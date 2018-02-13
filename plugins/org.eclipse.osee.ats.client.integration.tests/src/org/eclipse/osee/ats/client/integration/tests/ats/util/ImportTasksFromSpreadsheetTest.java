@@ -44,7 +44,7 @@ public class ImportTasksFromSpreadsheetTest {
       ImportTasksFromSpreadsheet importTasks = new ImportTasksFromSpreadsheet();
 
       PluginUtil util = new PluginUtil("org.eclipse.osee.ats");
-      File file = util.copyPluginFileToOseeData("support/Task Import.xml", "Task Import.xml");
+      File file = util.copyPluginFileToOseeData("OSEE-INF/atsImport/Task Import.xml", "Task Import.xml");
       importTasks.performImport(false, AtsTestUtil.getTeamWf(), file);
 
       Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(AtsTestUtil.getTeamWf());

@@ -2,8 +2,8 @@
 <?eclipse version="3.0"?>
 
 <plugin>
-   <extension-point id="OrcsObjectProvider" name="OrcsObjectProvider" schema="schema/OrcsObjectProvider.exsd"/>
-   <extension-point id="OrcsImageProvider" name="OrcsImageProvider" schema="schema/OrcsImageProvider.exsd"/>
+   <extension-point id="OrcsObjectProvider" name="OrcsObjectProvider" schema="OSEE-INF/extensionPts/OrcsObjectProvider.exsd"/>
+   <extension-point id="OrcsImageProvider" name="OrcsImageProvider" schema="OSEE-INF/extensionPts/OrcsImageProvider.exsd"/>
 
     <extension
             point="org.eclipse.ui.editors">

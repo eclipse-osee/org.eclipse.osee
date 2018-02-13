@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-   <extension-point id="OutfileParser" name="OutfileParser" schema="schema/OutfileParser.exsd"/>
+   <extension-point id="OutfileParser" name="OutfileParser" schema="OSEE-INF/extensionPts/OutfileParser.exsd"/>
    <extension
          id="OseeTypesOTE"
          name="OseeTypesOTE"
          point="org.eclipse.osee.framework.skynet.core.OseeTypes">
       <OseeTypes
-            resource="support/OseeTypes_OTE.osee">
+            resource="OSEE-INF/orcsTypes/OseeTypes_OTE.osee">
       </OseeTypes>
    </extension>
    <extension

@@ -59,7 +59,7 @@ public class AtsWorkDefinitionImporter {
     * If sheet has WorkDef defined, create artifact and import string. Return artifact, else return null.
     */
    public Artifact importWorkDefinitionSheetToDb(WorkDefinitionSheet sheet, XResultData resultData, Set<String> stateNames, IAtsChangeSet changes) {
-      String modelName = sheet.getFile().getName();
+      String modelName = sheet.getName() + ".ats";
       // Prove that can convert to atsDsl
       AtsDsl atsDsl = AtsDslUtil.getFromSheet(modelName, sheet);
       if (atsDsl.getWorkDef() != null) {

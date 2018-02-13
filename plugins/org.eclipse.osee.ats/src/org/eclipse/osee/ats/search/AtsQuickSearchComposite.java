@@ -70,7 +70,7 @@ public class AtsQuickSearchComposite extends Composite {
          public void mouseDoubleClick(MouseEvent mouseEvent) {
             if (mouseEvent.button == 3) {
                try {
-                  File file = new PluginUtil(Activator.PLUGIN_ID).getPluginFile("support/OSEEDay.wav");
+                  File file = new PluginUtil(Activator.PLUGIN_ID).getPluginFile("OSEE-INF/misc/OSEEDay.wav");
                   Program.launch(file.getAbsolutePath());
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);

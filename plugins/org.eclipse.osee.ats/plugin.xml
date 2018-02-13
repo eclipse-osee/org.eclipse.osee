@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-   <extension-point id="AtsNavigateItem" name="AtsNavigateItem" schema="schema/AtsNavigateItem.exsd"/>
-   <extension-point id="AtsStateItem" name="AtsStateItem" schema="schema/AtsStateItem.exsd"/>
-   <extension-point id="AtsWizardItem" name="AtsWizardItem" schema="schema/AtsWizardItem.exsd"/>
-   <extension-point id="AtsWorldEditorItem" name="AtsWorldEditorItem" schema="schema/AtsWorldEditorItem.exsd"/>
-   <extension-point id="AtsHealthCheck" name="AtsHealthCheck" schema="schema/AtsHealthCheck.exsd"/>
-   <extension-point id="AtsAdvancedOperationAction" name="AtsAdvancedOperationAction" schema="schema/AtsAdvancedOperationAction.exsd"/>
-   <extension-point id="AtsWorkDefinitionSheetProvider" name="AtsWorkDefinitionSheetProvider" schema="schema/AtsWorkDefinitionSheetProvider.exsd"/>
+   <extension-point id="AtsNavigateItem" name="AtsNavigateItem" schema="OSEE-INF/extensionPts/AtsNavigateItem.exsd"/>
+   <extension-point id="AtsStateItem" name="AtsStateItem" schema="OSEE-INF/extensionPts/AtsStateItem.exsd"/>
+   <extension-point id="AtsWizardItem" name="AtsWizardItem" schema="OSEE-INF/extensionPts/AtsWizardItem.exsd"/>
+   <extension-point id="AtsWorldEditorItem" name="AtsWorldEditorItem" schema="OSEE-INF/extensionPts/AtsWorldEditorItem.exsd"/>
+   <extension-point id="AtsHealthCheck" name="AtsHealthCheck" schema="OSEE-INF/extensionPts/AtsHealthCheck.exsd"/>
+   <extension-point id="AtsAdvancedOperationAction" name="AtsAdvancedOperationAction" schema="OSEE-INF/extensionPts/AtsAdvancedOperationAction.exsd"/>
+   <extension-point id="AtsWorkDefinitionSheetProvider" name="AtsWorkDefinitionSheetProvider" schema="OSEE-INF/extensionPts/AtsWorkDefinitionSheetProvider.exsd"/>
          <extension
          point="org.eclipse.ui.editors">
          <editor
@@ -112,7 +112,7 @@
     <view
          class="org.eclipse.osee.ats.walker.ActionWalkerView"
          icon="images/action.gif"
-         category="org.eclipse.osee.ats.category"
+         category="org.eclipse.osee.category"
          name="Action View"
          id="org.eclipse.osee.ats.ActionWalkerView">
     </view>
@@ -150,7 +150,7 @@
          name="OseeTypes_ATS"
          point="org.eclipse.osee.framework.skynet.core.OseeTypes">
       <OseeTypes
-            resource="support/OseeTypes_ATS.osee">
+            resource="OSEE-INF/orcsTypes/OseeTypes_ATS.osee">
       </OseeTypes>
    </extension>
    <extension

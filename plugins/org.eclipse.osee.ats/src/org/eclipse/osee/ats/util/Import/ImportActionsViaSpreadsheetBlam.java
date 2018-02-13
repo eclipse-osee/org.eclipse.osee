@@ -138,7 +138,7 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
 
    public File getSampleSpreadsheetFile() throws Exception {
       PluginUtil util = new PluginUtil(Activator.PLUGIN_ID);
-      return util.getPluginFile("support/Action_Import.xml");
+      return util.getPluginFile("OSEE-INF/atsImport/Action_Import.xml");
    }
 
    @Override

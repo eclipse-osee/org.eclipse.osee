@@ -58,7 +58,7 @@
       <OseeTypes
             guid="AQjoNnwNdyjicTck2UwA"
             id="466104557"
-            resource="support/OseeTypes_ClientDemo.osee">
+            resource="OSEE-INF/orcsTypes/OseeTypes_ClientDemo.osee">
       </OseeTypes>
    </extension>
 </plugin>

@@ -2,24 +2,24 @@
 <?eclipse version="3.0"?>
 <plugin>
 
-   <extension-point id="ArtifactFactory" name="ArtifactFactory" schema="schema/ArtifactFactory.exsd"/>
-   <extension-point id="HttpServerRequest" name="HttpServerRequest" schema="schema/HttpServerRequest.exsd"/>
-   <extension-point id="OseeTypes" name="OseeTypes" schema="schema/OseeTypes.exsd"/>
-   <extension-point id="DefaultInitialBranchProvider" name="DefaultInitialBranchProvider" schema="schema/DefaultInitialBranchProvider.exsd"/>
-   <extension-point id="ArtifactAnnotation" name="ArtifactAnnotation" schema="schema/ArtifactAnnotation.exsd"/>
-   <extension-point id="OseeDbSchema" name="OseeDbSchema" schema="schema/OseeDbSchema.exsd"/>
-   <extension-point id="WebPage" name="WebPage" schema="schema/WebPage.exsd"/>
-   <extension-point id="ArtifactCheck" name="ArtifactCheck" schema="schema/ArtifactCheck.exsd"/>
-   <extension-point id="AttributeType" name="AttributeType" schema="schema/AttributeType.exsd"/>
-   <extension-point id="AttributeDataProvider" name="AttributeDataProvider" schema="schema/AttributeDataProvider.exsd"/>
-   <extension-point id="OseeDbImportData" name="OseeDbImportData" schema="schema/OseeDbImportData.exsd"/>
-   <extension-point id="ClientLoopbackCmd" name="ClientLoopbackCmd" schema="schema/ClientLoopbackCmd.exsd"/>
-   <extension-point id="CommitActions" name="CommitActions" schema="schema/CommitActions.exsd"/>
-   <extension-point id="OseeValidator" name="OseeValidator" schema="schema/OseeValidator.exsd"/>
-   <extension-point id="ArtifactExtractor" name="ArtifactExtractor" schema="schema/ArtifactExtractor.exsd"/>
-   <extension-point id="ArtifactExtractorDelegate" name="ArtifactExtractorDelegate" schema="schema/ArtifactExtractorDelegate.exsd"/>
-   <extension-point id="OseeTypesHandler" name="OseeTypesHandler" schema="schema/OseeTypesHandler.exsd"/>
-   <extension-point id="ImportHandler" name="ImportHandler" schema="schema/ImportHandler.exsd"/>
+   <extension-point id="ArtifactFactory" name="ArtifactFactory" schema="OSEE-INF/extensionPts/ArtifactFactory.exsd"/>
+   <extension-point id="HttpServerRequest" name="HttpServerRequest" schema="OSEE-INF/extensionPts/HttpServerRequest.exsd"/>
+   <extension-point id="OseeTypes" name="OseeTypes" schema="OSEE-INF/extensionPts/OseeTypes.exsd"/>
+   <extension-point id="DefaultInitialBranchProvider" name="DefaultInitialBranchProvider" schema="OSEE-INF/extensionPts/DefaultInitialBranchProvider.exsd"/>
+   <extension-point id="ArtifactAnnotation" name="ArtifactAnnotation" schema="OSEE-INF/extensionPts/ArtifactAnnotation.exsd"/>
+   <extension-point id="OseeDbSchema" name="OseeDbSchema" schema="OSEE-INF/extensionPts/OseeDbSchema.exsd"/>
+   <extension-point id="WebPage" name="WebPage" schema="OSEE-INF/extensionPts/WebPage.exsd"/>
+   <extension-point id="ArtifactCheck" name="ArtifactCheck" schema="OSEE-INF/extensionPts/ArtifactCheck.exsd"/> 
+   <extension-point id="AttributeType" name="AttributeType" schema="OSEE-INF/extensionPts/AttributeType.exsd"/>
+   <extension-point id="AttributeDataProvider" name="AttributeDataProvider" schema="OSEE-INF/extensionPts/AttributeDataProvider.exsd"/>
+   <extension-point id="OseeDbImportData" name="OseeDbImportData" schema="OSEE-INF/extensionPts/OseeDbImportData.exsd"/>
+   <extension-point id="ClientLoopbackCmd" name="ClientLoopbackCmd" schema="OSEE-INF/extensionPts/ClientLoopbackCmd.exsd"/>
+   <extension-point id="CommitActions" name="CommitActions" schema="OSEE-INF/extensionPts/CommitActions.exsd"/>
+   <extension-point id="OseeValidator" name="OseeValidator" schema="OSEE-INF/extensionPts/OseeValidator.exsd"/>
+   <extension-point id="ArtifactExtractor" name="ArtifactExtractor" schema="OSEE-INF/extensionPts/ArtifactExtractor.exsd"/>
+   <extension-point id="ArtifactExtractorDelegate" name="ArtifactExtractorDelegate" schema="OSEE-INF/extensionPts/ArtifactExtractorDelegate.exsd"/>
+   <extension-point id="OseeTypesHandler" name="OseeTypesHandler" schema="OSEE-INF/extensionPts/OseeTypesHandler.exsd"/>
+   <extension-point id="ImportHandler" name="ImportHandler" schema="OSEE-INF/extensionPts/ImportHandler.exsd"/>
    
       <extension
          id="MappedAttributeDataProvider"
@@ -36,7 +36,7 @@
      <OseeTypes
            guid="AQjoNk+tfwaBTmnl1IQA"
            id="518481167"
-           resource="support/OseeTypes_Framework.osee">
+           resource="OSEE-INF/orcsTypes/OseeTypes_Framework.osee">
      </OseeTypes>
   </extension>
 

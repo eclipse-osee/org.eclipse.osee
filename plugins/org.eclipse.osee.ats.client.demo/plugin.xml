@@ -41,7 +41,7 @@
          name="OseeTypes_Demo"
          point="org.eclipse.osee.framework.skynet.core.OseeTypes">
       <OseeTypes
-            resource="support/OseeTypes_Demo.osee">
+            resource="OSEE-INF/orcsTypes/OseeTypes_Demo.osee">
       </OseeTypes>
    </extension>
    <extension

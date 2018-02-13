@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="AtsTransitionListener" name="AtsTransitionListener" schema="schema/AtsTransitionListener.exsd"/>
-   <extension-point id="AtsXWidgetValidator" name="AtsXWidgetValidator" schema="schema/AtsXWidgetValidator.exsd"/>
-   <extension-point id="AtsProgramManager" name="AtsProgramManager" schema="schema/AtsProgramManager.exsd"/>
-   <extension-point id="AtsReviewProvider" name="AtsReviewProvider" schema="schema/AtsReviewProvider.exsd"/>
-   <extension-point id="AtsStateItemCore" name="AtsStateItemCore" schema="schema/AtsStateItemCore.exsd"/>
+   <extension-point id="AtsTransitionListener" name="AtsTransitionListener" schema="OSEE-INF/extensionPts/AtsTransitionListener.exsd"/>
+   <extension-point id="AtsXWidgetValidator" name="AtsXWidgetValidator" schema="OSEE-INF/extensionPts/AtsXWidgetValidator.exsd"/>
+   <extension-point id="AtsProgramManager" name="AtsProgramManager" schema="OSEE-INF/extensionPts/AtsProgramManager.exsd"/>
+   <extension-point id="AtsReviewProvider" name="AtsReviewProvider" schema="OSEE-INF/extensionPts/AtsReviewProvider.exsd"/>
+   <extension-point id="AtsStateItemCore" name="AtsStateItemCore" schema="OSEE-INF/extensionPts/AtsStateItemCore.exsd"/>
    <extension point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
       <ArtifactFactory classname="org.eclipse.osee.ats.core.client.artifact.AtsArtifactFactory"/>
    </extension>

@@ -1,0 +1,17 @@
+Essentially, there is/should be an OSEE-INF directory in each bundle that has supporting files like 
+types sheets, test files, images and etc.
+
+Exmaple of OSEE-INF directory in osee.ats bundle:
+	atsConfig – Work Definitions 
+	extensionPts – Eclipsie extension point definitions
+	orcsTypes - *.osee types sheets
+	toolsWeb – data supporting the generation of the CEE tools website
+
+Other possible folder types:
+	images – images used by ide client/web UIs
+	requirements – word documents imported into test database
+	blamUi – external xml files containing blam widgets
+	web – pages and applications supporting web UIs
+	
+This not only makes things a little more organized, but could also support simpler code cause you can use OSGI 
+annotations to “declare” certain directories/file as different types instead of using eclipse extensions.

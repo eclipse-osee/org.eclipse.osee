@@ -2,22 +2,22 @@
 <?eclipse version="3.0"?>
 <plugin
 >
-	<extension-point id="ArtifactRenderer" name="ArtifactRenderer" schema="schema/ArtifactRenderer.exsd"/>
-	<extension-point id="BlamOperation" name="BlamOperation" schema="schema/BlamOperation.exsd"/>
-	<extension-point id="WordMlProducer" name="WordMlProducer" schema="schema/WordMlProducer.exsd"/>
-	<extension-point id="ArtifactRendererTemplate" name="ArtifactRendererTemplate" schema="schema/ArtifactRendererTemplate.exsd"/>
-	<extension-point id="OseeDictionary" name="OseeDictionary" schema="schema/OseeDictionary.exsd"/>
-	<extension-point id="XWidgetProvider" name="XWidgetProvider" schema="schema/XWidgetProvider.exsd"/>
-	<extension-point id="IgnorePublishAttribute" name="IgnorePublishAttribute" schema="schema/IgnorePublishAttribute.exsd"/>
-	<extension-point id="TemplateProvider" name="TemplateProvider" schema="schema/TemplateProvider.exsd"/>
- <extension-point id="SimpleTemplateProviderTemplate" name="SimpleTemplateProviderTemplate" schema="schema/SimpleTemplateProviderTemplate.exsd"/>
- <extension-point id="AttributeXWidgetProvider" name="AttributeXWidgetProvider" schema="schema/AttributeXWidgetProvider.exsd"/>
- <extension-point id="WorkDefinitionProvider" name="WorkDefinitionProvider" schema="schema/WorkDefinitionProvider.exsd"/>
- <extension-point id="DatabaseHealthOperation" name="DatabaseHealthOperation" schema="schema/DatabaseHealthOperation.exsd"/>
-  <extension-point id="ArtifactImageProvider" name="ArtifactImageProvider" schema="schema/ArtifactImageProvider.exsd"/>
-  <extension-point id="UserNavigateItem" name="UserNavigateItem" schema="schema/UserNavigateItem.exsd"/>
-  <extension-point id="DslGrammar" name="DslGrammar" schema="schema/DslGrammar.exsd"/>
-  <extension-point id="ArtifactEditorProvider" name="ArtifactEditorProvider" schema="schema/ArtifactEditorProvider.exsd"/>
+	<extension-point id="ArtifactRenderer" name="ArtifactRenderer" schema="OSEE-INF/extensionPts/ArtifactRenderer.exsd"/>
+	<extension-point id="BlamOperation" name="BlamOperation" schema="OSEE-INF/extensionPts/BlamOperation.exsd"/>
+	<extension-point id="WordMlProducer" name="WordMlProducer" schema="OSEE-INF/extensionPts/WordMlProducer.exsd"/>
+	<extension-point id="ArtifactRendererTemplate" name="ArtifactRendererTemplate" schema="OSEE-INF/extensionPts/ArtifactRendererTemplate.exsd"/>
+	<extension-point id="OseeDictionary" name="OseeDictionary" schema="OSEE-INF/extensionPts/OseeDictionary.exsd"/>
+	<extension-point id="XWidgetProvider" name="XWidgetProvider" schema="OSEE-INF/extensionPts/XWidgetProvider.exsd"/>
+	<extension-point id="IgnorePublishAttribute" name="IgnorePublishAttribute" schema="OSEE-INF/extensionPts/IgnorePublishAttribute.exsd"/>
+	<extension-point id="TemplateProvider" name="TemplateProvider" schema="OSEE-INF/extensionPts/TemplateProvider.exsd"/>
+ <extension-point id="SimpleTemplateProviderTemplate" name="SimpleTemplateProviderTemplate" schema="OSEE-INF/extensionPts/SimpleTemplateProviderTemplate.exsd"/>
+ <extension-point id="AttributeXWidgetProvider" name="AttributeXWidgetProvider" schema="OSEE-INF/extensionPts/AttributeXWidgetProvider.exsd"/>
+ <extension-point id="WorkDefinitionProvider" name="WorkDefinitionProvider" schema="OSEE-INF/extensionPts/WorkDefinitionProvider.exsd"/>
+ <extension-point id="DatabaseHealthOperation" name="DatabaseHealthOperation" schema="OSEE-INF/extensionPts/DatabaseHealthOperation.exsd"/>
+  <extension-point id="ArtifactImageProvider" name="ArtifactImageProvider" schema="OSEE-INF/extensionPts/ArtifactImageProvider.exsd"/>
+  <extension-point id="UserNavigateItem" name="UserNavigateItem" schema="OSEE-INF/extensionPts/UserNavigateItem.exsd"/>
+  <extension-point id="DslGrammar" name="DslGrammar" schema="OSEE-INF/extensionPts/DslGrammar.exsd"/>
+  <extension-point id="ArtifactEditorProvider" name="ArtifactEditorProvider" schema="OSEE-INF/extensionPts/ArtifactEditorProvider.exsd"/>
 
  	<extension point="org.eclipse.ui.importWizards">
 		<wizard category="org.eclipse.osee.define.import.category" class="org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard" icon="images/import.gif" id="org.eclipse.osee.framework.ui.skynet.artifact.Import.ImportWizard" name="OSEE Artifacts">
@@ -187,12 +187,12 @@
     </Renderer>
  </extension>
 	<extension point="org.eclipse.osee.framework.ui.skynet.ArtifactRendererTemplate">
-		<Template presentationType="ALL" templateFile="support/templates/PREVIEW_ALL.xml" templateName="PREVIEW_ALL"/>
-		<Template presentationType="ALL" templateFile="support/templates/Word Edit Template.xml" templateName="Word Edit Template"/>
-		<Template presentationType="ALL" templateFile="support/templates/PREVIEW Software Requirement with Recursion.xml" templateName="PREVIEW Software Requirement with Recursion"/>
+		<Template presentationType="ALL" templateFile="OSEE-INF/templates/PREVIEW_ALL.xml" templateName="PREVIEW_ALL"/>
+		<Template presentationType="ALL" templateFile="OSEE-INF/templates/Word Edit Template.xml" templateName="Word Edit Template"/>
+		<Template presentationType="ALL" templateFile="OSEE-INF/templates/PREVIEW Software Requirement with Recursion.xml" templateName="PREVIEW Software Requirement with Recursion"/>
   <Template
         presentationType="org.eclipse.osee.framework.ui.skynet.Template1"
-        templateFile="support/templates/PREVIEW_ALL_RECURSE.xml"
+        templateFile="OSEE-INF/templates/PREVIEW_ALL_RECURSE.xml"
         templateName="Preview Recurse">
   </Template>
 	</extension>
@@ -213,7 +213,7 @@
  <extension
        point="org.eclipse.osee.framework.ui.skynet.SimpleTemplateProviderTemplate">
     <Template
-          File="support/templates/PREVIEW_ALL.xml">
+          File="OSEE-INF/templates/PREVIEW_ALL.xml">
        <MatchCriteria
              match="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer PREVIEW PREVIEW_ARTIFACT">
        </MatchCriteria>
@@ -225,13 +225,13 @@
        </MatchCriteria>
     </Template>
     <Template
-          File="support/templates/PREVIEW_ALL_RECURSE.xml">
+          File="OSEE-INF/templates/PREVIEW_ALL_RECURSE.xml">
        <MatchCriteria
              match="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer PREVIEW PREVIEW_WITH_RECURSE">
        </MatchCriteria>
     </Template>
     <Template
-          File="support/templates/Word Edit Template.xml">
+          File="OSEE-INF/templates/Word Edit Template.xml">
        <MatchCriteria
              match="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer SPECIALIZED_EDIT">
        </MatchCriteria>
@@ -240,7 +240,7 @@
        </MatchCriteria>
     </Template>
     <Template
-          File="support/templates/Word Edit Template.xml">
+          File="OSEE-INF/templates/Word Edit Template.xml">
        <MatchCriteria
              match="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer MERGE">
        </MatchCriteria>

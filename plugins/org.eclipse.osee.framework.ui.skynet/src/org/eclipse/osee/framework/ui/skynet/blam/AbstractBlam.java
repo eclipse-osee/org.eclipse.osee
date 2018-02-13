@@ -66,9 +66,12 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    protected Map<Long, String> branchViews;
    protected ArtifactId viewId = ArtifactId.SENTINEL;
 
+   /**
+    * Where Blam XML UI comes from
+    */
    public enum BlamUiSource {
-      DEFAULT,
-      FILE
+      DEFAULT, // specified by Blam's getXWidgetsXml() method
+      FILE; // stored in OSEE-INF/blamUI/<blam-name>UI.xml file
    }
 
    public static final String BRANCH_VIEW = "Branch View";
@@ -143,7 +146,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
     * {@link NullPointerException} wrapped in {@link OseeCoreException}
     */
    public String getXWidgetsXmlFromUiFile(String className, String nameOfBundle) {
-      String file = String.format("ui/%sUi.xml", className);
+      String file = String.format("OSEE-INF/blamUi/%sUi.xml", className);
       Bundle bundle = Platform.getBundle(nameOfBundle);
 
       String contents = null;

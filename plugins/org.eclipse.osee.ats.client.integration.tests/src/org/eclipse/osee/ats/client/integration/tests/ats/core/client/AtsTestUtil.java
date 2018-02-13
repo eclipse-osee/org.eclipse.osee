@@ -368,7 +368,7 @@ public class AtsTestUtil {
       workDefName = WORK_DEF_NAME + "_" + AtsClientService.get().getClientUtils().getAtsDeveloperIncrementingNum();
       if (atsDsl == null) {
          atsDsl =
-            AWorkspace.getOseeInfResource("support/" + WORK_DEF_NAME + ".ats", AtsClientIntegrationTestSuite.class);
+            AWorkspace.getOseeInfResource("atsConfig/" + WORK_DEF_NAME + ".ats", AtsClientIntegrationTestSuite.class);
       }
       return atsDsl.replaceAll("PUT_NAME_HERE", workDefName);
    }

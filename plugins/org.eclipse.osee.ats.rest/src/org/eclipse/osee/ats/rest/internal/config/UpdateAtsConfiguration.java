@@ -80,7 +80,7 @@ public class UpdateAtsConfiguration {
             TransactionBuilder tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(
                CoreBranches.COMMON, userArt, "Add Rule Definitions Artifact");
             ArtifactId ruleDefConfigArt = tx.createArtifact(AtsArtifactToken.RuleDefinitions);
-            String ruleDefs = RestUtil.getResource("support/ruleDefinitions.ats");
+            String ruleDefs = RestUtil.getResource("atsConfig/ruleDefinitions.ats");
             tx.createAttribute(ruleDefConfigArt, AtsAttributeTypes.DslSheet, ruleDefs);
             if (rd.isErrors()) {
                throw new OseeStateException(rd.toString());
@@ -96,7 +96,7 @@ public class UpdateAtsConfiguration {
 
    private List<String> getViewsJsonStrings() throws Exception {
       List<String> viewsJson = new LinkedList<>();
-      viewsJson.add(RestUtil.getResource("support/views.json"));
+      viewsJson.add(RestUtil.getResource("atsConfig/views.json"));
       for (IAtsConfigurationViewsProvider provider : AtsConfigurationViewsService.getViewsProviders()) {
          viewsJson.add(provider.getViewsJson());
       }

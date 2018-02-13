@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-   <extension-point id="ITestRunReport" name="ITestRunReport" schema="schema/ITestRunReport.exsd"/>
+   <extension-point id="ITestRunReport" name="ITestRunReport" schema="OSEE-INF/extensionPts/ITestRunReport.exsd"/>
    <extension
          point="org.eclipse.ui.importWizards">
       <wizard
@@ -33,15 +33,6 @@
             classname="org.eclipse.osee.ote.ui.define.views.TestRunViewNavigateItem"
             viewId="org.eclipse.osee.ote.ui.navigate.OteNavigateView">
       </XNavigateItem>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="org.eclipse.osee.ote.ui.TestPerspective">
-         <viewShortcut
-               id="org.eclipse.osee.ote.ui.define.views.TestRunView">
-         </viewShortcut>
-      </perspectiveExtension>
    </extension>
    <extension
          point="org.eclipse.osee.framework.skynet.core.HttpServerRequest">

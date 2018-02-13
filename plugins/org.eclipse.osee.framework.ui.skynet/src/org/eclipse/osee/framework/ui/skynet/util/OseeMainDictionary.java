@@ -40,7 +40,7 @@ public class OseeMainDictionary implements IOseeDictionary {
          BufferedReader br = null;
          try {
             Bundle bundle = Activator.getInstance().getBundle();
-            URL url = bundle.getEntry("support/spellCheck/AllWords.txt");
+            URL url = bundle.getEntry("OSEE-INF/spellCheck/AllWords.txt");
 
             br = new BufferedReader(new InputStreamReader(url.openStream()));
             String line = null;

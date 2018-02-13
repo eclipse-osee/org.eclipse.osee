@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef;
 
-import java.io.File;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
@@ -18,23 +17,18 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
  */
 public class WorkDefinitionSheet {
 
-   public File file;
    public String name;
-   private final ArtifactToken token;
+   private ArtifactToken artifact = null;
+   private final String pluginId;
 
-   public WorkDefinitionSheet(String name, File file) {
-      this(name, file, null);
-   }
-
-   public WorkDefinitionSheet(String name, File file, ArtifactToken asToken) {
-      super();
-      this.file = file;
+   public WorkDefinitionSheet(String name, String pluginId) {
       this.name = name;
-      this.token = asToken;
+      this.pluginId = pluginId;
    }
 
-   public File getFile() {
-      return file;
+   public WorkDefinitionSheet(ArtifactToken artifact, String pluginId) {
+      this(artifact.getName(), pluginId);
+      this.artifact = artifact;
    }
 
    public String getName() {
@@ -43,10 +37,15 @@ public class WorkDefinitionSheet {
 
    @Override
    public String toString() {
-      return String.format("%s   - file[%s]", name, file);
+      return name;
    }
 
    public ArtifactToken getToken() {
-      return token;
+      return artifact;
    }
+
+   public String getPluginId() {
+      return pluginId;
+   }
+
 }

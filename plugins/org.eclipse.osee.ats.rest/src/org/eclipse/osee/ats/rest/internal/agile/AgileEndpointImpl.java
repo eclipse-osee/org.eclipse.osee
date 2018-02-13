@@ -1058,7 +1058,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    private CustomizeData getDefaultAgileCustData() {
       CustomizeData result = null;
       try {
-         String custDataStr = RestUtil.getResource("support/DefaultAgileCustomization.json");
+         String custDataStr = RestUtil.getResource("atsConfig/DefaultAgileCustomization.json");
          if (Strings.isValid(custDataStr)) {
             result = JsonUtil.getMapper().readValue(custDataStr, CustomizeData.class);
          }

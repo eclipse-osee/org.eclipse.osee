@@ -73,9 +73,9 @@ public class AddRequirementData implements IDbInitializationTask {
          applEndpoint.createDemoApplicability();
 
          //@formatter:off
-         importRequirements(branch, CoreArtifactTypes.SoftwareRequirement, "Software Requirements", "support/SAW-SoftwareRequirements.xml");
-         importRequirements(branch, CoreArtifactTypes.SystemRequirementMSWord, "System Requirements", "support/SAW-SystemRequirements.xml");
-         importRequirements(branch, CoreArtifactTypes.SubsystemRequirementMSWord, "Subsystem Requirements", "support/SAW-SubsystemRequirements.xml");
+         importRequirements(branch, CoreArtifactTypes.SoftwareRequirement, "Software Requirements", "OSEE-INF/requirements/SAW-SoftwareRequirements.xml");
+         importRequirements(branch, CoreArtifactTypes.SystemRequirementMSWord, "System Requirements", "OSEE-INF/requirements/SAW-SystemRequirements.xml");
+         importRequirements(branch, CoreArtifactTypes.SubsystemRequirementMSWord, "Subsystem Requirements", "OSEE-INF/requirements/SAW-SubsystemRequirements.xml");
          //@formatter:on
 
          SkynetTransaction demoDbTraceability =

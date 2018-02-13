@@ -44,8 +44,8 @@ public class ConvertCreateUpdateAtsConfig implements IAtsDatabaseConversion {
       StringBuffer data = new StringBuffer();
       data.append("Updates AtsConfig artifact (optional but recommended conversion)\n\n");
       data.append("This will:\n" + "   - Create AtsConfig artifact, if not created\n" //
-         + "   - Create Rule Definitions from support/ruleDefinitions.ats, if not created\n" //
-         + "   - Create/Update Views from support/views.json\n" //
+         + "   - Create Rule Definitions from OSEE-INF/atsConfig/ruleDefinitions.ats, if not created\n" //
+         + "   - Create/Update Views from OSEE-INF/atsConfig/views.json\n" //
          + "   - Create Color Team Column, if not created.\n" //
          + "   - Create/Update Valid State Names\n\n" //
          + "Can be run multiple times without corruption.\n" //

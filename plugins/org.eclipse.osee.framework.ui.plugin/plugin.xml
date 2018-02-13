@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="XNavigateItem" name="XNavigateItem" schema="schema/XNavigateItem.exsd"/>
-   <extension-point id="PropertyStoreControl" name="PropertyStoreControl" schema="schema/PropertyStoreControl.exsd"/>
-   <extension-point id="XCommonNavigateItem" name="XCommonNavigateItem" schema="schema/XCommonNavigateItem.exsd"/>
+   <extension-point id="XNavigateItem" name="XNavigateItem" schema="OSEE-INF/extensionPts/XNavigateItem.exsd"/>
+   <extension-point id="PropertyStoreControl" name="PropertyStoreControl" schema="OSEE-INF/extensionPts/PropertyStoreControl.exsd"/>
+   <extension-point id="XCommonNavigateItem" name="XCommonNavigateItem" schema="OSEE-INF/extensionPts/XCommonNavigateItem.exsd"/>
    <extension
          point="org.eclipse.ui.startup">
       <startup

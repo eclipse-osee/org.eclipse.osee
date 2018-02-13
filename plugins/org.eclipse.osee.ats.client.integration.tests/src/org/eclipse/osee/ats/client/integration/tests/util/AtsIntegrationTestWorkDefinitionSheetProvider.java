@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
-import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.ats.workdef.IAtsWorkDefinitionSheetProvider;
 
 /**
@@ -27,24 +26,12 @@ public class AtsIntegrationTestWorkDefinitionSheetProvider implements IAtsWorkDe
    @Override
    public Collection<WorkDefinitionSheet> getWorkDefinitionSheets() {
       List<WorkDefinitionSheet> sheets = new ArrayList<>();
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare",
-         AtsWorkDefinitionSheetProviders.getSupportFile(PLUGIN_ID,
-            "OSEE-INF/support/WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare.ats")));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision",
-         AtsWorkDefinitionSheetProviders.getSupportFile(PLUGIN_ID,
-            "OSEE-INF/support/WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision.ats")));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_PeerReviewDefinitionManagerTest_Transition",
-         AtsWorkDefinitionSheetProviders.getSupportFile(PLUGIN_ID,
-            "OSEE-INF/support/WorkDef_Team_PeerReviewDefinitionManagerTest_Transition.ats")));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_TransitionManagerTest_TargetedVersion",
-         AtsWorkDefinitionSheetProviders.getSupportFile(PLUGIN_ID,
-            "OSEE-INF/support/WorkDef_Team_TransitionManagerTest_TargetedVersion.ats")));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion",
-         AtsWorkDefinitionSheetProviders.getSupportFile(PLUGIN_ID,
-            "OSEE-INF/support/WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion.ats")));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition",
-         AtsWorkDefinitionSheetProviders.getSupportFile(PLUGIN_ID,
-            "OSEE-INF/support/WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition.ats")));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare", PLUGIN_ID));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision", PLUGIN_ID));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Team_PeerReviewDefinitionManagerTest_Transition", PLUGIN_ID));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Team_TransitionManagerTest_TargetedVersion", PLUGIN_ID));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion", PLUGIN_ID));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition", PLUGIN_ID));
       return sheets;
    }
 }

@@ -94,7 +94,7 @@ public final class AtsWorkDefinitionSheetProviders {
    }
 
    public static void importAIsAndTeamsToDb(WorkDefinitionSheet sheet, IAtsChangeSet changes) {
-      String modelName = sheet.getFile().getName();
+      String modelName = sheet.getName() + ".ats";
       AtsDsl atsDsl = AtsDslUtil.getFromSheet(modelName, sheet);
       ImportAIsAndTeamDefinitionsToDb importer = new ImportAIsAndTeamDefinitionsToDb(modelName, atsDsl, changes);
       importer.execute();
@@ -103,20 +103,13 @@ public final class AtsWorkDefinitionSheetProviders {
    public static List<WorkDefinitionSheet> getWorkDefinitionSheets(String dbType) {
       List<WorkDefinitionSheet> sheets = new ArrayList<>();
       if (dbType.equals("ats")) {
-         sheets.add(new WorkDefinitionSheet(WORK_DEF_TEAM_DEFAULT,
-            getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Team_Default.ats")));
-         sheets.add(new WorkDefinitionSheet("WorkDef_Task_Default",
-            getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Task_Default.ats")));
-         sheets.add(new WorkDefinitionSheet("WorkDef_Review_Decision",
-            getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Review_Decision.ats")));
-         sheets.add(new WorkDefinitionSheet("WorkDef_Review_PeerToPeer",
-            getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Review_PeerToPeer.ats")));
-         sheets.add(new WorkDefinitionSheet("WorkDef_Team_Simple",
-            getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Team_Simple.ats")));
-         sheets.add(
-            new WorkDefinitionSheet("WorkDef_Goal", getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Goal.ats")));
-         sheets.add(new WorkDefinitionSheet("WorkDef_Sprint",
-            getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Sprint.ats")));
+         sheets.add(new WorkDefinitionSheet(WORK_DEF_TEAM_DEFAULT, Activator.PLUGIN_ID));
+         sheets.add(new WorkDefinitionSheet("WorkDef_Task_Default", Activator.PLUGIN_ID));
+         sheets.add(new WorkDefinitionSheet("WorkDef_Review_Decision", Activator.PLUGIN_ID));
+         sheets.add(new WorkDefinitionSheet("WorkDef_Review_PeerToPeer", Activator.PLUGIN_ID));
+         sheets.add(new WorkDefinitionSheet("WorkDef_Team_Simple", Activator.PLUGIN_ID));
+         sheets.add(new WorkDefinitionSheet("WorkDef_Goal", Activator.PLUGIN_ID));
+         sheets.add(new WorkDefinitionSheet("WorkDef_Sprint", Activator.PLUGIN_ID));
       }
       for (IAtsWorkDefinitionSheetProvider provider : getProviders(dbType)) {
          sheets.addAll(provider.getWorkDefinitionSheets());

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="DatabaseInitializationConfiguration" name="DatabaseInitializationConfiguration" schema="schema/DatabaseInitializationConfiguration.exsd"/>
-   <extension-point id="DatabaseInitializationTask" name="DatabaseInitializationTask" schema="schema/DatabaseInitializationTask.exsd"/>
+   <extension-point id="DatabaseInitializationConfiguration" name="DatabaseInitializationConfiguration" schema="OSEE-INF/extensionPts/DatabaseInitializationConfiguration.exsd"/>
+   <extension-point id="DatabaseInitializationTask" name="DatabaseInitializationTask" schema="OSEE-INF/extensionPts/DatabaseInitializationTask.exsd"/>
    <extension
          id="configClient"
          point="org.eclipse.core.runtime.applications">

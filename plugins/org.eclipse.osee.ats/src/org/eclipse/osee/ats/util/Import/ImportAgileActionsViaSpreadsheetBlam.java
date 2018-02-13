@@ -32,7 +32,7 @@ public class ImportAgileActionsViaSpreadsheetBlam extends ImportActionsViaSpread
    @Override
    public File getSampleSpreadsheetFile() throws Exception {
       PluginUtil util = new PluginUtil(Activator.PLUGIN_ID);
-      return util.getPluginFile("support/Agile_Action_Import.xml");
+      return util.getPluginFile("OSEE-INF/atsImport/Agile_Action_Import.xml");
    }
 
 }

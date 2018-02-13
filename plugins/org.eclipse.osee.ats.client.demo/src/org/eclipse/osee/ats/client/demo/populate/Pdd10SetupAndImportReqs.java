@@ -277,9 +277,9 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
    private void demoDbImportReqsTx() {
       try {
          //@formatter:off
-         importRequirements(SAW_Bld_1, CoreArtifactTypes.SoftwareRequirement, "Software Requirements", "support/SAW-SoftwareRequirements.xml");
-         importRequirements(SAW_Bld_1, CoreArtifactTypes.SystemRequirementMSWord, "System Requirements", "support/SAW-SystemRequirements.xml");
-         importRequirements(SAW_Bld_1, CoreArtifactTypes.SubsystemRequirementMSWord, "Subsystem Requirements", "support/SAW-SubsystemRequirements.xml");
+         importRequirements(SAW_Bld_1, CoreArtifactTypes.SoftwareRequirement, "Software Requirements", "OSEE-INF/requirements/SAW-SoftwareRequirements.xml");
+         importRequirements(SAW_Bld_1, CoreArtifactTypes.SystemRequirementMSWord, "System Requirements", "OSEE-INF/requirements/SAW-SystemRequirements.xml");
+         importRequirements(SAW_Bld_1, CoreArtifactTypes.SubsystemRequirementMSWord, "Subsystem Requirements", "OSEE-INF/requirements/SAW-SubsystemRequirements.xml");
          //@formatter:on
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));
