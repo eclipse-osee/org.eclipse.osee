@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaQueryTypeToken;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTokenQuery;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -19,14 +19,14 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 /**
  * @author Ryan D. Brooks
  */
-public class QueryTypeTokenHandler extends SqlHandler<CriteriaQueryTypeToken> {
+public class TokenQueryHandler extends SqlHandler<CriteriaTokenQuery> {
 
    private String atrTxsAlias;
    private String atrAlias;
-   private CriteriaQueryTypeToken criteria;
+   private CriteriaTokenQuery criteria;
 
    @Override
-   public void setData(CriteriaQueryTypeToken criteria) {
+   public void setData(CriteriaTokenQuery criteria) {
       this.criteria = criteria;
    }
 

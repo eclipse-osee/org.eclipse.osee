@@ -16,10 +16,10 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
 /**
  * @author Ryan D. Brooks
  */
-public class CriteriaQueryTypeToken extends Criteria {
+public class CriteriaTokenQuery extends Criteria {
    private final AttributeTypeId attributeType;
 
-   public CriteriaQueryTypeToken(AttributeTypeId attributeType) {
+   public CriteriaTokenQuery(AttributeTypeId attributeType) {
       this.attributeType = attributeType;
    }
 

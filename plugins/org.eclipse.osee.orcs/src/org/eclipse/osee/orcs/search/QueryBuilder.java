@@ -29,6 +29,12 @@ public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query 
 
    List<ArtifactToken> loadArtifactTokens();
 
+   List<ArtifactId> loadArtifactIds();
+
+   /**
+    * @param attributeType is used in place of the natural Name attribute to populate the name fields in the returned
+    * artifact tokens
+    */
    List<ArtifactToken> loadArtifactTokens(AttributeTypeId attributeType);
 
    /**

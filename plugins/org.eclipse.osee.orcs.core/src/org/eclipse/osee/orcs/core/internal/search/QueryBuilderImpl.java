@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.List;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -23,7 +21,8 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaQueryTypeToken;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaIdQuery;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTokenQuery;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
@@ -61,8 +60,14 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
 
    @Override
    public List<ArtifactToken> loadArtifactTokens(AttributeTypeId attributeType) {
-      getQueryData().addCriteria(new CriteriaQueryTypeToken(attributeType));
+      getQueryData().addCriteria(new CriteriaTokenQuery(attributeType));
       return queryEngine.loadArtifactTokens(build());
+   }
+
+   @Override
+   public List<ArtifactId> loadArtifactIds() {
+      getQueryData().addCriteria(new CriteriaIdQuery());
+      return queryEngine.loadArtifactIds(build());
    }
 
    @Override

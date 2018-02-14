@@ -144,9 +144,27 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       return query.andTypeEquals(artifactType).andNotExists(attributeType, value).loadArtifactTokens();
    }
 
+   /**
+    * if exists = false then return all artifact of given type that do not have an attribute of the given type with the
+    * specified value. This includes artifacts that lack attributes of the given type as well as those that have that
+    * type but with a different value.
+    */
+   @Override
+   public List<ArtifactId> getArtifactIdsByAttribute(ArtifactTypeId artifactType, AttributeTypeId attributeType, String value, boolean exists) {
+      if (exists) {
+         return query.andTypeEquals(artifactType).and(attributeType, value).loadArtifactIds();
+      }
+      return query.andTypeEquals(artifactType).andNotExists(attributeType, value).loadArtifactIds();
+   }
+
    @Override
    public List<ArtifactToken> getArtifactTokensByType(ArtifactTypeId artifactType) {
       return query.andTypeEquals(artifactType).loadArtifactTokens();
+   }
+
+   @Override
+   public List<ArtifactId> getArtifactIdsByType(ArtifactTypeId artifactType) {
+      return query.andTypeEquals(artifactType).loadArtifactIds();
    }
 
    @Override

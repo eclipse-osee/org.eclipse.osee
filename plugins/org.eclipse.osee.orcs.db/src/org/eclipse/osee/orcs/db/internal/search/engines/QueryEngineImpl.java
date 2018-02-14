@@ -13,11 +13,14 @@ package org.eclipse.osee.orcs.db.internal.search.engines;
 import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_FETCH_SIZE;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
@@ -118,15 +121,25 @@ public class QueryEngineImpl implements QueryEngine {
 
    @Override
    public List<ArtifactToken> loadArtifactTokens(QueryData queryData) {
-      ArtifactQuerySqlContext queryContext =
-         (ArtifactQuerySqlContext) artifactSqlContextFactory.createQueryContext(null, queryData, QueryType.TOKEN);
       List<ArtifactToken> tokens = new ArrayList<>(100);
-      jdbcClient.runQuery(
-         stmt -> tokens.add(ArtifactToken.valueOf(stmt.getLong("art_id"), stmt.getString("value"),
-            queryContext.getBranch(), ArtifactTypeId.valueOf(stmt.getLong("art_type_id")))),
-         JDBC__MAX_FETCH_SIZE, queryContext.getSql(), queryContext.getParameters().toArray());
-      queryData.reset();
+      loadArtifactX(queryData, QueryType.TOKEN, stmt -> tokens.add(ArtifactToken.valueOf(stmt.getLong("art_id"),
+         stmt.getString("value"), queryData.getBranch(), ArtifactTypeId.valueOf(stmt.getLong("art_type_id")))));
       return tokens;
+   }
+
+   @Override
+   public List<ArtifactId> loadArtifactIds(QueryData queryData) {
+      List<ArtifactId> ids = new ArrayList<>(100);
+      loadArtifactX(queryData, QueryType.ID, stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))));
+      return ids;
+   }
+
+   private void loadArtifactX(QueryData queryData, QueryType queryType, Consumer<JdbcStatement> consumer) {
+      ArtifactQuerySqlContext queryContext =
+         (ArtifactQuerySqlContext) artifactSqlContextFactory.createQueryContext(null, queryData, queryType);
+      jdbcClient.runQuery(consumer, JDBC__MAX_FETCH_SIZE, queryContext.getSql(),
+         queryContext.getParameters().toArray());
+      queryData.reset();
    }
 
    @Override

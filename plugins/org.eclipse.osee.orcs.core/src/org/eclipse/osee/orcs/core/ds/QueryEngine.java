@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.ds;
 
 import java.util.List;
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -42,4 +43,6 @@ public interface QueryEngine {
    CancellableCallable<Integer> createQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler);
 
    List<ArtifactToken> loadArtifactTokens(QueryData queryData);
+
+   List<ArtifactId> loadArtifactIds(QueryData queryData);
 }

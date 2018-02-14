@@ -55,9 +55,13 @@ public abstract class SqlHandler<T extends Criteria> implements HasPriority {
       // do nothing
    }
 
-   public abstract void addTables(AbstractSqlWriter writer);
+   public void addTables(AbstractSqlWriter writer) {
+      // do nothing
+   }
 
-   public abstract boolean addPredicates(AbstractSqlWriter writer);
+   public boolean addPredicates(AbstractSqlWriter writer) {
+      return false;
+   }
 
    public void addWithTables(AbstractSqlWriter writer) {
       // Do Nothing

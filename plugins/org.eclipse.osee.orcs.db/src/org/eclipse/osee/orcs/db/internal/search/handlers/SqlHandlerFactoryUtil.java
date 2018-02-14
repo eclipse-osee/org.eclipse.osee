@@ -36,14 +36,15 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaCommitIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateRange;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateWithOperator;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaIdQuery;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMergeBranchFor;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaQueryTypeToken;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeNotExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideNotExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTokenQuery;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxArtifactIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxBranchIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxComment;
@@ -99,7 +100,8 @@ public final class SqlHandlerFactoryUtil {
    }
 
    private static void addArtifactHandlers(Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap) {
-      handleMap.put(CriteriaQueryTypeToken.class, QueryTypeTokenHandler.class);
+      handleMap.put(CriteriaIdQuery.class, IdQueryHandler.class);
+      handleMap.put(CriteriaTokenQuery.class, TokenQueryHandler.class);
       handleMap.put(CriteriaArtifactGuids.class, ArtifactGuidSqlHandler.class);
       handleMap.put(CriteriaArtifactIds.class, ArtifactIdsSqlHandler.class);
       handleMap.put(CriteriaArtifactType.class, ArtifactTypeSqlHandler.class);

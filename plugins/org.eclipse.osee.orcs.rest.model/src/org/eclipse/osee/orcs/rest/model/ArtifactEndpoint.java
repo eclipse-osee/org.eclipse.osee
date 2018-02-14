@@ -61,9 +61,19 @@ public interface ArtifactEndpoint {
    List<ArtifactToken> getArtifactTokensByAttribute(@PathParam("artifactType") ArtifactTypeId artifactType, @PathParam("attributeType") AttributeTypeId attributeType, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists);
 
    @GET
+   @Path("type/{artifactType}/atrType/{attributeType}/ids")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ArtifactId> getArtifactIdsByAttribute(@PathParam("artifactType") ArtifactTypeId artifactType, @PathParam("attributeType") AttributeTypeId attributeType, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists);
+
+   @GET
    @Path("type/{artifactType}")
    @Produces(MediaType.APPLICATION_JSON)
    List<ArtifactToken> getArtifactTokensByType(@PathParam("artifactType") ArtifactTypeId artifactType);
+
+   @GET
+   @Path("type/{artifactType}/ids")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ArtifactId> getArtifactIdsByType(@PathParam("artifactType") ArtifactTypeId artifactType);
 
    /**
     * error if an artifact with the same name and type already exist
