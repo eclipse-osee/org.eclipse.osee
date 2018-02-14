@@ -6,7 +6,6 @@ Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
-Osee-Data: OSEE-INF/*
 Import-Package: javax.annotation;version="1.2.0",
  javax.ws.rs;version="2.0.0",
  javax.ws.rs.container;version="2.0.0",
