@@ -103,13 +103,13 @@ public final class AtsWorkDefinitionSheetProviders {
    public static List<WorkDefinitionSheet> getWorkDefinitionSheets(String dbType) {
       List<WorkDefinitionSheet> sheets = new ArrayList<>();
       if (dbType.equals("ats")) {
-         sheets.add(new WorkDefinitionSheet(WORK_DEF_TEAM_DEFAULT, Activator.PLUGIN_ID));
-         sheets.add(new WorkDefinitionSheet("WorkDef_Task_Default", Activator.PLUGIN_ID));
-         sheets.add(new WorkDefinitionSheet("WorkDef_Review_Decision", Activator.PLUGIN_ID));
-         sheets.add(new WorkDefinitionSheet("WorkDef_Review_PeerToPeer", Activator.PLUGIN_ID));
-         sheets.add(new WorkDefinitionSheet("WorkDef_Team_Simple", Activator.PLUGIN_ID));
-         sheets.add(new WorkDefinitionSheet("WorkDef_Goal", Activator.PLUGIN_ID));
-         sheets.add(new WorkDefinitionSheet("WorkDef_Sprint", Activator.PLUGIN_ID));
+         sheets.add(new WorkDefinitionSheet(WORK_DEF_TEAM_DEFAULT, AtsWorkDefinitionSheetProviders.class));
+         sheets.add(new WorkDefinitionSheet("WorkDef_Task_Default", AtsWorkDefinitionSheetProviders.class));
+         sheets.add(new WorkDefinitionSheet("WorkDef_Review_Decision", AtsWorkDefinitionSheetProviders.class));
+         sheets.add(new WorkDefinitionSheet("WorkDef_Review_PeerToPeer", AtsWorkDefinitionSheetProviders.class));
+         sheets.add(new WorkDefinitionSheet("WorkDef_Team_Simple", AtsWorkDefinitionSheetProviders.class));
+         sheets.add(new WorkDefinitionSheet("WorkDef_Goal", AtsWorkDefinitionSheetProviders.class));
+         sheets.add(new WorkDefinitionSheet("WorkDef_Sprint", AtsWorkDefinitionSheetProviders.class));
       }
       for (IAtsWorkDefinitionSheetProvider provider : getProviders(dbType)) {
          sheets.addAll(provider.getWorkDefinitionSheets());

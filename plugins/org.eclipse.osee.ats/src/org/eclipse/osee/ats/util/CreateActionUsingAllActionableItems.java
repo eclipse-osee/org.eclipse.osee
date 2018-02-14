@@ -19,14 +19,12 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
-import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -53,11 +51,11 @@ public class CreateActionUsingAllActionableItems extends XNavigateItemAction {
          int numWfs = action.getTeamWfs().size();
          if (numWfs > 30) {
             AWorkbench.popup(numWfs + " Workflows were created.  Only opening one.");
-            AtsEditors.openATSAction((Artifact) action.getTeamWfs().iterator().next().getStoreObject(),
+            AtsEditors.openATSAction(action.getTeamWfs().iterator().next().getStoreObject(),
                AtsOpenOption.OpenOneOrPopupSelect);
          } else {
             AWorkbench.popup("Completed", "Completed");
-            AtsEditors.openATSAction((ActionArtifact) action.getAction().getStoreObject(), AtsOpenOption.OpenAll);
+            AtsEditors.openATSAction(action.getAction().getStoreObject(), AtsOpenOption.OpenAll);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

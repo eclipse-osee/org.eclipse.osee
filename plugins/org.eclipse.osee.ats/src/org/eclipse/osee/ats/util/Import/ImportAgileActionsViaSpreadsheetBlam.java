@@ -11,8 +11,7 @@
 package org.eclipse.osee.ats.util.Import;
 
 import java.io.File;
-import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.plugin.core.PluginUtil;
+import org.eclipse.osee.framework.core.util.OseeInf;
 
 /**
  * @author Donald G. Dunne
@@ -31,8 +30,7 @@ public class ImportAgileActionsViaSpreadsheetBlam extends ImportActionsViaSpread
 
    @Override
    public File getSampleSpreadsheetFile() throws Exception {
-      PluginUtil util = new PluginUtil(Activator.PLUGIN_ID);
-      return util.getPluginFile("OSEE-INF/atsImport/Agile_Action_Import.xml");
+      return OseeInf.getResourceAsFile("atsImport/Agile_Action_Import.xml", getClass());
    }
 
 }

@@ -13,7 +13,6 @@ package org.eclipse.osee.jaxrs.server.internal.resources;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -33,11 +32,10 @@ import org.apache.cxf.jaxrs.model.ClassResourceInfo;
 import org.apache.cxf.jaxrs.model.wadl.WadlGenerator;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.message.Message;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsUtils;
 import org.eclipse.osee.logger.Log;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -48,11 +46,8 @@ public class JaxRsHtmlWadlGenerator extends WadlGenerator {
 
    private static final String WADL_TRANSFORMED_FLAG = "was.wadl.transformed";
 
-   private static final String DEFAULT_TRANSFORM = "OSEE-INF/transforms/wadl.xsl";
-
    private Log logger;
    private BundleContext bundleContext;
-   private String wadlTemplatePath;
 
    //@formatter:off
    private @Context HttpHeaders headers;
@@ -64,16 +59,10 @@ public class JaxRsHtmlWadlGenerator extends WadlGenerator {
 
    public void start(BundleContext bundleContext, Map<String, Object> props) {
       this.bundleContext = bundleContext;
-      update(props);
    }
 
    public void stop() {
       this.bundleContext = null;
-      this.wadlTemplatePath = null;
-   }
-
-   public void update(Map<String, Object> props) {
-      this.wadlTemplatePath = DEFAULT_TRANSFORM;
    }
 
    @Override
@@ -98,7 +87,7 @@ public class JaxRsHtmlWadlGenerator extends WadlGenerator {
       StringBuilder toReturn = wadl;
       List<MediaType> acceptableMediaTypes = headers.getAcceptableMediaTypes();
       if (JaxRsUtils.isHtmlSupported(acceptableMediaTypes)) {
-         URL templateUrl = getTemplateURL(wadlTemplatePath);
+         URL templateUrl = OseeInf.getResourceAsUrl("transforms/wadl.xsl", getClass());
          if (templateUrl != null) {
             InputStream wadlStream = null;
             InputStream templateStream = null;
@@ -120,25 +109,7 @@ public class JaxRsHtmlWadlGenerator extends WadlGenerator {
                Lib.close(templateStream);
             }
          } else {
-            logger.warn("WADL to HTML template url was null - templatePath[%s]", wadlTemplatePath);
-         }
-      }
-      return toReturn;
-   }
-
-   private URL getTemplateURL(String template) {
-      URL toReturn = null;
-      if (Strings.isValid(template)) {
-         if (template.contains("://")) {
-            try {
-               URI uri = URI.create(template);
-               toReturn = uri.toURL();
-            } catch (Exception ex) {
-               // do nothing
-            }
-         } else if (bundleContext != null) {
-            Bundle bundle = bundleContext.getBundle();
-            toReturn = bundle.getResource(template);
+            logger.warn("WADL to HTML template url was null - templatePath[%s]", templateUrl);
          }
       }
       return toReturn;

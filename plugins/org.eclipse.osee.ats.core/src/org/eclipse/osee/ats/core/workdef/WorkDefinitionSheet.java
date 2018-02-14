@@ -19,15 +19,15 @@ public class WorkDefinitionSheet {
 
    public String name;
    private ArtifactToken artifact = null;
-   private final String pluginId;
+   private final Class<?> clazz;
 
-   public WorkDefinitionSheet(String name, String pluginId) {
+   public WorkDefinitionSheet(String name, Class<?> clazz) {
       this.name = name;
-      this.pluginId = pluginId;
+      this.clazz = clazz;
    }
 
-   public WorkDefinitionSheet(ArtifactToken artifact, String pluginId) {
-      this(artifact.getName(), pluginId);
+   public WorkDefinitionSheet(ArtifactToken artifact) {
+      this(artifact.getName(), null);
       this.artifact = artifact;
    }
 
@@ -44,8 +44,8 @@ public class WorkDefinitionSheet {
       return artifact;
    }
 
-   public String getPluginId() {
-      return pluginId;
+   public Class<?> getClazz() {
+      return clazz;
    }
 
 }

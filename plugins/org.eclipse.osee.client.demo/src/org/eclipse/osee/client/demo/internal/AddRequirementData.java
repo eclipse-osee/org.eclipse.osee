@@ -13,12 +13,10 @@ package org.eclipse.osee.client.demo.internal;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import java.io.File;
-import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -31,6 +29,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -52,8 +51,6 @@ import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationParame
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author Donald G. Dunne
@@ -73,9 +70,9 @@ public class AddRequirementData implements IDbInitializationTask {
          applEndpoint.createDemoApplicability();
 
          //@formatter:off
-         importRequirements(branch, CoreArtifactTypes.SoftwareRequirement, "Software Requirements", "OSEE-INF/requirements/SAW-SoftwareRequirements.xml");
-         importRequirements(branch, CoreArtifactTypes.SystemRequirementMSWord, "System Requirements", "OSEE-INF/requirements/SAW-SystemRequirements.xml");
-         importRequirements(branch, CoreArtifactTypes.SubsystemRequirementMSWord, "Subsystem Requirements", "OSEE-INF/requirements/SAW-SubsystemRequirements.xml");
+         importRequirements(branch, CoreArtifactTypes.SoftwareRequirement, "Software Requirements", OseeInf.getResourceAsFile("requirements/SAW-SoftwareRequirements.xml", getClass()));
+         importRequirements(branch, CoreArtifactTypes.SystemRequirementMSWord, "System Requirements", OseeInf.getResourceAsFile("requirements/SAW-SystemRequirements.xml", getClass()));
+         importRequirements(branch, CoreArtifactTypes.SubsystemRequirementMSWord, "Subsystem Requirements", OseeInf.getResourceAsFile("requirements/SAW-SubsystemRequirements.xml", getClass()));
          //@formatter:on
 
          SkynetTransaction demoDbTraceability =
@@ -100,7 +97,7 @@ public class AddRequirementData implements IDbInitializationTask {
       }
    }
 
-   private void importRequirements(BranchId branch, IArtifactType requirementType, String folderName, String filename) throws Exception {
+   private void importRequirements(BranchId branch, IArtifactType requirementType, String folderName, File file) throws Exception {
       if (DEBUG) {
          OseeLog.logf(AddRequirementData.class, Level.INFO, "Importing \"%s\" requirements on branch \"%s\"",
             folderName, branch);
@@ -112,7 +109,7 @@ public class AddRequirementData implements IDbInitializationTask {
       extractor.setDelegate(new WordOutlineExtractorDelegate());
 
       ArtifactImportOperationParameter importOptions = new ArtifactImportOperationParameter();
-      importOptions.setSourceFile(getResourceFile(filename));
+      importOptions.setSourceFile(file);
       importOptions.setDestinationArtifact(systemReq);
       importOptions.setExtractor(extractor);
       importOptions.setResolver(artifactResolver);
@@ -124,14 +121,6 @@ public class AddRequirementData implements IDbInitializationTask {
       if (systemReq.getChildren().isEmpty()) {
          throw new IllegalStateException("Artifacts were not imported");
       }
-   }
-
-   private File getResourceFile(String resource) throws Exception {
-      Bundle bundle = FrameworkUtil.getBundle(getClass());
-      URL url = bundle.getResource(resource);
-      url = FileLocator.toFileURL(url);
-      File file = new File(url.toURI());
-      return file;
    }
 
    private void relate(RelationTypeSide relationSide, Artifact artifact, Collection<Artifact> artifacts) {

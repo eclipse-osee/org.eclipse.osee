@@ -19,10 +19,9 @@ import org.eclipse.osee.ats.dsl.ModelUtil;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.PluginUtil;
 
 /**
  * @author Donald G. Dunne
@@ -30,9 +29,8 @@ import org.eclipse.osee.framework.plugin.core.PluginUtil;
 public class AtsDslUtil {
 
    public static String getString(WorkDefinitionSheet sheet) {
-      Conditions.assertNotNullOrEmpty(sheet.getPluginId(), "pluginId");
       try {
-         File file = getFile(sheet.getPluginId(), "OSEE-INF/atsConfig/" + sheet.getName() + ".ats");
+         File file = OseeInf.getResourceAsFile("atsConfig/" + sheet.getName() + ".ats", sheet.getClazz());
          if (!file.exists()) {
             OseeLog.logf(Activator.class, Level.SEVERE, "WorkDefinition [%s]", sheet);
             return null;
@@ -43,16 +41,6 @@ public class AtsDslUtil {
       }
    }
 
-   private static File getFile(String pluginId, String filename) {
-      try {
-         PluginUtil util = new PluginUtil(pluginId);
-         return util.getPluginFile(filename);
-      } catch (IOException ex) {
-         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Unable to access work definition sheet [%s]", filename);
-      }
-      return null;
-   }
-
    public static AtsDsl getFromSheet(String modelName, WorkDefinitionSheet sheet) {
       try {
          return getFromString(modelName, getString(sheet));
@@ -61,7 +49,7 @@ public class AtsDslUtil {
       }
    }
 
-   public static AtsDsl getFromString(String modelName, String dslString) {
+   private static AtsDsl getFromString(String modelName, String dslString) {
       try {
          AtsDsl atsDsl = ModelUtil.loadModel(modelName, dslString);
          return atsDsl;

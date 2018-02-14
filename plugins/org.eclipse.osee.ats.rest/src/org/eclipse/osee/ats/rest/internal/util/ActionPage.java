@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -174,7 +175,7 @@ public class ActionPage {
    public void addTransitionStates(ViewModel page) {
       try {
          IAtsWorkItem workItem = getWorkItem();
-         String html = RestUtil.getResource("templates/transition.html");
+         String html = OseeInf.getResourceContents("templates/transition.html", getClass());
          html = html.replaceAll("PUT_POST_URL_HERE", "/ats/action/state");
          html = html.replaceAll("PUT_ATS_ID_HERE", workItem.getAtsId());
          html = html.replaceFirst("PUT_TO_STATE_LIST_HERE", getToStateList());
@@ -393,7 +394,7 @@ public class ActionPage {
 
    private String getStateHtmlTemplate() throws Exception {
       if (pageTemplate == null) {
-         pageTemplate = RestUtil.getResource("templates/state.html");
+         pageTemplate = OseeInf.getResourceContents("templates/state.html", getClass());
       }
       return pageTemplate;
    }

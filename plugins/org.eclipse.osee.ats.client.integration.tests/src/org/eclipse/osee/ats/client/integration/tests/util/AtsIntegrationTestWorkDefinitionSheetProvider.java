@@ -21,17 +21,21 @@ import org.eclipse.osee.ats.workdef.IAtsWorkDefinitionSheetProvider;
  */
 public class AtsIntegrationTestWorkDefinitionSheetProvider implements IAtsWorkDefinitionSheetProvider {
 
-   private static final String PLUGIN_ID = "org.eclipse.osee.ats.client.integration.tests";
-
    @Override
    public Collection<WorkDefinitionSheet> getWorkDefinitionSheets() {
       List<WorkDefinitionSheet> sheets = new ArrayList<>();
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare", PLUGIN_ID));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision", PLUGIN_ID));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_PeerReviewDefinitionManagerTest_Transition", PLUGIN_ID));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_TransitionManagerTest_TargetedVersion", PLUGIN_ID));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion", PLUGIN_ID));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition", PLUGIN_ID));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare",
+         AtsIntegrationTestWorkDefinitionSheetProvider.class));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision",
+         AtsIntegrationTestWorkDefinitionSheetProvider.class));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Team_PeerReviewDefinitionManagerTest_Transition",
+         AtsIntegrationTestWorkDefinitionSheetProvider.class));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Team_TransitionManagerTest_TargetedVersion",
+         AtsIntegrationTestWorkDefinitionSheetProvider.class));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion",
+         AtsIntegrationTestWorkDefinitionSheetProvider.class));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition",
+         AtsIntegrationTestWorkDefinitionSheetProvider.class));
       return sheets;
    }
 }

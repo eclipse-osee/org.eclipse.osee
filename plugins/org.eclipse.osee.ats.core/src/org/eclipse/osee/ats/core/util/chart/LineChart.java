@@ -18,8 +18,8 @@ import java.util.Map.Entry;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.util.ILineChart;
-import org.eclipse.osee.ats.core.internal.util.OseeResource;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -62,7 +62,7 @@ public class LineChart implements ILineChart {
 
       try {
          // Fill LineChart.json
-         String htmlChart = OseeResource.getResource("web/agilebl/LineChart.html");
+         String htmlChart = OseeInf.getResourceContents("web/agilebl/LineChart.html", getClass());
          htmlChart = htmlChart.replaceFirst("PUT_TITLE_HERE", title);
          htmlChart = htmlChart.replaceFirst("PUT_REPORT_DATE_HERE", DateUtil.getMMDDYYHHMM());
          htmlChart = htmlChart.replaceFirst("PUT_LABELS_HERE", Collections.toString(",", xAxisLabels));
@@ -70,7 +70,7 @@ public class LineChart implements ILineChart {
          List<String> dataSetStrs = new LinkedList<>();
          for (Entry<String, List<Double>> entry : datasets.entrySet()) {
 
-            String dataSetStr = OseeResource.getResource("web/agilebl/LineDataset.json");
+            String dataSetStr = OseeInf.getResourceContents("web/agilebl/LineDataset.json", getClass());
             dataSetStr = dataSetStr.replaceFirst("PUT_LABEL_HERE", entry.getKey());
             List<String> valueStrs = new LinkedList<>();
             for (Double value : entry.getValue()) {

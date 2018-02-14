@@ -15,9 +15,9 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorOperationProvider;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.PluginUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -70,7 +70,7 @@ public class AtsQuickSearchComposite extends Composite {
          public void mouseDoubleClick(MouseEvent mouseEvent) {
             if (mouseEvent.button == 3) {
                try {
-                  File file = new PluginUtil(Activator.PLUGIN_ID).getPluginFile("OSEE-INF/misc/OSEEDay.wav");
+                  File file = OseeInf.getResourceAsFile("misc/OSEEDay.wav", getClass());
                   Program.launch(file.getAbsolutePath());
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);

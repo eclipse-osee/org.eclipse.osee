@@ -16,13 +16,12 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
-import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.plugin.core.PluginUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -137,8 +136,7 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
    }
 
    public File getSampleSpreadsheetFile() throws Exception {
-      PluginUtil util = new PluginUtil(Activator.PLUGIN_ID);
-      return util.getPluginFile("OSEE-INF/atsImport/Action_Import.xml");
+      return OseeInf.getResourceAsFile("atsImport/Action_Import.xml", getClass());
    }
 
    @Override

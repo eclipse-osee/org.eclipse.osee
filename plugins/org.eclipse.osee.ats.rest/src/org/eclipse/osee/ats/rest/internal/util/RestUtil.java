@@ -10,52 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.util;
 
-import java.io.File;
 import java.net.URI;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.rest.internal.AtsApplication;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author Donald G. Dunne
  */
 public class RestUtil {
 
-   /**
-    * @return Contents of resource starting at path org.eclipse.osee.ats.rest/OSEE-INF
-    */
-   public static String getResource(String path) throws Exception {
-      Bundle bundle = FrameworkUtil.getBundle(AtsApplication.class);
-      URL url = bundle.getEntry("OSEE-INF/" + path);
-      return Lib.inputStreamToString(url.openStream());
-   }
-
-   public static File getResourceAsFile(String path) {
-      Bundle bundle = FrameworkUtil.getBundle(AtsApplication.class);
-      URL url = bundle.getEntry("OSEE-INF/" + path);
-      try {
-         URL fileUrl = FileLocator.toFileURL(url);
-         return new File(fileUrl.toURI().getPath());
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex, "Error getting resource [%s] as file", path);
-      }
-   }
-
    public static String simplePageHtml(String title, String message) throws Exception {
-      String html = getResource("templates/simple.html");
+      String html = OseeInf.getResourceContents("templates/simple.html", RestUtil.class);
       html = html.replaceFirst("<\\?PUT_MESSAGE_HERE\\?>", message);
       html = html.replaceFirst("<\\?PUT_TITLE_HERE\\?>", title);
       return html;

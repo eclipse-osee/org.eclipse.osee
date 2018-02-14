@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.access.provider.internal.DefaultFrameworkAcces
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -25,8 +26,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author John R. Misinco
@@ -39,8 +38,7 @@ public class FrameworkAccessConfig implements IDbInitializationTask {
    }
 
    private static void importFrameworkAccessModel() {
-      Bundle bundle = FrameworkUtil.getBundle(FrameworkAccessConfig.class);
-      URL url = bundle.getEntry("OSEE-INF/access/OseeAccess_FrameworkAccess.osee");
+      URL url = OseeInf.getResourceAsUrl("access/OseeAccess_FrameworkAccess.osee", FrameworkAccessConfig.class);
 
       InputStream inputStream = null;
       try {

@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.core.column.ColorTeamColumn;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
-import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -33,6 +32,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.util.JsonUtil;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -80,7 +80,7 @@ public class UpdateAtsConfiguration {
             TransactionBuilder tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(
                CoreBranches.COMMON, userArt, "Add Rule Definitions Artifact");
             ArtifactId ruleDefConfigArt = tx.createArtifact(AtsArtifactToken.RuleDefinitions);
-            String ruleDefs = RestUtil.getResource("atsConfig/ruleDefinitions.ats");
+            String ruleDefs = OseeInf.getResourceContents("atsConfig/ruleDefinitions.ats", getClass());
             tx.createAttribute(ruleDefConfigArt, AtsAttributeTypes.DslSheet, ruleDefs);
             if (rd.isErrors()) {
                throw new OseeStateException(rd.toString());
@@ -96,7 +96,7 @@ public class UpdateAtsConfiguration {
 
    private List<String> getViewsJsonStrings() throws Exception {
       List<String> viewsJson = new LinkedList<>();
-      viewsJson.add(RestUtil.getResource("atsConfig/views.json"));
+      viewsJson.add(OseeInf.getResourceContents("atsConfig/views.json", getClass()));
       for (IAtsConfigurationViewsProvider provider : AtsConfigurationViewsService.getViewsProviders()) {
          viewsJson.add(provider.getViewsJson());
       }

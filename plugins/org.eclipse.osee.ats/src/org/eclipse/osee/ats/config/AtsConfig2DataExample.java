@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
-import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -51,15 +50,15 @@ public class AtsConfig2DataExample extends AbstractAtsConfig2Data {
    @Override
    public Collection<WorkDefinitionSheet> getTeamsAiSheets() {
       List<WorkDefinitionSheet> sheets = new ArrayList<>();
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_AtsConfig2_AIs_And_Teams", Activator.PLUGIN_ID));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Team_AtsConfig2_AIs_And_Teams", AtsConfig2DataExample.class));
       return sheets;
    }
 
    @Override
    public Collection<WorkDefinitionSheet> getWorkDefSheets() {
       List<WorkDefinitionSheet> sheets = new ArrayList<>();
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_AtsConfig2Example", Activator.PLUGIN_ID));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Task_AtsConfig2Example", Activator.PLUGIN_ID));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Team_AtsConfig2Example", AtsConfig2DataExample.class));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Task_AtsConfig2Example", AtsConfig2DataExample.class));
       return sheets;
    }
 

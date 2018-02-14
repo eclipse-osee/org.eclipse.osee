@@ -16,10 +16,10 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.osgi.framework.Bundle;
 
 /**
  * @author Donald G. Dunne
@@ -39,8 +39,7 @@ public class OseeMainDictionary implements IOseeDictionary {
          // open OSEE english dictionary
          BufferedReader br = null;
          try {
-            Bundle bundle = Activator.getInstance().getBundle();
-            URL url = bundle.getEntry("OSEE-INF/spellCheck/AllWords.txt");
+            URL url = OseeInf.getResourceAsUrl("spellCheck/AllWords.txt", getClass());
 
             br = new BufferedReader(new InputStreamReader(url.openStream()));
             String line = null;

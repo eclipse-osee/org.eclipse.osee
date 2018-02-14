@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Megumi Telles
@@ -82,11 +81,6 @@ public class DeleteInvalidAttributeTypesFromBranch extends AbstractBlam {
             logf("Artifact [%s] attribute type [%s] deleted: [%s]\n", art, attrType, attr);
          }
       }
-   }
-
-   @Override
-   public String getXWidgetsXml() {
-      return getXWidgetsXmlFromUiFile(getClass().getSimpleName(), Activator.PLUGIN_ID);
    }
 
    @Override

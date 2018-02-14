@@ -95,7 +95,6 @@ import org.eclipse.osee.ats.rest.internal.agile.operations.KanbanOperations;
 import org.eclipse.osee.ats.rest.internal.agile.operations.ProgramOperations;
 import org.eclipse.osee.ats.rest.internal.agile.operations.SprintConfigOperations;
 import org.eclipse.osee.ats.rest.internal.query.TokenSearchOperations;
-import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.ats.rest.internal.world.WorldResource;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -104,6 +103,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.JsonUtil;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
@@ -1058,7 +1058,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    private CustomizeData getDefaultAgileCustData() {
       CustomizeData result = null;
       try {
-         String custDataStr = RestUtil.getResource("atsConfig/DefaultAgileCustomization.json");
+         String custDataStr = OseeInf.getResourceContents("atsConfig/DefaultAgileCustomization.json", getClass());
          if (Strings.isValid(custDataStr)) {
             result = JsonUtil.getMapper().readValue(custDataStr, CustomizeData.class);
          }

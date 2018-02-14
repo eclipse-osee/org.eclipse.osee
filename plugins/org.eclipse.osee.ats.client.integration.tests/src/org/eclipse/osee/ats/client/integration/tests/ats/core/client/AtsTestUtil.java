@@ -72,6 +72,7 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -84,7 +85,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.ws.AWorkspace;
 
 /**
  * Test utility that will create a new work definition, team definition, versions and allow tests to easily
@@ -368,7 +368,7 @@ public class AtsTestUtil {
       workDefName = WORK_DEF_NAME + "_" + AtsClientService.get().getClientUtils().getAtsDeveloperIncrementingNum();
       if (atsDsl == null) {
          atsDsl =
-            AWorkspace.getOseeInfResource("atsConfig/" + WORK_DEF_NAME + ".ats", AtsClientIntegrationTestSuite.class);
+            OseeInf.getResourceContents("atsConfig/" + WORK_DEF_NAME + ".ats", AtsClientIntegrationTestSuite.class);
       }
       return atsDsl.replaceAll("PUT_NAME_HERE", workDefName);
    }

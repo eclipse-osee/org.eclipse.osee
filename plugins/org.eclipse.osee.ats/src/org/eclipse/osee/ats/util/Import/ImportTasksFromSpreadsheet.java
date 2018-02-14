@@ -24,10 +24,9 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.editor.WorkflowEditor;
-import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.plugin.core.PluginUtil;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -83,8 +82,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
    }
 
    public File getSampleSpreadsheetFile() throws Exception {
-      PluginUtil util = new PluginUtil(Activator.PLUGIN_ID);
-      return util.getPluginFile("OSEE-INF/atsImport/Task Import.xml");
+      return OseeInf.getResourceAsFile("atsImport/Task Import.xml", getClass());
    }
 
    @Override
