@@ -593,6 +593,26 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       teamArt.deleteAndPersist();
    }
 
+   @Test
+   public void testCreateEmptyAction() throws Exception {
+      IAtsActionableItem ai = AtsClientService.get().getConfigItem(DemoArtifactToken.SAW_Code_AI);
+      String aiStr = ai.getIdString();
+
+      String newAction = AtsClientService.getActionEndpoint().createEmptyAction(
+         AtsClientService.get().getUserService().getCurrentUserId(), aiStr, "New Action");
+
+      JsonNode root = JsonUtil.readTree(newAction);
+      Long id = root.path("id").asLong();
+
+      TeamWorkFlowArtifact teamArt =
+         (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromId(id, AtsClientService.get().getAtsBranch());
+      Assert.assertNotNull(teamArt);
+
+      // Cleanup test
+      ((Artifact) teamArt.getParentAction().getStoreObject()).deleteAndPersist();
+      teamArt.deleteAndPersist();
+   }
+
    private void postAndValidateResponse(String errorMessage, Form form) throws IOException {
       Response response = post(form);
       validateResponse(response, errorMessage);

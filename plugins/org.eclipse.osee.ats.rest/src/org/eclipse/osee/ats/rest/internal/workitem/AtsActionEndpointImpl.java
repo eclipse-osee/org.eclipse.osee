@@ -28,6 +28,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -75,6 +76,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -492,6 +494,10 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public NewActionResult createAction(NewActionData newActionData) {
+      return createNewAction(newActionData);
+   }
+
+   private NewActionResult createNewAction(NewActionData newActionData) {
       NewActionResult result = new NewActionResult();
       try {
          IAtsUser asUser = atsApi.getUserService().getUserById(newActionData.getAsUserId());
@@ -512,11 +518,41 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          result.setAction(ArtifactId.valueOf(actionResult.getActionArt()));
          for (ArtifactId teamWf : actionResult.getTeamWfArts()) {
             result.addTeamWf(teamWf);
+            String ret = teamWf.getIdString();
+            if (Strings.isInValid(ret)) {
+               return null;
+            }
          }
       } catch (Exception ex) {
          result.getResults().errorf("Exception creating action [%s]", Lib.exceptionToString(ex));
       }
       return result;
+   }
+
+   @Override
+   @Path("createEmpty")
+   @POST
+   @Produces(MediaType.APPLICATION_JSON)
+   public String createEmptyAction(@QueryParam("userId") String userId, @QueryParam("ai") String actionItem, @QueryParam("title") String title) {
+      String newActionId = "";
+      NewActionData newActionData = getNewActionData(userId, actionItem, title);
+      NewActionResult newAction = createNewAction(newActionData);
+      if (newAction == null || newAction.getTeamWfs().isEmpty()) {
+         throw new OseeCoreException("Unable to create new Action");
+      }
+      newActionId = newAction.getTeamWfs().get(0).getIdString();
+      return String.format("{ \"id\":\"%s\" }", newActionId);
+   }
+
+   private NewActionData getNewActionData(String userId, String actionItem, String title) {
+      NewActionData newActionData = new NewActionData();
+      List<String> actionIds = new ArrayList<String>();
+      actionIds.add(actionItem);
+      newActionData.setAiIds(actionIds);
+      newActionData.setTitle(title);
+      newActionData.setAsUserId(userId);
+      newActionData.setCreatedByUserId(userId);
+      return newActionData;
    }
 
    /**
