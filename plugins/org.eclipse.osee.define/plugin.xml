@@ -12,7 +12,7 @@
          <wizard
                category="org.eclipse.osee.define.import.category"
                class="org.eclipse.osee.define.traceability.ImportTraceabilityWizard"
-               icon="images/relate.gif"
+               icon="OSEE-INF/images/relate.gif"
                id="osee.define.traceability.ImportTraceabilityWizard"
                name="Traceability into OSEE">
             <description>
@@ -29,7 +29,7 @@
          <wizard
                category="org.eclipse.osee.define.import.category"
                class="org.eclipse.osee.define.traceability.importer.ImportTraceUnitWizard"
-               icon="images/importTrace.gif"
+               icon="OSEE-INF/images/importTrace.gif"
                id="ImportTraceUnitsWizard"
                name="Trace Units Into OSEE">
             <description>
@@ -78,7 +78,7 @@
           targetID="#CompilationUnitEditorContext">
        <action
              class="org.eclipse.osee.define.traceability.action.FindTraceUnitEditorAction"
-             icon="images/artifact_search.gif"
+             icon="OSEE-INF/images/artifact_search.gif"
              id="org.eclipse.osee.define.action.FindTraceUnitFromResource"
              label="Find Trace Unit Artifact"
              menubarPath="org.eclipse.jdt.ui.source.menu"
@@ -91,7 +91,7 @@
           objectClass="org.eclipse.core.resources.IResource">
        <action
              class="org.eclipse.osee.define.traceability.action.FindTraceUnitActionDelegate"
-             icon="images/artifact_search.gif"
+             icon="OSEE-INF/images/artifact_search.gif"
              id="org.eclipse.osee.define.action.FindTraceUnitFromResource2"
              label="Find Trace Unit Artifact"
              menubarPath="additions"

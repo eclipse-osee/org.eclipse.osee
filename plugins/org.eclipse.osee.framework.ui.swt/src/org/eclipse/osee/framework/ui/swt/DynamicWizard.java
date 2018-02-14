@@ -21,7 +21,7 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osee.framework.ui.swt.internal.FrameworkUiImage;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
@@ -38,8 +38,7 @@ public abstract class DynamicWizard implements IWizard {
     */
 
    static {
-      JFaceResources.getImageRegistry().put(DEFAULT_IMAGE,
-         ImageDescriptor.createFromFile(Wizard.class, "images/page.gif"));//$NON-NLS-1$
+      JFaceResources.getImageRegistry().put(DEFAULT_IMAGE, ImageManager.getImage(FrameworkUiImage.PAGE));//$NON-NLS-1$
    }
 
    /**
@@ -103,7 +102,7 @@ public abstract class DynamicWizard implements IWizard {
 
    /**
     * Adds a new page to this wizard. The page is inserted at the end of the page list.
-    * 
+    *
     * @param page the new page
     */
    public void addPage(IWizardPage page) {
@@ -290,7 +289,7 @@ public abstract class DynamicWizard implements IWizard {
     * This image descriptor will be used to generate an image for a page with no image of its own; the image will be
     * computed once and cached.
     * </p>
-    * 
+    *
     * @param imageDescriptor the default page image descriptor
     */
    public void setDefaultPageImageDescriptor(ImageDescriptor imageDescriptor) {
@@ -303,7 +302,7 @@ public abstract class DynamicWizard implements IWizard {
     * The dialog settings is used to record state between wizard invocations (for example, radio button selection, last
     * import directory, etc.)
     * </p>
-    * 
+    *
     * @param settings the dialog settings, or <code>null</code> if none
     * @see #getDialogSettings
     */
@@ -316,7 +315,7 @@ public abstract class DynamicWizard implements IWizard {
     * <p>
     * This flag should be set on wizards where the first wizard page adds follow-on wizard pages based on user input.
     * </p>
-    * 
+    *
     * @param b <code>true</code> to always show Next and Previous buttons, and <code>false</code> to suppress Next and
     * Previous buttons for single page wizards
     */
@@ -329,7 +328,7 @@ public abstract class DynamicWizard implements IWizard {
     * <p>
     * The result of this method is typically used by the container to show or hide the Help button.
     * </p>
-    * 
+    *
     * @param b <code>true</code> if help is available, and <code>false</code> if this wizard is helpless
     * @see #isHelpAvailable
     */
@@ -339,7 +338,7 @@ public abstract class DynamicWizard implements IWizard {
 
    /**
     * Sets whether this wizard needs a progress monitor.
-    * 
+    *
     * @param b <code>true</code> if a progress monitor is required, and <code>false</code> if none is needed
     * @see #needsProgressMonitor()
     */
@@ -349,7 +348,7 @@ public abstract class DynamicWizard implements IWizard {
 
    /**
     * Sets the title bar color for this wizard.
-    * 
+    *
     * @param color the title bar color
     */
    public void setTitleBarColor(RGB color) {
@@ -358,7 +357,7 @@ public abstract class DynamicWizard implements IWizard {
 
    /**
     * Sets the window title for the container that hosts this page to the given string.
-    * 
+    *
     * @param newTitle the window title for the container
     */
    public void setWindowTitle(String newTitle) {

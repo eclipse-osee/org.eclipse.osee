@@ -9,11 +9,11 @@
             application="org.eclipse.ui.ide.workbench"
             description="The Open System Engineering Environment (OSEE) builds upon the strengths of Eclipse (an open, extensible, platform independent, feature-rich, tools platform) to provide a tightly integrated engineering environment that supports lean engineering. Since OSEE integrates all engineering areas, the full lifecycle data for a product is managed by a common platform allowing this data to be seamlessly brought together to form a coherent, accurate view of a project in real-time."
             name="Open System Engineering Environment">
-        <property name="windowImages" value="images/osee_16.png,images/osee_32.png,images/osee_48.png" />
-        <property name="aboutImage" value="images/osee_154_152.png"/> 
+        <property name="windowImages" value="OSEE-INF/images/osee_16.png,images/osee_32.png,images/osee_48.png" />
+        <property name="aboutImage" value="OSEE-INF/images/osee_154_152.png"/> 
 		<property name="aboutText" value="%blurb"/> 
 		<property name="appName" value="OSEE"/> 
-        <property name="preferenceCustomization" value="support/plugin_customization.ini" />
+        <property name="preferenceCustomization" value="OSEE-INF/plugin_customization.ini" />
         <property
               name="cssTheme"
               value="org.eclipse.e4.ui.css.theme.e4_classic">

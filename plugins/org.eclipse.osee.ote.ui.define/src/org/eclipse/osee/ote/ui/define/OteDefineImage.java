@@ -52,7 +52,7 @@ public enum OteDefineImage implements KeyedImage {
 
    @Override
    public ImageDescriptor createImageDescriptor() {
-      return ImageManager.createImageDescriptor(OteUiDefinePlugin.PLUGIN_ID, "images", fileName);
+      return ImageManager.createImageDescriptor(OteUiDefinePlugin.PLUGIN_ID, fileName);
    }
 
    @Override

@@ -6,7 +6,7 @@
          point="org.eclipse.ui.views">
       <view
             name="Branch Visualization"
-            icon="images/branch.gif"
+            icon="OSEE-INF/images/branch.gif"
             category="osee.jdk.core.category"
             class="org.eclipse.osee.branch.gantt.views.BranchVisualizationView"
             id="org.eclipse.osee.branch.gantt.views.BranchVisualizationView">

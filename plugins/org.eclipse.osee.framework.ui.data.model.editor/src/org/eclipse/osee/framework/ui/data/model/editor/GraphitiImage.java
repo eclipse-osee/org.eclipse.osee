@@ -31,7 +31,7 @@ public enum GraphitiImage implements KeyedImage {
 
    @Override
    public ImageDescriptor createImageDescriptor() {
-      return ImageManager.createImageDescriptor(symbolicBundleName, "images", fileName);
+      return ImageManager.createImageDescriptor(symbolicBundleName, fileName);
    }
 
    @Override

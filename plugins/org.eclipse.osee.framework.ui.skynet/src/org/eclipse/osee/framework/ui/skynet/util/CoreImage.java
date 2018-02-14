@@ -29,7 +29,7 @@ public class CoreImage implements KeyedImage {
 
    @Override
    public ImageDescriptor createImageDescriptor() {
-      return ImageManager.createImageDescriptor(pluginId, "images", filename);
+      return ImageManager.createImageDescriptor(pluginId, filename);
    }
 
    @Override

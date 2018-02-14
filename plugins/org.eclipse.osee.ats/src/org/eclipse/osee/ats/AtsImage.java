@@ -100,7 +100,7 @@ public enum AtsImage implements KeyedImage {
 
    @Override
    public ImageDescriptor createImageDescriptor() {
-      return ImageManager.createImageDescriptor(Activator.PLUGIN_ID, "images", fileName);
+      return ImageManager.createImageDescriptor(Activator.PLUGIN_ID, fileName);
    }
 
    @Override

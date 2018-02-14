@@ -20,7 +20,7 @@
   <extension-point id="ArtifactEditorProvider" name="ArtifactEditorProvider" schema="OSEE-INF/extensionPts/ArtifactEditorProvider.exsd"/>
 
  	<extension point="org.eclipse.ui.importWizards">
-		<wizard category="org.eclipse.osee.define.import.category" class="org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard" icon="images/import.gif" id="org.eclipse.osee.framework.ui.skynet.artifact.Import.ImportWizard" name="OSEE Artifacts">
+		<wizard category="org.eclipse.osee.define.import.category" class="org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard" icon="OSEE-INF/images/import.gif" id="org.eclipse.osee.framework.ui.skynet.artifact.Import.ImportWizard" name="OSEE Artifacts">
 			<description>
             Import artifact data into OSEE.
          </description>
@@ -33,7 +33,7 @@
      <wizard
            category="org.eclipse.osee.framework.ui.skynet.export"
            class="org.eclipse.osee.framework.ui.skynet.export.ArtifactExportWizard"
-           icon="images/query_log.gif"
+           icon="OSEE-INF/images/query_log.gif"
            id="org.eclipse.osee.framework.ui.skynet.artifactExport"
            name="OSEE Artifact Export">
      </wizard>
@@ -43,20 +43,20 @@
      </category>
   </extension>
 	<extension point="org.eclipse.ui.editors">
-		<editor class="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor" contributorClass="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorContributor" default="false" icon="images/artifact_editor.gif" id="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor" name="Artifact Editor"/>
-		<editor class="org.eclipse.osee.framework.ui.skynet.blam.BlamEditor" default="false" icon="images/blam.gif" id="org.eclipse.osee.framework.ui.skynet.blam.BlamEditor" name="Blam Editor"/>
-		<editor class="org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor" default="false" icon="images/artifact_mass_editor.gif" id="org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor" name="Mass Artifact Editor"/>
+		<editor class="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor" contributorClass="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorContributor" default="false" icon="OSEE-INF/images/artifact_editor.gif" id="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor" name="Artifact Editor"/>
+		<editor class="org.eclipse.osee.framework.ui.skynet.blam.BlamEditor" default="false" icon="OSEE-INF/images/blam.gif" id="org.eclipse.osee.framework.ui.skynet.blam.BlamEditor" name="Blam Editor"/>
+		<editor class="org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor" default="false" icon="OSEE-INF/images/artifact_mass_editor.gif" id="org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor" name="Mass Artifact Editor"/>
   <editor
           class="org.eclipse.osee.framework.ui.skynet.change.view.ChangeReportEditor"
           default="false"
-          icon="images/branch_change.gif"
+          icon="OSEE-INF/images/branch_change.gif"
           id="org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditor"
           name="Change Report Editor">
     </editor>
   <editor
         class="org.eclipse.osee.framework.ui.skynet.results.ResultsEditor"
         default="false"
-        icon="images/file.gif"
+        icon="OSEE-INF/images/file.gif"
         id="org.eclipse.osee.framework.ui.skynet.results.ResultsEditor"
         name="Results Editor">
   </editor>
@@ -93,22 +93,22 @@
  </extension>
 
 	<extension id="org.eclipse.osee.framework.ui.skynet" name="OSEE" point="org.eclipse.ui.views">
-		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer" icon="images/artifact_explorer.gif" id="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer" name="Artifact Explorer"/>
-		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.group.GroupExplorer" icon="images/group.gif" id="org.eclipse.osee.framework.ui.skynet.group.GroupExplorer" name="OSEE Group Explorer"/>
+		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer" icon="OSEE-INF/images/artifact_explorer.gif" id="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer" name="Artifact Explorer"/>
+		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.group.GroupExplorer" icon="OSEE-INF/images/group.gif" id="org.eclipse.osee.framework.ui.skynet.group.GroupExplorer" name="OSEE Group Explorer"/>
 		<category id="osee.jdk.core.category" name="OSEE"/>
-		<view allowMultiple="false" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.search.QuickSearchView" icon="images/artifact_search.gif" id="org.eclipse.osee.framework.ui.skynet.QuickSearchView" name="Artifact Quick Search"/>
-		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView" icon="images/skywalker.gif" id="org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView" name="Sky Walker"/>
+		<view allowMultiple="false" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.search.QuickSearchView" icon="OSEE-INF/images/artifact_search.gif" id="org.eclipse.osee.framework.ui.skynet.QuickSearchView" name="Artifact Quick Search"/>
+		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView" icon="OSEE-INF/images/skywalker.gif" id="org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView" name="Sky Walker"/>
   <view
         allowMultiple="true"
         category="osee.jdk.core.category"
         class="org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView"
-        icon="images/branch_merge.gif"
+        icon="OSEE-INF/images/branch_merge.gif"
         id="org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView"
         name="Merge View">
   </view>
      <view
          class="org.eclipse.osee.framework.ui.skynet.skywalker.arttype.ArtifactTypeWalker"
-         icon="images/gear.gif"
+         icon="OSEE-INF/images/gear.gif"
          category="osee.jdk.core.category"
          name="Artifact Type Walker"
          id="org.eclipse.osee.framework.ui.skynet.skywalker.ArtifactTypeWalkerView">
@@ -117,7 +117,7 @@
         allowMultiple="true"
         category="osee.jdk.core.category"
         class="org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView"
-        icon="images/DBiconBlueEdit.GIF"
+        icon="OSEE-INF/images/DBiconBlueEdit.GIF"
         id="org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView"
         name="History">
   </view>
@@ -125,7 +125,7 @@
         allowMultiple="true"
         category="osee.jdk.core.category"
         class="org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView"
-        icon="images/branch.gif"
+        icon="OSEE-INF/images/branch.gif"
         id="org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView"
         name="Branch Manager">
   </view>
@@ -133,14 +133,14 @@
         allowMultiple="false"
         category="osee.jdk.core.category"
         class="org.eclipse.osee.framework.ui.skynet.user.perspective.UserNavigateView"
-        icon="images/userPurple.gif"
+        icon="OSEE-INF/images/userPurple.gif"
         id="org.eclipse.osee.framework.ui.skynet.UserNavigateView"
         name="User Navigator"
         restorable="true">
   </view>
 	</extension>
 	<extension point="org.eclipse.search.searchPages">
-		<page canSearchEnclosingProjects="true" class="org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchPage" enabled="true" extensions="&quot;*:1&quot;" icon="images/artifact_search.gif" id="org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchPage" label="Artifact Search" showScopeSection="false" sizeHint="&quot;250,250&quot;" tabPosition="1"/>
+		<page canSearchEnclosingProjects="true" class="org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchPage" enabled="true" extensions="&quot;*:1&quot;" icon="OSEE-INF/images/artifact_search.gif" id="org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchPage" label="Artifact Search" showScopeSection="false" sizeHint="&quot;250,250&quot;" tabPosition="1"/>
 	</extension>
 	<extension point="org.eclipse.search.searchResultViewPages">
 		<viewPage class="org.eclipse.osee.framework.ui.skynet.search.page.ArtifactSearchPage" id="org.eclipse.osee.framework.ui.skynet.ArtifactSearchViewPage" searchResultClass="org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchResult"/>
@@ -361,14 +361,14 @@
             label="Branch Presentation">
          <command
                commandId="org.eclipse.osee.framework.ui.skynet.branch.branchView.flatPresentation.command"
-               icon="images/flat_layout.gif"
+               icon="OSEE-INF/images/flat_layout.gif"
                id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.flatCommand"
                style="radio"
                tooltip="Show branches as a flat listing">
          </command>
          <command
                commandId="org.eclipse.osee.framework.ui.skynet.branch.branchView.hierarchicalPresentation.command"
-               icon="images/tree_layout.gif"
+               icon="OSEE-INF/images/tree_layout.gif"
                id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.hierarchicalCommand"
                style="radio"
                tooltip="Show branches as a hierarchical listing">
@@ -384,17 +384,17 @@
       </command>
       <command
             commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showMergeBranches"
-            icon="images/branch_merge.gif"
+            icon="OSEE-INF/images/branch_merge.gif"
             style="toggle">
       </command>
       <command
             commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showTransactions"
-            icon="images/DBicon2.GIF"
+            icon="OSEE-INF/images/DBicon2.GIF"
             style="toggle">
       </command>
       <command
             commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.ShowFavoriteBranchesFirst"
-            icon="images/star_9_9.gif"
+            icon="OSEE-INF/images/star_9_9.gif"
             style="toggle">
       </command>
    </menuContribution>
@@ -920,63 +920,63 @@
 	<extension point="org.eclipse.ui.commandImages">
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.new.artifacteditor.command"
-        icon="images/artifact_editor.gif">
+        icon="OSEE-INF/images/artifact_editor.gif">
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeReport"
-        icon="images/branch_change.gif">
+        icon="OSEE-INF/images/branch_change.gif">
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.widgets.xchange.BranchTransactionReport"
-        icon="images/DBiconBlueEdit.GIF">
+        icon="OSEE-INF/images/DBiconBlueEdit.GIF">
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.mergeManager"
-        icon="images/branch_merge.gif">
+        icon="OSEE-INF/images/branch_merge.gif">
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.branchCreator"
-        icon="images/branch.gif">
+        icon="OSEE-INF/images/branch.gif">
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteBranch"
-        icon="images/delete.png">
+        icon="OSEE-INF/images/delete.png">
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.purgeBranch"
-        icon="images/purge.gif">
+        icon="OSEE-INF/images/purge.gif">
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.purgeTransaction"
-        icon="images/purge.gif">
+        icon="OSEE-INF/images/purge.gif">
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.accessControl"
-        icon="images/authenticated.gif">
+        icon="OSEE-INF/images/authenticated.gif">
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ToggleFavoriteBranchHandler"
-        icon="images/star_9_9.gif">
+        icon="OSEE-INF/images/star_9_9.gif">
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.commitInto"
-        icon="images/commit.gif">
+        icon="OSEE-INF/images/commit.gif">
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.commitIntoParent"
-        icon="images/commit.gif">
+        icon="OSEE-INF/images/commit.gif">
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.updateBranch"
-        icon="images/branchSynch.gif">
+        icon="OSEE-INF/images/branchSynch.gif">
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showArchivedBranches"
-        icon="images/archive.gif">
+        icon="OSEE-INF/images/archive.gif">
   </image>
     <image
         commandId="org.eclipse.osee.framework.ui.skynet.OpenArtifactExplorerCommand"
-        icon="images/artifact_explorer.gif">
+        icon="OSEE-INF/images/artifact_explorer.gif">
   </image>
 	</extension>
  <extension
@@ -1476,7 +1476,7 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             class="org.eclipse.osee.framework.ui.skynet.user.perspective.UserPerspective"
-            icon="images/userPurple.gif"
+            icon="OSEE-INF/images/userPurple.gif"
             id="org.eclipse.framework.ui.skynet.UserPerspective"
             name="User Management">
       </perspective>
@@ -1510,8 +1510,8 @@
       </handler>
    </extension>
    <extension point="org.eclipse.ui.commandImages">
-     <image commandId="org.eclipse.osee.framework.ui.skynet.action.OpenConfigDetails" icon="images/gear.gif"> </image>
-     <image commandId="org.eclipse.osee.framework.ui.skynet.action.OpenOseeProperties" icon="images/gear.gif"> </image>
+     <image commandId="org.eclipse.osee.framework.ui.skynet.action.OpenConfigDetails" icon="OSEE-INF/images/gear.gif"> </image>
+     <image commandId="org.eclipse.osee.framework.ui.skynet.action.OpenOseeProperties" icon="OSEE-INF/images/gear.gif"> </image>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -1591,7 +1591,7 @@
       <wizard
             category="org.eclipse.osee.framework.ui.skynet.export"
             class="org.eclipse.osee.framework.ui.skynet.export.OseeTypesExportWizard"
-            icon="images/gears.gif"
+            icon="OSEE-INF/images/gears.gif"
             id="org.eclipse.osee.framework.ui.skynet.osee.types.export"
             name="Osee Types Export">
       </wizard>

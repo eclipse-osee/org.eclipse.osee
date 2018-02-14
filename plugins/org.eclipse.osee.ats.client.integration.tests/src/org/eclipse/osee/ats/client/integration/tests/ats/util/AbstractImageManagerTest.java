@@ -130,7 +130,7 @@ public abstract class AbstractImageManagerTest {
 
       @Override
       public ImageDescriptor createImageDescriptor() {
-         return ImageManager.createImageDescriptor(pluginId, "images", fileName);
+         return ImageManager.createImageDescriptor(pluginId, fileName);
       }
 
       @Override

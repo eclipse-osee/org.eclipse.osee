@@ -12,7 +12,7 @@
          point="org.eclipse.ui.editors">
          <editor
             class="org.eclipse.osee.ats.editor.WorkflowEditor"
-            icon="images/workflow.gif"
+            icon="OSEE-INF/images/workflow.gif"
             default="false"            
             contributorClass="org.eclipse.osee.ats.editor.WfeContributor"
             id="org.eclipse.osee.ats.editor.WorkflowEditor"
@@ -20,20 +20,20 @@
          <editor
                class="org.eclipse.osee.ats.task.TaskEditor"
                default="false"
-               icon="images/task.gif"
+               icon="OSEE-INF/images/task.gif"
                id="org.eclipse.osee.ats.editor.TaskEditor"
                name="ATS Task Editor"/>
          <editor
                class="org.eclipse.osee.ats.world.WorldEditor"
                default="false"
-               icon="images/globe.gif"
+               icon="OSEE-INF/images/globe.gif"
                id="org.eclipse.osee.ats.world.WorldEditor"
                name="ATS World Editor">
          </editor>
          <editor
                class="org.eclipse.osee.ats.workdef.viewer.AtsWorkDefConfigEditor"
                default="false"
-               icon="images/workDef.gif"
+               icon="OSEE-INF/images/workDef.gif"
                id="org.eclipse.osee.ats.workdef.viewer.AtsWorkflowConfigEditor"
                name="ATS Work Definition Viewer">
          </editor>
@@ -49,7 +49,7 @@
             category="org.eclipse.osee.category"
             class="org.eclipse.osee.ats.actions.wizard.NewActionWizard"
             hasPages="true"
-            icon="images/action.gif"
+            icon="OSEE-INF/images/action.gif"
             id="org.eclipse.osee.ats.NewAction.wizard"
             name="Action">
       </wizard>
@@ -58,7 +58,7 @@
             category="org.eclipse.osee.category"
             class="org.eclipse.osee.ats.config.wizard.AtsConfigWizard"
             hasPages="true"
-            icon="images/workflow.gif"
+            icon="OSEE-INF/images/workflow.gif"
             id="org.eclipse.osee.ats.config.wizard.AtsConfigWizard"
             name="ATS Configuration">
       </wizard>
@@ -69,11 +69,11 @@
          class="org.eclipse.osee.ats.internal.OseePerspective"
          fixed="false"
          id="org.eclipse.osee.OseePerspective"
-         icon="images/osee_16.png">
+         icon="OSEE-INF/images/osee_16.png">
    </perspective>
    <perspective
          class="org.eclipse.osee.ats.review.ReviewPerspective"
-         icon="images/review.gif"
+         icon="OSEE-INF/images/review.gif"
          id="org.eclipse.osee.ats.review.ReviewPerspective"
          name="Review">
    </perspective>
@@ -104,14 +104,14 @@
     </category>
     <view
          class="org.eclipse.osee.ats.navigate.NavigateView"
-         icon="images/osee_16.png"
+         icon="OSEE-INF/images/osee_16.png"
          category="org.eclipse.osee.category"
          name="OSEE Navigator"
          id="org.eclipse.osee.navigate.NavigateView">
    </view>
     <view
          class="org.eclipse.osee.ats.walker.ActionWalkerView"
-         icon="images/action.gif"
+         icon="OSEE-INF/images/action.gif"
          category="org.eclipse.osee.category"
          name="Action View"
          id="org.eclipse.osee.ats.ActionWalkerView">
@@ -119,7 +119,7 @@
    <view
          category="org.eclipse.osee.ats.review.category"
          class="org.eclipse.osee.ats.review.ReviewNavigateView"
-         icon="images/review.gif"
+         icon="OSEE-INF/images/review.gif"
          id="org.eclipse.osee.ats.review.ReviewNavigateView"
          name="ReviewNavigator">
    </view>
@@ -230,7 +230,7 @@
          point="org.eclipse.ui.commandImages">
       <image
             commandId="org.eclipse.osee.framework.ui.skynet.atseditor.command"
-            icon="images/action.gif">
+            icon="OSEE-INF/images/action.gif">
       </image>
    </extension>
    <extension
@@ -324,8 +324,8 @@
       </handler>
    </extension>
    <extension point="org.eclipse.ui.commandImages">
-     <image commandId="org.eclipse.osee.actions.OpenOseePerspective" icon="images/osee_16.png"> </image>
-     <image commandId="org.eclipse.osee.ats.actions.OpenReviewPerspective" icon="images/review.gif"> </image>
+     <image commandId="org.eclipse.osee.actions.OpenOseePerspective" icon="OSEE-INF/images/osee_16.png"> </image>
+     <image commandId="org.eclipse.osee.ats.actions.OpenReviewPerspective" icon="OSEE-INF/images/review.gif"> </image>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -351,7 +351,7 @@
                id="osee.ats.toolbar">
             <command
                   commandId="osee.ats.actions.OpenArtifactExplorer"
-                  icon="images/artifact_explorer.gif"
+                  icon="OSEE-INF/images/artifact_explorer.gif"
                   id="osee.ats.actions.OpenArtifactExplorer"
                   style="push">
             </command>

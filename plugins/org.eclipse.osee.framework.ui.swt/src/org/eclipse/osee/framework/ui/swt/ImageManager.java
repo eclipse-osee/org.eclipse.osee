@@ -106,8 +106,9 @@ public final class ImageManager {
       return new KeyedImagePair(overlayImageKey, overlayImageDescriptor);
    }
 
-   public static ImageDescriptor createImageDescriptor(String symbolicBundleName, String imagePath, String imageFileName) {
-      return AbstractUIPlugin.imageDescriptorFromPlugin(symbolicBundleName, imagePath + File.separator + imageFileName);
+   public static ImageDescriptor createImageDescriptor(String symbolicBundleName, String imageFileName) {
+      return AbstractUIPlugin.imageDescriptorFromPlugin(symbolicBundleName,
+         "OSEE-INF/images" + File.separator + imageFileName);
    }
 
    public static KeyedImage createKeyedImage(String imageKey, ImageDescriptor descriptor) {

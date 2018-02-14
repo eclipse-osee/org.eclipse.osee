@@ -7,7 +7,7 @@
       <wizard
             category="org.eclipse.osee.define.import.category"
             class="org.eclipse.osee.ote.ui.define.importer.OutfileImportWizard"
-            icon="images/outfile_import.gif"
+            icon="OSEE-INF/images/outfile_import.gif"
             id="org.eclipse.osee.ote.ui.define.importer.outfileImportWizard"
             name="Test Outfiles">
       </wizard>
@@ -22,7 +22,7 @@
             allowMultiple="false"
             category="osee.test.category"
             class="org.eclipse.osee.ote.ui.define.views.TestRunView"
-            icon="images/testRunView.gif"
+            icon="OSEE-INF/images/testRunView.gif"
             id="org.eclipse.osee.ote.ui.define.views.TestRunView"
             name="Test Run View">
       </view>
@@ -100,13 +100,13 @@
                label="Group By">
             <command
                   commandId="org.eclipse.osee.ote.ui.define.views.TestRunView.groupedPresentation.command"
-                  icon="images/tree_layout.gif"
+                  icon="OSEE-INF/images/tree_layout.gif"
                   id="org.eclipse.osee.ote.ui.define.views.TestRunView.groupedCommand"
                   style="radio">
             </command>
             <command
                   commandId="org.eclipse.osee.ote.ui.define.views.TestRunView.flatPresentation.command"
-                  icon="images/flat_layout.gif"
+                  icon="OSEE-INF/images/flat_layout.gif"
                   id="org.eclipse.osee.ote.ui.define.views.TestRunView.flatCommand"
                   style="radio">
             </command>
@@ -128,7 +128,7 @@
                label="Filters">
             <command
                   commandId="org.eclipse.osee.ote.ui.define.views.TestRunView.latestOnlyFilterHandler.command"
-                  icon="images/latest_versions.gif"
+                  icon="OSEE-INF/images/latest_versions.gif"
                   id="org.eclipse.osee.ote.ui.define.views.TestRunView.latestOnlyFilterCommand"
                   style="toggle">
             </command>
@@ -141,7 +141,7 @@
          point="org.eclipse.osee.ote.ui.define.ITestRunReport">
       <ITestRunReport
             classname="org.eclipse.osee.ote.ui.define.reports.HighLevelSummary"
-            icon="images/latest_versions.gif">
+            icon="OSEE-INF/images/latest_versions.gif">
       </ITestRunReport>
    </extension>
    <extension
@@ -150,7 +150,7 @@
          point="org.eclipse.osee.ote.ui.define.ITestRunReport">
       <ITestRunReport
             classname="org.eclipse.osee.ote.ui.define.reports.HistoricalTestRunData"
-            icon="images/latest_versions.gif">
+            icon="OSEE-INF/images/latest_versions.gif">
       </ITestRunReport>
    </extension>
    <extension

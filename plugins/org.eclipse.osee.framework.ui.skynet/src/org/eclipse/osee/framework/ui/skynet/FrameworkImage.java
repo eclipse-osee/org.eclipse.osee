@@ -250,7 +250,7 @@ public enum FrameworkImage implements KeyedImage {
    @Override
    public ImageDescriptor createImageDescriptor() {
       if (alias == null) {
-         return ImageManager.createImageDescriptor(Activator.PLUGIN_ID, "images", fileName);
+         return ImageManager.createImageDescriptor(Activator.PLUGIN_ID, fileName);
       }
       return alias.createImageDescriptor();
    }

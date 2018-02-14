@@ -36,7 +36,7 @@ public enum PluginUiImage implements KeyedImage {
 
    @Override
    public ImageDescriptor createImageDescriptor() {
-      return ImageManager.createImageDescriptor(UiPluginConstants.PLUGIN_ID, "images", fileName);
+      return ImageManager.createImageDescriptor(UiPluginConstants.PLUGIN_ID, fileName);
    }
 
    @Override

@@ -116,7 +116,7 @@ public abstract class ImageManagerTest {
 
       @Override
       public ImageDescriptor createImageDescriptor() {
-         return ImageManager.createImageDescriptor(PLUGIN_ID, "images", fileName);
+         return ImageManager.createImageDescriptor(PLUGIN_ID, fileName);
       }
 
       @Override

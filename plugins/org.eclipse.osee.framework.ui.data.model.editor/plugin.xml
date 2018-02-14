@@ -6,7 +6,7 @@
 	</extension>
 	<extension point="org.eclipse.ui.editors">
 		<editor class="org.eclipse.osee.framework.ui.data.model.editor.GraphitiDiagramArtifactEditor"
-		default="false" icon="images/diagram.gif" name="Graphiti Diagram Artifact Editor"
+		default="false" icon="OSEE-INF/images/diagram.gif" name="Graphiti Diagram Artifact Editor"
 		id="org.eclipse.osee.framework.ui.data.model.editor.graphiti.GraphitiDiagramArtifactEditor" />
 	</extension>
 </plugin>
