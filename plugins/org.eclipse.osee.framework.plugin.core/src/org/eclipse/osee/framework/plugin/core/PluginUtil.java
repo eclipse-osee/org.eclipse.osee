@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 

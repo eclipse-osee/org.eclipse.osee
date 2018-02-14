@@ -11,13 +11,16 @@
 package org.eclipse.osee.framework.core.data;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.logging.Level;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -82,6 +85,36 @@ public class OseeData {
    public static File getWorkspaceFile(String path) {
       IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
       return new File(workspaceRoot.getFile(new Path(path)).getLocation().toString());
+   }
+
+   public static IFile getIFile(String fileName) {
+      return getProject().getFile(fileName);
+   }
+
+   public static IFile getIFile(String fileName, InputStream in) {
+      return getIFile(fileName, in, false);
+   }
+
+   public static IFile getIFile(String fileName, InputStream in, boolean overwrite) {
+      IFile iFile = getProject().getFile(fileName);
+      if (!iFile.exists() || overwrite) {
+         writeToFile(iFile, in);
+      }
+      return iFile;
+   }
+
+   public static void writeToFile(IFile file, InputStream in) {
+      try {
+         if (file.exists()) {
+            file.setCharset("UTF-8", new NullProgressMonitor());
+            file.setContents(in, true, false, null); // steam will be closed before return
+         } else {
+            file.create(in, true, null);
+            in.close();
+         }
+      } catch (Exception ex) {
+         OseeCoreException.wrapAndThrow(ex);
+      }
    }
 
    public static IFolder getFolder(String name) {

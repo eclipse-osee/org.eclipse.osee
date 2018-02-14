@@ -12,9 +12,9 @@ package org.eclipse.osee.ats.core.client.util;
 
 import java.io.File;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.OseeData;
 
 /**
  * @author Donald G. Dunne
