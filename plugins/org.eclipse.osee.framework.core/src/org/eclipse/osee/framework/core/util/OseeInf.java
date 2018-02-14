@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.util;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -25,10 +26,18 @@ import org.osgi.framework.FrameworkUtil;
  */
 public class OseeInf {
 
-   public static String getResourceContents(String path, Class<?> clazz) {
+   public static InputStream getResourceAsStream(String path, Class<?> clazz) {
       try {
          URL url = getResourceAsUrl(path, clazz);
-         return Lib.inputStreamToString(url.openStream());
+         return url.openStream();
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex, "Error getting resource [%s] as file", path);
+      }
+   }
+
+   public static String getResourceContents(String path, Class<?> clazz) {
+      try {
+         return Lib.inputStreamToString(getResourceAsStream(path, clazz));
       } catch (Exception ex) {
          throw new OseeCoreException(ex, "Error getting resource [%s] as file", path);
       }

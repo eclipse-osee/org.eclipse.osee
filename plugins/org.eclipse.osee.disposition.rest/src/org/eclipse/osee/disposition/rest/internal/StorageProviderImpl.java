@@ -14,6 +14,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.util.Resource;
@@ -25,7 +26,7 @@ import org.eclipse.osee.orcs.OrcsApi;
  */
 public class StorageProviderImpl extends LazyObject<Storage> implements StorageProvider {
 
-   private static final String DISPOSITION_TYPE_DEFINITIONS = "types/OseeTypes_Dispo.osee";
+   private static final String DISPOSITION_TYPE_DEFINITIONS = "orcsTypes/OseeTypes_Dispo.osee";
    private Log logger;
    private OrcsApi orcsApi;
 
@@ -62,7 +63,7 @@ public class StorageProviderImpl extends LazyObject<Storage> implements StorageP
    private Storage createStorage() throws Exception {
       Storage storage = new OrcsStorageImpl(logger, orcsApi);
       if (!storage.typesExist()) {
-         URL resource = getClass().getResource(DISPOSITION_TYPE_DEFINITIONS);
+         URL resource = OseeInf.getResourceAsUrl(DISPOSITION_TYPE_DEFINITIONS, getClass());
          URI uri = resource.toURI();
          IResource typesResource = new Resource(uri, false);
          storage.storeTypes(typesResource);

@@ -1,0 +1,583 @@
+<?xml version="1.0" ?>
+<TestScript>
+ <Log Level="TEST_EVENT" Logger="core.log">
+  <Message>Test server memory at script start: 98MB
+  </Message>
+ </Log>
+ <Qualification level="Development">
+ </Qualification>
+ <Config machineName="station01">
+  <ScriptName>part.foo.bar.blah_blah
+  </ScriptName>
+  <User name="Guest" email="" id="99999998">
+  </User>
+  <ScriptVersion revision="alot" repositoryType="tmg" lastAuthor="mptest" lastModified="Jun 25, 2013 9:30:50 PM" modifiedFlag="N/A" url="somepath/part.foo.bar.blah_blah.java">
+  </ScriptVersion>
+  <ExecutionDate>January 8, 2014 11:04:58 PM MST
+  </ExecutionDate>
+  <Environment>Null Script
+  </Environment>
+ </Config>
+ <ScriptInit>
+ </ScriptInit>
+ <TestCase>
+  <Number>0
+  </Number>
+  <Name>part.foo.bar.blah_blah$LocalSetupTestCase
+  </Name>
+  <Tracability>
+   <Requirement>
+    <Message>SRS {ANGCONTROL}
+    </Message>
+   </Requirement>
+  </Tracability>
+  <OteLog Level="TEST_EVENT" Logger="osee.test.core.log">
+   <Message>Starting Test Case blah_blah.SetupTestCase
+   </Message>
+  </OteLog>
+ </TestCase>
+ <TestCase>
+  <Number>1
+  </Number>
+  <Name>part.foo.bar.blah_blah$Test60SecTimer
+  </Name>
+  <Tracability>
+  </Tracability>
+  <OteLog Level="TEST_EVENT" Logger="core.log">
+   <Message>Starting Test Case blah_blah.Test60SecTimerAnd
+   </Message>
+  </OteLog>
+  <OteLog Level="SEVERE" Logger="core.log">
+  </OteLog>
+  <TestPoint>
+   <Number>1
+   </Number>
+   <Result>PASSED
+   </Result>
+   <Location id="19417384">
+    <Time>1389247262147
+    </Time>
+   </Location>
+   <CheckPoint>
+    <TestPointName>SREADY
+    </TestPointName>
+    <Expected>Yo [1]
+    </Expected>
+    <Actual>Yo [1]
+    </Actual>
+    <Result>PASSED
+    </Result>
+    <ElapsedTime>25
+    </ElapsedTime>
+    <NumberOfTransmissions>44
+    </NumberOfTransmissions>
+   </CheckPoint>
+  </TestPoint>
+  
+  <TestPoint>
+   <Number>2
+   </Number>
+   <Result>PASSED
+   </Result>
+   <Location id="31124466">
+    <Time>1389247262549
+    </Time>
+   </Location>
+   <CheckGroup Mode="AND">
+    <GroupName>ddddd TIME:401
+    </GroupName>
+    <Result>PASSED
+    </Result>
+    <CheckPoint>
+     <TestPointName>FsaafME
+     </TestPointName>
+     <Expected>data_version.new
+     </Expected>
+     <Actual>data_version.new
+     </Actual>
+     <Result>PASSED
+     </Result>
+    </CheckPoint>
+    <CheckPoint>
+     <TestPointName>BOMMDND
+     </TestPointName>
+     <Expected>LOOKUP
+     </Expected>
+     <Actual>LOOKUP
+     </Actual>
+     <Result>PASSED
+     </Result>
+    </CheckPoint>
+    <CheckPoint>
+     <TestPointName>OffT
+     </TestPointName>
+     <Expected>0
+     </Expected>
+     <Actual>0
+     </Actual>
+     <Result>PASSED
+     </Result>
+    </CheckPoint>
+   </CheckGroup>
+  </TestPoint>
+  
+  
+  
+  <TestPoint>
+   <Number>3
+   </Number>
+   <Result>PASSED
+   </Result>
+   <Location id="31124466">
+    <Time>1389247262549
+    </Time>
+   </Location>
+   <CheckGroup Mode="AND">
+    <GroupName>ddddd TIME:401
+    </GroupName>
+    <Result>PASSED
+    </Result>
+    <CheckPoint>
+     <TestPointName>FsaafME
+     </TestPointName>
+     <Expected>data_version.new
+     </Expected>
+     <Actual>data_version.new
+     </Actual>
+     <Result>PASSED
+     </Result>
+    </CheckPoint>
+    <CheckPoint>
+     <TestPointName>BOMMDND
+     </TestPointName>
+     <Expected>LOOKUP
+     </Expected>
+     <Actual>LOOKUP
+     </Actual>
+     <Result>PASSED
+     </Result>
+    </CheckPoint>
+    <CheckPoint>
+     <TestPointName>OffT
+     </TestPointName>
+     <Expected>0
+     </Expected>
+     <Actual>0
+     </Actual>
+     <Result>PASSED
+     </Result>
+    </CheckPoint>
+   </CheckGroup>
+  </TestPoint>
+  
+  <TestPoint>
+   <Number>4
+   </Number>
+   <Result>PASSED
+   </Result>
+   <Location id="31124466">
+    <Time>1389247262549
+    </Time>
+   </Location>
+   <CheckGroup Mode="AND">
+    <GroupName>ddddd TIME:401
+    </GroupName>
+    <Result>PASSED
+    </Result>
+    <CheckPoint>
+     <TestPointName>FsaafME
+     </TestPointName>
+     <Expected>data_version.new
+     </Expected>
+     <Actual>data_version.new
+     </Actual>
+     <Result>PASSED
+     </Result>
+    </CheckPoint>
+    <CheckPoint>
+     <TestPointName>BOMMDND
+     </TestPointName>
+     <Expected>LOOKUP
+     </Expected>
+     <Actual>LOOKUP
+     </Actual>
+     <Result>PASSED
+     </Result>
+    </CheckPoint>
+    <CheckPoint>
+     <TestPointName>OffT
+     </TestPointName>
+     <Expected>0
+     </Expected>
+     <Actual>0
+     </Actual>
+     <Result>PASSED
+     </Result>
+    </CheckPoint>
+   </CheckGroup>
+  </TestPoint>
+  
+  <TestPoint>
+   <Number>5
+   </Number>
+   <Result>PASSED
+   </Result>
+   <Location id="31124466">
+    <Time>1389247262549
+    </Time>
+   </Location>
+   <CheckGroup Mode="AND">
+    <GroupName>ddddd TIME:401
+    </GroupName>
+    <Result>PASSED
+    </Result>
+    <CheckPoint>
+     <TestPointName>FsaafME
+     </TestPointName>
+     <Expected>data_version.new
+     </Expected>
+     <Actual>data_version.new
+     </Actual>
+     <Result>PASSED
+     </Result>
+    </CheckPoint>
+    <CheckPoint>
+     <TestPointName>BOMMDND
+     </TestPointName>
+     <Expected>LOOKUP
+     </Expected>
+     <Actual>LOOKUP
+     </Actual>
+     <Result>PASSED
+     </Result>
+    </CheckPoint>
+    <CheckPoint>
+     <TestPointName>OffT
+     </TestPointName>
+     <Expected>0
+     </Expected>
+     <Actual>0
+     </Actual>
+     <Result>PASSED
+     </Result>
+    </CheckPoint>
+   </CheckGroup>
+  </TestPoint>
+  
+  <TestPoint>
+   <Number>6
+   </Number>
+   <Result>PASSED
+   </Result>
+   <Location id="31124466">
+    <Time>1389247262549
+    </Time>
+   </Location>
+   <CheckGroup Mode="AND">
+    <GroupName>ddddd TIME:401
+    </GroupName>
+    <Result>PASSED
+    </Result>
+    <CheckPoint>
+     <TestPointName>FsaafME
+     </TestPointName>
+     <Expected>data_version.new
+     </Expected>
+     <Actual>data_version.new
+     </Actual>
+     <Result>PASSED
+     </Result>
+    </CheckPoint>
+    <CheckPoint>
+     <TestPointName>BOMMDND
+     </TestPointName>
+     <Expected>LOOKUP
+     </Expected>
+     <Actual>LOOKUP
+     </Actual>
+     <Result>PASSED
+     </Result>
+    </CheckPoint>
+    <CheckPoint>
+     <TestPointName>OffT
+     </TestPointName>
+     <Expected>0
+     </Expected>
+     <Actual>0
+     </Actual>
+     <Result>PASSED
+     </Result>
+    </CheckPoint>
+   </CheckGroup>
+  </TestPoint>
+  
+  
+<TestPoint>
+   <Number>7
+   </Number>
+   <Result>PASSED
+   </Result>
+   <Location id="31124466">
+    <Time>1389247262549
+    </Time>
+   </Location>
+   <CheckGroup Mode="AND">
+    <GroupName>ddddd TIME:401
+    </GroupName>
+    <Result>PASSED
+    </Result>
+    <CheckPoint>
+     <TestPointName>FsaafME
+     </TestPointName>
+     <Expected>data_version.new
+     </Expected>
+     <Actual>data_version.new
+     </Actual>
+     <Result>PASSED
+     </Result>
+    </CheckPoint>
+    <CheckPoint>
+     <TestPointName>BOMMDND
+     </TestPointName>
+     <Expected>LOOKUP
+     </Expected>
+     <Actual>LOOKUP
+     </Actual>
+     <Result>PASSED
+     </Result>
+    </CheckPoint>
+    <CheckPoint>
+     <TestPointName>OffT
+     </TestPointName>
+     <Expected>0
+     </Expected>
+     <Actual>0
+     </Actual>
+     <Result>PASSED
+     </Result>
+    </CheckPoint>
+   </CheckGroup>
+  </TestPoint>
+  
+  <TestPoint>
+   <Number>8
+   </Number>
+   <Result>PASSED
+   </Result>
+   <Location id="31124466">
+    <Time>1389247262549
+    </Time>
+   </Location>
+   <CheckGroup Mode="AND">
+    <GroupName>ddddd TIME:401
+    </GroupName>
+    <Result>PASSED
+    </Result>
+    <CheckPoint>
+     <TestPointName>FsaafME
+     </TestPointName>
+     <Expected>data_version.new
+     </Expected>
+     <Actual>data_version.new
+     </Actual>
+     <Result>PASSED
+     </Result>
+    </CheckPoint>
+    <CheckPoint>
+     <TestPointName>BOMMDND
+     </TestPointName>
+     <Expected>LOOKUP
+     </Expected>
+     <Actual>LOOKUP
+     </Actual>
+     <Result>PASSED
+     </Result>
+    </CheckPoint>
+    <CheckPoint>
+     <TestPointName>OffT
+     </TestPointName>
+     <Expected>0
+     </Expected>
+     <Actual>0
+     </Actual>
+     <Result>PASSED
+     </Result>
+    </CheckPoint>
+   </CheckGroup>
+  </TestPoint>
+  
+
+  <TestPoint>
+   <Number>9
+   </Number>
+   <Result>FAILED
+   </Result>
+   <CheckPoint>
+    <TestPointName>Boo_READY
+    </TestPointName>
+    <Expected>WT[1]
+    </Expected>
+    <Actual>WT [0]
+    </Actual>
+    <Result>FAILED
+    </Result>
+    <ElapsedTime>1111
+    </ElapsedTime>
+    <NumberOfTransmissions>3
+    </NumberOfTransmissions>
+   </CheckPoint>
+  </TestPoint>
+
+  <TestPoint>
+   <Number>10
+   </Number>
+   <Result>FAILED
+   </Result>
+   <CheckPoint>
+    <TestPointName>Boo_READY
+    </TestPointName>
+    <Expected>WT[1]
+    </Expected>
+    <Actual>WT [0]
+    </Actual>
+    <Result>FAILED
+    </Result>
+    <ElapsedTime>1111
+    </ElapsedTime>
+    <NumberOfTransmissions>3
+    </NumberOfTransmissions>
+   </CheckPoint>
+  </TestPoint>
+
+  <TestPoint>
+   <Number>11
+   </Number>
+   <Result>FAILED
+   </Result>
+   <CheckPoint>
+    <TestPointName>Boo_READY
+    </TestPointName>
+    <Expected>WT[1]
+    </Expected>
+    <Actual>WT [0]
+    </Actual>
+    <Result>FAILED
+    </Result>
+    <ElapsedTime>1111
+    </ElapsedTime>
+    <NumberOfTransmissions>3
+    </NumberOfTransmissions>
+   </CheckPoint>
+  </TestPoint>
+
+  <TestPoint>
+   <Number>12
+   </Number>
+   <Result>FAILED
+   </Result>
+   <CheckPoint>
+    <TestPointName>Boo_READY
+    </TestPointName>
+    <Expected>WT[1]
+    </Expected>
+    <Actual>WT [0]
+    </Actual>
+    <Result>FAILED
+    </Result>
+    <ElapsedTime>1111
+    </ElapsedTime>
+    <NumberOfTransmissions>3
+    </NumberOfTransmissions>
+   </CheckPoint>
+  </TestPoint>
+
+  <TestPoint>
+   <Number>13
+   </Number>
+   <Result>FAILED
+   </Result>
+   <CheckPoint>
+    <TestPointName>Boo_READY
+    </TestPointName>
+    <Expected>WT[1]
+    </Expected>
+    <Actual>WT [0]
+    </Actual>
+    <Result>FAILED
+    </Result>
+    <ElapsedTime>1111
+    </ElapsedTime>
+    <NumberOfTransmissions>3
+    </NumberOfTransmissions>
+   </CheckPoint>
+  </TestPoint>
+  
+ <TestPoint>
+   <Number>14
+   </Number>
+   <Result>FAILED
+   </Result>
+   <CheckGroup Mode="AND">
+    <GroupName>dfafqD - ELAPSED TIME:2010
+    </GroupName>
+    <Result>FAILED
+    </Result>
+    <CheckPoint>
+     <TestPointName>pokemon
+     </TestPointName>
+     <Expected>charmander
+     </Expected>
+     <Actual>squirtle
+     </Actual>
+     <Result>FAILED
+     </Result>
+     <ElapsedTime>2
+     </ElapsedTime>
+     <NumberOfTransmissions>3
+     </NumberOfTransmissions>
+    </CheckPoint>
+    <CheckPoint>
+     <TestPointName>superman
+     </TestPointName>
+     <Expected>unbeatable
+     </Expected>
+     <Actual>kryptonite
+     </Actual>
+     <Result>FAILED
+     </Result>
+     <ElapsedTime>2014
+     </ElapsedTime>
+     <NumberOfTransmissions>5
+     </NumberOfTransmissions>
+    </CheckPoint>
+    <CheckPoint>
+     <TestPointName>Nicest Guy Ever
+     </TestPointName>
+     <Expected>Bob Ross
+     </Expected>
+     <Actual>Bob Ross
+     </Actual>
+     <Result>PASSED
+     </Result>
+     <ElapsedTime>1964
+     </ElapsedTime>
+     <NumberOfTransmissions>45
+     </NumberOfTransmissions>
+    </CheckPoint>
+    <CheckPoint>
+     <TestPointName>Things fail
+     </TestPointName>
+     <Expected>sometimes
+     </Expected>
+     <Actual>A lot
+     </Actual>
+     <Result>FAILED
+     </Result>
+    </CheckPoint>
+  </CheckGroup>
+  </TestPoint>
+  
+ </TestCase>
+
+ <ScriptResult>
+</ScriptResult></TestScript>

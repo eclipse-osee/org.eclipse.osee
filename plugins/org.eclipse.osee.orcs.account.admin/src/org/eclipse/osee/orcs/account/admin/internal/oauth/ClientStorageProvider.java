@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -35,7 +36,7 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  */
 public class ClientStorageProvider extends LazyObject<ClientStorage> {
 
-   private static final String OAUTH_TYPES_DEFITIONS = "types/OseeTypes_OAuth.osee";
+   private static final String OAUTH_TYPES_DEFITIONS = "orcsTypes/OseeTypes_OAuth.osee";
 
    private Log logger;
    private OrcsApi orcsApi;
@@ -81,7 +82,7 @@ public class ClientStorageProvider extends LazyObject<ClientStorage> {
 
          @Override
          public InputStream getInput() throws IOException {
-            URL resource = getClass().getResource(OAUTH_TYPES_DEFITIONS);
+            URL resource = OseeInf.getResourceAsUrl(OAUTH_TYPES_DEFITIONS, getClass());
             return new BufferedInputStream(resource.openStream());
          }
       };
