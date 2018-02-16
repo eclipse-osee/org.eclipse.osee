@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.workitem;
 
-import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +35,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -75,6 +73,7 @@ import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -103,8 +102,12 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Override
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public String get() throws Exception {
-      return RestUtil.simplePageHtml("Action Resource");
+   public String get() {
+      try {
+         return RestUtil.simplePageHtml("Action Resource");
+      } catch (Exception ex) {
+         return "Error producing action page " + ex.getMessage();
+      }
    }
 
    /**
@@ -116,7 +119,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @IdentityView
    @GET
    @Produces({MediaType.APPLICATION_JSON})
-   public List<IAtsWorkItem> getAction(@PathParam("ids") String ids) throws Exception {
+   public List<IAtsWorkItem> getAction(@PathParam("ids") String ids) {
       List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemsByIds(ids);
       return workItems;
    }
@@ -129,7 +132,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Path("{ids}/details")
    @GET
    @Produces({MediaType.APPLICATION_JSON})
-   public List<IAtsWorkItem> getActionDetails(@PathParam("ids") String ids) throws Exception {
+   public List<IAtsWorkItem> getActionDetails(@PathParam("ids") String ids) {
       List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemsByIds(ids);
       return workItems;
    }
@@ -357,7 +360,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Path("{ids}/legacy/state")
    @GET
    @Produces({MediaType.APPLICATION_JSON})
-   public String getActionStateFromLegacyPcrId(@PathParam("ids") String ids) throws Exception {
+   public String getActionStateFromLegacyPcrId(@PathParam("ids") String ids) {
       List<IAtsWorkItem> workItems = new ArrayList<>();
       for (String id : atsApi.getQueryService().getIdsFromStr(ids)) {
          ArtifactToken action = atsApi.getQueryService().getArtifactByLegacyPcrId(id);
@@ -373,33 +376,37 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Path("{ids}/state")
    @GET
    @Produces({MediaType.APPLICATION_JSON})
-   public String getActionState(@PathParam("ids") String ids) throws Exception {
+   public String getActionState(@PathParam("ids") String ids) {
       List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemsByIds(ids);
       return getActionStateResultString(workItems);
    }
 
-   private String getActionStateResultString(List<IAtsWorkItem> workItems) throws IOException, JsonGenerationException {
-      JsonGenerator writer = null;
-      StringWriter stringWriter = new StringWriter();
-      writer = jsonFactory.createJsonGenerator(stringWriter);
-      if (workItems.size() > 1) {
-         writer.writeStartArray();
+   private String getActionStateResultString(List<IAtsWorkItem> workItems) {
+      try {
+         JsonGenerator writer = null;
+         StringWriter stringWriter = new StringWriter();
+         writer = jsonFactory.createJsonGenerator(stringWriter);
+         if (workItems.size() > 1) {
+            writer.writeStartArray();
+         }
+         for (IAtsWorkItem workItem : workItems) {
+            writer.writeStartObject();
+            writer.writeStringField("id", workItem.getIdString());
+            writer.writeStringField("atsId", workItem.getAtsId());
+            writer.writeStringField("legacyId",
+               atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.LegacyPcrId, ""));
+            writer.writeStringField("stateType", workItem.getStateMgr().getStateType().name());
+            writer.writeStringField("state", workItem.getStateMgr().getCurrentStateName());
+            writer.writeEndObject();
+         }
+         if (workItems.size() > 1) {
+            writer.writeEndArray();
+         }
+         writer.close();
+         return stringWriter.toString();
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
       }
-      for (IAtsWorkItem workItem : workItems) {
-         writer.writeStartObject();
-         writer.writeStringField("id", workItem.getIdString());
-         writer.writeStringField("atsId", workItem.getAtsId());
-         writer.writeStringField("legacyId",
-            atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.LegacyPcrId, ""));
-         writer.writeStringField("stateType", workItem.getStateMgr().getStateType().name());
-         writer.writeStringField("state", workItem.getStateMgr().getCurrentStateName());
-         writer.writeEndObject();
-      }
-      if (workItems.size() > 1) {
-         writer.writeEndArray();
-      }
-      writer.close();
-      return stringWriter.toString();
    }
 
    /**
@@ -410,7 +417,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Path("query")
    @GET
    @Produces({MediaType.APPLICATION_JSON})
-   public Set<IAtsWorkItem> query(@Context UriInfo uriInfo) throws Exception {
+   public Set<IAtsWorkItem> query(@Context UriInfo uriInfo) {
       Set<IAtsWorkItem> workItems = new HashSet<>();
       MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters(true);
       Set<Entry<String, List<String>>> entrySet = queryParameters.entrySet();
@@ -568,7 +575,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Override
    @POST
    @Consumes("application/x-www-form-urlencoded")
-   public Response createAction(MultivaluedMap<String, String> form) throws Exception {
+   public Response createAction(MultivaluedMap<String, String> form) {
       // validate title
       String title = form.getFirst("ats_title");
       if (!Strings.isValid(title)) {

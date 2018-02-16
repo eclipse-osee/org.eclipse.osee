@@ -34,7 +34,7 @@ public interface AtsActionEndpointApi {
 
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public abstract String get() throws Exception;
+   String get();
 
    /**
     * @param ids (atsId, artId) of action to display
@@ -43,7 +43,7 @@ public interface AtsActionEndpointApi {
    @Path("{ids}")
    @GET
    @Produces({MediaType.APPLICATION_JSON})
-   public abstract List<IAtsWorkItem> getAction(String ids) throws Exception;
+   List<IAtsWorkItem> getAction(@PathParam("ids") String ids);
 
    /**
     * @param ids (atsId, artId) of action to display
@@ -51,7 +51,8 @@ public interface AtsActionEndpointApi {
     */
    @Path("{ids}/details")
    @GET
-   public abstract List<IAtsWorkItem> getActionDetails(String ids) throws Exception;
+   @Produces({MediaType.APPLICATION_JSON})
+   List<IAtsWorkItem> getActionDetails(@PathParam("ids") String ids);
 
    /**
     * @param ids (atsId, artId) of action children to display
@@ -59,7 +60,8 @@ public interface AtsActionEndpointApi {
     */
    @Path("{ids}/child")
    @GET
-   public abstract List<IAtsWorkItem> getActionChildren(String ids) throws Exception;
+   @Produces({MediaType.APPLICATION_JSON})
+   List<IAtsWorkItem> getActionChildren(@PathParam("ids") String ids);
 
    /**
     * @param ids (ats.Legacy PCR Id) of action to display
@@ -67,7 +69,7 @@ public interface AtsActionEndpointApi {
     */
    @Path("{ids}/legacy/state")
    @GET
-   public abstract String getActionStateFromLegacyPcrId(String ids) throws Exception;
+   String getActionStateFromLegacyPcrId(@PathParam("ids") String ids);
 
    /**
     * @param ids (atsId, artId) of action to display
@@ -75,7 +77,7 @@ public interface AtsActionEndpointApi {
     */
    @Path("{ids}/state")
    @GET
-   public abstract String getActionState(String ids) throws Exception;
+   String getActionState(@PathParam("ids") String ids);
 
    /**
     * @query_string <attr type name>=<value>, <attr type id>=<value>
@@ -83,7 +85,7 @@ public interface AtsActionEndpointApi {
     */
    @Path("query")
    @GET
-   public abstract Set<IAtsWorkItem> query(UriInfo uriInfo) throws Exception;
+   Set<IAtsWorkItem> query(UriInfo uriInfo);
 
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
@@ -107,7 +109,7 @@ public interface AtsActionEndpointApi {
     */
    @POST
    @Consumes("application/x-www-form-urlencoded")
-   public abstract Response createAction(MultivaluedMap<String, String> form) throws Exception;
+   Response createAction(MultivaluedMap<String, String> form);
 
    /**
     * @param actionId (atsId, artId) of workItem
@@ -119,7 +121,7 @@ public interface AtsActionEndpointApi {
    @Path("{actionId}/attributeType/{attrTypeId}")
    @GET
    @Produces({MediaType.APPLICATION_JSON})
-   public Attribute getActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeId") String attrTypeId);
+   Attribute getActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeId") String attrTypeId);
 
    /**
     * @param actionId (atsId, artId) of workItem
@@ -132,7 +134,7 @@ public interface AtsActionEndpointApi {
    @PUT
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
-   public Attribute setActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeId") String attrTypeId, List<String> values);
+   Attribute setActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeId") String attrTypeId, List<String> values);
 
    /**
     * @return valid unreleased versions to select
@@ -140,7 +142,7 @@ public interface AtsActionEndpointApi {
    @GET
    @Path("{id}/UnrelasedVersions")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<String> getUnreleasedVersionNames(@PathParam("id") String id);
+   List<String> getUnreleasedVersionNames(@PathParam("id") String id);
 
    /**
     * @return valid transition-to states in order of default state, other states and return states
@@ -148,6 +150,6 @@ public interface AtsActionEndpointApi {
    @GET
    @Path("{id}/TransitionToStates")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<String> getTransitionToStateNames(@PathParam("id") String id);
+   List<String> getTransitionToStateNames(@PathParam("id") String id);
 
 }

@@ -11,11 +11,14 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.resource;
 
 import java.net.URI;
+import java.util.List;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import org.codehaus.jackson.JsonNode;
+import org.eclipse.osee.ats.core.client.workflow.WorkItemsJsonReader;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.junit.Assert;
@@ -24,6 +27,16 @@ import org.junit.Assert;
  * @author Donald G. Dunne
  */
 public abstract class AbstractRestTest {
+
+   protected void getAndCountWorkItems(String url, int expected) {
+      String json = getJson(url);
+      try {
+         List<Long> ids = WorkItemsJsonReader.getWorkItemIdsFromJson(json);
+         Assert.assertEquals(expected, ids.size());
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
+   }
 
    protected Object getFirstAndCount(String url, int count) {
       String json = getJson(url);

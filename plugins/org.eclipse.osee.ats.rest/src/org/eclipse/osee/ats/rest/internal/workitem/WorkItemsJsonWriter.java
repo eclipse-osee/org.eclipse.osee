@@ -109,13 +109,18 @@ public class WorkItemsJsonWriter implements MessageBodyWriter<Collection<IAtsWor
             WorkItemWriterOptions.WriteWithGammas.name()).equals("true")) {
             writeWithGammas = true;
          }
+         boolean writeRelatedAsTokens = false;
+         if (queryParameters.containsKey(WorkItemWriterOptions.WriteRelatedAsTokens.name()) && queryParameters.getFirst(
+            WorkItemWriterOptions.WriteRelatedAsTokens.name()).equals("true")) {
+            writeRelatedAsTokens = true;
+         }
          for (IAtsWorkItem workItem : workItems) {
             if (writeWithGammas) {
                WorkItemJsonWriter.addWorkItemWithGammas(atsServer, workItem, annotations, writer,
-                  matches(IdentityView.class, annotations), options);
+                  matches(IdentityView.class, annotations), writeRelatedAsTokens, options);
             } else {
                WorkItemJsonWriter.addWorkItem(atsServer, workItem, annotations, writer,
-                  matches(IdentityView.class, annotations), getAttributeTypes(), options);
+                  matches(IdentityView.class, annotations), writeRelatedAsTokens, getAttributeTypes(), options);
             }
          }
          writer.writeEndArray();

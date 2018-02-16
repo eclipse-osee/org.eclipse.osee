@@ -90,22 +90,22 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testQueryPriority() {
-      getFirstAndCount("ats/action/query?Priority=1&Priority=3", 24);
+      getAndCountWorkItems("ats/action/query?Priority=1&Priority=3", 24);
    }
 
    @Test
    public void testQueryWorking() {
-      getFirstAndCount("ats/action/query?StateType=Working", 54);
+      getAndCountWorkItems("ats/action/query?StateType=Working", 54);
    }
 
    @Test
    public void testQueryAssignee() {
-      getFirstAndCount("ats/action/query?Assignee=4444&Assignee=3333", 35);
+      getAndCountWorkItems("ats/action/query?Assignee=4444&Assignee=3333", 35);
    }
 
    @Test
    public void testQueryOriginator() {
-      getFirstAndCount("ats/action/query?Originator=3333", 44);
+      getAndCountWorkItems("ats/action/query?Originator=3333", 44);
    }
 
    @Test

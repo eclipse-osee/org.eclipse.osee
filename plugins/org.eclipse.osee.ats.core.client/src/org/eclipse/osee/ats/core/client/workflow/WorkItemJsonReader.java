@@ -14,18 +14,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.List;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
-import org.eclipse.osee.framework.jdk.core.type.VariantData;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Donald G. Dunne
@@ -41,21 +39,12 @@ public class WorkItemJsonReader implements MessageBodyReader<IAtsWorkItem> {
    @Override
    public IAtsWorkItem readFrom(Class<IAtsWorkItem> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
       try {
-         JsonFactory jfactory = new JsonFactory();
-         JsonParser jParser = jfactory.createJsonParser(entityStream);
+         String jsonStr = Lib.inputStreamToString(entityStream);
 
-         VariantData varData = new VariantData();
-         while (jParser.nextToken() != JsonToken.END_OBJECT) {
-            String key = jParser.getCurrentName();
-            if (key != null) {
-               jParser.nextToken();
-               String value = jParser.getText();
-               varData.put(key, value);
-            }
-         }
-         long id = Long.valueOf(varData.get("id"));
+         List<Long> workItems = WorkItemsJsonReader.getWorkItemIdsFromJson(jsonStr);
+
          return AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andIds(
-            id).getResults().getAtMostOneOrNull();
+            workItems.iterator().next()).getResults().getAtMostOneOrNull();
       } catch (Exception ex) {
          throw new IOException("Error deserializing a TraxRpcr Item.", ex);
       }

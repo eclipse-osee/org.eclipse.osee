@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.rest.internal.workitem;
 
 import java.util.Collection;
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -60,8 +61,10 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
       if (workPackageArt == null) {
          throw new OseeArgumentException("Work Package with id [%s] Not Found", workPackageId);
       }
-      return atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andAttr(
-         AtsAttributeTypes.WorkPackageReference, workPackageArt.getIdString()).getResults().getList();
+      List<IAtsWorkItem> arts =
+         atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andAttr(AtsAttributeTypes.WorkPackageReference,
+            workPackageArt.getIdString()).getResults().getList();
+      return arts;
    }
 
    @PUT

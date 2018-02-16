@@ -55,6 +55,17 @@ public class AtsActionEndpointImplOptionsTest extends AbstractRestTest {
    }
 
    @Test
+   public void testAtsActionsWriteRelatedAsTokensRestCall() {
+      String url =
+         "/ats/action/" + DemoUtil.getSawCodeCommittedWf().getIdString() + "/details?" + WorkItemWriterOptions.WriteRelatedAsTokens.name() + "=true";
+      JsonNode action = testActionRestCall(url, 1);
+      JsonNode node = action.get("AssigneesTokens");
+      Assert.assertTrue(node != null);
+      node = action.get("TargetedVersionToken");
+      Assert.assertTrue(node != null);
+   }
+
+   @Test
    public void testAtsActionsFieldsAsIdsAndDatesAsLong() {
       String url =
          "/ats/action/" + DemoUtil.getSawCodeCommittedWf().getIdString() + "/details?" + WorkItemWriterOptions.FieldsAsIds.name() + "=true&" + WorkItemWriterOptions.DatesAsLong.name() + "=true";

@@ -16,6 +16,10 @@ Import-Package: com.google.common.base,
  javax.ws.rs.ext,
  org.codehaus.jackson,
  org.codehaus.jackson.map,
+ org.codehaus.jackson.map.annotate;version="1.9.13",
+ org.codehaus.jackson.map.ser;version="1.9.13",
+ org.codehaus.jackson.map.ser.std;version="1.9.13",
+ org.codehaus.jackson.map.type;version="1.9.13",
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.jobs,
  org.eclipse.jdt.annotation,
@@ -81,6 +85,7 @@ Import-Package: com.google.common.base,
  org.eclipse.osee.logger,
  org.eclipse.osee.orcs.rest.client,
  org.eclipse.osee.orcs.rest.model,
+ org.json,
  org.osgi.framework,
  org.osgi.service.event
 Export-Package: org.eclipse.osee.ats.core.client,
@@ -105,4 +110,5 @@ Export-Package: org.eclipse.osee.ats.core.client,
  org.eclipse.osee.ats.core.client.workflow.transition
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
-Require-Bundle: org.eclipse.osee.ats.api
+Require-Bundle: org.eclipse.osee.ats.api,
+ org.codehaus.jackson.core

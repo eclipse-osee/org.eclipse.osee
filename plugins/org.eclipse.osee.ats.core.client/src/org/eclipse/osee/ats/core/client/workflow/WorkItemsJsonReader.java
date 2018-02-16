@@ -16,21 +16,24 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.ser.std.ToStringSerializer;
+import org.codehaus.jackson.map.type.TypeFactory;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -43,41 +46,51 @@ public class WorkItemsJsonReader implements MessageBodyReader<Collection<IAtsWor
       return Lib.isCollectionOfType(type, genericType, IAtsWorkItem.class);
    }
 
+   @JsonIgnoreProperties(ignoreUnknown = true)
+   public static class WorkItem {
+      @JsonSerialize(using = ToStringSerializer.class)
+      private Long id;
+
+      public Long getId() {
+         return id;
+      }
+
+      public void setId(Long id) {
+         this.id = id;
+      }
+   }
+
    @Override
    public Collection<IAtsWorkItem> readFrom(Class<Collection<IAtsWorkItem>> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
       try {
-         JsonFactory jfactory = new JsonFactory();
-         JsonParser jParser = jfactory.createJsonParser(entityStream);
-
-         List<Long> ids = new ArrayList<>();
-         JsonToken nextToken = jParser.nextToken();
-         while (nextToken != JsonToken.END_ARRAY) {
-            if (nextToken == JsonToken.START_OBJECT) {
-               while (nextToken != JsonToken.END_OBJECT) {
-                  String key = jParser.getCurrentName();
-                  if ("id".equals(key)) {
-                     jParser.nextToken();
-                     String value = jParser.getText();
-                     if (Strings.isNumeric(value)) {
-                        long id = Long.valueOf(value);
-                        ids.add(id);
-                     }
-                  }
-                  nextToken = jParser.nextToken();
-               }
-            }
-            nextToken = jParser.nextToken();
-         }
-         Collection<IAtsWorkItem> items = null;
-         if (ids.isEmpty()) {
-            items = Collections.emptyList();
-         } else {
-            items = AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andIds(
-               ids.toArray(new Long[ids.size()])).getItems();
-         }
-         return items;
+         String jsonStr = Lib.inputStreamToString(entityStream);
+         return getWorkItemsFromJson(jsonStr);
       } catch (Exception ex) {
          throw new IOException("Error deserializing a IAtsWorkItem.", ex);
       }
+   }
+
+   public static Collection<IAtsWorkItem> getWorkItemsFromJson(String jsonStr) throws IOException, JsonParseException, JsonMappingException {
+      List<Long> ids = getWorkItemIdsFromJson(jsonStr);
+
+      List<IAtsWorkItem> items = new LinkedList<>();
+      if (!ids.isEmpty()) {
+         items.addAll(AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andIds(
+            ids.toArray(new Long[ids.size()])).getItems());
+      }
+      return items;
+   }
+
+   public static List<Long> getWorkItemIdsFromJson(String jsonStr) throws IOException, JsonParseException, JsonMappingException {
+      ObjectMapper objectMapper = new ObjectMapper();
+      TypeFactory typeFactory = objectMapper.getTypeFactory();
+
+      List<WorkItem> workItemObjects =
+         objectMapper.readValue(jsonStr, typeFactory.constructCollectionType(List.class, WorkItem.class));
+      List<Long> ids = new ArrayList<>();
+      for (WorkItem workItem : workItemObjects) {
+         ids.add(workItem.getId());
+      }
+      return ids;
    }
 }

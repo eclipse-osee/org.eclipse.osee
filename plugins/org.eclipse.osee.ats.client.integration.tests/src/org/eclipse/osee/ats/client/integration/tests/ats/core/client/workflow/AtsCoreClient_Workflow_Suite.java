@@ -21,7 +21,10 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AtsCoreClient_Transition_Suite.class, ConvertWorkflowStatesOperationTest.class})
+@Suite.SuiteClasses({
+   WorkItemsJsonReaderWriterTest.class,
+   AtsCoreClient_Transition_Suite.class,
+   ConvertWorkflowStatesOperationTest.class})
 public class AtsCoreClient_Workflow_Suite {
    @BeforeClass
    public static void setUp() throws Exception {

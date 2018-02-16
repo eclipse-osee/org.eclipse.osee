@@ -19,5 +19,7 @@ public enum WorkItemWriterOptions {
    // write dates as long instead of human readable date format
    DatesAsLong,
    // write attributes out with gammaIds
-   WriteWithGammas
+   WriteWithGammas,
+   // include assignees and version as tokens
+   WriteRelatedAsTokens
 }
