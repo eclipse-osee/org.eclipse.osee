@@ -191,7 +191,7 @@ public final class Conditions {
       }
    }
 
-   public static void assertNotNullOrEmpty(Collection<String> values, String message, Object... data) {
+   public static void assertNotNullOrEmpty(Collection<? extends Object> values, String message, Object... data) {
       if (values == null || values.isEmpty()) {
          throw new OseeArgumentException(message, data);
       }

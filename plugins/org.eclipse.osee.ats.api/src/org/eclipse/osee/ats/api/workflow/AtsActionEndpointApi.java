@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workflow;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import javax.ws.rs.Consumes;
@@ -25,6 +26,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Donald G. Dunne
@@ -135,6 +137,18 @@ public interface AtsActionEndpointApi {
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
    Attribute setActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeId") String attrTypeId, List<String> values);
+
+   /**
+    * @param workItemId (atsId, artId)
+    * @param changeType: Assignee, Version
+    * @param artifacts: Assignee
+    * @return artifacts changed to
+    */
+   @Path("{workItemId}/changeType/{changeType}")
+   @PUT
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   public Collection<ArtifactToken> setByArtifactToken(@PathParam("workItemId") String workItemId, @PathParam("changeType") String attrTypeId, Collection<ArtifactToken> artifacts);
 
    /**
     * @return valid unreleased versions to select

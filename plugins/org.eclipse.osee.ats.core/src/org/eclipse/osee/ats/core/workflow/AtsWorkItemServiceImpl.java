@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.workflow;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
@@ -20,6 +21,8 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -189,6 +192,18 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
+   public void clearAssignees(IAtsWorkItem workItem, IAtsChangeSet changes) {
+      workItem.getStateMgr().clearAssignees();
+      changes.add(workItem);
+   }
+
+   @Override
+   public void setAssignees(IAtsWorkItem workItem, Set<IAtsUser> assignees, IAtsChangeSet changes) {
+      workItem.getStateMgr().setAssignees(assignees);
+      changes.add(workItem);
+   }
+
+   @Override
    public IAtsWorkItem getWorkItemByAnyId(String actionId) {
       IAtsWorkItem workItem = null;
       ArtifactToken artifact = null;
@@ -204,5 +219,4 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       }
       return workItem;
    }
-
 }

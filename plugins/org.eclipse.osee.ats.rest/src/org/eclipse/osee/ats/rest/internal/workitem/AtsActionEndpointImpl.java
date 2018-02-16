@@ -232,6 +232,23 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       return ops.setActionAttributeByType(id, attrTypeIdOrKey, values);
    }
 
+   @Override
+   @Path("{workItemId}/changeType/{changeType}")
+   @PUT
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   public Collection<ArtifactToken> setByArtifactToken(@PathParam("workItemId") String workItemId, @PathParam("changeType") String changeType, Collection<ArtifactToken> artifacts) {
+      IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(workItemId);
+      Conditions.assertNotNull(workItem, "workItem can not be found");
+      IAtsUser asUser = atsApi.getUserService().getUserByAccountId(httpHeaders);
+      if (asUser == null) {
+         asUser = AtsCoreUsers.SYSTEM_USER;
+      }
+      ActionOperations ops = new ActionOperations(asUser, workItem, atsApi);
+      return ops.setByArtifactToken(workItem, changeType, artifacts);
+
+   }
+
    /**
     * @query_string <attr type name>=<value>, <attr type id>=<value>
     * @return json representation of the matching workItem(s)

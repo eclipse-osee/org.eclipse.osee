@@ -12,7 +12,10 @@ package org.eclipse.osee.ats.rest.internal.workitem.operations;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -22,10 +25,12 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.Attribute;
 import org.eclipse.osee.ats.api.workflow.AttributeKey;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -167,6 +172,48 @@ public class ActionOperations {
          attribute.addAttribute(attr);
       }
       return attribute;
+   }
+
+   public Collection<ArtifactToken> setByArtifactToken(IAtsWorkItem workItem, String changeType, Collection<ArtifactToken> artifacts) {
+      if (changeType.equals(AttributeKey.Assignee.name())) {
+         if (artifacts.isEmpty()) {
+            IAtsChangeSet changes = atsApi.createChangeSet("Clear assignees", asUser);
+            atsApi.getWorkItemService().clearAssignees(workItem, changes);
+            changes.executeIfNeeded();
+         } else {
+            Set<IAtsUser> assignees = new HashSet<>();
+            for (ArtifactToken userArt : artifacts) {
+               IAtsUser user = atsApi.getUserService().getUserByArtifactId(userArt);
+               Conditions.assertNotNull(user, "Artifact %s is not a User", userArt.toStringWithId());
+               assignees.add(user);
+            }
+            IAtsChangeSet changes = atsApi.createChangeSet("Clear assignees", asUser);
+            atsApi.getWorkItemService().setAssignees(workItem, assignees, changes);
+            changes.executeIfNeeded();
+         }
+
+      }
+      if (changeType.equals(AttributeKey.Version.name())) {
+         if (workItem.isTeamWorkflow()) {
+            throw new OseeArgumentException("WorkItem %s is not a Team Workflow", workItem.toStringWithId());
+         }
+         if (artifacts.size() > 1) {
+            throw new OseeArgumentException("Can not set more than one targeted version for %s",
+               workItem.toStringWithId());
+         }
+         if (artifacts.isEmpty()) {
+            IAtsChangeSet changes = atsApi.createChangeSet("Clear targeted version", asUser);
+            atsApi.getVersionService().removeTargetedVersion((IAtsTeamWorkflow) workItem, changes);
+            changes.executeIfNeeded();
+         } else {
+            IAtsVersion version = atsApi.getVersionService().getById(artifacts.iterator().next());
+            Conditions.assertNotNull(version, "No version found from artifact %s", artifacts.iterator().next());
+            IAtsChangeSet changes = atsApi.createChangeSet("Set targeted version", asUser);
+            atsApi.getVersionService().setTargetedVersion((IAtsTeamWorkflow) workItem, version, changes);
+            changes.executeIfNeeded();
+         }
+      }
+      return artifacts;
    }
 
 }
