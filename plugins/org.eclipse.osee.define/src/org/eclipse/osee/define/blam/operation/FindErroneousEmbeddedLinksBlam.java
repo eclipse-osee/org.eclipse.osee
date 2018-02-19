@@ -151,13 +151,13 @@ public class FindErroneousEmbeddedLinksBlam extends AbstractBlam {
       } catch (Exception e) {
          String subsystem = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.Subsystem, "");
          excelWriter.writeRow("Invalid", artifact.getName(), artifact.getArtifactType().getName(), artifact.getGuid(),
-            subsystem, linkGuid);
+            subsystem, (linkGuid == null ? "NULL" : linkGuid));
       }
    }
 
    private void logLinksToSelf(Artifact artifact, String linkGuid, ISheetWriter excelWriter) throws IOException {
       String subsystem = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.Subsystem, "");
-      if (linkGuid.equals(artifact.getGuid())) {
+      if (linkGuid != null && linkGuid.equals(artifact.getGuid())) {
          excelWriter.writeRow("Link to Self", artifact.getName(), artifact.getArtifactType().getName(),
             artifact.getGuid(), subsystem, linkGuid);
       }
