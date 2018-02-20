@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -74,7 +73,7 @@ public class FindDuplicateArtifactNames extends AbstractBlam {
          List<Artifact> children = artifact.getChildren();
          for (Artifact child : children) {
             List<Artifact> artifactListFromName =
-               ArtifactQuery.getArtifactListFromName(child.getName(), branch, DeletionFlag.EXCLUDE_DELETED);
+               ArtifactQuery.getArtifactListFromName(child.getName(), branch);
             if (artifactListFromName != null) {
                ViewIdUtility.removeExcludedArtifacts(artifactListFromName.iterator(), findExcludedArtifactsByView);
             }

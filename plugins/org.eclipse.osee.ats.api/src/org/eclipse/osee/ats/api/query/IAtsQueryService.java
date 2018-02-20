@@ -142,6 +142,6 @@ public interface IAtsQueryService {
 
    Collection<ArtifactToken> getArtifacts(Collection<Long> ids);
 
-   ArtifactToken getArtifactByName(IArtifactType artifactType, String name);
+   ArtifactToken getArtifactByName(ArtifactTypeId artifactType, String name);
 
 }

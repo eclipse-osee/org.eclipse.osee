@@ -230,7 +230,9 @@ public class ArtifactQueryBuilder {
       }
 
       if (Conditions.hasValues(artifactTypes)) {
-         builder.andTypeEquals(artifactTypes);
+         if (!(artifactTypes.size() == 1 && artifactTypes.iterator().next().isInvalid())) {
+            builder.andTypeEquals(artifactTypes);
+         }
       }
 
       if (guid != null) {

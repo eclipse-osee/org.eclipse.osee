@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -66,8 +65,8 @@ public class WordUpdateEndpointImplTest {
    @Before
    public void setup() {
       branch = getWorkingBranch();
-      artReqt = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.SoftwareRequirement,
-         CoreAttributeTypes.Name, "Claw Interface Init 15", branch);
+      artReqt = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement,
+         "Claw Interface Init 15", branch);
    }
 
    @Test

@@ -404,7 +404,7 @@ public class WordTemplateProcessor {
                List<ArtifactId> artIds = Arrays.asList(ArtifactId.valueOf(artifactId));
                artifacts = ArtifactQuery.getArtifactListFrom(artIds, branch, EXCLUDE_DELETED);
             } else if (Strings.isValid(artifactName)) {
-               artifacts = ArtifactQuery.getArtifactListFromName(artifactName, branch, EXCLUDE_DELETED);
+               artifacts = ArtifactQuery.getArtifactListFromName(artifactName, branch);
             } else if (Strings.isValid(orcsQuery)) {
                Writer writer = new StringWriter();
                OseeClient oseeClient = ServiceUtil.getOseeClient();

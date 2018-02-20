@@ -105,7 +105,7 @@ public abstract class AbstractImageManagerTest {
 
    @org.junit.Test
    public void testGetImageByArtifact() throws Exception {
-      ArtifactId folder = ArtifactQuery.getArtifactFromTypeAndNameNoException(CoreArtifactTypes.Folder, "User Groups",
+      ArtifactId folder = ArtifactQuery.checkArtifactFromTypeAndName(CoreArtifactTypes.Folder, "User Groups",
          AtsClientService.get().getAtsBranch());
       assertTrue("Image returned not a folder image.",
          ArtifactImageManager.getImage((Artifact) folder).equals(ImageManager.getImage(PluginUiImage.FOLDER)));

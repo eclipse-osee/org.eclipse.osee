@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.ui.skynet.templates;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -98,7 +97,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
       if (name == null) {
          return toReturn;
       }
-      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(name, COMMON, EXCLUDE_DELETED);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(name, COMMON);
 
       if (!artifacts.isEmpty()) {
          toReturn = artifacts.iterator().next();

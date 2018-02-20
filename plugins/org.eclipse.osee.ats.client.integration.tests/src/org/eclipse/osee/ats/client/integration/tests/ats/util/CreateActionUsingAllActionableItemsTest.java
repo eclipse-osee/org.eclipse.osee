@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.client.integration.tests.ats.util;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.util.CreateActionUsingAllActionableItems;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -37,7 +36,7 @@ public class CreateActionUsingAllActionableItemsTest {
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(),
          CreateActionUsingAllActionableItemsTest.class.getSimpleName());
       for (Artifact art : ArtifactQuery.getArtifactListFromName("Big Action Test - Delete Me",
-         AtsClientService.get().getAtsBranch(), DeletionFlag.EXCLUDE_DELETED)) {
+         AtsClientService.get().getAtsBranch())) {
          art.deleteAndPersist(transaction);
       }
       transaction.execute();

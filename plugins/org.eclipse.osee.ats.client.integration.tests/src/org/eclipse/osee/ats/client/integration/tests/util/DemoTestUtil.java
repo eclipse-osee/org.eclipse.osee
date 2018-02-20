@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.util;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -123,7 +122,7 @@ public class DemoTestUtil {
    public static TeamWorkFlowArtifact getToolsTeamWorkflow() {
       if (toolsTeamWorkflow == null) {
          for (Artifact art : ArtifactQuery.getArtifactListFromName("Button S doesn't work on help",
-            AtsClientService.get().getAtsBranch(), EXCLUDE_DELETED)) {
+            AtsClientService.get().getAtsBranch())) {
             if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                toolsTeamWorkflow = (TeamWorkFlowArtifact) art;
             }

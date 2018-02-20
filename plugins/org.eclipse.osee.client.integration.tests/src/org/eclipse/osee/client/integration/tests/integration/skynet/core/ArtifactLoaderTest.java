@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -66,7 +65,7 @@ public class ArtifactLoaderTest {
    public void tearDown() throws Exception {
       SkynetTransaction transaction = TransactionManager.createTransaction(branch, testInfo.getQualifiedTestName());
       List<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromName(testInfo.getQualifiedTestName(), branch, DeletionFlag.EXCLUDE_DELETED);
+         ArtifactQuery.getArtifactListFromName(testInfo.getQualifiedTestName(), branch);
       ArtifactPersistenceManager.deleteArtifactCollection(transaction, false, artifacts);
       transaction.execute();
    }
@@ -121,7 +120,7 @@ public class ArtifactLoaderTest {
       Assert.assertEquals(message, TOTAL_THREADS, completed);
 
       // Load and check artifacts
-      artifacts = ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", COMMON, DeletionFlag.EXCLUDE_DELETED);
+      artifacts = ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", COMMON);
       Assert.assertEquals(NUM_ARTIFACTS, artifacts.size());
       for (Artifact artifact : artifacts) {
          Assert.assertEquals(ATTRIBUTE_VALUE, artifact.getSoleAttributeValue(CoreAttributeTypes.DefaultMailServer));
@@ -188,7 +187,7 @@ public class ArtifactLoaderTest {
       @Override
       public List<Artifact> call() throws Exception {
          List<Artifact> artifacts =
-            ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", COMMON, DeletionFlag.EXCLUDE_DELETED);
+            ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", COMMON);
          if (artifacts.size() != NUM_ARTIFACTS) {
             throw new OseeStateException("Should have loaded %d not %d", NUM_ARTIFACTS, artifacts.size());
          }

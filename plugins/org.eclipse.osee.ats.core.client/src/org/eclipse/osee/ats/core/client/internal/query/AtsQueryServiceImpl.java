@@ -335,8 +335,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public ArtifactToken getArtifactByName(IArtifactType artType, String name) {
-      return ArtifactQuery.getArtifactFromTypeAndNameNoException(artType, name, atsClient.getAtsBranch());
+   public ArtifactToken getArtifactByName(ArtifactTypeId artType, String name) {
+      return ArtifactQuery.checkArtifactFromTypeAndName(artType, name, atsClient.getAtsBranch());
    }
-
 }

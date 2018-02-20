@@ -220,30 +220,9 @@ public class ArtifactQuery {
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
-   public static Artifact getArtifactFromTypeAndName(ArtifactTypeId artifactType, String artifactName, BranchId branch, QueryOption... options) {
-      return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch,
-         options).getOrCheckArtifact(QueryType.GET);
-   }
-
-   /**
-    * search for exactly one artifact based on its type and name - otherwise throw an exception
-    *
-    * @return exactly one artifact based on its type and name, otherwise null
-    * @throws MultipleArtifactsExist if more than one artifact is found
-    */
-   public static Artifact getArtifactFromTypeAndNameNoException(ArtifactTypeId artifactType, String artifactName, BranchId branch, QueryOption... options) {
-      try {
-         return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch,
-            options).getOrCheckArtifact(QueryType.GET);
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
-      }
-      return null;
-   }
-
-   public static List<ArtifactId> selectArtifactIdsFromTypeAndName(ArtifactTypeId artifactType, String artifactName, BranchId branch, QueryOption... options) {
-      return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch,
-         options).selectArtifacts(2);
+   public static Artifact getArtifactFromTypeAndName(ArtifactTypeId artifactType, String artifactName, BranchId branch) {
+      return getArtifactFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch,
+         QueryType.GET);
    }
 
    /**
@@ -251,9 +230,50 @@ public class ArtifactQuery {
     *
     * @return one artifact based on its type and name if it exists, otherwise null
     */
-   public static Artifact checkArtifactFromTypeAndName(ArtifactTypeId artifactTypeToken, String artifactName, BranchId branch, QueryOption... options) {
-      return queryFromTypeAndAttribute(artifactTypeToken, CoreAttributeTypes.Name, artifactName, branch,
-         options).getOrCheckArtifact(QueryType.CHECK);
+   public static Artifact checkArtifactFromTypeAndName(ArtifactTypeId artifactType, String artifactName, BranchId branch) {
+      return getArtifactFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch,
+         QueryType.CHECK);
+   }
+
+   /**
+    * search for exactly one artifact based on its type and an attribute of a given type and value - otherwise throw an
+    * exception
+    *
+    * @return a collection of the artifacts found or an empty collection if none are found
+    * @throws ArtifactDoesNotExist if no artifacts are found
+    * @throws MultipleArtifactsExist if more than one artifact is found
+    */
+   public static Artifact getArtifactFromTypeAndAttribute(ArtifactTypeId artifactType, AttributeTypeId attributeType, String attributeValue, BranchId branch) {
+      return getArtifactFromTypeAndAttribute(artifactType, attributeType, attributeValue, branch, QueryType.GET);
+   }
+
+   public static List<ArtifactId> selectArtifactIdsFromTypeAndName(ArtifactTypeId artifactType, String artifactName, BranchId branch, QueryOption... options) {
+      return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch,
+         options).selectArtifacts(2);
+   }
+
+   private static Artifact getArtifactFromTypeAndAttribute(ArtifactTypeId artifactType, AttributeTypeId attributeType, String attributeValue, BranchId branch, QueryType queryType) {
+      return new ArtifactQueryBuilder(artifactType, branch, ALL,
+         new AttributeCriteria(attributeType, attributeValue)).getOrCheckArtifact(queryType);
+   }
+
+   public static List<Artifact> getArtifactListFromTypeAndName(ArtifactTypeId artifactType, String artifactName, BranchId branch) {
+      return getArtifactListFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch);
+   }
+
+   public static List<Artifact> getArtifactListFromTypeAndAttribute(ArtifactTypeId artifactType, AttributeTypeId attributeType, String attributeValue, BranchId branch) {
+      return new ArtifactQueryBuilder(artifactType, branch, ALL,
+         new AttributeCriteria(attributeType, attributeValue)).getArtifacts(100, null);
+   }
+
+   /**
+    * search for artifacts of the given type with an attribute of the given type and value
+    *
+    * @return a collection of the artifacts found or an empty collection if none are found
+    */
+   public static List<Artifact> getArtifactListFromTypeAndAttribute(ArtifactTypeId artifactType, AttributeTypeId attributeType, String attributeValue, BranchId branch, QueryOption... options) {
+      return new ArtifactQueryBuilder(artifactType, branch, ALL,
+         new AttributeCriteria(attributeType, attributeValue, options)).getArtifacts(100, null);
    }
 
    /**
@@ -303,26 +323,18 @@ public class ArtifactQuery {
          QueryType.GET);
    }
 
-   public static List<Artifact> getArtifactListFromName(String artifactName, BranchId branch, DeletionFlag allowDeleted, QueryOption... options) {
+   public static List<Artifact> getArtifactListFromName(String artifactName, BranchId branch, DeletionFlag allowDeleted, QueryOption[] options) {
       return new ArtifactQueryBuilder(branch, ALL, allowDeleted,
          new AttributeCriteria(CoreAttributeTypes.Name, artifactName, options)).getArtifacts(30, null);
    }
 
-   public static List<Artifact> getArtifactListFromTypeAndName(ArtifactTypeId artifactType, String artifactName, BranchId branch, QueryOption... options) {
-      return getArtifactListFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch, options);
+   public static List<Artifact> getArtifactListFromName(String artifactName, BranchId branch) {
+      return getArtifactListFromTypeAndAttribute(ArtifactTypeId.SENTINEL, CoreAttributeTypes.Name, artifactName,
+         branch);
    }
 
-   /**
-    * search for exactly one artifact based on its type and an attribute of a given type and value - otherwise throw an
-    * exception
-    *
-    * @return a collection of the artifacts found or an empty collection if none are found
-    * @throws ArtifactDoesNotExist if no artifacts are found
-    * @throws MultipleArtifactsExist if more than one artifact is found
-    */
-   public static Artifact getArtifactFromTypeAndAttribute(ArtifactTypeId artifactType, AttributeTypeId attributeType, String attributeValue, BranchId branch) {
-      return queryFromTypeAndAttribute(artifactType, attributeType, attributeValue, branch).getOrCheckArtifact(
-         QueryType.GET);
+   public static List<Artifact> getArtifactListFromTypeAndName(ArtifactTypeId artifactType, String artifactName, BranchId branch, QueryOption[] options) {
+      return getArtifactListFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch, options);
    }
 
    /**
@@ -338,19 +350,19 @@ public class ArtifactQuery {
          new AttributeCriteria(attributeType, attributeValue)).getOrCheckArtifact(QueryType.GET);
    }
 
+   public static List<Artifact> getArtifactListFromType(ArtifactTypeId artifactTypeToken, BranchId branch) {
+      return getArtifactListFromType(artifactTypeToken, branch, EXCLUDE_DELETED);
+   }
+
    /**
     * Does not return any inherited artifacts. Use getArtifactListFromTypeWithInheritence instead.
     */
-   public static List<Artifact> getArtifactListFromType(ArtifactTypeId artifactTypeToken, BranchId branch, DeletionFlag allowDeleted) {
-      return new ArtifactQueryBuilder(artifactTypeToken, branch, ALL, allowDeleted).getArtifacts(1000, null);
+   public static List<Artifact> getArtifactListFromType(ArtifactTypeId artifactType, BranchId branch, DeletionFlag allowDeleted) {
+      return getArtifactListFrom(getArtifactEndpoint(branch).getArtifactIdsByType(artifactType), branch, allowDeleted);
    }
 
    public static List<Artifact> getArtifactListFromType(List<? extends ArtifactTypeId> artifactTypeTokens, BranchId branch, DeletionFlag allowDeleted) {
       return new ArtifactQueryBuilder(artifactTypeTokens, branch, ALL, allowDeleted).getArtifacts(1000, null);
-   }
-
-   public static List<Artifact> getArtifactListFromType(ArtifactTypeId artifactTypeToken, BranchId branch) {
-      return getArtifactListFromType(artifactTypeToken, branch, EXCLUDE_DELETED);
    }
 
    public static List<Artifact> getArtifactListFromBranch(BranchId branch, DeletionFlag allowDeleted) {
@@ -437,19 +449,13 @@ public class ArtifactQuery {
          new RelationCriteria(relationType, relationSide)).getArtifacts(1000, null);
    }
 
-   /**
-    * search for artifacts of the given type with an attribute of the given type and value
-    *
-    * @return a collection of the artifacts found or an empty collection if none are found
-    */
-   public static List<Artifact> getArtifactListFromTypeAndAttribute(ArtifactTypeId artifactType, AttributeTypeId attributeType, String attributeValue, BranchId branch, QueryOption... options) {
-      return new ArtifactQueryBuilder(artifactType, branch, ALL,
-         new AttributeCriteria(attributeType, attributeValue, options)).getArtifacts(100, null);
-   }
-
    public static List<Artifact> getArtifactListFromAttribute(AttributeTypeId attributeType, String attributeValue, BranchId branch, QueryOption... options) {
       return new ArtifactQueryBuilder(branch, ALL, EXCLUDE_DELETED,
          new AttributeCriteria(attributeType, attributeValue, options)).getArtifacts(300, null);
+   }
+
+   public static List<Artifact> getArtifactListFromAttribute(AttributeTypeId attributeType, String attributeValue, BranchId branch) {
+      return getArtifactListFromTypeAndAttribute(ArtifactTypeId.SENTINEL, attributeType, attributeValue, branch);
    }
 
    /**
