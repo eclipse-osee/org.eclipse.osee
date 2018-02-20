@@ -254,8 +254,8 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public ArtifactToken getArtifactToken(long id) {
-      return ArtifactQuery.getArtifactTokenFromId(atsClient.getAtsBranch(), id);
+   public ArtifactToken getArtifactToken(ArtifactId artifactId) {
+      return ArtifactQuery.getArtifactTokenFromId(atsClient.getAtsBranch(), artifactId);
    }
 
    @Override

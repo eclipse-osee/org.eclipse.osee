@@ -172,7 +172,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @GET
    @Path("program/{programId}/token")
    @Produces(MediaType.APPLICATION_JSON)
-   public JaxAtsObject getProgramToken(@PathParam("programId") long programId) {
+   public JaxAtsObject getProgramToken(@PathParam("programId") ArtifactId programId) {
       ArtifactToken token = atsApi.getQueryService().getArtifactToken(programId);
       return toAtsObjToken(token);
    }
@@ -411,7 +411,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @GET
    @Path("team/{teamId}/token")
    @Produces(MediaType.APPLICATION_JSON)
-   public ArtifactToken getTeamToken(@PathParam("teamId") long teamId) {
+   public ArtifactToken getTeamToken(@PathParam("teamId") ArtifactId teamId) {
       return atsApi.getQueryService().getArtifactToken(teamId);
    }
 
@@ -955,8 +955,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
-   public ArtifactToken getBacklogToken(long teamId) {
-      if (teamId <= 0) {
+   public ArtifactToken getBacklogToken(ArtifactId teamId) {
+      if (teamId.isInvalid()) {
          throw new OseeWebApplicationException(Status.NOT_FOUND, "teamId is not valid");
       }
       return atsApi.getQueryService().getArtifactToken(teamId);

@@ -69,7 +69,7 @@ public interface IAtsQueryService {
 
    List<ArtifactId> getArtifactIdsFromQuery(String query, Object... data);
 
-   ArtifactToken getArtifactToken(long id);
+   ArtifactToken getArtifactToken(ArtifactId artifactId);
 
    List<ArtifactToken> getArtifactTokensFromQuery(String query, Object... data);
 

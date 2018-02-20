@@ -64,6 +64,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.client.QueryBuilder;
+import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMatch;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchParameters;
@@ -927,12 +928,8 @@ public class ArtifactQuery {
       return guidToToken;
    }
 
-   public static ArtifactToken getArtifactTokenFromId(BranchId branch, Long id) {
-      Map<String, ArtifactToken> tokens = getArtifactTokensFromIds(branch, Collections.singleton(id.toString()));
-      if (tokens.size() == 1) {
-         return tokens.values().iterator().next();
-      }
-      return null;
+   public static ArtifactToken getArtifactTokenFromId(BranchId branch, ArtifactId artifactId) {
+      return getArtifactEndpoint(branch).getArtifactToken(artifactId);
    }
 
    public static Map<String, ArtifactToken> getArtifactTokensFromIds(BranchId branch, Collection<String> artIds) {
@@ -1004,4 +1001,7 @@ public class ArtifactQuery {
       return !artifact.getTransaction().getId().equals(transactionId);
    }
 
+   private static ArtifactEndpoint getArtifactEndpoint(BranchId branch) {
+      return ServiceUtil.getOseeClient().getArtifactEndpoint(branch);
+   }
 }

@@ -125,18 +125,9 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       return new AtsOrcsScriptQuery(String.format(query, data), atsServer);
    }
 
-   private static String QUERY_ART_TOKEN_FROM_ART =
-      "SELECT branch_id, attr.art_id, attr.VALUE AS name FROM OSEE_ATTRIBUTE attr, OSEE_TXS txs WHERE attr.ART_ID = ? " //
-         + "AND txs.BRANCH_ID = ? AND txs.GAMMA_ID = attr.GAMMA_ID AND txs.TX_CURRENT = 1 AND attr.ATTR_TYPE_ID = 1152921504606847088";
-
    @Override
-   public ArtifactToken getArtifactToken(long id) {
-      List<ArtifactToken> tokens =
-         getArtifactTokensFromQuery(QUERY_ART_TOKEN_FROM_ART, id, atsServer.getAtsBranch().getIdString());
-      if (tokens.size() == 1) {
-         return tokens.iterator().next();
-      }
-      return null;
+   public ArtifactToken getArtifactToken(ArtifactId artifactId) {
+      return getQuery().andId(artifactId).loadArtifactToken();
    }
 
    @Override

@@ -53,7 +53,7 @@ public interface AgileEndpointApi {
    @GET
    @Path("program/{programId}/token")
    @Produces(MediaType.APPLICATION_JSON)
-   public JaxAtsObject getProgramToken(@PathParam("programId") long programId);
+   public JaxAtsObject getProgramToken(@PathParam("programId") ArtifactId programId);
 
    @GET
    @Path("program/{programId}/atw")
@@ -103,7 +103,7 @@ public interface AgileEndpointApi {
    @GET
    @Path("team/{teamId}/token")
    @Produces(MediaType.APPLICATION_JSON)
-   public ArtifactToken getTeamToken(@PathParam("teamId") long teamId);
+   public ArtifactToken getTeamToken(@PathParam("teamId") ArtifactId teamId);
 
    @GET
    @Path("team/{teamId}/feature")
@@ -138,7 +138,7 @@ public interface AgileEndpointApi {
    @GET
    @Path("team/{teamId}/backlog/token")
    @Produces(MediaType.APPLICATION_JSON)
-   public ArtifactToken getBacklogToken(@PathParam("teamId") long teamId);
+   public ArtifactToken getBacklogToken(@PathParam("teamId") ArtifactId teamId);
 
    @GET
    @Path("team/{teamId}/backlog/item")

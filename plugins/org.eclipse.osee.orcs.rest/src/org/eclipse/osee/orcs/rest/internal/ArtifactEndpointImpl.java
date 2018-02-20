@@ -41,6 +41,9 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
+ * A new instance of this REST endpoint is created for each REST call so this class does not require a thread-safe
+ * design
+ *
  * @author Ryan D. Brooks
  */
 public class ArtifactEndpointImpl implements ArtifactEndpoint {
@@ -124,6 +127,11 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    public String getArtifactAsHtml(ArtifactId artifactId) {
       HtmlWriter writer = new HtmlWriter(uriInfo, orcsApi);
       return writer.toHtml(query.andId(artifactId).getResults());
+   }
+
+   @Override
+   public ArtifactToken getArtifactToken(ArtifactId artifactId) {
+      return query.andId(artifactId).loadArtifactToken();
    }
 
    @Override
