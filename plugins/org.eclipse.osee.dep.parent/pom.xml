@@ -43,7 +43,7 @@
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
 		<eclipse-ip-site>https://github.com/osee-dev/osee.external.releases/raw/master/org.eclipse.ip</eclipse-ip-site>
-		<nebula-site>http://download.eclipse.org/technology/nebula/snapshot</nebula-site>
+		<nebula-site>http://download.eclipse.org/nebula/snapshot</nebula-site>
 	</properties>
 
 	<licenses>
