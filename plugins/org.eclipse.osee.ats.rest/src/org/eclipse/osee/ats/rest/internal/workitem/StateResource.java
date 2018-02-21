@@ -97,7 +97,7 @@ public final class StateResource {
          IAtsChangeSet changes =
             atsServer.getStoreService().createAtsChangeSet("Transition Action - Server", transitionUser);
          TransitionHelper helper = new TransitionHelper("Transition " + id, Collections.singleton(workItem), toState,
-            workItem.getAssignees(), reason, changes, atsServer.getServices(), TransitionOption.None);
+            workItem.getAssignees(), reason, changes, atsServer, TransitionOption.None);
          helper.setTransitionUser(transitionUser);
          IAtsTransitionManager mgr = TransitionFactory.getTransitionManager(helper);
          TransitionResults results = mgr.handleAll();

@@ -34,8 +34,6 @@ public interface IAtsServer extends AtsApi, IAtsNotifier, IAtsConfigItemFactoryP
 
    Iterable<IAtsDatabaseConversion> getDatabaseConversions();
 
-   AtsApi getServices();
-
    void setEmailEnabled(boolean emailEnabled);
 
    void addAtsDatabaseConversion(IAtsDatabaseConversion conversion);

@@ -62,7 +62,7 @@ public class WorkflowRuleRunner {
 
                         if (ruleDefinition != null && ruleDefinition.getRuleEvents().contains(
                            eventType) && ruleDefinition instanceof IExecutableRule) {
-                           ((IExecutableRule) ruleDefinition).execute(workItem, atsServer.getServices(), changes,
+                           ((IExecutableRule) ruleDefinition).execute(workItem, atsServer, changes,
                               ruleResults);
                         }
                      }
@@ -81,7 +81,7 @@ public class WorkflowRuleRunner {
 
                            if (ruleDefinition != null && ruleDefinition.getRuleEvents().contains(
                               eventType) && ruleDefinition instanceof IExecutableRule) {
-                              ((IExecutableRule) ruleDefinition).execute(workItem, atsServer.getServices(), changes,
+                              ((IExecutableRule) ruleDefinition).execute(workItem, atsServer, changes,
                                  ruleResults);
                            }
                         }
@@ -102,7 +102,7 @@ public class WorkflowRuleRunner {
                            atsServer.getWorkDefinitionService().getRuleDefinition(teamDefRule);
                         if (ruleDefinition.getRuleEvents().contains(
                            eventType) && ruleDefinition instanceof IExecutableRule) {
-                           ((IExecutableRule) ruleDefinition).execute(workItem, atsServer.getServices(), changes,
+                           ((IExecutableRule) ruleDefinition).execute(workItem, atsServer, changes,
                               ruleResults);
                         }
                      }

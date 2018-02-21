@@ -18,7 +18,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
-import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
@@ -62,7 +61,6 @@ import org.eclipse.osee.ats.rest.util.IAtsNotifierServer;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -129,21 +127,21 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
       configItemFactory = new ConfigItemFactory(logger, this);
 
       artifactResolver = new ArtifactResolverImpl(this, orcsApi);
-      branchService = new AtsBranchServiceImpl(getServices(), orcsApi, teamWorkflowProvidersLazy);
+      branchService = new AtsBranchServiceImpl(this, orcsApi, teamWorkflowProvidersLazy);
 
       relationResolver = new AtsRelationResolverServiceImpl(this);
       ((AtsAttributeResolverServiceImpl) attributeResolverService).setOrcsApi(orcsApi);
       ((AtsAttributeResolverServiceImpl) attributeResolverService).setServices(this);
 
       logFactory = AtsCoreFactory.newLogFactory();
-      stateFactory = AtsCoreFactory.newStateFactory(getServices(), logFactory);
+      stateFactory = AtsCoreFactory.newStateFactory(this, logFactory);
       storeService =
          new AtsStoreServiceImpl(attributeResolverService, this, stateFactory, logFactory, this, jdbcService);
 
       queryService = new AtsQueryServiceImpl(this, jdbcService);
       actionableItemManager = new ActionableItemService(attributeResolverService, storeService, this);
       actionFactory = new ActionFactory(workItemFactory, sequenceProvider, actionableItemManager,
-         attributeResolverService, stateFactory, getServices());
+         attributeResolverService, stateFactory, this);
 
       agileService = new AgileService(logger, this);
       taskService = new AtsTaskService(this);
@@ -209,11 +207,6 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
          }
       }
       return result;
-   }
-
-   @Override
-   public AtsApi getServices() {
-      return this;
    }
 
    @Override

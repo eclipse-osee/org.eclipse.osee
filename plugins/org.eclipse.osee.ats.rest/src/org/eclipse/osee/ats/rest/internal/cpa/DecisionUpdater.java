@@ -79,7 +79,7 @@ public class DecisionUpdater {
             changes.deleteAttributes(teamWf, AtsAttributeTypes.ApplicableToProgram);
 
             TransitionHelper helper = new TransitionHelper("Transition " + teamWf.getAtsId(), Arrays.asList(teamWf),
-               TeamState.Analyze.getName(), teamWf.getAssignees(), "", changes, atsServer.getServices(),
+               TeamState.Analyze.getName(), teamWf.getAssignees(), "", changes, atsServer,
                TransitionOption.OverrideAssigneeCheck);
             helper.setTransitionUser(AtsCoreUsers.SYSTEM_USER);
             IAtsTransitionManager mgr = TransitionFactory.getTransitionManager(helper);
@@ -93,7 +93,7 @@ public class DecisionUpdater {
             changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.ApplicableToProgram, appl);
 
             TransitionHelper helper = new TransitionHelper("Transition " + teamWf.getAtsId(), Arrays.asList(teamWf),
-               TeamState.Completed.getName(), null, "", changes, atsServer.getServices(),
+               TeamState.Completed.getName(), null, "", changes, atsServer,
                TransitionOption.OverrideAssigneeCheck);
             helper.setTransitionUser(AtsCoreUsers.SYSTEM_USER);
             IAtsTransitionManager mgr = TransitionFactory.getTransitionManager(helper);

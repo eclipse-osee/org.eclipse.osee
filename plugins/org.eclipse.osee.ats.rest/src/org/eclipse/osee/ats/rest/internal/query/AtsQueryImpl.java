@@ -38,7 +38,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    private QueryBuilder query;
 
    public AtsQueryImpl(IAtsServer atsServer) {
-      super(atsServer.getServices());
+      super(atsServer);
       this.atsServer = atsServer;
    }
 

@@ -106,7 +106,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable art = (ArtifactReadable) artifact;
          if (art.isOfType(AtsArtifactTypes.WorkPackage)) {
-            workPackage = new WorkPackage(logger, art, atsServer.getServices());
+            workPackage = new WorkPackage(logger, art, atsServer);
          }
       }
       return workPackage;
@@ -190,7 +190,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.Insertion)) {
-            insertion = new Insertion(logger, atsServer.getServices(), artRead);
+            insertion = new Insertion(logger, atsServer, artRead);
             ArtifactReadable programArt =
                ((ArtifactReadable) artifact).getRelated(AtsRelationTypes.ProgramToInsertion_Program).getOneOrNull();
             if (programArt != null) {
@@ -209,7 +209,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.InsertionActivity)) {
-            insertionActivity = new InsertionActivity(logger, atsServer.getServices(), artRead);
+            insertionActivity = new InsertionActivity(logger, atsServer, artRead);
             ArtifactReadable insertionArt = ((ArtifactReadable) artifact).getRelated(
                AtsRelationTypes.InsertionToInsertionActivity_Insertion).getOneOrNull();
             if (insertionArt != null) {
@@ -315,7 +315,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.Country)) {
-            country = new Country(logger, atsServer.getServices(), artRead);
+            country = new Country(logger, atsServer, artRead);
          } else {
             throw new OseeCoreException("Requested id not Country");
          }

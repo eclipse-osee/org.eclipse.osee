@@ -48,7 +48,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    private final IAtsServer atsServer;
 
    public AtsQueryServiceImpl(IAtsServer atsServer, JdbcService jdbcService) {
-      super(jdbcService, atsServer.getServices());
+      super(jdbcService, atsServer);
       this.atsServer = atsServer;
    }
 
@@ -75,7 +75,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public IAtsWorkItemFilter createFilter(Collection<? extends IAtsWorkItem> workItems) {
-      return new AtsWorkItemFilter(workItems, atsServer.getServices());
+      return new AtsWorkItemFilter(workItems, atsServer);
    }
 
    @Override

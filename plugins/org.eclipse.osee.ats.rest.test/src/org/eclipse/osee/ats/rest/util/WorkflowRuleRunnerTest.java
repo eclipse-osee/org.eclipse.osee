@@ -83,7 +83,6 @@ public class WorkflowRuleRunnerTest {
       when(createTaskRule.getRuleEvents()).thenReturn(eventList);
       when(workItem.getWorkDefinition()).thenReturn(null);
       when(workItem.getWorkDefinition()).thenReturn(atsWorkDef);
-      when(atsServer.getServices()).thenReturn(atsServices);
       when(teamDef.getRules()).thenReturn(rules);
       when(workItem.getStateMgr()).thenReturn(atsStateMgr);
       when(atsStateMgr.getCurrentStateName()).thenReturn(stateName);
@@ -102,17 +101,17 @@ public class WorkflowRuleRunnerTest {
 
       ruleRunner = new WorkflowRuleRunner(eventType, workflowsCreated, atsServer);
       ruleRunner.run();
-      verify(createTaskRule, times(2)).execute(workItem, atsServices, changes, ruleRunner.getRuleResults());
+      verify(createTaskRule, times(2)).execute(workItem, atsServer, changes, ruleRunner.getRuleResults());
 
       // Clear the ruleList passed for the StateDef rule check
       ruleList.clear();
       ruleRunner.run();
-      verify(createTaskRule, times(3)).execute(workItem, atsServices, changes, ruleRunner.getRuleResults());
+      verify(createTaskRule, times(3)).execute(workItem, atsServer, changes, ruleRunner.getRuleResults());
 
       // Clear the rules passed for the Team Def rule check
       rules.clear();
       ruleRunner.run();
-      verify(createTaskRule, times(3)).execute(workItem, atsServices, changes, ruleRunner.getRuleResults());
+      verify(createTaskRule, times(3)).execute(workItem, atsServer, changes, ruleRunner.getRuleResults());
       ruleList.clear();
       eventList.clear();
    }
