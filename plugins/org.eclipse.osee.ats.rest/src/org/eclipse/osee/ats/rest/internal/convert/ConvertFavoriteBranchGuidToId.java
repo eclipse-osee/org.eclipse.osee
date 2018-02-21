@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.rest.internal.convert;
 
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -34,8 +33,8 @@ public class ConvertFavoriteBranchGuidToId extends AbstractConvertGuidToId {
 
    private int numChanges = 0;
 
-   public ConvertFavoriteBranchGuidToId(Log logger, JdbcClient jdbcClient, OrcsApi orcsApi, IAtsServer atsServer) {
-      super(logger, jdbcClient, orcsApi, atsServer);
+   public ConvertFavoriteBranchGuidToId(Log logger, JdbcClient jdbcClient, OrcsApi orcsApi, AtsApi atsApi) {
+      super(logger, jdbcClient, orcsApi, atsApi);
    }
 
    @Override
@@ -132,8 +131,7 @@ public class ConvertFavoriteBranchGuidToId extends AbstractConvertGuidToId {
    }
 
    private ResultSet<ArtifactReadable> getUsersFavoriteBranch(QueryFactory queryFactory) {
-      return queryFactory.fromBranch(atsServer.getAtsBranch()).andTypeEquals(CoreArtifactTypes.User).andExists(
+      return queryFactory.fromBranch(atsApi.getAtsBranch()).andTypeEquals(CoreArtifactTypes.User).andExists(
          CoreAttributeTypes.FavoriteBranch).getResults();
    }
-
 }

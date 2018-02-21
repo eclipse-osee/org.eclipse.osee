@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.workitem;
 
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
@@ -35,7 +36,6 @@ import org.eclipse.osee.ats.core.config.Version;
 import org.eclipse.osee.ats.core.insertion.Insertion;
 import org.eclipse.osee.ats.core.insertion.InsertionActivity;
 import org.eclipse.osee.ats.core.model.WorkPackage;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -54,11 +55,13 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public class ConfigItemFactory extends AbstractConfigItemFactory {
 
    private final Log logger;
-   private final IAtsServer atsServer;
+   private final AtsApi atsApi;
+   private final OrcsApi orcsApi;
 
-   public ConfigItemFactory(Log logger, IAtsServer atsServer) {
+   public ConfigItemFactory(Log logger, AtsApi atsApi, OrcsApi orcsApi) {
       this.logger = logger;
-      this.atsServer = atsServer;
+      this.atsApi = atsApi;
+      this.orcsApi = orcsApi;
    }
 
    @Override
@@ -68,7 +71,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       } else if (artifact instanceof ArtifactReadable) {
          return getConfigObject((ArtifactReadable) artifact);
       }
-      QueryBuilder query = atsServer.getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch());
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch());
       return getConfigObject(query.andId(artifact).getResults().getExactlyOne());
    }
 
@@ -106,7 +109,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable art = (ArtifactReadable) artifact;
          if (art.isOfType(AtsArtifactTypes.WorkPackage)) {
-            workPackage = new WorkPackage(logger, art, atsServer);
+            workPackage = new WorkPackage(logger, art, atsApi);
          }
       }
       return workPackage;
@@ -118,7 +121,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.Version)) {
-            version = new Version(logger, atsServer, artRead);
+            version = new Version(logger, atsApi, artRead);
          }
       }
       return version;
@@ -130,7 +133,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.TeamDefinition)) {
-            teamDef = new TeamDefinition(logger, atsServer, artRead);
+            teamDef = new TeamDefinition(logger, atsApi, artRead);
          }
       }
       return teamDef;
@@ -142,7 +145,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.ActionableItem)) {
-            ai = new ActionableItem(logger, atsServer, artRead);
+            ai = new ActionableItem(logger, atsApi, artRead);
          }
       }
       return ai;
@@ -154,7 +157,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.Program)) {
-            program = new Program(logger, atsServer, artRead);
+            program = new Program(logger, atsApi, artRead);
          }
       }
       return program;
@@ -166,7 +169,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.AgileTeam)) {
-            agileTeam = atsServer.getAgileService().getAgileTeam(artRead);
+            agileTeam = atsApi.getAgileService().getAgileTeam(artRead);
          }
       }
       return agileTeam;
@@ -178,7 +181,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.AgileFeatureGroup)) {
-            agileTeam = atsServer.getAgileService().getAgileFeatureGroup(artRead);
+            agileTeam = atsApi.getAgileService().getAgileFeatureGroup(artRead);
          }
       }
       return agileTeam;
@@ -190,7 +193,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.Insertion)) {
-            insertion = new Insertion(logger, atsServer, artRead);
+            insertion = new Insertion(logger, atsApi, artRead);
             ArtifactReadable programArt =
                ((ArtifactReadable) artifact).getRelated(AtsRelationTypes.ProgramToInsertion_Program).getOneOrNull();
             if (programArt != null) {
@@ -209,7 +212,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.InsertionActivity)) {
-            insertionActivity = new InsertionActivity(logger, atsServer, artRead);
+            insertionActivity = new InsertionActivity(logger, atsApi, artRead);
             ArtifactReadable insertionArt = ((ArtifactReadable) artifact).getRelated(
                AtsRelationTypes.InsertionToInsertionActivity_Insertion).getOneOrNull();
             if (insertionArt != null) {
@@ -229,8 +232,8 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (id <= 0) {
          id = Lib.generateArtifactIdAsInt();
       }
-      IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Create new Insertion",
-         atsServer.getUserService().getCurrentUser());
+      IAtsChangeSet changes =
+         atsApi.getStoreService().createAtsChangeSet("Create new Insertion", atsApi.getUserService().getCurrentUser());
       ArtifactReadable insertionArt =
          (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.Insertion, newInsertion.getName(), id);
 
@@ -241,12 +244,12 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
 
    @Override
    public IAtsInsertion updateInsertion(JaxInsertion updatedInsertion) {
-      IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Update Insertion",
-         atsServer.getUserService().getCurrentUser());
+      IAtsChangeSet changes =
+         atsApi.getStoreService().createAtsChangeSet("Update Insertion", atsApi.getUserService().getCurrentUser());
       changes.setSoleAttributeValue(ArtifactId.valueOf(updatedInsertion.getId()), CoreAttributeTypes.Name,
          updatedInsertion.getName());
       changes.execute();
-      return getInsertion(atsServer.getQueryService().getArtifact(updatedInsertion.getId()));
+      return getInsertion(atsApi.getQueryService().getArtifact(updatedInsertion.getId()));
    }
 
    @Override
@@ -260,8 +263,8 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (id <= 0) {
          id = Lib.generateArtifactIdAsInt();
       }
-      IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Create new Insertion Activity",
-         atsServer.getUserService().getCurrentUser());
+      IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Create new Insertion Activity",
+         atsApi.getUserService().getCurrentUser());
       ArtifactReadable insertionActivityArt =
          (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.InsertionActivity, newActivity.getName(), id);
 
@@ -272,16 +275,16 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
 
    @Override
    public IAtsInsertionActivity updateInsertionActivity(JaxInsertionActivity updatedActivity) {
-      IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Update Insertion",
-         atsServer.getUserService().getCurrentUser());
+      IAtsChangeSet changes =
+         atsApi.getStoreService().createAtsChangeSet("Update Insertion", atsApi.getUserService().getCurrentUser());
       ArtifactReadable insertionActivityArt =
-         (ArtifactReadable) atsServer.getQueryService().getArtifact(updatedActivity.getId());
+         (ArtifactReadable) atsApi.getQueryService().getArtifact(updatedActivity.getId());
 
       changes.setSoleAttributeValue(insertionActivityArt, CoreAttributeTypes.Name, updatedActivity.getName());
       changes.setSoleAttributeValue(ArtifactId.valueOf(updatedActivity.getId()), CoreAttributeTypes.Name,
          updatedActivity.getName());
       changes.execute();
-      return getInsertionActivity(atsServer.getQueryService().getArtifact(updatedActivity.getId()));
+      return getInsertionActivity(atsApi.getQueryService().getArtifact(updatedActivity.getId()));
    }
 
    @Override
@@ -290,7 +293,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    private void deleteConfigObject(ArtifactId id, String comment, IArtifactType type) {
-      ArtifactReadable toDelete = (ArtifactReadable) atsServer.getQueryService().getArtifact(id);
+      ArtifactReadable toDelete = (ArtifactReadable) atsApi.getQueryService().getArtifact(id);
       if (toDelete == null) {
          throw new OseeCoreException("No object found for id %s", id);
       }
@@ -299,7 +302,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
          throw new OseeCoreException("Artifact type does not match for %s", comment);
       }
       TransactionBuilder transaction =
-         atsServer.getOrcsApi().getTransactionFactory().createTransaction(atsServer.getAtsBranch(), toDelete, comment);
+         orcsApi.getTransactionFactory().createTransaction(atsApi.getAtsBranch(), toDelete, comment);
       transaction.deleteArtifact(toDelete);
       transaction.commit();
    }
@@ -315,7 +318,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.Country)) {
-            country = new Country(logger, atsServer, artRead);
+            country = new Country(logger, atsApi, artRead);
          } else {
             throw new OseeCoreException("Requested id not Country");
          }

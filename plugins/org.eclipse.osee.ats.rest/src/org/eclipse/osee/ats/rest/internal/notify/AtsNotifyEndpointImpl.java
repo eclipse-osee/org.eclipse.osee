@@ -11,25 +11,23 @@
 package org.eclipse.osee.ats.rest.internal.notify;
 
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
-import org.eclipse.osee.ats.rest.IAtsServer;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsNotifyEndpointImpl implements AtsNotifyEndpointApi {
+   private final AtsApi atsApi;
 
-   private final IAtsServer atsServer;
-
-   public AtsNotifyEndpointImpl(IAtsServer atsServer) {
-      this.atsServer = atsServer;
+   public AtsNotifyEndpointImpl(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
    @Override
    public Response sendNotifications(AtsNotificationCollector notifications) {
-      atsServer.sendNotifications(notifications);
+      atsApi.sendNotifications(notifications);
       return Response.ok().build();
    }
-
 }

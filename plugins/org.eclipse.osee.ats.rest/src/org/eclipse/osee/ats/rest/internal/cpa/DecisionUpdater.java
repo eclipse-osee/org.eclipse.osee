@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.cpa.DecisionUpdate;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -27,7 +28,6 @@ import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
@@ -37,19 +37,19 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 public class DecisionUpdater {
 
    private final DecisionUpdate update;
-   private final IAtsServer atsServer;
+   private final AtsApi atsApi;
 
-   public DecisionUpdater(final DecisionUpdate update, IAtsServer atsServer) {
+   public DecisionUpdater(final DecisionUpdate update, AtsApi atsApi) {
       this.update = update;
-      this.atsServer = atsServer;
+      this.atsApi = atsApi;
    }
 
    public XResultData update() {
       XResultData rd = new XResultData(false);
       Collection<IAtsTeamWorkflow> teamWfs =
-         atsServer.getQueryService().createQuery(WorkItemType.TeamWorkflow).andAtsIds(update.getIds()).getItems();
+         atsApi.getQueryService().createQuery(WorkItemType.TeamWorkflow).andAtsIds(update.getIds()).getItems();
       IAtsChangeSet changes =
-         atsServer.getStoreService().createAtsChangeSet("Update CPA Decision", AtsCoreUsers.SYSTEM_USER);
+         atsApi.getStoreService().createAtsChangeSet("Update CPA Decision", AtsCoreUsers.SYSTEM_USER);
       for (IAtsTeamWorkflow teamWf : teamWfs) {
          if (!rd.isErrors()) {
             updateRationale(update, changes, teamWf, rd);
@@ -79,7 +79,7 @@ public class DecisionUpdater {
             changes.deleteAttributes(teamWf, AtsAttributeTypes.ApplicableToProgram);
 
             TransitionHelper helper = new TransitionHelper("Transition " + teamWf.getAtsId(), Arrays.asList(teamWf),
-               TeamState.Analyze.getName(), teamWf.getAssignees(), "", changes, atsServer,
+               TeamState.Analyze.getName(), teamWf.getAssignees(), "", changes, atsApi,
                TransitionOption.OverrideAssigneeCheck);
             helper.setTransitionUser(AtsCoreUsers.SYSTEM_USER);
             IAtsTransitionManager mgr = TransitionFactory.getTransitionManager(helper);
@@ -93,8 +93,7 @@ public class DecisionUpdater {
             changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.ApplicableToProgram, appl);
 
             TransitionHelper helper = new TransitionHelper("Transition " + teamWf.getAtsId(), Arrays.asList(teamWf),
-               TeamState.Completed.getName(), null, "", changes, atsServer,
-               TransitionOption.OverrideAssigneeCheck);
+               TeamState.Completed.getName(), null, "", changes, atsApi, TransitionOption.OverrideAssigneeCheck);
             helper.setTransitionUser(AtsCoreUsers.SYSTEM_USER);
             IAtsTransitionManager mgr = TransitionFactory.getTransitionManager(helper);
             TransitionResults results = mgr.handleAll();
@@ -109,7 +108,7 @@ public class DecisionUpdater {
       if (update.getAssignees() != null) {
          List<IAtsUser> assignees = new ArrayList<>();
          for (String userId : update.getAssignees()) {
-            IAtsUser user = atsServer.getUserService().getUserById(userId);
+            IAtsUser user = atsApi.getUserService().getUserById(userId);
             if (user == null) {
                rd.errorf("Invalid userId [%s]", userId);
             }

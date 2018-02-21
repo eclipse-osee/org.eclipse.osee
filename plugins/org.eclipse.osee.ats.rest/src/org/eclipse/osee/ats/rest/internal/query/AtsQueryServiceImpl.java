@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
@@ -26,7 +27,6 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryService;
 import org.eclipse.osee.ats.core.query.AtsWorkItemFilter;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
@@ -37,28 +37,34 @@ import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
-   private final IAtsServer atsServer;
+   private final AtsApi atsApi;
+   private final OrcsApi orcsApi;
+   private final QueryFactory query;
 
-   public AtsQueryServiceImpl(IAtsServer atsServer, JdbcService jdbcService) {
-      super(jdbcService, atsServer);
-      this.atsServer = atsServer;
+   public AtsQueryServiceImpl(AtsApi atsApi, JdbcService jdbcService, OrcsApi orcsApi) {
+      super(jdbcService, atsApi);
+      this.atsApi = atsApi;
+      this.orcsApi = orcsApi;
+      this.query = orcsApi.getQueryFactory();
    }
 
    private QueryBuilder getQuery() {
-      return atsServer.getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch());
+      return query.fromBranch(atsApi.getAtsBranch());
    }
 
    @Override
    public IAtsQuery createQuery(WorkItemType workItemType, WorkItemType... workItemTypes) {
-      AtsQueryImpl query = new AtsQueryImpl(atsServer);
+      AtsQueryImpl query = new AtsQueryImpl(atsApi, orcsApi);
       query.isOfType(workItemType);
       for (WorkItemType type : workItemTypes) {
          query.isOfType(type);
@@ -68,14 +74,14 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public IAtsConfigQuery createQuery(IArtifactType... artifactType) {
-      AtsConfigQueryImpl query = new AtsConfigQueryImpl(atsServer);
+      AtsConfigQueryImpl query = new AtsConfigQueryImpl(atsApi, orcsApi);
       query.isOfType(artifactType);
       return query;
    }
 
    @Override
    public IAtsWorkItemFilter createFilter(Collection<? extends IAtsWorkItem> workItems) {
-      return new AtsWorkItemFilter(workItems, atsServer);
+      return new AtsWorkItemFilter(workItems, atsApi);
    }
 
    @Override
@@ -110,19 +116,17 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public Collection<ArtifactToken> getArtifacts(List<ArtifactId> ids, BranchId branch) {
-      return Collections.castAll(
-         atsServer.getOrcsApi().getQueryFactory().fromBranch(branch).andIds(ids).getResults().getList());
+      return Collections.castAll(query.fromBranch(branch).andIds(ids).getResults().getList());
    }
 
    @Override
    public Collection<ArtifactToken> getArtifacts(BranchId branch, IArtifactType... artifactType) {
-      return Collections.castAll(atsServer.getOrcsApi().getQueryFactory().fromBranch(branch).andTypeEquals(
-         artifactType).getResults().getList());
+      return Collections.castAll(query.fromBranch(branch).andTypeEquals(artifactType).getResults().getList());
    }
 
    @Override
    public IAtsOrcsScriptQuery createOrcsScriptQuery(String query, Object... data) {
-      return new AtsOrcsScriptQuery(String.format(query, data), atsServer);
+      return new AtsOrcsScriptQuery(String.format(query, data), orcsApi);
    }
 
    @Override
@@ -133,7 +137,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    @Override
    public Collection<ArtifactToken> getRelatedToTokens(BranchId branch, ArtifactId artifact, RelationTypeSide relationType, ArtifactTypeId artifactType) {
       HashCollection<ArtifactId, ArtifactToken> tokenMap = TokenSearchOperations.getArtifactTokenListFromRelated(branch,
-         java.util.Collections.singleton(artifact), artifactType, relationType, atsServer.getOrcsApi(), jdbcService);
+         java.util.Collections.singleton(artifact), artifactType, relationType, orcsApi, jdbcService);
       Collection<ArtifactToken> result = tokenMap.getValues(artifact);
       if (result != null) {
          return result;

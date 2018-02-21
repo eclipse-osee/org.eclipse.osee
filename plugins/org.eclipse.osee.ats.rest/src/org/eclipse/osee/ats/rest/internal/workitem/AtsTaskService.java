@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.task.AbstractAtsTaskService;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
@@ -24,32 +25,33 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsTaskService extends AbstractAtsTaskService {
+   private final AtsApi atsApi;
+   private final OrcsApi orcsApi;
 
-   private final IAtsServer atsServer;
-
-   public AtsTaskService(IAtsServer atsServer) {
-      super(atsServer);
-      this.atsServer = atsServer;
+   public AtsTaskService(AtsApi atsApi, OrcsApi orcsApi) {
+      super(atsApi);
+      this.atsApi = atsApi;
+      this.orcsApi = orcsApi;
    }
 
    @Override
    public Collection<IAtsTask> createTasks(NewTaskData newTaskData) {
       IAtsChangeSet changes =
-         atsServer.getStoreService().createAtsChangeSet(newTaskData.getCommitComment(), AtsCoreUsers.SYSTEM_USER);
+         atsApi.getStoreService().createAtsChangeSet(newTaskData.getCommitComment(), AtsCoreUsers.SYSTEM_USER);
       return createTasks(newTaskData, changes);
    }
 
    @Override
    public Collection<IAtsTask> createTasks(NewTaskData newTaskData, IAtsChangeSet changes) {
-      CreateTasksOperation operation = new CreateTasksOperation(newTaskData, atsServer, new XResultData());
+      CreateTasksOperation operation = new CreateTasksOperation(newTaskData, atsApi, orcsApi, new XResultData());
       XResultData results = operation.validate();
       operation.run(changes);
       if (results.isErrors()) {
@@ -57,14 +59,14 @@ public class AtsTaskService extends AbstractAtsTaskService {
       }
       List<IAtsTask> tasks = new LinkedList<>();
       for (JaxAtsTask task : operation.getTasks()) {
-         tasks.add(atsServer.getWorkItemFactory().getTask(atsServer.getQueryService().getArtifact(task.getId())));
+         tasks.add(atsApi.getWorkItemFactory().getTask(atsApi.getQueryService().getArtifact(task.getId())));
       }
       return tasks;
    }
 
    @Override
    public Collection<IAtsTask> createTasks(NewTaskDatas newTaskDatas) {
-      CreateTasksOperation operation = new CreateTasksOperation(newTaskDatas, atsServer, new XResultData());
+      CreateTasksOperation operation = new CreateTasksOperation(newTaskDatas, atsApi, orcsApi, new XResultData());
       XResultData results = operation.validate();
 
       if (results.isErrors()) {
@@ -76,14 +78,14 @@ public class AtsTaskService extends AbstractAtsTaskService {
       }
       List<IAtsTask> tasks = new LinkedList<>();
       for (JaxAtsTask task : operation.getTasks()) {
-         tasks.add(atsServer.getWorkItemFactory().getTask(atsServer.getQueryService().getArtifact(task.getId())));
+         tasks.add(atsApi.getWorkItemFactory().getTask(atsApi.getQueryService().getArtifact(task.getId())));
       }
       return tasks;
    }
 
    @Override
    public Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<Object>> attributes, IAtsChangeSet changes) {
-      NewTaskData tasks = atsServer.getTaskService().getNewTaskData(teamWf, titles, assignees, createdDate, createdBy,
+      NewTaskData tasks = atsApi.getTaskService().getNewTaskData(teamWf, titles, assignees, createdDate, createdBy,
          relatedToState, taskWorkDef, attributes, changes.getComment());
       return createTasks(tasks, changes);
    }

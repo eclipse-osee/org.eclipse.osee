@@ -20,9 +20,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.ActionPage;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -36,11 +36,11 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 @Path("/ui/action")
 public final class ActionUiResource {
 
-   private final IAtsServer atsServer;
+   private final AtsApi atsApi;
    private final Log logger;
 
-   public ActionUiResource(IAtsServer atsServer, Log logger) {
-      this.atsServer = atsServer;
+   public ActionUiResource(AtsApi atsApi, Log logger) {
+      this.atsApi = atsApi;
       this.logger = logger;
    }
 
@@ -61,13 +61,13 @@ public final class ActionUiResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public ViewModel getAction(@PathParam("ids") String ids) throws Exception {
-      List<IAtsWorkItem> workItems = atsServer.getQueryService().getWorkItemsByIds(ids);
+      List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemsByIds(ids);
       if (workItems.isEmpty()) {
          return RestUtil.simplePage(String.format("Action with id(s) [%s] can not be found", ids));
       }
       if (workItems.size() == 1) {
          ActionPage page =
-            new ActionPage(logger, atsServer, (ArtifactReadable) workItems.iterator().next().getStoreObject(), false);
+            new ActionPage(logger, atsApi, (ArtifactReadable) workItems.iterator().next().getStoreObject(), false);
          return page.generate();
       } else {
          String idStr = "";
@@ -91,11 +91,11 @@ public final class ActionUiResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public ViewModel getActionWithDetails(@PathParam("id") String id) throws Exception {
-      ArtifactReadable action = (ArtifactReadable) atsServer.getQueryService().getArtifactById(id);
+      ArtifactReadable action = (ArtifactReadable) atsApi.getQueryService().getArtifactById(id);
       if (action == null) {
          return RestUtil.simplePage(String.format("Action with id [%s] can not be found", id));
       }
-      ActionPage page = new ActionPage(logger, atsServer, action, true);
+      ActionPage page = new ActionPage(logger, atsApi, action, true);
       return page.generate();
    }
 
@@ -135,7 +135,7 @@ public final class ActionUiResource {
    };
 
    private Collection<ArtifactToken> getAis() {
-      return atsServer.getQueryService().getArtifacts(AtsArtifactTypes.ActionableItem);
+      return atsApi.getQueryService().getArtifacts(AtsArtifactTypes.ActionableItem);
    }
 
    /**
@@ -156,12 +156,12 @@ public final class ActionUiResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public ViewModel getTransition(@PathParam("id") String id) throws Exception {
-      ArtifactReadable action = (ArtifactReadable) atsServer.getQueryService().getArtifactById(id);
+      ArtifactReadable action = (ArtifactReadable) atsApi.getQueryService().getArtifactById(id);
       if (action == null) {
          return RestUtil.simplePage(String.format("Action with id [%s] can not be found", id));
       }
-      IAtsWorkItem workItem = atsServer.getWorkItemFactory().getWorkItem(action);
-      ActionPage page = new ActionPage(logger, atsServer, workItem, false);
+      IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem(action);
+      ActionPage page = new ActionPage(logger, atsApi, workItem, false);
       page.setAddTransition(true);
       return page.generate();
    }

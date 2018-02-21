@@ -124,7 +124,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
 
       notifyService = new AtsNotifierServiceImpl();
       workItemFactory = new WorkItemFactory(this);
-      configItemFactory = new ConfigItemFactory(logger, this);
+      configItemFactory = new ConfigItemFactory(logger, this, orcsApi);
 
       artifactResolver = new ArtifactResolverImpl(this, orcsApi);
       branchService = new AtsBranchServiceImpl(this, orcsApi, teamWorkflowProvidersLazy);
@@ -136,15 +136,15 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
       logFactory = AtsCoreFactory.newLogFactory();
       stateFactory = AtsCoreFactory.newStateFactory(this, logFactory);
       storeService =
-         new AtsStoreServiceImpl(attributeResolverService, this, stateFactory, logFactory, this, jdbcService);
+         new AtsStoreServiceImpl(attributeResolverService, this, orcsApi, stateFactory, logFactory, this, jdbcService);
 
-      queryService = new AtsQueryServiceImpl(this, jdbcService);
+      queryService = new AtsQueryServiceImpl(this, jdbcService, orcsApi);
       actionableItemManager = new ActionableItemService(attributeResolverService, storeService, this);
       actionFactory = new ActionFactory(workItemFactory, sequenceProvider, actionableItemManager,
          attributeResolverService, stateFactory, this);
 
       agileService = new AgileService(logger, this);
-      taskService = new AtsTaskService(this);
+      taskService = new AtsTaskService(this, orcsApi);
       earnedValueService = new AtsEarnedValueImpl(logger, this);
 
       addAtsDatabaseConversion(new ConvertBaselineGuidToBaselineId(logger, jdbcService.getClient(), orcsApi, this));

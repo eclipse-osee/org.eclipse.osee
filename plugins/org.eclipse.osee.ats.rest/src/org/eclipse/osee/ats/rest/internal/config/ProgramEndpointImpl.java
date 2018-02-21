@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.PUT;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -24,7 +25,6 @@ import org.eclipse.osee.ats.api.program.JaxProgram;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -38,26 +38,26 @@ public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> impl
 
    private final long countryId;
 
-   public ProgramEndpointImpl(IAtsServer atsServer) {
-      this(atsServer, 0L);
+   public ProgramEndpointImpl(AtsApi atsApi) {
+      this(atsApi, 0L);
    }
 
-   public ProgramEndpointImpl(IAtsServer atsServer, long countryId) {
-      super(AtsArtifactTypes.Program, null, atsServer);
+   public ProgramEndpointImpl(AtsApi atsApi, long countryId) {
+      super(AtsArtifactTypes.Program, null, atsApi);
       this.countryId = countryId;
    }
 
    @PUT
    @Override
    public Response update(JaxProgram program) throws Exception {
-      ArtifactReadable artifact = (ArtifactReadable) atsServer.getQueryService().getArtifact(program.getId());
+      ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(program.getId());
       if (artifact == null) {
          throw new OseeStateException("Artifact with id %d not found", program.getId());
       }
       IAtsChangeSet changes =
-         atsServer.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
+         atsApi.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
       ArtifactToken configArtifact = changes.createArtifact(artifactType, program.getName(), program.getId());
-      IAtsConfigObject configObject = atsServer.getConfigItemFactory().getConfigObject(configArtifact);
+      IAtsConfigObject configObject = atsApi.getConfigItemFactory().getConfigObject(configArtifact);
       if (!configArtifact.getName().equals(program.getName())) {
          changes.setSoleAttributeValue(configObject, CoreAttributeTypes.Name, program.getName());
       }
@@ -68,7 +68,7 @@ public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> impl
    @Override
    public JaxProgram getConfigObject(ArtifactId artifact) {
       JaxProgram jaxProgram = new JaxProgram();
-      IAtsProgram program = atsServer.getConfigItemFactory().getProgram(artifact);
+      IAtsProgram program = atsApi.getConfigItemFactory().getProgram(artifact);
       jaxProgram.setName(program.getName());
       jaxProgram.setId(program.getId());
       jaxProgram.setActive(program.isActive());
@@ -80,12 +80,12 @@ public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> impl
    public List<JaxProgram> getObjects() {
       List<JaxProgram> configs = new ArrayList<>();
       if (countryId == 0L) {
-         for (ArtifactToken art : atsServer.getQueryService().getArtifacts(artifactType)) {
+         for (ArtifactToken art : atsApi.getQueryService().getArtifacts(artifactType)) {
             configs.add(getConfigObject(art));
          }
       } else {
-         for (ArtifactToken art : atsServer.getRelationResolver().getRelated(
-            atsServer.getQueryService().getArtifact(countryId), AtsRelationTypes.CountryToProgram_Program)) {
+         for (ArtifactToken art : atsApi.getRelationResolver().getRelated(
+            atsApi.getQueryService().getArtifact(countryId), AtsRelationTypes.CountryToProgram_Program)) {
             JaxProgram program = getConfigObject(art);
             program.setCountryId(countryId);
             configs.add(program);
@@ -99,13 +99,13 @@ public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> impl
       ArtifactReadable programArt = (ArtifactReadable) programArtId;
       if (programArt.getRelatedCount(AtsRelationTypes.CountryToProgram_Country) == 0) {
          ArtifactReadable countryArt =
-            (ArtifactReadable) atsServer.getQueryService().getArtifact(jaxProgram.getCountryId());
+            (ArtifactReadable) atsApi.getQueryService().getArtifact(jaxProgram.getCountryId());
          changes.relate(countryArt, AtsRelationTypes.CountryToProgram_Program, programArt);
       }
    }
 
    @Override
    public InsertionEndpointApi getInsertion(long programId) {
-      return new InsertionEndpointImpl(atsServer, programId);
+      return new InsertionEndpointImpl(atsApi, programId);
    }
 }

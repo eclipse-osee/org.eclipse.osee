@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
@@ -25,7 +26,6 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -54,11 +55,11 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    private final OrcsApi orcsApi;
    private final IAtsNotifier notifier;
 
-   private final IAtsServer atsServer;
+   private final AtsApi atsApi;
 
-   public AtsChangeSet(IAtsServer atsServer, IAttributeResolver attributeResolver, OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, String comment, IAtsUser user, IAtsNotifier notifier) {
+   public AtsChangeSet(AtsApi atsApi, IAttributeResolver attributeResolver, OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, String comment, IAtsUser user, IAtsNotifier notifier) {
       super(comment, user);
-      this.atsServer = atsServer;
+      this.atsApi = atsApi;
       this.orcsApi = orcsApi;
       this.notifier = notifier;
    }
@@ -66,7 +67,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    public TransactionBuilder getTransaction() {
       if (transaction == null) {
          transaction =
-            orcsApi.getTransactionFactory().createTransaction(atsServer.getAtsBranch(), getUser(asUser), comment);
+            orcsApi.getTransactionFactory().createTransaction(atsApi.getAtsBranch(), getUser(asUser), comment);
       }
       return transaction;
    }
@@ -75,7 +76,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       if (user.getStoreObject() instanceof ArtifactReadable) {
          return (ArtifactReadable) user.getStoreObject();
       }
-      return (ArtifactReadable) atsServer.getQueryService().getArtifact(user);
+      return (ArtifactReadable) atsApi.getQueryService().getArtifact(user);
    }
 
    @Override
@@ -89,10 +90,10 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          if (atsObject instanceof IAtsWorkItem) {
             IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
             if (workItem.getStateMgr().isDirty()) {
-               atsServer.getStateFactory().writeToStore(asUser, workItem, this);
+               atsApi.getStateFactory().writeToStore(asUser, workItem, this);
             }
             if (workItem.getLog().isDirty()) {
-               atsServer.getLogFactory().writeToStore(workItem, atsServer.getAttributeResolver(), this);
+               atsApi.getLogFactory().writeToStore(workItem, atsApi.getAttributeResolver(), this);
             }
          }
       }
@@ -103,7 +104,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       notifier.sendNotifications(getNotifications());
       for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
          if (atsObject instanceof IAtsWorkItem) {
-            atsServer.getStoreService().clearCaches((IAtsWorkItem) atsObject);
+            atsApi.getStoreService().clearCaches((IAtsWorkItem) atsObject);
          }
       }
 
@@ -113,7 +114,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
        * AtsChangeSets. See action TW1864.
        */
       //      if (!workItemsCreated.isEmpty()) {
-      //         WorkflowRuleRunner runner = new WorkflowRuleRunner(RuleEventType.CreateWorkflow, workItemsCreated, atsServer);
+      //         WorkflowRuleRunner runner = new WorkflowRuleRunner(RuleEventType.CreateWorkflow, workItemsCreated, atsApi);
       //         runner.run();
       //      }
       return transactionReadable;
@@ -165,10 +166,11 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public void addAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) {
       ArtifactReadable artifact = getArtifact(atsObject);
-      if (atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().isArtifactReferencedAttribute(attributeType)) {
+      AttributeTypes attributeTypes = orcsApi.getOrcsTypes().getAttributeTypes();
+      if (attributeTypes.isArtifactReferencedAttribute(attributeType)) {
          Conditions.assertTrue(value instanceof ArtifactId, "value must be of type ArtifactId");
          getTransaction().createAttributeFromString(artifact, attributeType, ((ArtifactId) value).getIdString());
-      } else if (atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().isDateType(attributeType)) {
+      } else if (attributeTypes.isDateType(attributeType)) {
          Conditions.assertTrue(value instanceof Date, "value must be of type Date");
          getTransaction().createAttributeFromString(artifact, attributeType, String.valueOf(((Date) value).getTime()));
       } else {
@@ -220,7 +222,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          if (atsObject.getStoreObject() instanceof ArtifactReadable) {
             artifact = (ArtifactReadable) atsObject.getStoreObject();
          } else {
-            artifact = (ArtifactReadable) atsServer.getQueryService().getArtifact(atsObject.getId());
+            artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(atsObject.getId());
          }
       }
       return artifact;

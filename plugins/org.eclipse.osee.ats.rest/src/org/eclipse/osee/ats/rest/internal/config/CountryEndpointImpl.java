@@ -14,6 +14,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.country.CountryEndpointApi;
 import org.eclipse.osee.ats.api.country.IAtsCountry;
@@ -23,7 +24,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -35,20 +35,20 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class CountryEndpointImpl extends BaseConfigEndpointImpl<JaxCountry> implements CountryEndpointApi {
 
-   public CountryEndpointImpl(IAtsServer atsServer) {
-      super(AtsArtifactTypes.Country, AtsArtifactToken.CountryFolder, atsServer);
+   public CountryEndpointImpl(AtsApi atsApi) {
+      super(AtsArtifactTypes.Country, AtsArtifactToken.CountryFolder, atsApi);
    }
 
    @Override
    public Response update(JaxCountry country) throws Exception {
-      ArtifactReadable artifact = (ArtifactReadable) atsServer.getQueryService().getArtifact(country.getId());
+      ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(country.getId());
       if (artifact == null) {
          throw new OseeStateException("Artifact with id %d not found", country.getId());
       }
       IAtsChangeSet changes =
-         atsServer.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
+         atsApi.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
       ArtifactToken configArtifact = changes.createArtifact(artifactType, country.getName(), country.getId());
-      IAtsConfigObject configObject = atsServer.getConfigItemFactory().getConfigObject(configArtifact);
+      IAtsConfigObject configObject = atsApi.getConfigItemFactory().getConfigObject(configArtifact);
       if (!configArtifact.getName().equals(country.getName())) {
          changes.setSoleAttributeValue(configObject, CoreAttributeTypes.Name, country.getName());
       }
@@ -59,7 +59,7 @@ public class CountryEndpointImpl extends BaseConfigEndpointImpl<JaxCountry> impl
    @Override
    public JaxCountry getConfigObject(ArtifactId artifact) {
       JaxCountry jaxCountry = new JaxCountry();
-      IAtsCountry country = atsServer.getConfigItemFactory().getCountry(artifact);
+      IAtsCountry country = atsApi.getConfigItemFactory().getCountry(artifact);
       jaxCountry.setName(country.getName());
       jaxCountry.setId(country.getId());
       jaxCountry.setActive(country.isActive());
@@ -70,7 +70,7 @@ public class CountryEndpointImpl extends BaseConfigEndpointImpl<JaxCountry> impl
    @Override
    public List<JaxCountry> getObjects() {
       List<JaxCountry> configs = new ArrayList<>();
-      for (ArtifactToken art : atsServer.getQueryService().getArtifacts(artifactType)) {
+      for (ArtifactToken art : atsApi.getQueryService().getArtifacts(artifactType)) {
          configs.add(getConfigObject(art));
       }
       return configs;
@@ -78,7 +78,7 @@ public class CountryEndpointImpl extends BaseConfigEndpointImpl<JaxCountry> impl
 
    @Override
    public ProgramEndpointApi getProgram(long countryId) {
-      return new ProgramEndpointImpl(atsServer, countryId);
+      return new ProgramEndpointImpl(atsApi, countryId);
    }
 
 }

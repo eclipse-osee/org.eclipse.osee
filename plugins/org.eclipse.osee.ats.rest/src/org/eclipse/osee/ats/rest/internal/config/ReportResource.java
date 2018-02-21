@@ -28,7 +28,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
-import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -45,13 +45,12 @@ import org.eclipse.osee.orcs.data.AttributeTypes;
  */
 @Path("typeCount")
 public class ReportResource {
-
    private final OrcsApi orcsApi;
-   private final IAtsServer atsServer;
+   private final AtsApi atsApi;
 
-   public ReportResource(OrcsApi orcsApi, IAtsServer atsServer) {
+   public ReportResource(OrcsApi orcsApi, AtsApi atsApi) {
       this.orcsApi = orcsApi;
-      this.atsServer = atsServer;
+      this.atsApi = atsApi;
    }
 
    @GET
@@ -148,7 +147,7 @@ public class ReportResource {
    }
 
    private List<ChangeItem> getChanges(BranchId branch) {
-      CompareResults results = atsServer.getBranchService().getChangeData(branch);
+      CompareResults results = atsApi.getBranchService().getChangeData(branch);
       if (results != null) {
          return results.getChanges();
       }

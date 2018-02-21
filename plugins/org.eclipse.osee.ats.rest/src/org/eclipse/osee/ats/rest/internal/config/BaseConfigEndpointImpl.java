@@ -18,6 +18,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.config.BaseConfigEndpointApi;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
@@ -25,7 +26,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -39,14 +39,14 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> implements BaseConfigEndpointApi<T> {
 
-   protected final IAtsServer atsServer;
+   protected final AtsApi atsApi;
    protected final IArtifactType artifactType;
    protected final ArtifactToken typeFolder;
 
-   public BaseConfigEndpointImpl(IArtifactType artifactType, ArtifactToken typeFolder, IAtsServer atsServer) {
+   public BaseConfigEndpointImpl(IArtifactType artifactType, ArtifactToken typeFolder, AtsApi atsApi) {
       this.artifactType = artifactType;
       this.typeFolder = typeFolder;
-      this.atsServer = atsServer;
+      this.atsApi = atsApi;
    }
 
    @Override
@@ -70,22 +70,22 @@ public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> implements 
       } else if (!Strings.isValid(jaxAtsObject.getName())) {
          throw new OseeStateException("Invalid name [%d]");
       }
-      ArtifactReadable artifact = (ArtifactReadable) atsServer.getQueryService().getArtifact(jaxAtsObject.getId());
+      ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(jaxAtsObject.getId());
       if (artifact != null) {
          throw new OseeStateException("Artifact with id %d already exists", jaxAtsObject.getId());
       }
       IAtsChangeSet changes =
-         atsServer.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
+         atsApi.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
       ArtifactId newArtifact = changes.createArtifact(artifactType, jaxAtsObject.getName(), jaxAtsObject.getId());
-      IAtsObject newAtsObject = atsServer.getConfigItemFactory().getConfigObject(newArtifact);
+      IAtsObject newAtsObject = atsApi.getConfigItemFactory().getConfigObject(newArtifact);
       if (typeFolder != null) {
-         ArtifactReadable typeFolderArtifact = (ArtifactReadable) atsServer.getQueryService().getArtifact(typeFolder);
+         ArtifactReadable typeFolderArtifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(typeFolder);
          if (typeFolderArtifact == null) {
             typeFolderArtifact = (ArtifactReadable) changes.createArtifact(AtsArtifactToken.CountryFolder);
          }
          if (typeFolderArtifact.getParent() == null) {
             ArtifactReadable headingFolder =
-               (ArtifactReadable) atsServer.getQueryService().getArtifact(AtsArtifactToken.HeadingFolder);
+               (ArtifactReadable) atsApi.getQueryService().getArtifact(AtsArtifactToken.HeadingFolder);
             changes.relate(headingFolder, CoreRelationTypes.Default_Hierarchical__Child, typeFolderArtifact);
          }
          changes.relate(typeFolderArtifact, CoreRelationTypes.Default_Hierarchical__Child, newArtifact);
@@ -111,12 +111,12 @@ public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> implements 
    @Override
    @DELETE
    public Response delete(@PathParam("id") long id) throws Exception {
-      ArtifactReadable artifact = (ArtifactReadable) atsServer.getQueryService().getArtifact(id);
+      ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(id);
       if (artifact == null) {
          throw new OseeStateException("Artifact with id %d not found", id);
       }
       IAtsChangeSet changes =
-         atsServer.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
+         atsApi.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
       changes.deleteArtifact(artifact);
       changes.execute();
       return Response.ok().build();
@@ -125,7 +125,7 @@ public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> implements 
    public abstract T getConfigObject(ArtifactId artifact);
 
    protected T getObject(long id) {
-      ArtifactToken configArt = atsServer.getQueryService().getArtifact(id);
+      ArtifactToken configArt = atsApi.getQueryService().getArtifact(id);
       return getConfigObject(configArt);
    }
 

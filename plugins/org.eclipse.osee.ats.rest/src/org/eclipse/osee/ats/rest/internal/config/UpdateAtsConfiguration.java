@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.AtsViews;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationViewsProvider;
@@ -24,7 +25,6 @@ import org.eclipse.osee.ats.api.util.ColorColumns;
 import org.eclipse.osee.ats.core.column.ColorTeamColumn;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -47,19 +48,21 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  * @author Donald G. Dunne
  */
 public class UpdateAtsConfiguration {
-
-   private final IAtsServer atsServer;
    private static final String VIEWS_KEY = "views";
    private static final String VIEWS_EQUAL_KEY = VIEWS_KEY + "=";
    private static final String COLOR_COLUMN_KEY = "colorColumns";
    public static final String VALID_STATE_NAMES_KEY = "validStateNames";
 
-   public UpdateAtsConfiguration(IAtsServer atsServer) {
-      this.atsServer = atsServer;
+   private final AtsApi atsApi;
+   private final OrcsApi orcsApi;
+
+   public UpdateAtsConfiguration(AtsApi atsApi, OrcsApi orcsApi) {
+      this.atsApi = atsApi;
+      this.orcsApi = orcsApi;
    }
 
    public XResultData createUpdateConfig(XResultData rd) {
-      ArtifactReadable userArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(AtsCoreUsers.SYSTEM_USER);
+      ArtifactReadable userArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(AtsCoreUsers.SYSTEM_USER);
       ArtifactId configFolder = getOrCreateConfigFolder(userArt, rd);
       ArtifactReadable atsConfigArt = (ArtifactReadable) getOrCreateAtsConfig(userArt, rd);
       createRuleDefinitions(userArt, configFolder, rd);
@@ -70,15 +73,15 @@ public class UpdateAtsConfiguration {
       } catch (Exception ex) {
          rd.errorf("Error in createUpdateValidStateAttributes [%s]", Lib.exceptionToString(ex));
       }
-      atsServer.setConfigValue(AtsUtilCore.SERVER_CONFIG_RELOAD_MIN_KEY, AtsUtilCore.SERVER_CONFIG_RELOAD_MIN_KEY);
+      atsApi.setConfigValue(AtsUtilCore.SERVER_CONFIG_RELOAD_MIN_KEY, AtsUtilCore.SERVER_CONFIG_RELOAD_MIN_KEY);
       return rd;
    }
 
    private void createRuleDefinitions(ArtifactReadable userArt, ArtifactId configFolderArt, XResultData rd) {
       try {
-         if ((ArtifactReadable) atsServer.getQueryService().getArtifact(AtsArtifactToken.RuleDefinitions) == null) {
-            TransactionBuilder tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(
-               CoreBranches.COMMON, userArt, "Add Rule Definitions Artifact");
+         if ((ArtifactReadable) atsApi.getQueryService().getArtifact(AtsArtifactToken.RuleDefinitions) == null) {
+            TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, userArt,
+               "Add Rule Definitions Artifact");
             ArtifactId ruleDefConfigArt = tx.createArtifact(AtsArtifactToken.RuleDefinitions);
             String ruleDefs = OseeInf.getResourceContents("atsConfig/ruleDefinitions.ats", getClass());
             tx.createAttribute(ruleDefConfigArt, AtsAttributeTypes.DslSheet, ruleDefs);
@@ -131,8 +134,8 @@ public class UpdateAtsConfiguration {
             databaseViews.getAttrColumns().addAll(toAdd);
          }
 
-         TransactionBuilder tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(CoreBranches.COMMON,
-            userArt, "Create Update Config Attributes");
+         TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, userArt,
+            "Create Update Config Attributes");
          Iterator<? extends AttributeReadable<Object>> iterator =
             configArt.getAttributes(CoreAttributeTypes.GeneralStringData, DeletionFlag.EXCLUDE_DELETED).iterator();
          boolean found = false;
@@ -162,11 +165,11 @@ public class UpdateAtsConfiguration {
    }
 
    public ArtifactId getOrCreateConfigFolder(ArtifactId userArt, XResultData rd) {
-      ArtifactToken configFolderArt = atsServer.getQueryService().getArtifact(AtsArtifactToken.ConfigFolder);
+      ArtifactToken configFolderArt = atsApi.getQueryService().getArtifact(AtsArtifactToken.ConfigFolder);
       if (configFolderArt == null) {
-         TransactionBuilder tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(CoreBranches.COMMON,
-            userArt, "Create Config Folder");
-         ArtifactToken headingFolderArt = atsServer.getQueryService().getArtifact(AtsArtifactToken.HeadingFolder);
+         TransactionBuilder tx =
+            orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, userArt, "Create Config Folder");
+         ArtifactToken headingFolderArt = atsApi.getQueryService().getArtifact(AtsArtifactToken.HeadingFolder);
          configFolderArt = tx.createArtifact(AtsArtifactToken.ConfigFolder);
          tx.relate(headingFolderArt, CoreRelationTypes.Default_Hierarchical__Parent, configFolderArt);
          tx.commit();
@@ -176,10 +179,10 @@ public class UpdateAtsConfiguration {
    }
 
    public ArtifactId getOrCreateAtsConfig(ArtifactReadable userArt, XResultData rd) {
-      ArtifactToken atsConfigArt = atsServer.getQueryService().getArtifact(AtsArtifactToken.AtsConfig);
+      ArtifactToken atsConfigArt = atsApi.getQueryService().getArtifact(AtsArtifactToken.AtsConfig);
       if (atsConfigArt == null) {
-         TransactionBuilder tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(CoreBranches.COMMON,
-            userArt, "Create AtsConfig");
+         TransactionBuilder tx =
+            orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, userArt, "Create AtsConfig");
          ArtifactReadable headingFolderArt = (ArtifactReadable) getOrCreateConfigFolder(userArt, rd);
          atsConfigArt = tx.createArtifact(AtsArtifactToken.AtsConfig);
          tx.relate(headingFolderArt, CoreRelationTypes.Default_Hierarchical__Parent, atsConfigArt);
@@ -193,22 +196,21 @@ public class UpdateAtsConfiguration {
       ColorColumns columns = new ColorColumns();
       columns.addColumn(ColorTeamColumn.getColor());
       String colorColumnsJson = JsonUtil.toJson(columns);
-      atsServer.setConfigValue(COLOR_COLUMN_KEY, colorColumnsJson);
+      atsApi.setConfigValue(COLOR_COLUMN_KEY, colorColumnsJson);
    }
 
    private void createUpdateValidStateAttributes(ArtifactReadable atsConfigArt, ArtifactReadable userArt, XResultData rd) throws Exception {
 
-      Collection<String> validStateNames =
-         atsServer.getWorkDefinitionService().getAllValidStateNames(new XResultData());
-      atsServer.setConfigValue(VALID_STATE_NAMES_KEY, Collections.toString(",", validStateNames));
+      Collection<String> validStateNames = atsApi.getWorkDefinitionService().getAllValidStateNames(new XResultData());
+      atsApi.setConfigValue(VALID_STATE_NAMES_KEY, Collections.toString(",", validStateNames));
    }
 
    public ArtifactId getOrCreateConfigsFolder(ArtifactId userArt, XResultData rd) {
       ArtifactId configFolderArt = getOrCreateConfigFolder(userArt, rd);
-      ArtifactId configsFolderArt = atsServer.getQueryService().getArtifact(AtsArtifactToken.ConfigsFolder);
+      ArtifactId configsFolderArt = atsApi.getQueryService().getArtifact(AtsArtifactToken.ConfigsFolder);
       if (configsFolderArt == null) {
-         TransactionBuilder tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(CoreBranches.COMMON,
-            userArt, "Create Configs Folder");
+         TransactionBuilder tx =
+            orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, userArt, "Create Configs Folder");
          configsFolderArt = tx.createArtifact(AtsArtifactToken.ConfigsFolder);
          tx.relate(configsFolderArt, CoreRelationTypes.Default_Hierarchical__Parent, configFolderArt);
          tx.commit();
@@ -218,7 +220,7 @@ public class UpdateAtsConfiguration {
    }
 
    public Collection<String> getValidStateNames() {
-      String stateNamesStr = atsServer.getConfigValue(VALID_STATE_NAMES_KEY);
+      String stateNamesStr = atsApi.getConfigValue(VALID_STATE_NAMES_KEY);
       List<String> stateNames = new LinkedList<>();
       if (Strings.isValid(stateNamesStr)) {
          for (String stateName : stateNamesStr.split(",")) {
@@ -229,7 +231,7 @@ public class UpdateAtsConfiguration {
    }
 
    public AtsViews getConfigViews() {
-      String viewsStr = atsServer.getConfigValue(VIEWS_KEY);
+      String viewsStr = atsApi.getConfigValue(VIEWS_KEY);
       AtsViews views = null;
       if (Strings.isValid(viewsStr)) {
          views = JsonUtil.readValue(viewsStr, AtsViews.class);
@@ -240,7 +242,7 @@ public class UpdateAtsConfiguration {
    }
 
    public ColorColumns getColorColumns() {
-      String colorStr = atsServer.getConfigValue(COLOR_COLUMN_KEY);
+      String colorStr = atsApi.getConfigValue(COLOR_COLUMN_KEY);
       ColorColumns columns = null;
       if (Strings.isValid(colorStr)) {
          columns = JsonUtil.readValue(colorStr, ColorColumns.class);

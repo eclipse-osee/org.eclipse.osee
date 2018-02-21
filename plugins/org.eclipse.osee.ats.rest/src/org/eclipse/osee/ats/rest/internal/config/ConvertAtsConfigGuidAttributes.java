@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.rest.internal.config;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 
 /**
@@ -22,18 +21,12 @@ import org.eclipse.osee.framework.core.util.result.XResultData;
  */
 public class ConvertAtsConfigGuidAttributes implements IAtsDatabaseConversion {
 
-   private final IAtsServer atsServer;
-
-   public ConvertAtsConfigGuidAttributes(IAtsServer atsServer) {
-      this.atsServer = atsServer;
-   }
-
    @Override
    public void run(XResultData data, boolean reportOnly, AtsApi atsApi) {
       if (reportOnly) {
          data.log("No REPORT-ONLY available for this conversion.\n");
       } else {
-         ConvertAtsConfigGuidAttributesOperation update = new ConvertAtsConfigGuidAttributesOperation(atsServer);
+         ConvertAtsConfigGuidAttributesOperation update = new ConvertAtsConfigGuidAttributesOperation(atsApi);
          update.createUpdateConfig(data);
          data.log("Complete");
       }
@@ -66,5 +59,4 @@ public class ConvertAtsConfigGuidAttributes implements IAtsDatabaseConversion {
    public String getName() {
       return "Convert ATS Config GUID Attributes";
    }
-
 }

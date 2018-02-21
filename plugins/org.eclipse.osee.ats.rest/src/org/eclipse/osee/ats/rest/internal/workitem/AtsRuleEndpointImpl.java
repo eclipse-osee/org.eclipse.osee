@@ -18,6 +18,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -29,7 +30,6 @@ import org.eclipse.osee.ats.api.workdef.RunRuleData;
 import org.eclipse.osee.ats.api.workdef.RunRuleResults;
 import org.eclipse.osee.ats.api.workflow.AtsRuleEndpointApi;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.WorkflowRuleRunner;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -38,10 +38,10 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  * @author Mark Joy
  */
 public class AtsRuleEndpointImpl implements AtsRuleEndpointApi {
-   private final IAtsServer atsServer;
+   private final AtsApi atsApi;
 
-   public AtsRuleEndpointImpl(IAtsServer atsServer) {
-      this.atsServer = atsServer;
+   public AtsRuleEndpointImpl(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
    @GET
@@ -50,7 +50,7 @@ public class AtsRuleEndpointImpl implements AtsRuleEndpointApi {
    @Override
    public JaxRuleDefinitions get() throws Exception {
       JaxRuleDefinitions rules = new JaxRuleDefinitions();
-      for (IAtsRuleDefinition rule : atsServer.getWorkDefinitionService().getAllRuleDefinitions()) {
+      for (IAtsRuleDefinition rule : atsApi.getWorkDefinitionService().getAllRuleDefinitions()) {
          rules.getRules().add(rule);
       }
       return rules;
@@ -64,8 +64,8 @@ public class AtsRuleEndpointImpl implements AtsRuleEndpointApi {
 
       List<IAtsWorkItem> workItemsCreated = new LinkedList<>();
       for (long workflowId : runRuleData.getWorkItemIds()) {
-         ArtifactReadable artifact = (ArtifactReadable) atsServer.getQueryService().getArtifact(workflowId);
-         IAtsWorkItem workItem = atsServer.getWorkItemFactory().getWorkItem(artifact);
+         ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(workflowId);
+         IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem(artifact);
          if (workItem == null) {
             throw new OseeArgumentException("Workflow of id [%d] does not exist", workflowId);
          }
@@ -76,7 +76,7 @@ public class AtsRuleEndpointImpl implements AtsRuleEndpointApi {
       }
       if (!workItemsCreated.isEmpty()) {
          WorkflowRuleRunner runner =
-            new WorkflowRuleRunner(runRuleData.getRuleEventType(), workItemsCreated, atsServer, ruleResults);
+            new WorkflowRuleRunner(runRuleData.getRuleEventType(), workItemsCreated, atsApi, ruleResults);
          runner.run();
       }
       return ruleResults;
@@ -86,16 +86,17 @@ public class AtsRuleEndpointImpl implements AtsRuleEndpointApi {
    @Path("rule")
    @Override
    public Response addRuleToConfig(AddRuleData setRuleData) {
-      ArtifactReadable artifact = (ArtifactReadable) atsServer.getQueryService().getArtifact(setRuleData.getConfigItemId());
+      ArtifactReadable artifact =
+         (ArtifactReadable) atsApi.getQueryService().getArtifact(setRuleData.getConfigItemId());
       List<String> ruleList = artifact.getAttributeValues(AtsAttributeTypes.RuleDefinition);
       if (!ruleList.contains(setRuleData.getRuleName())) {
          IAtsChangeSet changes =
-            atsServer.getStoreService().createAtsChangeSet("Update artifact with Rule", AtsCoreUsers.SYSTEM_USER);
-         changes.addAttribute(atsServer.getConfigItemFactory().getConfigObject(artifact),
-            AtsAttributeTypes.RuleDefinition, setRuleData.getRuleName());
+            atsApi.getStoreService().createAtsChangeSet("Update artifact with Rule", AtsCoreUsers.SYSTEM_USER);
+         changes.addAttribute(atsApi.getConfigItemFactory().getConfigObject(artifact), AtsAttributeTypes.RuleDefinition,
+            setRuleData.getRuleName());
          changes.execute();
-         IAtsConfigObject atsObject = atsServer.getCache().getAtsObject(setRuleData.getConfigItemId());
-         atsServer.getCache().deCacheAtsObject(atsObject);
+         IAtsConfigObject atsObject = atsApi.getCache().getAtsObject(setRuleData.getConfigItemId());
+         atsApi.getCache().deCacheAtsObject(atsObject);
       }
 
       return Response.ok().build();

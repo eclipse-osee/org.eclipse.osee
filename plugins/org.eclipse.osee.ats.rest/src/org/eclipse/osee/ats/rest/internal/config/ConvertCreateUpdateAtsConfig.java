@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.rest.internal.config;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.util.result.XResultData;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * See description below
@@ -21,11 +21,10 @@ import org.eclipse.osee.framework.core.util.result.XResultData;
  * @author Donald G Dunne
  */
 public class ConvertCreateUpdateAtsConfig implements IAtsDatabaseConversion {
+   private final OrcsApi orcsApi;
 
-   private final IAtsServer atsServer;
-
-   public ConvertCreateUpdateAtsConfig(IAtsServer atsServer) {
-      this.atsServer = atsServer;
+   public ConvertCreateUpdateAtsConfig(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
    }
 
    @Override
@@ -33,7 +32,7 @@ public class ConvertCreateUpdateAtsConfig implements IAtsDatabaseConversion {
       if (reportOnly) {
          data.log("No REPORT-ONLY available for this conversion.\n");
       } else {
-         UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsServer);
+         UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsApi, orcsApi);
          update.createUpdateConfig(data);
          data.log("Complete");
       }
@@ -57,5 +56,4 @@ public class ConvertCreateUpdateAtsConfig implements IAtsDatabaseConversion {
    public String getName() {
       return "Create or Update AtsConfig";
    }
-
 }

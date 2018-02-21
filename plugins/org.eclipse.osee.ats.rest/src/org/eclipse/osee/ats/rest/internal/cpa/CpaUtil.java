@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.rest.internal.cpa;
 
 import javax.ws.rs.core.UriBuilder;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.core.cpa.CpaFactory;
-import org.eclipse.osee.ats.rest.IAtsServer;
 
 /**
  * @author Donald G. dunne
@@ -24,15 +24,14 @@ public class CpaUtil {
       // utility class
    }
 
-   public static UriBuilder getCpaPath(IAtsServer atsServer) {
-      return UriBuilder.fromPath(getCpaBasePath(atsServer)).path("ats").path("cpa").path("decision");
+   public static UriBuilder getCpaPath(AtsApi atsApi) {
+      return UriBuilder.fromPath(getCpaBasePath(atsApi)).path("ats").path("cpa").path("decision");
    }
 
-   public static String getCpaBasePath(IAtsServer atsServer) {
+   public static String getCpaBasePath(AtsApi atsApi) {
       if (cpaBasepath == null) {
-         cpaBasepath = atsServer.getConfigValue(CpaFactory.CPA_BASEPATH_KEY);
+         cpaBasepath = atsApi.getConfigValue(CpaFactory.CPA_BASEPATH_KEY);
       }
       return cpaBasepath;
    }
-
 }

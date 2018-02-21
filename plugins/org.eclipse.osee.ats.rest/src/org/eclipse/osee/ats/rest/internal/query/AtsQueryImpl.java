@@ -15,17 +15,18 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryImpl;
 import org.eclipse.osee.ats.core.query.AtsAttributeQuery;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
@@ -33,13 +34,12 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
  * @author Donald G. Dunne
  */
 public class AtsQueryImpl extends AbstractAtsQueryImpl {
-
-   private final IAtsServer atsServer;
+   private final OrcsApi orcsApi;
    private QueryBuilder query;
 
-   public AtsQueryImpl(IAtsServer atsServer) {
-      super(atsServer);
-      this.atsServer = atsServer;
+   public AtsQueryImpl(AtsApi atsApi, OrcsApi orcsApi) {
+      super(atsApi);
+      this.orcsApi = orcsApi;
    }
 
    @Override
@@ -55,7 +55,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    @Override
    public void createQueryBuilder() {
       if (query == null) {
-         query = atsServer.getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch());
+         query = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch());
       }
    }
 
@@ -127,9 +127,8 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    @Override
    public List<ArtifactId> getWorkPackagesForColorTeam(String colorTeam) {
       List<ArtifactId> workPackageIds = new LinkedList<>();
-      for (ArtifactReadable workPackageArt : atsServer.getOrcsApi().getQueryFactory().fromBranch(
-         atsServer.getAtsBranch()).andIsOfType(AtsArtifactTypes.WorkPackage).and(AtsAttributeTypes.ColorTeam,
-            colorTeam).getResults()) {
+      for (ArtifactReadable workPackageArt : query.andIsOfType(AtsArtifactTypes.WorkPackage).and(
+         AtsAttributeTypes.ColorTeam, colorTeam).getResults()) {
          workPackageIds.add(workPackageArt);
       }
       return workPackageIds;
@@ -137,7 +136,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
 
    @Override
    public List<ArtifactId> getRelatedTeamWorkflowIdsBasedOnTeamDefsAisAndVersions(List<AtsAttributeQuery> teamWorkflowAttr) {
-      AtsQueryImpl search = new AtsQueryImpl(atsServer);
+      AtsQueryImpl search = new AtsQueryImpl(atsApi, orcsApi);
       search.isOfType(AtsArtifactTypes.TeamWorkflow);
       if (teamDefIds != null && !teamDefIds.isEmpty()) {
          search.andTeam(new ArrayList<Long>(teamDefIds));

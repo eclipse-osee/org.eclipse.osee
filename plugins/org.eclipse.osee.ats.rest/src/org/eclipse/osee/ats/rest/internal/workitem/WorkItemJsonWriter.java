@@ -25,6 +25,7 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -45,6 +46,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.AttributeTypes;
@@ -56,12 +58,17 @@ import org.eclipse.osee.orcs.data.RelationReadable;
 @Provider
 public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
 
-   private JsonFactory jsonFactory;
-   private IAtsServer atsServer;
    private static final String ATS_UI_ACTION_PREFIX = "/ats/ui/action/ID";
+   private JsonFactory jsonFactory;
+   private AtsApi atsApi;
+   private OrcsApi orcsApi;
+
+   public void setOrcsApi(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
+   }
 
    public void setAtsServer(IAtsServer atsServer) {
-      this.atsServer = atsServer;
+      this.atsApi = atsServer;
    }
 
    public void start() {
@@ -93,7 +100,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
    }
 
    private AttributeTypes getAttributeTypes() {
-      return atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes();
+      return orcsApi.getOrcsTypes().getAttributeTypes();
    }
 
    @Override
@@ -101,7 +108,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       JsonGenerator writer = null;
       try {
          writer = jsonFactory.createJsonGenerator(entityStream);
-         addWorkItem(atsServer, config, annotations, writer, matches(IdentityView.class, annotations), false,
+         addWorkItem(atsApi, orcsApi, config, annotations, writer, matches(IdentityView.class, annotations), false,
             getAttributeTypes(), Collections.emptyList());
       } finally {
          if (writer != null) {
@@ -110,20 +117,20 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       }
    }
 
-   protected static void addWorkItem(IAtsServer atsServer, IAtsWorkItem workItem, Annotation[] annotations, JsonGenerator writer, boolean identityView, boolean writeRelatedAsTokens, AttributeTypes attributeTypes, List<WorkItemWriterOptions> options) throws IOException, JsonGenerationException, JsonProcessingException {
+   protected static void addWorkItem(AtsApi atsApi, OrcsApi orcsApi, IAtsWorkItem workItem, Annotation[] annotations, JsonGenerator writer, boolean identityView, boolean writeRelatedAsTokens, AttributeTypes attributeTypes, List<WorkItemWriterOptions> options) throws IOException, JsonGenerationException, JsonProcessingException {
 
       ArtifactReadable workItemArt = (ArtifactReadable) workItem.getStoreObject();
       writer.writeStartObject();
-      writer.writeNumberField("id", ConfigJsonWriter.getId(workItem, atsServer));
+      writer.writeNumberField("id", workItem.getId());
       writer.writeStringField("Name", workItem.getName());
       String atsId = workItemArt.getSoleAttributeValue(AtsAttributeTypes.AtsId, "");
       writer.writeStringField("AtsId", atsId);
       writer.writeStringField("ArtifactType", workItemArt.getArtifactType().getName());
-      String actionUrl = AtsUtilCore.getActionUrl(atsId, ATS_UI_ACTION_PREFIX, atsServer);
+      String actionUrl = AtsUtilCore.getActionUrl(atsId, ATS_UI_ACTION_PREFIX, atsApi);
       writer.writeStringField("actionLocation", actionUrl);
       if (!identityView) {
-         ConfigJsonWriter.addAttributeData(writer, attributeTypes, workItemArt, options, atsServer);
-         writer.writeStringField("TeamName", ActionPage.getTeamStr(atsServer, workItemArt));
+         ConfigJsonWriter.addAttributeData(writer, attributeTypes, workItemArt, options, atsApi, orcsApi);
+         writer.writeStringField("TeamName", ActionPage.getTeamStr(atsApi, workItemArt));
          writer.writeStringField("Assignees", workItem.getStateMgr().getAssigneesStr());
          if (writeRelatedAsTokens) {
             writer.writeArrayFieldStart("AssigneesTokens");
@@ -148,7 +155,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       if (!identityView || matches(TargetedVersion.class, annotations)) {
          IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
          if (teamWf != null) {
-            IAtsVersion version = atsServer.getVersionService().getTargetedVersion(teamWf);
+            IAtsVersion version = atsApi.getVersionService().getTargetedVersion(teamWf);
             writer.writeStringField("TargetedVersion", version == null ? "" : version.getName());
             if (writeRelatedAsTokens) {
                writer.writeObjectFieldStart("TargetedVersionToken");
@@ -161,18 +168,18 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       writer.writeEndObject();
    }
 
-   protected static void addWorkItemWithGammas(IAtsServer atsServer, IAtsWorkItem workItem, Annotation[] annotations, JsonGenerator writer, boolean identityView, boolean writeRelatedAsTokens, List<WorkItemWriterOptions> options) throws IOException, JsonGenerationException, JsonProcessingException {
+   protected static void addWorkItemWithGammas(AtsApi atsApi, OrcsApi orcsApi, IAtsWorkItem workItem, Annotation[] annotations, JsonGenerator writer, boolean identityView, boolean writeRelatedAsTokens, List<WorkItemWriterOptions> options) throws IOException, JsonGenerationException, JsonProcessingException {
       ArtifactReadable workItemArt = (ArtifactReadable) workItem.getStoreObject();
       writer.writeStartObject();
-      writer.writeNumberField("id", ConfigJsonWriter.getId(workItem, atsServer));
+      writer.writeNumberField("id", workItem.getId());
       String atsId = workItemArt.getSoleAttributeValue(AtsAttributeTypes.AtsId, "");
       writer.writeStringField("AtsId", atsId);
       writer.writeStringField("ArtifactType", workItemArt.getArtifactType().getName());
-      String actionUrl = AtsUtilCore.getActionUrl(atsId, ATS_UI_ACTION_PREFIX, atsServer);
+      String actionUrl = AtsUtilCore.getActionUrl(atsId, ATS_UI_ACTION_PREFIX, atsApi);
       writer.writeStringField("actionLocation", actionUrl);
       if (!identityView) {
-         ConfigJsonWriter.addAttributeDataWithGammas(writer, workItemArt, options, atsServer);
-         writer.writeStringField("TeamName", ActionPage.getTeamStr(atsServer, workItemArt));
+         ConfigJsonWriter.addAttributeDataWithGammas(writer, workItemArt, options, atsApi, orcsApi);
+         writer.writeStringField("TeamName", ActionPage.getTeamStr(atsApi, workItemArt));
          writeAssignees(writer, workItemArt, workItem);
          writeType(writer, workItemArt, workItem, "ChangeType", AtsAttributeTypes.ChangeType);
          writeType(writer, workItemArt, workItem, "Priority", AtsAttributeTypes.PriorityType);
@@ -183,7 +190,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
             writer.writeStringField("CreatedDate", DateUtil.get(workItem.getCreatedDate(), DateUtil.MMDDYY));
          }
          writer.writeStringField("CreatedBy", workItem.getCreatedBy().getName());
-         writeTargetedVersion(atsServer, writer, workItemArt, workItem, writeRelatedAsTokens);
+         writeTargetedVersion(atsApi, writer, workItemArt, workItem, writeRelatedAsTokens);
       }
       writer.writeEndObject();
    }
@@ -220,19 +227,19 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       writer.writeEndObject();
    }
 
-   private static void writeTargetedVersion(IAtsServer atsServer, JsonGenerator writer, ArtifactReadable action, IAtsWorkItem workItem, boolean writeRelatedAsTokens) throws IOException, JsonGenerationException, JsonProcessingException {
+   private static void writeTargetedVersion(AtsApi atsApi, JsonGenerator writer, ArtifactReadable action, IAtsWorkItem workItem, boolean writeRelatedAsTokens) throws IOException, JsonGenerationException, JsonProcessingException {
       IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
       if (teamWf != null) {
          ResultSet<RelationReadable> relations =
             action.getRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
          if (!relations.isEmpty()) {
             writer.writeObjectFieldStart("TargetedVersion");
-            String versionStr = atsServer.getWorkItemService().getTargetedVersionStr(teamWf);
+            String versionStr = atsApi.getWorkItemService().getTargetedVersionStr(teamWf);
             writer.writeObjectField("value", versionStr);
             writer.writeNumberField("gammaId", relations.iterator().next().getGammaId());
             writer.writeEndObject();
             if (writeRelatedAsTokens) {
-               ArtifactToken version = atsServer.getRelationResolver().getRelatedOrNull(action,
+               ArtifactToken version = atsApi.getRelationResolver().getRelatedOrNull(action,
                   AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
                writer.writeObjectFieldStart("TargetedVersionToken");
                writer.writeStringField("id", String.valueOf(relations.iterator().next().getArtIdB()));

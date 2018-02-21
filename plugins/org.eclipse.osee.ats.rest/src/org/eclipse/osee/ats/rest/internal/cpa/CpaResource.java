@@ -24,6 +24,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.cpa.AtsCpaEndpointApi;
 import org.eclipse.osee.ats.api.cpa.CpaBuild;
 import org.eclipse.osee.ats.api.cpa.CpaConfig;
@@ -35,7 +36,6 @@ import org.eclipse.osee.ats.api.cpa.DuplicateCpa;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaService;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
@@ -50,12 +50,12 @@ import org.eclipse.osee.orcs.data.EnumEntry;
 public final class CpaResource implements AtsCpaEndpointApi {
 
    private final OrcsApi orcsApi;
-   private final IAtsServer atsServer;
+   private final AtsApi atsApi;
    private final CpaServiceRegistry cpaRegistry;
 
-   public CpaResource(OrcsApi orcsApi, IAtsServer atsServer, CpaServiceRegistry cpaRegistry) {
+   public CpaResource(OrcsApi orcsApi, AtsApi atsApi, CpaServiceRegistry cpaRegistry) {
       this.orcsApi = orcsApi;
-      this.atsServer = atsServer;
+      this.atsApi = atsApi;
       this.cpaRegistry = cpaRegistry;
    }
 
@@ -83,7 +83,7 @@ public final class CpaResource implements AtsCpaEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    @Override
    public List<CpaDecision> getDecisionByProgram(@PathParam("id") String id, @QueryParam("open") Boolean open) throws Exception {
-      return DecisionLoader.createLoader(cpaRegistry, atsServer).andOpen(open).andProgramId(id).load();
+      return new DecisionLoader(cpaRegistry, atsApi, orcsApi).andOpen(open).andProgramId(id).load();
    }
 
    @GET
@@ -105,11 +105,11 @@ public final class CpaResource implements AtsCpaEndpointApi {
    public Response getDecision(@PathParam("id") String id, @QueryParam("pcrSystem") String pcrSystem) throws Exception {
       URI uri = null;
       if (pcrSystem == null) {
-         String actionUrl = AtsUtilCore.getActionUrl(id, atsServer);
+         String actionUrl = AtsUtilCore.getActionUrl(id, atsApi);
          uri = UriBuilder.fromUri(actionUrl).build();
       } else {
          IAtsCpaService service = cpaRegistry.getServiceById(pcrSystem);
-         uri = service.getLocation(UriBuilder.fromUri(CpaUtil.getCpaBasePath(atsServer)).build(), id);
+         uri = service.getLocation(UriBuilder.fromUri(CpaUtil.getCpaBasePath(atsApi)).build(), id);
       }
       return Response.seeOther(uri).build();
    }
@@ -122,8 +122,8 @@ public final class CpaResource implements AtsCpaEndpointApi {
    @Path("decision")
    @Override
    public List<CpaDecision> putDecision(final DecisionUpdate update) throws Exception {
-      new DecisionUpdater(update, atsServer).update();
-      return DecisionLoader.createLoader(cpaRegistry, atsServer).andCpaIds(update.getIds()).load();
+      new DecisionUpdater(update, atsApi).update();
+      return new DecisionLoader(cpaRegistry, atsApi, orcsApi).andCpaIds(update.getIds()).load();
    }
 
    /**
@@ -134,11 +134,11 @@ public final class CpaResource implements AtsCpaEndpointApi {
    @Path("duplicate")
    @Override
    public Response putDuplicate(final DuplicateCpa duplicate) throws Exception {
-      XResultData rd = new CpaDuplicator(duplicate, atsServer, cpaRegistry).duplicate();
+      XResultData rd = new CpaDuplicator(duplicate, atsApi, cpaRegistry).duplicate();
       if (rd.isErrors()) {
          return Response.status(Status.NOT_ACCEPTABLE).entity(rd.toString()).build();
       }
-      CpaDecision decision = DecisionLoader.createLoader(cpaRegistry, atsServer).andCpaIds(
+      CpaDecision decision = new DecisionLoader(cpaRegistry, atsApi, orcsApi).andCpaIds(
          java.util.Collections.singleton(duplicate.getCpaId())).load().iterator().next();
       return Response.ok().entity(decision).build();
    }

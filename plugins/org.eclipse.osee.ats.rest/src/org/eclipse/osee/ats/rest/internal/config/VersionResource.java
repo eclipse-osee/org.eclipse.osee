@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.rest.internal.config;
 
 import javax.ws.rs.Path;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -21,9 +21,7 @@ import org.eclipse.osee.orcs.OrcsApi;
  */
 @Path("version")
 public class VersionResource extends AbstractConfigResource {
-
-   public VersionResource(IAtsServer atsServer, OrcsApi orcsApi) {
-      super(AtsArtifactTypes.Version, atsServer, orcsApi);
+   public VersionResource(AtsApi atsApi, OrcsApi orcsApi) {
+      super(AtsArtifactTypes.Version, atsApi, orcsApi);
    }
-
 }

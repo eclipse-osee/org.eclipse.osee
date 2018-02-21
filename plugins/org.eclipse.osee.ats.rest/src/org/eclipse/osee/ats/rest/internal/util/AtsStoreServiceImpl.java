@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -33,7 +34,6 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workflow.WorkItem;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
@@ -53,15 +54,17 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public class AtsStoreServiceImpl implements IAtsStoreService {
 
    private final IAttributeResolver attributeResolver;
+   private final OrcsApi orcsApi;
    private final IAtsStateFactory stateFactory;
    private final IAtsLogFactory logFactory;
    private final IAtsNotifier notifier;
-   private final IAtsServer atsServer;
+   private final AtsApi atsApi;
    private final JdbcService jdbcService;
 
-   public AtsStoreServiceImpl(IAttributeResolver attributeResolver, IAtsServer atsServer, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, IAtsNotifier notifier, JdbcService jdbcService) {
-      this.atsServer = atsServer;
+   public AtsStoreServiceImpl(IAttributeResolver attributeResolver, AtsApi atsApi, OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, IAtsNotifier notifier, JdbcService jdbcService) {
+      this.atsApi = atsApi;
       this.attributeResolver = attributeResolver;
+      this.orcsApi = orcsApi;
       this.logFactory = logFactory;
       this.stateFactory = stateFactory;
       this.notifier = notifier;
@@ -70,12 +73,11 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public IAtsChangeSet createAtsChangeSet(String comment, IAtsUser asUser) {
-      return new AtsChangeSet(atsServer, attributeResolver, atsServer.getOrcsApi(), stateFactory, logFactory, comment,
-         asUser, notifier);
+      return new AtsChangeSet(atsApi, attributeResolver, orcsApi, stateFactory, logFactory, comment, asUser, notifier);
    }
 
    public QueryBuilder getQuery() {
-      return atsServer.getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch());
+      return orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch());
    }
 
    @Override
@@ -84,14 +86,14 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
       List<String> guids = AtsObjects.toGuids(inWorkWorkflows);
       Iterator<ArtifactReadable> arts = getQuery().andGuids(guids).getResults().iterator();
       while (arts.hasNext()) {
-         workItems.add(atsServer.getWorkItemFactory().getWorkItem(arts.next()));
+         workItems.add(atsApi.getWorkItemFactory().getWorkItem(arts.next()));
       }
       return workItems;
    }
 
    @Override
    public boolean isDeleted(IAtsObject atsObject) {
-      return ((ArtifactReadable) atsServer.getQueryService().getArtifact(atsObject)).isDeleted();
+      return ((ArtifactReadable) atsApi.getQueryService().getArtifact(atsObject)).isDeleted();
    }
 
    /**
@@ -101,7 +103,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    public Set<IArtifactType> getTeamWorkflowArtifactTypes() {
       Set<IArtifactType> artifactTypes = new HashSet<>();
       artifactTypes.addAll(
-         atsServer.getOrcsApi().getOrcsTypes().getArtifactTypes().getAllDescendantTypes(AtsArtifactTypes.TeamWorkflow));
+         orcsApi.getOrcsTypes().getArtifactTypes().getAllDescendantTypes(AtsArtifactTypes.TeamWorkflow));
       return artifactTypes;
    }
 
@@ -117,7 +119,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public AttributeTypeId getAttributeType(String attrTypeName) {
-      return atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().getByName(attrTypeName);
+      return orcsApi.getOrcsTypes().getAttributeTypes().getByName(attrTypeName);
    }
 
    @Override
@@ -127,12 +129,12 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public boolean isDateType(AttributeTypeId attributeType) {
-      return atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().isDateType(attributeType);
+      return orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attributeType);
    }
 
    @Override
    public boolean isOfType(ArtifactId artifact, ArtifactTypeId... artifactType) {
-      return ((ArtifactReadable) atsServer.getQueryService().getArtifact(artifact)).isOfType(artifactType);
+      return ((ArtifactReadable) atsApi.getQueryService().getArtifact(artifact)).isOfType(artifactType);
    }
 
    @Override
@@ -142,7 +144,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public void executeChangeSet(String comment, Collection<? extends IAtsObject> atsObjects) {
-      IAtsChangeSet changes = createAtsChangeSet(comment, atsServer.getUserService().getCurrentUser());
+      IAtsChangeSet changes = createAtsChangeSet(comment, atsApi.getUserService().getCurrentUser());
       for (IAtsObject atsObject : atsObjects) {
          changes.add(atsObject);
       }
@@ -151,7 +153,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public IArtifactType getArtifactType(Long artTypeId) {
-      return atsServer.getOrcsApi().getOrcsTypes().getArtifactTypes().get(artTypeId);
+      return orcsApi.getOrcsTypes().getArtifactTypes().get(artTypeId);
    }
 
    @Override
@@ -165,7 +167,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public Collection<AttributeTypeToken> getAttributeTypes() {
-      return atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().getAll();
+      return orcsApi.getOrcsTypes().getAttributeTypes().getAll();
    }
 
    /**
@@ -178,7 +180,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public IArtifactType getArtifactType(IAtsObject atsObject) {
-      return getArtifactType(atsServer.getQueryService().getArtifact(atsObject.getStoreObject()));
+      return getArtifactType(atsApi.getQueryService().getArtifact(atsObject.getStoreObject()));
    }
 
    @Override
@@ -193,24 +195,24 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public boolean isArtifactTypeInheritsFrom(IArtifactType artifactType, IArtifactType baseArtifactType) {
-      return atsServer.getOrcsApi().getOrcsTypes().getArtifactTypes().inheritsFrom(artifactType, baseArtifactType);
+      return orcsApi.getOrcsTypes().getArtifactTypes().inheritsFrom(artifactType, baseArtifactType);
    }
 
    @Override
    public AttributeTypeId getAttributeType(Long attrTypeId) {
-      return atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().get(attrTypeId);
+      return orcsApi.getOrcsTypes().getAttributeTypes().get(attrTypeId);
    }
 
    @Override
    public Result setTransactionAssociatedArtifact(TransactionId trans, IAtsTeamWorkflow teamWf) {
-      atsServer.getOrcsApi().getTransactionFactory().setTransactionCommitArtifact(trans, teamWf.getStoreObject());
+      orcsApi.getTransactionFactory().setTransactionCommitArtifact(trans, teamWf.getStoreObject());
       return Result.TrueResult;
    }
 
    @Override
    public TransactionId getTransactionId(IAtsWorkItem workItem) {
       TransactionId transId = TransactionId.SENTINEL;
-      ArtifactId artifact = atsServer.getQueryService().getArtifact(workItem.getStoreObject());
+      ArtifactId artifact = atsApi.getQueryService().getArtifact(workItem.getStoreObject());
       if (artifact instanceof ArtifactReadable) {
          transId = ((ArtifactReadable) artifact).getTransaction();
       }
@@ -219,7 +221,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public boolean isDeleted(ArtifactId artifact) {
-      return ((ArtifactReadable) atsServer.getQueryService().getArtifact(artifact)).isDeleted();
+      return ((ArtifactReadable) atsApi.getQueryService().getArtifact(artifact)).isDeleted();
    }
 
    @Override
@@ -228,7 +230,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
       ArtifactReadable customizeStoreArt = getQuery().and(CoreAttributeTypes.XViewerCustomization, customize_guid,
          QueryOption.CONTAINS_MATCH_OPTIONS).getResults().getAtMostOneOrNull();
       if (customizeStoreArt != null) {
-         for (String custXml : atsServer.getAttributeResolver().getAttributesToStringList(customizeStoreArt,
+         for (String custXml : atsApi.getAttributeResolver().getAttributesToStringList(customizeStoreArt,
             CoreAttributeTypes.XViewerCustomization)) {
             if (custXml.contains(customize_guid)) {
                cust = new CustomizeData(custXml);

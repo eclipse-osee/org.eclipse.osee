@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.rest.internal.util;
 
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -22,7 +23,6 @@ import org.eclipse.osee.ats.api.workdef.IExecutableRule;
 import org.eclipse.osee.ats.api.workdef.RuleEventType;
 import org.eclipse.osee.ats.api.workdef.RunRuleResults;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -31,24 +31,23 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class WorkflowRuleRunner {
 
    private final RuleEventType eventType;
-   private final IAtsServer atsServer;
+   private final AtsApi atsApi;
    private final List<IAtsWorkItem> workflowsCreated;
    private final RunRuleResults ruleResults;
 
-   public WorkflowRuleRunner(RuleEventType eventType, List<IAtsWorkItem> workflowsCreated, IAtsServer atsServer) {
-      this(eventType, workflowsCreated, atsServer, new RunRuleResults());
+   public WorkflowRuleRunner(RuleEventType eventType, List<IAtsWorkItem> workflowsCreated, AtsApi atsApi) {
+      this(eventType, workflowsCreated, atsApi, new RunRuleResults());
    }
 
-   public WorkflowRuleRunner(RuleEventType eventType, List<IAtsWorkItem> workflowsCreated, IAtsServer atsServer, RunRuleResults ruleResults) {
+   public WorkflowRuleRunner(RuleEventType eventType, List<IAtsWorkItem> workflowsCreated, AtsApi atsApi, RunRuleResults ruleResults) {
       this.eventType = eventType;
       this.workflowsCreated = workflowsCreated;
-      this.atsServer = atsServer;
+      this.atsApi = atsApi;
       this.ruleResults = ruleResults;
    }
 
    public RunRuleResults run() {
-      IAtsChangeSet changes =
-         atsServer.getStoreService().createAtsChangeSet("ATS Rule Runner", AtsCoreUsers.SYSTEM_USER);
+      IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("ATS Rule Runner", AtsCoreUsers.SYSTEM_USER);
       if (eventType == RuleEventType.CreateWorkflow) {
          for (IAtsWorkItem workItem : workflowsCreated) {
             if (workItem.isTeamWorkflow()) {
@@ -58,12 +57,11 @@ public class WorkflowRuleRunner {
                   if (workItem.getParentTeamWorkflow() != null && workItem.getParentTeamWorkflow().getTeamDefinition() != null) {
                      for (String teamDefRule : workItem.getParentTeamWorkflow().getTeamDefinition().getRules()) {
                         IAtsRuleDefinition ruleDefinition =
-                           atsServer.getWorkDefinitionService().getRuleDefinition(teamDefRule);
+                           atsApi.getWorkDefinitionService().getRuleDefinition(teamDefRule);
 
                         if (ruleDefinition != null && ruleDefinition.getRuleEvents().contains(
                            eventType) && ruleDefinition instanceof IExecutableRule) {
-                           ((IExecutableRule) ruleDefinition).execute(workItem, atsServer, changes,
-                              ruleResults);
+                           ((IExecutableRule) ruleDefinition).execute(workItem, atsApi, changes, ruleResults);
                         }
                      }
                   }
@@ -77,12 +75,11 @@ public class WorkflowRuleRunner {
                      for (IAtsActionableItem ai : workItem.getParentTeamWorkflow().getActionableItems()) {
                         for (String aiRule : ai.getRules()) {
                            IAtsRuleDefinition ruleDefinition =
-                              atsServer.getWorkDefinitionService().getRuleDefinition(aiRule);
+                              atsApi.getWorkDefinitionService().getRuleDefinition(aiRule);
 
                            if (ruleDefinition != null && ruleDefinition.getRuleEvents().contains(
                               eventType) && ruleDefinition instanceof IExecutableRule) {
-                              ((IExecutableRule) ruleDefinition).execute(workItem, atsServer, changes,
-                                 ruleResults);
+                              ((IExecutableRule) ruleDefinition).execute(workItem, atsApi, changes, ruleResults);
                            }
                         }
                      }
@@ -99,11 +96,10 @@ public class WorkflowRuleRunner {
                         workDef.getStateByName(workItem.getStateMgr().getCurrentStateName());
                      for (String teamDefRule : stateDef.getRules()) {
                         IAtsRuleDefinition ruleDefinition =
-                           atsServer.getWorkDefinitionService().getRuleDefinition(teamDefRule);
+                           atsApi.getWorkDefinitionService().getRuleDefinition(teamDefRule);
                         if (ruleDefinition.getRuleEvents().contains(
                            eventType) && ruleDefinition instanceof IExecutableRule) {
-                           ((IExecutableRule) ruleDefinition).execute(workItem, atsServer, changes,
-                              ruleResults);
+                           ((IExecutableRule) ruleDefinition).execute(workItem, atsApi, changes, ruleResults);
                         }
                      }
                   }

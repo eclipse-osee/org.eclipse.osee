@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -26,7 +27,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -58,7 +58,7 @@ public class ActionPage {
    private String pageTemplate;
    private IAtsWorkItem workItem;
    private final ArtifactReadable action;
-   private final IAtsServer atsServer;
+   private final AtsApi atsApi;
    private final Log logger;
    private boolean addTransition = false;
    private static final List<String> roleKeys = Arrays.asList("role", "userId", "completed", "hoursSpent");
@@ -67,21 +67,21 @@ public class ActionPage {
    private static List<String> ignoredWidgets;
    private final boolean details;
 
-   public ActionPage(Log logger, IAtsServer atsServer, IAtsWorkItem workItem, boolean details) {
-      this(logger, atsServer, (ArtifactReadable) workItem.getStoreObject(), details);
+   public ActionPage(Log logger, AtsApi atsApi, IAtsWorkItem workItem, boolean details) {
+      this(logger, atsApi, (ArtifactReadable) workItem.getStoreObject(), details);
       this.workItem = workItem;
    }
 
-   public ActionPage(Log logger, IAtsServer atsServer, ArtifactReadable action, boolean details) {
+   public ActionPage(Log logger, AtsApi atsApi, ArtifactReadable action, boolean details) {
       this.logger = logger;
-      this.atsServer = atsServer;
+      this.atsApi = atsApi;
       this.action = action;
       this.details = details;
    }
 
    private IAtsWorkItem getWorkItem() {
       if (workItem == null) {
-         workItem = atsServer.getWorkItemFactory().getWorkItem(action);
+         workItem = atsApi.getWorkItemFactory().getWorkItem(action);
       }
       return workItem;
    }
@@ -92,7 +92,7 @@ public class ActionPage {
 
       ViewModel page = new ViewModel("action.html");
       page.param("title", action.getSoleAttributeAsString(AtsAttributeTypes.Title, ""));
-      page.param("team", getTeamStr(atsServer, action));
+      page.param("team", getTeamStr(atsApi, action));
       page.param("ais", getAIStr(action));
       page.param("state", workItem.getStateMgr().getCurrentStateName());
       page.param("assignees", getAssigneesStr(workItem, action));
@@ -126,16 +126,16 @@ public class ActionPage {
       return workItem.getStateMgr().getAssigneesStr();
    }
 
-   public static String getTeamStr(IAtsServer atsServer, ArtifactReadable action) {
+   public static String getTeamStr(AtsApi atsApi, ArtifactReadable action) {
       String results = "";
-      ArtifactId artId = atsServer.getAttributeResolver().getSoleArtifactIdReference(action,
+      ArtifactId artId = atsApi.getAttributeResolver().getSoleArtifactIdReference(action,
          AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
       if (artId.isValid()) {
-         results = atsServer.getQueryService().getArtifact(artId).getName();
+         results = atsApi.getQueryService().getArtifact(artId).getName();
       } else {
          ArtifactReadable teamWf = getParentTeamWf(action);
          if (teamWf != null && teamWf.notEqual(action)) {
-            results = getTeamStr(atsServer, teamWf);
+            results = getTeamStr(atsApi, teamWf);
          }
       }
       return results;
@@ -159,7 +159,7 @@ public class ActionPage {
       if (teamWf != null) {
          Collection<ArtifactId> artifactIds = teamWf.getAttributeValues(AtsAttributeTypes.ActionableItemReference);
          for (ArtifactId artifactId : artifactIds) {
-            sb.append(atsServer.getQueryService().getArtifact(artifactId));
+            sb.append(atsApi.getQueryService().getArtifact(artifactId));
             sb.append(", ");
          }
       }
@@ -208,7 +208,7 @@ public class ActionPage {
       String version = "<on full load>";
       try {
          IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
-         String str = atsServer.getWorkItemService().getTargetedVersionStr(teamWf);
+         String str = atsApi.getWorkItemService().getTargetedVersionStr(teamWf);
          if (Strings.isValid(str)) {
             version = str;
          }
@@ -225,7 +225,7 @@ public class ActionPage {
       IAtsStateManager stateMgr = workItem.getStateMgr();
       Collection<String> visitedStates = stateMgr.getVisitedStateNames();
       List<IAtsStateDefinition> statesOrderedByOrdinal =
-         atsServer.getWorkDefinitionService().getStatesOrderedByOrdinal(workDefinition);
+         atsApi.getWorkDefinitionService().getStatesOrderedByOrdinal(workDefinition);
       for (int index = statesOrderedByOrdinal.size() - 1; index >= 0; index--) {
          IAtsStateDefinition state = statesOrderedByOrdinal.get(index);
          if (visitedStates.contains(state.getName())) {
@@ -303,7 +303,7 @@ public class ActionPage {
 
    private void addCommitManager(StringBuilder sb, IAtsWorkItem workItem2, IAtsWidgetDefinition widget) {
       sb.append("Commit Manager: ");
-      IOseeBranch branch = atsServer.getBranchService().getBranch((IAtsTeamWorkflow) workItem);
+      IOseeBranch branch = atsApi.getBranchService().getBranch((IAtsTeamWorkflow) workItem);
       if (branch.isValid()) {
          sb.append(branch.getName());
       }
@@ -312,7 +312,7 @@ public class ActionPage {
    private List<String> getIgnoreWidgetNames() {
       if (ignoredWidgets == null) {
          ignoredWidgets = new ArrayList<>();
-         String configValue = atsServer.getConfigValue("IgnoredWidgetNames");
+         String configValue = atsApi.getConfigValue("IgnoredWidgetNames");
          if (Strings.isValid(configValue)) {
             for (String widgetName : configValue.split(";")) {
                ignoredWidgets.add(widgetName);
@@ -325,7 +325,7 @@ public class ActionPage {
    private void addRoleWidget(StringBuilder sb, IAtsWorkItem workItem, IAtsWidgetDefinition widget) {
       sb.append("Roles: ");
       Collection<String> roles =
-         atsServer.getAttributeResolver().getAttributesToStringList(workItem, AtsAttributeTypes.Role);
+         atsApi.getAttributeResolver().getAttributesToStringList(workItem, AtsAttributeTypes.Role);
       if (!roles.isEmpty()) {
          sb.append(ROLE_TABLE_HEADER);
          for (String xml : roles) {
@@ -334,7 +334,7 @@ public class ActionPage {
                sb.append("<td>");
                String data = AXml.getTagData(xml, key);
                if (key.equals("userId")) {
-                  data = atsServer.getUserService().getUserById(data).getName();
+                  data = atsApi.getUserService().getUserById(data).getName();
                }
                sb.append(data);
                sb.append("</td>");
@@ -348,7 +348,7 @@ public class ActionPage {
    private void addDefectWidget(StringBuilder sb, IAtsWorkItem workItem, IAtsWidgetDefinition widget) {
       sb.append("Defects: ");
       Collection<String> defects =
-         atsServer.getAttributeResolver().getAttributesToStringList(workItem, AtsAttributeTypes.ReviewDefect);
+         atsApi.getAttributeResolver().getAttributesToStringList(workItem, AtsAttributeTypes.ReviewDefect);
       if (!defects.isEmpty()) {
          sb.append(DEFECT_TABLE_HEADER);
          for (String xml : defects) {
@@ -357,7 +357,7 @@ public class ActionPage {
                sb.append("<td>");
                String data = AXml.getTagData(xml, key);
                if (key.equals("user")) {
-                  data = atsServer.getUserService().getUserById(data).getName();
+                  data = atsApi.getUserService().getUserById(data).getName();
                } else if (key.equals("date")) {
                   data = DateUtil.getDateStr(new Date(Long.valueOf(data)), DateUtil.MMDDYYHHMM);
                }
@@ -376,10 +376,9 @@ public class ActionPage {
          String widgetAttrName = widget.getAtrributeName();
          if (widgetAttrName != null) {
             sb.append(": <b>");
-            AttributeTypeId attributeType =
-               atsServer.getAttributeResolver().getAttributeType(widget.getAtrributeName());
+            AttributeTypeId attributeType = atsApi.getAttributeResolver().getAttributeType(widget.getAtrributeName());
             Collection<String> attributesToStringList =
-               atsServer.getAttributeResolver().getAttributesToStringList(workItem, attributeType);
+               atsApi.getAttributeResolver().getAttributesToStringList(workItem, attributeType);
             if (attributesToStringList.size() > 1) {
                sb.append(attributesToStringList.toString());
             } else if (attributesToStringList.size() == 1) {

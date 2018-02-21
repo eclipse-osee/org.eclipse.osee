@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.rest.internal.cpa;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.cpa.DuplicateCpa;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaService;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -22,7 +23,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -32,19 +32,19 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class CpaDuplicator {
 
-   private final IAtsServer atsServer;
+   private final AtsApi atsApi;
    private final DuplicateCpa duplicate;
    private final CpaServiceRegistry cpaRegistry;
 
-   public CpaDuplicator(final DuplicateCpa duplicate, IAtsServer atsServer, CpaServiceRegistry cpaRegistry) {
+   public CpaDuplicator(final DuplicateCpa duplicate, AtsApi atsApi, CpaServiceRegistry cpaRegistry) {
       this.duplicate = duplicate;
-      this.atsServer = atsServer;
+      this.atsApi = atsApi;
       this.cpaRegistry = cpaRegistry;
    }
 
    public XResultData duplicate() {
       XResultData rd = new XResultData(false);
-      ArtifactReadable cpaArt = (ArtifactReadable) atsServer.getQueryService().getArtifactById(duplicate.getCpaId());
+      ArtifactReadable cpaArt = (ArtifactReadable) atsApi.getQueryService().getArtifactById(duplicate.getCpaId());
       String atsId = cpaArt.getSoleAttributeValue(AtsAttributeTypes.AtsId, null);
       String duplicatePcrId = "";
       if (!Strings.isValid(atsId)) {
@@ -56,9 +56,9 @@ public class CpaDuplicator {
             if (cpaService == null) {
                rd.errorf("CPA Tool not configured for Tool Id [%s].  Skipping.", cpaService);
             } else {
-               IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet(
+               IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet(
                   "Duplicate for CPA " + duplicate.getCpaId(), AtsCoreUsers.SYSTEM_USER);
-               IAtsTeamWorkflow cpaWf = atsServer.getWorkItemFactory().getTeamWf(cpaArt);
+               IAtsTeamWorkflow cpaWf = atsApi.getWorkItemFactory().getTeamWf(cpaArt);
                duplicatePcrId = cpaArt.getSoleAttributeValue(AtsAttributeTypes.DuplicatedPcrId, null);
                if (Strings.isValid(duplicatePcrId)) {
                   rd.errorf("CPA already has duplicate pcr id set as [%s].  Skipping.", duplicatePcrId);
@@ -71,10 +71,10 @@ public class CpaDuplicator {
                      changes.setSoleAttributeValue(cpaWf, AtsAttributeTypes.ApplicableToProgram, "Yes");
                   }
                   if (duplicate.isCompleteCpa()) {
-                     TransitionHelper helper = new TransitionHelper("Complete Applicability Workflow",
-                        Arrays.asList(cpaWf), "Completed", new ArrayList<IAtsUser>(), "", changes,
-                        atsServer, TransitionOption.OverrideAssigneeCheck);
-                     IAtsUser asUser = atsServer.getUserService().getUserById(duplicate.getUserId());
+                     TransitionHelper helper =
+                        new TransitionHelper("Complete Applicability Workflow", Arrays.asList(cpaWf), "Completed",
+                           new ArrayList<IAtsUser>(), "", changes, atsApi, TransitionOption.OverrideAssigneeCheck);
+                     IAtsUser asUser = atsApi.getUserService().getUserById(duplicate.getUserId());
                      if (asUser == null) {
                         rd.errorf("Invalid userId [%s].  Skipping.", asUser);
                      }

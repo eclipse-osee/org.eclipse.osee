@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -28,11 +28,11 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class ArtifactResolverImpl implements IArtifactResolver {
 
-   private final IAtsServer atsServer;
+   private final AtsApi atsApi;
    private final OrcsApi orcsApi;
 
-   public ArtifactResolverImpl(IAtsServer atsServer, OrcsApi orcsApi) {
-      this.atsServer = atsServer;
+   public ArtifactResolverImpl(AtsApi atsApi, OrcsApi orcsApi) {
+      this.atsApi = atsApi;
       this.orcsApi = orcsApi;
    }
 
@@ -41,7 +41,7 @@ public class ArtifactResolverImpl implements IArtifactResolver {
       if (atsObject.getStoreObject() instanceof ArtifactReadable) {
          return atsObject.getStoreObject();
       }
-      return atsServer.getQueryService().getArtifact(atsObject);
+      return atsApi.getQueryService().getArtifact(atsObject);
    }
 
    @Override
@@ -79,14 +79,14 @@ public class ArtifactResolverImpl implements IArtifactResolver {
    public boolean isOfType(ArtifactId artifact, IArtifactType artifactType) {
       Assert.isNotNull(artifact, "Artifact can not be null");
       Assert.isNotNull(artifactType, "Artifact Type can not be null");
-      return atsServer.getStoreService().isOfType(artifact, artifactType);
+      return atsApi.getStoreService().isOfType(artifact, artifactType);
    }
 
    @Override
    public boolean isOfType(IAtsObject atsObject, IArtifactType artifactType) {
       Assert.isNotNull(atsObject, "ATS Object can not be null");
       Assert.isNotNull(artifactType, "Artifact Type can not be null");
-      return isOfType(atsServer.getQueryService().getArtifact(atsObject), artifactType);
+      return isOfType(atsApi.getQueryService().getArtifact(atsObject), artifactType);
    }
 
    @Override

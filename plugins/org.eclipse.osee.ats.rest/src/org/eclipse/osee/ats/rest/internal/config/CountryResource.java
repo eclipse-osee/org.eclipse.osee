@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.rest.internal.config;
 
 import javax.ws.rs.Path;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -22,8 +22,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 @Path("country")
 public class CountryResource extends AbstractConfigResource {
 
-   public CountryResource(IAtsServer atsServer, OrcsApi orcsApi) {
-      super(AtsArtifactTypes.Country, atsServer, orcsApi);
+   public CountryResource(AtsApi atsapi, OrcsApi orcsApi) {
+      super(AtsArtifactTypes.Country, atsapi, orcsApi);
    }
-
 }

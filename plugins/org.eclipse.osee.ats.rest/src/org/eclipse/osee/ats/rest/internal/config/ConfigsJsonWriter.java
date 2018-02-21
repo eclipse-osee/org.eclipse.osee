@@ -13,10 +13,12 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
@@ -24,13 +26,16 @@ import org.eclipse.osee.orcs.data.AttributeTypes;
  */
 @Provider
 public class ConfigsJsonWriter implements MessageBodyWriter<Collection<IAtsConfigObject>> {
-
    private JsonFactory jsonFactory;
+   private AtsApi atsApi;
+   private OrcsApi orcsApi;
 
-   private IAtsServer atsServer;
+   public void setOrcsApi(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
+   }
 
    public void setAtsServer(IAtsServer atsServer) {
-      this.atsServer = atsServer;
+      this.atsApi = atsServer;
    }
 
    public void start() {
@@ -73,7 +78,7 @@ public class ConfigsJsonWriter implements MessageBodyWriter<Collection<IAtsConfi
    }
 
    private AttributeTypes getAttributeTypes() {
-      return atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes();
+      return orcsApi.getOrcsTypes().getAttributeTypes();
    }
 
    @Override
@@ -83,7 +88,7 @@ public class ConfigsJsonWriter implements MessageBodyWriter<Collection<IAtsConfi
          writer = jsonFactory.createJsonGenerator(entityStream);
          writer.writeStartArray();
          for (IAtsConfigObject program : programs) {
-            ConfigJsonWriter.addProgramObject(atsServer, program, annotations, writer,
+            ConfigJsonWriter.addProgramObject(atsApi, orcsApi, program, annotations, writer,
                matches(IdentityView.class, annotations), getAttributeTypes());
          }
          writer.writeEndArray();

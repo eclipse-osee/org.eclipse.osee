@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.util.AbstractRelationResolverServiceImpl;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -31,11 +31,10 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  * @author Donald G. Dunne
  */
 public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServiceImpl {
+   private final AtsApi atsApi;
 
-   private final IAtsServer atsServer;
-
-   public AtsRelationResolverServiceImpl(IAtsServer atsServer) {
-      this.atsServer = atsServer;
+   public AtsRelationResolverServiceImpl(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
    @Override
@@ -125,11 +124,11 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    private IAtsObject getAtsObject(ArtifactReadable artifact) {
       IAtsObject result = null;
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         result = atsServer.getWorkItemFactory().getWorkItem(artifact);
-      } else if (atsServer.getConfigItemFactory().isAtsConfigArtifact(artifact)) {
-         result = atsServer.getConfigItemFactory().getConfigObject(artifact);
+         result = atsApi.getWorkItemFactory().getWorkItem(artifact);
+      } else if (atsApi.getConfigItemFactory().isAtsConfigArtifact(artifact)) {
+         result = atsApi.getConfigItemFactory().getConfigObject(artifact);
       } else if (artifact.isOfType(AtsArtifactTypes.Action)) {
-         result = atsServer.getWorkItemFactory().getAction(artifact);
+         result = atsApi.getWorkItemFactory().getAction(artifact);
       }
       return result;
    }
@@ -144,10 +143,10 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
          if (atsObject.getStoreObject() instanceof ArtifactReadable) {
             useArt = (ArtifactReadable) atsObject.getStoreObject();
          } else {
-            useArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(atsObject.getId());
+            useArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(atsObject.getId());
          }
       } else if (object instanceof ArtifactId) {
-         useArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(((ArtifactId) object).getId());
+         useArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(((ArtifactId) object).getId());
       }
       return useArt;
    }

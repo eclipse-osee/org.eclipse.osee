@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.rest.internal.convert;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -32,14 +32,14 @@ public abstract class AbstractConvertGuidToId implements IAtsDatabaseConversion 
    protected final Log logger;
    protected final JdbcClient jdbcClient;
    protected final OrcsApi orcsApi;
-   protected final IAtsServer atsServer;
+   protected final AtsApi atsApi;
 
-   public AbstractConvertGuidToId(Log logger, JdbcClient jdbcClient, OrcsApi orcsApi, IAtsServer atsServer) {
+   public AbstractConvertGuidToId(Log logger, JdbcClient jdbcClient, OrcsApi orcsApi, AtsApi atsApi) {
       super();
       this.logger = logger;
       this.jdbcClient = jdbcClient;
       this.orcsApi = orcsApi;
-      this.atsServer = atsServer;
+      this.atsApi = atsApi;
    }
 
    protected OrcsApi getOrcsApi() {
@@ -72,5 +72,4 @@ public abstract class AbstractConvertGuidToId implements IAtsDatabaseConversion 
       Conditions.checkExpressionFailOnTrue(branch.isInvalid(), "Error getting branch_id for branch: [%s]", branchGuid);
       return branch;
    }
-
 }

@@ -22,11 +22,13 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.WorkItemArray;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
@@ -35,13 +37,16 @@ import org.eclipse.osee.orcs.data.AttributeTypes;
  */
 @Provider
 public class WorkItemArrayJsonWriter implements MessageBodyWriter<WorkItemArray> {
-
    private JsonFactory jsonFactory;
+   private AtsApi atsApi;
+   private OrcsApi orcsApi;
 
-   private IAtsServer atsServer;
+   public void setOrcsApi(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
+   }
 
    public void setAtsServer(IAtsServer atsServer) {
-      this.atsServer = atsServer;
+      this.atsApi = atsServer;
    }
 
    public void start() {
@@ -73,7 +78,7 @@ public class WorkItemArrayJsonWriter implements MessageBodyWriter<WorkItemArray>
    }
 
    private AttributeTypes getAttributeTypes() {
-      return atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes();
+      return orcsApi.getOrcsTypes().getAttributeTypes();
    }
 
    @Override
@@ -84,7 +89,7 @@ public class WorkItemArrayJsonWriter implements MessageBodyWriter<WorkItemArray>
          writer.writeStartObject();
          writer.writeArrayFieldStart("workItems");
          for (IAtsWorkItem workItem : workItemArray.getWorkItems()) {
-            WorkItemJsonWriter.addWorkItem(atsServer, workItem, annotations, writer,
+            WorkItemJsonWriter.addWorkItem(atsApi, orcsApi, workItem, annotations, writer,
                matches(IdentityView.class, annotations), false, getAttributeTypes(), Collections.emptyList());
          }
          writer.writeEndArray();

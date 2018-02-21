@@ -18,6 +18,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
@@ -26,19 +27,20 @@ import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
+   private final AtsApi atsApi;
+   private final OrcsApi orcsApi;
 
-   private final IAtsServer atsServer;
-
-   public AtsTaskEndpointImpl(IAtsServer atsServer) {
-      this.atsServer = atsServer;
+   public AtsTaskEndpointImpl(AtsApi atsApi, OrcsApi orcsApi) {
+      this.atsApi = atsApi;
+      this.orcsApi = orcsApi;
    }
 
    @POST
@@ -46,7 +48,7 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    @Override
    public JaxAtsTasks create(NewTaskDatas newTaskDatas) {
-      CreateTasksOperation operation = new CreateTasksOperation(newTaskDatas, atsServer, new XResultData());
+      CreateTasksOperation operation = new CreateTasksOperation(newTaskDatas, atsApi, orcsApi, new XResultData());
       XResultData results = operation.validate();
 
       if (results.isErrors()) {
@@ -63,12 +65,12 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
    @Override
    public JaxAtsTask get(@PathParam("taskId") long taskId) {
       IAtsWorkItem task =
-         atsServer.getQueryService().createQuery(WorkItemType.WorkItem).isOfType(WorkItemType.Task).andIds(
+         atsApi.getQueryService().createQuery(WorkItemType.WorkItem).isOfType(WorkItemType.Task).andIds(
             taskId).getResults().getOneOrNull();
       if (task == null) {
          throw new OseeArgumentException("No Task found with id %d", taskId);
       }
-      JaxAtsTask jaxAtsTask = CreateTasksOperation.createNewJaxTask(task.getId(), atsServer);
+      JaxAtsTask jaxAtsTask = CreateTasksOperation.createNewJaxTask(task.getId(), atsApi);
       return jaxAtsTask;
    }
 
@@ -77,14 +79,12 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
    @Override
    public void delete(@PathParam("taskId") long taskId) {
       IAtsWorkItem task =
-         atsServer.getQueryService().createQuery(WorkItemType.WorkItem).isOfType(WorkItemType.Task).andIds(
+         atsApi.getQueryService().createQuery(WorkItemType.WorkItem).isOfType(WorkItemType.Task).andIds(
             taskId).getResults().getOneOrNull();
       if (task != null) {
-         IAtsChangeSet changes =
-            atsServer.getStoreService().createAtsChangeSet("Delete Task", AtsCoreUsers.SYSTEM_USER);
+         IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Delete Task", AtsCoreUsers.SYSTEM_USER);
          changes.deleteArtifact(task);
          changes.execute();
       }
    }
-
 }

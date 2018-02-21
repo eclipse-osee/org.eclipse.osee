@@ -17,6 +17,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -25,7 +26,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -36,11 +36,11 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 @Path("action/state")
 public final class StateResource {
 
-   private final IAtsServer atsServer;
+   private final AtsApi atsApi;
    private static final String ATS_UI_ACTION_PREFIX = "/ui/action/ID";
 
-   public StateResource(IAtsServer atsServer) {
-      this.atsServer = atsServer;
+   public StateResource(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
    /**
@@ -77,7 +77,7 @@ public final class StateResource {
       if (!Strings.isValid(asUserId)) {
          return RestUtil.returnBadRequest("asUserId is not valid");
       }
-      IAtsUser transitionUser = atsServer.getUserService().getUserById(asUserId);
+      IAtsUser transitionUser = atsApi.getUserService().getUserById(asUserId);
       if (transitionUser == null) {
          return RestUtil.returnBadRequest(String.format("User by id [%s] does not exist", asUserId));
       }
@@ -85,19 +85,19 @@ public final class StateResource {
       if (operation.equals("transition")) {
          ArtifactToken action = null;
          try {
-            action = atsServer.getQueryService().getArtifactById(id);
+            action = atsApi.getQueryService().getArtifactById(id);
          } catch (Exception ex) {
             // do nothing
          }
          if (action == null) {
             return RestUtil.returnBadRequest(String.format("Action by id [%s] does not exist", id));
          }
-         IAtsWorkItem workItem = atsServer.getWorkItemFactory().getWorkItem(action);
+         IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem(action);
 
          IAtsChangeSet changes =
-            atsServer.getStoreService().createAtsChangeSet("Transition Action - Server", transitionUser);
+            atsApi.getStoreService().createAtsChangeSet("Transition Action - Server", transitionUser);
          TransitionHelper helper = new TransitionHelper("Transition " + id, Collections.singleton(workItem), toState,
-            workItem.getAssignees(), reason, changes, atsServer, TransitionOption.None);
+            workItem.getAssignees(), reason, changes, atsApi, TransitionOption.None);
          helper.setTransitionUser(transitionUser);
          IAtsTransitionManager mgr = TransitionFactory.getTransitionManager(helper);
          TransitionResults results = mgr.handleAll();
@@ -108,7 +108,7 @@ public final class StateResource {
             changes.execute();
          }
 
-         return RestUtil.redirect(workItem, ATS_UI_ACTION_PREFIX, atsServer);
+         return RestUtil.redirect(workItem, ATS_UI_ACTION_PREFIX, atsApi);
       } else {
          return RestUtil.returnBadRequest(String.format("Unhandled operation [%s]", operation));
       }

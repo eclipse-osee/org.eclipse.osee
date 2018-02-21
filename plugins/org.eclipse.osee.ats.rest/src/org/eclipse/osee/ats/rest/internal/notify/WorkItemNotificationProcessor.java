@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -37,7 +38,6 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.users.AtsUsersUtility;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -55,12 +55,12 @@ public class WorkItemNotificationProcessor {
    private final IAtsUserService userService;
    private final IAttributeResolver attrResolver;
    private final IAtsWorkItemFactory workItemFactory;
-   private final IAtsServer atsServer;
+   private final AtsApi atsApi;
    private static String actionUrl;
 
-   public WorkItemNotificationProcessor(Log logger, IAtsServer atsServer, IAtsWorkItemFactory workItemFactory, IAtsUserService userService, IAttributeResolver attrResolver) {
+   public WorkItemNotificationProcessor(Log logger, AtsApi atsApi, IAtsWorkItemFactory workItemFactory, IAtsUserService userService, IAttributeResolver attrResolver) {
       this.logger = logger;
-      this.atsServer = atsServer;
+      this.atsApi = atsApi;
       this.workItemFactory = workItemFactory;
       this.userService = userService;
       this.attrResolver = attrResolver;
@@ -240,10 +240,10 @@ public class WorkItemNotificationProcessor {
 
    public List<IAtsUser> getSubscribed(IAtsWorkItem workItem) {
       ArrayList<IAtsUser> arts = new ArrayList<>();
-      for (ArtifactId art : atsServer.getRelationResolver().getRelated(workItem.getStoreObject(),
+      for (ArtifactId art : atsApi.getRelationResolver().getRelated(workItem.getStoreObject(),
          AtsRelationTypes.SubscribedUser_User)) {
          arts.add(userService.getUserById(
-            (String) atsServer.getAttributeResolver().getSoleAttributeValue(art, CoreAttributeTypes.UserId, null)));
+            (String) atsApi.getAttributeResolver().getSoleAttributeValue(art, CoreAttributeTypes.UserId, null)));
       }
       return arts;
    }
@@ -262,7 +262,7 @@ public class WorkItemNotificationProcessor {
 
    private String getUrl(IAtsWorkItem workItem) {
       if (actionUrl == null) {
-         actionUrl = atsServer.getConfigValue("ActionUrl_26_0");
+         actionUrl = atsApi.getConfigValue("ActionUrl_26_0");
       }
       if (Strings.isValid(actionUrl)) {
          return actionUrl.replaceFirst("ID", String.valueOf(workItem.getId()));

@@ -18,6 +18,7 @@ import java.util.Map;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfiguration;
@@ -29,7 +30,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
@@ -57,12 +57,12 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    private final OrcsApi orcsApi;
-   private final IAtsServer atsServer;
+   private final AtsApi atsApi;
    private final Log logger;
    private final ExecutorAdmin executorAdmin;
 
-   public AtsConfigEndpointImpl(IAtsServer atsServer, OrcsApi orcsApi, Log logger, ExecutorAdmin executorAdmin) {
-      this.atsServer = atsServer;
+   public AtsConfigEndpointImpl(AtsApi atsApi, OrcsApi orcsApi, Log logger, ExecutorAdmin executorAdmin) {
+      this.atsApi = atsApi;
       this.orcsApi = orcsApi;
       this.logger = logger;
       this.executorAdmin = executorAdmin;
@@ -78,13 +78,13 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
       @Override
       public void run() {
-         atsServer.getConfigService().getConfigurationsWithPend();
+         atsApi.getConfigService().getConfigurationsWithPend();
       }
    };
 
    @Override
    public AtsConfigurations get() {
-      return atsServer.getConfigService().getConfigurations();
+      return atsApi.getConfigService().getConfigurations();
    }
 
    @Override
@@ -94,7 +94,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    @Override
    public AtsConfigurations getWithPend() {
-      return atsServer.getConfigService().getConfigurationsWithPend();
+      return atsApi.getConfigService().getConfigurationsWithPend();
    }
 
    @Override
@@ -111,7 +111,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       Conditions.checkNotNullOrEmpty(newBranchName, "newBranchName");
       String userId = form.getFirst("userId");
       Conditions.checkNotNullOrEmpty(userId, "UserId");
-      ArtifactId user = atsServer.getUserService().getUserById(userId).getStoreObject();
+      ArtifactId user = atsApi.getUserService().getUserById(userId).getStoreObject();
       if (user == null) {
          logger.error("User by id [%s] does not exist", userId);
       }
@@ -194,7 +194,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       config.setArtifactId(configArt);
       tx.createAttribute(configArt, AtsAttributeTypes.AtsConfiguredBranch, branch.getIdString());
       XResultData rd = new XResultData();
-      UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsServer);
+      UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsApi, orcsApi);
 
       // Get or create Configs folder
       ArtifactId configsFolderArt = update.getOrCreateConfigsFolder(userArt, rd);
@@ -210,7 +210,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @Override
    public Response createUpdateConfig() {
       XResultData resultData = new XResultData(false);
-      UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsServer);
+      UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsApi, orcsApi);
       update.createUpdateConfig(resultData);
       if (resultData.isEmpty()) {
          resultData.log("Nothing to update");
@@ -221,10 +221,10 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @Override
    public Response storeWorkDef(JaxAtsWorkDef jaxWorkDef) {
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,
-         atsServer.getQueryService().getArtifact(AtsCoreUsers.SYSTEM_USER),
+         atsApi.getQueryService().getArtifact(AtsCoreUsers.SYSTEM_USER),
          "Store Work Definition " + jaxWorkDef.getName());
       ArtifactReadable workDefArt =
-         (ArtifactReadable) atsServer.getQueryService().getArtifactByName(AtsArtifactTypes.WorkDefinition,
+         (ArtifactReadable) atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.WorkDefinition,
             jaxWorkDef.getName());
       if (workDefArt == null) {
          workDefArt = (ArtifactReadable) tx.createArtifact(AtsArtifactTypes.WorkDefinition, jaxWorkDef.getName());
@@ -232,18 +232,18 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       tx.setSoleAttributeValue(workDefArt, AtsAttributeTypes.DslSheet, jaxWorkDef.getWorkDefDsl());
       if (workDefArt.getParent() == null) {
          ArtifactReadable workDefFolder =
-            (ArtifactReadable) atsServer.getQueryService().getArtifact(AtsArtifactToken.WorkDefinitionsFolder);
+            (ArtifactReadable) atsApi.getQueryService().getArtifact(AtsArtifactToken.WorkDefinitionsFolder);
          tx.addChildren(workDefFolder, workDefArt);
       }
       tx.commit();
-      atsServer.getWorkDefinitionService().clearCaches();
+      atsApi.getWorkDefinitionService().clearCaches();
       return Response.ok().build();
    }
 
    @Override
    public List<AtsAttributeValueColumn> generateAttrTypeViews() throws Exception {
       Map<String, AttributeTypeToken> idToToken = new HashMap<>();
-      for (AttributeTypeToken attrType : atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().getAll()) {
+      for (AttributeTypeToken attrType : orcsApi.getOrcsTypes().getAttributeTypes().getAll()) {
          idToToken.put(attrType.getName(), attrType);
       }
 
@@ -258,20 +258,20 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          SortDataType sortDataType = SortDataType.String;
          int width = 60;
 
-         boolean isBoolean = atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().isBooleanType(attrType);
-         if (atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().isEnumerated(attrType)) {
+         boolean isBoolean = orcsApi.getOrcsTypes().getAttributeTypes().isBooleanType(attrType);
+         if (orcsApi.getOrcsTypes().getAttributeTypes().isEnumerated(attrType)) {
             width = 40;
          } else if (isBoolean) {
             width = 50;
-         } else if (atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().isIntegerType(attrType)) {
+         } else if (orcsApi.getOrcsTypes().getAttributeTypes().isIntegerType(attrType)) {
             width = 45;
             sortDataType = SortDataType.Integer;
             columnAlign = ColumnAlign.Center;
-         } else if (atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().isFloatingType(attrType)) {
+         } else if (orcsApi.getOrcsTypes().getAttributeTypes().isFloatingType(attrType)) {
             width = 40;
             sortDataType = SortDataType.Float;
             columnAlign = ColumnAlign.Center;
-         } else if (atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().isDateType(attrType)) {
+         } else if (orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attrType)) {
             width = 80;
             sortDataType = SortDataType.Date;
          }
