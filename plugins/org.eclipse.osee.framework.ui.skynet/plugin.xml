@@ -1633,4 +1633,12 @@
            id="org.eclipse.osee.framework.ui.skynet.ArtifactEditorInputFactory">
      </factory>
   </extension>
+  <extension
+        id="ChangeArtifactName"
+        name="ChangeArtifactName"
+        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+     <Operation
+           className="org.eclipse.osee.framework.ui.skynet.blam.operation.ChangeArtifactName">
+     </Operation>
+  </extension>
 </plugin>
