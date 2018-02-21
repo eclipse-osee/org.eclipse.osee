@@ -35,8 +35,6 @@ import org.eclipse.osee.framework.core.model.change.CompareData;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.RendererOption;
-import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
-import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -76,7 +74,6 @@ public final class ViewWordChangeAndDiffTest {
 
    @Test
    public void testCompareTwoArtifacts() throws Exception {
-      ElapsedTime time = new ElapsedTime("testPurgeTransaction", true);
       Collection<Change> changes = getChanges(branch);
       ArrayList<Artifact> artifacts = asArtifacts(changes);
 
@@ -117,26 +114,20 @@ public final class ViewWordChangeAndDiffTest {
       if (Lib.isWindows()) {
          Assert.assertTrue(outPut.exists());
       }
-      time.end(Units.MIN);
-      time.end(Units.SEC);
    }
 
    @Test
    public void testViewWordChangeReport() throws Exception {
-      ElapsedTime time = new ElapsedTime("testPurgeTransaction", true);
       Collection<Change> changes = getChanges(branch);
       checkPermissions(asArtifacts(changes));
 
       Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
       RendererManager.diff(artifactDeltas, "testDiff", rendererOptions);
       verifyRenderFolderExists();
-      time.end(Units.MIN);
-      time.end(Units.SEC);
    }
 
    @Test
    public void testSingleNativeDiff() throws Exception {
-      ElapsedTime time = new ElapsedTime("testPurgeTransaction", true);
       Collection<Change> changes = getChanges(branch);
       Artifact artifact = changes.iterator().next().getChangeArtifact();
 
@@ -148,8 +139,6 @@ public final class ViewWordChangeAndDiffTest {
       verifyRenderFolderExists();
 
       assertTrue("Single Native Diff test passed", true);
-      time.end(Units.MIN);
-      time.end(Units.SEC);
    }
 
    private static Collection<Change> getChanges(BranchId testBranch) {
