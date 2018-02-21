@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.rest.internal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Supplier;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -139,17 +140,16 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       return new AttributeEndpointImpl(artifactId, branch, orcsApi, query, uriInfo);
    }
 
-   /**
-    * if exists = false then return all artifact of given type that do not have an attribute of the given type with the
-    * specified value. This includes artifacts that lack attributes of the given type as well as those that have that
-    * type but with a different value.
-    */
-   @Override
-   public List<ArtifactToken> getArtifactTokensByAttribute(ArtifactTypeId artifactType, AttributeTypeId attributeType, String value, boolean exists) {
-      if (exists) {
-         return query.andTypeEquals(artifactType).and(attributeType, value).loadArtifactTokens();
+   private <T> T getArtifactXByAttribute(AttributeTypeId attributeType, String value, boolean exists, ArtifactTypeId artifactType, Supplier<T> queryMethod) {
+      if (artifactType.isValid()) {
+         query.andTypeEquals(artifactType);
       }
-      return query.andTypeEquals(artifactType).andNotExists(attributeType, value).loadArtifactTokens();
+      if (exists) {
+         query.and(attributeType, value);
+      } else {
+         query.andNotExists(attributeType, value);
+      }
+      return queryMethod.get();
    }
 
    /**
@@ -158,11 +158,18 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
     * type but with a different value.
     */
    @Override
-   public List<ArtifactId> getArtifactIdsByAttribute(ArtifactTypeId artifactType, AttributeTypeId attributeType, String value, boolean exists) {
-      if (exists) {
-         return query.andTypeEquals(artifactType).and(attributeType, value).loadArtifactIds();
-      }
-      return query.andTypeEquals(artifactType).andNotExists(attributeType, value).loadArtifactIds();
+   public List<ArtifactToken> getArtifactTokensByAttribute(AttributeTypeId attributeType, String value, boolean exists, ArtifactTypeId artifactType) {
+      return getArtifactXByAttribute(attributeType, value, exists, artifactType, query::loadArtifactTokens);
+   }
+
+   /**
+    * if exists = false then return all artifact of given type that do not have an attribute of the given type with the
+    * specified value. This includes artifacts that lack attributes of the given type as well as those that have that
+    * type but with a different value.
+    */
+   @Override
+   public List<ArtifactId> getArtifactIdsByAttribute(AttributeTypeId attributeType, String value, boolean exists, ArtifactTypeId artifactType) {
+      return getArtifactXByAttribute(attributeType, value, exists, artifactType, query::loadArtifactIds);
    }
 
    @Override

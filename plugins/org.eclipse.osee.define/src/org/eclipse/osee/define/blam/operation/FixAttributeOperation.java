@@ -20,7 +20,6 @@ import org.eclipse.nebula.widgets.xviewer.Activator;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
@@ -127,8 +126,7 @@ public class FixAttributeOperation extends AbstractOperation {
    private HashCollectionSet<Artifact, AttributeTypeToken> getArtifactsWithDuplicates(IProgressMonitor monitor) {
       HashCollectionSet<Artifact, AttributeTypeToken> artifactAttributeMap = new HashCollectionSet<>(HashSet::new);
 
-      List<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromBranch(branch, LoadLevel.ALL, DeletionFlag.EXCLUDE_DELETED);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromBranch(branch, DeletionFlag.EXCLUDE_DELETED);
       checkForCancelledStatus(monitor);
       monitor.subTask("Mapping Enumerated Attributes");
 

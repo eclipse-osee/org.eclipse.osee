@@ -16,5 +16,5 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
  * @author Ryan D. Brooks
  */
 public class CriteriaIdQuery extends Criteria {
-   // used to flag the use of TokenQueryHandler
+   // used to flag the use of IdQueryHandler
 }

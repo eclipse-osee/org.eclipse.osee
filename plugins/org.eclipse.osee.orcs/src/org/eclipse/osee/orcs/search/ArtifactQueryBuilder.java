@@ -180,8 +180,7 @@ public interface ArtifactQueryBuilder<T> {
    T and(AttributeTypeId attributeType, Collection<String> values, QueryOption... options);
 
    /**
-    * Search criteria that finds an attribute of the given type with its current value relative to the given value based
-    * on the operator provided.
+    * Search criteria that finds an attribute of the given type with its current value relative to the given value.
     */
    T and(AttributeTypeId attributeType, String value, QueryOption... options);
 

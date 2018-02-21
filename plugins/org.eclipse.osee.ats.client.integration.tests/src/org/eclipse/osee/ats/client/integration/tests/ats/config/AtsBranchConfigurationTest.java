@@ -374,8 +374,8 @@ public class AtsBranchConfigurationTest {
          if (ai != null) {
             AtsClientService.get().getCache().deCacheAtsObject(ai);
          }
-         transaction.execute();
       }
+      transaction.execute();
 
       // Work Definition
       Collection<Artifact> arts =

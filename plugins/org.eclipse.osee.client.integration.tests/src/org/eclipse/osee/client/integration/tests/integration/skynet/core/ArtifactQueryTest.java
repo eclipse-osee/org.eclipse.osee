@@ -159,7 +159,7 @@ public class ArtifactQueryTest {
 
       try {
          ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Active, "true",
-            COMMON, QueryOption.TOKEN_DELIMITER__ANY);
+            COMMON);
          Assert.fail("Should have thrown an exception as the attribute type are not taggable");
       } catch (OseeCoreException e) {
          Assert.assertTrue(e.getMessage(), Boolean.TRUE);
@@ -177,7 +177,7 @@ public class ArtifactQueryTest {
 
       try {
          ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Notes, "My Notes",
-            COMMON, QueryOption.TOKEN_DELIMITER__ANY);
+            COMMON);
          Assert.assertTrue("This attribute type is taggable", Boolean.TRUE);
       } catch (OseeCoreException e) {
          Assert.fail(e.getMessage());

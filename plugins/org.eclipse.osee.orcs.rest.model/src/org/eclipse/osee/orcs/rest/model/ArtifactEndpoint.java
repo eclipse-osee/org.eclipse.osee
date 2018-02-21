@@ -53,6 +53,7 @@ public interface ArtifactEndpoint {
    String getArtifactAsHtml(@PathParam("artifactId") ArtifactId artifactId);
 
    @GET
+   @Path("{artifactId}/token")
    @Produces(MediaType.APPLICATION_JSON)
    ArtifactToken getArtifactToken(@PathParam("artifactId") ArtifactId artifactId);
 
@@ -60,22 +61,22 @@ public interface ArtifactEndpoint {
    AttributeEndpoint getAttributes(@PathParam("artifactId") ArtifactId artifactId);
 
    @GET
-   @Path("type/{artifactType}/atrType/{attributeType}")
+   @Path("atrType/{attributeType}/token")
    @Produces(MediaType.APPLICATION_JSON)
-   List<ArtifactToken> getArtifactTokensByAttribute(@PathParam("artifactType") ArtifactTypeId artifactType, @PathParam("attributeType") AttributeTypeId attributeType, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists);
+   List<ArtifactToken> getArtifactTokensByAttribute(@PathParam("attributeType") AttributeTypeId attributeType, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists, @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeId artifactType);
 
    @GET
-   @Path("type/{artifactType}/atrType/{attributeType}/ids")
+   @Path("atrType/{attributeType}/id")
    @Produces(MediaType.APPLICATION_JSON)
-   List<ArtifactId> getArtifactIdsByAttribute(@PathParam("artifactType") ArtifactTypeId artifactType, @PathParam("attributeType") AttributeTypeId attributeType, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists);
+   List<ArtifactId> getArtifactIdsByAttribute(@PathParam("attributeType") AttributeTypeId attributeType, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists, @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeId artifactType);
 
    @GET
-   @Path("type/{artifactType}")
+   @Path("type/{artifactType}/token")
    @Produces(MediaType.APPLICATION_JSON)
    List<ArtifactToken> getArtifactTokensByType(@PathParam("artifactType") ArtifactTypeId artifactType);
 
    @GET
-   @Path("type/{artifactType}/ids")
+   @Path("type/{artifactType}/id")
    @Produces(MediaType.APPLICATION_JSON)
    List<ArtifactId> getArtifactIdsByType(@PathParam("artifactType") ArtifactTypeId artifactType);
 
