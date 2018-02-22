@@ -126,8 +126,8 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
 
                      if (Widgets.isAccessible(parent)) {
 
-                        xNavComp = new AtsNavigateComposite(NavigateViewItems.getInstance(), parent, SWT.NONE,
-                           savedFilterStr);
+                        xNavComp =
+                           new AtsNavigateComposite(NavigateViewItems.getInstance(), parent, SWT.NONE, savedFilterStr);
 
                         XNavigateEventManager.register(navView);
                         HelpUtil.setHelp(xNavComp, AtsHelpContext.NAVIGATOR);
@@ -165,15 +165,13 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
 
             public void refreshUserLabel() {
                String str = getWhoAmI();
-               if (AtsClientService.get().getUserService().isAtsAdmin()) {
+               boolean atsAdmin = AtsClientService.get().getUserService().isAtsAdmin();
+               if (atsAdmin) {
                   str += " - [Admin]";
-               }
-               if (!str.equals("")) {
-                  if (AtsClientService.get().getUserService().isAtsAdmin()) {
-                     userLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-                  } else {
-                     userLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
-                  }
+                  userLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+               } else {
+
+                  userLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
                }
                userLabel.setText(str);
                userLabel.setToolTipText(str);

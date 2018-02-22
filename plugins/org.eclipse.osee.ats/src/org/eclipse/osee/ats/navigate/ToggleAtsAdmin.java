@@ -47,7 +47,7 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
             AWorkbench.popup("Current User not configured for Temporary Admin");
             return;
          }
-         boolean isAdmin = AtsClientService.get().getUserService().isAtsAdmin(false);
+         boolean isAdmin = AtsClientService.get().getUserService().isAtsAdmin();
          String message = "Currently " + (isAdmin ? "ADMIN" : "NOT ADMIN") + " - Toggle?";
          if (MessageDialog.openConfirm(Displays.getActiveShell(), "Toggle ATS Admin", message)) {
 
@@ -56,7 +56,7 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
                SystemGroup.OseeAdmin.setTemporaryOverride(true);
             } else {
                AtsGroup.AtsAdmin.removeTemporaryOverride();
-               SystemGroup.OseeAdmin.addMember(AtsClientService.get().getUserServiceClient().getCurrentOseeUser());
+               SystemGroup.OseeAdmin.removeTemporaryOverride();
             }
             AtsClientService.get().getUserService().isAtsAdmin(false);
             NavigateViewItems.getInstance().clearCaches();
