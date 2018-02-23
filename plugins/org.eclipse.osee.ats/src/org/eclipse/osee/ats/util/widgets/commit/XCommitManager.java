@@ -164,11 +164,12 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
                });
             }
 
-            xCommitManager = new CommitXManager(tableComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
+            xCommitManager = new CommitXManager(tableComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this, teamArt,
+               AtsClientService.get());
             xCommitManager.getTree().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
             xCommitManager.setContentProvider(new XCommitContentProvider());
-            xCommitManager.setLabelProvider(new XCommitLabelProvider(xCommitManager));
+            xCommitManager.setLabelProvider(new XCommitLabelProvider(xCommitManager, teamArt));
 
             if (toolkit != null && xCommitManager.getStatusLabel() != null) {
                toolkit.adapt(xCommitManager.getStatusLabel(), false, false);
@@ -287,7 +288,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
                if (infoStr == null && currentString != null || //
                infoStr != null && currentString == null || //
                infoStr != null && currentString != null && !infoStr.equals(currentString)) {
-                  extraInfoLabel.setText("Double-click item to perform Action");
+                  extraInfoLabel.setText("Double-click item to perform Action; Right-click for mor options.");
                }
                extraInfoLabel.setForeground(Displays.getSystemColor(color));
             }

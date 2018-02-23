@@ -16,12 +16,18 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.commit.CommitOverride;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
+import org.eclipse.osee.ats.util.widgets.commit.menu.CommitOverrideAction;
+import org.eclipse.osee.ats.util.widgets.commit.menu.RemoveCommitOverrideAction;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -29,6 +35,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.RebaselineInProgressHandler;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.OseeTreeReportAdapter;
@@ -42,10 +49,14 @@ import org.eclipse.swt.widgets.TreeItem;
 public class CommitXManager extends XViewer {
 
    private final XCommitManager xCommitManager;
+   private final AtsApi atsApi;
+   private final IAtsTeamWorkflow teamWf;
 
-   public CommitXManager(Composite parent, int style, XCommitManager xRoleViewer) {
+   public CommitXManager(Composite parent, int style, XCommitManager xRoleViewer, IAtsTeamWorkflow teamWf, AtsApi atsApi) {
       super(parent, style, new CommitXManagerFactory(new OseeTreeReportAdapter("Table Report - Commit Manager")));
       this.xCommitManager = xRoleViewer;
+      this.teamWf = teamWf;
+      this.atsApi = atsApi;
    }
 
    @Override
@@ -53,6 +64,24 @@ public class CommitXManager extends XViewer {
       MenuManager mm = getMenuManager();
 
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
+
+      if (!getSelectedArtifacts().isEmpty()) {
+         Object firstSelectedArt = getSelectedArtifacts().iterator().next();
+         IOseeBranch branch = null;
+         ICommitConfigItem configArt = null;
+         if (firstSelectedArt instanceof ICommitConfigItem) {
+            configArt = (ICommitConfigItem) firstSelectedArt;
+            branch = BranchManager.getBranch(AtsClientService.get().getBranchService().getBranch(configArt));
+         }
+
+         CommitOverride override =
+            atsApi.getBranchService().getCommitOverrideOps().getCommitOverride(xCommitManager.getTeamArt(), branch);
+         if (override == null) {
+            mm.insertAfter(MENU_GROUP_PRE, new CommitOverrideAction(teamWf, branch, atsApi));
+         } else {
+            mm.insertAfter(MENU_GROUP_PRE, new RemoveCommitOverrideAction(teamWf, branch, atsApi));
+         }
+      }
    }
 
    /**
@@ -102,7 +131,9 @@ public class CommitXManager extends XViewer {
 
          CommitStatus commitStatus =
             AtsClientService.get().getBranchService().getCommitStatus(xCommitManager.getTeamArt(), branch, configArt);
-         if (commitStatus == CommitStatus.Rebaseline_In_Progress) {
+         if (commitStatus == CommitStatus.Commit_Overridden) {
+            AWorkbench.popup("Commit Overridden.  Right-click remove override to continue.");
+         } else if (commitStatus == CommitStatus.Rebaseline_In_Progress) {
             RebaselineInProgressHandler.handleRebaselineInProgress(xCommitManager.getTeamArt().getWorkingBranch());
          } else if (commitStatus == CommitStatus.Working_Branch_Not_Created) {
             AWorkbench.popup(commitStatus.getDisplayName(), "Need to create a working branch");
@@ -148,4 +179,5 @@ public class CommitXManager extends XViewer {
          AtsBranchManager.showMergeManager(xCommitManager.getTeamArt());
       }
    }
+
 }

@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.commit.CommitOverride;
+import org.eclipse.osee.ats.api.commit.CommitOverrideOperations;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -29,6 +31,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
+import org.eclipse.osee.ats.core.commit.operations.CommitOverrideOperationsImpl;
 import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -52,6 +55,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    private static final int SHORT_NAME_LIMIT = 35;
    private static Set<BranchId> branchesInCommit = new HashSet<>();
    private ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
+   private CommitOverrideOperations commitOverrideOps;
 
    public AbstractAtsBranchService() {
    }
@@ -179,8 +183,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    public boolean isBranchesAllCommittedExcept(IAtsTeamWorkflow teamWf, BranchId branchToExclude) {
       Collection<BranchId> committedTo = getBranchesCommittedTo(teamWf);
       for (BranchId destBranch : getBranchesToCommitTo(teamWf)) {
-         if (destBranch.notEqual(
-            branchToExclude) && !committedTo.contains(destBranch) && !isNoCommitNeeded(teamWf, destBranch)) {
+         if (destBranch.notEqual(branchToExclude) && !committedTo.contains(destBranch) && !isNoCommitNeeded(teamWf,
+            destBranch) && !isCommitOverridden(teamWf, destBranch)) {
             return false;
          }
       }
@@ -201,7 +205,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       Set<BranchId> branchesLeft = new HashSet<>();
       Collection<BranchId> committedTo = getBranchesCommittedTo(teamWf);
       for (BranchId branchToCommit : getBranchesToCommitTo(teamWf)) {
-         if (!committedTo.contains(branchToCommit) && !isNoCommitNeeded(teamWf, branchToCommit)) {
+         if (!committedTo.contains(branchToCommit) && !isNoCommitNeeded(teamWf,
+            branchToCommit) && !isCommitOverridden(teamWf, branchToCommit)) {
             branchesLeft.add(branchToCommit);
          }
       }
@@ -253,6 +258,10 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       return getCommitStatus(teamWf, destinationBranch) == CommitStatus.No_Commit_Needed;
    }
 
+   public boolean isCommitOverridden(IAtsTeamWorkflow teamWf, BranchId destinationBranch) {
+      return getCommitStatus(teamWf, destinationBranch) == CommitStatus.Commit_Overridden;
+   }
+
    /**
     * Return true if all commit destination branches are configured and have been committed to
     */
@@ -260,7 +269,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    public boolean isBranchesAllCommitted(IAtsTeamWorkflow teamWf) {
       Collection<BranchId> committedTo = getBranchesCommittedTo(teamWf);
       for (BranchId destBranch : getBranchesToCommitTo(teamWf)) {
-         if (!committedTo.contains(destBranch) && !isNoCommitNeeded(teamWf, destBranch)) {
+         if (!committedTo.contains(destBranch) && !isNoCommitNeeded(teamWf, destBranch) && !isCommitOverridden(teamWf,
+            destBranch)) {
             return false;
          }
       }
@@ -512,6 +522,11 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
          return CommitStatus.No_Commit_Needed;
       }
 
+      CommitOverride override = getCommitOverrideOps().getCommitOverride(teamWf, destinationBranch);
+      if (override != null) {
+         return CommitStatus.Commit_Overridden;
+      }
+
       Result result = new Result(false);
       if (configArt == null) {
          result = isCommitBranchAllowed(teamWf);
@@ -618,6 +633,14 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
          return branch;
       }
       return BranchId.SENTINEL;
+   }
+
+   @Override
+   public CommitOverrideOperations getCommitOverrideOps() {
+      if (commitOverrideOps == null) {
+         commitOverrideOps = new CommitOverrideOperationsImpl(atsApi);
+      }
+      return commitOverrideOps;
    }
 
 }

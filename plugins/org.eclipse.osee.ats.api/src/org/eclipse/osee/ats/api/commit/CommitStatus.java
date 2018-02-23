@@ -22,7 +22,8 @@ public enum CommitStatus {
    Merge_In_Progress("Merge in Progress"),
    Committed("Committed"),
    Committed_With_Merge("Committed With Merge"),
-   Rebaseline_In_Progress("Rebaseline In Progress");
+   Rebaseline_In_Progress("Rebaseline In Progress"),
+   Commit_Overridden("Commit Overridden");
 
    private final String displayName;
 

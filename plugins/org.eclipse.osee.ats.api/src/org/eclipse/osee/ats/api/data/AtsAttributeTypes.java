@@ -53,6 +53,7 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken CreatedDate = createType(1152921504606847173L, "Created Date", "Date the workflow was created.");
    public static final AttributeTypeToken CreatedBy = createType(1152921504606847174L, "Created By", "UserId of the user who created the workflow.");
 
+   public static final AttributeTypeToken CommitOverride = createType(104739333325561L, "Commit Override", "Commit was overridden by user.");
    public static final AttributeTypeToken CompletedDate = createType(1152921504606847166L, "Completed Date", "Date the workflow was completed.");
    public static final AttributeTypeToken CompletedBy = createType(1152921504606847167L, "Completed By", "UserId of the user who completed workflow.");
    public static final AttributeTypeToken CompletedFromState = createType(1152921504606847168L, "Completed From State", "State workflow was in when completed.");

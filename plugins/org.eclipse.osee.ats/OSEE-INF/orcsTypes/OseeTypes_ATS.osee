@@ -273,6 +273,7 @@ artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Cont
 	attribute "ats.PCR Tool Id"   
 	attribute "ats.Color Team"
 	attribute "ats.IPT"
+	attribute "ats.Commit Override"
 }
 
 artifactType "Work Package" extends "Artifact" {
@@ -298,6 +299,15 @@ artifactType "Work Package" extends "Artifact" {
 overrides artifactType "User" {
 	inheritAll
 	add attribute "ATS Quick Search"
+}
+
+attributeType "ats.Commit Override" extends StringAttribute {
+	id 104739333325561
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.kb.Story Name" extends StringAttribute {

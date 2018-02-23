@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.commit.CommitOverride;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -40,10 +41,12 @@ import org.eclipse.swt.graphics.Image;
 public class XCommitLabelProvider extends XViewerLabelProvider {
 
    private final CommitXManager commitXManager;
+   private final IAtsTeamWorkflow teamWf;
 
-   public XCommitLabelProvider(CommitXManager commitXManager) {
+   public XCommitLabelProvider(CommitXManager commitXManager, IAtsTeamWorkflow teamWf) {
       super(commitXManager);
       this.commitXManager = commitXManager;
+      this.teamWf = teamWf;
    }
 
    @Override
@@ -79,7 +82,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
                return ImageManager.getImage(FrameworkImage.DOT_YELLOW);
             }
 
-            if (commitStatus == CommitStatus.Committed || commitStatus == CommitStatus.Committed_With_Merge || commitStatus == CommitStatus.No_Commit_Needed) {
+            if (commitStatus == CommitStatus.Committed || commitStatus == CommitStatus.Committed_With_Merge || commitStatus == CommitStatus.No_Commit_Needed || commitStatus == CommitStatus.Commit_Overridden) {
                return ImageManager.getImage(FrameworkImage.DOT_GREEN);
             }
             return null;
@@ -119,8 +122,16 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       }
 
       if (xCol.equals(CommitXManagerFactory.Status_Col)) {
-         return AtsClientService.get().getBranchService().getCommitStatus(
-            commitXManager.getXCommitViewer().getTeamArt(), branch).getDisplayName();
+         CommitStatus status = AtsClientService.get().getBranchService().getCommitStatus(
+            commitXManager.getXCommitViewer().getTeamArt(), branch);
+         if (status == CommitStatus.Commit_Overridden) {
+            CommitOverride override =
+               AtsClientService.get().getBranchService().getCommitOverrideOps().getCommitOverride(teamWf, branch);
+            String userName =
+               AtsClientService.get().getUserService().getUserByAccountId(override.getUser().getId()).getName();
+            return String.format("%s by %s - Reason: [%s]", status.getDisplayName(), userName, override.getReason());
+         }
+         return status.getDisplayName();
       } else if (xCol.equals(CommitXManagerFactory.Merge_Col)) {
          return "";
       } else if (xCol.equals(CommitXManagerFactory.Version_Col)) {
@@ -232,6 +243,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          return "Show Change/Merge Report";
       } else if (commitStatus == CommitStatus.Working_Branch_Not_Created) {
          return "Working Branch Not Created";
+      } else if (commitStatus == CommitStatus.Commit_Overridden) {
+         return "None";
       }
       return "Error: Need to handle this";
    }

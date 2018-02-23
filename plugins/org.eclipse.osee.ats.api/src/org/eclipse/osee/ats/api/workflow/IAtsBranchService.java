@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.workflow;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.commit.CommitOverrideOperations;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -149,5 +150,7 @@ public interface IAtsBranchService {
    CompareResults getChangeData(TransactionToken transaction);
 
    void setAssociatedArtId(BranchId branch, ArtifactId artifact);
+
+   CommitOverrideOperations getCommitOverrideOps();
 
 }
