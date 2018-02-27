@@ -45,7 +45,7 @@ public class ElapsedTime {
 
    public static enum Units {
       SEC,
-      MSEC
+      MIN
    }
 
    public String end() {
@@ -53,12 +53,34 @@ public class ElapsedTime {
    }
 
    public String end(Units units) {
+      return end(units, true);
+   }
+
+   public String end(Units units, boolean printToSysErr) {
       endDate = new Date();
-      long diff = endDate.getTime() - startDate.getTime();
-      String str = String.format("%s - elapsed %d %s - start %s - end %s", name,
-         units == Units.SEC ? diff / 1000 : diff, units.name(), DateUtil.getDateStr(startDate, DateUtil.HHMMSSSS),
-         DateUtil.getDateStr(endDate, DateUtil.HHMMSSSS));
-      System.err.println(str + (logStart ? "" : "\n"));
+      long timeSpent = endDate.getTime() - startDate.getTime();
+      long time = timeSpent; // milliseconds
+      String milliseconds = "";
+      if (units == Units.SEC) {
+         time = time / 1000; // convert from milliseconds to seconds
+         milliseconds = "";
+      } else if (units == Units.MIN) {
+         time = time / 60000; // convert from milliseconds to minutes
+         milliseconds = " ( " + timeSpent + " ms ) ";
+      }
+      String str = String.format("%s- elapsed %d %s%s - start %s - end %s", name, time, units.name(), milliseconds,
+         DateUtil.getDateStr(startDate, DateUtil.HHMMSSSS), DateUtil.getDateStr(endDate, DateUtil.HHMMSSSS));
+      if (printToSysErr) {
+         System.err.println(str + (logStart ? "" : "\n"));
+      }
       return str;
+   }
+
+   /**
+    * Milliseconds spent so far. Does not call end().
+    */
+   public Long getTimeSpent() {
+      Date endDate = new Date();
+      return endDate.getTime() - startDate.getTime();
    }
 }

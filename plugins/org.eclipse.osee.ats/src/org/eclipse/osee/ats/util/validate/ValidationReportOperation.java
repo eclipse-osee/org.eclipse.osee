@@ -31,6 +31,8 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
@@ -53,6 +55,7 @@ public class ValidationReportOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
+      ElapsedTime totalTime = new ElapsedTime(getName());
       logf("<b>Validating Requirement Changes for %s</b>\n", teamArt.getName());
 
       List<AbstractValidationRule> rulesSorted = new ArrayList<>(rules);
@@ -70,7 +73,7 @@ public class ValidationReportOperation extends AbstractOperation {
             changeData.getArtifacts(KindType.ArtifactOrRelation, ModificationType.NEW, ModificationType.MODIFIED);
          checkForCancelledStatus(monitor);
 
-         double total = changedArtifacts.size() + rules.size();
+         double total = changedArtifacts.size() * rules.size();
          if (total > 0) {
             Collection<String> warnings = new ArrayList<>();
 
@@ -79,6 +82,7 @@ public class ValidationReportOperation extends AbstractOperation {
             String lastTitle = "";
             int ruleIndex = 1;
             for (AbstractValidationRule rule : rulesSorted) {
+               ElapsedTime time = new ElapsedTime("Time Spent");
                checkForCancelledStatus(monitor);
 
                //check to see if we should print a header for sorted (and grouped) rule types
@@ -90,30 +94,36 @@ public class ValidationReportOperation extends AbstractOperation {
 
                if (isSkipRelationCheck(rule.getRuleTitle())) {
                   logf("INFO: Relations Check skipped:  detected committed branches.");
+               } else if (isSkipOrphanCheck(rule.getRuleTitle())) {
+                  logf("INFO: Orphan Check skipped");
                } else {
                   int artIndex = 1;
                   for (Artifact art : changedArtifacts) {
-                     monitor.setTaskName(String.format("Validating: Rule[%s of %s] Artifact[%s of %s]", ruleIndex,
-                        rules.size(), artIndex, changedArtifacts.size()));
-                     checkForCancelledStatus(monitor);
+                     try {
+                        monitor.setTaskName(String.format("Validating: Rule[%s of %s] Artifact[%s of %s]", ruleIndex,
+                           rules.size(), artIndex, changedArtifacts.size()));
+                        checkForCancelledStatus(monitor);
 
-                     ValidationResult result = rule.validate(art, monitor);
-                     if (!isSkipOrphanCheck(rule.getRuleTitle(), artIndex)) {
+                        ValidationResult result = rule.validate(art, monitor);
                         if (!result.didValidationPass()) {
                            for (String errorMsg : result.getErrorMessages()) {
-                              if (art.isOfType(CoreArtifactTypes.DirectSoftwareRequirement,
-                                 CoreArtifactTypes.AbstractImplementationDetails)) {
+                              if (art.isOfType(CoreArtifactTypes.DirectSoftwareRequirement)) {
                                  logf("Error: %s", errorMsg);
                               } else {
                                  warnings.add(String.format("Warning: %s", errorMsg));
                               }
                            }
                         }
+                     } catch (Exception ex) {
+                        logf("Exception processing artifact %s Exception ex: %s", art.toStringWithId(),
+                           ex.getMessage());
                      }
                      monitor.worked(workAmount);
                      artIndex++;
                   }
                }
+               log("\n");
+               log(time.end(Units.MIN, false));
                ruleIndex++;
             }
 
@@ -123,6 +133,7 @@ public class ValidationReportOperation extends AbstractOperation {
             }
          }
 
+         log(totalTime.end(Units.MIN));
          log("\nValidation Complete");
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -130,8 +141,8 @@ public class ValidationReportOperation extends AbstractOperation {
       }
    }
 
-   private boolean isSkipOrphanCheck(String ruleTitle, int index) {
-      return ruleTitle.equals("Orphan Validation Checks") && index > 1;
+   private boolean isSkipOrphanCheck(String ruleTitle) {
+      return ruleTitle.equals("Orphan Validation Checks");
    }
 
    private boolean isSkipRelationCheck(String ruleTitle) {

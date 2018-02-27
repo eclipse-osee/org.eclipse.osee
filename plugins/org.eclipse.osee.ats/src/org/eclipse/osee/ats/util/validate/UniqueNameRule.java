@@ -12,10 +12,13 @@ package org.eclipse.osee.ats.util.validate;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -31,6 +34,7 @@ public class UniqueNameRule extends AbstractValidationRule {
 
    private final IArtifactType artifactType;
    private final Collection<UuidPair> uuidPairs = new LinkedList<>();
+   private final Map<IArtifactType, List<Artifact>> artTypeToArtifacts = new HashMap<IArtifactType, List<Artifact>>();
 
    public UniqueNameRule(IArtifactType artifactType) {
       this.artifactType = artifactType;
@@ -46,8 +50,7 @@ public class UniqueNameRule extends AbstractValidationRule {
       boolean validationPassed = true;
       if (hasArtifactType(artToValidate.getArtifactType())) {
          // validate that no other artifact of the given Artifact Type has the same name.
-         List<Artifact> arts = ArtifactQuery.getArtifactListFromTypeWithInheritence(artifactType,
-            artToValidate.getBranch(), DeletionFlag.EXCLUDE_DELETED);
+         List<Artifact> arts = getArtifactsOfType(artToValidate.getBranchToken(), artToValidate.getArtifactType());
          for (Artifact art : arts) {
             if (art.getName().equalsIgnoreCase(artToValidate.getName()) && !art.getUuid().equals(
                artToValidate.getUuid()) && !hasUuidPairAlreadyBeenEvaluated(art.getUuid(), artToValidate.getUuid())) {
@@ -77,6 +80,16 @@ public class UniqueNameRule extends AbstractValidationRule {
          }
       }
       return new ValidationResult(errorMessages, validationPassed);
+   }
+
+   protected List<Artifact> getArtifactsOfType(IOseeBranch branch, IArtifactType artToValidate) {
+      List<Artifact> arts = artTypeToArtifacts.get(artToValidate);
+      if (arts == null) {
+         arts =
+            ArtifactQuery.getArtifactListFromTypeWithInheritence(artifactType, branch, DeletionFlag.EXCLUDE_DELETED);
+         artTypeToArtifacts.put(artToValidate, arts);
+      }
+      return arts;
    }
 
    private boolean isImplementationDetailsChild(Artifact childArtifact, Artifact parentArtifact) {
