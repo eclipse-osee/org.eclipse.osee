@@ -24,6 +24,8 @@ import org.eclipse.osee.vcast.model.ICoverageUnitFileContentsLoader;
  */
 public class VCastLisFileParser implements ICoverageUnitFileContentsLoader {
 
+   private static final String lis = ".lis";
+   private static final String LIS = ".LIS";
    private static final Pattern sourceLinePattern = Pattern.compile("^[0-9]+ [0-9]+(.*?)$");
    private static final Pattern exceptionPattern = Pattern.compile("^\\s+EXCEPTION\\s*$");
    private static final Pattern endMethodPattern = Pattern.compile("^\\s*END\\s+(.*);\\s*$");
@@ -46,7 +48,11 @@ public class VCastLisFileParser implements ICoverageUnitFileContentsLoader {
          String lisFilePathName = vCastDir + File.separator + lisFileName;
          File lisFile = new File(lisFilePathName);
          if (!lisFile.exists()) {
-            throw new OseeArgumentException(String.format("VectorCast *.LIS file doesn't exist [%s]", lisFilePathName));
+            lisFile = new File(lisFilePathName.replace(LIS, lis));
+            if (!lisFile.exists()) {
+               throw new OseeArgumentException(
+                  String.format("VectorCast *.LIS file doesn't exist [%s]", lisFilePathName));
+            }
          }
          try {
             fileText = Lib.fileToString(lisFile);

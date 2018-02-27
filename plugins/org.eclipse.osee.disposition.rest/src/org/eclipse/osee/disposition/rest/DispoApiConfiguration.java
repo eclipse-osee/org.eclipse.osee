@@ -18,6 +18,7 @@ import java.util.Map;
 public class DispoApiConfiguration {
 
    private String fileExtRegex;
+   private String resultsFileExtRegex;
 
    private DispoApiConfiguration() {
       //Builder Class
@@ -31,9 +32,18 @@ public class DispoApiConfiguration {
       this.fileExtRegex = fileExtRegex;
    }
 
+   public String getResultsFileExtRegex() {
+      return resultsFileExtRegex;
+   }
+
+   public void setResultsFileExtRegex(String resultsFileExtRegex) {
+      this.resultsFileExtRegex = resultsFileExtRegex;
+   }
+
    public DispoApiConfiguration copy() {
       DispoApiConfiguration data = new DispoApiConfiguration();
       data.fileExtRegex = this.fileExtRegex;
+      data.resultsFileExtRegex = this.resultsFileExtRegex;
       return data;
    }
 
@@ -58,11 +68,17 @@ public class DispoApiConfiguration {
 
       public DispoApiConfigurationBuilder properties(Map<String, Object> props) {
          fileExtRegex(get(props, DispoConstants.FILE_EXT_REGEX, ""));
+         resultsFileExtRegex(get(props, DispoConstants.RESULTS_FILE_EXT_REGEX, ""));
          return this;
       }
 
       public DispoApiConfigurationBuilder fileExtRegex(String fileExtRegex) {
          config.setFileExtRegex(fileExtRegex);
+         return this;
+      }
+
+      public DispoApiConfigurationBuilder resultsFileExtRegex(String resultsFileExtRegex) {
+         config.setResultsFileExtRegex(resultsFileExtRegex);
          return this;
       }
 

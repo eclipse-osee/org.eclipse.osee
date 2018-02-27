@@ -63,6 +63,7 @@ public final class DispoConstants {
    }
 
    public static final String FILE_EXT_REGEX = qualify("file.ext.regex");
+   public static final String RESULTS_FILE_EXT_REGEX = qualify("results.file.ext.regex");
 
    // @formatter:on
 

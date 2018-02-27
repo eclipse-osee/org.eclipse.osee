@@ -61,6 +61,7 @@ import org.eclipse.osee.vcast.model.VCastStatementCoverage;
  * @author Angel Avila
  */
 public class LisFileParser implements DispoImporterApi {
+   private static final String RESULTS = "results";
    private static final String LOG = "\\s*(log).*";
    private static final String EXIT_WHEN = "\\s*\\( \\)\\s*\\( \\)\\s*(EXIT WHEN).*";
    private static final String WHEN_FOR = "\\s*\\( \\)\\s*(WHEN|FOR).*";
@@ -377,12 +378,30 @@ public class LisFileParser implements DispoImporterApi {
       String resultPath = result.getPath();
       String resultPathAbs = vCastDir + File.separator + resultPath;
 
+      boolean exists = false;
       File resultsFile = new File(resultPathAbs);
       if (!resultsFile.exists()) {
-         report.addEntry("SQL", String.format("Could not find DAT file [%s]", resultPathAbs), ERROR);
-      } else if (isDupcliateFile(resultsFile, report)) {
-         // Ignore
+         File resultsDir = new File(vCastDir + File.separator + RESULTS);
+         File[] files = resultsDir.listFiles();
+         for (File file : files) {
+            String inputF = file.toString();
+            String outputF = inputF.replaceAll(config.getResultsFileExtRegex(), "");
+            if (outputF.toString().equalsIgnoreCase(resultsFile.toString())) {
+               process(report, resultPath, file);
+               exists = true;
+               break;
+            }
+         }
+         if (!exists) {
+            report.addEntry("SQL", String.format("Could not find DAT file [%s]", resultPathAbs), WARNING);
+         }
       } else {
+         process(report, resultPath, resultsFile);
+      }
+   }
+
+   private void process(OperationReport report, String resultPath, File resultsFile) {
+      if (!isDuplicateFile(resultsFile, report)) {
          //Start reading line by line
          BufferedReader br = null;
          try {
@@ -416,7 +435,10 @@ public class LisFileParser implements DispoImporterApi {
                               processMultiResultMCDC(resultPath, m);
                            }
                         } else {
-                           // ERROR
+                           report.addEntry("RESULTS FILE PARSE",
+                              String.format("This line [%s] could not be parsed. In DAT file [%s]", resultsLine,
+                                 resultsFile.getName()),
+                              WARNING);
                         }
                      }
                   }
@@ -430,7 +452,7 @@ public class LisFileParser implements DispoImporterApi {
       }
    }
 
-   private boolean isDupcliateFile(File file, OperationReport report) {
+   private boolean isDuplicateFile(File file, OperationReport report) {
       String normalizedFileName = file.getName().replaceAll("//....", "");
       if (alreadyUsedFileNames.contains(normalizedFileName)) {
          report.addEntry(file.getName(), "Duplicate File skipped", DispoSummarySeverity.WARNING);
