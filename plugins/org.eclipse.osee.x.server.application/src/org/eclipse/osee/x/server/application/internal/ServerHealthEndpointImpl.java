@@ -13,9 +13,11 @@ package org.eclipse.osee.x.server.application.internal;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -27,6 +29,7 @@ import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcClientConfig;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.x.server.application.internal.model.ServerStatus;
@@ -42,6 +45,8 @@ public final class ServerHealthEndpointImpl {
    private final Map<String, JdbcService> jdbcServices;
    private final IAuthenticationManager authManager;
    private ObjectMapper mapper;
+   private static final String GET_VALUE_SQL = "Select OSEE_VALUE FROM osee_info where OSEE_KEY = ?";
+   public static final String OSEE_HEALTH_SERVERS_KEY = "osee.health.servers";
 
    public ServerHealthEndpointImpl(IApplicationServerManager applicationServerManager, Map<String, JdbcService> jdbcServices, IAuthenticationManager authManager) {
       this.applicationServerManager = applicationServerManager;
@@ -94,6 +99,7 @@ public final class ServerHealthEndpointImpl {
 
    private String serverStatusAsll(boolean details) {
 
+      // Retrieve servers from osee.json
       final JdbcClientConfig config = jdbcServices.values().iterator().next().getClient().getConfig();
       Object serverObj = config.getDbProps().get("application.servers");
       if (serverObj == null || !(serverObj instanceof String)) {
@@ -101,8 +107,19 @@ public final class ServerHealthEndpointImpl {
       }
       String serversStr = ((String) serverObj).replaceAll("[\\[\\]]", "");
       serversStr = serversStr.replaceAll(" ", "");
-      String[] servers = serversStr.split(",");
-      if (servers.length == 0) {
+      Set<String> servers = new HashSet<>();
+      for (String server : serversStr.split(",")) {
+         servers.add(server);
+      }
+
+      // Retrieve servers from OseeInfo
+      serversStr = getValue(jdbcServices.values().iterator().next().getClient(), OSEE_HEALTH_SERVERS_KEY);
+      serversStr = serversStr.replaceAll(" ", "");
+      for (String server : serversStr.split(",")) {
+         servers.add(server);
+      }
+
+      if (servers.size() == 0) {
          throw new IllegalStateException("No application.servers configured in osee.json file");
       }
 
@@ -161,6 +178,11 @@ public final class ServerHealthEndpointImpl {
          values.add("Exception: " + ex.getMessage());
       }
       sb.append(AHTML.addRowMultiColumnTable(values.toArray(new String[values.size()])));
+   }
+
+   private String getValue(JdbcClient jdbcClient, String key) {
+      String toReturn = jdbcClient.fetch("", GET_VALUE_SQL, key);
+      return toReturn;
    }
 
 }
