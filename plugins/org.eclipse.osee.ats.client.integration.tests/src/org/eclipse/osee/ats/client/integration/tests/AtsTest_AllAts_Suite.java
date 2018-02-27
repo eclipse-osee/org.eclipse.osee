@@ -35,13 +35,14 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({//
-   AtsCoreClient_Suite.class, //
-   AtsTest_Ats_Suite.class, //
+@Suite.SuiteClasses({
+   AtsCoreClient_Suite.class,
+   AtsTest_Ats_Suite.class,
+   AtsClientServiceTest.class,
    // Long running tests at bottom for ease of development/re-run
-   TransitionManagerTest.class, //
-   AtsTest_Action_Suite.class, //
-   AtsCoreClient_Review_Suite.class, //
+   TransitionManagerTest.class,
+   AtsTest_Action_Suite.class,
+   AtsCoreClient_Review_Suite.class //
 })
 public class AtsTest_AllAts_Suite {
 

@@ -222,13 +222,11 @@ public class AtsHealthCheckOperation {
                atsApi.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
             if (versions.size() > 1) {
                error(results, workItem, "Team workflow has " + versions.size() + " versions; should only be 0 or 1");
-            } else {
+            } else if (versions.size() == 1) {
                IAtsVersion version = atsApi.getQueryService().getConfigItem(versions.iterator().next());
-               if (version != null) {
-                  if (!getTeamVersions(teamWf.getTeamDefinition()).contains(version)) {
-                     error(results, workItem,
-                        "Team workflow " + teamWf.getAtsId() + " has version" + version.toStringWithId() + " that does not belong to teamDefHoldingVersions ");
-                  }
+               if (!getTeamVersions(teamWf.getTeamDefinition()).contains(version)) {
+                  error(results, workItem,
+                     "Team workflow " + teamWf.getAtsId() + " has version" + version.toStringWithId() + " that does not belong to teamDefHoldingVersions ");
                }
             }
          }

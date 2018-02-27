@@ -14,8 +14,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.util.health.AtsHealthEndpointApi;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.mail.api.MailService;
@@ -24,21 +24,21 @@ import org.eclipse.osee.mail.api.MailService;
  * @author Donald G. Dunne
  */
 @Path("health")
-public final class HealthResource {
+public final class AtsHealthEndpointImpl implements AtsHealthEndpointApi {
 
    private AtsApi atsApi;
    private JdbcService jdbcService;
    private static MailService mailService;
 
    public void setMailService(MailService mailService) {
-      HealthResource.mailService = mailService;
+      AtsHealthEndpointImpl.mailService = mailService;
    }
 
-   public HealthResource() {
+   public AtsHealthEndpointImpl() {
       // for osgi instantiation; this optionally sets the mail service if available
    }
 
-   public HealthResource(AtsApi atsApi, JdbcService jdbcService) {
+   public AtsHealthEndpointImpl(AtsApi atsApi, JdbcService jdbcService) {
       this.atsApi = atsApi;
       this.jdbcService = jdbcService;
    }
@@ -46,12 +46,19 @@ public final class HealthResource {
    /**
     * @return html representation of ATS Health Checks
     */
+   @Override
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public Response get() throws Exception {
+   public String get() {
       AtsHealthCheckOperation validate = new AtsHealthCheckOperation(atsApi, jdbcService, mailService);
       XResultData rd = validate.run();
-      return Response.ok(rd.toString().replaceAll("\n", "</br>")).build();
+      return rd.toString().replaceAll("\n", "</br>");
+   }
+
+   @Override
+   @GET
+   public boolean alive() {
+      return true;
    }
 
 }

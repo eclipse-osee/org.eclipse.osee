@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
+import org.eclipse.osee.ats.api.util.health.AtsHealthEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsRuleEndpointApi;
 import org.eclipse.osee.ats.core.client.IAtsClient;
@@ -44,6 +45,7 @@ public class AtsClientService {
    private static AtsRuleEndpointApi ruleEp;
    private static AtsNotifyEndpointApi notifyEp;
    private static AtsConfigEndpointApi configEp;
+   private static AtsHealthEndpointApi healthEp;
    private static AtsWorkPackageEndpointApi workPackageEp;
    private static AtsActionEndpointApi actionEp;
 
@@ -141,5 +143,12 @@ public class AtsClientService {
          actionEp = getAtsTarget().newProxy(AtsActionEndpointApi.class);
       }
       return actionEp;
+   }
+
+   public static AtsHealthEndpointApi getHealthEndpoint() {
+      if (healthEp == null) {
+         healthEp = getAtsTarget().newProxy(AtsHealthEndpointApi.class);
+      }
+      return healthEp;
    }
 }
