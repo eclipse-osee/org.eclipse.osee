@@ -1,34 +1,35 @@
 
-app.directive('oseeDateTimeControl', function() {
+app.directive('oseeDateTimeControl', function () {
     return {
         restrict: 'E',
-        controller: ['BaseController', '$scope', '$routeParams', 'OseeAppSchema', function(
-                      BaseController, $scope, $routeParams, OseeAppSchema) {
-            var vm = this;
+        controller: ['BaseController', '$scope', '$routeParams', 'OseeAppSchema', function (
+                BaseController, $scope, $routeParams, OseeAppSchema) {
+                var vm = this;
 
-            $scope.onNgBlur = function() {
-                OseeAppSchema.doUpdate();
-            }
-            $scope.onNgChanged = function(controlschema) {
-                OseeAppSchema.updateItem(controlschema);
-            }
-            $scope.onInit = function() {
-                var given;
-                var intermediate = vm.uiSchema.scope.$ref.substr(13);
-
-                var dateIndex;
-                if(intermediate.indexOf('/') > 0) {
-                    dateIndex = intermediate.substring(0, intermediate.indexOf('/'));
-                    given = new Date(vm.data[dateIndex].value); 
-                    vm.data[dateIndex].value = given;
-                } else {
-                    dateIndex = intermediate;
-                    given = new Date(vm.data[dateIndex]);
-                    vm.data[dateIndex] = given;
+                $scope.onNgBlur = function () {
+                    OseeAppSchema.doUpdate();
                 }
+                $scope.onNgChanged = function (controlschema) {
+                    OseeAppSchema.updateItem(controlschema, vm.resolvedData[vm.fragment]);
+                }
+                $scope.onInit = function () {
+                    var given;
+                    var intermediate = vm.uiSchema.scope.$ref.substr(13);
+
+                    var dateIndex;
+                    if (intermediate.indexOf('/') > 0) {
+                        dateIndex = intermediate.substring(0, intermediate.indexOf('/'));
+                        given = new Date(vm.data[dateIndex].value);
+                        vm.data[dateIndex].value = given;
+                    } else {
+                        dateIndex = intermediate;
+                        given = new Date(vm.data[dateIndex]);
+                        vm.data[dateIndex] = given;
+                    }
+                }
+                BaseController.call(vm, $scope);
             }
-            BaseController.call(vm, $scope);
-        }],
+        ],
         controllerAs: 'vm',
         template: `<jsonforms-control>
                    <input type="date"
@@ -44,9 +45,9 @@ app.directive('oseeDateTimeControl', function() {
                    </input>
                    </jsonforms-control>`
     };
-}).run(['RendererService', 'JSONFormsTesters', function(RendererService, Testers) {
-    RendererService.register('osee-date-time-control', Testers.and(
-        // Inherit this custom control from schema that call out the following using this single option:
-        Testers.optionIs('customControlName', 'oseeDateTimeControl')
-    ), 10);
-}]);
+}).run(['RendererService', 'JSONFormsTesters', function (RendererService, Testers) {
+            RendererService.register('osee-date-time-control', Testers.and(
+                    // Inherit this custom control from schema that call out the following using this single option:
+                    Testers.optionIs('customControlName', 'oseeDateTimeControl')), 10);
+        }
+    ]);

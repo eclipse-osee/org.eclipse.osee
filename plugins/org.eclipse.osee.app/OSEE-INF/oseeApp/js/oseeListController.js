@@ -1,4 +1,5 @@
-app.controller('oseeListController', ['OseeAppSchema', '$route', '$resource',
+
+app.controller('oseeListController', ['OseeAppSchema', '$route', '$resource',
         function (OseeAppSchema, $route, $resource) {
             $route.current.params;
 
@@ -14,19 +15,26 @@
             };
             vm.gridOptions = vm.allGridSettings;
 
-
-
             OseeAppSchema.get({
                 appId: vm.appId
-                }, function (result) {                OseeAppSchema.query({filter:result.QueryFilter}, function (data) {                    vm.startData = data;                });
+            }, function (result) {
+                OseeAppSchema.query({
+                    filter: result.QueryFilter
+                }, function (data) {
+                    vm.startData = data;
+                });
                 vm.allGridSettings.columnDefs = result.UIGridColumns;
                 vm.gridOptions = vm.allGridSettings;
                 vm.listDataResource = $resource(result.ListRestURL);
-                vm.listDataResource.query(function(listData) {
+                vm.listDataResource.query(function (listData) {
                     vm.allGridSettings.enableColumnResizing = true;
                     vm.allGridSettings.data = listData;
                     vm.gridOptions = vm.allGridSettings;
                     vm.loaded = true;
-                }, function (response) {                    vm.failed = true;                   alert("Problem: " + response.message);                });
+                }, function (response) {
+                    vm.failed = true;
+                    alert("Problem: " + response.message);
+                });
             });
-        }]);
+        }
+    ]);

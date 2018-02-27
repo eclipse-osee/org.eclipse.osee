@@ -14,7 +14,10 @@ app.controller('oseeAppController', [
             vm.element = $route.current.params.element;
             vm.oseeAppData = {};
             vm.useSubmit = false;
-
+            $scope.$on('$locationChangeStart', function (event) {
+                // make sure the last update is captured before leaving
+                OseeAppSchema.doUpdate();
+            });
             OseeAppSchema.get({
                 appId: vm.appId
             }, function (data) {
@@ -53,9 +56,6 @@ app.controller('oseeAppController', [
                 }
             });
 
-            this.goBack = function () {
-                history.back();
-            };
             this.newAction = function () {
                 vm.createAction = $resource(vm.createURL, null, {
                         'create': {
@@ -91,14 +91,21 @@ app.controller('oseeAppController', [
                     alert("Data not ready to be submitted.");
                 }
             };
+            this.goBack = function () {
+                history.back();
+            };
+            OseeAppSchema.getElement = function () {
+                return vm.element;
+            };
+
             OseeAppSchema.doUpdate = function () {
                 if (this.changedItem) {
-                        var jsonData;
-                        if(this.changedData.value instanceof Date)  { 
-                            jsonData = JSON.stringify(this.changedData.value.getTime());
-                        } else {
-                            jsonData = JSON.stringify(this.changedData.value);
-                        }
+                    var jsonData;
+                    if (this.changedData instanceof Date) {
+                        jsonData = JSON.stringify(this.changedData.getTime());
+                    } else {
+                        jsonData = JSON.stringify(this.changedData);
+                    }
                     vm.putResource = $resource(
                             vm.defaultUpdateURL, null, {
                             'update': {
@@ -113,6 +120,7 @@ app.controller('oseeAppController', [
                         updated: this.changedItem
                     }, "[" + jsonData + "]").$promise.then(
                         function (data) {
+                        console.log(data);
                         // will need to update the gamma here
                     }, function (response) {
                         vm.failed = true;
@@ -121,11 +129,11 @@ app.controller('oseeAppController', [
                     this.changedItem = null;
                 }
             };
-            OseeAppSchema.updateItem = function (controlschema) {
+            OseeAppSchema.updateItem = function (controlschema, change) {
                 var input = JSON.parse(controlschema);
                 var intermediate = input.scope.$ref.substr(13);
                 this.changedItem = intermediate.substring(0, intermediate.indexOf('/'));
-                this.changedData = vm.oseeAppData[this.changedItem];
-            }
+                this.changedData = change;
+            };
         }
     ]);

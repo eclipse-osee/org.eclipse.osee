@@ -5,34 +5,7 @@ app.directive('oseeMultiselectDropdownControl', function () {
         controller: ['BaseController', '$scope', 'OseeAppSchema', 'OseeControlValues', '$route', function (BaseController, $scope, OseeAppSchema, OseeControlValues, $route) {
                 var vm = this;
                 vm.element = $route.current.params.element;
-                $scope.model = []; // This is where we can set default selections on initialization, if any.
-                var controlIdValue = OseeControlValues.parseAttribute($scope.uischema.scope.$ref);
-                console.log("logging url and control id, url: [" + $scope.uischema.scope.getUrl + "] and control id: [" + controlIdValue + "]");
-                OseeControlValues.queryUrl($scope.uischema.scope.getUrl + '/:controlId').query({
-                    controlId: controlIdValue
-                }, function (selections) {
-                    var objects = [];
-                    // if there are no objects, use the local enumeration
-                    if(selections.length < 1) {
-                        for(i = 0; i < vm.resolvedSchema.enum.length; ++i) {
-                            selections[i] = vm.resolvedSchema.enum[i];                           
-                        }
-                    }
-                    for (i = 0; i < selections.length; i++) {
-                        objects[i] = {
-                            id: i,
-                            label: selections[i].toString()
-                        };
 
-                        if (vm.resolvedData && vm.resolvedData[vm.fragment]) {                 
-                            if (selections[i].toString() === vm.resolvedData.value) {
-                                console.log('selection['+selections[i].toString()+']data>'+vm.resolvedData.value+'<');
-                                $scope.model.push(objects[i]);
-                            }
-                        }
-                    }
-                    $scope.data = objects;
-                });
                 $scope.settings = $scope.uischema.options.settings;
                 if ($scope.settings.smartButtonTextConverter == true) {
                     $scope.settings.smartButtonTextConverter = function (itemText, originalItem) {
@@ -41,19 +14,72 @@ app.directive('oseeMultiselectDropdownControl', function () {
                     }
                 }
 
-                $scope.onInit = function () {}
+                $scope.onInit = function () {
+                    console.log("in init");
+                    if (!$scope.model) {
+                        $scope.model = []; // This is where we can set default selections on initialization, if any.
+                    } else {
+                        vm.resolvedData.value = $scope.model["0"].label;
+                        $scope.model = [];
+                    }
+                    var controlIdParam = {};
+                    if ($scope.uischema.scope.getUrl.indexOf(":element") > 0) {
+                        controlIdParam = OseeControlValues.getParameterFromString("element", vm.element);
+                    } else if ($scope.uischema.scope.getUrl.indexOf(":attribute") > 0) {
+                        controlIdParam = OseeControlValues.getParameterFromString("attribute", OseeControlValues.parseAttribute($scope.uischema.scope.$ref));
+                    }
+                    // choose parameters by either element id or attribute id
+                    console.log("logging url and attribute id, url: [" + $scope.uischema.scope.getUrl + "] and control id: [" + controlIdParam + "]");
+                    OseeControlValues.queryUrl($scope.uischema.scope.getUrl).query(controlIdParam, function (selections) {
+                        var objects = [];
+                        // if there are no objects, use the local enumeration
+                        if (selections.length < 1) {
+                            for (i = 0; i < vm.resolvedSchema.enum.length; ++i) {
+                                selections[i] = vm.resolvedSchema.enum[i];
+                            }
+                        }
+                        var found = false;
+                        for (i = 0; i < selections.length; i++) {
+                            objects[i] = {
+                                id: i,
+                                label: selections[i].toString()
+                            };
+
+                            if (vm.resolvedData) {
+                                if (selections[i].toString() === vm.resolvedData.value) {
+                                    console.log('selection[' + selections[i].toString() + ']data>' + vm.resolvedData.value + '<');
+                                    $scope.model.push(objects[i]);
+                                    found = true;
+                                }
+                            }
+                        }
+                        if (vm.resolvedData.value && !found) {
+                            // put it into the list
+                            objects[selections.length] = {
+                                id: selections.length,
+                                label: vm.resolvedData.value
+                            }
+                            $scope.model.push(objects[selections.length]);
+                        }
+                        $scope.data = objects;
+                    });
+                }
                 $scope.multiselectEvents = {
                     onSelectionChanged: function () {
                         var content = $scope.getEffectedData($scope.model);
-                        var parameter = $scope.getParameterFromString($scope.uischema.scope.putUrl, $scope.vm.element, 
-                                        OseeControlValues.parseAttribute($scope.vm.uiSchema.scope.$ref));
-                        OseeControlValues.putUrl($scope.uischema.scope.putUrl).submit(parameter, content);
+                        var parameter = OseeControlValues.getParametersFromURL($scope.uischema.scope.putUrl, $scope.vm.element,
+                                OseeControlValues.parseAttribute($scope.vm.uiSchema.scope.$ref));
+                        OseeControlValues.putUrl($scope.uischema.scope.putUrl, false).submit(parameter, content).$promise.then(
+                            function (data) {
+                            console.log("data put from multiselect dropdown:" + data);
+                            $scope.onInit();
+                            // will need to update the gamma here
+                        }, function (response) {
+                            vm.failed = true;
+                            alert("Problem: " + response.message);
+                        });
                     }
                 };
-                $scope.getParameterFromString = function (url, action, attribute) {
-                    var elements = url.match(/:[^\/]*/g);
-                    return JSON.parse("{ \"" + elements[0].substr(1) + "\": \"" + action + "\", \"" + elements[1].substr(1) + "\": \"" + attribute + "\" }");
-                }
                 $scope.getEffectedData = function (selections) {
                     var toReturn = '[ ';
                     var first = true;

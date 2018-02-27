@@ -1,20 +1,21 @@
 
-app.directive('oseeTextControl', function() {
+app.directive('oseeTextControl', function () {
     return {
         restrict: 'E',
-        controller: ['BaseController', '$scope', 'OseeAppSchema', function(BaseController, $scope, OseeAppSchema) {
-            var vm = this;
+        controller: ['BaseController', '$scope', 'OseeAppSchema', function (BaseController, $scope, OseeAppSchema) {
+                var vm = this;
 
-            $scope.onNgBlur = function () {
-                OseeAppSchema.doUpdate();
+                $scope.onNgBlur = function () {
+                    OseeAppSchema.doUpdate();
+                }
+
+                $scope.onNgChange = function (controlschema) {
+                    OseeAppSchema.updateItem(controlschema, vm.resolvedData[vm.fragment]);
+                }
+
+                BaseController.call(vm, $scope, OseeAppSchema);
             }
-
-            $scope.onNgChange = function(controlschema) {
-                OseeAppSchema.updateItem(controlschema);
-            }
-
-            BaseController.call(vm, $scope, OseeAppSchema);
-        }],
+        ],
         controllerAs: 'vm',
         template: `
             <jsonforms-control>
@@ -30,12 +31,10 @@ app.directive('oseeTextControl', function() {
         `
     };
 
-}).run(['RendererService', 'JSONFormsTesters', function(RendererService, Testers) {
-    RendererService.register('osee-text-control', Testers.and(
+}).run(['RendererService', 'JSONFormsTesters', function (RendererService, Testers) {
+            RendererService.register('osee-text-control', Testers.and(
 
-        // Inherit this custom control from schema that call out the following using this single option:
-        Testers.optionIs('customControlName', 'oseeTextControl')
-    ), 10);
-}]);
-
-
+                    // Inherit this custom control from schema that call out the following using this single option:
+                    Testers.optionIs('customControlName', 'oseeTextControl')), 10);
+        }
+    ]);

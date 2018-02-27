@@ -11,7 +11,7 @@ app.directive('oseeInputControl', function () {
                 }
 
                 $scope.onNgChange = function (controlschema) {
-                    OseeAppSchema.updateItem(controlschema);
+                    OseeAppSchema.updateItem(controlschema, vm.resolvedData[vm.fragment]);
                 }
                 BaseController.call(vm, $scope, $routeParams, OseeAppSchema);
 

@@ -39,13 +39,15 @@ app.service('OseeControlValues', function ($resource) {
             }
         });
     }
-    this.putUrl = function (url) {
+    this.putUrl = function (url, useArray) {
         return $resource(url, {}, {
             submit: {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                params: {},
+                isArray: useArray
             }
         });
     }
@@ -55,5 +57,12 @@ app.service('OseeControlValues', function ($resource) {
             return intermediate.substring(0, intermediate.indexOf('/'));
         }
         return intermediate;
+    }
+    this.getParametersFromURL = function (url, action, attribute) {
+        var elements = url.match(/:[^\/]*/g);
+        return JSON.parse("{ \"" + elements[0].substr(1) + "\": \"" + action + "\", \"" + elements[1].substr(1) + "\": \"" + attribute + "\" }");
+    }
+    this.getParameterFromString = function (item, value) {
+        return JSON.parse("{ \"" + item + "\": \"" + value + "\" }");
     }
 });

@@ -28,6 +28,11 @@
     text-align: left !important;
 }
 
+.osee-multiselectobject-dropdown {
+    width: 100%;
+    text-align: left !important;
+}
+
 .multiselect-parent{
     width: 100%;
 }

@@ -1,22 +1,23 @@
 
-app.directive('oseeTextareaControl', function() {
+app.directive('oseeTextareaControl', function () {
     return {
         restrict: 'E',
-        controller: ['BaseController', '$scope', '$routeParams', 'OseeAppSchema', function(
+        controller: ['BaseController', '$scope', '$routeParams', 'OseeAppSchema', function (
                 BaseController, $scope, $routeParams, OseeAppSchema) {
-            var vm = this;
+                var vm = this;
 
-            $scope.onNgChange = function(controlschema) {
-                OseeAppSchema.updateItem(controlschema);
-                console.log("got ng change");
-            }
-            $scope.onNgBlur = function() {
-                console.log("got ng blur");
-                OseeAppSchema.doUpdate();
-            }
-            BaseController.call(vm, $scope, OseeAppSchema);
+                $scope.onNgChange = function (controlschema) {
+                    OseeAppSchema.updateItem(controlschema, vm.resolvedData[vm.fragment]);
+                    console.log("got ng change");
+                }
+                $scope.onNgBlur = function () {
+                    console.log("got ng blur");
+                    OseeAppSchema.doUpdate();
+                }
+                BaseController.call(vm, $scope, OseeAppSchema);
 
-        }],
+            }
+        ],
         controllerAs: 'vm',
         template: `
             <jsonforms-control>
@@ -33,12 +34,10 @@ app.directive('oseeTextareaControl', function() {
         `
     };
 
-}).run(['RendererService', 'JSONFormsTesters', function(RendererService, Testers) {
-    RendererService.register('osee-textarea-control', Testers.and(
+}).run(['RendererService', 'JSONFormsTesters', function (RendererService, Testers) {
+            RendererService.register('osee-textarea-control', Testers.and(
 
-        // Inherit this custom control from schema that call out the following using this single option:
-        Testers.optionIs('customControlName', 'oseeTextareaControl')
-    ), 10);
-}]);
-
-
+                    // Inherit this custom control from schema that call out the following using this single option:
+                    Testers.optionIs('customControlName', 'oseeTextareaControl')), 10);
+        }
+    ]);

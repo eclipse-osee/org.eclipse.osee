@@ -5,16 +5,15 @@ app.directive('oseeCheckboxControl', function () {
                 BaseController, $scope, $routeParams, OseeAppSchema) {
                 var vm = this;
 
-                $scope.onNgBlur = function () {
+                $scope.onNgChanged = function (controlschema) {
+                    OseeAppSchema.updateItem(controlschema, vm.resolvedData[vm.fragment]);
                     OseeAppSchema.doUpdate();
                 }
-
-                $scope.onNgChanged = function (controlschema) {
-                    OseeAppSchema.updateItem(controlschema);
-                }
-                $scope.subLabelExists = function() {
-                    if(vm.uiSchema.options.subLabel) return true;
-                    else return false;
+                $scope.subLabelExists = function () {
+                    if (vm.uiSchema.options.subLabel)
+                        return true;
+                    else
+                        return false;
                 }
                 BaseController.call(vm, $scope);
 
@@ -30,8 +29,7 @@ app.directive('oseeCheckboxControl', function () {
                     ng-style="{{vm.uiSchema.style}}"
                     ng-model="vm.resolvedData[vm.fragment]"
                     ng-change="onNgChanged('{{vm.uiSchema}}')"
-                    ng-readonly="vm.uiSchema.readOnly"
-                    ng-blur="onNgBlur()">
+                    ng-readonly="vm.uiSchema.readOnly">
                 </input>
             </jsonforms-control>
         `
@@ -42,4 +40,4 @@ app.directive('oseeCheckboxControl', function () {
                     // Inherit this custom control from schema that call out the following using this single option:
                     Testers.optionIs('customControlName', 'oseeCheckboxControl')), 10);
         }
-]);
+    ]);
