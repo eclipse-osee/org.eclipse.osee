@@ -212,7 +212,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    @Override
    public TransactionId getTransactionId(IAtsWorkItem workItem) {
       TransactionId transId = TransactionId.SENTINEL;
-      ArtifactId artifact = atsApi.getQueryService().getArtifact(workItem.getStoreObject());
+      ArtifactId artifact = atsApi.getQueryService().getArtifact(workItem.getId());
       if (artifact instanceof ArtifactReadable) {
          transId = ((ArtifactReadable) artifact).getTransaction();
       }
