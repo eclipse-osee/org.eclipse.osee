@@ -11,8 +11,10 @@
 package org.eclipse.osee.orcs.db.internal.change;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -88,10 +90,16 @@ public class AddSyntheticArtifactChangeData {
 
    private Map<Long, Long> getArtIdToArtTypeIdMap(BranchId branchId, Set<Long> artIds) {
       Map<Long, Long> map = new HashMap<>();
+      List<Integer> artIdsAsInt = new LinkedList<>();
+      for (Long id : artIds) {
+         artIdsAsInt.add(id.intValue());
+      }
       if (!artIds.isEmpty()) {
-         String query = String.format(ART_TYPE_ID_QUERY, Collections.toString(",", artIds));
-         jdbcClient.runQuery(stmt -> map.put(stmt.getLong("art_id"), stmt.getLong("art_type_id")), query,
-            branchId.getId());
+         for (Collection<Integer> ids : Collections.subDivide(artIdsAsInt, 999)) {
+            String query = String.format(ART_TYPE_ID_QUERY, Collections.toString(",", ids));
+            jdbcClient.runQuery(stmt -> map.put(stmt.getLong("art_id"), stmt.getLong("art_type_id")), query,
+               branchId.getId());
+         }
       }
       return map;
    }

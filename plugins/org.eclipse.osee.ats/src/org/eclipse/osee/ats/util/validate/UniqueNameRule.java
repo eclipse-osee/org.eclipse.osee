@@ -58,8 +58,7 @@ public class UniqueNameRule extends AbstractValidationRule {
                 * 1) Artifact name is numeric <br/>
                 * 2) Artifact type is different<br/>
                 */
-               if (Strings.isNumeric(
-                  artToValidate.getName()) && !artToValidate.isTypeEqual(art.getArtifactType())) {
+               if (Strings.isNumeric(artToValidate.getName()) && !artToValidate.isTypeEqual(art.getArtifactType())) {
                   continue;
                }
                /**************************************************************************
