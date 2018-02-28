@@ -70,9 +70,9 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    private TeamWorkFlowArtifact teamWfArt;
 
    @Test
-   public void testUnrelasedVersions() {
+   public void testUnreleasedVersions() {
       Object object = getFirstAndCount(
-         "ats/action/" + DemoArtifactToken.SAW_Commited_Code_TeamWf.getIdString() + "/UnrelasedVersions", 2);
+         "ats/action/" + DemoArtifactToken.SAW_Commited_Code_TeamWf.getIdString() + "/UnreleasedVersions", 2);
       Assert.assertEquals(DemoBranches.SAW_Bld_2.getName(), object);
    }
 

@@ -196,12 +196,17 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
    }
 
    private static void writeAssignees(JsonGenerator writer, ArtifactReadable action, IAtsWorkItem workItem) throws IOException, JsonGenerationException, JsonProcessingException {
-      writer.writeObjectFieldStart("Assignees");
-      writer.writeObjectField("value", workItem.getStateMgr().getAssigneesStr());
       AttributeReadable<Object> attr =
          action.getAttributeById(AttributeId.valueOf(action.getSoleAttributeId(AtsAttributeTypes.CurrentState)));
+      writer.writeArrayFieldStart("AssigneesTokens");
+      for (IAtsUser assignee : workItem.getStateMgr().getAssignees()) {
+         writer.writeStartObject();
+         writer.writeStringField("id", assignee.getIdString());
+         writer.writeStringField("name", assignee.getName());
       writer.writeNumberField("gammaId", attr.getGammaId());
       writer.writeEndObject();
+      }
+      writer.writeEndArray();
    }
 
    private static void writeType(JsonGenerator writer, ArtifactReadable action, IAtsWorkItem workItem, String fieldName, AttributeTypeToken attrType) throws IOException, JsonGenerationException, JsonProcessingException {

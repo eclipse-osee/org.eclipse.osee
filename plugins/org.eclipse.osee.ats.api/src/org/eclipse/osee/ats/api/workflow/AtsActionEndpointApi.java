@@ -154,7 +154,7 @@ public interface AtsActionEndpointApi {
     * @return valid unreleased versions to select
     */
    @GET
-   @Path("{id}/UnrelasedVersions")
+   @Path("{id}/UnreleasedVersions")
    @Produces(MediaType.APPLICATION_JSON)
    List<String> getUnreleasedVersionNames(@PathParam("id") String id);
 

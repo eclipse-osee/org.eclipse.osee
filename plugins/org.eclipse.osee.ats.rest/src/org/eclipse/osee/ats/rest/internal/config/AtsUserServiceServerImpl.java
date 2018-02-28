@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -173,6 +174,9 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    public IAtsUser getUserByAccountId(HttpHeaders httpHeaders) {
       IAtsUser user = null;
       String accountId = RestUtil.getAccountId(httpHeaders);
+      if (Strings.isInValid(accountId)) {
+         return null;
+      }
       IAtsUser userById = getUserByAccountId(Long.valueOf(accountId));
       if (userById != null) {
          user = userById;

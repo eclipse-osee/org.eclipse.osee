@@ -158,7 +158,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
     */
    @Override
    @GET
-   @Path("{id}/UnrelasedVersions")
+   @Path("{id}/UnreleasedVersions")
    @Produces(MediaType.APPLICATION_JSON)
    public List<String> getUnreleasedVersionNames(@PathParam("id") String id) {
       List<String> versions = new LinkedList<>();
