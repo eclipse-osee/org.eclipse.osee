@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
-   <implementation class="org.eclipse.osee.ats.rest.internal.util.health.HealthResource"/>
+   <implementation class="org.eclipse.osee.ats.rest.internal.util.health.AtsHealthEndpointImpl"/>
    <reference bind="setMailService" cardinality="1..1" interface="org.eclipse.osee.mail.api.MailService" name="MailService" policy="static"/>
 </scr:component>
