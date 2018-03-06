@@ -257,4 +257,9 @@ public class AtsStoreService implements IAtsStoreService {
       return ClientSessionManager.isProductionDataStore();
    }
 
+   @Override
+   public boolean isHistorical(IAtsObject atsObject) {
+      return ((Artifact) AtsClientService.get().getQueryService().getArtifact(atsObject)).isHistorical();
+   }
+
 }

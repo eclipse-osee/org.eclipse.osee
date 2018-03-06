@@ -111,6 +111,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
 
    @Override
    public boolean setValueFromInputStream(InputStream value) {
+      Conditions.checkNotNull(value, "Attribute value", "attribute id [%s]", getId());
       boolean success = false;
       try {
          success = setFromString(Lib.inputStreamToString(value));

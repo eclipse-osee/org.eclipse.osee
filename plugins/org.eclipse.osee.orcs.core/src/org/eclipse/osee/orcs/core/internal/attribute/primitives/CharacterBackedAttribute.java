@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.CharacterDataProxy;
 
 /**
@@ -30,6 +31,7 @@ public abstract class CharacterBackedAttribute<T> extends AttributeImpl<T> {
 
    @Override
    public boolean subClassSetValue(T value) {
+      Conditions.checkNotNull(value, "Attribute value", "attribute id [%s]", getId());
       return getDataProxy().setValue(value);
    }
 }

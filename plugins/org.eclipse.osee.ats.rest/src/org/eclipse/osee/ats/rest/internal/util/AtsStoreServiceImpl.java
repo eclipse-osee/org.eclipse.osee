@@ -246,4 +246,9 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
       return jdbcService.getClient().getConfig().isProduction();
    }
 
+   @Override
+   public boolean isHistorical(IAtsObject atsObject) {
+      return ((ArtifactReadable) atsApi.getQueryService().getArtifact(atsObject)).isHistorical();
+   }
+
 }
