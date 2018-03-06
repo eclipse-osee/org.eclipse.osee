@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import static org.eclipse.osee.orcs.db.internal.sql.SqlUtil.newSimpleWithClause;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -23,10 +22,8 @@ import org.eclipse.osee.orcs.db.internal.search.tagger.HasTagProcessor;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagCollector;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
-import org.eclipse.osee.orcs.db.internal.sql.AliasEntry;
 import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
-import org.eclipse.osee.orcs.db.internal.sql.SqlUtil;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 
@@ -34,10 +31,6 @@ import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
  * @author Roberto E. Escobar
  */
 public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywords> implements HasTagProcessor {
-
-   private static final AliasEntry GAMMA_WITH = SqlUtil.newAlias("gamma", "gamma");
-   private static final AliasEntry ATTRIBUTE_WITH = SqlUtil.newAlias("attribute", "att");
-
    private CriteriaAttributeKeywords criteria;
 
    private String artAlias;
@@ -63,7 +56,6 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
 
    @Override
    public void addWithTables(AbstractSqlWriter writer) {
-      String gammaAlias = writer.getNextAlias(GAMMA_WITH);
       StringBuilder gammaSb = new StringBuilder();
       Collection<AttributeTypeId> types = criteria.getTypes();
       AbstractJoinQuery joinQuery = null;
@@ -131,8 +123,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          }
          valueIdx++;
       }
-      writer.addWithClause(newSimpleWithClause(gammaAlias, gammaSb.toString()));
-      attrAlias = writer.getNextAlias(ATTRIBUTE_WITH);
+      String gammaAlias = writer.addWithClause("gamma", gammaSb.toString());
 
       StringBuilder attrSb = new StringBuilder();
       attrSb.append("   SELECT art_id FROM osee_attribute att, osee_txs txs, ");
@@ -165,8 +156,8 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       attrSb.append("   att.gamma_id = txs.gamma_id");
       attrSb.append(" AND ");
       attrSb.append(writer.getWithClauseTxBranchFilter("txs", true));
-      writer.addWithClause(newSimpleWithClause(attrAlias, attrSb.toString()));
-      writer.addTable(attrAlias);
+
+      attrAlias = writer.addReferencedWithClause("att", attrSb.toString());
    }
 
    @Override

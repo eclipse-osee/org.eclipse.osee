@@ -16,10 +16,8 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
-import org.eclipse.osee.orcs.db.internal.sql.AliasEntry;
 import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
-import org.eclipse.osee.orcs.db.internal.sql.SqlUtil;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 import org.eclipse.osee.orcs.db.internal.sql.WithClause;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
@@ -28,11 +26,7 @@ import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
  * @author Roberto E. Escobar
  */
 public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeTypeExists> {
-
-   private static final AliasEntry ATTRIBUTE_EXIST_WITH = SqlUtil.newAlias("attr_exists", "attrExt");
-
    private CriteriaAttributeTypeExists criteria;
-
    private String artAlias;
    private String artTxsAlias;
    private String attrAlias;
@@ -74,10 +68,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
          sb.append("\n    GROUP BY attr.art_id");
          String body = sb.toString();
 
-         withClauseName = writer.getNextAlias(ATTRIBUTE_EXIST_WITH);
-         withClause = SqlUtil.newSimpleWithClause(withClauseName, body);
-         writer.addWithClause(withClause);
-         writer.addTable(withClauseName);
+         withClauseName = writer.addReferencedWithClause("attrExt", body);
       }
    }
 

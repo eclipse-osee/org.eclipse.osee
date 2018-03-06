@@ -134,8 +134,31 @@ public abstract class AbstractSqlWriter implements HasOptions {
       }
    }
 
-   public void addWithClause(WithClause clause) {
-      withClauses.add(clause);
+   /**
+    * Add a named query into a recursive WITH statement that is referenced in the main FROM clause
+    */
+   public String addRecursiveReferencedWithClause(String withClauseName, String parameters, String body) {
+      withClauses.add(new WithClause(withClauseName, parameters, body));
+      tableEntries.add(withClauseName);
+      return withClauseName;
+   }
+
+   /**
+    * Add a named query into a WITH statement that is not referenced in the main FROM clause
+    */
+   public String addWithClause(String prefix, String body) {
+      String withClauseName = getNextAlias(prefix);
+      withClauses.add(new WithClause(withClauseName, body));
+      return withClauseName;
+   }
+
+   /**
+    * Add a named query into a WITH statement that is referenced in the main FROM clause
+    */
+   public String addReferencedWithClause(String prefix, String body) {
+      String withClauseName = addWithClause(prefix, body);
+      tableEntries.add(withClauseName);
+      return withClauseName;
    }
 
    protected void computeWithClause(Iterable<SqlHandler<?>> handlers) {
@@ -160,12 +183,14 @@ public abstract class AbstractSqlWriter implements HasOptions {
    protected abstract void writeGroupAndOrder();
 
    protected void writeTables() {
-      int size = tableEntries.size();
-      for (int i = 0; i < size; i++) {
-         write(tableEntries.get(i));
-         if (i + 1 < size) {
+      boolean first = true;
+      for (String tableEntry : tableEntries) {
+         if (first) {
+            first = false;
+         } else {
             write(", ");
          }
+         write(tableEntry);
       }
    }
 
@@ -233,12 +258,17 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    public String getNextAlias(AliasEntry table) {
       ObjectType type = table.getObjectType();
-      return getNextAlias(table, type);
+      return getNextAlias(table.getPrefix(), type);
    }
 
-   private String getNextAlias(AliasEntry table, ObjectType type) {
+   private String getNextAlias(String prefix, ObjectType type) {
       int level = getAliasManager().getLevel();
-      return getAliasManager().getNextAlias(level, table, type);
+      return getAliasManager().getNextAlias(level, prefix, type);
+   }
+
+   public String getNextAlias(String prefix) {
+      int level = getAliasManager().getLevel();
+      return getAliasManager().getNextAlias(level, prefix, ObjectType.UNKNOWN);
    }
 
    public int nextAliasLevel() {
@@ -247,10 +277,6 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    public SqlAliasManager getAliasManager() {
       return aliasManager;
-   }
-
-   public void addTable(String table) {
-      tableEntries.add(table);
    }
 
    public String getOrCreateTableAlias(TableEnum table) {
@@ -276,7 +302,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    public String addTable(AliasEntry table, ObjectType objectType) {
-      String alias = getNextAlias(table, objectType);
+      String alias = getNextAlias(table.getPrefix(), objectType);
       tableEntries.add(String.format("%s %s", table.getName(), alias));
       return alias;
    }

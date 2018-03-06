@@ -10,19 +10,49 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql;
 
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+
 /**
  * @author John R. Misinco
  */
-public interface WithClause {
+public class WithClause {
+   private final boolean isRecursive;
+   private final String name;
+   private final String parameters;
+   private final String body;
 
-   String getName();
+   public WithClause(String name, String body) {
+      this(false, name, "", body);
+   };
 
-   String getBody();
+   public WithClause(String name, String parameters, String body) {
+      this(true, name, parameters, body);
+   };
 
-   String getParameters();
+   public WithClause(boolean isRecursive, String name, String parameters, String body) {
+      this.isRecursive = isRecursive;
+      this.name = name;
+      this.parameters = parameters;
+      this.body = body;
+   }
 
-   boolean isRecursive();
+   public String getName() {
+      return name;
+   }
 
-   boolean hasParameters();
+   public String getParameters() {
+      return parameters;
+   }
 
+   public boolean isRecursive() {
+      return isRecursive;
+   }
+
+   public String getBody() {
+      return body;
+   }
+
+   public boolean hasParameters() {
+      return Strings.isValid(parameters);
+   }
 }

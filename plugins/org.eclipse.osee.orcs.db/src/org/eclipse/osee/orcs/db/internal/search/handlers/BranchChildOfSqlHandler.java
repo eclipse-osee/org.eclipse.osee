@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import static org.eclipse.osee.orcs.db.internal.sql.SqlUtil.newRecursiveWithClause;
 import java.util.List;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchChildOf;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
-import org.eclipse.osee.orcs.db.internal.sql.AliasEntry;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
-import org.eclipse.osee.orcs.db.internal.sql.SqlUtil;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 
 /**
@@ -24,9 +21,6 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
  * @author Ryan D. Brooks
  */
 public class BranchChildOfSqlHandler extends SqlHandler<CriteriaBranchChildOf> {
-
-   private static final AliasEntry CHILDREN_OF_ENTRY = SqlUtil.newAlias("children_of", "chof");
-
    private CriteriaBranchChildOf criteria;
    private String withAlias;
    private String brAlias;
@@ -38,7 +32,7 @@ public class BranchChildOfSqlHandler extends SqlHandler<CriteriaBranchChildOf> {
 
    @Override
    public void addWithTables(final AbstractSqlWriter writer) {
-      withAlias = writer.getNextAlias(CHILDREN_OF_ENTRY);
+      withAlias = writer.getNextAlias("chof");
       final StringBuilder body = new StringBuilder();
       body.append("  SELECT anch_br1.branch_id, 0 as branch_level FROM osee_branch anch_br1, osee_branch anch_br2\n");
       body.append("   WHERE anch_br1.parent_branch_id = anch_br2.branch_id AND anch_br2.branch_id = ?");
@@ -46,8 +40,7 @@ public class BranchChildOfSqlHandler extends SqlHandler<CriteriaBranchChildOf> {
       body.append("  SELECT branch_id, branch_level + 1 FROM ").append(withAlias).append(" recurse, osee_branch br");
       body.append(" WHERE recurse.child_id = br.parent_branch_id");
       writer.addParameter(criteria.getParent());
-      writer.addWithClause(newRecursiveWithClause(withAlias, "(child_id, branch_level)", body.toString()));
-      writer.addTable(withAlias);
+      writer.addRecursiveReferencedWithClause(withAlias, "(child_id, branch_level)", body.toString());
    }
 
    @Override

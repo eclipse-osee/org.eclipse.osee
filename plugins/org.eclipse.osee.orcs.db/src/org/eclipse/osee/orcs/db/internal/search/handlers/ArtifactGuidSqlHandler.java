@@ -14,10 +14,8 @@ import java.util.Collection;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
-import org.eclipse.osee.orcs.db.internal.sql.AliasEntry;
 import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
-import org.eclipse.osee.orcs.db.internal.sql.SqlUtil;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 import org.eclipse.osee.orcs.db.internal.sql.WithClause;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
@@ -26,11 +24,7 @@ import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
  * @author Roberto E. Escobar
  */
 public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids> {
-
-   private static final AliasEntry ART_GUID_WITH = SqlUtil.newAlias("artifactGuidWith", "artUuid");
-
    private CriteriaArtifactGuids criteria;
-
    private String artAlias;
    private String jguidAlias;
    private String txsAlias;
@@ -64,10 +58,7 @@ public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids> {
          sb.append("\n    GROUP BY art.art_id");
          String body = sb.toString();
 
-         withClauseName = writer.getNextAlias(ART_GUID_WITH);
-         withClause = SqlUtil.newSimpleWithClause(withClauseName, body);
-         writer.addWithClause(withClause);
-         writer.addTable(withClauseName);
+         withClauseName = writer.addReferencedWithClause("artUuid", body);
       }
    }
 

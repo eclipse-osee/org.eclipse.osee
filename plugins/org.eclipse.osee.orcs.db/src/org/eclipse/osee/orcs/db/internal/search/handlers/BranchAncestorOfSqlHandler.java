@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import static org.eclipse.osee.orcs.db.internal.sql.SqlUtil.newRecursiveWithClause;
 import java.util.List;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchAncestorOf;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
-import org.eclipse.osee.orcs.db.internal.sql.AliasEntry;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
-import org.eclipse.osee.orcs.db.internal.sql.SqlUtil;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 
 /**
@@ -24,9 +21,6 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
  * @author Ryan D. Brooks
  */
 public class BranchAncestorOfSqlHandler extends SqlHandler<CriteriaBranchAncestorOf> {
-
-   private static final AliasEntry ANCESTOR_OF_ENTRY = SqlUtil.newAlias("ancestor_of", "anstrof");
-
    private CriteriaBranchAncestorOf criteria;
    private String withAlias;
    private String brAlias;
@@ -38,7 +32,7 @@ public class BranchAncestorOfSqlHandler extends SqlHandler<CriteriaBranchAncesto
 
    @Override
    public void addWithTables(final AbstractSqlWriter writer) {
-      withAlias = writer.getNextAlias(ANCESTOR_OF_ENTRY);
+      withAlias = writer.getNextAlias("anstrof");
       final StringBuilder body = new StringBuilder();
       body.append("  SELECT anch_br1.parent_branch_id, 0 as branch_level FROM osee_branch anch_br1\n");
       body.append("   WHERE anch_br1.branch_id = ?");
@@ -47,8 +41,7 @@ public class BranchAncestorOfSqlHandler extends SqlHandler<CriteriaBranchAncesto
       body.append(" recurse, osee_branch br");
       body.append(" WHERE br.branch_id = recurse.parent_id");
       writer.addParameter(criteria.getChild());
-      writer.addWithClause(newRecursiveWithClause(withAlias, "(parent_id, branch_level)", body.toString()));
-      writer.addTable(withAlias);
+      writer.addRecursiveReferencedWithClause(withAlias, "(parent_id, branch_level)", body.toString());
    }
 
    @Override

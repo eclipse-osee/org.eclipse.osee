@@ -74,9 +74,7 @@ public class SqlAliasManager {
       return Iterables.getLast(aliases, null);
    }
 
-   public String getNextAlias(int level, AliasEntry table, ObjectType type) {
-      String prefix = table.getPrefix();
-
+   public String getNextAlias(int level, String prefix, ObjectType type) {
       Alias alias = aliasCounter.get(prefix);
       if (alias == null) {
          alias = new Alias(prefix);

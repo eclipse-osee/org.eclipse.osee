@@ -15,10 +15,8 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
-import org.eclipse.osee.orcs.db.internal.sql.AliasEntry;
 import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
-import org.eclipse.osee.orcs.db.internal.sql.SqlUtil;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 import org.eclipse.osee.orcs.db.internal.sql.WithClause;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
@@ -27,9 +25,6 @@ import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
  * @author Roberto E. Escobar
  */
 public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
-
-   private static final AliasEntry RELATION_WITH = SqlUtil.newAlias("relatedTo", "relTo");
-
    private CriteriaRelatedTo criteria;
 
    private String jIdAlias;
@@ -71,10 +66,7 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
          sb.append("\n    GROUP BY rel.a_art_id\n");
          String body = sb.toString();
 
-         withClauseName = writer.getNextAlias(RELATION_WITH);
-         withClause = SqlUtil.newSimpleWithClause(withClauseName, body);
-         writer.addWithClause(withClause);
-         writer.addTable(withClauseName);
+         withClauseName = writer.addReferencedWithClause("relTo", body);
       }
    }
 
