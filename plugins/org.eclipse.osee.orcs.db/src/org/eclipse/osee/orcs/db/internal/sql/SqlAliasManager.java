@@ -45,11 +45,11 @@ public class SqlAliasManager {
       return dataSet;
    }
 
-   public boolean hasAlias(int level, AliasEntry table, ObjectType objectType) {
+   public boolean hasAlias(int level, TableEnum table, ObjectType objectType) {
       return !getAliases(level, table, objectType).isEmpty();
    }
 
-   public List<String> getAliases(int level, AliasEntry table, ObjectType objectType) {
+   public List<String> getAliases(int level, TableEnum table, ObjectType objectType) {
       List<String> toReturn;
       AliasSet dataSet = getAliasByLevel(level);
       if (dataSet != null) {
@@ -64,12 +64,12 @@ public class SqlAliasManager {
       return toReturn;
    }
 
-   public String getFirstAlias(int level, AliasEntry table, ObjectType objectType) {
+   public String getFirstAlias(int level, TableEnum table, ObjectType objectType) {
       Collection<String> aliases = getAliases(level, table, objectType);
       return Iterables.getFirst(aliases, null);
    }
 
-   public String getLastAlias(int level, AliasEntry table, ObjectType objectType) {
+   public String getLastAlias(int level, TableEnum table, ObjectType objectType) {
       Collection<String> aliases = getAliases(level, table, objectType);
       return Iterables.getLast(aliases, null);
    }
@@ -85,7 +85,7 @@ public class SqlAliasManager {
       return aliasValue;
    }
 
-   public void putAlias(int level, AliasEntry table, ObjectType type, String alias) {
+   public void putAlias(int level, TableEnum table, ObjectType type, String alias) {
       String prefix = table.getPrefix();
       putAlias(level, prefix, type, alias);
    }

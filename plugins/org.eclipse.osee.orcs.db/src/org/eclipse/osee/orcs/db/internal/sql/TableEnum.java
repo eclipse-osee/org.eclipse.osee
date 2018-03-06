@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.db.internal.sql;
 /**
  * @author Roberto E. Escobar
  */
-public enum TableEnum implements AliasEntry {
+public enum TableEnum {
    BRANCH_TABLE("osee_branch", "br", ObjectType.BRANCH),
    TX_DETAILS_TABLE("osee_tx_details", "txd", ObjectType.TX),
    TXS_TABLE("osee_txs", "txs"),
@@ -40,17 +40,14 @@ public enum TableEnum implements AliasEntry {
       this.objectType = objectType;
    }
 
-   @Override
    public String getName() {
       return tableName;
    }
 
-   @Override
    public String getPrefix() {
       return aliasPrefix;
    }
 
-   @Override
    public ObjectType getObjectType() {
       return objectType;
    }

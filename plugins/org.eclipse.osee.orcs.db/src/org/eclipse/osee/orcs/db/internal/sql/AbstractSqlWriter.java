@@ -256,7 +256,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return getAliasManager().getLastAlias(level, table, type);
    }
 
-   public String getNextAlias(AliasEntry table) {
+   public String getNextAlias(TableEnum table) {
       ObjectType type = table.getObjectType();
       return getNextAlias(table.getPrefix(), type);
    }
@@ -295,23 +295,23 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return alias;
    }
 
-   public String addTable(AliasEntry table) {
+   public String addTable(TableEnum table) {
       String alias = getNextAlias(table);
       tableEntries.add(String.format("%s %s", table.getName(), alias));
       return alias;
    }
 
-   public String addTable(AliasEntry table, ObjectType objectType) {
+   public String addTable(TableEnum table, ObjectType objectType) {
       String alias = getNextAlias(table.getPrefix(), objectType);
       tableEntries.add(String.format("%s %s", table.getName(), alias));
       return alias;
    }
 
-   public void write(String data, Object... params) {
+   public void write(String format, Object... params) {
       if (params != null && params.length > 0) {
-         output.append(String.format(data, params));
+         output.append(String.format(format, params));
       } else {
-         output.append(data);
+         output.append(format);
       }
    }
 
