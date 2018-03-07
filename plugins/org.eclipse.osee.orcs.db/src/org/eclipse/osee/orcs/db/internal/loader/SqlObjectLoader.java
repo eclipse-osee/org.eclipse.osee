@@ -107,7 +107,7 @@ public class SqlObjectLoader {
    private void writeSql(Criteria criteria, LoadSqlContext context) {
       context.clear();
       SqlHandler<?> handler = handlerFactory.createHandler(criteria);
-      AbstractSqlWriter writer = new LoadSqlWriter(logger, joinFactory, jdbcClient, context);
+      AbstractSqlWriter writer = new LoadSqlWriter(joinFactory, jdbcClient, context);
       writer.build(handler);
    }
 

@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
@@ -25,13 +24,11 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
  * @author Roberto E. Escobar
  */
 public class ArtifactQuerySqlContextFactoryImpl implements QuerySqlContextFactory {
-   private final Log logger;
    private final SqlHandlerFactory handlerFactory;
    private final JdbcClient jdbcClient;
    private final SqlJoinFactory joinFactory;
 
-   public ArtifactQuerySqlContextFactoryImpl(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlHandlerFactory handlerFactory) {
-      this.logger = logger;
+   public ArtifactQuerySqlContextFactoryImpl(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlHandlerFactory handlerFactory) {
       this.joinFactory = joinFactory;
       this.jdbcClient = jdbcClient;
       this.handlerFactory = handlerFactory;
@@ -42,7 +39,7 @@ public class ArtifactQuerySqlContextFactoryImpl implements QuerySqlContextFactor
       QuerySqlContext context = new ArtifactQuerySqlContext(session, queryData);
 
       AbstractSqlWriter writer =
-         new ArtifactQuerySqlWriter(logger, joinFactory, jdbcClient, context, queryType, queryData.getBranch());
+         new ArtifactQuerySqlWriter(joinFactory, jdbcClient, context, queryType, queryData.getBranch());
       writer.build(handlerFactory.createHandlers(queryData));
       return context;
    }

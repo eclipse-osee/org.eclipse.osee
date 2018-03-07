@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DynamicData;
 import org.eclipse.osee.orcs.core.ds.DynamicObject;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -55,14 +54,12 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 public class ObjectQuerySqlWriter extends AbstractSqlWriter {
 
    private static final SqlHandlerComparator HANDLER_COMPARATOR = new SqlHandlerComparator();
-   private final Log logger;
    private final SqlFieldResolver fieldResolver;
 
    private WithClauseTxFilterData withTxFilterClause;
 
-   public ObjectQuerySqlWriter(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryType queryType, QueryData queryData) {
-      super(logger, joinFactory, jdbcClient, context, queryType);
-      this.logger = logger;
+   public ObjectQuerySqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryType queryType, QueryData queryData) {
+      super(joinFactory, jdbcClient, context, queryType);
       this.fieldResolver = new SqlFieldResolver(getAliasManager(), queryData.getSelectSets());
    }
 
@@ -368,7 +365,6 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
       }
       if (handler != null) {
          handler.setLevel(level);
-         handler.setLogger(logger);
       }
       return handler;
    }

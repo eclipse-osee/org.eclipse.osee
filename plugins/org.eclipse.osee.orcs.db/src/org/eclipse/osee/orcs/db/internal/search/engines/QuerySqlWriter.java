@@ -31,7 +31,7 @@ public class QuerySqlWriter extends AbstractSqlWriter {
    private String tableAlias;
 
    public QuerySqlWriter(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryType queryType, TableEnum table, String idColumn) {
-      super(logger, joinFactory, jdbcClient, context, queryType);
+      super(joinFactory, jdbcClient, context, queryType);
       this.idColumn = idColumn;
       this.table = table;
    }

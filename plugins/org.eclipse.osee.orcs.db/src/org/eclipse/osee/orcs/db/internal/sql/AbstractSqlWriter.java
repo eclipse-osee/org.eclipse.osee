@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.HasOptions;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -42,8 +41,6 @@ public abstract class AbstractSqlWriter implements HasOptions {
    private final List<WithClause> withClauses = new ArrayList<>();
    private final SqlAliasManager aliasManager = new SqlAliasManager();
    private final HashMap<TableEnum, String> mainAliases = new HashMap<>();
-
-   private final Log logger;
    private final SqlJoinFactory joinFactory;
    private final JdbcClient jdbcClient;
    private final SqlContext context;
@@ -51,8 +48,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    private int level;
    private boolean firstField;
 
-   public AbstractSqlWriter(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryType queryType) {
-      this.logger = logger;
+   public AbstractSqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryType queryType) {
       this.joinFactory = joinFactory;
       this.jdbcClient = jdbcClient;
       this.context = context;
@@ -70,10 +66,6 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
       String sql = toString();
       context.setSql(sql);
-
-      if (logger.isTraceEnabled()) {
-         logger.trace("Sql Writer - [%s]", context);
-      }
    }
 
    protected void reset() {

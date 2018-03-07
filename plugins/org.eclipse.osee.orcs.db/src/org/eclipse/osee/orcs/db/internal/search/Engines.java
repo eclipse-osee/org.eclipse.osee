@@ -63,7 +63,7 @@ public final class Engines {
    public static QuerySqlContextFactory createArtifactSqlContext(Log logger, SqlJoinFactory joinFactory, IdentityLocator idService, JdbcClient jdbcClient, TaggingEngine taggingEngine) {
       SqlHandlerFactory handlerFactory =
          createArtifactSqlHandlerFactory(logger, idService, taggingEngine.getTagProcessor());
-      return new ArtifactQuerySqlContextFactoryImpl(logger, joinFactory, jdbcClient, handlerFactory);
+      return new ArtifactQuerySqlContextFactoryImpl(joinFactory, jdbcClient, handlerFactory);
    }
 
    public static ObjectQueryCallableFactory newArtifactQueryEngine(QuerySqlContextFactory sqlContextFactory, Log logger, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, DataLoaderFactory objectLoader, AttributeTypes attrTypes) {
@@ -79,7 +79,7 @@ public final class Engines {
       SqlHandlerFactory handlerFactory =
          createObjectSqlHandlerFactory(logger, idService, taggingEngine.getTagProcessor());
       QuerySqlContextFactory sqlContextFactory =
-         new ObjectQuerySqlContextFactoryImpl(logger, joinFactory, jdbcClient, handlerFactory);
+         new ObjectQuerySqlContextFactoryImpl(joinFactory, jdbcClient, handlerFactory);
       AttributeDataMatcher matcher = new AttributeDataMatcher(logger, taggingEngine, attrTypes);
       QueryFilterFactoryImpl filterFactory = new QueryFilterFactoryImpl(logger, executorAdmin, matcher);
       return new ObjectQueryCallableFactory(logger, objectLoader, sqlContextFactory, filterFactory);

@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.QueryType;
@@ -31,8 +30,8 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
 
    private final BranchId branch;
 
-   public ArtifactQuerySqlWriter(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryType queryType, BranchId branch) {
-      super(logger, joinFactory, jdbcClient, context, queryType);
+   public ArtifactQuerySqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryType queryType, BranchId branch) {
+      super(joinFactory, jdbcClient, context, queryType);
       this.branch = branch;
    }
 

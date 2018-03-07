@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -31,8 +30,8 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
  */
 public class LoadSqlWriter extends AbstractSqlWriter {
 
-   public LoadSqlWriter(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context) {
-      super(logger, joinFactory, jdbcClient, context, QueryType.SELECT);
+   public LoadSqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context) {
+      super(joinFactory, jdbcClient, context, QueryType.SELECT);
    }
 
    @Override

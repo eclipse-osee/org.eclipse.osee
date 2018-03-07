@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import java.util.List;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
@@ -29,14 +28,11 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
  */
 public class ObjectQuerySqlContextFactoryImpl implements QuerySqlContextFactory {
 
-   private final Log logger;
    private final SqlHandlerFactory handlerFactory;
    private final JdbcClient jdbcClient;
    private final SqlJoinFactory joinFactory;
 
-   public ObjectQuerySqlContextFactoryImpl(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlHandlerFactory handlerFactory) {
-      super();
-      this.logger = logger;
+   public ObjectQuerySqlContextFactoryImpl(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlHandlerFactory handlerFactory) {
       this.joinFactory = joinFactory;
       this.jdbcClient = jdbcClient;
       this.handlerFactory = handlerFactory;
@@ -45,8 +41,7 @@ public class ObjectQuerySqlContextFactoryImpl implements QuerySqlContextFactory 
    @Override
    public QuerySqlContext createQueryContext(OrcsSession session, QueryData queryData, QueryType queryType) {
       QuerySqlContext context = new QuerySqlContext(session, queryData.getOptions(), ObjectQueryType.DYNAMIC_OBJECT);
-      AbstractSqlWriter writer =
-         new ObjectQuerySqlWriter(logger, joinFactory, jdbcClient, context, queryType, queryData);
+      AbstractSqlWriter writer = new ObjectQuerySqlWriter(joinFactory, jdbcClient, context, queryType, queryData);
       List<SqlHandler<?>> handlers = handlerFactory.createHandlers(queryData);
       writer.build(handlers);
       return context;
