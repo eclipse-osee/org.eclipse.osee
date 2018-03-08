@@ -27,4 +27,9 @@ public interface ITraceParser {
 
    public boolean isTraceRemovalAllowed();
 
+   default void setupTraceMatcher(boolean includeImpd) { //
+   }
+
+   default void setupCommentTraceMatcher(boolean inludeImpd) { //
+   }
 }

@@ -49,11 +49,13 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
 
    private static final String TRACE_UNIT_HANDLER_GROUP = "Select trace unit parser";
    private static final String GIT_CODE_STRUCTURE_GROUP = "Select to use Git codebase";
+   private static final String INCLUDE_IMPD_GROUP = "Include IMPD";
 
    private DirectoryOrFileSelector directoryFileSelector;
    private BranchSelectComposite branchSelectComposite;
    private final Map<Button, Boolean> traceUnitHandlers;
    private boolean isGitCodeStructure = false;
+   private boolean includeImpd = false;
 
    private IResource currentResourceSelection;
 
@@ -85,6 +87,7 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
       createSourceGroup(composite);
       createParserSelectArea(composite);
       createGitStructureCheckbox(composite);
+      createIncludeImpdCheckbox(composite);
       restoreWidgetValues();
       updateWidgetEnablements();
       setPageComplete(determinePageCompletion());
@@ -166,6 +169,27 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
       });
    }
 
+   private void createIncludeImpdCheckbox(Composite parent) {
+      Group composite = new Group(parent, SWT.NONE);
+      composite.setText(INCLUDE_IMPD_GROUP);
+      composite.setLayout(new GridLayout());
+      composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+      Button handlerButton = new Button(composite, SWT.CHECK);
+      handlerButton.setText("Include IMPD");
+      handlerButton.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            Object source = e.getSource();
+            if (source instanceof Button) {
+               Button button = (Button) source;
+               includeImpd = button.getSelection();
+            }
+         }
+      });
+   }
+
    private void createTraceHandler(Composite parent, String text, String handlerId) {
       Button handlerButton = new Button(parent, SWT.CHECK);
       handlerButton.setText(text);
@@ -223,6 +247,10 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
 
    public boolean isGitBased() {
       return isGitCodeStructure;
+   }
+
+   public boolean includeImpd() {
+      return includeImpd;
    }
 
    @Override

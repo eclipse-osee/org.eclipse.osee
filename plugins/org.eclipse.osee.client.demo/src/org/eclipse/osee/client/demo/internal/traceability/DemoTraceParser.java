@@ -48,5 +48,4 @@ public class DemoTraceParser implements ITraceParser {
    public boolean addIfEmpty() {
       return false;
    }
-
 }

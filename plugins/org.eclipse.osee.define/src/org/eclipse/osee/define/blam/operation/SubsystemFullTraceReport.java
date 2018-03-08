@@ -121,7 +121,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
          File dir = new File(scriptDir);
          if (dir.exists()) {
             ScriptTraceabilityOperation traceOperation = new ScriptTraceabilityOperation(dir.getParentFile(), branch,
-               false, traceHandlers, isGitCodeStructure, viewId);
+               false, traceHandlers, isGitCodeStructure, viewId, false);
             Operations.executeWorkAndCheckStatus(traceOperation, monitor);
             requirementsToCodeUnits = traceOperation.getRequirementToCodeUnitsMap();
          }

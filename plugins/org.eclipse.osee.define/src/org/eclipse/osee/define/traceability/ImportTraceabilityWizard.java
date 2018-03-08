@@ -43,13 +43,14 @@ public class ImportTraceabilityWizard extends Wizard implements IImportWizard {
          BranchId branch = mainPage.getSelectedBranch();
          File file = mainPage.getImportFile();
          boolean isGitBased = mainPage.isGitBased();
+         boolean includeImpd = mainPage.includeImpd();
 
          Collection<TraceHandler> handlers = new LinkedList<>();
          for (String handlerId : mainPage.getTraceUnitHandlerIds()) {
             handlers.add(TraceUnitExtensionManager.getInstance().getTraceUnitHandlerById(handlerId));
          }
-         Operations.executeWorkAndCheckStatus(
-            new ScriptTraceabilityOperation(file, branch, true, handlers, isGitBased, ArtifactId.SENTINEL));
+         Operations.executeWorkAndCheckStatus(new ScriptTraceabilityOperation(file, branch, true, handlers, isGitBased,
+            ArtifactId.SENTINEL, includeImpd));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Traceability Import Error", ex);
       }

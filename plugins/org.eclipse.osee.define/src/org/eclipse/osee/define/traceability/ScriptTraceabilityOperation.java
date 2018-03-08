@@ -78,25 +78,27 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
    private int pathPrefixLength;
    private final boolean writeOutResults;
    private final boolean isGitBased;
+   private final boolean includeImpd;
 
-   private ScriptTraceabilityOperation(RequirementData requirementData, File file, boolean writeOutResults, Collection<TraceHandler> traceHandlers, boolean isGitBased) throws IOException {
+   private ScriptTraceabilityOperation(RequirementData requirementData, File file, boolean writeOutResults, Collection<TraceHandler> traceHandlers, boolean isGitBased, boolean includeImpd) throws IOException {
       super("Importing Traceability", Activator.PLUGIN_ID);
       this.file = file;
       this.requirementData = requirementData;
       this.writeOutResults = writeOutResults;
       this.traceHandlers = traceHandlers;
       this.isGitBased = isGitBased;
+      this.includeImpd = includeImpd;
       charBak = new CharBackedInputStream();
       excelWriter = new ExcelXmlWriter(charBak.getWriter());
    }
 
-   public ScriptTraceabilityOperation(File file, BranchId branch, boolean writeOutResults, Collection<TraceHandler> traceHandlers, boolean isGitBased, ArtifactId viewId) throws IOException {
-      this(new RequirementData(branch, viewId), file, writeOutResults, traceHandlers, isGitBased);
+   public ScriptTraceabilityOperation(File file, BranchId branch, boolean writeOutResults, Collection<TraceHandler> traceHandlers, boolean isGitBased, ArtifactId viewId, boolean includeImpd) throws IOException {
+      this(new RequirementData(branch, viewId), file, writeOutResults, traceHandlers, isGitBased, includeImpd);
    }
 
-   public ScriptTraceabilityOperation(File file, BranchId branch, boolean writeOutResults, Collection<? extends IArtifactType> types, boolean withInheritance, Collection<TraceHandler> traceHandlers, boolean isGitBased, ArtifactId viewId) throws IOException {
+   public ScriptTraceabilityOperation(File file, BranchId branch, boolean writeOutResults, Collection<? extends IArtifactType> types, boolean withInheritance, Collection<TraceHandler> traceHandlers, boolean isGitBased, ArtifactId viewId, boolean includeImpd) throws IOException {
       this(new RequirementData(branch, types, withInheritance, viewId), file, writeOutResults, traceHandlers,
-         isGitBased);
+         isGitBased, includeImpd);
    }
 
    @Override
@@ -147,6 +149,8 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
          CharBuffer buffer = Lib.fileToCharBuffer(sourceFile);
          Collection<TraceMark> tracemarks = new LinkedList<>();
          for (TraceHandler handler : traceHandlers) {
+            handler.getParser().setupTraceMatcher(includeImpd);
+            handler.getParser().setupCommentTraceMatcher(includeImpd);
             Collection<TraceMark> marks = handler.getParser().getTraceMarks(buffer);
             tracemarks.addAll(marks);
          }

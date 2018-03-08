@@ -67,6 +67,8 @@ public class PublishStdStpTraceability extends AbstractBlam {
       "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Search Git Code Structure\" labelAfter=\"true\" horizontalLabel=\"true\" defaultValue=\"false\" />";
    private static final String TRACE_HANDLER_CHECKBOX =
       "<XWidget xwidgetType=\"XCheckBox\" displayName=\"%s\" labelAfter=\"true\" horizontalLabel=\"true\"/>";
+   private static final String includeImpd =
+      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include IMPD\" labelAfter=\"true\" horizontalLabel=\"true\" defaultValue=\"false\" />";
 
    private Collection<String> availableTraceHandlers;
    private XCombo branchViewWidget;
@@ -106,6 +108,9 @@ public class PublishStdStpTraceability extends AbstractBlam {
       builder.append(
          "<XWidget xwidgetType=\"XLabel\" displayName=\"===  For traceability stored in test scripts, select the following  ===\" />");
       builder.append(useGitCodeStructure);
+      builder.append(
+         "<XWidget xwidgetType=\"XLabel\" displayName=\"===  To include IMPD, select the following  ===\" />");
+      builder.append(includeImpd);
       availableTraceHandlers = new LinkedList<>();
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select appropriate script parser:\" />");
       Collection<String> traceHandlers = TraceUnitExtensionManager.getInstance().getAllTraceHandlerNames();
@@ -160,8 +165,9 @@ public class PublishStdStpTraceability extends AbstractBlam {
             provider = new BranchTraceabilityOperation(requirementsBranch, types, searchInherited, viewId);
          } else {
             boolean isGitBased = variableMap.getBoolean("Search Git Code Structure");
+            boolean includeImpd = variableMap.getBoolean("Include IMPD");
             provider = new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false, types, searchInherited,
-               traceHandlers, isGitBased, viewId);
+               traceHandlers, isGitBased, viewId, includeImpd);
          }
          RequirementTraceabilityData traceabilityData =
             new RequirementTraceabilityData(requirementsBranch, provider, viewId);

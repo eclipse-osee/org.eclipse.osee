@@ -41,12 +41,14 @@ public class ResourceToTraceUnit {
    private final UriResourceContentFinder resourceFinder;
    private final Set<ITraceUnitProcessor> traceProcessors;
    private final HashCollection<ITraceUnitResourceLocator, ITraceParser> traceUnitHandlers;
+   private final boolean includeImpd;
 
-   public ResourceToTraceUnit(final Iterable<URI> sources, final boolean isRecursionAllowed, final boolean isFileWithMultiplePaths) {
+   public ResourceToTraceUnit(final Iterable<URI> sources, final boolean isRecursionAllowed, final boolean isFileWithMultiplePaths, boolean includeImpd) {
       super();
       this.traceUnitHandlers = new HashCollection<>();
       this.traceProcessors = Collections.synchronizedSet(new HashSet<ITraceUnitProcessor>());
       this.resourceFinder = new UriResourceContentFinder(sources, isRecursionAllowed, isFileWithMultiplePaths);
+      this.includeImpd = includeImpd;
    }
 
    public void addTraceProcessor(ITraceUnitProcessor traceProcessor) {
@@ -85,7 +87,7 @@ public class ResourceToTraceUnit {
          for (ITraceUnitResourceLocator locator : traceUnitHandlers.keySet()) {
             Collection<ITraceParser> parsers = traceUnitHandlers.getValues(locator);
             for (ITraceParser parser : parsers) {
-               TraceUnitCollector testUnitCollector = new TraceUnitCollector(locator, parser);
+               TraceUnitCollector testUnitCollector = new TraceUnitCollector(locator, parser, includeImpd);
                resourceFinder.addLocator(locator, testUnitCollector);
                collectors.add(testUnitCollector);
             }
@@ -177,15 +179,18 @@ public class ResourceToTraceUnit {
       private final ITraceParser traceParser;
       private final ITraceUnitResourceLocator traceUnitLocator;
       private final Map<IArtifactType, Map<String, TraceUnit>> traceUnitToTraceMarks;
+      private final boolean includeImpd;
 
-      public TraceUnitCollector(ITraceUnitResourceLocator traceUnitLocator, ITraceParser traceParser) {
+      public TraceUnitCollector(ITraceUnitResourceLocator traceUnitLocator, ITraceParser traceParser, boolean includeImpd) {
          this.traceParser = traceParser;
          this.traceUnitLocator = traceUnitLocator;
          this.traceUnitToTraceMarks = new HashMap<>();
+         this.includeImpd = includeImpd;
       }
 
       @Override
       public void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer) throws OseeCoreException {
+         traceParser.setupTraceMatcher(includeImpd);
          IArtifactType traceUnitType = traceUnitLocator.getTraceUnitType(name, fileBuffer);
          if (!traceUnitType.equals(ITraceUnitResourceLocator.UNIT_TYPE_UNKNOWN)) {
             Collection<TraceMark> traceMarks = traceParser.getTraceMarks(fileBuffer);

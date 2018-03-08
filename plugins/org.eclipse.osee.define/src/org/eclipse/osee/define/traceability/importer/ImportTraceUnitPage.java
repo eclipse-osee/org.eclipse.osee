@@ -83,6 +83,9 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
    private static final String ADD_GUID_TO_SOURCE_FILE_TOOLTIP =
       "When selected, the GUID will be added to the source file. Note: You will need write access to the files to use this selection.";
 
+   private static final String INCLUDE_IMPD_BUTTON = "Include IMPD";
+   private static final String INCLUDE_IMPD_TOOLTIP = "Select to include IMPD trace marks.";
+
    private static final String SELECTED_TRACE_HANDLERS_KEY = "trace.handlers";
    private static final String BRANCH_KEY = "branch.selected";
    private static final String SOURCE_URI_KEY = "source.uri";
@@ -91,6 +94,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
    private static final String IS_FOLDER_RECURSION_KEY = "is.folder.recurse.allowed";
    private static final String IS_FILE_WITH_MULTI_PATHS_KEY = "is.file.with.multi.paths";
    private static final String IS_ADD_GUID_TO_SOURCE_KEY = "is.add.guid.to.source";
+   private static final String INCLUDE_IMPD_KEY = "is.impd.included";
 
    private DirectoryOrFileSelector directoryFileSelector;
    private BranchSelectComposite branchSelectComposite;
@@ -101,6 +105,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
    private final MutableBoolean isAddGuidToSourceFileAllowed;
    private final Map<Button, Boolean> traceUnitHandlers;
    private final Map<String, Button> optionButtons;
+   private final MutableBoolean isImpdIncluded;
 
    public ImportTraceUnitPage(IStructuredSelection selection) {
       super(PAGE_NAME);
@@ -113,6 +118,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       this.isArtifactPersistanceAllowed = new MutableBoolean(false);
       this.isFileContainingMultiplePaths = new MutableBoolean(false);
       this.isAddGuidToSourceFileAllowed = new MutableBoolean(true);
+      this.isImpdIncluded = new MutableBoolean(false);
 
       if (selection != null && selection.size() >= 1) {
          currentResourceSelection = new LinkedList<>();
@@ -277,6 +283,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
          isFileContainingMultiplePaths);
       createOptionButton(composite, IS_ADD_GUID_TO_SOURCE_KEY, ADD_GUID_TO_SOURCE_FILE_BUTTON,
          ADD_GUID_TO_SOURCE_FILE_TOOLTIP, isAddGuidToSourceFileAllowed);
+      createOptionButton(composite, INCLUDE_IMPD_KEY, INCLUDE_IMPD_BUTTON, INCLUDE_IMPD_TOOLTIP, isImpdIncluded);
    }
 
    private void createOptionButton(Composite parent, String buttonId, String buttonText, String buttonToolTip, final MutableBoolean toModify) {
@@ -370,6 +377,10 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       return isAddGuidToSourceFileAllowed.getValue();
    }
 
+   public boolean isImpdIncluded() {
+      return isImpdIncluded.getValue();
+   }
+
    public String[] getTraceUnitHandlerIds() {
       List<String> selectedIds = new ArrayList<>();
       for (Button button : traceUnitHandlers.keySet()) {
@@ -458,6 +469,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
          settings.put(IS_FOLDER_RECURSION_KEY, isFolderRecursionAllowed());
          settings.put(IS_FILE_WITH_MULTI_PATHS_KEY, isFileContainingMultiplePaths());
          settings.put(IS_ADD_GUID_TO_SOURCE_KEY, isAddGuidToSourceFileAllowed());
+         settings.put(INCLUDE_IMPD_KEY, isImpdIncluded());
       }
    }
 

@@ -256,7 +256,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
       // Load Requirements Data
       TraceabilityProviderOperation provider =
-         new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false, traceHandlers, false, viewId);
+         new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false, traceHandlers, false, viewId, false);
       RequirementTraceabilityData traceabilityData = new RequirementTraceabilityData(procedureBranch, provider, viewId);
 
       IStatus status = traceabilityData.initialize(monitor);

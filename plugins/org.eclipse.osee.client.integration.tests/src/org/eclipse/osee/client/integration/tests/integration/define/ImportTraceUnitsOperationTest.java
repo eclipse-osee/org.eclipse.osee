@@ -176,9 +176,11 @@ public final class ImportTraceUnitsOperationTest {
       boolean isPersistChanges = true;
       boolean fileWithMultiPaths = true;
       boolean addGuidToSourceFile = false;
+      boolean includeImpd = false;
 
-      IOperation op = new ImportTraceUnitsOperation("Import Trace Units", importToBranch, files, isRecursive,
-         isPersistChanges, fileWithMultiPaths, addGuidToSourceFile, DemoTraceability.DEMO_TRACE_UNIT_HANDLER_ID);
+      IOperation op =
+         new ImportTraceUnitsOperation("Import Trace Units", importToBranch, files, isRecursive, isPersistChanges,
+            fileWithMultiPaths, addGuidToSourceFile, includeImpd, DemoTraceability.DEMO_TRACE_UNIT_HANDLER_ID);
       Operations.executeWorkAndCheckStatus(op);
    }
 }
