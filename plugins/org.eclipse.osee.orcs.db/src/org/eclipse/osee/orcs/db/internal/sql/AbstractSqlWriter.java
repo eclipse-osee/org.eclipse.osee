@@ -307,6 +307,10 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return alias;
    }
 
+   public void write(String sql) {
+      output.append(sql);
+   }
+
    public void write(String format, Object... params) {
       if (params != null && params.length > 0) {
          output.append(String.format(format, params));
@@ -315,12 +319,38 @@ public abstract class AbstractSqlWriter implements HasOptions {
       }
    }
 
+   public String writeTable(TableEnum table) {
+      String alias = getNextAlias(table);
+      write("%s %s", table.getName(), alias);
+      return alias;
+   }
+
+   public void writeTableNoAlias(TableEnum table) {
+      write(table.getName());
+   }
+
    public void writeEquals(String table1, String table2, String column) {
       write("%s.%s = %s.%s", table1, column, table2, column);
    }
 
-   public void addParameter(Object data) {
-      getContext().getParameters().add(data);
+   public void writeEquals(String table1, String column1, String table2, String column2) {
+      write("%s.%s = %s.%s", table1, column1, table2, column2);
+   }
+
+   public void writeEqualsParameter(String table, String column, Object parameter) {
+      output.append(table);
+      output.append(".");
+      writeEqualsParameter(column, parameter);
+   }
+
+   public void writeEqualsParameter(String column, Object parameter) {
+      output.append(column);
+      output.append(" = ?");
+      addParameter(parameter);
+   }
+
+   public void addParameter(Object parameter) {
+      getContext().getParameters().add(parameter);
    }
 
    private void addJoin(AbstractJoinQuery join) {

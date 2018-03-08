@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.rest.model;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 
 /**
@@ -24,7 +24,7 @@ public class NewBranch {
    private ArtifactId associatedArtifact;
    private BranchType branchType;
    private ArtifactId author;
-   private TransactionId sourceTransaction;
+   private TransactionToken sourceTransaction;
    private String creationComment;
    private int mergeAddressingQueryId;
    private BranchId mergeDestinationBranchId;
@@ -50,7 +50,7 @@ public class NewBranch {
       return author;
    }
 
-   public TransactionId getSourceTransaction() {
+   public TransactionToken getSourceTransaction() {
       return sourceTransaction;
    }
 
@@ -90,7 +90,7 @@ public class NewBranch {
       this.author = author;
    }
 
-   public void setSourceTransactionId(TransactionId sourceTransaction) {
+   public void setSourceTransactionId(TransactionToken sourceTransaction) {
       this.sourceTransaction = sourceTransaction;
    }
 

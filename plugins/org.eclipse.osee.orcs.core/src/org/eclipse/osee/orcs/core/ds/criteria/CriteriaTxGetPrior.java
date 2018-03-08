@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
-import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
@@ -20,14 +20,14 @@ import org.eclipse.osee.orcs.core.ds.Options;
  */
 public class CriteriaTxGetPrior extends Criteria implements TxCriteria {
 
-   private final TransactionId txId;
+   private final TransactionToken txId;
 
-   public CriteriaTxGetPrior(TransactionId txId) {
+   public CriteriaTxGetPrior(TransactionToken txId) {
       super();
       this.txId = txId;
    }
 
-   public TransactionId getTxId() {
+   public TransactionToken getTxId() {
       return txId;
    }
 
@@ -41,5 +41,4 @@ public class CriteriaTxGetPrior extends Criteria implements TxCriteria {
    public String toString() {
       return "CriteriaTxGetPrior [txId=" + txId + "]";
    }
-
 }

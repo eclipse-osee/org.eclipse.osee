@@ -33,6 +33,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -71,7 +72,7 @@ public class OrcsTxQueryTest {
    private final String CommonBranchTransComment = "Cleanup PopulateDemoActionsTest";
    private final int NumberCommonTransactions = 132;
 
-   private final TransactionId CommonBranchHeadTransaction = TransactionId.valueOf(178);
+   private final TransactionToken CommonBranchHeadTransaction = TransactionToken.valueOf(178, CoreBranches.COMMON);
    private final TransactionId CommonBranchHeadPriorTransaction = TransactionId.valueOf(177);
    private final TransactionId tx1 = TransactionId.valueOf(1);
    private final TransactionId tx2 = TransactionId.valueOf(2);

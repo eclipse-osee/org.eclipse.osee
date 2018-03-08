@@ -17,11 +17,13 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxArtifactIds;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxGetPrior;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIds;
 import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.TxQueryBuilder;
@@ -166,9 +168,8 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
    }
 
    @Override
-   public T andIsPriorTx(TransactionId txId) {
-      Criteria criteria = criteriaFactory.newGetPriorTx(txId);
-      return addAndCheck(queryData, criteria);
+   public T andIsPriorTx(TransactionToken tx) {
+      return addAndCheck(queryData, new CriteriaTxGetPrior(tx));
    }
 
    @SuppressWarnings("unchecked")

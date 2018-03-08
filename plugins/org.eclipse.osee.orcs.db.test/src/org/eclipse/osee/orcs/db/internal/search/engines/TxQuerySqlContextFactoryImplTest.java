@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
@@ -256,10 +258,10 @@ public class TxQuerySqlContextFactoryImplTest {
    public void testQueryTxPrior() throws Exception {
       String expected = "SELECT txd1.*\n" + //
          " FROM osee_tx_details txd1\n" + //
-         " WHERE txd1.transaction_id = (SELECT max(td2.transaction_id) FROM osee_tx_details td1,osee_tx_details td2 WHERE td1.transaction_id = ? AND td1.branch_id = td2.branch_id AND td1.transaction_id > td2.transaction_id)\n" + //
+         " WHERE txd1.branch_id = ? AND txd1.transaction_id = (SELECT max(transaction_id) FROM osee_tx_details WHERE branch_id = ? AND transaction_id < ?)\n" + //
          " ORDER BY txd1.transaction_id";
 
-      TransactionId tx = TransactionId.valueOf(3);
+      TransactionToken tx = TransactionToken.valueOf(3, CoreBranches.COMMON);
       queryData.addCriteria(new CriteriaTxGetPrior(tx));
 
       QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.SELECT);
@@ -267,11 +269,13 @@ public class TxQuerySqlContextFactoryImplTest {
       assertEquals(expected, context.getSql());
 
       List<Object> parameters = context.getParameters();
-      assertEquals(1, parameters.size());
+      assertEquals(3, parameters.size());
       List<AbstractJoinQuery> joins = context.getJoins();
       assertEquals(0, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
+      assertEquals(tx.getBranch(), iterator.next());
+      assertEquals(tx.getBranch(), iterator.next());
       assertEquals(tx, iterator.next());
    }
 

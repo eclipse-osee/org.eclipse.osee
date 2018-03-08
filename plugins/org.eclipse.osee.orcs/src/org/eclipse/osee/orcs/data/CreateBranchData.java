@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.data;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 
 /**
@@ -26,7 +27,7 @@ public class CreateBranchData {
    private final BranchId branch;
    private BranchType branchType;
    private String creationComment;
-   private TransactionId fromTransaction;
+   private TransactionToken fromTransaction;
    private TransactionId savedTransaction;
    private ArtifactId associatedArtifact;
    private ArtifactId author;
@@ -74,11 +75,11 @@ public class CreateBranchData {
       this.creationComment = creationComment;
    }
 
-   public TransactionId getFromTransaction() {
+   public TransactionToken getFromTransaction() {
       return fromTransaction;
    }
 
-   public void setFromTransaction(TransactionId fromTransaction) {
+   public void setFromTransaction(TransactionToken fromTransaction) {
       this.fromTransaction = fromTransaction;
    }
 

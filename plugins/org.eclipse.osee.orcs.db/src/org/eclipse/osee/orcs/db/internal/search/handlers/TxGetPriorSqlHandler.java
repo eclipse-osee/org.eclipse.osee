@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxGetPrior;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -20,9 +20,7 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
  * @author Roberto E. Escobar
  */
 public class TxGetPriorSqlHandler extends SqlHandler<CriteriaTxGetPrior> {
-
    private CriteriaTxGetPrior criteria;
-
    private String txdAlias;
 
    @Override
@@ -32,31 +30,24 @@ public class TxGetPriorSqlHandler extends SqlHandler<CriteriaTxGetPrior> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      List<String> aliases = writer.getAliases(TableEnum.TX_DETAILS_TABLE);
-      if (aliases.isEmpty()) {
-         txdAlias = writer.addTable(TableEnum.TX_DETAILS_TABLE);
-      } else {
-         txdAlias = aliases.iterator().next();
-      }
+      txdAlias = writer.getOrCreateTableAlias(TableEnum.TX_DETAILS_TABLE);
    }
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) {
+      BranchId branch = criteria.getTxId().getBranch();
+      writer.writeEqualsParameter(txdAlias, "branch_id", branch);
+      writer.write(" AND ");
       writer.write(txdAlias);
       writer.write(".transaction_id = ");
-      writer.write("(SELECT max(td2.transaction_id) FROM ");
-      writer.write(TableEnum.TX_DETAILS_TABLE.getName());
-      writer.write(" td1,");
-      writer.write(TableEnum.TX_DETAILS_TABLE.getName());
-      writer.write(" td2");
+      writer.write("(SELECT max(transaction_id) FROM ");
+      writer.writeTableNoAlias(TableEnum.TX_DETAILS_TABLE);
       writer.write(" WHERE ");
-      writer.write("td1");
-      writer.write(".transaction_id = ?");
+      writer.writeEqualsParameter("branch_id", branch);
       writer.write(" AND ");
-      writer.write("td1.branch_id = td2.branch_id");
-      writer.write(" AND ");
-      writer.write("td1.transaction_id > td2.transaction_id)");
+      writer.write("transaction_id < ?");
       writer.addParameter(criteria.getTxId());
+      writer.write(")");
       return true;
    }
 

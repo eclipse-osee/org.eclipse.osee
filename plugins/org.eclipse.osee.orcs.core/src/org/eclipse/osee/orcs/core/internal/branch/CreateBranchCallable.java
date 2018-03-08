@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.branch;
 
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -44,10 +45,10 @@ public class CreateBranchCallable extends AbstractBranchCallable<Branch> {
 
       if (branchData.isTxCopyBranchType()) {
          TransactionQuery txQuery = queryFactory.transactionQuery();
-         TransactionId givenTx = branchData.getFromTransaction();
+         TransactionToken givenTx = branchData.getFromTransaction();
          Conditions.checkNotNull(givenTx, "Transaction used for copy");
          branchData.setSavedTransaction(givenTx);
-         TransactionId priorTx = txQuery.andIsPriorTx(givenTx).getResults().getExactlyOne();
+         TransactionToken priorTx = txQuery.andIsPriorTx(givenTx).getResults().getExactlyOne();
          branchData.setFromTransaction(priorTx);
          getBranchStore().createBranchCopyTx(branchData);
       } else {

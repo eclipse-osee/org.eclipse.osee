@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.core.internal.search;
 import java.sql.Timestamp;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllTxs;
@@ -24,7 +23,6 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateWithOperator;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxBranchIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxComment;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxGetHead;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxGetPrior;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIdWithOperator;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIdWithTwoOperators;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxType;
@@ -78,9 +76,4 @@ public class TransactionCriteriaFactory {
    public Criteria newGetHead(BranchId branch) {
       return new CriteriaTxGetHead(branch);
    }
-
-   public Criteria newGetPriorTx(TransactionId txId) {
-      return new CriteriaTxGetPrior(txId);
-   }
-
 }

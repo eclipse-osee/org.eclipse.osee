@@ -15,6 +15,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 
 /**
@@ -65,5 +66,5 @@ public interface TxQueryBuilder<T> {
 
    T andIsHead(BranchId branch);
 
-   T andIsPriorTx(TransactionId txId);
+   T andIsPriorTx(TransactionToken txId);
 }
