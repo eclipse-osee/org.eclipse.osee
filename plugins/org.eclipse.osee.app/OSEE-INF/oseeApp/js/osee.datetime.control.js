@@ -5,12 +5,24 @@ app.directive('oseeDateTimeControl', function () {
         controller: ['BaseController', '$scope', '$routeParams', 'OseeAppSchema', function (
                 BaseController, $scope, $routeParams, OseeAppSchema) {
                 var vm = this;
+                vm.isValid = OseeAppSchema.isValid;
 
                 $scope.onNgBlur = function () {
-                    OseeAppSchema.doUpdate();
+                    if (OseeAppSchema.isValid(vm.resolvedData[vm.fragment], vm.uiSchema.options.required)) {
+                        OseeAppSchema.doUpdate();
+                    }
                 }
-                $scope.onNgChanged = function (controlschema) {
-                    OseeAppSchema.updateItem(controlschema, vm.resolvedData[vm.fragment]);
+                $scope.onNgChanged = function () {
+                    if (OseeAppSchema.isValid(vm.resolvedData[vm.fragment], vm.uiSchema.options.required)) {
+                        vm.uiSchema.style = {
+                            color: 'black'
+                        };
+                    } else {
+                        vm.uiSchema.style = {
+                            color: 'red'
+                        };
+                    }
+                    OseeAppSchema.updateItem(vm.uiSchema, vm.resolvedData[vm.fragment]);
                 }
                 $scope.onInit = function () {
                     var given;
@@ -30,15 +42,24 @@ app.directive('oseeDateTimeControl', function () {
                 BaseController.call(vm, $scope);
             }
         ],
+        link: function link(scope, element, attrs, ctrl) {
+            if (ctrl.resolvedData) {
+                if (!ctrl.isValid(ctrl.resolvedData[ctrl.fragment], ctrl.uiSchema.options.required)) {
+                    console.log("invalid control data according to the uiSchema regex");
+                    element.css({
+                        color: 'red'
+                    });
+                }
+            }
+        },
         controllerAs: 'vm',
-        template: `<jsonforms-control>
+        template: `<jsonforms-control id="{{vm.scope.$id}}" ng-style="vm.uiSchema.style">
                    <input type="date"
                      close-text="Close"
                      is-open="vm.isOpen"
-                     id="{{vm.id}}"
                      class="osee-date-time form-control jsf-control-datetime"
                      ng-model="vm.resolvedData[vm.fragment]"
-                     ng-change="onNgChanged('{{vm.uiSchema}}')"
+                     ng-change="onNgChanged()"
                      ng-readonly="vm.uiSchema.readOnly"
                      ng-blur="onNgBlur()"
                      data-ng-init="onInit()">

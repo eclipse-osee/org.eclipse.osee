@@ -29,13 +29,23 @@ app.provider('OseeAppSchema', function () {
     ];
 });
 
+app.provider('Account', function () {
+    this.$get = ['$resource',
+        function ($resource) {
+            var Account = $resource('/accounts/user', {}, {});
+            return Account;
+        }
+    ];
+});
+
 app.service('OseeControlValues', function ($resource) {
-    this.queryUrl = function (url) {
+
+    this.queryUrl = function (url, useArray) {
         return $resource(url, {}, {
             query: {
                 method: 'GET',
                 params: {},
-                isArray: true
+                isArray: useArray
             }
         });
     }
@@ -44,10 +54,22 @@ app.service('OseeControlValues', function ($resource) {
             submit: {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'osee.account.id': this.userId
                 },
                 params: {},
                 isArray: useArray
+            }
+        });
+    }
+    this.createUrl = function (url, params) {
+        return $resource(url, params, {
+            'create': {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'osee.account.id': this.userId
+                },
             }
         });
     }
@@ -64,5 +86,50 @@ app.service('OseeControlValues', function ($resource) {
     }
     this.getParameterFromString = function (item, value) {
         return JSON.parse("{ \"" + item + "\": \"" + value + "\" }");
+    }
+    this.setActiveUserId = function (userId) {
+        this.userId = userId;
+    }
+    this.getActiveUserId = function () {
+        if (this.userId) {
+            return this.userId;
+        } else {
+            return '99999999';
+        }
+    }
+    this.setCreateUrl = function (url) {
+        this.newCreateUrl = url;
+    }
+    this.getCreateUrl = function () {
+        return this.newCreateUrl;
+    }
+    this.setActiveApp = function(appId) {
+        this.activeApp = appId;
+    }
+    this.getActiveApp = function() {
+        return this.activeApp;
+    }
+    this.createAction = function (title) {
+        if (this.newCreateUrl) {
+            var params = { userId: this.getActiveUserId(), title: title };
+            var appId = this.getActiveApp();
+            this.createUrl(this.getCreateUrl(), params).create()
+            .$promise.then(
+                function (data) {
+                    window.location.href = 'index.html#/osee_app?uuid=' + appId + '&element=' + data.id;
+            }, function (response) {
+                alert("Problem: " + response.data);
+            });
+        } 
+        else {
+            alert("URL for creation not set");
+        }
+    }
+    this.setWindowLocation = function (element) {
+        if(!this.getActiveApp()) {
+            alert("Active Application not yet set");
+            return;
+        }
+        window.location.href = 'index.html#/osee_app?uuid=' + this.getActiveApp() + '&element=' + element;
     }
 });

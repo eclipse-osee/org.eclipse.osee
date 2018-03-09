@@ -24,6 +24,7 @@
     <script src="../js/oseeAppController.js"></script>
     <script src="../js/oseeListController.js"></script>
     <script src="../js/startController.js"></script>
+    <script src="../js/indexController.js"></script>
     <script src="../js/osee.text.control.js"></script>
     <script src="../js/osee.textarea.control.js"></script>
     <script src="../js/osee.checkbox.control.js"></script>
@@ -34,6 +35,40 @@
     <script src="../js/osee.multiselectobject.dropdown.control.js"></script>
 </head>
 <body ng-app="oseeApp" style="max-width:90%; margin:1vw auto;">
+    <nav class="navbar navbar-default">
+    	<div class="container-fluid" ng-controller="indexController">
+            <!-- Navbar brand -->
+		     <div class="navbar-header">
+                 <logo><a class="navbar-brand" href="#/"><img style="max-width:100px; margin-top: -6px;" alt="OSEE" src="/libs/images/osee_32x32.png" /></a></logo>
+		     </div>
+             <form class="navbar-form navbar-left">
+                 <div class="input-group">
+                     <input type="text" class="form-control" placeholder="Apache Issue Number" ng-model="element">
+                     <div class="input-group-btn">
+                         <button class="btn btn-default" type="submit" ng-click="findAction()">
+                             <i class="glyphicon glyphicon-search"></i>
+                         </button>
+                     </div>
+                 </div>
+             </form> 
+             <form class="navbar-form navbar-left">
+                 <div class="input-group">
+                     <input type="text" class="form-control" placeholder="Input new title here" ng-model="createTitle">
+                     <div class="input-group-btn">
+                         <button class="btn btn-default" type="submit" ng-click="createAction()">
+                             <i class="glyphicon glyphicon-plus-sign"></i>
+                         </button>
+                     </div>
+                 </div>
+             </form> 
+             <ul class="nav navbar-nav navbar-right">                  
+                   <li class="navbar-text">
+                        <span class="glyphicon glyphicon-user"></span>
+                        <strong ng-model="userName">{{userName}}</strong>  
+                   </li>
+             </ul>
+		</div>
+    </nav>
     <div ng-view></div>
 </body>
 </html>

@@ -4,10 +4,11 @@ app.directive('oseeDropdownControl', function () {
         restrict: 'E',
         controller: ['BaseController', '$scope', 'OseeAppSchema', 'OseeControlValues', function (BaseController, $scope, OseeAppSchema, OseeControlValues) {
                 var vm = this;
+                vm.isValid = OseeAppSchema.isValid;
 
                 $scope.onInit = function () {
                     if ($scope.uischema.scope.getUrl) {
-                        vm.possibleSelections = OseeControlValues.queryUrl($scope.uischema.scope.getUrl).query({
+                        vm.possibleSelections = OseeControlValues.queryUrl($scope.uischema.scope.getUrl, true).query({
                                 element: OseeAppSchema.getElement()
                             }, function (selections) {
                                 vm.possibleSelections = selections;
@@ -15,9 +16,18 @@ app.directive('oseeDropdownControl', function () {
                     } else
                         vm.possibleSelections = vm.resolvedSchema.enum;
                 }
-                $scope.onNgChange = function (controlschema) {
+                $scope.onNgChange = function () {
+                    if (OseeAppSchema.isValid(vm.resolvedData[vm.fragment], vm.uiSchema.options.required)) {
+                        vm.uiSchema.style = {
+                            color: 'black'
+                        };
+                    } else {
+                        vm.uiSchema.style = {
+                            color: 'red'
+                        };
+                    }
                     if (vm.resolvedData.value) {
-                        OseeAppSchema.updateItem(controlschema, vm.resolvedData.value);
+                        OseeAppSchema.updateItem(vm.uiSchema, vm.resolvedData.value);
                     }
                 }
                 $scope.onNgBlur = function () {
@@ -33,8 +43,19 @@ app.directive('oseeDropdownControl', function () {
             }
         ],
         controllerAs: 'vm',
+        link: function link(scope, element, attrs, ctrl) {
+            if (ctrl.resolvedData) {
+                if (!ctrl.isValid(ctrl.resolvedData.value, ctrl.uiSchema.options.required)) {
+                    console.log("invalid control data according to the uiSchema regex");
+                    element.
+                    css({
+                        color: 'red'
+                    });
+                }
+            }
+        },
         template: `
-            <jsonforms-control>
+            <jsonforms-control ng-style="vm.uiSchema.style">
                 <span ng-if = "linkExists()">
                     <label>{{vm.uiSchema.options.subLabel}}</label>
                     <a href="{{vm.uiSchema.options.link}}" class="btn pull-right">{{vm.uiSchema.options.linkText}}</a>
@@ -43,7 +64,7 @@ app.directive('oseeDropdownControl', function () {
                         id="{{vm.id}}"
                         class="form-control jsf-control-enum"
                         ng-model="vm.resolvedData[vm.fragment]"
-                        ng-change="onNgChange('{{vm.uiSchema}}')"
+                        ng-change="onNgChange()"
                         ng-blur="onNgBlur()"
                         data-ng-init="onInit()">
                     </select>

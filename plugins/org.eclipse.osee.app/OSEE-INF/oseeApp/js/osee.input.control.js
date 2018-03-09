@@ -10,8 +10,8 @@ app.directive('oseeInputControl', function () {
                     OseeAppSchema.doUpdate();
                 }
 
-                $scope.onNgChange = function (controlschema) {
-                    OseeAppSchema.updateItem(controlschema, vm.resolvedData[vm.fragment]);
+                $scope.onNgChange = function () {
+                    OseeAppSchema.updateItem(vm.uiSchema, vm.resolvedData[vm.fragment]);
                 }
                 BaseController.call(vm, $scope, $routeParams, OseeAppSchema);
 
@@ -21,12 +21,14 @@ app.directive('oseeInputControl', function () {
         template: `
             <jsonforms-control>
                 <input id="{{vm.id}}"
+                    required minlength="4"
                     class="form-control jsf-control-string"
                     ng-style="{{vm.uiSchema.style}}"
                     ng-model="vm.resolvedData[vm.fragment]"
-                    ng-change="onNgChange('{{vm.uiSchema}}')"
+                    ng-change="onNgChange()"
                     ng-readonly="vm.uiSchema.readOnly"
-                    ng-blur="onNgBlur()">
+                    ng-blur="onNgBlur()"
+                    required>
                 </input>
             </jsonforms-control>
         `

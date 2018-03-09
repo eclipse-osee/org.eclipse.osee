@@ -9,8 +9,9 @@ app.controller('oseeAppController', [
             var vm = this;
             vm.dataloaded = false;
             vm.loaded = false;
+            vm.name = {};
             vm.appId = $route.current.params.uuid;
-            vm.name = $route.current.params.name;
+            OseeControlValues.setActiveApp(vm.appId);
             vm.element = $route.current.params.element;
             vm.oseeAppData = {};
             vm.useSubmit = false;
@@ -18,13 +19,16 @@ app.controller('oseeAppController', [
                 // make sure the last update is captured before leaving
                 OseeAppSchema.doUpdate();
             });
+
             OseeAppSchema.get({
                 appId: vm.appId
             }, function (data) {
                 vm.oseeAppSchema = data.OseeApp;
                 vm.dataloaded = true;
                 vm.defaultUpdateURL = data.ItemUpdateURL;
-                vm.createURL = data.ItemCreateURL;
+                vm.baseName = data.BaseName;
+                vm.identifier = data.NameContent;
+                OseeControlValues.setCreateUrl(data.ItemCreateURL);
                 if (data.ItemSubmitURL) {
                     vm.submitURL = data.ItemSubmitURL;
                     vm.useSubmit = true;
@@ -33,20 +37,22 @@ app.controller('oseeAppController', [
                 $scope.schemaGetKey = data.SchemaGetKey;
                 if (vm.element !== undefined) {
                     if (data.SchemaType === 'isArray') {
-                        vm.itemDataResource.query({
+                        OseeControlValues.queryUrl(data.ItemGetURL, true).query({
                             element: vm.element
                         }, function (data) {
                             vm.oseeAppData = data[0];
+                            vm.name = vm.baseName + vm.oseeAppData[vm.identifier];
                             vm.loaded = true;
                         }, function (response) {
                             vm.failed = true;
                             alert("Problem: " + response.message);
                         });
                     } else if (data.SchemaType === 'isItem') {
-                        vm.itemDataResource.get({
+                        OseeControlValues.queryUrl(data.ItemGetURL, false).query({
                             element: vm.element
                         }, function (data) {
                             vm.oseeAppData = data;
+                            vm.name = vm.baseName + vm.oseeAppData[vm.identifier];
                             vm.loaded = true;
                         }, function (response) {
                             vm.failed = true;
@@ -55,24 +61,6 @@ app.controller('oseeAppController', [
                     }
                 }
             });
-
-            this.newAction = function () {
-                vm.createAction = $resource(vm.createURL, null, {
-                        'create': {
-                            method: 'POST'
-                        }
-                    });
-
-                vm.createAction.create()
-                .$promise.then(
-                    function (data) {
-                    window.location.href = 'index.html#/osee_app?uuid=' + vm.appId +
-                        '&name=' + vm.name + '&element=' + data.id;
-                }, function (response) {
-                    vm.failed = true;
-                    alert("Problem: " + response.data);
-                });
-            };
 
             this.submitForm = function () {
                 vm.itemSubmitResource = $resource(vm.submitURL, null, {
@@ -91,9 +79,6 @@ app.controller('oseeAppController', [
                     alert("Data not ready to be submitted.");
                 }
             };
-            this.goBack = function () {
-                history.back();
-            };
             OseeAppSchema.getElement = function () {
                 return vm.element;
             };
@@ -106,16 +91,8 @@ app.controller('oseeAppController', [
                     } else {
                         jsonData = JSON.stringify(this.changedData);
                     }
-                    vm.putResource = $resource(
-                            vm.defaultUpdateURL, null, {
-                            'update': {
-                                method: 'PUT',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                }
-                            }
-                        });
-                    vm.putResource.update({
+                    var userId = OseeControlValues.getActiveUserId();
+                    OseeControlValues.putUrl(vm.defaultUpdateURL, false).submit({
                         element: vm.element,
                         updated: this.changedItem
                     }, "[" + jsonData + "]").$promise.then(
@@ -129,11 +106,21 @@ app.controller('oseeAppController', [
                     this.changedItem = null;
                 }
             };
-            OseeAppSchema.updateItem = function (controlschema, change) {
-                var input = JSON.parse(controlschema);
-                var intermediate = input.scope.$ref.substr(13);
+            OseeAppSchema.updateItem = function (uiSchema, change) {
+                var intermediate = uiSchema.scope.$ref.substr(13);
                 this.changedItem = intermediate.substring(0, intermediate.indexOf('/'));
                 this.changedData = change;
+            };
+            OseeAppSchema.isValid = function (value, regex) {
+                // the regex represents invalid strings
+                if (!regex)
+                    return true;
+                if (!value)
+                    return false;
+                var regexp = RegExp(regex);
+                if (regexp.test(value))
+                    return false;
+                return true;
             };
         }
     ]);

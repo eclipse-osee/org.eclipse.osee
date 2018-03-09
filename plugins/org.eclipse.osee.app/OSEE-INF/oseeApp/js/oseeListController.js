@@ -1,6 +1,6 @@
 
-app.controller('oseeListController', ['OseeAppSchema', '$route', '$resource',
-        function (OseeAppSchema, $route, $resource) {
+app.controller('oseeListController', ['OseeAppSchema', 'OseeControlValues', '$route', '$resource',
+        function (OseeAppSchema, OseeControlValues, $route, $resource) {
             $route.current.params;
 
             var vm = this;
@@ -23,6 +23,7 @@ app.controller('oseeListController', ['OseeAppSchema', '$route', '$resource',
                 }, function (data) {
                     vm.startData = data;
                 });
+                OseeControlValues.setActiveApp(result.ActiveAppId);
                 vm.allGridSettings.columnDefs = result.UIGridColumns;
                 vm.gridOptions = vm.allGridSettings;
                 vm.listDataResource = $resource(result.ListRestURL);

@@ -5,28 +5,48 @@ app.directive('oseeTextareaControl', function () {
         controller: ['BaseController', '$scope', '$routeParams', 'OseeAppSchema', function (
                 BaseController, $scope, $routeParams, OseeAppSchema) {
                 var vm = this;
+                vm.isValid = OseeAppSchema.isValid;
 
-                $scope.onNgChange = function (controlschema) {
-                    OseeAppSchema.updateItem(controlschema, vm.resolvedData[vm.fragment]);
-                    console.log("got ng change");
+                $scope.onNgChange = function () {
+                    if (OseeAppSchema.isValid(vm.resolvedData[vm.fragment], vm.uiSchema.options.required)) {
+                        vm.uiSchema.style = {
+                            color: 'black'
+                        };
+                    } else {
+                        vm.uiSchema.style = {
+                            color: 'red'
+                        };
+                    }
+                    OseeAppSchema.updateItem(vm.uiSchema, vm.resolvedData[vm.fragment]);
                 }
                 $scope.onNgBlur = function () {
-                    console.log("got ng blur");
-                    OseeAppSchema.doUpdate();
+                    if (OseeAppSchema.isValid(vm.resolvedData[vm.fragment], vm.uiSchema.options.required)) {
+                        OseeAppSchema.doUpdate();
+                    }
                 }
                 BaseController.call(vm, $scope, OseeAppSchema);
-
+                console.log(document.getElementById(vm.scope.$id));
             }
         ],
         controllerAs: 'vm',
+        link: function link(scope, element, attrs, ctrl) {
+            if (ctrl.resolvedData) {
+                if (!ctrl.isValid(ctrl.resolvedData.value, ctrl.uiSchema.options.required)) {
+                    console.log("invalid control data according to the uiSchema regex");
+                    element.
+                    css({
+                        color: 'red'
+                    });
+                }
+            }
+        },
         template: `
-            <jsonforms-control>
-                <textarea id="{{vm.id}}"
+            <jsonforms-control id="{{vm.scope.$id}}" ng-style="vm.uiSchema.style">
+                <textarea
                     class="form-control jsf-control-string osee-textarea"
-                    ng-style="{{vm.uiSchema.style}}"
                     rows="{{vm.uiSchema.rows}}"
                     ng-model="vm.resolvedData[vm.fragment]"
-                    ng-change="onNgChange('{{vm.uiSchema}}')"
+                    ng-change="onNgChange()"
                     ng-blur="onNgBlur()"
                     ng-readonly="vm.uiSchema.readOnly">
                 </textarea>

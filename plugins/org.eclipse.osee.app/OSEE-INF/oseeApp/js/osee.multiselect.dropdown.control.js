@@ -30,7 +30,7 @@ app.directive('oseeMultiselectDropdownControl', function () {
                     }
                     // choose parameters by either element id or attribute id
                     console.log("logging url and attribute id, url: [" + $scope.uischema.scope.getUrl + "] and control id: [" + controlIdParam + "]");
-                    OseeControlValues.queryUrl($scope.uischema.scope.getUrl).query(controlIdParam, function (selections) {
+                    OseeControlValues.queryUrl($scope.uischema.scope.getUrl, true).query(controlIdParam, function (selections) {
                         var objects = [];
                         // if there are no objects, use the local enumeration
                         if (selections.length < 1) {
@@ -53,13 +53,27 @@ app.directive('oseeMultiselectDropdownControl', function () {
                                 }
                             }
                         }
-                        if (vm.resolvedData.value && !found) {
-                            // put it into the list
-                            objects[selections.length] = {
-                                id: selections.length,
-                                label: vm.resolvedData.value
+                        if (!found) {
+                            if (vm.resolvedData.value) {
+                                // put it into the list
+                                objects[selections.length] = {
+                                    id: selections.length,
+                                    label: vm.resolvedData.value
+                                }
+                                $scope.model.push(objects[selections.length]);
+                                vm.uiSchema.style = {
+                                    color: 'black'
+                                };
+                            } else if ($scope.uischema.options.required) {
+                                // value required, but not found
+                                vm.uiSchema.style = {
+                                    color: 'red'
+                                };
                             }
-                            $scope.model.push(objects[selections.length]);
+                        } else {
+                            vm.uiSchema.style = {
+                                color: 'black'
+                            };
                         }
                         $scope.data = objects;
                     });
@@ -107,13 +121,12 @@ app.directive('oseeMultiselectDropdownControl', function () {
         ],
         controllerAs: 'vm',
         template: `
-            <jsonforms-control>
+            <jsonforms-control id="{{vm.scope.$id}}" ng-style="vm.uiSchema.style">
                 <span ng-if = "linkExists()">
                     <label>{{vm.uiSchema.options.subLabel}}</label>
                     <a href="{{vm.uiSchema.options.link}}" class="btn pull-right priority">{{vm.uiSchema.options.linkText}}</a>
                 </span>
-                <div id="{{vm.id}}"
-                    ng-dropdown-multiselect="" 
+                <div ng-dropdown-multiselect="" 
                     options="data" 
                     selected-model="model" 
                     extra-settings="settings"

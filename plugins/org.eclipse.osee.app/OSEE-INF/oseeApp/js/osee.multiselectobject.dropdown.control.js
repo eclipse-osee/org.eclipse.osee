@@ -2,13 +2,13 @@
 app.directive('oseeMultiselectobjectDropdownControl', function () {
     return {
         restrict: 'E',
-        controller: ['BaseController', '$scope', 'OseeControlValues', '$route', function (BaseController, $scope, OseeControlValues, $route) {
+        controller: ['BaseController', '$scope', 'OseeControlValues', 'OseeAppSchema', '$route', function (BaseController, $scope, OseeControlValues, OseeAppSchema, $route) {
                 var vm = this;
                 vm.element = $route.current.params.element;
                 $scope.model = []; // This is where we can set default selections on initialization, if any.
                 var controlIdValue = OseeControlValues.parseAttribute($scope.uischema.scope.$ref);
                 console.log("logging url and control id, url: [" + $scope.uischema.scope.getUrl + "] and control id: [" + controlIdValue + "]");
-                OseeControlValues.queryUrl($scope.uischema.scope.getUrl).query({}, function (selections) {
+                OseeControlValues.queryUrl($scope.uischema.scope.getUrl, true).query({}, function (selections) {
                     var objects = [];
                     // if there are no objects, use the local enumeration
                     if (selections.length < 1) {
@@ -31,8 +31,27 @@ app.directive('oseeMultiselectobjectDropdownControl', function () {
                             }
                         }
                     }
+                    if (vm.uiSchema.options.required) {
+                        var names = "";
+                        for (i = 0; i < vm.resolvedData[vm.fragment].length; ++i) {
+                            names += vm.resolvedData[vm.fragment][i].name;
+                        }
+                        $scope.checkValue(names, vm.uiSchema.options.required);
+
+                    }
                     $scope.data = objects;
                 });
+                $scope.checkValue = function (item, regex) {
+                    if (OseeAppSchema.isValid(item, regex)) {
+                        vm.uiSchema.style = {
+                            color: 'black'
+                        };
+                    } else {
+                        vm.uiSchema.style = {
+                            color: 'red'
+                        };
+                    }
+                }
                 $scope.settings = $scope.uischema.options.settings;
                 if ($scope.settings.smartButtonTextConverter == true) {
                     $scope.settings.smartButtonTextConverter = function (itemText, originalItem) {
@@ -40,13 +59,22 @@ app.directive('oseeMultiselectobjectDropdownControl', function () {
                         return itemText;
                     }
                 }
-
-                $scope.onInit = function () {}
                 $scope.multiselectEvents = {
                     onSelectionChanged: function () {
                         var content = $scope.getMyEffectedData($scope.model);
                         var parameter = $scope.getParameterFromString($scope.uischema.scope.putUrl, $scope.vm.element);
-                        OseeControlValues.putUrl($scope.uischema.scope.putUrl, true).submit(parameter, content);
+                        OseeControlValues.putUrl($scope.uischema.scope.putUrl, true).submit(parameter, content).$promise.then(
+                            function (data) {
+                            console.log(data);
+                            if (vm.uiSchema.options.required) {
+                                vm.uiSchema.style = {
+                                    color: 'black'
+                                };
+                            }
+                        }, function (response) {
+                            vm.failed = true;
+                            alert("Problem: " + response.message);
+                        });
                     }
                 };
                 $scope.getParameterFromString = function (url, action) {
@@ -75,7 +103,7 @@ app.directive('oseeMultiselectobjectDropdownControl', function () {
         ],
         controllerAs: 'vm',
         template: `
-            <jsonforms-control>
+            <jsonforms-control ng-style="vm.uiSchema.style">
                 <span ng-if = "linkExists()">
                     <label>{{vm.uiSchema.options.subLabel}}</label>
                     <a href="{{vm.uiSchema.options.link}}" class="btn pull-right priority">{{vm.uiSchema.options.linkText}}</a>
@@ -85,8 +113,7 @@ app.directive('oseeMultiselectobjectDropdownControl', function () {
                     options="data" 
                     selected-model="model" 
                     extra-settings="settings"
-                    events="multiselectEvents"
-                    data-ng-init="onInit()">
+                    events="multiselectEvents">
                 </div>
            </jsonforms-control>
         `
