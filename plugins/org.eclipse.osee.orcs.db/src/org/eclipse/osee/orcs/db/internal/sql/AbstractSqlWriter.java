@@ -13,8 +13,10 @@ package org.eclipse.osee.orcs.db.internal.sql;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -39,12 +41,14 @@ public abstract class AbstractSqlWriter implements HasOptions {
    private final List<String> tableEntries = new ArrayList<>();
    private final List<WithClause> withClauses = new ArrayList<>();
    private final SqlAliasManager aliasManager = new SqlAliasManager();
+   private final HashMap<TableEnum, String> mainAliases = new HashMap<>();
 
    private final Log logger;
    private final SqlJoinFactory joinFactory;
    private final JdbcClient jdbcClient;
    private final SqlContext context;
    private final QueryType queryType;
+
    private int level = 0;
 
    public AbstractSqlWriter(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryType queryType) {
@@ -60,7 +64,6 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    public void build(List<SqlHandler<?>> handlers) {
-      Conditions.checkNotNullOrEmpty(handlers, "SqlHandlers");
       reset();
 
       write(handlers);
@@ -183,6 +186,10 @@ public abstract class AbstractSqlWriter implements HasOptions {
    protected abstract void writeGroupAndOrder();
 
    protected void writeTables() {
+      for (Entry<TableEnum, String> entry : mainAliases.entrySet()) {
+         tableEntries.add(entry.getKey().getName() + " " + entry.getValue());
+      }
+
       boolean first = true;
       for (String tableEntry : tableEntries) {
          if (first) {
@@ -219,6 +226,17 @@ public abstract class AbstractSqlWriter implements HasOptions {
             }
             handler.addPredicates(this);
          }
+      }
+
+      String mainTableAlias = mainAliases.get(TableEnum.ARTIFACT_TABLE);
+      if (mainTableAlias != null) {
+         if (!first) {
+            write("\n AND ");
+         }
+         String mainTxsAlias = getMainTableAlias(TableEnum.TXS_TABLE);
+         writeEquals(mainTableAlias, mainTxsAlias, "gamma_id");
+         write(" AND ");
+         write(getTxBranchFilter(mainTxsAlias));
       }
    }
 
@@ -311,8 +329,23 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return alias;
    }
 
-   public void write(String sql) {
-      output.append(sql);
+   public String getMainTableAlias(TableEnum table) {
+      String alias = mainAliases.get(table);
+      if (alias == null) {
+         alias = getNextAlias(table);
+         mainAliases.put(table, alias);
+      }
+      return alias;
+   }
+
+   public void writeTableNoAlias(TableEnum table) {
+      write(table.getName());
+   }
+
+   public String writeTable(TableEnum table) {
+      String alias = getNextAlias(table);
+      write("%s %s", table.getName(), alias);
+      return alias;
    }
 
    public void write(String format, Object... params) {
@@ -323,14 +356,8 @@ public abstract class AbstractSqlWriter implements HasOptions {
       }
    }
 
-   public String writeTable(TableEnum table) {
-      String alias = getNextAlias(table);
-      write("%s %s", table.getName(), alias);
-      return alias;
-   }
-
-   public void writeTableNoAlias(TableEnum table) {
-      write(table.getName());
+   public void write(String sql) {
+      output.append(sql);
    }
 
    public void writeEquals(String table1, String table2, String column) {
@@ -339,6 +366,10 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    public void writeEquals(String table1, String column1, String table2, String column2) {
       write("%s.%s = %s.%s", table1, column1, table2, column2);
+   }
+
+   public void addParameter(Object parameter) {
+      getContext().getParameters().add(parameter);
    }
 
    public void writeEqualsParameter(String table, String column, Object parameter) {
@@ -351,10 +382,6 @@ public abstract class AbstractSqlWriter implements HasOptions {
       output.append(column);
       output.append(" = ?");
       addParameter(parameter);
-   }
-
-   public void addParameter(Object parameter) {
-      getContext().getParameters().add(parameter);
    }
 
    private void addJoin(AbstractJoinQuery join) {

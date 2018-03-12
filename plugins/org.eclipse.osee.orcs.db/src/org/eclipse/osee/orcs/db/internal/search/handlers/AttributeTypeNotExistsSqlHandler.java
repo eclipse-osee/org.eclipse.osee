@@ -16,7 +16,6 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
-import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
@@ -25,13 +24,11 @@ import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
  * @author John Misinco
  */
 public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttributeTypeNotExists> {
-
    private CriteriaAttributeTypeNotExists criteria;
-
    private String jIdAlias;
+   private AbstractJoinQuery joinQuery;
    private String artAlias;
    private String txsAlias;
-   private AbstractJoinQuery joinQuery;
 
    @Override
    public void setData(CriteriaAttributeTypeNotExists criteria) {
@@ -43,25 +40,20 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
       if (criteria.getTypes().size() > 1) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
-      artAlias = writer.getOrCreateTableAlias(TableEnum.ARTIFACT_TABLE);
-      txsAlias = writer.getOrCreateTableAlias(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
+
+      artAlias = writer.getMainTableAlias(TableEnum.ARTIFACT_TABLE);
+      txsAlias = writer.getMainTableAlias(TableEnum.TXS_TABLE);
    }
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
       Collection<AttributeTypeId> types = criteria.getTypes();
-
-      writer.writeEquals(artAlias, txsAlias, "gamma_id");
-      writer.writeAndLn();
-      writer.write(writer.getTxBranchFilter(txsAlias));
-      writer.writeAndLn();
       writer.write("NOT EXISTS (SELECT 1 FROM ");
-      writer.write(TableEnum.ATTRIBUTE_TABLE.getName());
-      writer.write(" attr, ");
-      writer.write(TableEnum.TXS_TABLE.getName());
-      writer.write(" txs WHERE ");
-
-      writer.writeEquals("attr", artAlias, "art_id");
+      String attAlias = writer.writeTable(TableEnum.ATTRIBUTE_TABLE);
+      writer.write(", ");
+      String txsNotAlias = writer.writeTable(TableEnum.TXS_TABLE);
+      writer.write(" WHERE ");
+      writer.writeEquals(attAlias, artAlias, "art_id");
       writer.write(" AND ");
 
       if (types.size() > 1) {
@@ -71,15 +63,11 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
          }
          joinQuery = writer.writeJoin(typeIds);
 
-         writer.write("attr.attr_type_id = ");
-         writer.write(jIdAlias);
-         writer.write(".id AND ");
-         writer.write(jIdAlias);
-         writer.write(".query_id = ?");
-         writer.addParameter(joinQuery.getQueryId());
+         writer.writeEquals(attAlias, "attr_type_id", jIdAlias, "id");
+         writer.write(" AND ");
+         writer.writeEqualsParameter(jIdAlias, "query_id", joinQuery.getQueryId());
       } else {
-         writer.write("attr.attr_type_id = ?");
-         writer.addParameter(types.iterator().next());
+         writer.writeEqualsParameter(attAlias, "attr_type_id", types.iterator().next());
       }
       if (criteria.getValue() != null) {
          writer.write(" AND value = ?");
@@ -87,9 +75,9 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
       }
       writer.write(" AND ");
 
-      writer.writeEquals("attr", "txs", "gamma_id");
+      writer.writeEquals(attAlias, txsNotAlias, "gamma_id");
       writer.write(" AND ");
-      writer.write(writer.getTxBranchFilter("txs"));
+      writer.write(writer.getTxBranchFilter(txsNotAlias));
       writer.write(")");
    }
 
@@ -97,5 +85,4 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
    public int getPriority() {
       return SqlHandlerPriority.ATTRIBUTE_TYPE_NOT_EXISTS.ordinal();
    }
-
 }

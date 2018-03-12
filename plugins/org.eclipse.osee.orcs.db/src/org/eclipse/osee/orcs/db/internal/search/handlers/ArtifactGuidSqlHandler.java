@@ -14,7 +14,6 @@ import java.util.Collection;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
-import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 import org.eclipse.osee.orcs.db.internal.sql.WithClause;
@@ -25,12 +24,12 @@ import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
  */
 public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids> {
    private CriteriaArtifactGuids criteria;
-   private String artAlias;
    private String jguidAlias;
-   private String txsAlias;
    private AbstractJoinQuery joinQuery;
    private String withClauseName;
    private WithClause withClause;
+   private String artAlias;
+   private String txsAlias;
 
    @Override
    public void addWithTables(AbstractSqlWriter writer) {
@@ -72,8 +71,8 @@ public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids> {
       if (criteria.getIds().size() > 1) {
          jguidAlias = writer.addTable(TableEnum.CHAR_JOIN_TABLE);
       }
-      artAlias = writer.addTable(TableEnum.ARTIFACT_TABLE);
-      txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
+      artAlias = writer.getMainTableAlias(TableEnum.ARTIFACT_TABLE);
+      txsAlias = writer.getMainTableAlias(TableEnum.TXS_TABLE);
    }
 
    @Override
@@ -81,42 +80,22 @@ public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids> {
       Collection<String> ids = criteria.getIds();
       if (ids.size() > 1) {
          joinQuery = writer.writeCharJoin(ids);
-         writer.write(artAlias);
-         writer.write(".guid = ");
-         writer.write(jguidAlias);
-         writer.write(".id AND ");
-         writer.write(jguidAlias);
-         writer.write(".query_id = ?");
-         writer.addParameter(joinQuery.getQueryId());
+         writer.writeEquals(artAlias, "guid", jguidAlias, "id");
+         writer.write(" AND ");
+         writer.writeEqualsParameter(jguidAlias, "query_id", joinQuery.getQueryId());
       } else {
-         writer.write(artAlias);
-         writer.write(".guid = ?");
-         writer.addParameter(ids.iterator().next());
+         writer.writeEqualsParameter(artAlias, "guid", ids.iterator().next());
       }
       if (withClause != null) {
          writer.writeAndLn();
-         writer.write(withClauseName);
-         writer.write(".transaction_id = ");
-         writer.write(txsAlias);
-         writer.write(".transaction_id AND ");
-         writer.write(withClauseName);
-         writer.write(".art_id = ");
-         writer.write(artAlias);
-         writer.write(".art_id");
+         writer.writeEquals(withClauseName, txsAlias, "transaction_id");
+         writer.write(" AND ");
+         writer.writeEquals(withClauseName, artAlias, "art_id");
       }
-      writer.write(" AND ");
-      writer.write(artAlias);
-      writer.write(".gamma_id = ");
-      writer.write(txsAlias);
-      writer.write(".gamma_id AND ");
-
-      boolean includeDeletedArtifacts = OptionsUtil.areDeletedArtifactsIncluded(writer.getOptions());
-      writer.write(writer.getTxBranchFilter(txsAlias, includeDeletedArtifacts));
    }
 
    @Override
    public int getPriority() {
       return SqlHandlerPriority.ARTIFACT_GUID.ordinal();
    }
-
 }

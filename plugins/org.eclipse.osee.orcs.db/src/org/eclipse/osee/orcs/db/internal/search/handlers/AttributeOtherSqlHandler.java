@@ -33,9 +33,6 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther>
    private String attrAlias;
    private String txsAlias1;
 
-   private String artAlias2;
-   private String txs2Alias2;
-
    private String valueJoinAlias;
    private AbstractJoinQuery valueJoinQuery;
 
@@ -65,18 +62,8 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther>
          typeJoinAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
 
-      List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
-      List<String> txs = writer.getAliases(TableEnum.TXS_TABLE);
-
       attrAlias = writer.addTable(TableEnum.ATTRIBUTE_TABLE);
       txsAlias1 = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ATTRIBUTE);
-
-      if (aliases.isEmpty()) {
-         artAlias2 = writer.addTable(TableEnum.ARTIFACT_TABLE);
-      }
-      if (txs.isEmpty()) {
-         txs2Alias2 = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
-      }
    }
 
    private Collection<String> getValuesForSearch() {
@@ -170,14 +157,6 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther>
       writer.write(".gamma_id AND ");
       writer.write(writer.getTxBranchFilter(txsAlias1));
 
-      if (txs2Alias2 != null && artAlias2 != null) {
-         writer.writeAndLn();
-         writer.write(artAlias2);
-         writer.write(".gamma_id = ");
-         writer.write(txs2Alias2);
-         writer.write(".gamma_id AND ");
-         writer.write(writer.getTxBranchFilter(txs2Alias2));
-      }
    }
 
    @Override

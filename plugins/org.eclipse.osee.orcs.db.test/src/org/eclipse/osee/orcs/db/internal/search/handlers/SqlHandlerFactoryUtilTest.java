@@ -18,10 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.QueryData;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllArtifacts;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
@@ -78,11 +75,10 @@ public class SqlHandlerFactoryUtilTest {
       queryData.addCriteria(
          new CriteriaAttributeKeywords(false, null, null, Collections.<String> emptyList(), null, null, null));
       queryData.addCriteria(new CriteriaRelatedTo(null, (Collection<? extends ArtifactId>) null));
-      queryData.addCriteria(new CriteriaAllArtifacts());
 
       List<SqlHandler<?>> handlers = factory.createHandlers(queryData);
 
-      Assert.assertEquals(11, handlers.size());
+      Assert.assertEquals(10, handlers.size());
 
       Iterator<SqlHandler<?>> iterator = handlers.iterator();
       assertHandler(iterator.next(), ArtifactIdsSqlHandler.class, SqlHandlerPriority.ARTIFACT_ID);
@@ -97,7 +93,6 @@ public class SqlHandlerFactoryUtilTest {
          SqlHandlerPriority.ATTRIBUTE_TYPE_NOT_EXISTS);
       assertHandler(iterator.next(), RelationTypeExistsSqlHandler.class, SqlHandlerPriority.RELATION_TYPE_EXISTS);
       assertHandler(iterator.next(), ArtifactTypeSqlHandler.class, SqlHandlerPriority.ARTIFACT_TYPE);
-      assertHandler(iterator.next(), AllArtifactsSqlHandler.class, SqlHandlerPriority.ALL_ARTIFACTS);
       assertHandler(iterator.next(), RelationTypeFollowSqlHandler.class, SqlHandlerPriority.FOLLOW_RELATION_TYPES);
    }
 
@@ -116,13 +111,5 @@ public class SqlHandlerFactoryUtilTest {
          HasTagProcessor hasProcessor = (HasTagProcessor) actual;
          Assert.assertEquals(actualProcessor, hasProcessor.getTagProcessor());
       }
-   }
-
-   private static CriteriaSet createCriteria(Collection<? extends Criteria> criteria) {
-      CriteriaSet set = new CriteriaSet();
-      for (Criteria crit : criteria) {
-         set.add(crit);
-      }
-      return set;
    }
 }

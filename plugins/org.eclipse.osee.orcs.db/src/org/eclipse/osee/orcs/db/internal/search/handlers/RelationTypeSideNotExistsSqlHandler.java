@@ -24,15 +24,14 @@ public class RelationTypeSideNotExistsSqlHandler extends AbstractRelationSqlHand
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
       super.addPredicates(writer);
-
       RelationTypeSide type = criteria.getType();
 
       writer.write("NOT EXISTS (SELECT 1 FROM ");
-      writer.write(TableEnum.RELATION_TABLE.getName());
-      writer.write(" rel, ");
-      writer.write(TableEnum.TXS_TABLE.getName());
-      writer.write(" txs WHERE rel.rel_link_type_id = ?");
-      writer.addParameter(type.getGuid());
+      String relAlias = writer.writeTable(TableEnum.RELATION_TABLE);
+      writer.write(", ");
+      String txsAlias = writer.writeTable(TableEnum.TXS_TABLE);
+      writer.write(" WHERE ");
+      writer.writeEqualsParameter(relAlias, "rel_link_type_id", type);
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       String side = type.getSide().isSideA() ? "a" : "b";
@@ -41,20 +40,16 @@ public class RelationTypeSideNotExistsSqlHandler extends AbstractRelationSqlHand
       for (int index = 0; index < aSize; index++) {
          String artAlias = aliases.get(index);
 
-         writer.write("rel.");
-         writer.write(side);
-         writer.write("_art_id = ");
-         writer.write(artAlias);
-         writer.write(".art_id");
+         writer.writeEquals(relAlias, side + "_art_id", artAlias, "art_id");
 
          if (index + 1 < aSize) {
             writer.writeAndLn();
          }
       }
       writer.writeAndLn();
-      writer.write("rel.gamma_id = txs.gamma_id");
+      writer.writeEquals(relAlias, txsAlias, "gamma_id");
       writer.writeAndLn();
-      writer.write(writer.getTxBranchFilter("txs"));
+      writer.write(writer.getTxBranchFilter(txsAlias));
       writer.write(")");
    }
 }

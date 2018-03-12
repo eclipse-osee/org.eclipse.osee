@@ -18,7 +18,6 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
-import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.QueryType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -38,15 +37,13 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
    }
 
    private void writeSelectHelper() {
-      String txAlias = getLastAlias(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
-      String artAlias = getLastAlias(TableEnum.ARTIFACT_TABLE);
+      String txAlias = getMainTableAlias(TableEnum.TXS_TABLE);
 
       write("SELECT DISTINCT%s ", getSqlHint());
       if (OptionsUtil.isHistorical(getOptions())) {
-         write("%s.transaction_id, %s.art_id, %s.branch_id", txAlias, artAlias, txAlias);
-      } else {
-         write("%s.art_id, %s.branch_id", artAlias, txAlias);
+         write("%s.transaction_id, ", txAlias);
       }
+      write("%s.art_id, %s.branch_id", getMainTableAlias(TableEnum.ARTIFACT_TABLE), txAlias);
       if (isTokenQueryType()) {
          write(", value, art_type_id");
       }
@@ -59,8 +56,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
             write("SELECT count(xTable.art_id) FROM (\n ");
             writeSelectHelper();
          } else {
-            String artAlias = getLastAlias(TableEnum.ARTIFACT_TABLE);
-            write("SELECT%s count(%s.art_id)", getSqlHint(), artAlias);
+            write("SELECT%s count(%s.art_id)", getSqlHint(), getMainTableAlias(TableEnum.ARTIFACT_TABLE));
          }
       } else {
          writeSelectHelper();
@@ -74,9 +70,8 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
             write("\n) xTable");
          }
       } else {
-         String txAlias = getLastAlias(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
-         String artAlias = getLastAlias(TableEnum.ARTIFACT_TABLE);
-         write("\n ORDER BY %s.art_id, %s.branch_id", artAlias, txAlias);
+         write("\n ORDER BY %s.art_id, %s.branch_id", getMainTableAlias(TableEnum.ARTIFACT_TABLE),
+            getMainTableAlias(TableEnum.TXS_TABLE));
       }
    }
 

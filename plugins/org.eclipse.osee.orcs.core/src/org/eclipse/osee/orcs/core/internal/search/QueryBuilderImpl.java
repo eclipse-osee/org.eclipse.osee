@@ -61,13 +61,13 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
    @Override
    public List<ArtifactToken> loadArtifactTokens(AttributeTypeId attributeType) {
       getQueryData().addCriteria(new CriteriaTokenQuery(attributeType));
-      return queryEngine.loadArtifactTokens(build());
+      return queryEngine.loadArtifactTokens(getQueryData());
    }
 
    @Override
    public List<ArtifactId> loadArtifactIds() {
       getQueryData().addCriteria(new CriteriaIdQuery());
-      return queryEngine.loadArtifactIds(build());
+      return queryEngine.loadArtifactIds(getQueryData());
    }
 
    @Override
@@ -114,16 +114,16 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
 
    @Override
    public CancellableCallable<ResultSet<ArtifactReadable>> createSearch() {
-      return queryFactory.createSearch(session, build());
+      return queryFactory.createSearch(session, getQueryData());
    }
 
    @Override
    public CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches() {
-      return queryFactory.createSearchWithMatches(session, build());
+      return queryFactory.createSearchWithMatches(session, getQueryData());
    }
 
    @Override
    public CancellableCallable<ResultSet<? extends ArtifactId>> createSearchResultsAsIds() {
-      return queryFactory.createLocalIdSearch(session, build());
+      return queryFactory.createLocalIdSearch(session, getQueryData());
    }
 }

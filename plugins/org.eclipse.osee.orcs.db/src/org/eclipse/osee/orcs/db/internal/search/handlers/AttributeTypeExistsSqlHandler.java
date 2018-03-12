@@ -27,8 +27,6 @@ import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
  */
 public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeTypeExists> {
    private CriteriaAttributeTypeExists criteria;
-   private String artAlias;
-   private String artTxsAlias;
    private String attrAlias;
    private String txsAlias;
 
@@ -77,24 +75,12 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
       if (criteria.getTypes().size() > 1) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
-      List<String> artAliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
-      if (artAliases.isEmpty()) {
-         artAlias = writer.addTable(TableEnum.ARTIFACT_TABLE);
-         artTxsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
-      }
       attrAlias = writer.addTable(TableEnum.ATTRIBUTE_TABLE);
       txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ATTRIBUTE);
    }
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      if (artAlias != null && artTxsAlias != null) {
-         writer.writeEquals(artAlias, artTxsAlias, "gamma_id");
-         writer.write(" AND ");
-         writer.write(writer.getTxBranchFilter(artTxsAlias));
-         writer.writeAndLn();
-      }
-
       Collection<AttributeTypeId> types = criteria.getTypes();
       if (types.size() > 1) {
          joinQuery = writer.writeJoin(types);
@@ -155,5 +141,4 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
    public int getPriority() {
       return SqlHandlerPriority.ATTRIBUTE_TYPE_EXISTS.ordinal();
    }
-
 }

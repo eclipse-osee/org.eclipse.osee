@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchIds;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -39,12 +38,7 @@ public class BranchIdsSqlHandler extends SqlHandler<CriteriaBranchIds> {
       if (criteria.getIds().size() > 1) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
-      List<String> branchAliases = writer.getAliases(TableEnum.BRANCH_TABLE);
-      if (branchAliases.isEmpty()) {
-         brAlias = writer.addTable(TableEnum.BRANCH_TABLE);
-      } else {
-         brAlias = branchAliases.iterator().next();
-      }
+      brAlias = writer.getOrCreateTableAlias(TableEnum.BRANCH_TABLE);
    }
 
    @Override

@@ -22,7 +22,6 @@ import org.eclipse.osee.orcs.db.internal.search.tagger.HasTagProcessor;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagCollector;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
-import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
@@ -32,9 +31,8 @@ import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
  */
 public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywords> implements HasTagProcessor {
    private CriteriaAttributeKeywords criteria;
-
-   private String artAlias;
    private String attrAlias;
+   private String artAlias;
    private String txsAlias;
 
    private TagProcessor tagProcessor;
@@ -162,43 +160,13 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
-      List<String> txs = writer.getAliases(TableEnum.TXS_TABLE);
-
-      if (aliases.isEmpty()) {
-         artAlias = writer.addTable(TableEnum.ARTIFACT_TABLE);
-      }
-      if (txs.isEmpty()) {
-         txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
-      }
+      artAlias = writer.getMainTableAlias(TableEnum.ARTIFACT_TABLE);
+      txsAlias = writer.getMainTableAlias(TableEnum.TXS_TABLE);
    }
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      boolean artTableAdded = false;
-      boolean txsTableAdded = false;
-
-      if (!Strings.isValid(artAlias)) {
-         artAlias = writer.getAliases(TableEnum.ARTIFACT_TABLE).iterator().next();
-      } else {
-         artTableAdded = true;
-      }
-      if (!Strings.isValid(txsAlias)) {
-         txsAlias = writer.getAliases(TableEnum.TXS_TABLE).iterator().next();
-      } else {
-         txsTableAdded = true;
-      }
-
-      writer.write("%s.art_id = %s.art_id", artAlias, attrAlias);
-
-      if (artTableAdded) {
-         writer.writeAndLn();
-         writer.write("%s.gamma_id = %s.gamma_id", txsAlias, artAlias);
-      }
-      if (txsTableAdded) {
-         writer.writeAndLn();
-         writer.write(writer.getTxBranchFilter(txsAlias));
-      }
+      writer.writeEquals(artAlias, attrAlias, "art_id");
    }
 
    @Override
@@ -215,5 +183,4 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       };
       getTagProcessor().collectFromString(value, collector);
    }
-
 }

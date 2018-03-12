@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllArtifacts;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllBranches;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllTxs;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
@@ -114,7 +113,6 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaAttributeTypeNotExists.class, AttributeTypeNotExistsSqlHandler.class);
       handleMap.put(CriteriaAttributeOther.class, AttributeOtherSqlHandler.class);
       handleMap.put(CriteriaAttributeKeywords.class, AttributeTokenSqlHandler.class);
-      handleMap.put(CriteriaAllArtifacts.class, AllArtifactsSqlHandler.class);
       handleMap.put(CriteriaRelationTypeFollow.class, RelationTypeFollowSqlHandler.class);
    }
 

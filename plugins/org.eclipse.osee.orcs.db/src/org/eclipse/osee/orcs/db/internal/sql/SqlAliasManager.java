@@ -28,7 +28,6 @@ import java.util.Map;
  * @author Roberto E. Escobar
  */
 public class SqlAliasManager {
-
    private final HashMap<String, Alias> aliasCounter = new HashMap<>();
    private final List<AliasSet> usedAliases = new ArrayList<>();
    private int level = 0;

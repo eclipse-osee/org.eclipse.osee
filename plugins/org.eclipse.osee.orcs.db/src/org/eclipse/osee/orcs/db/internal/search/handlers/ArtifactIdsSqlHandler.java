@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
-import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
@@ -23,11 +22,10 @@ import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
  */
 public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds> {
    private CriteriaArtifactIds criteria;
-
-   private String artAlias;
    private String jIdAlias;
-   private String txsAlias;
    private String withClauseName;
+   private String artAlias;
+   private String txsAlias;
 
    @Override
    public void addWithTables(AbstractSqlWriter writer) {
@@ -66,22 +64,16 @@ public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds> {
       if (criteria.hasMultipleIds() && !OptionsUtil.isHistorical(writer.getOptions())) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
-      artAlias = writer.addTable(TableEnum.ARTIFACT_TABLE);
-      txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
+      artAlias = writer.getMainTableAlias(TableEnum.ARTIFACT_TABLE);
+      txsAlias = writer.getMainTableAlias(TableEnum.TXS_TABLE);
    }
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-
       if (OptionsUtil.isHistorical(writer.getOptions())) {
-         writer.write(withClauseName);
-         writer.write(".transaction_id = ");
-         writer.write(txsAlias);
-         writer.write(".transaction_id AND ");
-         writer.write(withClauseName);
-         writer.write(".art_id = ");
-         writer.write(artAlias);
-         writer.write(".art_id");
+         writer.writeEquals(withClauseName, txsAlias, "transaction_id");
+         writer.write(" AND ");
+         writer.writeEquals(withClauseName, artAlias, "art_id");
       } else {
          writer.write(artAlias);
          if (criteria.hasMultipleIds()) {
@@ -97,13 +89,6 @@ public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds> {
             writer.addParameter(criteria.getId());
          }
       }
-
-      writer.write(" AND ");
-      writer.write(artAlias);
-      writer.write(".gamma_id = ");
-      writer.write(txsAlias);
-      writer.write(".gamma_id AND ");
-      writer.write(writer.getTxBranchFilter(txsAlias));
    }
 
    @Override

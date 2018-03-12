@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllArtifacts;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
@@ -105,10 +104,6 @@ public class CriteriaFactory {
 
    public Criteria createArtifactGuidCriteria(Set<String> guids) {
       return new CriteriaArtifactGuids(guids);
-   }
-
-   public Criteria createAllArtifactsCriteria() {
-      return new CriteriaAllArtifacts();
    }
 
    public Criteria createFollowRelationType(RelationTypeSide relationTypeSide) {

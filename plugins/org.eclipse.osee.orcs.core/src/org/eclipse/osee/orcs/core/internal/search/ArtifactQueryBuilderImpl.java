@@ -333,13 +333,6 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
       return (T) this;
    }
 
-   public QueryData build() {
-      if (queryData.hasOnlyBranchOrTxCriterias()) {
-         addAndCheck(queryData, criteriaFactory.createAllArtifactsCriteria());
-      }
-      return queryData;
-   }
-
    @SuppressWarnings("unchecked")
    @Override
    public T andIsHeirarchicalRootArtifact() {

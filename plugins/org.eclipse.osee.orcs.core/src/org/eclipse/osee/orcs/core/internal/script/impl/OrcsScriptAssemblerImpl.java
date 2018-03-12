@@ -161,9 +161,6 @@ public class OrcsScriptAssemblerImpl implements OrcsScriptAssembler, OrcsScriptE
 
    @Override
    public void resetArtifactQuery() {
-      if (artQuery != null) {
-         artQuery.build();
-      }
       artQuery = null;
    }
 

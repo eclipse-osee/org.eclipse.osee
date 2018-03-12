@@ -20,20 +20,21 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 public class XtraAttributeDataSqlHandler extends AbstractXtraTableSqlHandler {
 
    private String txsAlias;
-   private String attrAlias;
+   private String attAlias;
+   private String artAlias;
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      attrAlias = writer.addTable(TableEnum.ATTRIBUTE_TABLE, ObjectType.ATTRIBUTE);
+      attAlias = writer.addTable(TableEnum.ATTRIBUTE_TABLE, ObjectType.ATTRIBUTE);
       txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ATTRIBUTE);
+      artAlias = writer.getMainTableAlias(TableEnum.ARTIFACT_TABLE);
    }
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      String artAlias = writer.getLastAlias(TableEnum.ARTIFACT_TABLE);
-      writer.writeEquals(artAlias, attrAlias, "art_id");
+      writer.writeEquals(artAlias, attAlias, "art_id");
       writer.write(" AND ");
-      writer.writeEquals(attrAlias, txsAlias, "gamma_id");
+      writer.writeEquals(attAlias, txsAlias, "gamma_id");
       writer.write(" AND ");
       writer.write(writer.getTxBranchFilter(txsAlias));
    }

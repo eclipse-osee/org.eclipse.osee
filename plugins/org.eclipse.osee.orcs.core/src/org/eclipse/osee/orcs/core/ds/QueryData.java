@@ -15,8 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
-import org.eclipse.osee.orcs.core.ds.criteria.BranchCriteria;
-import org.eclipse.osee.orcs.core.ds.criteria.TxCriteria;
 
 /**
  * @author Roberto E. Escobar
@@ -92,20 +90,6 @@ public final class QueryData implements HasOptions, HasBranch {
 
    public void addCriteria(Criteria criteria) {
       getLastCriteriaSet().add(criteria);
-   }
-
-   /**
-    * @return true if this queryData has no branch or txs criteria (including when there is no criteria)
-    */
-   public boolean hasOnlyBranchOrTxCriterias() {
-      for (List<Criteria> criteriaSet : criterias) {
-         for (Criteria criteria : criteriaSet) {
-            if (!(criteria instanceof TxCriteria) && !(criteria instanceof BranchCriteria)) {
-               return false;
-            }
-         }
-      }
-      return true;
    }
 
    public boolean hasCriteriaType(Class<? extends Criteria> type) {

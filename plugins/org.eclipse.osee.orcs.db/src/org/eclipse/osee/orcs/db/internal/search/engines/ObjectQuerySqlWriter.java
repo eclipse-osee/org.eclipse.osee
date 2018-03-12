@@ -49,6 +49,8 @@ import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
+ * Used to create ORCS Script queries
+ *
  * @author Roberto E. Escobar
  */
 public class ObjectQuerySqlWriter extends AbstractSqlWriter {
@@ -75,7 +77,6 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
    protected void write(Iterable<SqlHandler<?>> handlers) {
       withTxFilterClause = null;
       fieldResolver.reset();
-      reset();
       computeTxFilterClause(handlers);
       computeTables(handlers);
 
@@ -101,9 +102,7 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
       write("\n WHERE \n");
       writePredicates(Iterables.concat(handlers, xtraHandlers));
 
-      if (toString().endsWith("\n WHERE \n")) {
-         removeDanglingSeparator("\n WHERE \n");
-      }
+      removeDanglingSeparator("\n WHERE \n");
 
       writeGroupAndOrder();
    }
