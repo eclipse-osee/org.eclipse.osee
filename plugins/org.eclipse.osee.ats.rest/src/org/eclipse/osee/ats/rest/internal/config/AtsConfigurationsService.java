@@ -44,9 +44,11 @@ import org.eclipse.osee.ats.api.workdef.WorkDefData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * Loads the configurations from the database and provides to both server and clients through endpoint.
@@ -95,12 +97,13 @@ public class AtsConfigurationsService implements IAtsConfigurationsService {
 
    private AtsConfigurations getAtsConfigurationsFromDb() {
       List<Long> teamDefIds = new LinkedList<>();
-      for (ArtifactId art : atsApi.getQueryService().createQuery(TeamDefinition).getIds()) {
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
+      for (ArtifactId art : query.andTypeEquals(TeamDefinition).loadArtifactIds()) {
          teamDefIds.add(art.getId());
       }
 
       List<Long> aiIds = new LinkedList<>();
-      for (ArtifactId art : atsApi.getQueryService().createQuery(ActionableItem).getIds()) {
+      for (ArtifactId art : query.andTypeEquals(ActionableItem).loadArtifactIds()) {
          aiIds.add(art.getId());
       }
 
