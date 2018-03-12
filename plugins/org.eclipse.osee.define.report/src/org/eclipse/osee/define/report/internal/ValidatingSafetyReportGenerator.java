@@ -97,7 +97,7 @@ public class ValidatingSafetyReportGenerator {
          traces.extractTraces(root);
       }
       ArtifactReadable functionsFolder =
-         queryFactory.fromBranch(branchId).andIsOfType(CoreArtifactTypes.Folder).andNameEquals(
+         queryFactory.fromBranch(branchId).andTypeEquals(CoreArtifactTypes.Folder).andNameEquals(
             "System Functions").getResults().getExactlyOne();
       processSystemFunctions(functionsFolder, writer);
 

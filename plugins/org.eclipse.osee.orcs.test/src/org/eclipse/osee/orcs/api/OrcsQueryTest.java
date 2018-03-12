@@ -131,7 +131,7 @@ public class OrcsQueryTest {
 
    @Test
    public void testQueryArtifactType() {
-      QueryBuilder builder = factory.fromBranch(COMMON).andIsOfType(CoreArtifactTypes.Folder);
+      QueryBuilder builder = factory.fromBranch(COMMON).andTypeEquals(CoreArtifactTypes.Folder);
 
       assertTrue(builder.getCount() >= 6);
 
@@ -231,7 +231,7 @@ public class OrcsQueryTest {
    @Test
    public void testQueryMultipleArtifactType() {
       QueryBuilder builder = factory.fromBranch(COMMON);
-      builder.andIsOfType(CoreArtifactTypes.AccessControlModel, CoreArtifactTypes.GlobalPreferences);
+      builder.andTypeEquals(CoreArtifactTypes.AccessControlModel, CoreArtifactTypes.GlobalPreferences);
 
       assertEquals(2, builder.getCount());
       ResultSet<ArtifactReadable> artifacts = builder.getResults();
@@ -286,7 +286,7 @@ public class OrcsQueryTest {
       checkContainsTypes(artifacts, CoreArtifactTypes.Folder, CoreArtifactTypes.SubsystemRequirementMSWord,
          CoreArtifactTypes.SystemRequirementMSWord);
 
-      builder.andIsOfType(CoreArtifactTypes.Folder);
+      builder.andTypeEquals(CoreArtifactTypes.Folder);
       assertEquals(4, builder.getCount());
 
       ResultSet<ArtifactReadable> folders = builder.getResults();
@@ -407,7 +407,7 @@ public class OrcsQueryTest {
    @Test
    public void testFollowRelationType1() throws Exception {
       QueryBuilder builder = factory.fromBranch(SAW_Bld_1) //
-         .andIsOfType(CoreArtifactTypes.RootArtifact)//
+         .andTypeEquals(CoreArtifactTypes.RootArtifact)//
          .followRelation(CoreRelationTypes.Default_Hierarchical__Child);
 
       ResultSet<ArtifactReadable> results = builder.getResults();
@@ -428,9 +428,9 @@ public class OrcsQueryTest {
    @Test
    public void testFollowRelationType2() throws Exception {
       QueryBuilder builder = factory.fromBranch(SAW_Bld_1) //
-         .andIsOfType(CoreArtifactTypes.RootArtifact)//
+         .andTypeEquals(CoreArtifactTypes.RootArtifact)//
          .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
-         .andIsOfType(CoreArtifactTypes.Component);
+         .andTypeEquals(CoreArtifactTypes.Component);
 
       ResultSet<ArtifactReadable> results = builder.getResults();
       assertEquals(1, results.size());
@@ -455,7 +455,7 @@ public class OrcsQueryTest {
    public void testFollowRelationTypeHistorical() throws Exception {
       QueryBuilder query = factory.fromBranch(SAW_Bld_2) //
          .andNameEquals("Robot API") //
-         .andIsOfType(CoreArtifactTypes.SoftwareRequirement)//
+         .andTypeEquals(CoreArtifactTypes.SoftwareRequirement)//
          .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
          .and(CoreAttributeTypes.Name, "Robot", QueryOption.CONTAINS_MATCH_OPTIONS);
 
@@ -496,7 +496,7 @@ public class OrcsQueryTest {
       // do a query on branch
       ArtifactReadable robotApi = factory.fromBranch(SAW_Bld_2) //
          .andNameEquals("Robot API") //
-         .andIsOfType(CoreArtifactTypes.SoftwareRequirement).getResults().getExactlyOne();
+         .andTypeEquals(CoreArtifactTypes.SoftwareRequirement).getResults().getExactlyOne();
 
       // create a tx on branch
       TransactionBuilder tx = txFactory.createTransaction(SAW_Bld_2, author, "Simple Tx");
@@ -516,7 +516,7 @@ public class OrcsQueryTest {
       // do a query on branch
       ArtifactReadable robotApi = factory.fromBranch(SAW_Bld_2) //
          .andNameEquals("Robot API") //
-         .andIsOfType(CoreArtifactTypes.SoftwareRequirement).getResults().getExactlyOne();
+         .andTypeEquals(CoreArtifactTypes.SoftwareRequirement).getResults().getExactlyOne();
 
       // create a tx on branch
       TransactionBuilder tx1 = txFactory.createTransaction(SAW_Bld_2, author, "Simple Tx1");

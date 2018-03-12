@@ -165,7 +165,7 @@ public class ClientEndpointImpl implements ClientEndpoint {
       if (Strings.isNumeric(userIdOrName)) {
          results.add(userIdOrName);
       } else {
-         for (ArtifactReadable userArt : orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
+         for (ArtifactReadable userArt : orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(
             CoreArtifactTypes.User).and(CoreAttributeTypes.Name, userIdOrName,
                QueryOption.CONTAINS_MATCH_OPTIONS).getResults()) {
             results.add(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId, null));

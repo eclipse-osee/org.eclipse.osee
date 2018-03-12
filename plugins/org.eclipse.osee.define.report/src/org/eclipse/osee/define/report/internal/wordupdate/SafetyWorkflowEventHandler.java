@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.Date;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -25,8 +24,8 @@ import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -83,7 +82,7 @@ public class SafetyWorkflowEventHandler implements EventHandler {
          if (workflowId.notEqual(SystemUser.OseeSystem)) {
             ArtifactReadable assocArt =
                atsServer.getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch()).andId(
-                  workflowId).andIsOfType(AtsArtifactTypes.TeamWorkflow).getResults().getExactlyOne();
+                  workflowId).getResults().getExactlyOne();
             IAtsTeamWorkflow safetyWf = getSafetyWorkflow(assocArt);
             if (safetyWf == null) {
                IAtsTeamWorkflow teamWf = atsServer.getWorkItemFactory().getTeamWf(assocArt);

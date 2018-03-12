@@ -107,7 +107,7 @@ public class TraceReportGenerator {
       init(providedOrcs, writer);
 
       ArtifactReadable requirementsFolder =
-         queryFactory.fromBranch(branchId).andIsOfType(CoreArtifactTypes.Folder).andNameEquals(
+         queryFactory.fromBranch(branchId).andTypeEquals(CoreArtifactTypes.Folder).andNameEquals(
             "System Requirements").getResults().getExactlyOne();
       List<ArtifactReadable> systemRequirements = requirementsFolder.getDescendants();
       processReqts(systemRequirements, writer);

@@ -120,7 +120,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    @Override
    public List<IAtsUser> getUsersFromDb() {
       List<IAtsUser> users = new ArrayList<>();
-      for (ArtifactId art : getQuery().andIsOfType(CoreArtifactTypes.User).getResults()) {
+      for (ArtifactId art : getQuery().andTypeEquals(CoreArtifactTypes.User).getResults()) {
          ArtifactReadable userArt = (ArtifactReadable) art;
          AtsUser atsUser = createFromArtifact(userArt);
          users.add(atsUser);
@@ -136,7 +136,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
 
    @Override
    protected IAtsUser loadUserFromDbByUserId(String userId) {
-      ArtifactReadable userArt = getQuery().andIsOfType(CoreArtifactTypes.User).and(CoreAttributeTypes.UserId,
+      ArtifactReadable userArt = getQuery().andTypeEquals(CoreArtifactTypes.User).and(CoreAttributeTypes.UserId,
          userId).getResults().getAtMostOneOrNull();
       if (userArt != null) {
          return createFromArtifact(userArt);
@@ -146,7 +146,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
 
    @Override
    protected IAtsUser loadUserFromDbByUserName(String name) {
-      ArtifactReadable userArt = getQuery().andIsOfType(CoreArtifactTypes.User).and(CoreAttributeTypes.Name,
+      ArtifactReadable userArt = getQuery().andTypeEquals(CoreArtifactTypes.User).and(CoreAttributeTypes.Name,
          name).getResults().getAtMostOneOrNull();
       if (userArt != null) {
          return createFromArtifact(userArt);

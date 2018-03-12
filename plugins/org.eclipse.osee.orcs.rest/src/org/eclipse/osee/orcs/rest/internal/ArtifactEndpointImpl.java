@@ -185,7 +185,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    @Override
    public List<ArtifactToken> createArtifacts(BranchId branch, ArtifactTypeId artifactType, ArtifactId parent, List<String> names) {
       ResultSet<ArtifactReadable> results =
-         query.andIsOfType(artifactType).and(CoreAttributeTypes.Name, names).getResults();
+         query.andTypeEquals(artifactType).and(CoreAttributeTypes.Name, names).getResults();
       if (!results.isEmpty()) {
          List<ArtifactReadable> duplicates = results.getList();
          throw new OseeCoreException("Found %s artifacts of type %s with duplicate names: %s", results.size(),

@@ -633,7 +633,7 @@ public class OrcsStorageImpl implements Storage {
    @Override
    public ArtifactReadable findUserByName(String name) {
       ArtifactReadable user =
-         getQuery().fromBranch(COMMON).andIsOfType(CoreArtifactTypes.User).and(CoreAttributeTypes.Name,
+         getQuery().fromBranch(COMMON).andTypeEquals(CoreArtifactTypes.User).and(CoreAttributeTypes.Name,
             name).getResults().getOneOrNull();
       if (user == null) {
          user = findUser();

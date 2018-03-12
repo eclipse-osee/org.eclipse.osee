@@ -33,8 +33,8 @@ import java.util.Iterator;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -118,7 +118,7 @@ public class OrcsTransactionTest {
       tx.commit();
 
       ResultSet<ArtifactReadable> results =
-         query.fromBranch(COMMON).andIsOfType(CoreArtifactTypes.SoftwareRequirementPlainText).getResults();
+         query.fromBranch(COMMON).andTypeEquals(CoreArtifactTypes.SoftwareRequirementPlainText).getResults();
 
       Optional<ArtifactReadable> item = Iterables.tryFind(results, new Predicate<ArtifactReadable>() {
          @Override

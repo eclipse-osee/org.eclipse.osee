@@ -69,7 +69,7 @@ public class OrcsValidationHelperAdapterTest {
 
    @Test
    public void testIsArtifactExists() {
-      ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(COMMON).andIsOfType(
+      ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(COMMON).andTypeEquals(
          CoreArtifactTypes.User).getResults().iterator().next();
       Assert.assertTrue(helper.isArtifactExists(COMMON, artifact.getUuid()));
 

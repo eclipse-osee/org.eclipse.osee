@@ -80,19 +80,19 @@ public class ClientStorage {
 
    public ResultSet<ArtifactReadable> getClientByApplicationId(long applicationId) {
       int id = idToInt(applicationId);
-      return newQuery().andIsOfType(OAUTH_CLIENT).andUuid(id).getResults();
+      return newQuery().andTypeEquals(OAUTH_CLIENT).andUuid(id).getResults();
    }
 
    public ResultSet<ArtifactReadable> getClientByClientGuid(String guid) {
-      return newQuery().andIsOfType(OAUTH_CLIENT).andGuid(guid).getResults();
+      return newQuery().andTypeEquals(OAUTH_CLIENT).andGuid(guid).getResults();
    }
 
    public ResultSet<ArtifactReadable> getClientByClientUuid(Long uuid) {
-      return newQuery().andIsOfType(OAUTH_CLIENT).andUuid(uuid).getResults();
+      return newQuery().andTypeEquals(OAUTH_CLIENT).andUuid(uuid).getResults();
    }
 
    public boolean exists(Long uuid) {
-      return newQuery().andIsOfType(OAUTH_CLIENT).andUuid(uuid).exists();
+      return newQuery().andTypeEquals(OAUTH_CLIENT).andUuid(uuid).exists();
    }
 
    public ArtifactId insert(OseePrincipal principal, OAuthClient data) {

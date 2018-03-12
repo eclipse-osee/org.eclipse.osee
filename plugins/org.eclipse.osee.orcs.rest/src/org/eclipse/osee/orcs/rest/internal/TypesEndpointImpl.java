@@ -237,7 +237,7 @@ public class TypesEndpointImpl implements TypesEndpoint {
 
       tx = orcsApi.getTransactionFactory().createTransaction(COMMON, SystemUser.OseeSystem,
          "Add OseeTypeDef Tuples to Common Branch");
-      for (ArtifactReadable artifact : orcsApi.getQueryFactory().fromBranch(COMMON).andIsOfType(
+      for (ArtifactReadable artifact : orcsApi.getQueryFactory().fromBranch(COMMON).andTypeEquals(
          CoreArtifactTypes.OseeTypeDefinition).getResults()) {
          tx.addTuple2(CoreTupleTypes.OseeTypeDef, OrcsTypesData.OSEE_TYPE_VERSION,
             artifact.getAttributes(CoreAttributeTypes.UriGeneralStringData).iterator().next());
@@ -326,7 +326,7 @@ public class TypesEndpointImpl implements TypesEndpoint {
    @Override
    public Response getConfigSheets() {
       List<OrcsTypesSheet> sheets = new LinkedList<>();
-      for (ArtifactReadable art : orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
+      for (ArtifactReadable art : orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(
          CoreArtifactTypes.OseeTypeDefinition).getResults()) {
          OrcsTypesSheet sheet = new OrcsTypesSheet();
          sheet.setArtifactId(art.getId());

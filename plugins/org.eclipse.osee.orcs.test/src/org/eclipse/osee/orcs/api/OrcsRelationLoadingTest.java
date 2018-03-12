@@ -52,7 +52,7 @@ public class OrcsRelationLoadingTest {
    private void checkRelationsForCommonBranch(OrcsApi oseeApi, QueryFactory queryFactory) {
 
       ArtifactReadable art6 =
-         queryFactory.fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.OseeTypeDefinition).andNameEquals(
+         queryFactory.fromBranch(CoreBranches.COMMON).andTypeEquals(CoreArtifactTypes.OseeTypeDefinition).andNameEquals(
             "org.eclipse.osee.ats.client.demo.OseeTypes_Demo").getResults().getAtMostOneOrNull();
       assertNotNull(art6);
       ArtifactReadable art7 = queryFactory.fromBranch(CoreBranches.COMMON).andId(

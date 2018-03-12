@@ -63,42 +63,42 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
 
    @Override
    public boolean userNameExists(String username) {
-      return newQuery().andIsOfType(CoreArtifactTypes.User).and(CoreAttributeTypes.UserId, username).exists();
+      return newQuery().andTypeEquals(CoreArtifactTypes.User).and(CoreAttributeTypes.UserId, username).exists();
    }
 
    @Override
    public boolean emailExists(String email) {
-      return newQuery().andIsOfType(CoreArtifactTypes.User).and(CoreAttributeTypes.Email, email).exists();
+      return newQuery().andTypeEquals(CoreArtifactTypes.User).and(CoreAttributeTypes.Email, email).exists();
    }
 
    @Override
    public boolean displayNameExists(String displayName) {
-      return newQuery().andIsOfType(CoreArtifactTypes.User).andNameEquals(displayName).exists();
+      return newQuery().andTypeEquals(CoreArtifactTypes.User).andNameEquals(displayName).exists();
    }
 
    @Override
    public ResultSet<Account> getAllAccounts() {
-      ResultSet<ArtifactReadable> results = newQuery().andIsOfType(CoreArtifactTypes.User).getResults();
+      ResultSet<ArtifactReadable> results = newQuery().andTypeEquals(CoreArtifactTypes.User).getResults();
       return getFactory().newAccountResultSet(results);
    }
 
    @Override
    public ResultSet<Account> getAccountById(ArtifactId accountId) {
       ResultSet<ArtifactReadable> results =
-         newQuery().andIsOfType(CoreArtifactTypes.User).andUuid(accountId.getUuid()).getResults();
+         newQuery().andTypeEquals(CoreArtifactTypes.User).andUuid(accountId.getUuid()).getResults();
       return getFactory().newAccountResultSet(results);
    }
 
    @Override
    public ResultSet<Account> getAccountByEmail(String email) {
       ResultSet<ArtifactReadable> results =
-         newQuery().andIsOfType(CoreArtifactTypes.User).and(CoreAttributeTypes.Email, email).getResults();
+         newQuery().andTypeEquals(CoreArtifactTypes.User).and(CoreAttributeTypes.Email, email).getResults();
       return getFactory().newAccountResultSet(results);
    }
 
    @Override
    public AccountPreferences getAccountPreferencesById(ArtifactId accountId) {
-      ArtifactReadable artifact = newQuery().andIsOfType(CoreArtifactTypes.User).andId(accountId).getArtifact();
+      ArtifactReadable artifact = newQuery().andTypeEquals(CoreArtifactTypes.User).andId(accountId).getArtifact();
       return getFactory().newAccountPreferences(artifact);
    }
 
@@ -212,7 +212,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
          @Override
          public ResultSet<Account> get() {
             ResultSet<ArtifactReadable> results =
-               newQuery().andIsOfType(CoreArtifactTypes.User).andUuid(SystemUser.Anonymous.getUuid()).getResults();
+               newQuery().andTypeEquals(CoreArtifactTypes.User).andUuid(SystemUser.Anonymous.getUuid()).getResults();
             return getFactory().newAccountResultSet(results);
          }
       };
@@ -228,14 +228,14 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    @Override
    public AccountWebPreferences getAccountWebPreferencesById(ArtifactId accountId) {
       ResultSet<ArtifactReadable> results =
-         newQuery().andIsOfType(CoreArtifactTypes.User).andUuid(accountId.getUuid()).getResults();
+         newQuery().andTypeEquals(CoreArtifactTypes.User).andUuid(accountId.getUuid()).getResults();
       return getFactory().newAccountWebPreferences(results.getExactlyOne());
    }
 
    @Override
    public ResultSet<Account> getAccountByName(String name) {
       ResultSet<ArtifactReadable> results =
-         newQuery().andIsOfType(CoreArtifactTypes.User).and(CoreAttributeTypes.UserId, name).getResults();
+         newQuery().andTypeEquals(CoreArtifactTypes.User).and(CoreAttributeTypes.UserId, name).getResults();
       return getFactory().newAccountResultSet(results);
    }
 

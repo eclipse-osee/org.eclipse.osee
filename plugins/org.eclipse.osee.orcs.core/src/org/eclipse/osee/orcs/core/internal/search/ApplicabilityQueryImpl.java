@@ -28,8 +28,8 @@ import java.util.function.BiConsumer;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -131,7 +131,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       }
 
       List<ArtifactReadable> featureDefinitionArts =
-         queryFactory.fromBranch(branchToUse).andIsOfType(CoreArtifactTypes.FeatureDefinition).getResults().getList();
+         queryFactory.fromBranch(branchToUse).andTypeEquals(CoreArtifactTypes.FeatureDefinition).getResults().getList();
 
       List<FeatureDefinitionData> featureDefinition = new ArrayList<>();
 
@@ -182,7 +182,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
 
       List<BranchViewData> branchViews = new ArrayList<>();
       for (BranchId branchId : branchAndViewIds.keySet()) {
-         List<ArtifactId> values = (List<ArtifactId>) branchAndViewIds.getValues(branchId);
+         List<ArtifactId> values = branchAndViewIds.getValues(branchId);
          branchViews.add(new BranchViewData(branchId, values));
       }
       return branchViews;
@@ -282,8 +282,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
          Branch baseBranch = childBaselineBranchIds.get(branchView.getBranch().getId());
          if (baseBranch != null) {
             // Check Dates on baseBranch
-            Date baseDate =
-               transactionQuery.andTxId(baseBranch.getBaselineTx()).getResults().getExactlyOne().getDate();
+            Date baseDate = transactionQuery.andTxId(baseBranch.getBaselineTx()).getResults().getExactlyOne().getDate();
             if (baseDate.after(injection) && (removalDateMs == -1 || baseDate.before(removal))) {
                // now determine what views of this branch are applicable
                for (ArtifactId view : branchView.getBranchViews()) {

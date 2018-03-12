@@ -127,7 +127,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    @Override
    public List<ArtifactId> getWorkPackagesForColorTeam(String colorTeam) {
       List<ArtifactId> workPackageIds = new LinkedList<>();
-      for (ArtifactReadable workPackageArt : query.andIsOfType(AtsArtifactTypes.WorkPackage).and(
+      for (ArtifactReadable workPackageArt : query.andTypeEquals(AtsArtifactTypes.WorkPackage).and(
          AtsAttributeTypes.ColorTeam, colorTeam).getResults()) {
          workPackageIds.add(workPackageArt);
       }
