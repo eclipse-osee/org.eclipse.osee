@@ -16,9 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -31,8 +29,6 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 import org.eclipse.osee.framework.skynet.core.utility.ApplicabilityUtility;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
-import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
-import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
@@ -106,16 +102,6 @@ public class CatchWordMlChanges implements CommitAction {
          throw new OseeCoreException(err);
       }
 
-      OseeValidator validator = OseeValidator.getInstance();
-      for (Artifact artifactChanged : changedArtifacts) {
-         if (!artifactChanged.isDeleted()) {
-            IStatus status = validator.validate(IOseeValidator.LONG, artifactChanged);
-            if (status.getSeverity() == IStatus.ERROR) {
-               throw new OseeWrappedException(getArtifactErrorMessage(artifactChanged) + " " + status.getMessage(),
-                  status.getException());
-            }
-         }
-      }
    }
 
    private String getArtifactErrorMessage(Artifact artifact) {

@@ -198,14 +198,6 @@
      </IHttpServerRequest>
   </extension>
         <extension
-              id="CatchWordMlChanges"
-              name="CatchWordMlChanges"
-              point="org.eclipse.osee.framework.skynet.core.CommitActions">
-           <commitActions
-                 className="org.eclipse.osee.framework.skynet.core.commit.actions.CatchWordMlChanges">
-           </commitActions>
-        </extension>
-        <extension
               point="org.eclipse.osee.framework.skynet.core.OseeValidator">
            <OseeValidator
                  classname="org.eclipse.osee.framework.skynet.core.attribute.OseeEnumerationValidation">
@@ -281,6 +273,12 @@
          point="org.eclipse.osee.framework.skynet.core.CommitActions">
       <commitActions
             className="org.eclipse.osee.framework.skynet.core.commit.actions.CatchArtifactChanges">
+      </commitActions>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.skynet.core.CommitActions">
+      <commitActions
+            className="org.eclipse.osee.framework.skynet.core.commit.actions.CatchWordMlChanges">
       </commitActions>
    </extension>        
 </plugin>

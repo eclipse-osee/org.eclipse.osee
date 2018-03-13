@@ -1641,4 +1641,10 @@
            className="org.eclipse.osee.framework.ui.skynet.blam.operation.ChangeArtifactName">
      </Operation>
   </extension>
+  <extension
+        point="org.eclipse.osee.framework.skynet.core.CommitActions">
+     <commitActions
+           className="org.eclipse.osee.framework.ui.skynet.commit.CatchValidationChecks">
+     </commitActions>
+  </extension>
 </plugin>
