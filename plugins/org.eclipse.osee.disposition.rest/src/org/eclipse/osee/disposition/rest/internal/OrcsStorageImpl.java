@@ -15,6 +15,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.UriGenera
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -594,6 +595,40 @@ public class OrcsStorageImpl implements Storage {
    public Long getDispoItemParentSet(BranchId branch, String itemId) {
       ArtifactReadable artifact = findDispoArtifact(branch, itemId, DispoConstants.DispoItem);
       return artifact.getParent().getUuid();
+   }
+
+   @Override
+   public HashMap<ArtifactReadable, BranchId> getCiSet(String ciSet) {
+      HashMap<ArtifactReadable, BranchId> set = new HashMap<>();
+      List<BranchReadable> dispoBranches = findDispoBranches();
+      QueryFactory query = getQuery();
+      for (BranchReadable branch : dispoBranches) {
+         List<ArtifactReadable> arts =
+            query.fromBranch(branch).andIsOfType(DispoConstants.DispoSet).and(DispoConstants.DispoCiSet,
+               Arrays.asList(ciSet)).getResults().getList();
+         for (ArtifactReadable art : arts) {
+            set.put(art, branch);
+         }
+      }
+      return set;
+   }
+
+   private List<BranchReadable> findDispoBranches() {
+      BranchReadable dispoParent = getQuery().branchQuery().andNameEquals("Dispo Parent").getResults().getOneOrNull();
+      return getQuery().branchQuery().andIsChildOf(
+         dispoParent).excludeArchived().excludeDeleted().getResults().getList();
+   }
+
+   @Override
+   public String getDispoItemId(BranchId branch, String setId, String item) {
+      ArtifactReadable DispoSet =
+         getQuery().fromBranch(branch).andId(ArtifactId.valueOf(setId)).getResults().getOneOrNull();
+      for (ArtifactReadable child : DispoSet.getChildren()) {
+         if (child.getName().equals(item)) {
+            return child.getIdString();
+         }
+      }
+      return "";
    }
 
 }

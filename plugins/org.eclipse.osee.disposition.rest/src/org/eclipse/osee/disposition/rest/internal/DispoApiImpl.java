@@ -665,4 +665,19 @@ public class DispoApiImpl implements DispoApi {
       return getDispoSetById(branch, String.valueOf(id));
    }
 
+   @Override
+   public HashMap<ArtifactReadable, BranchId> getCiSet(String ciSet) {
+      return getQuery().getCiSet(ciSet);
+   }
+
+   @Override
+   public String getDispoItemId(BranchId branch, String setId, String item) {
+      return getQuery().getDispoItemId(branch, setId, item);
+   }
+
+   @Override
+   public boolean isCiSetConfigured(String ciSet) {
+      return !getCiSet(ciSet).isEmpty();
+   }
+
 }

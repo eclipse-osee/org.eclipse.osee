@@ -54,6 +54,7 @@ public final class DispoApplication extends Application {
       singletons.add(new DispoAnnotationMessageWriter());
 
       singletons.add(new DispoProgramResource(dispoApi));
+      singletons.add(new ContinuousIntegrationResource(dispoApi));
    }
 
    public void stop() {

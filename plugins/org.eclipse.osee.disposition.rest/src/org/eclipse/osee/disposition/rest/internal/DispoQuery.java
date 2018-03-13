@@ -11,6 +11,7 @@
 package org.eclipse.osee.disposition.rest.internal;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.disposition.model.DispoConfig;
@@ -54,5 +55,9 @@ public interface DispoQuery {
    DispoConfig findDispoConfig(BranchId branch);
 
    Long getDispoItemParentSet(BranchId branch, String itemId);
+
+   HashMap<ArtifactReadable, BranchId> getCiSet(String ciSet);
+
+   String getDispoItemId(BranchId branch, String setId, String item);
 
 }

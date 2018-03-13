@@ -558,4 +558,13 @@ public final class DispoUtil {
       return testScriptNameToPath;
    }
 
+   public static DispoItem findDispoItem(List<DispoItem> items, String itemName) {
+      for (DispoItem dItem : items) {
+         if (dItem.getName().equals(itemName)) {
+            return dItem;
+         }
+      }
+      return null;
+   }
+
 }

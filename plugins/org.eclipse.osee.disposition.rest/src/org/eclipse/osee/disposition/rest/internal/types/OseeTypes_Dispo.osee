@@ -78,6 +78,7 @@ attributeType "dispo.Dispo Config" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   taggerId DefaultAttributeTaggerProvider
    fileExtension "txt"
 	mediaType "text/plain"
 }
@@ -297,6 +298,7 @@ attributeType "dispo.CI Set" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	taggerId DefaultAttributeTaggerProvider 
 	defaultValue ""
 	mediaType "text/plain"
 }

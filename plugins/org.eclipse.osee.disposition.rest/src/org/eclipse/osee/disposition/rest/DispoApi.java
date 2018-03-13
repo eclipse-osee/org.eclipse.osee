@@ -11,6 +11,7 @@
 package org.eclipse.osee.disposition.rest;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import org.eclipse.osee.disposition.model.CopySetParams;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
@@ -22,6 +23,7 @@ import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Angel Avila
@@ -84,4 +86,11 @@ public interface DispoApi {
    Collection<DispoItem> getDispoItemByAnnotationText(BranchId branch, String setId, String keyword, boolean isDetailed);
 
    DispoApiConfiguration getConfig();
+
+   // CI
+   HashMap<ArtifactReadable, BranchId> getCiSet(String ciSet);
+
+   String getDispoItemId(BranchId branch, String setId, String item);
+
+   boolean isCiSetConfigured(String ciSet);
 }
