@@ -39,7 +39,6 @@ import org.eclipse.osee.ats.rest.internal.workitem.ActionUiResource;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsActionEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsRuleEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskEndpointImpl;
-import org.eclipse.osee.ats.rest.internal.workitem.AtsTeamWfEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsWorkPackageEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.StateResource;
 import org.eclipse.osee.ats.rest.internal.world.WorldResource;
@@ -120,7 +119,6 @@ public class AtsApplication extends Application {
       singletons.add(new AtsTaskEndpointImpl(atsServer));
       singletons.add(new AtsNotifyEndpointImpl(atsServer));
       singletons.add(new AtsWorkPackageEndpointImpl(atsServer, logger));
-      singletons.add(new AtsTeamWfEndpointImpl(atsServer));
 
       // UIs
       singletons.add(new ActionUiResource(atsServer, logger));

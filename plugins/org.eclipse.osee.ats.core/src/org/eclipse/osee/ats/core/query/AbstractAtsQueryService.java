@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.jdbc.JdbcStatement;
 
@@ -50,7 +49,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifactsFromQuery(String query, Object... data) {
+   public Collection<ArtifactId> getArtifactsFromQuery(String query, Object... data) {
       JdbcStatement chStmt = jdbcService.getClient().getStatement();
       List<Integer> ids = new LinkedList<Integer>();
       try {

@@ -37,12 +37,10 @@ import org.eclipse.osee.ats.core.validator.AtsXWidgetValidateManager;
 import org.eclipse.osee.ats.core.workflow.note.ArtifactNote;
 import org.eclipse.osee.ats.core.workflow.note.AtsWorkItemNotes;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -188,23 +186,6 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    @Override
    public ITeamWorkflowProvidersLazy getTeamWorkflowProviders() {
       return teamWorkflowProvidersLazy;
-   }
-
-   @Override
-   public IAtsWorkItem getWorkItemByAnyId(String actionId) {
-      IAtsWorkItem workItem = null;
-      ArtifactToken artifact = null;
-      if (GUID.isValid(actionId)) {
-         artifact = services.getArtifactByGuid(actionId);
-      } else if (Strings.isNumeric(actionId)) {
-         artifact = services.getArtifact(Long.valueOf(actionId));
-      } else {
-         artifact = services.getArtifactByAtsId(actionId);
-      }
-      if (artifact != null) {
-         workItem = services.getWorkItemFactory().getWorkItem(artifact);
-      }
-      return workItem;
    }
 
 }
