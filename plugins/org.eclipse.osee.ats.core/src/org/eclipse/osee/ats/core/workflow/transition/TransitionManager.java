@@ -161,8 +161,9 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
                boolean stateIsEditable = WorkflowManagerCore.isEditable(workItem, workItem.getStateDefinition(),
                   helper.isPrivilegedEditEnabled(), helper.getTransitionUser(),
                   userService.isAtsAdmin(helper.getTransitionUser()));
-               boolean currentlyUnAssigned =
-                  workItem.getStateMgr().getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER);
+               boolean currentlyUnAssignedOrCompletedOrCancelled =
+                  workItem.isCompletedOrCancelled() || workItem.getStateMgr().getAssignees().contains(
+                     AtsCoreUsers.UNASSIGNED_USER);
                workItem.getStateMgr().validateNoBootstrapUser();
                // Allow anyone to transition any task to completed/cancelled/working if parent is working
                if (workItem.isTask() && workItem.getParentTeamWorkflow().getStateMgr().getStateType().isCompletedOrCancelled()) {
@@ -170,7 +171,7 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
                   continue;
                }
                // Else, only allow transition if...
-               else if (workItem.isInWork() && !workItem.isTask() && !stateIsEditable && !currentlyUnAssigned && !overrideAssigneeCheck) {
+               else if (!workItem.isTask() && !stateIsEditable && !currentlyUnAssignedOrCompletedOrCancelled && !overrideAssigneeCheck) {
                   results.addResult(workItem, TransitionResult.MUST_BE_ASSIGNED);
                   continue;
                }
