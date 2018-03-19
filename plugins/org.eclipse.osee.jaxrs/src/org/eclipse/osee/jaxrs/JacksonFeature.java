@@ -30,7 +30,12 @@ import org.codehaus.jackson.map.module.SimpleModule;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.TransactionTokenDeserializer;
+import org.eclipse.osee.framework.core.data.TransactionTokenSerializer;
 import org.eclipse.osee.framework.jdk.core.type.IdDeserializer;
+import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdDeserializer;
 
 /**
@@ -127,6 +132,10 @@ public class JacksonFeature implements Feature {
          new NamedIdDeserializer<ApplicabilityToken>(ApplicabilityToken::create));
       module.addDeserializer(ArtifactToken.class, new NamedIdDeserializer<ArtifactToken>(ArtifactToken::valueOf));
       module.addDeserializer(ArtifactId.class, new IdDeserializer<ArtifactId>(ArtifactId::valueOf));
+      module.addDeserializer(TransactionToken.class, new TransactionTokenDeserializer());
+      module.addSerializer(new TransactionTokenSerializer());
+      module.addSerializer(TransactionId.class, new IdSerializer());
+      module.addDeserializer(TransactionId.class, new IdDeserializer<TransactionId>(TransactionId::valueOf));
 
       objectMapper.registerModule(module);
       return new JacksonJaxbJsonProvider(objectMapper, JacksonJaxbJsonProvider.DEFAULT_ANNOTATIONS);

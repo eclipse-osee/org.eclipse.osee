@@ -14,6 +14,7 @@ package org.eclipse.osee.define.report.api;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 
 /**
@@ -26,7 +27,7 @@ public class WordTemplateContentData {
    private String footer;
    private boolean isEdit;
    private String linkType;
-   private TransactionId txId;
+   private TransactionToken txId;
    private String sessionId;
    private String oseeLink;
    private ArtifactId viewId;
@@ -77,7 +78,7 @@ public class WordTemplateContentData {
       return txId;
    }
 
-   public void setTxId(TransactionId txId) {
+   public void setTxId(TransactionToken txId) {
       this.txId = txId;
    }
 

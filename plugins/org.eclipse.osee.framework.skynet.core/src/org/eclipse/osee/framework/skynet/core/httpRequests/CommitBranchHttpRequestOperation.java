@@ -10,15 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.httpRequests;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -28,7 +25,6 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicIdRelation;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -54,7 +50,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.BranchCommitOptions;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
-import org.eclipse.osee.orcs.rest.model.Transaction;
 
 /**
  * @author Megumi Telles
@@ -91,12 +86,9 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       options.setArchive(isArchiveAllowed);
       options.setCommitter(committer);
       try {
-         Response response = proxy.commitBranch(sourceBranch, destinationBranch, options);
-         if (Status.CREATED.getStatusCode() == response.getStatus()) {
-            BranchManager.setState(sourceBranch, BranchState.COMMITTED);
-            Long txId = getTransactionId(response);
-            handleResponse(txId, monitor, sourceBranch, destinationBranch);
-         }
+         TransactionToken tx = proxy.commitBranch(sourceBranch, destinationBranch, options);
+         BranchManager.setState(sourceBranch, BranchState.COMMITTED);
+         handleResponse(tx, monitor, sourceBranch, destinationBranch);
       } catch (Exception ex) {
          BranchManager.setState(sourceBranch, currentState);
          OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.CommitFailed, sourceBranch));
@@ -104,29 +96,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       }
    }
 
-   private long getTransactionId(Response response) {
-      long toReturn = -1;
-      if (response.hasEntity()) {
-         Transaction tx = response.readEntity(Transaction.class);
-         toReturn = tx.getTxId().getId();
-      } else {
-         URI location = response.getLocation();
-         if (location != null) {
-            String path = location.toASCIIString();
-            int index = path.lastIndexOf("txs/");
-            if (index > 0 && index < path.length()) {
-               String value = path.substring(index);
-               if (Strings.isNumeric(value)) {
-                  toReturn = Integer.parseInt(value);
-               }
-            }
-         }
-      }
-      return toReturn;
-   }
-
-   private void handleResponse(Long newTxId, IProgressMonitor monitor, BranchId sourceBranch, BranchId destinationBranch) {
-      TransactionToken newTransaction = TransactionToken.valueOf(newTxId, destinationBranch);
+   private void handleResponse(TransactionToken newTransaction, IProgressMonitor monitor, BranchId sourceBranch, BranchId destinationBranch) {
       AccessPolicy accessPolicy = ServiceUtil.getAccessPolicy();
       accessPolicy.removePermissions(sourceBranch);
 

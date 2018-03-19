@@ -26,7 +26,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -280,7 +279,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public Response commitBranch(BranchId branch, BranchId destinationBranch, BranchCommitOptions options) {
+   public TransactionToken commitBranch(BranchId branch, BranchId destinationBranch, BranchCommitOptions options) {
       Branch srcBranch = getBranchById(branch);
       Branch destBranch = getBranchById(destinationBranch);
 
@@ -292,8 +291,6 @@ public class BranchEndpointImpl implements BranchEndpoint {
          executeCallable(op2);
       }
 
-      UriInfo uriInfo = getUriInfo();
-      URI location = getTxLocation(uriInfo, tx);
       try {
          activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
             String.format("Branch Operation Commit Branch {branchId: %s srcBranch: %s destBranch: %s}", branch,
@@ -301,13 +298,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       } catch (OseeCoreException ex) {
          OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      return Response.created(location).entity(asTransaction(orcsApi.getTransactionFactory().getTx(tx))).build();
-   }
-
-   private URI getTxLocation(UriInfo uriInfo, TransactionToken tx) {
-      UriBuilder builder = uriInfo.getRequestUriBuilder();
-      URI location = builder.path("..").path("..").path("txs").path("{tx-id}").build(tx);
-      return location;
+      return tx;
    }
 
    @Override
