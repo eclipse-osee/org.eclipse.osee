@@ -224,7 +224,7 @@ public class AtsHealthCheckOperation {
                error(results, workItem, "Team workflow has " + versions.size() + " versions; should only be 0 or 1");
             } else if (versions.size() == 1) {
                IAtsVersion version = atsApi.getQueryService().getConfigItem(versions.iterator().next());
-               if (!getTeamVersions(teamWf.getTeamDefinition()).contains(version)) {
+               if (version != null && !getTeamVersions(teamWf.getTeamDefinition()).contains(version)) {
                   error(results, workItem,
                      "Team workflow " + teamWf.getAtsId() + " has version" + version.toStringWithId() + " that does not belong to teamDefHoldingVersions ");
                }
