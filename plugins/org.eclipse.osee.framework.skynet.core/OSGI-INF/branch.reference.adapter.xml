@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0"  name="org.eclipse.osee.framework.skynet.core.attribute.service.BranchAttributeAdapter">
-<implementation class="org.eclipse.osee.framework.skynet.core.attribute.service.BranchAttributeAdapter"/>
-   <service>
-      <provide interface="org.eclipse.osee.framework.skynet.core.attribute.AttributeAdapter"/>
-   </service>
-</scr:component>

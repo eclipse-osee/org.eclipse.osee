@@ -15,8 +15,10 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -54,10 +56,13 @@ public class RelatedArtifactLastModifiedDateColumn extends XViewerAtsColumn impl
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof Artifact) {
-            Artifact refArt =
-               ((Artifact) element).getSoleAttributeValue(AtsAttributeTypes.TaskToChangedArtifactReference, null);
-            if (refArt != null) {
-               return DateUtil.getMMDDYYHHMM(refArt.getLastModified());
+            ArtifactId refArtId = ((Artifact) element).getSoleAttributeValue(
+               AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
+            if (refArtId.isValid()) {
+               Artifact refArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(refArtId);
+               if (refArt != null) {
+                  return DateUtil.getMMDDYYHHMM(refArt.getLastModified());
+               }
             }
          }
       } catch (OseeCoreException ex) {

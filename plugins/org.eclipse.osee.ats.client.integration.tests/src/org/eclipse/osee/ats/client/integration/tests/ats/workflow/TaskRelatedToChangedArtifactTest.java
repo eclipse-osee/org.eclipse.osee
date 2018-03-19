@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -79,8 +80,8 @@ public class TaskRelatedToChangedArtifactTest {
 
       assertFalse(((Artifact) codeTask.getStoreObject()).isDirty());
 
-      Artifact refArt = ((Artifact) codeTask.getStoreObject()).getSoleAttributeValue(
-         AtsAttributeTypes.TaskToChangedArtifactReference, null);
+      ArtifactId refArt = ((Artifact) codeTask.getStoreObject()).getSoleAttributeValue(
+         AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
       assertEquals(robotReq, refArt);
    }
 }

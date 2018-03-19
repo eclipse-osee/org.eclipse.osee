@@ -33,6 +33,8 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -196,6 +198,11 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
+   public ArtifactReadable getArtifact(ArtifactId artifact, BranchId branch, DeletionFlag deletionFlag) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
    public Collection<ArtifactToken> getArtifacts(Collection<Long> ids) {
       Collection<ArtifactToken> artifacts = new LinkedList<>();
       Iterator<ArtifactReadable> iterator = getQuery().andUuids(ids).getResults().iterator();
@@ -208,5 +215,10 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    @Override
    public ArtifactToken getArtifactByName(ArtifactTypeId artifactType, String name) {
       return getQuery().andIsOfType(artifactType).andNameEquals(name).getResults().getAtMostOneOrNull();
+   }
+
+   @Override
+   public ArtifactToken getHistoricalArtifactOrNull(ArtifactId artifact, TransactionToken transaction, DeletionFlag deletionFlag) {
+      throw new UnsupportedOperationException("Unsupported on the server");
    }
 }

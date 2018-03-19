@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.util.JsonUtil;
@@ -321,7 +322,12 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public Artifact getArtifact(ArtifactId artifact, BranchId branch) {
-      return ArtifactQuery.getArtifactOrNull(artifact, branch, DeletionFlag.EXCLUDE_DELETED);
+      return getArtifact(artifact, branch, DeletionFlag.EXCLUDE_DELETED);
+   }
+
+   @Override
+   public Artifact getArtifact(ArtifactId artifact, BranchId branch, DeletionFlag deletionFlag) {
+      return ArtifactQuery.getArtifactOrNull(artifact, branch, deletionFlag);
    }
 
    @Override
@@ -337,5 +343,10 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    @Override
    public ArtifactToken getArtifactByName(ArtifactTypeId artType, String name) {
       return ArtifactQuery.checkArtifactFromTypeAndName(artType, name, atsClient.getAtsBranch());
+   }
+
+   @Override
+   public ArtifactToken getHistoricalArtifactOrNull(ArtifactId artifact, TransactionToken transaction, DeletionFlag deletionFlag) {
+      return ArtifactQuery.getHistoricalArtifactOrNull(artifact, transaction, deletionFlag);
    }
 }

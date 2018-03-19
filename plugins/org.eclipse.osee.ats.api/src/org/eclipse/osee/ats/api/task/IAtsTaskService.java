@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
  * @author Donald G. Dunne
@@ -51,5 +52,10 @@ public interface IAtsTaskService {
    boolean isRelatedToState(IAtsTask task, String stateName);
 
    boolean hasTasks(IAtsTeamWorkflow teamWf);
+
+   /**
+    * @return related ArtifactId or ArtifactId.SENTINAL if not exists
+    */
+   ArtifactId getTaskToRelatedArtifactChanged(IAtsTask task);
 
 }

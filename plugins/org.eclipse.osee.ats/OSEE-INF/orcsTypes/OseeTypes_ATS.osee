@@ -549,16 +549,6 @@ attributeType "ats.PCR Tool Id" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "ats.Artifact Reference" extends ArtifactReferenceAttribute {
-	id 1153126013769613561
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	taggerId DefaultAttributeTaggerProvider
-	description "Reference to an artifact"
-	mediaType "application/http"
-}
-
 attributeType "ats.Task To Changed Artifact Reference" extends ArtifactReferenceAttribute {
 	id 1153126013769613562
 	dataProvider DefaultAttributeDataProvider

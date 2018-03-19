@@ -15,8 +15,10 @@ import java.util.Map;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -57,20 +59,22 @@ public class RelatedArtifactChangedColumn extends XViewerAtsColumn implements IA
          String value = "";
          try {
             if (object instanceof Artifact) {
-               Artifact refArt =
-                  ((Artifact) object).getSoleAttributeValue(AtsAttributeTypes.TaskToChangedArtifactReference, null);
-
-               if (refArt != null) {
-                  BranchId refBranch = refArt.getBranch();
-                  if (refArt.isDeleted()) {
-                     value = "Deleted";
-                  } else if (BranchManager.getState(refBranch).isCommitted() || BranchManager.getType(
-                     refBranch).isBaselineBranch()) {
-                     value = "Commited";
-                  } else if (refArt.getLastModified().after(((Artifact) object).getLastModified())) {
-                     value = refArt.getLastModified().toString();
-                  } else {
-                     value = "Unmodified";
+               ArtifactId refArtId = ((Artifact) object).getSoleAttributeValue(
+                  AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
+               if (refArtId.isValid()) {
+                  Artifact refArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(refArtId);
+                  if (refArt != null) {
+                     BranchId refBranch = refArt.getBranch();
+                     if (refArt.isDeleted()) {
+                        value = "Deleted";
+                     } else if (BranchManager.getState(refBranch).isCommitted() || BranchManager.getType(
+                        refBranch).isBaselineBranch()) {
+                        value = "Commited";
+                     } else if (refArt.getLastModified().after(((Artifact) object).getLastModified())) {
+                        value = refArt.getLastModified().toString();
+                     } else {
+                        value = "Unmodified";
+                     }
                   }
                }
             }

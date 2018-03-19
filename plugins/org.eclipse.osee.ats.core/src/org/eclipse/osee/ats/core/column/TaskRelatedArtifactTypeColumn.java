@@ -21,9 +21,9 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -94,10 +94,10 @@ public class TaskRelatedArtifactTypeColumn extends AbstractServicesColumn {
    }
 
    private static Long getRelatedArtId(IAtsWorkItem workItem) {
-      String relatedArtIdStr = atsApi.getAttributeResolver().getSoleAttributeValueAsString(workItem,
-         AtsAttributeTypes.TaskToChangedArtifactReference, null);
-      if (Strings.isNumeric(relatedArtIdStr)) {
-         return Long.valueOf(relatedArtIdStr);
+      ArtifactId artifact = atsApi.getAttributeResolver().getSoleAttributeValue(workItem,
+         AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
+      if (artifact.isValid()) {
+         return artifact.getId();
       }
       return null;
    }

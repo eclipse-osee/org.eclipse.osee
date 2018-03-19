@@ -30,7 +30,6 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken AllowCommitBranch = createType(1152921504606847162L, "Allow Commit Branch");
    public static final AttributeTypeToken AllowCreateBranch = createType(1152921504606847161L, "Allow Create Branch");
    public static final AttributeTypeToken AllowUserActionCreation = createType(1322118789779953012L, "Allow User Action Creation");
-   public static final AttributeTypeToken ArtifactReference = createType(1153126013769613561L, "Artifact Reference");
    public static final AttributeTypeToken AtsId = createType(1152921504606847877L, "ATS Id", "ATS Generated Id");
    public static final AttributeTypeToken AtsIdPrefix = createType(1162773128791720837L, "ATS Id Prefix", "ATS Id Prefix");
    public static final AttributeTypeToken AtsIdSequenceName = createType(1163054603768431493L, "ATS Id Sequence Name", "ATS Id Sequence Name");

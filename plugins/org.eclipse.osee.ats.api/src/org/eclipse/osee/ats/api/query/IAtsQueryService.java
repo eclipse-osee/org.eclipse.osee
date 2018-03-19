@@ -27,6 +27,8 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 
 /**
  * @author Donald G. Dunne
@@ -143,5 +145,9 @@ public interface IAtsQueryService {
    Collection<ArtifactToken> getArtifacts(Collection<Long> ids);
 
    ArtifactToken getArtifactByName(ArtifactTypeId artifactType, String name);
+
+   ArtifactToken getArtifact(ArtifactId artifact, BranchId branch, DeletionFlag deletionFlag);
+
+   ArtifactToken getHistoricalArtifactOrNull(ArtifactId artifact, TransactionToken transaction, DeletionFlag deletionFlag);
 
 }

@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
-import org.eclipse.osee.framework.skynet.core.attribute.service.AttributeAdapterService;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.osgi.framework.Bundle;
@@ -52,10 +51,6 @@ public final class ServiceUtil {
          cacheService = getService(IOseeCachingService.class);
       }
       return cacheService;
-   }
-
-   public static AttributeAdapterService getAttributeAdapterService() {
-      return getService(AttributeAdapterService.class);
    }
 
    public static OseeClient getOseeClient() {

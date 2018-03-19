@@ -20,6 +20,11 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -137,4 +142,33 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
          stateName);
    }
 
+   @Override
+   public ArtifactId getTaskToRelatedArtifactChanged(IAtsTask task) {
+      ArtifactId relatedArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(task,
+         AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
+      if (relatedArt.isValid()) {
+         IAtsTeamWorkflow parentTeamWf = task.getParentTeamWorkflow();
+         ArtifactToken derivedArt =
+            atsApi.getRelationResolver().getRelatedOrNull(parentTeamWf, AtsRelationTypes.Derive_From);
+         if (derivedArt != null && derivedArt instanceof IAtsTeamWorkflow) {
+            IAtsTeamWorkflow derivedTeamWf = (IAtsTeamWorkflow) derivedArt;
+            // First, attempt to get from Working Branch if still exists
+            if (atsApi.getBranchService().isWorkingBranchInWork(derivedTeamWf)) {
+               IOseeBranch workingBranch = atsApi.getBranchService().getWorkingBranch(derivedTeamWf);
+               relatedArt = atsApi.getQueryService().getArtifact(relatedArt, BranchId.valueOf(workingBranch.getId()),
+                  DeletionFlag.INCLUDE_DELETED);
+            } else {
+               // Else get from first commit transaction
+               // NOTE: Each workflow has it's own commit in parallel dev
+               TransactionToken earliestTransactionId =
+                  atsApi.getBranchService().getEarliestTransactionId(derivedTeamWf);
+               if (earliestTransactionId != null) {
+                  relatedArt = atsApi.getQueryService().getHistoricalArtifactOrNull(relatedArt, earliestTransactionId,
+                     DeletionFlag.INCLUDE_DELETED);
+               }
+            }
+         }
+      }
+      return relatedArt;
+   }
 }
