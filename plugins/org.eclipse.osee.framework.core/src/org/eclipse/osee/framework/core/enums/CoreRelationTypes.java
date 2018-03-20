@@ -38,6 +38,9 @@ public final class CoreRelationTypes {
    public static final RelationTypeSide Executes__Test_Plan_Element = RelationTypeSide.create(SIDE_A, 0x200000000000015EL, "Executes");
    public static final RelationTypeSide Executes__Test_Procedure = Executes__Test_Plan_Element.getOpposite();
 
+   public static final RelationTypeSide Implementation_Info__Requirement = RelationTypeSide.create(SIDE_A, 3094530921867614694L, "Implementation_Info");
+   public static final RelationTypeSide Implementation_Info__ImpD = Implementation_Info__Requirement.getOpposite();
+
    public static final RelationTypeSide Related_Feature__Feature = RelationTypeSide.create(SIDE_A, 0x0000000000000058L, "Related Feature");
    public static final RelationTypeSide Related_Feature__Requirement = Related_Feature__Feature.getOpposite();
 
