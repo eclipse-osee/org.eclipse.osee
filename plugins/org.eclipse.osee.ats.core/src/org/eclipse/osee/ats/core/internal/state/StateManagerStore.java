@@ -66,10 +66,16 @@ public class StateManagerStore {
    }
 
    public static void load(IAtsWorkItem workItem, IAtsStateManager stateMgr, IAttributeResolver attrResolver, IAtsWorkStateFactory workStateFactory) {
-      StateManager stateManager = (StateManager) stateMgr;
-      stateManager.clear();
-      StateManagerReader reader = new StateManagerReader(workItem, stateManager, attrResolver, workStateFactory);
-      reader.load();
+      try {
+         StateManager stateManager = (StateManager) stateMgr;
+         stateManager.clear();
+         StateManagerReader reader = new StateManagerReader(workItem, stateManager, attrResolver, workStateFactory);
+         reader.load();
+      } catch (Exception ex) {
+         OseeLog.log(StateManagerStore.class, Level.SEVERE,
+            String.format("Exception loading state manager work work item %s", workItem.toStringWithId()), ex);
+         throw ex;
+      }
    }
 
 }

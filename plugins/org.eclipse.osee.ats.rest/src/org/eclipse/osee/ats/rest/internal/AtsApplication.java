@@ -48,6 +48,8 @@ import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTeamWfEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsWorkPackageEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.StateResource;
+import org.eclipse.osee.ats.rest.internal.workitem.operations.ConvertWorkDefinitionToAttributes;
+import org.eclipse.osee.ats.rest.internal.workitem.workdef.AtsWorkDefEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.world.WorldResource;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.util.JsonUtil;
@@ -67,7 +69,7 @@ public class AtsApplication extends Application {
    private final Set<Object> singletons = new HashSet<>();
 
    private Log logger;
-   private OrcsApi orcsApi;
+   private static OrcsApi orcsApi;
    private IAtsServer atsServer;
    private CpaServiceRegistry cpaRegistry;
    private JdbcService jdbcService;
@@ -79,7 +81,7 @@ public class AtsApplication extends Application {
    }
 
    public void setOrcsApi(OrcsApi orcsApi) {
-      this.orcsApi = orcsApi;
+      AtsApplication.orcsApi = orcsApi;
    }
 
    public void setLogger(Log logger) {
@@ -106,8 +108,8 @@ public class AtsApplication extends Application {
       // Register conversions
       ConvertCreateUpdateAtsConfig atsConfgConversion = new ConvertCreateUpdateAtsConfig(orcsApi);
       atsServer.addAtsDatabaseConversion(atsConfgConversion);
-      ConvertAtsConfigGuidAttributes convertTeamAiAttributes = new ConvertAtsConfigGuidAttributes();
-      atsServer.addAtsDatabaseConversion(convertTeamAiAttributes);
+      atsServer.addAtsDatabaseConversion(new ConvertAtsConfigGuidAttributes());
+      atsServer.addAtsDatabaseConversion(new ConvertWorkDefinitionToAttributes());
 
       // Register agile html report operations
       atsServer.getAgileSprintHtmlReportOperations().add(new SprintSummaryOperation(atsServer, registry));
@@ -131,6 +133,7 @@ public class AtsApplication extends Application {
       singletons.add(new UserResource(atsServer.getUserService()));
       singletons.add(new WorldResource(atsServer));
       singletons.add(new AtsHealthEndpointImpl(atsServer, jdbcService));
+      singletons.add(new AtsWorkDefEndpointImpl(atsServer, orcsApi));
 
       // Endpoints
       singletons.add(new AgileEndpointImpl(atsServer, registry, jdbcService, orcsApi));
@@ -159,6 +162,10 @@ public class AtsApplication extends Application {
    @Override
    public Set<Object> getSingletons() {
       return singletons;
+   }
+
+   public static OrcsApi getOrcsApi() {
+      return orcsApi;
    }
 
 }

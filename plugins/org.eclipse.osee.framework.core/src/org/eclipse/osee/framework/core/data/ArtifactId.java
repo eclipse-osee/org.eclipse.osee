@@ -14,6 +14,8 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Megumi Telles
@@ -28,6 +30,7 @@ public interface ArtifactId extends Id {
    }
 
    public static ArtifactId valueOf(String id) {
+      Conditions.assertTrue(Strings.isNumeric(id), "id is not numberic [%s]", id);
       return Id.valueOf(id, ArtifactId::valueOf);
    }
 

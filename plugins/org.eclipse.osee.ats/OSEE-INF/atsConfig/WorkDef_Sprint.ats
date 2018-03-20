@@ -1,5 +1,5 @@
 workDefinition "WorkDef_Sprint" {
-	id "504662856"
+	id "6915497"
 	startState "InWork"
 
 	widgetDefinition "Title" {

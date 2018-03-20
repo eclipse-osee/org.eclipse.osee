@@ -86,38 +86,6 @@ public class ConvertAtsConfigGuidAttributesOperation {
          }
       }
 
-      // Convert Team Workflow for Work Definition Reference
-      artIdList = new LinkedList<>();
-      artIdList.addAll(atsApi.getQueryService().createQuery(WorkItemType.TeamWorkflow).andNotExists(
-         ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition).getItemIds());
-      artIdList.addAll(atsApi.getQueryService().createQuery(WorkItemType.TeamWorkflow).andNotExists(
-         AtsAttributeTypes.WorkflowDefinitionReference).getItemIds());
-      subDivide = Collections.subDivide(artIdList, 2000);
-      size = subDivide.size();
-      count = 1;
-      for (Collection<ArtifactId> artIds : subDivide) {
-         atsApi.getLogger().info(String.format("processing %s / %s", count++, size));
-         List<Long> ids = new LinkedList<>();
-         for (ArtifactId art : artIds) {
-            ids.add(art.getId());
-         }
-         Collection<ArtifactToken> allArtifacts = atsApi.getQueryService().getArtifacts(ids);
-         IAtsChangeSet changes = atsApi.createChangeSet("Update Workflow Definition");
-         for (ArtifactToken art : allArtifacts) {
-            ConvertAtsConfigGuidAttributesOperations.convertWorkflowDefinitionIfNeeded(changes, art, atsApi);
-            atsApi.getLogger().error("Work Item - " + art.toStringWithId());
-         }
-         TransactionId transaction = changes.executeIfNeeded();
-         if (transaction != null && transaction.isValid()) {
-            atsApi.getLogger().info("================================== > executed");
-         }
-         try {
-            Thread.sleep(5 * 1000);
-         } catch (InterruptedException ex) {
-            // do nothing
-         }
-      }
-
       // convert work packages
       List<ArtifactId> artIdList2 = new LinkedList<>();
       artIdList2.addAll(getWorkItemIdsMissingWorkPacakge());

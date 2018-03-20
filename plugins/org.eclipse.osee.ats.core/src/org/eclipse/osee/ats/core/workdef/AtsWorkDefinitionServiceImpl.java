@@ -54,6 +54,7 @@ import org.eclipse.osee.ats.api.workdef.NullRuleDefinition;
 import org.eclipse.osee.ats.api.workdef.WorkDefData;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
@@ -144,7 +145,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       try {
          ArtifactId workDefArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(workItem,
             AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.SENTINEL);
-         if (workDefArt != null) {
+         if (workDefArt.isValid()) {
             workDefinition = workDefIdToWorkDef.get(workDefArt.getId());
          }
       } catch (Exception ex) {
@@ -331,29 +332,37 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       // If this artifact specifies it's own workflow definition, use it
       IAtsWorkDefinition workDef = getWorkDefinitionFromArtifactsAttributeValue(workItem);
       if (workDef == null) {
-         // Check extensions for definition handling
-         for (ITeamWorkflowProvider provider : teamWorkflowProvidersLazy.getProviders()) {
-            ArtifactToken workFlowDefId = provider.getWorkflowDefinitionId(workItem);
-            if (workFlowDefId != null && workFlowDefId.isValid()) {
-               workDef = getWorkDefinition(workFlowDefId);
-            }
+         // Tasks should never be needed once a database is converted to store work def as attribute
+         if (workItem instanceof IAtsTask && ((IAtsTask) workItem).getParentTeamWorkflow() != null) {
+            workDef = computedWorkDefinitionForTaskNotYetCreated(((IAtsTask) workItem).getParentTeamWorkflow());
          }
          if (workDef == null) {
-            // Otherwise, use workflow defined by attribute of WorkflowDefinition
-            // Note: This is new.  Old TeamDefs got workflow off relation
-            if (workItem instanceof IAtsTeamWorkflow) {
-               IAtsTeamDefinition teamDef = ((IAtsTeamWorkflow) workItem).getTeamDefinition();
-               workDef = getWorkDefinitionFromTeamDefinitionAttributeInherited(teamDef);
-            } else if (workItem instanceof IAtsGoal) {
-               workDef = getWorkDefinition(AtsArtifactToken.WorkDef_Goal);
-            } else if (workItem instanceof IAgileBacklog) {
-               workDef = getWorkDefinition(AtsArtifactToken.WorkDef_Goal);
-            } else if (workItem instanceof IAgileSprint) {
-               workDef = getWorkDefinition(AtsArtifactToken.WorkDef_Sprint);
-            } else if (workItem instanceof IAtsPeerToPeerReview) {
-               workDef = getWorkDefinition(AtsArtifactToken.WorkDef_Review_PeerToPeer);
-            } else if (workItem instanceof IAtsDecisionReview) {
-               workDef = getWorkDefinition(AtsArtifactToken.WorkDef_Review_Decision);
+            // Check extensions for definition handling
+            for (ITeamWorkflowProvider provider : teamWorkflowProvidersLazy.getProviders()) {
+               ArtifactToken workFlowDefId = provider.getWorkflowDefinitionId(workItem);
+               if (workFlowDefId != null && workFlowDefId.isValid()) {
+                  workDef = getWorkDefinition(workFlowDefId);
+               }
+            }
+            if (workDef == null) {
+               // Otherwise, use workflow defined by attribute of WorkflowDefinition
+               // Note: This is new.  Old TeamDefs got workflow off relation
+               if (workItem instanceof IAtsTeamWorkflow) {
+                  IAtsTeamDefinition teamDef = ((IAtsTeamWorkflow) workItem).getTeamDefinition();
+                  Conditions.assertNotNull(teamDef, "Team Def can not be null for %s.  Re-convert?",
+                     workItem.toStringWithId());
+                  workDef = getWorkDefinitionFromTeamDefinitionAttributeInherited(teamDef);
+               } else if (workItem instanceof IAtsGoal) {
+                  workDef = getWorkDefinition(AtsArtifactToken.WorkDef_Goal);
+               } else if (workItem instanceof IAgileBacklog) {
+                  workDef = getWorkDefinition(AtsArtifactToken.WorkDef_Goal);
+               } else if (workItem instanceof IAgileSprint) {
+                  workDef = getWorkDefinition(AtsArtifactToken.WorkDef_Sprint);
+               } else if (workItem instanceof IAtsPeerToPeerReview) {
+                  workDef = getWorkDefinition(AtsArtifactToken.WorkDef_Review_PeerToPeer);
+               } else if (workItem instanceof IAtsDecisionReview) {
+                  workDef = getWorkDefinition(AtsArtifactToken.WorkDef_Review_Decision);
+               }
             }
          }
       }

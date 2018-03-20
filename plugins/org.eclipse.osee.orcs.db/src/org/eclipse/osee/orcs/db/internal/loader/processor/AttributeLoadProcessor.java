@@ -79,7 +79,13 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
          } else if (baseAttributeType.contains("LongAttribute")) {
             value = chStmt.getLong("value");
          } else if (baseAttributeType.contains("ArtifactReferenceAttribute")) {
-            value = ArtifactId.valueOf(chStmt.getString("value"));
+            String id = chStmt.getString("value");
+            if (Strings.isNumeric(id)) {
+               value = ArtifactId.valueOf(id);
+            } else {
+               logger.error("Inavlid non-numeric value [%s] for ArtRefAttribute [%s] attrId [%s] on artId [%s]", id,
+                  attributeType.getIdString(), attrId, artId);
+            }
          } else if (baseAttributeType.contains("BranchReferenceAttribute")) {
             value = BranchId.valueOf(chStmt.getString("value"));
          } else if (baseAttributeType.contains("DateAttribute")) {
