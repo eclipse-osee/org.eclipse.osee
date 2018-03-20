@@ -69,7 +69,7 @@ public class RelationTypeFollowSqlHandler extends SqlHandler<CriteriaRelationTyp
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       boolean includeDeletedRelations = OptionsUtil.areDeletedRelationsIncluded(writer.getOptions());
       RelationTypeSide typeSide = criteria.getType();
 
@@ -120,7 +120,6 @@ public class RelationTypeFollowSqlHandler extends SqlHandler<CriteriaRelationTyp
       writer.write(".gamma_id");
       writer.write(" AND ");
       writer.write(writer.getTxBranchFilter(txsAlias2, includeDeletedRelations));
-      return true;
    }
 
    @Override

@@ -77,7 +77,7 @@ public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       Collection<String> ids = criteria.getIds();
       if (ids.size() > 1) {
          joinQuery = writer.writeCharJoin(ids);
@@ -112,7 +112,6 @@ public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids> {
 
       boolean includeDeletedArtifacts = OptionsUtil.areDeletedArtifactsIncluded(writer.getOptions());
       writer.write(writer.getTxBranchFilter(txsAlias, includeDeletedArtifacts));
-      return true;
    }
 
    @Override

@@ -37,7 +37,7 @@ public class TokenQueryHandler extends SqlHandler<CriteriaTokenQuery> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       String artAlias = writer.getFirstAlias(TableEnum.ARTIFACT_TABLE);
       writer.writeEquals(artAlias, atrAlias, "art_id");
       writer.write(" AND ");
@@ -47,7 +47,6 @@ public class TokenQueryHandler extends SqlHandler<CriteriaTokenQuery> {
       writer.writeEquals(atrAlias, atrTxsAlias, "gamma_id");
       writer.write(" AND ");
       writer.write(writer.getTxBranchFilter(atrTxsAlias));
-      return true;
    }
 
    @Override

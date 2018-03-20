@@ -33,7 +33,7 @@ public class RelationTypeSideExistsSqlHandler extends AbstractRelationSqlHandler
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       super.addPredicates(writer);
 
       RelationTypeSide type = criteria.getType();
@@ -68,7 +68,5 @@ public class RelationTypeSideExistsSqlHandler extends AbstractRelationSqlHandler
       writer.write(".gamma_id");
       writer.writeAndLn();
       writer.write(writer.getTxBranchFilter(txsAlias));
-      return true;
    }
-
 }

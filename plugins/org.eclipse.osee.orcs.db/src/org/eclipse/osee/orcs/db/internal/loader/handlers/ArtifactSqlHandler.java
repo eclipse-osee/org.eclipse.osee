@@ -49,7 +49,7 @@ public class ArtifactSqlHandler extends SqlHandler<CriteriaArtifact> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       writer.write(artAlias);
       writer.write(".art_id = ");
       writer.write(jArtAlias);
@@ -65,7 +65,5 @@ public class ArtifactSqlHandler extends SqlHandler<CriteriaArtifact> {
       writer.write(".gamma_id");
       writer.write("\n AND ");
       writer.write(writer.getTxBranchFilter(txsAlias));
-      return true;
    }
-
 }

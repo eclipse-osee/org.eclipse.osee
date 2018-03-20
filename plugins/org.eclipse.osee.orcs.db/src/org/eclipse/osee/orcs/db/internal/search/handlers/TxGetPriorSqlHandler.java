@@ -34,7 +34,7 @@ public class TxGetPriorSqlHandler extends SqlHandler<CriteriaTxGetPrior> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       BranchId branch = criteria.getTxId().getBranch();
       writer.writeEqualsParameter(txdAlias, "branch_id", branch);
       writer.write(" AND ");
@@ -48,7 +48,6 @@ public class TxGetPriorSqlHandler extends SqlHandler<CriteriaTxGetPrior> {
       writer.write("transaction_id < ?");
       writer.addParameter(criteria.getTxId());
       writer.write(")");
-      return true;
    }
 
    @Override

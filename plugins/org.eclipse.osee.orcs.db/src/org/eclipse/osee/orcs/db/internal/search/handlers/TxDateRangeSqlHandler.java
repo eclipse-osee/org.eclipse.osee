@@ -42,7 +42,7 @@ public class TxDateRangeSqlHandler extends SqlHandler<CriteriaDateRange> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       Timestamp from = criteria.getFrom();
       Timestamp to = criteria.getTo();
       writer.write(txAlias);
@@ -51,7 +51,6 @@ public class TxDateRangeSqlHandler extends SqlHandler<CriteriaDateRange> {
       writer.write(".time <= ? ");
       writer.addParameter(from);
       writer.addParameter(to);
-      return true;
    }
 
    @Override

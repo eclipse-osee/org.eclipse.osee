@@ -87,7 +87,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       if (artAlias != null && artTxsAlias != null) {
          writer.writeEquals(artAlias, artTxsAlias, "gamma_id");
          writer.write(" AND ");
@@ -149,7 +149,6 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
 
       boolean includeDeletedAttributes = OptionsUtil.areDeletedAttributesIncluded(writer.getOptions());
       writer.write(writer.getTxBranchFilter(txsAlias, includeDeletedAttributes));
-      return true;
    }
 
    @Override

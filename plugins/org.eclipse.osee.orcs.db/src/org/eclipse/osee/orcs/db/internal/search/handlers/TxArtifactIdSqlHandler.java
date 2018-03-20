@@ -56,7 +56,7 @@ public class TxArtifactIdSqlHandler extends SqlHandler<CriteriaTxArtifactIds> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       Collection<ArtifactId> ids = criteria.getIds();
       if (criteria.hasMultiple()) {
          joinQuery = writer.writeJoin(ids);
@@ -77,7 +77,6 @@ public class TxArtifactIdSqlHandler extends SqlHandler<CriteriaTxArtifactIds> {
       writer.write(".art_id = ");
       writer.write(txdAlias);
       writer.write(".author");
-      return true;
    }
 
    @Override

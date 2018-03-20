@@ -48,7 +48,7 @@ public class TxIdsSqlHandler extends SqlHandler<CriteriaTxIds> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       Collection<TransactionId> ids = criteria.getIds();
       if (ids.size() > 1) {
          AbstractJoinQuery joinQuery = writer.writeJoin(ids);
@@ -64,7 +64,6 @@ public class TxIdsSqlHandler extends SqlHandler<CriteriaTxIds> {
          writer.write(".transaction_id = ?");
          writer.addParameter(ids.iterator().next());
       }
-      return true;
    }
 
    @Override

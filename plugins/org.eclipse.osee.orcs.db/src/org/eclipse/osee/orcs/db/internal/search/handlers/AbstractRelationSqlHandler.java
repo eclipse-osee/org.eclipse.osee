@@ -42,16 +42,11 @@ public abstract class AbstractRelationSqlHandler<T extends Criteria> extends Sql
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
-      boolean modified = false;
-      if (artAlias != null && artTxsAlias != null) {
-         writer.writeEquals(artAlias, artTxsAlias, "gamma_id");
-         writer.write(" AND ");
-         writer.write(writer.getTxBranchFilter(artTxsAlias));
-         writer.writeAndLn();
-         modified = true;
-      }
-      return modified;
+   public void addPredicates(AbstractSqlWriter writer) {
+      writer.writeEquals(artAlias, artTxsAlias, "gamma_id");
+      writer.write(" AND ");
+      writer.write(writer.getTxBranchFilter(artTxsAlias));
+      writer.writeAndLn();
    }
 
    @Override

@@ -95,7 +95,7 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther>
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       Collection<AttributeTypeId> attributeTypes = criteria.getAttributeTypes();
 
       if (attributeTypes.size() == 1) {
@@ -178,7 +178,6 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther>
          writer.write(".gamma_id AND ");
          writer.write(writer.getTxBranchFilter(txs2Alias2));
       }
-      return true;
    }
 
    @Override

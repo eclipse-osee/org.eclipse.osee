@@ -77,7 +77,7 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       writer.write("(%s.a_art_id = %s.id2 OR %s.b_art_id = %s.id2)", relationAlias, jArtAlias, relationAlias,
          jArtAlias);
       writer.write(" AND ");
@@ -129,6 +129,5 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation> {
       writer.write(".gamma_id");
       writer.write("\n AND ");
       writer.write(writer.getTxBranchFilter(txsAlias));
-      return true;
    }
 }

@@ -66,7 +66,7 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       Collection<? extends ArtifactTypeId> types = criteria.getTypes();
       if (types.size() > 1) {
          joinQuery = writer.writeJoin(types);
@@ -111,7 +111,6 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
          writer.write(".gamma_id AND ");
          writer.write(writer.getTxBranchFilter(txsAlias));
       }
-      return true;
    }
 
    @Override

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import java.util.List;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllTxs;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -21,25 +20,14 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
  */
 public class AllTxsSqlHandler extends SqlHandler<CriteriaAllTxs> {
 
-   private String txAlias;
-
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      List<String> aliases = writer.getAliases(TableEnum.TX_DETAILS_TABLE);
-      if (aliases.isEmpty()) {
-         txAlias = writer.addTable(TableEnum.TX_DETAILS_TABLE);
-      } else {
-         txAlias = aliases.iterator().next();
-      }
+      writer.getOrCreateTableAlias(TableEnum.TX_DETAILS_TABLE);
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
-      boolean modified = false;
-      if (txAlias != null) {
-         modified = true;
-      }
-      return modified;
+   public boolean hasPredicates() {
+      return false;
    }
 
    @Override

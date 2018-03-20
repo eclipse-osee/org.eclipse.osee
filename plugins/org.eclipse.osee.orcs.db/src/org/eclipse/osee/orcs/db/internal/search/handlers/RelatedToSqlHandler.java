@@ -144,7 +144,7 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       if (artAlias != null && artTxsAlias != null) {
          writer.writeEquals(artAlias, artTxsAlias, "gamma_id");
          writer.write(" AND ");
@@ -162,7 +162,6 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
       writer.writeAndLn();
       boolean includeDeletedRelations = OptionsUtil.areDeletedRelationsIncluded(writer.getOptions());
       writer.write(writer.getTxBranchFilter(txsAlias, includeDeletedRelations));
-      return true;
    }
 
    @Override

@@ -207,15 +207,19 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    protected void writePredicates(Iterable<SqlHandler<?>> handlers) {
       Iterator<SqlHandler<?>> iterator = handlers.iterator();
+      boolean first = true;
       while (iterator.hasNext()) {
          SqlHandler<?> handler = iterator.next();
          setHandlerLevel(handler);
-         boolean modified = handler.addPredicates(this);
-         if (modified && iterator.hasNext()) {
-            writeAndLn();
+         if (handler.hasPredicates()) {
+            if (first) {
+               first = false;
+            } else {
+               writeAndLn();
+            }
+            handler.addPredicates(this);
          }
       }
-      removeDanglingSeparator(AND_WITH_NEWLINES);
    }
 
    public void writeAndLn() {

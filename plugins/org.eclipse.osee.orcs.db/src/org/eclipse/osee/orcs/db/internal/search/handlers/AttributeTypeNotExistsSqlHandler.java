@@ -48,7 +48,7 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       Collection<AttributeTypeId> types = criteria.getTypes();
 
       writer.writeEquals(artAlias, txsAlias, "gamma_id");
@@ -91,8 +91,6 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
       writer.write(" AND ");
       writer.write(writer.getTxBranchFilter("txs"));
       writer.write(")");
-
-      return true;
    }
 
    @Override

@@ -38,12 +38,13 @@ public class XtraBranchDataSqlHandler extends AbstractXtraTableSqlHandler {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
-      if (txsAlias == null || txsAlias.isEmpty()) {
-         return false;
-      }
+   public void addPredicates(AbstractSqlWriter writer) {
       writer.writeEquals(txsAlias, branchAlias, "branch_id");
-      return true;
+   }
+
+   @Override
+   public boolean hasPredicates() {
+      return txsAlias != null && !txsAlias.isEmpty();
    }
 
    @Override

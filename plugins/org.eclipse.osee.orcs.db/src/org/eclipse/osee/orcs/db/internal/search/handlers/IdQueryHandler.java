@@ -21,4 +21,9 @@ public class IdQueryHandler extends SqlHandler<CriteriaIdQuery> {
    public int getPriority() {
       return SqlHandlerPriority.ARTIFACT_ID_QUERY.ordinal();
    }
+
+   @Override
+   public boolean hasPredicates() {
+      return false;
+   }
 }

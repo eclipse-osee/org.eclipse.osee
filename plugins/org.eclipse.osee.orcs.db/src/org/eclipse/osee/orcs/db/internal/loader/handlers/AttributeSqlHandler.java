@@ -66,7 +66,7 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       writer.write(attrAlias);
       writer.write(".art_id = ");
       writer.write(jArtAlias);
@@ -120,7 +120,5 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
       writer.write(".gamma_id");
       writer.write("\n AND ");
       writer.write(writer.getTxBranchFilter(txsAlias));
-      return true;
    }
-
 }

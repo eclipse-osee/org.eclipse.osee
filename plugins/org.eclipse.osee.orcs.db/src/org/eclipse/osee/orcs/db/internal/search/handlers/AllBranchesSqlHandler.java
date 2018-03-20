@@ -30,7 +30,7 @@ public class AllBranchesSqlHandler extends SqlHandler<CriteriaAllBranches> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public boolean hasPredicates() {
       return false;
    }
 

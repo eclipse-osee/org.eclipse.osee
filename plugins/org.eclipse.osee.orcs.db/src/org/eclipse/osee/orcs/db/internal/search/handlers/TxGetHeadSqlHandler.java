@@ -41,7 +41,7 @@ public class TxGetHeadSqlHandler extends SqlHandler<CriteriaTxGetHead> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       writer.write(txdAlias);
       writer.write(".transaction_id = ");
 
@@ -51,7 +51,6 @@ public class TxGetHeadSqlHandler extends SqlHandler<CriteriaTxGetHead> {
       writer.write("branch_id = ?)");
 
       writer.addParameter(criteria.getBranch());
-      return true;
    }
 
    @Override

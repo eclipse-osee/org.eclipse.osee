@@ -71,7 +71,7 @@ public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
 
       if (OptionsUtil.isHistorical(writer.getOptions())) {
          writer.write(withClauseName);
@@ -104,7 +104,6 @@ public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds> {
       writer.write(txsAlias);
       writer.write(".gamma_id AND ");
       writer.write(writer.getTxBranchFilter(txsAlias));
-      return true;
    }
 
    @Override

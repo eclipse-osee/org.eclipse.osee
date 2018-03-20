@@ -39,17 +39,17 @@ public class AllArtifactsSqlHandler extends SqlHandler<CriteriaAllArtifacts> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
-      boolean modified = false;
-      if (artAlias != null && txsAlias != null) {
-         writer.write(artAlias);
-         writer.write(".gamma_id = ");
-         writer.write(txsAlias);
-         writer.write(".gamma_id AND ");
-         writer.write(writer.getTxBranchFilter(txsAlias));
-         modified = true;
-      }
-      return modified;
+   public void addPredicates(AbstractSqlWriter writer) {
+      writer.write(artAlias);
+      writer.write(".gamma_id = ");
+      writer.write(txsAlias);
+      writer.write(".gamma_id AND ");
+      writer.write(writer.getTxBranchFilter(txsAlias));
+   }
+
+   @Override
+   public boolean hasPredicates() {
+      return artAlias != null && txsAlias != null;
    }
 
    @Override

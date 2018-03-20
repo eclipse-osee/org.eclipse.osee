@@ -40,10 +40,9 @@ public class AssociatedArtIdSqlHandler extends SqlHandler<CriteriaAssociatedArtI
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       writer.write("%s.associated_art_id = ?", brAlias);
       writer.addParameter(criteria.getAssociatedArtId());
-      return true;
    }
 
    @Override

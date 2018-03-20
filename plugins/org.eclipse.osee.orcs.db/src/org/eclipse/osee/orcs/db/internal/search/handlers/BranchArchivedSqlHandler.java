@@ -50,7 +50,7 @@ public class BranchArchivedSqlHandler extends SqlHandler<CriteriaBranchArchived>
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       Collection<BranchArchivedState> states = criteria.getStates();
       if (states.size() > 1) {
          Set<Integer> ids = new HashSet<>();
@@ -70,7 +70,6 @@ public class BranchArchivedSqlHandler extends SqlHandler<CriteriaBranchArchived>
          writer.write(".archived = ?");
          writer.addParameter(states.iterator().next().getValue());
       }
-      return true;
    }
 
    @Override

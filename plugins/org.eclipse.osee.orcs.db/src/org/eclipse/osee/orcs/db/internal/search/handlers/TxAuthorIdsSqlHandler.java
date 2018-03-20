@@ -47,7 +47,7 @@ public class TxAuthorIdsSqlHandler extends SqlHandler<CriteriaAuthorIds> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       Collection<Integer> ids = criteria.getIds();
       if (ids.size() > 1) {
          AbstractJoinQuery joinQuery = writer.writeIdJoin(ids);
@@ -63,7 +63,6 @@ public class TxAuthorIdsSqlHandler extends SqlHandler<CriteriaAuthorIds> {
          writer.write(".author = ?");
          writer.addParameter(ids.iterator().next());
       }
-      return true;
    }
 
    @Override

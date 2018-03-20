@@ -33,7 +33,7 @@ public class XtraRelationDataSqlHandler extends AbstractXtraTableSqlHandler {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       String artAlias = writer.getLastAlias(TableEnum.ARTIFACT_TABLE);
       writer.write("(");
       writer.write(artAlias);
@@ -49,7 +49,6 @@ public class XtraRelationDataSqlHandler extends AbstractXtraTableSqlHandler {
       writer.writeEquals(itemAlias, txsAlias, "gamma_id");
       writer.write(" AND ");
       writer.write(writer.getTxBranchFilter(txsAlias));
-      return true;
    }
 
    @Override

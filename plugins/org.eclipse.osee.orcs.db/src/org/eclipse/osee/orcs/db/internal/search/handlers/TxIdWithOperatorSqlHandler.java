@@ -42,7 +42,7 @@ public class TxIdWithOperatorSqlHandler extends SqlHandler<CriteriaTxIdWithOpera
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       Operator op = criteria.getOperator();
       int id = criteria.getId();
       writer.write(txAlias);
@@ -50,7 +50,6 @@ public class TxIdWithOperatorSqlHandler extends SqlHandler<CriteriaTxIdWithOpera
       writer.write(op.toString());
       writer.write(" ?");
       writer.addParameter(id);
-      return true;
    }
 
    @Override

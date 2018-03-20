@@ -174,7 +174,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) {
+   public void addPredicates(AbstractSqlWriter writer) {
       boolean artTableAdded = false;
       boolean txsTableAdded = false;
 
@@ -199,7 +199,6 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          writer.writeAndLn();
          writer.write(writer.getTxBranchFilter(txsAlias));
       }
-      return true;
    }
 
    @Override
