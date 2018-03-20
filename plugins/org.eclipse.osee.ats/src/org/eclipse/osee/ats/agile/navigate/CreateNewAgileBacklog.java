@@ -71,7 +71,7 @@ public class CreateNewAgileBacklog extends XNavigateItemAction {
                   AgileEndpointApi agileEp = AtsClientService.getAgileEndpoint();
                   JaxNewAgileBacklog newBacklog = new JaxNewAgileBacklog();
                   newBacklog.setName(ed.getEntry());
-                  Artifact firstArtifact = (Artifact) dialog.getSelectedFirst();
+                  Artifact firstArtifact = dialog.getSelectedFirst();
                   if (firstArtifact == null) {
                      throw new OseeCoreException("Must make a selection");
                   }

@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
@@ -88,7 +87,7 @@ public class NewActionJob extends Job {
             // Because this is a job, it will automatically kill any popups that are created during.
             // Thus, if multiple teams were selected to create, don't popup on openAction or dialog
             // will exception out when it is killed at the end of this job.
-            AtsEditors.openATSAction((Artifact) result.getFirstTeam().getStoreObject(), AtsOpenOption.OpenAll);
+            AtsEditors.openATSAction(result.getFirstTeam().getStoreObject(), AtsOpenOption.OpenAll);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

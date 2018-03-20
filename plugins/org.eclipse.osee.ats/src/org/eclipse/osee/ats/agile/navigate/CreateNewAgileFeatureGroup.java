@@ -72,7 +72,7 @@ public class CreateNewAgileFeatureGroup extends XNavigateItemAction {
                   JaxNewAgileFeatureGroup newGroup = new JaxNewAgileFeatureGroup();
                   for (String name : ed.getEntry().split(",")) {
                      newGroup.setName(name);
-                     Artifact firstArtifact = (Artifact) dialog.getSelectedFirst();
+                     Artifact firstArtifact = dialog.getSelectedFirst();
                      if (firstArtifact == null) {
                         throw new OseeCoreException("Must make a selection");
                      }

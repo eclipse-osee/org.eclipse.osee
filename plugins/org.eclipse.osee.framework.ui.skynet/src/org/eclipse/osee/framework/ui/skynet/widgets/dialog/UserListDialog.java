@@ -70,6 +70,6 @@ public class UserListDialog extends FilteredTreeArtifactDialog {
    }
 
    public User getSelection() {
-      return super.getSelectedFirst();
+      return (User) super.getSelectedFirst();
    }
 }

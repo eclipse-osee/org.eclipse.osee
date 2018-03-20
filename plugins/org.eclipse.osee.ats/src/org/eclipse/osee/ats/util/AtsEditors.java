@@ -136,7 +136,7 @@ public final class AtsEditors {
                         try {
                            TeamWorkFlowArtifact teamArt = promptSelectTeamWorkflow(artifact);
                            if (teamArt != null) {
-                              WorkflowEditor.editArtifact((Artifact) teamArt);
+                              WorkflowEditor.editArtifact(teamArt);
                            } else {
                               return;
                            }

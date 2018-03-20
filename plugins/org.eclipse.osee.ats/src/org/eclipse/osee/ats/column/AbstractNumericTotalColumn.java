@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
@@ -136,7 +135,7 @@ public abstract class AbstractNumericTotalColumn extends XViewerAtsColumn implem
       if (workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
          return 0;
       }
-      double est = ((Artifact) workItem.getStoreObject()).getSoleAttributeValue(pointsAttrType, 0.0);
+      double est = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workItem, pointsAttrType, 0.0);
       if (est > 0) {
          int percentComplete = getPercentComplete(workItem);
          est = est - est * percentComplete / 100.0;

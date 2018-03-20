@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -322,7 +321,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
             IAtsTeamWorkflow.class).iterator().next();
 
       resultData.log("Loaded TeamWf " + teamWf);
-      AtsEditors.openATSAction((Artifact) teamWf.getParentAction().getStoreObject(), AtsOpenOption.OpenOneOrPopupSelect);
+      AtsEditors.openATSAction(teamWf.getParentAction().getStoreObject(), AtsOpenOption.OpenOneOrPopupSelect);
       validateActionAtStart(teamWf);
       XResultDataUI.report(resultData, title);
    }
@@ -337,7 +336,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
             IAtsTeamWorkflow.class).iterator().next();
 
       resultData.log("Loaded TeamWf " + teamWf);
-      AtsEditors.openATSAction((Artifact) teamWf.getParentAction().getStoreObject(), AtsOpenOption.OpenOneOrPopupSelect);
+      AtsEditors.openATSAction(teamWf.getParentAction().getStoreObject(), AtsOpenOption.OpenOneOrPopupSelect);
       validateActionAtEnd(teamWf);
       XResultDataUI.report(resultData, title);
    }

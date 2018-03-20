@@ -123,7 +123,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
 
       if (!results.isErrors()) {
          for (IAtsTeamWorkflow newTeamArt : op.getResults().values()) {
-            WorkflowEditor.editArtifact((Artifact) newTeamArt);
+            WorkflowEditor.edit(newTeamArt);
          }
       }
    }
@@ -159,7 +159,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
 
       if (!results.isErrors()) {
          for (IAtsTeamWorkflow newTeamArt : op.getResults().values()) {
-            WorkflowEditor.editArtifact((Artifact) newTeamArt);
+            WorkflowEditor.edit(newTeamArt);
          }
       }
    }

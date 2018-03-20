@@ -74,4 +74,10 @@ public class FilteredTreeArtifactDialog extends FilteredTreeDialog {
       getTreeViewer().getViewer().setComparator(comparator);
    }
 
+   @SuppressWarnings("unchecked")
+   @Override
+   public Artifact getSelectedFirst() {
+      return (Artifact) super.getSelectedFirst();
+   }
+
 }

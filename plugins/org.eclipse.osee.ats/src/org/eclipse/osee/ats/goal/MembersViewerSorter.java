@@ -17,9 +17,9 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.FavoritesManager;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
@@ -53,12 +53,12 @@ public class MembersViewerSorter extends ViewerComparator {
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
-         return compare((Artifact) o1, (Artifact) o2);
+         return compare((Named) o1, (Named) o2);
       }
       return 0;
    }
 
-   private int compare(Artifact a1, Artifact a2) {
+   private int compare(Named a1, Named a2) {
       return getComparator().compare(a1.getName(), a2.getName());
    }
 

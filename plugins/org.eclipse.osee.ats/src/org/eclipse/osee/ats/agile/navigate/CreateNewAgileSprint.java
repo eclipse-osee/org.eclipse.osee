@@ -69,7 +69,7 @@ public class CreateNewAgileSprint extends XNavigateItemAction {
                try {
                   AgileEndpointApi ageilEp = AtsClientService.getAgileEndpoint();
                   JaxNewAgileSprint newSprint = new JaxNewAgileSprint();
-                  Artifact firstArtifact = (Artifact) dialog.getSelectedFirst();
+                  Artifact firstArtifact = dialog.getSelectedFirst();
 
                   if (firstArtifact == null) {
                      throw new OseeCoreException("Must make a selection");

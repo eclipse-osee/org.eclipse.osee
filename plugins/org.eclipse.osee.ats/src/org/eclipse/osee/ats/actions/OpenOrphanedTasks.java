@@ -132,7 +132,7 @@ public class OpenOrphanedTasks extends Action {
                            changes.relate(teamWf, AtsRelationTypes.TeamWfToTask_Task, taskArt);
                         }
                         changes.execute();
-                        AtsEditors.openATSAction((Artifact) teamWf.getStoreObject(), AtsOpenOption.OpenOneOrPopupSelect);
+                        AtsEditors.openATSAction(teamWf.getStoreObject(), AtsOpenOption.OpenOneOrPopupSelect);
                      }
                   }
                }

@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
+import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -80,7 +81,6 @@ import org.eclipse.osee.ats.core.workflow.WorkItemFactory;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -488,6 +488,11 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    @Override
    public boolean isWorkDefAsName() {
       return "true".equals(OseeInfo.getCachedValue("osee.work.def.as.name"));
+   }
+
+   @Override
+   public IAtsQueryService getQueryService() {
+      return queryService;
    }
 
 }
