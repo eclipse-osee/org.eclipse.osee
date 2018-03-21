@@ -48,15 +48,9 @@ public class VCastLisFileParser implements ICoverageUnitFileContentsLoader {
          String lisFilePathName = vCastDir + File.separator + lisFileName;
          File lisFile = new File(lisFilePathName);
          if (!lisFile.exists()) {
-            String lisFileName = lisFilePathName.replace(lis, LIS);
-            lisFile = new File(lisFileName);
-            if (!lisFile.exists()) {
-               lisFileName = lisFileName.replace("_", "");
-               lisFile = new File(lisFileName);
-               if (!lisFile.exists()) {
-                  throw new OseeArgumentException(
-                     String.format("VectorCast *.LIS file doesn't exist [%s]", lisFilePathName));
-               }
+            if (!doesFileExist(lisFilePathName, lisFile)) {
+               throw new OseeArgumentException(
+                  String.format("VectorCast *.LIS file doesn't exist [%s]", lisFilePathName));
             }
          }
          try {
@@ -68,13 +62,13 @@ public class VCastLisFileParser implements ICoverageUnitFileContentsLoader {
       }
    }
 
-   private String checkAndAdjustLisFileName(String lisFileName) {
-      String lisFile = lisFileName;
-      // change *.lis to *.LIS
-      lisFile = lisFileName.replace(lis, LIS);
-      // change something_io.2.lis to somethingio.2.lis
-      lisFile = lisFileName.replace("_", "");
-      return lisFile;
+   private boolean doesFileExist(String lisFilePathName, File lisFile) {
+      for (String file : lisFile.list()) {
+         if (file.equalsIgnoreCase(lisFilePathName)) {
+            return true;
+         }
+      }
+      return false;
    }
 
    public Pair<String, Boolean> getSourceCodeForLine(Integer method, Integer executionLine) {
