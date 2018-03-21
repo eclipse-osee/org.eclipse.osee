@@ -48,11 +48,15 @@ public class VCastLisFileParser implements ICoverageUnitFileContentsLoader {
          String lisFilePathName = vCastDir + File.separator + lisFileName;
          File lisFile = new File(lisFilePathName);
          if (!lisFile.exists()) {
-            String lisFileName = checkAndAdjustLisFileName(lisFilePathName);
+            String lisFileName = lisFilePathName.replace(lis, LIS);
             lisFile = new File(lisFileName);
             if (!lisFile.exists()) {
-               throw new OseeArgumentException(
-                  String.format("VectorCast *.LIS file doesn't exist [%s]", lisFilePathName));
+               lisFileName = lisFileName.replace("_", "");
+               lisFile = new File(lisFileName);
+               if (!lisFile.exists()) {
+                  throw new OseeArgumentException(
+                     String.format("VectorCast *.LIS file doesn't exist [%s]", lisFilePathName));
+               }
             }
          }
          try {
