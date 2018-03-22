@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.x.server.application.internal.operations;
 
+import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.management.RuntimeMXBean;
 import java.text.DateFormat;
 import java.util.Arrays;
+import java.util.List;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.activity.api.ThreadStats;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
@@ -36,6 +38,7 @@ public class BuildServerStatusOperation {
    private final ActivityLog activityLog;
    private final RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
    private final OperatingSystemMXBean osMxBean = ManagementFactory.getOperatingSystemMXBean();
+   List<GarbageCollectorMXBean> garbageCollectorMXBeans = ManagementFactory.getGarbageCollectorMXBeans();
 
    public BuildServerStatusOperation(IApplicationServerManager applicationServerManager, IAuthenticationManager authManager, ActivityLog activityLog) {
       this.applicationServerManager = applicationServerManager;
@@ -61,9 +64,18 @@ public class BuildServerStatusOperation {
       stat.set(StatusKey.AuthenticationSchemeSupported, Arrays.deepToString(authManager.getProtocols()));
       stat.set(StatusKey.SupportedVersions, Arrays.deepToString(applicationServerManager.getVersions()));
       MemoryUsage heapMem = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
-      stat.set(StatusKey.MemoryUsed, Lib.toMBytes(heapMem.getUsed()));
-      stat.set(StatusKey.MemoryAllocated, Lib.toMBytes(heapMem.getCommitted()));
-      stat.set(StatusKey.MemoryMax, Lib.toMBytes(heapMem.getMax()));
+      stat.set(StatusKey.HeapMemoryUsed, Lib.toMBytes(heapMem.getUsed()));
+      stat.set(StatusKey.HeapMemoryAllocated, Lib.toMBytes(heapMem.getCommitted()));
+      stat.set(StatusKey.HeapMemoryMax, Lib.toMBytes(heapMem.getMax()));
+      MemoryUsage nonHeapMem = ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage();
+      stat.set(StatusKey.NonHeapMemoryUsed, Lib.toMBytes(nonHeapMem.getUsed()));
+      stat.set(StatusKey.NonHeapMemoryAllocated, Lib.toMBytes(nonHeapMem.getCommitted()));
+      stat.set(StatusKey.NonHeapMemoryMax, Lib.toMBytes(nonHeapMem.getMax()));
+      for (GarbageCollectorMXBean gcBean : garbageCollectorMXBeans) {
+         stat.getGarbageCollectorStats().add(String.format("name [%s] count %s - time %s ms - poolNames %s",
+            gcBean.getName(), gcBean.getCollectionCount(), gcBean.getCollectionTime(),
+            Arrays.deepToString(gcBean.getMemoryPoolNames())));
+      }
 
       ThreadStats[] threadStats = activityLog.getThreadActivity();
       try {

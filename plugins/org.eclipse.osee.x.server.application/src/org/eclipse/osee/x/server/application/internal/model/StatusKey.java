@@ -15,9 +15,12 @@ package org.eclipse.osee.x.server.application.internal.model;
  */
 public enum StatusKey {
    ServerUri("URI", false),
-   MemoryAllocated("Mem Alloc", false),
-   MemoryUsed("Mem-Used", false),
-   MemoryMax("Mem-Max", false),
+   HeapMemoryAllocated("Heap Mem Alloc", false),
+   HeapMemoryUsed("Heap Mem-Used", false),
+   HeapMemoryMax("Heap Mem-Max", false),
+   NonHeapMemoryAllocated("Non-Heap Mem Alloc", false),
+   NonHeapMemoryUsed("Non-Heap Mem-Used", false),
+   NonHeapMemoryMax("Non-Heap Mem-Max", false),
    ActiveThreads("Thread Activity", true),
    ServerId("ID", true),
    StartTime("Start", true),
@@ -28,6 +31,7 @@ public enum StatusKey {
    SupportedVersions("Versions", true),
    SystemLoad("SystemLoad", false),
    Unknown("Unknown", true),
+   GarbageCollector("GC", true),
    UpTime("UpTime", false);
 
    private final String shortName;
