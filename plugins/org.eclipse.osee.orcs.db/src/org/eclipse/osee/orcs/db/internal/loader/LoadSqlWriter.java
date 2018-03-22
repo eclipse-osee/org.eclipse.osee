@@ -36,22 +36,17 @@ public class LoadSqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeSelect(Iterable<SqlHandler<?>> handlers) {
+   protected void writeSelectFields(Iterable<SqlHandler<?>> handlers) {
       String txAlias = getLastAlias(TableEnum.TXS_TABLE);
       String artJoinAlias = getLastAlias(TableEnum.JOIN_ID4_TABLE);
 
-      write("SELECT%s ", getSqlHint());
+      writeCommaIfNotFirst();
       write("%s.gamma_id, %s.mod_type, %s.branch_id, %s.transaction_id, %s.app_id", txAlias, txAlias, txAlias, txAlias,
          txAlias);
       if (OptionsUtil.isHistorical(getOptions())) {
          write(", %s.transaction_id as stripe_transaction_id", txAlias);
       }
-      write(",\n %s.id2, %s.id4", artJoinAlias, artJoinAlias);
-      for (SqlHandler<?> handler : handlers) {
-         setHandlerLevel(handler);
-         write(", ");
-         handler.addSelect(this);
-      }
+      write(", %s.id2, %s.id4", artJoinAlias, artJoinAlias);
    }
 
    @Override

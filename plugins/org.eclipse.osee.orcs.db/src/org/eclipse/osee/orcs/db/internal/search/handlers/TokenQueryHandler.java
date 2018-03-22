@@ -21,8 +21,8 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
  */
 public class TokenQueryHandler extends SqlHandler<CriteriaTokenQuery> {
 
-   private String atrTxsAlias;
-   private String atrAlias;
+   private String attTxsAlias;
+   private String attAlias;
    private CriteriaTokenQuery criteria;
 
    @Override
@@ -32,21 +32,28 @@ public class TokenQueryHandler extends SqlHandler<CriteriaTokenQuery> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      atrAlias = writer.addTable(TableEnum.ATTRIBUTE_TABLE);
-      atrTxsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ATTRIBUTE);
+      attAlias = writer.addTable(TableEnum.ATTRIBUTE_TABLE);
+      attTxsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ATTRIBUTE);
+   }
+
+   @Override
+   public void writeSelectFields(AbstractSqlWriter writer) {
+      writer.writeCommaIfNotFirst();
+      String artAlias = writer.getMainTableAlias(TableEnum.ARTIFACT_TABLE);
+      writer.write("%s.value, %s.art_type_id", attAlias, artAlias);
    }
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
       String artAlias = writer.getMainTableAlias(TableEnum.ARTIFACT_TABLE);
-      writer.writeEquals(artAlias, atrAlias, "art_id");
+      writer.writeEquals(artAlias, attAlias, "art_id");
       writer.write(" AND ");
-      writer.write(atrAlias);
+      writer.write(attAlias);
       writer.write(".attr_type_id = ? AND ");
       writer.addParameter(criteria.getAttributeType());
-      writer.writeEquals(atrAlias, atrTxsAlias, "gamma_id");
+      writer.writeEquals(attAlias, attTxsAlias, "gamma_id");
       writer.write(" AND ");
-      writer.write(writer.getTxBranchFilter(atrTxsAlias));
+      writer.write(writer.getTxBranchFilter(attTxsAlias));
    }
 
    @Override

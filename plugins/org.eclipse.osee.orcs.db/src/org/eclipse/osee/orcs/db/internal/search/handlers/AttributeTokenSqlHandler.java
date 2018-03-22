@@ -124,7 +124,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       String gammaAlias = writer.addWithClause("gamma", gammaSb.toString());
 
       StringBuilder attrSb = new StringBuilder();
-      attrSb.append("   SELECT art_id FROM osee_attribute att, osee_txs txs, ");
+      attrSb.append("   SELECT DISTINCT art_id FROM osee_attribute att, osee_txs txs, ");
       if (!criteria.isIncludeAllTypes() && types.size() > 1) {
          attrSb.append("osee_join_id ");
          attrSb.append(jIdAlias);

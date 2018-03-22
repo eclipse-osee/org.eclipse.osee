@@ -37,13 +37,11 @@ public class QuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeSelect(Iterable<SqlHandler<?>> handlers) {
+   protected void writeSelectFields(Iterable<SqlHandler<?>> handlers) {
       tableAlias = getMainTableAlias(table);
-      if (isCountQueryType()) {
-         write("SELECT%s count(*)", getSqlHint());
-      } else {
-         write("SELECT%s %s.*", getSqlHint(), tableAlias);
-      }
+      writeCommaIfNotFirst();
+      write(tableAlias);
+      write(".*");
    }
 
    @Override

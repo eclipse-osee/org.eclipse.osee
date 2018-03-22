@@ -61,12 +61,12 @@ public interface ArtifactEndpoint {
    AttributeEndpoint getAttributes(@PathParam("artifactId") ArtifactId artifactId);
 
    @GET
-   @Path("atrType/{attributeType}/token")
+   @Path("attType/{attributeType}/token")
    @Produces(MediaType.APPLICATION_JSON)
    List<ArtifactToken> getArtifactTokensByAttribute(@PathParam("attributeType") AttributeTypeId attributeType, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists, @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeId artifactType);
 
    @GET
-   @Path("atrType/{attributeType}/id")
+   @Path("attType/{attributeType}/id")
    @Produces(MediaType.APPLICATION_JSON)
    List<ArtifactId> getArtifactIdsByAttribute(@PathParam("attributeType") AttributeTypeId attributeType, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists, @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeId artifactType);
 

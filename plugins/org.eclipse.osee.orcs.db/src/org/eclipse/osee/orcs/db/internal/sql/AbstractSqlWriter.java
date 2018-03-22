@@ -24,6 +24,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.HasOptions;
 import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.CharJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
@@ -47,8 +48,8 @@ public abstract class AbstractSqlWriter implements HasOptions {
    private final JdbcClient jdbcClient;
    private final SqlContext context;
    private final QueryType queryType;
-
-   private int level = 0;
+   private int level;
+   private boolean firstField;
 
    public AbstractSqlWriter(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryType queryType) {
       this.logger = logger;
@@ -83,6 +84,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       withClauses.clear();
       aliasManager.reset();
       level = 0;
+      firstField = true;
       mainAliases.clear();
    }
 
@@ -105,9 +107,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       write("\n WHERE ");
       writePredicates(handlers);
 
-      if (toString().endsWith("\n WHERE ")) {
-         removeDanglingSeparator("\n WHERE ");
-      }
+      removeDanglingSeparator("\n WHERE ");
       writeGroupAndOrder();
    }
 
@@ -175,7 +175,35 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return context;
    }
 
-   protected abstract void writeSelect(Iterable<SqlHandler<?>> handlers);
+   protected void writeSelect(Iterable<SqlHandler<?>> handlers) {
+      write("SELECT");
+      write(getSqlHint());
+      write(" ");
+      if (isCountQueryType()) {
+         if (OptionsUtil.isHistorical(getOptions())) {
+            write("count(xTable.art_id) FROM (SELECT");
+            write(getSqlHint());
+            write("1");
+         } else {
+            write("count(*)");
+         }
+      } else {
+         writeSelectFields(handlers);
+         for (SqlHandler<?> handler : handlers) {
+            handler.writeSelectFields(this);
+         }
+      }
+   }
+
+   public void writeCommaIfNotFirst() {
+      if (firstField) {
+         firstField = false;
+      } else {
+         write(", ");
+      }
+   }
+
+   protected abstract void writeSelectFields(Iterable<SqlHandler<?>> handlers);
 
    public abstract String getWithClauseTxBranchFilter(String txsAlias, boolean deletedPredicate);
 

@@ -37,7 +37,8 @@ public class ArtifactSqlHandler extends SqlHandler<CriteriaArtifact> {
    }
 
    @Override
-   public void addSelect(AbstractSqlWriter writer) {
+   public void writeSelectFields(AbstractSqlWriter writer) {
+      writer.writeCommaIfNotFirst();
       writer.write("%s.art_type_id, %s.guid", artAlias, artAlias);
    }
 

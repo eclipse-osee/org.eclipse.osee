@@ -46,7 +46,8 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation> {
    }
 
    @Override
-   public void addSelect(AbstractSqlWriter writer) {
+   public void writeSelectFields(AbstractSqlWriter writer) {
+      writer.writeCommaIfNotFirst();
       writer.write("%s.rel_link_id, %s.rel_link_type_id, %s.a_art_id, %s.b_art_id, %s.rationale", relationAlias,
          relationAlias, relationAlias, relationAlias, relationAlias);
    }

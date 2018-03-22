@@ -71,7 +71,7 @@ public abstract class SqlHandler<T extends Criteria> implements HasPriority {
       // Do Nothing
    }
 
-   public void addSelect(AbstractSqlWriter sqlWriter) {
+   public void writeSelectFields(AbstractSqlWriter writer) {
       // Do Nothing
    }
 }

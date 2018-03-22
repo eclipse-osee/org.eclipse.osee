@@ -36,30 +36,15 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
       this.branch = branch;
    }
 
-   private void writeSelectHelper() {
-      String txAlias = getMainTableAlias(TableEnum.TXS_TABLE);
-
-      write("SELECT DISTINCT%s ", getSqlHint());
-      if (OptionsUtil.isHistorical(getOptions())) {
-         write("%s.transaction_id, ", txAlias);
-      }
-      write("%s.art_id, %s.branch_id", getMainTableAlias(TableEnum.ARTIFACT_TABLE), txAlias);
-      if (isTokenQueryType()) {
-         write(", value, art_type_id");
-      }
-   }
-
    @Override
-   public void writeSelect(Iterable<SqlHandler<?>> handlers) {
-      if (isCountQueryType()) {
-         if (OptionsUtil.isHistorical(getOptions())) {
-            write("SELECT count(xTable.art_id) FROM (\n ");
-            writeSelectHelper();
-         } else {
-            write("SELECT%s count(%s.art_id)", getSqlHint(), getMainTableAlias(TableEnum.ARTIFACT_TABLE));
-         }
-      } else {
-         writeSelectHelper();
+   protected void writeSelectFields(Iterable<SqlHandler<?>> handlers) {
+      String txAlias = getMainTableAlias(TableEnum.TXS_TABLE);
+      String artAlias = getMainTableAlias(TableEnum.ARTIFACT_TABLE);
+
+      writeCommaIfNotFirst();
+      write("%s.art_id, %s.branch_id", artAlias, txAlias);
+      if (OptionsUtil.isHistorical(getOptions())) {
+         write(", %s.transaction_id", txAlias);
       }
    }
 

@@ -45,7 +45,8 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
    }
 
    @Override
-   public void addSelect(AbstractSqlWriter writer) {
+   public void writeSelectFields(AbstractSqlWriter writer) {
+      writer.writeCommaIfNotFirst();
       writer.write("%s.attr_id, %s.attr_type_id, %s.value, %s.uri", attrAlias, attrAlias, attrAlias, attrAlias);
    }
 

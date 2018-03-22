@@ -30,7 +30,6 @@ import org.eclipse.osee.orcs.core.ds.DynamicData;
 import org.eclipse.osee.orcs.core.ds.DynamicObject;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
-import org.eclipse.osee.orcs.core.ds.ResultObjectDescription;
 import org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerPriority;
 import org.eclipse.osee.orcs.db.internal.search.handlers.XtraAttributeDataSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.XtraBranchDataSqlHandler;
@@ -99,7 +98,7 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
       write("\n FROM \n");
       writeTables();
 
-      write("\n WHERE \n");
+      write("\n WHERE ");
       writePredicates(Iterables.concat(handlers, xtraHandlers));
 
       removeDanglingSeparator("\n WHERE \n");
@@ -108,18 +107,10 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeSelect(Iterable<SqlHandler<?>> handlers) {
-      if (isCountQueryType()) {
-         throw new UnsupportedOperationException("Count dynamic query not supported");
-      } else {
-         write("SELECT%s ", getSqlHint());
-         writeSelects(fieldResolver.getResult());
-      }
-   }
-
-   private void writeSelects(ResultObjectDescription result) {
+   protected void writeSelectFields(Iterable<SqlHandler<?>> handlers) {
+      writeCommaIfNotFirst();
       MutableBoolean isFirst = new MutableBoolean(true);
-      for (DynamicData data : result.getDynamicData()) {
+      for (DynamicData data : fieldResolver.getResult().getDynamicData()) {
          writeSelects(data, isFirst);
       }
    }
