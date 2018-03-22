@@ -151,10 +151,10 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public String createDispoAnnotation(BranchId branch, String itemId, DispoAnnotationData annotationToCreate, String userName) {
+   public String createDispoAnnotation(BranchId branch, String itemId, DispoAnnotationData annotationToCreate, String userName, boolean isCi) {
       String idOfNewAnnotation = "";
       DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
-      if (dispoItem != null && dispoItem.getAssignee().equalsIgnoreCase(userName)) {
+      if (dispoItem != null && (isCi || dispoItem.getAssignee().equalsIgnoreCase(userName))) {
          List<DispoAnnotationData> annotationsList = dispoItem.getAnnotationsList();
          dataFactory.initAnnotation(annotationToCreate);
          idOfNewAnnotation = dataFactory.getNewId();
@@ -321,10 +321,10 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public boolean editDispoAnnotation(BranchId branch, String itemId, String annotationId, DispoAnnotationData newAnnotation, String userName) {
+   public boolean editDispoAnnotation(BranchId branch, String itemId, String annotationId, DispoAnnotationData newAnnotation, String userName, boolean isCi) {
       boolean wasUpdated = false;
       DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
-      if (dispoItem != null && dispoItem.getAssignee().equalsIgnoreCase(userName)) {
+      if (dispoItem != null && (isCi || dispoItem.getAssignee().equalsIgnoreCase(userName))) {
          List<DispoAnnotationData> annotationsList = dispoItem.getAnnotationsList();
          Map<String, Discrepancy> discrepanciesList = dispoItem.getDiscrepanciesList();
          DispoAnnotationData origAnnotation = DispoUtil.getById(annotationsList, annotationId);
@@ -378,10 +378,10 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public boolean deleteDispoAnnotation(BranchId branch, String itemId, String annotationId, String userName) {
+   public boolean deleteDispoAnnotation(BranchId branch, String itemId, String annotationId, String userName, boolean isCi) {
       boolean wasUpdated = false;
       DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
-      if (dispoItem != null && dispoItem.getAssignee().equalsIgnoreCase(userName)) {
+      if (dispoItem != null && (isCi || dispoItem.getAssignee().equalsIgnoreCase(userName))) {
          List<DispoAnnotationData> annotationsList = dispoItem.getAnnotationsList();
          Map<String, Discrepancy> discrepanciesList = dispoItem.getDiscrepanciesList();
          DispoAnnotationData annotationToRemove = DispoUtil.getById(annotationsList, annotationId);
@@ -401,6 +401,18 @@ public class DispoApiImpl implements DispoApi {
                getDispoItemParentSet(branch, itemId));
          }
          wasUpdated = true;
+      }
+      return wasUpdated;
+   }
+
+   @Override
+   public boolean deleteAllDispoAnnotation(BranchId branch, String itemId, String userName, boolean isCi) {
+      boolean wasUpdated = false;
+      DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
+      if (dispoItem != null) {
+         for (DispoAnnotationData annotation : dispoItem.getAnnotationsList()) {
+            wasUpdated = deleteDispoAnnotation(branch, itemId, annotation.getId(), userName, isCi);
+         }
       }
       return wasUpdated;
    }
@@ -676,8 +688,12 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public boolean isCiSetConfigured(String ciSet) {
-      return !getCiSet(ciSet).isEmpty();
+   public BranchId getCiSetConfigured(String ciSet) {
+      HashMap<ArtifactReadable, BranchId> set = getCiSet(ciSet);
+      if (!set.isEmpty()) {
+         return set.values().iterator().next();
+      }
+      return BranchId.SENTINEL;
    }
 
 }

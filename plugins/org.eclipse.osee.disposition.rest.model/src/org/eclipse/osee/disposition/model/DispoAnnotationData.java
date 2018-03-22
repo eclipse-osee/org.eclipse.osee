@@ -27,7 +27,7 @@ public class DispoAnnotationData implements Identifiable<String> {
    private int index;
    private String developerNotes;
    private String customerNotes;
-   private String locationRefs;
+   private String locationRefs = "";
    private boolean isConnected;
    private List<String> idsOfCoveredDiscrepancies;
    private String resolution;

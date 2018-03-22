@@ -54,7 +54,7 @@ public interface DispoApi {
 
    Long createDispoSet(BranchId branch, DispoSetDescriptorData descriptor);
 
-   String createDispoAnnotation(BranchId branch, String itemId, DispoAnnotationData annotation, String userName);
+   String createDispoAnnotation(BranchId branch, String itemId, DispoAnnotationData annotation, String userName, boolean isCi);
 
    void editDispoSet(BranchId branch, String dispoSetId, DispoSetData newDispoSet);
 
@@ -62,7 +62,7 @@ public interface DispoApi {
 
    boolean massEditTeam(BranchId branch, String setId, List<String> itemNames, String team, String commitMessage);
 
-   boolean editDispoAnnotation(BranchId branch, String itemId, String annotationId, DispoAnnotationData newAnnotation, String userName);
+   boolean editDispoAnnotation(BranchId branch, String itemId, String annotationId, DispoAnnotationData newAnnotation, String userName, boolean isCi);
 
    void copyDispoSet(BranchId branch, String destSetId, BranchId sourceBranch, String sourceSetId, CopySetParams params);
 
@@ -74,7 +74,9 @@ public interface DispoApi {
 
    boolean deleteDispoItem(BranchId branch, String itemId);
 
-   boolean deleteDispoAnnotation(BranchId branch, String itemId, String annotationId, String userName);
+   boolean deleteDispoAnnotation(BranchId branch, String itemId, String annotationId, String userName, boolean isCi);
+
+   boolean deleteAllDispoAnnotation(BranchId branch, String itemId, String userName, boolean isCi);
 
    // Utilities
    boolean isUniqueProgramName(String name);
@@ -92,5 +94,5 @@ public interface DispoApi {
 
    String getDispoItemId(BranchId branch, String setId, String item);
 
-   boolean isCiSetConfigured(String ciSet);
+   BranchId getCiSetConfigured(String ciSet);
 }

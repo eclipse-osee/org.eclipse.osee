@@ -58,7 +58,7 @@ public class AnnotationResource {
       Response response;
       DispoAnnotationData createdAnnotation;
       if (!annotation.getLocationRefs().isEmpty()) {
-         String createdAnnotationId = dispoApi.createDispoAnnotation(branch, itemId, annotation, userName);
+         String createdAnnotationId = dispoApi.createDispoAnnotation(branch, itemId, annotation, userName, false);
          if (createdAnnotationId != "") {
             status = Status.CREATED;
             createdAnnotation = dispoApi.getDispoAnnotationById(branch, itemId, createdAnnotationId);
@@ -118,7 +118,7 @@ public class AnnotationResource {
    @Consumes(MediaType.APPLICATION_JSON)
    public Response putDispoAnnotation(@PathParam("annotationId") String annotationId, DispoAnnotationData newAnnotation, @QueryParam("userName") String userName) {
       Response response;
-      boolean wasEdited = dispoApi.editDispoAnnotation(branch, itemId, annotationId, newAnnotation, userName);
+      boolean wasEdited = dispoApi.editDispoAnnotation(branch, itemId, annotationId, newAnnotation, userName, false);
       if (wasEdited) {
          response = Response.status(Response.Status.OK).build();
 
@@ -140,7 +140,7 @@ public class AnnotationResource {
    @DELETE
    public Response deleteDispoAnnotation(@PathParam("annotationId") String annotationId, @QueryParam("userName") String userName) {
       Response response;
-      boolean wasEdited = dispoApi.deleteDispoAnnotation(branch, itemId, annotationId, userName);
+      boolean wasEdited = dispoApi.deleteDispoAnnotation(branch, itemId, annotationId, userName, false);
       if (wasEdited) {
          response = Response.status(Response.Status.OK).build();
       } else {

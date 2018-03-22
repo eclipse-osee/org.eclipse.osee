@@ -60,7 +60,8 @@ public class AnnotationResourceTest {
       annotationToCreate.setLocationRefs("1-10");
       annotationToCreate.setId(mockId);
 
-      when(dispositionApi.createDispoAnnotation(branch, "itemId", annotationToCreate, "name")).thenReturn(mockId);
+      when(dispositionApi.createDispoAnnotation(branch, "itemId", annotationToCreate, "name", false)).thenReturn(
+         mockId);
       when(dispositionApi.getDispoAnnotationById(branch, "itemId", mockId)).thenReturn(annotationToCreate);
 
       DispoAnnotationData expectedAnnotation = new DispoAnnotationData();
@@ -122,15 +123,15 @@ public class AnnotationResourceTest {
       newAnnotation.setLocationRefs("2-11");
       DispoAnnotationData annotationToEdit = new DispoAnnotationData();
       annotationToEdit.setId(mockId);
-      when(dispositionApi.editDispoAnnotation(branch, "itemId", annotationToEdit.getId(), newAnnotation,
-         "name")).thenReturn(true);
+      when(dispositionApi.editDispoAnnotation(branch, "itemId", annotationToEdit.getId(), newAnnotation, "name",
+         false)).thenReturn(true);
       when(dispositionApi.getDispoItemById(branch, "itemId")).thenReturn(dispoItem);
       when(dispoItem.getStatus()).thenReturn(DispoStrings.Item_Complete);
       Response response = resource.putDispoAnnotation(annotationToEdit.getId(), newAnnotation, "name");
       assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-      when(dispositionApi.editDispoAnnotation(branch, "itemId", annotationToEdit.getId(), newAnnotation,
-         "name")).thenReturn(false);
+      when(dispositionApi.editDispoAnnotation(branch, "itemId", annotationToEdit.getId(), newAnnotation, "name",
+         false)).thenReturn(false);
       response = resource.putDispoAnnotation(annotationToEdit.getId(), newAnnotation, "name");
       assertEquals(Response.Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
    }
@@ -139,13 +140,15 @@ public class AnnotationResourceTest {
    public void testDelete() {
       DispoAnnotationData annotationToEdit = new DispoAnnotationData();
       annotationToEdit.setId(mockId);
-      when(dispositionApi.deleteDispoAnnotation(branch, "itemId", annotationToEdit.getId(), "name")).thenReturn(true);
+      when(dispositionApi.deleteDispoAnnotation(branch, "itemId", annotationToEdit.getId(), "name", false)).thenReturn(
+         true);
       when(dispositionApi.getDispoItemById(branch, "itemId")).thenReturn(dispoItem);
       when(dispoItem.getStatus()).thenReturn(DispoStrings.Item_InComplete);
       Response response = resource.deleteDispoAnnotation(annotationToEdit.getId(), "name");
       assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-      when(dispositionApi.deleteDispoAnnotation(branch, "itemId", annotationToEdit.getId(), "name")).thenReturn(false);
+      when(dispositionApi.deleteDispoAnnotation(branch, "itemId", annotationToEdit.getId(), "name", false)).thenReturn(
+         false);
       response = resource.deleteDispoAnnotation(annotationToEdit.getId(), "name");
       assertEquals(Response.Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
    }
