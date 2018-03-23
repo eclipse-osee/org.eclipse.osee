@@ -71,6 +71,7 @@ public class VCastLisFileParser implements ICoverageUnitFileContentsLoader {
    private boolean doesFileExist(String lisFilePathName, File lisFile) {
       for (String file : lisFile.list()) {
          if (file.equalsIgnoreCase(lisFilePathName)) {
+            lisFile = new File(vCastDir + File.separator + file);
             return true;
          }
       }
