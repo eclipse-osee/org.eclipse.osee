@@ -30,7 +30,7 @@ public class TxGetPriorSqlHandler extends SqlHandler<CriteriaTxGetPrior> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      txdAlias = writer.getOrCreateTableAlias(TableEnum.TX_DETAILS_TABLE);
+      txdAlias = writer.getMainTableAlias(TableEnum.TX_DETAILS_TABLE);
    }
 
    @Override

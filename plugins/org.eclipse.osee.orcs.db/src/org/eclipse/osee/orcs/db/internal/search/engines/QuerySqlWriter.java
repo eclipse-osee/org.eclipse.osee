@@ -21,24 +21,26 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
+ * Used to write branch and transaction queries
+ *
  * @author Roberto E. Escobar
  */
 public class QuerySqlWriter extends AbstractSqlWriter {
-
-   private final TableEnum table;
    private final String idColumn;
+   private final TableEnum table;
+   private String tableAlias;
 
    public QuerySqlWriter(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryType queryType, TableEnum table, String idColumn) {
       super(logger, joinFactory, jdbcClient, context, queryType);
-      this.table = table;
       this.idColumn = idColumn;
+      this.table = table;
    }
 
    @Override
    public void writeSelect(Iterable<SqlHandler<?>> handlers) {
-      String tableAlias = getLastAlias(table);
+      tableAlias = getMainTableAlias(table);
       if (isCountQueryType()) {
-         write("SELECT%s count(%s.%s)", getSqlHint(), tableAlias, idColumn);
+         write("SELECT%s count(*)", getSqlHint());
       } else {
          write("SELECT%s %s.*", getSqlHint(), tableAlias);
       }
@@ -47,7 +49,6 @@ public class QuerySqlWriter extends AbstractSqlWriter {
    @Override
    public void writeGroupAndOrder() {
       if (!isCountQueryType()) {
-         String tableAlias = getLastAlias(table);
          write("\n ORDER BY %s.%s", tableAlias, idColumn);
       }
    }
@@ -66,5 +67,4 @@ public class QuerySqlWriter extends AbstractSqlWriter {
    public String getWithClauseTxBranchFilter(String txsAlias, boolean deletedPredicate) {
       return Strings.emptyString();
    }
-
 }

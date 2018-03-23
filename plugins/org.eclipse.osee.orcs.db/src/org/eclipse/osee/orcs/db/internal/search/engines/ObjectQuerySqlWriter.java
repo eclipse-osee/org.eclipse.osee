@@ -284,7 +284,7 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
       for (SqlHandler<?> handler : handlers) {
          if (handler.getPriority() <= SqlHandlerPriority.ALL_BRANCHES.ordinal()) {
             branchHandlers.add(handler);
-         } else if (handler.getPriority() <= SqlHandlerPriority.ALL_TXS.ordinal()) {
+         } else if (handler.getPriority() <= SqlHandlerPriority.TX_LAST.ordinal()) {
             txHandlers.add(handler);
          } else {
             artHandlers.add(handler);

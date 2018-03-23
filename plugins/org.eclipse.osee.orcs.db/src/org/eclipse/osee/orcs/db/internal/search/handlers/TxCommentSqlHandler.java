@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import java.util.List;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxComment;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -32,12 +31,7 @@ public class TxCommentSqlHandler extends SqlHandler<CriteriaTxComment> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      List<String> aliases = writer.getAliases(TableEnum.TX_DETAILS_TABLE);
-      if (aliases.isEmpty()) {
-         txdAlias = writer.addTable(TableEnum.TX_DETAILS_TABLE);
-      } else {
-         txdAlias = aliases.iterator().next();
-      }
+      txdAlias = writer.getMainTableAlias(TableEnum.TX_DETAILS_TABLE);
    }
 
    @Override

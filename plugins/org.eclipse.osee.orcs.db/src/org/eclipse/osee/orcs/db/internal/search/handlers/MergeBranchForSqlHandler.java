@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import java.util.List;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMergeBranchFor;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -20,7 +19,6 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
  * @author John Misinco
  */
 public class MergeBranchForSqlHandler extends SqlHandler<CriteriaMergeBranchFor> {
-
    private CriteriaMergeBranchFor criteria;
    private String brAlias, mergeAlias;
 
@@ -31,30 +29,17 @@ public class MergeBranchForSqlHandler extends SqlHandler<CriteriaMergeBranchFor>
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      List<String> mergeAliases = writer.getAliases(TableEnum.MERGE_TABLE);
-      if (mergeAliases.isEmpty()) {
-         mergeAlias = writer.addTable(TableEnum.MERGE_TABLE);
-      } else {
-         mergeAlias = mergeAliases.iterator().next();
-      }
-
-      List<String> branchAliases = writer.getAliases(TableEnum.BRANCH_TABLE);
-      if (branchAliases.isEmpty()) {
-         brAlias = writer.addTable(TableEnum.BRANCH_TABLE);
-      } else {
-         brAlias = branchAliases.iterator().next();
-      }
+      mergeAlias = writer.addTable(TableEnum.MERGE_TABLE);
+      brAlias = writer.getMainTableAlias(TableEnum.BRANCH_TABLE);
    }
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      writer.write("%s.source_branch_id = ?", mergeAlias);
-      writer.addParameter(criteria.getSource());
-      writer.writeAndLn();
-      writer.write("%s.dest_branch_id = ?", mergeAlias);
-      writer.addParameter(criteria.getDestination());
-      writer.writeAndLn();
-      writer.write("%s.merge_branch_id = %s.branch_id", mergeAlias, brAlias);
+      writer.writeEqualsParameter(mergeAlias, "source_branch_id", criteria.getSource());
+      writer.write(" AND ");
+      writer.writeEqualsParameter(mergeAlias, "dest_branch_id", criteria.getDestination());
+      writer.write(" AND ");
+      writer.writeEquals(mergeAlias, "merge_branch_id", brAlias, "branch_id");
    }
 
    @Override

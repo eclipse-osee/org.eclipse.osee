@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import java.util.List;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllBranches;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -23,10 +22,7 @@ public class AllBranchesSqlHandler extends SqlHandler<CriteriaAllBranches> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      List<String> branchAliases = writer.getAliases(TableEnum.BRANCH_TABLE);
-      if (branchAliases.isEmpty()) {
-         writer.addTable(TableEnum.BRANCH_TABLE);
-      }
+      writer.getMainTableAlias(TableEnum.BRANCH_TABLE);
    }
 
    @Override

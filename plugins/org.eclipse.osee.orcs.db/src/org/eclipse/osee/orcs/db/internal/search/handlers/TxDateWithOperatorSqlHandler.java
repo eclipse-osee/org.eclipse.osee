@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.sql.Timestamp;
-import java.util.List;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateWithOperator;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -25,7 +24,7 @@ public class TxDateWithOperatorSqlHandler extends SqlHandler<CriteriaDateWithOpe
 
    private CriteriaDateWithOperator criteria;
 
-   private String txAlias;
+   private String txdAlias;
 
    @Override
    public void setData(CriteriaDateWithOperator criteria) {
@@ -34,19 +33,14 @@ public class TxDateWithOperatorSqlHandler extends SqlHandler<CriteriaDateWithOpe
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      List<String> branchAliases = writer.getAliases(TableEnum.TX_DETAILS_TABLE);
-      if (branchAliases.isEmpty()) {
-         txAlias = writer.addTable(TableEnum.TX_DETAILS_TABLE);
-      } else {
-         txAlias = branchAliases.iterator().next();
-      }
+      txdAlias = writer.getMainTableAlias(TableEnum.TX_DETAILS_TABLE);
    }
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
       Operator op = criteria.getOperator();
       Timestamp time = criteria.getTimestamp();
-      writer.write(txAlias);
+      writer.write(txdAlias);
       writer.write(".time ");
       writer.write(op.toString());
       writer.write(" ?");

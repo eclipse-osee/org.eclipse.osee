@@ -17,6 +17,6 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
  */
 public final class TxAuthorIdsSqlHandler extends MainTableFieldSqlHandler {
    public TxAuthorIdsSqlHandler() {
-      super(TableEnum.TX_DETAILS_TABLE, "author", SqlHandlerPriority.TX_ID);
+      super(TableEnum.TX_DETAILS_TABLE, "author", SqlHandlerPriority.TX_AUTHOR);
    }
 }

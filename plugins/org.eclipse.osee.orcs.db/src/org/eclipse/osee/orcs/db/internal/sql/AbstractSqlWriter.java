@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -84,6 +83,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       withClauses.clear();
       aliasManager.reset();
       level = 0;
+      mainAliases.clear();
    }
 
    public boolean isCountQueryType() {
@@ -95,8 +95,8 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    protected void write(Iterable<SqlHandler<?>> handlers) {
-      computeTables(handlers);
       computeWithClause(handlers);
+      computeTables(handlers);
 
       writeWithClause();
       writeSelect(handlers);
@@ -186,10 +186,6 @@ public abstract class AbstractSqlWriter implements HasOptions {
    protected abstract void writeGroupAndOrder();
 
    protected void writeTables() {
-      for (Entry<TableEnum, String> entry : mainAliases.entrySet()) {
-         tableEntries.add(entry.getKey().getName() + " " + entry.getValue());
-      }
-
       boolean first = true;
       for (String tableEntry : tableEntries) {
          if (first) {
@@ -222,7 +218,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
             if (first) {
                first = false;
             } else {
-               writeAndLn();
+               write("\n AND ");
             }
             handler.addPredicates(this);
          }
@@ -270,10 +266,6 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    public String getLastAlias(TableEnum table) {
       ObjectType type = table.getObjectType();
-      return getLastAlias(table, type);
-   }
-
-   public String getLastAlias(TableEnum table, ObjectType type) {
       int level = getAliasManager().getLevel();
       return getAliasManager().getLastAlias(level, table, type);
    }
@@ -301,22 +293,6 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return aliasManager;
    }
 
-   public String getOrCreateTableAlias(TableEnum table) {
-      String alias = getFirstAlias(table);
-      if (alias == null) {
-         alias = addTable(table);
-      }
-      return alias;
-   }
-
-   public String getOrCreateTableAlias(TableEnum table, ObjectType objectType) {
-      String alias = getFirstAlias(level, table, objectType);
-      if (alias == null) {
-         alias = addTable(table, objectType);
-      }
-      return alias;
-   }
-
    public String addTable(TableEnum table) {
       String alias = getNextAlias(table);
       tableEntries.add(String.format("%s %s", table.getName(), alias));
@@ -332,7 +308,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    public String getMainTableAlias(TableEnum table) {
       String alias = mainAliases.get(table);
       if (alias == null) {
-         alias = getNextAlias(table);
+         alias = addTable(table);
          mainAliases.put(table, alias);
       }
       return alias;

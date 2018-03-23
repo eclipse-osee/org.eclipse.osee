@@ -15,7 +15,6 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import com.google.common.collect.Lists;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -24,6 +23,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -69,12 +69,13 @@ public class TxQuerySqlContextFactoryImplTest {
    private static final Criteria COMMENT = comment("SimpleTemplateProviderTask", false);
    private static final Criteria TYPES =
       type(Arrays.asList(TransactionDetailsType.Baselined, TransactionDetailsType.NonBaselined));
-   private static final Criteria BRANCHIDS = branchIds(1L, 2L, 3L, 4L, 5L);
+   private static final Criteria BRANCHIDS =
+      new CriteriaTxBranchIds(Lists.transform(Arrays.asList(1L, 2L, 3L, 4l, 5L), BranchId::valueOf));
    private static final Criteria IDS_WITH_OPERATOR = idWithOperator(Operator.LESS_THAN, 1);
    private static final Criteria DATE_WITH_OPERATOR =
       dateWithOperator(Operator.LESS_THAN, Timestamp.valueOf("2013-05-06 12:34:56"));
    private static final Collection<ArtifactId> artifactIds =
-      Arrays.asList(ArtifactId.valueOf(1), ArtifactId.valueOf(2));
+      Arrays.asList(CoreArtifactTokens.DefaultHierarchyRoot, CoreArtifactTokens.Everyone);
    private static final Criteria AUTHORS = new CriteriaAuthorIds(artifactIds);
    private static final Criteria COMMITS = new CriteriaCommitIds(artifactIds);
 
@@ -103,8 +104,8 @@ public class TxQuerySqlContextFactoryImplTest {
 
    @Test
    public void testCount() throws Exception {
-      String expected = "SELECT count(txd1.transaction_id)\n" + //
-         " FROM osee_join_id jid1, osee_tx_details txd1\n" + //
+      String expected = "SELECT count(*)\n" + //
+         " FROM osee_tx_details txd1, osee_join_id jid1\n" + //
          " WHERE txd1.transaction_id = jid1.id AND jid1.query_id = ?";
       queryData.addCriteria(IDS);
 
@@ -125,7 +126,7 @@ public class TxQuerySqlContextFactoryImplTest {
    @Test
    public void testQueryTxIds() throws Exception {
       String expected = "SELECT txd1.*\n" + //
-         " FROM osee_join_id jid1, osee_tx_details txd1\n" + //
+         " FROM osee_tx_details txd1, osee_join_id jid1\n" + //
          " WHERE txd1.transaction_id = jid1.id AND jid1.query_id = ?\n" + //
          " ORDER BY txd1.transaction_id";
 
@@ -166,7 +167,7 @@ public class TxQuerySqlContextFactoryImplTest {
    @Test
    public void testBranchType() throws Exception {
       String expected = "SELECT txd1.*\n" + //
-         " FROM osee_join_id jid1, osee_tx_details txd1\n" + //
+         " FROM osee_tx_details txd1, osee_join_id jid1\n" + //
          " WHERE txd1.tx_type = jid1.id AND jid1.query_id = ?\n" + //
          " ORDER BY txd1.transaction_id";
 
@@ -191,10 +192,9 @@ public class TxQuerySqlContextFactoryImplTest {
    @Test
    public void testBranchTypeAndTxId() throws Exception {
       String expected = "SELECT txd1.*\n" + //
-         " FROM osee_join_id jid1, osee_tx_details txd1, osee_join_id jid2\n" + //
+         " FROM osee_tx_details txd1, osee_join_id jid1, osee_join_id jid2\n" + //
          " WHERE txd1.transaction_id = jid1.id AND jid1.query_id = ?\n" + //
-         " AND \n" + //
-         "txd1.tx_type = jid2.id AND jid2.query_id = ?\n" + //
+         " AND txd1.tx_type = jid2.id AND jid2.query_id = ?\n" + //
          " ORDER BY txd1.transaction_id";
 
       queryData.addCriteria(TYPES, IDS);
@@ -221,15 +221,11 @@ public class TxQuerySqlContextFactoryImplTest {
    public void testSixItemQuery() throws Exception {
       String expected = "SELECT txd1.*\n" + //
          " FROM osee_tx_details txd1, osee_join_id jid1, osee_join_id jid2, osee_join_id jid3\n" + //
-         " WHERE txd1.transaction_id < ?\n" + //
-         " AND \n" + //
-         "txd1.author = jid1.id AND jid1.query_id = ?\n" + //
-         " AND \n" + //
-         "txd1.commit_art_id = jid2.id AND jid2.query_id = ?\n" + //
-         " AND \n" + //
-         "txd1.time < ?\n" + //
-         " AND \n" + //
-         "txd1.branch_id = jid3.id AND jid3.query_id = ?\n" + //
+         " WHERE txd1.branch_id = jid1.id AND jid1.query_id = ?\n" + //
+         " AND txd1.commit_art_id = jid2.id AND jid2.query_id = ?\n" + //
+         " AND txd1.author = jid3.id AND jid3.query_id = ?\n" + //
+         " AND txd1.time < ?\n" + //
+         " AND txd1.transaction_id < ?\n" + //
          " ORDER BY txd1.transaction_id";
 
       queryData.addCriteria(BRANCHIDS, IDS_WITH_OPERATOR, DATE_WITH_OPERATOR, AUTHORS, COMMITS);
@@ -245,16 +241,15 @@ public class TxQuerySqlContextFactoryImplTest {
       assertEquals(3, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
-      assertEquals(iterator.next(), 1);
       assertEquals(iterator.next(), joins.get(0).getQueryId());
       assertEquals(iterator.next(), joins.get(1).getQueryId());
-      assertEquals(iterator.next(), Timestamp.valueOf("2013-05-06 12:34:56"));
       assertEquals(iterator.next(), joins.get(2).getQueryId());
+      assertEquals(iterator.next(), Timestamp.valueOf("2013-05-06 12:34:56"));
+      assertEquals(iterator.next(), 1);
 
-      assertEquals(2, joins.get(0).size());
+      assertEquals(5, joins.get(0).size());
       assertEquals(2, joins.get(1).size());
-      assertEquals(5, joins.get(2).size());
-
+      assertEquals(2, joins.get(2).size());
    }
 
    @Test
@@ -288,14 +283,6 @@ public class TxQuerySqlContextFactoryImplTest {
 
    private static Criteria type(Collection<TransactionDetailsType> types) {
       return new CriteriaTxType(types);
-   }
-
-   private static Criteria branchIds(Long... ids) {
-      List<BranchId> values = new ArrayList<>(ids.length);
-      for (Long id : ids) {
-         values.add(BranchId.valueOf(id));
-      }
-      return new CriteriaTxBranchIds(values);
    }
 
    private static Criteria idWithOperator(Operator op, int id) {

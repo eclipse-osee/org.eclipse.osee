@@ -38,7 +38,7 @@ public class TokenQueryHandler extends SqlHandler<CriteriaTokenQuery> {
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      String artAlias = writer.getFirstAlias(TableEnum.ARTIFACT_TABLE);
+      String artAlias = writer.getMainTableAlias(TableEnum.ARTIFACT_TABLE);
       writer.writeEquals(artAlias, atrAlias, "art_id");
       writer.write(" AND ");
       writer.write(atrAlias);

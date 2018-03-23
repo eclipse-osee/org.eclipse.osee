@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import java.util.List;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchChildOf;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -45,17 +44,12 @@ public class BranchChildOfSqlHandler extends SqlHandler<CriteriaBranchChildOf> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      List<String> branchAliases = writer.getAliases(TableEnum.BRANCH_TABLE);
-      if (branchAliases.isEmpty()) {
-         brAlias = writer.addTable(TableEnum.BRANCH_TABLE);
-      } else {
-         brAlias = branchAliases.iterator().next();
-      }
+      brAlias = writer.getMainTableAlias(TableEnum.BRANCH_TABLE);
    }
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      writer.write("%s.branch_id = %s.child_id", brAlias, withAlias);
+      writer.writeEquals(withAlias, "child_id", brAlias, "branch_id");
    }
 
    @Override

@@ -104,11 +104,10 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testCount() throws Exception {
-      String expected = "SELECT count(br1.branch_id)\n" + //
-         " FROM osee_join_id jid1, osee_branch br1, osee_join_id jid2\n" + //
+      String expected = "SELECT count(*)\n" + //
+         " FROM osee_branch br1, osee_join_id jid1, osee_join_id jid2\n" + //
          " WHERE br1.branch_id = jid1.id AND jid1.query_id = ?\n" + //
-         " AND \n" + //
-         "br1.branch_type = jid2.id AND jid2.query_id = ?";
+         " AND br1.branch_type = jid2.id AND jid2.query_id = ?";
 
       queryData.addCriteria(UUIDS, TYPES);
 
@@ -131,10 +130,9 @@ public class BranchQuerySqlContextFactoryImplTest {
    @Test
    public void testQueryUuidIdsTypes() throws Exception {
       String expected = "SELECT br1.*\n" + //
-         " FROM osee_join_id jid1, osee_branch br1, osee_join_id jid2\n" + //
+         " FROM osee_branch br1, osee_join_id jid1, osee_join_id jid2\n" + //
          " WHERE br1.branch_id = jid1.id AND jid1.query_id = ?\n" + //
-         " AND \n" + //
-         "br1.branch_type = jid2.id AND jid2.query_id = ?\n" + //
+         " AND br1.branch_type = jid2.id AND jid2.query_id = ?\n" + //
          " ORDER BY br1.branch_id";
 
       queryData.addCriteria(UUIDS, TYPES);
@@ -178,8 +176,7 @@ public class BranchQuerySqlContextFactoryImplTest {
       String expected = "SELECT br1.*\n" + //
          " FROM osee_branch br1\n" + //
          " WHERE br1.branch_id = ?\n" + //
-         " AND \n" + //
-         "br1.branch_type = ?\n" + //
+         " AND br1.branch_type = ?\n" + //
          " ORDER BY br1.branch_id";
 
       queryData.addCriteria(uuid(CoreBranches.SYSTEM_ROOT.getId()), type(SYSTEM_ROOT));
@@ -245,10 +242,9 @@ public class BranchQuerySqlContextFactoryImplTest {
    @Test
    public void testQueryStateArchive() throws Exception {
       String expected = "SELECT br1.*\n" + //
-         " FROM osee_join_id jid1, osee_branch br1\n" + //
+         " FROM osee_branch br1, osee_join_id jid1\n" + //
          " WHERE br1.branch_state = jid1.id AND jid1.query_id = ?\n" + //
-         " AND \n" + //
-         "br1.archived = ?\n" + //
+         " AND br1.archived = ?\n" + //
          " ORDER BY br1.branch_id";
 
       queryData.addCriteria(STATE, IS_ARCHIVED);
@@ -273,8 +269,7 @@ public class BranchQuerySqlContextFactoryImplTest {
       String expected = "SELECT br1.*\n" + //
          " FROM osee_branch br1\n" + //
          " WHERE br1.branch_state = ?\n" + //
-         " AND \n" + //
-         "br1.archived = ?\n" + //
+         " AND br1.archived = ?\n" + //
          " ORDER BY br1.branch_id";
 
       queryData.addCriteria(state(CREATION_IN_PROGRESS), IS_ARCHIVED);
@@ -302,8 +297,8 @@ public class BranchQuerySqlContextFactoryImplTest {
          "  SELECT branch_id, branch_level + 1 FROM chof1 recurse, osee_branch br WHERE recurse.child_id = br.parent_branch_id\n" + //
          " )\n" + //
          "SELECT br1.*\n" + //
-         " FROM osee_branch br1, chof1\n" + //
-         " WHERE br1.branch_id = chof1.child_id\n" + //
+         " FROM chof1, osee_branch br1\n" + //
+         " WHERE chof1.child_id = br1.branch_id\n" + //
          " ORDER BY br1.branch_id";
 
       queryData.addCriteria(childOf(COMMON));
@@ -330,8 +325,8 @@ public class BranchQuerySqlContextFactoryImplTest {
          "  SELECT parent_branch_id, branch_level - 1 FROM anstrof1 recurse, osee_branch br WHERE br.branch_id = recurse.parent_id\n" + //
          " )\n" + //
          "SELECT br1.*\n" + //
-         " FROM osee_branch br1, anstrof1\n" + //
-         " WHERE br1.branch_id = anstrof1.parent_id\n" + //
+         " FROM anstrof1, osee_branch br1\n" + //
+         " WHERE anstrof1.parent_id = br1.branch_id\n" + //
          " ORDER BY br1.branch_id";
 
       queryData.addCriteria(ancestorOf(COMMON));
@@ -358,16 +353,12 @@ public class BranchQuerySqlContextFactoryImplTest {
          "  SELECT branch_id, branch_level + 1 FROM chof1 recurse, osee_branch br WHERE recurse.child_id = br.parent_branch_id\n" + //
          " )\n" + //
          "SELECT br1.*\n" + //
-         " FROM osee_branch br1, osee_join_id jid1, chof1\n" + //
-         " WHERE br1.branch_id = chof1.child_id\n" + //
-         " AND \n" + //
-         "br1.branch_type = ?\n" + //
-         " AND \n" + //
-         "br1.branch_state = jid1.id AND jid1.query_id = ?\n" + //
-         " AND \n" + //
-         "br1.archived = ?\n" + //
-         " AND \n" + //
-         "REGEXP_MATCHES (br1.branch_name, ?)\n" + //
+         " FROM chof1, osee_branch br1, osee_join_id jid1\n" + //
+         " WHERE chof1.child_id = br1.branch_id\n" + //
+         " AND br1.branch_type = ?\n" + //
+         " AND br1.branch_state = jid1.id AND jid1.query_id = ?\n" + //
+         " AND br1.archived = ?\n" + //
+         " AND REGEXP_MATCHES (br1.branch_name, ?)\n" + //
          " ORDER BY br1.branch_id";
 
       queryData.addCriteria(STATE, IS_ARCHIVED, type(WORKING), childOf(COMMON), NAME_PATTERN);
@@ -395,11 +386,7 @@ public class BranchQuerySqlContextFactoryImplTest {
    public void testMergeBranchFor() throws Exception {
       String expected = "SELECT br1.*\n" + //
          " FROM osee_merge mbr1, osee_branch br1\n" + //
-         " WHERE mbr1.source_branch_id = ?\n" + //
-         " AND \n" + //
-         "mbr1.dest_branch_id = ?\n" + //
-         " AND \n" + //
-         "mbr1.merge_branch_id = br1.branch_id\n" + //
+         " WHERE mbr1.source_branch_id = ? AND mbr1.dest_branch_id = ? AND mbr1.merge_branch_id = br1.branch_id\n" + //
          " ORDER BY br1.branch_id";
 
       queryData.addCriteria(new CriteriaMergeBranchFor(CoreBranches.SYSTEM_ROOT, COMMON));

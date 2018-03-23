@@ -27,11 +27,13 @@ public enum SqlHandlerPriority {
    BRANCH_TX_DATA_XTRA,
    //
    TX_ID,
-   TX_DATE,
    TX_BRANCH_ID,
+   TX_COMMIT_ART_ID,
+   TX_AUTHOR,
    TX_TYPE,
+   TX_DATE,
    TX_COMMENT,
-   ALL_TXS,
+   TX_LAST,
    //
    ARTIFACT_ID,
    ARTIFACT_GUID,

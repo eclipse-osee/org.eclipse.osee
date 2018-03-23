@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.sql.Timestamp;
-import java.util.List;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateRange;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -24,7 +23,7 @@ public class TxDateRangeSqlHandler extends SqlHandler<CriteriaDateRange> {
 
    private CriteriaDateRange criteria;
 
-   private String txAlias;
+   private String txdAlias;
 
    @Override
    public void setData(CriteriaDateRange criteria) {
@@ -33,21 +32,16 @@ public class TxDateRangeSqlHandler extends SqlHandler<CriteriaDateRange> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      List<String> branchAliases = writer.getAliases(TableEnum.TX_DETAILS_TABLE);
-      if (branchAliases.isEmpty()) {
-         txAlias = writer.addTable(TableEnum.TX_DETAILS_TABLE);
-      } else {
-         txAlias = branchAliases.iterator().next();
-      }
+      txdAlias = writer.getMainTableAlias(TableEnum.TX_DETAILS_TABLE);
    }
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
       Timestamp from = criteria.getFrom();
       Timestamp to = criteria.getTo();
-      writer.write(txAlias);
+      writer.write(txdAlias);
       writer.write(".time >= ? and ");
-      writer.write(txAlias);
+      writer.write(txdAlias);
       writer.write(".time <= ? ");
       writer.addParameter(from);
       writer.addParameter(to);

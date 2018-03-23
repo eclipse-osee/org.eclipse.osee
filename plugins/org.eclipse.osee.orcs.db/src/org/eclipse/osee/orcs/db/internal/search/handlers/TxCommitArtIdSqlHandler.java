@@ -17,6 +17,6 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
  */
 public final class TxCommitArtIdSqlHandler extends MainTableFieldSqlHandler {
    public TxCommitArtIdSqlHandler() {
-      super(TableEnum.TX_DETAILS_TABLE, "commit_art_id", SqlHandlerPriority.TX_ID);
+      super(TableEnum.TX_DETAILS_TABLE, "commit_art_id", SqlHandlerPriority.TX_COMMIT_ART_ID);
    }
 }

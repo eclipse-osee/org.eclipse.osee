@@ -22,7 +22,7 @@ public class AllTxsSqlHandler extends SqlHandler<CriteriaAllTxs> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      writer.getOrCreateTableAlias(TableEnum.TX_DETAILS_TABLE);
+      writer.getMainTableAlias(TableEnum.TX_DETAILS_TABLE);
    }
 
    @Override
@@ -32,6 +32,6 @@ public class AllTxsSqlHandler extends SqlHandler<CriteriaAllTxs> {
 
    @Override
    public int getPriority() {
-      return SqlHandlerPriority.ALL_TXS.ordinal();
+      return SqlHandlerPriority.TX_LAST.ordinal();
    }
 }

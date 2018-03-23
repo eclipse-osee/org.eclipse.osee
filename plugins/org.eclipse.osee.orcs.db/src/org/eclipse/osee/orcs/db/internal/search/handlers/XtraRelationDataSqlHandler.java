@@ -34,7 +34,7 @@ public class XtraRelationDataSqlHandler extends AbstractXtraTableSqlHandler {
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      String artAlias = writer.getLastAlias(TableEnum.ARTIFACT_TABLE);
+      String artAlias = writer.getMainTableAlias(TableEnum.ARTIFACT_TABLE);
       writer.write("(");
       writer.write(artAlias);
       writer.write(".art_id = ");

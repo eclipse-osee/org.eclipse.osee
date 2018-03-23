@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import java.util.List;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxGetHead;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -20,9 +19,7 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
  * @author Roberto E. Escobar
  */
 public class TxGetHeadSqlHandler extends SqlHandler<CriteriaTxGetHead> {
-
    private CriteriaTxGetHead criteria;
-
    private String txdAlias;
 
    @Override
@@ -32,25 +29,18 @@ public class TxGetHeadSqlHandler extends SqlHandler<CriteriaTxGetHead> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      List<String> aliases = writer.getAliases(TableEnum.TX_DETAILS_TABLE);
-      if (aliases.isEmpty()) {
-         txdAlias = writer.addTable(TableEnum.TX_DETAILS_TABLE);
-      } else {
-         txdAlias = aliases.iterator().next();
-      }
+      txdAlias = writer.getMainTableAlias(TableEnum.TX_DETAILS_TABLE);
    }
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
       writer.write(txdAlias);
       writer.write(".transaction_id = ");
-
       writer.write("(SELECT max(transaction_id) FROM ");
       writer.write(TableEnum.TX_DETAILS_TABLE.getName());
       writer.write(" WHERE ");
-      writer.write("branch_id = ?)");
-
-      writer.addParameter(criteria.getBranch());
+      writer.writeEqualsParameter("branch_id", criteria.getBranch());
+      writer.write(")");
    }
 
    @Override
