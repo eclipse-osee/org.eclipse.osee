@@ -308,7 +308,8 @@ public class LisFileParser implements DispoImporterApi {
       try {
          lineData = lisFileParser.getSourceCodeForLine(functionNumber, lineNumber);
       } catch (Exception ex) {
-         report.addEntry("SQL", ex.getMessage(), ERROR);
+         report.addEntry("SQL",
+            String.format("Issue getting source code line [%s], [%s]", lisFile.getLISFile(), ex.getMessage()), ERROR);
       }
       String location = "";
       if (lineData != null) {
