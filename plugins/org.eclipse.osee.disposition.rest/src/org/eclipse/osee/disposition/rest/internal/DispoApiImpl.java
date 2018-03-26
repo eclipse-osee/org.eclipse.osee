@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.eclipse.osee.disposition.model.CiSetData;
 import org.eclipse.osee.disposition.model.CopySetParams;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
@@ -678,8 +679,8 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public HashMap<ArtifactReadable, BranchId> getCiSet(String branchId, String ciSet) {
-      return getQuery().getCiSet(branchId, ciSet);
+   public HashMap<ArtifactReadable, BranchId> getCiSet(CiSetData setData) {
+      return getQuery().getCiSet(setData);
    }
 
    @Override
@@ -688,7 +689,7 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public HashMap<String, String> getAllCiSets() {
+   public List<CiSetData> getAllCiSets() {
       return getQuery().getAllCiSets();
    }
 

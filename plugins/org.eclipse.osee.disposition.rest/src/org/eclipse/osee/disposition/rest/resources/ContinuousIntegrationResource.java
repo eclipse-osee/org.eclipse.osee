@@ -22,11 +22,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.disposition.model.CiItemData;
+import org.eclipse.osee.disposition.model.CiSetData;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Megumi Telles
@@ -39,15 +39,15 @@ public class ContinuousIntegrationResource {
       this.dispoApi = dispoApi;
    }
 
-   @GET
-   @Path("branchId/{branchId}/ciSet/{ciSet}/annotations")
+   @Path("annotations")
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public HashMap<String, List<DispoAnnotationData>> getAllDispoAnnotations(@PathParam("branchId") String branchId, @PathParam("ciSet") String ciSet) {
-      HashMap<ArtifactReadable, BranchId> set = dispoApi.getCiSet(branchId, ciSet);
+   public HashMap<String, List<DispoAnnotationData>> getAllDispoAnnotations(CiSetData setData) {
       HashMap<String, List<DispoAnnotationData>> allDispoAnnotations = new HashMap<>();
-      if (set != null && !set.isEmpty()) {
-         ArtifactReadable dispoSet = set.keySet().iterator().next();
-         List<DispoItem> dispoItems = dispoApi.getDispoItems(set.get(dispoSet), dispoSet.getIdString(), false);
+      if (setData != null) {
+         List<DispoItem> dispoItems =
+            dispoApi.getDispoItems(BranchId.valueOf(setData.getBranchId()), setData.getDispoSetId(), false);
          for (DispoItem item : dispoItems) {
             allDispoAnnotations.put(item.getName(), item.getAnnotationsList());
          }
@@ -55,16 +55,17 @@ public class ContinuousIntegrationResource {
       return allDispoAnnotations;
    }
 
-   @GET
-   @Path("branchId/{branchId}/ciSet/{ciSet}/item/{item}/annotation")
+   @Path("{item}/annotation")
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public List<DispoAnnotationData> getAllDispoAnnotationsPerItem(@PathParam("branchId") String branchId, @PathParam("ciSet") String ciSet, @PathParam("item") String item) {
-      HashMap<ArtifactReadable, BranchId> set = dispoApi.getCiSet(branchId, ciSet);
-      if (set != null && !set.isEmpty()) {
-         ArtifactReadable dispoSet = set.keySet().iterator().next();
-         BranchId branch = set.get(dispoSet);
-         String itemId = dispoApi.getDispoItemId(branch, dispoSet.getIdString(), item);
-         return dispoApi.getDispoAnnotations(branch, itemId);
+   public List<DispoAnnotationData> getAllDispoAnnotationsPerItem(CiSetData setData, @PathParam("item") String item) {
+      if (setData != null) {
+         BranchId branch = BranchId.valueOf(setData.getBranchId());
+         String itemId = dispoApi.getDispoItemId(branch, setData.getDispoSetId(), item);
+         if (itemId != null && !itemId.isEmpty()) {
+            return dispoApi.getDispoAnnotations(branch, itemId);
+         }
       }
       return null;
    }
@@ -72,22 +73,22 @@ public class ContinuousIntegrationResource {
    @GET
    @Path("sets")
    @Produces(MediaType.APPLICATION_JSON)
-   public HashMap<String, String> getAllCiSets() {
+   public List<CiSetData> getAllCiSets() {
       return dispoApi.getAllCiSets();
    }
 
-   @Path("{branchId}/annotate")
+   @Path("annotate")
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response createDispoAnnotation(@PathParam("branchId") String branchId, CiItemData data, @QueryParam("userName") String userName) {
-      Response response = null;
-      HashMap<ArtifactReadable, BranchId> set = dispoApi.getCiSet(branchId, data.getCiSet());
-      if (set != null && !set.isEmpty()) {
-         ArtifactReadable dispoSet = set.keySet().iterator().next();
-         BranchId branch = set.get(dispoSet);
-         String itemId = dispoApi.getDispoItemId(branch, dispoSet.getIdString(), data.getScriptName());
-         dispoApi.deleteAllDispoAnnotation(branch, itemId, userName, true);
-         response = createAndUpdateAnnotation(data, userName, response, branch, itemId);
+   public Response createDispoAnnotation(CiItemData data, @QueryParam("userName") String userName) {
+      Response response = Response.status(Response.Status.NOT_FOUND).build();
+      if (data != null) {
+         BranchId branch = BranchId.valueOf(data.getSetData().getBranchId());
+         String itemId = dispoApi.getDispoItemId(branch, data.getSetData().getDispoSetId(), data.getScriptName());
+         if (itemId != null && !itemId.isEmpty()) {
+            dispoApi.deleteAllDispoAnnotation(branch, itemId, userName, true);
+            response = createAndUpdateAnnotation(data, userName, response, branch, itemId);
+         }
       } else {
          response = Response.status(Response.Status.BAD_REQUEST).build();
       }

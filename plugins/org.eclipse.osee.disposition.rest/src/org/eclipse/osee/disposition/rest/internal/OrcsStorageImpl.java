@@ -15,7 +15,6 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.UriGenera
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.disposition.model.CiSetData;
 import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoSet;
@@ -598,10 +598,10 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public HashMap<ArtifactReadable, BranchId> getCiSet(String branchId, String ciSet) {
+   public HashMap<ArtifactReadable, BranchId> getCiSet(CiSetData setData) {
       HashMap<ArtifactReadable, BranchId> set = new HashMap<>();
-      BranchId branch = BranchId.valueOf(branchId);
-      List<ArtifactReadable> arts = findDispoSet(ciSet, branch);
+      BranchId branch = BranchId.valueOf(setData.getBranchId());
+      List<ArtifactReadable> arts = findDispoSet(branch, ArtifactId.valueOf(setData.getDispoSetId()));
       for (ArtifactReadable art : arts) {
          set.put(art, branch);
       }
@@ -621,23 +621,26 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public HashMap<String, String> getAllCiSets() {
-      HashMap<String, String> set = new HashMap<>();
+   public List<CiSetData> getAllCiSets() {
+      List<CiSetData> setData = new ArrayList<>();
       List<BranchReadable> dispoBranches = findDispoBranches();
       for (BranchReadable branch : dispoBranches) {
          for (ArtifactReadable dispoSet : findAllCiSets(branch)) {
             String ciSet = dispoSet.getSoleAttributeValue(DispoConstants.DispoCiSet, "");
             if (!ciSet.isEmpty()) {
-               set.put(ciSet, branch.getIdString());
+               CiSetData set = new CiSetData();
+               set.setBranchId(branch.getIdString());
+               set.setDispoSetId(dispoSet.getIdString());
+               set.setCiSetName(ciSet);
+               setData.add(set);
             }
          }
       }
-      return set;
+      return setData;
    }
 
-   private List<ArtifactReadable> findDispoSet(String ciSet, BranchId branch) {
-      return getQuery().fromBranch(branch).andIsOfType(DispoConstants.DispoSet).and(DispoConstants.DispoCiSet,
-         Arrays.asList(ciSet)).getResults().getList();
+   private List<ArtifactReadable> findDispoSet(BranchId branch, ArtifactId setId) {
+      return getQuery().fromBranch(branch).andId(setId).getResults().getList();
    }
 
    private List<BranchReadable> findDispoBranches() {

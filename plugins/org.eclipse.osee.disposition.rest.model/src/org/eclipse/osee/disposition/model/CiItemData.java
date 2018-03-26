@@ -1,8 +1,13 @@
-/*
- * Created on Mar 22, 2018
+/*******************************************************************************
+ * Copyright (c) 2018 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.disposition.model;
 
 import java.util.List;
@@ -12,8 +17,8 @@ import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 @XmlRootElement(name = "CiItemData")
 public class CiItemData implements Identifiable<String> {
 
+   private CiSetData setData;
    private String scriptName;
-   private String ciSet;
    private CiTestPoint testPoints;
    private List<DispoAnnotationData> annotations;
 
@@ -46,12 +51,12 @@ public class CiItemData implements Identifiable<String> {
       this.annotations = annotations;
    }
 
-   public String getCiSet() {
-      return ciSet;
+   public CiSetData getSetData() {
+      return setData;
    }
 
-   public void setCiSet(String ciSet) {
-      this.ciSet = ciSet;
+   public void setSetData(CiSetData setData) {
+      this.setData = setData;
    }
 
 }
