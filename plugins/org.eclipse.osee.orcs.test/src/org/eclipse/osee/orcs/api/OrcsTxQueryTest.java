@@ -337,7 +337,7 @@ public class OrcsTxQueryTest {
    @Test
    public void testGetAuthorId() throws Exception {
       TransactionQuery query = factory.transactionQuery();
-      query.andAuthorLocalIds(OseeSystem);
+      query.andAuthorId(OseeSystem);
       ResultSet<TransactionReadable> results = query.getResults();
       assertEquals(128, results.size());
       assertEquals(128, query.getCount());
@@ -346,7 +346,7 @@ public class OrcsTxQueryTest {
       assertTx(transactions, tx33, Baselined, "New Branch from System Root Branch (3)", CIS_Bld_1, OseeSystem);
 
       query = factory.transactionQuery();
-      query.andAuthorLocalIds(OseeSystem, Joe_Smith);
+      query.andAuthorIds(Arrays.asList(OseeSystem, Joe_Smith));
       results = query.getResults();
       assertEquals(178, results.size());
       assertEquals(178, query.getCount());
@@ -362,7 +362,7 @@ public class OrcsTxQueryTest {
       ArrayList<ArtifactId> list = new ArrayList<>(2);
       list.add(OseeSystem);
       list.add(Joe_Smith);
-      query.andAuthorLocalIds(list);
+      query.andAuthorIds(list);
       results = query.getResults();
       assertEquals(178, results.size());
       assertEquals(178, query.getCount());
@@ -397,9 +397,9 @@ public class OrcsTxQueryTest {
       assertEquals(0, query.getCount());
 
       query = factory.transactionQuery();
-      ArrayList<Integer> list = new ArrayList<>(2);
-      list.add(1);
-      list.add(2);
+      ArrayList<ArtifactId> list = new ArrayList<>(2);
+      list.add(ArtifactId.valueOf(1));
+      list.add(ArtifactId.valueOf(2));
       query.andAuthorIds(list);
       results = query.getResults();
       assertEquals(0, results.size());
@@ -451,14 +451,14 @@ public class OrcsTxQueryTest {
       ArtifactId joeArt = itUsers.next();
 
       TransactionQuery query = factory.transactionQuery();
-      query.andAuthorLocalIds(joeArt);
+      query.andAuthorId(joeArt);
       assertEquals(50, query.getCount());
 
       /**********************************************************
        * Only valid user is 17. Verify the multiple entry by entering the same user twice
        */
       query = factory.transactionQuery();
-      query.andAuthorLocalIds(joeArt, joeArt);
+      query.andAuthorIds(Arrays.asList(joeArt, joeArt));
       assertEquals(50, query.getCount());
 
    }
@@ -466,7 +466,7 @@ public class OrcsTxQueryTest {
    @Test
    public void testMultifield() throws Exception {
       TransactionQuery query = factory.transactionQuery();
-      query.andAuthorLocalIds(OseeSystem);
+      query.andAuthorId(OseeSystem);
       query.andIs(Baselined);
       query.andCommentPattern("New Branch from.*");
       ResultSet<TransactionReadable> results = query.getResults();

@@ -50,13 +50,9 @@ public interface TxQueryBuilder<T> {
 
    T andDate(Timestamp from, Timestamp to);
 
-   T andAuthorLocalIds(ArtifactId... id);
+   T andAuthorId(ArtifactId author);
 
-   T andAuthorLocalIds(Collection<ArtifactId> ids);
-
-   T andAuthorIds(int... id);
-
-   T andAuthorIds(Collection<Integer> ids);
+   T andAuthorIds(Collection<ArtifactId> authors);
 
    T andCommitIds(Integer... id);
 

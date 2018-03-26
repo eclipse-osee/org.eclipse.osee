@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllTxs;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAuthorIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaCommitIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateRange;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateWithOperator;
@@ -63,10 +62,6 @@ public class TransactionCriteriaFactory {
 
    public Criteria newByDateRange(Timestamp from, Timestamp to) {
       return new CriteriaDateRange(from, to);
-   }
-
-   public Criteria newByAuthorId(Collection<Integer> ids) {
-      return new CriteriaAuthorIds(ids);
    }
 
    public Criteria newByCommitId(Collection<Integer> ids) {

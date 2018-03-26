@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -72,7 +73,7 @@ public class TxQuerySqlContextFactoryImplTest {
    private static final Criteria IDS_WITH_OPERATOR = idWithOperator(Operator.LESS_THAN, 1);
    private static final Criteria DATE_WITH_OPERATOR =
       dateWithOperator(Operator.LESS_THAN, Timestamp.valueOf("2013-05-06 12:34:56"));
-   private static final Criteria AUTHORS = byAuthorId(Arrays.asList(new Integer(1), new Integer(2)));
+   private static final Criteria AUTHORS = byAuthorId(Arrays.asList(ArtifactId.valueOf(1), ArtifactId.valueOf(2)));
    private static final Criteria COMMITS = byCommitId(Arrays.asList(new Integer(1), new Integer(2)));
 
    // @formatter:off
@@ -303,7 +304,7 @@ public class TxQuerySqlContextFactoryImplTest {
       return new CriteriaDateWithOperator(op, t);
    }
 
-   private static Criteria byAuthorId(Collection<Integer> ids) {
+   private static Criteria byAuthorId(Collection<ArtifactId> ids) {
       return new CriteriaAuthorIds(ids);
    }
 

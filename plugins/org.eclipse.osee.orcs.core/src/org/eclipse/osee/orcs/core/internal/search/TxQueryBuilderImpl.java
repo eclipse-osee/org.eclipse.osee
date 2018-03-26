@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.QueryData;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxArtifactIds;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAuthorIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxGetPrior;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIds;
 import org.eclipse.osee.orcs.search.Operator;
@@ -119,28 +119,13 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
    }
 
    @Override
-   public T andAuthorLocalIds(ArtifactId... id) {
-      return andAuthorLocalIds(Arrays.asList(id));
+   public T andAuthorId(ArtifactId author) {
+      return addAndCheck(queryData, new CriteriaAuthorIds(author));
    }
 
    @Override
-   public T andAuthorLocalIds(Collection<ArtifactId> ids) {
-      return addAndCheck(queryData, new CriteriaTxArtifactIds(ids));
-   }
-
-   @Override
-   public T andAuthorIds(int... id) {
-      ArrayList<Integer> theList = new ArrayList<>();
-      for (int i = 0; i < id.length; i++) {
-         theList.add(new Integer(id[i]));
-      }
-      return andAuthorIds(theList);
-   }
-
-   @Override
-   public T andAuthorIds(Collection<Integer> ids) {
-      Criteria criteria = criteriaFactory.newByAuthorId(ids);
-      return addAndCheck(queryData, criteria);
+   public T andAuthorIds(Collection<ArtifactId> authors) {
+      return addAndCheck(queryData, new CriteriaAuthorIds(authors));
    }
 
    @Override

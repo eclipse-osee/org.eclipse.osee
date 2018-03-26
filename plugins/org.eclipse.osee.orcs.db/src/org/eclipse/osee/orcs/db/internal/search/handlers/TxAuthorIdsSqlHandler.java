@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAuthorIds;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -21,10 +22,8 @@ import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 /**
  * @author Roberto E. Escobar
  */
-public class TxAuthorIdsSqlHandler extends SqlHandler<CriteriaAuthorIds> {
-
+public final class TxAuthorIdsSqlHandler extends SqlHandler<CriteriaAuthorIds> {
    private CriteriaAuthorIds criteria;
-
    private String txdAlias;
    private String jIdAlias;
 
@@ -48,20 +47,15 @@ public class TxAuthorIdsSqlHandler extends SqlHandler<CriteriaAuthorIds> {
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      Collection<Integer> ids = criteria.getIds();
+      Collection<ArtifactId> ids = criteria.getIds();
       if (ids.size() > 1) {
-         AbstractJoinQuery joinQuery = writer.writeIdJoin(ids);
-         writer.write(txdAlias);
-         writer.write(".author = ");
-         writer.write(jIdAlias);
-         writer.write(".id AND ");
-         writer.write(jIdAlias);
-         writer.write(".query_id = ?");
-         writer.addParameter(joinQuery.getQueryId());
+         AbstractJoinQuery joinQuery = writer.writeJoin(ids);
+         writer.writeEquals(txdAlias, "author", jIdAlias, "id");
+         writer.write(" AND ");
+         writer.writeEqualsParameter(jIdAlias, "query_id", joinQuery.getQueryId());
+
       } else {
-         writer.write(txdAlias);
-         writer.write(".author = ?");
-         writer.addParameter(ids.iterator().next());
+         writer.writeEqualsParameter(txdAlias, "author", ids.iterator().next());
       }
    }
 

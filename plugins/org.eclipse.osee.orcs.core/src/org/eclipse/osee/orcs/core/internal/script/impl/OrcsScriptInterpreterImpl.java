@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.DynamicData;
 import org.eclipse.osee.orcs.core.ds.DynamicObject;
@@ -399,7 +400,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       @Override
       public Void caseOsTxAuthorIdCriteria(OsTxAuthorIdCriteria object) {
          Collection<Integer> ids = resolver.resolve(Integer.class, object.getIds());
-         getTxQuery().andAuthorIds(ids);
+         getTxQuery().andAuthorIds(Collections.transform(ids, ArtifactId::valueOf));
          return null;
       }
 
