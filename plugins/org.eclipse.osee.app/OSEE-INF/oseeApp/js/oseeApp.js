@@ -1,6 +1,8 @@
 var app = angular.module('oseeApp', ['ngRoute', 'ngStorage', 'ngCookies', 'angularjs-dropdown-multiselect',
             'jsonforms', 'jsonforms-bootstrap', 'ui.bootstrap', 'ngResource', 'ui.grid', 'ui.grid.resizeColumns']);
 
+
+
 app.config(
     ['$routeProvider', function ($routeProvider) {
             $routeProvider.when('/', {
@@ -133,3 +135,5 @@ app.service('OseeControlValues', function ($resource) {
         window.location.href = 'index.html#/osee_app?uuid=' + this.getActiveApp() + '&element=' + element;
     }
 });
+
+

@@ -107,8 +107,7 @@ app.controller('oseeAppController', [
                 }
             };
             OseeAppSchema.updateItem = function (uiSchema, change) {
-                var intermediate = uiSchema.scope.$ref.substr(13);
-                this.changedItem = intermediate.substring(0, intermediate.indexOf('/'));
+                this.changedItem = OseeControlValues.parseAttribute(uiSchema.scope.$ref);
                 this.changedData = change;
             };
             OseeAppSchema.isValid = function (value, regex) {
@@ -122,5 +121,41 @@ app.controller('oseeAppController', [
                     return false;
                 return true;
             };
+            OseeAppSchema.parseHtmlForTableData = function (html, jsonData) {
+                if (!html) {
+                    return "";
+                }
+                var div = document.createElement('div');
+
+                div.innerHTML = html;
+
+                var artNodes = div.getElementsByTagName('A');
+                var parsedTableData = "[  \n";
+                for (i = 0; i < artNodes.length; ++i) {
+                    var artName = artNodes[i].innerText;
+                    var artId = "";
+                    artNodes[i].href.split("&").forEach(function (part) {
+                        var item = part.split("=");
+                        if (item[0] === "id") {
+                            artId = item[1];
+                        }
+                    });
+                    if(!OseeAppSchema.contains(jsonData, artId))
+                        jsonData.push({ rpcrUuid: artId, rpcrName: artName });
+                }
+                parsedTableData += "\n ]";
+                return parsedTableData;
+            };
+            OseeAppSchema.contains = function (jsonData, artId) {
+               var found = false;
+                 for(var i = 0; i < jsonData.length; i++) {
+                   if (jsonData[i].rpcrUuid == artId) {
+                     found = true;
+                   break;
+                 }
+               }
+               return found;
+            }
+
         }
     ]);
