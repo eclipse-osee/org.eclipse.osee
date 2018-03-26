@@ -90,9 +90,9 @@ public interface DispoApi {
    DispoApiConfiguration getConfig();
 
    // CI
-   HashMap<ArtifactReadable, BranchId> getCiSet(String ciSet);
+   HashMap<ArtifactReadable, BranchId> getCiSet(String branchId, String ciSet);
 
    String getDispoItemId(BranchId branch, String setId, String item);
 
-   BranchId getCiSetConfigured(String ciSet);
+   HashMap<String, String> getAllCiSets();
 }

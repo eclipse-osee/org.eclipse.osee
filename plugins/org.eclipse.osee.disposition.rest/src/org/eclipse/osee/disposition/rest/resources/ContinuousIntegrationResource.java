@@ -40,10 +40,10 @@ public class ContinuousIntegrationResource {
    }
 
    @GET
-   @Path("{ciSet}/annotations")
+   @Path("branchId/{branchId}/ciSet/{ciSet}/annotations")
    @Produces(MediaType.APPLICATION_JSON)
-   public HashMap<String, List<DispoAnnotationData>> getAllDispoAnnotations(@PathParam("ciSet") String ciSet) {
-      HashMap<ArtifactReadable, BranchId> set = dispoApi.getCiSet(ciSet);
+   public HashMap<String, List<DispoAnnotationData>> getAllDispoAnnotations(@PathParam("branchId") String branchId, @PathParam("ciSet") String ciSet) {
+      HashMap<ArtifactReadable, BranchId> set = dispoApi.getCiSet(branchId, ciSet);
       HashMap<String, List<DispoAnnotationData>> allDispoAnnotations = new HashMap<>();
       if (set != null && !set.isEmpty()) {
          ArtifactReadable dispoSet = set.keySet().iterator().next();
@@ -56,38 +56,38 @@ public class ContinuousIntegrationResource {
    }
 
    @GET
-   @Path("{ciSet}/item/{item}/annotation")
+   @Path("branchId/{branchId}/ciSet/{ciSet}/item/{item}/annotation")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<DispoAnnotationData> getAllDispoAnnotationsPerItem(@PathParam("ciSet") String ciSet, @PathParam("item") String item) {
-      HashMap<ArtifactReadable, BranchId> set = dispoApi.getCiSet(ciSet);
+   public List<DispoAnnotationData> getAllDispoAnnotationsPerItem(@PathParam("branchId") String branchId, @PathParam("ciSet") String ciSet, @PathParam("item") String item) {
+      HashMap<ArtifactReadable, BranchId> set = dispoApi.getCiSet(branchId, ciSet);
       if (set != null && !set.isEmpty()) {
          ArtifactReadable dispoSet = set.keySet().iterator().next();
-         BranchId branchId = set.get(dispoSet);
-         String itemId = dispoApi.getDispoItemId(branchId, dispoSet.getIdString(), item);
-         return dispoApi.getDispoAnnotations(branchId, itemId);
+         BranchId branch = set.get(dispoSet);
+         String itemId = dispoApi.getDispoItemId(branch, dispoSet.getIdString(), item);
+         return dispoApi.getDispoAnnotations(branch, itemId);
       }
       return null;
    }
 
    @GET
-   @Path("{ciSet}/configured")
+   @Path("sets")
    @Produces(MediaType.APPLICATION_JSON)
-   public BranchId getCiSetConfigured(@PathParam("ciSet") String ciSet) {
-      return dispoApi.getCiSetConfigured(ciSet);
+   public HashMap<String, String> getAllCiSets() {
+      return dispoApi.getAllCiSets();
    }
 
-   @Path("annotate")
+   @Path("{branchId}/annotate")
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response createDispoAnnotation(CiItemData data, @QueryParam("userName") String userName) {
+   public Response createDispoAnnotation(@PathParam("branchId") String branchId, CiItemData data, @QueryParam("userName") String userName) {
       Response response = null;
-      HashMap<ArtifactReadable, BranchId> set = dispoApi.getCiSet(data.getCiSet());
+      HashMap<ArtifactReadable, BranchId> set = dispoApi.getCiSet(branchId, data.getCiSet());
       if (set != null && !set.isEmpty()) {
          ArtifactReadable dispoSet = set.keySet().iterator().next();
-         BranchId branchId = set.get(dispoSet);
-         String itemId = dispoApi.getDispoItemId(branchId, dispoSet.getIdString(), data.getScriptName());
-         dispoApi.deleteAllDispoAnnotation(branchId, itemId, userName, true);
-         response = createAndUpdateAnnotation(data, userName, response, branchId, itemId);
+         BranchId branch = set.get(dispoSet);
+         String itemId = dispoApi.getDispoItemId(branch, dispoSet.getIdString(), data.getScriptName());
+         dispoApi.deleteAllDispoAnnotation(branch, itemId, userName, true);
+         response = createAndUpdateAnnotation(data, userName, response, branch, itemId);
       } else {
          response = Response.status(Response.Status.BAD_REQUEST).build();
       }

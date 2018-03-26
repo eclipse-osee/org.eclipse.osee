@@ -56,7 +56,9 @@ public interface DispoQuery {
 
    Long getDispoItemParentSet(BranchId branch, String itemId);
 
-   HashMap<ArtifactReadable, BranchId> getCiSet(String ciSet);
+   HashMap<ArtifactReadable, BranchId> getCiSet(String branchId, String ciSet);
+
+   HashMap<String, String> getAllCiSets();
 
    String getDispoItemId(BranchId branch, String setId, String item);
 

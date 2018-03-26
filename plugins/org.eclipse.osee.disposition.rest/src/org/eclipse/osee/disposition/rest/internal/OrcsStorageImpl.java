@@ -598,25 +598,14 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public HashMap<ArtifactReadable, BranchId> getCiSet(String ciSet) {
+   public HashMap<ArtifactReadable, BranchId> getCiSet(String branchId, String ciSet) {
       HashMap<ArtifactReadable, BranchId> set = new HashMap<>();
-      List<BranchReadable> dispoBranches = findDispoBranches();
-      QueryFactory query = getQuery();
-      for (BranchReadable branch : dispoBranches) {
-         List<ArtifactReadable> arts =
-            query.fromBranch(branch).andIsOfType(DispoConstants.DispoSet).and(DispoConstants.DispoCiSet,
-               Arrays.asList(ciSet)).getResults().getList();
-         for (ArtifactReadable art : arts) {
-            set.put(art, branch);
-         }
+      BranchId branch = BranchId.valueOf(branchId);
+      List<ArtifactReadable> arts = findDispoSet(ciSet, branch);
+      for (ArtifactReadable art : arts) {
+         set.put(art, branch);
       }
       return set;
-   }
-
-   private List<BranchReadable> findDispoBranches() {
-      BranchReadable dispoParent = getQuery().branchQuery().andNameEquals("Dispo Parent").getResults().getOneOrNull();
-      return getQuery().branchQuery().andIsChildOf(
-         dispoParent).excludeArchived().excludeDeleted().getResults().getList();
    }
 
    @Override
@@ -629,6 +618,37 @@ public class OrcsStorageImpl implements Storage {
          }
       }
       return "";
+   }
+
+   @Override
+   public HashMap<String, String> getAllCiSets() {
+      HashMap<String, String> set = new HashMap<>();
+      List<BranchReadable> dispoBranches = findDispoBranches();
+      for (BranchReadable branch : dispoBranches) {
+         for (ArtifactReadable dispoSet : findAllCiSets(branch)) {
+            String ciSet = dispoSet.getSoleAttributeValue(DispoConstants.DispoCiSet, "");
+            if (!ciSet.isEmpty()) {
+               set.put(ciSet, branch.getIdString());
+            }
+         }
+      }
+      return set;
+   }
+
+   private List<ArtifactReadable> findDispoSet(String ciSet, BranchId branch) {
+      return getQuery().fromBranch(branch).andIsOfType(DispoConstants.DispoSet).and(DispoConstants.DispoCiSet,
+         Arrays.asList(ciSet)).getResults().getList();
+   }
+
+   private List<BranchReadable> findDispoBranches() {
+      BranchReadable dispoParent = getQuery().branchQuery().andNameEquals("Dispo Parent").getResults().getOneOrNull();
+      return getQuery().branchQuery().andIsChildOf(
+         dispoParent).excludeArchived().excludeDeleted().getResults().getList();
+   }
+
+   private List<ArtifactReadable> findAllCiSets(BranchId branch) {
+      return getQuery().fromBranch(branch).andIsOfType(DispoConstants.DispoSet).andExists(
+         DispoConstants.DispoCiSet).getResults().getList();
    }
 
 }

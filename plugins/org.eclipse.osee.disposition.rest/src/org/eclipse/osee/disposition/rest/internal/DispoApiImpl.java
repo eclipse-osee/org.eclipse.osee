@@ -678,8 +678,8 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public HashMap<ArtifactReadable, BranchId> getCiSet(String ciSet) {
-      return getQuery().getCiSet(ciSet);
+   public HashMap<ArtifactReadable, BranchId> getCiSet(String branchId, String ciSet) {
+      return getQuery().getCiSet(branchId, ciSet);
    }
 
    @Override
@@ -688,12 +688,8 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public BranchId getCiSetConfigured(String ciSet) {
-      HashMap<ArtifactReadable, BranchId> set = getCiSet(ciSet);
-      if (!set.isEmpty()) {
-         return set.values().iterator().next();
-      }
-      return BranchId.SENTINEL;
+   public HashMap<String, String> getAllCiSets() {
+      return getQuery().getAllCiSets();
    }
 
 }
