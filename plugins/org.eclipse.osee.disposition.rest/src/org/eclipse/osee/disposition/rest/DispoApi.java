@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import org.eclipse.osee.disposition.model.CiSetData;
 import org.eclipse.osee.disposition.model.CopySetParams;
+import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.DispoItem;
@@ -57,6 +58,10 @@ public interface DispoApi {
 
    String createDispoAnnotation(BranchId branch, String itemId, DispoAnnotationData annotation, String userName, boolean isCi);
 
+   String createDispoDiscrepancy(BranchId branch, String itemId, Discrepancy discrepancy, String userName);
+
+   boolean editDispoDiscrepancy(BranchId branch, String itemId, String discrepancyId, Discrepancy newDiscrepancy, String userName);
+
    void editDispoSet(BranchId branch, String dispoSetId, DispoSetData newDispoSet);
 
    boolean editDispoItem(BranchId branch, String itemId, DispoItemData newDispoItem);
@@ -78,6 +83,8 @@ public interface DispoApi {
    boolean deleteDispoAnnotation(BranchId branch, String itemId, String annotationId, String userName, boolean isCi);
 
    boolean deleteAllDispoAnnotation(BranchId branch, String itemId, String userName, boolean isCi);
+
+   boolean deleteDispoDiscrepancy(BranchId branch, String itemId, String discrepancyId, String userName);
 
    // Utilities
    boolean isUniqueProgramName(String name);

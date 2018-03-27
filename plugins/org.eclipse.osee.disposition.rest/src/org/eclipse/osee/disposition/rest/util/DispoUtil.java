@@ -17,8 +17,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoConfig;
@@ -565,6 +568,59 @@ public final class DispoUtil {
          }
       }
       return null;
+   }
+
+   public static List<Integer> splitDiscrepancyLocations(String locations) {
+      String[] locationString = locations.split(",");
+      List<Integer> range = new ArrayList<>();
+      if (locations != null && !locations.isEmpty()) {
+         for (String location : locationString) {
+            String[] loc = location.split("-");
+            if (loc.length > 1) {
+               range.addAll(
+                  IntStream.range(Integer.valueOf(loc[0].trim()), Integer.valueOf(loc[1].trim()) + 1).boxed().collect(
+                     Collectors.toList()));
+            } else {
+               range.add(Integer.valueOf(loc[0].trim()));
+            }
+         }
+      }
+      return range;
+   }
+
+   public static List<String> findDiscrepancyLocsToRemove(List<Integer> ranges, DispoItem item) {
+      List<String> removeDiscrepancies = new ArrayList<>();
+      if (ranges != null && !ranges.isEmpty()) {
+         for (Integer locRef : ranges) {
+            for (Entry<String, Discrepancy> discrepancy : item.getDiscrepanciesList().entrySet()) {
+               Discrepancy value = discrepancy.getValue();
+               if (locRef == Integer.valueOf(value.getLocation())) {
+                  removeDiscrepancies.add(discrepancy.getKey());
+               }
+            }
+         }
+      }
+      return removeDiscrepancies;
+   }
+
+   public static List<String> findMissingDiscrepancyLocs(List<Integer> ranges, DispoItem item) {
+      List<String> missingDiscrepanciesLoc = new ArrayList<>();
+      if (ranges != null && !ranges.isEmpty()) {
+         for (Integer locRef : ranges) {
+            boolean found = false;
+            for (Entry<String, Discrepancy> discrepancy : item.getDiscrepanciesList().entrySet()) {
+               Discrepancy value = discrepancy.getValue();
+               if (locRef == Integer.valueOf(value.getLocation())) {
+                  found = true;
+                  break;
+               }
+            }
+            if (!found) {
+               missingDiscrepanciesLoc.add(String.valueOf(locRef));
+            }
+         }
+      }
+      return missingDiscrepanciesLoc;
    }
 
 }

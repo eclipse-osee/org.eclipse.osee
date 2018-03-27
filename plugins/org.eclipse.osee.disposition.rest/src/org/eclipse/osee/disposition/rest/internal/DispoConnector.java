@@ -78,12 +78,13 @@ public class DispoConnector {
    }
 
    private boolean allAnnotationsValid(List<DispoAnnotationData> annotations) {
-      for (DispoAnnotationData annotation : annotations) {
-         if (!annotation.getIsDefault() && !annotation.isValid()) {
-            return false;
+      if (annotations != null) {
+         for (DispoAnnotationData annotation : annotations) {
+            if (!annotation.getIsDefault() && !annotation.isValid()) {
+               return false;
+            }
          }
       }
-
       return true;
    }
 
@@ -99,16 +100,17 @@ public class DispoConnector {
 
    private HashSet<String> getAllCoveredDiscrepanciesFromAnnotations(Map<String, Discrepancy> discrepancies, List<DispoAnnotationData> annotations) {
       HashSet<String> toReturn = new HashSet<>();
-      for (DispoAnnotationData annotation : annotations) {
-         List<String> idsOfCoveredDiscrepancies = annotation.getIdsOfCoveredDiscrepancies();
-         for (String id : idsOfCoveredDiscrepancies) {
-            if (discrepancies.containsKey(id)) {
-               Discrepancy discrepancy = discrepancies.get(id);
-               toReturn.add(discrepancy.getLocation());
+      if (annotations != null) {
+         for (DispoAnnotationData annotation : annotations) {
+            List<String> idsOfCoveredDiscrepancies = annotation.getIdsOfCoveredDiscrepancies();
+            for (String id : idsOfCoveredDiscrepancies) {
+               if (discrepancies.containsKey(id)) {
+                  Discrepancy discrepancy = discrepancies.get(id);
+                  toReturn.add(discrepancy.getLocation());
+               }
             }
          }
       }
-
       return toReturn;
    }
 

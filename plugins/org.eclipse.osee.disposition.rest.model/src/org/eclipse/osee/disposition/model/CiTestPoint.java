@@ -10,23 +10,23 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "CiTestPoint")
 public class CiTestPoint {
 
-   private String passing;
-   private String failing;
+   private String pass;
+   private String fail;
 
-   public String getPassing() {
-      return passing;
+   public String getPass() {
+      return pass;
    }
 
-   public void setPassing(String passing) {
-      this.passing = passing;
+   public void setPass(String pass) {
+      this.pass = pass;
    }
 
-   public String getFailing() {
-      return failing;
+   public String getFail() {
+      return fail;
    }
 
-   public void setFailing(String failing) {
-      this.failing = failing;
+   public void setFail(String fail) {
+      this.fail = fail;
    }
 
 }

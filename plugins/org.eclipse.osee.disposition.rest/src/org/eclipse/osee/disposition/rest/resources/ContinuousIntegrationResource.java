@@ -23,9 +23,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.disposition.model.CiItemData;
 import org.eclipse.osee.disposition.model.CiSetData;
+import org.eclipse.osee.disposition.model.CiTestPoint;
+import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
+import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.rest.DispoApi;
+import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
@@ -86,6 +90,7 @@ public class ContinuousIntegrationResource {
          BranchId branch = BranchId.valueOf(data.getSetData().getBranchId());
          String itemId = dispoApi.getDispoItemId(branch, data.getSetData().getDispoSetId(), data.getScriptName());
          if (itemId != null && !itemId.isEmpty()) {
+            updateDiscrepencies(data, branch, itemId, userName);
             dispoApi.deleteAllDispoAnnotation(branch, itemId, userName, true);
             response = createAndUpdateAnnotation(data, userName, response, branch, itemId);
          }
@@ -93,6 +98,30 @@ public class ContinuousIntegrationResource {
          response = Response.status(Response.Status.BAD_REQUEST).build();
       }
       return response;
+   }
+
+   private void updateDiscrepencies(CiItemData data, BranchId branch, String itemId, String userName) {
+      CiTestPoint testPoints = data.getTestPoints();
+      DispoItem item = dispoApi.getDispoItemById(branch, itemId);
+      DispoItemData itemData = DispoUtil.itemArtToItemData(item, true);
+      String asRanges = itemData.getDiscrepanciesAsRanges();
+      if (!testPoints.getFail().equals(asRanges)) {
+         // remove ones that are now passing
+         List<Integer> ranges = DispoUtil.splitDiscrepancyLocations(testPoints.getPass());
+         List<String> discrepToRemove = DispoUtil.findDiscrepancyLocsToRemove(ranges, item);
+         for (String toRemove : discrepToRemove) {
+            dispoApi.deleteDispoDiscrepancy(branch, itemId, toRemove, userName);
+         }
+         // add ones that are new
+         ranges = DispoUtil.splitDiscrepancyLocations(testPoints.getFail());
+         List<String> discrepToAdd = DispoUtil.findMissingDiscrepancyLocs(ranges, item);
+         for (String toAdd : discrepToAdd) {
+            Discrepancy discrepancy = new Discrepancy();
+            String discrepancyId = dispoApi.createDispoDiscrepancy(branch, itemId, discrepancy, userName);
+            discrepancy.setLocation(toAdd);
+            dispoApi.editDispoDiscrepancy(branch, itemId, discrepancyId, discrepancy, userName);
+         }
+      }
    }
 
    private Response createAndUpdateAnnotation(CiItemData data, String userName, Response response, BranchId branchId, String itemId) {

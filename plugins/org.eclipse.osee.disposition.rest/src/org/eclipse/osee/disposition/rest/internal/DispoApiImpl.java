@@ -693,4 +693,88 @@ public class DispoApiImpl implements DispoApi {
       return getQuery().getAllCiSets();
    }
 
+   @Override
+   public String createDispoDiscrepancy(BranchId branch, String itemId, Discrepancy discrepancy, String userName) {
+      String idOfNewDiscrepancy = "";
+      DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
+      if (dispoItem != null) {
+         Map<String, Discrepancy> discrepancyList = dispoItem.getDiscrepanciesList();
+
+         idOfNewDiscrepancy = dataFactory.getNewId();
+         discrepancy.setId(idOfNewDiscrepancy);
+         discrepancy.setLocation("");
+         discrepancy.setText("");
+
+         discrepancyList.put(idOfNewDiscrepancy, discrepancy);
+
+         DispoItemData newItem = new DispoItemData();
+         newItem.setDiscrepanciesList(discrepancyList);
+         newItem.setStatus(dispoConnector.getItemStatus(newItem));
+
+         ArtifactReadable author = getQuery().findUser();
+         DispoStorageMetadata metadata = new DispoStorageMetadata();
+         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), newItem, metadata);
+         if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
+            updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(dispoItem),
+               getDispoItemParentSet(branch, itemId));
+         }
+      }
+      return idOfNewDiscrepancy;
+   }
+
+   @Override
+   public boolean editDispoDiscrepancy(BranchId branch, String itemId, String discrepancyId, Discrepancy newDiscrepancy, String userName) {
+      boolean wasUpdated = false;
+      DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
+      if (dispoItem != null) {
+         Map<String, Discrepancy> discrepanciesList = dispoItem.getDiscrepanciesList();
+         discrepanciesList.put(discrepancyId, newDiscrepancy);
+
+         DispoItemData modifiedDispoItem = DispoUtil.itemArtToItemData(getDispoItemById(branch, itemId), true);
+         modifiedDispoItem.setDiscrepanciesList(discrepanciesList);
+         modifiedDispoItem.setStatus(dispoConnector.getItemStatus(modifiedDispoItem));
+
+         DispoStorageMetadata metadata = new DispoStorageMetadata();
+         try {
+            Date date = DispoUtil.getTimestampOfFile(getFullFilePathFromDispoItemId(branch, itemId, dispoItem));
+            modifiedDispoItem.setLastUpdate(date);
+         } catch (Throwable ex) {
+            throw new OseeCoreException(ex);
+         }
+
+         ArtifactReadable author = getQuery().findUser();
+         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), modifiedDispoItem, metadata);
+         if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
+            updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(modifiedDispoItem),
+               getDispoItemParentSet(branch, itemId));
+         }
+         wasUpdated = true;
+      }
+      return wasUpdated;
+   }
+
+   @Override
+   public boolean deleteDispoDiscrepancy(BranchId branch, String itemId, String discrepancyId, String userName) {
+      boolean wasUpdated = false;
+      DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
+      if (dispoItem != null) {
+         Map<String, Discrepancy> discrepanciesList = dispoItem.getDiscrepanciesList();
+         discrepanciesList.remove(discrepancyId);
+
+         DispoItemData newItem = new DispoItemData();
+         newItem.setDiscrepanciesList(discrepanciesList);
+         newItem.setStatus(dispoConnector.getItemStatus(newItem));
+
+         ArtifactReadable author = getQuery().findUser();
+         DispoStorageMetadata metadata = new DispoStorageMetadata();
+         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), newItem, metadata);
+         if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
+            updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(newItem),
+               getDispoItemParentSet(branch, itemId));
+         }
+         wasUpdated = true;
+      }
+      return wasUpdated;
+   }
+
 }
