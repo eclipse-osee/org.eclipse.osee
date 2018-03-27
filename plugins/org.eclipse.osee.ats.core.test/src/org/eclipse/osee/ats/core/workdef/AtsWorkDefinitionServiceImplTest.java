@@ -110,6 +110,8 @@ public class AtsWorkDefinitionServiceImplTest {
       workDefService = Mockito.spy(workDefService);
       Mockito.doReturn(defaultPeerToPeerWorkDef).when(workDefService).getWorkDefinition(
          eq(AtsArtifactToken.WorkDef_Review_PeerToPeer.getName()), any(XResultData.class));
+      Mockito.doReturn(defaultPeerToPeerWorkDef).when(workDefService).getWorkDefinition(
+         eq(AtsArtifactToken.WorkDef_Review_PeerToPeer));
    }
 
    @Test
@@ -140,9 +142,6 @@ public class AtsWorkDefinitionServiceImplTest {
       when(attributeResolver.getSoleArtifactIdReference(topTeamDef,
          AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
             ArtifactId.SENTINEL);
-      when(attributeResolver.getSoleArtifactIdReference(peerReview,
-         AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
-            MyPeerToPeerWorkDefArt);
 
       IAtsWorkDefinition workDef = workDefService.getWorkDefinitionForPeerToPeerReviewNotYetCreated(teamWf);
       assertEquals(defaultPeerToPeerWorkDef, workDef);
