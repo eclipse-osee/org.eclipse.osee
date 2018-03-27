@@ -70,7 +70,7 @@ public abstract class AbstractWordCompare implements IComparator {
       boolean show = !getRenderer().getBooleanOption(IRenderer.NO_DISPLAY);
       boolean executeVbScript = System.getProperty("os.name").contains("Windows");
       boolean skipErrors = !getRenderer().getBooleanOption(IRenderer.SKIP_ERRORS);
-      skipDialogs = !getRenderer().getBooleanOption(IRenderer.SKIP_DIALOGS);
+      skipDialogs = getRenderer().getBooleanOption(IRenderer.SKIP_DIALOGS);
       boolean diffFieldCodes = !UserManager.getBooleanSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES);
 
       IVbaDiffGenerator diffGenerator = WordUiUtil.createScriptGenerator(presentationType == PresentationType.MERGE,
