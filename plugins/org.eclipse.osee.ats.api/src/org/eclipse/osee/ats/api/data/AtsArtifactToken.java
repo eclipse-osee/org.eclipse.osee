@@ -43,6 +43,7 @@ public final class AtsArtifactToken {
    public static ArtifactToken AtsTempAdmin = ArtifactToken.valueOf(5367074, "AtsTempAdmin", COMMON, CoreArtifactTypes.UserGroup);
 
    // Default Work Definitions
+   public static ArtifactToken WorkDef_Sprint = ArtifactToken.valueOf(504662856, "WorkDef_Sprint", COMMON, AtsArtifactTypes.WorkDefinition);
    public static ArtifactToken WorkDef_Goal = ArtifactToken.valueOf(142177, "WorkDef_Goal", COMMON, AtsArtifactTypes.WorkDefinition);
    public static ArtifactToken WorkDef_Review_Decision = ArtifactToken.valueOf(25335, "WorkDef_Review_Decision", COMMON, AtsArtifactTypes.WorkDefinition);
    public static ArtifactToken WorkDef_Review_PeerToPeer = ArtifactToken.valueOf(25334, "WorkDef_Review_PeerToPeer", COMMON, AtsArtifactTypes.WorkDefinition);

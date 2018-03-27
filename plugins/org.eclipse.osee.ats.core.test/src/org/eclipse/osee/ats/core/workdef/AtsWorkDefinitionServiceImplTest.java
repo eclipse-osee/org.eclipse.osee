@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -97,7 +98,7 @@ public class AtsWorkDefinitionServiceImplTest {
       when(projTeamDef.getParentTeamDef()).thenReturn(topTeamDef);
       when(featureTeamDef.getParentTeamDef()).thenReturn(projTeamDef);
       // always return default when requested
-      when(workDefinitionService.getWorkDefinition(eq(IAtsWorkDefinitionService.PeerToPeerDefaultWorkflowDefinitionId),
+      when(workDefinitionService.getWorkDefinition(eq(AtsArtifactToken.WorkDef_Review_PeerToPeer.getName()),
          any(XResultData.class))).thenReturn(defaultPeerToPeerWorkDef);
 
       workDefinitionStore = new AtsWorkDefinitionStoreService(atsApi);
@@ -108,7 +109,7 @@ public class AtsWorkDefinitionServiceImplTest {
       // always return myPeerToPeerWorkDef when requested
       workDefService = Mockito.spy(workDefService);
       Mockito.doReturn(defaultPeerToPeerWorkDef).when(workDefService).getWorkDefinition(
-         eq(IAtsWorkDefinitionService.PeerToPeerDefaultWorkflowDefinitionId), any(XResultData.class));
+         eq(AtsArtifactToken.WorkDef_Review_PeerToPeer.getName()), any(XResultData.class));
    }
 
    @Test

@@ -321,7 +321,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          workDefinition = getTaskWorkDefinitionFromArtifactsAttributeValue(teamWf.getTeamDefinition());
       }
       if (workDefinition == null) {
-         workDefinition = getWorkDefinition(TaskWorkflowDefinitionId);
+         workDefinition = getWorkDefinition(AtsArtifactToken.WorkDef_Task_Default);
       }
       return workDefinition;
    }
@@ -345,15 +345,15 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
                IAtsTeamDefinition teamDef = ((IAtsTeamWorkflow) workItem).getTeamDefinition();
                workDef = getWorkDefinitionFromTeamDefinitionAttributeInherited(teamDef);
             } else if (workItem instanceof IAtsGoal) {
-               workDef = getWorkDefinition(GoalWorkflowDefinitionId);
+               workDef = getWorkDefinition(AtsArtifactToken.WorkDef_Goal);
             } else if (workItem instanceof IAgileBacklog) {
-               workDef = getWorkDefinition(GoalWorkflowDefinitionId);
+               workDef = getWorkDefinition(AtsArtifactToken.WorkDef_Goal);
             } else if (workItem instanceof IAgileSprint) {
-               workDef = getWorkDefinition(SprintWorkflowDefinitionId);
+               workDef = getWorkDefinition(AtsArtifactToken.WorkDef_Sprint);
             } else if (workItem instanceof IAtsPeerToPeerReview) {
-               workDef = getWorkDefinition(PeerToPeerDefaultWorkflowDefinitionId);
+               workDef = getWorkDefinition(AtsArtifactToken.WorkDef_Review_PeerToPeer);
             } else if (workItem instanceof IAtsDecisionReview) {
-               workDef = getWorkDefinition(DecisionWorkflowDefinitionId);
+               workDef = getWorkDefinition(AtsArtifactToken.WorkDef_Review_Decision);
             }
          }
       }
@@ -375,7 +375,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    @Override
    public IAtsWorkDefinition getDefaultPeerToPeerWorkflowDefinition() {
-      return getWorkDefinition(PeerToPeerDefaultWorkflowDefinitionId);
+      return getWorkDefinition(AtsArtifactToken.WorkDef_Review_PeerToPeer);
    }
 
    /**
