@@ -51,7 +51,7 @@ public class ArchiveUnarchiveBranchCallable extends AbstractDatastoreTxCallable<
       jdbcClient.runPreparedUpdate(connection, sql, branch);
 
       BranchArchivedState newState = archive ? BranchArchivedState.ARCHIVED : BranchArchivedState.UNARCHIVED;
-      Object[] params = new Object[] {newState.getValue(), branch};
+      Object[] params = new Object[] {newState, branch};
       jdbcClient.runPreparedUpdate(connection, UPDATE_BRANCH, params);
       return null;
    }

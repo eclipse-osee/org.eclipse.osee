@@ -50,7 +50,7 @@ public class BranchFilter implements Predicate<Branch> {
       if (associatedArtifact != null && !branch.getAssociatedArtifactId().equals(associatedArtifact)) {
          return false;
       }
-      if (!BranchArchivedState.fromBoolean(branch.isArchived()).matches(archivedState)) {
+      if (!archivedState.matches(branch.isArchived())) {
          return false;
       }
       if (branchTypes.length > 0 && !branch.getBranchType().isOfType(branchTypes)) {

@@ -110,8 +110,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
       Integer result = getJdbcClient().fetchOrException(Integer.class,
          () -> new OseeCoreException("Failed to get Branch archived state for %s", getEndTx().getBranch()),
          SELECT_IS_BRANCH_ARCHIVED, getEndTx().getBranch());
-      Integer archived = result.intValue();
-      boolean isArchived = archived.equals(BranchArchivedState.ARCHIVED.getValue());
+      boolean isArchived = BranchArchivedState.valueOf(result.intValue()).isArchived();
 
       DoubleKeyHashMap<Integer, Long, ChangeItem> hashChangeData = loadChangesAtEndTx(isArchived);
       return loadItemsByItemId(hashChangeData, isArchived);

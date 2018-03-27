@@ -10,24 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+
 /**
  * @author Ryan D. Brooks
  */
-public enum BranchArchivedState {
-   ARCHIVED(1),
-   UNARCHIVED(0),
-   ALL(-1),
-   ARCHIVED_IN_PROGRESS(2),
-   UNARCHIVED_IN_PROGRESS(3);
+public class BranchArchivedState extends NamedIdBase {
+   public static final BranchArchivedState ARCHIVED = new BranchArchivedState(1, "ARCHIVED");
+   public static final BranchArchivedState UNARCHIVED = new BranchArchivedState(0, "UNARCHIVED");
+   public static final BranchArchivedState ALL = new BranchArchivedState(-1, "ALL");
+   public static final BranchArchivedState ARCHIVED_IN_PROGRESS = new BranchArchivedState(2, "ARCHIVED_IN_PROGRESS");
+   public static final BranchArchivedState UNARCHIVED_IN_PROGRESS =
+      new BranchArchivedState(3, "UNARCHIVED_IN_PROGRESS");
 
-   private final int value;
+   private static final BranchArchivedState[] values =
+      new BranchArchivedState[] {ARCHIVED, UNARCHIVED, ALL, ARCHIVED_IN_PROGRESS, UNARCHIVED_IN_PROGRESS};
 
-   BranchArchivedState(int value) {
-      this.value = value;
-   }
-
-   public final int getValue() {
-      return value;
+   BranchArchivedState(int id, String name) {
+      super(Long.valueOf(id), name);
    }
 
    public boolean isBeingArchived() {
@@ -46,8 +46,8 @@ public enum BranchArchivedState {
       return this == UNARCHIVED;
    }
 
-   public boolean matches(BranchArchivedState branchState) {
-      return branchState == BranchArchivedState.ALL || this == branchState;
+   public boolean matches(boolean isArchived) {
+      return this == BranchArchivedState.ALL || this == fromBoolean(isArchived);
    }
 
    /**
@@ -61,18 +61,15 @@ public enum BranchArchivedState {
       return archived ? ARCHIVED : UNARCHIVED;
    }
 
-   public static BranchArchivedState valueOf(int value) {
-      switch (value) {
-         case 1:
-            return ARCHIVED;
-         case 2:
-            return ARCHIVED_IN_PROGRESS;
-         case 3:
-            return UNARCHIVED_IN_PROGRESS;
-         case -1:
-         case 0:
-         default:
-            return UNARCHIVED;
-      }
+   public static BranchArchivedState valueOf(int id) {
+      return NamedIdBase.valueOf(Long.valueOf(id), values);
+   }
+
+   public static BranchArchivedState valueOf(String id) {
+      return NamedIdBase.valueOf(Long.valueOf(id), values);
+   }
+
+   public static BranchArchivedState[] values() {
+      return values;
    }
 }

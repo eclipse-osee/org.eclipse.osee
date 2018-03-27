@@ -694,7 +694,7 @@ public final class BranchManager {
 
    public static String getArchivedStr(BranchId branchId) {
       Branch branch = getAndCheck(branchId);
-      return BranchArchivedState.fromBoolean(branch.isArchived()).name();
+      return BranchArchivedState.fromBoolean(branch.isArchived()).getName();
    }
 
    public static boolean hasChildren(BranchId branchId) {

@@ -184,7 +184,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
          truncatedName,
          parentBranch,
          sourceTx,
-         BranchArchivedState.UNARCHIVED.getValue(),
+         BranchArchivedState.UNARCHIVED,
          newBranchData.getAssociatedArtifact(),
          newBranchData.getBranchType().getValue(),
          BranchState.CREATED,

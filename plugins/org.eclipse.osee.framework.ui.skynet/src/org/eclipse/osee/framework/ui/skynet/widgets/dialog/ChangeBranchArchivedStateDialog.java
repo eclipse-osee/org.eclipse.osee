@@ -89,7 +89,7 @@ public class ChangeBranchArchivedStateDialog extends ListDialog {
       @Override
       public String getText(Object arg0) {
          BranchArchivedState type = (BranchArchivedState) arg0;
-         return type.name();
+         return type.getName();
       }
 
       @Override
