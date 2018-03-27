@@ -36,4 +36,21 @@ public class NamedIdBase extends BaseId implements NamedId {
       return name == null ? super.toString() : name;
    }
 
+   public static <T extends Named> T fromName(String name, T[] tokens) {
+      for (T token : tokens) {
+         if (token.getName().equals(name)) {
+            return token;
+         }
+      }
+      throw new OseeArgumentException("Value with name [%s] does not exist", name);
+   }
+
+   public static <T extends NamedId> T valueOf(Long id, T[] tokens) {
+      for (T token : tokens) {
+         if (token.getId().equals(id)) {
+            return token;
+         }
+      }
+      throw new OseeArgumentException("Value with id [%s] does not exist", id);
+   }
 }

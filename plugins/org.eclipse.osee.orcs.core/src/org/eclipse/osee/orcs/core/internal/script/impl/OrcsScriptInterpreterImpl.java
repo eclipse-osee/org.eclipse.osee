@@ -738,7 +738,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       private BranchState[] asStates(List<OsBranchState> values) {
          Set<BranchState> toReturn = new LinkedHashSet<>();
          for (OsBranchState value : values) {
-            BranchState state = BranchState.valueOf(value.getName());
+            BranchState state = BranchState.fromName(value.getName());
             toReturn.add(state);
          }
          return toReturn.toArray(new BranchState[toReturn.size()]);

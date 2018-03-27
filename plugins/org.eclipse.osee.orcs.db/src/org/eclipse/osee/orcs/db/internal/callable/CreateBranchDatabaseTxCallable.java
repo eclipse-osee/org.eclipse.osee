@@ -122,8 +122,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
          if (associatedArtifactId.isValid() && SystemUser.OseeSystem.notEqual(associatedArtifactId)) {
             int count = jdbcClient.fetch(connection, 0,
                "SELECT (1) FROM osee_branch WHERE associated_art_id = ? AND branch_state NOT IN (?, ?)",
-               newBranchData.getAssociatedArtifact(), BranchState.DELETED.getValue(),
-               BranchState.REBASELINED.getValue());
+               newBranchData.getAssociatedArtifact(), BranchState.DELETED, BranchState.REBASELINED);
             if (count > 0) {
                // the PORT branch type is a special case, a PORT branch can have the same associated artifact
                // as its related RPCR branch. We need to check to see if there is already a
@@ -132,8 +131,8 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 
                   int portcount = jdbcClient.fetch(connection, 0,
                      "SELECT (1) FROM osee_branch WHERE associated_art_id = ? AND branch_state NOT IN (?, ?) AND branch_type = ?",
-                     newBranchData.getAssociatedArtifact(), BranchState.DELETED.getValue(),
-                     BranchState.REBASELINED.getValue(), BranchType.PORT.getValue());
+                     newBranchData.getAssociatedArtifact(), BranchState.DELETED, BranchState.REBASELINED,
+                     BranchType.PORT.getValue());
                   if (portcount > 0) {
                      throw new OseeStateException("Existing port branch creation detected for [%s]",
                         newBranchData.getName());
@@ -188,7 +187,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
          BranchArchivedState.UNARCHIVED.getValue(),
          newBranchData.getAssociatedArtifact(),
          newBranchData.getBranchType().getValue(),
-         BranchState.CREATED.getValue(),
+         BranchState.CREATED,
          nextTransactionId,
          inheritAccessControl};
 

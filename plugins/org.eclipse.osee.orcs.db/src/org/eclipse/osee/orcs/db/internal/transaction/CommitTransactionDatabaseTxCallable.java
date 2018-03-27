@@ -90,7 +90,7 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
          TransactionReadable txRecord = createTransactionRecord(branch, author, comment, getNextTransactionId());
          writer.write(connection, txRecord, changeSet);
 
-         Object[] params = new Object[] {BranchState.MODIFIED.getValue(), branch, BranchState.CREATED.getValue()};
+         Object[] params = new Object[] {BranchState.MODIFIED, branch, BranchState.CREATED};
          getJdbcClient().runPreparedUpdate(connection, UPDATE_BRANCH_STATE, params);
 
          result = new TransactionResultImpl(txRecord, changeSet);

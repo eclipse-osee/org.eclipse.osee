@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -87,36 +88,25 @@ public class ArtifactExplorerUtil {
                   if (!new GlobalMenuPermissions(globalMenuHelper).isBranchReadable(branch)) {
                      warningStr = "Branch Read Access Denied.\nContact your administrator.";
                   } else {
-                     switch (BranchManager.getState(branch)) {
-                        case CREATION_IN_PROGRESS:
-                           warningStr = "Branch Creation in Progress, Please Wait.";
-                           break;
-                        case COMMIT_IN_PROGRESS:
-                           warningStr = "Branch Commit in Progress, Please Close Artifact Explorer.";
-                           break;
-                        case COMMITTED:
-                           warningStr = "Branch Committed, Please Close Artifact Explorer.";
-                           break;
-                        case DELETED:
-                           warningStr = "Branch Deleted, Please Close Artifact Explorer.";
-                           break;
-                        case REBASELINE_IN_PROGRESS:
-                           warningStr = "Branch Rebaseline in Progress, Please Wait.";
-                           break;
-                        case REBASELINED:
-                           warningStr = "Branch Rebaselined, Please Close Artifact Explorer.";
-                           break;
-                        case DELETE_IN_PROGRESS:
-                           warningStr = "Branch Delete in Progress, Please Close Artifact Explorer.";
-                           break;
-                        case PURGE_IN_PROGRESS:
-                           warningStr = "Branch Purge in Progress, Please Close Artifact Explorer.";
-                           break;
-                        case PURGED:
-                           warningStr = "Branch Purged, Please Close Artifact Explorer.";
-                           break;
-                        default:
-                           break;
+                     BranchState state = BranchManager.getState(branch);
+                     if (state == BranchState.CREATION_IN_PROGRESS) {
+                        warningStr = "Branch Creation in Progress, Please Wait.";
+                     } else if (state == BranchState.COMMIT_IN_PROGRESS) {
+                        warningStr = "Branch Commit in Progress, Please Close Artifact Explorer.";
+                     } else if (state == BranchState.COMMITTED) {
+                        warningStr = "Branch Committed, Please Close Artifact Explorer.";
+                     } else if (state == BranchState.DELETED) {
+                        warningStr = "Branch Deleted, Please Close Artifact Explorer.";
+                     } else if (state == BranchState.REBASELINE_IN_PROGRESS) {
+                        warningStr = "Branch Rebaseline in Progress, Please Wait.";
+                     } else if (state == BranchState.REBASELINED) {
+                        warningStr = "Branch Rebaselined, Please Close Artifact Explorer.";
+                     } else if (state == BranchState.DELETE_IN_PROGRESS) {
+                        warningStr = "Branch Delete in Progress, Please Close Artifact Explorer.";
+                     } else if (state == BranchState.PURGE_IN_PROGRESS) {
+                        warningStr = "Branch Purge in Progress, Please Close Artifact Explorer.";
+                     } else if (state == BranchState.PURGED) {
+                        warningStr = "Branch Purged, Please Close Artifact Explorer.";
                      }
                   }
                   if (warningStr != null) {

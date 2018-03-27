@@ -111,7 +111,7 @@ public final class BranchCommand implements ConsoleCommand {
          if (types != null && types.length > 0) {
             Set<BranchState> data = new HashSet<>();
             for (String type : types) {
-               BranchState typeEnum = BranchState.valueOf(type.toUpperCase());
+               BranchState typeEnum = BranchState.fromName(type.toUpperCase());
                data.add(typeEnum);
             }
             toReturn = data.toArray(new BranchState[data.size()]);

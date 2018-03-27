@@ -50,7 +50,7 @@ public class ChangeBranchFieldCallable extends AbstractDatastoreTxCallable<Void>
 
    public static Callable<Void> newBranchState(Log logger, OrcsSession session, JdbcClient jdbcClient, BranchId branch, BranchState branchState) {
       Conditions.checkNotNull(branchState, "branchState");
-      return new ChangeBranchFieldCallable(logger, session, jdbcClient, branch, "branch_state", branchState.getValue());
+      return new ChangeBranchFieldCallable(logger, session, jdbcClient, branch, "branch_state", branchState);
    }
 
    public static Callable<Void> newBranchType(Log logger, OrcsSession session, JdbcClient jdbcClient, BranchId branch, BranchType branchType) {

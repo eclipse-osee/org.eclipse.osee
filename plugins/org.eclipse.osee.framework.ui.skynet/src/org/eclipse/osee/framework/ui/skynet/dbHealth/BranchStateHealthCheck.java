@@ -103,7 +103,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
          monitor.setTaskName("Fixing Branch State data");
          List<Object[]> data = new ArrayList<>();
          for (BranchData branchData : itemsToFix) {
-            data.add(new Object[] {branchData.getBranchState().getValue(), branchData});
+            data.add(new Object[] {branchData.getBranchState(), branchData});
          }
          ConnectionHandler.runBatchUpdate("update osee_branch set branch_state = ? where branch_id = ?", data);
       }
@@ -179,7 +179,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
             int numberOfTxs = ConnectionHandler.getJdbcClient().fetch(0,
                "select count(1) from osee_tx_details where branch_id = ?", branchUuid);
             data.put(branchUuid, new BranchData(branchUuid, chStmt.getString("branch_name"),
-               BranchType.valueOf(branchType), BranchState.getBranchState(branchState), isArchived, numberOfTxs));
+               BranchType.valueOf(branchType), BranchState.valueOf(branchState), isArchived, numberOfTxs));
          }
       } finally {
          chStmt.close();

@@ -31,8 +31,8 @@ public class BranchIdSerializer extends SerializerBase<BranchId> {
    @Override
    public void serialize(BranchId branch, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
       jgen.writeStartObject();
-      jgen.writeNumberField("id", branch.getId());
-      jgen.writeNumberField("viewId", branch.getViewId().getId());
+      jgen.writeStringField("id", branch.getIdString());
+      jgen.writeStringField("viewId", branch.getViewId().getIdString());
       jgen.writeEndObject();
    }
 

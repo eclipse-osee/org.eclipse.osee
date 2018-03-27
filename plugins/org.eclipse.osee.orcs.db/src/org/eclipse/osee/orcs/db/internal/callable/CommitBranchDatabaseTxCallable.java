@@ -108,8 +108,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    }
 
    public synchronized void checkPreconditions() {
-      int count =
-         getJdbcClient().fetch(0, SELECT_SOURCE_BRANCH_STATE, sourceBranch, BranchState.COMMIT_IN_PROGRESS.getValue());
+      int count = getJdbcClient().fetch(0, SELECT_SOURCE_BRANCH_STATE, sourceBranch, BranchState.COMMIT_IN_PROGRESS);
       if (sourceBranch.getBranchState().isCommitInProgress() || sourceBranch.isArchived() || count > 0) {
          throw new OseeStateException("Commit completed or in progress for [%s]", sourceBranch);
       }
@@ -120,7 +119,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    }
 
    public void updateBranchState(BranchState state, BranchId branchId) {
-      getJdbcClient().runPreparedUpdate(UPDATE_SOURCE_BRANCH_STATE, state.getValue(), branchId);
+      getJdbcClient().runPreparedUpdate(UPDATE_SOURCE_BRANCH_STATE, state, branchId);
    }
 
    private void updatePreviousCurrentsOnDestinationBranch(JdbcConnection connection) {

@@ -123,7 +123,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       Long branchId = stmt.getLong("branch_id");
       String name = stmt.getString("branch_name");
       BranchType branchType = BranchType.valueOf(stmt.getInt("branch_type"));
-      BranchState branchState = BranchState.getBranchState(stmt.getInt("branch_state"));
+      BranchState branchState = BranchState.valueOf(stmt.getInt("branch_state"));
       boolean isArchived = BranchArchivedState.valueOf(stmt.getInt("archived")).isArchived();
       boolean inheritAccessControl = stmt.getInt("inherit_access_control") == 1;
       ArtifactId artifactId = ArtifactId.valueOf(stmt.getLong("associated_art_id"));

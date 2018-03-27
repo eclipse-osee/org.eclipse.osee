@@ -140,7 +140,7 @@ public class SqlObjectLoader {
          TransactionId parentTx = TransactionId.valueOf(stmt.getLong("parent_transaction_id"));
          BranchId parentBranch = BranchId.valueOf(stmt.getLong("parent_branch_id"));
          boolean isArchived = stmt.getInt("archived") == 1;
-         BranchState branchState = BranchState.getBranchState(stmt.getInt("branch_state"));
+         BranchState branchState = BranchState.valueOf(stmt.getInt("branch_state"));
          BranchType branchType = BranchType.valueOf(stmt.getInt("branch_type"));
          boolean inheritAccessControl = stmt.getInt("inherit_access_control") != 0;
          ArtifactId viewId = ArtifactId.SENTINEL;

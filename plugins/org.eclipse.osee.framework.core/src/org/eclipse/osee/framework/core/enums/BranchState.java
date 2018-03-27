@@ -10,30 +10,38 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+
 /**
  * @author Roberto E. Escobar
  */
-public enum BranchState {
-   CREATED(0),
-   MODIFIED(1),
-   COMMITTED(2),
-   REBASELINED(3),
-   DELETED(4),
-   REBASELINE_IN_PROGRESS(5),
-   COMMIT_IN_PROGRESS(6),
-   CREATION_IN_PROGRESS(7),
-   DELETE_IN_PROGRESS(8),
-   PURGE_IN_PROGRESS(9),
-   PURGED(10);
+public class BranchState extends NamedIdBase {
+   public static final BranchState CREATED = new BranchState(0, "CREATED");
+   public static final BranchState MODIFIED = new BranchState(1, "MODIFIED");
+   public static final BranchState COMMITTED = new BranchState(2, "COMMITTED");
+   public static final BranchState REBASELINED = new BranchState(3, "REBASELINED");
+   public static final BranchState DELETED = new BranchState(4, "DELETED");
+   public static final BranchState REBASELINE_IN_PROGRESS = new BranchState(5, "REBASELINE_IN_PROGRESS");
+   public static final BranchState COMMIT_IN_PROGRESS = new BranchState(6, "COMMIT_IN_PROGRESS");
+   public static final BranchState CREATION_IN_PROGRESS = new BranchState(7, "CREATION_IN_PROGRESS");
+   public static final BranchState DELETE_IN_PROGRESS = new BranchState(8, "DELETE_IN_PROGRESS");
+   public static final BranchState PURGE_IN_PROGRESS = new BranchState(9, "PURGE_IN_PROGRESS");
+   public static final BranchState PURGED = new BranchState(10, "PURGED");
+   private static final BranchState[] values = new BranchState[] {
+      CREATED,
+      MODIFIED,
+      COMMITTED,
+      REBASELINED,
+      DELETED,
+      REBASELINE_IN_PROGRESS,
+      COMMIT_IN_PROGRESS,
+      CREATION_IN_PROGRESS,
+      DELETE_IN_PROGRESS,
+      PURGE_IN_PROGRESS,
+      PURGED};
 
-   private final int value;
-
-   BranchState(int value) {
-      this.value = value;
-   }
-
-   public final int getValue() {
-      return value;
+   private BranchState(int id, String name) {
+      super(Long.valueOf(id), name);
    }
 
    public boolean isCommitInProgress() {
@@ -80,22 +88,19 @@ public enum BranchState {
       return this == BranchState.PURGE_IN_PROGRESS;
    }
 
-   public static BranchState getBranchState(int value) {
-      for (BranchState type : values()) {
-         if (type.getValue() == value) {
-            return type;
-         }
-      }
-      return null;
+   public static BranchState valueOf(int id) {
+      return NamedIdBase.valueOf(Long.valueOf(id), values);
    }
 
-   public boolean matches(BranchState... branchStates) {
-      for (BranchState branchState : branchStates) {
-         if (this == branchState) {
-            return true;
-         }
-      }
-      return false;
+   public static BranchState valueOf(String id) {
+      return NamedIdBase.valueOf(Long.valueOf(id), values);
    }
 
+   public static BranchState[] values() {
+      return values;
+   }
+
+   public static BranchState fromName(String name) {
+      return NamedIdBase.fromName(name, values);
+   }
 }

@@ -160,7 +160,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       if (Strings.isValid(branchStates)) {
          List<BranchState> branchStateVals = new LinkedList<>();
          for (String branchState : branchStates.split(",")) {
-            branchStateVals.add(BranchState.valueOf(branchState.toUpperCase()));
+            branchStateVals.add(BranchState.fromName(branchState.toUpperCase()));
          }
          options.setBranchStates(branchStateVals);
       }

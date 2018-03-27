@@ -41,7 +41,7 @@ public class WorkingBranchStateColumn extends AbstractBranchColumn {
 
    @Override
    String getColumnText(BranchId branch) {
-      return BranchManager.getState(branch).name();
+      return BranchManager.getState(branch).getName();
    }
 
 }

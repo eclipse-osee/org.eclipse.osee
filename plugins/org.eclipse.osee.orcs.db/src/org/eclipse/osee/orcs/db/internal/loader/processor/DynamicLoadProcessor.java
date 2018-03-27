@@ -174,7 +174,7 @@ public class DynamicLoadProcessor extends AbstractLoadProcessor<DynamicDataHandl
    }
 
    private BranchState getBranchState(JdbcStatement chStmt, String columnName) {
-      return BranchState.getBranchState(chStmt.getInt(columnName));
+      return BranchState.valueOf(chStmt.getInt(columnName));
    }
 
    private BranchArchivedState getBranchArchivedState(JdbcStatement chStmt, String columnName) {

@@ -289,7 +289,7 @@ public class BranchQuerySqlContextFactoryImplTest {
       assertEquals(0, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
-      assertEquals(CREATION_IN_PROGRESS.getValue(), iterator.next());
+      assertEquals(CREATION_IN_PROGRESS, iterator.next());
       assertEquals(ARCHIVED.getValue(), iterator.next());
    }
 
