@@ -44,7 +44,7 @@ public class UpdateBranchHandler extends CommandHandler {
 
    protected boolean isValid(IOseeBranch branch) {
       return !BranchManager.isParentSystemRoot(branch) && BranchManager.isEditable(
-         branch) && BranchManager.getType(branch).isOfType(BranchType.WORKING,
+         branch) && BranchManager.getType(branch).matches(BranchType.WORKING,
             BranchType.BASELINE) && !BranchManager.hasChildren(branch);
    }
 

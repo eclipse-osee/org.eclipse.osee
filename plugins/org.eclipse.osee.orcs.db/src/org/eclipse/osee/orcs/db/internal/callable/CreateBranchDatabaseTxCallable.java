@@ -132,7 +132,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
                   int portcount = jdbcClient.fetch(connection, 0,
                      "SELECT (1) FROM osee_branch WHERE associated_art_id = ? AND branch_state NOT IN (?, ?) AND branch_type = ?",
                      newBranchData.getAssociatedArtifact(), BranchState.DELETED, BranchState.REBASELINED,
-                     BranchType.PORT.getValue());
+                     BranchType.PORT);
                   if (portcount > 0) {
                      throw new OseeStateException("Existing port branch creation detected for [%s]",
                         newBranchData.getName());
@@ -186,7 +186,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
          sourceTx,
          BranchArchivedState.UNARCHIVED,
          newBranchData.getAssociatedArtifact(),
-         newBranchData.getBranchType().getValue(),
+         newBranchData.getBranchType(),
          BranchState.CREATED,
          nextTransactionId,
          inheritAccessControl};

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.branch.graph.utility;
 
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -24,22 +25,17 @@ public class GraphImageConstants {
    private GraphImageConstants() {
    }
 
-   @SuppressWarnings("incomplete-switch")
    public static Image getImage(BranchId branch) {
       Image image = null;
-      switch (BranchManager.getType(branch)) {
-         case SYSTEM_ROOT:
-            image = ImageManager.getImage(FrameworkImage.BRANCH_SYSTEM_ROOT);
-            break;
-         case BASELINE:
-            image = ImageManager.getImage(FrameworkImage.BRANCH_BASELINE);
-            break;
-         case WORKING:
-            image = ImageManager.getImage(FrameworkImage.BRANCH_WORKING);
-            break;
-         case MERGE:
-            image = ImageManager.getImage(FrameworkImage.BRANCH_MERGE);
-            break;
+      BranchType type = BranchManager.getType(branch);
+      if (type.equals(BranchType.SYSTEM_ROOT)) {
+         image = ImageManager.getImage(FrameworkImage.BRANCH_SYSTEM_ROOT);
+      } else if (type.equals(BranchType.BASELINE)) {
+         image = ImageManager.getImage(FrameworkImage.BRANCH_BASELINE);
+      } else if (type.equals(BranchType.WORKING)) {
+         image = ImageManager.getImage(FrameworkImage.BRANCH_WORKING);
+      } else if (type.equals(BranchType.MERGE)) {
+         image = ImageManager.getImage(FrameworkImage.BRANCH_MERGE);
       }
       return image;
    }

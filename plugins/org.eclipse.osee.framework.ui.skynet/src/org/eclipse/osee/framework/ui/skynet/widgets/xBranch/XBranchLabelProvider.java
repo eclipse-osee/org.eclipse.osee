@@ -140,7 +140,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
       } else if (cCol.equals(BranchXViewerFactory.branchState)) {
          return BranchManager.getState(branch).getName();
       } else if (cCol.equals(BranchXViewerFactory.branchType)) {
-         return BranchManager.getType(branch).name();
+         return BranchManager.getType(branch).getName();
       } else if (cCol.equals(BranchXViewerFactory.branchId)) {
          return branch.getIdString();
       } else if (cCol.equals(BranchXViewerFactory.branchId)) {

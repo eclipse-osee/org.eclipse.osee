@@ -156,7 +156,7 @@ public final class BranchData implements Cloneable {
    }
 
    public void setBranchType(BranchType branchType) {
-      this.backingData.put(BRANCH_TYPE, branchType.getValue());
+      this.backingData.put(BRANCH_TYPE, branchType);
    }
 
 }

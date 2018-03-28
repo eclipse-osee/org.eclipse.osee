@@ -776,7 +776,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             results.log("validateBranchId",
                String.format(
                   "Error: [%s][%d][%s] has Parent Branch Id attribute [%s][%s] that is a [%s] branch; should be a BASELINE branch",
-                  name.getName(), name.getId(), name, BranchManager.getType(branch).name(), parentBranchId, branch));
+                  name.getName(), name.getId(), name, BranchManager.getType(branch).getName(), parentBranchId, branch));
          }
       } catch (BranchDoesNotExist ex) {
          results.log("validateBranchId",

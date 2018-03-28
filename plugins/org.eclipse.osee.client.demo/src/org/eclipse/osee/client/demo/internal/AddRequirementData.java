@@ -90,7 +90,7 @@ public class AddRequirementData implements IDbInitializationTask {
             PermissionEnum.FULLACCESS);
 
          // need to update the branch type;
-         ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE, BranchType.BASELINE.getValue(), childBranch);
+         ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE, BranchType.BASELINE, childBranch);
          BranchManager.refreshBranches();
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);

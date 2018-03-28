@@ -41,7 +41,7 @@ public class WorkingBranchTypeColumn extends AbstractBranchColumn {
 
    @Override
    String getColumnText(BranchId branch) {
-      return BranchManager.getType(branch).name();
+      return BranchManager.getType(branch).getName();
    }
 
 }

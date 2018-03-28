@@ -120,7 +120,7 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
             PermissionEnum.FULLACCESS);
 
          // need to update the branch type;
-         ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE, BranchType.BASELINE.getValue(), childBranch);
+         ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE, BranchType.BASELINE, childBranch);
          BranchManager.refreshBranches();
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));

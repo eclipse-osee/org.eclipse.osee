@@ -10,26 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Ryan D. Brooks
  */
-public enum BranchType {
-   WORKING(0),
-   BASELINE(2),
-   MERGE(3),
-   SYSTEM_ROOT(4),
-   PORT(5);
+public class BranchType extends NamedIdBase {
+   public static final BranchType WORKING = new BranchType(0, "WORKING");
+   public static final BranchType BASELINE = new BranchType(2, "BASELINE");
+   public static final BranchType MERGE = new BranchType(3, "MERGE");
+   public static final BranchType SYSTEM_ROOT = new BranchType(4, "SYSTEM_ROOT");
+   public static final BranchType PORT = new BranchType(5, "PORT");
+   private static final BranchType[] values = new BranchType[] {WORKING, BASELINE, MERGE, SYSTEM_ROOT, PORT};
 
-   private final int value;
-
-   BranchType(int value) {
-      this.value = value;
-   }
-
-   public final int getValue() {
-      return value;
+   public BranchType(int id, String name) {
+      super(Long.valueOf(id), name);
    }
 
    public boolean isBaselineBranch() {
@@ -52,21 +47,19 @@ public enum BranchType {
       return this == BranchType.PORT;
    }
 
-   public boolean isOfType(BranchType... branchTypes) {
-      for (BranchType branchType : branchTypes) {
-         if (this == branchType) {
-            return true;
-         }
-      }
-      return false;
+   public static BranchType valueOf(int id) {
+      return NamedIdBase.valueOf(Long.valueOf(id), values);
    }
 
-   public static BranchType valueOf(int value) {
-      for (BranchType type : values()) {
-         if (type.getValue() == value) {
-            return type;
-         }
-      }
-      throw new OseeArgumentException("No branch type with value [%s]", value);
+   public static BranchType valueOf(String id) {
+      return NamedIdBase.valueOf(Long.valueOf(id), values);
+   }
+
+   public static BranchType[] values() {
+      return values;
+   }
+
+   public static BranchType fromName(String name) {
+      return NamedIdBase.fromName(name, values);
    }
 }

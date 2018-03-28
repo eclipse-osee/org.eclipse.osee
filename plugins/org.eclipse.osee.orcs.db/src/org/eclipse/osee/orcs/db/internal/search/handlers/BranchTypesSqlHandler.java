@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -53,11 +54,11 @@ public class BranchTypesSqlHandler extends SqlHandler<CriteriaBranchType> {
    public void addPredicates(AbstractSqlWriter writer) {
       Collection<BranchType> types = criteria.getTypes();
       if (types.size() > 1) {
-         Set<Integer> ids = new HashSet<>();
+         Set<Id> ids = new HashSet<>();
          for (BranchType type : types) {
-            ids.add(type.getValue());
+            ids.add(type);
          }
-         AbstractJoinQuery joinQuery = writer.writeIdJoin(ids);
+         AbstractJoinQuery joinQuery = writer.writeJoin(ids);
          writer.write(brAlias);
          writer.write(".branch_type = ");
          writer.write(jIdAlias);
@@ -68,7 +69,7 @@ public class BranchTypesSqlHandler extends SqlHandler<CriteriaBranchType> {
       } else {
          writer.write(brAlias);
          writer.write(".branch_type = ?");
-         writer.addParameter(types.iterator().next().getValue());
+         writer.addParameter(types.iterator().next());
       }
    }
 

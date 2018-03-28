@@ -36,7 +36,7 @@ public class OseeDatastoreMigrationResource extends AbstractJdbcMigrationResourc
    @Override
    public void addPlaceholders(Map<String, String> placeholders) {
       placeholders.put(TX_SEQ_PLACEHOLDER, OseeData.TRANSACTION_ID_SEQ);
-      placeholders.put(SYS_ROOT_TYPE_PLACEHOLDER, String.valueOf(BranchType.SYSTEM_ROOT.getValue()));
+      placeholders.put(SYS_ROOT_TYPE_PLACEHOLDER, BranchType.SYSTEM_ROOT.getIdString());
       placeholders.put(SYS_ROOT_STATE_PLACEHOLDER, BranchState.MODIFIED.getIdString());
       placeholders.put(SYS_ROOT_NAME_PLACEHOLDER, CoreBranches.SYSTEM_ROOT.getName());
       placeholders.put(SYS_ROOT_ID_PLACEHOLDER, SYSTEM_ROOT.getIdString());

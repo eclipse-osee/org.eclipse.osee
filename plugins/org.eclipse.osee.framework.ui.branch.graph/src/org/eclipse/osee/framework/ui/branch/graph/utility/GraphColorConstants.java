@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.branch.graph.utility;
 
 import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.branch.graph.model.BranchModel;
 import org.eclipse.swt.graphics.Color;
@@ -33,25 +34,20 @@ public class GraphColorConstants {
    private GraphColorConstants() {
    }
 
-   @SuppressWarnings("incomplete-switch")
    public static Color getBranchColor(BranchModel branchModel) {
       Color toReturn = ColorConstants.gray;
       if (branchModel.isDefaultBranch()) {
          toReturn = GraphColorConstants.CURRENT_BRANCH;
       } else {
-         switch (BranchManager.getType(branchModel.getBranch())) {
-            case BASELINE:
-               toReturn = GraphColorConstants.BASELINE_BRANCH;
-               break;
-            case MERGE:
-               toReturn = GraphColorConstants.MERGE_BRANCH;
-               break;
-            case SYSTEM_ROOT:
-               toReturn = GraphColorConstants.SYSTEM_ROOT_BRANCH;
-               break;
-            case WORKING:
-               toReturn = GraphColorConstants.WORKING_BRANCH_COLOR;
-               break;
+         BranchType type = BranchManager.getType(branchModel.getBranch());
+         if (type.equals(BranchType.BASELINE)) {
+            toReturn = GraphColorConstants.BASELINE_BRANCH;
+         } else if (type.equals(BranchType.MERGE)) {
+            toReturn = GraphColorConstants.MERGE_BRANCH;
+         } else if (type.equals(BranchType.SYSTEM_ROOT)) {
+            toReturn = GraphColorConstants.SYSTEM_ROOT_BRANCH;
+         } else if (type.equals(BranchType.WORKING)) {
+            toReturn = GraphColorConstants.WORKING_BRANCH_COLOR;
          }
       }
       return toReturn;

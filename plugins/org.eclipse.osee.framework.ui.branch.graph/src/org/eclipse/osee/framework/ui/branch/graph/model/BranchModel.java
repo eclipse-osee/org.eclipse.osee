@@ -176,7 +176,7 @@ public class BranchModel extends Node {
    @Override
    public String toString() {
       return String.format("Branch:[%s] Type:[%s] Children:[%s] TxNodes:[%s]", branch.getId(),
-         BranchManager.getType(branch).name(), children.size(), txs.size());
+         BranchManager.getType(branch).getName(), children.size(), txs.size());
    }
 
    public boolean areTxsVisible() {

@@ -53,7 +53,7 @@ public class BranchFilter implements Predicate<Branch> {
       if (!archivedState.matches(branch.isArchived())) {
          return false;
       }
-      if (branchTypes.length > 0 && !branch.getBranchType().isOfType(branchTypes)) {
+      if (branchTypes.length > 0 && !branch.getBranchType().matches(branchTypes)) {
          return false;
       }
       if (branchStates != null && !branch.getBranchState().matches(branchStates)) {
@@ -62,7 +62,7 @@ public class BranchFilter implements Predicate<Branch> {
       if (negatedBranchStates != null && branch.getBranchState().matches(negatedBranchStates)) {
          return false;
       }
-      if (negatedBranchTypes != null && branch.getBranchType().isOfType(negatedBranchTypes)) {
+      if (negatedBranchTypes != null && branch.getBranchType().matches(negatedBranchTypes)) {
          return false;
       }
       return true;

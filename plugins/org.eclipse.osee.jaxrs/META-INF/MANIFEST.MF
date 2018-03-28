@@ -11,6 +11,7 @@ Import-Package: javax.servlet,
  javax.ws.rs.core,
  javax.ws.rs.ext,
  org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util
 Export-Package: org.eclipse.osee.jaxrs,

@@ -89,7 +89,7 @@ public class ChangeBranchTypeDialog extends ListDialog {
       @Override
       public String getText(Object arg0) {
          BranchType type = (BranchType) arg0;
-         return type.name();
+         return type.getName();
       }
 
       @Override

@@ -206,8 +206,8 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
 
    @Override
    public void clearDataTable() {
-      getDatabaseService().runPreparedUpdate(getConnection(), String.format(
-         "DELETE FROM %s where NOT branch_type = " + BranchType.SYSTEM_ROOT.getValue(), getMetaData().getTableName()));
+      getDatabaseService().runPreparedUpdate(getConnection(), String.format("DELETE FROM %s where NOT branch_type = ?",
+         getMetaData().getTableName(), BranchType.SYSTEM_ROOT));
    }
 
    public void setConnection(JdbcConnection connection) {

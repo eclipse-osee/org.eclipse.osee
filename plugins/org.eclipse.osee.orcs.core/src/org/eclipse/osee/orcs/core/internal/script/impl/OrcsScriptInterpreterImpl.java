@@ -747,7 +747,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       private BranchType[] asBranchTypes(List<OsBranchType> values) {
          Set<BranchType> toReturn = new LinkedHashSet<>();
          for (OsBranchType value : values) {
-            BranchType type = BranchType.valueOf(value.getName());
+            BranchType type = BranchType.fromName(value.getName());
             toReturn.add(type);
          }
          return toReturn.toArray(new BranchType[toReturn.size()]);
