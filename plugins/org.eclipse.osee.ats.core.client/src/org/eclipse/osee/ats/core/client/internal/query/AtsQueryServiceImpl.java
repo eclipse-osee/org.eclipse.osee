@@ -350,4 +350,9 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    public ArtifactToken getHistoricalArtifactOrNull(ArtifactId artifact, TransactionToken transaction, DeletionFlag deletionFlag) {
       return ArtifactQuery.getHistoricalArtifactOrNull(artifact, transaction, deletionFlag);
    }
+
+   @Override
+   public ArtifactToken getArtifactByGuid(String guid) {
+      return ArtifactQuery.getArtifactFromId(guid, atsClient.getAtsBranch());
+   }
 }

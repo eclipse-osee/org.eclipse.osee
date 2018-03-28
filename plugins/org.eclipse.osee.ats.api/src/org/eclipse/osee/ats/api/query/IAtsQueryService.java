@@ -150,4 +150,9 @@ public interface IAtsQueryService {
 
    ArtifactToken getHistoricalArtifactOrNull(ArtifactId artifact, TransactionToken transaction, DeletionFlag deletionFlag);
 
+   /**
+    * This should be use sparingly and in many cases, only in database conversions as code moves away from guid
+    */
+   ArtifactToken getArtifactByGuid(String guid);
+
 }

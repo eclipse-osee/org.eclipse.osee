@@ -221,4 +221,10 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    public ArtifactToken getHistoricalArtifactOrNull(ArtifactId artifact, TransactionToken transaction, DeletionFlag deletionFlag) {
       throw new UnsupportedOperationException("Unsupported on the server");
    }
+
+   @Override
+   public ArtifactToken getArtifactByGuid(String guid) {
+      return orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andGuid(
+         guid).getResults().getAtMostOneOrNull();
+   }
 }
