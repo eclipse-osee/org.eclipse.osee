@@ -11,37 +11,17 @@
 package org.eclipse.osee.orcs.core.ds.criteria;
 
 import java.util.Collection;
-import java.util.Collections;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.Options;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaAuthorIds extends Criteria implements TxCriteria {
-   private final Collection<ArtifactId> authors;
-
+public final class CriteriaAuthorIds extends CriteriaMainTableField implements TxCriteria {
    public CriteriaAuthorIds(Collection<ArtifactId> authors) {
-      this.authors = authors;
+      super(authors);
    }
 
    public CriteriaAuthorIds(ArtifactId author) {
-      this.authors = Collections.singletonList(author);
-   }
-
-   @Override
-   public void checkValid(Options options) {
-      Conditions.checkNotNullOrEmpty(authors, "Author ids");
-   }
-
-   public Collection<ArtifactId> getIds() {
-      return authors;
-   }
-
-   @Override
-   public String toString() {
-      return "CriteriaAuthorIds [ids=" + authors + "]";
+      super(author);
    }
 }

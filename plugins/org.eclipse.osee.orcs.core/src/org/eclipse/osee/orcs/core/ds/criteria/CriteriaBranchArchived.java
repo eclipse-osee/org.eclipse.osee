@@ -12,34 +12,12 @@ package org.eclipse.osee.orcs.core.ds.criteria;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.Options;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaBranchArchived extends Criteria implements BranchCriteria {
-
-   private final Collection<BranchArchivedState> state;
-
-   public CriteriaBranchArchived(Collection<BranchArchivedState> state) {
-      super();
-      this.state = state;
+public final class CriteriaBranchArchived extends CriteriaMainTableField implements BranchCriteria {
+   public CriteriaBranchArchived(Collection<BranchArchivedState> states) {
+      super(states);
    }
-
-   public Collection<BranchArchivedState> getStates() {
-      return state;
-   }
-
-   @Override
-   public void checkValid(Options options) {
-      Conditions.checkNotNullOrEmpty(getStates(), "branch archived state");
-   }
-
-   @Override
-   public String toString() {
-      return "CriteriaBranchArchived [archivedState=" + state + "]";
-   }
-
 }

@@ -12,34 +12,12 @@ package org.eclipse.osee.orcs.core.ds.criteria;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.Options;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaBranchType extends Criteria implements BranchCriteria {
-
-   private final Collection<BranchType> types;
-
+public final class CriteriaBranchType extends CriteriaMainTableField implements BranchCriteria {
    public CriteriaBranchType(Collection<BranchType> types) {
-      super();
-      this.types = types;
+      super(types);
    }
-
-   public Collection<BranchType> getTypes() {
-      return types;
-   }
-
-   @Override
-   public void checkValid(Options options) {
-      Conditions.checkExpressionFailOnTrue(getTypes().isEmpty(), "Branch Types cannot be empty");
-   }
-
-   @Override
-   public String toString() {
-      return "CriteriaBranchType [types=" + types + "]";
-   }
-
 }

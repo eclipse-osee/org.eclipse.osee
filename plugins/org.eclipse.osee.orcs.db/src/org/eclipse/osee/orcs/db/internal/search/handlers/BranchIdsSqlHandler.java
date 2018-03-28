@@ -10,58 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import java.util.Collection;
-import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchIds;
-import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
-import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
-import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 
 /**
  * @author Roberto E. Escobar
  */
-public class BranchIdsSqlHandler extends SqlHandler<CriteriaBranchIds> {
-
-   private CriteriaBranchIds criteria;
-
-   private String brAlias;
-   private String jIdAlias;
-
-   @Override
-   public void setData(CriteriaBranchIds criteria) {
-      this.criteria = criteria;
-   }
-
-   @Override
-   public void addTables(AbstractSqlWriter writer) {
-      if (criteria.getIds().size() > 1) {
-         jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
-      }
-      brAlias = writer.getOrCreateTableAlias(TableEnum.BRANCH_TABLE);
-   }
-
-   @Override
-   public void addPredicates(AbstractSqlWriter writer) {
-      Collection<? extends BranchId> ids = criteria.getIds();
-      if (ids.size() > 1) {
-         AbstractJoinQuery joinQuery = writer.writeJoin(ids);
-         writer.write(brAlias);
-         writer.write(".branch_id = ");
-         writer.write(jIdAlias);
-         writer.write(".id AND ");
-         writer.write(jIdAlias);
-         writer.write(".query_id = ?");
-         writer.addParameter(joinQuery.getQueryId());
-      } else {
-         writer.write(brAlias);
-         writer.write(".branch_id = ?");
-         writer.addParameter(ids.iterator().next());
-      }
-   }
-
-   @Override
-   public int getPriority() {
-      return SqlHandlerPriority.BRANCH_ID.ordinal();
+public class BranchIdsSqlHandler extends MainTableFieldSqlHandler {
+   public BranchIdsSqlHandler() {
+      super(TableEnum.BRANCH_TABLE, "branch_id", SqlHandlerPriority.BRANCH_ID);
    }
 }

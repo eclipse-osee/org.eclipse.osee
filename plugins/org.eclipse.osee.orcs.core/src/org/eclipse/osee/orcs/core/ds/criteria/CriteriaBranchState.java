@@ -12,34 +12,12 @@ package org.eclipse.osee.orcs.core.ds.criteria;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.Options;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaBranchState extends Criteria implements BranchCriteria {
-
-   private final Collection<BranchState> states;
-
+public final class CriteriaBranchState extends CriteriaMainTableField implements BranchCriteria {
    public CriteriaBranchState(Collection<BranchState> states) {
-      super();
-      this.states = states;
+      super(states);
    }
-
-   public Collection<BranchState> getStates() {
-      return states;
-   }
-
-   @Override
-   public void checkValid(Options options) {
-      Conditions.checkExpressionFailOnTrue(getStates().isEmpty(), "Branch States cannot be empty");
-   }
-
-   @Override
-   public String toString() {
-      return "CriteriaBranchState [states=" + states + "]";
-   }
-
 }
