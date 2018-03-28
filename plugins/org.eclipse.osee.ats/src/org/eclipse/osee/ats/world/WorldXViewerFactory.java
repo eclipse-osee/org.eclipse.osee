@@ -165,6 +165,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          getAttriubuteConfigColumn(AtsColumnToken.TitleColumn),
          getColumnServiceColumn(AtsColumnToken.ActionableItemsColumn),
          getColumnServiceColumn(AtsColumnToken.AtsIdColumnShow),
+         getColumnServiceColumn(AtsColumnToken.WorkDefinitionColumn),
          CreatedDateColumnUI.getInstance(),
          TargetedVersionColumnUI.getInstance(),
          getColumnServiceColumn(AtsColumnToken.TeamColumn),

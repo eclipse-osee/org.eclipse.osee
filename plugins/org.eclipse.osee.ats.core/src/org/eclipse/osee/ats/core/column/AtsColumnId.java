@@ -50,6 +50,7 @@ public enum AtsColumnId implements IAtsColumnId {
    Type("ats.column.type"),
    Id("framework.id"),
    UnPlannedWork("ats.Unplanned Work"),
+   WorkDefinition("ats.column.workDefinition"),
    WorkPackageName("ats.column.workPackageName"),
    WorkPackageId("ats.column.workPackageId"),
    WorkPackageType("ats.column.workPackageType"),

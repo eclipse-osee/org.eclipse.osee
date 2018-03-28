@@ -48,6 +48,7 @@ import org.eclipse.osee.ats.core.column.TaskRelatedArtifactTypeColumn;
 import org.eclipse.osee.ats.core.column.TeamColumn;
 import org.eclipse.osee.ats.core.column.TitleColumn;
 import org.eclipse.osee.ats.core.column.TypeColumn;
+import org.eclipse.osee.ats.core.internal.column.WorkDefinitionColumn;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 
 /**
@@ -131,6 +132,8 @@ public class AtsColumnService implements IAtsColumnService {
             column = new IdColumn(atsApi);
          } else if (id.equals(AtsColumnId.Priority.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnToken.PriorityColumn, atsApi);
+         } else if (id.equals(AtsColumnId.WorkDefinition.getId())) {
+            column = new WorkDefinitionColumn(atsApi);
          } else if (id.equals(AtsColumnId.WorkPackageName.getId())) {
             column = new WorkPackageNameColumn(atsApi.getEarnedValueServiceProvider(), atsApi);
          } else if (id.equals(AtsColumnId.WorkPackageId.getId())) {
