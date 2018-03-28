@@ -32,11 +32,11 @@ public class TxData {
    private final BranchId branch;
    private final Long txId;
 
-   public TxData(BranchId branch, UserId authorId, Date timeStamp, String comment, int txType, int commitArtId, long txId) {
+   public TxData(BranchId branch, UserId authorId, Date timeStamp, String comment, TransactionDetailsType txType, int commitArtId, long txId) {
       this.authorId = authorId;
       this.timeStamp = timeStamp;
       this.comment = comment;
-      this.txType = TransactionDetailsType.toEnum(txType);
+      this.txType = txType;
       this.commitArtId = commitArtId;
       this.branch = branch;
       this.txId = txId;
@@ -121,7 +121,7 @@ public class TxData {
    }
 
    protected static TxData createTxData(TransactionRecord txId) {
-      return new TxData(txId.getBranch(), txId.getAuthor(), txId.getTimeStamp(), txId.getComment(),
-         txId.getTxType().getId(), txId.getCommit(), txId.getId());
+      return new TxData(txId.getBranch(), txId.getAuthor(), txId.getTimeStamp(), txId.getComment(), txId.getTxType(),
+         txId.getCommit(), txId.getId());
    }
 }

@@ -34,7 +34,7 @@ public class V0_9_2TxDetailsHandler extends AbstractSaxHandler {
    public void startElementFound(String uri, String localName, String qName, Attributes attributes) {
       if (localName.equals("entry")) {
          int txType = Integer.parseInt(attributes.getValue("tx_type"));
-         TransactionDetailsType detailsType = TransactionDetailsType.toEnum(txType);
+         TransactionDetailsType detailsType = TransactionDetailsType.valueOf(txType);
          if (detailsType.isBaseline()) {
             Long branchUuid = Long.parseLong(attributes.getValue("branch_id"));
             Integer baseTransaction = Integer.parseInt(attributes.getValue("transaction_id"));

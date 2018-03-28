@@ -182,7 +182,7 @@ public class DynamicLoadProcessor extends AbstractLoadProcessor<DynamicDataHandl
    }
 
    private TransactionDetailsType getTxType(JdbcStatement chStmt, String columnName) {
-      return TransactionDetailsType.toEnum(chStmt.getInt(columnName));
+      return TransactionDetailsType.valueOf(chStmt.getInt(columnName));
    }
 
    private ModificationType getModType(JdbcStatement chStmt, String columnName) {

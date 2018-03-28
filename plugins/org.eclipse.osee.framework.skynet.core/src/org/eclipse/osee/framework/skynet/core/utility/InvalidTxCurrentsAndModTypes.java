@@ -183,7 +183,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
          checkForCancelledStatus(monitor);
          ModificationType modType = ModificationType.valueOf(stmt.getInt("mod_type"));
          TxChange txCurrent = TxChange.valueOf(stmt.getInt("tx_current"));
-         TransactionDetailsType type = TransactionDetailsType.toEnum(stmt.getInt("tx_type"));
+         TransactionDetailsType type = TransactionDetailsType.valueOf(stmt.getInt("tx_type"));
          ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
          Address address =
             new Address(type.isBaseline(), BranchId.valueOf(stmt.getLong("branch_id")), stmt.getInt(columnName),

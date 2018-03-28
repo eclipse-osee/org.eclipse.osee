@@ -159,7 +159,7 @@ public class TransactionRecordTest {
          String comment = GUID.create();
          Date time = new Date();
          int commitArtId = index * 37;
-         TransactionDetailsType txType = TransactionDetailsType.toEnum(index % TransactionDetailsType.values().length);
+         TransactionDetailsType txType = TransactionDetailsType.valueOf(index % TransactionDetailsType.values.length);
          data.add(new Object[] {transactionNumber, branch, comment, time, DemoUsers.Joe_Smith, commitArtId, txType});
       }
       return data;

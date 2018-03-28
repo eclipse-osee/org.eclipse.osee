@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxType;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -53,11 +54,11 @@ public class TxTypesSqlHandler extends SqlHandler<CriteriaTxType> {
    public void addPredicates(AbstractSqlWriter writer) {
       Collection<TransactionDetailsType> types = criteria.getTypes();
       if (types.size() > 1) {
-         Set<Integer> ids = new HashSet<>();
+         Set<Id> ids = new HashSet<>();
          for (TransactionDetailsType type : types) {
-            ids.add(type.getId());
+            ids.add(type);
          }
-         AbstractJoinQuery joinQuery = writer.writeIdJoin(ids);
+         AbstractJoinQuery joinQuery = writer.writeJoin(ids);
          writer.write(txAlias);
          writer.write(".tx_type = ");
          writer.write(jIdAlias);

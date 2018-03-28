@@ -158,7 +158,7 @@ public class SqlObjectLoader {
       Consumer<JdbcStatement> stmtConsumer = stmt -> {
          TransactionDataImpl tx = new TransactionDataImpl(stmt.getLong("transaction_id"));
          tx.setBranch(BranchId.valueOf(stmt.getLong("branch_id")));
-         tx.setTxType(TransactionDetailsType.toEnum(stmt.getInt("tx_type")));
+         tx.setTxType(TransactionDetailsType.valueOf(stmt.getInt("tx_type")));
          tx.setComment(stmt.getString("osee_comment"));
          tx.setDate(stmt.getTimestamp("time"));
          tx.setAuthor(UserId.valueOf(stmt.getLong("author")));

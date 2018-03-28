@@ -182,7 +182,7 @@ public final class TransactionManager {
       UserId authorArtId = UserId.valueOf(stmt.getLong("author"));
       Integer commitArtId = stmt.getInt("commit_art_id");
       Long buildId = stmt.getLong("build_id");
-      TransactionDetailsType txType = TransactionDetailsType.toEnum(stmt.getInt("tx_type"));
+      TransactionDetailsType txType = TransactionDetailsType.valueOf(stmt.getInt("tx_type"));
       return new TransactionRecord(transactionNumber, branch, comment, timestamp, authorArtId, commitArtId, txType,
          buildId);
    }

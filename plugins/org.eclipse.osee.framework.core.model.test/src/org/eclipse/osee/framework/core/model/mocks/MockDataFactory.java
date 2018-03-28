@@ -71,7 +71,7 @@ public final class MockDataFactory {
 
    public static TransactionRecord createTransaction(int index, long branchUuid) {
       TransactionDetailsType type =
-         TransactionDetailsType.values()[Math.abs(index % TransactionDetailsType.values().length)];
+         TransactionDetailsType.values[Math.abs(index % TransactionDetailsType.values.length)];
       int value = index;
       if (value == 0) {
          value++;
