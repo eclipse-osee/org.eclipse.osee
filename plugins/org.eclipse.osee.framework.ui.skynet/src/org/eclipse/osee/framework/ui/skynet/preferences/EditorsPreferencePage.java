@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
@@ -61,7 +62,12 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
    }
 
    public static boolean isIncludeAttributeTabOnArtifactEditor() {
-      return UserManager.getBooleanSetting(ADMIN_INCLUDE_ATTRIBUTE_TAB_ON_ARTIFACT_EDITOR);
+      return UserManager.getBooleanSetting(ADMIN_INCLUDE_ATTRIBUTE_TAB_ON_ARTIFACT_EDITOR) || isDemoDb();
+   }
+
+   private static boolean isDemoDb() {
+      String dbType = OseeInfo.getValue(OseeInfo.DB_TYPE_KEY);
+      return "demo".equals(dbType);
    }
 
    public static boolean isUseExternalCompareEditorForText() {

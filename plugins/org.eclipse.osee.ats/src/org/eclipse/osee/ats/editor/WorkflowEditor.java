@@ -60,6 +60,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
@@ -369,7 +370,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    private void createAttributesTab() {
       try {
-         if (!AtsClientService.get().getUserService().isAtsAdmin()) {
+         if (!AtsClientService.get().getUserService().isAtsAdmin() && !isDemoDb()) {
             return;
          }
 
@@ -415,6 +416,11 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
+   }
+
+   private static boolean isDemoDb() {
+      String dbType = OseeInfo.getValue(OseeInfo.DB_TYPE_KEY);
+      return "demo".equals(dbType);
    }
 
    private ToolBar createToolBar(Composite parent) {
