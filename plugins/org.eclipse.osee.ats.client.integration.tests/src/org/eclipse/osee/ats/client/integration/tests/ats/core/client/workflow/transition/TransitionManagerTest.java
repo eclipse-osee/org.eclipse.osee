@@ -312,9 +312,8 @@ public class TransitionManagerTest {
       AtsClientService.get().getWorkDefinitionService().clearCaches();
 
       transMgr.handleTransitionValidation(results);
-      String resultsStr = results.toString();
-      Assert.assertTrue(resultsStr, results.contains("[Estimated Hours] is required for transition"));
-      Assert.assertTrue(resultsStr, results.contains("[Work Package] is required for transition"));
+      Assert.assertTrue(results.toString(), results.contains("[Estimated Hours] is required for transition"));
+      Assert.assertTrue(results.toString(), results.contains("[Work Package] is required for transition"));
    }
 
    @org.junit.Test

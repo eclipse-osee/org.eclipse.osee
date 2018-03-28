@@ -12,15 +12,13 @@ package org.eclipse.osee.ats.api.agile;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.TransactionId;
 
 /**
  * @author Donald G. Dunne
  */
 public class JaxAgileItem extends JaxAgileObject {
 
-   private List<Long> ids = new ArrayList<>();
-   private List<TransactionId> transactionIds = new ArrayList<>();
+   private final List<Long> ids = new ArrayList<>();
    private final List<Long> features = new ArrayList<>();
    private long sprintId = 0;
    private long backlogId = 0;
@@ -101,18 +99,6 @@ public class JaxAgileItem extends JaxAgileObject {
 
    public String getToState() {
       return toState;
-   }
-
-   public List<TransactionId> getTransactionIds() {
-      return transactionIds;
-   }
-
-   public void setTransactionIds(List<TransactionId> transactionIds) {
-      this.transactionIds = transactionIds;
-   }
-
-   public void setIds(List<Long> ids) {
-      this.ids = ids;
    }
 
 }

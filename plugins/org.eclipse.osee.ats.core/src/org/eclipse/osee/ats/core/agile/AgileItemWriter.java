@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -60,23 +59,6 @@ public class AgileItemWriter {
             atsApi.getStoreService().createAtsChangeSet("Update new Agile Item", AtsCoreUsers.SYSTEM_USER);
          if (Strings.isValid(newItem.getToState())) {
             List<IAtsWorkItem> workItems = getWorkItems();
-
-            // check for changed items first if transaction ids were returned
-            if (!newItem.getTransactionIds().isEmpty()) {
-               TransactionId[] transactionIds =
-                  newItem.getTransactionIds().toArray(new TransactionId[newItem.getTransactionIds().size()]);
-               int count = 0;
-               for (IAtsWorkItem workItem : workItems) {
-                  TransactionId oldTransId = transactionIds[count++];
-                  if (oldTransId.notEqual(atsApi.getStoreService().getTransactionId(workItem))) {
-                     result.getResults().errorf("Work Item [%s] is out of date, please reload.",
-                        workItem.toStringWithId());
-                  }
-               }
-               if (result.isErrors()) {
-                  return result;
-               }
-            }
 
             for (IAtsWorkItem workItem : workItems) {
                // just assignee change
@@ -167,10 +149,7 @@ public class AgileItemWriter {
          }
 
          if (!changes.isEmpty()) {
-            TransactionId transactionId = changes.execute();
-            if (transactionId.isValid()) {
-               newItem.setTransactionIds(Arrays.asList(transactionId));
-            }
+            changes.execute();
          }
       } catch (Exception ex) {
          result.getResults().errorf("Error Updating Work Items [%s]", Lib.exceptionToString(ex));

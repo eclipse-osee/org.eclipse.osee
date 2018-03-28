@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.api.agile.kanban;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.TransactionId;
 
 /**
  * @author Donald G. Dunne
@@ -26,15 +25,6 @@ public class JaxKbTask {
    private String branchGuid;
    private boolean canEdit;
    private String artifactType;
-   private TransactionId transactionId;
-
-   public TransactionId getTransactionId() {
-      return transactionId;
-   }
-
-   public void setTransactionId(TransactionId transactionId) {
-      this.transactionId = transactionId;
-   }
 
    public String getName() {
       return name;

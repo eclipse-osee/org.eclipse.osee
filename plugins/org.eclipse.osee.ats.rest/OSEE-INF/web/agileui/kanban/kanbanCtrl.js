@@ -52,7 +52,6 @@ angular
 
 									var _data = {};
 									_data.ids = [ data.guid ];
-									_data.transactionIds = [ _tasks.taskIdToTransId[data.guid] ];
 									_data.toStateUsers = [ toAssigneeId ];
 									_data.toState = toState;
 
@@ -102,13 +101,6 @@ angular
 														assigneeNameToTasksIds[name] = entry.taskIds;
 														count += entry.taskIds.length;
 													}
-													
-													var taskIdToTransId = [];
-													for (var taskId in _tasks.tasks) {
-														var task = _tasks.tasks[taskId];
-														taskIdToTransId[task.guid] = task.transactionId;
-													}
-													_tasks.taskIdToTransId = taskIdToTransId;
 
 													var assignees = _
 															.keys(assigneeNameToTasksIds);
@@ -162,7 +154,7 @@ angular
 													} else {
 														updateTask(taskId,
 																fromState,
-																toState, data);
+																toState);
 														var toTd = document
 																.getElementById(idDropedToTd);
 														var card = document
@@ -240,7 +232,7 @@ var getTasksFor = function(taskState, assignee) {
 /*
  * Updates model
  */
-var updateTask = function(taskId, oldState, newState, results) {
+var updateTask = function(taskId, oldState, newState) {
 
 	var tasksForOldState = _tasks.states[oldState];
 	var index = tasksForOldState.indexOf(taskId);
@@ -250,10 +242,6 @@ var updateTask = function(taskId, oldState, newState, results) {
 	_tasks.states[oldState].splice(index, 1)
 	_tasks.states[newState].push(taskId);
 
-    // update transactionId so can move again
-	var task = _tasks.tasks[taskId];
-	task.transactionId = results.jaxAgileItem.transactionIds[0];
-	
 }
 
 /*
