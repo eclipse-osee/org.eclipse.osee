@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -23,6 +22,7 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAuthorIds;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaCommitIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxGetPrior;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIds;
 import org.eclipse.osee.orcs.search.Operator;
@@ -39,10 +39,6 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
    public TxQueryBuilderImpl(TransactionCriteriaFactory criteriaFactory, QueryData queryData) {
       this.criteriaFactory = criteriaFactory;
       this.queryData = queryData;
-   }
-
-   private QueryData getQueryData() {
-      return queryData;
    }
 
    private Options getOptions() {
@@ -129,21 +125,18 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
    }
 
    @Override
-   public T andCommitIds(Integer... id) {
-      return andCommitIds(Arrays.asList(id));
-   }
-
-   @Override
    public T andNullCommitId() {
-      Collection<Integer> aNull = new ArrayList<>();
-      aNull.add(null);
-      return andCommitIds(aNull);
+      return andCommitId(null);
    }
 
    @Override
-   public T andCommitIds(Collection<Integer> ids) {
-      Criteria criteria = criteriaFactory.newByCommitId(ids);
-      return addAndCheck(queryData, criteria);
+   public T andCommitIds(Collection<ArtifactId> ids) {
+      return addAndCheck(queryData, new CriteriaCommitIds(ids));
+   }
+
+   @Override
+   public T andCommitId(ArtifactId id) {
+      return addAndCheck(queryData, new CriteriaCommitIds(id));
    }
 
    @Override

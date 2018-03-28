@@ -54,9 +54,9 @@ public interface TxQueryBuilder<T> {
 
    T andAuthorIds(Collection<ArtifactId> authors);
 
-   T andCommitIds(Integer... id);
+   T andCommitId(ArtifactId id);
 
-   T andCommitIds(Collection<Integer> ids);
+   T andCommitIds(Collection<ArtifactId> ids);
 
    T andNullCommitId();
 

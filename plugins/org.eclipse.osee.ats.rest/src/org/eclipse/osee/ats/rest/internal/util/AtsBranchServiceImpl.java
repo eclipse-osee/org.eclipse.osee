@@ -20,8 +20,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -129,7 +129,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    public Collection<TransactionRecord> getCommittedArtifactTransactionIds(IAtsTeamWorkflow teamWf) {
       ArtifactId artId = ArtifactId.valueOf(teamWf.getId());
       if (!commitArtifactIdMap.containsKey(artId)) {
-         txQuery.andCommitIds(teamWf.getId().intValue());
+         txQuery.andCommitId(teamWf.getArtifactId());
          txQuery.getResults().forEach(
             tx -> commitArtifactIdMap.put(artId, new TransactionRecord(tx.getId(), tx.getBranch(), tx.getComment(),
                tx.getDate(), tx.getAuthor(), tx.getCommitArt().getId().intValue(), tx.getTxType(), tx.getBuildId())));

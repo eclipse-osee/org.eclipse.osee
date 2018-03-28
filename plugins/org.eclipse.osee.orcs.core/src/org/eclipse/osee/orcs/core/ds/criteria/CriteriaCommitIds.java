@@ -11,6 +11,8 @@
 package org.eclipse.osee.orcs.core.ds.criteria;
 
 import java.util.Collection;
+import java.util.Collections;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
@@ -20,11 +22,14 @@ import org.eclipse.osee.orcs.core.ds.Options;
  */
 public class CriteriaCommitIds extends Criteria {
 
-   private final Collection<Integer> ids;
+   private final Collection<ArtifactId> ids;
 
-   public CriteriaCommitIds(Collection<Integer> ids) {
-      super();
+   public CriteriaCommitIds(Collection<ArtifactId> ids) {
       this.ids = ids;
+   }
+
+   public CriteriaCommitIds(ArtifactId id) {
+      this(Collections.singleton(id));
    }
 
    @Override
@@ -32,7 +37,7 @@ public class CriteriaCommitIds extends Criteria {
       Conditions.checkNotNullOrEmpty(ids, "Author ids");
    }
 
-   public Collection<Integer> getIds() {
+   public Collection<ArtifactId> getIds() {
       return ids;
    }
 

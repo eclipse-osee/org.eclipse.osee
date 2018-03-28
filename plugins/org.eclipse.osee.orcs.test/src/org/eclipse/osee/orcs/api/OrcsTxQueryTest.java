@@ -391,7 +391,7 @@ public class OrcsTxQueryTest {
       assertTxExists(transactions, tx5);
 
       query = factory.transactionQuery();
-      query.andCommitIds(OseeSystem.getId().intValue(), 1);
+      query.andCommitIds(Arrays.asList(OseeSystem, ArtifactId.valueOf(1)));
       results = query.getResults();
       assertEquals(0, results.size());
       assertEquals(0, query.getCount());
@@ -409,9 +409,8 @@ public class OrcsTxQueryTest {
        * null not allowed in multiple argument case --
        */
       query = factory.transactionQuery();
-      query.andCommitIds(null, OseeSystem.getId().intValue(), 1);
+      query.andCommitIds(Arrays.asList(null, OseeSystem));
       results = query.getResults();
-
    }
 
    @Test

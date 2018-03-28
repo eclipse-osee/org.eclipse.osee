@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaCommitIds;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -49,12 +50,12 @@ public class TxCommitArtIdSqlHandler extends SqlHandler<CriteriaCommitIds> {
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      Collection<Integer> ids = criteria.getIds();
+      Collection<ArtifactId> ids = criteria.getIds();
       if (ids.size() > 1) {
          if (ids.contains(null)) {
             throw new OseeArgumentException("cannot specify null commit id as part of a multiple value request");
          }
-         AbstractJoinQuery joinQuery = writer.writeIdJoin(ids);
+         AbstractJoinQuery joinQuery = writer.writeJoin(ids);
          writer.write(txdAlias);
          writer.write(".commit_art_id = ");
          writer.write(jIdAlias);
@@ -63,7 +64,7 @@ public class TxCommitArtIdSqlHandler extends SqlHandler<CriteriaCommitIds> {
          writer.write(".query_id = ?");
          writer.addParameter(joinQuery.getQueryId());
       } else {
-         Integer theValue = ids.iterator().next();
+         ArtifactId theValue = ids.iterator().next();
          writer.write(txdAlias);
          if (theValue == null) {
             writer.write(".commit_art_id is null");

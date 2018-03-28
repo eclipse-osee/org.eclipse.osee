@@ -73,8 +73,10 @@ public class TxQuerySqlContextFactoryImplTest {
    private static final Criteria IDS_WITH_OPERATOR = idWithOperator(Operator.LESS_THAN, 1);
    private static final Criteria DATE_WITH_OPERATOR =
       dateWithOperator(Operator.LESS_THAN, Timestamp.valueOf("2013-05-06 12:34:56"));
-   private static final Criteria AUTHORS = byAuthorId(Arrays.asList(ArtifactId.valueOf(1), ArtifactId.valueOf(2)));
-   private static final Criteria COMMITS = byCommitId(Arrays.asList(new Integer(1), new Integer(2)));
+   private static final Collection<ArtifactId> artifactIds =
+      Arrays.asList(ArtifactId.valueOf(1), ArtifactId.valueOf(2));
+   private static final Criteria AUTHORS = new CriteriaAuthorIds(artifactIds);
+   private static final Criteria COMMITS = new CriteriaCommitIds(artifactIds);
 
    // @formatter:off
    @Rule public TestRule integrationRule = integrationRule(this);
@@ -302,13 +304,5 @@ public class TxQuerySqlContextFactoryImplTest {
 
    private static Criteria dateWithOperator(Operator op, Timestamp t) {
       return new CriteriaDateWithOperator(op, t);
-   }
-
-   private static Criteria byAuthorId(Collection<ArtifactId> ids) {
-      return new CriteriaAuthorIds(ids);
-   }
-
-   private static Criteria byCommitId(Collection<Integer> ids) {
-      return new CriteriaCommitIds(ids);
    }
 }
