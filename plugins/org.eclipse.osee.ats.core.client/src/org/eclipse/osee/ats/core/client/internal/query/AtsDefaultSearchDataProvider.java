@@ -25,6 +25,7 @@ public class AtsDefaultSearchDataProvider implements IAtsSearchDataProvider {
    @Override
    public AtsSearchData fromJson(String namespace, String jsonValue) {
       try {
+         jsonValue = convertFrom25To26(jsonValue);
          return JsonUtil.getMapper().readValue(jsonValue, AtsSearchData.class);
       } catch (Exception ex) {
          throw new OseeArgumentException(ex, "Unable to read AtsSearchData for [%s]", jsonValue);

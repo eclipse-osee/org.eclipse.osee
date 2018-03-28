@@ -23,4 +23,18 @@ public interface IAtsSearchDataProvider {
 
    List<String> getSupportedNamespaces();
 
+   default String convertFrom25To26(String jsonValue) {
+      // for backward compatibility with 0.25 release line
+      // convert all attributes and remove this upon 26.0 release
+      jsonValue = jsonValue.replaceAll("\"uuid\"", "\"id\"");
+      jsonValue = jsonValue.replaceAll("\"teamDefUuids\"", "\"teamDefIds\"");
+      jsonValue = jsonValue.replaceAll("\"aiUuids\"", "\"aiIds\"");
+      jsonValue = jsonValue.replaceAll("\"versionUuid\"", "\"versionId\"");
+      jsonValue = jsonValue.replaceAll("\"programUuid\"", "\"programId\"");
+      jsonValue = jsonValue.replaceAll("\"insertionUuid\"", "\"insertionId\"");
+      jsonValue = jsonValue.replaceAll("\"insertionActivityUuid\"", "\"insertionActivityId\"");
+      jsonValue = jsonValue.replaceAll("\"workPackageUuid\"", "\"workPackageId\"");
+      return jsonValue;
+   }
+
 }
