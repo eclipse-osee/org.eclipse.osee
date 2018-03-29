@@ -90,7 +90,7 @@ public class WorkItemArrayJsonWriter implements MessageBodyWriter<WorkItemArray>
          writer.writeArrayFieldStart("workItems");
          for (IAtsWorkItem workItem : workItemArray.getWorkItems()) {
             WorkItemJsonWriter.addWorkItem(atsApi, orcsApi, workItem, annotations, writer,
-               matches(IdentityView.class, annotations), false, getAttributeTypes(), Collections.emptyList());
+               matches(IdentityView.class, annotations), getAttributeTypes(), Collections.emptyList());
          }
          writer.writeEndArray();
          writer.writeEndObject();

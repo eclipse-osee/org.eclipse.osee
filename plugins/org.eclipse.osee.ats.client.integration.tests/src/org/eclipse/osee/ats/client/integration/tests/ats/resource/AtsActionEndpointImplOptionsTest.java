@@ -29,7 +29,7 @@ public class AtsActionEndpointImplOptionsTest extends AbstractRestTest {
    @Test
    public void testAtsActionsWriteWithGammasRestCall() {
       String url =
-         "/ats/action/" + DemoUtil.getSawCodeCommittedWf().getIdString() + "/details?" + WorkItemWriterOptions.WriteWithGammas.name() + "=true";
+         "/ats/action/" + DemoUtil.getSawCodeCommittedWf().getIdString() + "/details?" + WorkItemWriterOptions.ValuesWithIds.name() + "=true";
       ;
       JsonNode action = testActionRestCall(url, 1);
       Assert.assertEquals(action.get("AtsId").asText(), action.get("ats.Id").get("value").asText());
@@ -40,7 +40,7 @@ public class AtsActionEndpointImplOptionsTest extends AbstractRestTest {
    @Test
    public void testAtsActionsFieldsAsIdsRestCall() {
       String url =
-         "/ats/action/" + DemoUtil.getSawCodeCommittedWf().getIdString() + "/details?" + WorkItemWriterOptions.FieldsAsIds.name() + "=true";
+         "/ats/action/" + DemoUtil.getSawCodeCommittedWf().getIdString() + "/details?" + WorkItemWriterOptions.KeysAsIds.name() + "=true";
       JsonNode action = testActionRestCall(url, 1);
       Assert.assertEquals(action.get("AtsId").asText(), action.get("1152921504606847877").asText());
       Assert.assertFalse(Strings.isNumeric(action.get("CreatedDate").asText()));
@@ -68,7 +68,7 @@ public class AtsActionEndpointImplOptionsTest extends AbstractRestTest {
    @Test
    public void testAtsActionsFieldsAsIdsAndDatesAsLong() {
       String url =
-         "/ats/action/" + DemoUtil.getSawCodeCommittedWf().getIdString() + "/details?" + WorkItemWriterOptions.FieldsAsIds.name() + "=true&" + WorkItemWriterOptions.DatesAsLong.name() + "=true";
+         "/ats/action/" + DemoUtil.getSawCodeCommittedWf().getIdString() + "/details?" + WorkItemWriterOptions.KeysAsIds.name() + "=true&" + WorkItemWriterOptions.DatesAsLong.name() + "=true";
       JsonNode action = testActionRestCall(url, 1);
 
       // FieldsAsIds should replace attr type names with id as the field

@@ -102,31 +102,31 @@ public class WorkItemsJsonWriter implements MessageBodyWriter<Collection<IAtsWor
          writer.writeStartArray();
          MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters(true);
          List<WorkItemWriterOptions> options = new LinkedList<>();
-         if (queryParameters.containsKey(WorkItemWriterOptions.FieldsAsIds.name()) && queryParameters.getFirst(
-            WorkItemWriterOptions.FieldsAsIds.name()).equals("true")) {
-            options.add(WorkItemWriterOptions.FieldsAsIds);
+         boolean valuesWithIds = false;
+         if (queryParameters.containsKey(WorkItemWriterOptions.KeysAsIds.name()) && queryParameters.getFirst(
+            WorkItemWriterOptions.KeysAsIds.name()).equals("true")) {
+            options.add(WorkItemWriterOptions.KeysAsIds);
          }
          if (queryParameters.containsKey(WorkItemWriterOptions.DatesAsLong.name()) && queryParameters.getFirst(
             WorkItemWriterOptions.DatesAsLong.name()).equals("true")) {
             options.add(WorkItemWriterOptions.DatesAsLong);
          }
-         boolean writeWithGammas = false;
-         if (queryParameters.containsKey(WorkItemWriterOptions.WriteWithGammas.name()) && queryParameters.getFirst(
-            WorkItemWriterOptions.WriteWithGammas.name()).equals("true")) {
-            writeWithGammas = true;
+         if (queryParameters.containsKey(WorkItemWriterOptions.ValuesWithIds.name()) && queryParameters.getFirst(
+            WorkItemWriterOptions.ValuesWithIds.name()).equals("true")) {
+            options.add(WorkItemWriterOptions.ValuesWithIds);
+            valuesWithIds = true;
          }
-         boolean writeRelatedAsTokens = false;
          if (queryParameters.containsKey(WorkItemWriterOptions.WriteRelatedAsTokens.name()) && queryParameters.getFirst(
             WorkItemWriterOptions.WriteRelatedAsTokens.name()).equals("true")) {
-            writeRelatedAsTokens = true;
+            options.add(WorkItemWriterOptions.WriteRelatedAsTokens);
          }
          for (IAtsWorkItem workItem : workItems) {
-            if (writeWithGammas) {
-               WorkItemJsonWriter.addWorkItemWithGammas(atsApi, orcsApi, workItem, annotations, writer,
-                  matches(IdentityView.class, annotations), writeRelatedAsTokens, options);
+            if (valuesWithIds) {
+               WorkItemJsonWriter.addWorkItemWithIds(atsApi, orcsApi, workItem, annotations, writer,
+                  matches(IdentityView.class, annotations), options);
             } else {
                WorkItemJsonWriter.addWorkItem(atsApi, orcsApi, workItem, annotations, writer,
-                  matches(IdentityView.class, annotations), writeRelatedAsTokens, getAttributeTypes(), options);
+                  matches(IdentityView.class, annotations), getAttributeTypes(), options);
             }
          }
          writer.writeEndArray();

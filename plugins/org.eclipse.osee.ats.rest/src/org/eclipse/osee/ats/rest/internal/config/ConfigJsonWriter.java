@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.JsonUtil;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
@@ -236,7 +237,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
    public static void addAttributeData(JsonGenerator writer, AttributeTypes attributeTypes, ArtifactReadable artifact, List<WorkItemWriterOptions> options, AtsApi atsApi, OrcsApi orcsApi) throws IOException, JsonGenerationException, JsonProcessingException {
       Collection<AttributeTypeToken> attrTypes = attributeTypes.getAll();
       ResultSet<? extends AttributeReadable<Object>> attributes = artifact.getAttributes();
-      boolean fieldsAsIds = options.contains(WorkItemWriterOptions.FieldsAsIds);
+      boolean fieldsAsIds = options.contains(WorkItemWriterOptions.KeysAsIds);
       boolean datesAsLong = options.contains(WorkItemWriterOptions.DatesAsLong);
       if (!attributes.isEmpty()) {
          for (AttributeTypeToken attrType : attrTypes) {
@@ -270,51 +271,59 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       }
    }
 
-   public static void addAttributeDataWithGammas(JsonGenerator writer, ArtifactReadable artifact, List<WorkItemWriterOptions> options, AtsApi atsApi, OrcsApi orcsApi) throws IOException, JsonGenerationException, JsonProcessingException {
+   public static void addAttributeDataWithIds(JsonGenerator writer, ArtifactReadable artifact, List<WorkItemWriterOptions> options, AtsApi atsApi, OrcsApi orcsApi) throws IOException, JsonGenerationException, JsonProcessingException {
 
       ResultSet<? extends AttributeReadable<Object>> attributes = artifact.getAttributes();
-      boolean fieldsAsIds = options.contains(WorkItemWriterOptions.FieldsAsIds);
+      boolean keysAsIds = options.contains(WorkItemWriterOptions.KeysAsIds);
       boolean datesAsLong = options.contains(WorkItemWriterOptions.DatesAsLong);
 
       if (!attributes.isEmpty()) {
          List<Long> writtenTypes = new LinkedList<Long>();
-         for (AttributeReadable<Object> attr : attributes) {
-            AttributeTypeToken attrType = attr.getAttributeType();
+         HashCollection<String, AttributeReadable<Object>> attrIdToAttrsMap = getAttributeMap(attributes);
+         for (String attrId : attrIdToAttrsMap.keySet()) {
+            List<AttributeReadable<Object>> attributeValues = attrIdToAttrsMap.getValues(attrId);
+            AttributeTypeToken attrType = attributeValues.iterator().next().getAttributeType();
             if (!writtenTypes.contains(attrType.getId())) {
                writtenTypes.add(attrType.getId());
                boolean isDateType = orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attrType);
-               List<Object> attributeValues = artifact.getAttributeValues(attrType);
-               if (!attributeValues.isEmpty()) {
 
-                  if (attributeValues.size() > 1) {
-                     if (fieldsAsIds) {
-                        writer.writeArrayFieldStart(attrType.getIdString());
-                     } else {
-                        writer.writeArrayFieldStart(attrType.getName());
-                     }
-                     for (Object value : attributeValues) {
-                        writer.writeStartObject();
-                        writeObjectValueField(writer, datesAsLong, isDateType, value);
-                        writer.writeNumberField("gammaId", attr.getGammaId());
-                        writer.writeEndObject();
-                     }
-                     writer.writeEndArray();
-                  } else if (attributeValues.size() == 1) {
-
-                     if (fieldsAsIds) {
-                        writer.writeObjectFieldStart(attrType.getIdString());
-                     } else {
-                        writer.writeObjectFieldStart(attrType.getName());
-                     }
-                     writeObjectValueField(writer, datesAsLong, isDateType, attr.getValue());
+               if (attributeValues.size() > 1) {
+                  if (keysAsIds) {
+                     writer.writeArrayFieldStart(attrType.getIdString());
+                  } else {
+                     writer.writeArrayFieldStart(attrType.getName());
+                  }
+                  for (AttributeReadable<Object> attr : attributeValues) {
+                     writer.writeStartObject();
+                     writeObjectValueField(writer, datesAsLong, isDateType, attr.getDisplayableString());
+                     writer.writeNumberField("attrId", attr.getId());
                      writer.writeNumberField("gammaId", attr.getGammaId());
-
                      writer.writeEndObject();
                   }
+                  writer.writeEndArray();
+               } else if (attributeValues.size() == 1) {
+                  AttributeReadable<Object> attr = attributeValues.iterator().next();
+                  if (keysAsIds) {
+                     writer.writeObjectFieldStart(attrType.getIdString());
+                  } else {
+                     writer.writeObjectFieldStart(attrType.getName());
+                  }
+                  writeObjectValueField(writer, datesAsLong, isDateType, attr.getValue());
+                  writer.writeNumberField("attrId", attr.getId());
+                  writer.writeNumberField("gammaId", attr.getGammaId());
+                  writer.writeEndObject();
                }
             }
          }
       }
+   }
+
+   private static HashCollection<String, AttributeReadable<Object>> getAttributeMap(ResultSet<? extends AttributeReadable<Object>> attributes) {
+      HashCollection<String, AttributeReadable<Object>> attrIdToAttrsMap = new HashCollection<>();
+      for (AttributeReadable<Object> attr : attributes) {
+         attrIdToAttrsMap.put(attr.getAttributeType().getIdString(), attr);
+      }
+      return attrIdToAttrsMap;
    }
 
    private static void writeObjectValue(JsonGenerator writer, boolean datesAsLong, boolean isDateType, Object value) throws IOException, JsonGenerationException, JsonProcessingException {

@@ -15,11 +15,11 @@ package org.eclipse.osee.ats.api.workflow;
  */
 public enum WorkItemWriterOptions {
    // write keys as long attribute ids instead of attribute name
-   FieldsAsIds,
+   KeysAsIds,
    // write dates as long instead of human readable date format
    DatesAsLong,
-   // write attributes out with gammaIds
-   WriteWithGammas,
+   // write attributes out with gammaIds and attrIds
+   ValuesWithIds,
    // include assignees and version as tokens
    WriteRelatedAsTokens
 }
