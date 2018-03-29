@@ -67,6 +67,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -319,6 +320,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters(true);
       Set<Entry<String, List<String>>> entrySet = queryParameters.entrySet();
       IAtsQuery query = atsApi.getQueryService().createQuery(WorkItemType.WorkItem);
+      Collection<IAtsTeamDefinition> teams = new LinkedList<>();
       for (Entry<String, List<String>> entry : entrySet) {
          if (entry.getKey().equals("Title")) {
             query.andName(entry.getValue().iterator().next(), QueryOption.CONTAINS_MATCH_OPTIONS);
@@ -338,7 +340,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          } else if (entry.getKey().equals("IPT")) {
             query.andAttr(AtsAttributeTypes.IPT, entry.getValue().iterator().next());
          } else if (entry.getKey().equals("Team")) {
-            Collection<IAtsTeamDefinition> teams = new LinkedList<>();
             for (String teamId : entry.getValue()) {
                IAtsTeamDefinition team = atsApi.getQueryService().getConfigItem(Long.valueOf(teamId));
                if (team != null) {
@@ -388,6 +389,9 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
                query.andAttr(attrType, entry.getValue());
             }
          }
+      }
+      if (teams.isEmpty()) {
+         throw new OseeArgumentException("Team(s) are invalid and must be included.");
       }
       workItems.addAll(query.getItems());
       return workItems;

@@ -85,27 +85,32 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testQueryTitle() {
-      getFirstAndCount("ats/action/query?Title=SAW", 21);
+      getFirstAndCount(String.format("ats/action/query?Team=%s&Title=SAW", DemoArtifactToken.SAW_Code.getIdString()),
+         3);
    }
 
    @Test
    public void testQueryPriority() {
-      getAndCountWorkItems("ats/action/query?Priority=1&Priority=3", 24);
+      getAndCountWorkItems(
+         String.format("ats/action/query?Team=%s&Priority=1&Priority=3", DemoArtifactToken.SAW_Code.getIdString()), 3);
    }
 
    @Test
    public void testQueryWorking() {
-      getAndCountWorkItems("ats/action/query?StateType=Working", 54);
+      getAndCountWorkItems(
+         String.format("ats/action/query?Team=%s&StateType=Working", DemoArtifactToken.SAW_Code.getIdString()), 3);
    }
 
    @Test
    public void testQueryAssignee() {
-      getAndCountWorkItems("ats/action/query?Assignee=4444&Assignee=3333", 35);
+      getAndCountWorkItems(String.format("ats/action/query?Team=%s&Assignee=4444&Assignee=3333",
+         DemoArtifactToken.SAW_Code.getIdString()), 3);
    }
 
    @Test
    public void testQueryOriginator() {
-      getAndCountWorkItems("ats/action/query?Originator=3333", 44);
+      getAndCountWorkItems(
+         String.format("ats/action/query?Team=%s&Originator=3333", DemoArtifactToken.SAW_Code.getIdString()), 3);
    }
 
    @Test
@@ -150,11 +155,13 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    public void testQuerySingle() {
       TeamWorkFlowArtifact sawCodeCommittedWf = DemoUtil.getSawCodeCommittedWf();
 
-      String url = String.format("/ats/action/query?ats%%2EId=%s", sawCodeCommittedWf.getAtsId());
+      String url = String.format("/ats/action/query?Team=%s&ats%%2EId=%s",
+         sawCodeCommittedWf.getTeamDefinition().getIdString(), sawCodeCommittedWf.getAtsId());
       JsonNode action = testActionRestCall(url, 1);
       Assert.assertEquals(action.get("AtsId").asText(), sawCodeCommittedWf.getAtsId());
 
-      url = String.format("/ats/action/query?1152921504606847877=%s", sawCodeCommittedWf.getAtsId());
+      url = String.format("/ats/action/query?Team=%s&1152921504606847877=%s",
+         sawCodeCommittedWf.getTeamDefinition().getIdString(), sawCodeCommittedWf.getAtsId());
       action = testActionRestCall(url, 1);
       Assert.assertEquals(action.get("AtsId").asText(), sawCodeCommittedWf.getAtsId());
    }
@@ -173,11 +180,13 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testQueryMulti() {
-      String name = DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW.replaceAll(" ", "%20");
-      URI uri =
-         UriBuilder.fromUri(OseeClientProperties.getOseeApplicationServer()).path("/ats/action/query").queryParam(
-            "Name", name).build();
-      JsonNode action = testActionRestCall(uri, 3);
+      String name =
+         DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW.replaceAll(" ", "%20").replaceAll("\\(",
+            "%28").replaceAll("\\)", "%29");
+      URI uri = UriBuilder.fromUri(OseeClientProperties.getOseeApplicationServer()).path(
+         String.format("/ats/action/query?Team=%s&Team=%s&Name=%s", DemoArtifactToken.SAW_Code.getIdString(),
+            DemoArtifactToken.SAW_Test.getIdString(), name)).build();
+      JsonNode action = testActionRestCall(uri, 2);
       Assert.assertEquals(action.get("AtsId").asText(), action.get("ats.Id").asText());
    }
 
