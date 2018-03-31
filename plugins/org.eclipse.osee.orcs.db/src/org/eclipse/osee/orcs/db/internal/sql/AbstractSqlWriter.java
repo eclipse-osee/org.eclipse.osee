@@ -374,6 +374,11 @@ public abstract class AbstractSqlWriter implements HasOptions {
       writeEqualsParameter(column, parameter);
    }
 
+   public void writeEqualsParameterAnd(String table, String column, Object parameter) {
+      writeEqualsParameter(table, column, parameter);
+      write(" AND ");
+   }
+
    public void writeEqualsParameter(String column, Object parameter) {
       output.append(column);
       output.append(" = ?");

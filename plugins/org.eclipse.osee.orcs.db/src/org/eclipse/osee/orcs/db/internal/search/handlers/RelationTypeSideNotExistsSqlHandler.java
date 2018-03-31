@@ -31,11 +31,10 @@ public class RelationTypeSideNotExistsSqlHandler extends AbstractRelationSqlHand
       writer.write(", ");
       String txsAlias = writer.writeTable(TableEnum.TXS_TABLE);
       writer.write(" WHERE ");
-      writer.writeEqualsParameter(relAlias, "rel_link_type_id", type);
+      writer.writeEqualsParameterAnd(relAlias, "rel_link_type_id", type);
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       String side = type.getSide().isSideA() ? "a" : "b";
-      writer.writeAndLn();
       int aSize = aliases.size();
       for (int index = 0; index < aSize; index++) {
          String artAlias = aliases.get(index);

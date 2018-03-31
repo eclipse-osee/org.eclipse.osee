@@ -87,7 +87,7 @@ public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids> {
          writer.writeEqualsParameter(artAlias, "guid", ids.iterator().next());
       }
       if (withClause != null) {
-         writer.writeAndLn();
+         writer.write(" AND ");
          writer.writeEquals(withClauseName, txsAlias, "transaction_id");
          writer.write(" AND ");
          writer.writeEquals(withClauseName, artAlias, "art_id");

@@ -48,8 +48,7 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
 
       if (types.size() > 1) {
          joinQuery = writer.writeJoin(types);
-         writer.writeEqualsParameter(jIdAlias, "query_id", joinQuery.getQueryId());
-         writer.write(" AND ");
+         writer.writeEqualsParameterAnd(jIdAlias, "query_id", joinQuery.getQueryId());
          writer.writeEquals(jIdAlias, "id", artAlias, "art_type_id");
       } else {
          writer.writeEqualsParameter(artAlias, "art_type_id", types.iterator().next());

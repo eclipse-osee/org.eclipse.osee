@@ -36,8 +36,7 @@ public class TxGetPriorSqlHandler extends SqlHandler<CriteriaTxGetPrior> {
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
       BranchId branch = criteria.getTxId().getBranch();
-      writer.writeEqualsParameter(txdAlias, "branch_id", branch);
-      writer.write(" AND ");
+      writer.writeEqualsParameterAnd(txdAlias, "branch_id", branch);
       writer.write(txdAlias);
       writer.write(".transaction_id = ");
       writer.write("(SELECT max(transaction_id) FROM ");
