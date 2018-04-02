@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.OrcsTypesConfig;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
 import org.eclipse.osee.framework.core.data.OrcsTypesSheet;
 import org.eclipse.osee.framework.core.data.OrcsTypesVersion;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -224,14 +225,24 @@ public class TypesEndpointImpl implements TypesEndpoint {
    public Response importOrcsTypes(OrcsTypesData typesData) {
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(COMMON, SystemUser.OseeSystem, "Add Types to Common Branch");
+      ArtifactId typesFolder = orcsApi.getQueryFactory().fromBranch(COMMON).andId(
+         CoreArtifactTokens.OseeTypesFolder).getResults().getAtMostOneOrNull();
+      if (typesFolder == null) {
+         ArtifactId rootArt = orcsApi.getQueryFactory().fromBranch(COMMON).andId(
+            CoreArtifactTokens.DefaultHierarchyRoot).getResults().getExactlyOne();
+         typesFolder = tx.createArtifact(CoreArtifactTokens.OseeTypesFolder);
+         tx.addChildren(rootArt, typesFolder);
+      }
       for (OrcsTypeSheet sheet : typesData.getSheets()) {
          Long id = Lib.generateArtifactIdAsInt();
          if (Strings.isNumeric(sheet.getId())) {
             id = Long.valueOf(sheet.getId());
          }
-         ArtifactId artifact = tx.createArtifact(CoreArtifactTypes.OseeTypeDefinition, sheet.getName(), id);
+         ArtifactId artifact =
+            tx.createArtifact(CoreArtifactTypes.OseeTypeDefinition, sheet.getName().replaceFirst("^.*\\.", ""), id);
          tx.setSoleAttributeValue(artifact, CoreAttributeTypes.Active, true);
          tx.setSoleAttributeFromString(artifact, CoreAttributeTypes.UriGeneralStringData, sheet.getTypesSheet());
+         tx.addChildren(typesFolder, artifact);
       }
       tx.commit();
 

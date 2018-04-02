@@ -3,8 +3,8 @@
 <plugin>
    <extension-point id="OutfileParser" name="OutfileParser" schema="OSEE-INF/extensionPts/OutfileParser.exsd"/>
    <extension
-         id="OseeTypesOTE"
-         name="OseeTypesOTE"
+         id="OseeTypes_OTE"
+         name="OseeTypes_OTE"
          point="org.eclipse.osee.framework.skynet.core.OseeTypes">
       <OseeTypes
             resource="OSEE-INF/orcsTypes/OseeTypes_OTE.osee">
