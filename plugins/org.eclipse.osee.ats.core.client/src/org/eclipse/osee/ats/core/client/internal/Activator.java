@@ -10,21 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+import org.eclipse.osee.framework.plugin.core.OseeActivator;
 
-public class Activator implements BundleActivator {
+public class Activator extends OseeActivator {
 
    public static final String PLUGIN_ID = "org.eclipse.osee.ats.core.client";
-
-   @Override
-   public void start(BundleContext bundleContext) throws Exception {
-      // do nothing
-   }
-
-   @Override
-   public void stop(BundleContext bundleContext) throws Exception {
-      // do nothing
-   }
 
 }

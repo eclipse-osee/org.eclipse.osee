@@ -124,7 +124,7 @@ public class OseeTypesSetup {
             items.add(sheet);
          }
       }
-      OseeLog.logf(DatabaseInitActivator.class, Level.INFO, "Importing:\n\t%s",
+      OseeLog.logf(Activator.class, Level.INFO, "Importing:\n\t%s",
          items.toString().replaceAll(",", ",\n\t"));
       return items;
    }
@@ -134,7 +134,7 @@ public class OseeTypesSetup {
       if (handler != null) {
          handler.execute(new NullProgressMonitor(), uri);
       } else {
-         OseeLog.logf(DatabaseInitActivator.class, Level.SEVERE, "Unable to find handler for [%s] - handlers - %s",
+         OseeLog.logf(Activator.class, Level.SEVERE, "Unable to find handler for [%s] - handlers - %s",
             uri.toASCIIString(), this.extensionObjects.getObjects());
       }
    }

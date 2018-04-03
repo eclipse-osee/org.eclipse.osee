@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.ote.define.jobs.OutfileToArtifactJob;
 import org.eclipse.osee.ote.define.utilities.OutfileParserExtensionManager;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.ote.ui.define.Activator;
 import org.eclipse.osee.ote.ui.define.dialogs.BranchComboDialog;
 import org.eclipse.osee.ote.ui.define.jobs.AddArtifactsToViewerJob;
 import org.eclipse.osee.ote.ui.define.jobs.ReportErrorsJob;
@@ -73,7 +73,7 @@ public class DragDropHandler {
             try {
                performDrop(event);
             } catch (OseeCoreException ex) {
-               OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
 
@@ -127,10 +127,10 @@ public class DragDropHandler {
                try {
                   handleResourceDrops(iFiles);
                } catch (OseeCoreException ex) {
-                  OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             } else {
-               OseeLog.log(OteUiDefinePlugin.class, Level.WARNING, "No valid files dropped");
+               OseeLog.log(Activator.class, Level.WARNING, "No valid files dropped");
             }
          }
       }

@@ -25,7 +25,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.ote.ui.define.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -59,7 +59,7 @@ public class HistoricalTestRunData implements ITestRunReport {
             theMap.put(name, operator);
             runsByName.add(name);
          } catch (Exception ex) {
-            OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -101,7 +101,7 @@ public class HistoricalTestRunData implements ITestRunReport {
             data[3] = operator.getTestResultStatus();
          }
       } catch (Exception ex) {
-         OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return data;
    }

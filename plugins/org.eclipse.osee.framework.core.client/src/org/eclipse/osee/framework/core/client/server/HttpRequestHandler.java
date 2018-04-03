@@ -16,7 +16,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.client.internal.CoreClientActivator;
+import org.eclipse.osee.framework.core.client.internal.Activator;
 import org.eclipse.osee.framework.core.client.server.HttpRequest.HttpMethod;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -43,7 +43,7 @@ public class HttpRequestHandler implements Runnable {
       try {
          processRequest();
       } catch (Exception ex) {
-         OseeLog.log(CoreClientActivator.class, Level.SEVERE, "Error Processing Request: ", ex);
+         OseeLog.log(Activator.class, Level.SEVERE, "Error Processing Request: ", ex);
       }
    }
 

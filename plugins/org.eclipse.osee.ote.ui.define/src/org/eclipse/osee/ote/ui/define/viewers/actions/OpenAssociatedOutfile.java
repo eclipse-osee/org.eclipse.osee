@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.ote.ui.define.Activator;
 import org.eclipse.osee.ote.ui.define.utilities.SelectionHelper;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
@@ -72,7 +72,7 @@ public class OpenAssociatedOutfile extends AbstractActionHandler {
    }
 
    private void handleException(Exception ex) {
-      OseeLog.log(OteUiDefinePlugin.class, Level.WARNING, "Unable to open outfile.", ex);
+      OseeLog.log(Activator.class, Level.WARNING, "Unable to open outfile.", ex);
       Shell shell = AWorkbench.getActiveShell();
       MessageDialog.openError(shell, "Open Outfile", "Unable to open outfile.");
    }

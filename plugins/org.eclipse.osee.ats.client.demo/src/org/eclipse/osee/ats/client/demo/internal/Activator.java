@@ -12,19 +12,12 @@ package org.eclipse.osee.ats.client.demo.internal;
 
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 
-/**
- * The activator class controls the plug-in life cycle
- */
 public class Activator extends OseeUiActivator {
-   private static Activator plugin;
+
    public static final String PLUGIN_ID = "org.eclipse.osee.ats.client.demo";
 
    public Activator() {
       super(PLUGIN_ID);
-      plugin = this;
    }
 
-   public static Activator getInstance() {
-      return plugin;
-   }
 }

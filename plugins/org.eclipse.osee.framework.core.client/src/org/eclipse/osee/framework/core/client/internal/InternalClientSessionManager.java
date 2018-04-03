@@ -152,11 +152,11 @@ public class InternalClientSessionManager {
                }
             });
          } catch (Exception ex) {
-            OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             try {
                authenticateAsGuest();
             } catch (Exception ex1) {
-               OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex1);
+               OseeLog.log(Activator.class, Level.SEVERE, ex1);
             }
          }
       }
@@ -177,7 +177,7 @@ public class InternalClientSessionManager {
          }
          clearData();
       } catch (Exception ex) {
-         OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -190,7 +190,7 @@ public class InternalClientSessionManager {
          List<String> protocols = response.readEntity(LinkedList.class);
          toReturn.addAll(protocols);
       } catch (Exception ex) {
-         OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return toReturn;
    }

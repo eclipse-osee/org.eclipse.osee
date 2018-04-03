@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.ote.ui.define.Activator;
 import org.eclipse.osee.ote.ui.define.utilities.HtmlStringUtils;
 import org.osgi.framework.Bundle;
 
@@ -74,7 +74,7 @@ public class HtmlActiveTable {
 
    private URL getTemplate() throws IOException {
       URL url = null;
-      Bundle bundle = OteUiDefinePlugin.getInstance().getBundle();
+      Bundle bundle = Activator.getInstance().getBundle();
       if (bundle != null) {
          url = bundle.getEntry(TEMPLATE_PATH);
          url = FileLocator.resolve(url);

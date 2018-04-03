@@ -17,14 +17,11 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 
-/**
- * The activator class controls the plug-in life cycle
- */
 @SuppressWarnings("deprecation")
-public class PluginCoreActivator extends OseeActivator {
+public class Activator extends OseeActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.plugin.core";
 
-   private static PluginCoreActivator pluginInstance;
+   private static Activator instance;
    @SuppressWarnings("rawtypes")
    private ServiceTracker packageAdminTracker;
 
@@ -32,7 +29,7 @@ public class PluginCoreActivator extends OseeActivator {
    @Override
    public void start(BundleContext context) throws Exception {
       super.start(context);
-      pluginInstance = this;
+      instance = this;
 
       OseeLog.registerLoggerListener(new EclipseErrorLogLogger());
 
@@ -46,8 +43,8 @@ public class PluginCoreActivator extends OseeActivator {
       packageAdminTracker.close();
    }
 
-   public static PluginCoreActivator getInstance() {
-      return pluginInstance;
+   public static Activator getInstance() {
+      return instance;
    }
 
    public PackageAdmin getPackageAdmin() {

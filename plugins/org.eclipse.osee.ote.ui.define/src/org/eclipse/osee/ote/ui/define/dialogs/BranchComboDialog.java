@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.panels.BranchSelectSimpleComposite;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.ote.ui.define.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -99,7 +99,7 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
    }
 
    protected void restoreWidgetValues() {
-      IDialogSettings settings = OteUiDefinePlugin.getInstance().getDialogSettings();
+      IDialogSettings settings = Activator.getInstance().getDialogSettings();
       if (settings != null) {
          String[] branchUuids = settings.getArray(TestRunStorageKey.BRANCH_IDS);
          String lastSelected = settings.get(TestRunStorageKey.SELECTED_BRANCH_ID);
@@ -108,7 +108,7 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
    }
 
    protected void saveWidgetValues() {
-      IDialogSettings settings = OteUiDefinePlugin.getInstance().getDialogSettings();
+      IDialogSettings settings = Activator.getInstance().getDialogSettings();
       if (settings != null) {
          // update source names history
          String[] branchUuids = settings.getArray(TestRunStorageKey.BRANCH_IDS);
@@ -135,11 +135,11 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
                try {
                   settings.save(this.getClass().getName());
                } catch (IOException ex) {
-                  OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }

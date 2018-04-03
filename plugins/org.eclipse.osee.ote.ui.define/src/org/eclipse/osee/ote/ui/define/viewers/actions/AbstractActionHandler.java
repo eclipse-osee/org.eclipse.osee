@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.ote.ui.define.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -51,7 +51,7 @@ public abstract class AbstractActionHandler extends Action implements ISelection
       try {
          updateState();
       } catch (Exception ex) {
-         OseeLog.log(OteUiDefinePlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    };
 }

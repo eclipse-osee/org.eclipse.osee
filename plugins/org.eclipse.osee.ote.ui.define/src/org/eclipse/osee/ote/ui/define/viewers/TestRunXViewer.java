@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.ote.ui.define.Activator;
 import org.eclipse.osee.ote.ui.define.jobs.CommitTestRunJob;
 import org.eclipse.osee.ote.ui.define.utilities.CommitConfiguration;
 import org.eclipse.osee.ote.ui.define.viewers.actions.AbstractActionHandler;
@@ -118,7 +118,7 @@ public class TestRunXViewer extends XViewer {
                try {
                   handleChangeDisposition();
                } catch (Exception ex) {
-                  OseeLog.log(OteUiDefinePlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          };
@@ -131,7 +131,7 @@ public class TestRunXViewer extends XViewer {
          actionList.add(new LaunchReportsAction(this, "Reports..."));
          actionList.add(new CommitAction("Commit Test Runs...", COMMIT_IMAGE));
       } catch (Exception ex) {
-         OseeLog.log(OteUiDefinePlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -146,7 +146,7 @@ public class TestRunXViewer extends XViewer {
             action.updateState();
          }
       } catch (Exception ex) {
-         OseeLog.log(OteUiDefinePlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -246,7 +246,7 @@ public class TestRunXViewer extends XViewer {
             try {
                returnValue = setDisposition(list);
             } catch (Exception ex) {
-               OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       }
@@ -280,7 +280,7 @@ public class TestRunXViewer extends XViewer {
             dispositionArtifacts, true, false);
          refresh();
       } catch (Exception ex) {
-         OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return returnValue;
    }

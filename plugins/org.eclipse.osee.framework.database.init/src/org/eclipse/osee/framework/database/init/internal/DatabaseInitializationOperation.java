@@ -50,7 +50,7 @@ public class DatabaseInitializationOperation extends AbstractOperation {
    private final boolean isPromptEnabled;
 
    public DatabaseInitializationOperation(String preSelectedChoice, boolean isPromptEnabled) {
-      super("Database Initialization", DatabaseInitActivator.PLUGIN_ID);
+      super("Database Initialization", Activator.PLUGIN_ID);
       this.preSelectedChoice = preSelectedChoice;
       this.isPromptEnabled = isPromptEnabled;
    }
@@ -122,7 +122,7 @@ public class DatabaseInitializationOperation extends AbstractOperation {
    }
 
    private void processTasks() {
-      OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Configuring Database...");
+      OseeLog.log(Activator.class, Level.INFO, "Configuring Database...");
       IDatabaseInitConfiguration configuration = getConfiguration();
       IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
       for (String pointId : configuration.getTaskExtensionIds()) {
@@ -130,7 +130,7 @@ public class DatabaseInitializationOperation extends AbstractOperation {
          checkValidExtension(extension, pointId);
          runDbInitTasks(configuration, extension);
       }
-      OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Database Initialization Complete.");
+      OseeLog.log(Activator.class, Level.INFO, "Database Initialization Complete.");
    }
 
    /**
@@ -155,7 +155,7 @@ public class DatabaseInitializationOperation extends AbstractOperation {
             selectedChoice = choices.get(selection);
          }
       }
-      OseeLog.logf(DatabaseInitActivator.class, Level.INFO, "DB Config Choice Selected: [%s]", selectedChoice);
+      OseeLog.logf(Activator.class, Level.INFO, "DB Config Choice Selected: [%s]", selectedChoice);
       return selector.getDbInitConfiguration(selectedChoice);
    }
 
@@ -207,7 +207,7 @@ public class DatabaseInitializationOperation extends AbstractOperation {
                isExecutionAllowed = rule.isAllowed();
             }
 
-            OseeLog.logf(DatabaseInitActivator.class, isExecutionAllowed ? Level.INFO : Level.WARNING,
+            OseeLog.logf(Activator.class, isExecutionAllowed ? Level.INFO : Level.WARNING,
                "%s [%s] execution rule [%s]", isExecutionAllowed ? "Starting" : "Skipping",
                extension.getUniqueIdentifier(), Strings.isValid(initRuleClassName) ? initRuleClassName : "Default");
             if (isExecutionAllowed) {
@@ -253,7 +253,7 @@ public class DatabaseInitializationOperation extends AbstractOperation {
          try {
             line = stdin.readLine();
          } catch (IOException ex) {
-            OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return line;

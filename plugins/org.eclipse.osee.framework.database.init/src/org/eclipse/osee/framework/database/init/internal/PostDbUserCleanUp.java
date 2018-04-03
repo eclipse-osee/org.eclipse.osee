@@ -32,7 +32,7 @@ public class PostDbUserCleanUp implements IDbInitializationTask {
 
    @Override
    public void run() {
-      OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Post Initialization User Clean-up");
+      OseeLog.log(Activator.class, Level.INFO, "Post Initialization User Clean-up");
 
       boolean isUserAuthenticationAllowed = false;
       try {
@@ -56,11 +56,11 @@ public class PostDbUserCleanUp implements IDbInitializationTask {
          ConnectionHandler.runPreparedUpdate(UPDATE_BOOTSTRAP_USER_ID, user);
       } else {
          // This is an initialization for base import -- users are not available
-         OseeLog.log(DatabaseInitActivator.class, Level.INFO,
+         OseeLog.log(Activator.class, Level.INFO,
             "Post Initialization User Clean-up - Base Initialization - unable to set tx author id");
       }
 
-      DatabaseInitActivator.getInstance().getCachingService().clearAll();
-      DatabaseInitActivator.getInstance().getCachingService().reloadTypes();
+      Activator.getInstance().getCachingService().clearAll();
+      Activator.getInstance().getCachingService().reloadTypes();
    }
 }

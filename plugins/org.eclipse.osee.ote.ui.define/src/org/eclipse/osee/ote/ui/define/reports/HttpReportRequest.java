@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.ote.ui.define.Activator;
 import org.eclipse.osee.ote.ui.define.reports.output.IReportWriter;
 import org.eclipse.osee.ote.ui.define.reports.output.OutputFactory;
 import org.eclipse.osee.ote.ui.define.reports.output.OutputFormat;
@@ -135,7 +135,7 @@ public class HttpReportRequest implements IHttpServerRequest {
    }
 
    private void handleException(HttpRequest httpRequest, HttpResponse httpResponse, Exception ex) {
-      OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, "Exception occurred.", ex);
+      OseeLog.log(Activator.class, Level.SEVERE, "Exception occurred.", ex);
    }
 
    private final class LocalSourceSelection implements Runnable {

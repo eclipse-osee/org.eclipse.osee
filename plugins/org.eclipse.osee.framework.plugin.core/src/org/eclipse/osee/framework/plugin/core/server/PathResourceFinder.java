@@ -28,7 +28,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
+import org.eclipse.osee.framework.plugin.core.internal.Activator;
 
 public class PathResourceFinder extends ResourceFinder {
 
@@ -201,7 +201,7 @@ public class PathResourceFinder extends ResourceFinder {
 
    /**
     * Finds the jarFile if it is being served.
-    * 
+    *
     * @param name The name of the jar file
     * @return The jar represented as a File, or null if the jar was not found.
     */
@@ -227,7 +227,7 @@ public class PathResourceFinder extends ResourceFinder {
             JarFile jarFile = it.next();
             if (jarFile.getName().endsWith(File.separator + name)) {
                try {
-                  OseeLog.log(PluginCoreActivator.class, Level.INFO, "removing JAR file " + name);
+                  OseeLog.log(Activator.class, Level.INFO, "removing JAR file " + name);
                   jarFile.close();
                } catch (IOException ex) {
                   // do nothing
@@ -242,7 +242,7 @@ public class PathResourceFinder extends ResourceFinder {
    @Override
    public void dispose() {
       synchronized (jars) {
-         OseeLog.log(PluginCoreActivator.class, Level.INFO, "disposing path resource finder's cached JAR files");
+         OseeLog.log(Activator.class, Level.INFO, "disposing path resource finder's cached JAR files");
          Iterator<JarFile> it = jars.iterator();
          while (it.hasNext()) {
             JarFile jarFile = it.next();

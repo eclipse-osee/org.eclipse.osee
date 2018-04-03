@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.ote.ui.define.Activator;
 import org.eclipse.swt.graphics.Image;
 import org.osgi.framework.Bundle;
 
@@ -81,7 +81,7 @@ public class ExtensionDefinedReports {
 
    private void loadReports() {
       List<IConfigurationElement> elements =
-         ExtensionPoints.getExtensionElements(OteUiDefinePlugin.getInstance(), EXTENSION_ID, EXTENSION_ID);
+         ExtensionPoints.getExtensionElements(Activator.getInstance(), EXTENSION_ID, EXTENSION_ID);
       for (IConfigurationElement element : elements) {
          IExtension extension = (IExtension) element.getParent();
          String identifier = extension.getUniqueIdentifier();
@@ -101,7 +101,7 @@ public class ExtensionDefinedReports {
                   reportMap.put(identifier, new ReportData(identifier, name, object, imageDescriptor.createImage()));
                }
             } catch (Exception ex) {
-               OseeLog.logf(OteUiDefinePlugin.class, Level.SEVERE, ex, "Error loading report [%s]", className);
+               OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error loading report [%s]", className);
             }
          }
       }

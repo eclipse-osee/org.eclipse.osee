@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.client;
 
 import java.net.InetAddress;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.client.internal.CoreClientActivator;
+import org.eclipse.osee.framework.core.client.internal.Activator;
 import org.eclipse.osee.framework.core.client.server.HttpServer;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeCredential;
@@ -38,7 +38,7 @@ public abstract class BaseCredentialProvider implements ICredentialProvider {
          credential.setClientAddress(InetAddress.getLocalHost().getHostName());
       } catch (Exception ex) {
          credential.setClientAddress("Unknown");
-         OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return credential;
    }

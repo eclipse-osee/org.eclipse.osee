@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.CoreClientConstants;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
-import org.eclipse.osee.framework.core.client.internal.CoreClientActivator;
+import org.eclipse.osee.framework.core.client.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.HttpUrlBuilder;
@@ -44,7 +44,7 @@ public final class HttpUrlBuilderClient {
 
    public boolean isUseConnectedServerUrl() {
       boolean isUseConnectedServerUrl =
-         CoreClientActivator.getInstance().getPluginPreferences().getBoolean(USE_CONNECTED_SERVER_URL_FOR_PERM_LINKS);
+         Activator.getInstance().getPluginPreferences().getBoolean(USE_CONNECTED_SERVER_URL_FOR_PERM_LINKS);
       return isUseConnectedServerUrl;
    }
 
@@ -52,7 +52,7 @@ public final class HttpUrlBuilderClient {
       try {
          return HttpUrlBuilder.createURL(getHttpLocalServerPrefix(), context, parameters);
       } catch (UnsupportedEncodingException ex) {
-         OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return null;
    }

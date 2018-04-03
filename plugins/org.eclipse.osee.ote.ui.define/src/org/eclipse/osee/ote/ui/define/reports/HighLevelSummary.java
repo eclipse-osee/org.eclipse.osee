@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.ote.ui.define.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -55,7 +55,7 @@ public class HighLevelSummary implements ITestRunReport {
          try {
             processData(data, operator);
          } catch (Exception ex) {
-            OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          if (monitor.isCanceled()) {
             break;

@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.ote.ui.define.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -221,7 +221,7 @@ public class OutfileImportPage extends WizardDataTransferPage {
          try {
             branchSelect.setSelection(BranchManager.getBranchToken(Long.parseLong(lastSelected)));
          } catch (Exception ex) {
-            OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       onStartSelectedResource();
@@ -277,7 +277,7 @@ public class OutfileImportPage extends WizardDataTransferPage {
                toReturn &= false;
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return toReturn;
@@ -314,11 +314,11 @@ public class OutfileImportPage extends WizardDataTransferPage {
                try {
                   settings.save(this.getClass().getName());
                } catch (IOException ex) {
-                  OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }

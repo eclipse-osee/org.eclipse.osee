@@ -58,10 +58,10 @@ public class DbBootstrapTask implements IDbInitializationTask {
             throw new OseeCoreException(ex);
          }
       }
-      IOseeCachingService service = DatabaseInitActivator.getInstance().getCachingService();
+      IOseeCachingService service = Activator.getInstance().getCachingService();
       service.clearAll();
 
-      JdbcClient jdbcClient = DatabaseInitActivator.getInstance().getJdbcClient();
+      JdbcClient jdbcClient = Activator.getInstance().getJdbcClient();
       jdbcClient.invalidateSequences();
 
       Conditions.checkNotNull(BranchManager.getBranchToken(SYSTEM_ROOT), "System root was not created - ");

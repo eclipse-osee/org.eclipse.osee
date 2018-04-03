@@ -17,17 +17,17 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class DatabaseInitActivator implements BundleActivator {
+public class Activator implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.database.init";
 
-   private static DatabaseInitActivator instance;
+   private static Activator instance;
 
    private ServiceTracker<IOseeCachingService, IOseeCachingService> serviceTracker2;
    private ServiceTracker<JdbcService, JdbcService> serviceTracker3;
 
    @Override
    public void start(BundleContext context) throws Exception {
-      DatabaseInitActivator.instance = this;
+      Activator.instance = this;
 
       serviceTracker2 =
          new ServiceTracker<IOseeCachingService, IOseeCachingService>(context, IOseeCachingService.class, null);
@@ -48,7 +48,7 @@ public class DatabaseInitActivator implements BundleActivator {
       }
    }
 
-   public static DatabaseInitActivator getInstance() {
+   public static Activator getInstance() {
       return instance;
    }
 

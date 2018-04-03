@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.ote.ui.define.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -35,7 +35,7 @@ public class ExcelReportWriter implements IReportWriter {
       try {
          this.sheetWriter = new ExcelXmlWriter(stringWriter);
       } catch (IOException ex) {
-         OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -61,7 +61,7 @@ public class ExcelReportWriter implements IReportWriter {
          this.sheetWriter.startSheet(title, headers.length);
          this.sheetWriter.writeRow((Object[]) headers);
       } catch (IOException ex) {
-         OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -70,7 +70,7 @@ public class ExcelReportWriter implements IReportWriter {
       try {
          this.sheetWriter.writeRow((Object[]) cellData);
       } catch (IOException ex) {
-         OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 

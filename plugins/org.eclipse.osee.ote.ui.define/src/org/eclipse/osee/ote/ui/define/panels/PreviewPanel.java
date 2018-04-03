@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.ote.ui.define.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.StackLayout;
@@ -119,7 +119,7 @@ public class PreviewPanel extends Composite {
             browser.setUrl(uri.toURL().toString());
          }
       } catch (Exception ex) {
-         OseeLog.logf(OteUiDefinePlugin.class, Level.SEVERE, ex, "Error Updating Preview [%s]", panelId);
+         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error Updating Preview [%s]", panelId);
       }
    }
 }

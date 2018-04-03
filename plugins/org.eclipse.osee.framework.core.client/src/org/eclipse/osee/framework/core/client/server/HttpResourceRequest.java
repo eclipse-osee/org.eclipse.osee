@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.core.client.internal.CoreClientActivator;
+import org.eclipse.osee.framework.core.client.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
@@ -62,14 +62,14 @@ public class HttpResourceRequest implements IHttpMethod {
             ps.write(buffer, 0, count);
          }
       } catch (IOException ex) {
-         OseeLog.log(CoreClientActivator.class, Level.SEVERE, "Error sending requested resource", ex);
+         OseeLog.log(Activator.class, Level.SEVERE, "Error sending requested resource", ex);
       } finally {
          try {
             if (bis != null) {
                bis.close();
             }
          } catch (IOException ex) {
-            OseeLog.log(CoreClientActivator.class, Level.SEVERE, "Error closing stream", ex);
+            OseeLog.log(Activator.class, Level.SEVERE, "Error closing stream", ex);
          }
       }
    }

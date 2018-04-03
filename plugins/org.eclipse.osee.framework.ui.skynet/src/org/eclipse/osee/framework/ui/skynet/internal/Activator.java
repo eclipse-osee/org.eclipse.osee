@@ -11,10 +11,10 @@
 package org.eclipse.osee.framework.ui.skynet.internal;
 
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.osgi.framework.BundleContext;
 
 public class Activator extends OseeUiActivator {
-   private static Activator pluginInstance; // The shared instance.
+
+   private static Activator instance;
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.skynet";
    public static final String CHANGE_REPORT_ATTRIBUTES_PREF =
       "org.eclipse.osee.framework.ui.skynet.changeReportAttributes";
@@ -25,21 +25,11 @@ public class Activator extends OseeUiActivator {
 
    public Activator() {
       super(PLUGIN_ID);
-      pluginInstance = this;
-   }
-
-   @Override
-   public void stop(BundleContext context) throws Exception {
-      super.stop(context);
-   }
-
-   @Override
-   public void start(BundleContext context) throws Exception {
-      super.start(context);
+      instance = this;
    }
 
    public static Activator getInstance() {
-      return pluginInstance;
+      return instance;
    }
 
 }

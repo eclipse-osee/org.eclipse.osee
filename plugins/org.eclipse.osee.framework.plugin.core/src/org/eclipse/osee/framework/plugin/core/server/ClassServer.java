@@ -27,7 +27,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
+import org.eclipse.osee.framework.plugin.core.internal.Activator;
 
 public class ClassServer extends Thread {
    private ServerSocket server;
@@ -78,7 +78,7 @@ public class ClassServer extends Thread {
       msg += Integer.toString(getPort());
       msg += "]";
 
-      OseeLog.log(PluginCoreActivator.class, Level.INFO, msg);
+      OseeLog.log(Activator.class, Level.INFO, msg);
       try {
          while (true) {
             Socket socket = server.accept();
@@ -87,9 +87,9 @@ public class ClassServer extends Thread {
       } catch (IOException e) {
          synchronized (this) {
             if (!server.isClosed()) {
-               OseeLog.log(PluginCoreActivator.class, Level.SEVERE, "accepting connection", e);
+               OseeLog.log(Activator.class, Level.SEVERE, "accepting connection", e);
                terminate();
-               OseeLog.log(PluginCoreActivator.class, Level.WARNING, "ClassServer Terminated");
+               OseeLog.log(Activator.class, Level.WARNING, "ClassServer Terminated");
             }
          }
       }
@@ -189,7 +189,7 @@ public class ClassServer extends Thread {
                return bytes;
             }
          }
-         OseeLog.log(PluginCoreActivator.class, Level.INFO, "requested file: '" + path + "' was not found.");
+         OseeLog.log(Activator.class, Level.INFO, "requested file: '" + path + "' was not found.");
          return null;
       }
 
@@ -245,7 +245,7 @@ public class ClassServer extends Thread {
             try {
                req = getInput(sock, true);
             } catch (Exception e) {
-               OseeLog.log(PluginCoreActivator.class, Level.INFO, "reading request", e);
+               OseeLog.log(Activator.class, Level.INFO, "reading request", e);
                return;
             }
             if (req == null) {
@@ -259,7 +259,7 @@ public class ClassServer extends Thread {
 
             boolean get = req.startsWith("GET ");
             if (!get && !req.startsWith("HEAD ")) {
-               OseeLog.log(PluginCoreActivator.class, Level.FINE, "bad request \"{0}\" from {1}:{2}");
+               OseeLog.log(Activator.class, Level.FINE, "bad request \"{0}\" from {1}:{2}");
                out.writeBytes("HTTP/1.0 400 Bad Request\r\n\r\n");
                out.flush();
                return;
@@ -271,25 +271,24 @@ public class ClassServer extends Thread {
             }
             path = getCanonicalizedPath(path);
             if (path == null) {
-               OseeLog.log(PluginCoreActivator.class, Level.FINE, "bad request \"{0}\" from {1}:{2}");
+               OseeLog.log(Activator.class, Level.FINE, "bad request \"{0}\" from {1}:{2}");
                out.writeBytes("HTTP/1.0 400 Bad Request\r\n\r\n");
                out.flush();
                return;
             }
 
-            OseeLog.log(PluginCoreActivator.class, Level.FINER,
-               get ? "{0} requested from {1}:{2}" : "{0} probed from {1}:{2}");
+            OseeLog.log(Activator.class, Level.FINER, get ? "{0} requested from {1}:{2}" : "{0} probed from {1}:{2}");
             byte[] bytes;
             try {
                bytes = getBytes(path);
             } catch (Exception e) {
-               OseeLog.log(PluginCoreActivator.class, Level.WARNING, "getting bytes", e);
+               OseeLog.log(Activator.class, Level.WARNING, "getting bytes", e);
                out.writeBytes("HTTP/1.0 500 Internal Error\r\n\r\n");
                out.flush();
                return;
             }
             if (bytes == null) {
-               OseeLog.logf(PluginCoreActivator.class, Level.FINE, "%s not found", path);
+               OseeLog.logf(Activator.class, Level.FINE, "%s not found", path);
                out.writeBytes("HTTP/1.0 404 Not Found\r\n\r\n");
                out.flush();
                return;
@@ -305,7 +304,7 @@ public class ClassServer extends Thread {
                fileDownloaded(path, sock.getInetAddress());
             }
          } catch (Exception e) {
-            OseeLog.log(PluginCoreActivator.class, Level.INFO, "writing response", e);
+            OseeLog.log(Activator.class, Level.INFO, "writing response", e);
          } finally {
             try {
                sock.close();

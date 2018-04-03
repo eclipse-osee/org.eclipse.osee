@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
+import org.eclipse.osee.framework.plugin.core.internal.Activator;
 import org.osgi.framework.Bundle;
 
 /**
@@ -72,14 +72,14 @@ public class ExtensionPoints {
       for (String entensionPointUniqueId : extensionPointUniqueIds) {
          IExtension extension = Platform.getExtensionRegistry().getExtension(entensionPointUniqueId);
          if (extension == null) {
-            OseeLog.log(PluginCoreActivator.class, Level.SEVERE,
+            OseeLog.log(Activator.class, Level.SEVERE,
                "Unable to locate extension [" + entensionPointUniqueId + "]");
          } else {
             String thisPointId = extension.getExtensionPointUniqueIdentifier();
             if (extensionPointId.equals(thisPointId)) {
                extensions.add(extension);
             } else {
-               OseeLog.log(PluginCoreActivator.class, Level.SEVERE,
+               OseeLog.log(Activator.class, Level.SEVERE,
                   "Unknown extension id [" + thisPointId + "] from extension [" + entensionPointUniqueId + "]");
             }
          }

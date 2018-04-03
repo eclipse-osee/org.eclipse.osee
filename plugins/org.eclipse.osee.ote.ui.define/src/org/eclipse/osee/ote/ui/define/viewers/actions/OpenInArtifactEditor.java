@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.ote.ui.define.Activator;
 import org.eclipse.osee.ote.ui.define.utilities.SelectionHelper;
 
 /**
@@ -48,7 +48,7 @@ public class OpenInArtifactEditor extends AbstractActionHandler {
             RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
          }
       } catch (Exception ex) {
-         OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, "Unable to open artifact.", ex);
+         OseeLog.log(Activator.class, Level.SEVERE, "Unable to open artifact.", ex);
       }
    }
 

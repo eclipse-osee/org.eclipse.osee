@@ -11,34 +11,17 @@
 package org.eclipse.osee.ote.ui.define;
 
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.osgi.framework.BundleContext;
 
-/**
- * The activator class controls the plug-in life cycle
- */
-public class OteUiDefinePlugin extends OseeUiActivator {
+public class Activator extends OseeUiActivator {
 
    public static final String PLUGIN_ID = "org.eclipse.osee.ote.ui.define";
+   private static Activator instance;
 
-   public OteUiDefinePlugin() {
+   public Activator() {
       super(PLUGIN_ID);
    }
 
-   private static OteUiDefinePlugin plugin;
-
-   @Override
-   public void start(BundleContext context) throws Exception {
-      super.start(context);
-      plugin = this;
-   }
-
-   @Override
-   public void stop(BundleContext context) throws Exception {
-      plugin = null;
-      super.stop(context);
-   }
-
-   public static OteUiDefinePlugin getInstance() {
-      return plugin;
+   public static Activator getInstance() {
+      return instance;
    }
 }

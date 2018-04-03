@@ -16,7 +16,7 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.util.TableWriterAdaptor;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.ote.ui.define.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -30,7 +30,7 @@ public class ReportWriter implements IReportWriter {
          this.outputStream = new ByteArrayOutputStream();
          this.tableWriterAdapter = new TableWriterAdaptor(writerId, outputStream);
       } catch (Exception ex) {
-         OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -57,7 +57,7 @@ public class ReportWriter implements IReportWriter {
       try {
          tableWriterAdapter.writeHeader(headers);
       } catch (Exception ex) {
-         OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 

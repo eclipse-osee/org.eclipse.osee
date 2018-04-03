@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.ote.ui.define.Activator;
 import org.eclipse.osee.ote.ui.define.dialogs.CommitDialog;
 import org.eclipse.osee.ote.ui.define.dialogs.OverrideInvalidScriptRevisions;
 import org.eclipse.swt.graphics.Image;
@@ -157,7 +157,7 @@ class CommitJobDialog extends UIJob {
                         try {
                            toReturn = new ArtifactTestRunOperator(artifact).getChecksum();
                         } catch (Exception ex) {
-                           OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, "Error getting Checksum", ex);
+                           OseeLog.log(Activator.class, Level.SEVERE, "Error getting Checksum", ex);
                         }
                         break;
                      case Name:
@@ -168,7 +168,7 @@ class CommitJobDialog extends UIJob {
                            toReturn =
                               new ArtifactTestRunOperator(artifact).getOutfileAttribute().getDisplayableString();
                         } catch (Exception ex) {
-                           OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, "Error getting Outfile", ex);
+                           OseeLog.log(Activator.class, Level.SEVERE, "Error getting Outfile", ex);
                         }
                         break;
                      default:

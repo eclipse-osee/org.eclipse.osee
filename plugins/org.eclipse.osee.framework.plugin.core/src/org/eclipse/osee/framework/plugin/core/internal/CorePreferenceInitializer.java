@@ -28,7 +28,7 @@ public class CorePreferenceInitializer extends AbstractPreferenceInitializer {
 
    @Override
    public void initializeDefaultPreferences() {
-      Preferences store = PluginCoreActivator.getInstance().getPluginPreferences();
+      Preferences store = Activator.getInstance().getPluginPreferences();
       try {
          String defaultNetworkValue = Network.getValidIP().getHostAddress();
          store.setDefault(CorePreferences.INETADDRESS_KEY, defaultNetworkValue);
@@ -37,7 +37,7 @@ public class CorePreferenceInitializer extends AbstractPreferenceInitializer {
             store.setValue(CorePreferences.INETADDRESS_KEY, store.getDefaultString(CorePreferences.INETADDRESS_KEY));
          }
       } catch (UnknownHostException ex) {
-         OseeLog.log(PluginCoreActivator.class, Level.SEVERE, "Error initializing default inet address key", ex);
+         OseeLog.log(Activator.class, Level.SEVERE, "Error initializing default inet address key", ex);
       }
    }
 }

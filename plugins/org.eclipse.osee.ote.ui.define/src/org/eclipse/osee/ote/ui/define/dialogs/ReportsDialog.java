@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.osee.ote.define.jobs.RemoteResourceRequestJob;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.ote.ui.define.Activator;
 import org.eclipse.osee.ote.ui.define.panels.ListSelectionPanel;
 import org.eclipse.osee.ote.ui.define.panels.PreviewPanel;
 import org.eclipse.osee.ote.ui.define.panels.PreviewPanel.PanelEnum;
@@ -152,7 +152,7 @@ public class ReportsDialog extends TitleAreaDialog {
    }
 
    private void restoreDialog() {
-      IDialogSettings settings = OteUiDefinePlugin.getInstance().getDialogSettings();
+      IDialogSettings settings = Activator.getInstance().getDialogSettings();
       if (settings != null) {
          String reportSelected = settings.get(REPORT_STORE_ID);
          String format = settings.get(FORMAT_STORE_ID);
@@ -184,7 +184,7 @@ public class ReportsDialog extends TitleAreaDialog {
    }
 
    private void saveDialog() {
-      IDialogSettings settings = OteUiDefinePlugin.getInstance().getDialogSettings();
+      IDialogSettings settings = Activator.getInstance().getDialogSettings();
       if (settings != null) {
          String reportSelected = getReportSelected();
          String format = getReportFormat();
@@ -449,7 +449,7 @@ public class ReportsDialog extends TitleAreaDialog {
                   try {
                      generatePreview(selectedReportFormat, selectedReportId, report);
                   } catch (Exception ex) {
-                     OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }
                }
             }

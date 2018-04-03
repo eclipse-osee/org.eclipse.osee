@@ -29,7 +29,7 @@ public class PostDatabaseInitialization implements IDbInitializationTask {
    public void run() {
       OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "Running Post-Initialization Process...");
 
-      JdbcClient jdbcClient = DatabaseInitActivator.getInstance().getJdbcClient();
+      JdbcClient jdbcClient = Activator.getInstance().getJdbcClient();
       JdbcDbType dbType = jdbcClient.getDbType();
       if (dbType.equals(JdbcDbType.postgresql)) {
          OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "Vacuuming PostgreSQL");

@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.plugin.core.util;
 
-import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
+import org.eclipse.osee.framework.plugin.core.internal.Activator;
 import org.osgi.framework.Bundle;
 import org.osgi.service.packageadmin.ExportedPackage;
 import org.osgi.service.packageadmin.PackageAdmin;
@@ -36,7 +36,7 @@ public class ExportClassLoader extends ClassLoader {
    }
 
    public ExportClassLoader() {
-      this(PluginCoreActivator.getInstance().getPackageAdmin());
+      this(Activator.getInstance().getPackageAdmin());
    }
 
    @Override

@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.ote.ui.define.Activator;
 import org.eclipse.osee.ote.ui.define.viewers.XViewerDataManager;
 
 /**
@@ -44,8 +44,8 @@ public class AddArtifactsToViewerJob extends Job {
       try {
          viewerDataManager.addArtifacts(monitor, artifacts);
       } catch (Exception ex) {
-         OseeLog.log(OteUiDefinePlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         return new Status(IStatus.ERROR, OteUiDefinePlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getMessage(), ex);
       }
       if (monitor.isCanceled() != true) {
          toReturn = Status.OK_STATUS;

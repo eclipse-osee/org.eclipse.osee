@@ -14,7 +14,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.eclipse.osee.framework.jdk.core.util.Network;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
+import org.eclipse.osee.framework.plugin.core.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -24,12 +24,12 @@ public class CorePreferences {
    private CorePreferences() {
    }
 
-   public static final String INETADDRESS_KEY = PluginCoreActivator.PLUGIN_ID + ".preferences.InetAddressDefault";
+   public static final String INETADDRESS_KEY = Activator.PLUGIN_ID + ".preferences.InetAddressDefault";
 
    @SuppressWarnings("deprecation")
    public static InetAddress getDefaultInetAddress() throws UnknownHostException {
       String inetaddress =
-         PluginCoreActivator.getInstance().getPluginPreferences().getString(CorePreferences.INETADDRESS_KEY);
+         Activator.getInstance().getPluginPreferences().getString(CorePreferences.INETADDRESS_KEY);
       if (Strings.isValid(inetaddress)) {
          return InetAddress.getByName(inetaddress);
       }

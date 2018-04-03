@@ -24,7 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.client.internal.CoreClientActivator;
+import org.eclipse.osee.framework.core.client.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -196,11 +196,11 @@ public class HttpResponse {
       String reasonStr = reason != null ? "Reason: " + reason : "";
       String html = AHTML.simplePage(
          "<h1>Error " + errorStr + "</h1><h2>OSEE was unable to handle the request.</h2>" + reasonStr + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
-      OseeLog.log(CoreClientActivator.class, Level.SEVERE, "HttpServer Request failed. " + reasonStr);
+      OseeLog.log(Activator.class, Level.SEVERE, "HttpServer Request failed. " + reasonStr);
       try {
          printStream.println(html);
       } catch (Exception ex) {
-         OseeLog.log(CoreClientActivator.class, Level.SEVERE, "Error sending error string", ex);
+         OseeLog.log(Activator.class, Level.SEVERE, "Error sending error string", ex);
       }
    }
 

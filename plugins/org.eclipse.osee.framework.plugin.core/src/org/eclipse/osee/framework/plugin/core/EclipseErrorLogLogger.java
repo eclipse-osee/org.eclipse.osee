@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.logging.ILoggerListener;
-import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
+import org.eclipse.osee.framework.plugin.core.internal.Activator;
 
 public class EclipseErrorLogLogger implements ILoggerListener {
 
@@ -33,7 +33,7 @@ public class EclipseErrorLogLogger implements ILoggerListener {
       } else {
          return;
       }
-      PluginCoreActivator.getInstance().getLog().log(new Status(statusLevel, loggerName, statusLevel, message, th));
+      Activator.getInstance().getLog().log(new Status(statusLevel, loggerName, statusLevel, message, th));
    }
 
 }

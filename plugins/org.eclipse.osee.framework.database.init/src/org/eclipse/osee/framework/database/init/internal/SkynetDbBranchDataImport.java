@@ -46,7 +46,7 @@ import org.osgi.framework.Bundle;
  */
 public class SkynetDbBranchDataImport implements IDbInitializationTask {
    private static final String ELEMENT_NAME = "OseeDbImportData";
-   private static final String EXTENSION_POINT = DatabaseInitActivator.PLUGIN_ID + "." + ELEMENT_NAME;
+   private static final String EXTENSION_POINT = Activator.PLUGIN_ID + "." + ELEMENT_NAME;
    private static final String BRANCH_NAME = "branchName";
    private static final String BRANCH_DATA = "branchData";
    private static final String BRANCHES_TO_IMPORT = "BranchesToImport";
@@ -64,13 +64,13 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
 
          Collection<ImportData> importDatas = loadDataFromExtensions();
          for (ImportData importData : importDatas) {
-            OseeLog.logf(DatabaseInitActivator.class, Level.INFO, "Import Branch Data: [%s]", importData);
+            OseeLog.logf(Activator.class, Level.INFO, "Import Branch Data: [%s]", importData);
             try {
                File importFile = importData.getExchangeFile();
                //TODO not yet supported               importData.getSelectedBranches();
                HttpBranchExchange.importBranches(importFile.toURI().toASCIIString(), true, true);
             } catch (OseeDataStoreException ex) {
-               OseeLog.logf(DatabaseInitActivator.class, Level.SEVERE, ex, "Exception while importing branch: [%s]",
+               OseeLog.logf(Activator.class, Level.SEVERE, ex, "Exception while importing branch: [%s]",
                   importData);
                throw ex;
             }

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Init Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.database.init;singleton:=true
 Bundle-Version: 0.26.0.qualifier
-Bundle-Activator: org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator
+Bundle-Activator: org.eclipse.osee.framework.database.init.internal.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.apache.commons.lang;version="2.4.0",

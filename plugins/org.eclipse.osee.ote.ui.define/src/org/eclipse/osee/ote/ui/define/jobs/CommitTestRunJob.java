@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.ote.define.operations.ImportOutfileOperation;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.ote.ui.define.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -55,7 +55,7 @@ public class CommitTestRunJob extends Job {
       try {
          jobDialog.join();
       } catch (InterruptedException ex1) {
-         OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex1.toString(), ex1);
+         OseeLog.log(Activator.class, Level.SEVERE, ex1.toString(), ex1);
       }
 
       toReturn = jobDialog.getResult();
@@ -68,8 +68,8 @@ public class CommitTestRunJob extends Job {
             toReturn = Status.OK_STATUS;
          } catch (Exception ex) {
             if (monitor.isCanceled() != true) {
-               OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, "Error committing Artifacts.", ex);
-               toReturn = new Status(IStatus.ERROR, OteUiDefinePlugin.PLUGIN_ID, "Error committing Artifacts.", ex);
+               OseeLog.log(Activator.class, Level.SEVERE, "Error committing Artifacts.", ex);
+               toReturn = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error committing Artifacts.", ex);
             }
          }
       }

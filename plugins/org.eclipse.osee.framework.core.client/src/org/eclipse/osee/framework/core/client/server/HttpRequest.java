@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.client.internal.CoreClientActivator;
+import org.eclipse.osee.framework.core.client.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -162,7 +162,7 @@ public class HttpRequest {
 
    private void parseRequest(String entry) throws Exception {
       this.rawRequest = entry;
-      OseeLog.log(CoreClientActivator.class, Level.INFO, "HttpRequest *" + rawRequest + "*");
+      OseeLog.log(Activator.class, Level.INFO, "HttpRequest *" + rawRequest + "*");
       String[] entries = rawRequest.split("\\s");
       if (entries.length > 0 && entries.length < 4) {
          httpMethod = HttpMethod.valueOf(entries[0].trim());

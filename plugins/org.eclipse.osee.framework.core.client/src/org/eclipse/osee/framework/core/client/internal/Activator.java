@@ -21,11 +21,11 @@ import org.osgi.framework.BundleContext;
  *
  * @author Donald G. Dunne
  */
-public class CoreClientActivator extends Plugin {
+public class Activator extends Plugin {
 
-   private static CoreClientActivator instance;
+   private static Activator instance;
 
-   public CoreClientActivator() {
+   public Activator() {
       instance = this;
    }
 
@@ -43,7 +43,7 @@ public class CoreClientActivator extends Plugin {
       context = null;
    }
 
-   public static CoreClientActivator getInstance() {
+   public static Activator getInstance() {
       return instance;
    }
 

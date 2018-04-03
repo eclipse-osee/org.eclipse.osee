@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
+import org.eclipse.osee.framework.plugin.core.internal.Activator;
 import org.osgi.framework.Bundle;
 
 public class BundleResourceFinder extends ResourceFinder {
@@ -29,7 +29,7 @@ public class BundleResourceFinder extends ResourceFinder {
          if (bundle != null) {
             bundles.add(Platform.getBundle(bundlenames[i]));
          } else {
-            OseeLog.logf(PluginCoreActivator.class, Level.SEVERE,
+            OseeLog.logf(Activator.class, Level.SEVERE,
                "Unable to load bundle [ %s ].  This bundle was not added to the list in BundleResourceFinder.",
                bundlenames[i]);
          }

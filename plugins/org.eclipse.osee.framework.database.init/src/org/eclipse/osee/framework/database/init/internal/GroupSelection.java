@@ -45,7 +45,7 @@ public class GroupSelection implements IGroupSelector {
       if (!wasInitialized) {
          wasInitialized = true;
          ExtensionDefinedObjects<IAddDbInitChoice> contributions = new ExtensionDefinedObjects<IAddDbInitChoice>(
-            DatabaseInitActivator.PLUGIN_ID + ".DatabaseInitializationConfiguration",
+            Activator.PLUGIN_ID + ".DatabaseInitializationConfiguration",
             "DatabaseInitializationConfiguration", "classname");
          for (IAddDbInitChoice dbInitChoice : contributions.getObjects()) {
             dbInitChoice.addDbInitChoice(this);

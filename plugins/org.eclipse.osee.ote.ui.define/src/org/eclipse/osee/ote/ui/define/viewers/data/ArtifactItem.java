@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
 import org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes;
 import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.ote.ui.define.Activator;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeColumn;
 
@@ -117,7 +117,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
                   try {
                      toReturn = getOperator().getTestResultStatus();
                   } catch (Exception ex) {
-                     OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
                      toReturn = ex.getLocalizedMessage();
                   }
                } else if (colName.equals("Disposition")) {
@@ -161,7 +161,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          toReturn = ex.getLocalizedMessage();
       }
       return toReturn;
@@ -202,7 +202,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return toReturn;
    }

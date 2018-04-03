@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
-import org.eclipse.osee.framework.core.client.internal.CoreClientActivator;
+import org.eclipse.osee.framework.core.client.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -40,7 +40,7 @@ public class HttpServer {
       try {
          serverAddress = CorePreferences.getDefaultInetAddress().getHostAddress();
       } catch (UnknownHostException ex) {
-         OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return serverAddress;
    }
@@ -61,7 +61,7 @@ public class HttpServer {
             try {
                portToUse = Integer.valueOf(value);
             } catch (Exception ex) {
-               OseeLog.logf(CoreClientActivator.class, Level.SEVERE, ex, "Unable to parse port property - [%s]", value);
+               OseeLog.logf(Activator.class, Level.SEVERE, ex, "Unable to parse port property - [%s]", value);
             }
          }
 
@@ -69,7 +69,7 @@ public class HttpServer {
             try {
                portToUse = PortUtil.getInstance().getValidPort();
             } catch (IOException ex) {
-               OseeLog.log(CoreClientActivator.class, Level.SEVERE, "Unable to get a valid port.");
+               OseeLog.log(Activator.class, Level.SEVERE, "Unable to get a valid port.");
             }
          }
 
@@ -79,7 +79,7 @@ public class HttpServer {
             thread.setName(String.format("%s:%s", DEFAULT_SERVICE_NAME, portToUse));
             thread.start();
          } else {
-            OseeLog.log(CoreClientActivator.class, Level.SEVERE,
+            OseeLog.log(Activator.class, Level.SEVERE,
                "Unable to get a valid port for osee http local server.");
          }
       }
@@ -129,7 +129,7 @@ public class HttpServer {
       public void run() {
          try {
             listenSocket = new ServerSocket(getPort());
-            OseeLog.logf(CoreClientActivator.class, Level.INFO, "Starting HttpServer on port: [%s]", getPort());
+            OseeLog.logf(Activator.class, Level.INFO, "Starting HttpServer on port: [%s]", getPort());
 
             // Process HTTP service requests in an infinite loop.
             while (listenFlag) {
@@ -156,7 +156,7 @@ public class HttpServer {
                         }
                      });
                   } catch (Exception ex) {
-                     OseeLog.log(CoreClientActivator.class, Level.SEVERE, "Error processing request.", ex);
+                     OseeLog.log(Activator.class, Level.SEVERE, "Error processing request.", ex);
                   }
                } catch (SocketTimeoutException ex) {
                   /*
@@ -166,7 +166,7 @@ public class HttpServer {
                }
             }
          } catch (IOException ex) {
-            OseeLog.log(CoreClientActivator.class, Level.WARNING, "Unable to start HttpServer, socket may be busy", ex);
+            OseeLog.log(Activator.class, Level.WARNING, "Unable to start HttpServer, socket may be busy", ex);
          } finally {
             executorService.shutdownNow();
          }

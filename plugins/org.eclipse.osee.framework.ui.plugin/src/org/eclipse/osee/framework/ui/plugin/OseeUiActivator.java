@@ -35,6 +35,7 @@ import org.osgi.framework.BundleContext;
  * @author Ryan D. Brooks
  */
 public abstract class OseeUiActivator extends AbstractUIPlugin {
+
    private PluginUtil helper;
    private final String pluginId;
 
@@ -168,4 +169,5 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
       }
       return imageDescriptor;
    }
+
 }

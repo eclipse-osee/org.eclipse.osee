@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.branch.graph;
 
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.osgi.framework.BundleContext;
 
 /**
  * @author Roberto E. Escobar
@@ -19,26 +18,15 @@ import org.osgi.framework.BundleContext;
 public class Activator extends OseeUiActivator {
 
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.branch.graph";
-   private static Activator plugin;
+   private static Activator instance;
 
    public Activator() {
       super(PLUGIN_ID);
-   }
-
-   @Override
-   public void start(BundleContext context) throws Exception {
-      super.start(context);
-      plugin = this;
-   }
-
-   @Override
-   public void stop(BundleContext context) throws Exception {
-      plugin = null;
-      super.stop(context);
+      Activator.instance = this;
    }
 
    public static Activator getInstance() {
-      return plugin;
+      return instance;
    }
 
 }

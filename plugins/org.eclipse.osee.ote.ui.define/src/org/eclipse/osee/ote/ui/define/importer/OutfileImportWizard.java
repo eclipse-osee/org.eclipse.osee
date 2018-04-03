@@ -16,7 +16,7 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.ote.ui.define.Activator;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -30,7 +30,7 @@ public class OutfileImportWizard extends Wizard implements IImportWizard {
 
    public OutfileImportWizard() {
       super();
-      setDialogSettings(OteUiDefinePlugin.getInstance().getDialogSettings());
+      setDialogSettings(Activator.getInstance().getDialogSettings());
       setWindowTitle("Outfile Import Wizard");
       setDefaultPageImageDescriptor(WIZARD_IMAGE);
    }
