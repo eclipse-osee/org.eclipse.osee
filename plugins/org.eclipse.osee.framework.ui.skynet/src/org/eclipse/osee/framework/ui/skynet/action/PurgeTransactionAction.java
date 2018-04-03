@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperationWithListener;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -63,7 +64,7 @@ public class PurgeTransactionAction extends Action {
          }
       }
       if (MessageDialog.openConfirm(Displays.getActiveShell(), NAME,
-         "Are you sure you want to purge " + getTransactionListStr(useTransactions))) {
+         "Are you sure you want to purge\n\n" + getTransactionListStr(useTransactions))) {
 
          IJobChangeListener jobChangeListener = new JobChangeAdapter() {
 
@@ -102,10 +103,17 @@ public class PurgeTransactionAction extends Action {
    }
 
    private String getTransactionListStr(List<TransactionId> transactions) {
-      if (transactions.size() == 1) {
-         return "the transaction: " + transactions.iterator().next().toString();
+      StringBuilder transStrs = new StringBuilder();
+      int count = 1;
+      for (TransactionId transactionId : transactions) {
+         transStrs.append(String.format("Tranaction Id [%s] Comment [%s]\n", transactionId,
+            TransactionManager.getComment(transactionId)));
+         if (count++ > 30) {
+            transStrs.append("(truncated at 25)...");
+            break;
+         }
       }
-      return transactions.size() + " transactions:\n\n " + Collections.toString(", ", transactions);
+      return transStrs.toString();
    }
 
 }
