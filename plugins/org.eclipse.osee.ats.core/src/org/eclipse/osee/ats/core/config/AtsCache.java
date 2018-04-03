@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
@@ -29,16 +28,14 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  */
 public class AtsCache implements IAtsCache {
 
-   private static AtsApi atsApi;
-   private final LoadingCache<Long, IAtsObject> idToAtsObjectCache = CacheBuilder.newBuilder() //
-      .expireAfterWrite(15, TimeUnit.MINUTES) //
-      .build(idToAtsObjectCacheLoader);
-   private final LoadingCache<Long, ArtifactId> idToArtifactIdCache = CacheBuilder.newBuilder() //
-      .expireAfterWrite(15, TimeUnit.MINUTES) //
-      .build(idToArtifactIdCacheLoader);
+   private final AtsApi atsApi;
+   private final LoadingCache<Long, IAtsObject> idToAtsObjectCache;
 
    public AtsCache(AtsApi atsApi) {
-      AtsCache.atsApi = atsApi;
+      this.atsApi = atsApi;
+      idToAtsObjectCache = CacheBuilder.newBuilder() //
+         .expireAfterWrite(15, TimeUnit.MINUTES) //
+         .build(idToAtsObjectCacheLoader);
    }
 
    @Override
@@ -60,43 +57,24 @@ public class AtsCache implements IAtsCache {
    @Override
    public void cacheAtsObject(IAtsObject atsObject) {
       Conditions.checkNotNull(atsObject, "atsObject");
-      ArtifactToken storeObject = atsApi.getQueryService().getArtifact(atsObject.getStoreObject());
-      if (storeObject != null) {
-         idToArtifactIdCache.put(atsObject.getId(), storeObject);
-      }
       idToAtsObjectCache.put(atsObject.getId(), atsObject);
    }
 
-   @Override
-   public void cacheArtifact(ArtifactId artifact) {
-      Conditions.checkNotNull(artifact, "artifact");
-      idToArtifactIdCache.put(artifact.getId(), artifact);
-   }
-
-   static CacheLoader<Long, IAtsObject> idToAtsObjectCacheLoader = new CacheLoader<Long, IAtsObject>() {
+   private final CacheLoader<Long, IAtsObject> idToAtsObjectCacheLoader = new CacheLoader<Long, IAtsObject>() {
       @Override
       public IAtsObject load(Long id) {
          return atsApi.getConfigItemFactory().getConfigObject(atsApi.getQueryService().getArtifact(id));
       }
    };
 
-   static CacheLoader<Long, ArtifactId> idToArtifactIdCacheLoader = new CacheLoader<Long, ArtifactId>() {
-      @Override
-      public ArtifactId load(Long id) {
-         return atsApi.getQueryService().getArtifact(id);
-      }
-   };
-
    @Override
    public void invalidate() {
       idToAtsObjectCache.invalidateAll();
-      idToArtifactIdCache.invalidateAll();
    }
 
    @Override
    public void deCacheAtsObject(IAtsObject atsObject) {
       Conditions.checkNotNull(atsObject, "atsObject");
       idToAtsObjectCache.invalidate(atsObject.getId());
-      idToArtifactIdCache.invalidate(atsObject.getId());
    }
 }

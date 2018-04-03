@@ -57,21 +57,21 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class AtsProgramService implements IAtsProgramService {
 
-   static private AtsApi atsApi;
-   static CacheLoader<IAtsTeamDefinition, IAtsProgram> teamDefToAtsProgramCacheLoader =
-      new CacheLoader<IAtsTeamDefinition, IAtsProgram>() {
+   private AtsApi atsApi;
+   private CacheLoader<IAtsTeamDefinition, IAtsProgram> teamDefToAtsProgramCacheLoader;
+   private LoadingCache<IAtsTeamDefinition, IAtsProgram> teamDefToAtsProgramCache;
+
+   public AtsProgramService(AtsApi atsApi) {
+      this.atsApi = atsApi;
+      teamDefToAtsProgramCacheLoader = new CacheLoader<IAtsTeamDefinition, IAtsProgram>() {
          @Override
          public IAtsProgram load(IAtsTeamDefinition teamDef) {
             return loadProgram(teamDef);
          }
       };
-   static private final LoadingCache<IAtsTeamDefinition, IAtsProgram> teamDefToAtsProgramCache =
-      CacheBuilder.newBuilder() //
+      teamDefToAtsProgramCache = CacheBuilder.newBuilder() //
          .expireAfterWrite(15, TimeUnit.MINUTES) //
          .build(teamDefToAtsProgramCacheLoader);
-
-   public AtsProgramService(AtsApi atsApi) {
-      AtsProgramService.atsApi = atsApi;
    }
 
    @Override
@@ -215,7 +215,7 @@ public class AtsProgramService implements IAtsProgramService {
       return null;
    }
 
-   private static IAtsProgram loadProgram(IAtsTeamDefinition teamDef) {
+   private IAtsProgram loadProgram(IAtsTeamDefinition teamDef) {
       IAtsProgram program = null;
       Object object = atsApi.getAttributeResolver().getSoleAttributeValue(teamDef, AtsAttributeTypes.ProgramId, null);
       if (object instanceof ArtifactId) {

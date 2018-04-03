@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
  */
 public class TeamDefinitionService implements IAtsTeamDefinitionService {
 
-   protected final AtsApi atsApi;
+   private final AtsApi atsApi;
 
    public TeamDefinitionService(AtsApi atsApi) {
       this.atsApi = atsApi;

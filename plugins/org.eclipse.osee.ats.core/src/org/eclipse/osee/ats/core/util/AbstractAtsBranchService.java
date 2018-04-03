@@ -54,11 +54,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    protected AtsApi atsApi;
    private static final int SHORT_NAME_LIMIT = 35;
    private static Set<BranchId> branchesInCommit = new HashSet<>();
-   private ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
+   private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
    private CommitOverrideOperations commitOverrideOps;
-
-   public AbstractAtsBranchService() {
-   }
 
    public AbstractAtsBranchService(AtsApi atsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       this.atsApi = atsApi;

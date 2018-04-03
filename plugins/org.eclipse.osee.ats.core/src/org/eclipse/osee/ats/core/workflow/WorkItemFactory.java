@@ -26,11 +26,8 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
  */
 public class WorkItemFactory extends AbstractWorkItemFactory {
 
-   private final AtsApi atsApi;
-
    public WorkItemFactory(AtsApi atsApi) {
       super(atsApi);
-      this.atsApi = atsApi;
    }
 
    @Override

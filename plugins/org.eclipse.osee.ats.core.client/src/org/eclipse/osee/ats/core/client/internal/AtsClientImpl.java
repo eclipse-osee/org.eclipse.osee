@@ -125,7 +125,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
       workDefinitionService = new AtsWorkDefinitionServiceImpl(this, workDefinitionStore, this,
          workDefinitionDslService, teamWorkflowProvidersLazy);
 
-      earnedValueService = new AtsEarnedValueImpl(logger, getServices());
+      earnedValueService = new AtsEarnedValueImpl(logger, this);
       configItemFactory = new ConfigItemFactory(logger, this);
 
       actionableItemFactory = new ActionableItemFactory();
@@ -139,14 +139,14 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
       branchService = new AtsBranchServiceImpl(this, teamWorkflowProvidersLazy);
 
       logFactory = AtsCoreFactory.newLogFactory();
-      stateFactory = AtsCoreFactory.newStateFactory(getServices(), logFactory);
+      stateFactory = AtsCoreFactory.newStateFactory(this, logFactory);
       storeService = new AtsStoreService(this, workItemFactory, getUserServiceClient(), jdbcService);
 
       queryService = new AtsQueryServiceImpl(this, jdbcService);
       actionableItemManager = new ActionableItemService(attributeResolverService, storeService, this);
 
       actionFactory = new ActionFactory(workItemFactory, sequenceProvider, actionableItemManager,
-         attributeResolverService, stateFactory, getServices());
+         attributeResolverService, stateFactory, this);
       taskService = new AtsTaskService(this);
 
       eventService = new AtsEventServiceImpl();

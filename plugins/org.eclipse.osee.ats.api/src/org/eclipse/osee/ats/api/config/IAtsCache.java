@@ -24,8 +24,6 @@ public interface IAtsCache {
 
    public void cacheAtsObject(IAtsObject atsObject);
 
-   public void cacheArtifact(ArtifactId artifact);
-
    public void invalidate();
 
    public void deCacheAtsObject(IAtsObject atsObject);
