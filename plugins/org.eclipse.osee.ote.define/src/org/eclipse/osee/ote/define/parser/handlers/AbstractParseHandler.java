@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.ote.define.OteDefinePlugin;
+import org.eclipse.osee.ote.define.internal.Activator;
 import org.eclipse.osee.ote.define.parser.IDataListener;
 import org.eclipse.osee.ote.define.parser.ISaxElementHandler;
 import org.w3c.dom.Document;
@@ -61,7 +61,7 @@ public abstract class AbstractParseHandler implements ISaxElementHandler {
             processSaxChunk(root);
          }
       } catch (Exception ex) {
-         OseeLog.log(OteDefinePlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 

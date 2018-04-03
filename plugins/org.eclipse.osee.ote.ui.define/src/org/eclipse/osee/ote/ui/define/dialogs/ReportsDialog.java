@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.osee.ote.define.jobs.RemoteResourceRequestJob;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
-import org.eclipse.osee.ote.ui.define.Activator;
+import org.eclipse.osee.ote.ui.define.internal.Activator;
 import org.eclipse.osee.ote.ui.define.panels.ListSelectionPanel;
 import org.eclipse.osee.ote.ui.define.panels.PreviewPanel;
 import org.eclipse.osee.ote.ui.define.panels.PreviewPanel.PanelEnum;

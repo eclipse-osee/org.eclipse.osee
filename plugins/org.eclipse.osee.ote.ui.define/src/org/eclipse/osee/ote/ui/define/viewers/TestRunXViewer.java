@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
-import org.eclipse.osee.ote.ui.define.Activator;
+import org.eclipse.osee.ote.ui.define.internal.Activator;
 import org.eclipse.osee.ote.ui.define.jobs.CommitTestRunJob;
 import org.eclipse.osee.ote.ui.define.utilities.CommitConfiguration;
 import org.eclipse.osee.ote.ui.define.viewers.actions.AbstractActionHandler;

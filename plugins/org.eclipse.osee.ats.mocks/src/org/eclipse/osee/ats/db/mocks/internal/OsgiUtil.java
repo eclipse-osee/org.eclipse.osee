@@ -64,7 +64,7 @@ public final class OsgiUtil {
       return service;
    }
 
-   public static Bundle getBundleByName(String bundleName) {
+   private static Bundle getBundleByName(String bundleName) {
       Bundle bundle = FrameworkUtil.getBundle(OsgiUtil.class);
       checkStarted(bundle);
 

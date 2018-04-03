@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: OTE Define Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.define;singleton:=true
 Bundle-Version: 0.26.0.qualifier
-Bundle-Activator: org.eclipse.osee.ote.define.OteDefinePlugin
+Bundle-Activator: org.eclipse.osee.ote.define.internal.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,

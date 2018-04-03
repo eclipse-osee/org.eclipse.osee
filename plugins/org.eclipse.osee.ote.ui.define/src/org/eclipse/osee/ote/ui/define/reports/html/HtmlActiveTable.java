@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.ote.ui.define.Activator;
+import org.eclipse.osee.ote.ui.define.internal.Activator;
 import org.eclipse.osee.ote.ui.define.utilities.HtmlStringUtils;
 import org.osgi.framework.Bundle;
 

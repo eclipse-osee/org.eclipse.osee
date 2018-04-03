@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.ote.define.OteDefinePlugin;
+import org.eclipse.osee.ote.define.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -79,7 +79,7 @@ public class OteArtifactFetcher<T extends Artifact> {
             toReturn.add((T) artifact);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.logf(OteDefinePlugin.class, Level.WARNING, ex, "Search for all artifacts failed [%s] on branch [%s]",
+         OseeLog.logf(Activator.class, Level.WARNING, ex, "Search for all artifacts failed [%s] on branch [%s]",
             oteArtifactType.getName(), branch.getId());
       }
       return toReturn;

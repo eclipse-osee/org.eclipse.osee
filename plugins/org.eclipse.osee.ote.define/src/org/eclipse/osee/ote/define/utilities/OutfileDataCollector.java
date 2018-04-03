@@ -18,9 +18,9 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.ote.define.OteDefinePlugin;
 import org.eclipse.osee.ote.define.TestRunField;
 import org.eclipse.osee.ote.define.artifacts.OteToAttributeMap;
+import org.eclipse.osee.ote.define.internal.Activator;
 import org.eclipse.osee.ote.define.parser.IDataListener;
 
 /**
@@ -51,7 +51,7 @@ public class OutfileDataCollector implements IDataListener {
                Object object = oteToAttributeMap.asTypedObject(attributeType, value);
                artifact.setSoleAttributeValue(attributeType, object);
             } catch (Exception ex) {
-               OseeLog.log(OteDefinePlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       }

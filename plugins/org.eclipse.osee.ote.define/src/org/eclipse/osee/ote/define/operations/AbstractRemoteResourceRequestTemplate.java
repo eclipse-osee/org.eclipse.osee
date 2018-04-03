@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.ote.define.OteDefinePlugin;
+import org.eclipse.osee.ote.define.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -55,7 +55,7 @@ public abstract class AbstractRemoteResourceRequestTemplate {
             containerCreator.createContainer(new NullProgressMonitor());
          }
       } catch (CoreException ex1) {
-         OseeLog.log(OteDefinePlugin.class, Level.SEVERE, ex1.toString(), ex1);
+         OseeLog.log(Activator.class, Level.SEVERE, ex1.toString(), ex1);
       }
    }
 
@@ -66,7 +66,7 @@ public abstract class AbstractRemoteResourceRequestTemplate {
             IFileStore store = EFS.getStore(file.getLocationURI());
             found = store.fetchInfo().exists();
          } catch (Exception ex) {
-            OseeLog.log(OteDefinePlugin.class, Level.SEVERE, "Error retrieving file system. ", ex);
+            OseeLog.log(Activator.class, Level.SEVERE, "Error retrieving file system. ", ex);
          }
       }
       return found;

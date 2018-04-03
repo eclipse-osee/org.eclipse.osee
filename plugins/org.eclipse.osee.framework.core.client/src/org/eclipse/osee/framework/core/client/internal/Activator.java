@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.client.internal;
 
-import org.eclipse.core.runtime.Plugin;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpServer;
+import org.eclipse.osee.framework.plugin.core.OseeActivator;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -21,7 +21,7 @@ import org.osgi.framework.BundleContext;
  *
  * @author Donald G. Dunne
  */
-public class Activator extends Plugin {
+public class Activator extends OseeActivator {
 
    private static Activator instance;
 

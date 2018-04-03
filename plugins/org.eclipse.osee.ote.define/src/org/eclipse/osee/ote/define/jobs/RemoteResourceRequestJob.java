@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ote.define.OteDefinePlugin;
+import org.eclipse.osee.ote.define.internal.Activator;
 import org.eclipse.osee.ote.define.operations.RemoteResourceRequestOperation;
 
 /**
@@ -49,7 +49,7 @@ public class RemoteResourceRequestJob extends Job {
          downloaded = remoteRequest.getResults();
          status = Status.OK_STATUS;
       } catch (Exception ex) {
-         status = new Status(IStatus.ERROR, OteDefinePlugin.PLUGIN_ID,
+         status = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
             String.format("Error downloading resource [%s]", targetFileName), ex);
       }
       return status;

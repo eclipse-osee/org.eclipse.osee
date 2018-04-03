@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.ote.define.OteDefinePlugin;
+import org.eclipse.osee.ote.define.internal.Activator;
 import org.eclipse.osee.ote.define.operations.LinkTestRunToTestScriptOperation;
 import org.eclipse.osee.ote.define.operations.OutfileToArtifactOperation;
 
@@ -57,7 +57,7 @@ public class OutfileToArtifactJob extends Job {
          }
 
       } catch (Exception ex) {
-         toReturn = new Status(IStatus.ERROR, OteDefinePlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+         toReturn = new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getMessage(), ex);
       } finally {
          monitor.subTask("Done");
          monitor.done();

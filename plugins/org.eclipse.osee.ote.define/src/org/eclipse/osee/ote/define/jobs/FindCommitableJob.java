@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.ote.define.OteDefinePlugin;
 import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 
 /**
@@ -126,7 +125,7 @@ public class FindCommitableJob extends Job {
                   }
                }
             } catch (OseeArgumentException ex) {
-               OseeLog.log(OteDefinePlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
 
             if (monitor.isCanceled() == true) {

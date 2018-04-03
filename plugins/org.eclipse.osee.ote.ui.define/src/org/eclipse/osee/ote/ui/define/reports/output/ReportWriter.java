@@ -16,7 +16,7 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.util.TableWriterAdaptor;
-import org.eclipse.osee.ote.ui.define.Activator;
+import org.eclipse.osee.ote.ui.define.internal.Activator;
 
 /**
  * @author Roberto E. Escobar

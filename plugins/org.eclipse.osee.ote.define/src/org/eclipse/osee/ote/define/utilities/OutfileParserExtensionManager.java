@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.ote.define.OteDefinePlugin;
+import org.eclipse.osee.ote.define.internal.Activator;
 import org.eclipse.osee.ote.define.parser.BaseOutfileParser;
 import org.osgi.framework.Bundle;
 
@@ -89,7 +89,7 @@ public class OutfileParserExtensionManager {
    private void checkObjectsLoaded() {
       if (contributions.isEmpty()) {
          List<IConfigurationElement> elements =
-            ExtensionPoints.getExtensionElements(OteDefinePlugin.PLUGIN_ID + "." + OUTFILE_PARSER, OUTFILE_PARSER);
+            ExtensionPoints.getExtensionElements(Activator.PLUGIN_ID + "." + OUTFILE_PARSER, OUTFILE_PARSER);
          for (IConfigurationElement element : elements) {
             IExtension extension = (IExtension) element.getParent();
             String identifier = extension.getUniqueIdentifier();

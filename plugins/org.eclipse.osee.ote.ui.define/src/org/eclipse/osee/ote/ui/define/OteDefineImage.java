@@ -13,6 +13,7 @@ package org.eclipse.osee.ote.ui.define;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
+import org.eclipse.osee.ote.ui.define.internal.Activator;
 
 /**
  * @author Andrew M. Finkbeiner

@@ -25,7 +25,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
-import org.eclipse.osee.ote.ui.define.Activator;
+import org.eclipse.osee.ote.ui.define.internal.Activator;
 
 /**
  * @author Roberto E. Escobar

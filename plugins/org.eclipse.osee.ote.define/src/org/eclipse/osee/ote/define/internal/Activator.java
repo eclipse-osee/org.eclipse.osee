@@ -8,24 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.define;
+package org.eclipse.osee.ote.define.internal;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+import org.eclipse.osee.framework.plugin.core.OseeActivator;
 
-/**
- * The activator class controls the plug-in life cycle
- */
-public class OteDefinePlugin implements BundleActivator {
+public class Activator extends OseeActivator {
+
    public static final String PLUGIN_ID = "org.eclipse.osee.ote.define";
 
-   @Override
-   public void start(BundleContext context) throws Exception {
-      // do nothing
-   }
-
-   @Override
-   public void stop(BundleContext context) throws Exception {
-      // do nothing
-   }
 }
