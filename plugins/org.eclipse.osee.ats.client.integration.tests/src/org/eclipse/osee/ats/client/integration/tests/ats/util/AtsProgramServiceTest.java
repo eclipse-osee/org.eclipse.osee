@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.program.ProjectType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.junit.Assert;
@@ -55,8 +56,7 @@ public class AtsProgramServiceTest {
       Collection<IAtsProgram> programs = programService.getPrograms();
       assertEquals(5, programs.size());
 
-      IAtsProgram program = programService.getProgram(programs.iterator().next().getId());
-      assertEquals(program.getId(), program.getId());
+      IAtsProgram program = programService.getProgramById(ArtifactId.valueOf(programs.iterator().next().getId()));
 
       Collection<IAtsProgram> programs2 = programService.getPrograms(AtsArtifactTypes.Program);
       assertEquals(5, programs2.size());
@@ -69,7 +69,7 @@ public class AtsProgramServiceTest {
       IAtsProgram program4 = programService.getProgram(insertions.iterator().next());
       assertEquals(program.getId(), program4.getId());
 
-      program4 = programService.getProgram(program.getStoreObject().getId());
+      program4 = programService.getProgramById(program.getStoreObject());
       assertEquals(program.getId(), program4.getId());
    }
 

@@ -168,7 +168,7 @@ public class AtsProgramService implements IAtsProgramService {
    }
 
    @Override
-   public IAtsProgram getProgram(Long programId) {
+   public IAtsProgram getProgramById(ArtifactId programId) {
       return atsApi.getConfigItemFactory().getProgram(atsApi.getQueryService().getArtifact(programId));
    }
 
@@ -221,7 +221,7 @@ public class AtsProgramService implements IAtsProgramService {
       if (object instanceof ArtifactId) {
          program = atsApi.getConfigItemFactory().getProgram((ArtifactId) object);
       } else if (object instanceof String && Strings.isNumeric((String) object)) {
-         program = atsApi.getProgramService().getProgram(Long.parseLong((String) object));
+         program = atsApi.getProgramService().getProgramById(ArtifactId.valueOf((String) object));
       }
       if (program == null) {
          IAtsTeamDefinition topTeamDef = teamDef.getTeamDefinitionHoldingVersions();

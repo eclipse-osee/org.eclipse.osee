@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 
@@ -34,10 +35,10 @@ public class ProgramSearchWidget extends AbstractXComboViewerSearchWidget<IAtsPr
    public void set(AtsSearchData data) {
       if (getWidget() != null) {
          setup(getWidget());
-         Long programId = data.getProgramId();
+         ArtifactId programId = ArtifactId.valueOf(data.getProgramId());
          XComboViewer combo = getWidget();
-         if (programId != null && programId > 0) {
-            IAtsProgram program = AtsClientService.get().getProgramService().getProgram(programId);
+         if (programId.isValid()) {
+            IAtsProgram program = AtsClientService.get().getProgramService().getProgramById(programId);
             combo.setSelected(Arrays.asList(program));
          }
       }

@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 
 /**
@@ -40,7 +41,7 @@ public interface IAtsProgramService {
 
    List<IAtsProgram> getPrograms(IAtsCountry atsCountry);
 
-   IAtsProgram getProgram(Long programId);
+   IAtsProgram getProgramById(ArtifactId programId);
 
    Collection<IAtsProgram> getPrograms();
 
