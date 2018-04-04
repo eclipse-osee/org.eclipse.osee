@@ -76,8 +76,8 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    private final Cache<String, IAtsRuleDefinition> ruleDefinitionCache =
       CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
-   private final LoadingCache<Long, IAtsWorkDefinition> workDefIdToWorkDef;
-   private final LoadingCache<IAtsWorkItem, IAtsWorkDefinition> workItemToWorkDef;
+   private LoadingCache<Long, IAtsWorkDefinition> workDefIdToWorkDef;
+   private LoadingCache<IAtsWorkItem, IAtsWorkDefinition> workItemToWorkDef;
    private final AtsApi atsApi;
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
    private final IAtsWorkDefinitionDslService workDefinitionDslService;
@@ -92,13 +92,6 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       this.workDefinitionStringProvider = workDefinitionStringProvider;
       this.workDefinitionDslService = workDefinitionDslService;
       this.teamWorkflowProvidersLazy = teamWorkflowProvidersLazy;
-      workDefIdToWorkDef = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build(workDefLoader);
-      if (atsApi.isWorkDefAsName()) {
-         workItemToWorkDef =
-            CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build(workItemWorkDefLoader);
-      } else {
-         workItemToWorkDef = null;
-      }
    }
 
    private final CacheLoader<Long, IAtsWorkDefinition> workDefLoader = new CacheLoader<Long, IAtsWorkDefinition>() {
@@ -118,7 +111,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    @Override
    public void clearCaches() {
-      workDefIdToWorkDef.invalidateAll();
+      getWorkDefIdToWorkDef().invalidateAll();
       if (workItemToWorkDef != null && atsApi.isWorkDefAsName()) {
          workItemToWorkDef.invalidateAll();
       }
@@ -127,12 +120,12 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    @Override
    public void addWorkDefinition(IAtsWorkDefinition workDef) {
-      workDefIdToWorkDef.put(workDef.getId(), workDef);
+      getWorkDefIdToWorkDef().put(workDef.getId(), workDef);
    }
 
    @Override
    public void removeWorkDefinition(IAtsWorkDefinition workDef) {
-      workDefIdToWorkDef.invalidate(workDef.getId());
+      getWorkDefIdToWorkDef().invalidate(workDef.getId());
    }
 
    @Override
@@ -146,7 +139,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          ArtifactId workDefArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(workItem,
             AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.SENTINEL);
          if (workDefArt.isValid()) {
-            workDefinition = workDefIdToWorkDef.get(workDefArt.getId());
+            workDefinition = getWorkDefIdToWorkDef().get(workDefArt.getId());
          }
       } catch (Exception ex) {
          throw new OseeWrappedException(ex, "Error getting work definition for work item %s",
@@ -154,7 +147,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       }
       if (workDefinition == null && atsApi.isWorkDefAsName()) {
          try {
-            return workItemToWorkDef.get(workItem);
+            return getWorkItemToWorkDef().get(workItem);
          } catch (Exception ex) {
             throw new OseeWrappedException(ex, "Error getting work definition for work item %s",
                workItem.toStringWithId());
@@ -193,7 +186,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    @Override
    public IAtsWorkDefinition getWorkDefinition(String name) {
-      for (Entry<Long, IAtsWorkDefinition> entry : workDefIdToWorkDef.asMap().entrySet()) {
+      for (Entry<Long, IAtsWorkDefinition> entry : getWorkDefIdToWorkDef().asMap().entrySet()) {
          if (entry.getValue().getName().equals(name)) {
             return entry.getValue();
          }
@@ -206,7 +199,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          atsApi.getLogger().error(ex, "Exception getting work definition [%s]", name);
       }
       if (workDef != null) {
-         workDefIdToWorkDef.put(workDef.getId(), workDef);
+         getWorkDefIdToWorkDef().put(workDef.getId(), workDef);
       }
       return workDef;
    }
@@ -215,7 +208,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    public IAtsWorkDefinition getWorkDefinition(ArtifactId workDefArt) {
       Conditions.assertNotNull(workDefArt, "workDefArt");
       try {
-         return workDefIdToWorkDef.get(workDefArt.getId());
+         return getWorkDefIdToWorkDef().get(workDefArt.getId());
       } catch (ExecutionException ex) {
          atsApi.getLogger().error(ex, "Exception getting work definition [%s]", workDefArt);
       }
@@ -566,7 +559,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       Conditions.assertTrue(id > 0, "Id must be > 0, not %s", id);
       IAtsWorkDefinition workDef = null;
       try {
-         workDef = workDefIdToWorkDef.get(id);
+         workDef = getWorkDefIdToWorkDef().get(id);
       } catch (Exception ex) {
          // do nothing
       }
@@ -592,11 +585,11 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    @Override
    public void reloadAll() {
-      workDefIdToWorkDef.invalidateAll();
+      getWorkDefIdToWorkDef().invalidateAll();
       for (WorkDefData data : workDefinitionStringProvider.getWorkDefinitionsData()) {
          IAtsWorkDefinition workDef = workDefinitionDslService.getWorkDefinition(data.getId(), data.getDsl());
          if (workDef != null) {
-            workDefIdToWorkDef.put(workDef.getId(), workDef);
+            getWorkDefIdToWorkDef().put(workDef.getId(), workDef);
             workDef.setStoreObject(data.getStoreObject());
          }
       }
@@ -651,7 +644,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    @Override
    public void cache(IAtsWorkDefinition workDef) {
-      workDefIdToWorkDef.put(workDef.getId(), workDef);
+      getWorkDefIdToWorkDef().put(workDef.getId(), workDef);
    }
 
    @Override
@@ -685,7 +678,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          for (WorkDefData data : workDefinitionStringProvider.getWorkDefinitionsData()) {
             IAtsWorkDefinition workDef = workDefinitionDslService.getWorkDefinition(data.getId(), data.getDsl());
             if (workDef != null) {
-               workDefIdToWorkDef.put(workDef.getId(), workDef);
+               getWorkDefIdToWorkDef().put(workDef.getId(), workDef);
                workDef.setStoreObject(data.getStoreObject());
             }
          }
@@ -693,7 +686,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          for (WorkDefData data : workDefinitionStore.getWorkDefinitionsData()) {
             IAtsWorkDefinition workDef = workDefinitionDslService.getWorkDefinition(data.getId(), data.getDsl());
             if (workDef != null) {
-               workDefIdToWorkDef.put(workDef.getId(), workDef);
+               getWorkDefIdToWorkDef().put(workDef.getId(), workDef);
                workDef.setStoreObject(data.getStoreObject());
             }
          }
@@ -741,7 +734,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.SENTINEL);
       if (workDefArt.isValid()) {
          try {
-            IAtsWorkDefinition workDef = workDefIdToWorkDef.get(workDefArt.getId());
+            IAtsWorkDefinition workDef = getWorkDefIdToWorkDef().get(workDefArt.getId());
             return workDef;
          } catch (ExecutionException ex) {
             // do nothing
@@ -761,12 +754,36 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       IAtsTeamDefinition parentTeamDef = teamDef.getParentTeamDef();
       if (parentTeamDef == null) {
          try {
-            return workDefIdToWorkDef.get(AtsArtifactToken.WorkDef_Team_Default.getId());
+            return getWorkDefIdToWorkDef().get(AtsArtifactToken.WorkDef_Team_Default.getId());
          } catch (ExecutionException ex) {
             // do nothing
          }
       }
       return getWorkDefinitionNameForTeamWfFromTeamDef(parentTeamDef);
+   }
+
+   private LoadingCache<IAtsWorkItem, IAtsWorkDefinition> getWorkItemToWorkDef() {
+      if (workItemToWorkDef == null) {
+         createCaches();
+      }
+      return workItemToWorkDef;
+   }
+
+   private LoadingCache<Long, IAtsWorkDefinition> getWorkDefIdToWorkDef() {
+      if (workDefIdToWorkDef == null) {
+         createCaches();
+      }
+      return workDefIdToWorkDef;
+   }
+
+   private void createCaches() {
+      workDefIdToWorkDef = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build(workDefLoader);
+      if (atsApi.isWorkDefAsName()) {
+         workItemToWorkDef =
+            CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build(workItemWorkDefLoader);
+      } else {
+         workItemToWorkDef = null;
+      }
    }
 
    @Override
