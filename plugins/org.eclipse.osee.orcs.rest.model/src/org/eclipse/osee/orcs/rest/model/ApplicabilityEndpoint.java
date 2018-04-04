@@ -73,6 +73,11 @@ public interface ApplicabilityEndpoint {
    List<BranchViewData> getViews();
 
    @GET
+   @Path("view")
+   @Produces({MediaType.APPLICATION_JSON})
+   HashMap<String, ArtifactId> getViewMap();
+
+   @GET
    @Path("feature-data")
    @Produces(MediaType.APPLICATION_JSON)
    List<FeatureDefinitionData> getFeatureDefinitionData();

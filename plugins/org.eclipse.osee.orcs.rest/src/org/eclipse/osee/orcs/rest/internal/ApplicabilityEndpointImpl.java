@@ -94,6 +94,21 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
+   public HashMap<String, ArtifactId> getViewMap() {
+      HashMap<String, ArtifactId> viewMap = new HashMap<>();
+      List<BranchViewData> views = applicabilityQuery.getViews();
+      for (BranchViewData view : views) {
+         if (branch.equals(view.getBranch())) {
+            for (ArtifactId id : view.getBranchViews()) {
+               ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(branch).andId(id).getArtifact();
+               viewMap.put(artifact.getName(), id);
+            }
+         }
+      }
+      return viewMap;
+   }
+
+   @Override
    public List<FeatureDefinitionData> getFeatureDefinitionData() {
       return applicabilityQuery.getFeatureDefinitionData(branch);
    }
