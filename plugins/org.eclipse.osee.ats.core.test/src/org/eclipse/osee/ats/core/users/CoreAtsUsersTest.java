@@ -79,9 +79,7 @@ public class CoreAtsUsersTest {
    public void testHashCode() {
       TestUser user = new TestUser();
       user.setUserId(null);
-      Assert.assertEquals(user.hashCode(), 31);
-      user.setUserId("99999998");
-      Assert.assertEquals(user.hashCode(), 31 * 1 + user.getUserId().hashCode());
+      Assert.assertEquals(user.getId().intValue(), user.hashCode());
    }
 
    @Test

@@ -11,17 +11,18 @@
 package org.eclipse.osee.ats.api.user;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
  */
+@JsonSerialize(as = AtsUser.class)
 public class AtsUser extends JaxAtsObject implements IAtsUser {
 
    private String userId;
@@ -42,7 +43,7 @@ public class AtsUser extends JaxAtsObject implements IAtsUser {
       this.email = email;
       this.active = active;
       this.id = id;
-      this.name = name;
+      setName(name);
    }
 
    @Override
@@ -105,37 +106,15 @@ public class AtsUser extends JaxAtsObject implements IAtsUser {
    }
 
    @Override
-   public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + (userId == null ? 0 : userId.hashCode());
-      return result;
+   @JsonIgnore
+   public Long getUuid() {
+      return super.getId();
    }
 
    @Override
-   public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
-      }
-      if (obj instanceof Id && (((Id) obj).getId().equals(getId()))) {
-         return true;
-      }
-      try {
-         if (obj instanceof IAtsUser) {
-            String thisUserId = getUserId();
-            String objUserId = ((IAtsUser) obj).getUserId();
-            if (thisUserId == null) {
-               if (objUserId != null) {
-                  return false;
-               }
-            } else if (!thisUserId.equals(objUserId)) {
-               return false;
-            }
-         }
-      } catch (OseeCoreException ex) {
-         return false;
-      }
-      return false;
+   @JsonIgnore
+   public ArtifactId getArtifactId() {
+      return ArtifactId.valueOf(getId());
    }
 
 }

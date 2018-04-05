@@ -55,7 +55,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       if (atsAdminArt == null) {
          atsAdminArt = getArtifact(AtsArtifactToken.AtsAdmin);
       }
-      return atsAdminArt.areRelated(CoreRelationTypes.User_Grouping__Members, getArtifact(user));
+      return atsAdminArt.areRelated(CoreRelationTypes.User_Grouping__Members, getArtifact((IAtsObject) user));
    }
 
    private ArtifactReadable getArtifact(IAtsObject atsObject) {

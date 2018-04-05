@@ -18,8 +18,11 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
+import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.util.UserIdSorter;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 
 /**
  * @author Donald G. Dunne
@@ -42,7 +45,7 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
    /**
     * If set, team members will be shown prior to rest of un-checked users
     */
-   public void setTeamMembers(Collection<? extends User> teamMembers) {
+   public void setTeamMembers(Collection<User> teamMembers) {
       this.teamMembers.addAll(teamMembers);
    }
 
@@ -68,16 +71,12 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
    @Override
    public boolean handleSelection() {
       try {
-         UserCheckTreeDialog uld =
-            new UserCheckTreeDialog("Select Users", "Select to assign.\nDeSelect to un-assign.", users);
+         FilteredCheckboxTreeDialog<User> uld = new FilteredCheckboxTreeDialog<User>("Select Users",
+            "Select to assign.\nDeSelect to un-assign.", users, new ArrayTreeContentProvider(),
+            new ArtifactLabelProvider(), new UserIdSorter(selectedUsers, teamMembers));
          uld.setInitialSelections(selectedUsers);
-         uld.setTeamMembers(teamMembers);
          if (uld.open() != 0) {
             return false;
-         }
-         selectedUsers.clear();
-         for (User art : uld.getUsersSelected()) {
-            selectedUsers.add(art);
          }
          return true;
       } catch (Exception ex) {

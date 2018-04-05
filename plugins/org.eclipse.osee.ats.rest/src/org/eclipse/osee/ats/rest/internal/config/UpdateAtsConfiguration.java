@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.AtsViews;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationViewsProvider;
@@ -62,7 +63,8 @@ public class UpdateAtsConfiguration {
    }
 
    public XResultData createUpdateConfig(XResultData rd) {
-      ArtifactReadable userArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(AtsCoreUsers.SYSTEM_USER);
+      ArtifactReadable userArt =
+         (ArtifactReadable) atsApi.getQueryService().getArtifact((IAtsObject) AtsCoreUsers.SYSTEM_USER);
       ArtifactId configFolder = getOrCreateConfigFolder(userArt, rd);
       ArtifactReadable atsConfigArt = (ArtifactReadable) getOrCreateAtsConfig(userArt, rd);
       createRuleDefinitions(userArt, configFolder, rd);

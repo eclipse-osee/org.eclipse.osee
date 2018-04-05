@@ -648,7 +648,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     * getTransitionAssignees() is a method that is ONLY to be used in the WETransitionComposition class. Eventually this
     * method needs to be incorporated into WETransitionComposition.
     */
-   public Collection<? extends IAtsUser> getTransitionAssignees() {
+   public Collection<IAtsUser> getTransitionAssignees() {
       if (transitionAssignees != null) {
          if (!transitionAssignees.isEmpty() && transitionAssignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {
             transitionAssignees.remove(AtsCoreUsers.UNASSIGNED_USER);

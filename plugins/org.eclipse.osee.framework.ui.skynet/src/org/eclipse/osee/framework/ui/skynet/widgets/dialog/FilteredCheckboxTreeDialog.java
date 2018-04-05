@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ICheckStateListener;
@@ -22,7 +21,6 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTree.FilterableCheckboxTreeViewer;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -38,7 +36,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.PatternFilter;
 
-public class FilteredCheckboxTreeDialog extends MessageDialog {
+public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
 
    protected Label statusLabel;
    protected Button okButton;
@@ -46,13 +44,13 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
    private Object input;
    private final IContentProvider contentProvider;
    private final IBaseLabelProvider labelProvider;
-   private Collection<? extends Object> initialSelections;
+   private Collection<T> initialSelections;
    private final ViewerComparator viewerComparator;
    private boolean showSelectButtons = false;
    private boolean expandChecked = false;
    private boolean multiSelect = true;
    private PatternFilter patternFilter;
-   private Set<Artifact> selectables;
+   private Collection<T> selectables;
 
    public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider) {
       this(dialogTitle, dialogMessage, contentProvider, labelProvider, null);
@@ -68,9 +66,9 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 
-   public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, Set<Artifact> artifacts, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerComparator viewerSorter) {
+   public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, Collection<T> selectables, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerComparator viewerSorter) {
       this(dialogTitle, dialogMessage, contentProvider, labelProvider, viewerSorter);
-      this.selectables = artifacts;
+      this.selectables = selectables;
    }
 
    public void setShowSelectButtons(boolean showSelectButtons) {
@@ -102,7 +100,7 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
     *
     * @param object the initial selection.
     */
-   public void setInitialSelections(Collection<? extends Object> initialSelections) {
+   public void setInitialSelections(Collection<T> initialSelections) {
       this.initialSelections = initialSelections;
       if (treeViewer != null) {
          getCheckboxTreeViewer().setCheckedElements(initialSelections.toArray());
@@ -152,7 +150,7 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
 
       if (selectables != null && !selectables.isEmpty()) {
          setInput(selectables);
-         for (Artifact selectable : selectables) {
+         for (T selectable : selectables) {
             treeViewer.getCheckboxTreeViewer().getOrCreateItem(selectable);
          }
       }
@@ -252,7 +250,7 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
    }
 
    @SuppressWarnings("unchecked")
-   public <T> Collection<T> getChecked() {
+   public Collection<T> getChecked() {
       List<T> checked = new ArrayList<>();
       for (Object obj : getResult()) {
          checked.add((T) obj);
@@ -260,7 +258,7 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
       return checked;
    }
 
-   public Collection<? extends Object> getInitialSelections() {
+   public Collection<T> getInitialSelections() {
       return initialSelections;
    }
 

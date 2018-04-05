@@ -121,7 +121,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       try {
          IAttribute<Object> attr = getAttrById(userArt, data.getId());
          if (attr == null) {
-            changes.addAttribute(atsUser, AtsAttributeTypes.QuickSearch, getStoreString(data));
+            changes.addAttribute((IAtsObject) atsUser, AtsAttributeTypes.QuickSearch, getStoreString(data));
          } else {
             changes.setAttribute(userArt, attr, getStoreString(data));
          }

@@ -10,19 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.config;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.ser.std.ToStringSerializer;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Donald G. Dunne
  */
-public class JaxAtsObject {
+public class JaxAtsObject extends NamedIdBase {
 
-   protected String name;
-   @JsonSerialize(using = ToStringSerializer.class)
-   protected Long id;
    /**
     * Do not remove this guid until IDE client no longer needs it for creating config objects. This class is used to
     * serialize all the ATS config objects so the clients don't have to load them.
@@ -31,23 +26,12 @@ public class JaxAtsObject {
    protected boolean active;
    private String description;
 
-   public String getName() {
-      return name;
+   public JaxAtsObject() {
+      this(ArtifactId.SENTINEL.getId(), "");
    }
 
-   public void setName(String name) {
-      this.name = name;
-   }
-
-   public Long getId() {
-      return id;
-   }
-
-   /**
-    * Provided for deserialization. Setting will not apply to new artifact.
-    */
-   public void setId(Long id) {
-      this.id = id;
+   public JaxAtsObject(Long id, String name) {
+      super(id, name);
    }
 
    @Override
@@ -72,43 +56,6 @@ public class JaxAtsObject {
       return false;
    }
 
-   @Override
-   public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + (int) (id ^ id >>> 32);
-      return result;
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
-      }
-      if (obj == null) {
-         return false;
-      }
-      if (obj instanceof JaxAtsObject) {
-         JaxAtsObject other = (JaxAtsObject) obj;
-         if (other.getId().equals(id)) {
-            return true;
-         }
-      }
-      if (obj instanceof IAtsObject) {
-         IAtsObject other = (IAtsObject) obj;
-         if (other.getId().equals(id)) {
-            return true;
-         }
-      }
-      if (obj instanceof ArtifactId) {
-         ArtifactId other = (ArtifactId) obj;
-         if (other.getId().equals(id)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
    public String getDescription() {
       return description;
    }
@@ -123,10 +70,6 @@ public class JaxAtsObject {
 
    public void setGuid(String guid) {
       this.guid = guid;
-   }
-
-   public String toStringWithId() {
-      return String.format("[%s]-[%s]", getName(), getId());
    }
 
 }

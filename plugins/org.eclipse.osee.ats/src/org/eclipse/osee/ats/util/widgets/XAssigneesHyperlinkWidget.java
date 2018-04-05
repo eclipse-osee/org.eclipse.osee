@@ -16,10 +16,10 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.util.UserCheckTreeDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 
 /**
  * @author Donald G. Dunne
@@ -42,15 +42,14 @@ public class XAssigneesHyperlinkWidget extends XHyperlinkLabelCmdValueSelection 
    @Override
    public boolean handleSelection() {
       UserCheckTreeDialog uld = new UserCheckTreeDialog("Select Assigness", "Select to assign.\nDeSelect to un-assign.",
-         AtsClientService.get().getUserServiceClient().getOseeUsers(
-            AtsClientService.get().getUserService().getUsers(Active.Active)));
-      uld.setTeamMembers(AtsClientService.get().getUserServiceClient().getOseeUsers(teamDef.getMembersAndLeads()));
+         AtsClientService.get().getUserService().getUsers(Active.Active));
+      uld.setTeamMembers(teamDef.getMembersAndLeads());
 
       if (!assignees.isEmpty()) {
-         uld.setInitialSelections(AtsClientService.get().getUserServiceClient().getOseeUsers(assignees));
+         uld.setInitialSelections(assignees);
       }
       if (uld.open() == Window.OK) {
-         Collection<IAtsUser> users = AtsClientService.get().getUserServiceClient().getAtsUsers(uld.getUsersSelected());
+         Collection<IAtsUser> users = uld.getUsersSelected();
          assignees.clear();
          assignees.addAll(users);
          return true;

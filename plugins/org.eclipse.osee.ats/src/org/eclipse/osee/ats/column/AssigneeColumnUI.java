@@ -18,25 +18,25 @@ import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.util.UserCheckTreeDialog;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumnIdColumn;
 import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -70,28 +70,27 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
-         if (treeItem.getData() instanceof Artifact) {
-            Artifact useArt = (Artifact) treeItem.getData();
-            if (useArt.isOfType(AtsArtifactTypes.Action)) {
-               if (AtsClientService.get().getWorkItemService().getTeams(useArt).size() == 1) {
-                  useArt = (Artifact) AtsClientService.get().getWorkItemService().getFirstTeam(useArt).getStoreObject();
-               } else {
-                  return false;
-               }
-            }
-            if (!(useArt instanceof AbstractWorkflowArtifact)) {
+         IAtsTeamWorkflow teamWf = null;
+         if (treeItem.getData() instanceof IAtsAction) {
+            if (AtsClientService.get().getWorkItemService().getTeams(teamWf).size() == 1) {
+               teamWf = AtsClientService.get().getWorkItemService().getFirstTeam(teamWf);
+            } else {
                return false;
             }
-            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) useArt;
-            boolean modified = promptChangeAssignees(Arrays.asList(awa), isPersistViewer());
-            XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
-            if (modified && isPersistViewer(xViewer)) {
-               AtsClientService.get().getStoreService().executeChangeSet("persist assignees via alt-left-click", awa);
-            }
-            if (modified) {
-               xViewer.update(awa, null);
-               return true;
-            }
+         } else if (treeItem.getData() instanceof IAtsTeamWorkflow) {
+            teamWf = (IAtsTeamWorkflow) treeItem.getData();
+         }
+         if (teamWf == null) {
+            return false;
+         }
+         boolean modified = promptChangeAssignees(Arrays.asList(teamWf), isPersistViewer());
+         XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
+         if (modified && isPersistViewer(xViewer)) {
+            AtsClientService.get().getStoreService().executeChangeSet("persist assignees via alt-left-click", teamWf);
+         }
+         if (modified) {
+            xViewer.update(teamWf.getStoreObject(), null);
+            return true;
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -100,63 +99,53 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
       return false;
    }
 
-   public static boolean promptChangeAssignees(AbstractWorkflowArtifact sma, boolean persist) {
-      return promptChangeAssignees(Arrays.asList(sma), persist);
+   public static boolean promptChangeAssignees(IAtsWorkItem workItem, boolean persist) {
+      return promptChangeAssignees(Arrays.asList(workItem), persist);
    }
 
-   public static boolean promptChangeAssignees(final Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) {
-      for (AbstractWorkflowArtifact awa : awas) {
-         if (awa.isCompleted()) {
+   public static boolean promptChangeAssignees(final Collection<? extends IAtsWorkItem> workItems, boolean persist) {
+      for (IAtsWorkItem workItem : workItems) {
+         if (workItem.isCompleted()) {
             AWorkbench.popup("ERROR",
-               "Can't assign completed " + awa.getArtifactTypeName() + " (" + awa.getAtsId() + ")");
+               "Can't assign completed " + workItem.getArtifactTypeName() + " (" + workItem.getAtsId() + ")");
             return false;
-         } else if (awa.isCancelled()) {
+         } else if (workItem.isCancelled()) {
             AWorkbench.popup("ERROR",
-               "Can't assign cancelled " + awa.getArtifactTypeName() + " (" + awa.getAtsId() + ")");
+               "Can't assign cancelled " + workItem.getArtifactTypeName() + " (" + workItem.getAtsId() + ")");
             return false;
          }
       }
-      User unassigned = AtsClientService.get().getUserServiceClient().getOseeUser(AtsCoreUsers.UNASSIGNED_USER);
-      Collection<User> oseeUsers = AtsClientService.get().getUserServiceClient().getOseeUsers(
-         AtsClientService.get().getUserService().getUsers(Active.Active));
-      AbstractWorkflowArtifact awaI = awas.iterator().next();
-      TeamWorkFlowArtifact twa = awaI != null ? awaI.getParentTeamWorkflow() : null;
-      Collection<User> teamMembers = twa != null ? AtsClientService.get().getUserServiceClient().getOseeUsers(
-         twa.getTeamDefinition().getMembersAndLeads()) : null;
-      Collection<User> selected =
-         awas.size() == 1 && awaI != null ? AtsClientService.get().getUserServiceClient().getOseeUsers(
-            awaI.getStateMgr().getAssignees()) : null;
+      Collection<IAtsUser> users = AtsClientService.get().getUserService().getActiveAndAssignedInActive(workItems);
 
       // unassigned is not useful in the selection choice dialog
-      oseeUsers.remove(unassigned);
-      if (teamMembers != null) {
-         teamMembers.remove(unassigned);
-      }
+      users.remove(SystemUser.UnAssigned);
       UserCheckTreeDialog uld =
-         new UserCheckTreeDialog("Select Assignees", "Select to assign.\nDeSelect to un-assign.", oseeUsers);
+         new UserCheckTreeDialog("Select Assignees", "Select to assign.\nDeSelect to un-assign.", users);
       uld.setIncludeAutoSelectButtons(true);
-      if (teamMembers != null) {
-         uld.setTeamMembers(teamMembers);
+
+      IAtsTeamWorkflow parentWorklfow = workItems.iterator().next().getParentTeamWorkflow();
+      if (parentWorklfow != null) {
+         uld.setTeamMembers(parentWorklfow.getTeamDefinition().getMembersAndLeads());
       }
-      if (selected != null) {
-         uld.setInitialSelections(selected);
+      if (workItems.size() == 1) {
+         uld.setInitialSelections(workItems.iterator().next().getStateMgr().getAssignees());
       }
       if (uld.open() != 0) {
          return false;
       }
-      Collection<IAtsUser> users = AtsClientService.get().getUserServiceClient().getAtsUsers(uld.getUsersSelected());
-      if (users.isEmpty()) {
-         users.add(AtsCoreUsers.UNASSIGNED_USER);
+      Collection<IAtsUser> selected = uld.getUsersSelected();
+      if (selected.isEmpty()) {
+         selected.add(AtsCoreUsers.UNASSIGNED_USER);
       }
       // As a convenience, remove the UnAssigned user if another user is selected
-      if (users.size() > 1) {
+      if (selected.size() > 1) {
          users.remove(AtsCoreUsers.UNASSIGNED_USER);
       }
-      for (AbstractWorkflowArtifact awa : awas) {
-         awa.getStateMgr().setAssignees(users);
+      for (IAtsWorkItem workItem : workItems) {
+         workItem.getStateMgr().setAssignees(selected);
       }
       if (persist) {
-         AtsClientService.get().getStoreService().executeChangeSet("Assignee - Prompt Change", awas);
+         AtsClientService.get().getStoreService().executeChangeSet("Assignee - Prompt Change", workItems);
       }
       return true;
    }
@@ -164,23 +153,22 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       try {
-         Set<AbstractWorkflowArtifact> awas = new HashSet<>();
+         Set<IAtsTeamWorkflow> teamWfs = new HashSet<>();
          for (TreeItem item : treeItems) {
-            Artifact art = (Artifact) item.getData();
-            if (art instanceof AbstractWorkflowArtifact) {
-               awas.add((AbstractWorkflowArtifact) art);
-            }
-            if (art.isOfType(
-               AtsArtifactTypes.Action) && AtsClientService.get().getWorkItemService().getTeams(art).size() == 1) {
-               awas.add((AbstractWorkflowArtifact) AtsClientService.get().getWorkItemService().getFirstTeam(
-                  art).getStoreObject());
+            if (item.getData() instanceof IAtsTeamWorkflow) {
+               IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) item.getData();
+               if (teamWf instanceof AbstractWorkflowArtifact) {
+                  teamWfs.add(teamWf);
+               }
+            } else if (item.getData() instanceof IAtsAction) {
+               teamWfs.add(AtsClientService.get().getWorkItemService().getFirstTeam(item.getData()));
             }
          }
-         if (awas.isEmpty()) {
+         if (teamWfs.isEmpty()) {
             AWorkbench.popup("Invalid selection for setting assignees.");
             return;
          }
-         promptChangeAssignees(awas, true);
+         promptChangeAssignees(teamWfs, true);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

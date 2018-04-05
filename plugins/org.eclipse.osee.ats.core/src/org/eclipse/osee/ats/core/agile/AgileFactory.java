@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileProgram;
@@ -51,7 +52,7 @@ public class AgileFactory {
 
    public static IAgileTeam createAgileTeam(Log logger, AtsApi atsApi, JaxNewAgileTeam newTeam) {
       org.eclipse.osee.framework.core.data.ArtifactId userArt =
-         atsApi.getQueryService().getArtifact(atsApi.getUserService().getCurrentUser());
+         atsApi.getQueryService().getArtifact((IAtsObject) atsApi.getUserService().getCurrentUser());
 
       ArtifactId agileTeamArt = atsApi.getQueryService().getArtifact(newTeam.getId());
       if (agileTeamArt == null) {
@@ -78,7 +79,7 @@ public class AgileFactory {
    }
 
    public static IAgileTeam updateAgileTeam(Log logger, AtsApi atsApi, JaxAgileTeam team) {
-      ArtifactId userArt = atsApi.getQueryService().getArtifact(atsApi.getUserService().getCurrentUser());
+      ArtifactId userArt = atsApi.getQueryService().getArtifact((IAtsObject) atsApi.getUserService().getCurrentUser());
 
       IAtsChangeSet changes = atsApi.createChangeSet("Update new Agile Team");
 
@@ -162,7 +163,7 @@ public class AgileFactory {
    }
 
    public static IAgileFeatureGroup createAgileFeatureGroup(Log logger, AtsApi atsApi, JaxAgileFeatureGroup newFeatureGroup) {
-      ArtifactId userArt = atsApi.getQueryService().getArtifact(atsApi.getUserService().getCurrentUser());
+      ArtifactId userArt = atsApi.getQueryService().getArtifact((IAtsObject) atsApi.getUserService().getCurrentUser());
 
       IAtsChangeSet changes = atsApi.createChangeSet("Create new Agile Feature Group");
 

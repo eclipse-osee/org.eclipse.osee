@@ -13,10 +13,13 @@ package org.eclipse.osee.ats.core.users;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.AtsUserNameComparator;
@@ -165,4 +168,20 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    public void releaseUser() {
       currentUser = null;
    }
+
+   @Override
+   public Collection<IAtsUser> getActiveAndAssignedInActive(Collection<? extends IAtsWorkItem> workItems) {
+      Set<IAtsUser> users = new HashSet<>();
+      users.addAll(getUsers(Active.Active));
+      // Include inactive assigned
+      for (IAtsWorkItem workItem : workItems) {
+         for (IAtsUser user : workItem.getAssignees()) {
+            if (!user.isActive()) {
+               users.add((IAtsUser) user.getStoreObject());
+            }
+         }
+      }
+      return users;
+   }
+
 }

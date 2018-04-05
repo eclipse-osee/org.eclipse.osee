@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.notify.ArtifactEmailWizard;
 import org.eclipse.osee.ats.util.AtsUserLabelProvider;
+import org.eclipse.osee.ats.util.UserCheckTreeDialog;
 import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -40,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.IAttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListViewer;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -153,11 +153,10 @@ public class XAtsUserListDam extends XListViewer implements IAttributeWidget {
    private void handleModifyList() {
       try {
          UserCheckTreeDialog uld = new UserCheckTreeDialog("Select User(s)", "Select Users.",
-            AtsClientService.get().getUserServiceClient().getOseeUsers(
-               AtsClientService.get().getUserService().getUsers(Active.Active)));
+            AtsClientService.get().getUserService().getUsers(Active.Active));
          Collection<IAtsUser> atsUsers = getStoredAtsUsers();
          if (!atsUsers.isEmpty()) {
-            uld.setInitialSelections(AtsClientService.get().getUserServiceClient().getOseeUsers(atsUsers));
+            uld.setInitialSelections(atsUsers);
          }
          if (uld.open() == Window.OK) {
             selectedUsers.clear();

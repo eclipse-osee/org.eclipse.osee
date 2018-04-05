@@ -74,4 +74,8 @@ public class BaseId implements Id, Cloneable {
       newId.id = id;
       return (T) newId;
    }
+
+   public void setId(Long id) {
+      this.id = id;
+   }
 }

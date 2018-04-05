@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.config.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelperAdapter;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
@@ -41,6 +40,7 @@ import org.eclipse.osee.ats.editor.widget.XTransitionToStateComboWidget;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtilClient;
+import org.eclipse.osee.ats.util.UserCheckTreeDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.workflow.transition.TransitionToOperation;
@@ -56,7 +56,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench.MessageType;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -202,7 +201,8 @@ public class WfeTransitionComposite extends Composite {
 
          @Override
          public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem) {
-            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) AtsClientService.get().getQueryService().getArtifact(workItem);
+            AbstractWorkflowArtifact awa =
+               (AbstractWorkflowArtifact) AtsClientService.get().getQueryService().getArtifact(workItem);
             return awa.getTransitionAssignees();
          }
 
@@ -423,17 +423,15 @@ public class WfeTransitionComposite extends Composite {
          AWorkbench.popup("ERROR", "No Assignees in Completed and Cancelled states");
          return;
       }
-      IAtsUserServiceClient userServiceClient = AtsClientService.get().getUserServiceClient();
       UserCheckTreeDialog uld = new UserCheckTreeDialog();
-      uld.setInitialSelections(userServiceClient.getOseeUsers(aba.getTransitionAssignees()));
+      uld.setInitialSelections(aba.getTransitionAssignees());
       if (awa.getParentTeamWorkflow() != null) {
-         uld.setTeamMembers(
-            userServiceClient.getOseeUsers(awa.getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads()));
+         uld.setTeamMembers(awa.getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads());
       }
       if (uld.open() != 0) {
          return;
       }
-      Collection<IAtsUser> users = userServiceClient.getAtsUsers(uld.getUsersSelected());
+      Collection<IAtsUser> users = uld.getUsersSelected();
       if (users.isEmpty()) {
          AWorkbench.popup("ERROR", "Must have at least one assignee");
          return;

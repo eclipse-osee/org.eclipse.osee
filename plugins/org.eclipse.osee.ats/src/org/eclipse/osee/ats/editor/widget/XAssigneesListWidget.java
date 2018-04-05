@@ -17,10 +17,10 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.util.UserCheckTreeDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 
 /**
  * @author Donald G. Dunne
@@ -44,18 +44,15 @@ public class XAssigneesListWidget extends AbstractXAssigneesListWidget {
    public void handleModifySelection() {
       try {
          UserCheckTreeDialog uld = new UserCheckTreeDialog("Select Assigness", "Select to assign.",
-            AtsClientService.get().getUserServiceClient().getOseeUsers(
-               AtsClientService.get().getUserService().getUsers(Active.Active)));
+            AtsClientService.get().getUserService().getUsers(Active.Active));
          if (teamDef != null) {
-            uld.setTeamMembers(
-               AtsClientService.get().getUserServiceClient().getOseeUsers(teamDef.getMembersAndLeads()));
+            uld.setTeamMembers(teamDef.getMembersAndLeads());
          }
-
-         uld.setInitialSelections(AtsClientService.get().getUserServiceClient().getOseeUsers(assignees));
+         uld.setInitialSelections(assignees);
 
          if (uld.open() == Window.OK) {
             assignees.clear();
-            assignees.addAll(AtsClientService.get().getUserServiceClient().getAtsUsers(uld.getUsersSelected()));
+            assignees.addAll(uld.getUsersSelected());
             setInput(assignees);
          }
       } catch (Exception ex) {

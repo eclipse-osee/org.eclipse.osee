@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
-import org.eclipse.osee.ats.core.AbstractUserTest;
+import org.eclipse.osee.ats.core.users.AbstractUserTest;
 import org.eclipse.osee.ats.core.workflow.Action;
 import org.junit.Assert;
 import org.junit.Before;

@@ -9,27 +9,23 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
+package org.eclipse.osee.ats.util;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
+import org.eclipse.osee.framework.ui.skynet.util.UserIdSorter;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -43,34 +39,26 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-@SuppressWarnings("deprecation")
-public class UserCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
+public class UserCheckTreeDialog extends FilteredCheckboxTreeDialog<IAtsUser> {
 
-   private Collection<User> teamMembers;
+   private Collection<IAtsUser> teamMembers;
    private boolean includeAutoSelectButtons = false;
 
-   public UserCheckTreeDialog(Collection<? extends User> users) {
+   public UserCheckTreeDialog(Collection<IAtsUser> users) {
       this("Select Users", "Select Users", users);
    }
 
    public UserCheckTreeDialog() {
-      this("Select Users", "Select to assign.\nDeSelect to un-assign.", UserManager.getUsers());
+      this("Select Users", "Select to assign.\nDeSelect to un-assign.",
+         AtsClientService.get().getUserService().getUsers(Active.Active));
    }
 
-   public UserCheckTreeDialog(String title, String message, Collection<? extends User> users) {
-      super(title, message, toArtifacts(users), new UserCheckTreeLabelProvider());
+   public UserCheckTreeDialog(String title, String message, Collection<IAtsUser> users) {
+      super(title, message, users, new ArrayTreeContentProvider(), new UserCheckTreeLabelProvider(), null);
    }
 
-   private static Collection<? extends Artifact> toArtifacts(Collection<? extends User> users) {
-      return Collections.castAll(users);
-   }
-
-   public Collection<User> getUsersSelected() {
-      Set<User> selected = new HashSet<>();
-      for (FullyNamed art : getChecked()) {
-         selected.add((User) art);
-      }
-      return selected;
+   public Collection<IAtsUser> getUsersSelected() {
+      return getChecked();
    }
 
    @Override
@@ -87,7 +75,7 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);
                getCheckboxTreeViewer().setSelection(new StructuredSelection(java.util.Collections.emptyList()));
-               fUld.setInitialSelections(Arrays.asList(SystemUser.UnAssigned));
+               fUld.setInitialSelections(Arrays.asList(AtsCoreUsers.UNASSIGNED_USER));
                okPressed();
             }
          });
@@ -99,7 +87,7 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);
                getCheckboxTreeViewer().setSelection(new StructuredSelection(java.util.Collections.emptyList()));
-               fUld.setInitialSelections(Arrays.asList(UserManager.getUser()));
+               fUld.setInitialSelections(Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()));
                okPressed();
             }
          });
@@ -110,8 +98,8 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
             @Override
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);
-               List<ArtifactId> users = new LinkedList<>(fUld.getChecked());
-               users.add(UserManager.getUser());
+               List<IAtsUser> users = new LinkedList<>(fUld.getChecked());
+               users.add(AtsClientService.get().getUserService().getCurrentUser());
                fUld.setInitialSelections(users);
                okPressed();
             }
@@ -128,58 +116,18 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
       if (teamMembers != null) {
          ((UserCheckTreeLabelProvider) getTreeViewer().getViewer().getLabelProvider()).setTeamMembers(teamMembers);
       }
-      getTreeViewer().setSorter(new ViewerSorter() {
-         @Override
-         public int compare(Viewer viewer, Object e1, Object e2) {
-            User user1 = (User) e1;
-            User user2 = (User) e2;
-            try {
-               if (UserManager.getUser().equals(user1)) {
-                  return -1;
-               }
-               if (UserManager.getUser().equals(user2)) {
-                  return 1;
-               }
-               Collection<? extends Object> initialSel = getInitialSelections();
-               if (initialSel != null) {
-                  if (initialSel.contains(user1) && initialSel.contains(user2)) {
-                     return getComparator().compare(user1.getName(), user2.getName());
-                  }
-                  if (initialSel.contains(user1)) {
-                     return -1;
-                  }
-                  if (initialSel.contains(user2)) {
-                     return 1;
-                  }
-               }
-               if (teamMembers != null) {
-                  if (teamMembers.contains(user1) && teamMembers.contains(user2)) {
-                     return getComparator().compare(user1.getName(), user2.getName());
-                  }
-                  if (teamMembers.contains(user1)) {
-                     return -1;
-                  }
-                  if (teamMembers.contains(user2)) {
-                     return 1;
-                  }
-               }
-               return getComparator().compare(user1.getName(), user2.getName());
-            } catch (OseeCoreException ex) {
-               return -1;
-            }
-         }
-      });
+      getTreeViewer().setSorter(new UserIdSorter(getInitialSelections(), teamMembers));
       return c;
    }
 
-   public Collection<User> getTeamMembers() {
+   public Collection<IAtsUser> getTeamMembers() {
       return teamMembers;
    }
 
    /**
     * If set, team members will be shown prior to rest of un-checked users
     */
-   public void setTeamMembers(Collection<? extends User> teamMembers) {
+   public void setTeamMembers(Collection<IAtsUser> teamMembers) {
       if (this.teamMembers == null) {
          this.teamMembers = new HashSet<>();
       }
@@ -187,7 +135,7 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
    }
 
    public static class UserCheckTreeLabelProvider implements ILabelProvider {
-      private Collection<? extends User> teamMembers;
+      private Collection<IAtsUser> teamMembers;
 
       @Override
       public Image getImage(Object arg0) {
@@ -197,9 +145,9 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
       @Override
       public String getText(Object arg0) {
          if (teamMembers != null && teamMembers.contains(arg0)) {
-            return ((Artifact) arg0).getName() + " (Team)";
+            return ((IAtsUser) arg0).getName() + " (Team)";
          }
-         return ((Artifact) arg0).getName();
+         return ((IAtsUser) arg0).getName();
       }
 
       @Override
@@ -222,7 +170,7 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
          // do nothing
       }
 
-      public void setTeamMembers(Collection<? extends User> teamMembers) {
+      public void setTeamMembers(Collection<IAtsUser> teamMembers) {
          this.teamMembers = teamMembers;
       }
 

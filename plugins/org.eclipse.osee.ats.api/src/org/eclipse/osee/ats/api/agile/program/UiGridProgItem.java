@@ -35,7 +35,7 @@ public class UiGridProgItem extends JaxAtsObject {
 
    @Override
    public String toString() {
-      return "ProgItem [name=" + name + ", id=" + id + "]";
+      return "ProgItem [name=" + getName() + ", id=" + id + "]";
    }
 
    public boolean isExpanded() {

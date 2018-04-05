@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.agile.operations;
 
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.agile.IAgileProgram;
 import org.eclipse.osee.ats.api.agile.IAgileProgramBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileProgramBacklogItem;
@@ -47,7 +48,7 @@ public class AgileProgramOperations {
 
    public IAgileProgram createAgileProgram(IAgileProgram agileProgram) {
       org.eclipse.osee.framework.core.data.ArtifactId userArt =
-         atsApi.getQueryService().getArtifact(atsApi.getUserService().getCurrentUser());
+         atsApi.getQueryService().getArtifact((IAtsObject) atsApi.getUserService().getCurrentUser());
 
       ArtifactId agileProgramArt = atsApi.getQueryService().getArtifact(agileProgram);
       if (agileProgramArt == null) {

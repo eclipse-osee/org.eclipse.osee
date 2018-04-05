@@ -19,6 +19,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfiguration;
@@ -221,7 +222,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @Override
    public Response storeWorkDef(JaxAtsWorkDef jaxWorkDef) {
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,
-         atsApi.getQueryService().getArtifact(AtsCoreUsers.SYSTEM_USER),
+         atsApi.getQueryService().getArtifact((IAtsObject) AtsCoreUsers.SYSTEM_USER),
          "Store Work Definition " + jaxWorkDef.getName());
       ArtifactReadable workDefArt =
          (ArtifactReadable) atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.WorkDefinition,

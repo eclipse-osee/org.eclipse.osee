@@ -11,11 +11,12 @@
 package org.eclipse.osee.ats.api.user;
 
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.framework.core.data.UserId;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsUser extends IAtsObject {
+public interface IAtsUser extends IAtsObject, UserId {
 
    public String getUserId();
 

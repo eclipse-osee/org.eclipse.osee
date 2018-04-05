@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.model.impl;
 
 import java.util.Arrays;
-import org.eclipse.osee.ats.core.AbstractUserTest;
+import org.eclipse.osee.ats.core.users.AbstractUserTest;
 import org.junit.Assert;
 import org.junit.Test;
 
