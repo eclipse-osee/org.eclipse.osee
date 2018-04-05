@@ -38,6 +38,7 @@ import org.eclipse.osee.disposition.model.OperationSummaryEntry;
 import org.eclipse.osee.disposition.model.ResolutionMethod;
 import org.eclipse.osee.disposition.rest.internal.LocationRangesCompressor;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -594,7 +595,8 @@ public final class DispoUtil {
          for (Integer locRef : ranges) {
             for (Entry<String, Discrepancy> discrepancy : item.getDiscrepanciesList().entrySet()) {
                Discrepancy value = discrepancy.getValue();
-               if (locRef == Integer.valueOf(value.getLocation())) {
+               String location = value.getLocation();
+               if (Strings.isValid(location) && locRef == Integer.valueOf(location)) {
                   removeDiscrepancies.add(discrepancy.getKey());
                }
             }
@@ -610,7 +612,8 @@ public final class DispoUtil {
             boolean found = false;
             for (Entry<String, Discrepancy> discrepancy : item.getDiscrepanciesList().entrySet()) {
                Discrepancy value = discrepancy.getValue();
-               if (locRef == Integer.valueOf(value.getLocation())) {
+               String location = value.getLocation();
+               if (Strings.isValid(location) && locRef == Integer.valueOf(location)) {
                   found = true;
                   break;
                }
