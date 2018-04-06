@@ -61,12 +61,13 @@ public final class ExportChangeReportOperation extends AbstractOperation {
    private final Appendable resultFolder;
    private final boolean reverse;
    private final boolean writeChangeReports;
-   private final IArtifactType[] ALLOW_TYPES = {
+   private final IArtifactType[] DISALLOW_TYPES = {CoreArtifactTypes.ImplementationDetails};
+   private final String overrideDataRightsClassification;
+
+   public static final IArtifactType[] ALLOW_TYPES = {
       CoreArtifactTypes.AbstractSoftwareRequirement,
       CoreArtifactTypes.InterfaceRequirement,
       CoreArtifactTypes.HeadingMSWord};
-   private final IArtifactType[] DISALLOW_TYPES = {CoreArtifactTypes.ImplementationDetails};
-   private final String overrideDataRightsClassification;
 
    public ExportChangeReportOperation(List<TeamWorkFlowArtifact> workflows, boolean reverse, boolean writeChangeReports, String overrideDataRightsClassification, Appendable resultFolder, OperationLogger logger) {
       super("Exporting Change Report(s)", Activator.PLUGIN_ID, logger);
