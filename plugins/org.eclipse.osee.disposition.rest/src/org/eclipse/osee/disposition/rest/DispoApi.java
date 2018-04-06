@@ -13,6 +13,7 @@ package org.eclipse.osee.disposition.rest;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import org.eclipse.osee.disposition.model.CiItemData;
 import org.eclipse.osee.disposition.model.CiSetData;
 import org.eclipse.osee.disposition.model.CopySetParams;
 import org.eclipse.osee.disposition.model.Discrepancy;
@@ -103,4 +104,6 @@ public interface DispoApi {
    String getDispoItemId(BranchId branch, String setId, String item);
 
    List<CiSetData> getAllCiSets();
+
+   String createDispoItem(BranchId branch, CiItemData data, String userName);
 }

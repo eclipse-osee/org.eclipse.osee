@@ -31,6 +31,7 @@ import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Megumi Telles
@@ -89,7 +90,11 @@ public class ContinuousIntegrationResource {
       if (data != null) {
          BranchId branch = BranchId.valueOf(data.getSetData().getBranchId());
          String itemId = dispoApi.getDispoItemId(branch, data.getSetData().getDispoSetId(), data.getScriptName());
-         if (itemId != null && !itemId.isEmpty()) {
+         if (Strings.isInValid(itemId)) {
+            dispoApi.createDispoItem(branch, data, userName);
+            itemId = dispoApi.getDispoItemId(branch, data.getSetData().getDispoSetId(), data.getScriptName());
+         }
+         if (Strings.isValid(itemId)) {
             updateDiscrepencies(data, branch, itemId, userName);
             dispoApi.deleteAllDispoAnnotation(branch, itemId, userName, true);
             response = createAndUpdateAnnotation(data, userName, response, branch, itemId);

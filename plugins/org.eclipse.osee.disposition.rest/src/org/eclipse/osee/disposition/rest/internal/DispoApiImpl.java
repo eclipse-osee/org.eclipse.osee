@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.eclipse.osee.disposition.model.CiItemData;
 import org.eclipse.osee.disposition.model.CiSetData;
 import org.eclipse.osee.disposition.model.CopySetParams;
 import org.eclipse.osee.disposition.model.Discrepancy;
@@ -775,6 +776,27 @@ public class DispoApiImpl implements DispoApi {
          wasUpdated = true;
       }
       return wasUpdated;
+   }
+
+   @Override
+   public String createDispoItem(BranchId branch, CiItemData data, String userName) {
+      DispoItemData dispoItemData = new DispoItemData();
+      dispoItemData.setName(data.getScriptName());
+      dispoItemData.setAssignee(getQuery().findUnassignedUser().getName());
+      dispoItemData.setGuid(dataFactory.getNewId());
+      dispoItemData.setCreationDate(new Date());
+      dispoItemData.setDiscrepanciesAsRanges(data.getTestPoints().getFail());
+      dispoItemData.setDiscrepanciesList(new HashMap<String, Discrepancy>());
+      dispoItemData.setAnnotationsList(data.getAnnotations());
+      List<DispoItem> newItem = new ArrayList<>();
+      newItem.add(dispoItemData);
+
+      ArtifactReadable author = getQuery().findUser();
+      DispoSet parentSet = getQuery().findDispoSetsById(branch, data.getSetData().getDispoSetId());
+      if (parentSet != null) {
+         getWriter().createDispoItems(author, branch, parentSet, newItem);
+      }
+      return dispoItemData.getGuid();
    }
 
 }
