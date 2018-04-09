@@ -147,6 +147,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
 
    @Override
    public void closeEditor() {
+      super.closeEditor();
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {

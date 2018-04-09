@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
@@ -43,7 +43,9 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
    public abstract void refreshDirtyArtifact();
 
    @Override
-   public abstract void closeEditor();
+   public void closeEditor() {
+      ArtifactEditorEventManager.remove(this);
+   }
 
    @Override
    public abstract void refreshRelations();
