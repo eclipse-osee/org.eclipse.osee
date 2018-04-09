@@ -34,8 +34,9 @@ public final class AtsIntegrationByMethodRule extends OsgiRule {
    }
 
    public static TestRule integrationRule(Object testObject) {
-      return RuleChain.outerRule(new AtsMethodDatabase("orcs.jdbc.service")).around(
-         new OsgiRule(new CheckServices(), testObject));
+      return RuleChain.outerRule(new AtsMethodDatabase("orcs.jdbc.service",
+         "org.eclipse.osee.orcs.core.internal.OrcsApiImpl", "org.eclipse.osee.ats.rest.IAtsServer")).around(
+            new OsgiRule(new CheckServices(), testObject));
    }
 
    public static class CheckServices {

@@ -25,7 +25,6 @@
       <import plugin="org.eclipse.osee.framework.core"/>
       <import plugin="org.eclipse.osee.framework.jdk.core"/>
       <import plugin="org.eclipse.osee.framework.logging"/>
-      <import plugin="net.jini"/>
       <import plugin="org.eclipse.core.resources"/>
    </requires>
 
