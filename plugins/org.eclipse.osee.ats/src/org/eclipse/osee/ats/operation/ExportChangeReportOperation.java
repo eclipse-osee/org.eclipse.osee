@@ -26,6 +26,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.ExportChangeReportUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -63,11 +64,6 @@ public final class ExportChangeReportOperation extends AbstractOperation {
    private final boolean writeChangeReports;
    private final IArtifactType[] DISALLOW_TYPES = {CoreArtifactTypes.ImplementationDetails};
    private final String overrideDataRightsClassification;
-
-   public static final IArtifactType[] ALLOW_TYPES = {
-      CoreArtifactTypes.AbstractSoftwareRequirement,
-      CoreArtifactTypes.InterfaceRequirement,
-      CoreArtifactTypes.HeadingMSWord};
 
    public ExportChangeReportOperation(List<TeamWorkFlowArtifact> workflows, boolean reverse, boolean writeChangeReports, String overrideDataRightsClassification, Appendable resultFolder, OperationLogger logger) {
       super("Exporting Change Report(s)", Activator.PLUGIN_ID, logger);
@@ -118,7 +114,8 @@ public final class ExportChangeReportOperation extends AbstractOperation {
                   ArtifactDelta next = it.next();
                   Artifact endArtifact = next.getEndArtifact();
                   ArtifactType artifactType = endArtifact.getArtifactType();
-                  if (artifactType.inheritsFrom(DISALLOW_TYPES) || !artifactType.inheritsFrom(ALLOW_TYPES)) {
+                  if (artifactType.inheritsFrom(
+                     DISALLOW_TYPES) || !artifactType.inheritsFrom(ExportChangeReportUtil.ARTIFACT_ALLOW_TYPES)) {
                      it.remove();
                      artIds.remove(endArtifact.getArtId());
                      logf("skipping: [" + endArtifact.getName().replaceAll("%",
