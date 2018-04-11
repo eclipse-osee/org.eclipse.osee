@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workflow;
 
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -137,6 +138,17 @@ public interface AtsActionEndpointApi {
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
    Attribute setActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeId") String attrTypeId, List<String> values);
+
+   /**
+    * Will cancel action if configured to do so and tasks and reviews are completed.
+    *
+    * @param id (atsId, artId) of action to cancel
+    * @throws URISyntaxException
+    */
+   @Path("{id}/cancel")
+   @GET
+   @Produces({MediaType.TEXT_HTML})
+   Response cancelAction(@PathParam("id") String id) throws URISyntaxException;
 
    /**
     * @param workItemId (atsId, artId)

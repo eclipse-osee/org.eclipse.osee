@@ -25,6 +25,7 @@ public class AtsNotificationEvent {
    private String type;
    private String description;
    private String url;
+   private String cancelUrl;
 
    public String getId() {
       return id;
@@ -85,6 +86,14 @@ public class AtsNotificationEvent {
 
    public void setEmailAddresses(Collection<String> emailAddresses) {
       this.emailAddresses = emailAddresses;
+   }
+
+   public String getCancelUrl() {
+      return cancelUrl;
+   }
+
+   public void setCancelUrl(String cancelUrl) {
+      this.cancelUrl = cancelUrl;
    }
 
 }

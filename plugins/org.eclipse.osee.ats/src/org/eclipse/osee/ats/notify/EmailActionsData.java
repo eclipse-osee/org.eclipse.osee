@@ -31,6 +31,7 @@ public class EmailActionsData {
    private String body;
    private final Set<Artifact> workflows = new HashSet<>(5);
    private EmailRecipient emailRecipient = null;
+   private boolean includeCancelHyperlink = false;
 
    public String getSubject() {
       return subject;
@@ -80,4 +81,13 @@ public class EmailActionsData {
    public void setEmailRecipient(EmailRecipient emailRecipient) {
       this.emailRecipient = emailRecipient;
    }
+
+   public boolean isIncludeCancelHyperlink() {
+      return includeCancelHyperlink;
+   }
+
+   public void setIncludeCancelHyperlink(boolean includeCancelHyperlink) {
+      this.includeCancelHyperlink = includeCancelHyperlink;
+   }
+
 }

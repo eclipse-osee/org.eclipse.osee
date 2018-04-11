@@ -65,6 +65,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.core.util.JsonUtil;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -217,6 +218,9 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
                loggedNotificationDisabled = true;
             }
          } else {
+            if (notifications.isIncludeCancelHyperlink() && !getWorkItemService().isCancelHyperlinkConfigured()) {
+               throw new OseeArgumentException("Cancel Hyperlink URl not configured");
+            }
             WorkItemNotificationProcessor workItemNotificationProcessor =
                new WorkItemNotificationProcessor(logger, this, userService, attributeResolverService);
             Thread thread = new Thread("ATS Notification Sender") {

@@ -11,7 +11,9 @@
 package org.eclipse.osee.ats.rest.internal.workitem;
 
 import java.io.StringWriter;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -52,6 +54,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.Attribute;
+import org.eclipse.osee.ats.api.workflow.AttributeKey;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.NewActionResult;
@@ -231,6 +234,29 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       }
       ActionOperations ops = new ActionOperations(asUser, workItem, atsApi);
       return ops.setActionAttributeByType(id, attrTypeIdOrKey, values);
+   }
+
+   @Override
+   @Path("{id}/cancel")
+   @GET
+   @Produces({MediaType.TEXT_HTML})
+   public Response cancelAction(@PathParam("id") String id) {
+      IAtsUser asUser = atsApi.getUserService().getUserByAccountId(httpHeaders);
+      IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
+      if (workItem.isInWork()) {
+         Conditions.assertNotNull(workItem, "workItem can not be found");
+         if (asUser == null) {
+            asUser = AtsCoreUsers.SYSTEM_USER;
+         }
+         ActionOperations ops = new ActionOperations(asUser, workItem, atsApi);
+         ops.setActionAttributeByType(id, AttributeKey.State.name(), Arrays.asList("Cancelled"));
+      }
+      String htmlUrl = atsApi.getWorkItemService().getHtmlUrl(workItem, atsApi);
+      try {
+         return Response.temporaryRedirect(new URI(htmlUrl)).build();
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
    }
 
    @Override

@@ -19,7 +19,7 @@ import java.util.List;
  * notifications to be collected for a certain period of time and rolled into a single notification. This will
  * eventually also support other types of notifications such as popups and allow the user to configure which events are
  * sent and how.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsNotificationCollector {
@@ -28,6 +28,7 @@ public class AtsNotificationCollector {
    private final List<AtsNotificationEvent> notificationEvents = new ArrayList<>();
    private final List<AtsWorkItemNotificationEvent> workItemNotificationEvents =
       new ArrayList<AtsWorkItemNotificationEvent>();
+   private boolean includeCancelHyperlink = false;
 
    public void addNotificationEvent(AtsNotificationEvent notificationEvent) {
       notificationEvents.add(notificationEvent);
@@ -59,6 +60,14 @@ public class AtsNotificationCollector {
 
    public void setBody(String body) {
       this.body = body;
+   }
+
+   public boolean isIncludeCancelHyperlink() {
+      return includeCancelHyperlink;
+   }
+
+   public void setIncludeCancelHyperlink(boolean includeCancelHyperlink) {
+      this.includeCancelHyperlink = includeCancelHyperlink;
    }
 
 }

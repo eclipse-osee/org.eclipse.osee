@@ -15,6 +15,7 @@ import static org.eclipse.osee.framework.core.enums.DemoUsers.Inactive_Steve;
 import static org.eclipse.osee.framework.core.enums.DemoUsers.Jason_Michael;
 import static org.eclipse.osee.framework.core.enums.DemoUsers.Joe_Smith;
 import static org.eclipse.osee.framework.core.enums.DemoUsers.Kay_Jones;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -104,7 +107,10 @@ public class WorkItemNotificationProcessorTest {
       when(atsServer.getWorkItemService()).thenReturn(workItemService);
       when(workItemService.getWorkItemByAtsId(atsId)).thenReturn(teamWf);
       when(attrResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.LegacyPcrId, "")).thenReturn(atsId);
-      when(atsServer.getConfigValue(eq("ActionUrl"))).thenReturn("http://ats/action/ID/");
+      when(atsServer.getWorkItemService()).thenReturn(workItemService);
+      when(workItemService.getCancelUrl(any(IAtsWorkItem.class), any(AtsApi.class))).thenReturn(
+         "http://ats/action/ID/cancel");
+      when(workItemService.getHtmlUrl(any(IAtsWorkItem.class), any(AtsApi.class))).thenReturn("http://ats/action/ID");
       when(teamWf.getId()).thenReturn(98L);
       when(teamWf.getArtifactTypeName()).thenReturn("Team Workflow");
       when(teamWf.getStateMgr()).thenReturn(stateMgr);

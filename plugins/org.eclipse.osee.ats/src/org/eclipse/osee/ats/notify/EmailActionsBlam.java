@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
+import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.users.AtsUsersUtility;
@@ -48,6 +49,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class EmailActionsBlam extends AbstractBlam {
    public final static String ATS_WORKFLOWS = "ATS Workflows (drop here)";
+   boolean includeCancelHyperlink;
 
    @Override
    public String getName() {
@@ -72,6 +74,8 @@ public class EmailActionsBlam extends AbstractBlam {
                }
                data.setSubject(variableMap.getString("Subject"));
                data.setBody(variableMap.getString("Body"));
+               includeCancelHyperlink = variableMap.getBoolean("Include Cancel Hyperlink");
+               data.setIncludeCancelHyperlink(includeCancelHyperlink);
             } catch (OseeArgumentException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -101,15 +105,16 @@ public class EmailActionsBlam extends AbstractBlam {
       int sent = notifications.getNotificationEvents().size();
       notifications.setSubject(data.getSubject());
       notifications.setBody(data.getBody());
+      notifications.setIncludeCancelHyperlink(data.isIncludeCancelHyperlink());
       AtsClientService.get().sendNotifications(notifications);
       logf("Sent %s notifications.", sent);
    }
 
-   private void addNotification(EmailActionsData data, final AbstractWorkflowArtifact awa, AtsNotificationCollector notifications) {
-      Collection<IAtsUser> recipients = getRecipients(data.getEmailRecipient(), awa);
+   private void addNotification(EmailActionsData data, final AbstractWorkflowArtifact workItem, AtsNotificationCollector notifications) {
+      Collection<IAtsUser> recipients = getRecipients(data.getEmailRecipient(), workItem);
       Collection<IAtsUser> activeEmailUsers = AtsUsersUtility.getActiveEmailUsers(recipients);
       if (recipients.isEmpty()) {
-         logf("No active " + data.getEmailRecipient() + " for workflow [%s].", awa.toStringWithId());
+         logf("No active " + data.getEmailRecipient() + " for workflow [%s].", workItem.toStringWithId());
          return;
       }
 
@@ -121,7 +126,7 @@ public class EmailActionsBlam extends AbstractBlam {
       }
 
       if (emailAddresses.isEmpty()) {
-         logf("No valid emails for workflow [%s].", awa.toStringWithId());
+         logf("No valid emails for workflow [%s].", workItem.toStringWithId());
          return;
       }
 
@@ -131,12 +136,25 @@ public class EmailActionsBlam extends AbstractBlam {
          return;
       }
 
-      notifications.addNotificationEvent(
+      AtsNotificationEvent notificationEvent =
          AtsNotificationEventFactory.getNotificationEvent(AtsClientService.get().getUserService().getCurrentUser(),
-            recipients, getIdString(awa), data.getEmailRecipient().name(),
+            recipients, getIdString(workItem), data.getEmailRecipient().name(),
             String.format("You are the %s of [%s] in state [%s] titled [%s] created on [%s]",
-               data.getEmailRecipient().name(), awa.getArtifactTypeName(), awa.getStateMgr().getCurrentStateName(),
-               awa.getName(), DateUtil.get(awa.getCreatedDate(), DateUtil.MMDDYYHHMM))));
+               data.getEmailRecipient().name(), workItem.getArtifactTypeName(),
+               workItem.getStateMgr().getCurrentStateName(), workItem.getName(),
+               DateUtil.get(workItem.getCreatedDate(), DateUtil.MMDDYYHHMM)));
+      notificationEvent.setUrl(
+         AtsClientService.get().getWorkItemService().getHtmlUrl(workItem, AtsClientService.get()));
+      if (includeCancelHyperlink) {
+         if (AtsClientService.get().getWorkItemService().isCancelHyperlinkConfigured()) {
+            notificationEvent.setCancelUrl(
+               AtsClientService.get().getWorkItemService().getCancelUrl(workItem, AtsClientService.get()));
+         } else {
+            AWorkbench.popup("CancelHyperlinkUrl not configured.  Can not include cancel link. Aborting...");
+            return;
+         }
+      }
+      notifications.addNotificationEvent(notificationEvent);
 
    }
 
@@ -172,12 +190,12 @@ public class EmailActionsBlam extends AbstractBlam {
       try {
          String legacyPcrId = sma.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
          if (!legacyPcrId.equals("")) {
-            return "ID: " + sma.getAtsId() + " / LegacyId: " + legacyPcrId;
+            return sma.getAtsId() + " / LegacyId: " + legacyPcrId;
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      return "ID: " + sma.getAtsId();
+      return sma.getAtsId();
    }
 
    @Override
@@ -196,7 +214,8 @@ public class EmailActionsBlam extends AbstractBlam {
             "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + ATS_WORKFLOWS + "\" />" +
             "<XWidget xwidgetType=\"XText\" displayName=\"Subject\" />" +
             "<XWidget xwidgetType=\"XCombo("+EmailRecipient.Assignees.toString()+","+EmailRecipient.Originator.toString()+")\" defaultValue=\""+EmailRecipient.Assignees.toString()+"\" displayName=\"Recipient\" />" +
-      		"<XWidget xwidgetType=\"XText\" displayName=\"Body\" fill=\"Vertically\" />" +
+            "<XWidget xwidgetType=\"XText\" displayName=\"Body\" fill=\"Vertically\" />" +
+            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Cancel Hyperlink\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       		"</xWidgets>";
       // @formatter:on
    }

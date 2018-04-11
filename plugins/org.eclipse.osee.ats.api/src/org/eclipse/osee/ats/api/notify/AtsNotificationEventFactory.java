@@ -34,13 +34,7 @@ public class AtsNotificationEventFactory {
       return event;
    }
 
-   public static AtsNotificationEvent getNotificationEvent(IAtsUser fromUser, Collection<IAtsUser> users, String id, String type, String url, String description) {
-      AtsNotificationEvent event = getNotificationEvent(fromUser, users, id, type, description);
-      event.setUrl(url);
-      return event;
-   }
-
-   public static AtsNotificationEvent getNotificationEventFactory(IAtsUser fromUser, Collection<IAtsUser> users, String id, String type, String description, String url) {
+   public static AtsNotificationEvent getNotificationEvent(IAtsUser fromUser, Collection<IAtsUser> users, String id, String type, String url, String cancelUrl, String description) {
       AtsNotificationEvent event = getNotificationEvent(fromUser, users, id, type, description);
       event.setUrl(url);
       return event;

@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.workflow;
 
 import java.util.Collection;
 import java.util.Set;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
@@ -95,5 +96,11 @@ public interface IAtsWorkItemService {
    IAtsTeamWorkflow getTeamWfNoCache(ArtifactId artifact);
 
    IAtsTeamWorkflow getTeamWf(ArtifactId artifact);
+
+   String getCancelUrl(IAtsWorkItem workItem, AtsApi atsApi);
+
+   String getHtmlUrl(IAtsWorkItem workItem, AtsApi atsApi);
+
+   boolean isCancelHyperlinkConfigured();
 
 }

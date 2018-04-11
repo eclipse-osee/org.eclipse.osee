@@ -54,7 +54,6 @@ public class WorkItemNotificationProcessor {
    private final IAtsUserService userService;
    private final IAttributeResolver attrResolver;
    private final AtsApi atsApi;
-   private static String actionUrl;
 
    public WorkItemNotificationProcessor(Log logger, AtsApi atsApi, IAtsUserService userService, IAttributeResolver attrResolver) {
       this.logger = logger;
@@ -86,9 +85,11 @@ public class WorkItemNotificationProcessor {
                   if (!EmailUtil.isEmailValid(originator.getEmail()) && !AtsCoreUsers.isAtsCoreUser(originator)) {
                      logger.info("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName());
                   } else if (fromUser.notEqual(originator)) {
+                     String cancelUrl = getCancelUrl(notifications, workItem, atsApi);
+                     String url = getUrl(workItem, atsApi);
                      notifications.addNotificationEvent(
                         AtsNotificationEventFactory.getNotificationEvent(getFromUser(event), Arrays.asList(originator),
-                           getIdString(workItem), AtsNotifyType.Originator.name(), getUrl(workItem),
+                           getIdString(workItem), AtsNotifyType.Originator.name(), url, cancelUrl,
                            String.format("You have been set as the originator of [%s] state [%s] titled [%s]",
                               workItem.getArtifactTypeName(), workItem.getStateMgr().getCurrentStateName(),
                               workItem.getName())));
@@ -111,12 +112,12 @@ public class WorkItemNotificationProcessor {
                assignees = AtsUsersUtility.getValidEmailUsers(assignees);
                assignees = AtsUsersUtility.getActiveEmailUsers(assignees);
                if (assignees.size() > 0) {
-                  notifications.addNotificationEvent(
-                     AtsNotificationEventFactory.getNotificationEvent(getFromUser(event), assignees,
-                        getIdString(workItem), AtsNotifyType.Assigned.name(), getUrl(workItem),
-                        String.format("You have been set as the assignee of [%s] in state [%s] titled [%s]",
-                           workItem.getArtifactTypeName(), workItem.getStateMgr().getCurrentStateName(),
-                           workItem.getName())));
+                  notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
+                     getFromUser(event), assignees, getIdString(workItem), AtsNotifyType.Assigned.name(),
+                     getUrl(workItem, atsApi), getCancelUrl(notifications, workItem, atsApi),
+                     String.format("You have been set as the assignee of [%s] in state [%s] titled [%s]",
+                        workItem.getArtifactTypeName(), workItem.getStateMgr().getCurrentStateName(),
+                        workItem.getName())));
                }
             } catch (OseeCoreException ex) {
                logger.error(ex, "Error processing Assigned for workItem [%s] and event [%s]", workItem.toStringWithId(),
@@ -130,12 +131,12 @@ public class WorkItemNotificationProcessor {
                subscribed = AtsUsersUtility.getValidEmailUsers(subscribed);
                subscribed = AtsUsersUtility.getActiveEmailUsers(subscribed);
                if (subscribed.size() > 0) {
-                  notifications.addNotificationEvent(
-                     AtsNotificationEventFactory.getNotificationEvent(getFromUser(event), subscribed,
-                        getIdString(workItem), AtsNotifyType.Subscribed.name(), getUrl(workItem),
-                        String.format("[%s] titled [%s] transitioned to [%s] and you subscribed for notification.",
-                           workItem.getArtifactTypeName(), workItem.getName(),
-                           workItem.getStateMgr().getCurrentStateName())));
+                  notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
+                     getFromUser(event), subscribed, getIdString(workItem), AtsNotifyType.Subscribed.name(),
+                     getUrl(workItem, atsApi), getCancelUrl(notifications, workItem, atsApi),
+                     String.format("[%s] titled [%s] transitioned to [%s] and you subscribed for notification.",
+                        workItem.getArtifactTypeName(), workItem.getName(),
+                        workItem.getStateMgr().getCurrentStateName())));
                }
             } catch (OseeCoreException ex) {
                logger.error(ex, "Error processing Subscribed for workItem [%s] and event [%s]",
@@ -157,14 +158,16 @@ public class WorkItemNotificationProcessor {
                      if (stateType.isCompleted()) {
                         notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
                            getFromUser(event), Arrays.asList(originator), getIdString(workItem),
-                           workItem.getStateMgr().getCurrentStateName(), getUrl(workItem),
+                           workItem.getStateMgr().getCurrentStateName(), getUrl(workItem, atsApi),
+                           getCancelUrl(notifications, workItem, atsApi),
                            String.format("[%s] titled [%s] is [%s]", workItem.getArtifactTypeName(), workItem.getName(),
                               workItem.getStateMgr().getCurrentStateName())));
                      }
                      if (stateType.isCancelled()) {
                         notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
                            getFromUser(event), Arrays.asList(originator), getIdString(workItem),
-                           workItem.getStateMgr().getCurrentStateName(), getUrl(workItem),
+                           workItem.getStateMgr().getCurrentStateName(), getUrl(workItem, atsApi),
+                           getCancelUrl(notifications, workItem, atsApi),
                            String.format("[%s] titled [%s] was [%s] from the [%s] state on [%s].<br>Reason: [%s]",
                               workItem.getArtifactTypeName(), workItem.getName(),
                               workItem.getStateMgr().getCurrentStateName(), workItem.getCancelledFromState(),
@@ -212,7 +215,7 @@ public class WorkItemNotificationProcessor {
                   if (subscribedUsers.size() > 0) {
                      notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
                         AtsCoreUsers.SYSTEM_USER, subscribedUsers, getIdString(teamWf), "Workflow Creation",
-                        getUrl(workItem),
+                        getUrl(workItem, atsApi), getCancelUrl(notifications, workItem, atsApi),
                         "You have subscribed for email notification for Team \"" + teamWf.getTeamDefinition().getName() + "\"; New Team Workflow created with title \"" + teamWf.getName() + "\""));
                   }
 
@@ -222,7 +225,7 @@ public class WorkItemNotificationProcessor {
                      if (subscribedUsers.size() > 0) {
                         notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
                            AtsCoreUsers.SYSTEM_USER, subscribedUsers, getIdString(teamWf), "Workflow Creation",
-                           getUrl(workItem),
+                           getUrl(workItem, atsApi), getCancelUrl(notifications, workItem, atsApi),
                            "You have subscribed for email notification for Actionable Item \"" + teamWf.getTeamDefinition().getName() + "\"; New Team Workflow created with title \"" + teamWf.getName() + "\""));
                      }
                   }
@@ -257,14 +260,19 @@ public class WorkItemNotificationProcessor {
       return different;
    }
 
-   private String getUrl(IAtsWorkItem workItem) {
-      if (actionUrl == null) {
-         actionUrl = atsApi.getConfigValue("ActionUrl_26_0");
+   private String getCancelUrl(AtsNotificationCollector notifications, IAtsWorkItem workItem, AtsApi atsApi) {
+      if (notifications.isIncludeCancelHyperlink()) {
+         return atsApi.getWorkItemService().getCancelUrl(workItem, atsApi);
       }
-      if (Strings.isValid(actionUrl)) {
-         return actionUrl.replaceFirst("ID", String.valueOf(workItem.getId()));
+      return "";
+   }
+
+   private String getUrl(IAtsWorkItem workItem, AtsApi atsApi) {
+      String url = atsApi.getWorkItemService().getHtmlUrl(workItem, atsApi);
+      if (Strings.isInValid(url)) {
+         return "Not Configured";
       }
-      return "Not Configured";
+      return url;
    }
 
    private IAtsUser getFromUser(AtsWorkItemNotificationEvent event) {

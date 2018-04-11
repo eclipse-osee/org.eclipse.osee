@@ -72,6 +72,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    private final CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder() //
       .expireAfterWrite(1, TimeUnit.MINUTES);
    private final Cache<ArtifactId, IAtsWorkItem> workItemCache = cacheBuilder.build();
+   private static final String CANCEL_HYPERLINK_URL_CONFIG_KEY = "CancelHyperlinkUrl";
 
    public AtsWorkItemServiceImpl(AtsApi atsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       this.atsApi = atsApi;
@@ -297,6 +298,15 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
+   public String getCancelUrl(IAtsWorkItem workItem, AtsApi atsApi) {
+      String cancelActionUrl = atsApi.getConfigValue(CANCEL_HYPERLINK_URL_CONFIG_KEY);
+      if (Strings.isValid(cancelActionUrl)) {
+         return cancelActionUrl.replaceFirst("ID", String.valueOf(workItem.getId()));
+      }
+      return null;
+   }
+
+   @Override
    public IAgileSprint getAgileSprint(ArtifactToken artifact) {
       IAgileSprint sprint = null;
       if (artifact instanceof IAgileSprint) {
@@ -389,6 +399,20 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          action = new Action(atsApi, artifact);
       }
       return action;
+   }
+
+   @Override
+   public String getHtmlUrl(IAtsWorkItem workItem, AtsApi atsApi) {
+      String actionUrl = atsApi.getConfigValue("ActionUrl_26_0");
+      if (Strings.isValid(actionUrl)) {
+         return actionUrl.replaceFirst("ID", String.valueOf(workItem.getId()));
+      }
+      return null;
+   }
+
+   @Override
+   public boolean isCancelHyperlinkConfigured() {
+      return Strings.isValid(atsApi.getConfigValue(CANCEL_HYPERLINK_URL_CONFIG_KEY));
    }
 
 }

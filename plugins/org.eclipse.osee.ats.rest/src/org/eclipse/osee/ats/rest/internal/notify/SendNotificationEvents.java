@@ -112,21 +112,47 @@ public class SendNotificationEvents {
    private String notificationEventsToHtml(List<AtsNotificationEvent> notificationEvents) {
       StringBuffer sb = new StringBuffer();
       sb.append(AHTML.beginMultiColumnTable(100, 1));
-      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Reason", "Description", "Id", "URL"}));
+      boolean anyCancelable = isAnyCancelable(notificationEvents);
+      if (anyCancelable) {
+         sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Reason", "Description", "Id", "Cancel"}));
+      } else {
+         sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Reason", "Description", "Id"}));
+      }
       for (AtsNotificationEvent notificationEvent : notificationEvents) {
-         sb.append(AHTML.addRowMultiColumnTable(new String[] {
-            notificationEvent.getType(),
-            notificationEvent.getDescription(),
-            notificationEvent.getId(),
-            getHyperlink(notificationEvent)}));
+         if (anyCancelable) {
+            sb.append(AHTML.addRowMultiColumnTable(new String[] {
+               notificationEvent.getType(),
+               notificationEvent.getDescription(),
+               getHyperlink(notificationEvent),
+               getCancelHyperlink(notificationEvent)}));
+         } else {
+            sb.append(AHTML.addRowMultiColumnTable(new String[] {
+               notificationEvent.getType(),
+               notificationEvent.getDescription(),
+               getHyperlink(notificationEvent)}));
+         }
       }
       sb.append(AHTML.endMultiColumnTable());
       return sb.toString().replaceAll("\n", "");
    }
 
+   private boolean isAnyCancelable(List<AtsNotificationEvent> notificationEvents) {
+      for (AtsNotificationEvent notificationEvent : notificationEvents) {
+         if (Strings.isValid(notificationEvent.getCancelUrl())) {
+            return true;
+         }
+      }
+      return false;
+   }
+
    private String getHyperlink(AtsNotificationEvent notificationEvent) {
       return Strings.isValid(notificationEvent.getUrl()) ? AHTML.getHyperlink(notificationEvent.getUrl(),
-         "More Info") : "";
+         notificationEvent.getId()) : "";
+   }
+
+   private String getCancelHyperlink(AtsNotificationEvent notificationEvent) {
+      return Strings.isValid(notificationEvent.getCancelUrl()) ? AHTML.getHyperlink(notificationEvent.getCancelUrl(),
+         "Cancel") : "";
    }
 
    private void notifyUser(IAtsUser user, List<AtsNotificationEvent> notificationEvents, XResultData resultData) {
