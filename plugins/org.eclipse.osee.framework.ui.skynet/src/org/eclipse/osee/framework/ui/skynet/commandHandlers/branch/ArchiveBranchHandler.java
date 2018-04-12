@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -24,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Jeff C. Phillips
@@ -38,13 +40,30 @@ public class ArchiveBranchHandler extends CommandHandler {
 
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
-      Collection<? extends BranchId> branches = Handlers.getBranchesFromStructuredSelection(selection);
 
-      for (BranchId branch : branches) {
-         BranchArchivedState state = BranchArchivedState.fromBoolean(!BranchManager.isArchived(branch));
-         BranchManager.setArchiveState(branch, state);
-         OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Committed, branch));
-      }
+      Displays.ensureInDisplayThread(new Runnable() {
+
+         @Override
+         public void run() {
+            if (MessageDialog.openConfirm(Displays.getActiveShell(), "Archive Branches",
+               "Archive Selected Branches?")) {
+               Thread thread = new Thread(new Runnable() {
+
+                  @Override
+                  public void run() {
+                     Collection<? extends BranchId> branches = Handlers.getBranchesFromStructuredSelection(selection);
+
+                     for (BranchId branch : branches) {
+                        BranchArchivedState state = BranchArchivedState.fromBoolean(!BranchManager.isArchived(branch));
+                        BranchManager.setArchiveState(branch, state);
+                        OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Committed, branch));
+                     }
+                  }
+               }, "Archive Branch(es)");
+               thread.start();
+            }
+         }
+      });
       return null;
    }
 }
