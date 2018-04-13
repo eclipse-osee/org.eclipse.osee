@@ -592,12 +592,30 @@ public final class DispoUtil {
    public static List<String> findDiscrepancyLocsToRemove(List<Integer> ranges, DispoItem item) {
       List<String> removeDiscrepancies = new ArrayList<>();
       if (ranges != null && !ranges.isEmpty()) {
-         for (Integer locRef : ranges) {
-            for (Entry<String, Discrepancy> discrepancy : item.getDiscrepanciesList().entrySet()) {
-               Discrepancy value = discrepancy.getValue();
-               String location = value.getLocation();
-               if (Strings.isValid(location) && locRef == Integer.valueOf(location)) {
+         for (Entry<String, Discrepancy> discrepancy : item.getDiscrepanciesList().entrySet()) {
+            Discrepancy value = discrepancy.getValue();
+            String location = value.getLocation();
+            if (Strings.isValid(location)) {
+               if (ranges.contains(location)) {
                   removeDiscrepancies.add(discrepancy.getKey());
+                  break;
+               }
+            }
+         }
+      }
+      return removeDiscrepancies;
+   }
+
+   public static List<String> removeAllDiscrepancies(List<Integer> ranges, DispoItem item) {
+      List<String> removeDiscrepancies = new ArrayList<>();
+      if (ranges != null && !ranges.isEmpty()) {
+         for (Entry<String, Discrepancy> discrepancy : item.getDiscrepanciesList().entrySet()) {
+            Discrepancy value = discrepancy.getValue();
+            String location = value.getLocation();
+            if (Strings.isValid(location)) {
+               if (ranges.contains(location)) {
+                  removeDiscrepancies.add(discrepancy.getKey());
+                  break;
                }
             }
          }
@@ -608,19 +626,20 @@ public final class DispoUtil {
    public static List<String> findMissingDiscrepancyLocs(List<Integer> ranges, DispoItem item) {
       List<String> missingDiscrepanciesLoc = new ArrayList<>();
       if (ranges != null && !ranges.isEmpty()) {
-         for (Integer locRef : ranges) {
-            boolean found = false;
-            for (Entry<String, Discrepancy> discrepancy : item.getDiscrepanciesList().entrySet()) {
-               Discrepancy value = discrepancy.getValue();
-               String location = value.getLocation();
-               if (Strings.isValid(location) && locRef == Integer.valueOf(location)) {
+         boolean found = false;
+         String location = "";
+         for (Entry<String, Discrepancy> discrepancy : item.getDiscrepanciesList().entrySet()) {
+            Discrepancy value = discrepancy.getValue();
+            location = value.getLocation();
+            if (Strings.isValid(location)) {
+               if (ranges.contains(location)) {
                   found = true;
                   break;
                }
             }
-            if (!found) {
-               missingDiscrepanciesLoc.add(String.valueOf(locRef));
-            }
+         }
+         if (!found) {
+            missingDiscrepanciesLoc.add(String.valueOf(location));
          }
       }
       return missingDiscrepanciesLoc;

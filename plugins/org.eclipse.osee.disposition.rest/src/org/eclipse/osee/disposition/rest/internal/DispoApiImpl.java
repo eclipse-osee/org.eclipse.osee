@@ -703,9 +703,13 @@ public class DispoApiImpl implements DispoApi {
 
          idOfNewDiscrepancy = dataFactory.getNewId();
          discrepancy.setId(idOfNewDiscrepancy);
-         discrepancy.setLocation("");
-         discrepancy.setText("");
 
+         if (discrepancy.getLocation() == null) {
+            discrepancy.setLocation("");
+         }
+         if (discrepancy.getText() == null) {
+            discrepancy.setText("");
+         }
          discrepancyList.put(idOfNewDiscrepancy, discrepancy);
 
          DispoItemData newItem = new DispoItemData();
