@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.workitem;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,15 +66,20 @@ import org.eclipse.osee.ats.rest.internal.workitem.operations.ActionOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
+import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -82,14 +88,16 @@ import org.eclipse.osee.jaxrs.mvc.IdentityView;
 public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
    private final AtsApi atsApi;
+   private final OrcsApi orcsApi;
    private static final String ATS_UI_ACTION_PREFIX = "/ui/action/ID";
 
    @Context
    private HttpHeaders httpHeaders;
    private final JsonFactory jsonFactory;
 
-   public AtsActionEndpointImpl(AtsApi atsApi, JsonFactory jsonFactory) {
+   public AtsActionEndpointImpl(AtsApi atsApi, OrcsApi orcsApi, JsonFactory jsonFactory) {
       this.atsApi = atsApi;
+      this.orcsApi = orcsApi;
       this.jsonFactory = jsonFactory;
    }
 
@@ -203,6 +211,36 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          }
       }
       return states;
+   }
+
+   /**
+    * @return list of json objects containing artifact ids and names for a related set of requirements
+    */
+   @Override
+   @GET
+   @Path("{id}/assocArt/{attrTypeId}")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<String> getRelatedRequirements(@PathParam("id") ArtifactId workflowId, @PathParam("attrTypeId") AttributeTypeId relatedReqs, @QueryParam("versionType") AttributeTypeId versionType) {
+      List<String> requirements = new LinkedList<>();
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(COMMON);
+      ArtifactReadable workflow = query.andId(workflowId).getArtifact();
+      Integer vertionArtId = workflow.getSoleAttributeValue(versionType);
+      ArtifactReadable version = query.andId(ArtifactId.valueOf(vertionArtId)).getArtifact();
+      BranchId versionBranch =
+         BranchId.valueOf(version.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchId, "-1"));
+
+      String values = workflow.getSoleAttributeValue(relatedReqs);
+      if (Strings.isValid(values)) {
+         List<String> items = Arrays.asList(values.split("\\s*,\\s*"));
+         List<ArtifactId> artIds = Collections.transform(items, ArtifactId::valueOf);
+
+         Collection<ArtifactToken> tokens = atsApi.getQueryService().getArtifacts(artIds, versionBranch);
+         for (ArtifactToken token : tokens) {
+            requirements.add(
+               String.format("{ \"rpcrUuid\": \"%s\", \"rpcrName\": \"%s\" }", token.getIdString(), token.getName()));
+         }
+      }
+      return requirements;
    }
 
    @Override

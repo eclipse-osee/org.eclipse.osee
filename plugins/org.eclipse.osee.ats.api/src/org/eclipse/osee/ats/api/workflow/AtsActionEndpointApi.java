@@ -27,7 +27,9 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 
 /**
  * @author Donald G. Dunne
@@ -178,4 +180,11 @@ public interface AtsActionEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    List<String> getTransitionToStateNames(@PathParam("id") String id);
 
+   /**
+    * @return list of json objects containing artifact ids and names for a related set of requirements
+    */
+   @GET
+   @Path("{id}/assocArt/{attrTypeId}")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<String> getRelatedRequirements(@PathParam("workflowId") ArtifactId workflowId, @PathParam("relatedReqs") AttributeTypeId relatedReqs, @QueryParam("versionType") AttributeTypeId versionType);
 }

@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 
 /**
@@ -116,6 +117,10 @@ public interface IAtsProgramService {
 
    List<ProgramVersions> getProgramVersions(IArtifactType artType, boolean activeOnly);
 
+   ProgramVersions getVersionsForProgram(ArtifactId program, boolean onlyActive);
+
+   ArtifactToken getProgramFromVersion(ArtifactId version);
+
    /**
     * @return this object casted, else if hard artifact constructed, else load and construct
     */
@@ -130,5 +135,4 @@ public interface IAtsProgramService {
     * @return this object casted, else if hard artifact constructed, else load and construct
     */
    IAtsCountry getCountryById(ArtifactId countryId);
-
 }

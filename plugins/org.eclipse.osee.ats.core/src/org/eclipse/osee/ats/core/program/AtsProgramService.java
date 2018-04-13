@@ -501,4 +501,17 @@ public class AtsProgramService implements IAtsProgramService {
       return ops.getProgramVersions(artType, activeOnly);
    }
 
+   @Override
+   public ProgramVersions getVersionsForProgram(ArtifactId program, boolean onlyActive) {
+      AtsProgramOperations ops = new AtsProgramOperations(atsApi);
+      ProgramVersions progVer = new ProgramVersions();
+      ops.getVersionsForProgram(program, onlyActive, progVer);
+      return progVer;
+   }
+
+   @Override
+   public ArtifactToken getProgramFromVersion(ArtifactId version) {
+      AtsProgramOperations ops = new AtsProgramOperations(atsApi);
+      return ops.getProgramFromVersion(version);
+   }
 }

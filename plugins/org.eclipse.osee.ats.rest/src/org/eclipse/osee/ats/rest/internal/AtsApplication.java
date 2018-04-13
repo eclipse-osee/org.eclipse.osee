@@ -125,7 +125,7 @@ public class AtsApplication extends Application {
       singletons.add(new InsertionResource(atsServer, orcsApi));
       singletons.add(new InsertionActivityResource(atsServer, orcsApi));
 
-      singletons.add(new AtsActionEndpointImpl(atsServer, jsonFactory));
+      singletons.add(new AtsActionEndpointImpl(atsServer, orcsApi, jsonFactory));
       singletons.add(new AtsRuleEndpointImpl(atsServer));
       singletons.add(new StateResource(atsServer));
       singletons.add(new ConvertResource(atsServer));

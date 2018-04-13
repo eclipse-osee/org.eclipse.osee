@@ -12,10 +12,12 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
 import org.eclipse.osee.ats.api.config.JaxVersion;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.ProgramVersions;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
 public class AtsProgramOperations {
 
@@ -40,30 +42,45 @@ public class AtsProgramOperations {
          progVer.setProgram(program);
          progVers.add(progVer);
 
-         ArtifactId teamDefId = atsApi.getAttributeResolver().getSoleAttributeValue(program,
-            AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
-         if (teamDefId.isValid()) {
-            JaxTeamDefinition jaxTeamDef =
-               atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(teamDefId.getId());
-
-            if (jaxTeamDef != null) {
-               progVer.setTeam(ArtifactToken.valueOf(jaxTeamDef.getId(), jaxTeamDef.getName(), atsApi.getAtsBranch()));
-
-               for (Long versionId : jaxTeamDef.getVersions()) {
-                  JaxVersion version = atsApi.getConfigService().getConfigurations().getIdToVersion().get(versionId);
-
-                  boolean verActive = version.isActive();
-                  if (onlyActive && !verActive) {
-                     continue;
-                  }
-
-                  progVer.addVersion(ArtifactToken.valueOf(version.getId(), version.getName(), atsApi.getAtsBranch()));
-               }
-            }
-         }
+         getVersionsForProgram(program, onlyActive, progVer);
 
       }
       return progVers;
    }
 
+   public ArtifactToken getProgramFromVersion(ArtifactId version) {
+      ArtifactId teamDef = atsApi.getRelationResolver().getRelatedOrNull(version,
+         AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition);
+      if (teamDef != null) {
+         ArtifactId program = atsApi.getAttributeResolver().getSoleAttributeValue(teamDef, AtsAttributeTypes.ProgramId,
+            ArtifactId.SENTINEL);
+         String name = atsApi.getAttributeResolver().getSoleAttributeValue(program, CoreAttributeTypes.Name, "");
+         return ArtifactToken.valueOf(program, name);
+      }
+      return null;
+   }
+
+   public void getVersionsForProgram(ArtifactId program, boolean onlyActive, ProgramVersions progVer) {
+      ArtifactId teamDefId = atsApi.getAttributeResolver().getSoleAttributeValue(program,
+         AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
+      if (teamDefId.isValid()) {
+         JaxTeamDefinition jaxTeamDef =
+            atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(teamDefId.getId());
+
+         if (jaxTeamDef != null) {
+            progVer.setTeam(ArtifactToken.valueOf(jaxTeamDef.getId(), jaxTeamDef.getName(), atsApi.getAtsBranch()));
+
+            for (Long versionId : jaxTeamDef.getVersions()) {
+               JaxVersion version = atsApi.getConfigService().getConfigurations().getIdToVersion().get(versionId);
+
+               boolean verActive = version.isActive();
+               if (onlyActive && !verActive) {
+                  continue;
+               }
+
+               progVer.addVersion(ArtifactToken.valueOf(version.getId(), version.getName(), atsApi.getAtsBranch()));
+            }
+         }
+      }
+   }
 }

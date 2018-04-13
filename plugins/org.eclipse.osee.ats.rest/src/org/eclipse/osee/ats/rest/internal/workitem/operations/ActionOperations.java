@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -142,6 +143,15 @@ public class ActionOperations {
                throw new OseeArgumentException("No user with account id [%s]", accountId);
             }
             atsApi.getActionFactory().setCreatedBy(workItem, originator, true, workItem.getCreatedDate(), changes);
+         }
+      } else if (attrTypeIdOrKey.equals(AttributeKey.assocArt.name())) {
+         if (values != null && Strings.isNumeric(values.get(0))) {
+            attrTypeId = atsApi.getStoreService().getAttributeType(Long.valueOf(values.get(0)));
+            if (attrTypeId != null) {
+               values.remove(0);
+               // check to make sure the rest of the items are valid requirements
+               changes.setSoleAttributeValue(workItem, attrTypeId, Collections.toString(",", values));
+            }
          }
       } else {
          attrTypeId = atsApi.getStoreService().getAttributeType(Long.valueOf(attrTypeIdOrKey));

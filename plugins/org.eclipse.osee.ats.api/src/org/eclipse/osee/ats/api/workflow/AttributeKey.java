@@ -25,6 +25,7 @@ public enum AttributeKey {
    IPT("/ats/attr/" + AtsAttributeTypes.IPT.getIdString()),
    Originator("/ats/attr/Originator"),
    Version("/ats/action/{id}/UnrelasedVersions"),
+   assocArt("/ats/action/{id}/assocArt/{attrTypeId}"),
    State("/ats/action/{id}/TransitionToStates");
 
    private final String url;

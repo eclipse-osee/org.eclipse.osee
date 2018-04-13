@@ -357,7 +357,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    @Override
    public AtsActionEndpointApi getActionEndpoint() {
       if (actionEndpoint == null) {
-         actionEndpoint = new AtsActionEndpointImpl(this, JsonUtil.getFactory());
+         actionEndpoint = new AtsActionEndpointImpl(this, orcsApi, JsonUtil.getFactory());
       }
       return actionEndpoint;
    }
