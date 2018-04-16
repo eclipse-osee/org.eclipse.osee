@@ -114,4 +114,6 @@ public interface IAtsProgramService {
 
    Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program);
 
+   List<ProgramVersions> getProgramVersions(IArtifactType artType, boolean activeOnly);
+
 }

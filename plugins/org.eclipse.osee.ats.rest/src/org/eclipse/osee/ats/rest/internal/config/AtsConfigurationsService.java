@@ -142,7 +142,7 @@ public class AtsConfigurationsService implements IAtsConfigurationsService {
       Map<Long, ArtifactReadable> idToArtifact = new HashMap<>();
 
       List<ArtifactReadable> configArts = Collections.castAll(
-         atsApi.getQueryService().getArtifacts(atsApi.getAtsBranch(), TeamDefinition, Version, ActionableItem));
+         atsApi.getQueryService().getArtifacts(atsApi.getAtsBranch(), false, TeamDefinition, Version, ActionableItem));
 
       // load ats config objects
       for (ArtifactReadable configArtId : configArts) {

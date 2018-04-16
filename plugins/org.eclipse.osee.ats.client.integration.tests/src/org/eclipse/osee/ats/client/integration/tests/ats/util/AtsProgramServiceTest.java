@@ -25,9 +25,11 @@ import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
+import org.eclipse.osee.ats.api.program.ProgramVersions;
 import org.eclipse.osee.ats.api.program.ProjectType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
@@ -187,14 +189,28 @@ public class AtsProgramServiceTest {
 
    private IAtsProgram getSawProgram() {
       if (sawProgram == null) {
-         for (IAtsProgram prog : programService.getPrograms()) {
-            if (prog.getName().contains("SAW")) {
-               sawProgram = prog;
-               break;
-            }
-         }
+         sawProgram = programService.getProgramById(DemoArtifactToken.SAW_Program);
       }
       return sawProgram;
+   }
+
+   @Test
+   public void testGetProgramVersions() {
+      List<ProgramVersions> progVers = programService.getProgramVersions(AtsArtifactTypes.Program, false);
+      Assert.assertNotNull(progVers);
+
+      Assert.assertTrue("Should be at least 5 programs", progVers.size() >= 5);
+
+      ProgramVersions sawProgVer = null;
+      for (ProgramVersions program : progVers) {
+         if (program.getProgram().equals(DemoArtifactToken.SAW_Program)) {
+            sawProgVer = program;
+            break;
+         }
+      }
+      Assert.assertNotNull(sawProgVer);
+      Assert.assertEquals(sawProgVer.getTeam(), DemoArtifactToken.SAW_SW);
+      Assert.assertTrue("Should at least 3 versions", sawProgVer.getVersions().size() >= 3);
    }
 
 }

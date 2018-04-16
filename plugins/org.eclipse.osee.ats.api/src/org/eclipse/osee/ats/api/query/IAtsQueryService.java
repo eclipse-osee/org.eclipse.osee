@@ -67,7 +67,7 @@ public interface IAtsQueryService {
 
    Collection<ArtifactToken> getArtifactsFromQuery(String query, Object... data);
 
-   Collection<ArtifactToken> getArtifacts(BranchId branch, IArtifactType... artifactType);
+   Collection<ArtifactToken> getArtifacts(BranchId branch, boolean includeInherited, IArtifactType... artifactType);
 
    List<ArtifactId> getArtifactIdsFromQuery(String query, Object... data);
 

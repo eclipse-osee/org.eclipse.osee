@@ -122,8 +122,12 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifacts(BranchId branch, IArtifactType... artifactType) {
-      return Collections.castAll(query.fromBranch(branch).andTypeEquals(artifactType).getResults().getList());
+   public Collection<ArtifactToken> getArtifacts(BranchId branch, boolean includeInherited, IArtifactType... artifactType) {
+      if (includeInherited) {
+         return Collections.castAll(query.fromBranch(branch).andIsOfType(artifactType).getResults().getList());
+      } else {
+         return Collections.castAll(query.fromBranch(branch).andTypeEquals(artifactType).getResults().getList());
+      }
    }
 
    @Override

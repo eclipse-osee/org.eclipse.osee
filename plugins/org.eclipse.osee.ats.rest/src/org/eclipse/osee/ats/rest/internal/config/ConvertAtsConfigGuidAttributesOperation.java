@@ -124,7 +124,7 @@ public class ConvertAtsConfigGuidAttributesOperation {
 
       // Delete AIs for Action, they shouldn't have them
       changes = atsApi.createChangeSet("Remove Action AI and TeamDef GUIDs");
-      for (ArtifactToken actionArt : atsApi.getQueryService().getArtifacts(atsApi.getAtsBranch(),
+      for (ArtifactToken actionArt : atsApi.getQueryService().getArtifacts(atsApi.getAtsBranch(), false,
          AtsArtifactTypes.Action)) {
          changes.deleteAttributes(actionArt, ConvertAtsConfigGuidAttributesOperations.TeamDefinition);
          changes.deleteAttributes(actionArt, ConvertAtsConfigGuidAttributesOperations.ActionableItem);
@@ -162,7 +162,7 @@ public class ConvertAtsConfigGuidAttributesOperation {
 
    private void convertWorkPackageIfNeeded(IAtsChangeSet changes, ArtifactToken workItemArt) {
       if (!workPackagesLoaded) {
-         for (ArtifactToken workPackageArt : atsApi.getQueryService().getArtifacts(atsApi.getAtsBranch(),
+         for (ArtifactToken workPackageArt : atsApi.getQueryService().getArtifacts(atsApi.getAtsBranch(), false,
             AtsArtifactTypes.WorkPackage)) {
             IAtsWorkPackage workPkg = atsApi.getEarnedValueService().getWorkPackage(workPackageArt);
             guidToWorkPackage.put(workPkg.getStoreObject().getGuid(), workPkg);

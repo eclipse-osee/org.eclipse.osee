@@ -18,6 +18,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   ProgramEndpointImplTest.class,
    AtsConfigEndpointImplClientIntegrationTest.class,
    TeamResourceTest.class,
    VersionResourceTest.class,

@@ -265,7 +265,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
 
    @Override
    public List<ArtifactToken> getArtifacts(IArtifactType artifactType) {
-      return Collections.castAll(atsApi.getQueryService().getArtifacts(atsApi.getAtsBranch(), artifactType));
+      return Collections.castAll(atsApi.getQueryService().getArtifacts(atsApi.getAtsBranch(), true, artifactType));
    }
 
    @Override

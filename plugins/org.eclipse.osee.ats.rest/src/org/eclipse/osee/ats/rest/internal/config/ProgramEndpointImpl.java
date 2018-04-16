@@ -13,8 +13,15 @@ package org.eclipse.osee.ats.rest.internal.config;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -23,12 +30,15 @@ import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.program.JaxProgram;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
+import org.eclipse.osee.ats.api.program.ProgramVersions;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -107,5 +117,27 @@ public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> impl
    @Override
    public InsertionEndpointApi getInsertion(long programId) {
       return new InsertionEndpointImpl(atsApi, programId);
+   }
+
+   @Override
+   @GET
+   @Path("version")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<ProgramVersions> getVersions(@Context UriInfo uriInfo) {
+      boolean activeOnly = true;
+      IArtifactType artType = AtsArtifactTypes.Program;
+      if (uriInfo != null) {
+         MultivaluedMap<String, String> qp = uriInfo.getQueryParameters(true);
+         String activeStr = qp.getFirst("activeOnly");
+         if (Strings.isValid(activeStr)) {
+            activeOnly = "true".equals(activeStr);
+         }
+         String artifactTypeId = qp.getFirst("artifactTypeId");
+         if (Strings.isNumeric(artifactTypeId)) {
+            artType = atsApi.getStoreService().getArtifactType(Long.valueOf(artifactTypeId));
+         }
+      }
+
+      return atsApi.getProgramService().getProgramVersions(artType, activeOnly);
    }
 }

@@ -244,8 +244,16 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifacts(BranchId branch, IArtifactType... artifactType) {
+   public Collection<ArtifactToken> getArtifacts(BranchId branch, boolean includeInherited, IArtifactType... artifactType) {
       List<IArtifactType> types = Arrays.asList(artifactType);
+      if (includeInherited) {
+         if (artifactType.length == 1) {
+            return Collections.castAll(ArtifactQuery.getArtifactListFromTypeWithInheritence(types.iterator().next(),
+               branch, DeletionFlag.EXCLUDE_DELETED));
+         } else {
+            throw new UnsupportedOperationException("Not supported on client");
+         }
+      }
       return Collections.castAll(ArtifactQuery.getArtifactListFromTypes(types, branch, DeletionFlag.EXCLUDE_DELETED));
    }
 
