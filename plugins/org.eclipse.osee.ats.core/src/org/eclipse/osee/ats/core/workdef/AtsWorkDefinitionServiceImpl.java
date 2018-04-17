@@ -77,7 +77,6 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    private final Cache<String, IAtsRuleDefinition> ruleDefinitionCache =
       CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
    private LoadingCache<Long, IAtsWorkDefinition> workDefIdToWorkDef;
-   private LoadingCache<IAtsWorkItem, IAtsWorkDefinition> workItemToWorkDef;
    private final AtsApi atsApi;
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
    private final IAtsWorkDefinitionDslService workDefinitionDslService;
@@ -101,20 +100,9 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       }
    };
 
-   private final CacheLoader<IAtsWorkItem, IAtsWorkDefinition> workItemWorkDefLoader =
-      new CacheLoader<IAtsWorkItem, IAtsWorkDefinition>() {
-         @Override
-         public IAtsWorkDefinition load(IAtsWorkItem workItem) {
-            return computeWorkDefinition(workItem);
-         }
-      };
-
    @Override
    public void clearCaches() {
       getWorkDefIdToWorkDef().invalidateAll();
-      if (workItemToWorkDef != null && atsApi.isWorkDefAsName()) {
-         workItemToWorkDef.invalidateAll();
-      }
       ruleDefinitionCache.invalidateAll();
    }
 
@@ -147,7 +135,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       }
       if (workDefinition == null && atsApi.isWorkDefAsName()) {
          try {
-            return getWorkItemToWorkDef().get(workItem);
+            return computeWorkDefinition(workItem);
          } catch (Exception ex) {
             throw new OseeWrappedException(ex, "Error getting work definition for work item %s",
                workItem.toStringWithId());
@@ -762,13 +750,6 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       return getWorkDefinitionNameForTeamWfFromTeamDef(parentTeamDef);
    }
 
-   private LoadingCache<IAtsWorkItem, IAtsWorkDefinition> getWorkItemToWorkDef() {
-      if (workItemToWorkDef == null) {
-         createCaches();
-      }
-      return workItemToWorkDef;
-   }
-
    private LoadingCache<Long, IAtsWorkDefinition> getWorkDefIdToWorkDef() {
       if (workDefIdToWorkDef == null) {
          createCaches();
@@ -778,12 +759,6 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    private void createCaches() {
       workDefIdToWorkDef = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build(workDefLoader);
-      if (atsApi.isWorkDefAsName()) {
-         workItemToWorkDef =
-            CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build(workItemWorkDefLoader);
-      } else {
-         workItemToWorkDef = null;
-      }
    }
 
    @Override
