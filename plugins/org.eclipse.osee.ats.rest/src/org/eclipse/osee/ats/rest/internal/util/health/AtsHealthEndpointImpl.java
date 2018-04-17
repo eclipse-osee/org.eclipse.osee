@@ -50,6 +50,7 @@ public final class AtsHealthEndpointImpl implements AtsHealthEndpointApi {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String get() {
+      Thread.currentThread().setName("ATS Health Check Operation");
       AtsHealthCheckOperation validate = new AtsHealthCheckOperation(atsApi, jdbcService, mailService);
       XResultData rd = validate.run();
       return rd.toString().replaceAll("\n", "</br>");
