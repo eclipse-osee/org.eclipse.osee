@@ -5,7 +5,9 @@ import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_FETCH_SIZE;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
@@ -52,8 +54,14 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
    @Override
    public void load(IOseeCache<Branch> cache) throws OseeCoreException {
       String sql = String.format(SELECT_BRANCHES, jdbcClient.getDbType().getRecursiveWithSql());
-      jdbcClient.runQuery(stmt -> cache.cache(load(cache, stmt)), JDBC__MAX_FETCH_SIZE, sql);
+      Map<MergeBranch, Long> mergeIdMap = new HashMap<>();
+      jdbcClient.runQuery(stmt -> cache.cache(load(cache, stmt, mergeIdMap)), JDBC__MAX_FETCH_SIZE, sql);
 
+      for (MergeBranch branch : mergeIdMap.keySet()) {
+         Long destId = mergeIdMap.get(branch);
+         Branch destBranch = cache.getById(destId);
+         branch.setDestinationBranch(destBranch);
+      }
       List<BranchViewData> branchAndViews = oseeClient.getApplicabilityEndpoint(CoreBranches.COMMON).getViews();
       List<Branch> branchViews = new ArrayList<>();
 
@@ -76,11 +84,11 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
    public static Branch loadBranch(IOseeCache<Branch> cache, Long branchId) {
       return ConnectionHandler.getJdbcClient().fetchOrException(
          () -> new BranchDoesNotExist("Branch could not be acquired for branch id %d", branchId),
-         stmt -> load(cache, stmt), SELECT_BRANCH, branchId);
+         stmt -> load(cache, stmt, null), SELECT_BRANCH, branchId);
    }
 
-   private static Branch load(IOseeCache<Branch> cache, JdbcStatement stmt) {
-      Branch branch = createOrUpdate(cache, stmt);
+   private static Branch load(IOseeCache<Branch> cache, JdbcStatement stmt, Map<MergeBranch, Long> mergeIdMap) {
+      Branch branch = createOrUpdate(cache, stmt, mergeIdMap);
 
       Branch parentBranch;
       Branch sourceTxBranch;
@@ -98,7 +106,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       return branch;
    }
 
-   private static Branch createOrUpdate(IOseeCache<Branch> cache, JdbcStatement stmt) {
+   private static Branch createOrUpdate(IOseeCache<Branch> cache, JdbcStatement stmt, Map<MergeBranch, Long> mergeIdMap) {
       Long branchId = stmt.getLong("branch_id");
       String name = stmt.getString("branch_name");
       BranchType branchType = BranchType.valueOf(stmt.getInt("branch_type"));
@@ -115,6 +123,10 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
             branch = mergeBranch;
             Branch sourceBranch = cache.getById(stmt.getLong("source_branch_id"));
             Branch destBranch = cache.getById(stmt.getLong("dest_branch_id"));
+
+            if (destBranch == null) {
+               mergeIdMap.put(mergeBranch, stmt.getLong("dest_branch_id"));
+            }
 
             mergeBranch.setSourceBranch(sourceBranch);
             mergeBranch.setDestinationBranch(destBranch);
