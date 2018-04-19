@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Activity Logging Impl - (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.activity
-Bundle-Version: 0.25.3.qualifier
+Bundle-Version: 0.25.4.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml

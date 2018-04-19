@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE JAX-RS Server (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.jaxrs.server
-Bundle-Version: 0.25.3.qualifier
+Bundle-Version: 0.25.4.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*.xml
 Osee-Template: OSEE-INF/templates/*.html

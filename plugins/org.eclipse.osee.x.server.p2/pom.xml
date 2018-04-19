@@ -6,14 +6,14 @@
 	<parent>
 		<groupId>org.eclipse.osee</groupId>
 		<artifactId>org.eclipse.osee.x.server.parent</artifactId>
-		<version>0.25.3-SNAPSHOT</version>
+		<version>0.25.4-SNAPSHOT</version>
 		<relativePath>../../plugins/org.eclipse.osee.x.server.parent</relativePath>
 	</parent>
 
 	<artifactId>org.eclipse.osee.x.server.p2</artifactId>
 	<packaging>eclipse-repository</packaging>
 	<name>OSEE X Server - p2 Site (Incubation)</name>
-	<version>0.25.3-SNAPSHOT</version>
+	<version>0.25.4-SNAPSHOT</version>
 
 	<build>
 		<plugins>

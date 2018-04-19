@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.osee.x.server.external.feature"
       label="%featureName"
-      version="0.25.3.qualifier"
+      version="0.25.4.qualifier"
       provider-name="%providerName">
 
    <description>

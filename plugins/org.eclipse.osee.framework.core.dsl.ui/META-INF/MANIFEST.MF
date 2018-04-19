@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE ORCS DSL UI - (Incubation)
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-Version: 0.25.3.qualifier
+Bundle-Version: 0.25.4.qualifier
 Bundle-SymbolicName: org.eclipse.osee.framework.core.dsl.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.osee.framework.core.dsl;visibility:=reexport,

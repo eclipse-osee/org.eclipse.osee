@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.osee.client.all.feature_0.25.3.qualifier.jar" id="org.eclipse.osee.client.all.feature" version="0.25.3.qualifier">
+   <feature url="features/org.eclipse.osee.client.all.feature_0.25.4.qualifier.jar" id="org.eclipse.osee.client.all.feature" version="0.25.4.qualifier">
       <category name="org.eclipse.osee.client.all"/>
    </feature>
-   <feature url="features/org.eclipse.osee.client.all.feature.source_0.25.3.qualifier.jar" id="org.eclipse.osee.client.all.feature.source" version="0.25.3.qualifier">
+   <feature url="features/org.eclipse.osee.client.all.feature.source_0.25.4.qualifier.jar" id="org.eclipse.osee.client.all.feature.source" version="0.25.4.qualifier">
       <category name="org.eclipse.osee.client.all"/>
    </feature>
-   <feature url="features/org.eclipse.osee.client.feature.source_0.25.3.qualifier.jar" id="org.eclipse.osee.client.feature.source" version="0.25.3.qualifier">
+   <feature url="features/org.eclipse.osee.client.feature.source_0.25.4.qualifier.jar" id="org.eclipse.osee.client.feature.source" version="0.25.4.qualifier">
       <category name="org.eclipse.osee.client.all"/>
    </feature>
-   <feature url="features/org.eclipse.osee.core.runtime.feature.source_0.25.3.qualifier.jar" id="org.eclipse.osee.core.runtime.feature.source" version="0.25.3.qualifier">
+   <feature url="features/org.eclipse.osee.core.runtime.feature.source_0.25.4.qualifier.jar" id="org.eclipse.osee.core.runtime.feature.source" version="0.25.4.qualifier">
       <category name="org.eclipse.osee.client.all"/>
    </feature>
-   <feature url="features/org.eclipse.osee.ats.feature.source_0.25.3.qualifier.jar" id="org.eclipse.osee.ats.feature.source" version="0.25.3.qualifier">
+   <feature url="features/org.eclipse.osee.ats.feature.source_0.25.4.qualifier.jar" id="org.eclipse.osee.ats.feature.source" version="0.25.4.qualifier">
       <category name="org.eclipse.osee.client.all"/>
    </feature>
-   <feature url="features/org.eclipse.osee.ats.client.demo.feature.source_0.25.3.qualifier.jar" id="org.eclipse.osee.ats.client.demo.feature.source" version="0.25.3.qualifier">
+   <feature url="features/org.eclipse.osee.ats.client.demo.feature.source_0.25.4.qualifier.jar" id="org.eclipse.osee.ats.client.demo.feature.source" version="0.25.4.qualifier">
       <category name="org.eclipse.osee.client.all"/>
    </feature>
    <category-def name="org.eclipse.osee.client.all" label="Eclipse OSEE Client All - (Incubation)">

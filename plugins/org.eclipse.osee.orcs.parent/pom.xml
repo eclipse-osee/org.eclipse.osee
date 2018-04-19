@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.eclipse.osee</groupId>
 		<artifactId>org.eclipse.osee.x.parent</artifactId>
-		<version>0.25.3-SNAPSHOT</version>
+		<version>0.25.4-SNAPSHOT</version>
 		<relativePath>../../plugins/org.eclipse.osee.x.parent</relativePath>
 	</parent>
 
@@ -14,7 +14,7 @@
 	<artifactId>org.eclipse.osee.orcs.parent</artifactId>
 	<packaging>pom</packaging>
 	<name>OSEE ORCS - Parent (Incubation)</name>
-	<version>0.25.3-SNAPSHOT</version>
+	<version>0.25.4-SNAPSHOT</version>
 
 	<profiles>
 

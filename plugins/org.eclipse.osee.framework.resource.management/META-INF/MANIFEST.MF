@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Management Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.resource.management
-Bundle-Version: 0.25.3.qualifier
+Bundle-Version: 0.25.4.qualifier
 Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.jdk.core.type,

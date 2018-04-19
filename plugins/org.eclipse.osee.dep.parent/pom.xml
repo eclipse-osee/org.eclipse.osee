@@ -7,7 +7,7 @@
 	<artifactId>org.eclipse.osee.dep.parent</artifactId>
 	<packaging>pom</packaging>
 	<name>OSEE Runtime - Parent (Incubation)</name>
-	<version>0.25.3-SNAPSHOT</version>
+	<version>0.25.4-SNAPSHOT</version>
 
 	<modules>
 		<module>../../features/org.eclipse.osee.dep.feature</module>
