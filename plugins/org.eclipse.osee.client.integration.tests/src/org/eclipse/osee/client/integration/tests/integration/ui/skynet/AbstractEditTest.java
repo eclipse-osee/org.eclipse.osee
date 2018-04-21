@@ -111,8 +111,8 @@ public abstract class AbstractEditTest {
 
       String expected = updateDataForTest(testData);
 
-      IFile editFile = openArtifactForEdit(renderer, artifact);
-      writeNewContentAndWaitForSave(artifact, editFile, expected);
+      IFile renderFile = openArtifactForEdit(renderer, artifact);
+      writeNewContentAndWaitForSave(artifact, renderFile, expected);
       String actual = getRenderedStoredContent(renderer, artifact);
       Assert.assertEquals(expected, actual);
    }

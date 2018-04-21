@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.database.init.DefaultDbInitTasks;
@@ -50,6 +51,9 @@ public class SimpleTemplateProviderTask implements IDbInitializationTask {
    private void processTemplatesForDBInit() throws IOException {
 
       Artifact templateFolder = getTemplateFolder();
+      Artifact dataRights = ArtifactQuery.getArtifactFromId(CoreArtifactTokens.DataRightsFooters, COMMON);
+      templateFolder.addChild(dataRights);
+
       IExtensionPoint ep = Platform.getExtensionRegistry().getExtensionPoint(
          "org.eclipse.osee.framework.ui.skynet.SimpleTemplateProviderTemplate");
       for (IExtension extension : ep.getExtensions()) {

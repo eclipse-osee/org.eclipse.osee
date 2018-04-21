@@ -11,7 +11,8 @@
 
 package org.eclipse.osee.framework.database.init;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.OrcsTypeSheet;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
@@ -21,6 +22,8 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.database.init.internal.OseeTypesSetup;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.GlobalXViewerSettings;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
@@ -30,6 +33,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * This class creates the common branch and imports the appropriate skynet types. Class should be extended for plugins
@@ -81,7 +86,7 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
          typesData.getSheets().addAll(sheets);
          ArtifactTypeManager.importOrcsTypes(typesData);
 
-         SkynetTransaction transaction = TransactionManager.createTransaction(COMMON, "Add Common Branch");
+         SkynetTransaction transaction = TransactionManager.createTransaction(CoreBranches.COMMON, "Add Common Branch");
 
          //create everyone group
          Artifact everyonGroup = SystemGroup.Everyone.getArtifact();
@@ -103,7 +108,35 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
 
          // Create OseeAdmin group
          SystemGroup.OseeAdmin.getArtifact().persist(transaction);
+         // Create common data rights artifact
+         Artifact dataRightsArt =
+            ArtifactTypeManager.addArtifact(CoreArtifactTokens.DataRightsFooters, CoreBranches.COMMON);
+         // Add Data Rights attributes
+
+         addAttributes(dataRightsArt);
+         dataRightsArt.persist(transaction);
+
          transaction.execute();
+      }
+   }
+
+   public static void addAttributes(Artifact art) {
+      Bundle bundle = FrameworkUtil.getBundle(AddCommonBranch.class);
+
+      art.addAttribute(CoreAttributeTypes.GeneralStringData, getDataFromFilename(bundle, "OSEE-INF/Unspecified.xml"));
+      art.addAttribute(CoreAttributeTypes.GeneralStringData, getDataFromFilename(bundle, "OSEE-INF/Default.xml"));
+      art.addAttribute(CoreAttributeTypes.GeneralStringData,
+         getDataFromFilename(bundle, "OSEE-INF/GovernmentPurposeRights.xml"));
+      art.addAttribute(CoreAttributeTypes.GeneralStringData,
+         getDataFromFilename(bundle, "OSEE-INF/RestrictedRights.xml"));
+   }
+
+   private static String getDataFromFilename(Bundle bundle, String filename) {
+      try {
+         InputStream inStream = bundle.getEntry(filename).openStream();
+         return Lib.inputStreamToString(inStream);
+      } catch (IOException ex) {
+         throw OseeCoreException.wrap(ex);
       }
    }
 }

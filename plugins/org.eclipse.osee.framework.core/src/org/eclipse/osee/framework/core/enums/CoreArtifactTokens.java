@@ -25,6 +25,8 @@ public final class CoreArtifactTokens {
    public static ArtifactToken OseeAccessAdmin = ArtifactToken.valueOf(8033605, "AGXiIJi2qxZnuXEdZVwA", "OseeAccessAdmin", COMMON, CoreArtifactTypes.UserGroup);
    public static ArtifactToken UserGroups = ArtifactToken.valueOf(80920, "AAABGTAGNY8BauB5GajiIQ", "User Groups", COMMON, CoreArtifactTypes.Folder);
    public static ArtifactToken OseeTypesFolder = ArtifactToken.valueOf(7911256, "AKsESORrehN02WEfF9gA", "OSEE Types and Access Control", COMMON, CoreArtifactTypes.Folder);
+   public static ArtifactToken DataRightsFooters = ArtifactToken.valueOf(5443258, null, "DataRightsFooters",  COMMON,CoreArtifactTypes.GeneralData);
+   public static ArtifactToken DocumentTemplates = ArtifactToken.valueOf(64970, null, "Document Templates", COMMON, CoreArtifactTypes.Folder);
    // @formatter:on
 
    private CoreArtifactTokens() {
