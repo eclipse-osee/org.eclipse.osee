@@ -12,7 +12,7 @@
 package org.eclipse.osee.ats.editor.log;
 
 import org.eclipse.jface.action.ActionContributionItem;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;

@@ -16,8 +16,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.demo.populate.Pdd92CreateDemoReviews;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
-import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
-import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
+import org.eclipse.osee.ats.workflow.review.DecisionReviewState;
+import org.eclipse.osee.ats.workflow.review.PeerToPeerReviewState;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.actions.DuplicateWorkflowViaWorldEditorAction;
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
-import org.eclipse.osee.ats.core.client.actions.SelectedAtsArtifactsAdapter;
+import org.eclipse.osee.ats.actions.SelectedAtsArtifactsAdapter;
+import org.eclipse.osee.ats.client.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.junit.Test;
 

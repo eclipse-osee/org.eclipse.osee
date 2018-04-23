@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.task.TaskEditorProvider;
+import org.eclipse.osee.ats.workflow.task.TaskEditorProvider;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLevel;

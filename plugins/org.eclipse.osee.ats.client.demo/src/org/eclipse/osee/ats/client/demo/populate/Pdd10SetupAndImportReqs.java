@@ -21,7 +21,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.client.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.client.demo.internal.Activator;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
+import org.eclipse.osee.ats.util.AtsUtilClient;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;

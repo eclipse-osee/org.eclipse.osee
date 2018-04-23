@@ -20,8 +20,8 @@ import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 
 /**
  * @author Donald G. Dunne

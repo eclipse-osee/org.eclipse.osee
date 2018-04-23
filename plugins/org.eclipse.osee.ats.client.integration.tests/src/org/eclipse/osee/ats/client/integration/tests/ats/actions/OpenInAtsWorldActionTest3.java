@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 
 import org.eclipse.osee.ats.actions.OpenInAtsWorldAction;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
+import org.eclipse.osee.ats.client.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.junit.Test;
 

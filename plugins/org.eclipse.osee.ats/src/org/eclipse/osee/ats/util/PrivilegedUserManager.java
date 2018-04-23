@@ -17,10 +17,10 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 

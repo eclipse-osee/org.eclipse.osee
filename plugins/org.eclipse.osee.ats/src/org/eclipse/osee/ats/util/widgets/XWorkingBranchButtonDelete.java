@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
-import org.eclipse.osee.ats.util.AtsBranchManager;
+import org.eclipse.osee.ats.branch.AtsBranchManager;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;

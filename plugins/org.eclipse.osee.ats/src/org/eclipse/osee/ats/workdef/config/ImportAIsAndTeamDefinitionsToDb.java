@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
+import org.eclipse.osee.ats.config.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;

@@ -15,7 +15,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;

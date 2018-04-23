@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.country.CountryEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionActivityEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
-import org.eclipse.osee.ats.core.client.IAtsClient;
+import org.eclipse.osee.ats.util.IAtsClient;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;

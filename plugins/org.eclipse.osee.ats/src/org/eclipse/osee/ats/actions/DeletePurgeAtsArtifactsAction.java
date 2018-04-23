@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.util.AtsDeleteManager;
 import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;

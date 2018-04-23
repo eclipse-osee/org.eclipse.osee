@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
-import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
+import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.data.ArtifactId;

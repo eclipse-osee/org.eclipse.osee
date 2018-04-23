@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.actions;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.osee.ats.review.ReviewPerspective;
+import org.eclipse.osee.ats.workflow.review.ReviewPerspective;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 
 /**

@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
+import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.util.EmailGroup;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailWizard;
 

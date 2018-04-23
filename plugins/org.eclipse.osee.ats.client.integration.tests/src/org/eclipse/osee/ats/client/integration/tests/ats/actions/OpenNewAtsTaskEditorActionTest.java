@@ -16,7 +16,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction.IOpenNewAtsTaskEditorHandler;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.task.ITaskEditorProvider;
+import org.eclipse.osee.ats.workflow.task.ITaskEditorProvider;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

@@ -12,10 +12,10 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
+import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;

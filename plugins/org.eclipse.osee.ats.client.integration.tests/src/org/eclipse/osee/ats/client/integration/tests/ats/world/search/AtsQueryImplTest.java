@@ -31,19 +31,15 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoWorkType;
+import org.eclipse.osee.ats.util.IAtsClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -52,27 +48,6 @@ import org.junit.Test;
  * @author Donald G. Dunne
  */
 public class AtsQueryImplTest {
-
-   @BeforeClass
-   @AfterClass
-   public static void cleanup() throws Exception {
-      AtsTestUtil.cleanup();
-
-      IAtsClient client = AtsClientService.get();
-
-      Artifact wpArt =
-         (Artifact) AtsClientService.get().getQueryService().getArtifactByName(AtsArtifactTypes.WorkPackage,
-            "Work Pkg 01");
-      Conditions.checkNotNull(wpArt, "Work Package");
-      IAtsWorkPackage wp = client.getEarnedValueService().getWorkPackage(wpArt);
-
-      IAtsTeamWorkflow codeWf = AtsClientService.get().getWorkItemFactory().getTeamWf(
-         DemoTestUtil.getCommittedActionWorkflow(DemoWorkType.Code));
-      IAtsTask codeTask = (IAtsTask) AtsClientService.get().getQueryService().createQuery(WorkItemType.Task).andAttr(
-         CoreAttributeTypes.Name, "Create test plan").getItems().iterator().next();
-
-      client.getEarnedValueService().removeWorkPackage(wp, Arrays.asList(codeWf, codeTask));
-   }
 
    @Test
    public void test() {

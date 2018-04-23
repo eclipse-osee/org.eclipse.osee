@@ -6,6 +6,7 @@ Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.osee.ats.api,
+ org.eclipse.osee.ats.api.access,
  org.eclipse.osee.ats.api.agile,
  org.eclipse.osee.ats.api.agile.atw,
  org.eclipse.osee.ats.api.agile.kanban,

@@ -16,10 +16,10 @@ import org.eclipse.osee.ats.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.demo.api.DemoActionableItems;
 import org.eclipse.osee.ats.demo.api.DemoWorkType;
+import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -112,6 +112,8 @@ public class AtsBranchAccessManagerTest {
       teamArt.setAttributeValues(CoreAttributeTypes.AccessContextId,
          Arrays.asList(teamContextId1, teamContextId2, teamContextId3));
       teamArt.persist(getClass().getSimpleName());
+
+      AtsClientService.get().clearCaches();
 
       Assert.assertEquals(3, mgr.getContextId(teamArt.getWorkingBranch(), false).size());
    }

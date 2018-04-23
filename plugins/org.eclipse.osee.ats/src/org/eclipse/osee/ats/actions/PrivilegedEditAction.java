@@ -16,11 +16,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.PrivilegedUserManager;
 import org.eclipse.osee.ats.util.ReadOnlyHyperlinkListener;
+import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 

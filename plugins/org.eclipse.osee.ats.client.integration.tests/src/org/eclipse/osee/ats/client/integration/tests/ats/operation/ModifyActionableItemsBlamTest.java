@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.client.integration.tests.ats.operation;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.operation.ModifyActionableItemsBlam;
+import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.junit.After;
 import org.junit.Assert;

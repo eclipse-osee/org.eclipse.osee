@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.actions;
 
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**

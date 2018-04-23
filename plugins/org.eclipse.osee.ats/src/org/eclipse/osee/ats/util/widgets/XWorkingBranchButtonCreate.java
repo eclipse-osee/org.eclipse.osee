@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.util.widgets;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
+import org.eclipse.osee.ats.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.util.Result;

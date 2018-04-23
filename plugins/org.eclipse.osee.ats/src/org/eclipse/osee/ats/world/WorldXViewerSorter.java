@@ -17,9 +17,9 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.column.ChangeTypeColumnUI;
-import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.workflow.ChangeTypeUtil;
 
 /**
  * @author Donald G. Dunne

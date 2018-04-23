@@ -8,6 +8,20 @@
    <extension-point id="AtsHealthCheck" name="AtsHealthCheck" schema="OSEE-INF/extensionPts/AtsHealthCheck.exsd"/>
    <extension-point id="AtsAdvancedOperationAction" name="AtsAdvancedOperationAction" schema="OSEE-INF/extensionPts/AtsAdvancedOperationAction.exsd"/>
    <extension-point id="AtsWorkDefinitionSheetProvider" name="AtsWorkDefinitionSheetProvider" schema="OSEE-INF/extensionPts/AtsWorkDefinitionSheetProvider.exsd"/>
+   <extension-point id="AtsTransitionListener" name="AtsTransitionListener" schema="OSEE-INF/extensionPts/AtsTransitionListener.exsd"/>
+   <extension-point id="AtsXWidgetValidator" name="AtsXWidgetValidator" schema="OSEE-INF/extensionPts/AtsXWidgetValidator.exsd"/>
+   <extension-point id="AtsProgramManager" name="AtsProgramManager" schema="OSEE-INF/extensionPts/AtsProgramManager.exsd"/>
+   <extension-point id="AtsReviewProvider" name="AtsReviewProvider" schema="OSEE-INF/extensionPts/AtsReviewProvider.exsd"/>
+   <extension-point id="AtsStateItemCore" name="AtsStateItemCore" schema="OSEE-INF/extensionPts/AtsStateItemCore.exsd"/>
+   <extension point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
+      <ArtifactFactory classname="org.eclipse.osee.ats.workflow.AtsArtifactFactory"/>
+   </extension>
+   <extension
+         id="AtsArtifactChecks"
+         name="AtsArtifactChecks"
+         point="org.eclipse.osee.framework.skynet.core.ArtifactCheck">
+      <ArtifactCheck classname="org.eclipse.osee.ats.workflow.AtsArtifactChecks"/>
+   </extension>   
          <extension
          point="org.eclipse.ui.editors">
          <editor
@@ -18,7 +32,7 @@
             id="org.eclipse.osee.ats.editor.WorkflowEditor"
             name="ATS Workflow Editor"/>
          <editor
-               class="org.eclipse.osee.ats.task.TaskEditor"
+               class="org.eclipse.osee.ats.workflow.task.TaskEditor"
                default="false"
                icon="OSEE-INF/images/task.gif"
                id="org.eclipse.osee.ats.editor.TaskEditor"
@@ -72,7 +86,7 @@
          icon="OSEE-INF/images/osee_16.png">
    </perspective>
    <perspective
-         class="org.eclipse.osee.ats.review.ReviewPerspective"
+         class="org.eclipse.osee.ats.workflow.review.ReviewPerspective"
          icon="OSEE-INF/images/review.gif"
          id="org.eclipse.osee.ats.review.ReviewPerspective"
          name="Review">
@@ -118,7 +132,7 @@
     </view>
    <view
          category="org.eclipse.osee.ats.review.category"
-         class="org.eclipse.osee.ats.review.ReviewNavigateView"
+         class="org.eclipse.osee.ats.workflow.review.ReviewNavigateView"
          icon="OSEE-INF/images/review.gif"
          id="org.eclipse.osee.ats.review.ReviewNavigateView"
          name="ReviewNavigator">
@@ -168,7 +182,7 @@
       <Renderer classname="org.eclipse.osee.ats.workdef.editor.AtsWorkDefinitionDslRenderer"/>
       <Renderer classname="org.eclipse.osee.ats.workdef.editor.AtsRuleDefinitionDslRenderer"/>
       <Renderer
-            classname="org.eclipse.osee.ats.task.AtsTaskEditorRenderer">
+            classname="org.eclipse.osee.ats.workflow.task.AtsTaskEditorRenderer">
       </Renderer>
       <Renderer
             classname="org.eclipse.osee.ats.world.AtsWorldEditorRenderer">
@@ -287,7 +301,7 @@
             classname="org.eclipse.osee.ats.navigate.NavigateViewItems">
       </XCommonNavigateItem>
       <XCommonNavigateItem
-            classname="org.eclipse.osee.ats.review.ReviewNavigateViewItems">
+            classname="org.eclipse.osee.ats.workflow.review.ReviewNavigateViewItems">
       </XCommonNavigateItem>
    </extension>
    
@@ -364,7 +378,7 @@
       <extension
             id="AtsTransitionListener"
             name="AtsTransitionListener"
-            point="org.eclipse.osee.ats.core.client.AtsTransitionListener">
+            point="org.eclipse.osee.ats.AtsTransitionListener">
          <AtsTransitionListener
                classname="org.eclipse.osee.ats.editor.stateItem.AtsDecisionReviewPrepareStateItem">
          </AtsTransitionListener>

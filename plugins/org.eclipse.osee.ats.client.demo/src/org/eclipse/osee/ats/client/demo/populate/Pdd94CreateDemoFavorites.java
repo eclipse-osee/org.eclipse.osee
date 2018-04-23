@@ -11,10 +11,10 @@
 package org.eclipse.osee.ats.client.demo.populate;
 
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.ats.util.SubscribeManagerUI;
+import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;

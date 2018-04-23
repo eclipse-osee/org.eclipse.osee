@@ -16,9 +16,7 @@ import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.AtsClientIntegrationTestSuite;
 import org.eclipse.osee.ats.client.integration.tests.ats.AtsTest_Ats_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.actions.AtsTest_Action_Suite;
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsCoreClient_Suite;
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.review.AtsCoreClient_Review_Suite;
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.workflow.transition.TransitionManagerTest;
+import org.eclipse.osee.ats.client.integration.tests.ats.workflow.transition.TransitionManagerTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IdeClientSession;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -36,13 +34,11 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   AtsCoreClient_Suite.class,
    AtsTest_Ats_Suite.class,
    AtsClientServiceTest.class,
    // Long running tests at bottom for ease of development/re-run
    TransitionManagerTest.class,
-   AtsTest_Action_Suite.class,
-   AtsCoreClient_Review_Suite.class //
+   AtsTest_Action_Suite.class //
 })
 public class AtsTest_AllAts_Suite {
 

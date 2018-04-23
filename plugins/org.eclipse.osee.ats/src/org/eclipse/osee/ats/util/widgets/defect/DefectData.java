@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.util.widgets.defect;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectError;
-import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem;
+import org.eclipse.osee.ats.workflow.review.ReviewDefectItem;
+import org.eclipse.osee.ats.workflow.review.defect.ReviewDefectError;
 
 /**
  * @author Donald G. Dunne

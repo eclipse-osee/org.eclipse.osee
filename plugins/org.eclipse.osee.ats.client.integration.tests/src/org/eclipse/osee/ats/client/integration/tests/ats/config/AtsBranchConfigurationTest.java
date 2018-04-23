@@ -27,15 +27,15 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.branch.AtsBranchManager;
+import org.eclipse.osee.ats.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.config.AtsConfigOperation;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.ats.editor.WorkflowEditor;
-import org.eclipse.osee.ats.util.AtsBranchManager;
+import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -177,16 +177,14 @@ public class AtsBranchConfigurationTest {
       WorkflowEditor.edit(teamWf);
 
       // create branch
-      createBranch(namespace, teamWf);
+      BranchId workingBranch = createBranch(namespace, teamWf);
 
       // make changes
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Make new requirement artifact");
       }
-      Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(
-         ((TeamWorkFlowArtifact) teamWf.getStoreObject()).getWorkingBranch());
-      Artifact blk3MainArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement,
-         ((TeamWorkFlowArtifact) teamWf.getStoreObject()).getWorkingBranch(),
+      Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(workingBranch);
+      Artifact blk3MainArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch,
          BRANCH_VIA_VERSIONS.getName() + " Requirement");
       rootArtifact.addChild(blk3MainArt);
       blk3MainArt.persist(getClass().getSimpleName());
@@ -281,16 +279,14 @@ public class AtsBranchConfigurationTest {
       changes.execute();
 
       // create branch
-      createBranch(namespace, teamWf);
+      BranchId workingBranch = createBranch(namespace, teamWf);
 
       // make changes
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Make new requirement artifact");
       }
-      Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(
-         ((TeamWorkFlowArtifact) teamWf.getStoreObject()).getWorkingBranch());
-      Artifact blk3MainArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement,
-         ((TeamWorkFlowArtifact) teamWf.getStoreObject()).getWorkingBranch(),
+      Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(workingBranch);
+      Artifact blk3MainArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch,
          BRANCH_VIA_TEAM_DEFINITION.getName() + " Requirement");
       rootArtifact.addChild(blk3MainArt);
       blk3MainArt.persist(getClass().getSimpleName());
@@ -414,13 +410,17 @@ public class AtsBranchConfigurationTest {
       Operations.executeWorkAndCheckStatus(op);
    }
 
-   public static void createBranch(String namespace, IAtsTeamWorkflow teamWf) throws Exception {
+   public static BranchId createBranch(String namespace, IAtsTeamWorkflow teamWf) throws Exception {
       Result result = AtsBranchUtil.createWorkingBranch_Validate((TeamWorkFlowArtifact) teamWf.getStoreObject());
       if (result.isFalse()) {
          AWorkbench.popup(result);
-         return;
+         return BranchId.SENTINEL;
       }
       AtsBranchUtil.createWorkingBranch_Create(((TeamWorkFlowArtifact) teamWf), true);
+
+      BranchId workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamWf, true);
+      Assert.assertTrue("No working branch created", workingBranch.isValid());
+      return workingBranch;
    }
 
    @After

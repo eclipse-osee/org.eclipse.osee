@@ -21,10 +21,10 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.core.review.UserRoleManager;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.workflow.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.workflow.review.PeerToPeerReviewState;
 
 /**
  * @author Donald G. Dunne

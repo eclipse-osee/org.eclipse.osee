@@ -17,6 +17,9 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   AtsUsersTest.class,
+   AtsUserTest.class,
+   CopyActionDetailsTest.class,
    AtsProgramServiceTest.class,
    AtsNotifyEndpointImplTest.class,
    AtsChangeSetTest.class,

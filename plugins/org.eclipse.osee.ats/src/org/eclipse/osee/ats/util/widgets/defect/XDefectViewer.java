@@ -12,7 +12,7 @@
 package org.eclipse.osee.ats.util.widgets.defect;
 
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;

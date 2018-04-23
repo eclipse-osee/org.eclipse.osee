@@ -18,8 +18,8 @@ import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
-import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.workflow.review.AbstractReviewArtifact;
+import org.eclipse.osee.ats.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**

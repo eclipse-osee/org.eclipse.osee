@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
+import org.eclipse.osee.ats.client.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.config.copy.ConfigData;
 import org.eclipse.osee.ats.config.copy.CopyAtsConfigurationOperation;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;

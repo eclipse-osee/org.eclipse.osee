@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 import org.eclipse.osee.ats.actions.OpenInAtsWorldAction;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
+import org.eclipse.osee.ats.client.integration.tests.ats.workflow.AtsTestUtil;
 
 /**
  * @author Donald G. Dunne

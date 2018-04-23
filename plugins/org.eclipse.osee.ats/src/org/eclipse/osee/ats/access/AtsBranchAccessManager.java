@@ -20,14 +20,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.access.AtsBranchAccessContextId;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.client.access.AtsBranchAccessContextId;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.util.AtsUtilClient;
+import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
@@ -64,7 +64,7 @@ import org.osgi.service.event.EventHandler;
 public class AtsBranchAccessManager implements IArtifactEventListener, EventHandler {
 
    // Cache to store branch id to context id list so don't have to re-compute
-   private final Map<BranchId, Collection<IAccessContextId>> branchIdToContextIdCache = new HashMap<>(50);
+   private static final Map<BranchId, Collection<IAccessContextId>> branchIdToContextIdCache = new HashMap<>(50);
 
    private final RoleContextProvider roleContextProvider;
    private volatile long cacheUpdated = 0;
@@ -259,6 +259,10 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
       } catch (Exception ex) {
          OseeLog.log(AccessControlManager.class, Level.SEVERE, ex);
       }
+   }
+
+   public static void clearCaches() {
+      branchIdToContextIdCache.clear();
    }
 
 }

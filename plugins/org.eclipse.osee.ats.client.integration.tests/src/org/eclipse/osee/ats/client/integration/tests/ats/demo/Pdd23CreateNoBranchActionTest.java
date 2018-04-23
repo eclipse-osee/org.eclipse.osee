@@ -15,11 +15,11 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.demo.populate.Pdd23CreateNoBranchAction;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.ats.demo.api.DemoWorkflowTitles;
+import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 
 import org.eclipse.osee.ats.actions.OpenInArtifactEditorAction;
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
+import org.eclipse.osee.ats.client.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.junit.After;
 

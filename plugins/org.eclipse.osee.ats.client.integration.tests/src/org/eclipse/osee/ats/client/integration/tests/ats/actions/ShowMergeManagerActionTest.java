@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 
 import org.eclipse.osee.ats.actions.ShowMergeManagerAction;
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
+import org.eclipse.osee.ats.client.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;

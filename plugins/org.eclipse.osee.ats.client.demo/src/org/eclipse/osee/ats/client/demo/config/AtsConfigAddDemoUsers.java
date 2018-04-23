@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.client.demo.config;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.core.client.util.AtsGroup;
+import org.eclipse.osee.ats.util.AtsGroup;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;

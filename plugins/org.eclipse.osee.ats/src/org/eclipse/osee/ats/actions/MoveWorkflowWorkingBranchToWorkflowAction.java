@@ -17,7 +17,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;

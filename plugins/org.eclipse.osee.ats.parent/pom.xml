@@ -31,8 +31,6 @@
 				<module>../../plugins/org.eclipse.osee.ats.mocks</module>
 				<module>../../plugins/org.eclipse.osee.ats.help.ui</module>
 				<module>../../plugins/org.eclipse.osee.ats</module>
-				<module>../../plugins/org.eclipse.osee.ats.core.client</module>
-				<module>../../plugins/org.eclipse.osee.ats.core.client.test</module>
 				<module>../../plugins/org.eclipse.osee.ats.dsl.ui</module>
 
 				<module>../../plugins/org.eclipse.osee.ats.client.demo</module>
@@ -59,8 +57,6 @@
 				<module>../../plugins/org.eclipse.osee.ats.mocks</module>
 				<module>../../plugins/org.eclipse.osee.ats.help.ui</module>
 				<module>../../plugins/org.eclipse.osee.ats</module>
-				<module>../../plugins/org.eclipse.osee.ats.core.client</module>
-				<module>../../plugins/org.eclipse.osee.ats.core.client.test</module>
 				<module>../../plugins/org.eclipse.osee.ats.dsl.ui</module>
 
 				<module>../../plugins/org.eclipse.osee.ats.client.demo</module>

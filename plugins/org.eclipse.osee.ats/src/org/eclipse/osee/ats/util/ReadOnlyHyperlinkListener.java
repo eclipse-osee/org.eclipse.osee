@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;

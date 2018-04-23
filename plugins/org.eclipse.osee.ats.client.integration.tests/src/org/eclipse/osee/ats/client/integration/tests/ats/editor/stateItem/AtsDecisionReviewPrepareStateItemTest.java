@@ -17,11 +17,11 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil.AtsTestUtilState;
-import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
-import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
+import org.eclipse.osee.ats.client.integration.tests.ats.workflow.AtsTestUtil;
+import org.eclipse.osee.ats.client.integration.tests.ats.workflow.AtsTestUtil.AtsTestUtilState;
 import org.eclipse.osee.ats.editor.stateItem.AtsDecisionReviewPrepareStateItem;
+import org.eclipse.osee.ats.workflow.review.DecisionReviewArtifact;
+import org.eclipse.osee.ats.workflow.review.DecisionReviewState;
 import org.junit.Assert;
 import org.junit.Test;
 

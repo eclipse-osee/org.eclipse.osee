@@ -12,10 +12,10 @@ package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.branch.AtsBranchManager;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsBranchManager;
+import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;

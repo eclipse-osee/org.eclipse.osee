@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.Import.ImportTasksFromSpreadsheet;
+import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;

@@ -16,12 +16,12 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.client.task.TaskArtifact;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
+import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.workflow.task.TaskArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 

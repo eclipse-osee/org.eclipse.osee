@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.actions.AddNoteAction;
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
+import org.eclipse.osee.ats.client.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.support.test.util.TestUtil;

@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.notify;
 
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
+import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 
 /**
  * @author Donald G. Dunne

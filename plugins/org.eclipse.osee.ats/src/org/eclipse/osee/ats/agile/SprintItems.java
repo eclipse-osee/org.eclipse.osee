@@ -16,8 +16,8 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 

@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 
 /**

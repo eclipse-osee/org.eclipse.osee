@@ -16,9 +16,9 @@ import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.client.task.TaskArtifact;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.AtsEditors;
+import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.workflow.task.TaskArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**

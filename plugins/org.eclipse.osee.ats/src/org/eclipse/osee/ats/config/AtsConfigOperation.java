@@ -206,6 +206,10 @@ public class AtsConfigOperation extends AbstractOperation {
          Artifact workDefArt = null;
          try {
             String workDefXml = AtsClientService.get().getWorkDefinitionService().getStorageString(workDef, resultData);
+            if (resultData.isErrors()) {
+               throw new OseeStateException("Error getting store string for WorkDef [%s]: Errors %s", workDef.getName(),
+                  resultData.toString());
+            }
             workDefArt = AtsWorkDefinitionImporter.get().importWorkDefinitionToDb(workDefXml, workDef.getName(), name,
                resultData, null, null, changes);
             Artifact folder =

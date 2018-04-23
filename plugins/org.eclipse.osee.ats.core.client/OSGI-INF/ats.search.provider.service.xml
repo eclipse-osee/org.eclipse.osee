@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true">
-   <implementation class="org.eclipse.osee.ats.core.client.internal.query.AtsDefaultSearchDataProvider"/>
-   <service>
-      <provide interface="org.eclipse.osee.ats.api.query.IAtsSearchDataProvider"/>
-   </service>
-</scr:component>

@@ -12,9 +12,9 @@ package org.eclipse.osee.ats.client.integration.tests.ats.editor;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.Arrays;
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.client.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.editor.WfeEditorAddSupportingArtifacts;
+import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

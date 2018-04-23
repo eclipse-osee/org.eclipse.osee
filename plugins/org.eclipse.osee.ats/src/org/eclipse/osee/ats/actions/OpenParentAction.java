@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.actions;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsOpenOption;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.AtsEditors;
+import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**

@@ -12,15 +12,15 @@ package org.eclipse.osee.ats.editor.widget;
 
 import java.util.Collections;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.core.client.review.ReviewManager;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.editor.WfePromptChangeStatus;
 import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
+import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.workflow.review.ReviewManager;
+import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelection;

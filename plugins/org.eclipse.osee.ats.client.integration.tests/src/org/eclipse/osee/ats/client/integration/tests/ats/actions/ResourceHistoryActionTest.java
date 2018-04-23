@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
+import org.eclipse.osee.ats.client.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;

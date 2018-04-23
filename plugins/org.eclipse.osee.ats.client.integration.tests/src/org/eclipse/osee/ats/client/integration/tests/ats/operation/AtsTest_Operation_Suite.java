@@ -19,7 +19,7 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ModifyActionableItemsBlamTest.class})
+@Suite.SuiteClasses({ModifyActionableItemsBlamTest.class, MoveTeamWorkflowsOperationTest.class})
 public class AtsTest_Operation_Suite {
 
    @BeforeClass

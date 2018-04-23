@@ -14,10 +14,10 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.demo.populate.Pdd90CreateDemoTasks;
-import org.eclipse.osee.ats.core.client.task.TaskArtifact;
-import org.eclipse.osee.ats.core.client.task.TaskStates;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
+import org.eclipse.osee.ats.workflow.task.TaskArtifact;
+import org.eclipse.osee.ats.workflow.task.TaskStates;
+import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.junit.Assert;
 import org.junit.Test;
 

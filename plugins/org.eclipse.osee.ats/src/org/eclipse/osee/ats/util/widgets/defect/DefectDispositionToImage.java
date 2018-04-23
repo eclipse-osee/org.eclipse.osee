@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.util.widgets.defect;
 
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Disposition;
+import org.eclipse.osee.ats.workflow.review.ReviewDefectItem.Disposition;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;

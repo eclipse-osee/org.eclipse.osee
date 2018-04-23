@@ -14,7 +14,7 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;

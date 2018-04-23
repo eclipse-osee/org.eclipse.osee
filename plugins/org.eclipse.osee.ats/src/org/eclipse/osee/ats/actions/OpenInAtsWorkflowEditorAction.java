@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsOpenOption;
-import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;

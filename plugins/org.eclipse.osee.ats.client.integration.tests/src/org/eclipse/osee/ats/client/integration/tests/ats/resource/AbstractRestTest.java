@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import org.codehaus.jackson.JsonNode;
-import org.eclipse.osee.ats.core.client.workflow.WorkItemsJsonReader;
+import org.eclipse.osee.ats.workflow.WorkItemsJsonReader;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.JsonUtil;

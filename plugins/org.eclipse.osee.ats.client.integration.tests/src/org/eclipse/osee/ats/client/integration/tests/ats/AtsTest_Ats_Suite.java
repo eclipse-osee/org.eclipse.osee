@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats;
 
 import org.eclipse.osee.ats.client.integration.tests.ats.access.AtsTest_Access_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.agile.AtsTest_Agile_Suite;
+import org.eclipse.osee.ats.client.integration.tests.ats.branch.AtsTest_Branch_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.column.AtsTest_Column_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.config.AtsTest_Config_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.dialog.AtsTest_Dialog_Suite;
@@ -23,7 +24,6 @@ import org.eclipse.osee.ats.client.integration.tests.ats.navigate.AtsTest_Naviga
 import org.eclipse.osee.ats.client.integration.tests.ats.operation.AtsTest_Operation_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.render.AtsTest_Renderer_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.resource.AtsTest_Resource_Suite;
-import org.eclipse.osee.ats.client.integration.tests.ats.review.AtsTest_Review_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.util.AtsTest_Util_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.version.AtsTest_Version_Search_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.workflow.AtsTest_Workflow_Suite;
@@ -41,6 +41,7 @@ import org.junit.runners.Suite;
    AtsTest_Access_Suite.class,
    // Note: AtsTest_Action_Suite in parent suite
    AtsTest_Agile_Suite.class,
+   AtsTest_Branch_Suite.class,
    AtsTest_Column_Suite.class,
    AtsTest_Config_Suite.class,
    AtsTest_Dialog_Suite.class,
@@ -52,7 +53,6 @@ import org.junit.runners.Suite;
    AtsTest_Operation_Suite.class,
    AtsTest_Renderer_Suite.class,
    AtsTest_Resource_Suite.class,
-   AtsTest_Review_Suite.class,
    AtsTest_Util_Suite.class,
    AtsTest_Workflow_Suite.class,
    AtsTest_World_Search_Suite.class,

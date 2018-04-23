@@ -14,8 +14,8 @@ import java.util.List;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
+import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.client.integration.tests.ats.column;
 
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.column.GroupsColumn;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.demo.api.DemoWorkType;
+import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.support.test.util.TestUtil;

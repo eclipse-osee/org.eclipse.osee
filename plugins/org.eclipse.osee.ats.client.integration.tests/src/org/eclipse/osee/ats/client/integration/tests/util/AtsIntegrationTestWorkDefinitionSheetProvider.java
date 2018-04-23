@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.client.integration.tests.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.review.DecisionReviewDefinitionManagerTest;
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.review.PeerReviewDefinitionManagerTest;
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.workflow.transition.TransitionManagerTest;
+import org.eclipse.osee.ats.client.integration.tests.ats.workflow.review.DecisionReviewDefinitionManagerTest;
+import org.eclipse.osee.ats.client.integration.tests.ats.workflow.review.PeerReviewDefinitionManagerTest;
+import org.eclipse.osee.ats.client.integration.tests.ats.workflow.transition.TransitionManagerTest;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.workdef.IAtsWorkDefinitionSheetProvider;
 

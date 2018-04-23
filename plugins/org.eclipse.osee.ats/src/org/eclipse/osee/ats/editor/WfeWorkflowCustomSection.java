@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
+import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.swt.widgets.Composite;
 
 /**

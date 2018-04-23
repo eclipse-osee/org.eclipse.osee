@@ -13,8 +13,10 @@ package org.eclipse.osee.ats.internal;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
+import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
-import org.eclipse.osee.ats.core.client.IAtsClient;
+import org.eclipse.osee.ats.util.IAtsClient;
+import org.eclipse.osee.ats.workflow.WorkItemJsonReader;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
@@ -32,6 +34,7 @@ public class AtsClientService {
    private static AgileEndpointApi agileEp;
    private static AtsWorkPackageEndpointApi workPackageEp;
    private static TupleEndpoint atsBranchTupleEndpoint;
+   private static AtsNotifyEndpointApi notifyEp;
 
    public void setAtsClient(IAtsClient atsClient) {
       AtsClientService.atsClient = atsClient;
@@ -46,9 +49,16 @@ public class AtsClientService {
          String appServer = OseeClientProperties.getOseeApplicationServer();
          String atsUri = String.format("%s/ats", appServer);
          JaxRsClient jaxRsClient = JaxRsClient.newBuilder().createThreadSafeProxyClients(true).build();
-         target = jaxRsClient.target(atsUri);
+         target = jaxRsClient.target(atsUri).register(WorkItemJsonReader.class);
       }
       return target;
+   }
+
+   public static AtsNotifyEndpointApi getNotifyEndpoint() {
+      if (notifyEp == null) {
+         notifyEp = getAtsTarget().newProxy(AtsNotifyEndpointApi.class);
+      }
+      return notifyEp;
    }
 
    public static AtsTaskEndpointApi getTaskEp() {
@@ -58,6 +68,9 @@ public class AtsClientService {
       return taskEp;
    }
 
+   /**
+    * This should not be used unless configurations are being updated. Use AtsApi.getConfigurations
+    */
    public static AtsConfigEndpointApi getConfigEndpoint() {
       if (configEp == null) {
          configEp = getAtsTarget().newProxy(AtsConfigEndpointApi.class);

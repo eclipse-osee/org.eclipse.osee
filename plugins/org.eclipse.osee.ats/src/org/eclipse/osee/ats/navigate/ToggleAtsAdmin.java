@@ -11,10 +11,10 @@
 package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.util.AtsGroup;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;

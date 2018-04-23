@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
+import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactId;

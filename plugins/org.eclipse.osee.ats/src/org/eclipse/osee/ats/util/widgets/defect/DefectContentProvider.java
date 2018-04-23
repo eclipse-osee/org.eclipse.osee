@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem;
+import org.eclipse.osee.ats.workflow.review.ReviewDefectItem;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.swt.Displays;
 

@@ -15,8 +15,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.column.DeadlineColumn;
 import org.eclipse.osee.ats.column.EstimatedCompletionDateColumn;
 import org.eclipse.osee.ats.column.EstimatedReleaseDateColumn;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 

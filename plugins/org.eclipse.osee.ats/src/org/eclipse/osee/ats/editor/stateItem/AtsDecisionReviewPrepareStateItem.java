@@ -19,8 +19,8 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.workflow.review.DecisionReviewState;
 
 /**
  * @author Donald G. Dunne
