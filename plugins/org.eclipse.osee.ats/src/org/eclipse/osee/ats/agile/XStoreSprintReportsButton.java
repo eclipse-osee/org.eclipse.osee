@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
+import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButton;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -86,7 +86,7 @@ public class XStoreSprintReportsButton extends XButton implements IArtifactWidge
             stored.setArtifact((Artifact) sprint.getStoreObject());
             stored.openExternally();
 
-            ArtifactExplorer.revealArtifact((Artifact) sprint.getStoreObject(), true);
+            ArtifactExplorerUtil.revealArtifact((Artifact) sprint.getStoreObject());
 
             AWorkbench.popup("Reports opened in browser");
 

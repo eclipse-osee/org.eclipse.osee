@@ -15,7 +15,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
+import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerUtil;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 public class RevealInExplorerAction extends Action {
@@ -39,7 +39,7 @@ public class RevealInExplorerAction extends Action {
 
    @Override
    public void run() {
-      ArtifactExplorer.revealArtifact(selectedArtifact.getSelectedArtifact());
+      ArtifactExplorerUtil.revealArtifact(selectedArtifact.getSelectedArtifact());
    }
 
    @Override

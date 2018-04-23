@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.explorer;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -36,17 +37,21 @@ class CheckArtifactBeforeReveal extends AbstractOperation {
 
       Artifact artifact = artifactData.getArtifact();
       Conditions.checkNotNull(artifact, "artifact");
-      if (artifact.isDeleted()) {
-         throw new OseeStateException("The artifact [%s] has been deleted.", artifact.getName());
-      } else {
-         if (artifact.isHistorical()) {
-            artifactData.setArtifact(ArtifactQuery.getArtifactFromToken(artifact));
-         }
 
-         if (artifact.isNotRootedInDefaultRoot()) {
-            throw new OseeStateException("Artifact [%s] is not rooted in the default hierarchical root",
-               artifact.getName());
-         }
+      Artifact toUse = artifact;
+      if (artifact.isHistorical()) {
+         toUse = ArtifactQuery.getArtifactFromToken(artifact, DeletionFlag.INCLUDE_DELETED);
       }
+
+      Conditions.checkNotNull(toUse, "artifact");
+
+      if (toUse.isDeleted()) {
+         throw new OseeStateException("The artifact [%s] has been deleted.", artifact.getName());
+      }
+      if (toUse.isNotRootedInDefaultRoot()) {
+         throw new OseeStateException("Artifact [%s] is not rooted in the default hierarchical root",
+            artifact.getName());
+      }
+      artifactData.setArtifact(toUse);
    }
 }

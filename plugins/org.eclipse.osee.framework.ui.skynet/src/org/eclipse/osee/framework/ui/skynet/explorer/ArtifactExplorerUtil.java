@@ -127,7 +127,7 @@ public class ArtifactExplorerUtil {
       });
    }
 
-   public static void revealArtifact(final ArtifactExplorer artifactExplorer, Artifact artifact) {
+   public static void revealArtifact(Artifact artifact) {
       final ArtifactData data = new ArtifactData(artifact);
       IOperation operation = new CheckArtifactBeforeReveal(data);
       Operations.executeAsJob(operation, true, Job.SHORT, new JobChangeAdapter() {
@@ -144,6 +144,7 @@ public class ArtifactExplorerUtil {
                      IWorkbenchPage page = AWorkbench.getActivePage();
                      ArtifactExplorer artifactExplorer = ArtifactExplorerUtil.findView(artifact.getBranch(), page);
                      artifactExplorer.getTreeViewer().setSelection(new StructuredSelection(artifact), true);
+                     artifactExplorer.getTreeViewer().expandToLevel(artifact, 1);
                      return Status.OK_STATUS;
                   }
                };

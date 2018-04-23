@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler
 import org.eclipse.osee.framework.ui.plugin.util.Commands;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
-import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
+import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
@@ -331,7 +331,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
       IHandler handler = new MenuSelectionEnabledHandler(menuManager) {
          @Override
          public void executeWithException(AttributeConflict attributeConflict) {
-            ArtifactExplorer.revealArtifact(attributeConflict.getSourceArtifact());
+            ArtifactExplorerUtil.revealArtifact(attributeConflict.getSourceArtifact());
          }
       };
       handlerService.activateHandler(addSourceRevealMenuItem(menuManager, handler), handler);
@@ -341,7 +341,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
       IHandler handler = new MenuSelectionEnabledHandler(menuManager) {
          @Override
          public void executeWithException(AttributeConflict attributeConflict) {
-            ArtifactExplorer.revealArtifact(attributeConflict.getDestArtifact());
+            ArtifactExplorerUtil.revealArtifact(attributeConflict.getDestArtifact());
          }
       };
       handlerService.activateHandler(addDestRevealMenuItem(menuManager, handler), handler);

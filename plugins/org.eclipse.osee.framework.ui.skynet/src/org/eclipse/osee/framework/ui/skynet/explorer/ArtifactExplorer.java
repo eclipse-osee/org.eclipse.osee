@@ -16,29 +16,19 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -89,7 +79,6 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.progress.UIJob;
 
 /**
  * @author Ryan D. Brooks
@@ -439,45 +428,6 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    @Override
    public BranchId getBranch() {
       return branch;
-   }
-
-   /**
-    * Reveal an artifact in the viewer and select it.
-    */
-   public static void revealArtifact(Artifact artifact) {
-      revealArtifact(artifact, false);
-   }
-
-   /**
-    * Reveal an artifact in the viewer and select it.
-    */
-   public static void revealArtifact(Artifact artifact, final boolean expand) {
-
-      final ArtifactData data = new ArtifactData(artifact);
-      IOperation operation = new CheckArtifactBeforeReveal(data);
-      Operations.executeAsJob(operation, true, Job.SHORT, new JobChangeAdapter() {
-
-         @Override
-         public void done(IJobChangeEvent event) {
-            IStatus status = event.getResult();
-            if (status.isOK()) {
-               Job uiJob = new UIJob("Reveal in Artifact Explorer") {
-
-                  @Override
-                  public IStatus runInUIThread(IProgressMonitor monitor) {
-                     Artifact artifact = data.getArtifact();
-                     IWorkbenchPage page = AWorkbench.getActivePage();
-                     ArtifactExplorer artifactExplorer = ArtifactExplorerUtil.findView(artifact.getBranch(), page);
-                     artifactExplorer.treeViewer.setSelection(new StructuredSelection(artifact), true);
-                     artifactExplorer.treeViewer.expandToLevel(artifact, 1);
-                     return Status.OK_STATUS;
-                  }
-               };
-               Jobs.startJob(uiJob);
-            }
-         }
-      });
-
    }
 
    @Override

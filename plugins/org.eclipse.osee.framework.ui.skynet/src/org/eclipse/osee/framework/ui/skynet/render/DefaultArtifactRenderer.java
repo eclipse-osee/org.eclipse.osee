@@ -47,7 +47,7 @@ import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
+import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.compare.DefaultArtifactCompare;
@@ -256,7 +256,7 @@ public class DefaultArtifactRenderer implements IRenderer {
                }
             } else if (OPEN_IN_EXPLORER.equals(openOption)) {
                for (Artifact artifact : artifacts) {
-                  ArtifactExplorer.revealArtifact(artifact);
+                  ArtifactExplorerUtil.revealArtifact(artifact);
                }
             } else if (OPEN_IN_TABLE_EDITOR.equals(openOption)) {
                MassArtifactEditor.editArtifacts("", artifacts);

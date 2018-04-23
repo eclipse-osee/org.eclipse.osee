@@ -58,6 +58,7 @@ import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.dialogs.ArtifactPasteSpecialDialog;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerLinkNode;
+import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTreeViewerGlobalMenuHelper;
@@ -533,7 +534,7 @@ public class ArtifactExplorerMenu {
             if (branch != null) {
                for (Artifact artifact : getSelection().toList()) {
                   try {
-                     ArtifactExplorer.revealArtifact(ArtifactQuery.getArtifactFromId(artifact, branch));
+                     ArtifactExplorerUtil.revealArtifact(ArtifactQuery.getArtifactFromId(artifact, branch));
                   } catch (OseeCoreException ex) {
                      OseeLog.logf(Activator.class, OseeLevel.SEVERE_POPUP,
                         "Could not find Artifact \'%s\' on Branch \'%s\'", artifact.getName(), branch);

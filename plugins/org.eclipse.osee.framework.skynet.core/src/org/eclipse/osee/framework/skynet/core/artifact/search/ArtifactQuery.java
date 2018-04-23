@@ -83,6 +83,9 @@ public class ArtifactQuery {
       return getOrCheckArtifactFromId(artifactToken, artifactToken.getBranch(), deletionFlag, QueryType.CHECK);
    }
 
+   /**
+    * @return artifact unless it's been deleted
+    */
    public static <T extends ArtifactId & HasBranch> Artifact getArtifactFromToken(T artifactToken) {
       return getOrCheckArtifactFromId(artifactToken, artifactToken.getBranch(), EXCLUDE_DELETED, QueryType.GET);
    }
