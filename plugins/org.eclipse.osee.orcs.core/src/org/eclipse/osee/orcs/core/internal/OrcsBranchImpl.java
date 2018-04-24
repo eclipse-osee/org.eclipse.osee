@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -130,6 +131,11 @@ public class OrcsBranchImpl implements OrcsBranch {
       TransactionToken fromTx = queryFactory.transactionQuery().andTxId(baseTransaction).getResults().getExactlyOne();
       TransactionToken toTx = queryFactory.transactionQuery().andIsHead(branch).getResults().getExactlyOne();
       return branchStore.compareBranch(session, fromTx, toTx, queryFactory.applicabilityQuery());
+   }
+
+   @Override
+   public void setBranchPermission(ArtifactId subject, BranchId branch, PermissionEnum permission) {
+      branchStore.setBranchPermission(subject, branch, permission);
    }
 
    @Override

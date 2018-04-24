@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.CompareResults;
 
 /**
@@ -157,6 +158,10 @@ public interface BranchEndpoint {
    @PUT
    @Path("{branch}/state/{branch-state}")
    Response setBranchState(@PathParam("branch") BranchId branch, @PathParam("branch-state") BranchState newState);
+
+   @POST
+   @Path("{branch}/permission/{permission}/{subject}")
+   void setBranchPermission(@PathParam("subject") ArtifactId subject, @PathParam("branch") BranchId branch, @PathParam("permission") PermissionEnum permission);
 
    @PUT
    @Path("{branch}/associated-artifact/{art-id}")

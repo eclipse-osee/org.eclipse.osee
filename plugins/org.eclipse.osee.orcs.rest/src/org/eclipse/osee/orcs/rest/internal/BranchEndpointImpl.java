@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.CompareResults;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -549,6 +550,11 @@ public class BranchEndpointImpl implements BranchEndpoint {
          }
       }
       return asResponse(modified);
+   }
+
+   @Override
+   public void setBranchPermission(ArtifactId subject, BranchId branch, PermissionEnum permission) {
+      orcsApi.getBranchOps().setBranchPermission(subject, branch, permission);
    }
 
    @Override

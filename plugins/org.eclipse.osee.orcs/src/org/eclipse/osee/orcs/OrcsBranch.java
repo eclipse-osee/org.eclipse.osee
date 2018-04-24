@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
@@ -58,6 +59,8 @@ public interface OrcsBranch {
    Callable<Branch> createPortBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact);
 
    /////////////////////////////////////////////////////////////////////////
+
+   void setBranchPermission(ArtifactId subject, BranchId branch, PermissionEnum permission);
 
    Callable<Void> changeBranchState(BranchId branch, BranchState branchState);
 

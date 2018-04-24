@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -57,6 +58,12 @@ import org.eclipse.osee.orcs.search.ApplicabilityQuery;
  * @author Roberto E. Escobar
  */
 public class BranchModule {
+   private final String INSERT_INTO_BRANCH_ACL =
+      "INSERT INTO OSEE_BRANCH_ACL (permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?)";
+   private final String UPDATE_BRANCH_ACL =
+      "UPDATE OSEE_BRANCH_ACL SET permission_id = ? WHERE privilege_entity_id = ? AND branch_id = ?";
+   private final String GET_BRANCH_PERMISSION =
+      "SELECT permission_id FROM osee_branch_acl WHERE privilege_entity_id = ? AND branch_id = ?";
 
    private static final String COPY_APPLIC =
       "INSERT INTO osee_txs (branch_id, gamma_id, transaction_id, tx_current, mod_type, app_id)\n" + "with cte as (select branch_id as chid, baseline_transaction_id as chtx, parent_branch_id as pid from osee_branch where branch_id = ?)\n" + "select chid, txsP.gamma_id, chtx, tx_current, mod_type, app_id from cte, osee_tuple2 t2, osee_txs txsP where tuple_type = 2 and t2.gamma_id = txsP.gamma_id and txsP.branch_id = pid and txsP.tx_current =1 and not exists (select 1 from osee_txs txsC where txsC.branch_id = chid and txsC.gamma_id = txsP.gamma_id)";
@@ -172,6 +179,13 @@ public class BranchModule {
             CompositeDatastoreTxCallable composite =
                new CompositeDatastoreTxCallable(logger, session, jdbcClient, deleteBranch, archiveBranch);
             return composite;
+         }
+
+         @Override
+         public void setBranchPermission(ArtifactId subject, BranchId branch, PermissionEnum permission) {
+            int existingPermission = jdbcClient.fetch(-1, GET_BRANCH_PERMISSION, subject, branch);
+            String sql = existingPermission == -1 ? INSERT_INTO_BRANCH_ACL : UPDATE_BRANCH_ACL;
+            jdbcClient.runPreparedUpdate(sql, permission.getPermId(), subject, branch);
          }
 
       };

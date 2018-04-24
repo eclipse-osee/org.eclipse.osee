@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -63,4 +64,5 @@ public interface BranchDataStore {
 
    Callable<Void> deleteBranch(OrcsSession session, BranchId branch);
 
+   void setBranchPermission(ArtifactId subject, BranchId branch, PermissionEnum permission);
 }

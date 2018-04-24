@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.access.AccessControlData;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.access.AccessObject;
 import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
 import org.eclipse.osee.framework.access.internal.data.BranchAccessObject;
@@ -51,6 +52,7 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -81,6 +83,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -94,13 +97,9 @@ public class AccessControlService implements IAccessControlService {
 
    private final String INSERT_INTO_ARTIFACT_ACL =
       "INSERT INTO OSEE_ARTIFACT_ACL (art_id, permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?, ?)";
-   private final String INSERT_INTO_BRANCH_ACL =
-      "INSERT INTO OSEE_BRANCH_ACL (permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?)";
 
    private final String UPDATE_ARTIFACT_ACL =
       "UPDATE OSEE_ARTIFACT_ACL SET permission_id = ? WHERE privilege_entity_id =? AND art_id = ? AND branch_id = ?";
-   private final String UPDATE_BRANCH_ACL =
-      "UPDATE OSEE_BRANCH_ACL SET permission_id = ? WHERE privilege_entity_id =? AND branch_id = ?";
 
    private final String GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST =
       "SELECT aac1.*, art1.art_type_id FROM osee_artifact art1, osee_artifact_acl aac1 WHERE art1.art_id = aac1.privilege_entity_id";
@@ -484,7 +483,9 @@ public class AccessControlService implements IAccessControlService {
 
          BranchAccessObject branchAccessObject = (BranchAccessObject) data.getObject();
 
-         persistPermissionForBranch(data, branchAccessObject, recurse, null);
+         OsgiUtil.getService(AccessControlManager.class, OseeClient.class).getBranchEndpoint().setBranchPermission(
+            data.getSubject(), branchAccessObject.getBranch(), data.getPermission());
+
          cacheAccessControlData(data);
 
          AccessTopicEventPayload event = new AccessTopicEventPayload();
@@ -540,24 +541,6 @@ public class AccessControlService implements IAccessControlService {
                }
             }
 
-         } catch (OseeCoreException ex) {
-            OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
-         }
-      }
-   }
-
-   private void persistPermissionForBranch(AccessControlData data, BranchAccessObject branchAccessObject, boolean recurse, AccessTopicEventPayload event) {
-      ensurePopulated();
-      if (data.isDirty()) {
-         data.setNotDirty();
-         try {
-            if (data.isBirth()) {
-               getJdbcClient().runPreparedUpdate(INSERT_INTO_BRANCH_ACL, data.getPermission().getPermId(),
-                  data.getSubject().getArtId(), branchAccessObject.getBranch());
-            } else {
-               getJdbcClient().runPreparedUpdate(UPDATE_BRANCH_ACL, data.getPermission().getPermId(),
-                  data.getSubject().getArtId(), branchAccessObject.getBranch());
-            }
          } catch (OseeCoreException ex) {
             OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
          }
