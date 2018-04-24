@@ -85,7 +85,7 @@ public class SafetyWorkflowEventHandler implements EventHandler {
                   workflowId).getResults().getExactlyOne();
             IAtsTeamWorkflow safetyWf = getSafetyWorkflow(assocArt);
             if (safetyWf == null) {
-               IAtsTeamWorkflow teamWf = atsServer.getWorkItemFactory().getTeamWf(assocArt);
+               IAtsTeamWorkflow teamWf = atsServer.getWorkItemService().getTeamWf(assocArt);
                safetyWf = createSafetyAction(teamWf, (ArtifactId) userArt);
             }
          }
@@ -110,7 +110,7 @@ public class SafetyWorkflowEventHandler implements EventHandler {
       IAtsTeamWorkflow safetyWorkflow = null;
       ArtifactReadable safetyActionableItemArt =
          (ArtifactReadable) atsServer.getQueryService().getArtifact(AtsArtifactToken.SafetyActionableItem);
-      IAtsTeamWorkflow teamWf = atsServer.getWorkItemFactory().getTeamWf(workflowArt);
+      IAtsTeamWorkflow teamWf = atsServer.getWorkItemService().getTeamWf(workflowArt);
       IAtsActionableItem actionableItem = atsServer.getConfigItemFactory().getActionableItem(safetyActionableItemArt);
       for (IAtsTeamWorkflow sibling : atsServer.getActionFactory().getSiblingTeamWorkflows(teamWf)) {
          if (sibling.getActionableItems().contains(actionableItem)) {

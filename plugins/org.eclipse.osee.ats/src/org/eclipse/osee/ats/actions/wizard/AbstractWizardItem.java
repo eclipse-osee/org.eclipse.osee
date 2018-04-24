@@ -248,7 +248,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
          List<IAgileSprint> sprints = new LinkedList<>();
          for (ArtifactToken sprintArt : atsApi.getRelationResolver().getRelated(agileTeam,
             AtsRelationTypes.AgileTeamToSprint_Sprint)) {
-            IAgileSprint sprint = atsApi.getWorkItemFactory().getAgileSprint(sprintArt);
+            IAgileSprint sprint = atsApi.getWorkItemService().getAgileSprint(sprintArt);
             if (sprint.isInWork()) {
                sprints.add(sprint);
             }

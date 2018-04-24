@@ -139,7 +139,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public IAtsAction getParentAction() {
       Artifact actionArt = getParentActionArtifact();
       if (actionArt != null) {
-         return AtsClientService.get().getWorkItemFactory().getAction(actionArt);
+         return AtsClientService.get().getWorkItemService().getAction(actionArt);
       }
       return null;
    }

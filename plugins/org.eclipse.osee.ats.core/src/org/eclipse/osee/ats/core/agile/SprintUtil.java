@@ -116,7 +116,7 @@ public class SprintUtil {
 
    public static AgileItem getAgileItem(IAgileItem aItem, AtsApi atsApi) {
       AgileItem item = new AgileItem();
-      IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem(aItem.getStoreObject());
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(aItem.getStoreObject());
       item.setName(aItem.getName());
       item.setFeatureGroups(Collections.toString("; ", atsApi.getAgileService().getFeatureGroups(aItem)));
       item.setId(aItem.getId());

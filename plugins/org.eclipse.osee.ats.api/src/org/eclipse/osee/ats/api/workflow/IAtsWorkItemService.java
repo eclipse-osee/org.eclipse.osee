@@ -13,6 +13,9 @@ package org.eclipse.osee.ats.api.workflow;
 import java.util.Collection;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.IAgileBacklog;
+import org.eclipse.osee.ats.api.agile.IAgileItem;
+import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -22,6 +25,8 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Donald G. Dunne
@@ -64,4 +69,31 @@ public interface IAtsWorkItemService {
    void clearAssignees(IAtsWorkItem workItem, IAtsChangeSet changes);
 
    void setAssignees(IAtsWorkItem workItem, Set<IAtsUser> assignees, IAtsChangeSet changes);
+
+   IAtsTeamWorkflow getTeamWf(ArtifactToken artifact);
+
+   IAtsWorkItem getWorkItem(ArtifactToken artifact);
+
+   IAtsTask getTask(ArtifactToken artifact);
+
+   IAtsAbstractReview getReview(ArtifactToken artifact);
+
+   IAtsGoal getGoal(ArtifactToken artifact);
+
+   IAtsAction getAction(ArtifactToken artifact);
+
+   IAtsWorkItem getWorkItemByAtsId(String atsId);
+
+   IAgileSprint getAgileSprint(ArtifactToken artifact);
+
+   IAgileBacklog getAgileBacklog(ArtifactToken artifact);
+
+   IAgileItem getAgileItem(ArtifactToken artifact);
+
+   Collection<IAtsWorkItem> getWorkItems(Collection<? extends ArtifactToken> artifacts);
+
+   IAtsTeamWorkflow getTeamWfNoCache(ArtifactId artifact);
+
+   IAtsTeamWorkflow getTeamWf(ArtifactId artifact);
+
 }

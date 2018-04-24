@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -55,14 +54,12 @@ import org.eclipse.osee.jdbc.JdbcService;
  * @author Donald G. Dunne
  */
 public class AtsStoreService implements IAtsStoreService {
-   private final IAtsWorkItemFactory workItemFactory;
    private final IAtsUserService userService;
    private final JdbcService jdbcService;
    private final AtsApi atsApi;
 
-   public AtsStoreService(AtsApi atsApi, IAtsWorkItemFactory workItemFactory, IAtsUserService userService, JdbcService jdbcService) {
+   public AtsStoreService(AtsApi atsApi, IAtsUserService userService, JdbcService jdbcService) {
       this.atsApi = atsApi;
-      this.workItemFactory = workItemFactory;
       this.userService = userService;
       this.jdbcService = jdbcService;
    }
@@ -84,7 +81,7 @@ public class AtsStoreService implements IAtsStoreService {
          }
          for (Artifact art : ArtifactQuery.reloadArtifacts(artifacts)) {
             if (!art.isDeleted()) {
-               IAtsWorkItem workItem = workItemFactory.getWorkItem(art);
+               IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(art);
                if (workItem != null) {
                   results.add(workItem);
                }

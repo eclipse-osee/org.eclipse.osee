@@ -1030,7 +1030,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    public JaxAtsObjects getSprintItemsAsJax(long teamId, long sprintId) {
       ArtifactToken sprintArt = atsApi.getQueryService().getArtifact(sprintId);
       JaxAtsObjects objs = new JaxAtsObjects();
-      for (IAtsWorkItem workItem : atsApi.getWorkItemFactory().getWorkItems(
+      for (IAtsWorkItem workItem : atsApi.getWorkItemService().getWorkItems(
          atsApi.getRelationResolver().getRelated(sprintArt, AtsRelationTypes.AgileSprintToItem_AtsItem))) {
          objs.getAtsObjects().add(JaxAtsObjects.create(workItem));
       }
@@ -1039,7 +1039,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    public Collection<IAtsWorkItem> getSprintWorkItems(long teamId, long sprintId) {
       ArtifactToken sprintArt = atsApi.getQueryService().getArtifact(sprintId);
-      return atsApi.getWorkItemFactory().getWorkItems(
+      return atsApi.getWorkItemService().getWorkItems(
          atsApi.getRelationResolver().getRelated(sprintArt, AtsRelationTypes.AgileSprintToItem_AtsItem));
    }
 
@@ -1086,7 +1086,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    public Response addFeatureGroup(@PathParam("itemId") long itemId, String featureGroupName) {
       ArtifactToken itemArt = atsApi.getQueryService().getArtifact(itemId);
       Conditions.assertNotNull(itemArt, "Work Item not found with id %s", itemId);
-      IAgileItem item = atsApi.getWorkItemFactory().getAgileItem(itemArt);
+      IAgileItem item = atsApi.getWorkItemService().getAgileItem(itemArt);
       boolean found = false;
       // check to make sure item is not already related
       for (IAgileFeatureGroup feature : atsApi.getAgileService().getFeatureGroups(item)) {
@@ -1117,7 +1117,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    public Response setUnPlanned(@PathParam("itemId") long itemId, boolean unPlanned) {
       ArtifactToken itemArt = atsApi.getQueryService().getArtifact(itemId);
       Conditions.assertNotNull(itemArt, "Work Item not found with id %s", itemId);
-      IAgileItem item = atsApi.getWorkItemFactory().getAgileItem(itemArt);
+      IAgileItem item = atsApi.getWorkItemService().getAgileItem(itemArt);
       IAtsChangeSet changes = atsApi.createChangeSet("Set Agile UnPlanned", AtsCoreUsers.SYSTEM_USER);
       changes.setSoleAttributeValue(item, AtsAttributeTypes.UnPlannedWork, unPlanned);
       changes.execute();
@@ -1130,7 +1130,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    public Response setPoints(@PathParam("itemId") long itemId, String points) {
       ArtifactToken itemArt = atsApi.getQueryService().getArtifact(itemId);
       Conditions.assertNotNull(itemArt, "Work Item not found with id %s", itemId);
-      IAgileItem item = atsApi.getWorkItemFactory().getAgileItem(itemArt);
+      IAgileItem item = atsApi.getWorkItemService().getAgileItem(itemArt);
       IAgileTeam team = atsApi.getAgileService().getAgileTeam(item);
       AttributeTypeId agileTeamPointsAttributeType = atsApi.getAgileService().getAgileTeamPointsAttributeType(team);
       IAtsChangeSet changes = atsApi.createChangeSet("Set Points", AtsCoreUsers.SYSTEM_USER);
@@ -1157,7 +1157,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       if (artifact != null) {
          for (ArtifactToken sprintArt : atsApi.getRelationResolver().getRelated(artifact,
             AtsRelationTypes.AgileTeamToSprint_Sprint)) {
-            IAgileSprint sprint = atsApi.getWorkItemFactory().getAgileSprint(sprintArt);
+            IAgileSprint sprint = atsApi.getWorkItemService().getAgileSprint(sprintArt);
             if (sprint.isInWork()) {
                return sprint;
             }

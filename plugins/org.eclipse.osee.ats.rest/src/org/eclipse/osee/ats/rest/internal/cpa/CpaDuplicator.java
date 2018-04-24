@@ -58,7 +58,7 @@ public class CpaDuplicator {
             } else {
                IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet(
                   "Duplicate for CPA " + duplicate.getCpaId(), AtsCoreUsers.SYSTEM_USER);
-               IAtsTeamWorkflow cpaWf = atsApi.getWorkItemFactory().getTeamWf(cpaArt);
+               IAtsTeamWorkflow cpaWf = atsApi.getWorkItemService().getTeamWf(cpaArt);
                duplicatePcrId = cpaArt.getSoleAttributeValue(AtsAttributeTypes.DuplicatedPcrId, null);
                if (Strings.isValid(duplicatePcrId)) {
                   rd.errorf("CPA already has duplicate pcr id set as [%s].  Skipping.", duplicatePcrId);

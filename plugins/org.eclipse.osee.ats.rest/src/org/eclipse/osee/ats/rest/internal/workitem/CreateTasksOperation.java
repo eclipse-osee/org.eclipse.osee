@@ -93,7 +93,7 @@ public class CreateTasksOperation {
          }
          IAtsTeamWorkflow teamWf = idToTeamWf.get(teamWfId);
          if (teamWf == null) {
-            teamWf = atsApi.getWorkItemFactory().getTeamWf(teamWfArt);
+            teamWf = atsApi.getWorkItemService().getTeamWf(teamWfArt);
             idToTeamWf.put(teamWfId, teamWf);
          }
          String asUserId = newTaskData.getAsUserId();
@@ -127,7 +127,7 @@ public class CreateTasksOperation {
             if (createdByDate == null) {
                resultData.errorf("Task Created By Date %s does not exist in %s", createdByDate, task);
             }
-            IAtsTeamWorkflow teamWorkflow = atsApi.getWorkItemFactory().getTeamWf(teamWfArt);
+            IAtsTeamWorkflow teamWorkflow = atsApi.getWorkItemService().getTeamWf(teamWfArt);
             String relatedToState = task.getRelatedToState();
             if (Strings.isValid(relatedToState)) {
                if (teamWorkflow.getWorkDefinition().getStateByName(relatedToState) == null) {
@@ -246,7 +246,7 @@ public class CreateTasksOperation {
                jaxTask.setId(id);
             }
             ArtifactToken taskArt = changes.createArtifact(AtsArtifactTypes.Task, jaxTask.getName(), id);
-            IAtsTask task = atsApi.getWorkItemFactory().getTask(taskArt);
+            IAtsTask task = atsApi.getWorkItemService().getTask(taskArt);
 
             IAtsTeamWorkflow teamWf = idToTeamWf.get(newTaskData.getTeamWfId());
             atsApi.getActionFactory().setAtsId(task, teamWf.getTeamDefinition(), changes);
@@ -319,7 +319,7 @@ public class CreateTasksOperation {
          newJaxTask.setCreatedByUserId(createdByUserId);
          newJaxTask.setCreatedDate(taskArt.getSoleAttributeValue(AtsAttributeTypes.CreatedDate));
          newJaxTask.setRelatedToState(taskArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, ""));
-         IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem(taskArt);
+         IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(taskArt);
          for (IAtsUser user : workItem.getAssignees()) {
             newJaxTask.getAssigneeUserIds().add(user.getUserId());
          }

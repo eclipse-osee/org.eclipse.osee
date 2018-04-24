@@ -160,7 +160,7 @@ public final class ActionUiResource {
       if (action == null) {
          return RestUtil.simplePage(String.format("Action with id [%s] can not be found", id));
       }
-      IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem(action);
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(action);
       ActionPage page = new ActionPage(logger, atsApi, workItem, false);
       page.setAddTransition(true);
       return page.generate();

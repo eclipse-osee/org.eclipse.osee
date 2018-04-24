@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
-import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
@@ -111,7 +110,6 @@ public abstract class AtsApiImpl implements AtsApi {
    protected IAtsWorkStateFactory workStateFactory;
    protected IAtsLogFactory logFactory;
    protected IAtsColumnService columnServices;
-   protected IAtsWorkItemFactory workItemFactory;
    protected IAtsConfigItemFactory configItemFactory;
    protected IAtsActionableItemService actionableItemManager;
    protected IRelationResolver relationResolver;
@@ -412,11 +410,6 @@ public abstract class AtsApiImpl implements AtsApi {
    @Override
    public IArtifactResolver getArtifactResolver() {
       return artifactResolver;
-   }
-
-   @Override
-   public IAtsWorkItemFactory getWorkItemFactory() {
-      return workItemFactory;
    }
 
    @Override

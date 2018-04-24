@@ -394,7 +394,7 @@ public class AgileService implements IAgileService {
       ArtifactId artifact = team.getStoreObject();
       for (ArtifactToken sprintArt : atsApi.getRelationResolver().getRelated(artifact,
          AtsRelationTypes.AgileTeamToSprint_Sprint)) {
-         sprints.add(atsApi.getWorkItemFactory().getAgileSprint(sprintArt));
+         sprints.add(atsApi.getWorkItemService().getAgileSprint(sprintArt));
       }
       return sprints;
    }
@@ -467,7 +467,7 @@ public class AgileService implements IAgileService {
       ArtifactId backlogArt = backlogOrSprint.getStoreObject();
       for (ArtifactToken art : atsApi.getRelationResolver().getRelated(backlogArt, relationType)) {
          if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.AbstractWorkflowArtifact)) {
-            items.add(atsApi.getWorkItemFactory().getAgileItem(art));
+            items.add(atsApi.getWorkItemService().getAgileItem(art));
          } else {
             throw new OseeStateException("Inavlid artifact [%s] in [%s].  Only workflows are allowed, not [%s]",
                art.toStringWithId(), backlogOrSprint, art.getArtifactTypeId());
@@ -499,7 +499,7 @@ public class AgileService implements IAgileService {
       ArtifactToken sprintArt =
          atsApi.getRelationResolver().getRelatedOrNull(itemArt, AtsRelationTypes.AgileSprintToItem_Sprint);
       if (sprintArt != null) {
-         sprint = atsApi.getWorkItemFactory().getAgileSprint(sprintArt);
+         sprint = atsApi.getWorkItemService().getAgileSprint(sprintArt);
       }
       return sprint;
    }

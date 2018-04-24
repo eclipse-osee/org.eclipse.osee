@@ -101,7 +101,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   if (assignees.isEmpty()) {
                      assignees.add(AtsCoreUsers.UNASSIGNED_USER);
                   }
-                  IAtsTeamWorkflow teamWf = AtsClientService.get().getWorkItemFactory().getTeamWf(artifact);
+                  IAtsTeamWorkflow teamWf = AtsClientService.get().getWorkItemService().getTeamWf(artifact);
                   AtsClientService.get().getTaskService().createTasks(teamWf, titles, assignees, null,
                      AtsClientService.get().getUserService().getCurrentUser(), null, null, null, commitComment);
                } catch (Exception ex) {

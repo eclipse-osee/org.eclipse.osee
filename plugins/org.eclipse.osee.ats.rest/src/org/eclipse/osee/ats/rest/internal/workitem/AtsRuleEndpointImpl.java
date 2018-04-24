@@ -65,7 +65,7 @@ public class AtsRuleEndpointImpl implements AtsRuleEndpointApi {
       List<IAtsWorkItem> workItemsCreated = new LinkedList<>();
       for (long workflowId : runRuleData.getWorkItemIds()) {
          ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(workflowId);
-         IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem(artifact);
+         IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(artifact);
          if (workItem == null) {
             throw new OseeArgumentException("Workflow of id [%d] does not exist", workflowId);
          }

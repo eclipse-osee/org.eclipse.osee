@@ -115,7 +115,7 @@ public class AtsObjects {
             ArtifactToken artId = (ArtifactToken) object;
             if (atsApi.getStoreService().isOfType(artId, AtsArtifactTypes.Action)) {
                artifacts.addAll(AtsObjects.getArtifacts(
-                  atsApi.getWorkItemService().getTeams(atsApi.getWorkItemFactory().getAction(artId))));
+                  atsApi.getWorkItemService().getTeams(atsApi.getWorkItemService().getAction(artId))));
             }
          }
          if (object instanceof IAtsTeamWorkflow) {

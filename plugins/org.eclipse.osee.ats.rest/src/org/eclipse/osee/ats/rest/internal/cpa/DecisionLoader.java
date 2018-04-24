@@ -89,7 +89,7 @@ public class DecisionLoader {
       time.end(Units.SEC);
       time = new ElapsedTime("process cpa workflows");
       for (ArtifactReadable art : results) {
-         IAtsTeamWorkflow teamWf = atsApi.getWorkItemFactory().getTeamWf(art);
+         IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(art);
          CpaDecision decision = CpaFactory.getDecision(teamWf, null);
          decision.setApplicability(art.getSoleAttributeValue(AtsAttributeTypes.ApplicableToProgram, ""));
          decision.setRationale(art.getSoleAttributeValue(AtsAttributeTypes.Rationale, ""));

@@ -101,7 +101,7 @@ public class SprintItems {
    public IAgileBacklog getCommonBacklog() {
       IAgileBacklog backlog = null;
       if (commonBacklog != null) {
-         backlog = AtsClientService.get().getWorkItemFactory().getAgileBacklog(commonBacklog);
+         backlog = AtsClientService.get().getWorkItemService().getAgileBacklog(commonBacklog);
       }
       return backlog;
    }
@@ -109,7 +109,7 @@ public class SprintItems {
    public Set<IAgileSprint> getMultipleSprints() {
       Set<IAgileSprint> sprints = new HashSet<>();
       for (Artifact art : multipleSprints) {
-         sprints.add(AtsClientService.get().getWorkItemFactory().getAgileSprint(art));
+         sprints.add(AtsClientService.get().getWorkItemService().getAgileSprint(art));
       }
       return sprints;
    }

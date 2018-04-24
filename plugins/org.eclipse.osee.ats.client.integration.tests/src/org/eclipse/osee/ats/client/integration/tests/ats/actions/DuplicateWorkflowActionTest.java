@@ -69,7 +69,7 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
          changes.getNotifications().getWorkItemNotificationEvents().size());
 
       // duplicate workflow
-      dupTeamWf = AtsClientService.get().getWorkItemFactory().getTeamWf(
+      dupTeamWf = AtsClientService.get().getWorkItemService().getTeamWf(
          ((TeamWorkFlowArtifact) teamWf.getStoreObject()).duplicate(AtsClientService.get().getAtsBranch(),
             Arrays.asList(AtsAttributeTypes.AtsId)));
 

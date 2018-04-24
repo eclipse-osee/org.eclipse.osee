@@ -175,7 +175,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    @Override
    public IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<IAtsDecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
       ArtifactToken decRevArt = changes.createArtifact(AtsArtifactTypes.DecisionReview, title);
-      IAtsDecisionReview decRev = (IAtsDecisionReview) atsApi.getWorkItemFactory().getReview(decRevArt);
+      IAtsDecisionReview decRev = (IAtsDecisionReview) atsApi.getWorkItemService().getReview(decRevArt);
 
       changes.relate(teamWf, AtsRelationTypes.TeamWorkflowToReview_Review, decRev);
       atsApi.getActionFactory().setAtsId(decRev, decRev.getParentTeamWorkflow().getTeamDefinition(), changes);
@@ -262,7 +262,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
 
       for (ArtifactToken reviewArt : atsApi.getRelationResolver().getRelated(teamWf,
          AtsRelationTypes.TeamWorkflowToReview_Review)) {
-         reviews.add(atsApi.getWorkItemFactory().getReview(reviewArt));
+         reviews.add(atsApi.getWorkItemService().getReview(reviewArt));
       }
       return reviews;
    }

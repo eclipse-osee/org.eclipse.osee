@@ -78,7 +78,7 @@ public class WorkflowPortingBlam extends AbstractBlam {
             changes.setName(destinationWorkflow, sourceWorkflow.getName());
             changes.relate(sourceWorkflow, AtsRelationTypes.Port_To, destinationWorkflow);
          } else {
-            destinationWorkflow = AtsClientService.get().getWorkItemFactory().getTeamWf(
+            destinationWorkflow = AtsClientService.get().getWorkItemService().getTeamWf(
                AtsClientService.get().getRelationResolver().getRelatedOrNull((ArtifactId) sourceWorkflow,
                   AtsRelationTypes.Port_To));
             log("Reusing destination workflow " + destinationWorkflow);

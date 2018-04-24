@@ -150,7 +150,7 @@ public class AtsQueryImplTest {
       IAtsInsertion insertion = programService.getInsertion(activity); // COMM
       IAtsProgram program = programService.getProgram(insertion); // SAW Program
 
-      IAtsTeamWorkflow codeWf = AtsClientService.get().getWorkItemFactory().getTeamWf(
+      IAtsTeamWorkflow codeWf = AtsClientService.get().getWorkItemService().getTeamWf(
          DemoTestUtil.getCommittedActionWorkflow(DemoWorkType.Code));
       IAtsTask codeTask = (IAtsTask) AtsClientService.get().getQueryService().createQuery(WorkItemType.Task).andAttr(
          CoreAttributeTypes.Name, "Create test plan").getItems().iterator().next();

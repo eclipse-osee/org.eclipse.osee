@@ -59,7 +59,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
       }
       List<IAtsTask> tasks = new LinkedList<>();
       for (JaxAtsTask task : operation.getTasks()) {
-         tasks.add(atsApi.getWorkItemFactory().getTask(atsApi.getQueryService().getArtifact(task.getId())));
+         tasks.add(atsApi.getWorkItemService().getTask(atsApi.getQueryService().getArtifact(task.getId())));
       }
       return tasks;
    }
@@ -78,7 +78,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
       }
       List<IAtsTask> tasks = new LinkedList<>();
       for (JaxAtsTask task : operation.getTasks()) {
-         tasks.add(atsApi.getWorkItemFactory().getTask(atsApi.getQueryService().getArtifact(task.getId())));
+         tasks.add(atsApi.getWorkItemService().getTask(atsApi.getQueryService().getArtifact(task.getId())));
       }
       return tasks;
    }

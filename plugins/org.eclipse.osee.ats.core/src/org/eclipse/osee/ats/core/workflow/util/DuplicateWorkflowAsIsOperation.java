@@ -111,7 +111,7 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
             changes.addAttribute(newWorkItemArt, attr.getAttributeType(), attr.getValue());
          }
       }
-      IAtsWorkItem newWorkItem = atsApi.getWorkItemFactory().getWorkItem(newWorkItemArt);
+      IAtsWorkItem newWorkItem = atsApi.getWorkItemService().getWorkItem(newWorkItemArt);
       atsApi.getActionFactory().setAtsId(newWorkItem, workItem.getParentTeamWorkflow().getTeamDefinition(), changes);
       return newWorkItem;
    }

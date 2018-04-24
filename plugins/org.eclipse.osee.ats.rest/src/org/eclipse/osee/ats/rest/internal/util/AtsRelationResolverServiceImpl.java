@@ -124,11 +124,11 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    private IAtsObject getAtsObject(ArtifactReadable artifact) {
       IAtsObject result = null;
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         result = atsApi.getWorkItemFactory().getWorkItem(artifact);
+         result = atsApi.getWorkItemService().getWorkItem(artifact);
       } else if (atsApi.getConfigItemFactory().isAtsConfigArtifact(artifact)) {
          result = atsApi.getConfigItemFactory().getConfigObject(artifact);
       } else if (artifact.isOfType(AtsArtifactTypes.Action)) {
-         result = atsApi.getWorkItemFactory().getAction(artifact);
+         result = atsApi.getWorkItemService().getAction(artifact);
       }
       return result;
    }

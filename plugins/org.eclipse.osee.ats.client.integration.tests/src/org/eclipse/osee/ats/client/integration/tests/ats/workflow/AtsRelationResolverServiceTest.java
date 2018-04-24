@@ -110,7 +110,7 @@ public class AtsRelationResolverServiceTest {
       Collection<ArtifactToken> related =
          relationResolver.getRelatedArtifacts((IAtsWorkItem) sawCodeCommittedWf, AtsRelationTypes.TeamWfToTask_Task);
       ArtifactToken firstTaskArt = related.iterator().next();
-      IAtsTask firstTask = atsApi.getWorkItemFactory().getTask(firstTaskArt);
+      IAtsTask firstTask = atsApi.getWorkItemService().getTask(firstTaskArt);
 
       IAtsTeamWorkflow teamWf =
          relationResolver.getRelatedOrNull(firstTask, AtsRelationTypes.TeamWfToTask_TeamWf, IAtsTeamWorkflow.class);

@@ -73,7 +73,7 @@ public class ConvertWorkDefinitionOperations {
          Collection<ArtifactToken> allArtifacts = atsApi.getQueryService().getArtifacts(ids);
          IAtsChangeSet changes = atsApi.createChangeSet("Update Workflow Definition");
          for (ArtifactToken art : allArtifacts) {
-            IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem(art);
+            IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(art);
             boolean deleted = atsApi.getStoreService().isDeleted(workItem);
             if (deleted) {
                continue;

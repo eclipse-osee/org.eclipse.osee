@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
@@ -77,19 +76,16 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class ActionFactory implements IAtsActionFactory {
 
-   private final IAtsWorkItemFactory workItemFactory;
    private final IAttributeResolver attrResolver;
    private final AtsApi atsApi;
    private IAtsTeamDefinition topTeamDefinition;
 
    public ActionFactory(AtsApi atsApi) {
-      this.workItemFactory = atsApi.getWorkItemFactory();
       this.attrResolver = atsApi.getAttributeResolver();
       this.atsApi = atsApi;
    }
 
-   public ActionFactory(IAtsWorkItemFactory workItemFactory, ISequenceProvider sequenceProvider, IAtsActionableItemService actionableItemManager, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, AtsApi atsApi) {
-      this.workItemFactory = workItemFactory;
+   public ActionFactory(ISequenceProvider sequenceProvider, IAtsActionableItemService actionableItemManager, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, AtsApi atsApi) {
       this.attrResolver = attrResolver;
       this.atsApi = atsApi;
    }
@@ -310,7 +306,7 @@ public class ActionFactory implements IAtsActionFactory {
       // make it easier, all fields are automatically filled in for ATS developer
 
       ArtifactToken actionArt = changes.createArtifact(AtsArtifactTypes.Action, title);
-      IAtsAction action = workItemFactory.getAction(actionArt);
+      IAtsAction action = atsApi.getWorkItemService().getAction(actionArt);
       IAtsTeamDefinition topTeamDefinition = getTopTeamDef();
       atsApi.getActionFactory().setAtsId(action, topTeamDefinition, changes);
       changes.add(action);
@@ -422,9 +418,9 @@ public class ActionFactory implements IAtsActionFactory {
          artToken = newActionListener.getArtifactToken(applicableAis);
       }
       if (artToken == null) {
-         teamWf = workItemFactory.getTeamWf(changes.createArtifact(artifactType, ""));
+         teamWf = atsApi.getWorkItemService().getTeamWf(changes.createArtifact(artifactType, ""));
       } else {
-         teamWf = workItemFactory.getTeamWf(changes.createArtifact(artToken));
+         teamWf = atsApi.getWorkItemService().getTeamWf(changes.createArtifact(artToken));
       }
 
       setArtifactIdentifyData(action, teamWf, changes);

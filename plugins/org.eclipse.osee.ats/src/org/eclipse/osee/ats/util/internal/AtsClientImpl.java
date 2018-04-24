@@ -59,7 +59,6 @@ import org.eclipse.osee.ats.core.util.AtsApiImpl;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionServiceImpl;
-import org.eclipse.osee.ats.core.workflow.WorkItemFactory;
 import org.eclipse.osee.ats.ev.internal.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -132,7 +131,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
 
       actionableItemFactory = new ActionableItemFactory();
       teamDefFactory = new TeamDefinitionFactory();
-      workItemFactory = new WorkItemFactory(this);
       versionFactory = new VersionFactory();
 
       artifactResolver = new ArtifactResolverImpl(this);
@@ -142,13 +140,13 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
 
       logFactory = AtsCoreFactory.newLogFactory();
       stateFactory = AtsCoreFactory.newStateFactory(this, logFactory);
-      storeService = new AtsStoreService(this, workItemFactory, getUserServiceClient(), jdbcService);
+      storeService = new AtsStoreService(this, getUserServiceClient(), jdbcService);
 
       queryService = new AtsQueryServiceImpl(this, jdbcService);
       actionableItemManager = new ActionableItemService(attributeResolverService, storeService, this);
 
-      actionFactory = new ActionFactory(workItemFactory, sequenceProvider, actionableItemManager,
-         attributeResolverService, stateFactory, this);
+      actionFactory =
+         new ActionFactory(sequenceProvider, actionableItemManager, attributeResolverService, stateFactory, this);
       taskService = new AtsTaskService(this);
 
       eventService = new AtsEventServiceImpl();

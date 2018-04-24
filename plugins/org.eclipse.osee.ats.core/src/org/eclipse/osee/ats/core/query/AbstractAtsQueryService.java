@@ -60,7 +60,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
       List<IAtsWorkItem> workItems = new LinkedList<>();
       for (ArtifactToken art : atsApi.getQueryService().getArtifacts(ids, atsApi.getAtsBranch())) {
          if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.AbstractWorkflowArtifact)) {
-            IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem(art);
+            IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(art);
             if (workItem != null) {
                workItems.add(workItem);
             }
@@ -100,7 +100,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    public List<IAtsWorkItem> getWorkItemsByIds(String ids) {
       List<IAtsWorkItem> workItems = new ArrayList<>();
       for (ArtifactToken art : getArtifactsByIds(ids)) {
-         IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem(art);
+         IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(art);
          if (workItem != null) {
             workItems.add(workItem);
          }
@@ -125,7 +125,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
       IAtsWorkItem workItem = null;
       ArtifactToken workItemArt = getArtifactById(id);
       if (workItemArt != null) {
-         workItem = atsApi.getWorkItemFactory().getWorkItem(workItemArt);
+         workItem = atsApi.getWorkItemService().getWorkItem(workItemArt);
       }
       return workItem;
    }
@@ -183,7 +183,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
       List<IAtsWorkItem> workItems = new LinkedList<>();
       for (ArtifactToken art : getArtifactsFromQuery(ATTR_QUERY, atsApi.getAtsBranch(),
          AtsAttributeTypes.LegacyPcrId.getIdString(), id)) {
-         IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem(art);
+         IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(art);
          if (workItem != null) {
             workItems.add(workItem);
          }
@@ -249,7 +249,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    public IAtsTeamWorkflow getTeamWf(ArtifactId artifact) {
       ArtifactId art = getArtifact(artifact);
       if (art != null) {
-         return atsApi.getWorkItemFactory().getTeamWf(art);
+         return atsApi.getWorkItemService().getTeamWf(art);
       }
       return null;
    }
@@ -258,7 +258,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    public IAtsTeamWorkflow getTeamWf(Long id) {
       ArtifactId art = getArtifact(id);
       if (art != null) {
-         return atsApi.getWorkItemFactory().getTeamWf(art);
+         return atsApi.getWorkItemService().getTeamWf(art);
       }
       return null;
    }

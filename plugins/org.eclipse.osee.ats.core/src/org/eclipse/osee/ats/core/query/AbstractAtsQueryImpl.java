@@ -160,7 +160,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
          for (ArtifactId artifact : artifacts) {
             if (allArtTypes.isEmpty() || isArtifactTypeMatch(artifact, allArtTypes)) {
                if (artifact instanceof ArtifactToken) {
-                  IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem((ArtifactToken) artifact);
+                  IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem((ArtifactToken) artifact);
                   if (workItem != null) {
                      workItems.add((T) workItem);
                   }
@@ -626,7 +626,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
       boolean match = false;
       if (artifact instanceof ArtifactToken) {
-         IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem((ArtifactToken) artifact);
+         IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem((ArtifactToken) artifact);
          IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
          if (teamWf != null) {
             boolean released = atsApi.getVersionService().isReleased(teamWf);

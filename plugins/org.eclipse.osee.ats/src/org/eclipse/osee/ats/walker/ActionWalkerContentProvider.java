@@ -83,7 +83,7 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
             }
          } else if (entity instanceof Artifact && ((Artifact) entity).isOfType(AtsArtifactTypes.AgileSprint)) {
             objs.add(entity);
-            IAgileSprint sprint = AtsClientService.get().getWorkItemFactory().getAgileSprint((Artifact) entity);
+            IAgileSprint sprint = AtsClientService.get().getWorkItemService().getAgileSprint((Artifact) entity);
             if (!view.isShowAll() && AtsClientService.get().getAgileService().getItems(sprint).size() > 10) {
                objs.add(new SprintMemberWrapper(sprint));
             } else {
@@ -137,7 +137,7 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
          } else if (inputElement instanceof Artifact && ((Artifact) inputElement).isOfType(
             AtsArtifactTypes.AgileSprint)) {
             List<Object> objs = new ArrayList<>(5);
-            IAgileSprint sprint = AtsClientService.get().getWorkItemFactory().getAgileSprint((Artifact) inputElement);
+            IAgileSprint sprint = AtsClientService.get().getWorkItemService().getAgileSprint((Artifact) inputElement);
             if (!view.isShowAll() && AtsClientService.get().getAgileService().getItems(sprint).size() > 10) {
                objs.add(new SprintMemberWrapper(sprint));
             } else {

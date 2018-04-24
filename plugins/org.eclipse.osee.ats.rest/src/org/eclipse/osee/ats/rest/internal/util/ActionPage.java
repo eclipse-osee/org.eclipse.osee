@@ -81,7 +81,7 @@ public class ActionPage {
 
    private IAtsWorkItem getWorkItem() {
       if (workItem == null) {
-         workItem = atsApi.getWorkItemFactory().getWorkItem(action);
+         workItem = atsApi.getWorkItemService().getWorkItem(action);
       }
       return workItem;
    }

@@ -144,10 +144,10 @@ public class WorldResource {
       Collection<IAtsWorkItem> myWorldItems = new ArrayList<>();
       if (collectorArt != null) {
          if (collectorArt.isOfType(AtsArtifactTypes.Goal)) {
-            myWorldItems.addAll(atsServer.getWorkItemFactory().getWorkItems(
+            myWorldItems.addAll(atsServer.getWorkItemService().getWorkItems(
                collectorArt.getRelated(AtsRelationTypes.Goal_Member).getList()));
          } else if (collectorArt.isOfType(AtsArtifactTypes.AgileSprint)) {
-            myWorldItems.addAll(atsServer.getWorkItemFactory().getWorkItems(
+            myWorldItems.addAll(atsServer.getWorkItemService().getWorkItems(
                collectorArt.getRelated(AtsRelationTypes.AgileSprintToItem_AtsItem).getList()));
          }
       }

@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -54,14 +53,12 @@ public class WorkItemNotificationProcessor {
    private final Log logger;
    private final IAtsUserService userService;
    private final IAttributeResolver attrResolver;
-   private final IAtsWorkItemFactory workItemFactory;
    private final AtsApi atsApi;
    private static String actionUrl;
 
-   public WorkItemNotificationProcessor(Log logger, AtsApi atsApi, IAtsWorkItemFactory workItemFactory, IAtsUserService userService, IAttributeResolver attrResolver) {
+   public WorkItemNotificationProcessor(Log logger, AtsApi atsApi, IAtsUserService userService, IAttributeResolver attrResolver) {
       this.logger = logger;
       this.atsApi = atsApi;
-      this.workItemFactory = workItemFactory;
       this.userService = userService;
       this.attrResolver = attrResolver;
    }
@@ -80,7 +77,7 @@ public class WorkItemNotificationProcessor {
          notifyUsers.add(userService.getUserById(userId));
       }
       for (String atsId : event.getAtsIds()) {
-         IAtsWorkItem workItem = workItemFactory.getWorkItemByAtsId(atsId);
+         IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAtsId(atsId);
 
          if (types.contains(AtsNotifyType.Originator)) {
             try {

@@ -99,7 +99,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
       }
 
       for (Long id : artIds) {
-         tasks.add(AtsClientService.get().getWorkItemFactory().getTask(
+         tasks.add(AtsClientService.get().getWorkItemService().getTask(
             AtsClientService.get().getQueryService().getArtifact(id)));
       }
    }

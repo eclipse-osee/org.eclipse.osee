@@ -92,7 +92,7 @@ public final class StateResource {
          if (action == null) {
             return RestUtil.returnBadRequest(String.format("Action by id [%s] does not exist", id));
          }
-         IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem(action);
+         IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(action);
 
          IAtsChangeSet changes =
             atsApi.getStoreService().createAtsChangeSet("Transition Action - Server", transitionUser);

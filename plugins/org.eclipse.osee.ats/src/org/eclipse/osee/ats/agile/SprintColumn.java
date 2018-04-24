@@ -187,7 +187,7 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
    private static Set<IAgileSprint> getActiveSprints(Artifact agileTeamArt) {
       Set<IAgileSprint> activeSprints = new HashSet<>();
       for (Artifact sprintArt : agileTeamArt.getRelatedArtifacts(AtsRelationTypes.AgileTeamToSprint_Sprint)) {
-         IAgileSprint agileSprint = AtsClientService.get().getWorkItemFactory().getAgileSprint(sprintArt);
+         IAgileSprint agileSprint = AtsClientService.get().getWorkItemService().getAgileSprint(sprintArt);
          if (agileSprint.isActive()) {
             activeSprints.add(agileSprint);
          }

@@ -191,7 +191,7 @@ public class AgileFactory {
          atsApi.getStoreService().createAtsChangeSet("Create new Agile Sprint", AtsCoreUsers.SYSTEM_USER);
 
       ArtifactToken sprintArt = changes.createArtifact(AtsArtifactTypes.AgileSprint, name, id);
-      IAgileSprint sprint = atsApi.getWorkItemFactory().getAgileSprint(sprintArt);
+      IAgileSprint sprint = atsApi.getWorkItemService().getAgileSprint(sprintArt);
 
       atsApi.getActionFactory().setAtsId(sprint, TeamDefinitions.getTopTeamDefinition(atsApi.getQueryService()),
          changes);
@@ -225,7 +225,7 @@ public class AgileFactory {
          atsApi.getStoreService().createAtsChangeSet("Create new Agile Backlog", AtsCoreUsers.SYSTEM_USER);
 
       ArtifactToken backlogArt = changes.createArtifact(AtsArtifactTypes.AgileBacklog, name, id);
-      IAgileBacklog backlog = atsApi.getWorkItemFactory().getAgileBacklog(backlogArt);
+      IAgileBacklog backlog = atsApi.getWorkItemService().getAgileBacklog(backlogArt);
 
       atsApi.getActionFactory().setAtsId(backlog, TeamDefinitions.getTopTeamDefinition(atsApi.getQueryService()),
          changes);

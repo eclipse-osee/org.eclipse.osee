@@ -10,13 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.IAgileBacklog;
+import org.eclipse.osee.ats.api.agile.IAgileItem;
+import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
@@ -29,18 +36,26 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsGoal;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
+import org.eclipse.osee.ats.core.agile.AgileBacklog;
+import org.eclipse.osee.ats.core.agile.AgileSprint;
 import org.eclipse.osee.ats.core.ai.ActionableItemService;
+import org.eclipse.osee.ats.core.review.DecisionReview;
+import org.eclipse.osee.ats.core.review.PeerToPeerReview;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidateManager;
 import org.eclipse.osee.ats.core.workflow.note.ArtifactNote;
 import org.eclipse.osee.ats.core.workflow.note.AtsWorkItemNotes;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -54,6 +69,9 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
    private final AtsApi atsApi;
    private IAtsActionableItemService actionableItemService;
+   private final CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder() //
+      .expireAfterWrite(1, TimeUnit.MINUTES);
+   private final Cache<ArtifactId, IAtsWorkItem> workItemCache = cacheBuilder.build();
 
    public AtsWorkItemServiceImpl(AtsApi atsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       this.atsApi = atsApi;
@@ -102,7 +120,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       if (object instanceof IAtsAction) {
          for (ArtifactToken teamWfArt : atsApi.getRelationResolver().getRelated((IAtsAction) object,
             AtsRelationTypes.ActionToWorkflow_WorkFlow)) {
-            teams.add(atsApi.getWorkItemFactory().getTeamWf(teamWfArt));
+            teams.add(atsApi.getWorkItemService().getTeamWf(teamWfArt));
          }
       } else if (object instanceof ActionResult) {
          return Collections.castAll(AtsObjects.getArtifacts(((ActionResult) object).getTeamWfArts()));
@@ -215,8 +233,162 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          artifact = atsApi.getQueryService().getArtifactByAtsId(actionId);
       }
       if (artifact != null) {
-         workItem = atsApi.getWorkItemFactory().getWorkItem(artifact);
+         workItem = atsApi.getWorkItemService().getWorkItem(artifact);
       }
       return workItem;
    }
+
+   @Override
+   public Collection<IAtsWorkItem> getWorkItems(Collection<? extends ArtifactToken> artifacts) {
+      List<IAtsWorkItem> workItems = new LinkedList<>();
+      for (ArtifactToken artifact : artifacts) {
+         IAtsWorkItem workItem = getWorkItem(artifact);
+         if (workItem != null) {
+            workItems.add(workItem);
+         }
+      }
+      return workItems;
+   }
+
+   @Override
+   public IAtsWorkItem getWorkItem(ArtifactToken artifact) {
+      IAtsWorkItem workItem = null;
+      try {
+         if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
+            workItem = getTeamWf(artifact);
+         } else if (atsApi.getStoreService().isOfType(artifact,
+            AtsArtifactTypes.PeerToPeerReview) || atsApi.getStoreService().isOfType(artifact,
+               AtsArtifactTypes.DecisionReview)) {
+            workItem = getReview(artifact);
+         } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Task)) {
+            workItem = getTask(artifact);
+         } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileBacklog)) {
+            // note, an agile backlog is also a goal type, so this has to be before the goal
+            workItem = getAgileBacklog(artifact);
+         } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Goal)) {
+            workItem = getGoal(artifact);
+         } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileSprint)) {
+            workItem = getAgileSprint(artifact);
+         }
+      } catch (OseeCoreException ex) {
+         atsApi.getLogger().error(ex, "Error getting work item for [%s]", artifact);
+      }
+      return workItem;
+   }
+
+   @Override
+   public IAtsTeamWorkflow getTeamWfNoCache(ArtifactId artifact) {
+      if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
+         return new TeamWorkflow(atsApi.getLogger(), atsApi, (ArtifactToken) artifact);
+      }
+      return null;
+   }
+
+   @Override
+   public IAtsTeamWorkflow getTeamWf(ArtifactId artifact) {
+      IAtsTeamWorkflow team = (IAtsTeamWorkflow) workItemCache.getIfPresent(artifact);
+      if (team == null) {
+         if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
+            team = new TeamWorkflow(atsApi.getLogger(), atsApi, (ArtifactToken) artifact);
+            workItemCache.put(artifact, team);
+         }
+      }
+      return team;
+   }
+
+   @Override
+   public IAgileSprint getAgileSprint(ArtifactToken artifact) {
+      IAgileSprint sprint = null;
+      if (artifact instanceof IAgileSprint) {
+         sprint = (IAgileSprint) artifact;
+      } else {
+         sprint = new AgileSprint(atsApi.getLogger(), atsApi, artifact);
+      }
+      return sprint;
+   }
+
+   @Override
+   public IAgileBacklog getAgileBacklog(ArtifactToken artifact) {
+      IAgileBacklog backlog = null;
+      if (artifact instanceof IAgileBacklog) {
+         backlog = (IAgileBacklog) artifact;
+      } else {
+         backlog = new AgileBacklog(atsApi.getLogger(), atsApi, artifact);
+      }
+      return backlog;
+   }
+
+   @Override
+   public IAgileItem getAgileItem(ArtifactToken artifact) {
+      IAgileItem item = null;
+      ArtifactId art = atsApi.getQueryService().getArtifact(artifact);
+      if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.AbstractWorkflowArtifact)) {
+         item = new org.eclipse.osee.ats.core.agile.AgileItem(atsApi.getLogger(), atsApi, (ArtifactToken) art);
+      }
+      return item;
+   }
+
+   @Override
+   public IAtsWorkItem getWorkItemByAtsId(String atsId) {
+      return atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andAttr(AtsAttributeTypes.AtsId,
+         atsId).getResults().getOneOrNull();
+   }
+
+   @Override
+   public IAtsTeamWorkflow getTeamWf(ArtifactToken artifact) {
+      IAtsTeamWorkflow teamWf = null;
+      if (artifact instanceof IAtsTeamWorkflow) {
+         teamWf = (IAtsTeamWorkflow) artifact;
+      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
+         teamWf = new TeamWorkflow(atsApi.getLogger(), atsApi, artifact);
+      }
+      return teamWf;
+   }
+
+   @Override
+   public IAtsGoal getGoal(ArtifactToken artifact) {
+      IAtsGoal goal = null;
+      if (artifact instanceof IAtsGoal) {
+         goal = (IAtsGoal) artifact;
+      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Goal)) {
+         goal = new Goal(atsApi.getLogger(), atsApi, artifact);
+      }
+      return goal;
+   }
+
+   @Override
+   public IAtsTask getTask(ArtifactToken artifact) {
+      IAtsTask task = null;
+      if (artifact instanceof IAtsTask) {
+         task = (IAtsTask) artifact;
+      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Task)) {
+         task = new Task(atsApi.getLogger(), atsApi, artifact);
+      }
+      return task;
+   }
+
+   @Override
+   public IAtsAbstractReview getReview(ArtifactToken artifact) {
+      IAtsAbstractReview review = null;
+      if (artifact instanceof IAtsAbstractReview) {
+         review = (IAtsAbstractReview) artifact;
+      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.PeerToPeerReview)) {
+         review = new PeerToPeerReview(atsApi.getLogger(), atsApi, artifact);
+      } else {
+         review = new DecisionReview(atsApi.getLogger(), atsApi, artifact);
+      }
+      return review;
+   }
+
+   @Override
+   public IAtsAction getAction(ArtifactToken artifact) {
+      IAtsAction action = null;
+      if (artifact instanceof IAtsAction) {
+         action = (IAtsAction) artifact;
+      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Action)) {
+         action = new Action(atsApi, artifact);
+      }
+      return action;
+   }
+
 }

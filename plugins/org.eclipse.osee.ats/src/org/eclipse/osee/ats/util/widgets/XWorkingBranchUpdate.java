@@ -62,7 +62,7 @@ public class XWorkingBranchUpdate extends XWorkingBranchButtonAbstract {
                IOseeBranch branchToUpdate = getWorkingBranch();
                if (branchToUpdate != null) {
                   Artifact associatedArtifact = BranchManager.getAssociatedArtifact(branchToUpdate);
-                  IAtsWorkItem workItem = AtsClientService.get().getWorkItemFactory().getWorkItem(associatedArtifact);
+                  IAtsWorkItem workItem = AtsClientService.get().getWorkItemService().getWorkItem(associatedArtifact);
                   if (workItem == null || !workItem.isTeamWorkflow()) {
                      AWorkbench.popup("Working Branch must have associated Team Workflow");
                      return;

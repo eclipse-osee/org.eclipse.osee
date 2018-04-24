@@ -246,7 +246,7 @@ public class AtsChangeSetTest {
 
       // ensure that teamWf is related to ver1
       Assert.assertEquals(ver1.getId(),
-         atsServer.getVersionService().getTargetedVersion(atsServer.getWorkItemFactory().getTeamWf(teamWf)).getId());
+         atsServer.getVersionService().getTargetedVersion(atsServer.getWorkItemService().getTeamWf(teamWf)).getId());
 
       // setRelation/setRelations - replace ver1 with ver2
       changes = createAtsChangeSet();
@@ -260,7 +260,7 @@ public class AtsChangeSetTest {
 
       // ensure teamWf is related to ver2 and not related to ver1
       IAtsVersion targetedVersion =
-         atsServer.getVersionService().getTargetedVersion(atsServer.getWorkItemFactory().getTeamWfNoCache(teamWf));
+         atsServer.getVersionService().getTargetedVersion(atsServer.getWorkItemService().getTeamWfNoCache(teamWf));
       Assert.assertEquals(ver2.getId(), targetedVersion.getId());
       Assert.assertEquals(0,
          ((ArtifactReadable) ver1).getRelated(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow).size());

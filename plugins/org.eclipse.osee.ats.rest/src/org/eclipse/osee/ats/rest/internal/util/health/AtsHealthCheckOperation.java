@@ -121,7 +121,7 @@ public class AtsHealthCheckOperation {
                   if (atsApi.getStoreService().isDeleted(artifact)) {
                      continue;
                   }
-                  IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem((ArtifactToken) artifact);
+                  IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem((ArtifactToken) artifact);
                   Date date = new Date();
                   try {
                      check.check(artifact, workItem, vResults, atsApi);

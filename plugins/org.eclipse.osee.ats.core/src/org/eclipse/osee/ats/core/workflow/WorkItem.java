@@ -94,7 +94,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
             teamArt = atsApi.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.TeamWfToTask_TeamWf);
          }
          if (teamArt != null) {
-            parentTeamWf = atsApi.getWorkItemFactory().getTeamWf(teamArt);
+            parentTeamWf = atsApi.getWorkItemService().getTeamWf(teamArt);
          }
       }
       return parentTeamWf;
@@ -112,7 +112,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
                actionArt = results.iterator().next();
             }
          }
-         parentAction = atsApi.getWorkItemFactory().getAction(actionArt);
+         parentAction = atsApi.getWorkItemService().getAction(actionArt);
       }
       return parentAction;
    }

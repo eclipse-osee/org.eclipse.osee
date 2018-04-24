@@ -145,7 +145,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       for (ArtifactToken action : atsApi.getQueryService().getArtifactsByIds(ids)) {
          for (ArtifactToken childWf : atsApi.getRelationResolver().getRelated(action,
             AtsRelationTypes.ActionToWorkflow_WorkFlow)) {
-            IAtsWorkItem child = atsApi.getWorkItemFactory().getWorkItem(childWf);
+            IAtsWorkItem child = atsApi.getWorkItemService().getWorkItem(childWf);
             if (child != null) {
                children.add(child);
             }
@@ -263,7 +263,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       for (String id : atsApi.getQueryService().getIdsFromStr(ids)) {
          ArtifactToken action = atsApi.getQueryService().getArtifactByLegacyPcrId(id);
          if (action != null) {
-            IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem(action);
+            IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(action);
             workItems.add(workItem);
          }
       }

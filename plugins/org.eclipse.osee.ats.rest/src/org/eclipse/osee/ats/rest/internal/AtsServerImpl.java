@@ -38,7 +38,6 @@ import org.eclipse.osee.ats.core.util.AtsApiImpl;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionServiceImpl;
-import org.eclipse.osee.ats.core.workflow.WorkItemFactory;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.config.AtsConfigurationsService;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertBaselineGuidToBaselineId;
@@ -124,7 +123,6 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
          workDefinitionDslService, teamWorkflowProvidersLazy);
 
       notifyService = new AtsNotifierServiceImpl();
-      workItemFactory = new WorkItemFactory(this);
       configItemFactory = new ConfigItemFactory(logger, this, orcsApi);
 
       artifactResolver = new ArtifactResolverImpl(this, orcsApi);
@@ -141,8 +139,8 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
 
       queryService = new AtsQueryServiceImpl(this, jdbcService, orcsApi);
       actionableItemManager = new ActionableItemService(attributeResolverService, storeService, this);
-      actionFactory = new ActionFactory(workItemFactory, sequenceProvider, actionableItemManager,
-         attributeResolverService, stateFactory, this);
+      actionFactory =
+         new ActionFactory(sequenceProvider, actionableItemManager, attributeResolverService, stateFactory, this);
 
       agileService = new AgileService(logger, this);
       taskService = new AtsTaskService(this, orcsApi);
@@ -220,7 +218,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
             }
          } else {
             WorkItemNotificationProcessor workItemNotificationProcessor =
-               new WorkItemNotificationProcessor(logger, this, workItemFactory, userService, attributeResolverService);
+               new WorkItemNotificationProcessor(logger, this, userService, attributeResolverService);
             Thread thread = new Thread("ATS Notification Sender") {
 
                @Override

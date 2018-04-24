@@ -110,7 +110,7 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
                   for (Long id : colorTeam.getGoalIds()) {
                      ArtifactReadable goalArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(id);
                      if (goalArt != null) {
-                        IAtsWorkItem goalWorkItem = atsApi.getWorkItemFactory().getWorkItem(goalArt);
+                        IAtsWorkItem goalWorkItem = atsApi.getWorkItemService().getWorkItem(goalArt);
                         if (!atsApi.getRelationResolver().areRelated(goalWorkItem, AtsRelationTypes.Goal_Member,
                            workItem)) {
                            changes.relate(goalWorkItem, AtsRelationTypes.Goal_Member, workItem);
