@@ -17,8 +17,8 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.util.AbstractRelationResolverServiceImpl;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -60,7 +60,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
       ArtifactReadable useArt = getArtifact(atsObject);
       if (useArt != null) {
          for (ArtifactReadable art : useArt.getRelated(relationType, flag)) {
-            IAtsObject object = getAtsObject(art);
+            IAtsObject object = AtsObjects.getAtsObject(art, atsApi);
             if (object != null) {
                results.add((T) object);
             }
@@ -109,7 +109,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
          try {
             ArtifactReadable artifact = art.getRelated(relationType).getOneOrNull();
             if (artifact != null) {
-               IAtsObject object = getAtsObject(artifact);
+               IAtsObject object = AtsObjects.getAtsObject(artifact, atsApi);
                if (object != null) {
                   related = (T) object;
                }
@@ -119,18 +119,6 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
          }
       }
       return related;
-   }
-
-   private IAtsObject getAtsObject(ArtifactReadable artifact) {
-      IAtsObject result = null;
-      if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         result = atsApi.getWorkItemService().getWorkItem(artifact);
-      } else if (atsApi.getConfigItemFactory().isAtsConfigArtifact(artifact)) {
-         result = atsApi.getConfigItemFactory().getConfigObject(artifact);
-      } else if (artifact.isOfType(AtsArtifactTypes.Action)) {
-         result = atsApi.getWorkItemService().getAction(artifact);
-      }
-      return result;
    }
 
    @Override

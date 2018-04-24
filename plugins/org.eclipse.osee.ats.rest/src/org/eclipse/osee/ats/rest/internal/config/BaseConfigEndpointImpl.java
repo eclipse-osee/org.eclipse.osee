@@ -19,7 +19,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.config.BaseConfigEndpointApi;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
@@ -77,7 +76,6 @@ public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> implements 
       IAtsChangeSet changes =
          atsApi.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
       ArtifactId newArtifact = changes.createArtifact(artifactType, jaxAtsObject.getName(), jaxAtsObject.getId());
-      IAtsObject newAtsObject = atsApi.getConfigItemFactory().getConfigObject(newArtifact);
       if (typeFolder != null) {
          ArtifactReadable typeFolderArtifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(typeFolder);
          if (typeFolderArtifact == null) {
@@ -91,11 +89,11 @@ public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> implements 
          changes.relate(typeFolderArtifact, CoreRelationTypes.Default_Hierarchical__Child, newArtifact);
       }
       if (Strings.isValid(jaxAtsObject.getDescription())) {
-         changes.setSoleAttributeValue(newAtsObject, AtsAttributeTypes.Description, jaxAtsObject.getDescription());
+         changes.setSoleAttributeValue(newArtifact, AtsAttributeTypes.Description, jaxAtsObject.getDescription());
       } else {
-         changes.deleteAttributes(newAtsObject, AtsAttributeTypes.Description);
+         changes.deleteAttributes(newArtifact, AtsAttributeTypes.Description);
       }
-      changes.setSoleAttributeValue(newAtsObject, AtsAttributeTypes.Active, jaxAtsObject.isActive());
+      changes.setSoleAttributeValue(newArtifact, AtsAttributeTypes.Active, jaxAtsObject.isActive());
       create(jaxAtsObject, newArtifact, changes);
       changes.execute();
       return Response.created(new URI("/" + jaxAtsObject.getId())).build();

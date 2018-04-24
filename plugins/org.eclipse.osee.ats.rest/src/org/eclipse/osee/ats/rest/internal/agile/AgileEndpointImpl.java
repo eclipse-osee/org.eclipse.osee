@@ -491,7 +491,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       // Add any AgileTeam to AI relations
       for (ArtifactId aiArt : atsApi.getRelationResolver().getRelated(aTeam,
          AtsRelationTypes.AgileTeamToAtsAtsAis_AtsAis)) {
-         ais.add(atsApi.getConfigItemFactory().getActionableItem(aiArt));
+         ais.add(atsApi.getActionableItemService().getActionableItemById(aiArt));
       }
       Collections.sort(ais, new NamedComparator(SortOrder.ASCENDING));
       return ais;
@@ -559,7 +559,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          if (child.getName().equals(IAgileService.FEATURE_GROUP_FOLDER_NAME)) {
             for (ArtifactToken subChild : atsApi.getRelationResolver().getChildren(child)) {
                if (atsApi.getStoreService().isOfType(subChild, AtsArtifactTypes.AgileFeatureGroup)) {
-                  IAgileFeatureGroup group = atsApi.getConfigItemFactory().getAgileFeatureGroup(subChild);
+                  IAgileFeatureGroup group = atsApi.getAgileService().getAgileFeatureGroup(subChild);
                   JaxAgileFeatureGroup newGroup = new JaxAgileFeatureGroup();
                   newGroup.setName(group.getName());
                   newGroup.setId(group.getId());

@@ -46,7 +46,7 @@ import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.agile.AgileBacklog;
 import org.eclipse.osee.ats.core.agile.AgileSprint;
-import org.eclipse.osee.ats.core.ai.ActionableItemService;
+import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
 import org.eclipse.osee.ats.core.review.DecisionReview;
 import org.eclipse.osee.ats.core.review.PeerToPeerReview;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -168,7 +168,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    public IAtsActionableItemService getActionableItemService() {
       if (actionableItemService == null) {
          actionableItemService =
-            new ActionableItemService(atsApi.getAttributeResolver(), atsApi.getStoreService(), atsApi);
+            new ActionableItemServiceImpl(atsApi.getAttributeResolver(), atsApi.getStoreService(), atsApi);
       }
       return actionableItemService;
    }

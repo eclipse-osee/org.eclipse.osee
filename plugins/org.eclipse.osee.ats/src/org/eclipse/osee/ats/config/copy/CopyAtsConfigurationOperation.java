@@ -122,7 +122,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       // Get or create new team definition
       Artifact newAiArt = duplicateTeamDefinitionOrActionableItem(changes, fromAiArt);
       changes.add(newAiArt);
-      IAtsActionableItem newAi = AtsClientService.get().getConfigItem(newAiArt);
+      IAtsActionableItem newAi = AtsClientService.get().getActionableItemService().getActionableItemById(newAiArt);
       changes.relate(parentAiArt, CoreRelationTypes.Default_Hierarchical__Child, newAi);
       existingArtifacts.add(parentAiArt);
       newArtifacts.add(newAiArt);
@@ -145,8 +145,10 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       // Handle all children
       for (Artifact childFromAiArt : fromAiArt.getChildren()) {
          if (childFromAiArt.isOfType(AtsArtifactTypes.ActionableItem)) {
-            IAtsActionableItem childAi = AtsClientService.get().getConfigItem(childFromAiArt);
-            IAtsActionableItem newChildAi = AtsClientService.get().getConfigItem(newAiArt);
+            IAtsActionableItem childAi =
+               AtsClientService.get().getActionableItemService().getActionableItemById(childFromAiArt);
+            IAtsActionableItem newChildAi =
+               AtsClientService.get().getActionableItemService().getActionableItemById(newAiArt);
             createActionableItems(changes, childAi, newChildAi);
          }
       }
@@ -160,7 +162,8 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
 
       Artifact newTeamDefArt = duplicateTeamDefinitionOrActionableItem(changes, fromTeamDefArt);
       changes.add(newTeamDefArt);
-      IAtsTeamDefinition newTeamDef = AtsClientService.get().getConfigItem(newTeamDefArt);
+      IAtsTeamDefinition newTeamDef =
+         AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(newTeamDefArt);
 
       parentTeamDefArt.addChild(newTeamDefArt);
       changes.add(parentTeamDefArt);
@@ -173,7 +176,8 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       // handle all children
       for (Artifact childFromTeamDefArt : fromTeamDefArt.getChildren()) {
          if (childFromTeamDefArt.isOfType(AtsArtifactTypes.TeamDefinition)) {
-            IAtsTeamDefinition childFromTeamDef = AtsClientService.get().getConfigItem(childFromTeamDefArt);
+            IAtsTeamDefinition childFromTeamDef =
+               AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(childFromTeamDefArt);
             AtsClientService.get().getCache().getAtsObject(childFromTeamDefArt.getId());
             createTeamDefinitions(changes, childFromTeamDef, newTeamDef);
          }

@@ -95,7 +95,7 @@ public class ConvertAtsConfigGuidAttributesOperations {
          String teamDefGuid = atsApi.getAttributeResolver().getSoleAttributeValue(art, TeamDefinition, "");
          if (Strings.isValid(teamDefGuid)) {
             ArtifactToken artifact = atsApi.getQueryService().getArtifactByGuid(teamDefGuid);
-            IAtsTeamDefinition teamDef = atsApi.getConfigItemFactory().getTeamDef(artifact);
+            IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(artifact);
             changes.setSoleAttributeValue(art, AtsAttributeTypes.TeamDefinitionReference, teamDef.getStoreObject());
          }
       }

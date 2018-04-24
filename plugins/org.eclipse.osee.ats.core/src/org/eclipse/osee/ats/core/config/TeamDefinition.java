@@ -82,7 +82,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
          if (parentArt != null && !parentArt.equals(AtsArtifactToken.HeadingFolder)) {
             parent = atsApi.getCache().getAtsObject(parentArt.getId());
             if (parent == null) {
-               parent = atsApi.getConfigItemFactory().getTeamDef(parentArt);
+               parent = atsApi.getTeamDefinitionService().getTeamDefinitionById(parentArt);
             }
          }
       } catch (OseeCoreException ex) {
@@ -97,7 +97,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       try {
          for (ArtifactId childArt : atsApi.getRelationResolver().getRelated(artifact,
             CoreRelationTypes.Default_Hierarchical__Child)) {
-            IAtsTeamDefinition childTeamDef = atsApi.getConfigItemFactory().getTeamDef(childArt);
+            IAtsTeamDefinition childTeamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(childArt);
             if (childTeamDef != null) {
                children.add(childTeamDef);
             }
@@ -269,7 +269,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       try {
          for (ArtifactId verArt : atsApi.getRelationResolver().getRelated(artifact,
             AtsRelationTypes.TeamDefinitionToVersion_Version)) {
-            IAtsVersion version = atsApi.getConfigItemFactory().getVersion(verArt);
+            IAtsVersion version = atsApi.getVersionService().getVersion(verArt);
             results.add(version);
          }
       } catch (OseeCoreException ex) {

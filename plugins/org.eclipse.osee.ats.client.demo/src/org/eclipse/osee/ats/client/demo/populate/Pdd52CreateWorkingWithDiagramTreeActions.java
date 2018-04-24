@@ -51,7 +51,7 @@ public class Pdd52CreateWorkingWithDiagramTreeActions implements IPopulateDemoDa
    public void run() {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getName());
 
-      Collection<IAtsActionableItem> aias = DemoDbUtil.getConfigObjects(DemoArtifactToken.SAW_SW_Design_AI);
+      Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.SAW_SW_Design_AI);
       Date createdDate = new Date();
 
       for (ArtifactToken version : getVersionToWorkflowToken().keySet()) {

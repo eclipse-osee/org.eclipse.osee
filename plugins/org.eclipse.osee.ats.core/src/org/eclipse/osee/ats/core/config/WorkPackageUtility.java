@@ -82,7 +82,7 @@ public class WorkPackageUtility {
          ArtifactId activityArt = atsApi.getRelationResolver().getRelatedOrNull(workPackageResult.getFirst(),
             AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity);
          if (activityArt != null) {
-            IAtsInsertionActivity activity = atsApi.getConfigItemFactory().getInsertionActivity(activityArt);
+            IAtsInsertionActivity activity = atsApi.getProgramService().getInsertionActivityById(activityArt);
             result.setFirst(activity);
             result.setSecond(workPackageResult.getSecond());
          }

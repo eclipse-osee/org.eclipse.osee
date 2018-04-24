@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
@@ -154,6 +155,50 @@ public class AtsObjects {
 
    public static boolean isAtsWorkItemOrAction(Object element) {
       return element instanceof IAtsAction || element instanceof IAtsWorkItem;
+   }
+
+   public static IAtsConfigObject getConfigObject(ArtifactToken artifact, AtsApi atsApi) {
+      IAtsConfigObject configObject;
+      if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Version)) {
+         configObject = atsApi.getVersionService().getVersion(artifact);
+      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamDefinition)) {
+         configObject = atsApi.getTeamDefinitionService().getTeamDefinitionById(artifact);
+      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.ActionableItem)) {
+         configObject = atsApi.getActionableItemService().getActionableItemById(artifact);
+      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Program)) {
+         configObject = atsApi.getProgramService().getProgramById(artifact);
+      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileTeam)) {
+         configObject = atsApi.getAgileService().getAgileTeam(artifact);
+      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileFeatureGroup)) {
+         configObject = atsApi.getAgileService().getAgileFeatureGroup(artifact);
+      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Insertion)) {
+         configObject = atsApi.getProgramService().getInsertionById(artifact);
+      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.InsertionActivity)) {
+         configObject = atsApi.getProgramService().getInsertionActivityById(artifact);
+      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Country)) {
+         configObject = atsApi.getProgramService().getCountryById(artifact);
+      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.WorkPackage)) {
+         configObject = atsApi.getEarnedValueService().getWorkPackage(artifact);
+      } else {
+         throw new OseeArgumentException("Unexpected artifact type [%s]", artifact.getArtifactTypeId());
+      }
+      return configObject;
+   }
+
+   public static boolean isAtsConfigArtifact(ArtifactToken artifact, AtsApi atsApi) {
+      return atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AtsConfigObject);
+   }
+
+   public static IAtsObject getAtsObject(ArtifactToken artifact, AtsApi atsApi) {
+      IAtsObject result = null;
+      if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AbstractWorkflowArtifact)) {
+         result = atsApi.getWorkItemService().getWorkItem(artifact);
+      } else if (AtsObjects.isAtsConfigArtifact(artifact, atsApi)) {
+         result = AtsObjects.getConfigObject(artifact, atsApi);
+      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Action)) {
+         result = atsApi.getWorkItemService().getAction(artifact);
+      }
+      return result;
    }
 
 }

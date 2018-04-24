@@ -79,7 +79,7 @@ public class NewActionToGoalAction extends Action {
             List<Artifact> atsTeams = agileTeam.getRelatedArtifacts(AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam);
             for (Artifact atsTeam : atsTeams) {
                for (Artifact ai : atsTeam.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_ActionableItem)) {
-                  ais.add(AtsClientService.get().getConfigItemFactory().getActionableItem(ai));
+                  ais.add(AtsClientService.get().getActionableItemService().getActionableItemById(ai));
                }
             }
          }

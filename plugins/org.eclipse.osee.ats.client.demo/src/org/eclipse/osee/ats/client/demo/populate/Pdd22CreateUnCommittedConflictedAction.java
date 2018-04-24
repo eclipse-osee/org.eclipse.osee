@@ -50,7 +50,7 @@ public class Pdd22CreateUnCommittedConflictedAction implements IPopulateDemoData
    public void run() {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getName());
 
-      Collection<IAtsActionableItem> aias = DemoDbUtil.getConfigObjects(DemoArtifactToken.SAW_Requirements_AI);
+      Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.SAW_Requirements_AI);
       Date createdDate = new Date();
       IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       String priority = "3";

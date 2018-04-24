@@ -16,7 +16,6 @@ import java.util.List;
 import javax.ws.rs.PUT;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
@@ -49,26 +48,26 @@ public class InsertionEndpointImpl extends BaseConfigEndpointImpl<JaxInsertion> 
 
    @PUT
    @Override
-   public Response update(JaxInsertion insertion) throws Exception {
-      ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(insertion.getId());
+   public Response update(JaxInsertion jaxInsertion) throws Exception {
+      ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(jaxInsertion.getId());
       if (artifact == null) {
-         throw new OseeStateException("Artifact with id %d not found", insertion.getId());
+         throw new OseeStateException("Artifact with id %d not found", jaxInsertion.getId());
       }
       IAtsChangeSet changes =
          atsApi.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
-      ArtifactToken configArtifact = changes.createArtifact(artifactType, insertion.getName(), insertion.getId());
-      IAtsConfigObject configObject = atsApi.getConfigItemFactory().getConfigObject(configArtifact);
-      if (!configArtifact.getName().equals(insertion.getName())) {
-         changes.setSoleAttributeValue(configObject, CoreAttributeTypes.Name, insertion.getName());
+      ArtifactToken insertionArt = changes.createArtifact(artifactType, jaxInsertion.getName(), jaxInsertion.getId());
+      IAtsInsertion insertion = atsApi.getProgramService().getInsertionById(insertionArt);
+      if (!insertionArt.getName().equals(jaxInsertion.getName())) {
+         changes.setSoleAttributeValue(insertion, CoreAttributeTypes.Name, jaxInsertion.getName());
       }
       changes.execute();
-      return Response.created(new URI("/" + insertion.getId())).build();
+      return Response.created(new URI("/" + jaxInsertion.getId())).build();
    }
 
    @Override
    public JaxInsertion getConfigObject(ArtifactId artifact) {
       JaxInsertion jaxInsertion = new JaxInsertion();
-      IAtsInsertion insertion = atsApi.getConfigItemFactory().getInsertion(artifact);
+      IAtsInsertion insertion = atsApi.getProgramService().getInsertionById(artifact);
       jaxInsertion.setName(insertion.getName());
       jaxInsertion.setId(insertion.getId());
       jaxInsertion.setActive(insertion.isActive());

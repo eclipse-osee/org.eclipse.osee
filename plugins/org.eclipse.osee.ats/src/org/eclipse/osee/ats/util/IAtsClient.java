@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.core.config.IAtsCacheProvider;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.ats.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.workflow.sprint.SprintArtifact;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 
@@ -56,10 +55,6 @@ public interface IAtsClient extends AtsApi, IAtsNotifier, IAttributeResolverProv
    void reloadUserCache(boolean pend);
 
    OseeClient getOseeClient();
-
-   <T> T getConfigItem(ArtifactToken configToken);
-
-   <T> Collection<T> getConfigItems(ArtifactToken... configTokens);
 
    void reloadServerAndClientCaches();
 

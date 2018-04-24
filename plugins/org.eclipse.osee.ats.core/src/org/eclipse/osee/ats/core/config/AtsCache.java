@@ -17,7 +17,9 @@ import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.config.IAtsCache;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
@@ -63,7 +65,8 @@ public class AtsCache implements IAtsCache {
    private final CacheLoader<Long, IAtsObject> idToAtsObjectCacheLoader = new CacheLoader<Long, IAtsObject>() {
       @Override
       public IAtsObject load(Long id) {
-         return atsApi.getConfigItemFactory().getConfigObject(atsApi.getQueryService().getArtifact(id));
+         ArtifactToken artifact = atsApi.getQueryService().getArtifact(id);
+         return AtsObjects.getConfigObject(artifact, atsApi);
       }
    };
 

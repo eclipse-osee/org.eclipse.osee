@@ -120,7 +120,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          if (!identityView) {
             writer.writeArrayFieldStart("version");
             for (ArtifactReadable verArt : artifact.getRelated(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
-               IAtsVersion version = atsApi.getConfigItemFactory().getVersion(verArt);
+               IAtsVersion version = atsApi.getVersionService().getVersion(verArt);
                addProgramObject(atsApi, orcsApi, version, annotations, writer, true, attributeTypes);
             }
             writer.writeEndArray();

@@ -92,8 +92,7 @@ public class AtsRuleEndpointImpl implements AtsRuleEndpointApi {
       if (!ruleList.contains(setRuleData.getRuleName())) {
          IAtsChangeSet changes =
             atsApi.getStoreService().createAtsChangeSet("Update artifact with Rule", AtsCoreUsers.SYSTEM_USER);
-         changes.addAttribute(atsApi.getConfigItemFactory().getConfigObject(artifact), AtsAttributeTypes.RuleDefinition,
-            setRuleData.getRuleName());
+         changes.addAttribute(artifact, AtsAttributeTypes.RuleDefinition, setRuleData.getRuleName());
          changes.execute();
          IAtsConfigObject atsObject = atsApi.getCache().getAtsObject(setRuleData.getConfigItemId());
          atsApi.getCache().deCacheAtsObject(atsObject);

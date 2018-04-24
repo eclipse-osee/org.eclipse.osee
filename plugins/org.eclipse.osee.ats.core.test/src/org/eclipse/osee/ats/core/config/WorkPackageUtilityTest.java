@@ -18,11 +18,12 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.country.IAtsCountry;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
+import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
-import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
@@ -59,7 +60,8 @@ public class WorkPackageUtilityTest {
    @Mock private IAtsProgram program;
    @Mock private IAtsCountry country;
 
-   @Mock private IAtsConfigItemFactory factory;
+   @Mock private IAtsEarnedValueService evService;
+   @Mock private IAtsProgramService programService;
    @Mock private IAtsQueryService queryService;
 
    // @formatter:on
@@ -76,8 +78,9 @@ public class WorkPackageUtilityTest {
 
       when(atsApi.getAttributeResolver()).thenReturn(attributeResolver);
       when(atsApi.getRelationResolver()).thenReturn(relationResolver);
-      when(atsApi.getConfigItemFactory()).thenReturn(factory);
+      when(atsApi.getEarnedValueService()).thenReturn(evService);
       when(atsApi.getQueryService()).thenReturn(queryService);
+      when(atsApi.getProgramService()).thenReturn(programService);
 
       util = new WorkPackageUtility();
    }
@@ -120,7 +123,7 @@ public class WorkPackageUtilityTest {
 
       when(relationResolver.getRelatedOrNull(workPackageArt,
          AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity)).thenReturn(activityArt);
-      when(factory.getInsertionActivity(activityArt)).thenReturn(activity);
+      when(programService.getInsertionActivityById(activityArt)).thenReturn(activity);
       result = util.getInsertionActivity(atsApi, teamWf);
       assertResult(result, activity, false);
 
@@ -136,12 +139,12 @@ public class WorkPackageUtilityTest {
          ArtifactId.SENTINEL)).thenReturn(workPackageArt);
       when(relationResolver.getRelatedOrNull(workPackageArt,
          AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity)).thenReturn(activityArt);
-      when(factory.getInsertionActivity(activityArt)).thenReturn(null);
+      when(programService.getInsertionActivityById(activityArt)).thenReturn(null);
 
       Pair<IAtsInsertion, Boolean> result = util.getInsertion(atsApi, teamWf);
       assertResult(result, null, false);
 
-      when(factory.getInsertionActivity(activityArt)).thenReturn(activity);
+      when(programService.getInsertionActivityById(activityArt)).thenReturn(activity);
       when(relationResolver.getRelatedOrNull(activity, AtsRelationTypes.InsertionToInsertionActivity_Insertion,
          IAtsInsertion.class)).thenReturn(insertion);
       result = util.getInsertion(atsApi, teamWf);
@@ -159,7 +162,7 @@ public class WorkPackageUtilityTest {
          ArtifactId.SENTINEL)).thenReturn(workPackageArt);
       when(relationResolver.getRelatedOrNull(workPackageArt,
          AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity)).thenReturn(activityArt);
-      when(factory.getInsertionActivity(activityArt)).thenReturn(activity);
+      when(programService.getInsertionActivityById(activityArt)).thenReturn(activity);
       when(relationResolver.getRelatedOrNull(activity, AtsRelationTypes.InsertionToInsertionActivity_Insertion,
          IAtsInsertion.class)).thenReturn(insertion);
 
@@ -184,8 +187,8 @@ public class WorkPackageUtilityTest {
       when(relationResolver.getRelatedOrNull(workPackageArt,
          AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity)).thenReturn(activityArt);
       when(atsApi.getQueryService().getArtifact(37L)).thenReturn(workPackageArt);
-      when(factory.getInsertionActivity(activityArt)).thenReturn(null);
-      when(factory.getInsertionActivity(activityArt)).thenReturn(activity);
+      when(programService.getInsertionActivityById(activityArt)).thenReturn(null);
+      when(programService.getInsertionActivityById(activityArt)).thenReturn(activity);
       when(relationResolver.getRelatedOrNull(activity, AtsRelationTypes.InsertionToInsertionActivity_Insertion,
          IAtsInsertion.class)).thenReturn(insertion);
       when(relationResolver.getRelatedOrNull(insertion, AtsRelationTypes.ProgramToInsertion_Program,

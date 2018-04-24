@@ -112,7 +112,7 @@ public class ExcelAtsActionArtifactExtractor {
                   Collection<IAtsActionableItem> aias = new ArrayList<>();
                   for (Artifact aiaArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem,
                      actionableItemName, AtsClientService.get().getAtsBranch())) {
-                     IAtsActionableItem ai = AtsClientService.get().getConfigItemFactory().getActionableItem(aiaArt);
+                     IAtsActionableItem ai = AtsClientService.get().getActionableItemService().getActionableItemById(aiaArt);
                      if (ai != null) {
                         aias.add(ai);
                      }
@@ -236,7 +236,7 @@ public class ExcelAtsActionArtifactExtractor {
                for (String actionableItemName : aData.actionableItems) {
                   for (Artifact aiaArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem,
                      actionableItemName, AtsClientService.get().getAtsBranch())) {
-                     IAtsActionableItem ai = AtsClientService.get().getConfigItemFactory().getActionableItem(aiaArt);
+                     IAtsActionableItem ai = AtsClientService.get().getActionableItemService().getActionableItemById(aiaArt);
                      if (ai != null) {
                         aias.add(ai);
                      }

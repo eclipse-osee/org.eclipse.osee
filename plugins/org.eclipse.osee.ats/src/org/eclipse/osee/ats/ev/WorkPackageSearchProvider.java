@@ -38,7 +38,7 @@ public class WorkPackageSearchProvider implements IWorkPackageProvider {
       Collection<IAtsWorkPackage> items = new LinkedList<>();
       for (Artifact art : ArtifactQuery.getArtifactListFrom(selectableWorkPackageTokens,
          AtsClientService.get().getAtsBranch())) {
-         items.add(AtsClientService.get().getConfigItemFactory().getWorkPackage(art));
+         items.add(AtsClientService.get().getEarnedValueService().getWorkPackage(art));
       }
       return items;
    }
@@ -50,7 +50,7 @@ public class WorkPackageSearchProvider implements IWorkPackageProvider {
       Collection<IAtsWorkPackage> items = new LinkedList<>();
       for (Artifact art : ArtifactQuery.getArtifactListFrom(selectableWorkPackageTokens,
          AtsClientService.get().getAtsBranch())) {
-         items.add(AtsClientService.get().getConfigItemFactory().getWorkPackage(art));
+         items.add(AtsClientService.get().getEarnedValueService().getWorkPackage(art));
       }
       return items;
    }

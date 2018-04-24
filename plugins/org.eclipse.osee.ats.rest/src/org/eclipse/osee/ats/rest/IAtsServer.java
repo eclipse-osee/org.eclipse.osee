@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
-import org.eclipse.osee.ats.api.team.IAtsConfigItemFactoryProvider;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
@@ -28,7 +27,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 /**
  * @author Donald G Dunne
  */
-public interface IAtsServer extends AtsApi, IAtsNotifier, IAtsConfigItemFactoryProvider, IAtsCacheProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider {
+public interface IAtsServer extends AtsApi, IAtsNotifier, IAtsCacheProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider {
 
    OrcsApi getOrcsApi();
 

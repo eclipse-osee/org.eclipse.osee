@@ -58,4 +58,6 @@ public interface IAtsVersionService {
 
    Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef);
 
+   IAtsVersion getVersion(ArtifactId versionId);
+
 }

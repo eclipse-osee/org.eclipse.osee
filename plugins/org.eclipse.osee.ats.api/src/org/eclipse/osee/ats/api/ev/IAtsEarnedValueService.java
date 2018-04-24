@@ -55,4 +55,9 @@ public interface IAtsEarnedValueService {
 
    void setWorkPackage(IAtsWorkPackage workPackage, IAtsWorkItem workItem, IAtsChangeSet changes);
 
+   /**
+    * @return this object casted, else if hard artifact constructed, else load and construct
+    */
+   IAtsWorkPackage getWorkPackageById(ArtifactId workPackageId);
+
 }

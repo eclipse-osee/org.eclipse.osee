@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
-import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
@@ -54,7 +53,7 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.config.AtsCache;
-import org.eclipse.osee.ats.core.config.TeamDefinitionService;
+import org.eclipse.osee.ats.core.config.TeamDefinitionServiceImpl;
 import org.eclipse.osee.ats.core.program.AtsProgramService;
 import org.eclipse.osee.ats.core.review.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.core.version.AtsVersionServiceImpl;
@@ -110,7 +109,6 @@ public abstract class AtsApiImpl implements AtsApi {
    protected IAtsWorkStateFactory workStateFactory;
    protected IAtsLogFactory logFactory;
    protected IAtsColumnService columnServices;
-   protected IAtsConfigItemFactory configItemFactory;
    protected IAtsActionableItemService actionableItemManager;
    protected IRelationResolver relationResolver;
    protected IAtsVersionService versionService;
@@ -163,7 +161,7 @@ public abstract class AtsApiImpl implements AtsApi {
 
       workDefinitionStore = new AtsWorkDefinitionStoreService(this);
       programService = new AtsProgramService(this);
-      teamDefinitionService = new TeamDefinitionService(this);
+      teamDefinitionService = new TeamDefinitionServiceImpl(this);
       versionService = new AtsVersionServiceImpl(this, eventAdmin);
       reviewService = new AtsReviewServiceImpl(this);
    }
@@ -410,11 +408,6 @@ public abstract class AtsApiImpl implements AtsApi {
    @Override
    public IArtifactResolver getArtifactResolver() {
       return artifactResolver;
-   }
-
-   @Override
-   public IAtsConfigItemFactory getConfigItemFactory() {
-      return configItemFactory;
    }
 
    @Override

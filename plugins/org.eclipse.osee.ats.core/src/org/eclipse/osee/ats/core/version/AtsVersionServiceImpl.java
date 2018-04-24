@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.config.Version;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -54,6 +55,20 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
+   public IAtsVersion getVersion(ArtifactId versionId) {
+      IAtsVersion version = null;
+      if (versionId instanceof IAtsVersion) {
+         version = (IAtsVersion) versionId;
+      } else {
+         ArtifactToken art = atsApi.getQueryService().getArtifact(versionId);
+         if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.Version)) {
+            version = new Version(atsApi.getLogger(), atsApi, art);
+         }
+      }
+      return version;
+   }
+
+   @Override
    public IAtsVersion getTargetedVersion(IAtsWorkItem workItem) {
       IAtsVersion version = null;
       IAtsTeamWorkflow team = workItem.getParentTeamWorkflow();
@@ -76,7 +91,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
             OseeLog.log(Activator.class, Level.SEVERE,
                "Multiple targeted versions for artifact " + team.toStringWithId());
          } else {
-            version = atsApi.getConfigItemFactory().getVersion(versions.iterator().next());
+            version = atsApi.getVersionService().getVersion(versions.iterator().next());
          }
       }
       return version;
@@ -178,7 +193,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
       IAtsVersion version = null;
       ArtifactToken verArt = atsApi.getQueryService().getArtifact(id.getId());
       if (verArt != null) {
-         version = atsApi.getConfigItemFactory().getVersion(verArt);
+         version = atsApi.getVersionService().getVersion(verArt);
       }
       return version;
    }
@@ -208,8 +223,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
       IAtsVersion version = null;
       version = atsApi.getProgramService().getVersion(program, versionName);
       if (version == null) {
-         version =
-            atsApi.getConfigItemFactory().getVersion(changes.createArtifact(AtsArtifactTypes.Version, versionName));
+         version = atsApi.getVersionService().getVersion(changes.createArtifact(AtsArtifactTypes.Version, versionName));
       }
       return version;
    }

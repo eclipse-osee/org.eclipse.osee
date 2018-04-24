@@ -16,7 +16,6 @@ import java.util.List;
 import javax.ws.rs.PUT;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
@@ -56,9 +55,9 @@ public class InsertionActivityEndpointImpl extends BaseConfigEndpointImpl<JaxIns
       IAtsChangeSet changes =
          atsApi.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
       ArtifactToken configArtifact = changes.createArtifact(artifactType, activity.getName(), activity.getId());
-      IAtsConfigObject configObject = atsApi.getConfigItemFactory().getConfigObject(configArtifact);
+      IAtsInsertionActivity insertionActivity = atsApi.getProgramService().getInsertionActivityById(configArtifact);
       if (!configArtifact.getName().equals(activity.getName())) {
-         changes.setSoleAttributeValue(configObject, CoreAttributeTypes.Name, activity.getName());
+         changes.setSoleAttributeValue(insertionActivity, CoreAttributeTypes.Name, activity.getName());
       }
       changes.execute();
       return Response.created(new URI("/" + activity.getId())).build();
@@ -67,7 +66,7 @@ public class InsertionActivityEndpointImpl extends BaseConfigEndpointImpl<JaxIns
    @Override
    public JaxInsertionActivity getConfigObject(ArtifactId artifact) {
       JaxInsertionActivity jaxInsertion = new JaxInsertionActivity();
-      IAtsInsertionActivity insertion = atsApi.getConfigItemFactory().getInsertionActivity(artifact);
+      IAtsInsertionActivity insertion = atsApi.getProgramService().getInsertionActivityById(artifact);
       jaxInsertion.setName(insertion.getName());
       jaxInsertion.setId(insertion.getId());
       jaxInsertion.setActive(insertion.isActive());

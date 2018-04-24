@@ -35,7 +35,7 @@ public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
    private ArtifactToken artifact;
    private final AtsApi atsApi;
 
-   public WorkPackage(Log logger, ArtifactToken artifact, AtsApi atsApi) {
+   public WorkPackage(Log logger, AtsApi atsApi, ArtifactToken artifact) {
       super(logger, atsApi, artifact, AtsArtifactTypes.WorkPackage);
       this.artifact = artifact;
       this.atsApi = atsApi;

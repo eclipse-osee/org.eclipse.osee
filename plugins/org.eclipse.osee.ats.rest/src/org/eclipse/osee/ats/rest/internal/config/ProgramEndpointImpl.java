@@ -23,7 +23,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
@@ -59,26 +58,26 @@ public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> impl
 
    @PUT
    @Override
-   public Response update(JaxProgram program) throws Exception {
-      ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(program.getId());
+   public Response update(JaxProgram jaxProgram) throws Exception {
+      ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(jaxProgram.getId());
       if (artifact == null) {
-         throw new OseeStateException("Artifact with id %d not found", program.getId());
+         throw new OseeStateException("Artifact with id %d not found", jaxProgram.getId());
       }
       IAtsChangeSet changes =
          atsApi.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
-      ArtifactToken configArtifact = changes.createArtifact(artifactType, program.getName(), program.getId());
-      IAtsConfigObject configObject = atsApi.getConfigItemFactory().getConfigObject(configArtifact);
-      if (!configArtifact.getName().equals(program.getName())) {
-         changes.setSoleAttributeValue(configObject, CoreAttributeTypes.Name, program.getName());
+      ArtifactToken programArt = changes.createArtifact(artifactType, jaxProgram.getName(), jaxProgram.getId());
+      IAtsProgram program = atsApi.getProgramService().getProgramById(programArt);
+      if (!programArt.getName().equals(jaxProgram.getName())) {
+         changes.setSoleAttributeValue(program, CoreAttributeTypes.Name, jaxProgram.getName());
       }
       changes.execute();
-      return Response.created(new URI("/" + program.getId())).build();
+      return Response.created(new URI("/" + jaxProgram.getId())).build();
    }
 
    @Override
    public JaxProgram getConfigObject(ArtifactId artifact) {
       JaxProgram jaxProgram = new JaxProgram();
-      IAtsProgram program = atsApi.getConfigItemFactory().getProgram(artifact);
+      IAtsProgram program = atsApi.getProgramService().getProgramById(artifact);
       jaxProgram.setName(program.getName());
       jaxProgram.setId(program.getId());
       jaxProgram.setActive(program.isActive());

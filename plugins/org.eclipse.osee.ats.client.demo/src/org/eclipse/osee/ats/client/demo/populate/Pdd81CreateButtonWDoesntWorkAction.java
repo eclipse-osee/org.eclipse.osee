@@ -33,7 +33,7 @@ public class Pdd81CreateButtonWDoesntWorkAction implements IPopulateDemoDatabase
    public void run() {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
 
-      Collection<IAtsActionableItem> aias = DemoDbUtil.getConfigObjects(DemoArtifactToken.CIS_Test_AI);
+      Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.CIS_Test_AI);
 
       ActionResult actionResult = AtsClientService.get().getActionFactory().createAction(null,
          DemoArtifactToken.ButtonWDoesntWorkOnSituationPage_TeamWf.getName(), "Problem with the Situation Page",

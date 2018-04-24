@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.client.demo.internal.Activator;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -67,10 +68,10 @@ public class DemoDbUtil {
          branch);
    }
 
-   public static <T> Collection<T> getConfigObjects(ArtifactToken... configTokens) {
-      Set<T> aias = new HashSet<>();
-      for (ArtifactToken configObj : configTokens) {
-         aias.add(AtsClientService.get().getConfigItem(configObj));
+   public static Collection<IAtsActionableItem> getActionableItems(ArtifactToken... aiTokens) {
+      Set<IAtsActionableItem> aias = new HashSet<>();
+      for (ArtifactToken aiToken : aiTokens) {
+         aias.add(AtsClientService.get().getActionableItemService().getActionableItemById(aiToken));
       }
       return aias;
    }

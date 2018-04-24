@@ -176,8 +176,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
       if (awas.size() == 1) {
          for (Artifact featureArt : awas.iterator().next().getRelatedArtifacts(
             AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
-            IAgileFeatureGroup featureGroup =
-               AtsClientService.get().getConfigItemFactory().getAgileFeatureGroup(featureArt);
+            IAgileFeatureGroup featureGroup = AtsClientService.get().getAgileService().getAgileFeatureGroup(featureArt);
             if (featureGroup.isActive()) {
                selected.add(createJaxAgileFeatureGroupFromAgileFeatureGroup(featureGroup));
             }

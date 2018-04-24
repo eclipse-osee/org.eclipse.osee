@@ -49,7 +49,7 @@ import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.branch.internal.AtsBranchServiceImpl;
 import org.eclipse.osee.ats.config.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.agile.AgileService;
-import org.eclipse.osee.ats.core.ai.ActionableItemService;
+import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
 import org.eclipse.osee.ats.core.config.ActionableItem;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
@@ -81,7 +81,6 @@ import org.eclipse.osee.ats.workflow.task.internal.AtsTaskService;
 import org.eclipse.osee.ats.workflow.transition.TransitionListeners;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -127,8 +126,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
          workDefinitionDslService, teamWorkflowProvidersLazy);
 
       earnedValueService = new AtsEarnedValueImpl(logger, this);
-      configItemFactory = new ConfigItemFactory(logger, this);
-
       actionableItemFactory = new ActionableItemFactory();
       teamDefFactory = new TeamDefinitionFactory();
       versionFactory = new VersionFactory();
@@ -143,7 +140,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
       storeService = new AtsStoreService(this, getUserServiceClient(), jdbcService);
 
       queryService = new AtsQueryServiceImpl(this, jdbcService);
-      actionableItemManager = new ActionableItemService(attributeResolverService, storeService, this);
+      actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, storeService, this);
 
       actionFactory =
          new ActionFactory(sequenceProvider, actionableItemManager, attributeResolverService, stateFactory, this);
@@ -440,24 +437,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    @Override
    public List<WorkDefData> getWorkDefinitionsData() {
       return getConfigService().getConfigurations().getWorkDefinitionsData();
-   }
-
-   @SuppressWarnings("unchecked")
-   @Override
-   public <T> T getConfigItem(ArtifactToken configToken) {
-      return (T) getConfigItemFactory().getConfigObject(configToken);
-   }
-
-   @Override
-   public <T> Collection<T> getConfigItems(ArtifactToken... configTokens) {
-      List<T> results = new LinkedList<>();
-      for (ArtifactToken art : configTokens) {
-         T configItem = getConfigItem(art);
-         if (configItem != null) {
-            results.add(configItem);
-         }
-      }
-      return results;
    }
 
    @Override

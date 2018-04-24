@@ -82,6 +82,34 @@ public class AgileService implements IAgileService {
       this.atsApi = atsApi;
    }
 
+   @Override
+   public IAgileTeam getAgileTeamById(ArtifactId agileTeamId) {
+      AgileTeam program = null;
+      if (agileTeamId instanceof AgileTeam) {
+         program = (AgileTeam) agileTeamId;
+      } else {
+         ArtifactToken art = atsApi.getQueryService().getArtifact(agileTeamId);
+         if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.AgileTeam)) {
+            program = new AgileTeam(atsApi.getLogger(), atsApi, art);
+         }
+      }
+      return program;
+   }
+
+   @Override
+   public IAgileFeatureGroup getAgileFeatureGroupById(ArtifactId agileFeatureGroupId) {
+      AgileFeatureGroup agileFeatureGroup = null;
+      if (agileFeatureGroupId instanceof AgileFeatureGroup) {
+         agileFeatureGroup = (AgileFeatureGroup) agileFeatureGroupId;
+      } else {
+         ArtifactToken art = atsApi.getQueryService().getArtifact(agileFeatureGroupId);
+         if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.AgileFeatureGroup)) {
+            agileFeatureGroup = new AgileFeatureGroup(atsApi.getLogger(), atsApi, art);
+         }
+      }
+      return agileFeatureGroup;
+   }
+
    /********************************
     ** Agile Program
     ***********************************/
@@ -275,7 +303,7 @@ public class AgileService implements IAgileService {
       IAgileTeam aTeam = null;
       ArtifactId aTeamArt = atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.AgileTeam, agileTeamName);
       if (aTeamArt != null) {
-         aTeam = atsApi.getConfigItemFactory().getAgileTeam(aTeamArt);
+         aTeam = atsApi.getAgileService().getAgileTeam(aTeamArt);
       }
       return aTeam;
    }
@@ -342,7 +370,7 @@ public class AgileService implements IAgileService {
       ArtifactId artifact = team.getStoreObject();
       for (ArtifactId groupArt : atsApi.getRelationResolver().getRelated(artifact,
          AtsRelationTypes.AgileTeamToFeatureGroup_FeatureGroup)) {
-         groups.add(atsApi.getConfigItemFactory().getAgileFeatureGroup(groupArt));
+         groups.add(atsApi.getAgileService().getAgileFeatureGroup(groupArt));
       }
       return groups;
    }
@@ -452,7 +480,7 @@ public class AgileService implements IAgileService {
    public Collection<IAgileFeatureGroup> getAgileFeatureGroups(List<Long> ids) {
       List<IAgileFeatureGroup> features = new LinkedList<>();
       for (ArtifactId featureArt : atsApi.getQueryService().getArtifacts(ids)) {
-         features.add(atsApi.getConfigItemFactory().getAgileFeatureGroup(featureArt));
+         features.add(atsApi.getAgileService().getAgileFeatureGroup(featureArt));
       }
       return features;
    }
@@ -522,7 +550,7 @@ public class AgileService implements IAgileService {
          ArtifactId teamArt =
             atsApi.getRelationResolver().getRelatedOrNull(backlogArt, AtsRelationTypes.AgileTeamToBacklog_AgileTeam);
          if (teamArt != null) {
-            return atsApi.getConfigItemFactory().getAgileTeam(teamArt);
+            return atsApi.getAgileService().getAgileTeam(teamArt);
          }
       }
       ArtifactId sprintArt =
@@ -531,7 +559,7 @@ public class AgileService implements IAgileService {
          ArtifactId teamArt =
             atsApi.getRelationResolver().getRelatedOrNull(sprintArt, AtsRelationTypes.AgileTeamToSprint_AgileTeam);
          if (teamArt != null) {
-            return atsApi.getConfigItemFactory().getAgileTeam(teamArt);
+            return atsApi.getAgileService().getAgileTeam(teamArt);
          }
       }
       return null;

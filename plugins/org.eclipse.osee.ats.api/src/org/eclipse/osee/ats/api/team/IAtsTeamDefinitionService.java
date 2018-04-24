@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 
 public interface IAtsTeamDefinitionService {
 
@@ -29,5 +30,10 @@ public interface IAtsTeamDefinitionService {
    IAtsTeamDefinition getTeamDefinition(String name);
 
    Collection<IAtsTeamDefinition> getTeamDefinitions(IAgileTeam agileTeam);
+
+   /**
+    * @return this object casted, else if hard artifact constructed, else load and construct
+    */
+   IAtsTeamDefinition getTeamDefinitionById(ArtifactId teamDefId);
 
 }

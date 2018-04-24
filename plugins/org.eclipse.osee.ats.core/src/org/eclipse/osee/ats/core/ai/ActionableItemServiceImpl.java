@@ -20,31 +20,48 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.core.config.ActionableItem;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
  */
-public class ActionableItemService implements IAtsActionableItemService {
+public class ActionableItemServiceImpl implements IAtsActionableItemService {
 
    private final IAttributeResolver attrResolver;
    private final IAtsStoreService atsStoreService;
    private final AtsApi atsApi;
 
-   public ActionableItemService(IAttributeResolver attrResolver, IAtsStoreService atsStoreService, AtsApi atsApi) {
+   public ActionableItemServiceImpl(IAttributeResolver attrResolver, IAtsStoreService atsStoreService, AtsApi atsApi) {
       this.attrResolver = attrResolver;
       this.atsStoreService = atsStoreService;
       this.atsApi = atsApi;
+   }
+
+   @Override
+   public IAtsActionableItem getActionableItemById(ArtifactId aiId) {
+      IAtsActionableItem ai = null;
+      if (aiId instanceof IAtsActionableItem) {
+         ai = (IAtsActionableItem) aiId;
+      } else {
+         ArtifactToken art = atsApi.getQueryService().getArtifact(aiId);
+         if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.ActionableItem)) {
+            ai = new ActionableItem(atsApi.getLogger(), atsApi, art);
+         }
+      }
+      return ai;
    }
 
    @Override
@@ -74,7 +91,7 @@ public class ActionableItemService implements IAtsActionableItemService {
          for (ArtifactId id : getActionableItemIds(atsObject)) {
             IAtsActionableItem aia = atsApi.getQueryService().getConfigItem(id);
             if (aia == null) {
-               OseeLog.logf(ActionableItemService.class, Level.SEVERE,
+               OseeLog.logf(ActionableItemServiceImpl.class, Level.SEVERE,
                   "Actionable Item id [%s] from [%s] doesn't match item in AtsConfigCache", id,
                   atsObject.toStringWithId());
             } else {

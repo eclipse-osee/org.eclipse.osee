@@ -33,7 +33,7 @@ public class Pdd80CreateButtonSDoesntWorkAction implements IPopulateDemoDatabase
    public void run() {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
 
-      Collection<IAtsActionableItem> aias = DemoDbUtil.getConfigObjects(DemoArtifactToken.Reader_AI);
+      Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.Reader_AI);
 
       ActionResult actionResult = AtsClientService.get().getActionFactory().createAction(null,
          DemoArtifactToken.ButtonSDoesntWorkOnHelp_TeamWf.getName(), "Problem with the help", ChangeType.Problem, "3",

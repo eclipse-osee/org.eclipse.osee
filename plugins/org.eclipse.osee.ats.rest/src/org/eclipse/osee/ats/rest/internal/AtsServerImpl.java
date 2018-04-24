@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.agile.AgileService;
-import org.eclipse.osee.ats.core.ai.ActionableItemService;
+import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsApiImpl;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
@@ -54,7 +54,6 @@ import org.eclipse.osee.ats.rest.internal.util.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsStoreServiceImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsActionEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskService;
-import org.eclipse.osee.ats.rest.internal.workitem.ConfigItemFactory;
 import org.eclipse.osee.ats.rest.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.rest.util.IAtsNotifierServer;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
@@ -124,7 +123,6 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
          workDefinitionDslService, teamWorkflowProvidersLazy);
 
       notifyService = new AtsNotifierServiceImpl();
-      configItemFactory = new ConfigItemFactory(logger, this, orcsApi);
 
       artifactResolver = new ArtifactResolverImpl(this, orcsApi);
       branchService = new AtsBranchServiceImpl(this, orcsApi, teamWorkflowProvidersLazy);
@@ -139,7 +137,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
          new AtsStoreServiceImpl(attributeResolverService, this, orcsApi, stateFactory, logFactory, this, jdbcService);
 
       queryService = new AtsQueryServiceImpl(this, jdbcService, orcsApi);
-      actionableItemManager = new ActionableItemService(attributeResolverService, storeService, this);
+      actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, storeService, this);
       actionFactory =
          new ActionFactory(sequenceProvider, actionableItemManager, attributeResolverService, stateFactory, this);
 

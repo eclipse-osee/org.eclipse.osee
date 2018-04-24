@@ -116,4 +116,19 @@ public interface IAtsProgramService {
 
    List<ProgramVersions> getProgramVersions(IArtifactType artType, boolean activeOnly);
 
+   /**
+    * @return this object casted, else if hard artifact constructed, else load and construct
+    */
+   IAtsInsertion getInsertionById(ArtifactId insertionId);
+
+   /**
+    * @return this object casted, else if hard artifact constructed, else load and construct
+    */
+   IAtsInsertionActivity getInsertionActivityById(ArtifactId insertionActivityId);
+
+   /**
+    * @return this object casted, else if hard artifact constructed, else load and construct
+    */
+   IAtsCountry getCountryById(ArtifactId countryId);
+
 }

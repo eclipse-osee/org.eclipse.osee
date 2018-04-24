@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.query.IAtsQueryFilter;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -70,7 +71,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    public <T extends IAtsConfigObject> Collection<T> getConfigObjects() {
       Set<T> allResults = new HashSet<>();
       for (ArtifactToken artifact : getArtifacts()) {
-         IAtsConfigObject configObj = atsApi.getConfigItemFactory().getConfigObject(artifact);
+         IAtsConfigObject configObj = AtsObjects.getConfigObject(artifact, atsApi);
          if (configObj == null) {
             throw new OseeArgumentException("Non-AtsConfigObject Artifact Returned %s", artifact.toStringWithId());
          }

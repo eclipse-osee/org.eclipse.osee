@@ -448,7 +448,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       AtsActionEndpointApi actionEp = AtsClientService.getActionEndpoint();
 
       // Set to Build 1 by id
-      IAtsVersion sawBld1Ver = AtsClientService.get().getConfigItem(DemoArtifactToken.SAW_Bld_1);
+      IAtsVersion sawBld1Ver = AtsClientService.get().getVersionService().getVersion(DemoArtifactToken.SAW_Bld_1);
       actionEp.setActionAttributeByType(teamWf.getIdString(), AttributeKey.Version.name(),
          Collections.singletonList(sawBld1Ver.getIdString()));
 
@@ -513,7 +513,8 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       Date needBy = new Date();
       data.setNeedByDateLong(String.valueOf(needBy.getTime()));
       data.setPriority("3");
-      IAtsActionableItem ai = AtsClientService.get().getConfigItem(DemoArtifactToken.SAW_Code_AI);
+      IAtsActionableItem ai =
+         AtsClientService.get().getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_Code_AI);
       data.setAiIds(Arrays.asList(ai.getIdString()));
       data.addAttrValue(AtsAttributeTypes.ColorTeam, "Blue Team");
       data.addAttrValue(AtsAttributeTypes.IPT, "My IPT");
@@ -604,7 +605,8 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testCreateEmptyAction() throws Exception {
-      IAtsActionableItem ai = AtsClientService.get().getConfigItem(DemoArtifactToken.SAW_Code_AI);
+      IAtsActionableItem ai =
+         AtsClientService.get().getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_Code_AI);
       String aiStr = ai.getIdString();
 
       String newAction = AtsClientService.getActionEndpoint().createEmptyAction(

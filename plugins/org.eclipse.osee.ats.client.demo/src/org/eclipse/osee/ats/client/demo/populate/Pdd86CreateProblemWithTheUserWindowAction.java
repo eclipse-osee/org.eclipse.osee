@@ -33,7 +33,7 @@ public class Pdd86CreateProblemWithTheUserWindowAction implements IPopulateDemoD
    public void run() {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
 
-      Collection<IAtsActionableItem> aias = DemoDbUtil.getConfigObjects(DemoArtifactToken.Timesheet_AI);
+      Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.Timesheet_AI);
 
       ActionResult actionResult = AtsClientService.get().getActionFactory().createAction(null,
          DemoArtifactToken.ProblemWithTheUserWindow_TeamWf.getName(), "Problem with the user window",

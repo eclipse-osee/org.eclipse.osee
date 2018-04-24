@@ -16,8 +16,8 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.util.AbstractRelationResolverServiceImpl;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.util.IAtsClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -63,25 +63,13 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
       Artifact useArt = getArtifact(atsObject);
       if (useArt != null) {
          for (Artifact art : useArt.getRelatedArtifacts(relationType, flag)) {
-            IAtsObject object = getAtsObject(art);
+            IAtsObject object = AtsObjects.getAtsObject(art, atsClient);
             if (object != null) {
                results.add((T) object);
             }
          }
       }
       return results;
-   }
-
-   private IAtsObject getAtsObject(Artifact artifact) {
-      IAtsObject result = null;
-      if (artifact instanceof IAtsWorkItem) {
-         result = atsClient.getWorkItemService().getWorkItem(artifact);
-      } else if (atsClient.getConfigItemFactory().isAtsConfigArtifact(artifact)) {
-         result = atsClient.getConfigItemFactory().getConfigObject(artifact);
-      } else if (artifact.isOfType(AtsArtifactTypes.Action)) {
-         result = atsClient.getWorkItemService().getAction(artifact);
-      }
-      return result;
    }
 
    @Override
@@ -147,7 +135,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
          try {
             Artifact artifact = art.getRelatedArtifact(relationType);
             if (artifact != null) {
-               IAtsObject object = getAtsObject(artifact);
+               IAtsObject object = AtsObjects.getAtsObject(artifact, atsClient);
                if (object != null) {
                   related = (T) object;
                }

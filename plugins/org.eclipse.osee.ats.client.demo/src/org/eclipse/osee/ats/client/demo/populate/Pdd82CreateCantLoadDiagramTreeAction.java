@@ -31,7 +31,7 @@ public class Pdd82CreateCantLoadDiagramTreeAction implements IPopulateDemoDataba
    public void run() {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
 
-      Collection<IAtsActionableItem> aias = DemoDbUtil.getConfigObjects(DemoArtifactToken.CIS_Test_AI);
+      Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.CIS_Test_AI);
 
       AtsClientService.get().getActionFactory().createAction(null,
          DemoArtifactToken.CantLoadDiagramTree_TeamWf.getName(), "Problem with the Diagram Tree", ChangeType.Problem,

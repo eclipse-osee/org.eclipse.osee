@@ -25,16 +25,31 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Donald G. Dunne
  */
-public class TeamDefinitionService implements IAtsTeamDefinitionService {
+public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
 
    private final AtsApi atsApi;
 
-   public TeamDefinitionService(AtsApi atsApi) {
+   public TeamDefinitionServiceImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
+   }
+
+   @Override
+   public IAtsTeamDefinition getTeamDefinitionById(ArtifactId teamDefId) {
+      IAtsTeamDefinition teamDef = null;
+      if (teamDefId instanceof IAtsTeamDefinition) {
+         teamDef = (IAtsTeamDefinition) teamDefId;
+      } else {
+         ArtifactToken art = atsApi.getQueryService().getArtifact(teamDefId);
+         if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.TeamDefinition)) {
+            teamDef = new TeamDefinition(atsApi.getLogger(), atsApi, art);
+         }
+      }
+      return teamDef;
    }
 
    @Override
@@ -53,7 +68,7 @@ public class TeamDefinitionService implements IAtsTeamDefinitionService {
       List<IAtsVersion> versions = new ArrayList<>();
       for (ArtifactId verArt : atsApi.getRelationResolver().getRelated(teamDef,
          AtsRelationTypes.TeamDefinitionToVersion_Version)) {
-         versions.add(atsApi.getConfigItemFactory().getVersion(verArt));
+         versions.add(atsApi.getVersionService().getVersion(verArt));
       }
       return versions;
    }
@@ -73,7 +88,7 @@ public class TeamDefinitionService implements IAtsTeamDefinitionService {
       IAtsTeamDefinition teamDef = null;
       ArtifactId teamDefArt = atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.TeamDefinition, name);
       if (teamDefArt != null) {
-         teamDef = atsApi.getConfigItemFactory().getTeamDef(teamDefArt);
+         teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(teamDefArt);
       }
       return teamDef;
    }
@@ -83,7 +98,7 @@ public class TeamDefinitionService implements IAtsTeamDefinitionService {
       List<IAtsTeamDefinition> teamDefs = new LinkedList<>();
       for (ArtifactId atsTeamArt : atsApi.getRelationResolver().getRelated(agileTeam,
          AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam)) {
-         teamDefs.add(atsApi.getConfigItemFactory().getTeamDef(atsTeamArt));
+         teamDefs.add(atsApi.getTeamDefinitionService().getTeamDefinitionById(atsTeamArt));
       }
       return teamDefs;
    }

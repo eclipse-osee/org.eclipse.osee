@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -223,9 +224,9 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
       if (Strings.isNumeric(id)) {
          atsObject = getCache().getAtsObject(Long.valueOf(id));
          if (atsObject == null) {
-            ArtifactId artifact = getArtifact(Long.valueOf(id));
+            ArtifactToken artifact = getArtifact(Long.valueOf(id));
             if (artifact != null && artifact instanceof IAtsConfigObject) {
-               atsObject = (T) atsApi.getConfigItemFactory().getConfigObject(artifact);
+               atsObject = (T) AtsObjects.getConfigObject(artifact, atsApi);
             }
          }
       }
@@ -237,9 +238,9 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    public <T> T getConfigItem(Long id) {
       T atsObject = getCache().getAtsObject(id);
       if (atsObject == null) {
-         ArtifactId artifact = getArtifact(id);
+         ArtifactToken artifact = getArtifact(id);
          if (artifact != null && artifact instanceof IAtsConfigObject) {
-            atsObject = (T) atsApi.getConfigItemFactory().getConfigObject(artifact);
+            atsObject = (T) AtsObjects.getConfigObject(artifact, atsApi);
          }
       }
       return atsObject;

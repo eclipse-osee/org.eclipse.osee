@@ -56,9 +56,9 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
  * @author Donald G Dunne
  */
 public class AtsConfigurationsService implements IAtsConfigurationsService {
+   private AtsConfigurations atsConfigurations;
    private final OrcsApi orcsApi;
    private final AtsApi atsApi;
-   private AtsConfigurations atsConfigurations;
 
    public AtsConfigurationsService(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
@@ -259,4 +259,5 @@ public class AtsConfigurationsService implements IAtsConfigurationsService {
       }
       return null;
    }
+
 }

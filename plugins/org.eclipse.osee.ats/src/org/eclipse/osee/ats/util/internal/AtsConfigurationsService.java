@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * Provides client configurations through server endpoint
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsConfigurationsService implements IAtsConfigurationsService {

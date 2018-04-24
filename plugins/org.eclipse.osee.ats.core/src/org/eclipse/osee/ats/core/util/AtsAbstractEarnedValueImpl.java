@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
@@ -48,6 +49,20 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
    }
 
    @Override
+   public IAtsWorkPackage getWorkPackageById(ArtifactId workPackageId) {
+      IAtsWorkPackage workPackage = null;
+      if (workPackageId instanceof IAtsWorkPackage) {
+         workPackage = (IAtsWorkPackage) workPackageId;
+      } else {
+         ArtifactToken art = atsApi.getQueryService().getArtifact(workPackageId);
+         if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.WorkPackage)) {
+            workPackage = new WorkPackage(atsApi.getLogger(), atsApi, art);
+         }
+      }
+      return workPackage;
+   }
+
+   @Override
    public ArtifactId getWorkPackageId(IAtsWorkItem workItem) {
       ArtifactId artifact = atsApi.getQueryService().getArtifact(workItem);
       Conditions.checkNotNull(artifact, "workItem", "Can't Find Work Package matching %s", workItem.toStringWithId());
@@ -60,7 +75,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
       ArtifactId workPackageId = getWorkPackageId(workItem);
       if (workPackageId.isValid()) {
          ArtifactToken workPkgArt = atsApi.getQueryService().getArtifact(workPackageId);
-         return new WorkPackage(logger, workPkgArt, atsApi);
+         return new WorkPackage(logger, atsApi, workPkgArt);
       }
       return null;
    }
@@ -80,7 +95,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
          if (artifact != null) {
             for (ArtifactToken workPackageArt : atsApi.getRelationResolver().getRelated(artifact,
                AtsRelationTypes.WorkPackage_WorkPackage)) {
-               workPackageOptions.add(new WorkPackage(logger, workPackageArt, atsApi));
+               workPackageOptions.add(new WorkPackage(logger, atsApi, workPackageArt));
             }
          }
       }
@@ -117,15 +132,16 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
    @Override
    public IAtsWorkPackage getWorkPackage(ArtifactId artifact) {
       ArtifactToken realArt = atsApi.getQueryService().getArtifact(artifact);
-      return new WorkPackage(logger, realArt, atsApi);
+      return new WorkPackage(logger, atsApi, realArt);
    }
 
    @Override
    public Collection<IAtsWorkPackage> getWorkPackages(IAtsInsertionActivity insertionActivity) {
       List<IAtsWorkPackage> workPackages = new ArrayList<>();
       for (ArtifactToken artifact : atsApi.getRelationResolver().getRelated(
-         atsApi.getQueryService().getArtifact(insertionActivity.getId()), AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
-         workPackages.add(new WorkPackage(logger, artifact, atsApi));
+         atsApi.getQueryService().getArtifact(insertionActivity.getId()),
+         AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
+         workPackages.add(new WorkPackage(logger, atsApi, artifact));
       }
       return workPackages;
    }

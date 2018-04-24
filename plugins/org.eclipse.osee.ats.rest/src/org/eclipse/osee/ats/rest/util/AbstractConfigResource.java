@@ -19,6 +19,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
@@ -52,8 +53,8 @@ public abstract class AbstractConfigResource {
    @Produces(MediaType.APPLICATION_JSON)
    public List<IAtsConfigObject> getObjectsJson() {
       List<IAtsConfigObject> configs = new ArrayList<>();
-      for (ArtifactId art : query.andTypeEquals(artifactType).getResults()) {
-         configs.add(atsApi.getConfigItemFactory().getConfigObject(art));
+      for (ArtifactToken art : query.andTypeEquals(artifactType).getResults()) {
+         configs.add(AtsObjects.getConfigObject(art, atsApi));
       }
       return configs;
    }
@@ -69,6 +70,6 @@ public abstract class AbstractConfigResource {
    @Path("{id}/details")
    @Produces(MediaType.APPLICATION_JSON)
    public IAtsConfigObject getObjectDetails(@PathParam("id") ArtifactId artifactId) {
-      return atsApi.getConfigItemFactory().getConfigObject(artifactId);
+      return AtsObjects.getConfigObject(atsApi.getQueryService().getArtifact(artifactId), atsApi);
    }
 }

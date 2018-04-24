@@ -153,7 +153,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
          }
          if (Strings.isValid(dslTeamDef.getWorkDefinition())) {
             ArtifactToken workDefArt = sheetNameToArtifactIdMap.get(dslTeamDef.getWorkDefinition());
-            IAtsTeamDefinition newTeamDef = AtsClientService.get().getConfigItemFactory().getTeamDef(newTeam);
+            IAtsTeamDefinition newTeamDef = AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(newTeam);
             AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(newTeamDef, workDefArt, changes);
          }
          if (Strings.isValid(dslTeamDef.getTeamWorkflowArtifactType())) {

@@ -56,7 +56,7 @@ public class Versions {
       List<IAtsVersion> parallelVersions = new ArrayList<>();
       for (ArtifactId parallelVersion : atsApi.getRelationResolver().getRelated(atsApi.getQueryService().getArtifact(version),
          AtsRelationTypes.ParallelVersion_Child)) {
-         IAtsVersion parallelVer = atsApi.getConfigItemFactory().getVersion(parallelVersion);
+         IAtsVersion parallelVer = atsApi.getVersionService().getVersion(parallelVersion);
          parallelVersions.add(parallelVer);
       }
       return parallelVersions;

@@ -48,7 +48,7 @@ public class SubscribeByActionableItem extends XNavigateItemAction {
          for (Artifact artifact : AtsClientService.get().getUserServiceClient().getCurrentOseeUser().getRelatedArtifacts(
             AtsRelationTypes.SubscribedUser_Artifact)) {
             if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
-               objs.add(AtsClientService.get().getConfigItemFactory().getActionableItem(artifact));
+               objs.add(AtsClientService.get().getActionableItemService().getActionableItemById(artifact));
             }
          }
          diag.setInitialAias(objs);

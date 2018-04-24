@@ -18,8 +18,20 @@ import org.eclipse.osee.ats.api.agile.atw.AtwNode;
 import org.eclipse.osee.ats.api.agile.program.UiGridProgItem;
 import org.eclipse.osee.ats.api.agile.program.UiGridProgram;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
+import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
+import org.eclipse.osee.ats.api.insertion.JaxInsertion;
+import org.eclipse.osee.ats.api.insertion.JaxInsertionActivity;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
@@ -116,6 +128,83 @@ public class ProgramOperations {
          return IMG_BASE_PATH + "folder.gif";
       }
       return null;
+   }
+
+   public IAtsInsertion createInsertion(ArtifactId programArtifact, JaxInsertion newInsertion) {
+
+      long id = newInsertion.getId();
+      if (id <= 0) {
+         id = Lib.generateArtifactIdAsInt();
+      }
+      IAtsChangeSet changes =
+         atsApi.getStoreService().createAtsChangeSet("Create new Insertion", atsApi.getUserService().getCurrentUser());
+      ArtifactReadable insertionArt =
+         (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.Insertion, newInsertion.getName(), id);
+
+      changes.relate(programArtifact, AtsRelationTypes.ProgramToInsertion_Insertion, insertionArt);
+      changes.execute();
+      return atsApi.getProgramService().getInsertionById(insertionArt);
+   }
+
+   public IAtsInsertion updateInsertion(JaxInsertion updatedInsertion) {
+      IAtsChangeSet changes =
+         atsApi.getStoreService().createAtsChangeSet("Update Insertion", atsApi.getUserService().getCurrentUser());
+      changes.setSoleAttributeValue(ArtifactId.valueOf(updatedInsertion.getId()), CoreAttributeTypes.Name,
+         updatedInsertion.getName());
+      changes.execute();
+      return atsApi.getProgramService().getInsertionById(
+         atsApi.getQueryService().getArtifact(updatedInsertion.getId()));
+   }
+
+   public void deleteInsertion(ArtifactId artifact) {
+      deleteConfigObject(artifact, "Delete Insertion", AtsArtifactTypes.Insertion);
+   }
+
+   public IAtsInsertionActivity createInsertionActivity(ArtifactId insertion, JaxInsertionActivity newActivity) {
+      long id = newActivity.getId();
+      if (id <= 0) {
+         id = Lib.generateArtifactIdAsInt();
+      }
+      IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Create new Insertion Activity",
+         atsApi.getUserService().getCurrentUser());
+      ArtifactReadable insertionActivityArt =
+         (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.InsertionActivity, newActivity.getName(), id);
+
+      changes.relate(insertion, AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity, insertionActivityArt);
+      changes.execute();
+      return atsApi.getProgramService().getInsertionActivityById(insertionActivityArt);
+   }
+
+   public IAtsInsertionActivity updateInsertionActivity(JaxInsertionActivity updatedActivity) {
+      IAtsChangeSet changes =
+         atsApi.getStoreService().createAtsChangeSet("Update Insertion", atsApi.getUserService().getCurrentUser());
+      ArtifactReadable insertionActivityArt =
+         (ArtifactReadable) atsApi.getQueryService().getArtifact(updatedActivity.getId());
+
+      changes.setSoleAttributeValue(insertionActivityArt, CoreAttributeTypes.Name, updatedActivity.getName());
+      changes.setSoleAttributeValue(ArtifactId.valueOf(updatedActivity.getId()), CoreAttributeTypes.Name,
+         updatedActivity.getName());
+      changes.execute();
+      return atsApi.getProgramService().getInsertionActivityById(
+         atsApi.getQueryService().getArtifact(updatedActivity.getId()));
+   }
+
+   public void deleteInsertionActivity(ArtifactId artifact) {
+      deleteConfigObject(artifact, "Delete Insertion Activity", AtsArtifactTypes.InsertionActivity);
+   }
+
+   private void deleteConfigObject(ArtifactId id, String comment, IArtifactType type) {
+      ArtifactReadable toDelete = (ArtifactReadable) atsApi.getQueryService().getArtifact(id);
+      if (toDelete == null) {
+         throw new OseeCoreException("No object found for id %s", id);
+      }
+
+      if (!toDelete.isTypeEqual(type)) {
+         throw new OseeCoreException("Artifact type does not match for %s", comment);
+      }
+      IAtsChangeSet changes = atsApi.createChangeSet(String.format("Delete config object %s-%s", id, type));
+      changes.deleteArtifact(toDelete);
+      changes.execute();
    }
 
 }

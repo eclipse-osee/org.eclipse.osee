@@ -85,12 +85,13 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
       IAtsActionableItem parent = null;
       try {
          if (jaxAI != null && jaxAI.getParentId() != null) {
-            parent = atsApi.getConfigItemFactory().getActionableItem(atsApi.getQueryService().getArtifact(jaxAI.getParentId()));
+            parent = atsApi.getActionableItemService().getActionableItemById(
+               atsApi.getQueryService().getArtifact(jaxAI.getParentId()));
          } else {
             ArtifactToken art =
                atsApi.getRelationResolver().getRelatedOrNull(artifact, CoreRelationTypes.Default_Hierarchical__Parent);
             if (art != null) {
-               parent = atsApi.getConfigItemFactory().getActionableItem(art);
+               parent = atsApi.getActionableItemService().getActionableItemById(art);
             }
          }
       } catch (OseeCoreException ex) {
@@ -104,12 +105,13 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
       IAtsTeamDefinition teamDef = null;
       try {
          if (jaxAI != null && jaxAI.getTeamDefId() != null) {
-            teamDef = atsApi.getConfigItemFactory().getTeamDef(atsApi.getQueryService().getArtifact(jaxAI.getTeamDefId()));
+            teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(
+               atsApi.getQueryService().getArtifact(jaxAI.getTeamDefId()));
          } else {
             ArtifactToken art =
                atsApi.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.TeamActionableItem_Team);
             if (art != null) {
-               teamDef = atsApi.getConfigItemFactory().getTeamDef(art);
+               teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(art);
             }
          }
       } catch (OseeCoreException ex) {

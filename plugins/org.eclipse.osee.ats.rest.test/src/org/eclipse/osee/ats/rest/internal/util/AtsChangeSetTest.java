@@ -79,7 +79,7 @@ public class AtsChangeSetTest {
       ArtifactReadable folder = (ArtifactReadable) atsServer.getQueryService().getArtifact(folderArt.getId());
       assertNotNull(folder);
       IAtsVersion version =
-         atsServer.getConfigItemFactory().getVersion(atsServer.getQueryService().getArtifact(verArt.getId()));
+         atsServer.getVersionService().getVersion(atsServer.getQueryService().getArtifact(verArt.getId()));
       assertNotNull(version);
 
       // add relation from folder to version
@@ -111,7 +111,7 @@ public class AtsChangeSetTest {
       // relate version to folder with same relation, but opposite order
       folder = (ArtifactReadable) atsServer.getQueryService().getArtifact(folderArt.getId());
       assertNotNull(folder);
-      version = atsServer.getConfigItemFactory().getVersion(atsServer.getQueryService().getArtifact(verArt.getId()));
+      version = atsServer.getVersionService().getVersion(atsServer.getQueryService().getArtifact(verArt.getId()));
       assertNotNull(version);
       changes = createAtsChangeSet();
       changes.relate(version, CoreRelationTypes.SupportingInfo_SupportedBy, folder);

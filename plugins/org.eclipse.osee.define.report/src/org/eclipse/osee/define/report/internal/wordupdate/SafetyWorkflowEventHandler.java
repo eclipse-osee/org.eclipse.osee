@@ -111,7 +111,8 @@ public class SafetyWorkflowEventHandler implements EventHandler {
       ArtifactReadable safetyActionableItemArt =
          (ArtifactReadable) atsServer.getQueryService().getArtifact(AtsArtifactToken.SafetyActionableItem);
       IAtsTeamWorkflow teamWf = atsServer.getWorkItemService().getTeamWf(workflowArt);
-      IAtsActionableItem actionableItem = atsServer.getConfigItemFactory().getActionableItem(safetyActionableItemArt);
+      IAtsActionableItem actionableItem =
+         atsServer.getActionableItemService().getActionableItemById(safetyActionableItemArt);
       for (IAtsTeamWorkflow sibling : atsServer.getActionFactory().getSiblingTeamWorkflows(teamWf)) {
          if (sibling.getActionableItems().contains(actionableItem)) {
             safetyWorkflow = sibling;

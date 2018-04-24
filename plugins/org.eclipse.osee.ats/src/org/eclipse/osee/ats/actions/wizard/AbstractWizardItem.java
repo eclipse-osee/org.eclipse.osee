@@ -284,7 +284,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
          List<IAgileFeatureGroup> featureGroups = new LinkedList<>();
          for (ArtifactToken featureGroupArt : atsApi.getRelationResolver().getRelated(agileTeam,
             AtsRelationTypes.AgileTeamToFeatureGroup_FeatureGroup)) {
-            IAgileFeatureGroup featureGroup = atsApi.getConfigItemFactory().getAgileFeatureGroup(featureGroupArt);
+            IAgileFeatureGroup featureGroup = atsApi.getAgileService().getAgileFeatureGroup(featureGroupArt);
             featureGroups.add(featureGroup);
          }
          if (!featureGroups.isEmpty()) {
@@ -394,7 +394,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
       ArtifactToken agileTeamArt = AtsClientService.get().getRelationResolver().getRelatedOrNull(teamDef,
          AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
       if (agileTeamArt != null) {
-         IAgileTeam agileTeam = AtsClientService.get().getConfigItemFactory().getAgileTeam(agileTeamArt);
+         IAgileTeam agileTeam = AtsClientService.get().getAgileService().getAgileTeam(agileTeamArt);
          AttributeTypeId agileTeamPointsAttributeType =
             AtsClientService.get().getAgileService().getAgileTeamPointsAttributeType(agileTeam);
          XWidget widget = (XWidget) teamDefFieldToWidget.get(teamDef, agileTeamPointsAttributeType.equals(

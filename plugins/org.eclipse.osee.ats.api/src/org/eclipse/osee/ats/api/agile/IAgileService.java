@@ -160,4 +160,8 @@ public interface IAgileService {
 
    ArtifactToken getAgileProgramBacklogArt(IAgileProgram program);
 
+   IAgileTeam getAgileTeamById(ArtifactId agileTeamId);
+
+   IAgileFeatureGroup getAgileFeatureGroupById(ArtifactId agileFeatureGroupId);
+
 }

@@ -51,7 +51,7 @@ public class Pdd51CreateWorkaroundForGraphViewActions implements IPopulateDemoDa
    public void run() {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getName());
 
-      Collection<IAtsActionableItem> aias = DemoDbUtil.getConfigObjects(DemoArtifactToken.Adapter_AI);
+      Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.Adapter_AI);
       Date createdDate = new Date();
 
       for (ArtifactToken version : getVersionToWorkflowToken().keySet()) {

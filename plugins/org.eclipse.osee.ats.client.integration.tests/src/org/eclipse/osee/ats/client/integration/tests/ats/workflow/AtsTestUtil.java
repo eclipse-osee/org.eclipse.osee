@@ -277,7 +277,8 @@ public class AtsTestUtil {
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
 
-      IAtsActionableItem topAi = AtsClientService.get().getConfigItem(AtsArtifactToken.TopActionableItem);
+      IAtsActionableItem topAi =
+         AtsClientService.get().getActionableItemService().getActionableItemById(AtsArtifactToken.TopActionableItem);
 
       testAi = AtsClientService.get().createActionableItem(getTitle("AI", postFixName),
          AtsUtilClient.createConfigObjectId(), changes, AtsClientService.get());
@@ -316,7 +317,8 @@ public class AtsTestUtil {
       changes.relate(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, testAi2);
       changes.relate(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, testAi3);
       changes.relate(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, testAi4);
-      IAtsTeamDefinition topTeamDef = AtsClientService.get().getConfigItem(AtsArtifactToken.TopTeamDefinition);
+      IAtsTeamDefinition topTeamDef =
+         AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(AtsArtifactToken.TopTeamDefinition);
       changes.addChild(topTeamDef, teamDef);
 
       verArt1 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 1.0", postFixName),
