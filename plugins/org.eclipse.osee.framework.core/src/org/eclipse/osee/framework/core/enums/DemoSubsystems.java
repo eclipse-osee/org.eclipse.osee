@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.client.demo;
+package org.eclipse.osee.framework.core.enums;
 
 import java.util.ArrayList;
 import java.util.Collection;
