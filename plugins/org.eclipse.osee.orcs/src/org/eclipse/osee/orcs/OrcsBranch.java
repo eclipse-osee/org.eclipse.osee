@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -71,6 +72,8 @@ public interface OrcsBranch {
    Callable<Void> deleteBranch(BranchId branch);
 
    /////////////////////////////////////////////////////////////////////////
+
+   IOseeBranch createTopLevelBranch(String branchName, ArtifactId associatedArtifact, UserId account);
 
    Callable<Branch> createBranch(CreateBranchData branchData);
 

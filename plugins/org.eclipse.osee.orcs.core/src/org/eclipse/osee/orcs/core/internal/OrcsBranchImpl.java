@@ -14,17 +14,21 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.OrcsTypes;
@@ -42,16 +46,16 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  * @author Roberto E. Escobar
  */
 public class OrcsBranchImpl implements OrcsBranch {
-
+   private final OrcsApi orcsApi;
    private final Log logger;
-
    private final OrcsSession session;
    private final BranchDataStore branchStore;
    private final BranchDataFactory branchDataFactory;
    private final OrcsTypes orcsTypes;
    private final QueryFactory queryFactory;
 
-   public OrcsBranchImpl(Log logger, OrcsSession session, BranchDataStore branchStore, QueryFactory queryFactory, OrcsTypes orcsTypes) {
+   public OrcsBranchImpl(OrcsApi orcsApi, Log logger, OrcsSession session, BranchDataStore branchStore, QueryFactory queryFactory, OrcsTypes orcsTypes) {
+      this.orcsApi = orcsApi;
       this.logger = logger;
       this.session = session;
       this.branchStore = branchStore;
@@ -63,6 +67,34 @@ public class OrcsBranchImpl implements OrcsBranch {
    @Override
    public Callable<Branch> createBranch(CreateBranchData branchData) {
       return new CreateBranchCallable(logger, session, branchStore, branchData, queryFactory);
+   }
+
+   @Override
+   public IOseeBranch createTopLevelBranch(String branchName, ArtifactId associatedArtifact, UserId account) {
+      CreateBranchData createData = new CreateBranchData();
+      createData.setName(branchName);
+      createData.setBranchType(BranchType.BASELINE);
+
+      BranchId parentBranch = CoreBranches.SYSTEM_ROOT;
+      TransactionToken parentTx =
+         orcsApi.getQueryFactory().transactionQuery().andIsHead(parentBranch).getTokens().getExactlyOne();
+
+      String creationComment = String.format("New Branch from %s (%s)", branchName, parentTx.getId());
+      createData.setCreationComment(creationComment);
+
+      createData.setAuthor(account);
+      createData.setAssociatedArtifact(associatedArtifact);
+
+      createData.setFromTransaction(parentTx);
+      createData.setParentBranch(parentBranch);
+
+      createData.setTxCopyBranchType(false);
+
+      try {
+         return createBranch(createData).call();
+      } catch (Exception ex) {
+         throw OseeCoreException.wrap(ex);
+      }
    }
 
    @Override

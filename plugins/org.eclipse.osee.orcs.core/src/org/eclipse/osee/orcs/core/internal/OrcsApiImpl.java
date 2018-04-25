@@ -222,7 +222,7 @@ public class OrcsApiImpl implements OrcsApi {
    public OrcsBranch getBranchOps() {
       OrcsSession session = getSession();
       QueryFactory queryFactory = getQueryFactory();
-      return new OrcsBranchImpl(logger, session, module.getBranchDataStore(), queryFactory, getOrcsTypes());
+      return new OrcsBranchImpl(this, logger, session, module.getBranchDataStore(), queryFactory, getOrcsTypes());
    }
 
    @Override
