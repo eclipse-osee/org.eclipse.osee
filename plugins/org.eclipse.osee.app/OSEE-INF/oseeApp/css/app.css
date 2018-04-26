@@ -24,12 +24,7 @@
 }
 
 .osee-multiselect-dropdown {
-    width: 100%;
-    text-align: left !important;
-}
-
-.osee-multiselectobject-dropdown {
-    width: 100%;
+    width: 100%; 
     text-align: left !important;
 }
 
@@ -88,4 +83,12 @@ section.listview {
 #back_button {
 	float: right;
    margin: 10px;
+}
+div.versionsel {
+    width:200px;
+    margin: auto;
+}
+div.programsel {
+    width:200px;
+    margin: auto;
 }

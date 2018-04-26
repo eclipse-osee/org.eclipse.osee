@@ -1,24 +1,16 @@
-<div class="panel panel-primary">
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="panel panel-primary" ng-show="oc.dataloaded" >
-                    <div class="panel-heading clearfix">
-                         <h3 class="panel-title" style="line-height: 34px;">
-                                <strong>{{oc.name}}</strong>
-                         </h3>
-                    </div>
-                    <div class="panel-body jsf" style="line-height: 2.0" ng-if="oc.loaded" >
-                        <jsonforms schema="oc.oseeAppSchema.dataSchema" uischema="oc.oseeAppSchema.uiItemSchema" data="oc.oseeAppData" ></jsonforms>
-                    </div>
-                    <div ng-if="!oc.loaded">
-                        <strong>Loading</strong>
-                    </div>
-                    <div ng-if="oc.failed">
-                        <strong>Failed to Load</strong>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="panel panel-primary" ng-show="oc.dataloaded" >
+    <div class="panel-heading clearfix">
+         <h3 class="panel-title" style="line-height: 34px;">
+                <strong>{{oc.name}}</strong>
+         </h3>
+    </div>
+    <div class="panel-body jsf" style="line-height: 2.0" ng-if="oc.loaded" >
+        <jsonforms schema="oc.oseeAppSchema.dataSchema" uischema="oc.oseeAppSchema.uiItemSchema" data="oc.oseeAppData" ></jsonforms>
+    </div>
+    <div ng-if="!oc.loaded">
+        <strong>Loading</strong>
+    </div>
+    <div ng-if="oc.failed">
+        <strong>Failed to Load</strong>
     </div>
 </div>
