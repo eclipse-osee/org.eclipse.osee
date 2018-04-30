@@ -26,9 +26,9 @@
 			</property>
 		</activation>
 		<modules>
-			<module>../../plugins/org.eclipse.osee.define.report.api</module>
-			<module>../../plugins/org.eclipse.osee.define.report</module>
-			<module>../../plugins/org.eclipse.osee.define.report.test</module>
+			<module>../../plugins/org.eclipse.osee.define.api</module>
+			<module>../../plugins/org.eclipse.osee.define.rest</module>
+			<module>../../plugins/org.eclipse.osee.define.rest.test</module>
 
 			<module>../../plugins/org.eclipse.osee.app</module>
 			<module>../../plugins/org.eclipse.osee.app.test</module>
@@ -61,9 +61,9 @@
 			</property>
 		</activation>
 		<modules>
-			<module>../../plugins/org.eclipse.osee.define.report.api</module>
-			<module>../../plugins/org.eclipse.osee.define.report</module>
-			<module>../../plugins/org.eclipse.osee.define.report.test</module>
+			<module>../../plugins/org.eclipse.osee.define.api</module>
+			<module>../../plugins/org.eclipse.osee.define.rest</module>
+			<module>../../plugins/org.eclipse.osee.define.rest.test</module>
 
 			<module>../../plugins/org.eclipse.osee.app</module>
 			<module>../../plugins/org.eclipse.osee.app.test</module>

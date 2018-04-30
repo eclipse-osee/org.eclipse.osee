@@ -70,8 +70,8 @@
 				<module>../../plugins/org.eclipse.osee.framework.ui.product</module>
 				<module>../../plugins/org.eclipse.osee.ote.ui.define</module>
 
-				<module>../../plugins/org.eclipse.osee.define</module>
-				<module>../../plugins/org.eclipse.osee.define.test</module>
+				<module>../../plugins/org.eclipse.osee.define.ide</module>
+				<module>../../plugins/org.eclipse.osee.define.ide.test</module>
 
 				<module>../../plugins/org.eclipse.osee.doors.connector.core</module>
 				<module>../../plugins/org.eclipse.osee.doors.connector.ui</module>
@@ -151,8 +151,8 @@
 				<module>../../plugins/org.eclipse.osee.framework.ui.product</module>
 				<module>../../plugins/org.eclipse.osee.ote.ui.define</module>
 
-				<module>../../plugins/org.eclipse.osee.define</module>
-				<module>../../plugins/org.eclipse.osee.define.test</module>
+				<module>../../plugins/org.eclipse.osee.define.ide</module>
+				<module>../../plugins/org.eclipse.osee.define.ide.test</module>
 
 				<module>../../features/org.eclipse.osee.framework.feature</module>
 				<module>../../features/org.eclipse.osee.framework.ui.feature</module>

@@ -7,8 +7,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: org.eclipse.core.filesystem,
  org.eclipse.osee.ats.demo.api,
- org.eclipse.osee.define.traceability,
- org.eclipse.osee.define.traceability.data,
+ org.eclipse.osee.define.ide.traceability,
+ org.eclipse.osee.define.ide.traceability.data,
  org.eclipse.osee.framework.access,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,

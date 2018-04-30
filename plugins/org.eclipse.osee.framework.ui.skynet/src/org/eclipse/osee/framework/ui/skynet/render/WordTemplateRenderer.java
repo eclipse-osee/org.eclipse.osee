@@ -33,7 +33,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.define.report.api.WordTemplateContentData;
+import org.eclipse.osee.define.api.WordTemplateContentData;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;

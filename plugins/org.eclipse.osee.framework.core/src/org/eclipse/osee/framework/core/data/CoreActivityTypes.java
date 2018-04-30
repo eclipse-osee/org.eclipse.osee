@@ -26,7 +26,7 @@ public final class CoreActivityTypes {
    public static final ActivityTypeToken OSEE_ERROR = create(2L, SEVERE, "org.eclipse.osee.activity");
    public static final ActivityTypeToken JAXRS_METHOD_CALL = create(880479734L, INFO, "org.eclipse.osee.activity.jaxrs");
    public static final ActivityTypeToken JAXRS_METHOD_CALL_FILTER_ERROR = create(23133964208285L, SEVERE, "org.eclipse.osee.activity.jaxrs");
-   public static final ActivityTypeToken SRS_TRACE = create(80349535402L, INFO, "org.eclipse.osee.define.report.SrsTraceReport");
+   public static final ActivityTypeToken SRS_TRACE = create(80349535402L, INFO, "org.eclipse.osee.define.SrsTraceReport");
    public static final ActivityTypeToken MSG_CONTINUATION = create(29566294587L, INFO, "org.eclipse.osee.activity");
    public static final ActivityTypeToken IDE = create(88L, INFO, "osee.ide.client");
    public static final ActivityTypeToken XNAVIGATEITEM = create(45L, INFO, "osee.framework.XNavigateItem", "XNavigateItem [%s]");

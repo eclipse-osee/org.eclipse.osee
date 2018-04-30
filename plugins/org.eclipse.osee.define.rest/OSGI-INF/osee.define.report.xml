@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" name="org.eclipse.osee.define.rest.internal.OseeReportApplication">
+   <implementation class="org.eclipse.osee.define.rest.internal.OseeReportApplication"/>
+   <service>
+      <provide interface="javax.ws.rs.core.Application"/>
+   </service>
+   <reference bind="setOrcsApi" cardinality="1..1" interface="org.eclipse.osee.orcs.OrcsApi" name="OrcsApi" policy="static"/>
+   <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
+	<reference bind="setDefineApi" cardinality="1..1" interface="org.eclipse.osee.define.api.DefineApi" name="DefineApi" policy="static"/>
+   <property name="osee.trace.myII.C_Test_Scripts.primary.regexs" type="String">[^_&quot;]CSID\s*\{\d+\s+(.+)\}
+[^_&quot;]CSID\s*(\{[^\{\}]+\})
+[^_&quot;]SubDD\s*\{\d+\s*(.+)\}
+[^_&quot;](SRS\[.+\])
+   </property>
+   <property name="osee.trace.myII.C_Test_Scripts.secondary.regexs" type="String">.+
+.+
+.+
+.+
+   </property>
+   <property name="osee.trace.myII.Ada_Code.primary.regexs" type="String">\^(?:CSID|SubDD)\s*\[?([^\]]+)\]?
+\^(SRS)\s*(\[.+\])
+   </property>
+   <property name="osee.trace.myII.Ada_Code.secondary.regexs" type="String">(SRS)?\d*\s*([^;]+)
+.+
+   </property>
+ </scr:component>

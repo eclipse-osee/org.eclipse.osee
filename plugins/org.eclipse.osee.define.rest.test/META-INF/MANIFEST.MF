@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE Define Rest Test
+Bundle-SymbolicName: org.eclipse.osee.define.rest.test;singleton:=true
+Bundle-Version: 0.26.0.qualifier
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Fragment-Host: org.eclipse.osee.define.rest
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.eclipse.osee.framework.jdk.core.type,
+ org.hamcrest.core,
+ org.junit,
+ org.junit.rules,
+ org.junit.runner,
+ org.junit.runners,
+ org.mockito,
+ org.mockito.invocation,
+ org.mockito.stubbing

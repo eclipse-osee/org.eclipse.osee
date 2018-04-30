@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.client.demo.traceability;
 
 import java.nio.CharBuffer;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.osee.define.traceability.ITraceUnitResourceLocator;
-import org.eclipse.osee.define.traceability.ResourceIdentifier;
+import org.eclipse.osee.define.ide.traceability.ITraceUnitResourceLocator;
+import org.eclipse.osee.define.ide.traceability.ResourceIdentifier;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;

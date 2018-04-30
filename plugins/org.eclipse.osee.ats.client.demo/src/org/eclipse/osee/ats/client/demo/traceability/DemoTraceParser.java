@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.client.demo.traceability;
 import java.nio.CharBuffer;
 import java.util.Collection;
 import java.util.HashSet;
-import org.eclipse.osee.define.traceability.ITraceParser;
-import org.eclipse.osee.define.traceability.data.TraceMark;
+import org.eclipse.osee.define.ide.traceability.ITraceParser;
+import org.eclipse.osee.define.ide.traceability.data.TraceMark;
 
 /**
  * @author John R. Misinco

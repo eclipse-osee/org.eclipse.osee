@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension-point id="DefineNavigateItem" name="DefineNavigateItem" schema="OSEE-INF/extensionPts/DefineNavigateItem.exsd"/>
+   <extension-point id="TraceUnitHandler" name="TraceUnitHandler" schema="OSEE-INF/extensionPts/TraceUnitHandler.exsd"/>
+      <extension
+            point="org.eclipse.ui.importWizards">
+         <category
+               id="org.eclipse.osee.define.import.category"
+               name="OSEE">
+         </category>
+         <wizard
+               category="org.eclipse.osee.define.import.category"
+               class="org.eclipse.osee.define.ide.traceability.ImportTraceabilityWizard"
+               icon="OSEE-INF/images/relate.gif"
+               id="osee.define.traceability.ImportTraceabilityWizard"
+               name="Traceability into OSEE">
+            <description>
+               Import Skynet relations.
+            </description>
+         </wizard>
+      </extension>
+      <extension
+            point="org.eclipse.ui.importWizards">
+         <category
+               id="org.eclipse.osee.define.import.category"
+               name="OSEE">
+         </category>
+         <wizard
+               category="org.eclipse.osee.define.import.category"
+               class="org.eclipse.osee.define.ide.traceability.importer.ImportTraceUnitWizard"
+               icon="OSEE-INF/images/importTrace.gif"
+               id="ImportTraceUnitsWizard"
+               name="Trace Units Into OSEE">
+            <description>
+               Imports trace units into OSEE and updates relations.
+            </description>
+         </wizard>
+      </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.IgnorePublishAttribute">
+      <attribute
+            name="Word Ole Data">
+      </attribute>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.ArtifactRendererTemplate">
+      <Template
+            presentationType="ALL"
+            templateFile="OSEE-INF/templates/Work_Instruction_Template.xml"
+            templateName="Work Instruction">
+      </Template>
+   </extension>
+	<extension id="SystemSubsystemReport" name="System and Subsystem Report"
+		point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+		<Operation className="org.eclipse.osee.define.ide.blam.operation.SystemSubsystemReport" />
+	</extension>
+   <extension
+         id="PublishSubsystemToDesignTraceability"
+         name="Publish Subsystem To Design Traceability"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.define.ide.blam.operation.PublishSubsystemToDesignTraceability">
+      </Operation>
+   </extension>
+ <extension
+       id="SubsystemToLowLevelReqTraceReport"
+       name="SubsystemToLowLevelReqTraceReport"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.ide.blam.operation.SubsystemToLowLevelReqTraceReport">
+    </Operation>
+ </extension>
+ <extension
+       point="org.eclipse.ui.popupMenus">
+    <viewerContribution
+          id="traceFind"
+          targetID="#CompilationUnitEditorContext">
+       <action
+             class="org.eclipse.osee.define.ide.traceability.action.FindTraceUnitEditorAction"
+             icon="OSEE-INF/images/artifact_search.gif"
+             id="org.eclipse.osee.define.action.FindTraceUnitFromResource"
+             label="Find Trace Unit Artifact"
+             menubarPath="org.eclipse.jdt.ui.source.menu"
+             tooltip="Searches for trace units in OSEE">
+       </action>
+    </viewerContribution>
+    <objectContribution
+          adaptable="true"
+          id="osee.database.projectContribution"
+          objectClass="org.eclipse.core.resources.IResource">
+       <action
+             class="org.eclipse.osee.define.ide.traceability.action.FindTraceUnitActionDelegate"
+             icon="OSEE-INF/images/artifact_search.gif"
+             id="org.eclipse.osee.define.action.FindTraceUnitFromResource2"
+             label="Find Trace Unit Artifact"
+             menubarPath="additions"
+             state="true"
+             style="push"
+             tooltip="Searches for trace units in OSEE">
+       </action>
+    </objectContribution>
+ </extension>
+ <extension
+       id="TraceReport"
+       name="TraceReport"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.ide.traceability.blam.TraceReportBlam">
+    </Operation>
+ </extension>
+   <extension
+         id="PublishWithSpecifiedTemplate"
+         name="Publish With Specified Template"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.define.ide.blam.operation.PublishWithSpecifiedTemplate">
+      </Operation>
+   </extension>
+ <extension
+       id="RemoveTraceMarksFromTraceUnits"
+       name="RemoveTraceMarksFromTraceUnits"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.ide.traceability.blam.RemoveTraceMarksFromTraceUnits">
+    </Operation>
+ </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.ide.blam.operation.SubsystemRequirementVerificationLevel">
+    </Operation>
+ </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.ide.blam.operation.TestPlanComplianceReport">
+    </Operation>
+ </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.ide.blam.operation.RequirementsTestReport">
+    </Operation>
+ </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.ide.blam.operation.RequirementReorderOperation">
+    </Operation>
+ </extension>
+ <extension point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+	<Operation className="org.eclipse.osee.define.ide.blam.operation.SubsystemFullTraceReport"></Operation>
+ </extension>
+ <extension
+       id="DefineNavigateViewItems"
+       name="DefineNavigateViewItems"
+       point="org.eclipse.osee.framework.ui.plugin.XCommonNavigateItem">
+    <XCommonNavigateItem
+          classname="org.eclipse.osee.define.ide.navigate.DefineNavigateViewItems">
+    </XCommonNavigateItem>
+ </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.ide.traceability.report.PublishStdStpTraceability">
+    </Operation>
+ </extension>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="OSEE Category"
+            id="osee.product.commands.category">
+      </category>
+   </extension>
+ <extension
+       id="org.eclipse.osee.define.blam.operation.PublishSystemLevelSSDD"
+       name="org.eclipse.osee.define.blam.operation.PublishSystemLevelSSDD"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.ide.blam.operation.PublishSystemLevelSSDD">
+    </Operation>
+ </extension>
+ <extension
+       id="AddTraceMarksToTestCase"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.ide.traceability.blam.AddTraceMarksToTraceUnits">
+    </Operation>
+ </extension>
+ <extension
+       id="FixDuplicateEnumeratedAttributes"
+       name="FixDuplicateEnumeratedAttributes"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.ide.blam.operation.FixDuplicateEnumeratedAttributes">
+    </Operation>
+ </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.ide.blam.operation.FixEmbeddedLinksBlam">
+    </Operation>
+ </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.ide.blam.operation.DataRightsImporter">
+    </Operation>
+ </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.ide.traceability.blam.RemoveObjectIdsFromTraceUnits">
+    </Operation>
+ </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.ide.blam.operation.FindErroneousEmbeddedLinksBlam">
+    </Operation>
+ </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.ide.blam.operation.FindDuplicateArtifactNames">
+    </Operation>
+ </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.ide.blam.operation.FindMissingOrUnspecifiedAttributes">
+    </Operation>
+ </extension>
+</plugin>

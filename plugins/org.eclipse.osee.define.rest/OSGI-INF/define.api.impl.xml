@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.eclipse.osee.define.rest.DefineApiImpl">
+   <implementation class="org.eclipse.osee.define.rest.DefineApiImpl"/>
+   <reference bind="setOrcsApi" cardinality="1..1" interface="org.eclipse.osee.orcs.OrcsApi" name="OrcsApi" policy="static"/>
+   <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
+   <reference bind="setEventAdmin" cardinality="1..1" interface="org.osgi.service.event.EventAdmin" name="EventAdmin" policy="static"/>
+   <service>
+      <provide interface="org.eclipse.osee.define.api.DefineApi"/>
+   </service>
+ </scr:component>

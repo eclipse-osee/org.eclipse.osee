@@ -62,7 +62,7 @@
    <extension
          id="DemoTraceUnitHandler"
          name="DemoTraceUnitHandler"
-         point="org.eclipse.osee.define.TraceUnitHandler">
+         point="org.eclipse.osee.define.ide.TraceUnitHandler">
       <TraceUnitHandler
             TraceUnitParser="org.eclipse.osee.ats.client.demo.traceability.DemoTraceParser"
             TraceUnitResourceLocator="org.eclipse.osee.ats.client.demo.traceability.DemoTraceUnitResourceLocator">

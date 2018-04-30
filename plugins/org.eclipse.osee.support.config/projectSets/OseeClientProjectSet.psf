@@ -181,7 +181,7 @@
 <item elementID="=org.eclipse.osee.sos" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
 <item elementID="=net.jini" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
 <item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.osee.framework.feature" type="4"/>
-<item elementID="=org.eclipse.osee.define" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.eclipse.osee.define.ide" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
 <item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.osee.client.ote.feature.test" type="4"/>
 <item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.osee.client.feature" type="4"/>
 <item elementID="=org.eclipse.osee.ote.ui" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>

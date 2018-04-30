@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Osee Define IDE Tests
+Bundle-SymbolicName: org.eclipse.osee.define.ide.test;singleton:=true
+Bundle-Version: 0.26.0.qualifier
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Fragment-Host: org.eclipse.osee.define.ide
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.junit

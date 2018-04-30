@@ -55,7 +55,7 @@ Require-Bundle: org.junit,
  org.eclipse.ui.forms,
  org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.ui.skynet,
- org.eclipse.osee.define,
+ org.eclipse.osee.define.ide,
  org.eclipse.osee.framework.core.dsl.ui.integration,
  org.eclipse.osee.framework.core.dsl.integration,
  javax.mail.glassfish;bundle-version="1.4.1"

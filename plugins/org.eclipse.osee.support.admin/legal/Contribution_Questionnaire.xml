@@ -100,7 +100,7 @@
     <Cell><Data ss:Type="String">Component (if known)   </Data></Cell>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework</Data></Cell>
     <Cell><Data ss:Type="String">org.eclipse.osee.ats</Data></Cell>
-    <Cell><Data ss:Type="String">org.eclipse.osee.define</Data></Cell>
+    <Cell><Data ss:Type="String">org.eclipse.osee.define.ide</Data></Cell>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework, org.eclipse.osee.ats, org.eclipse.osee.define, org.eclipse.osee.ote</Data></Cell>
    </Row>
    <Row ss:Height="25.5" ss:StyleID="s25">
@@ -246,7 +246,7 @@
     <Cell><Data ss:Type="String">org.eclipse.osee.framework</Data></Cell>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework</Data></Cell>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework</Data></Cell>
-    <Cell><Data ss:Type="String">org.eclipse.osee.define</Data></Cell>
+    <Cell><Data ss:Type="String">org.eclipse.osee.define.ide</Data></Cell>
     <Cell ss:Index="13"><Data ss:Type="String">technology.osee</Data></Cell>
     <Cell ss:Index="15"><Data ss:Type="String">org.eclipse.osee.framework</Data></Cell>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework</Data></Cell>
@@ -581,7 +581,7 @@
     <Cell><Data ss:Type="Number">31</Data></Cell>
    </Row>
    <Row ss:Index="77">
-    <Cell><Data ss:Type="String">org.eclipse.osee.define</Data></Cell>
+    <Cell><Data ss:Type="String">org.eclipse.osee.define.ide</Data></Cell>
     <Cell><Data ss:Type="Number">4957</Data></Cell>
    </Row>
    <Row>

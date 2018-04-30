@@ -47,7 +47,7 @@ import org.eclipse.osee.ats.util.widgets.XAtsProgramComboWidget;
 import org.eclipse.osee.ats.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.workflow.task.internal.AtsTaskCache;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.define.traceability.report.RequirementStatus;
+import org.eclipse.osee.define.ide.traceability.report.RequirementStatus;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
