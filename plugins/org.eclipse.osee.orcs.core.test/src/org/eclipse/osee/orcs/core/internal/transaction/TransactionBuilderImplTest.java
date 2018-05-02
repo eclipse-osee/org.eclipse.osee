@@ -19,7 +19,6 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.PlainTextContent;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.QualificationMethod;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.RelationOrder;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordTemplateContent;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
@@ -193,15 +192,6 @@ public class TransactionBuilderImplTest {
 
       verify(txDataManager).getForWrite(txData, expectedAuthor);
       verify(artifact).createAttribute(QualificationMethod, "Demonstration");
-   }
-
-   @Test
-   public void testCreateAttributeFromString() {
-      factory.createAttributeFromString(expectedAuthor, WordTemplateContent, "This is my word template content");
-
-      verify(txDataManager).getForWrite(txData, expectedAuthor);
-      verify(artifact).createAttributeFromString(CoreAttributeTypes.WordTemplateContent,
-         "This is my word template content");
    }
 
    @Test

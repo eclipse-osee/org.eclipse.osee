@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -165,17 +164,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void addAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) {
-      ArtifactReadable artifact = getArtifact(atsObject);
-      AttributeTypes attributeTypes = orcsApi.getOrcsTypes().getAttributeTypes();
-      if (attributeTypes.isArtifactReferencedAttribute(attributeType)) {
-         Conditions.assertTrue(value instanceof ArtifactId, "value must be of type ArtifactId");
-         getTransaction().createAttributeFromString(artifact, attributeType, ((ArtifactId) value).getIdString());
-      } else if (attributeTypes.isDateType(attributeType)) {
-         Conditions.assertTrue(value instanceof Date, "value must be of type Date");
-         getTransaction().createAttributeFromString(artifact, attributeType, String.valueOf(((Date) value).getTime()));
-      } else {
-         getTransaction().createAttributeFromString(artifact, attributeType, String.valueOf(value));
-      }
+      getTransaction().createAttribute(getArtifact(atsObject), attributeType, value);
       add(atsObject);
    }
 

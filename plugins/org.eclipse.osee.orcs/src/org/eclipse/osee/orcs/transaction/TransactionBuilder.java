@@ -79,8 +79,6 @@ public interface TransactionBuilder {
 
    <T> AttributeId createAttribute(ArtifactId art, AttributeTypeId attributeType, T value);
 
-   AttributeId createAttributeFromString(ArtifactId art, AttributeTypeId attributeType, String value);
-
    <T> void setSoleAttributeValue(ArtifactId art, AttributeTypeId attributeType, T value);
 
    void setSoleAttributeFromStream(ArtifactId art, AttributeTypeId attributeType, InputStream stream);

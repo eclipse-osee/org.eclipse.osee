@@ -54,7 +54,7 @@ public class DispositionInitializer {
       sb.append(SAW_Bld_1.getIdString());
       sb.append(":");
       sb.append(SAW_Bld_1_FOR_DISPO.getIdString());
-      tx.createAttributeFromString(createArtifact, CoreAttributeTypes.GeneralStringData, sb.toString());
+      tx.createAttribute(createArtifact, CoreAttributeTypes.GeneralStringData, sb.toString());
       tx.commit();
 
       // Creat Set and Item Arts

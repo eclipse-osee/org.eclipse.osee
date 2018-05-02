@@ -158,12 +158,6 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public AttributeId createAttributeFromString(ArtifactId sourceArtifact, AttributeTypeId attributeType, String value) {
-      Artifact asArtifact = getForWrite(sourceArtifact);
-      return asArtifact.createAttributeFromString(attributeType, value);
-   }
-
-   @Override
    public <T> void setSoleAttributeValue(ArtifactId sourceArtifact, AttributeTypeId attributeType, T value) {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setSoleAttributeValue(attributeType, value);

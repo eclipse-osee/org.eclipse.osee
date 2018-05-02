@@ -470,8 +470,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       return attribute;
    }
 
-   @Override
-   public <T> Attribute<T> createAttributeFromString(AttributeTypeId attributeType, String value) {
+   private <T> Attribute<T> createAttributeFromString(AttributeTypeId attributeType, String value) {
       Attribute<T> attribute = createAttribute(attributeType);
       attribute.setFromString(value);
       return attribute;
@@ -614,6 +613,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       return toReturn;
    }
 
+   @Override
    public String getGuid() {
       return guid;
    }
