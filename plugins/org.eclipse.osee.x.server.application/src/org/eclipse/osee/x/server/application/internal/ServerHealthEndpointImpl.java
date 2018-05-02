@@ -13,11 +13,10 @@ package org.eclipse.osee.x.server.application.internal;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -110,7 +109,7 @@ public final class ServerHealthEndpointImpl {
       }
       String serversStr = ((String) serverObj).replaceAll("[\\[\\]]", "");
       serversStr = serversStr.replaceAll(" ", "");
-      Set<String> servers = new HashSet<>();
+      List<String> servers = new ArrayList<String>();
       for (String server : serversStr.split(",")) {
          servers.add(server);
       }
@@ -161,21 +160,19 @@ public final class ServerHealthEndpointImpl {
          AcquireResult result = HttpProcessor.acquire(url, outputStream, 5000);
          if (result.wasSuccessful()) {
             values.add("Ok");
+            String json = outputStream.toString(result.getEncoding());
+            ServerStatus stat = getMapper().readValue(json, ServerStatus.class);
+            for (StatusKey key : StatusKey.values()) {
+               if (details || !key.isDetails()) {
+                  String value = stat.get(key);
+                  if (value == null) {
+                     value = "";
+                  }
+                  values.add(value);
+               }
+            }
          } else {
             values.add("Not successful: " + result.getResult());
-            return;
-         }
-
-         String json = outputStream.toString(result.getEncoding());
-         ServerStatus stat = getMapper().readValue(json, ServerStatus.class);
-         for (StatusKey key : StatusKey.values()) {
-            if (details || !key.isDetails()) {
-               String value = stat.get(key);
-               if (value == null) {
-                  value = "";
-               }
-               values.add(value);
-            }
          }
       } catch (Exception ex) {
          values.add("Exception: " + ex.getMessage());
