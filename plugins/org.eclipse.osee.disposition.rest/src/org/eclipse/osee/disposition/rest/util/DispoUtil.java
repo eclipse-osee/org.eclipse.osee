@@ -625,24 +625,20 @@ public final class DispoUtil {
 
    public static List<String> findMissingDiscrepancyLocs(List<Integer> ranges, DispoItem item) {
       List<String> missingDiscrepanciesLoc = new ArrayList<>();
+      List<String> currentLocations = new ArrayList<>();
       if (ranges != null && !ranges.isEmpty()) {
-         boolean found = false;
-         String location = "";
          for (Entry<String, Discrepancy> discrepancy : item.getDiscrepanciesList().entrySet()) {
-            Discrepancy value = discrepancy.getValue();
-            location = value.getLocation();
+            String location = discrepancy.getValue().getLocation();
             if (Strings.isValid(location)) {
-               if (ranges.contains(location)) {
-                  found = true;
-                  break;
-               }
+               currentLocations.add(location);
             }
          }
-         if (!found) {
-            missingDiscrepanciesLoc.add(String.valueOf(location));
+         for (Integer range : ranges) {
+            if (!currentLocations.contains(String.valueOf(range))) {
+               missingDiscrepanciesLoc.add(String.valueOf(range));
+            }
          }
       }
       return missingDiscrepanciesLoc;
    }
-
 }
