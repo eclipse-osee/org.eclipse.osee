@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.PluginUtil;
+import org.eclipse.osee.framework.ui.swt.ProgramFinder;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -52,7 +53,7 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
 
    /**
     * finds a resource in the plugin bundle and writes it out to the default persistent storage area as a regualar file
-    * 
+    *
     * @return Return plugin file reference
     */
    public File getPluginFile(String path) throws IOException {
@@ -102,7 +103,7 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
 
    /**
     * Returns the workspace instance.
-    * 
+    *
     * @return the workspace instance
     */
    public static IWorkspace getWorkspace() {
@@ -119,7 +120,7 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
 
    /**
     * Returns Returns the root resource of this workspace
-    * 
+    *
     * @return the workspace root
     */
    public static IWorkspaceRoot getWorkspaceRoot() {
@@ -138,7 +139,7 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
 
    /**
     * Checks that OSEE is connected to all necessary application services
-    * 
+    *
     * @return Result.isFalse if not connected with getText() of problem
     */
    public static Result areOSEEServicesAvailable() {
@@ -153,16 +154,16 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
       return toReturn;
    }
 
-   public ImageDescriptor getImageDescriptorForProgram(String extenstion) {
-      ImageDescriptor imageDescriptor = getImageRegistry().getDescriptor(extenstion);
+   public ImageDescriptor getImageDescriptorForProgram(String extension) {
+      ImageDescriptor imageDescriptor = getImageRegistry().getDescriptor(extension);
 
-      if (imageDescriptor == null && extenstion != null) {
-         Program program = Program.findProgram(extenstion);
+      if (imageDescriptor == null && extension != null) {
+         Program program = ProgramFinder.findProgram(extension);
          if (program == null || program.getImageData() == null) {
             // provide no image (i.e. leave null)
          } else {
             imageDescriptor = ImageDescriptor.createFromImageData(program.getImageData());
-            getImageRegistry().put(extenstion, imageDescriptor);
+            getImageRegistry().put(extension, imageDescriptor);
          }
       }
       return imageDescriptor;

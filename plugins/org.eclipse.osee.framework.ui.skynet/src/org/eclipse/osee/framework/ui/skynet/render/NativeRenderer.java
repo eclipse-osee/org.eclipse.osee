@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ProgramFinder;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -89,7 +90,7 @@ public class NativeRenderer extends FileSystemRenderer {
    @Override
    public Program getAssociatedProgram(Artifact artifact) throws OseeCoreException {
       String extension = getAssociatedExtension(artifact);
-      Program program = Program.findProgram(extension);
+      Program program = ProgramFinder.findProgram(extension);
       if (program == null) {
          throw new OseeArgumentException("No program associated with the extension [%s] found on your local machine.",
             extension);

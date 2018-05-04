@@ -26,7 +26,7 @@ public class ProgramImage implements KeyedImage {
 
    @Override
    public ImageDescriptor createImageDescriptor() {
-      Program program = Program.findProgram(extension);
+      Program program = ProgramFinder.findProgram(extension);
       if (program == null || program.getImageData() == null) {
          return null;
       }
