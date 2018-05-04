@@ -19,15 +19,15 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.database.init.IDatabaseInitConfiguration;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.httpRequests.DatastoreInitializationOperation;
 import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
@@ -47,7 +47,7 @@ public class DbBootstrapTask implements IDbInitializationTask {
 
       OseeClientProperties.setInDbInit(true);
 
-      createOseeDatastore();
+      OsgiUtil.getService(getClass(), OseeClient.class).getDatastoreEndpoint().initialize();
 
       Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.skynet.core");
       int state = bundle.getState();
@@ -85,16 +85,5 @@ public class DbBootstrapTask implements IDbInitializationTask {
 
       service.clearAll();
       service.reloadTypes();
-   }
-
-   private void createOseeDatastore() {
-      //    OseeClientProperties.isOseeImportAllowed();
-      String tableDataSpace = OseeClientProperties.getOseeTableDataSpaceForDbInit();
-      String indexDataSpace = OseeClientProperties.getOseeIndexDataSpaceForDbInit();
-      boolean useSchemasSpecified = OseeClientProperties.useSchemasSpecifiedInDbConfigFiles();
-
-      DatastoreInitializationOperation op =
-         new DatastoreInitializationOperation(tableDataSpace, indexDataSpace, useSchemasSpecified);
-      Operations.executeWorkAndCheckStatus(op);
    }
 }

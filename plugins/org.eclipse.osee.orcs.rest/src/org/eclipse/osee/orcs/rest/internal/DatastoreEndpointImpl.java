@@ -12,8 +12,6 @@ package org.eclipse.osee.orcs.rest.internal;
 
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -22,26 +20,21 @@ import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsMetaData;
-import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreInfo;
-import org.eclipse.osee.orcs.rest.model.DatastoreInitOptions;
 
 /**
  * @author Roberto E. Escobar
  */
 public class DatastoreEndpointImpl implements DatastoreEndpoint {
-
-   private final OrcsApi orcsApi;
-
    @Context
    private UriInfo uriInfo;
-
    private final ActivityLog activityLog;
+   private final OrcsAdmin adminOps;
 
    public DatastoreEndpointImpl(OrcsApi orcsApi, ActivityLog activityLog) {
-      this.orcsApi = orcsApi;
       this.activityLog = activityLog;
+      this.adminOps = orcsApi.getAdminOps();
    }
 
    protected void setUriInfo(UriInfo uriInfo) {
@@ -52,41 +45,23 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
       return uriInfo;
    }
 
-   private OrcsAdmin getOrcsAdmin() {
-      return orcsApi.getAdminOps();
-   }
-
    @Override
    public DatastoreInfo getInfo() {
-      OrcsAdmin adminOps = getOrcsAdmin();
       Callable<OrcsMetaData> callable = adminOps.createFetchOrcsMetaData();
       OrcsMetaData metaData = executeCallable(callable);
       return asDatastoreInfo(metaData);
    }
 
    @Override
-   public Response initialize(DatastoreInitOptions options) {
+   public void initialize() {
       activityLog.setEnabled(false);
-      OrcsAdmin adminOps = getOrcsAdmin();
-
-      Map<String, String> parameters = new HashMap<>();
-      parameters.put(DataStoreAdmin.SCHEMA_TABLE_DATA_NAMESPACE, options.getTableDataSpace());
-      parameters.put(DataStoreAdmin.SCHEMA_INDEX_DATA_NAMESPACE, options.getIndexDataSpace());
-      parameters.put(DataStoreAdmin.SCHEMA_USER_FILE_SPECIFIED_NAMESPACE,
-         Boolean.toString(options.isUseFileSpecifiedSchemas()));
-
-      OrcsMetaData metaData = adminOps.createDatastore(parameters);
-
+      adminOps.createDatastore();
       activityLog.setEnabled(true);
-      UriInfo uriInfo = getUriInfo();
-      URI location = getDatastoreLocation(uriInfo);
-      return Response.created(location).entity(asDatastoreInfo(metaData)).build();
    }
 
    @Override
-   public Response migrate(DatastoreInitOptions options) {
+   public Response migrate() {
       activityLog.setEnabled(false);
-      OrcsAdmin adminOps = getOrcsAdmin();
 
       Callable<OrcsMetaData> callable = adminOps.migrateDatastore();
       OrcsMetaData metaData = executeCallable(callable);
@@ -103,5 +78,4 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
       info.setProperties(metaData.getProperties());
       return info;
    }
-
 }

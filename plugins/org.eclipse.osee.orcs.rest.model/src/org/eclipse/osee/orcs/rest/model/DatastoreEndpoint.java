@@ -31,11 +31,10 @@ public interface DatastoreEndpoint {
    @POST
    @Path("initialize")
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-   Response initialize(DatastoreInitOptions options);
+   void initialize();
 
    @POST
    @Path("migrate")
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-   Response migrate(DatastoreInitOptions options);
-
+   Response migrate();
 }

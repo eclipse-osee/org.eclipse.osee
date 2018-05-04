@@ -1,8 +1,13 @@
-/*
- * Created on May 5, 2016
+/*******************************************************************************
+ * Copyright (c) 2016 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.callable;
 
 import com.google.common.base.Supplier;
@@ -15,6 +20,9 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
 
+/**
+ * @author Angel Avila
+ */
 public class MigrateDatastoreCallable extends AbstractDatastoreCallable<DataStoreInfo> {
 
    private final SystemPreferences preferences;
@@ -33,9 +41,8 @@ public class MigrateDatastoreCallable extends AbstractDatastoreCallable<DataStor
       getJdbcClient().migrate(options, schemaProvider.get());
 
       Callable<DataStoreInfo> fetchCallable =
-         new FetchDatastoreInfoCallable(getLogger(), getSession(), getJdbcClient(), schemaProvider, preferences);
+         new FetchDatastoreInfoCallable(getLogger(), getJdbcClient(), schemaProvider, preferences);
       DataStoreInfo dataStoreInfo = callAndCheckForCancel(fetchCallable);
       return dataStoreInfo;
    }
-
 }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs;
 
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 /**
@@ -20,7 +19,7 @@ public interface OrcsAdmin {
 
    Callable<OrcsMetaData> createFetchOrcsMetaData();
 
-   OrcsMetaData createDatastore(Map<String, String> parameters);
+   OrcsMetaData createDatastore();
 
    Callable<OrcsMetaData> migrateDatastore();
 

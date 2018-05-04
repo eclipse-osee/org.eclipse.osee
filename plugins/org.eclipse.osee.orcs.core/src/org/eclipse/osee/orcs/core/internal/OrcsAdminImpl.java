@@ -37,8 +37,8 @@ public class OrcsAdminImpl implements OrcsAdmin {
    }
 
    @Override
-   public OrcsMetaData createDatastore(Map<String, String> parameters) {
-      final DataStoreInfo dataStoreInfo = dataStoreAdmin.createDataStore(null, parameters);
+   public OrcsMetaData createDatastore() {
+      final DataStoreInfo dataStoreInfo = dataStoreAdmin.createDataStore();
 
       OrcsMetaData orcsMetaData = new OrcsMetaData() {
          @Override

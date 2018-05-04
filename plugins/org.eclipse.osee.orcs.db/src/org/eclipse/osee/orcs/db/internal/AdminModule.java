@@ -14,7 +14,6 @@ import com.google.common.base.Supplier;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -61,11 +60,7 @@ public class AdminModule {
    public DataStoreAdmin createDataStoreAdmin() {
       return new DataStoreAdmin() {
          @Override
-         public DataStoreInfo createDataStore(OrcsSession session, Map<String, String> parameters) {
-            getOption(parameters, DataStoreAdmin.SCHEMA_TABLE_DATA_NAMESPACE, "");
-            getOption(parameters, DataStoreAdmin.SCHEMA_INDEX_DATA_NAMESPACE, "");
-            getOption(parameters, DataStoreAdmin.SCHEMA_USER_FILE_SPECIFIED_NAMESPACE, false);
-
+         public DataStoreInfo createDataStore() {
             Supplier<Iterable<JdbcMigrationResource>> schemaProvider = new DynamicSchemaResourceProvider(logger);
 
             JdbcMigrationOptions options = new JdbcMigrationOptions(true, true);
@@ -85,7 +80,7 @@ public class AdminModule {
             identityService.invalidateIds();
 
             try {
-               return new FetchDatastoreInfoCallable(logger, session, jdbcClient, schemaProvider, preferences).call();
+               return new FetchDatastoreInfoCallable(logger, jdbcClient, schemaProvider, preferences).call();
             } catch (Exception ex) {
                throw OseeCoreException.wrap(ex);
             }
@@ -111,25 +106,7 @@ public class AdminModule {
          @Override
          public Callable<DataStoreInfo> getDataStoreInfo(OrcsSession session) {
             Supplier<Iterable<JdbcMigrationResource>> schemaProvider = new DynamicSchemaResourceProvider(logger);
-            return new FetchDatastoreInfoCallable(logger, session, jdbcClient, schemaProvider, preferences);
-         }
-
-         private boolean getOption(Map<String, String> parameters, String key, boolean defaultValue) {
-            boolean toReturn = defaultValue;
-            String value = parameters.get(key);
-            if (Strings.isValid(value)) {
-               toReturn = Boolean.parseBoolean(value);
-            }
-            return toReturn;
-         }
-
-         private String getOption(Map<String, String> parameters, String key, String defaultValue) {
-            String toReturn = defaultValue;
-            String value = parameters.get(key);
-            if (Strings.isValid(value)) {
-               toReturn = value;
-            }
-            return toReturn;
+            return new FetchDatastoreInfoCallable(logger, jdbcClient, schemaProvider, preferences);
          }
 
          @Override

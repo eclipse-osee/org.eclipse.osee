@@ -25,11 +25,6 @@ public class OseeClientProperties extends OseeProperties {
 
    // Database Initialization Properties
    private static final String OSEE_IMPORT_DURING_DB_INIT = "osee.import.on.db.init";
-   //   private static final String OSEE_IMPORT_FROM_DB_SERVICE = "osee.import.from.connection.id.on.db.init";
-   private static final String OSEE_USE_FILE_SPECIFIED_SCHEMAS = "osee.file.specified.schema.names.on.db.init";
-
-   private static final String OSEE_TABLE_DATA_SPACE_ON_DB_INIT = "osee.table.data.space.on.db.init";
-   private static final String OSEE_INDEX_DATA_SPACE_ON_DB_INIT = "osee.index.data.space.on.db.init";
 
    private static final String OSEE_PROMPT_ON_DB_INIT = "osee.prompt.on.db.init";
    private static final String OSEE_CHOICE_ON_DB_INIT = "osee.choice.on.db.init";
@@ -44,44 +39,6 @@ public class OseeClientProperties extends OseeProperties {
 
    public static void setInDbInit(boolean value) {
       System.setProperty(OSEE_IS_IN_DB_INIT, Boolean.toString(value));
-   }
-
-   //   /**
-   //    * Retrieves where table data should be imported from during OSEE database initialization. The default is to use the
-   //    * database connection id specified in the schema.xml files.
-   //    *
-   //    * @return the connection id to use as a source of the data to be imported.
-   //    */
-   //   public static String getTableImportSource() {
-   //      return getProperty(OSEE_IMPORT_FROM_DB_SERVICE);
-   //   }
-
-   /**
-    * Retrieves whether OSEE database initialization should use the schema names specified in the schema.xml files
-    * instead of using the connection schema. Using the connection specified schema is the default behavior.
-    *
-    * @return <b>true</b> if the file specified schemas should be used.
-    */
-   public static boolean useSchemasSpecifiedInDbConfigFiles() {
-      return Boolean.valueOf(getProperty(OSEE_USE_FILE_SPECIFIED_SCHEMAS));
-   }
-
-   /**
-    * Retrieves the table data space to use during OSEE database initialization
-    *
-    * @return table data space
-    */
-   public static String getOseeTableDataSpaceForDbInit() {
-      return getProperty(OSEE_TABLE_DATA_SPACE_ON_DB_INIT);
-   }
-
-   /**
-    * Retrieves the index data space to use during OSEE database initialization
-    *
-    * @return index data space
-    */
-   public static String getOseeIndexDataSpaceForDbInit() {
-      return getProperty(OSEE_INDEX_DATA_SPACE_ON_DB_INIT);
    }
 
    /**
