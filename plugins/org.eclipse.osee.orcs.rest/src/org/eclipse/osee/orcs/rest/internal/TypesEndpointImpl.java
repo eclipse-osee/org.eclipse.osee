@@ -99,8 +99,8 @@ public class TypesEndpointImpl implements TypesEndpoint {
    }
 
    @Override
-   public void setTypes(final InputStream inputStream) {
-      IResource resource = asResource("http.osee.model", inputStream);
+   public void setTypes(String model) {
+      IResource resource = asResource("http.osee.model", model);
       Callable<Void> op = getOrcsTypes().loadTypes(resource);
       executeCallable(op);
       getOrcsTypes().invalidateAll();
@@ -112,15 +112,12 @@ public class TypesEndpointImpl implements TypesEndpoint {
       return Response.ok().build();
    }
 
-   private IResource asResource(final String fileName, final InputStream inputStream) {
-      byte[] bytes;
+   private IResource asResource(final String fileName, String model) {
       try {
-         String types = Lib.inputStreamToString(inputStream);
-         bytes = types.getBytes("UTF-8");
+         return new ByteResource(fileName, model.getBytes("UTF-8"));
       } catch (IOException ex1) {
          throw new OseeWebApplicationException(Status.BAD_REQUEST, "Error parsing data");
       }
-      return new ByteResource(fileName, bytes);
    }
 
    private static final class ByteResource implements IResource {

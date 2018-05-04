@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model;
 
-import java.io.InputStream;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -66,7 +65,7 @@ public interface TypesEndpoint {
    @POST
    @Consumes({OrcsMediaType.APPLICATION_ORCS_TYPES, MediaType.TEXT_PLAIN})
    @Produces(MediaType.APPLICATION_JSON)
-   void setTypes(InputStream inputStream);
+   void setTypes(String model);
 
    @POST
    @Path("invalidate-caches")

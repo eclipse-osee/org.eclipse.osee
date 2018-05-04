@@ -12,12 +12,7 @@
 package org.eclipse.osee.framework.database.init.internal;
 
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Writer;
-import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -51,17 +46,20 @@ public class OseeTypesSetup {
    private static final String OSEE_TYPES_EXTENSION_ID = DECLARING_PLUGIN_ID + "." + OSEE_TYPES_ELEMENT;
 
    public void execute(Collection<String> uniqueIdsToImport) {
-      File combinedFile = null;
-      try {
-         List<OrcsTypeSheet> itemsToProcess = getOseeTypeExtensionsById(uniqueIdsToImport);
-         combinedFile = createCombinedFile(itemsToProcess);
-         processOseeTypeData(combinedFile.toURI());
-         // Only delete file if no problems processing
-         combinedFile.delete();
+      List<OrcsTypeSheet> sheets = getOseeTypeExtensionsById(uniqueIdsToImport);
 
-      } catch (IOException ex) {
-         OseeCoreException.wrapAndThrow(ex);
+      StringBuilder model = new StringBuilder(10000);
+      for (OrcsTypeSheet sheet : sheets) {
+         String oseeTypeFragment = sheet.getTypesSheet();
+         oseeTypeFragment = oseeTypeFragment.replaceAll("import\\s+\"", "// import \"");
+         model.append("\n");
+         model.append("//////////////     ");
+         model.append(sheet.getName());
+         model.append("\n\n");
+         model.append(oseeTypeFragment);
       }
+      OsgiUtil.getService(getClass(), OseeClient.class).getTypesEndpoint().setTypes(model.toString());
+      OsgiUtil.getService(getClass(), IOseeCachingService.class).reloadTypes();
    }
 
    public List<OrcsTypeSheet> getOseeTypeExtensions() {
@@ -84,30 +82,6 @@ public class OseeTypesSetup {
       return oseeTypes;
    }
 
-   public File createCombinedFile(List<OrcsTypeSheet> sheets) throws IOException {
-      String userHome = System.getProperty("user.home");
-      File file = new File(userHome, "osee.types." + Lib.getDateTimeString() + ".osee");
-      Writer writer = null;
-      try {
-         writer = new FileWriter(file);
-         for (OrcsTypeSheet sheet : sheets) {
-            String oseeTypeFragment = sheet.getTypesSheet();
-            oseeTypeFragment = oseeTypeFragment.replaceAll("import\\s+\"", "// import \"");
-            writer.write("\n");
-            writer.write("//////////////     ");
-            writer.write(sheet.getName());
-            writer.write("\n");
-            writer.write("\n");
-            writer.write(oseeTypeFragment);
-         }
-      } finally {
-         if (writer != null) {
-            writer.close();
-         }
-      }
-      return file;
-   }
-
    private List<OrcsTypeSheet> getOseeTypeExtensionsById(Collection<String> uniqueIdsToImport) {
       List<OrcsTypeSheet> items = new LinkedList<>();
       for (OrcsTypeSheet sheet : getOseeTypeExtensions()) {
@@ -117,15 +91,5 @@ public class OseeTypesSetup {
       }
       OseeLog.logf(Activator.class, Level.INFO, "Importing:\n\t%s", items.toString().replaceAll(",", ",\n\t"));
       return items;
-   }
-
-   public void processOseeTypeData(URI model) {
-      try {
-         InputStream inputStream = model.toURL().openStream();
-         OsgiUtil.getService(getClass(), OseeClient.class).getTypesEndpoint().setTypes(inputStream);
-         OsgiUtil.getService(getClass(), IOseeCachingService.class).reloadTypes();
-      } catch (IOException ex) {
-         OseeCoreException.wrapAndThrow(ex);
-      }
    }
 }
