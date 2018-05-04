@@ -19,7 +19,7 @@ public interface OrcsAdmin {
 
    Callable<OrcsMetaData> createFetchOrcsMetaData();
 
-   OrcsMetaData createDatastore();
+   void createDatastore();
 
    Callable<OrcsMetaData> migrateDatastore();
 

@@ -16,7 +16,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -60,7 +59,7 @@ public class AdminModule {
    public DataStoreAdmin createDataStoreAdmin() {
       return new DataStoreAdmin() {
          @Override
-         public DataStoreInfo createDataStore() {
+         public void createDataStore() {
             Supplier<Iterable<JdbcMigrationResource>> schemaProvider = new DynamicSchemaResourceProvider(logger);
 
             JdbcMigrationOptions options = new JdbcMigrationOptions(true, true);
@@ -78,12 +77,6 @@ public class AdminModule {
             addDefaultPermissions();
 
             identityService.invalidateIds();
-
-            try {
-               return new FetchDatastoreInfoCallable(logger, jdbcClient, schemaProvider, preferences).call();
-            } catch (Exception ex) {
-               throw OseeCoreException.wrap(ex);
-            }
          }
 
          private void addDefaultPermissions() {

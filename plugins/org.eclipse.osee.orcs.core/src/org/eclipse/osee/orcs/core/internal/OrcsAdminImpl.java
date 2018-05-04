@@ -10,14 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
-import java.util.Map;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsMetaData;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
-import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
 import org.eclipse.osee.orcs.core.internal.admin.FetchDatastoreMetadataCallable;
 import org.eclipse.osee.orcs.core.internal.admin.MigrateDatastoreAdminCallable;
 
@@ -37,16 +35,8 @@ public class OrcsAdminImpl implements OrcsAdmin {
    }
 
    @Override
-   public OrcsMetaData createDatastore() {
-      final DataStoreInfo dataStoreInfo = dataStoreAdmin.createDataStore();
-
-      OrcsMetaData orcsMetaData = new OrcsMetaData() {
-         @Override
-         public Map<String, String> getProperties() {
-            return dataStoreInfo.getProperties();
-         }
-      };
-      return orcsMetaData;
+   public void createDatastore() {
+      dataStoreAdmin.createDataStore();
    }
 
    @Override
