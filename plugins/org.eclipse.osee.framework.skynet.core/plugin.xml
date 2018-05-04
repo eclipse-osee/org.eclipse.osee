@@ -18,7 +18,6 @@
    <extension-point id="OseeValidator" name="OseeValidator" schema="OSEE-INF/extensionPts/OseeValidator.exsd"/>
    <extension-point id="ArtifactExtractor" name="ArtifactExtractor" schema="OSEE-INF/extensionPts/ArtifactExtractor.exsd"/>
    <extension-point id="ArtifactExtractorDelegate" name="ArtifactExtractorDelegate" schema="OSEE-INF/extensionPts/ArtifactExtractorDelegate.exsd"/>
-   <extension-point id="OseeTypesHandler" name="OseeTypesHandler" schema="OSEE-INF/extensionPts/OseeTypesHandler.exsd"/>
    <extension-point id="ImportHandler" name="ImportHandler" schema="OSEE-INF/extensionPts/ImportHandler.exsd"/>
    
       <extension
@@ -263,12 +262,6 @@
            classname="org.eclipse.osee.framework.skynet.core.artifact.checks.AssociatedArtifactCheck">
      </ArtifactCheck>
   </extension>
-   <extension
-         point="org.eclipse.osee.framework.skynet.core.OseeTypesHandler">
-      <OseeTypesHandler
-            classname="org.eclipse.osee.framework.skynet.core.internal.XtextOseeTypesHandler">
-      </OseeTypesHandler>
-   </extension>
    <extension
          point="org.eclipse.osee.framework.skynet.core.CommitActions">
       <commitActions

@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.io.OutputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,7 +40,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.OseeTypesExportOperation;
-import org.eclipse.osee.framework.skynet.core.internal.OseeTypesImportOperation;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
@@ -237,13 +235,6 @@ public class ArtifactTypeManager {
          throw new OseeArgumentException("Artifact Type cannot be null");
       }
       return factoryManager.getFactory(artifactType);
-   }
-
-   public static IOperation newImportTypesOp(URI model) {
-      IOseeCachingService caches = getCacheService();
-      OseeClient oseeClient = ServiceUtil.getOseeClient();
-      TypesEndpoint typesEndpoint = oseeClient.getTypesEndpoint();
-      return new OseeTypesImportOperation(typesEndpoint, caches, model, true);
    }
 
    public static IOperation newExportTypesOp(OutputStream outputStream) {

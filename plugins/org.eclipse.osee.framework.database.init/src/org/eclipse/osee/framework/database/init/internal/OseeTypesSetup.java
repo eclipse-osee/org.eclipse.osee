@@ -15,6 +15,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
@@ -23,16 +24,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.data.OrcsTypeSheet;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.importing.IOseeTypesHandler;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.osgi.framework.Bundle;
 
 /**
@@ -48,16 +49,6 @@ public class OseeTypesSetup {
    private static final String DECLARING_PLUGIN_ID = "org.eclipse.osee.framework.skynet.core";
    private static final String OSEE_TYPES_ELEMENT = "OseeTypes";
    private static final String OSEE_TYPES_EXTENSION_ID = DECLARING_PLUGIN_ID + "." + OSEE_TYPES_ELEMENT;
-
-   private static final String OSEE_TYPES_HANDLER = "OseeTypesHandler";
-   private static final String OSEE_TYPES_HANDLER_EXTENSION_ID = DECLARING_PLUGIN_ID + "." + OSEE_TYPES_HANDLER;
-
-   private final ExtensionDefinedObjects<IOseeTypesHandler> extensionObjects;
-
-   public OseeTypesSetup() {
-      extensionObjects = new ExtensionDefinedObjects<IOseeTypesHandler>(OSEE_TYPES_HANDLER_EXTENSION_ID,
-         OSEE_TYPES_HANDLER, "classname");
-   }
 
    public void execute(Collection<String> uniqueIdsToImport) {
       File combinedFile = null;
@@ -124,31 +115,17 @@ public class OseeTypesSetup {
             items.add(sheet);
          }
       }
-      OseeLog.logf(Activator.class, Level.INFO, "Importing:\n\t%s",
-         items.toString().replaceAll(",", ",\n\t"));
+      OseeLog.logf(Activator.class, Level.INFO, "Importing:\n\t%s", items.toString().replaceAll(",", ",\n\t"));
       return items;
    }
 
-   public void processOseeTypeData(URI uri) {
-      IOseeTypesHandler handler = getHandler(uri);
-      if (handler != null) {
-         handler.execute(new NullProgressMonitor(), uri);
-      } else {
-         OseeLog.logf(Activator.class, Level.SEVERE, "Unable to find handler for [%s] - handlers - %s",
-            uri.toASCIIString(), this.extensionObjects.getObjects());
+   public void processOseeTypeData(URI model) {
+      try {
+         InputStream inputStream = model.toURL().openStream();
+         OsgiUtil.getService(getClass(), OseeClient.class).getTypesEndpoint().setTypes(inputStream);
+         OsgiUtil.getService(getClass(), IOseeCachingService.class).reloadTypes();
+      } catch (IOException ex) {
+         OseeCoreException.wrapAndThrow(ex);
       }
    }
-
-   private IOseeTypesHandler getHandler(URI uri) {
-      IOseeTypesHandler toReturn = null;
-      String urlString = uri.toASCIIString();
-      for (IOseeTypesHandler handler : extensionObjects.getObjects()) {
-         if (handler.isApplicable(urlString)) {
-            toReturn = handler;
-            break;
-         }
-      }
-      return toReturn;
-   }
-
 }

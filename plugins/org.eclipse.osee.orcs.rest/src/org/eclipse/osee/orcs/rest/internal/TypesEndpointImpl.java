@@ -99,12 +99,11 @@ public class TypesEndpointImpl implements TypesEndpoint {
    }
 
    @Override
-   public Response setTypes(final InputStream inputStream) {
+   public void setTypes(final InputStream inputStream) {
       IResource resource = asResource("http.osee.model", inputStream);
       Callable<Void> op = getOrcsTypes().loadTypes(resource);
       executeCallable(op);
       getOrcsTypes().invalidateAll();
-      return Response.ok().build();
    }
 
    @Override

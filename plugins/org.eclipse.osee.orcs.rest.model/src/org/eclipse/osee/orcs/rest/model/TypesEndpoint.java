@@ -66,7 +66,7 @@ public interface TypesEndpoint {
    @POST
    @Consumes({OrcsMediaType.APPLICATION_ORCS_TYPES, MediaType.TEXT_PLAIN})
    @Produces(MediaType.APPLICATION_JSON)
-   Response setTypes(InputStream inputStream);
+   void setTypes(InputStream inputStream);
 
    @POST
    @Path("invalidate-caches")
