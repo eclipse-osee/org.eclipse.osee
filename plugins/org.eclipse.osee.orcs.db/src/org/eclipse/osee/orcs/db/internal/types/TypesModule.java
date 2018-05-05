@@ -21,7 +21,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
-import org.eclipse.osee.orcs.db.internal.callable.OrcsTypeLoaderCallable;
+import org.eclipse.osee.orcs.db.internal.callable.OrcsTypeLoader;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeArtifactTypeDatabaseTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeAttributeTypeDatabaseTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeRelationTypeDatabaseTxCallable;
@@ -49,8 +49,8 @@ public class TypesModule {
       return new OrcsTypesDataStore() {
 
          @Override
-         public Callable<IResource> getOrcsTypesLoader(OrcsSession session) {
-            return new OrcsTypeLoaderCallable(logger, session, jdbcClient, resourceManager);
+         public IResource getOrcsTypesLoader(OrcsSession session) {
+            return new OrcsTypeLoader(jdbcClient, resourceManager).load();
          }
 
          @Override

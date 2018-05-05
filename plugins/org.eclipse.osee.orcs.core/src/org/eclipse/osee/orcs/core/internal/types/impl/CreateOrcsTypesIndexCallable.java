@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.types.impl;
 
-import com.google.common.base.Stopwatch;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesIndex;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesResourceProvider;
@@ -36,24 +33,6 @@ public class CreateOrcsTypesIndexCallable extends CancellableCallable<OrcsTypesI
 
    @Override
    public OrcsTypesIndex call() throws Exception {
-      Stopwatch stopwatch = new Stopwatch();
-      stopwatch.start();
-      OrcsTypesIndex index = null;
-      try {
-         index = createIndex();
-      } finally {
-         logger.trace("Created OrcsTypesIndex in [%s]", Lib.getElapseString(stopwatch.elapsedMillis()));
-         stopwatch.stop();
-      }
-      return index;
-   }
-
-   private OrcsTypesIndex createIndex() throws Exception {
-      long startTime = System.currentTimeMillis();
-      IResource source = provider.getOrcsTypesResource();
-      checkForCancelled();
-      logger.trace("Read OrcsTypes from datastore in [%s]", Lib.getElapseString(startTime));
-      OrcsTypesIndex index = indexer.index(source);
-      return index;
+      return indexer.index(provider.getOrcsTypesResource());
    }
 }

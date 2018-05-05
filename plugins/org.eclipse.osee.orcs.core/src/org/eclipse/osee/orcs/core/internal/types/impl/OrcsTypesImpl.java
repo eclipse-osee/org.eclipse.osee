@@ -90,20 +90,14 @@ public class OrcsTypesImpl implements OrcsTypes {
    }
 
    @Override
-   public Callable<Void> loadTypes(final IResource resource) {
-      return new CancellableCallable<Void>() {
-         @Override
-         public Void call() throws Exception {
-            indexProvider.setLoader(loaderFactory.createTypesLoader(session, new OrcsTypesResourceProvider() {
+   public void loadTypes(final IResource resource) {
+      indexProvider.setLoader(loaderFactory.createTypesLoader(session, new OrcsTypesResourceProvider() {
 
-               @Override
-               public IResource getOrcsTypesResource() {
-                  return resource;
-               }
-            }));
-            return null;
+         @Override
+         public IResource getOrcsTypesResource() {
+            return resource;
          }
-      };
+      }));
    }
 
    @Override

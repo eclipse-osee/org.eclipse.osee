@@ -40,7 +40,7 @@ public class OrcsTypesLoaderFactoryImpl implements OrcsTypesLoaderFactory {
 
          @Override
          public IResource getOrcsTypesResource() throws Exception {
-            return ds.getOrcsTypesLoader(session).call();
+            return ds.getOrcsTypesLoader(session);
          }
       });
    }

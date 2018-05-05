@@ -44,7 +44,7 @@ public interface OrcsTypes {
 
    EnumTypes getEnumTypes();
 
-   Callable<Void> loadTypes(IResource resource);
+   void loadTypes(IResource resource);
 
    Callable<Void> writeTypes(OutputStream outputStream);
 

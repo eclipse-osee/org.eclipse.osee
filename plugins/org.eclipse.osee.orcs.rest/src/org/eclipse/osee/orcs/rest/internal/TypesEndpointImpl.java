@@ -101,8 +101,7 @@ public class TypesEndpointImpl implements TypesEndpoint {
    @Override
    public void setTypes(String model) {
       IResource resource = asResource("http.osee.model", model);
-      Callable<Void> op = getOrcsTypes().loadTypes(resource);
-      executeCallable(op);
+      getOrcsTypes().loadTypes(resource);
       getOrcsTypes().invalidateAll();
    }
 

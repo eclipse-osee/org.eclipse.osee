@@ -24,7 +24,6 @@ import com.google.common.collect.Multimap;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.InputSupplier;
 import com.google.common.io.Resources;
-import com.google.common.util.concurrent.Callables;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -127,7 +126,7 @@ public class OrcsTypesTest {
       URI uri = new URI("osee:/types.test.data.osee");
 
       IResource resource = new MultiResource(uri, resources);
-      when(dataStore.getOrcsTypesLoader(session)).thenReturn(Callables.returning(resource));
+      when(dataStore.getOrcsTypesLoader(session)).thenReturn(resource);
 
       resources.add(getResource(TEST_TYPE_MODEL));
 

@@ -108,7 +108,7 @@ public class AdminModule {
             try {
                String systemUuid = preferences.getSystemUuid();
                if (Strings.isValid(systemUuid)) {
-                  IResource resource = typesDataStore.getOrcsTypesLoader(null).call();
+                  IResource resource = typesDataStore.getOrcsTypesLoader(null);
                   if (resource != null) {
                      initialized = true;
                   }

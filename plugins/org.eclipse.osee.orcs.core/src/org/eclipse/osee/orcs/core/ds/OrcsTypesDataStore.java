@@ -23,7 +23,7 @@ import org.eclipse.osee.orcs.OrcsSession;
  */
 public interface OrcsTypesDataStore {
 
-   Callable<IResource> getOrcsTypesLoader(OrcsSession session);
+   IResource getOrcsTypesLoader(OrcsSession session);
 
    Callable<Void> purgeArtifactsByArtifactType(OrcsSession session, Collection<? extends IArtifactType> artifactTypes);
 

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
@@ -30,45 +31,39 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.OrcsTypes;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource> {
+public class OrcsTypeLoader {
 
    private final IResourceManager resourceManager;
+   private final JdbcClient jdbcClient;
 
-   public OrcsTypeLoaderCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, IResourceManager resourceManager) {
-      super(logger, session, jdbcClient);
+   public OrcsTypeLoader(JdbcClient jdbcClient, IResourceManager resourceManager) {
       this.resourceManager = resourceManager;
+      this.jdbcClient = jdbcClient;
    }
 
-   @Override
-   public IResource call() throws Exception {
+   public IResource load() {
       String resourceUri = String.format("osee:/datastore.orcs.types_%s.osee", Lib.getDateTimeString());
-      URI uri = new URI(resourceUri);
-      Collection<String> uriPaths = findOseeTypeData();
+      try {
+         URI uri = new URI(resourceUri);
+         Collection<String> uriPaths = new LinkedHashSet<>();
 
-      Conditions.checkExpressionFailOnTrue(uriPaths.isEmpty(), "No orcs types found");
-      return new OrcsTypesResource(uri, uriPaths);
-   }
+         jdbcClient.runQuery(stmt -> uriPaths.add(stmt.getString("uri")), OrcsTypes.LOAD_OSEE_TYPE_DEF_URIS,
+            CoreTupleTypes.OseeTypeDef, CoreBranches.COMMON, TxChange.CURRENT, OrcsTypesData.OSEE_TYPE_VERSION,
+            TxChange.CURRENT);
 
-   private Collection<String> findOseeTypeData() {
-      Collection<String> paths = new LinkedHashSet<>();
-
-      getJdbcClient().runQuery(stmt -> {
-         String uri = stmt.getString("uri");
-         paths.add(uri);
-      }, OrcsTypes.LOAD_OSEE_TYPE_DEF_URIS, CoreTupleTypes.OseeTypeDef, CoreBranches.COMMON, TxChange.CURRENT,
-         OrcsTypesData.OSEE_TYPE_VERSION, TxChange.CURRENT);
-      return paths;
+         Conditions.checkExpressionFailOnTrue(uriPaths.isEmpty(), "No orcs types found");
+         return new OrcsTypesResource(uri, uriPaths);
+      } catch (URISyntaxException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
    }
 
    private final class OrcsTypesResource implements IResource {
-
       private final URI uri;
       private final Collection<String> resources;
 
@@ -101,7 +96,6 @@ public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource>
       private InputStream asInputStream(Collection<String> resources) {
          PropertyStore options = new PropertyStore();
          options.put(StandardOptions.DecompressOnAquire.name(), "true");
-         getLogger().info("osee types uri [" + uri + "] resources [" + resources + "]");
          StringBuilder builder = new StringBuilder();
          for (String path : resources) {
             IResourceLocator locator = resourceManager.getResourceLocator(path);
@@ -134,5 +128,4 @@ public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource>
          return toReturn;
       }
    }
-
 }
