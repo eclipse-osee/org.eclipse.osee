@@ -205,13 +205,6 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public void addChildren(OrcsSession session, Artifact parent, List<? extends Artifact> children) {
-      for (Artifact child : children) {
-         addChild(session, parent, child);
-      }
-   }
-
-   @Override
    public void relate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode) {
       relate(session, aNode, type, bNode, emptyString(), PREEXISTING);
    }

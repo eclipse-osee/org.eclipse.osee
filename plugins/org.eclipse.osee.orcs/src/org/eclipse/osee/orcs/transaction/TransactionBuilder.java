@@ -51,11 +51,21 @@ public interface TransactionBuilder {
 
    // ARTIFACT
 
+   /**
+    * If parent is invalid, the artifact will be created with no parent
+    */
+   ArtifactToken createArtifact(ArtifactId parent, ArtifactTypeId artifactType, String name);
+
    ArtifactToken createArtifact(ArtifactTypeId artifactType, String name);
 
    ArtifactToken createArtifact(ArtifactTypeId artifactType, String name, Long artifactId);
 
    ArtifactToken createArtifact(ArtifactToken configsFolder);
+
+   /**
+    * If parent is invalid, the artifact will be created with no parent
+    */
+   ArtifactToken createArtifact(ArtifactId parent, ArtifactToken configsFolder);
 
    void deleteArtifact(ArtifactId sourceArtifact);
 
@@ -112,9 +122,7 @@ public interface TransactionBuilder {
 
    /// TX
 
-   void addChildren(ArtifactId artA, Iterable<? extends ArtifactId> children);
-
-   void addChildren(ArtifactId artA, ArtifactId... children);
+   void addChild(ArtifactId parent, ArtifactId child);
 
    void relate(ArtifactId artA, IRelationType relType, ArtifactId artB);
 

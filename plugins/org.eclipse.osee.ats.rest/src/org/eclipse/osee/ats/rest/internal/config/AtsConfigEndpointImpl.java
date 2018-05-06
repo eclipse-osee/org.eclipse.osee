@@ -180,7 +180,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
                   relateToToken.getName()).getResults().getAtMostOneOrNull();
          }
       }
-      tx.addChildren(relateToArt, artifact);
+      tx.addChild(relateToArt, artifact);
       return artifact;
    }
 
@@ -234,7 +234,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       if (workDefArt.getParent() == null) {
          ArtifactReadable workDefFolder =
             (ArtifactReadable) atsApi.getQueryService().getArtifact(AtsArtifactToken.WorkDefinitionsFolder);
-         tx.addChildren(workDefFolder, workDefArt);
+         tx.addChild(workDefFolder, workDefArt);
       }
       tx.commit();
       atsApi.getWorkDefinitionService().clearCaches();

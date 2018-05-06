@@ -66,8 +66,6 @@ public interface RelationManager {
 
    void addChild(OrcsSession session, Artifact parent, Artifact child);
 
-   void addChildren(OrcsSession session, Artifact parent, List<? extends Artifact> children);
-
    void relate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode);
 
    void relate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode, String rationale);

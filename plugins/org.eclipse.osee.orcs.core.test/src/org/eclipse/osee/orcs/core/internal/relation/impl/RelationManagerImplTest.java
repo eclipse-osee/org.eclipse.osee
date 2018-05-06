@@ -640,34 +640,6 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testAddChildren() {
-      when(container1.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
-      when(container2.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
-
-      when(
-         relationFactory.createRelation(eq(node1), eq(DEFAULT_HIERARCHY), eq(node2), Matchers.anyString())).thenReturn(
-            relation1);
-      when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
-      when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(UNORDERED);
-
-      when(node1.getArtifactTypeId()).thenReturn(artifactType1);
-      when(node2.getArtifactTypeId()).thenReturn(artifactType2);
-      when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType1, SIDE_A)).thenReturn(10);
-      when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType2, SIDE_B)).thenReturn(10);
-
-      List<? extends Artifact> children = Arrays.asList(node2);
-      manager.addChildren(session, node1, children);
-
-      verify(container1).getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED);
-      verify(container2).getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED);
-
-      verify(orderManager1).getSorterId(Default_Hierarchical__Child);
-      verify(orderManager1).setOrder(eq(Default_Hierarchical__Child), eq(UNORDERED), sortedListCaptor.capture());
-      verify(container1).add(DEFAULT_HIERARCHY, relation1);
-      verify(container2).add(DEFAULT_HIERARCHY, relation1);
-   }
-
-   @Test
    public void testAddPreviouslyDeletedChild() {
       when(container1.getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED)).thenReturn(relation1);

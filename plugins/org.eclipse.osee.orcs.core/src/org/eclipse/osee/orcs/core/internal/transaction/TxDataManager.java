@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.core.internal.transaction;
 
 import static java.util.Collections.singleton;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -349,12 +348,10 @@ public class TxDataManager {
       asArtifact.delete();
    }
 
-   public void addChildren(TxData txData, ArtifactId artA, Iterable<? extends ArtifactId> children) {
+   public void addChild(TxData txData, ArtifactId parent, ArtifactId child) {
       OrcsSession session = txData.getSession();
-      Artifact asArtifact = getForWrite(txData, artA);
-      Iterable<? extends Artifact> artifacts = getForWrite(txData, children);
-      List<Artifact> nodes = Lists.newLinkedList(artifacts);
-      relationManager.addChildren(session, asArtifact, nodes);
+      Artifact asArtifact = getForWrite(txData, parent);
+      relationManager.addChild(session, asArtifact, getForWrite(txData, child));
    }
 
    public void relate(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB) {

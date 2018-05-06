@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.core.internal.transaction;
 
 import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -93,6 +92,24 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    public void setAuthor(UserId author) {
       txManager.setAuthor(txData, author);
+   }
+
+   @Override
+   public ArtifactToken createArtifact(ArtifactId parent, ArtifactToken token) {
+      ArtifactToken child = createArtifact(token);
+      if (parent.isValid()) {
+         addChild(parent, child);
+      }
+      return child;
+   }
+
+   @Override
+   public ArtifactToken createArtifact(ArtifactId parent, ArtifactTypeId artifactType, String name) {
+      ArtifactToken child = createArtifact(artifactType, name);
+      if (parent.isValid()) {
+         addChild(parent, child);
+      }
+      return child;
    }
 
    @Override
@@ -254,13 +271,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public void addChildren(ArtifactId artA, ArtifactId... children) {
-      addChildren(artA, Arrays.asList(children));
-   }
-
-   @Override
-   public void addChildren(ArtifactId artA, Iterable<? extends ArtifactId> children) {
-      txManager.addChildren(txData, artA, children);
+   public void addChild(ArtifactId parent, ArtifactId child) {
+      txManager.addChild(txData, parent, child);
    }
 
    @Override
@@ -377,17 +389,13 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public ArtifactId createView(BranchId branch, String viewName) {
-      ArtifactId art = createArtifact(CoreArtifactTypes.BranchView, viewName);
       ArtifactId folder = query.createQueryFactory(txData.getSession()).fromBranch(branch).andTypeEquals(
          CoreArtifactTypes.Folder).andNameEquals("Product Line").getResults().getOneOrNull();
       if (folder == null || folder.isInvalid()) {
-         folder = createArtifact(CoreArtifactTypes.Folder, "Product Line");
-         addChildren(CoreArtifactTokens.DefaultHierarchyRoot, folder);
+         folder = createArtifact(CoreArtifactTokens.DefaultHierarchyRoot, CoreArtifactTypes.Folder, "Product Line");
       }
-
-      addChildren(folder, art);
+      ArtifactId art = createArtifact(folder, CoreArtifactTypes.BranchView, viewName);
       addTuple2(CoreTupleTypes.BranchView, CoreBranches.COMMON.getId(), art.getId());
-
       return art;
    }
 
@@ -399,16 +407,14 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void createDemoApplicability() {
-      ArtifactId config1 = createArtifact(CoreArtifactTypes.BranchView, "Config1");
-      ArtifactId config2 = createArtifact(CoreArtifactTypes.BranchView, "Config2");
-      ArtifactId folder = createArtifact(CoreArtifactTypes.Folder, "Product Line");
+      ArtifactId folder =
+         createArtifact(CoreArtifactTokens.DefaultHierarchyRoot, CoreArtifactTypes.Folder, "Product Line");
+      ArtifactId config1 = createArtifact(folder, CoreArtifactTypes.BranchView, "Config1");
+      ArtifactId config2 = createArtifact(folder, CoreArtifactTypes.BranchView, "Config2");
       ArtifactId featureDefinition =
-         createArtifact(CoreArtifactTypes.FeatureDefinition, "Feature Definition_SAW_Bld_1");
+         createArtifact(folder, CoreArtifactTypes.FeatureDefinition, "Feature Definition_SAW_Bld_1");
 
       keyValueOps.putByKey(BASE.getId(), BASE.getName());
-
-      addChildren(CoreArtifactTokens.DefaultHierarchyRoot, folder);
-      addChildren(folder, config1, config2, featureDefinition);
 
       addTuple2(CoreTupleTypes.ViewApplicability, config1, "Base");
       addTuple2(CoreTupleTypes.ViewApplicability, config2, "Base");

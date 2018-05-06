@@ -525,15 +525,13 @@ public class OrcsQueryTest {
       ArtifactId folder = tx1.createArtifact(CoreArtifactTypes.Folder, "Just a Folder");
       tx1.commit();
 
-      tx2.addChildren(robotApi, folder);
+      tx2.addChild(robotApi, folder);
 
       tx2.commit();
 
-      factory.fromBranch(SAW_Bld_2) //
-         .andNameEquals("Robot Interfaces").getResults().getExactlyOne();
+      factory.fromBranch(SAW_Bld_2).andNameEquals("Robot Interfaces").getResults().getExactlyOne();
 
-      ArtifactReadable folderArt = factory.fromBranch(SAW_Bld_2) //
-         .andId(folder).getResults().getExactlyOne();
+      ArtifactReadable folderArt = factory.fromBranch(SAW_Bld_2).andId(folder).getResults().getExactlyOne();
       // robotApi should be related to folder
       Assert.assertTrue(robotApi.areRelated(CoreRelationTypes.Default_Hierarchical__Child, folderArt));
    }

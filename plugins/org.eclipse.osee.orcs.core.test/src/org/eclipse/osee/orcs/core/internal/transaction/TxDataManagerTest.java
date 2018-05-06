@@ -103,7 +103,6 @@ public class TxDataManagerTest {
    @Mock private Artifact artifact3;
    @Mock private RelationNodeAdjacencies adjacencies;
    @Captor private ArgumentCaptor<Collection<ArtifactId>> idCaptor;
-   @Captor private ArgumentCaptor<List<? extends Artifact>> nodeCaptor;
    // @formatter:on
 
    private TxDataManager txDataManager;
@@ -592,29 +591,6 @@ public class TxDataManagerTest {
       txDataManager.relate(txData, readable1, DEFAULT_HIERARCHY, readable2, LEXICOGRAPHICAL_DESC);
 
       verify(relationManager).relate(session, artifact1, DEFAULT_HIERARCHY, artifact2, LEXICOGRAPHICAL_DESC);
-   }
-
-   @Test
-   public void testAddChildren() {
-      List<? extends ArtifactReadable> children = Arrays.asList(readable2, readable3);
-
-      when(txData.getWriteable(readable1)).thenReturn(artifact1);
-      when(txData.getWriteable(readable2)).thenReturn(artifact2);
-      when(txData.getWriteable(readable3)).thenReturn(artifact3);
-
-      ArtifactData data = Mockito.mock(ArtifactData.class);
-      when(artifact1.getOrcsData()).thenReturn(data);
-      when(artifact2.getOrcsData()).thenReturn(data);
-      when(artifact3.getOrcsData()).thenReturn(data);
-      when(data.isExistingVersionUsed()).thenReturn(false);
-
-      txDataManager.addChildren(txData, readable1, children);
-
-      verify(relationManager).addChildren(eq(session), eq(artifact1), nodeCaptor.capture());
-
-      Iterator<? extends Artifact> iterator = nodeCaptor.getValue().iterator();
-      assertEquals(artifact2, iterator.next());
-      assertEquals(artifact3, iterator.next());
    }
 
    @Test

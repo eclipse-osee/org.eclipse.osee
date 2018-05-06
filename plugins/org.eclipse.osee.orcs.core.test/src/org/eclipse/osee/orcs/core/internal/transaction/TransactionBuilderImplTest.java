@@ -36,7 +36,6 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -357,22 +356,6 @@ public class TransactionBuilderImplTest {
       factory.setRationale(node1, DEFAULT_HIERARCHY, node2, "This is my rationale");
 
       verify(txDataManager).setRationale(txData, node1, DEFAULT_HIERARCHY, node2, "This is my rationale");
-   }
-
-   @Test
-   public void testAddChildren() {
-      List<ArtifactReadable> list = Arrays.asList(node1, node2);
-
-      factory.addChildren(expectedAuthor, list);
-
-      verify(txDataManager).addChildren(txData, expectedAuthor, list);
-   }
-
-   @Test
-   public void TestAddChildrenAsList() {
-      Iterable<? extends ArtifactId> children = Collections.emptyList();
-      factory.addChildren(expectedAuthor, children);
-      verify(txDataManager).addChildren(txData, expectedAuthor, children);
    }
 
    @Test

@@ -17,6 +17,7 @@ import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hi
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Dependency__Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Dependency__Dependency;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
 import static org.junit.Assert.assertEquals;
@@ -62,6 +63,7 @@ import org.eclipse.osee.orcs.search.TransactionQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -173,6 +175,18 @@ public class OrcsTransactionTest {
       assertEquals(expectedName, artifact1.getName());
       assertEquals(expectedAnnotation, artifact1.getAttributeValues(CoreAttributeTypes.Annotation).iterator().next());
       assertEquals(artifact1.getGuid(), artifact1.getGuid());
+   }
+
+   @Test
+   public void testCreateArtifactWithParent() {
+      TransactionBuilder tx = txFactory.createTransaction(SAW_Bld_2, userArtifact, "testCreateArtifact");
+      ArtifactId folder = tx.createArtifact(ArtifactId.SENTINEL, CoreArtifactTypes.Folder, "Just a Folder");
+      ArtifactId subfolder = tx.createArtifact(folder, CoreArtifactTypes.Folder, "subfolder");
+      tx.commit();
+
+      ArtifactReadable folderArt = query.fromBranch(SAW_Bld_2).andId(folder).getResults().getExactlyOne();
+      Assert.assertEquals(null, folderArt.getParent());
+      Assert.assertEquals(subfolder, folderArt.getChildren().getExactlyOne());
    }
 
    @Test
@@ -608,9 +622,8 @@ public class OrcsTransactionTest {
    public void testRelateWithSortType() {
       TransactionBuilder tx1 = createTx();
       ArtifactId art1 = tx1.createArtifact(CoreArtifactTypes.Component, "A component");
-      ArtifactId art2 = tx1.createArtifact(CoreArtifactTypes.Component, "B component");
-      ArtifactId art3 = tx1.createArtifact(CoreArtifactTypes.Component, "C component");
-      tx1.addChildren(art1, art2, art3);
+      tx1.createArtifact(art1, CoreArtifactTypes.Component, "B component");
+      tx1.createArtifact(art1, CoreArtifactTypes.Component, "C component");
       TransactionId tx1Id = tx1.commit();
 
       QueryBuilder art1Query = query.fromBranch(COMMON).andId(art1);
@@ -648,10 +661,9 @@ public class OrcsTransactionTest {
    public void testSetRelations() {
       TransactionBuilder tx1 = createTx();
       ArtifactId art1 = tx1.createArtifact(Component, "A component");
-      ArtifactId art2 = tx1.createArtifact(Component, "B component");
+      ArtifactId art2 = tx1.createArtifact(art1, Component, "B component");
       ArtifactId art3 = tx1.createArtifact(Component, "C component");
       ArtifactId art4 = tx1.createArtifact(Component, "D component");
-      tx1.addChildren(art1, art2);
       tx1.commit();
 
       ArtifactReadable artifact1 = query.fromBranch(COMMON).andId(art1).getResults().getExactlyOne();
@@ -697,7 +709,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testAddChildren() {
+   public void testAddChild() {
       TransactionBuilder tx1 = createTx();
       ArtifactId art1 = tx1.createArtifact(Component, "A component");
       ArtifactId art2 = tx1.createArtifact(Component, "C component");
@@ -705,7 +717,8 @@ public class OrcsTransactionTest {
       tx1.commit();
 
       TransactionBuilder tx2 = createTx();
-      tx2.addChildren(art1, art2, art3);
+      tx2.addChild(art1, art2);
+      tx2.addChild(art1, art3);
       tx2.commit();
 
       ArtifactReadable artifact1 = query.fromBranch(COMMON).andId(art1).getResults().getExactlyOne();
@@ -761,9 +774,8 @@ public class OrcsTransactionTest {
    public void testUnrelate() {
       TransactionBuilder tx1 = createTx();
       ArtifactId art1 = tx1.createArtifact(Component, "A component");
-      ArtifactId art2 = tx1.createArtifact(Component, "C component");
-      ArtifactId art3 = tx1.createArtifact(Component, "B component");
-      tx1.addChildren(art1, art2, art3);
+      ArtifactId art2 = tx1.createArtifact(art1, Component, "C component");
+      ArtifactId art3 = tx1.createArtifact(art1, Component, "B component");
       ArtifactId art4 = tx1.createArtifact(GeneralDocument, "Document");
       tx1.relate(art1, Dependency__Dependency, art4);
       tx1.commit();
@@ -796,9 +808,8 @@ public class OrcsTransactionTest {
    public void testUnrelateFromAllByType() {
       TransactionBuilder tx1 = createTx();
       ArtifactId art1 = tx1.createArtifact(Component, "A component");
-      ArtifactId art2 = tx1.createArtifact(Component, "C component");
-      ArtifactId art3 = tx1.createArtifact(Component, "B component");
-      tx1.addChildren(art1, art2, art3);
+      ArtifactId art2 = tx1.createArtifact(art1, Component, "C component");
+      ArtifactId art3 = tx1.createArtifact(art1, Component, "B component");
 
       ArtifactId art4 = tx1.createArtifact(GeneralDocument, "Document");
       tx1.relate(art1, Dependency__Dependency, art4);
@@ -863,9 +874,8 @@ public class OrcsTransactionTest {
 
       TransactionBuilder tx1 = createTx();
       ArtifactId art1 = tx1.createArtifact(Component, "A component");
-      ArtifactId art2 = tx1.createArtifact(Component, "B component");
-      ArtifactId art3 = tx1.createArtifact(Component, "C component");
-      tx1.addChildren(art1, art2, art3);
+      ArtifactId art2 = tx1.createArtifact(art1, Component, "B component");
+      ArtifactId art3 = tx1.createArtifact(art1, Component, "C component");
 
       ArtifactId art4 = tx1.createArtifact(GeneralDocument, "Document");
       tx1.relate(art1, Dependency__Dependency, art4);

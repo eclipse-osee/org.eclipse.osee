@@ -225,8 +225,7 @@ public class TypesEndpointImpl implements TypesEndpoint {
       if (typesFolder == null) {
          ArtifactId rootArt = orcsApi.getQueryFactory().fromBranch(COMMON).andId(
             CoreArtifactTokens.DefaultHierarchyRoot).getResults().getExactlyOne();
-         typesFolder = tx.createArtifact(CoreArtifactTokens.OseeTypesFolder);
-         tx.addChildren(rootArt, typesFolder);
+         typesFolder = tx.createArtifact(rootArt, CoreArtifactTokens.OseeTypesFolder);
       }
       for (OrcsTypeSheet sheet : typesData.getSheets()) {
          Long id = Lib.generateArtifactIdAsInt();
@@ -237,7 +236,7 @@ public class TypesEndpointImpl implements TypesEndpoint {
             tx.createArtifact(CoreArtifactTypes.OseeTypeDefinition, sheet.getName().replaceFirst("^.*\\.", ""), id);
          tx.setSoleAttributeValue(artifact, CoreAttributeTypes.Active, true);
          tx.setSoleAttributeFromString(artifact, CoreAttributeTypes.UriGeneralStringData, sheet.getTypesSheet());
-         tx.addChildren(typesFolder, artifact);
+         tx.addChild(typesFolder, artifact);
       }
       tx.commit();
 

@@ -196,10 +196,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(branch, account, "rest - create artifacts");
       for (String name : names) {
-         tokens.add(tx.createArtifact(artifactType, name));
-      }
-      if (parent.isValid()) {
-         tx.addChildren(parent, tokens);
+         tokens.add(tx.createArtifact(parent, artifactType, name));
       }
       tx.commit();
       return tokens;
