@@ -240,7 +240,7 @@ public class OrcsApiImpl implements OrcsApi {
    @Override
    public OrcsAdmin getAdminOps() {
       OrcsSession session = getSession();
-      return new OrcsAdminImpl(logger, session, module.getDataStoreAdmin());
+      return new OrcsAdminImpl(this, logger, session, module.getDataStoreAdmin());
    }
 
    @Override

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -30,8 +31,8 @@ public interface DatastoreEndpoint {
 
    @POST
    @Path("initialize")
-   @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-   void initialize();
+   @Consumes({MediaType.APPLICATION_JSON})
+   void initialize(String typeModel);
 
    @POST
    @Path("migrate")

@@ -63,11 +63,6 @@ public interface TypesEndpoint {
    Response getEnumEntries(@PathParam("uuid") Long uuid);
 
    @POST
-   @Consumes({OrcsMediaType.APPLICATION_ORCS_TYPES, MediaType.TEXT_PLAIN})
-   @Produces(MediaType.APPLICATION_JSON)
-   void setTypes(String model);
-
-   @POST
    @Path("invalidate-caches")
    Response invalidateCaches();
 

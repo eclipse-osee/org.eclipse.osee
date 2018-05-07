@@ -12,12 +12,7 @@ package org.eclipse.osee.orcs.rest.internal;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -26,7 +21,6 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
@@ -43,14 +37,11 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.resource.management.IResource;
-import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsTypes;
@@ -99,64 +90,9 @@ public class TypesEndpointImpl implements TypesEndpoint {
    }
 
    @Override
-   public void setTypes(String model) {
-      IResource resource = asResource("http.osee.model", model);
-      getOrcsTypes().loadTypes(resource);
-      getOrcsTypes().invalidateAll();
-   }
-
-   @Override
    public Response invalidateCaches() {
       getOrcsTypes().invalidateAll();
       return Response.ok().build();
-   }
-
-   private IResource asResource(final String fileName, String model) {
-      try {
-         return new ByteResource(fileName, model.getBytes("UTF-8"));
-      } catch (IOException ex1) {
-         throw new OseeWebApplicationException(Status.BAD_REQUEST, "Error parsing data");
-      }
-   }
-
-   private static final class ByteResource implements IResource {
-
-      private final String filename;
-      private final byte[] bytes;
-
-      public ByteResource(String filename, byte[] bytes) {
-         super();
-         this.filename = filename;
-         this.bytes = bytes;
-      }
-
-      @Override
-      public InputStream getContent() {
-         return new ByteArrayInputStream(bytes);
-      }
-
-      @Override
-      public URI getLocation() {
-         String modelName = filename;
-         if (!modelName.endsWith(".osee")) {
-            modelName += ".osee";
-         }
-         try {
-            return new URI("osee:/" + modelName);
-         } catch (URISyntaxException ex) {
-            throw new OseeCoreException(ex, "Error creating URI for [%s]", modelName);
-         }
-      }
-
-      @Override
-      public String getName() {
-         return filename;
-      }
-
-      @Override
-      public boolean isCompressed() {
-         return false;
-      }
    }
 
    @Override

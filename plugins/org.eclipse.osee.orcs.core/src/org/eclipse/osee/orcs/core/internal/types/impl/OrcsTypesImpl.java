@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.types.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -98,6 +102,55 @@ public class OrcsTypesImpl implements OrcsTypes {
             return resource;
          }
       }));
+   }
+
+   @Override
+   public void loadTypes(String model) {
+      try {
+         loadTypes(new ByteResource("http.osee.model", model.getBytes("UTF-8")));
+         invalidateAll();
+      } catch (IOException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+   }
+
+   private static final class ByteResource implements IResource {
+      private final String filename;
+      private final byte[] bytes;
+
+      public ByteResource(String filename, byte[] bytes) {
+         super();
+         this.filename = filename;
+         this.bytes = bytes;
+      }
+
+      @Override
+      public InputStream getContent() {
+         return new ByteArrayInputStream(bytes);
+      }
+
+      @Override
+      public URI getLocation() {
+         String modelName = filename;
+         if (!modelName.endsWith(".osee")) {
+            modelName += ".osee";
+         }
+         try {
+            return new URI("osee:/" + modelName);
+         } catch (URISyntaxException ex) {
+            throw new OseeCoreException(ex, "Error creating URI for [%s]", modelName);
+         }
+      }
+
+      @Override
+      public String getName() {
+         return filename;
+      }
+
+      @Override
+      public boolean isCompressed() {
+         return false;
+      }
    }
 
    @Override

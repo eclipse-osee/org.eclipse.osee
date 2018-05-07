@@ -53,9 +53,9 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    }
 
    @Override
-   public void initialize() {
+   public void initialize(String typeModel) {
       activityLog.setEnabled(false);
-      adminOps.createDatastore();
+      adminOps.createDatastore(typeModel);
       activityLog.setEnabled(true);
    }
 

@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsAdmin;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsMetaData;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
@@ -23,20 +24,22 @@ import org.eclipse.osee.orcs.core.internal.admin.MigrateDatastoreAdminCallable;
  * @author Roberto E. Escobar
  */
 public class OrcsAdminImpl implements OrcsAdmin {
-
+   private final OrcsApi orcsApi;
    private final Log logger;
    private final OrcsSession session;
    private final DataStoreAdmin dataStoreAdmin;
 
-   public OrcsAdminImpl(Log logger, OrcsSession session, DataStoreAdmin dataStoreAdmin) {
+   public OrcsAdminImpl(OrcsApi orcsApi, Log logger, OrcsSession session, DataStoreAdmin dataStoreAdmin) {
+      this.orcsApi = orcsApi;
       this.logger = logger;
       this.session = session;
       this.dataStoreAdmin = dataStoreAdmin;
    }
 
    @Override
-   public void createDatastore() {
+   public void createDatastore(String typeModel) {
       dataStoreAdmin.createDataStore();
+      orcsApi.getOrcsTypes().loadTypes(typeModel);
    }
 
    @Override

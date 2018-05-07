@@ -44,10 +44,13 @@ public class DbBootstrapTask implements IDbInitializationTask {
    @Override
    public void run() {
       Conditions.checkNotNull(configuration, "DbInitConfiguration Info");
-
       OseeClientProperties.setInDbInit(true);
 
-      OsgiUtil.getService(getClass(), OseeClient.class).getDatastoreEndpoint().initialize();
+      List<String> oseeTypeExtensions = configuration.getOseeTypeExtensionIds();
+      Conditions.checkExpressionFailOnTrue(oseeTypeExtensions.isEmpty(), "osee types cannot be empty");
+
+      String typeModel = OseeTypesSetup.getOseeTypeModelByExtensions(oseeTypeExtensions);
+      OsgiUtil.getService(getClass(), OseeClient.class).getDatastoreEndpoint().initialize(typeModel);
 
       Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.skynet.core");
       int state = bundle.getState();
@@ -58,8 +61,6 @@ public class DbBootstrapTask implements IDbInitializationTask {
             throw new OseeCoreException(ex);
          }
       }
-      IOseeCachingService service = Activator.getInstance().getCachingService();
-      service.clearAll();
 
       JdbcClient jdbcClient = Activator.getInstance().getJdbcClient();
       jdbcClient.invalidateSequences();
@@ -68,7 +69,6 @@ public class DbBootstrapTask implements IDbInitializationTask {
 
       ClientSessionManager.releaseSession();
       ClientSessionManager.authenticate(new BaseCredentialProvider() {
-
          @Override
          public OseeCredential getCredential() {
             OseeCredential credential = super.getCredential();
@@ -77,13 +77,9 @@ public class DbBootstrapTask implements IDbInitializationTask {
          }
       });
 
-      List<String> oseeTypes = configuration.getOseeTypeExtensionIds();
-      Conditions.checkExpressionFailOnTrue(oseeTypes.isEmpty(), "osee types cannot be empty");
+      IOseeCachingService typeService = OsgiUtil.getService(getClass(), IOseeCachingService.class);
 
-      OseeTypesSetup oseeTypesSetup = new OseeTypesSetup();
-      oseeTypesSetup.execute(oseeTypes);
-
-      service.clearAll();
-      service.reloadTypes();
+      typeService.clearAll();
+      typeService.reloadTypes();
    }
 }

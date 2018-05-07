@@ -46,6 +46,8 @@ public interface OrcsTypes {
 
    void loadTypes(IResource resource);
 
+   void loadTypes(String model);
+
    Callable<Void> writeTypes(OutputStream outputStream);
 
    Callable<Void> purgeArtifactsByArtifactType(Collection<? extends IArtifactType> artifactTypes);
