@@ -25,4 +25,6 @@ public interface OrcsAdmin {
 
    boolean isDataStoreInitialized();
 
+   void createSystemBranches(String typeModel);
+
 }

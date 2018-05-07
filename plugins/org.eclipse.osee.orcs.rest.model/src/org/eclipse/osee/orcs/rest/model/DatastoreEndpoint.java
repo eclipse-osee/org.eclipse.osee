@@ -31,7 +31,7 @@ public interface DatastoreEndpoint {
 
    @POST
    @Path("initialize")
-   @Consumes({MediaType.APPLICATION_JSON})
+   @Consumes(MediaType.TEXT_PLAIN)
    void initialize(String typeModel);
 
    @POST

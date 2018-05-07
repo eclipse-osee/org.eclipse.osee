@@ -50,6 +50,7 @@ public class DbBootstrapTask implements IDbInitializationTask {
       Conditions.checkExpressionFailOnTrue(oseeTypeExtensions.isEmpty(), "osee types cannot be empty");
 
       String typeModel = OseeTypesSetup.getOseeTypeModelByExtensions(oseeTypeExtensions);
+
       OsgiUtil.getService(getClass(), OseeClient.class).getDatastoreEndpoint().initialize(typeModel);
 
       Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.skynet.core");

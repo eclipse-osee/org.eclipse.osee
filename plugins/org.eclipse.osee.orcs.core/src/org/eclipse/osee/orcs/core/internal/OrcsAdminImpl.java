@@ -19,6 +19,7 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
 import org.eclipse.osee.orcs.core.internal.admin.FetchDatastoreMetadataCallable;
 import org.eclipse.osee.orcs.core.internal.admin.MigrateDatastoreAdminCallable;
+import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Roberto E. Escobar
@@ -28,18 +29,25 @@ public class OrcsAdminImpl implements OrcsAdmin {
    private final Log logger;
    private final OrcsSession session;
    private final DataStoreAdmin dataStoreAdmin;
+   private final EventAdmin eventAdmin;
 
-   public OrcsAdminImpl(OrcsApi orcsApi, Log logger, OrcsSession session, DataStoreAdmin dataStoreAdmin) {
+   public OrcsAdminImpl(OrcsApi orcsApi, Log logger, OrcsSession session, DataStoreAdmin dataStoreAdmin, EventAdmin eventAdmin) {
       this.orcsApi = orcsApi;
       this.logger = logger;
       this.session = session;
       this.dataStoreAdmin = dataStoreAdmin;
+      this.eventAdmin = eventAdmin;
    }
 
    @Override
    public void createDatastore(String typeModel) {
       dataStoreAdmin.createDataStore();
       orcsApi.getOrcsTypes().loadTypes(typeModel);
+   }
+
+   @Override
+   public void createSystemBranches(String typeModel) {
+      new CreateSystemBranches(orcsApi, eventAdmin).create(typeModel);
    }
 
    @Override

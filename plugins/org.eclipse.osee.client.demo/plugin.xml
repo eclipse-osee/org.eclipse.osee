@@ -2,13 +2,6 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-      	id="AddCommonBranchForClientDemo"
-         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
-   	<DatabaseInitializationTask
-            classname="org.eclipse.osee.client.demo.internal.AddCommonBranchForClientDemo">
-      </DatabaseInitializationTask>
-   </extension>
-   <extension
          id="AddDemoUsers"
          point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
       <DatabaseInitializationTask

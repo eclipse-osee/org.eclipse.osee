@@ -10,13 +10,6 @@
          <run class="org.eclipse.osee.framework.database.init.internal.ConfigDatabaseApplication"/>
       </application>
    </extension>
-   <extension
-      	id="AddCommonBranch"
-         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
-   	<DatabaseInitializationTask
-      	   classname="org.eclipse.osee.framework.database.init.AddCommonBranch">
-   	</DatabaseInitializationTask>
-	</extension>
 	<extension
 			id="PostDatabaseInitialization"
       	point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">

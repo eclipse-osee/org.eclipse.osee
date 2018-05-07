@@ -60,7 +60,7 @@ public interface TransactionBuilder {
 
    ArtifactToken createArtifact(ArtifactTypeId artifactType, String name, Long artifactId);
 
-   ArtifactToken createArtifact(ArtifactToken configsFolder);
+   ArtifactToken createArtifact(ArtifactToken token);
 
    /**
     * If parent is invalid, the artifact will be created with no parent

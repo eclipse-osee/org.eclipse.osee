@@ -18,7 +18,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.framework.core.data.OrcsTypesData;
 import org.eclipse.osee.framework.core.data.OrcsTypesVersion;
 
 /**
@@ -65,16 +64,4 @@ public interface TypesEndpoint {
    @POST
    @Path("invalidate-caches")
    Response invalidateCaches();
-
-   @POST
-   @Path("import-types")
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.TEXT_PLAIN)
-   Response importOrcsTypes(OrcsTypesData typesData);
-
-   @POST
-   @Path("dbinit")
-   @Produces(MediaType.TEXT_PLAIN)
-   Response dbInit();
-
 }

@@ -10,14 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class OrcsTypesData {
 
    /**
@@ -29,15 +24,4 @@ public class OrcsTypesData {
     * Version 2 = Corresponds to 0.24.0 code base
     */
    public static final Long OSEE_TYPE_VERSION = 3L; // Corresponds to 0.25.0 code base
-
-   private List<OrcsTypeSheet> sheets = new ArrayList<>();
-
-   public List<OrcsTypeSheet> getSheets() {
-      return sheets;
-   }
-
-   public void setSheets(List<OrcsTypeSheet> sheets) {
-      this.sheets = sheets;
-   }
-
 }

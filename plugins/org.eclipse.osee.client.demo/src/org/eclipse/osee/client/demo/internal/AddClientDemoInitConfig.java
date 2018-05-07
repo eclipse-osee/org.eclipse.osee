@@ -25,7 +25,6 @@ public class AddClientDemoInitConfig implements IAddDbInitChoice {
    @Override
    public void addDbInitChoice(IGroupSelector groupSelection) {
       DatabaseInitConfiguration config = new DatabaseInitConfiguration();
-      config.addTask(asLocalExtensionId("AddCommonBranchForClientDemo"));
       config.addTask("org.eclipse.osee.framework.access.provider.FrameworkAccessConfig");
 
       config.addTask(asLocalExtensionId("AddDemoUsers"));

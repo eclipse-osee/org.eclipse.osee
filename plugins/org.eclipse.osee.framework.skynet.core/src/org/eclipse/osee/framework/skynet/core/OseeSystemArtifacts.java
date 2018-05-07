@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -34,10 +33,6 @@ public final class OseeSystemArtifacts {
 
    public static Artifact getDefaultHierarchyRootArtifact(BranchId branch) {
       return ArtifactQuery.getArtifactFromId(CoreArtifactTokens.DefaultHierarchyRoot, branch);
-   }
-
-   public static Artifact createGlobalPreferenceArtifact() {
-      return ArtifactTypeManager.addArtifact(CoreArtifactTokens.GlobalPreferences, COMMON);
    }
 
    /**

@@ -63,6 +63,7 @@ import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Roberto E. Escobar
@@ -73,6 +74,7 @@ public class OrcsApiImpl implements OrcsApi {
    private OrcsDataStore dataStore;
    private ExecutorAdmin executorAdmin;
    private SystemPreferences preferences;
+   private EventAdmin eventAdmin;
 
    private QueryModule queryModule;
    private IndexerModule indexerModule;
@@ -100,6 +102,10 @@ public class OrcsApiImpl implements OrcsApi {
 
    public void setSystemPreferences(SystemPreferences preferences) {
       this.preferences = preferences;
+   }
+
+   public void setEventAdmin(EventAdmin eventAdmin) {
+      this.eventAdmin = eventAdmin;
    }
 
    public void start() {
@@ -240,7 +246,7 @@ public class OrcsApiImpl implements OrcsApi {
    @Override
    public OrcsAdmin getAdminOps() {
       OrcsSession session = getSession();
-      return new OrcsAdminImpl(this, logger, session, module.getDataStoreAdmin());
+      return new OrcsAdminImpl(this, logger, session, module.getDataStoreAdmin(), eventAdmin);
    }
 
    @Override

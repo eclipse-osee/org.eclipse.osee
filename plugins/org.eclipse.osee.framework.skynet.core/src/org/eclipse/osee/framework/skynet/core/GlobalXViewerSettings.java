@@ -12,12 +12,10 @@
 package org.eclipse.osee.framework.skynet.core;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.XViewerGlobalCustomization;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
@@ -34,20 +32,12 @@ public final class GlobalXViewerSettings {
       return new Supplier<Artifact>() {
          @Override
          public Artifact get() {
-            return loadConfigArtifact();
+            return ArtifactQuery.getArtifactFromToken(XViewerGlobalCustomization);
          }
       };
    }
 
-   private static Artifact loadConfigArtifact() {
-      return ArtifactQuery.getArtifactFromToken(XViewerGlobalCustomization);
-   }
-
    public static Artifact getCustomArtifact() {
       return configurationsCache.get();
-   }
-
-   public static Artifact createCustomArtifact() {
-      return ArtifactTypeManager.addArtifact(XViewerGlobalCustomization, COMMON);
    }
 }

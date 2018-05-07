@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.database.init.IGroupSelector;
 /**
  * * Add the ability to wipe an OSEE database and configure it for the ATS Demo Configuration which will showcase ATS
  * functionality.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AddDbInitDemoChoice implements IAddDbInitChoice {
@@ -27,7 +27,6 @@ public class AddDbInitDemoChoice implements IAddDbInitChoice {
    @Override
    public void addDbInitChoice(IGroupSelector groupSelection) {
       DatabaseInitConfiguration config = new DatabaseInitConfiguration();
-      config.addTask("org.eclipse.osee.ats.client.demo.AddCommonBranchForAtsDemo");
       config.addTask("org.eclipse.osee.framework.access.provider.FrameworkAccessConfig");
       config.addTask("org.eclipse.osee.ats.client.demo.AtsConfigAddDemoUsers");
       config.addTask("org.eclipse.osee.framework.database.init.SimpleTemplateProviderTask");

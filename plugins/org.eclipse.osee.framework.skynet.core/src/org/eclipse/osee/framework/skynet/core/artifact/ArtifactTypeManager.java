@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.OrcsTypesData;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -252,12 +251,5 @@ public class ArtifactTypeManager {
          userCreationoAllowed = true;
       }
       return userCreationoAllowed;
-   }
-
-   public static void importOrcsTypes(OrcsTypesData typesData) {
-      OseeClient oseeClient = ServiceUtil.getOseeClient();
-      TypesEndpoint typesEndpoint = oseeClient.getTypesEndpoint();
-      typesEndpoint.importOrcsTypes(typesData);
-      typesEndpoint.dbInit();
    }
 }

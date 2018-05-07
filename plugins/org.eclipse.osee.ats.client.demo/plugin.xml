@@ -29,13 +29,6 @@
             classname="org.eclipse.osee.ats.client.demo.navigate.DemoNavigateViewItems">
       </AtsNavigateItem>
    </extension>
-      <extension
-      	id="AddCommonBranchForAtsDemo"
-         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
-   	<DatabaseInitializationTask
-            classname="org.eclipse.osee.ats.client.demo.config.AddCommonBranchForAtsDemo">
-      </DatabaseInitializationTask>
-   </extension>
    <extension
          id="OseeTypes_Demo"
          name="OseeTypes_Demo"

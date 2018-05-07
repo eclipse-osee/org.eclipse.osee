@@ -41,10 +41,6 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
       this.uriInfo = uriInfo;
    }
 
-   protected UriInfo getUriInfo() {
-      return uriInfo;
-   }
-
    @Override
    public DatastoreInfo getInfo() {
       Callable<OrcsMetaData> callable = adminOps.createFetchOrcsMetaData();
@@ -56,6 +52,7 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    public void initialize(String typeModel) {
       activityLog.setEnabled(false);
       adminOps.createDatastore(typeModel);
+      adminOps.createSystemBranches(typeModel);
       activityLog.setEnabled(true);
    }
 
