@@ -11,10 +11,10 @@
 package org.eclipse.osee.ats.workflow.transition;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
-import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.internal.AtsClientService;
 
 

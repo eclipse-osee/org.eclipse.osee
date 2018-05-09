@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;

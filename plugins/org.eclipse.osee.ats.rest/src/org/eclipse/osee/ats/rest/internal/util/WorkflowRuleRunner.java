@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsRuleDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -22,7 +23,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IExecutableRule;
 import org.eclipse.osee.ats.api.workdef.RuleEventType;
 import org.eclipse.osee.ats.api.workdef.RunRuleResults;
-import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**

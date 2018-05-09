@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.editor.widget;
 
 import java.util.List;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.util.AtsUserLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListViewer;

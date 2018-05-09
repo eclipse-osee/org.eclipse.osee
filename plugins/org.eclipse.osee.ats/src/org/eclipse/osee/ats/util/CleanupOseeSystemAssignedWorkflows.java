@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.util;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;

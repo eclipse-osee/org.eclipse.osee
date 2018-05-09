@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.junit.Assert;
 import org.junit.Test;
 

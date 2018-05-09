@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.users;
 
 import java.util.HashMap;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.enums.SystemUser;
