@@ -12,6 +12,7 @@ package org.eclipse.osee.define.report.internal.wordupdate;
 
 import java.util.Arrays;
 import java.util.Date;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -22,7 +23,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -47,7 +47,7 @@ public class SafetyWorkflowEventHandler implements EventHandler {
    public final static String SAFETY_EVENT_USER_ART = "org/eclipse/osee/define/report/internal/USER_ART";
 
    private QueryFactory queryFactory;
-   private IAtsServer atsServer;
+   private AtsApi atsApi;
    private Log logger;
 
    public SafetyWorkflowEventHandler() {
@@ -65,8 +65,8 @@ public class SafetyWorkflowEventHandler implements EventHandler {
       this.logger = logger;
    }
 
-   public void setAtsServer(IAtsServer atsServer) {
-      this.atsServer = atsServer;
+   public void setAtsServer(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
    @Override
@@ -80,12 +80,10 @@ public class SafetyWorkflowEventHandler implements EventHandler {
          Branch branch = queryFactory.branchQuery().andId((BranchId) branchId).getResults().getExactlyOne();
          ArtifactId workflowId = branch.getAssociatedArtifact();
          if (workflowId.notEqual(SystemUser.OseeSystem)) {
-            ArtifactReadable assocArt =
-               atsServer.getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch()).andId(
-                  workflowId).getResults().getExactlyOne();
+            ArtifactReadable assocArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(workflowId);
             IAtsTeamWorkflow safetyWf = getSafetyWorkflow(assocArt);
             if (safetyWf == null) {
-               IAtsTeamWorkflow teamWf = atsServer.getWorkItemService().getTeamWf(assocArt);
+               IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(assocArt);
                safetyWf = createSafetyAction(teamWf, (ArtifactId) userArt);
             }
          }
@@ -109,11 +107,11 @@ public class SafetyWorkflowEventHandler implements EventHandler {
       Conditions.checkNotNull(workflowArt, "work flow artifact");
       IAtsTeamWorkflow safetyWorkflow = null;
       ArtifactReadable safetyActionableItemArt =
-         (ArtifactReadable) atsServer.getQueryService().getArtifact(AtsArtifactToken.SafetyActionableItem);
-      IAtsTeamWorkflow teamWf = atsServer.getWorkItemService().getTeamWf(workflowArt);
+         (ArtifactReadable) atsApi.getQueryService().getArtifact(AtsArtifactToken.SafetyActionableItem);
+      IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(workflowArt);
       IAtsActionableItem actionableItem =
-         atsServer.getActionableItemService().getActionableItemById(safetyActionableItemArt);
-      for (IAtsTeamWorkflow sibling : atsServer.getActionFactory().getSiblingTeamWorkflows(teamWf)) {
+         atsApi.getActionableItemService().getActionableItemById(safetyActionableItemArt);
+      for (IAtsTeamWorkflow sibling : atsApi.getActionFactory().getSiblingTeamWorkflows(teamWf)) {
          if (sibling.getActionableItems().contains(actionableItem)) {
             safetyWorkflow = sibling;
             break;
@@ -125,20 +123,20 @@ public class SafetyWorkflowEventHandler implements EventHandler {
    private IAtsTeamWorkflow createSafetyAction(IAtsTeamWorkflow teamWf, ArtifactId userArt) {
       IAtsTeamWorkflow teamWorkflow = null;
       try {
-         IAtsActionableItem ai = atsServer.getCache().getAtsObject(AtsArtifactToken.SafetyActionableItem);
+         IAtsActionableItem ai = atsApi.getCache().getAtsObject(AtsArtifactToken.SafetyActionableItem);
          if (ai == null) {
             throw new OseeCoreException("Safety Actionable Item not configured");
          }
-         IAtsTeamDefinition teamDef = atsServer.getCache().getAtsObject(AtsArtifactToken.SafetyTeamDefinition);
+         IAtsTeamDefinition teamDef = atsApi.getCache().getAtsObject(AtsArtifactToken.SafetyTeamDefinition);
          if (teamDef == null) {
             throw new OseeCoreException("Safety Team Definition not configured");
          }
          IAtsUser createdBy = AtsCoreUsers.SYSTEM_USER;
-         IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Create System Safety Workflow",
-            atsServer.getUserService().getUserByArtifactId(userArt));
-         IAtsAction action = atsServer.getActionFactory().getAction(teamWf);
+         IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Create System Safety Workflow",
+            atsApi.getUserService().getUserByArtifactId(userArt));
+         IAtsAction action = atsApi.getActionFactory().getAction(teamWf);
          teamWorkflow =
-            atsServer.getActionFactory().createTeamWorkflow(action, teamDef, java.util.Collections.singleton(ai),
+            atsApi.getActionFactory().createTeamWorkflow(action, teamDef, java.util.Collections.singleton(ai),
                Arrays.asList(AtsCoreUsers.UNASSIGNED_USER), changes, new Date(), createdBy, new INewActionListener() {
 
                   @Override
