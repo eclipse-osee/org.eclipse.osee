@@ -37,22 +37,31 @@ public final class ArtifactFactoryManager {
    private static Set<ArtifactTypeId> eternalArtifactTypes = null;
 
    public ArtifactFactory getFactory(ArtifactTypeId artifactType) {
+      Exception savedEx = null;
       ArtifactFactory responsibleFactory = null;
       for (ArtifactFactory factory : getFactories()) {
-         if (factory.isResponsibleFor(artifactType)) {
-            if (responsibleFactory == null) {
-               responsibleFactory = factory;
-            } else {
-               OseeLog.logf(Activator.class, Level.SEVERE,
-
-                  "Multiple ArtifactFactories [%s] [%s]responsible for same artifact type [%s].  Defaulting to DefaultArtifactFactory.",
-                  responsibleFactory, factory, artifactType);
-               return getDefaultArtifactFactory();
+         try {
+            if (factory.isResponsibleFor(artifactType)) {
+               if (responsibleFactory == null) {
+                  responsibleFactory = factory;
+               } else {
+                  OseeLog.logf(Activator.class, Level.SEVERE,
+                     "Multiple ArtifactFactories [%s] [%s]responsible for same artifact type [%s].  Defaulting to DefaultArtifactFactory.",
+                     responsibleFactory, factory, artifactType);
+                  return getDefaultArtifactFactory();
+               }
             }
+         } catch (Exception ex) {
+            // do not stop artifact loading for a single failed factory that may not be the needed one
+            savedEx = ex;
          }
       }
       if (responsibleFactory != null) {
          return responsibleFactory;
+      }
+      if (savedEx != null) {
+         // if we didn't find a isResponsible factory and had an exception, then log it
+         OseeLog.log(getClass(), Level.SEVERE, savedEx);
       }
       return getDefaultArtifactFactory();
    }
