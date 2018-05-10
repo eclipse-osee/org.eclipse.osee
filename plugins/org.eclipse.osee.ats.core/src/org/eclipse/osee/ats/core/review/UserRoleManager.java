@@ -149,12 +149,11 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
          List<UserRole> storedUserRoles = getStoredUserRoles();
 
          // Change existing ones
-         for (IAttribute<Object> attr : atsApi.getAttributeResolver().getAttributes(peerRev,
-            AtsAttributeTypes.Role)) {
+         for (IAttribute<Object> attr : atsApi.getAttributeResolver().getAttributes(peerRev, AtsAttributeTypes.Role)) {
             UserRole storedRole = new UserRole((String) attr.getValue());
             for (UserRole pItem : getUserRoles()) {
                if (pItem.equals(storedRole)) {
-                  changes.setAttribute(peerRev, attr.getId().intValue(), AXml.addTagData(ROLE_ITEM_TAG, pItem.toXml()));
+                  changes.setAttribute(peerRev, attr, AXml.addTagData(ROLE_ITEM_TAG, pItem.toXml()));
                }
             }
          }

@@ -334,15 +334,15 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T> void setAttribute(IAtsWorkItem workItem, int attributeId, T value) {
-      Conditions.checkExpressionFailOnTrue(attributeId <= 0,
-         "Can not set attribute by id that has not be persisted.  Atrribute Id [%s] Work Item [%s]", attributeId,
+   public <T> void setAttribute(IAtsWorkItem workItem, AttributeId attributeId, T value) {
+      Conditions.checkExpressionFailOnTrue(attributeId.isInvalid(),
+         "Can not set attribute by id that has not be persisted.  Attribute Id [%s] Work Item [%s]", attributeId,
          workItem.toStringWithId());
       Artifact artifact = getArtifact(workItem);
       Conditions.checkNotNull(artifact, "artifact");
       boolean found = false;
       for (Attribute<?> attribute : artifact.getAttributes()) {
-         if (attribute.getId() == attributeId) {
+         if (attributeId.equals(attribute)) {
             ((Attribute<T>) attribute).setValue(value);
             found = true;
             break;

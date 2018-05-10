@@ -100,7 +100,7 @@ public interface IAtsChangeSet {
     */
    void setRelationsAndOrder(Object object, RelationTypeSide relationSide, Collection<? extends Object> objects);
 
-   <T> void setAttribute(IAtsWorkItem workItem, int attributeId, T value);
+   <T> void setAttribute(IAtsWorkItem workItem, AttributeId attributeId, T value);
 
    ArtifactId createArtifact(ArtifactToken token);
 
