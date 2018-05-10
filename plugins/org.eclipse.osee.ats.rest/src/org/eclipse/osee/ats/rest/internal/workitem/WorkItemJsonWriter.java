@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -203,7 +204,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
          writer.writeStartObject();
          writer.writeStringField("id", assignee.getIdString());
          writer.writeStringField("name", assignee.getName());
-         writer.writeNumberField("gammaId", attr.getGammaId());
+         writer.writeNumberField("gammaId", attr.getGammaId().getId());
          writer.writeEndObject();
       }
       writer.writeEndArray();
@@ -212,14 +213,14 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
    private static void writeType(JsonGenerator writer, ArtifactReadable action, IAtsWorkItem workItem, String fieldName, AttributeTypeToken attrType) throws IOException, JsonGenerationException, JsonProcessingException {
       writer.writeObjectFieldStart(fieldName);
       String attrValue = action.getSoleAttributeAsString(attrType, "");
-      long gammaId = -1;
+      GammaId gammaId = GammaId.SENTINEL;
       if (Strings.isValid(attrValue)) {
          AttributeReadable<Object> attr =
             action.getAttributeById(AttributeId.valueOf(action.getSoleAttributeId(attrType)));
          gammaId = attr.getGammaId();
       }
       writer.writeObjectField("value", attrValue);
-      writer.writeNumberField("gammaId", gammaId);
+      writer.writeNumberField("gammaId", gammaId.getId());
       writer.writeEndObject();
    }
 
@@ -228,7 +229,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       AttributeReadable<Object> attr =
          action.getAttributeById(AttributeId.valueOf(action.getSoleAttributeId(AtsAttributeTypes.CurrentState)));
       writer.writeObjectField("value", workItem.getStateMgr().getCurrentStateName());
-      writer.writeNumberField("gammaId", attr.getGammaId());
+      writer.writeNumberField("gammaId", attr.getGammaId().getId());
       writer.writeEndObject();
    }
 

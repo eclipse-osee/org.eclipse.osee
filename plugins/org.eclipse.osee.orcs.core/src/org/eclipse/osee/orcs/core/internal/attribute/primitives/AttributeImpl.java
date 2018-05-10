@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.lang.ref.Reference;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -259,12 +260,12 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
     * @return true if in data store
     */
    public boolean isInDb() {
-      return getGammaId() > 0;
+      return getGammaId().isValid();
    }
 
    @Override
-   public long getGammaId() {
-      return getOrcsData().getVersion().getGammaId().getId();
+   public GammaId getGammaId() {
+      return getOrcsData().getVersion().getGammaId();
    }
 
    public void internalSetGammaId(int gammaId) {

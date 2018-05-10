@@ -484,7 +484,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public boolean deleteTuple(Long gammaId) {
+   public boolean deleteTuple(GammaId gammaId) {
       return false;
    }
 

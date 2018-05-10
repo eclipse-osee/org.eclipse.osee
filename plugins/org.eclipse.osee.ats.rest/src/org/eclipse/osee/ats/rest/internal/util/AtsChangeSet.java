@@ -287,7 +287,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       ArtifactReadable artifact = getArtifact(workItem);
       boolean found = false;
       for (AttributeReadable<Object> attribute : artifact.getAttributes()) {
-         if (attribute.getGammaId() == attributeId) {
+         if (attribute.getGammaId().equals(attributeId)) {
             getTransaction().setAttributeById(artifact, attribute, value);
             found = true;
             break;

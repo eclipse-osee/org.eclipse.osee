@@ -17,6 +17,7 @@ import static org.mockito.Mockito.when;
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Attribute;
@@ -76,10 +77,10 @@ public class AttributeReadOnlyImplTest {
 
    @Test
    public void testGetGammaId() {
-      long expected = 1231232112L;
+      GammaId expected = GammaId.valueOf(1231232112L);
       when(proxiedObject.getGammaId()).thenReturn(expected);
 
-      long actual = readOnly.getGammaId();
+      GammaId actual = readOnly.getGammaId();
 
       assertEquals(expected, actual);
       verify(proxiedObject).getGammaId();

@@ -297,7 +297,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
                      writer.writeStartObject();
                      writeObjectValueField(writer, datesAsLong, isDateType, attr.getDisplayableString());
                      writer.writeNumberField("attrId", attr.getId());
-                     writer.writeNumberField("gammaId", attr.getGammaId());
+                     writer.writeNumberField("gammaId", attr.getGammaId().getId());
                      writer.writeEndObject();
                   }
                   writer.writeEndArray();
@@ -310,7 +310,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
                   }
                   writeObjectValueField(writer, datesAsLong, isDateType, attr.getValue());
                   writer.writeNumberField("attrId", attr.getId());
-                  writer.writeNumberField("gammaId", attr.getGammaId());
+                  writer.writeNumberField("gammaId", attr.getGammaId().getId());
                   writer.writeEndObject();
                }
             }

@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.proxy.impl;
 
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Attribute;
@@ -38,7 +39,7 @@ public class AttributeReadOnlyImpl<T> extends AbstractProxied<Attribute<T>> impl
    }
 
    @Override
-   public long getGammaId() {
+   public GammaId getGammaId() {
       return getProxiedObject().getGammaId();
    }
 

@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.data;
 
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 
@@ -21,7 +22,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
  */
 public interface AttributeReadable<T> extends OrcsReadable, IAttribute<T> {
 
-   long getGammaId();
+   GammaId getGammaId();
 
    @Override
    ModificationType getModificationType();
