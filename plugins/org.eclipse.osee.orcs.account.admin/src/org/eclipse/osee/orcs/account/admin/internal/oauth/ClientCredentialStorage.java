@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jaxrs.server.database.AbstractDatabaseStorage;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -83,7 +84,7 @@ public class ClientCredentialStorage extends AbstractDatabaseStorage<OAuthClient
       return selectOneOrNull(SELECT_CLIENT_CREDENTIAL_BY_APPLICATION_ID, applicationId);
    }
 
-   public OAuthClientCredential getByClientIdAndApplicationId(long clientId, long applicationId) {
+   public OAuthClientCredential getByClientIdAndApplicationId(long clientId, ArtifactId applicationId) {
       return selectOneOrNull(SELECT_CLIENT_CREDENTIAL_BY_CLIENT_ID_AND_APPLICATION_ID, clientId, applicationId);
    }
 

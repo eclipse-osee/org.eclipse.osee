@@ -22,7 +22,7 @@ public interface JaxRsOAuthStorage {
 
    OAuthClient getClientByClientGuid(String guid);
 
-   OAuthClient getClientByClientUuid(Long uuid);
+   OAuthClient getClientByClientId(ArtifactId id);
 
    OAuthClient getClientByClientKey(String clientKey);
 

@@ -181,7 +181,7 @@ public class JdbcJaxRsOAuthStorageTest {
       long clientUuid = storage.getClientUuidByKey(CLIENT_KEY);
       assertEquals(createdClientId.getUuid(), Long.valueOf(clientUuid));
 
-      OAuthClient actualClient = storage.getClientByClientUuid(createdClientUuid);
+      OAuthClient actualClient = storage.getClientByClientId(createdClientId);
 
       assertEquals(createdClientUuid, actualClient.getClientUuid());
       assertEquals(SUBJECT_ID, actualClient.getSubjectId());
@@ -221,7 +221,7 @@ public class JdbcJaxRsOAuthStorageTest {
       clientUuid = storage.getClientUuidByKey(CLIENT_KEY);
       assertEquals(-1L, clientUuid);
 
-      actualClient = storage.getClientByClientUuid(createdClientUuid);
+      actualClient = storage.getClientByClientId(createdClientId);
       assertNull(actualClient);
 
       actualClient = storage.getClientByClientKey(CLIENT_KEY);
@@ -243,7 +243,7 @@ public class JdbcJaxRsOAuthStorageTest {
       long clientUuid = storage.getClientUuidByKey(CLIENT_KEY);
       assertEquals(createdClientArtId.getUuid(), Long.valueOf(clientUuid));
 
-      OAuthClient actualClient = storage.getClientByClientUuid(createdClientUuid);
+      OAuthClient actualClient = storage.getClientByClientId(createdClientArtId);
       assertNotNull(actualClient);
 
       OAuthToken accessToken = storage.getPreauthorizedToken(createdClientUuid, SUBJECT_ID, AT_GRANT_TYPE_1);
@@ -257,7 +257,7 @@ public class JdbcJaxRsOAuthStorageTest {
       clientUuid = storage.getClientUuidByKey(CLIENT_KEY);
       assertEquals(-1L, clientUuid);
 
-      actualClient = storage.getClientByClientUuid(createdClientUuid);
+      actualClient = storage.getClientByClientId(createdClientArtId);
       assertNull(actualClient);
 
       accessToken = storage.getPreauthorizedToken(createdClientUuid, SUBJECT_ID, AT_GRANT_TYPE_1);

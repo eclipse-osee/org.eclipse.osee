@@ -39,7 +39,6 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
-import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
@@ -63,13 +62,8 @@ public class ClientStorage {
       return storageBranch;
    }
 
-   private int idToInt(long uuid) {
-      return Long.valueOf(uuid).intValue();
-   }
-
    private QueryBuilder newQuery() {
-      QueryFactory queryFactory = orcsApi.getQueryFactory();
-      return queryFactory.fromBranch(getBranch());
+      return orcsApi.getQueryFactory().fromBranch(getBranch());
    }
 
    private TransactionBuilder newTransaction(OseePrincipal principal, String comment) {
@@ -78,21 +72,20 @@ public class ClientStorage {
       return transactionFactory.createTransaction(getBranch(), author, comment);
    }
 
-   public ResultSet<ArtifactReadable> getClientByApplicationId(long applicationId) {
-      int id = idToInt(applicationId);
-      return newQuery().andTypeEquals(OAUTH_CLIENT).andUuid(id).getResults();
+   public ResultSet<ArtifactReadable> getClientByApplicationId(ArtifactId applicationId) {
+      return newQuery().andId(applicationId).getResults();
    }
 
    public ResultSet<ArtifactReadable> getClientByClientGuid(String guid) {
-      return newQuery().andTypeEquals(OAUTH_CLIENT).andGuid(guid).getResults();
+      return newQuery().andGuid(guid).getResults();
    }
 
-   public ResultSet<ArtifactReadable> getClientByClientUuid(Long uuid) {
-      return newQuery().andTypeEquals(OAUTH_CLIENT).andUuid(uuid).getResults();
+   public ResultSet<ArtifactReadable> getClientByClientId(ArtifactId id) {
+      return newQuery().andId(id).getResults();
    }
 
-   public boolean exists(Long uuid) {
-      return newQuery().andTypeEquals(OAUTH_CLIENT).andUuid(uuid).exists();
+   public boolean exists(Long id) {
+      return newQuery().andId(id).exists();
    }
 
    public ArtifactId insert(OseePrincipal principal, OAuthClient data) {
@@ -166,12 +159,8 @@ public class ClientStorage {
       }
       tx.commit();
 
-      reloadTypes();
-      return artifactId;
-   }
-
-   private void reloadTypes() {
       orcsApi.getOrcsTypes().invalidateAll();
+      return artifactId;
    }
 
    public boolean typesExist() {
