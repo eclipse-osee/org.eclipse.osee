@@ -38,8 +38,6 @@
 <stringAttribute key="product" value="lba.ote.outfile.conversion.app.convert"/>
 <booleanAttribute key="run_in_ui_thread" value="true"/>
 <setAttribute key="selected_features"/>
-<stringAttribute key="selected_target_plugins" value="javax.xml,org.apache.commons.codec,org.apache.commons.httpclient,org.apache.commons.logging,org.apache.xerces,org.apache.xml.resolver,org.apache.xml.serializer,org.eclipse.ant.core,org.eclipse.core.contenttype,org.eclipse.core.expressions,org.eclipse.core.filesystem,org.eclipse.core.filesystem.win32.x86_64,org.eclipse.core.jobs,org.eclipse.core.net,org.eclipse.core.net.win32.x86_64,org.eclipse.core.resources,org.eclipse.core.runtime,org.eclipse.core.runtime.compatibility.registry,org.eclipse.core.variables,org.eclipse.equinox.app,org.eclipse.equinox.common,org.eclipse.equinox.preferences,org.eclipse.equinox.registry,org.eclipse.equinox.security,org.eclipse.equinox.security.win32.x86_64,org.eclipse.osgi,org.hamcrest.core"/>
-<stringAttribute key="selected_workspace_plugins" value="jms.activemq.launch,jms.libraries,org.eclipse.osee.framework.core,org.eclipse.osee.framework.core.test,org.eclipse.osee.framework.jdk.core,org.eclipse.osee.framework.jdk.core.test,org.eclipse.osee.framework.logging,org.eclipse.osee.framework.logging.test,org.eclipse.osee.framework.messaging,org.eclipse.osee.framework.messaging.test,org.eclipse.osee.framework.plugin.core,org.mockito,org.objenesis"/>
 <booleanAttribute key="show_selected_only" value="false"/>
 <stringAttribute key="timestamp" value="1352335978869"/>
 <booleanAttribute key="tracing" value="false"/>

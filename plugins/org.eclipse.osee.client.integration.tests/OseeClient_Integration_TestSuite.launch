@@ -2,8 +2,8 @@
 <launchConfiguration type="org.eclipse.pde.ui.JunitLaunchConfig">
 <setAttribute key="additional_plugins">
 <setEntry value="com.google.guava:15.0.0.v201403281430:default:false"/>
-<setEntry value="org.eclipse.osee.client.integration.tests:0.25.0.qualifier:default:true"/>
-<setEntry value="org.eclipse.osee.client.test.framework:0.25.0.qualifier:default:true"/>
+<setEntry value="org.eclipse.osee.client.integration.tests:0.26.0.qualifier:default:true"/>
+<setEntry value="org.eclipse.osee.client.test.framework:0.26.0.qualifier:default:true"/>
 </setAttribute>
 <booleanAttribute key="append.args" value="true"/>
 <booleanAttribute key="askclear" value="false"/>

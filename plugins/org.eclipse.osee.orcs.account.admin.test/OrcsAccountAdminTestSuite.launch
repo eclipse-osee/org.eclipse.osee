@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.JunitLaunchConfig">
 <setAttribute key="additional_plugins">
-<setEntry value="org.eclipse.equinox.ds:1.4.300.v20150423-1356:default:false"/>
-<setEntry value="org.eclipse.osee.orcs.db.mock:0.23.0.qualifier:default:false"/>
+<setEntry value="org.eclipse.equinox.ds:1.4.400.v20160226-2036:default:false"/>
+<setEntry value="org.eclipse.osee.orcs.db.mock:0.26.0.qualifier:default:false"/>
 <setEntry value="org.hsqldb:2.2.9.qualifier:default:false"/>
 <setEntry value="org.mockito:1.9.0.qualifier:default:false"/>
 </setAttribute>
@@ -38,7 +38,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.eclipse.osee.orcs.account.admin.test"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xms40m -Xmx384m &#13;&#10;-Dosee.log.default=ALL&#13;&#10;-Dlogback.configurationFile=logback-dev.xml&#13;&#10;-DNosgi.noShutdown=true&#13;&#10;-DNequinox.ds.print=true&#13;&#10;-DNequinox.ds.debug=true"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xms40m -Xmx384m &#13;&#10;-Dosee.log.default=WARNING&#13;&#10;-Dlogback.configurationFile=C:\UserData\logback-dev.xml&#13;&#10;-DNosgi.noShutdown=true&#13;&#10;-DNequinox.ds.print=true&#13;&#10;-DNequinox.ds.debug=true"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="lba.ote.outfile.conversion.app.convert"/>
 <booleanAttribute key="run_in_ui_thread" value="false"/>

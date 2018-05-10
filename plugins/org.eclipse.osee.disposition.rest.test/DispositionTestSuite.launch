@@ -38,7 +38,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.eclipse.osee.disposition.rest.test"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xms40m -Xmx384m &#13;&#10;-Dosee.log.default=ALL&#13;&#10;-Dlogback.configurationFile=logback-dev.xml&#13;&#10;-DNosgi.noShutdown=true&#13;&#10;-DNequinox.ds.print=true&#13;&#10;-DNequinox.ds.debug=true"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xms40m -Xmx384m &#13;&#10;-Dosee.log.default=WARNING&#13;&#10;-Dlogback.configurationFile=C:\UserData\logback-dev.xml&#13;&#10;-DNosgi.noShutdown=true&#13;&#10;-DNequinox.ds.print=true&#13;&#10;-DNequinox.ds.debug=true"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="lba.ote.outfile.conversion.app.convert"/>
 <booleanAttribute key="run_in_ui_thread" value="true"/>

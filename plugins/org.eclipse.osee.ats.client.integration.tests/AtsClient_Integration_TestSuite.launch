@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.JunitLaunchConfig">
 <setAttribute key="additional_plugins">
-<setEntry value="org.eclipse.osee.ats.client.integration.tests:0.25.0.qualifier:default:true"/>
-<setEntry value="org.eclipse.osee.client.integration.tests:0.25.0.qualifier:default:true"/>
-<setEntry value="org.eclipse.osee.client.test.framework:0.25.0.qualifier:default:true"/>
+<setEntry value="org.eclipse.osee.ats.client.integration.tests:0.26.0.qualifier:default:true"/>
+<setEntry value="org.eclipse.osee.client.integration.tests:0.26.0.qualifier:default:true"/>
+<setEntry value="org.eclipse.osee.client.test.framework:0.26.0.qualifier:default:true"/>
 <setEntry value="org.hamcrest.core:1.3.0.v201303031735:default:true"/>
 </setAttribute>
 <booleanAttribute key="append.args" value="true"/>
@@ -42,9 +42,6 @@
 <stringAttribute key="product" value="org.eclipse.osee.framework.ui.product.osee"/>
 <booleanAttribute key="run_in_ui_thread" value="true"/>
 <setAttribute key="selected_features">
-<setEntry value="de.itemis.xtext.antlr.feature:default"/>
-<setEntry value="de.itemis.xtext.antlr.sdk:default"/>
-<setEntry value="de.itemis.xtext.antlr.source.feature:default"/>
 <setEntry value="org.eclipse.cvs.source:default"/>
 <setEntry value="org.eclipse.cvs:default"/>
 <setEntry value="org.eclipse.e4.rcp.source:default"/>
