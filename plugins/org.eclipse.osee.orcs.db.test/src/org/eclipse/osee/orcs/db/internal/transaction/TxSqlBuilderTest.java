@@ -146,7 +146,7 @@ public class TxSqlBuilderTest {
       tx.setDate(EXPECTED_TX_TIME);
       tx.setTxType(EXPECTED_TX_TYPE);
 
-      when(idManager.getNextGammaId()).thenReturn(NEXT_GAMMA_ID.getId());
+      when(idManager.getNextGammaId()).thenReturn(NEXT_GAMMA_ID);
    }
 
    @Test
@@ -349,7 +349,7 @@ public class TxSqlBuilderTest {
 
    private void reset(OrcsData data) {
       data.getVersion().setTransactionId(LOADED_TX_ID);
-      data.getVersion().setGammaId(GammaId.SENTINEL.getId());
+      data.getVersion().setGammaId(GammaId.SENTINEL);
    }
 
    private void verifyQuery(SqlOrderEnum key) {

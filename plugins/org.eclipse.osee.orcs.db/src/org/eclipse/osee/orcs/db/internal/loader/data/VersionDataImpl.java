@@ -37,8 +37,8 @@ public class VersionDataImpl implements VersionData {
    }
 
    @Override
-   public void setGammaId(long gamma) {
-      this.gamma = GammaId.valueOf(gamma);
+   public void setGammaId(GammaId gamma) {
+      this.gamma = gamma;
    }
 
    @Override
@@ -137,7 +137,7 @@ public class VersionDataImpl implements VersionData {
    public VersionData clone() {
       VersionData copy = new VersionDataImpl();
       copy.setBranch(getBranch());
-      copy.setGammaId(getGammaId().getId());
+      copy.setGammaId(getGammaId());
       copy.setHistorical(isHistorical());
       copy.setStripeId(getStripeId());
       copy.setTransactionId(getTransactionId());

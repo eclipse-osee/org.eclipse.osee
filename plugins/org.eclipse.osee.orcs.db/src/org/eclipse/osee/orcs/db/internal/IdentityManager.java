@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal;
 
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 
 /**
@@ -25,7 +26,7 @@ public interface IdentityManager extends IdentityLocator {
 
    int getNextRelationId();
 
-   long getNextGammaId();
+   GammaId getNextGammaId();
 
    void invalidateIds();
 

@@ -21,7 +21,7 @@ public interface VersionData extends Cloneable {
 
    GammaId getGammaId();
 
-   void setGammaId(long gamma);
+   void setGammaId(GammaId gamma);
 
    TransactionId getTransactionId();
 

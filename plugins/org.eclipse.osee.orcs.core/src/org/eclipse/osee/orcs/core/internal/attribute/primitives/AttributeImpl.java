@@ -268,7 +268,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
       return getOrcsData().getVersion().getGammaId();
    }
 
-   public void internalSetGammaId(int gammaId) {
+   public void internalSetGammaId(GammaId gammaId) {
       getOrcsData().getVersion().setGammaId(gammaId);
    }
 
@@ -280,7 +280,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
     * artifact.persist(); artifact.reloadAttributesAndRelations(); Will need to be called afterwards to see replaced
     * data in memory
     */
-   public void replaceWithVersion(int gammaId) {
+   public void replaceWithVersion(GammaId gammaId) {
       internalSetModificationType(ModificationType.REPLACED_WITH_VERSION);
       getOrcsData().getVersion().setGammaId(gammaId);
       setDirtyFlag(true);

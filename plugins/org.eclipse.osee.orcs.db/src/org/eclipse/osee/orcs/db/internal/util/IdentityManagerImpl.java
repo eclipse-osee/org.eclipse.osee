@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.util;
 
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -51,8 +52,8 @@ public class IdentityManagerImpl implements IdentityManager {
    }
 
    @Override
-   public long getNextGammaId() {
-      return client.getNextSequence(OseeData.GAMMA_ID_SEQ, true);
+   public GammaId getNextGammaId() {
+      return GammaId.valueOf(client.getNextSequence(OseeData.GAMMA_ID_SEQ, true));
    }
 
    @Override

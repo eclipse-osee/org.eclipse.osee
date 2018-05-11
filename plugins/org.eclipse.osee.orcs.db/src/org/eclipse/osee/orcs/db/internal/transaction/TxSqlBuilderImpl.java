@@ -67,7 +67,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    public List<Object[]> getInsertData(SqlOrderEnum key) {
       List<Object[]> toReturn = null;
       if (dataItemInserts != null) {
-         toReturn = (List<Object[]>) dataItemInserts.getValues(key);
+         toReturn = dataItemInserts.getValues(key);
       }
       return toReturn != null ? toReturn : Collections.<Object[]> emptyList();
    }
@@ -218,8 +218,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
 
    private void updateGamma(OrcsData data) {
       VersionData version = data.getVersion();
-      long newGamma = idManager.getNextGammaId();
-      version.setGammaId(newGamma);
+      version.setGammaId(idManager.getNextGammaId());
    }
 
    private ModificationType computeModType(ModificationType original) {

@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.exchange;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -100,7 +101,7 @@ public class ExportItemFactory {
 
       processTxOptions(options);
 
-      int gammaJoinId = createGammaJoin(getDbService(), branchJoinId, options);
+      GammaId gammaJoinId = createGammaJoin(getDbService(), branchJoinId, options);
 
       items.add(new ManifestExportItem(logger, preferences, items, options));
       items.add(new MetadataExportItem(logger, items, getDbService()));
@@ -120,7 +121,7 @@ public class ExportItemFactory {
       return items;
    }
 
-   private void addItem(List<AbstractExportItem> items, Long branchJoinId, PropertyStore options, int gammaJoinId, ExportItem exportItem, String query) {
+   private void addItem(List<AbstractExportItem> items, Long branchJoinId, PropertyStore options, GammaId gammaJoinId, ExportItem exportItem, String query) {
       StringBuilder modifiedQuery = new StringBuilder(query);
       Object[] bindData = prepareQuery(exportItem, modifiedQuery, options, branchJoinId, gammaJoinId);
       items.add(new DbTableExportItem(getLogger(), getDbService(), getResourceManager(), exportItem,
@@ -135,9 +136,9 @@ public class ExportItemFactory {
       }
    }
 
-   private int createGammaJoin(JdbcClient jdbcClient, Long branchJoinId, PropertyStore options) {
+   private GammaId createGammaJoin(JdbcClient jdbcClient, Long branchJoinId, PropertyStore options) {
       List<Object> bindList = new ArrayList<>();
-      int gammaJoinId = new Random().nextInt();
+      GammaId gammaJoinId = GammaId.valueOf(new Random().nextInt());
       StringBuilder sql = new StringBuilder(
          "INSERT INTO osee_join_id (id, query_id) SELECT DISTINCT(gamma_id), %s FROM osee_join_id, osee_txs txs WHERE query_id=? AND id = txs.branch_id");
       bindList.add(branchJoinId);
@@ -157,7 +158,7 @@ public class ExportItemFactory {
       return gammaJoinId;
    }
 
-   private static Object[] prepareQuery(ExportItem exportItem, StringBuilder query, PropertyStore options, Long branchJoinId, int gammaJionId) {
+   private static Object[] prepareQuery(ExportItem exportItem, StringBuilder query, PropertyStore options, Long branchJoinId, GammaId gammaJionId) {
       List<Object> bindData = new ArrayList<>();
 
       if (exportItem.matches(ExportItem.OSEE_ARTIFACT_DATA, ExportItem.OSEE_ATTRIBUTE_DATA,

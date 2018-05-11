@@ -80,7 +80,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       VersionData version = new VersionDataImpl();
       version.setBranch(branchId);
       version.setTransactionId(txId);
-      version.setGammaId(gamma.getId());
+      version.setGammaId(gamma);
       version.setHistorical(historical);
       version.setStripeId(stripeId);
       return version;
@@ -190,7 +190,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       data.setModType(ModificationType.NEW);
       data.setApplicabilityId(ApplicabilityId.BASE);
       data.setTupleType(tupleType);
-      data.getVersion().setGammaId(Lib.generateUuid());
+      data.getVersion().setGammaId(GammaId.valueOf(Lib.generateUuid()));
       data.getVersion().setBranch(branch);
       data.setElement1(e1);
       data.setElement2(e2);

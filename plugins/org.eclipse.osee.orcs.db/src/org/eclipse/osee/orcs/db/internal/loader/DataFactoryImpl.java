@@ -184,7 +184,7 @@ public class DataFactoryImpl implements DataFactory {
       version.setTransactionId(TransactionId.SENTINEL);
       version.setStripeId(TransactionId.SENTINEL);
       version.setHistorical(false);
-      version.setGammaId(GammaId.SENTINEL.getId());
+      version.setGammaId(GammaId.SENTINEL);
 
       data.setModType(ModificationType.NEW);
    }
