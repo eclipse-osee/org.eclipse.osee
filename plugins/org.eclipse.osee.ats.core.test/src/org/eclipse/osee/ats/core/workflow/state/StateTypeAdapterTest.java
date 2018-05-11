@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.workflow.state;
 
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.StateTypeAdapter;
 import org.eclipse.osee.ats.core.workflow.OneStates;
 import org.eclipse.osee.ats.core.workflow.OrderedStates;
 import org.eclipse.osee.ats.core.workflow.TestState;

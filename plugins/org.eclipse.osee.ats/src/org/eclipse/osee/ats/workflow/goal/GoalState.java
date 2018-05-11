@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.workflow.goal;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.core.workflow.state.StateTypeAdapter;
+import org.eclipse.osee.ats.api.workdef.StateTypeAdapter;
 
 /**
  * @author Donald G. Dunne
