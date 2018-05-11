@@ -17,8 +17,8 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
@@ -68,7 +68,7 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
          if (result.isFalse()) {
             return result.getText();
          }
-         return AtsUtilCore.doubleToI18nString(getWorldViewAnnualCostAvoidance(element), true);
+         return AtsUtil.doubleToI18nString(getWorldViewAnnualCostAvoidance(element), true);
       } catch (OseeCoreException ex) {
          LogUtil.getCellExceptionString(ex);
       }

@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
@@ -255,7 +256,7 @@ public abstract class AtsApiImpl implements AtsApi {
                   String atsBranchId = AtsPreferencesService.get(ATS_BRANCH_ID);
                   setConfig(atsBranchId, AtsPreferencesService.get(ATS_BRANCH_NAME));
                } catch (Exception ex) {
-                  OseeLog.log(AtsUtilCore.class, Level.SEVERE, "Error processing stored ATS Branch.", ex);
+                  OseeLog.log(AtsUtil.class, Level.SEVERE, "Error processing stored ATS Branch.", ex);
                }
             }
             // osee.ini -D option overrides default
@@ -479,7 +480,7 @@ public abstract class AtsApiImpl implements AtsApi {
 
    @Override
    public boolean isSingleServerDeployment() {
-      return "true".equals(getConfigValue(AtsUtilCore.SINGLE_SERVER_DEPLOYMENT));
+      return "true".equals(getConfigValue(AtsUtil.SINGLE_SERVER_DEPLOYMENT));
    }
 
    @Override

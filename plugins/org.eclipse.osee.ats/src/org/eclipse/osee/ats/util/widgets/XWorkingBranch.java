@@ -21,9 +21,9 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.branch.AtsBranchManager;
 import org.eclipse.osee.ats.branch.AtsBranchUtil;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
@@ -328,7 +328,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
 
       BundleContext context = AtsClientService.get().getEventService().getBundleContext(Activator.PLUGIN_ID);
       context.registerService(EventHandler.class.getName(), this,
-         AtsUtilCore.hashTable(EventConstants.EVENT_TOPIC, AccessTopicEvent.ACCESS_BRANCH_MODIFIED.getTopic()));
+         AtsUtil.hashTable(EventConstants.EVENT_TOPIC, AccessTopicEvent.ACCESS_BRANCH_MODIFIED.getTopic()));
 
    }
 

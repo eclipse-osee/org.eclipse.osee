@@ -16,10 +16,10 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workflow.note.NoteItem;
 import org.eclipse.osee.ats.column.DeadlineColumn;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
@@ -191,7 +191,7 @@ public class WfePrint extends Action {
 
    private String getStateHoursSpentHtml(StateXWidgetPage statePage) {
       return AHTML.getLabelValueStr("State Hours Spent",
-         AtsUtilCore.doubleToI18nString(sma.getStateMgr().getHoursSpent(statePage.getName())) + "<br>");
+         AtsUtil.doubleToI18nString(sma.getStateMgr().getHoursSpent(statePage.getName())) + "<br>");
    }
 
    public boolean isIncludeTaskList() {

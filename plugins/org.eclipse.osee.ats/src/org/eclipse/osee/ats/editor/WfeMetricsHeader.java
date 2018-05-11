@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.column.RemainingHoursColumn;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.internal.Activator;
@@ -87,7 +87,7 @@ public class WfeMetricsHeader extends Composite {
             estimatedHoursHeader.refresh();
          }
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
-            hoursSpentLabel.setText(String.valueOf(AtsUtilCore.doubleToI18nString(
+            hoursSpentLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(
                HoursSpentUtil.getHoursSpentTotal(awa, AtsClientService.get().getServices()))));
          }
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
@@ -96,7 +96,7 @@ public class WfeMetricsHeader extends Composite {
                remainHoursLabel.setText("Error" + result.getText());
             } else {
                remainHoursLabel.setText(
-                  String.valueOf(AtsUtilCore.doubleToI18nString(RemainingHoursColumn.getRemainingHours(awa))));
+                  String.valueOf(AtsUtil.doubleToI18nString(RemainingHoursColumn.getRemainingHours(awa))));
             }
          }
       } catch (Exception ex) {

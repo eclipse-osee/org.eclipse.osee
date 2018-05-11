@@ -16,9 +16,9 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workdef.ITransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -59,7 +59,7 @@ public class AtsUtilClient {
    }
 
    public static void setEmailEnabled(boolean enabled) {
-      if (!DbUtil.isDbInit() && !AtsUtilCore.isInTest()) {
+      if (!DbUtil.isDbInit() && !AtsUtil.isInTest()) {
          OseeLog.log(Activator.class, Level.INFO, "Email " + (enabled ? "Enabled" : "Disabled"));
       }
       emailEnabled = enabled;

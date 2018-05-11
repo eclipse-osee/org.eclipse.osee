@@ -25,13 +25,13 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelperAdapter;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
@@ -326,7 +326,7 @@ public class WfeTransitionComposite extends Composite {
 
       if (isRequireStateHoursSpentPrompt(fromStateDefinition) && !toStateDefinition.getStateType().isCancelledState()) {
          // Otherwise, open dialog to ask for hours complete
-         String msg = awa.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtilCore.doubleToI18nString(
+         String msg = awa.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtil.doubleToI18nString(
             hoursSpent) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
          // Remove after ATS Resolution options is removed 0.9.9_SR5ish
          TransitionStatusData data = new TransitionStatusData(Arrays.asList(awa), false);

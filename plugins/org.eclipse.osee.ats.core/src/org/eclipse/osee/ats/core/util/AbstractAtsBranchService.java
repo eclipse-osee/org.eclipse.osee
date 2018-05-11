@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
@@ -86,7 +87,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    public IOseeBranch getWorkingBranch(IAtsTeamWorkflow teamWf, boolean force) {
       long now = new Date().getTime();
       boolean notSet = idToWorkingBranchCacheUpdated.get(teamWf.getAtsId()) == null;
-      if (AtsUtilCore.isInTest() || notSet || force || now - idToWorkingBranchCacheUpdated.get(
+      if (AtsUtil.isInTest() || notSet || force || now - idToWorkingBranchCacheUpdated.get(
          teamWf.getAtsId()) > 1000) {
          IOseeBranch branch = IOseeBranch.SENTINEL;
          try {

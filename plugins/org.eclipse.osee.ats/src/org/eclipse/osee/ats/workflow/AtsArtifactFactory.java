@@ -31,8 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.IAtsClient;
@@ -124,13 +124,13 @@ public class AtsArtifactFactory extends ArtifactFactory {
       disabledUserCreationTypes.add(AgileTeam);
       disabledUserCreationTypes.add(AgileFeatureGroup);
       disabledUserCreationTypes.add(AgileSprint);
-      String configValue = AtsClientService.get().getConfigValue(AtsUtilCore.USER_CREATION_DISABLED);
+      String configValue = AtsClientService.get().getConfigValue(AtsUtil.USER_CREATION_DISABLED);
       if (Strings.isValid(configValue)) {
          for (String artifactTypeToken : configValue.split(";")) {
             ArtifactTypeId artifactTypeFromToken = TokenFactory.createArtifactTypeFromToken(artifactTypeToken);
             if (artifactTypeFromToken == null) {
                OseeLog.logf(Activator.class, Level.SEVERE,
-                  "Artifact Type Name [%s] specified in AtsConfig.[%s] is invalid", AtsUtilCore.USER_CREATION_DISABLED);
+                  "Artifact Type Name [%s] specified in AtsConfig.[%s] is invalid", AtsUtil.USER_CREATION_DISABLED);
             } else {
                disabledUserCreationTypes.add(artifactTypeFromToken);
             }

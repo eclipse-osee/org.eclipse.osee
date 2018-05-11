@@ -29,9 +29,9 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.review.UserRoleManager;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtilClient;
@@ -435,7 +435,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
             html.append(AHTML.addRowMultiColumnTable(new String[] {
                item.getRole().name(),
                atsUser.getName(),
-               AtsUtilCore.doubleToI18nString(item.getHoursSpent()),
+               AtsUtil.doubleToI18nString(item.getHoursSpent()),
                defectMgr.getNumMajor(atsUser) + "",
                defectMgr.getNumMinor(atsUser) + "",
                defectMgr.getNumIssues(atsUser) + ""}));

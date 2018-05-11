@@ -17,8 +17,8 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
@@ -57,7 +57,7 @@ public abstract class AbstractNumericTotalColumn extends XViewerAtsColumn implem
             if (result.isFalse()) {
                return result.getText();
             }
-            return AtsUtilCore.doubleToI18nString(getRemainingPoints(element));
+            return AtsUtil.doubleToI18nString(getRemainingPoints(element));
          } catch (OseeCoreException ex) {
             LogUtil.getCellExceptionString(ex);
          }

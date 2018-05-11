@@ -21,10 +21,10 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkState;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -152,7 +152,7 @@ public class EventColumn extends XViewerValueColumn {
    }
 
    public static String getHoursSpentStr(WorkState state) {
-      return AtsUtilCore.doubleToI18nString(state.getHoursSpent(), true);
+      return AtsUtil.doubleToI18nString(state.getHoursSpent(), true);
    }
 
 }

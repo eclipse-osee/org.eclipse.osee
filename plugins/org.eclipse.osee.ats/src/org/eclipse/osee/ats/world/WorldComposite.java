@@ -39,10 +39,10 @@ import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelectedAction.IOpenNew
 import org.eclipse.osee.ats.actions.TaskAddAction.ITaskAddActionHandler;
 import org.eclipse.osee.ats.agile.SprintOrderColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.column.GoalOrderColumn;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
@@ -127,7 +127,7 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
          }
          return ((AbstractWorkflowArtifact) artifact).getManHrsPerDayPreference();
       }
-      return AtsUtilCore.DEFAULT_HOURS_PER_WORK_DAY;
+      return AtsUtil.DEFAULT_HOURS_PER_WORK_DAY;
    }
 
    public void setCustomizeData(CustomizeData customizeData) {

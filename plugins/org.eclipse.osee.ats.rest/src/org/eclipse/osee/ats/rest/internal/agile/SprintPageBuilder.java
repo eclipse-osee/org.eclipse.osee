@@ -18,7 +18,7 @@ import java.util.TreeMap;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -64,7 +64,7 @@ public class SprintPageBuilder {
       page.addKeyValuePairs("numActionsBacklog", getNumActionsBacklog());
       page.addKeyValuePairs("tableContent", getTable());
       String html = page.realizePage(token);
-      html = AtsUtilCore.resolveAjaxToBaseApplicationServer(html, atsApi);
+      html = AtsUtil.resolveAjaxToBaseApplicationServer(html, atsApi);
       return html;
    }
 

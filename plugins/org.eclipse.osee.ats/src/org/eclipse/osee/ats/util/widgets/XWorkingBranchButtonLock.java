@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.util.widgets;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.access.AccessControlData;
@@ -144,7 +144,7 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
 
       BundleContext context = AtsClientService.get().getEventService().getBundleContext(Activator.PLUGIN_ID);
       context.registerService(EventHandler.class.getName(), this,
-         AtsUtilCore.hashTable(EventConstants.EVENT_TOPIC, AccessTopicEvent.ACCESS_BRANCH_MODIFIED.getTopic()));
+         AtsUtil.hashTable(EventConstants.EVENT_TOPIC, AccessTopicEvent.ACCESS_BRANCH_MODIFIED.getTopic()));
 
    }
 

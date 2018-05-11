@@ -15,7 +15,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.workflow.EstimatedHoursUtil;
@@ -54,7 +54,7 @@ public class EstimatedHoursColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         return AtsUtilCore.doubleToI18nString(EstimatedHoursUtil.getEstimatedHours(element));
+         return AtsUtil.doubleToI18nString(EstimatedHoursUtil.getEstimatedHours(element));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

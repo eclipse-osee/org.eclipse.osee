@@ -17,8 +17,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.ILineChart;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -86,7 +86,7 @@ public class LineChart implements ILineChart {
          htmlChart = htmlChart.replaceFirst("PUT_XAXIS_LABEL_HERE", getxAxisLabel());
          htmlChart = htmlChart.replaceFirst("PUT_YAXIS_LABEL_HERE", getyAxisLabel());
          htmlChart = htmlChart.replaceFirst("PUT_TITLE_HERE", getTitle());
-         htmlChart = AtsUtilCore.resolveAjaxToBaseApplicationServer(htmlChart, atsApi);
+         htmlChart = AtsUtil.resolveAjaxToBaseApplicationServer(htmlChart, atsApi);
          return htmlChart;
       } catch (Exception ex) {
          results.errorf("Exception generating LineChart [%s]", Lib.exceptionToString(ex));

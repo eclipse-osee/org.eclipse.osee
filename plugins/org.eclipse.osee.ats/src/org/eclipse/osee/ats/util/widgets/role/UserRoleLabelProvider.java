@@ -17,8 +17,8 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.core.review.UserRoleManager;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.defect.DefectSeverityToImage;
@@ -78,7 +78,7 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
       if (aCol.equals(UserRoleXViewerFactory.User_Col)) {
          return user.getName();
       } else if (aCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {
-         return userRole.getHoursSpent() == null ? "" : AtsUtilCore.doubleToI18nString(userRole.getHoursSpent(), false);
+         return userRole.getHoursSpent() == null ? "" : AtsUtil.doubleToI18nString(userRole.getHoursSpent(), false);
       } else if (aCol.equals(UserRoleXViewerFactory.Role_Col)) {
          return userRole.getRole().name();
       } else if (aCol.equals(UserRoleXViewerFactory.Completed_Col)) {

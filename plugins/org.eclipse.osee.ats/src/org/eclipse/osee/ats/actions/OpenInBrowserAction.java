@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -34,7 +34,7 @@ public class OpenInBrowserAction extends Action {
 
    @Override
    public void run() {
-      Program.launch(AtsUtilCore.getActionUrl(awa.getAtsId(), AtsClientService.get()));
+      Program.launch(AtsUtil.getActionUrl(awa.getAtsId(), AtsClientService.get()));
    }
 
    @Override

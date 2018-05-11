@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsGroup;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
@@ -85,7 +85,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
    }
 
    private void createUserCreationDisabledConfig() {
-      AtsClientService.get().setConfigValue(AtsUtilCore.USER_CREATION_DISABLED,
+      AtsClientService.get().setConfigValue(AtsUtil.USER_CREATION_DISABLED,
          AtsArtifactTypes.Action.toStringWithId() + ";" + AtsArtifactTypes.TeamWorkflow.toStringWithId());
    }
 

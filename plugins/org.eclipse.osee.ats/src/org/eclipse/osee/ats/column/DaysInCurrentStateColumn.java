@@ -17,8 +17,8 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
@@ -65,7 +65,7 @@ public class DaysInCurrentStateColumn extends XViewerAtsColumn implements IXView
             if (timeInCurrState == 0) {
                return "0.0";
             }
-            return AtsUtilCore.doubleToI18nString(timeInCurrState / DateUtil.MILLISECONDS_IN_A_DAY);
+            return AtsUtil.doubleToI18nString(timeInCurrState / DateUtil.MILLISECONDS_IN_A_DAY);
          } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<String> strs = new HashSet<>();
             for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(element)) {

@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.workdef.WorkDefData;
@@ -36,7 +37,6 @@ import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsApiImpl;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionServiceImpl;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.config.AtsConfigurationsService;
@@ -154,9 +154,9 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    }
 
    private void scheduleAtsConfigCacheReloader() {
-      long reloadTime = AtsUtilCore.SERVER_CONFIG_RELOAD_MIN_DEFAULT;
+      long reloadTime = AtsUtil.SERVER_CONFIG_RELOAD_MIN_DEFAULT;
       String reloadTimeStr =
-         orcsApi.getAdminOps().isDataStoreInitialized() ? getConfigValue(AtsUtilCore.SERVER_CONFIG_RELOAD_MIN_KEY) : "";
+         orcsApi.getAdminOps().isDataStoreInitialized() ? getConfigValue(AtsUtil.SERVER_CONFIG_RELOAD_MIN_KEY) : "";
       if (Strings.isNumeric(reloadTimeStr)) {
          reloadTime = Long.valueOf(reloadTimeStr);
       }

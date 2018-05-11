@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.util;
+package org.eclipse.osee.ats.api.util;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Donald G. Dunne
  */
-public class AtsUtilCore {
+public class AtsUtil {
 
    public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
    public static final String DEFAULT_ATS_ID_VALUE = "0";
@@ -67,7 +67,7 @@ public class AtsUtilCore {
    }
 
    public static String getBaseActionUiUrl(String defaultUrl, AtsApi atsApi) {
-      return atsApi.getConfigValue(AtsUtilCore.ATS_CONFIG_ACTION_URL_KEY, defaultUrl);
+      return atsApi.getConfigValue(AtsUtil.ATS_CONFIG_ACTION_URL_KEY, defaultUrl);
    }
 
    public static String resolveAjaxToBaseApplicationServer(String html, AtsApi atsApi) {

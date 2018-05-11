@@ -15,7 +15,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
@@ -54,7 +54,7 @@ public class HoursSpentTotalColumn extends XViewerAtsColumn implements IXViewerV
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof IAtsWorkItem) {
-            return AtsUtilCore.doubleToI18nString(
+            return AtsUtil.doubleToI18nString(
                HoursSpentUtil.getHoursSpentTotal((IAtsWorkItem) element, AtsClientService.get().getServices()));
          }
       } catch (OseeCoreException ex) {

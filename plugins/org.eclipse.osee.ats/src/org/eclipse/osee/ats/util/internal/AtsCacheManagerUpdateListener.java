@@ -19,7 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtilClient;
@@ -63,7 +63,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
 
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-      if (!DbUtil.isDbInit() && !AtsUtilCore.isInTest() && isSingleServerDeployment()) {
+      if (!DbUtil.isDbInit() && !AtsUtil.isInTest() && isSingleServerDeployment()) {
          boolean handledConfigReload = processArtifacts(artifactEvent, sender);
          if (!handledConfigReload) {
             processRelations(artifactEvent, handledConfigReload);

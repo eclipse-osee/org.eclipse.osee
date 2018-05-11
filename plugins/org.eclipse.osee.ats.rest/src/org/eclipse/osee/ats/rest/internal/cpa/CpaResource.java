@@ -35,7 +35,7 @@ import org.eclipse.osee.ats.api.cpa.DecisionUpdate;
 import org.eclipse.osee.ats.api.cpa.DuplicateCpa;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaService;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
@@ -105,7 +105,7 @@ public final class CpaResource implements AtsCpaEndpointApi {
    public Response getDecision(@PathParam("id") String id, @QueryParam("pcrSystem") String pcrSystem) throws Exception {
       URI uri = null;
       if (pcrSystem == null) {
-         String actionUrl = AtsUtilCore.getActionUrl(id, atsApi);
+         String actionUrl = AtsUtil.getActionUrl(id, atsApi);
          uri = UriBuilder.fromUri(actionUrl).build();
       } else {
          IAtsCpaService service = cpaRegistry.getServiceById(pcrSystem);

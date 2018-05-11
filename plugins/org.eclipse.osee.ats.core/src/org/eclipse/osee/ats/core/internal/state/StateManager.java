@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -35,7 +36,6 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.state.WorkStateFactory;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.state.SimpleTeamState;
@@ -124,7 +124,7 @@ public class StateManager implements IAtsStateManager {
    }
 
    protected void logMetrics(IStateToken state, IAtsUser user, Date date) {
-      String hoursSpent = AtsUtilCore.doubleToI18nString(HoursSpentUtil.getHoursSpentTotal(workItem, atsApi));
+      String hoursSpent = AtsUtil.doubleToI18nString(HoursSpentUtil.getHoursSpentTotal(workItem, atsApi));
       logMetrics(atsApi, logFactory, workItem, PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, atsApi) + "",
          hoursSpent, state, user, date);
    }
@@ -216,7 +216,7 @@ public class StateManager implements IAtsStateManager {
 
    @Override
    public String getHoursSpentStr(String stateName) {
-      return AtsUtilCore.doubleToI18nString(getHoursSpent(stateName), true);
+      return AtsUtil.doubleToI18nString(getHoursSpent(stateName), true);
    }
 
    @Override

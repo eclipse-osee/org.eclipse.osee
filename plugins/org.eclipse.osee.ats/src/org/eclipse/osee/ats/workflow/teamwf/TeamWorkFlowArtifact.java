@@ -23,12 +23,12 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
@@ -190,7 +190,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
       if (arts.isEmpty()) {
          // Only show exception once in log
          if (!teamArtsWithNoAction.contains(getArtId())) {
-            if (!AtsUtilCore.isInTest()) {
+            if (!AtsUtil.isInTest()) {
                OseeLog.log(Activator.class, Level.SEVERE,
                   String.format("Team Workflow has no parent Action [%s]", toStringWithId()));
             }
@@ -230,7 +230,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
          if (manDayHours == 0 && teamDef.getParentTeamDef() != null) {
             return getHoursPerWorkDayFromItemAndChildren(teamDef.getParentTeamDef());
          }
-         return AtsUtilCore.DEFAULT_HOURS_PER_WORK_DAY;
+         return AtsUtil.DEFAULT_HOURS_PER_WORK_DAY;
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

@@ -18,7 +18,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 
@@ -61,7 +61,7 @@ public class RestUtil {
    }
 
    public static Response redirect(Collection<? extends IAtsWorkItem> workItems, String defaultUrl, AtsApi atsApi) {
-      String actionUrl = AtsUtilCore.getBaseActionUiUrl(defaultUrl, atsApi);
+      String actionUrl = AtsUtil.getBaseActionUiUrl(defaultUrl, atsApi);
       String ids = "";
       for (IAtsWorkItem teamWf : workItems) {
          ids += teamWf.getAtsId() + ",";

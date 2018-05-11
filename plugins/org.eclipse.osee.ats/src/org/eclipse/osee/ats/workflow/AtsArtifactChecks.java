@@ -22,10 +22,10 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -47,7 +47,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
 
    private static final List<Long> Admin_Only_Relation_Type_Ids = Arrays.asList(
       AtsRelationTypes.TeamWorkflowToReview_Review.getId(), AtsRelationTypes.ActionToWorkflow_Action.getId());
-   private static boolean deletionChecksEnabled = !AtsUtilCore.isInTest();
+   private static boolean deletionChecksEnabled = !AtsUtil.isInTest();
 
    @Override
    public IStatus isDeleteableRelation(Artifact artifact, IRelationType relationType) {
