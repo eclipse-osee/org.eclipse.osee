@@ -31,8 +31,8 @@ import org.junit.runners.Suite;
    BranchEventTest.class,
    BranchFavoriteTest.class,
    BranchManagerTest.class,
-   BranchPurgeTest.class,
-   BranchStateTest.class,
+   // BranchPurgeTest moved to LongRunningTestSuite
+   // BranchStateTest moved to LongRunningTestSuite
    ChangeManagerTest.class,
    ConflictDeletionTest.class,
    ConflictIntroduceTest.class,
@@ -49,7 +49,7 @@ import org.junit.runners.Suite;
    OseeEnumerationValidationTest.class,
    OseeInfoTest.class,
    PurgeArtifactsTest.class,
-   PurgeTransactionTest.class,
+   // PurgeTransactionTest moved to LongRunningTestSuite
    RelationCacheTest.class,
    RelationDeletionTest.class,
    RelationFilterUtilTest.class,

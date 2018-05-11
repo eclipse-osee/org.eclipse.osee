@@ -23,16 +23,16 @@ import org.junit.runners.Suite;
    InterArtifactDropTest.class,
    PlainTextEditTest.class,
    PreviewAndMultiPreviewTest.class,
-   RelationIntegrityCheckTest.class,
+   // RelationIntegrityCheckTest moved to LongRunningTestSuite
    ReplaceWithBaselineTest.class,
    StringGuidsToArtifactListOperationTest.class,
    TemplateArtifactValidatorTest.class,
-   ViewWordChangeAndDiffTest.class,
+   // ViewWordChangeAndDiffTest moved to LongRunningTestSuite
    WordArtifactElementExtractorTest.class,
    WordEditTest.class,
    WordOutlineAndStyleTest.class,
    WordTemplateProcessorTest.class,
-   WordTemplateRendererTest.class,
+   // WordTemplateRendererTest moved to LongRunningTestSuite
    WordTrackedChangesTest.class,
    FrameworkImageTest.class,
    OseeEmailTest.class,
