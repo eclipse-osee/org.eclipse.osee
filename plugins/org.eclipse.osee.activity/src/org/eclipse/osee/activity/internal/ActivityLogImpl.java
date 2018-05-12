@@ -27,6 +27,13 @@ import static org.eclipse.osee.activity.internal.ActivityUtil.captureStackTrace;
 import static org.eclipse.osee.framework.core.data.CoreActivityTypes.DEFAULT_ROOT;
 import static org.eclipse.osee.framework.core.data.CoreActivityTypes.THREAD_ACTIVITY;
 import java.net.UnknownHostException;
+import java.lang.management.GarbageCollectorMXBean;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryUsage;
+import java.lang.management.RuntimeMXBean;
+import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -93,7 +100,6 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
    };
 
    private final ConcurrentHashMap<Long, ActivityTypeToken> types = new ConcurrentHashMap<>(30);
-   private final static int HALF_HOUR = 30 * 60 * 1000;
 
    private final ConcurrentHashMap<Long, Object[]> newEntities = new ConcurrentHashMap<>();
    private final ConcurrentHashMap<Long, Object[]> updatedEntities = new ConcurrentHashMap<>();
@@ -176,6 +182,50 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
       if (!threadReport.isEmpty()) {
          createEntry(THREAD_ACTIVITY, threadActivityParententryId, COMPLETE_STATUS, threadReport);
       }
+
+      RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
+
+      StringBuilder sb = new StringBuilder("Mem Sats - ");
+      sb.append(" start [");
+      String startTime = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(
+         applicationServerManager.getDateStarted()).toString();
+      sb.append(startTime);
+      sb.append("] upTime [");
+      int seconds = (int) (runtimeMxBean.getUptime() / 1000) % 60;
+      int minutes = (int) ((runtimeMxBean.getUptime() / (1000 * 60)) % 60);
+      int hours = (int) ((runtimeMxBean.getUptime() / (1000 * 60 * 60)) % 24);
+      sb.append(String.format("%s h %s m %s s", hours, minutes, seconds));
+
+      MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+      MemoryUsage heapMem = memoryMXBean.getHeapMemoryUsage();
+      sb.append("] heapUsed [");
+      sb.append(Lib.toMBytes(heapMem.getUsed()));
+      sb.append("] heapAlloc [");
+      sb.append(Lib.toMBytes(heapMem.getCommitted()));
+      sb.append("] heapMax [");
+      sb.append(Lib.toMBytes(heapMem.getMax()));
+      MemoryUsage nonHeapMem = memoryMXBean.getNonHeapMemoryUsage();
+      sb.append("] nonHeapUsed [");
+      sb.append(Lib.toMBytes(nonHeapMem.getUsed()));
+      sb.append("] nonHeapAlloc [");
+      sb.append(Lib.toMBytes(nonHeapMem.getCommitted()));
+      sb.append("] nonHeapMax [");
+      sb.append(Lib.toMBytes(nonHeapMem.getMax()));
+      sb.append("] ");
+
+      sb.append(getGarbageCollectionStats());
+      createEntry(CoreActivityTypes.MEMORY_ACTIVITY, threadActivityParententryId, COMPLETE_STATUS, sb.toString());
+   }
+
+   @Override
+   public List<String> getGarbageCollectionStats() {
+      List<GarbageCollectorMXBean> garbageCollectorMXBeans = ManagementFactory.getGarbageCollectorMXBeans();
+      List<String> stats = new ArrayList<String>(garbageCollectorMXBeans.size());
+      for (GarbageCollectorMXBean gcBean : garbageCollectorMXBeans) {
+         stats.add(String.format("%s: %s (count); %s (ms)", gcBean.getName(), gcBean.getCollectionCount(),
+            gcBean.getCollectionTime()));
+      }
+      return stats;
    }
 
    public void stop() {

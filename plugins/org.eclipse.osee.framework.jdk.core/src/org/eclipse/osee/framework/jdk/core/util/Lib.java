@@ -32,8 +32,6 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryUsage;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
@@ -1687,16 +1685,6 @@ public final class Lib {
             // Do Nothing
          }
       }
-   }
-
-   public static String getMemoryInfo() {
-      MemoryUsage heapMem = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
-      StringBuffer buffer = new StringBuffer();
-      buffer.append("Heap Memory Usage:\n");
-      buffer.append(String.format("\tUsed:      [%s]\n", toMBytes(heapMem.getUsed())));
-      buffer.append(String.format("\tAllocated: [%s]\n", toMBytes(heapMem.getCommitted())));
-      buffer.append(String.format("\tMax:       [%s]\n", toMBytes(heapMem.getMax())));
-      return buffer.toString();
    }
 
    public static String toMBytes(long valInBytes) {

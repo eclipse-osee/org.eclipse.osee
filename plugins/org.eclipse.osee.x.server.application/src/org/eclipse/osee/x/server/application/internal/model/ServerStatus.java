@@ -23,7 +23,7 @@ public class ServerStatus {
 
    private final Map<String, String> data = new HashMap<String, String>();
    private final List<String> threadStats = new LinkedList<>();
-   private final List<String> garbageCollectorStats = new LinkedList<>();
+   public final List<String> garbageCollectorStats = new LinkedList<>();
 
    public void set(StatusKey key, String value) {
       data.put(key.getShortName(), value);
@@ -64,9 +64,4 @@ public class ServerStatus {
    public void add(String threadStr) {
       threadStats.add(threadStr);
    }
-
-   public List<String> getGarbageCollectorStats() {
-      return garbageCollectorStats;
-   }
-
 }

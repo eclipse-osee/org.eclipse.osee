@@ -33,6 +33,7 @@ public final class CoreActivityTypes {
    public static final ActivityTypeToken ACCESS_CONTROL_MODIFIED = create(99L, INFO, "osee.framework.access", "Access Control Modified [%s]");
    public static final ActivityTypeToken BRANCH_OPERATION = create(61L, INFO, "org.eclipse.osee.orcs.rest.internal.branch");
    public static final ActivityTypeToken THREAD_ACTIVITY = create(777L, INFO, "org.eclipse.osee.activity");
+   public static final ActivityTypeToken MEMORY_ACTIVITY = create(888L, INFO, "org.eclipse.osee.activity");
    public static final ActivityTypeToken PURGE_TRANSACTION = create(4455L, INFO, "org.eclipse.osee.orcs.rest.purge.transaction");
    // @formatter:on
 

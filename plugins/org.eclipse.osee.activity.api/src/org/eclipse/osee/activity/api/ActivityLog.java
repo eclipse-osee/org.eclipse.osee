@@ -85,4 +85,6 @@ public interface ActivityLog {
    ThreadStats[] getThreadActivity();
 
    List<String> getThreadActivityDelta(ThreadStats[] threadStats);
+
+   List<String> getGarbageCollectionStats();
 }
