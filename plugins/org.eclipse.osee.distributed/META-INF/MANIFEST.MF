@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Osee Distributed
-Bundle-SymbolicName: org.eclipse.osee.distributed
-Bundle-Version: 0.26.0.qualifier
-Bundle-Vendor: Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: org.eclipse.osee.distributed
