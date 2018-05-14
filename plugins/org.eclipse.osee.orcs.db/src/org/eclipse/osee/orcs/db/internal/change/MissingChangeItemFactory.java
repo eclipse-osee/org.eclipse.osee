@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.db.internal.change;
 
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.executor.HasCancellation;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;

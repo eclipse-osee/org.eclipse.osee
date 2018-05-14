@@ -12,9 +12,9 @@ package org.eclipse.osee.orcs.core.internal.transaction;
 
 import java.util.Collection;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;

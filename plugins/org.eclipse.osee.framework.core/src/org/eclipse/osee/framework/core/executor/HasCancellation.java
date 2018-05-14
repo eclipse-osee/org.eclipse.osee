@@ -8,17 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.executor.admin;
+package org.eclipse.osee.framework.core.executor;
+
+import java.util.concurrent.CancellationException;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface ExecutionCallback<T> {
+public interface HasCancellation {
 
-   void onCancelled();
+   boolean isCancelled();
 
-   void onSuccess(T result);
+   void setCancel(boolean isCancelled);
 
-   void onFailure(Throwable throwable);
-
+   void checkForCancelled() throws CancellationException;
 }

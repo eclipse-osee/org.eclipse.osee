@@ -11,10 +11,10 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import java.util.List;
-import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.TupleQuery;

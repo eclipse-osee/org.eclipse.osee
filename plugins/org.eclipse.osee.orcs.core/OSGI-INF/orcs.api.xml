@@ -5,7 +5,7 @@
       <provide interface="org.eclipse.osee.orcs.OrcsApi"/>
    </service>
    <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
-   <reference bind="setExecutorAdmin" cardinality="1..1" interface="org.eclipse.osee.executor.admin.ExecutorAdmin" name="ExecutorAdmin" policy="static"/>
+   <reference bind="setExecutorAdmin" cardinality="1..1" interface="org.eclipse.osee.framework.core.executor.ExecutorAdmin" name="ExecutorAdmin" policy="static"/>
    <reference bind="setSystemPreferences" cardinality="1..1" interface="org.eclipse.osee.orcs.SystemPreferences" name="SystemPreferences" policy="static"/>
    <reference bind="setOrcsDataStore" cardinality="1..1" interface="org.eclipse.osee.orcs.core.ds.OrcsDataStore" name="OrcsDataStore" policy="static"/>
 </scr:component>

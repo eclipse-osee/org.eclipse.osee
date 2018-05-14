@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.console.admin.ConsoleAdminConstants;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.event.EventService;
-import org.eclipse.osee.executor.admin.ExecutorAdmin;
+import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.osgi.framework.BundleContext;

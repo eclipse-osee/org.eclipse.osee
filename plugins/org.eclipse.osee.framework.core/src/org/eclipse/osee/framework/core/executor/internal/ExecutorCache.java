@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.executor.admin.internal;
+package org.eclipse.osee.framework.core.executor.internal;
 
 import com.google.common.util.concurrent.ListeningExecutorService;
 import java.util.Map;

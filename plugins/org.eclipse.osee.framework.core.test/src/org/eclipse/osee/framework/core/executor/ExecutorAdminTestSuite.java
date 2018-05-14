@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2010 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,26 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.executor.admin;
+package org.eclipse.osee.framework.core.executor;
 
-/**
- * @author Roberto E. Escobar
- */
-public class ExecutionCallbackAdapter<T> implements ExecutionCallback<T> {
+import org.eclipse.osee.framework.core.executor.internal.ExecutorAdminIternalTestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-   @Override
-   public void onCancelled() {
-      // Sub-class
-   }
-
-   @Override
-   public void onSuccess(T result) {
-      // Sub-class
-   }
-
-   @Override
-   public void onFailure(Throwable throwable) {
-      // Sub-class
-   }
-
+@RunWith(Suite.class)
+@Suite.SuiteClasses({ExecutorAdminIternalTestSuite.class})
+public class ExecutorAdminTestSuite {
+   //
 }

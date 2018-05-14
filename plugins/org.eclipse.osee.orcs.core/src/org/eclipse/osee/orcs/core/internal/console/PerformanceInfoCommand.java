@@ -17,7 +17,7 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
-import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsPerformance;
 import org.eclipse.osee.orcs.statistics.IndexerStatistics;

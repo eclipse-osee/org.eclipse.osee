@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.executor.CancellableCallable;
 
 /**
  * @author Roberto E. Escobar

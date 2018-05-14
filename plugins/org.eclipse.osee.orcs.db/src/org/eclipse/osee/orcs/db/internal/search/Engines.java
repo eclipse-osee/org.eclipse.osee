@@ -16,7 +16,7 @@ import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactor
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createTxSqlHandlerFactory;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.executor.admin.ExecutorAdmin;
+import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;

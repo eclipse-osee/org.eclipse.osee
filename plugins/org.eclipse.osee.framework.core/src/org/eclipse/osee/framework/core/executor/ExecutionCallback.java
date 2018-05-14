@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Boeing.
+ * Copyright (c) 2004, 2007 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,14 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.executor.admin;
+package org.eclipse.osee.framework.core.executor;
 
-import org.eclipse.osee.executor.admin.internal.ExecutorAdminIternalTestSuite;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+/**
+ * @author Roberto E. Escobar
+ */
+public interface ExecutionCallback<T> {
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ExecutorAdminIternalTestSuite.class})
-public class ExecutorAdminTestSuite {
-   //
+   void onCancelled();
+
+   void onSuccess(T result);
+
+   void onFailure(Throwable throwable);
+
 }

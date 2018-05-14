@@ -12,11 +12,11 @@ package org.eclipse.osee.orcs.db.internal.loader.executors;
 
 import java.util.List;
 import java.util.function.Consumer;
-import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.executor.HasCancellation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;

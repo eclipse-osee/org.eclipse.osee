@@ -13,8 +13,8 @@ package org.eclipse.osee.orcs.db.internal.conflict;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
+import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 
 /**

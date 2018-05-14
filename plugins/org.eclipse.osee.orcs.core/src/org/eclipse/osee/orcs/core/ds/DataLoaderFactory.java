@@ -11,9 +11,9 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Collection;
-import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.executor.HasCancellation;
 import org.eclipse.osee.orcs.OrcsSession;
 
 /**

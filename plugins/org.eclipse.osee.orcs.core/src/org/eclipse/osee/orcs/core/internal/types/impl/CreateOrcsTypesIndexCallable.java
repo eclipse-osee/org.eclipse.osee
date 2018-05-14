@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.types.impl;
 
-import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesIndex;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesResourceProvider;

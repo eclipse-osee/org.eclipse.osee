@@ -13,8 +13,8 @@ package org.eclipse.osee.console.admin.internal;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleParameters;
-import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.executor.CancellableCallable;
+import org.eclipse.osee.framework.core.executor.HasCancellation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**

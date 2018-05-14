@@ -51,7 +51,7 @@ import org.eclipse.osee.ats.rest.internal.workitem.StateResource;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.ConvertWorkDefinitionToAttributes;
 import org.eclipse.osee.ats.rest.internal.workitem.workdef.AtsWorkDefEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.world.WorldResource;
-import org.eclipse.osee.executor.admin.ExecutorAdmin;
+import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;

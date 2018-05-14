@@ -29,7 +29,7 @@ import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.DispoImporterApi;
 import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
 import org.eclipse.osee.disposition.rest.internal.importer.DiscrepancyParser.MutableString;
-import org.eclipse.osee.executor.admin.ExecutorAdmin;
+import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;

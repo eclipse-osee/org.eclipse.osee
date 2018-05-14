@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.sql.join;
 
 import java.util.concurrent.TimeUnit;
-import org.eclipse.osee.executor.admin.ExecutorAdmin;
+import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcService;

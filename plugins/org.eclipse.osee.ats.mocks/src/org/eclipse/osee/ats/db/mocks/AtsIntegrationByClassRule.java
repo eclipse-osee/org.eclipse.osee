@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.db.mocks;
 
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.event.EventService;
-import org.eclipse.osee.executor.admin.ExecutorAdmin;
+import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;

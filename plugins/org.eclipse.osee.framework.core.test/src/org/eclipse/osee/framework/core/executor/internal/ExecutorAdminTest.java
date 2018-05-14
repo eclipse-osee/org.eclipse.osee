@@ -8,12 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.executor.admin.internal;
+package org.eclipse.osee.framework.core.executor.internal;
 
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.eclipse.osee.framework.core.executor.internal.ExecutorAdminImpl;
 import org.eclipse.osee.logger.Log;
 import org.junit.After;
 import org.junit.Assert;

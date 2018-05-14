@@ -30,7 +30,6 @@
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.eclipse.osee.console.admin"/>
       <import plugin="org.eclipse.osee.event"/>
-      <import plugin="org.eclipse.osee.executor.admin"/>
       <import plugin="org.eclipse.osgi.services"/>
       <import plugin="org.xerial.sqlite"/>
    </requires>

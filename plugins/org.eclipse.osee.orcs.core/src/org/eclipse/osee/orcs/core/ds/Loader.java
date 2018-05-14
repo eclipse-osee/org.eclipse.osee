@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.executor.HasCancellation;
 
 /**
  * @author Andrew M. Finkbeiner

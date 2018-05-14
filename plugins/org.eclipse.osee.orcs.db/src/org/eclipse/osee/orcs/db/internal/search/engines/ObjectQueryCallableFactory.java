@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
-import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.CountingLoadDataHandler;

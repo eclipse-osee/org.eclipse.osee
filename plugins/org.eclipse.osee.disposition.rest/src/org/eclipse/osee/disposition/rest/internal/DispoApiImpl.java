@@ -47,10 +47,10 @@ import org.eclipse.osee.disposition.rest.internal.importer.DispoImporterFactory.
 import org.eclipse.osee.disposition.rest.internal.importer.DispoSetCopier;
 import org.eclipse.osee.disposition.rest.internal.importer.coverage.CoverageAdapter;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
-import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;

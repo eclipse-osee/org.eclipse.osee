@@ -6,7 +6,7 @@
    </service>
    <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
    <reference bind="setJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static" target="(osgi.binding=orcs.jdbc.service)"/>
-   <reference bind="setExecutorAdmin" cardinality="1..1" interface="org.eclipse.osee.executor.admin.ExecutorAdmin" name="ExecutorAdmin" policy="static"/>
+   <reference bind="setExecutorAdmin" cardinality="1..1" interface="org.eclipse.osee.framework.core.executor.ExecutorAdmin" name="ExecutorAdmin" policy="static"/>
    <reference bind="setResourceManager" cardinality="1..1" interface="org.eclipse.osee.framework.resource.management.IResourceManager" name="IResourceManager" policy="static"/>
    <reference bind="setSystemPreferences" cardinality="1..1" interface="org.eclipse.osee.orcs.SystemPreferences" name="SystemPreferences" policy="static"/>
    <reference bind="setSqlJoinFactory" cardinality="1..1" interface="org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory" name="SqlJoinFactory" policy="static"/>

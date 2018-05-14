@@ -2,7 +2,7 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" configuration-policy="require" deactivate="stop" modified="update">
    <implementation class="org.eclipse.osee.mail.internal.MailServiceImpl"/>
    <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
-   <reference bind="setExecutorAdmin" cardinality="1..1" interface="org.eclipse.osee.executor.admin.ExecutorAdmin" name="ExecutorAdmin" policy="static"/>
+   <reference bind="setExecutorAdmin" cardinality="1..1" interface="org.eclipse.osee.framework.core.executor.ExecutorAdmin" name="ExecutorAdmin" policy="static"/>
    <service>
       <provide interface="org.eclipse.osee.mail.api.MailService"/>
    </service>

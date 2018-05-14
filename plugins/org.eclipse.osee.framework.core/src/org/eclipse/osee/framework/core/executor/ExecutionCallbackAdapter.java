@@ -8,13 +8,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.executor.admin;
-
-import java.util.concurrent.Callable;
+package org.eclipse.osee.framework.core.executor;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class CancellableCallable<T> extends Cancellable implements Callable<T> {
-   // allows anonymous inner classes to be constructed that are both Cancellable and Callable
+public class ExecutionCallbackAdapter<T> implements ExecutionCallback<T> {
+
+   @Override
+   public void onCancelled() {
+      // Sub-class
+   }
+
+   @Override
+   public void onSuccess(T result) {
+      // Sub-class
+   }
+
+   @Override
+   public void onFailure(Throwable throwable) {
+      // Sub-class
+   }
+
 }

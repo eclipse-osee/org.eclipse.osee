@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs;
 
 import org.eclipse.osee.event.EventService;
-import org.eclipse.osee.executor.admin.ExecutorAdmin;
+import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiRule;

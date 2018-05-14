@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search;
 
-import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.QueryData;

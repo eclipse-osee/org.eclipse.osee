@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.util;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 

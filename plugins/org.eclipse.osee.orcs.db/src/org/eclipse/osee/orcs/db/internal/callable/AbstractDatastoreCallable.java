@@ -11,8 +11,8 @@
 package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.util.concurrent.Callable;
-import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.executor.CancellableCallable;
+import org.eclipse.osee.framework.core.executor.HasCancellation;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;

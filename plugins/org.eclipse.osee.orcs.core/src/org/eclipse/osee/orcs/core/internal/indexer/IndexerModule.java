@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.indexer;
 
 import java.util.concurrent.Future;
-import org.eclipse.osee.executor.admin.ExecutorAdmin;
+import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.SystemPreferences;

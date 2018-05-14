@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.executor.admin.internal;
+package org.eclipse.osee.framework.core.executor.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
@@ -19,8 +19,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.executor.admin.ExecutionCallback;
+import org.eclipse.osee.framework.core.executor.CancellableCallable;
+import org.eclipse.osee.framework.core.executor.ExecutionCallback;
+import org.eclipse.osee.framework.core.executor.internal.ExecutorAdminImpl;
 import org.eclipse.osee.logger.Log;
 import org.junit.After;
 import org.junit.Before;
