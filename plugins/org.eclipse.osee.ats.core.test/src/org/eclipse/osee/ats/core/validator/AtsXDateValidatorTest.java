@@ -20,8 +20,8 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
-import org.eclipse.osee.ats.mocks.MockStateDefinition;
-import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.junit.Assert;
 import org.mockito.Mock;
 
@@ -39,12 +39,12 @@ public class AtsXDateValidatorTest {
    public void testValidateTransition() {
       AtsXDateValidator validator = new AtsXDateValidator();
 
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
+      WidgetDefinition widgetDef = new WidgetDefinition("test");
       widgetDef.setXWidgetName("xList");
 
-      MockStateDefinition fromStateDef = new MockStateDefinition("from");
+      StateDefinition fromStateDef = new StateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      MockStateDefinition toStateDef = new MockStateDefinition("to");
+      StateDefinition toStateDef = new StateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       // Valid for anything not XIntegerDam
@@ -70,12 +70,12 @@ public class AtsXDateValidatorTest {
    public void testValidateTransition_validDate() {
       AtsXDateValidator validator = new AtsXDateValidator();
 
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
+      WidgetDefinition widgetDef = new WidgetDefinition("test");
       widgetDef.setXWidgetName("XDateDam");
 
-      MockStateDefinition fromStateDef = new MockStateDefinition("from");
+      StateDefinition fromStateDef = new StateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      MockStateDefinition toStateDef = new MockStateDefinition("to");
+      StateDefinition toStateDef = new StateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       MockDateValueProvider dateProvider = new MockDateValueProvider(Arrays.asList(new Date()));
@@ -90,13 +90,13 @@ public class AtsXDateValidatorTest {
    public void testValidateTransition_validRange() {
       AtsXDateValidator validator = new AtsXDateValidator();
 
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
+      WidgetDefinition widgetDef = new WidgetDefinition("test");
       widgetDef.setXWidgetName("XDateDam");
       widgetDef.getOptions().add(WidgetOption.FUTURE_DATE_REQUIRED);
 
-      MockStateDefinition fromStateDef = new MockStateDefinition("from");
+      StateDefinition fromStateDef = new StateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      MockStateDefinition toStateDef = new MockStateDefinition("to");
+      StateDefinition toStateDef = new StateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       Calendar cal = new GregorianCalendar(2010, 02, 05);

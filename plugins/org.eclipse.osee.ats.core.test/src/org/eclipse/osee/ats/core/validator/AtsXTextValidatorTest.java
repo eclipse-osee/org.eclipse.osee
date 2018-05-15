@@ -16,8 +16,8 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
-import org.eclipse.osee.ats.mocks.MockStateDefinition;
-import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.junit.Assert;
 import org.mockito.Mock;
 
@@ -34,12 +34,12 @@ public class AtsXTextValidatorTest {
    public void testValidateTransition() {
       AtsXTextValidator validator = new AtsXTextValidator();
 
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
+      WidgetDefinition widgetDef = new WidgetDefinition("test");
       widgetDef.setXWidgetName("xList");
 
-      MockStateDefinition fromStateDef = new MockStateDefinition("from");
+      StateDefinition fromStateDef = new StateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      MockStateDefinition toStateDef = new MockStateDefinition("to");
+      StateDefinition toStateDef = new StateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       // Valid for anything not XIntegerDam

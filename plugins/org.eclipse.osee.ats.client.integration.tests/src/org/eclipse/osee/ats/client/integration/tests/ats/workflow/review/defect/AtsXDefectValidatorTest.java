@@ -18,8 +18,8 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
-import org.eclipse.osee.ats.mocks.MockStateDefinition;
-import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.workflow.review.ReviewDefectItem;
 import org.eclipse.osee.ats.workflow.review.ReviewDefectItem.Disposition;
 import org.eclipse.osee.ats.workflow.review.ReviewDefectItem.InjectionActivity;
@@ -45,12 +45,12 @@ public class AtsXDefectValidatorTest {
    public void testValidateTransition() {
       AtsXDefectValidator validator = new AtsXDefectValidator();
 
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
+      WidgetDefinition widgetDef = new WidgetDefinition("test");
       widgetDef.setXWidgetName("xList");
 
-      MockStateDefinition fromStateDef = new MockStateDefinition("from");
+      StateDefinition fromStateDef = new StateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      MockStateDefinition toStateDef = new MockStateDefinition("to");
+      StateDefinition toStateDef = new StateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       // Valid for anything not XDefectViewer
@@ -76,12 +76,12 @@ public class AtsXDefectValidatorTest {
    public void testValidateTransition__Defect() {
       AtsXDefectValidator validator = new AtsXDefectValidator();
 
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
+      WidgetDefinition widgetDef = new WidgetDefinition("test");
       widgetDef.setXWidgetName("XDefectViewer");
 
-      MockStateDefinition fromStateDef = new MockStateDefinition("from");
+      StateDefinition fromStateDef = new StateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      MockStateDefinition toStateDef = new MockStateDefinition("to");
+      StateDefinition toStateDef = new StateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       ReviewDefectItem item = getValidItem();

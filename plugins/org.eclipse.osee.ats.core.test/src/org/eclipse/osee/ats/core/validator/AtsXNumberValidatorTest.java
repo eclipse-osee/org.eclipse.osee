@@ -17,9 +17,9 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
-import org.eclipse.osee.ats.mocks.MockStateDefinition;
-import org.eclipse.osee.ats.mocks.MockValueProvider;
-import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.core.util.StringValueProvider;
 import org.junit.Assert;
 import org.mockito.Mock;
 
@@ -36,12 +36,12 @@ public class AtsXNumberValidatorTest {
    public void testValidateTransition() {
       AtsXNumberValidator validator = new AtsXNumberValidator();
 
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
+      WidgetDefinition widgetDef = new WidgetDefinition("test");
       widgetDef.setXWidgetName("xList");
 
-      MockStateDefinition fromStateDef = new MockStateDefinition("from");
+      StateDefinition fromStateDef = new StateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      MockStateDefinition toStateDef = new MockStateDefinition("to");
+      StateDefinition toStateDef = new StateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       // Valid for anything not XIntegerDam
@@ -67,13 +67,13 @@ public class AtsXNumberValidatorTest {
    public void testValidateTransition_MinMaxConstraint() {
       AtsXNumberValidator validator = new AtsXNumberValidator();
 
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
+      WidgetDefinition widgetDef = new WidgetDefinition("test");
       widgetDef.setXWidgetName("XFloatDam");
       widgetDef.setConstraint(0.0, 0.0);
 
-      MockStateDefinition fromStateDef = new MockStateDefinition("from");
+      StateDefinition fromStateDef = new StateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      MockStateDefinition toStateDef = new MockStateDefinition("to");
+      StateDefinition toStateDef = new StateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       // Valid is nothing entered
@@ -83,19 +83,19 @@ public class AtsXNumberValidatorTest {
 
       //Invalid_Range if > than what should be
       widgetDef.setConstraint(0.0, 2.0);
-      MockValueProvider provider = new MockValueProvider(Arrays.asList("0.0", "2.0", "3.0"));
+      StringValueProvider provider = new StringValueProvider(Arrays.asList("0.0", "2.0", "3.0"));
       result = validator.validateTransition(workItem, provider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
 
       //Invalid_Range if less than supposed to
       widgetDef.setConstraint(1.0, 2.0);
-      provider = new MockValueProvider(Arrays.asList("0.0"));
+      provider = new StringValueProvider(Arrays.asList("0.0"));
       result = validator.validateTransition(workItem, provider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
 
       //Valid if == what supposed to be
       widgetDef.setConstraint(2.0, 2.0);
-      provider = new MockValueProvider(Arrays.asList("2.0", "2.0"));
+      provider = new StringValueProvider(Arrays.asList("2.0", "2.0"));
       result = validator.validateTransition(workItem, provider, widgetDef, fromStateDef, toStateDef, atsServices);
       ValidatorTestUtil.assertValidResult(result);
    }

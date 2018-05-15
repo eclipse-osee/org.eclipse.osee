@@ -39,8 +39,7 @@ Import-Package: org.eclipse.osee.ats.api,
  org.osgi.framework;version="1.8.0",
  org.osgi.service.cm;version="1.5.0",
  org.osgi.service.event;version="1.3.1"
-Export-Package: org.eclipse.osee.ats.db.mocks,
- org.eclipse.osee.ats.mocks
+Export-Package: org.eclipse.osee.ats.db.mocks
 Require-Bundle: org.mockito;bundle-version="1.9.0",
  org.hamcrest.core,
  org.objenesis,

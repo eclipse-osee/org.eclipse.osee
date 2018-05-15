@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.mocks;
+package org.eclipse.osee.ats.core.util;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -18,16 +18,16 @@ import org.eclipse.osee.ats.api.util.IValueProvider;
 /**
  * @author Donald G. Dunne
  */
-public class MockValueProvider implements IValueProvider {
+public class StringValueProvider implements IValueProvider {
 
    private final Collection<String> values;
    private final String name;
 
-   public MockValueProvider(Collection<String> values) {
+   public StringValueProvider(Collection<String> values) {
       this("test", values);
    }
 
-   public MockValueProvider(String name, Collection<String> values) {
+   public StringValueProvider(String name, Collection<String> values) {
       this.name = name;
       this.values = values;
    }

@@ -12,12 +12,12 @@ package org.eclipse.osee.ats.core.validator;
 
 import java.util.Collection;
 import java.util.Date;
-import org.eclipse.osee.ats.mocks.MockValueProvider;
+import org.eclipse.osee.ats.core.util.StringValueProvider;
 
 /**
  * @author Donald G. Dunne
  */
-public class MockDateValueProvider extends MockValueProvider {
+public class MockDateValueProvider extends StringValueProvider {
 
    private final Collection<Date> dateValues;
 

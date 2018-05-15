@@ -18,9 +18,9 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
-import org.eclipse.osee.ats.mocks.MockStateDefinition;
-import org.eclipse.osee.ats.mocks.MockValueProvider;
-import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.core.util.StringValueProvider;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,12 +50,12 @@ public class AtsXComboBooleanValidatorTest {
 
    @Test
    public void testValidateTransition() {
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
+      WidgetDefinition widgetDef = new WidgetDefinition("test");
       widgetDef.setXWidgetName("xLabel");
 
-      MockStateDefinition fromStateDef = new MockStateDefinition("from");
+      StateDefinition fromStateDef = new StateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      MockStateDefinition toStateDef = new MockStateDefinition("to");
+      StateDefinition toStateDef = new StateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       // Valid for anything not XIntegerDam
@@ -77,17 +77,17 @@ public class AtsXComboBooleanValidatorTest {
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
 
       // Check for "true" value
-      MockValueProvider valueProvider = new MockValueProvider(Arrays.asList("true"));
+      StringValueProvider valueProvider = new StringValueProvider(Arrays.asList("true"));
       result = validator.validateTransition(workItem, valueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
 
       // Check for "false" value
-      valueProvider = new MockValueProvider(Arrays.asList("false"));
+      valueProvider = new StringValueProvider(Arrays.asList("false"));
       result = validator.validateTransition(workItem, valueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
 
       // Check for "junk" value
-      valueProvider = new MockValueProvider(Arrays.asList("junk"));
+      valueProvider = new StringValueProvider(Arrays.asList("junk"));
       result = validator.validateTransition(workItem, valueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
    }

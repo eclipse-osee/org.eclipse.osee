@@ -21,9 +21,9 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
-import org.eclipse.osee.ats.mocks.MockStateDefinition;
-import org.eclipse.osee.ats.mocks.MockValueProvider;
-import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.core.util.StringValueProvider;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.junit.Assert;
 
@@ -44,7 +44,7 @@ public class AtsXWidgetValidatorTest {
 
    @org.junit.Test
    public void testIsTransitionToComplete() {
-      MockStateDefinition stateDef = new MockStateDefinition("test state");
+      StateDefinition stateDef = new StateDefinition("test state");
       stateDef.setStateType(StateType.Working);
       Assert.assertFalse(validator.isTransitionToComplete(stateDef));
       stateDef.setStateType(StateType.Completed);
@@ -55,7 +55,7 @@ public class AtsXWidgetValidatorTest {
 
    @org.junit.Test
    public void testIsRequiredForTransition() {
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test widget");
+      WidgetDefinition widgetDef = new WidgetDefinition("test widget");
       Assert.assertFalse(validator.isRequiredForTransition(widgetDef));
 
       widgetDef.getOptions().add(WidgetOption.REQUIRED_FOR_TRANSITION);
@@ -64,7 +64,7 @@ public class AtsXWidgetValidatorTest {
 
    @org.junit.Test
    public void testIsRequiredForCompleted() {
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test widget");
+      WidgetDefinition widgetDef = new WidgetDefinition("test widget");
       Assert.assertFalse(validator.isRequiredForCompletion(widgetDef));
 
       widgetDef.getOptions().add(WidgetOption.REQUIRED_FOR_COMPLETION);
@@ -75,17 +75,17 @@ public class AtsXWidgetValidatorTest {
    public void testIsEmptyValue() {
       Assert.assertTrue(validator.isEmptyValue(ValidatorTestUtil.emptyValueProvider));
 
-      Assert.assertFalse(validator.isEmptyValue(new MockValueProvider(Arrays.asList("hello"))));
+      Assert.assertFalse(validator.isEmptyValue(new StringValueProvider(Arrays.asList("hello"))));
    }
 
    @org.junit.Test
    public void testValidateWidgetIsRequired() {
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
+      WidgetDefinition widgetDef = new WidgetDefinition("test");
       widgetDef.getOptions().add(WidgetOption.REQUIRED_FOR_TRANSITION);
 
-      MockStateDefinition fromStateDef = new MockStateDefinition("from");
+      StateDefinition fromStateDef = new StateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      MockStateDefinition toStateDef = new MockStateDefinition("to");
+      StateDefinition toStateDef = new StateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       // widget required_for_transition, state is working state returns incomplete state and details
@@ -130,7 +130,7 @@ public class AtsXWidgetValidatorTest {
 
    @org.junit.Test
    public void testIsValidDate() {
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
+      WidgetDefinition widgetDef = new WidgetDefinition("test");
 
       WidgetResult result = validator.isValidDate(new MockDateValueProvider(Arrays.asList(new Date())), widgetDef);
       Assert.assertEquals(WidgetStatus.Valid, result.getStatus());

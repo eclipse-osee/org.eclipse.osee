@@ -20,9 +20,9 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidator;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidatorProvider;
-import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -83,7 +83,7 @@ public class AtsXWidgetValidateManagerTest {
 
       TestValidatorProvider provider = new TestValidatorProvider(new AtsExceptionValidator());
       manager.addWidgetValidatorProvider(provider);
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("Widget Name");
+      WidgetDefinition widgetDef = new WidgetDefinition("Widget Name");
       widgetDef.setXWidgetName("XTestWidget");
       AtsXWidgetValidateManager.validateTransition(workItem, results, ValidatorTestUtil.emptyValueProvider, widgetDef,
          null, null, atsServices);

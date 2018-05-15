@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.mocks;
+package org.eclipse.osee.ats.client.integration.tests.util;
 
 import static org.mockito.Mockito.when;
 import java.util.Arrays;

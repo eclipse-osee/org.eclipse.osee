@@ -17,9 +17,9 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
-import org.eclipse.osee.ats.mocks.MockStateDefinition;
-import org.eclipse.osee.ats.mocks.MockValueProvider;
-import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.core.util.StringValueProvider;
 import org.junit.Assert;
 import org.mockito.Mock;
 
@@ -36,12 +36,12 @@ public class AtsXListValidatorTest {
    public void testValidateTransition() {
       AtsXListValidator validator = new AtsXListValidator();
 
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
+      WidgetDefinition widgetDef = new WidgetDefinition("test");
       widgetDef.setXWidgetName("xLabel");
 
-      MockStateDefinition fromStateDef = new MockStateDefinition("from");
+      StateDefinition fromStateDef = new StateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      MockStateDefinition toStateDef = new MockStateDefinition("to");
+      StateDefinition toStateDef = new StateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       // Valid for anything not XIntegerDam
@@ -67,13 +67,13 @@ public class AtsXListValidatorTest {
    public void testValidateTransition_MinMaxConstraint() {
       AtsXListValidator validator = new AtsXListValidator();
 
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
+      WidgetDefinition widgetDef = new WidgetDefinition("test");
       widgetDef.setXWidgetName("XListDam");
       widgetDef.setConstraint(0, 0);
 
-      MockStateDefinition fromStateDef = new MockStateDefinition("from");
+      StateDefinition fromStateDef = new StateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      MockStateDefinition toStateDef = new MockStateDefinition("to");
+      StateDefinition toStateDef = new StateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       // Valid is nothing entered
@@ -83,19 +83,19 @@ public class AtsXListValidatorTest {
 
       //Invalid_Range if select more than supposed to
       widgetDef.setConstraint(0, 2);
-      MockValueProvider provider = new MockValueProvider(Arrays.asList("this", "is", "selected"));
+      StringValueProvider provider = new StringValueProvider(Arrays.asList("this", "is", "selected"));
       result = validator.validateTransition(workItem, provider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
 
       //Invalid_Range if less than supposed to
       widgetDef.setConstraint(2, 2);
-      provider = new MockValueProvider(Arrays.asList("this"));
+      provider = new StringValueProvider(Arrays.asList("this"));
       result = validator.validateTransition(workItem, provider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
 
       //Valid if less what supposed to
       widgetDef.setConstraint(2, 2);
-      provider = new MockValueProvider(Arrays.asList("this", "is"));
+      provider = new StringValueProvider(Arrays.asList("this", "is"));
       result = validator.validateTransition(workItem, provider, widgetDef, fromStateDef, toStateDef, atsServices);
       ValidatorTestUtil.assertValidResult(result);
    }
