@@ -49,6 +49,7 @@ public class TraceabilityTable {
 
    public void run(IProgressMonitor monitor) throws Exception {
       for (ISimpleTable style : styles) {
+         style.initializeSheet(sheetWriter);
          sheetWriter.startSheet(style.getWorksheetName(), style.getColumnCount());
          style.generateBody(sheetWriter);
          sheetWriter.endSheet();

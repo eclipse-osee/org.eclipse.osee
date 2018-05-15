@@ -27,4 +27,8 @@ public interface ISimpleTable {
 
    public void generateBody(ExcelXmlWriter sheetWriter) throws Exception;
 
+   default void initializeSheet(ExcelXmlWriter sheetWriter) throws Exception {
+      // do nothing
+   }
+
 }
