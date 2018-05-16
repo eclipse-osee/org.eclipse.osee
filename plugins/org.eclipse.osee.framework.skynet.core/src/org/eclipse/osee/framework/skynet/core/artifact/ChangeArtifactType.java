@@ -98,7 +98,7 @@ public class ChangeArtifactType {
     * memory/database changes in such a manner that they stay in sync therefore, if any part of this blam fails, then
     * the type should not be changed
     */
-   private void internalChangeArtifactType(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType, boolean prompt) throws OseeDataStoreException {
+   private void internalChangeArtifactType(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType, boolean prompt) {
 
       createAttributeRelationTransactions(inputArtifacts, newArtifactType);
       boolean changeOk = !prompt;
@@ -129,7 +129,7 @@ public class ChangeArtifactType {
       OseeEventManager.kickPersistEvent(ChangeArtifactType.class, artifactEvent);
    }
 
-   private void createAttributeRelationTransactions(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType) throws OseeDataStoreException {
+   private void createAttributeRelationTransactions(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType) {
       IdJoinQuery artifactJoin = populateArtIdsInJoinIdTable(inputArtifacts);
       IdJoinQuery branchJoin = populateBranchIdsJoinIdTable();
       IdJoinQuery gammaJoin = populateGammaIdsJoinIdTable(artifactJoin);
@@ -255,13 +255,13 @@ public class ChangeArtifactType {
       }
    }
 
-   private IdJoinQuery populateArtIdsInJoinIdTable(Collection<? extends Artifact> inputArtifacts) throws OseeDataStoreException {
+   private IdJoinQuery populateArtIdsInJoinIdTable(Collection<? extends Artifact> inputArtifacts) {
       IdJoinQuery artifactJoin = JoinUtility.createIdJoinQuery();
       artifactJoin.addAndStore(inputArtifacts);
       return artifactJoin;
    }
 
-   private IdJoinQuery populateBranchIdsJoinIdTable() throws OseeDataStoreException {
+   private IdJoinQuery populateBranchIdsJoinIdTable() {
       IdJoinQuery branchJoin = JoinUtility.createIdJoinQuery();
       BranchFilter branchFilter = new BranchFilter(BranchArchivedState.UNARCHIVED);
       branchFilter.setNegatedBranchStates(BranchState.PURGED, BranchState.DELETED);
@@ -269,7 +269,7 @@ public class ChangeArtifactType {
       return branchJoin;
    }
 
-   private IdJoinQuery populateGammaIdsJoinIdTable(IdJoinQuery artIds) throws OseeDataStoreException {
+   private IdJoinQuery populateGammaIdsJoinIdTable(IdJoinQuery artIds) {
       IdJoinQuery gammaJoin = JoinUtility.createIdJoinQuery();
 
       Consumer<JdbcStatement> consumer = stmt -> {

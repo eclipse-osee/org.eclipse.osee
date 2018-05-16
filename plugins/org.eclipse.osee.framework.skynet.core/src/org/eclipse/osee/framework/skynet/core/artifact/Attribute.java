@@ -82,7 +82,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
       // provided for subclass implementation
    }
 
-   public AttributeChange createAttributeChangeFromSelf() throws OseeDataStoreException {
+   public AttributeChange createAttributeChangeFromSelf() {
       AttributeChange attributeChange = new AttributeChange();
 
       attributeChange.setAttrTypeGuid(getAttributeType().getGuid());

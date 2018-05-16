@@ -101,7 +101,7 @@ public class IntroduceArtifactOperation {
       }
    }
 
-   private void introduceAttributes(Artifact sourceArtifact, Artifact destinationArtifact) throws OseeDataStoreException {
+   private void introduceAttributes(Artifact sourceArtifact, Artifact destinationArtifact) {
       List<Attribute<?>> sourceAttributes = sourceArtifact.getAttributes(true);
 
       removeNewAttributesFromDestination(sourceArtifact, destinationArtifact);
@@ -115,7 +115,7 @@ public class IntroduceArtifactOperation {
       }
    }
 
-   private void introduceAttribute(Attribute<?> sourceAttribute, Artifact destinationArtifact) throws OseeDataStoreException {
+   private void introduceAttribute(Attribute<?> sourceAttribute, Artifact destinationArtifact) {
       if (sourceAttribute.isDirty()) {
          throw new OseeArgumentException("The un-persisted attribute [%s] can not be introduced until it is persisted.",
             sourceAttribute);
@@ -146,7 +146,7 @@ public class IntroduceArtifactOperation {
       }
    }
 
-   private void introduceRelation(RelationLink sourceRelation, Artifact destinationArtifact) throws OseeDataStoreException {
+   private void introduceRelation(RelationLink sourceRelation, Artifact destinationArtifact) {
       if (sourceRelation.isDirty()) {
          throw new OseeArgumentException("The un-persisted relation [%s] can not be introduced until it is persisted.",
             sourceRelation);

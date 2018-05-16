@@ -40,47 +40,47 @@ public class ClientSessionManager {
       InternalClientSessionManager.getInstance().ensureSessionCreated();
    }
 
-   private static OseeSessionGrant getSessionGrant() throws OseeAuthenticationRequiredException {
+   private static OseeSessionGrant getSessionGrant() {
       return InternalClientSessionManager.getInstance().getOseeSessionGrant();
    }
 
-   public static IdeClientSession getSession() throws OseeAuthenticationRequiredException {
+   public static IdeClientSession getSession() {
       return InternalClientSessionManager.getInstance().getOseeSession();
    }
 
-   public static boolean isUserCreationRequired() throws OseeAuthenticationRequiredException {
+   public static boolean isUserCreationRequired() {
       return getSessionGrant().isCreationRequired();
    }
 
-   public static void clearUserCreationRequired() throws OseeAuthenticationRequiredException {
+   public static void clearUserCreationRequired() {
       getSessionGrant().setCreationRequired(false);
    }
 
-   public static UserToken getCurrentUserToken() throws OseeAuthenticationRequiredException {
+   public static UserToken getCurrentUserToken() {
       return getSessionGrant().getUserToken();
    }
 
-   public static String getSessionId() throws OseeAuthenticationRequiredException {
+   public static String getSessionId() {
       return getSessionGrant().getSessionId();
    }
 
-   public static String getDataStoreLoginName() throws OseeAuthenticationRequiredException {
+   public static String getDataStoreLoginName() {
       return getSessionGrant().getDbLogin();
    }
 
-   public static String getDataStoreDriver() throws OseeAuthenticationRequiredException {
+   public static String getDataStoreDriver() {
       return getSessionGrant().getDbDriver();
    }
 
-   public static String getDataStoreName() throws OseeAuthenticationRequiredException {
+   public static String getDataStoreName() {
       return getSessionGrant().getDbDatabaseName();
    }
 
-   public static String getDataStorePath() throws OseeAuthenticationRequiredException {
+   public static String getDataStorePath() {
       return getSessionGrant().getDataStorePath();
    }
 
-   public static boolean isProductionDataStore() throws OseeAuthenticationRequiredException {
+   public static boolean isProductionDataStore() {
       return getSessionGrant().isDbIsProduction();
    }
 
@@ -109,7 +109,7 @@ public class ClientSessionManager {
       InternalClientSessionManager.getInstance().releaseSession();
    }
 
-   public static String getDatabaseInfo() throws OseeAuthenticationRequiredException {
+   public static String getDatabaseInfo() {
       return getSessionGrant().toString();
    }
 

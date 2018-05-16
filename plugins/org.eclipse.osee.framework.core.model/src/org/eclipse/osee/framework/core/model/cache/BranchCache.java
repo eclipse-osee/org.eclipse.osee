@@ -51,7 +51,7 @@ public class BranchCache extends AbstractOseeLoadingCache<Branch> {
       return toReturn;
    }
 
-   public MergeBranch findFirstMergeBranch(BranchId sourceBranch) throws OseeNotFoundException {
+   public MergeBranch findFirstMergeBranch(BranchId sourceBranch) {
       Conditions.checkNotNull(sourceBranch, "source branch");
       for (Branch branch : getAll()) {
          if (branch instanceof MergeBranch) {

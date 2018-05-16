@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -864,8 +863,6 @@ public class ArtifactEventTest {
 
    /**
     * Need to always get a new relationId that hasn't been used in this DB yet
-    *
-    * @throws OseeDataStoreException
     */
    private int getIncrementingRelationId() {
       return (int) ConnectionHandler.getNextSequence(OseeData.REL_LINK_ID_SEQ, true);

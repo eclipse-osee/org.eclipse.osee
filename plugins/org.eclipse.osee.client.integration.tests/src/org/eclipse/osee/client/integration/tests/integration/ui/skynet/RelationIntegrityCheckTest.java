@@ -125,7 +125,7 @@ public class RelationIntegrityCheckTest {
       }
    }
 
-   private void runQuery(String sqlQuery) throws OseeDataStoreException {
+   private void runQuery(String sqlQuery) {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(sqlQuery);

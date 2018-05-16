@@ -58,7 +58,7 @@ public class Sender {
       return createSender(networkSender.getSourceObject(), oseeSession);
    }
 
-   public static Sender createSender(Object sourceObject) throws OseeAuthenticationRequiredException {
+   public static Sender createSender(Object sourceObject) {
       IdeClientSession oseeSession = ClientSessionManager.getSafeSession();
       return createSender(sourceObject, oseeSession);
    }

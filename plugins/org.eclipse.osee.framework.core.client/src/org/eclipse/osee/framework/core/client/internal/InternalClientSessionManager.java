@@ -68,11 +68,11 @@ public class InternalClientSessionManager {
       return oseeSession != null;
    }
 
-   public OseeSessionGrant getDatabaseInfo() throws OseeAuthenticationRequiredException {
+   public OseeSessionGrant getDatabaseInfo() {
       return getOseeSessionGrant();
    }
 
-   public OseeSessionGrant getOseeSessionGrant() throws OseeAuthenticationRequiredException {
+   public OseeSessionGrant getOseeSessionGrant() {
       ensureSessionCreated();
       if (isSessionValid()) {
          return oseeSessionGrant;
@@ -80,7 +80,7 @@ public class InternalClientSessionManager {
       throw new OseeAuthenticationRequiredException("Session is invalid - authentication is required");
    }
 
-   public IdeClientSession getOseeSession() throws OseeAuthenticationRequiredException {
+   public IdeClientSession getOseeSession() {
       ensureSessionCreated();
       if (isSessionValid()) {
          return oseeSession;

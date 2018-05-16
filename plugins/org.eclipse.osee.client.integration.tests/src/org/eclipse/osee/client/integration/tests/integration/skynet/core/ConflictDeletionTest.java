@@ -387,7 +387,7 @@ public class ConflictDeletionTest {
       }
    }
 
-   public static void dumpAttribute(Attribute<?> attribute) throws OseeDataStoreException {
+   public static void dumpAttribute(Attribute<?> attribute) {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          if (DEBUG) {

@@ -145,7 +145,7 @@ public class OseeLinkBuilder {
       return getWordMlLink(destLinkType, artifact, txId, sessionId, PresentationType.DEFAULT_OPEN, permanentUrl);
    }
 
-   public String getWordMlLink(LinkType destLinkType, ArtifactReadable artifact, TransactionId txId, String sessionId, PresentationType presentationType, String permanentUrl) throws OseeCoreException {
+   public String getWordMlLink(LinkType destLinkType, ArtifactReadable artifact, TransactionId txId, String sessionId, PresentationType presentationType, String permanentUrl) {
       String linkFormat = getLinkFormat(destLinkType);
       String linkId = getLinkId(destLinkType, artifact, txId, sessionId, presentationType, permanentUrl);
       String linkText = getLinkText(destLinkType, artifact);
@@ -162,7 +162,7 @@ public class OseeLinkBuilder {
       return toReturn;
    }
 
-   private String getLinkId(LinkType destLinkType, ArtifactReadable artifact, TransactionId tx, String sessionId, PresentationType presentationType, String permanentUrl) throws OseeCoreException {
+   private String getLinkId(LinkType destLinkType, ArtifactReadable artifact, TransactionId tx, String sessionId, PresentationType presentationType, String permanentUrl) {
       String toReturn;
       if (destLinkType == LinkType.OSEE_SERVER_LINK) {
          toReturn = escapeXml(getOseeLink(artifact, presentationType, sessionId, permanentUrl));

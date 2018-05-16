@@ -89,7 +89,7 @@ public final class ConflictUtil {
    //      "(SELECT tx.transaction_id, tx.gamma_id FROM osee_txs tx, osee_attribute atr " + //
    //      "WHERE tx.transaction_id = ? AND atr.gamma_id = tx.gamma_id AND atr.attr_id = ? )";
 
-   //   public static ConflictStatus computeStatus(int sourceGamma, int destGamma, int branchID, int objectID, int conflictType, ConflictStatus passedStatus, int transactionId) throws OseeDataStoreException {
+   //   public static ConflictStatus computeStatus(int sourceGamma, int destGamma, int branchID, int objectID, int conflictType, ConflictStatus passedStatus, int transactionId) {
    //      //Check for a value in the table, if there is not one in there then
    //      //add it with an unedited setting and return unedited
    //      //If gammas are out of date, update the gammas and down grade markedMerged to Edited

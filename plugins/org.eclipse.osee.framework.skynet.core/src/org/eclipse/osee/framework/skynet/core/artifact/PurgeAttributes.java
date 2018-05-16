@@ -59,7 +59,7 @@ public class PurgeAttributes extends AbstractDbTxOperation {
       }
    }
 
-   private IdJoinQuery populateIdJoin(JdbcConnection connection) throws OseeDataStoreException {
+   private IdJoinQuery populateIdJoin(JdbcConnection connection) {
       IdJoinQuery idJoin = JoinUtility.createIdJoinQuery(getJdbcClient(), connection);
 
       try (IdJoinQuery attributeJoin = JoinUtility.createIdJoinQuery(getJdbcClient(), connection)) {

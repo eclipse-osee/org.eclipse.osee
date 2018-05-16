@@ -694,7 +694,7 @@ public class AccessControlService implements IAccessControlService {
       }
    }
 
-   public void unLockObjects(Collection<Artifact> objects, Artifact subject) throws OseeAuthenticationRequiredException {
+   public void unLockObjects(Collection<Artifact> objects, Artifact subject) {
       ensurePopulated();
       AccessArtifactLockTopicEvent event = new AccessArtifactLockTopicEvent();
       event.setBranch(objects.iterator().next().getBranch());

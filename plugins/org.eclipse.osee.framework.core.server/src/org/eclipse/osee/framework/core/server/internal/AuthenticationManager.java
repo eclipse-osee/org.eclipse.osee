@@ -40,7 +40,7 @@ public class AuthenticationManager implements IAuthenticationManager {
    }
 
    @Override
-   public boolean authenticate(OseeCredential credential) throws OseeAuthenticationException {
+   public boolean authenticate(OseeCredential credential) {
       boolean result = false;
       if (isSafeUser(credential)) {
          result = true;
@@ -60,7 +60,7 @@ public class AuthenticationManager implements IAuthenticationManager {
    }
 
    @Override
-   public UserToken asUserToken(OseeCredential credential) throws OseeAuthenticationException {
+   public UserToken asUserToken(OseeCredential credential) {
       UserToken toReturn = null;
       if (isGuestLogin(credential)) {
          toReturn = SystemUser.Anonymous;
@@ -75,7 +75,7 @@ public class AuthenticationManager implements IAuthenticationManager {
       return toReturn;
    }
 
-   private IAuthenticationProvider getAuthenticationProvider() throws OseeAuthenticationException {
+   private IAuthenticationProvider getAuthenticationProvider() {
       String key = getProtocol();
       if (Strings.isValid(key)) {
          IAuthenticationProvider provider = authenticationProviders.get(key);

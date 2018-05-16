@@ -63,7 +63,7 @@ public class ArtifactURL {
       }
    }
 
-   public static String getSelectedPermanentLinkUrl(OrcsApi orcsApi) throws OseeCoreException {
+   public static String getSelectedPermanentLinkUrl(OrcsApi orcsApi) {
       String address = null;
       try {
          address = getPermanentBaseUrl(orcsApi);
@@ -81,7 +81,7 @@ public class ArtifactURL {
       return normalize(address);
    }
 
-   public static String getPermanentBaseUrl(OrcsApi orcsApi) throws OseeCoreException {
+   public static String getPermanentBaseUrl(OrcsApi orcsApi) {
       String address = orcsApi.getSystemPreferences().getValue(OSEE_PERMANENT_URL);
       return normalize(address);
    }

@@ -1573,7 +1573,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return applicabilityId;
    }
 
-   public final Collection<AttributeChange> getDirtyFrameworkAttributeChanges() throws OseeDataStoreException {
+   public final Collection<AttributeChange> getDirtyFrameworkAttributeChanges() {
       List<AttributeChange> dirtyAttributes = new LinkedList<>();
 
       for (Attribute<?> attribute : internalGetAttributes()) {

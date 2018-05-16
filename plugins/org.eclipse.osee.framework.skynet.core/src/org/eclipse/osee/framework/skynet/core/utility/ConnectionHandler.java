@@ -62,7 +62,7 @@ public final class ConnectionHandler {
       return toReturn;
    }
 
-   public static JdbcStatement getStatement() throws OseeDataStoreException {
+   public static JdbcStatement getStatement() {
       return getJdbcClient().getStatement();
    }
 

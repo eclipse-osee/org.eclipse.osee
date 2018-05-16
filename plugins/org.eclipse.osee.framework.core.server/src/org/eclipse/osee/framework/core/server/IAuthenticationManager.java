@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.server;
 
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.UserToken;
-import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 
 /**
  * @author Roberto E. Escobar
@@ -22,18 +21,18 @@ public interface IAuthenticationManager {
    /**
     * @return <b>true</b> if authentication success
     */
-   public boolean authenticate(OseeCredential credential) throws OseeAuthenticationException;
+   public boolean authenticate(OseeCredential credential);
 
    /**
     * Resolves user credentials into an OSEE User Info
-    * 
+    *
     * @return OSEE user info
     */
-   public UserToken asUserToken(OseeCredential credential) throws OseeAuthenticationException;
+   public UserToken asUserToken(OseeCredential credential);
 
    /**
     * Gets an array of available authentication protocols
-    * 
+    *
     * @return authentication protocols
     */
    public String[] getProtocols();

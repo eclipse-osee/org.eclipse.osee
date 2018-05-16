@@ -82,7 +82,7 @@ public class EventTransport implements Transport, IFrameworkEventListener {
       return !preferences.isDisableEvents();
    }
 
-   private Sender createSender(Object sourceObject, Object event) throws OseeAuthenticationRequiredException {
+   private Sender createSender(Object sourceObject, Object event) {
       Sender sender = null;
       if (RemoteEventServiceEventType.Rem_Connected.equals(
          event) || RemoteEventServiceEventType.Rem_DisConnected.equals(event)) {

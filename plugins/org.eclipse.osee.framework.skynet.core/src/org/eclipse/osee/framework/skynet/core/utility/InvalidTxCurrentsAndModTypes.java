@@ -49,7 +49,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    private final String txsTableName;
    private final JdbcClient jdbcClient;
 
-   public InvalidTxCurrentsAndModTypes(String operationName, String tableName, String columnName, OperationLogger logger, boolean isFixOperationEnabled, boolean archived) throws OseeDataStoreException {
+   public InvalidTxCurrentsAndModTypes(String operationName, String tableName, String columnName, OperationLogger logger, boolean isFixOperationEnabled, boolean archived) {
       super(
          "InvalidTxCurrentsAndModTypes " + operationName + tableName + " fix:" + isFixOperationEnabled + " archived:" + archived,
          Activator.PLUGIN_ID, logger);
