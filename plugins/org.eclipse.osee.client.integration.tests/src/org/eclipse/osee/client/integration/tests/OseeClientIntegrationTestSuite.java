@@ -11,6 +11,7 @@
 package org.eclipse.osee.client.integration.tests;
 
 import org.eclipse.osee.client.integration.tests.integration.DirtyArtifactCacheTest;
+import org.eclipse.osee.client.integration.tests.integration.LongRunningTestSuite;
 import org.eclipse.osee.client.integration.tests.integration.define.XDefineIntegrationTestSuite;
 import org.eclipse.osee.client.integration.tests.integration.dsl.ui.integration.XDslUiIntegrationTestSuite;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.XSkynetCoreIntegrationTestSuite;
@@ -24,7 +25,8 @@ import org.junit.runners.Suite;
    XDefineIntegrationTestSuite.class,
    XSkynetCoreIntegrationTestSuite.class,
    XUiSkynetCoreIntegrationTestSuite.class,
-   DirtyArtifactCacheTest.class})
+   DirtyArtifactCacheTest.class,
+   LongRunningTestSuite.class})
 public class OseeClientIntegrationTestSuite {
    // Test Suite
 }
