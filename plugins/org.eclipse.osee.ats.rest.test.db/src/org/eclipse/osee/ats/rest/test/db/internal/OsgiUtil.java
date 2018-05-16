@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.db.mocks.internal;
+package org.eclipse.osee.ats.rest.test.db.internal;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;

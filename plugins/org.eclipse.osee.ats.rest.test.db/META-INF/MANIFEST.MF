@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Ats Presenter Mocks (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.ats.mocks
+Bundle-Name: Ats Rest Test Db (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.ats.rest.test.db
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -39,7 +39,7 @@ Import-Package: org.eclipse.osee.ats.api,
  org.osgi.framework;version="1.8.0",
  org.osgi.service.cm;version="1.5.0",
  org.osgi.service.event;version="1.3.1"
-Export-Package: org.eclipse.osee.ats.db.mocks
+Export-Package: org.eclipse.osee.ats.rest.test.db
 Require-Bundle: org.mockito;bundle-version="1.9.0",
  org.hamcrest.core,
  org.objenesis,

@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.rest.util;
 
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.db.mocks.AtsIntegrationByMethodRule;
 import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.ats.rest.test.db.AtsIntegrationByMethodRule;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.junit.Assert;
 import org.junit.Rule;

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.db.mocks;
+package org.eclipse.osee.ats.rest.test.db;
 
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.event.EventService;
@@ -23,18 +23,19 @@ import org.junit.rules.TestRule;
 import org.osgi.service.event.EventAdmin;
 
 /**
- * Provide a new AtsDatabase per method. No extra handling needs to be done by Test Class
- * 
+ * Rule to provide one AtsDatabase per class. Test Class must provide @AfterClass method and call
+ * AtsClassDatabase.cleanup().
+ *
  * @author Donald G. Dunne
  */
-public final class AtsIntegrationByMethodRule extends OsgiRule {
+public final class AtsIntegrationByClassRule extends OsgiRule {
 
-   private AtsIntegrationByMethodRule() {
+   private AtsIntegrationByClassRule() {
       // Utility
    }
 
    public static TestRule integrationRule(Object testObject) {
-      return RuleChain.outerRule(new AtsMethodDatabase("orcs.jdbc.service",
+      return RuleChain.outerRule(new AtsClassDatabase("orcs.jdbc.service",
          "org.eclipse.osee.orcs.core.internal.OrcsApiImpl", "org.eclipse.osee.ats.rest.IAtsServer")).around(
             new OsgiRule(new CheckServices(), testObject));
    }

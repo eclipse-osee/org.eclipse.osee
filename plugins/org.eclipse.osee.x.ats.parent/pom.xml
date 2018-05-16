@@ -19,6 +19,7 @@
 	<modules>
 		<module>../../plugins/org.eclipse.osee.ats.api</module>
 		<module>../../plugins/org.eclipse.osee.ats.demo.api</module>
+		<module>../../plugins/org.eclipse.osee.ats.rest.test.db</module>
 
 		<module>../../plugins/org.eclipse.osee.ats.dsl</module>
 		<module>../../plugins/org.eclipse.osee.ats.dsl.integration</module>

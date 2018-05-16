@@ -28,7 +28,6 @@
 			<modules>
 				<module>../../plugins/org.eclipse.osee.support.test.util</module>
 
-				<module>../../plugins/org.eclipse.osee.ats.mocks</module>
 				<module>../../plugins/org.eclipse.osee.ats.help.ui</module>
 				<module>../../plugins/org.eclipse.osee.ats</module>
 				<module>../../plugins/org.eclipse.osee.ats.dsl.ui</module>
@@ -54,7 +53,6 @@
 			<modules>
 				<module>../../plugins/org.eclipse.osee.support.test.util</module>
 
-				<module>../../plugins/org.eclipse.osee.ats.mocks</module>
 				<module>../../plugins/org.eclipse.osee.ats.help.ui</module>
 				<module>../../plugins/org.eclipse.osee.ats</module>
 				<module>../../plugins/org.eclipse.osee.ats.dsl.ui</module>
@@ -71,18 +69,6 @@
 		</profile>
 	
 	
-      <profile>
-      <id>ats-client-mock</id>
-         <activation>
-            <property>
-                   <name>osee-build-stage</name>
-                   <value>osee-ats-client</value>
-            </property>
-         </activation>
-         <modules>
-            <module>../../plugins/org.eclipse.osee.ats.mocks</module>
-         </modules>
-      </profile>
 		<profile>
 			<id>ats-client-help-test</id>
 			<activation>

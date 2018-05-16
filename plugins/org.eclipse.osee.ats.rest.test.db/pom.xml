@@ -10,7 +10,7 @@
 		<relativePath>../../plugins/org.eclipse.osee.x.ats.parent</relativePath>
 	</parent>
 
-	<artifactId>org.eclipse.osee.ats.mocks</artifactId>
+	<artifactId>org.eclipse.osee.ats.rest.test.db</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	<name>OSEE Ats Mocks - (Incubation)</name>
 
