@@ -9,4 +9,4 @@ Export-Package: org.eclipse.osee.ats.demo.api
 Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.jdk.core.type
-Require-Bundle: org.eclipse.osee.ats.api;bundle-version="0.24.0"
+Require-Bundle: org.eclipse.osee.ats.api

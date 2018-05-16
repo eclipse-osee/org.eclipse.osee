@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: OSEE ATS Help UI Test (Incubation)
+Bundle-Name: ATS Help UI Test (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ats.help.ui.test
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
