@@ -25,8 +25,8 @@ import org.junit.runners.Suite;
    XDefineIntegrationTestSuite.class,
    XSkynetCoreIntegrationTestSuite.class,
    XUiSkynetCoreIntegrationTestSuite.class,
-   DirtyArtifactCacheTest.class,
-   LongRunningTestSuite.class})
+   LongRunningTestSuite.class,
+   DirtyArtifactCacheTest.class})
 public class OseeClientIntegrationTestSuite {
    // Test Suite
 }
