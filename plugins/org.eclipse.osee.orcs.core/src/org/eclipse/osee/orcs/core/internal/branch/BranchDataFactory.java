@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -31,10 +30,6 @@ public class BranchDataFactory {
 
    public BranchDataFactory(QueryFactory queryFactory) {
       this.queryFactory = queryFactory;
-   }
-
-   public CreateBranchData createTopLevelBranchData(IOseeBranch branch, ArtifactId author) {
-      return createBranchData(branch, author, CoreBranches.SYSTEM_ROOT, ArtifactId.SENTINEL, BranchType.BASELINE);
    }
 
    public CreateBranchData createBaselineBranchData(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact) {

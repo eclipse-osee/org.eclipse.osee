@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -71,16 +70,18 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public IOseeBranch createTopLevelBranch(String branchName, ArtifactId associatedArtifact, UserId account) {
-      CreateBranchData createData = new CreateBranchData();
-      createData.setName(branchName);
+   public IOseeBranch createTopLevelBranch(IOseeBranch branch, ArtifactId account) {
+      return createTopLevelBranch(new CreateBranchData(branch), ArtifactId.SENTINEL, account);
+   }
+
+   private IOseeBranch createTopLevelBranch(CreateBranchData createData, ArtifactId associatedArtifact, ArtifactId account) {
       createData.setBranchType(BranchType.BASELINE);
 
-      BranchId parentBranch = CoreBranches.SYSTEM_ROOT;
+      IOseeBranch parentBranch = CoreBranches.SYSTEM_ROOT;
       TransactionToken parentTx =
          orcsApi.getQueryFactory().transactionQuery().andIsHead(parentBranch).getTokens().getExactlyOne();
 
-      String creationComment = String.format("New Branch from %s (%s)", branchName, parentTx.getId());
+      String creationComment = String.format("New Branch from %s (%s)", parentBranch, parentTx.getId());
       createData.setCreationComment(creationComment);
 
       createData.setAuthor(account);
@@ -177,12 +178,6 @@ public class OrcsBranchImpl implements OrcsBranch {
    @Override
    public Callable<URI> checkBranchExchangeIntegrity(URI fileToCheck) {
       return branchStore.checkBranchExchangeIntegrity(session, fileToCheck);
-   }
-
-   @Override
-   public Callable<Branch> createTopLevelBranch(IOseeBranch branch, ArtifactId author) {
-      CreateBranchData branchData = branchDataFactory.createTopLevelBranchData(branch, author);
-      return createBranch(branchData);
    }
 
    @Override

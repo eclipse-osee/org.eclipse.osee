@@ -199,8 +199,8 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 
       nextTransactionId = tobeTransactionId;
       jdbcClient.runPreparedUpdate(connection, INSERT_TX_DETAILS, branch, nextTransactionId,
-         newBranchData.getCreationComment(), timestamp, newBranchData.getAuthor(),
-         TransactionDetailsType.Baselined.getId(), buildVersionId);
+         newBranchData.getCreationComment(), timestamp, newBranchData.getAuthor(), TransactionDetailsType.Baselined,
+         buildVersionId);
 
       if (needsUpdate) {
          jdbcClient.runPreparedUpdate(connection, UPDATE_BASELINE_BRANCH_TX, nextTransactionId, branch);

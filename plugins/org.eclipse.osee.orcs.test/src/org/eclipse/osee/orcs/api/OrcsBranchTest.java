@@ -20,8 +20,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -108,8 +108,7 @@ public class OrcsBranchTest {
       IOseeBranch postbranch = IOseeBranch.create("PostBranch");
 
       TransactionId tx1 = TransactionId.valueOf(CHANGED_TX_ID);
-      Callable<Branch> postCallable =
-         branchOps.createCopyTxBranch(postbranch, author, tx1, ArtifactId.SENTINEL);
+      Callable<Branch> postCallable = branchOps.createCopyTxBranch(postbranch, author, tx1, ArtifactId.SENTINEL);
 
       assertNotNull(postCallable);
       Branch postBranch = postCallable.call();
@@ -151,8 +150,7 @@ public class OrcsBranchTest {
       // set up the initial branch
       IOseeBranch branch = IOseeBranch.create("BaseBranch");
 
-      Callable<Branch> callableBranch = branchOps.createTopLevelBranch(branch, author);
-      Branch base = callableBranch.call();
+      IOseeBranch base = branchOps.createTopLevelBranch(branch, author);
       // put some changes on the base branch
       TransactionBuilder tx = txFactory.createTransaction(base, author, "add some changes");
       ArtifactId folder = tx.createArtifact(CoreArtifactTypes.Folder, "BaseFolder");

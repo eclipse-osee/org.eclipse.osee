@@ -14,12 +14,11 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -48,7 +47,7 @@ public interface OrcsBranch {
    // branch state
    // assoc art id
 
-   Callable<Branch> createTopLevelBranch(IOseeBranch branch, ArtifactId author);
+   IOseeBranch createTopLevelBranch(IOseeBranch branch, ArtifactId account);
 
    Callable<Branch> createBaselineBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact);
 
@@ -57,6 +56,8 @@ public interface OrcsBranch {
    Callable<Branch> createCopyTxBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact);
 
    Callable<Branch> createPortBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact);
+
+   Callable<Branch> createBranch(CreateBranchData branchData);
 
    /////////////////////////////////////////////////////////////////////////
 
@@ -75,10 +76,6 @@ public interface OrcsBranch {
    Callable<Void> deleteBranch(BranchId branch);
 
    /////////////////////////////////////////////////////////////////////////
-
-   IOseeBranch createTopLevelBranch(String branchName, ArtifactId associatedArtifact, UserId account);
-
-   Callable<Branch> createBranch(CreateBranchData branchData);
 
    Callable<Void> archiveUnarchiveBranch(BranchId branch, ArchiveOperation archiveOp);
 

@@ -15,13 +15,12 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.search.BranchQuery;
@@ -74,18 +73,6 @@ public class BranchDataFactoryTest {
 
       when(parentBranch.getName()).thenReturn("testParentBranchName");
       when(parentBranch.getId()).thenReturn(44L);
-   }
-
-   @Test
-   public void testDataForTopLevelBranch() {
-      IOseeBranch branch = IOseeBranch.create("testDataForTopLevelBranch");
-      CreateBranchData result = factory.createTopLevelBranchData(branch, author);
-
-      verify(txQuery).andIsHead(CoreBranches.SYSTEM_ROOT);
-
-      String comment = String.format("New Branch from %s (%s)", CoreBranches.SYSTEM_ROOT.getName(), txRecord);
-      assertData(result, branch.getName(), branch, BranchType.BASELINE, comment, txRecord, author, ArtifactId.SENTINEL,
-         false);
    }
 
    @Test

@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.core.util.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -119,12 +118,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       BranchId fromBranch = orcsApi.getQueryFactory().branchQuery().andId(fromBranchId).getResults().getExactlyOne();
 
       // Create new baseline branch off Root
-      BranchId newBranch;
-      try {
-         newBranch = orcsApi.getBranchOps().createTopLevelBranch(IOseeBranch.create(newBranchName), user).call();
-      } catch (Exception ex) {
-         throw OseeCoreException.wrap(ex);
-      }
+      BranchId newBranch = orcsApi.getBranchOps().createTopLevelBranch(IOseeBranch.create(newBranchName), user);
 
       // Introduce all ATS heading artifacts to new branch
       introduceAtsHeadingArtifacts(fromBranch, newBranch, user);

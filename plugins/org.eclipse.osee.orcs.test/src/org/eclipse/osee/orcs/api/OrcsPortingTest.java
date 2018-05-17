@@ -124,7 +124,7 @@ public class OrcsPortingTest {
    private TransactionToken createBaselineBranchAndArtifacts() throws Exception {
       // set up the main branch
       IOseeBranch branch = IOseeBranch.create("MainFromBranch");
-      branchApi.createTopLevelBranch(branch, author).call();
+      branchApi.createTopLevelBranch(branch, author);
 
       // baseline branch - set up artifacts on the main branch, and on the child branch
       // first, add some transaction on the main branch, then create the child branch
@@ -198,7 +198,7 @@ public class OrcsPortingTest {
 
    private TransactionToken commitToDestinationBranch(BranchId copyTxBranch) throws Exception {
       IOseeBranch destinationBranch = IOseeBranch.create("IndepToBranch");
-      branchApi.createTopLevelBranch(destinationBranch, author).call();
+      branchApi.createTopLevelBranch(destinationBranch, author);
       return branchApi.commitBranch(author, copyTxBranch, destinationBranch).call();
    }
 }
