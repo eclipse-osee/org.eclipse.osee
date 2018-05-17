@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -125,6 +126,12 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
 
    @Override
    public IAtsTeamDefinition getTeamDefinition() throws OseeCoreException {
+      ArtifactId teamDefArt = getSoleAttributeValue(AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
+      if (teamDefArt.isValid()) {
+         IAtsTeamDefinition teamDef = AtsClientService.get().getConfigItemFactory().getTeamDef(teamDefArt);
+         Conditions.checkNotNull(teamDef, String.format("TeamDef not valid for TeamDefArt %s", teamDefArt.toString()));
+         return teamDef;
+      }
       String guid = this.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, "");
       if (!Strings.isValid(guid)) {
          throw new OseeArgumentException("TeamWorkflow [%s] has no Team Definition associated.", getAtsId());
