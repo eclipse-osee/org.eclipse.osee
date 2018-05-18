@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.OseeTypesExportOperation;
@@ -141,6 +142,11 @@ public class ArtifactTypeManager {
 
    public static boolean inheritsFrom(ArtifactTypeId artifactType, ArtifactTypeId... parentTypes) {
       return getType(artifactType).inheritsFrom(parentTypes);
+   }
+
+   public static Artifact addArtifact(ArtifactToken artifactToken) {
+      Conditions.assertTrue(artifactToken.getBranch().isValid(), "Branch must be specified.");
+      return addArtifact(artifactToken, artifactToken.getBranch());
    }
 
    /**
@@ -252,4 +258,5 @@ public class ArtifactTypeManager {
       }
       return userCreationoAllowed;
    }
+
 }

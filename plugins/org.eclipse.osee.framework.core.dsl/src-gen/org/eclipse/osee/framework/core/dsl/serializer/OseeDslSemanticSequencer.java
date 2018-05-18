@@ -164,7 +164,7 @@ public class OseeDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     (
 	 *         name=STRING 
 	 *         superAccessContexts+=[AccessContext|STRING]? 
-	 *         guid=STRING 
+	 *         id=WHOLE_NUM_STR 
 	 *         (accessRules+=ObjectRestriction | hierarchyRestrictions+=HierarchyRestriction)+
 	 *     )
 	 */
@@ -522,15 +522,15 @@ public class OseeDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     UsersAndGroups returns UsersAndGroups
 	 *
 	 * Constraint:
-	 *     userOrGroupGuid=STRING
+	 *     userOrGroupId=WHOLE_NUM_STR
 	 */
 	protected void sequence_UsersAndGroups(ISerializationContext context, UsersAndGroups semanticObject) {
 		if (errorAcceptor != null) {
-			if (transientValues.isValueTransient(semanticObject, OseeDslPackage.Literals.USERS_AND_GROUPS__USER_OR_GROUP_GUID) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, OseeDslPackage.Literals.USERS_AND_GROUPS__USER_OR_GROUP_GUID));
+			if (transientValues.isValueTransient(semanticObject, OseeDslPackage.Literals.USERS_AND_GROUPS__USER_OR_GROUP_ID) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, OseeDslPackage.Literals.USERS_AND_GROUPS__USER_OR_GROUP_ID));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getUsersAndGroupsAccess().getUserOrGroupGuidSTRINGTerminalRuleCall_1_0(), semanticObject.getUserOrGroupGuid());
+		feeder.accept(grammarAccess.getUsersAndGroupsAccess().getUserOrGroupIdWHOLE_NUM_STRTerminalRuleCall_1_0(), semanticObject.getUserOrGroupId());
 		feeder.finish();
 	}
 	

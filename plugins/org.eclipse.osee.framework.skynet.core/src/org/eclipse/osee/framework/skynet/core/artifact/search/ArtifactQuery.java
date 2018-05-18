@@ -87,6 +87,7 @@ public class ArtifactQuery {
     * @return artifact unless it's been deleted
     */
    public static <T extends ArtifactId & HasBranch> Artifact getArtifactFromToken(T artifactToken) {
+      Conditions.assertTrue(artifactToken.isValid(), "Branch must be specified.");
       return getOrCheckArtifactFromId(artifactToken, artifactToken.getBranch(), EXCLUDE_DELETED, QueryType.GET);
    }
 
@@ -573,6 +574,18 @@ public class ArtifactQuery {
       return reloadedArts;
    }
 
+   public static Artifact getOrCreate(Long id, ArtifactTypeId type, BranchId branch) {
+      Artifact artifact = ArtifactQuery.checkArtifactFromId(ArtifactId.valueOf(id), branch, EXCLUDE_DELETED);
+
+      if (artifact == null) {
+         artifact = ArtifactTypeManager.addArtifact(type, branch, null, id);
+      }
+      if (artifact == null) {
+         throw new ArtifactDoesNotExist("Artifact of type [%s] does not exist on branch [%s]", type, branch);
+      }
+      return artifact;
+   }
+
    public static Artifact getOrCreate(String guid, ArtifactTypeId type, BranchId branch) {
       Artifact artifact = ArtifactQuery.checkArtifactFromId(guid, branch, EXCLUDE_DELETED);
 
@@ -950,4 +963,5 @@ public class ArtifactQuery {
       }
       return artifacts.iterator().next();
    }
+
 }

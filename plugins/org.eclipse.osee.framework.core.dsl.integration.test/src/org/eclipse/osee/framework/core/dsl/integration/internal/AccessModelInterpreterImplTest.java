@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,11 +48,11 @@ public class AccessModelInterpreterImplTest {
    public void setup() {
       interpreterNoArtData = new AccessModelInterpreterImpl(null, null);
 
-      contextId1 = TokenFactory.createAccessContextId(GUID.create(), "Context 1");
-      contextId2 = TokenFactory.createAccessContextId(GUID.create(), "Context 2");
+      contextId1 = IAccessContextId.valueOf(Lib.generateArtifactIdAsInt(), "Context 1");
+      contextId2 = IAccessContextId.valueOf(Lib.generateArtifactIdAsInt(), "Context 2");
 
-      expectedContext1 = MockModel.createAccessContext(contextId1.getGuid(), "c1");
-      expectedContext2 = MockModel.createAccessContext(contextId2.getGuid(), "c2");
+      expectedContext1 = MockModel.createAccessContext(contextId1.getId(), "c1");
+      expectedContext2 = MockModel.createAccessContext(contextId2.getId(), "c2");
    }
 
    @Test
@@ -116,7 +116,7 @@ public class AccessModelInterpreterImplTest {
 
    @Test
    public void testComputeAccessCheckRestriction() {
-      AccessContext accessContext = MockModel.createAccessContext(contextId2.getGuid(), "c2");
+      AccessContext accessContext = MockModel.createAccessContext(contextId2.getId(), "c2");
 
       MockArtifactProxy artifactData = new MockArtifactProxy();
 

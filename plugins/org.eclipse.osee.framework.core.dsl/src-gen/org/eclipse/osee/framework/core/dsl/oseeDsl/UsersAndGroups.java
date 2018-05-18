@@ -13,7 +13,7 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups#getUserOrGroupGuid <em>User Or Group Guid</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups#getUserOrGroupId <em>User Or Group Id</em>}</li>
  * </ul>
  *
  * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getUsersAndGroups()
@@ -23,29 +23,29 @@ import org.eclipse.emf.ecore.EObject;
 public interface UsersAndGroups extends EObject
 {
   /**
-   * Returns the value of the '<em><b>User Or Group Guid</b></em>' attribute.
+   * Returns the value of the '<em><b>User Or Group Id</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>User Or Group Guid</em>' attribute isn't clear,
+   * If the meaning of the '<em>User Or Group Id</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>User Or Group Guid</em>' attribute.
-   * @see #setUserOrGroupGuid(String)
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getUsersAndGroups_UserOrGroupGuid()
+   * @return the value of the '<em>User Or Group Id</em>' attribute.
+   * @see #setUserOrGroupId(String)
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getUsersAndGroups_UserOrGroupId()
    * @model
    * @generated
    */
-  String getUserOrGroupGuid();
+  String getUserOrGroupId();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups#getUserOrGroupGuid <em>User Or Group Guid</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups#getUserOrGroupId <em>User Or Group Id</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>User Or Group Guid</em>' attribute.
-   * @see #getUserOrGroupGuid()
+   * @param value the new value of the '<em>User Or Group Id</em>' attribute.
+   * @see #getUserOrGroupId()
    * @generated
    */
-  void setUserOrGroupGuid(String value);
+  void setUserOrGroupId(String value);
 
 } // UsersAndGroups

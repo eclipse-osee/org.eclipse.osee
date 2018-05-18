@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2018 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,19 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
- * @author Roberto E. Escobar
+ * @author Donald G. Dunne
  */
-public interface IAccessContextId extends NamedId {
+public class AccessContextIdToken extends NamedIdBase implements IAccessContextId {
 
-   public static IAccessContextId valueOf(Long id, String name) {
-      return new AccessContextIdToken(id, name);
-   }
-
-   public static IAccessContextId valueOf(String idStr) {
-      return valueOf(Long.valueOf(idStr), "");
+   public AccessContextIdToken(Long id, String name) {
+      super(id, name);
    }
 
 }

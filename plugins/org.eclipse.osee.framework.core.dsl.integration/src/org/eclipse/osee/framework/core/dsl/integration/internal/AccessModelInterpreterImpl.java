@@ -50,7 +50,7 @@ public class AccessModelInterpreterImpl implements AccessModelInterpreter {
       Conditions.checkNotNull(contextId, "accessContextId");
       AccessContext toReturn = null;
       for (AccessContext accessContext : contexts) {
-         if (contextId.getGuid().equals(Strings.unquote(accessContext.getGuid()))) {
+         if (contextId.equals(Long.valueOf(Strings.unquote(accessContext.getId())))) {
             toReturn = accessContext;
          }
       }

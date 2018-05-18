@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage;
  * <ul>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AccessContextImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AccessContextImpl#getSuperAccessContexts <em>Super Access Contexts</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AccessContextImpl#getGuid <em>Guid</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AccessContextImpl#getId <em>Id</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AccessContextImpl#getAccessRules <em>Access Rules</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AccessContextImpl#getHierarchyRestrictions <em>Hierarchy Restrictions</em>}</li>
  * </ul>
@@ -74,24 +74,24 @@ public class AccessContextImpl extends MinimalEObjectImpl.Container implements A
   protected EList<AccessContext> superAccessContexts;
 
   /**
-   * The default value of the '{@link #getGuid() <em>Guid</em>}' attribute.
+   * The default value of the '{@link #getId() <em>Id</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getGuid()
+   * @see #getId()
    * @generated
    * @ordered
    */
-  protected static final String GUID_EDEFAULT = null;
+  protected static final String ID_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getGuid() <em>Guid</em>}' attribute.
+   * The cached value of the '{@link #getId() <em>Id</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getGuid()
+   * @see #getId()
    * @generated
    * @ordered
    */
-  protected String guid = GUID_EDEFAULT;
+  protected String id = ID_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getAccessRules() <em>Access Rules</em>}' containment reference list.
@@ -176,9 +176,9 @@ public class AccessContextImpl extends MinimalEObjectImpl.Container implements A
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getGuid()
+  public String getId()
   {
-    return guid;
+    return id;
   }
 
   /**
@@ -186,12 +186,12 @@ public class AccessContextImpl extends MinimalEObjectImpl.Container implements A
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setGuid(String newGuid)
+  public void setId(String newId)
   {
-    String oldGuid = guid;
-    guid = newGuid;
+    String oldId = id;
+    id = newId;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.ACCESS_CONTEXT__GUID, oldGuid, guid));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.ACCESS_CONTEXT__ID, oldId, id));
   }
 
   /**
@@ -254,8 +254,8 @@ public class AccessContextImpl extends MinimalEObjectImpl.Container implements A
         return getName();
       case OseeDslPackage.ACCESS_CONTEXT__SUPER_ACCESS_CONTEXTS:
         return getSuperAccessContexts();
-      case OseeDslPackage.ACCESS_CONTEXT__GUID:
-        return getGuid();
+      case OseeDslPackage.ACCESS_CONTEXT__ID:
+        return getId();
       case OseeDslPackage.ACCESS_CONTEXT__ACCESS_RULES:
         return getAccessRules();
       case OseeDslPackage.ACCESS_CONTEXT__HIERARCHY_RESTRICTIONS:
@@ -282,8 +282,8 @@ public class AccessContextImpl extends MinimalEObjectImpl.Container implements A
         getSuperAccessContexts().clear();
         getSuperAccessContexts().addAll((Collection<? extends AccessContext>)newValue);
         return;
-      case OseeDslPackage.ACCESS_CONTEXT__GUID:
-        setGuid((String)newValue);
+      case OseeDslPackage.ACCESS_CONTEXT__ID:
+        setId((String)newValue);
         return;
       case OseeDslPackage.ACCESS_CONTEXT__ACCESS_RULES:
         getAccessRules().clear();
@@ -313,8 +313,8 @@ public class AccessContextImpl extends MinimalEObjectImpl.Container implements A
       case OseeDslPackage.ACCESS_CONTEXT__SUPER_ACCESS_CONTEXTS:
         getSuperAccessContexts().clear();
         return;
-      case OseeDslPackage.ACCESS_CONTEXT__GUID:
-        setGuid(GUID_EDEFAULT);
+      case OseeDslPackage.ACCESS_CONTEXT__ID:
+        setId(ID_EDEFAULT);
         return;
       case OseeDslPackage.ACCESS_CONTEXT__ACCESS_RULES:
         getAccessRules().clear();
@@ -340,8 +340,8 @@ public class AccessContextImpl extends MinimalEObjectImpl.Container implements A
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
       case OseeDslPackage.ACCESS_CONTEXT__SUPER_ACCESS_CONTEXTS:
         return superAccessContexts != null && !superAccessContexts.isEmpty();
-      case OseeDslPackage.ACCESS_CONTEXT__GUID:
-        return GUID_EDEFAULT == null ? guid != null : !GUID_EDEFAULT.equals(guid);
+      case OseeDslPackage.ACCESS_CONTEXT__ID:
+        return ID_EDEFAULT == null ? id != null : !ID_EDEFAULT.equals(id);
       case OseeDslPackage.ACCESS_CONTEXT__ACCESS_RULES:
         return accessRules != null && !accessRules.isEmpty();
       case OseeDslPackage.ACCESS_CONTEXT__HIERARCHY_RESTRICTIONS:
@@ -363,8 +363,8 @@ public class AccessContextImpl extends MinimalEObjectImpl.Container implements A
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (name: ");
     result.append(name);
-    result.append(", guid: ");
-    result.append(guid);
+    result.append(", id: ");
+    result.append(id);
     result.append(')');
     return result.toString();
   }

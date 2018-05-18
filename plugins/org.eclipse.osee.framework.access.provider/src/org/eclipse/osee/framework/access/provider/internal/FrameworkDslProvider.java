@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.access.provider.internal;
 
-import static org.eclipse.osee.framework.access.provider.internal.DefaultFrameworkAccessConstants.STORAGE_ARTIFACT_NAME;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AccessControlModel;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.framework.core.dsl.ui.integration.operations.AbstractOseeDslProvider;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -31,7 +29,7 @@ public class FrameworkDslProvider extends AbstractOseeDslProvider {
 
    protected Artifact getStorageArtifact() {
       try {
-         return ArtifactQuery.getArtifactFromTypeAndName(AccessControlModel, STORAGE_ARTIFACT_NAME, COMMON);
+         return ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.FrameworkAccessModel);
       } catch (OseeCoreException ex) {
          return null;
       }

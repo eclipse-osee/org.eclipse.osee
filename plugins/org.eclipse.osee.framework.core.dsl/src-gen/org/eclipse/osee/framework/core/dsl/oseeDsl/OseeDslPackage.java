@@ -1200,13 +1200,13 @@ public interface OseeDslPackage extends EPackage
   int USERS_AND_GROUPS = 25;
 
   /**
-   * The feature id for the '<em><b>User Or Group Guid</b></em>' attribute.
+   * The feature id for the '<em><b>User Or Group Id</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int USERS_AND_GROUPS__USER_OR_GROUP_GUID = 0;
+  int USERS_AND_GROUPS__USER_OR_GROUP_ID = 0;
 
   /**
    * The number of structural features of the '<em>Users And Groups</em>' class.
@@ -1246,13 +1246,13 @@ public interface OseeDslPackage extends EPackage
   int ACCESS_CONTEXT__SUPER_ACCESS_CONTEXTS = 1;
 
   /**
-   * The feature id for the '<em><b>Guid</b></em>' attribute.
+   * The feature id for the '<em><b>Id</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ACCESS_CONTEXT__GUID = 2;
+  int ACCESS_CONTEXT__ID = 2;
 
   /**
    * The feature id for the '<em><b>Access Rules</b></em>' containment reference list.
@@ -2707,15 +2707,15 @@ public interface OseeDslPackage extends EPackage
   EClass getUsersAndGroups();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups#getUserOrGroupGuid <em>User Or Group Guid</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups#getUserOrGroupId <em>User Or Group Id</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>User Or Group Guid</em>'.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups#getUserOrGroupGuid()
+   * @return the meta object for the attribute '<em>User Or Group Id</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups#getUserOrGroupId()
    * @see #getUsersAndGroups()
    * @generated
    */
-  EAttribute getUsersAndGroups_UserOrGroupGuid();
+  EAttribute getUsersAndGroups_UserOrGroupId();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext <em>Access Context</em>}'.
@@ -2750,15 +2750,15 @@ public interface OseeDslPackage extends EPackage
   EReference getAccessContext_SuperAccessContexts();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext#getGuid <em>Guid</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext#getId <em>Id</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Guid</em>'.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext#getGuid()
+   * @return the meta object for the attribute '<em>Id</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext#getId()
    * @see #getAccessContext()
    * @generated
    */
-  EAttribute getAccessContext_Guid();
+  EAttribute getAccessContext_Id();
 
   /**
    * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext#getAccessRules <em>Access Rules</em>}'.
@@ -3943,12 +3943,12 @@ public interface OseeDslPackage extends EPackage
     EClass USERS_AND_GROUPS = eINSTANCE.getUsersAndGroups();
 
     /**
-     * The meta object literal for the '<em><b>User Or Group Guid</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>User Or Group Id</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute USERS_AND_GROUPS__USER_OR_GROUP_GUID = eINSTANCE.getUsersAndGroups_UserOrGroupGuid();
+    EAttribute USERS_AND_GROUPS__USER_OR_GROUP_ID = eINSTANCE.getUsersAndGroups_UserOrGroupId();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AccessContextImpl <em>Access Context</em>}' class.
@@ -3977,12 +3977,12 @@ public interface OseeDslPackage extends EPackage
     EReference ACCESS_CONTEXT__SUPER_ACCESS_CONTEXTS = eINSTANCE.getAccessContext_SuperAccessContexts();
 
     /**
-     * The meta object literal for the '<em><b>Guid</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Id</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute ACCESS_CONTEXT__GUID = eINSTANCE.getAccessContext_Guid();
+    EAttribute ACCESS_CONTEXT__ID = eINSTANCE.getAccessContext_Id();
 
     /**
      * The meta object literal for the '<em><b>Access Rules</b></em>' containment reference list feature.

@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.access.provider.internal;
 
 import org.eclipse.osee.framework.core.data.IAccessContextId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 
 /**
  * @author John R. Misinco
@@ -23,11 +22,9 @@ public final class DefaultFrameworkAccessConstants {
    }
 
    public static final IAccessContextId DEFAULT_FRAMEWORK_CONTEXT =
-      TokenFactory.createAccessContextId("AeA3J6AvwgEG4HGsypAA", "guest.context");
+      IAccessContextId.valueOf(7441402941554657282L, "guest.context");
 
    public final static IAccessContextId INVALID_ASSOC_ART_ID =
-      TokenFactory.createAccessContextId("ASwQLzdXySQfeyG57ywA", "famework.invalidAssocArtId");
-
-   public static final String STORAGE_ARTIFACT_NAME = "Framework Access Model";
+      IAccessContextId.valueOf(8528534420990278776L, "famework.invalidAssocArtId");
 
 }

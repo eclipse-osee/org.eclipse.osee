@@ -134,9 +134,9 @@ public final class DslAsserts {
       Assert.assertEquals(mult, type.getMultiplicity());
    }
 
-   public static void assertEquals(AccessContext context, String expName, String expGuid, String[] inheritsFrom) {
+   public static void assertEquals(AccessContext context, String expName, Long expId, String[] inheritsFrom) {
       Assert.assertEquals(expName, context.getName());
-      Assert.assertEquals(expGuid, context.getGuid());
+      Assert.assertEquals(expId, Long.valueOf(context.getId()));
 
       int index = 0;
       Assert.assertEquals(inheritsFrom.length, context.getSuperAccessContexts().size());

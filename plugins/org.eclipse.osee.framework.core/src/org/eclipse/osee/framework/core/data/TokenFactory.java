@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.data;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
-import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
 
 public final class TokenFactory {
 
@@ -44,10 +43,6 @@ public final class TokenFactory {
       return RelationTypeToken.create(id, name);
    }
 
-   public static IAccessContextId createAccessContextId(String guid, String name) {
-      return new AccessContextIdToken(guid, name);
-   }
-
    private final static class ArtifactTypeToken extends NamedIdBase implements IArtifactType {
       public ArtifactTypeToken(Long id, String name) {
          super(id, name);
@@ -59,14 +54,4 @@ public final class TokenFactory {
       }
    }
 
-   private final static class AccessContextIdToken extends NamedIdentity<String> implements IAccessContextId {
-      public AccessContextIdToken(String guid, String name) {
-         super(guid, name);
-      }
-
-      @Override
-      public String toString() {
-         return String.format("%s - %s", getName(), getGuid());
-      }
-   }
 }

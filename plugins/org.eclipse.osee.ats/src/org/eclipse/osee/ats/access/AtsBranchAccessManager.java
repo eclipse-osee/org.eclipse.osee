@@ -31,10 +31,12 @@ import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.RoleContextProvider;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -138,7 +140,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
    /**
     * Provided for testing purposes only.
     */
-   public static Collection<IAccessContextId> internalGetFromWorkflow(IAtsTeamWorkflow teamWf) {
+   public Collection<IAccessContextId> internalGetFromWorkflow(IAtsTeamWorkflow teamWf) {
       Set<IAccessContextId> contextIds = new HashSet<>();
       try {
          contextIds.addAll(getFromArtifact((Artifact) teamWf.getStoreObject()));
@@ -171,14 +173,14 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
    /**
     * Recursively check artifact and all default hierarchy parents
     */
-   private static Collection<IAccessContextId> getFromArtifact(Artifact artifact) {
+   private Collection<IAccessContextId> getFromArtifact(Artifact artifact) {
       Set<IAccessContextId> contextIds = new HashSet<>();
       try {
-         for (String guid : artifact.getAttributesToStringList(CoreAttributeTypes.AccessContextId)) {
+         for (String id : artifact.getAttributesToStringList(CoreAttributeTypes.AccessContextId)) {
             // Do not use getOrCreateId here cause name represents where context ids came from
             // Cache above will take care of this not being created on each access request call.
-            contextIds.add(TokenFactory.createAccessContextId(convertAccessAttributeToGuid(guid),
-               "From [" + artifact.getArtifactTypeName() + "]" + artifact.toStringWithId() + " as [" + guid + "]"));
+            contextIds.add(IAccessContextId.valueOf(convertAccessAttributeToContextId(id, artifact),
+               "From [" + artifact.getArtifactTypeName() + "]" + artifact.toStringWithId() + " as [" + id + "]"));
          }
          if (contextIds.isEmpty() && artifact.getParent() != null) {
             contextIds.addAll(getFromArtifact(artifact.getParent()));
@@ -190,11 +192,17 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
    }
 
    /**
-    * ATS "Access Context Id" attribute value can be stored as "guid" or "guid,name" for easy reading. This method
-    * strips ,name out so only guid is returned.
+    * ATS "Access Context Id" attribute value can be stored as "id" or "id,name" for easy reading. This method strips
+    * ,name out so only id is returned.
     */
-   private static String convertAccessAttributeToGuid(String value) {
-      return value.split(",")[0];
+   private Long convertAccessAttributeToContextId(String value, Artifact art) {
+      String idStr = value.split(",")[0];
+      if (Strings.isNumeric(idStr)) {
+         return Long.valueOf(idStr);
+      } else if (GUID.isValid(idStr)) {
+         return roleContextProvider.getContextGuidToIdMap().get(idStr);
+      }
+      throw new OseeArgumentException("Invalid access value [%s] on artifact %s", value, art.toStringWithId());
    }
 
    /**

@@ -54,12 +54,12 @@ public final class MockModel {
       return dsl;
    }
 
-   public static AccessContext createAccessContext(String guid, String name) {
+   public static AccessContext createAccessContext(Long id, String name) {
       AccessContext toReturn = OseeDslFactory.eINSTANCE.createAccessContext();
       Assert.assertNotNull(toReturn);
-      toReturn.setGuid(guid);
+      toReturn.setId(id.toString());
       toReturn.setName(name);
-      Assert.assertEquals(guid, toReturn.getGuid());
+      Assert.assertEquals(id, Long.valueOf(toReturn.getId()));
       Assert.assertEquals(name, toReturn.getName());
       return toReturn;
    }

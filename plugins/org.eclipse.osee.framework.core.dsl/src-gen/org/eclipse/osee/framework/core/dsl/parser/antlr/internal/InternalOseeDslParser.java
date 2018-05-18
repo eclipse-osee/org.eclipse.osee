@@ -22,7 +22,7 @@ import java.util.ArrayList;
 @SuppressWarnings("all")
 public class InternalOseeDslParser extends AbstractInternalAntlrParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_STRING", "RULE_ID", "RULE_WHOLE_NUM_STR", "RULE_INT", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'import'", "'.'", "'abstract'", "'artifactType'", "'extends'", "','", "'{'", "'id'", "'}'", "'attribute'", "'branchUuid'", "'attributeType'", "'overrides'", "'dataProvider'", "'DefaultAttributeDataProvider'", "'UriAttributeDataProvider'", "'min'", "'max'", "'unlimited'", "'taggerId'", "'DefaultAttributeTaggerProvider'", "'enumType'", "'description'", "'defaultValue'", "'fileExtension'", "'mediaType'", "'BooleanAttribute'", "'CompressedContentAttribute'", "'DateAttribute'", "'EnumeratedAttribute'", "'FloatingPointAttribute'", "'IntegerAttribute'", "'LongAttribute'", "'JavaObjectAttribute'", "'StringAttribute'", "'ArtifactReferenceAttribute'", "'BranchReferenceAttribute'", "'WordAttribute'", "'OutlineNumberAttribute'", "'oseeEnumType'", "'entry'", "'overrides enum'", "'inheritAll'", "'add'", "'remove'", "'overrides artifactType'", "'update'", "'relationType'", "'sideAName'", "'sideAArtifactType'", "'sideBName'", "'sideBArtifactType'", "'defaultOrderType'", "'multiplicity'", "'Lexicographical_Ascending'", "'Lexicographical_Descending'", "'Unordered'", "'('", "')'", "'artifactMatcher'", "'where'", "';'", "'role'", "'accessContext'", "'guid'", "'childrenOf'", "'artifact'", "'edit'", "'of'", "'ONE_TO_ONE'", "'ONE_TO_MANY'", "'MANY_TO_ONE'", "'MANY_TO_MANY'", "'EQ'", "'LIKE'", "'AND'", "'OR'", "'artifactName'", "'artifactId'", "'branchName'", "'ALLOW'", "'DENY'", "'ALL'", "'SIDE_A'", "'SIDE_B'", "'BOTH'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_STRING", "RULE_ID", "RULE_WHOLE_NUM_STR", "RULE_INT", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'import'", "'.'", "'abstract'", "'artifactType'", "'extends'", "','", "'{'", "'id'", "'}'", "'attribute'", "'branchUuid'", "'attributeType'", "'overrides'", "'dataProvider'", "'DefaultAttributeDataProvider'", "'UriAttributeDataProvider'", "'min'", "'max'", "'unlimited'", "'taggerId'", "'DefaultAttributeTaggerProvider'", "'enumType'", "'description'", "'defaultValue'", "'fileExtension'", "'mediaType'", "'BooleanAttribute'", "'CompressedContentAttribute'", "'DateAttribute'", "'EnumeratedAttribute'", "'FloatingPointAttribute'", "'IntegerAttribute'", "'LongAttribute'", "'JavaObjectAttribute'", "'StringAttribute'", "'ArtifactReferenceAttribute'", "'BranchReferenceAttribute'", "'WordAttribute'", "'OutlineNumberAttribute'", "'oseeEnumType'", "'entry'", "'overrides enum'", "'inheritAll'", "'add'", "'remove'", "'overrides artifactType'", "'update'", "'relationType'", "'sideAName'", "'sideAArtifactType'", "'sideBName'", "'sideBArtifactType'", "'defaultOrderType'", "'multiplicity'", "'Lexicographical_Ascending'", "'Lexicographical_Descending'", "'Unordered'", "'('", "')'", "'artifactMatcher'", "'where'", "';'", "'role'", "'accessContext'", "'childrenOf'", "'artifact'", "'edit'", "'of'", "'ONE_TO_ONE'", "'ONE_TO_MANY'", "'MANY_TO_ONE'", "'MANY_TO_MANY'", "'EQ'", "'LIKE'", "'AND'", "'OR'", "'artifactName'", "'artifactId'", "'branchName'", "'ALLOW'", "'DENY'", "'ALL'", "'SIDE_A'", "'SIDE_B'", "'BOTH'"
     };
     public static final int T__50=50;
     public static final int T__59=59;
@@ -83,7 +83,6 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
     public static final int T__14=14;
     public static final int T__95=95;
     public static final int T__96=96;
-    public static final int T__97=97;
     public static final int T__26=26;
     public static final int T__27=27;
     public static final int T__28=28;
@@ -5093,7 +5092,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             int alt29=2;
             int LA29_0 = input.LA(1);
 
-            if ( (LA29_0==22||(LA29_0>=89 && LA29_0<=91)) ) {
+            if ( (LA29_0==22||(LA29_0>=88 && LA29_0<=90)) ) {
                 alt29=1;
             }
             else if ( (LA29_0==69) ) {
@@ -5427,7 +5426,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                 int alt30=2;
                 int LA30_0 = input.LA(1);
 
-                if ( ((LA30_0>=87 && LA30_0<=88)) ) {
+                if ( ((LA30_0>=86 && LA30_0<=87)) ) {
                     alt30=1;
                 }
 
@@ -5667,7 +5666,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                 int alt31=2;
                 int LA31_0 = input.LA(1);
 
-                if ( ((LA31_0>=87 && LA31_0<=88)) ) {
+                if ( ((LA31_0>=86 && LA31_0<=87)) ) {
                     alt31=1;
                 }
 
@@ -5915,7 +5914,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                 int alt33=3;
                 int LA33_0 = input.LA(1);
 
-                if ( (LA33_0==76) ) {
+                if ( (LA33_0==19) ) {
                     alt33=1;
                 }
                 else if ( (LA33_0==75) ) {
@@ -6177,36 +6176,36 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleUsersAndGroups"
-    // InternalOseeDsl.g:2576:1: ruleUsersAndGroups returns [EObject current=null] : (otherlv_0= 'guid' ( (lv_userOrGroupGuid_1_0= RULE_STRING ) ) otherlv_2= ';' ) ;
+    // InternalOseeDsl.g:2576:1: ruleUsersAndGroups returns [EObject current=null] : (otherlv_0= 'id' ( (lv_userOrGroupId_1_0= RULE_WHOLE_NUM_STR ) ) otherlv_2= ';' ) ;
     public final EObject ruleUsersAndGroups() throws RecognitionException {
         EObject current = null;
 
         Token otherlv_0=null;
-        Token lv_userOrGroupGuid_1_0=null;
+        Token lv_userOrGroupId_1_0=null;
         Token otherlv_2=null;
 
          enterRule(); 
             
         try {
-            // InternalOseeDsl.g:2579:28: ( (otherlv_0= 'guid' ( (lv_userOrGroupGuid_1_0= RULE_STRING ) ) otherlv_2= ';' ) )
-            // InternalOseeDsl.g:2580:1: (otherlv_0= 'guid' ( (lv_userOrGroupGuid_1_0= RULE_STRING ) ) otherlv_2= ';' )
+            // InternalOseeDsl.g:2579:28: ( (otherlv_0= 'id' ( (lv_userOrGroupId_1_0= RULE_WHOLE_NUM_STR ) ) otherlv_2= ';' ) )
+            // InternalOseeDsl.g:2580:1: (otherlv_0= 'id' ( (lv_userOrGroupId_1_0= RULE_WHOLE_NUM_STR ) ) otherlv_2= ';' )
             {
-            // InternalOseeDsl.g:2580:1: (otherlv_0= 'guid' ( (lv_userOrGroupGuid_1_0= RULE_STRING ) ) otherlv_2= ';' )
-            // InternalOseeDsl.g:2580:3: otherlv_0= 'guid' ( (lv_userOrGroupGuid_1_0= RULE_STRING ) ) otherlv_2= ';'
+            // InternalOseeDsl.g:2580:1: (otherlv_0= 'id' ( (lv_userOrGroupId_1_0= RULE_WHOLE_NUM_STR ) ) otherlv_2= ';' )
+            // InternalOseeDsl.g:2580:3: otherlv_0= 'id' ( (lv_userOrGroupId_1_0= RULE_WHOLE_NUM_STR ) ) otherlv_2= ';'
             {
-            otherlv_0=(Token)match(input,76,FOLLOW_6); 
+            otherlv_0=(Token)match(input,19,FOLLOW_13); 
 
-                	newLeafNode(otherlv_0, grammarAccess.getUsersAndGroupsAccess().getGuidKeyword_0());
+                	newLeafNode(otherlv_0, grammarAccess.getUsersAndGroupsAccess().getIdKeyword_0());
                 
-            // InternalOseeDsl.g:2584:1: ( (lv_userOrGroupGuid_1_0= RULE_STRING ) )
-            // InternalOseeDsl.g:2585:1: (lv_userOrGroupGuid_1_0= RULE_STRING )
+            // InternalOseeDsl.g:2584:1: ( (lv_userOrGroupId_1_0= RULE_WHOLE_NUM_STR ) )
+            // InternalOseeDsl.g:2585:1: (lv_userOrGroupId_1_0= RULE_WHOLE_NUM_STR )
             {
-            // InternalOseeDsl.g:2585:1: (lv_userOrGroupGuid_1_0= RULE_STRING )
-            // InternalOseeDsl.g:2586:3: lv_userOrGroupGuid_1_0= RULE_STRING
+            // InternalOseeDsl.g:2585:1: (lv_userOrGroupId_1_0= RULE_WHOLE_NUM_STR )
+            // InternalOseeDsl.g:2586:3: lv_userOrGroupId_1_0= RULE_WHOLE_NUM_STR
             {
-            lv_userOrGroupGuid_1_0=(Token)match(input,RULE_STRING,FOLLOW_53); 
+            lv_userOrGroupId_1_0=(Token)match(input,RULE_WHOLE_NUM_STR,FOLLOW_53); 
 
-            			newLeafNode(lv_userOrGroupGuid_1_0, grammarAccess.getUsersAndGroupsAccess().getUserOrGroupGuidSTRINGTerminalRuleCall_1_0()); 
+            			newLeafNode(lv_userOrGroupId_1_0, grammarAccess.getUsersAndGroupsAccess().getUserOrGroupIdWHOLE_NUM_STRTerminalRuleCall_1_0()); 
             		
 
             	        if (current==null) {
@@ -6214,9 +6213,9 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             	        }
                    		setWithLastConsumed(
                    			current, 
-                   			"userOrGroupGuid",
-                    		lv_userOrGroupGuid_1_0, 
-                    		"org.eclipse.osee.framework.core.dsl.OseeDsl.STRING");
+                   			"userOrGroupId",
+                    		lv_userOrGroupId_1_0, 
+                    		"org.eclipse.osee.framework.core.dsl.OseeDsl.WHOLE_NUM_STR");
             	    
 
             }
@@ -6285,7 +6284,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleAccessContext"
-    // InternalOseeDsl.g:2623:1: ruleAccessContext returns [EObject current=null] : (otherlv_0= 'accessContext' ( (lv_name_1_0= RULE_STRING ) ) (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) )? otherlv_4= '{' otherlv_5= 'guid' ( (lv_guid_6_0= RULE_STRING ) ) otherlv_7= ';' ( ( (lv_accessRules_8_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_9_0= ruleHierarchyRestriction ) ) )+ otherlv_10= '}' ) ;
+    // InternalOseeDsl.g:2623:1: ruleAccessContext returns [EObject current=null] : (otherlv_0= 'accessContext' ( (lv_name_1_0= RULE_STRING ) ) (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) )? otherlv_4= '{' otherlv_5= 'id' ( (lv_id_6_0= RULE_WHOLE_NUM_STR ) ) otherlv_7= ';' ( ( (lv_accessRules_8_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_9_0= ruleHierarchyRestriction ) ) )+ otherlv_10= '}' ) ;
     public final EObject ruleAccessContext() throws RecognitionException {
         EObject current = null;
 
@@ -6295,7 +6294,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
         Token otherlv_3=null;
         Token otherlv_4=null;
         Token otherlv_5=null;
-        Token lv_guid_6_0=null;
+        Token lv_id_6_0=null;
         Token otherlv_7=null;
         Token otherlv_10=null;
         EObject lv_accessRules_8_0 = null;
@@ -6306,11 +6305,11 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // InternalOseeDsl.g:2626:28: ( (otherlv_0= 'accessContext' ( (lv_name_1_0= RULE_STRING ) ) (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) )? otherlv_4= '{' otherlv_5= 'guid' ( (lv_guid_6_0= RULE_STRING ) ) otherlv_7= ';' ( ( (lv_accessRules_8_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_9_0= ruleHierarchyRestriction ) ) )+ otherlv_10= '}' ) )
-            // InternalOseeDsl.g:2627:1: (otherlv_0= 'accessContext' ( (lv_name_1_0= RULE_STRING ) ) (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) )? otherlv_4= '{' otherlv_5= 'guid' ( (lv_guid_6_0= RULE_STRING ) ) otherlv_7= ';' ( ( (lv_accessRules_8_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_9_0= ruleHierarchyRestriction ) ) )+ otherlv_10= '}' )
+            // InternalOseeDsl.g:2626:28: ( (otherlv_0= 'accessContext' ( (lv_name_1_0= RULE_STRING ) ) (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) )? otherlv_4= '{' otherlv_5= 'id' ( (lv_id_6_0= RULE_WHOLE_NUM_STR ) ) otherlv_7= ';' ( ( (lv_accessRules_8_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_9_0= ruleHierarchyRestriction ) ) )+ otherlv_10= '}' ) )
+            // InternalOseeDsl.g:2627:1: (otherlv_0= 'accessContext' ( (lv_name_1_0= RULE_STRING ) ) (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) )? otherlv_4= '{' otherlv_5= 'id' ( (lv_id_6_0= RULE_WHOLE_NUM_STR ) ) otherlv_7= ';' ( ( (lv_accessRules_8_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_9_0= ruleHierarchyRestriction ) ) )+ otherlv_10= '}' )
             {
-            // InternalOseeDsl.g:2627:1: (otherlv_0= 'accessContext' ( (lv_name_1_0= RULE_STRING ) ) (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) )? otherlv_4= '{' otherlv_5= 'guid' ( (lv_guid_6_0= RULE_STRING ) ) otherlv_7= ';' ( ( (lv_accessRules_8_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_9_0= ruleHierarchyRestriction ) ) )+ otherlv_10= '}' )
-            // InternalOseeDsl.g:2627:3: otherlv_0= 'accessContext' ( (lv_name_1_0= RULE_STRING ) ) (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) )? otherlv_4= '{' otherlv_5= 'guid' ( (lv_guid_6_0= RULE_STRING ) ) otherlv_7= ';' ( ( (lv_accessRules_8_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_9_0= ruleHierarchyRestriction ) ) )+ otherlv_10= '}'
+            // InternalOseeDsl.g:2627:1: (otherlv_0= 'accessContext' ( (lv_name_1_0= RULE_STRING ) ) (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) )? otherlv_4= '{' otherlv_5= 'id' ( (lv_id_6_0= RULE_WHOLE_NUM_STR ) ) otherlv_7= ';' ( ( (lv_accessRules_8_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_9_0= ruleHierarchyRestriction ) ) )+ otherlv_10= '}' )
+            // InternalOseeDsl.g:2627:3: otherlv_0= 'accessContext' ( (lv_name_1_0= RULE_STRING ) ) (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) )? otherlv_4= '{' otherlv_5= 'id' ( (lv_id_6_0= RULE_WHOLE_NUM_STR ) ) otherlv_7= ';' ( ( (lv_accessRules_8_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_9_0= ruleHierarchyRestriction ) ) )+ otherlv_10= '}'
             {
             otherlv_0=(Token)match(input,75,FOLLOW_6); 
 
@@ -6384,23 +6383,23 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_4=(Token)match(input,18,FOLLOW_54); 
+            otherlv_4=(Token)match(input,18,FOLLOW_12); 
 
                 	newLeafNode(otherlv_4, grammarAccess.getAccessContextAccess().getLeftCurlyBracketKeyword_3());
                 
-            otherlv_5=(Token)match(input,76,FOLLOW_6); 
+            otherlv_5=(Token)match(input,19,FOLLOW_13); 
 
-                	newLeafNode(otherlv_5, grammarAccess.getAccessContextAccess().getGuidKeyword_4());
+                	newLeafNode(otherlv_5, grammarAccess.getAccessContextAccess().getIdKeyword_4());
                 
-            // InternalOseeDsl.g:2674:1: ( (lv_guid_6_0= RULE_STRING ) )
-            // InternalOseeDsl.g:2675:1: (lv_guid_6_0= RULE_STRING )
+            // InternalOseeDsl.g:2674:1: ( (lv_id_6_0= RULE_WHOLE_NUM_STR ) )
+            // InternalOseeDsl.g:2675:1: (lv_id_6_0= RULE_WHOLE_NUM_STR )
             {
-            // InternalOseeDsl.g:2675:1: (lv_guid_6_0= RULE_STRING )
-            // InternalOseeDsl.g:2676:3: lv_guid_6_0= RULE_STRING
+            // InternalOseeDsl.g:2675:1: (lv_id_6_0= RULE_WHOLE_NUM_STR )
+            // InternalOseeDsl.g:2676:3: lv_id_6_0= RULE_WHOLE_NUM_STR
             {
-            lv_guid_6_0=(Token)match(input,RULE_STRING,FOLLOW_53); 
+            lv_id_6_0=(Token)match(input,RULE_WHOLE_NUM_STR,FOLLOW_53); 
 
-            			newLeafNode(lv_guid_6_0, grammarAccess.getAccessContextAccess().getGuidSTRINGTerminalRuleCall_5_0()); 
+            			newLeafNode(lv_id_6_0, grammarAccess.getAccessContextAccess().getIdWHOLE_NUM_STRTerminalRuleCall_5_0()); 
             		
 
             	        if (current==null) {
@@ -6408,9 +6407,9 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             	        }
                    		setWithLastConsumed(
                    			current, 
-                   			"guid",
-                    		lv_guid_6_0, 
-                    		"org.eclipse.osee.framework.core.dsl.OseeDsl.STRING");
+                   			"id",
+                    		lv_id_6_0, 
+                    		"org.eclipse.osee.framework.core.dsl.OseeDsl.WHOLE_NUM_STR");
             	    
 
             }
@@ -6418,7 +6417,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_7=(Token)match(input,73,FOLLOW_55); 
+            otherlv_7=(Token)match(input,73,FOLLOW_54); 
 
                 	newLeafNode(otherlv_7, grammarAccess.getAccessContextAccess().getSemicolonKeyword_6());
                 
@@ -6429,10 +6428,10 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                 int alt35=3;
                 int LA35_0 = input.LA(1);
 
-                if ( ((LA35_0>=92 && LA35_0<=93)) ) {
+                if ( ((LA35_0>=91 && LA35_0<=92)) ) {
                     alt35=1;
                 }
-                else if ( (LA35_0==77) ) {
+                else if ( (LA35_0==76) ) {
                     alt35=2;
                 }
 
@@ -6450,7 +6449,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             	     
             	    	        newCompositeNode(grammarAccess.getAccessContextAccess().getAccessRulesObjectRestrictionParserRuleCall_7_0_0()); 
             	    	    
-            	    pushFollow(FOLLOW_56);
+            	    pushFollow(FOLLOW_55);
             	    lv_accessRules_8_0=ruleObjectRestriction();
 
             	    state._fsp--;
@@ -6487,7 +6486,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             	     
             	    	        newCompositeNode(grammarAccess.getAccessContextAccess().getHierarchyRestrictionsHierarchyRestrictionParserRuleCall_7_1_0()); 
             	    	    
-            	    pushFollow(FOLLOW_56);
+            	    pushFollow(FOLLOW_55);
             	    lv_hierarchyRestrictions_9_0=ruleHierarchyRestriction();
 
             	    state._fsp--;
@@ -6603,7 +6602,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             // InternalOseeDsl.g:2758:1: (otherlv_0= 'childrenOf' ( (otherlv_1= RULE_STRING ) ) otherlv_2= '{' ( (lv_accessRules_3_0= ruleObjectRestriction ) )+ otherlv_4= '}' )
             // InternalOseeDsl.g:2758:3: otherlv_0= 'childrenOf' ( (otherlv_1= RULE_STRING ) ) otherlv_2= '{' ( (lv_accessRules_3_0= ruleObjectRestriction ) )+ otherlv_4= '}'
             {
-            otherlv_0=(Token)match(input,77,FOLLOW_6); 
+            otherlv_0=(Token)match(input,76,FOLLOW_6); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getHierarchyRestrictionAccess().getChildrenOfKeyword_0());
                 
@@ -6628,7 +6627,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_2=(Token)match(input,18,FOLLOW_57); 
+            otherlv_2=(Token)match(input,18,FOLLOW_56); 
 
                 	newLeafNode(otherlv_2, grammarAccess.getHierarchyRestrictionAccess().getLeftCurlyBracketKeyword_2());
                 
@@ -6639,7 +6638,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                 int alt36=2;
                 int LA36_0 = input.LA(1);
 
-                if ( ((LA36_0>=92 && LA36_0<=93)) ) {
+                if ( ((LA36_0>=91 && LA36_0<=92)) ) {
                     alt36=1;
                 }
 
@@ -6654,7 +6653,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             	     
             	    	        newCompositeNode(grammarAccess.getHierarchyRestrictionAccess().getAccessRulesObjectRestrictionParserRuleCall_3_0()); 
             	    	    
-            	    pushFollow(FOLLOW_58);
+            	    pushFollow(FOLLOW_57);
             	    lv_accessRules_3_0=ruleObjectRestriction();
 
             	    state._fsp--;
@@ -6861,7 +6860,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             // InternalOseeDsl.g:2860:1: (otherlv_0= 'artifact' ( (otherlv_1= RULE_STRING ) ) )
             // InternalOseeDsl.g:2860:3: otherlv_0= 'artifact' ( (otherlv_1= RULE_STRING ) )
             {
-            otherlv_0=(Token)match(input,78,FOLLOW_6); 
+            otherlv_0=(Token)match(input,77,FOLLOW_6); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getRelationTypeArtifactPredicateAccess().getArtifactKeyword_0());
                 
@@ -6962,7 +6961,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             int alt37=2;
             int LA37_0 = input.LA(1);
 
-            if ( (LA37_0==78) ) {
+            if ( (LA37_0==77) ) {
                 alt37=1;
             }
             else if ( (LA37_0==15) ) {
@@ -7091,10 +7090,10 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             int alt38=4;
             int LA38_0 = input.LA(1);
 
-            if ( (LA38_0==92) ) {
+            if ( (LA38_0==91) ) {
                 int LA38_1 = input.LA(2);
 
-                if ( (LA38_1==79) ) {
+                if ( (LA38_1==78) ) {
                     switch ( input.LA(3) ) {
                     case 59:
                         {
@@ -7106,7 +7105,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                         alt38=2;
                         }
                         break;
-                    case 78:
+                    case 77:
                         {
                         alt38=1;
                         }
@@ -7131,10 +7130,10 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                     throw nvae;
                 }
             }
-            else if ( (LA38_0==93) ) {
+            else if ( (LA38_0==92) ) {
                 int LA38_2 = input.LA(2);
 
-                if ( (LA38_2==79) ) {
+                if ( (LA38_2==78) ) {
                     switch ( input.LA(3) ) {
                     case 59:
                         {
@@ -7146,7 +7145,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                         alt38=2;
                         }
                         break;
-                    case 78:
+                    case 77:
                         {
                         alt38=1;
                         }
@@ -7336,7 +7335,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
              
             	        newCompositeNode(grammarAccess.getArtifactMatchRestrictionAccess().getPermissionAccessPermissionEnumEnumRuleCall_0_0()); 
             	    
-            pushFollow(FOLLOW_59);
+            pushFollow(FOLLOW_58);
             lv_permission_0_0=ruleAccessPermissionEnum();
 
             state._fsp--;
@@ -7358,11 +7357,11 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_1=(Token)match(input,79,FOLLOW_60); 
+            otherlv_1=(Token)match(input,78,FOLLOW_59); 
 
                 	newLeafNode(otherlv_1, grammarAccess.getArtifactMatchRestrictionAccess().getEditKeyword_1());
                 
-            otherlv_2=(Token)match(input,78,FOLLOW_6); 
+            otherlv_2=(Token)match(input,77,FOLLOW_6); 
 
                 	newLeafNode(otherlv_2, grammarAccess.getArtifactMatchRestrictionAccess().getArtifactKeyword_2());
                 
@@ -7477,7 +7476,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
              
             	        newCompositeNode(grammarAccess.getArtifactTypeRestrictionAccess().getPermissionAccessPermissionEnumEnumRuleCall_0_0()); 
             	    
-            pushFollow(FOLLOW_59);
+            pushFollow(FOLLOW_58);
             lv_permission_0_0=ruleAccessPermissionEnum();
 
             state._fsp--;
@@ -7499,7 +7498,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_1=(Token)match(input,79,FOLLOW_9); 
+            otherlv_1=(Token)match(input,78,FOLLOW_9); 
 
                 	newLeafNode(otherlv_1, grammarAccess.getArtifactTypeRestrictionAccess().getEditKeyword_1());
                 
@@ -7621,7 +7620,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
              
             	        newCompositeNode(grammarAccess.getAttributeTypeRestrictionAccess().getPermissionAccessPermissionEnumEnumRuleCall_0_0()); 
             	    
-            pushFollow(FOLLOW_59);
+            pushFollow(FOLLOW_58);
             lv_permission_0_0=ruleAccessPermissionEnum();
 
             state._fsp--;
@@ -7643,7 +7642,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_1=(Token)match(input,79,FOLLOW_61); 
+            otherlv_1=(Token)match(input,78,FOLLOW_60); 
 
                 	newLeafNode(otherlv_1, grammarAccess.getAttributeTypeRestrictionAccess().getEditKeyword_1());
                 
@@ -7662,7 +7661,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             	            current = createModelElement(grammarAccess.getAttributeTypeRestrictionRule());
             	        }
                     
-            otherlv_3=(Token)match(input,RULE_STRING,FOLLOW_62); 
+            otherlv_3=(Token)match(input,RULE_STRING,FOLLOW_61); 
 
             		newLeafNode(otherlv_3, grammarAccess.getAttributeTypeRestrictionAccess().getAttributeTypeRefXAttributeTypeCrossReference_3_0()); 
             	
@@ -7676,14 +7675,14 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             int alt39=2;
             int LA39_0 = input.LA(1);
 
-            if ( (LA39_0==80) ) {
+            if ( (LA39_0==79) ) {
                 alt39=1;
             }
             switch (alt39) {
                 case 1 :
                     // InternalOseeDsl.g:3165:4: otherlv_4= 'of' otherlv_5= 'artifactType' ( (otherlv_6= RULE_STRING ) )
                     {
-                    otherlv_4=(Token)match(input,80,FOLLOW_9); 
+                    otherlv_4=(Token)match(input,79,FOLLOW_9); 
 
                         	newLeafNode(otherlv_4, grammarAccess.getAttributeTypeRestrictionAccess().getOfKeyword_4_0());
                         
@@ -7814,7 +7813,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
              
             	        newCompositeNode(grammarAccess.getRelationTypeRestrictionAccess().getPermissionAccessPermissionEnumEnumRuleCall_0_0()); 
             	    
-            pushFollow(FOLLOW_59);
+            pushFollow(FOLLOW_58);
             lv_permission_0_0=ruleAccessPermissionEnum();
 
             state._fsp--;
@@ -7836,11 +7835,11 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_1=(Token)match(input,79,FOLLOW_63); 
+            otherlv_1=(Token)match(input,78,FOLLOW_62); 
 
                 	newLeafNode(otherlv_1, grammarAccess.getRelationTypeRestrictionAccess().getEditKeyword_1());
                 
-            otherlv_2=(Token)match(input,59,FOLLOW_64); 
+            otherlv_2=(Token)match(input,59,FOLLOW_63); 
 
                 	newLeafNode(otherlv_2, grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeKeyword_2());
                 
@@ -7848,7 +7847,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             int alt40=2;
             int LA40_0 = input.LA(1);
 
-            if ( (LA40_0==94) ) {
+            if ( (LA40_0==93) ) {
                 alt40=1;
             }
             else if ( (LA40_0==RULE_STRING) ) {
@@ -7873,7 +7872,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                      
                     	        newCompositeNode(grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeMatchRelationTypeMatchEnumRuleCall_3_0_0()); 
                     	    
-                    pushFollow(FOLLOW_65);
+                    pushFollow(FOLLOW_64);
                     lv_relationTypeMatch_3_0=ruleRelationTypeMatch();
 
                     state._fsp--;
@@ -7912,7 +7911,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                     	            current = createModelElement(grammarAccess.getRelationTypeRestrictionRule());
                     	        }
                             
-                    otherlv_4=(Token)match(input,RULE_STRING,FOLLOW_65); 
+                    otherlv_4=(Token)match(input,RULE_STRING,FOLLOW_64); 
 
                     		newLeafNode(otherlv_4, grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeRefXRelationTypeCrossReference_3_1_0()); 
                     	
@@ -7937,7 +7936,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
              
             	        newCompositeNode(grammarAccess.getRelationTypeRestrictionAccess().getRestrictedToSideXRelationSideEnumEnumRuleCall_4_0()); 
             	    
-            pushFollow(FOLLOW_66);
+            pushFollow(FOLLOW_65);
             lv_restrictedToSide_5_0=ruleXRelationSideEnum();
 
             state._fsp--;
@@ -7963,7 +7962,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             int alt41=2;
             int LA41_0 = input.LA(1);
 
-            if ( (LA41_0==15||LA41_0==78) ) {
+            if ( (LA41_0==15||LA41_0==77) ) {
                 alt41=1;
             }
             switch (alt41) {
@@ -8043,22 +8042,22 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             // InternalOseeDsl.g:3322:1: ( (enumLiteral_0= 'ONE_TO_ONE' ) | (enumLiteral_1= 'ONE_TO_MANY' ) | (enumLiteral_2= 'MANY_TO_ONE' ) | (enumLiteral_3= 'MANY_TO_MANY' ) )
             int alt42=4;
             switch ( input.LA(1) ) {
-            case 81:
+            case 80:
                 {
                 alt42=1;
                 }
                 break;
-            case 82:
+            case 81:
                 {
                 alt42=2;
                 }
                 break;
-            case 83:
+            case 82:
                 {
                 alt42=3;
                 }
                 break;
-            case 84:
+            case 83:
                 {
                 alt42=4;
                 }
@@ -8077,7 +8076,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                     // InternalOseeDsl.g:3322:2: (enumLiteral_0= 'ONE_TO_ONE' )
                     // InternalOseeDsl.g:3322:4: enumLiteral_0= 'ONE_TO_ONE'
                     {
-                    enumLiteral_0=(Token)match(input,81,FOLLOW_2); 
+                    enumLiteral_0=(Token)match(input,80,FOLLOW_2); 
 
                             current = grammarAccess.getRelationMultiplicityEnumAccess().getONE_TO_ONEEnumLiteralDeclaration_0().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_0, grammarAccess.getRelationMultiplicityEnumAccess().getONE_TO_ONEEnumLiteralDeclaration_0()); 
@@ -8094,7 +8093,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                     // InternalOseeDsl.g:3328:6: (enumLiteral_1= 'ONE_TO_MANY' )
                     // InternalOseeDsl.g:3328:8: enumLiteral_1= 'ONE_TO_MANY'
                     {
-                    enumLiteral_1=(Token)match(input,82,FOLLOW_2); 
+                    enumLiteral_1=(Token)match(input,81,FOLLOW_2); 
 
                             current = grammarAccess.getRelationMultiplicityEnumAccess().getONE_TO_MANYEnumLiteralDeclaration_1().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_1, grammarAccess.getRelationMultiplicityEnumAccess().getONE_TO_MANYEnumLiteralDeclaration_1()); 
@@ -8111,7 +8110,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                     // InternalOseeDsl.g:3334:6: (enumLiteral_2= 'MANY_TO_ONE' )
                     // InternalOseeDsl.g:3334:8: enumLiteral_2= 'MANY_TO_ONE'
                     {
-                    enumLiteral_2=(Token)match(input,83,FOLLOW_2); 
+                    enumLiteral_2=(Token)match(input,82,FOLLOW_2); 
 
                             current = grammarAccess.getRelationMultiplicityEnumAccess().getMANY_TO_ONEEnumLiteralDeclaration_2().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_2, grammarAccess.getRelationMultiplicityEnumAccess().getMANY_TO_ONEEnumLiteralDeclaration_2()); 
@@ -8128,7 +8127,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                     // InternalOseeDsl.g:3340:6: (enumLiteral_3= 'MANY_TO_MANY' )
                     // InternalOseeDsl.g:3340:8: enumLiteral_3= 'MANY_TO_MANY'
                     {
-                    enumLiteral_3=(Token)match(input,84,FOLLOW_2); 
+                    enumLiteral_3=(Token)match(input,83,FOLLOW_2); 
 
                             current = grammarAccess.getRelationMultiplicityEnumAccess().getMANY_TO_MANYEnumLiteralDeclaration_3().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_3, grammarAccess.getRelationMultiplicityEnumAccess().getMANY_TO_MANYEnumLiteralDeclaration_3()); 
@@ -8176,10 +8175,10 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             int alt43=2;
             int LA43_0 = input.LA(1);
 
-            if ( (LA43_0==85) ) {
+            if ( (LA43_0==84) ) {
                 alt43=1;
             }
-            else if ( (LA43_0==86) ) {
+            else if ( (LA43_0==85) ) {
                 alt43=2;
             }
             else {
@@ -8195,7 +8194,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                     // InternalOseeDsl.g:3353:2: (enumLiteral_0= 'EQ' )
                     // InternalOseeDsl.g:3353:4: enumLiteral_0= 'EQ'
                     {
-                    enumLiteral_0=(Token)match(input,85,FOLLOW_2); 
+                    enumLiteral_0=(Token)match(input,84,FOLLOW_2); 
 
                             current = grammarAccess.getCompareOpAccess().getEQEnumLiteralDeclaration_0().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_0, grammarAccess.getCompareOpAccess().getEQEnumLiteralDeclaration_0()); 
@@ -8212,7 +8211,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                     // InternalOseeDsl.g:3359:6: (enumLiteral_1= 'LIKE' )
                     // InternalOseeDsl.g:3359:8: enumLiteral_1= 'LIKE'
                     {
-                    enumLiteral_1=(Token)match(input,86,FOLLOW_2); 
+                    enumLiteral_1=(Token)match(input,85,FOLLOW_2); 
 
                             current = grammarAccess.getCompareOpAccess().getLIKEEnumLiteralDeclaration_1().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_1, grammarAccess.getCompareOpAccess().getLIKEEnumLiteralDeclaration_1()); 
@@ -8260,10 +8259,10 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             int alt44=2;
             int LA44_0 = input.LA(1);
 
-            if ( (LA44_0==87) ) {
+            if ( (LA44_0==86) ) {
                 alt44=1;
             }
-            else if ( (LA44_0==88) ) {
+            else if ( (LA44_0==87) ) {
                 alt44=2;
             }
             else {
@@ -8279,7 +8278,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                     // InternalOseeDsl.g:3372:2: (enumLiteral_0= 'AND' )
                     // InternalOseeDsl.g:3372:4: enumLiteral_0= 'AND'
                     {
-                    enumLiteral_0=(Token)match(input,87,FOLLOW_2); 
+                    enumLiteral_0=(Token)match(input,86,FOLLOW_2); 
 
                             current = grammarAccess.getXLogicOperatorAccess().getANDEnumLiteralDeclaration_0().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_0, grammarAccess.getXLogicOperatorAccess().getANDEnumLiteralDeclaration_0()); 
@@ -8296,7 +8295,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                     // InternalOseeDsl.g:3378:6: (enumLiteral_1= 'OR' )
                     // InternalOseeDsl.g:3378:8: enumLiteral_1= 'OR'
                     {
-                    enumLiteral_1=(Token)match(input,88,FOLLOW_2); 
+                    enumLiteral_1=(Token)match(input,87,FOLLOW_2); 
 
                             current = grammarAccess.getXLogicOperatorAccess().getOREnumLiteralDeclaration_1().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_1, grammarAccess.getXLogicOperatorAccess().getOREnumLiteralDeclaration_1()); 
@@ -8345,17 +8344,17 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             // InternalOseeDsl.g:3391:1: ( (enumLiteral_0= 'artifactName' ) | (enumLiteral_1= 'artifactId' ) | (enumLiteral_2= 'branchName' ) | (enumLiteral_3= 'branchUuid' ) )
             int alt45=4;
             switch ( input.LA(1) ) {
-            case 89:
+            case 88:
                 {
                 alt45=1;
                 }
                 break;
-            case 90:
+            case 89:
                 {
                 alt45=2;
                 }
                 break;
-            case 91:
+            case 90:
                 {
                 alt45=3;
                 }
@@ -8379,7 +8378,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                     // InternalOseeDsl.g:3391:2: (enumLiteral_0= 'artifactName' )
                     // InternalOseeDsl.g:3391:4: enumLiteral_0= 'artifactName'
                     {
-                    enumLiteral_0=(Token)match(input,89,FOLLOW_2); 
+                    enumLiteral_0=(Token)match(input,88,FOLLOW_2); 
 
                             current = grammarAccess.getMatchFieldAccess().getArtifactNameEnumLiteralDeclaration_0().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_0, grammarAccess.getMatchFieldAccess().getArtifactNameEnumLiteralDeclaration_0()); 
@@ -8396,7 +8395,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                     // InternalOseeDsl.g:3397:6: (enumLiteral_1= 'artifactId' )
                     // InternalOseeDsl.g:3397:8: enumLiteral_1= 'artifactId'
                     {
-                    enumLiteral_1=(Token)match(input,90,FOLLOW_2); 
+                    enumLiteral_1=(Token)match(input,89,FOLLOW_2); 
 
                             current = grammarAccess.getMatchFieldAccess().getArtifactIdEnumLiteralDeclaration_1().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_1, grammarAccess.getMatchFieldAccess().getArtifactIdEnumLiteralDeclaration_1()); 
@@ -8413,7 +8412,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                     // InternalOseeDsl.g:3403:6: (enumLiteral_2= 'branchName' )
                     // InternalOseeDsl.g:3403:8: enumLiteral_2= 'branchName'
                     {
-                    enumLiteral_2=(Token)match(input,91,FOLLOW_2); 
+                    enumLiteral_2=(Token)match(input,90,FOLLOW_2); 
 
                             current = grammarAccess.getMatchFieldAccess().getBranchNameEnumLiteralDeclaration_2().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_2, grammarAccess.getMatchFieldAccess().getBranchNameEnumLiteralDeclaration_2()); 
@@ -8478,10 +8477,10 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             int alt46=2;
             int LA46_0 = input.LA(1);
 
-            if ( (LA46_0==92) ) {
+            if ( (LA46_0==91) ) {
                 alt46=1;
             }
-            else if ( (LA46_0==93) ) {
+            else if ( (LA46_0==92) ) {
                 alt46=2;
             }
             else {
@@ -8497,7 +8496,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                     // InternalOseeDsl.g:3422:2: (enumLiteral_0= 'ALLOW' )
                     // InternalOseeDsl.g:3422:4: enumLiteral_0= 'ALLOW'
                     {
-                    enumLiteral_0=(Token)match(input,92,FOLLOW_2); 
+                    enumLiteral_0=(Token)match(input,91,FOLLOW_2); 
 
                             current = grammarAccess.getAccessPermissionEnumAccess().getALLOWEnumLiteralDeclaration_0().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_0, grammarAccess.getAccessPermissionEnumAccess().getALLOWEnumLiteralDeclaration_0()); 
@@ -8514,7 +8513,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                     // InternalOseeDsl.g:3428:6: (enumLiteral_1= 'DENY' )
                     // InternalOseeDsl.g:3428:8: enumLiteral_1= 'DENY'
                     {
-                    enumLiteral_1=(Token)match(input,93,FOLLOW_2); 
+                    enumLiteral_1=(Token)match(input,92,FOLLOW_2); 
 
                             current = grammarAccess.getAccessPermissionEnumAccess().getDENYEnumLiteralDeclaration_1().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_1, grammarAccess.getAccessPermissionEnumAccess().getDENYEnumLiteralDeclaration_1()); 
@@ -8560,7 +8559,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             // InternalOseeDsl.g:3441:1: (enumLiteral_0= 'ALL' )
             // InternalOseeDsl.g:3441:3: enumLiteral_0= 'ALL'
             {
-            enumLiteral_0=(Token)match(input,94,FOLLOW_2); 
+            enumLiteral_0=(Token)match(input,93,FOLLOW_2); 
 
                     current = grammarAccess.getRelationTypeMatchAccess().getALLEnumLiteralDeclaration().getEnumLiteral().getInstance();
                     newLeafNode(enumLiteral_0, grammarAccess.getRelationTypeMatchAccess().getALLEnumLiteralDeclaration()); 
@@ -8602,17 +8601,17 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             // InternalOseeDsl.g:3454:1: ( (enumLiteral_0= 'SIDE_A' ) | (enumLiteral_1= 'SIDE_B' ) | (enumLiteral_2= 'BOTH' ) )
             int alt47=3;
             switch ( input.LA(1) ) {
-            case 95:
+            case 94:
                 {
                 alt47=1;
                 }
                 break;
-            case 96:
+            case 95:
                 {
                 alt47=2;
                 }
                 break;
-            case 97:
+            case 96:
                 {
                 alt47=3;
                 }
@@ -8631,7 +8630,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                     // InternalOseeDsl.g:3454:2: (enumLiteral_0= 'SIDE_A' )
                     // InternalOseeDsl.g:3454:4: enumLiteral_0= 'SIDE_A'
                     {
-                    enumLiteral_0=(Token)match(input,95,FOLLOW_2); 
+                    enumLiteral_0=(Token)match(input,94,FOLLOW_2); 
 
                             current = grammarAccess.getXRelationSideEnumAccess().getSIDE_AEnumLiteralDeclaration_0().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_0, grammarAccess.getXRelationSideEnumAccess().getSIDE_AEnumLiteralDeclaration_0()); 
@@ -8648,7 +8647,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                     // InternalOseeDsl.g:3460:6: (enumLiteral_1= 'SIDE_B' )
                     // InternalOseeDsl.g:3460:8: enumLiteral_1= 'SIDE_B'
                     {
-                    enumLiteral_1=(Token)match(input,96,FOLLOW_2); 
+                    enumLiteral_1=(Token)match(input,95,FOLLOW_2); 
 
                             current = grammarAccess.getXRelationSideEnumAccess().getSIDE_BEnumLiteralDeclaration_1().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_1, grammarAccess.getXRelationSideEnumAccess().getSIDE_BEnumLiteralDeclaration_1()); 
@@ -8665,7 +8664,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                     // InternalOseeDsl.g:3466:6: (enumLiteral_2= 'BOTH' )
                     // InternalOseeDsl.g:3466:8: enumLiteral_2= 'BOTH'
                     {
-                    enumLiteral_2=(Token)match(input,97,FOLLOW_2); 
+                    enumLiteral_2=(Token)match(input,96,FOLLOW_2); 
 
                             current = grammarAccess.getXRelationSideEnumAccess().getBOTHEnumLiteralDeclaration_2().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_2, grammarAccess.getXRelationSideEnumAccess().getBOTHEnumLiteralDeclaration_2()); 
@@ -8741,30 +8740,29 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
     public static final BitSet FOLLOW_39 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000001L});
     public static final BitSet FOLLOW_40 = new BitSet(new long[]{0x0000000000000020L,0x000000000000001CL});
     public static final BitSet FOLLOW_41 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_42 = new BitSet(new long[]{0x0000000000000000L,0x00000000001E0000L});
+    public static final BitSet FOLLOW_42 = new BitSet(new long[]{0x0000000000000000L,0x00000000000F0000L});
     public static final BitSet FOLLOW_43 = new BitSet(new long[]{0x0000000000100000L});
-    public static final BitSet FOLLOW_44 = new BitSet(new long[]{0x0000000000000000L,0x0000000000600000L});
-    public static final BitSet FOLLOW_45 = new BitSet(new long[]{0x0000000000400000L,0x000000000E000000L});
-    public static final BitSet FOLLOW_46 = new BitSet(new long[]{0x0000000000000000L,0x0000000001800000L});
-    public static final BitSet FOLLOW_47 = new BitSet(new long[]{0x0000000000000000L,0x0000000001800040L});
+    public static final BitSet FOLLOW_44 = new BitSet(new long[]{0x0000000000000000L,0x0000000000300000L});
+    public static final BitSet FOLLOW_45 = new BitSet(new long[]{0x0000000000400000L,0x0000000007000000L});
+    public static final BitSet FOLLOW_46 = new BitSet(new long[]{0x0000000000000000L,0x0000000000C00000L});
+    public static final BitSet FOLLOW_47 = new BitSet(new long[]{0x0000000000000000L,0x0000000000C00040L});
     public static final BitSet FOLLOW_48 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000100L});
-    public static final BitSet FOLLOW_49 = new BitSet(new long[]{0x0000000000400000L,0x000000000E000020L});
-    public static final BitSet FOLLOW_50 = new BitSet(new long[]{0x0000000000000000L,0x0000000001800200L});
-    public static final BitSet FOLLOW_51 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001800L});
-    public static final BitSet FOLLOW_52 = new BitSet(new long[]{0x0000000000100000L,0x0000000000001800L});
+    public static final BitSet FOLLOW_49 = new BitSet(new long[]{0x0000000000400000L,0x0000000007000020L});
+    public static final BitSet FOLLOW_50 = new BitSet(new long[]{0x0000000000000000L,0x0000000000C00200L});
+    public static final BitSet FOLLOW_51 = new BitSet(new long[]{0x0000000000080000L,0x0000000000000800L});
+    public static final BitSet FOLLOW_52 = new BitSet(new long[]{0x0000000000180000L,0x0000000000000800L});
     public static final BitSet FOLLOW_53 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000200L});
-    public static final BitSet FOLLOW_54 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
-    public static final BitSet FOLLOW_55 = new BitSet(new long[]{0x0000000000000000L,0x0000000030002000L});
-    public static final BitSet FOLLOW_56 = new BitSet(new long[]{0x0000000000100000L,0x0000000030002000L});
-    public static final BitSet FOLLOW_57 = new BitSet(new long[]{0x0000000000000000L,0x0000000030000000L});
-    public static final BitSet FOLLOW_58 = new BitSet(new long[]{0x0000000000100000L,0x0000000030000000L});
-    public static final BitSet FOLLOW_59 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L});
-    public static final BitSet FOLLOW_60 = new BitSet(new long[]{0x0000000000000000L,0x0000000000004000L});
-    public static final BitSet FOLLOW_61 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_62 = new BitSet(new long[]{0x0000000000000000L,0x0000000000010200L});
-    public static final BitSet FOLLOW_63 = new BitSet(new long[]{0x0800000000000000L});
-    public static final BitSet FOLLOW_64 = new BitSet(new long[]{0x0000000000000010L,0x0000000040000000L});
-    public static final BitSet FOLLOW_65 = new BitSet(new long[]{0x0000000000000000L,0x0000000380000000L});
-    public static final BitSet FOLLOW_66 = new BitSet(new long[]{0x0000000000008000L,0x0000000000004200L});
+    public static final BitSet FOLLOW_54 = new BitSet(new long[]{0x0000000000000000L,0x0000000018001000L});
+    public static final BitSet FOLLOW_55 = new BitSet(new long[]{0x0000000000100000L,0x0000000018001000L});
+    public static final BitSet FOLLOW_56 = new BitSet(new long[]{0x0000000000000000L,0x0000000018000000L});
+    public static final BitSet FOLLOW_57 = new BitSet(new long[]{0x0000000000100000L,0x0000000018000000L});
+    public static final BitSet FOLLOW_58 = new BitSet(new long[]{0x0000000000000000L,0x0000000000004000L});
+    public static final BitSet FOLLOW_59 = new BitSet(new long[]{0x0000000000000000L,0x0000000000002000L});
+    public static final BitSet FOLLOW_60 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_61 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008200L});
+    public static final BitSet FOLLOW_62 = new BitSet(new long[]{0x0800000000000000L});
+    public static final BitSet FOLLOW_63 = new BitSet(new long[]{0x0000000000000010L,0x0000000020000000L});
+    public static final BitSet FOLLOW_64 = new BitSet(new long[]{0x0000000000000000L,0x00000001C0000000L});
+    public static final BitSet FOLLOW_65 = new BitSet(new long[]{0x0000000000008000L,0x0000000000002200L});
 
 }

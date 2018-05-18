@@ -26,14 +26,14 @@ import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * Test Case for {@link OseeDslAccessModel}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class OseeDslAccessModelTest {
@@ -42,7 +42,7 @@ public class OseeDslAccessModelTest {
 
    @BeforeClass
    public static void setUp() {
-      accessContextId = TokenFactory.createAccessContextId(GUID.create(), "Context 1");
+      accessContextId = IAccessContextId.valueOf(Lib.generateArtifactIdAsInt(), "Context 1");
    }
 
    @Test(expected = OseeArgumentException.class)
@@ -92,7 +92,8 @@ public class OseeDslAccessModelTest {
 
       final AccessData accessData = new AccessData();
 
-      final AccessContext accessContext = MockModel.createAccessContext(GUID.create(), "Access Context");
+      final AccessContext accessContext =
+         MockModel.createAccessContext(Lib.generateArtifactIdAsInt(), "Access Context");
 
       OseeDsl oseeDsl = MockModel.createDsl();
       oseeDsl.getAccessDeclarations().add(accessContext);

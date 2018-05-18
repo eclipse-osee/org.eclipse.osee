@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.access;
 
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.util.Arrays;
+import java.util.Collection;
 import org.eclipse.osee.ats.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
@@ -87,8 +88,8 @@ public class AtsBranchAccessManagerTest {
       // confirm that no context id returned
       Assert.assertEquals(0, mgr.getContextId(teamArt.getWorkingBranch(), false).size());
 
-      String teamDefContextId1 = "teamDef.context.1";
-      String teamDefContextId2 = "teamDef.context.2";
+      String teamDefContextId1 = "1234";
+      String teamDefContextId2 = "2345";
       Artifact teamDefArt =
          (Artifact) AtsClientService.get().getQueryService().getArtifact(teamArt.getTeamDefinition());
       teamDefArt.setAttributeValues(CoreAttributeTypes.AccessContextId,
@@ -97,7 +98,7 @@ public class AtsBranchAccessManagerTest {
 
       Assert.assertEquals(2, mgr.getContextId(teamArt.getWorkingBranch(), false).size());
 
-      String aiContextId = "ai.context.1";
+      String aiContextId = "6789";
       Artifact aiArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(
          ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Requirements.getName()),
             AtsClientService.get()).iterator().next());
@@ -106,9 +107,9 @@ public class AtsBranchAccessManagerTest {
 
       Assert.assertEquals(1, mgr.getContextId(teamArt.getWorkingBranch(), false).size());
 
-      String teamContextId1 = "team.context.1";
-      String teamContextId2 = "team.context.2";
-      String teamContextId3 = "team.context.3";
+      String teamContextId1 = "1234";
+      String teamContextId2 = "2345";
+      String teamContextId3 = "3456";
       teamArt.setAttributeValues(CoreAttributeTypes.AccessContextId,
          Arrays.asList(teamContextId1, teamContextId2, teamContextId3));
       teamArt.persist(getClass().getSimpleName());
@@ -132,7 +133,7 @@ public class AtsBranchAccessManagerTest {
       // confirm that no context id returned
       Assert.assertEquals(0, mgr.getContextId(teamArt.getWorkingBranch()).size());
 
-      String teamDefContextId1 = "teamDef.context.1, this is the name";
+      String teamDefContextId1 = "16546, this is the name";
       Artifact teamDefArt =
          (Artifact) AtsClientService.get().getQueryService().getArtifact(teamArt.getTeamDefinition());
       teamDefArt.setAttributeValues(CoreAttributeTypes.AccessContextId, Arrays.asList(teamDefContextId1));
@@ -140,8 +141,9 @@ public class AtsBranchAccessManagerTest {
 
       mgr.clearCache();
 
-      Assert.assertEquals(1, mgr.getContextId(teamArt.getWorkingBranch()).size());
-      IAccessContextId contextId = mgr.getContextId(teamArt.getWorkingBranch()).iterator().next();
-      Assert.assertEquals("teamDef.context.1", contextId.getGuid());
+      Collection<IAccessContextId> contextIds = mgr.getContextId(teamArt.getWorkingBranch());
+      Assert.assertEquals(1, contextIds.size());
+      IAccessContextId contextId = contextIds.iterator().next();
+      Assert.assertEquals(Long.valueOf(16546), contextId.getId());
    }
 }

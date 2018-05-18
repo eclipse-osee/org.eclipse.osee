@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.dsl.ui.integration;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslProvider;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 
@@ -54,6 +56,11 @@ public class MockDslProvider implements OseeDslProvider {
 
    public boolean wasGetDslCalled() {
       return wasGetDslCalled;
+   }
+
+   @Override
+   public Map<String, Long> getContextGuidToIdMap() {
+      return new ConcurrentHashMap<>();
    }
 
 }

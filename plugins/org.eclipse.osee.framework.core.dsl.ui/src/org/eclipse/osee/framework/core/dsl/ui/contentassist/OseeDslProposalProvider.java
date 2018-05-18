@@ -5,7 +5,7 @@ package org.eclipse.osee.framework.core.dsl.ui.contentassist;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.xtext.Assignment;
 import org.eclipse.xtext.RuleCall;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
@@ -19,7 +19,7 @@ public class OseeDslProposalProvider extends AbstractOseeDslProposalProvider {
    @Override
    public void completeXAttributeTypeRef_BranchUuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
       super.completeXAttributeTypeRef_BranchUuid(model, assignment, context, acceptor);
-      completeGuidGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
+      completeIdGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
    }
 
    @Override
@@ -28,9 +28,9 @@ public class OseeDslProposalProvider extends AbstractOseeDslProposalProvider {
    }
 
    @Override
-   public void completeAccessContext_Guid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-      super.completeAccessContext_Guid(model, assignment, context, acceptor);
-      completeGuidGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
+   public void completeAccessContext_Id(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+      super.completeAccessContext_Id(model, assignment, context, acceptor);
+      completeIdGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
    }
 
    @Override
@@ -57,11 +57,11 @@ public class OseeDslProposalProvider extends AbstractOseeDslProposalProvider {
       completeRemoteTypeIdGeneration(context, acceptor);
    }
 
-   private void completeGuidGeneration(RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+   private void completeIdGeneration(RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
       if (acceptor.canAcceptMoreProposals()) {
-         String generatedGUID = String.format("\"%s\"", GUID.create());
-         String displayProposalAs = generatedGUID + "- GUID";
-         ICompletionProposal proposal = createCompletionProposal(generatedGUID, displayProposalAs, null, context);
+         String generatedId = String.format("\"%s\"", Lib.generateArtifactIdAsInt());
+         String displayProposalAs = generatedId + "- ID";
+         ICompletionProposal proposal = createCompletionProposal(generatedId, displayProposalAs, null, context);
          acceptor.accept(proposal);
       }
    }

@@ -11,13 +11,19 @@
 package org.eclipse.osee.framework.core.dsl.ui.integration.operations;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslProvider;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Roberto E. Escobar
@@ -67,6 +73,26 @@ public abstract class AbstractOseeDslProvider implements OseeDslProvider {
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
+   }
+
+   private Map<String, Long> accessGuidToId = null;
+
+   @Override
+   public Map<String, Long> getContextGuidToIdMap() {
+      if (accessGuidToId == null) {
+         accessGuidToId = new ConcurrentHashMap<String, Long>();
+         Artifact mapArt = ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.AccessIdMap);
+         if (mapArt.isValid()) {
+            String mapStr = mapArt.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData);
+            for (String line : mapStr.split("\n")) {
+               String[] values = line.split(",");
+               String guid = values[1];
+               Long id = Long.valueOf(values[0]);
+               accessGuidToId.put(guid, id);
+            }
+         }
+      }
+      return accessGuidToId;
    }
 
 }

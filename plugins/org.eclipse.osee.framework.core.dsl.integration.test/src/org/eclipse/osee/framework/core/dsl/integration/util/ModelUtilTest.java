@@ -127,7 +127,7 @@ public class ModelUtilTest {
       Assert.assertEquals(2, model1.getAccessDeclarations().size());
       Iterator<AccessContext> type5 = model1.getAccessDeclarations().iterator();
       AccessContext context1 = type5.next();
-      DslAsserts.assertEquals(context1, "System Context", "AAMFEcWy0xc4e3tcem11", new String[0]);
+      DslAsserts.assertEquals(context1, "System Context", 676767676L, new String[0]);
       List<ObjectRestriction> restrictions1 = context1.getAccessRules();
       Assert.assertEquals(1, restrictions1.size());
       DslAsserts.assertEquals((ArtifactTypeRestriction) restrictions1.iterator().next(), AccessPermissionEnum.DENY,
@@ -142,8 +142,7 @@ public class ModelUtilTest {
       DslAsserts.assertEquals(heirar.next(), "SubSystems");
 
       AccessContext context2 = type5.next();
-      DslAsserts.assertEquals(context2, "subsystem.requirement.writer", "AAMFEcWy0xc4e3tcem22",
-         new String[] {"System Context"});
+      DslAsserts.assertEquals(context2, "subsystem.requirement.writer", 89898989898L, new String[] {"System Context"});
       List<ObjectRestriction> restrictions2 = context2.getAccessRules();
       Assert.assertEquals(4, restrictions2.size());
       Iterator<ObjectRestriction> restIt = restrictions2.iterator();

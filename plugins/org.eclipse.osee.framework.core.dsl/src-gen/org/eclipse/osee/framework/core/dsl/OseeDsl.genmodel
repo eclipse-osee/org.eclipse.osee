@@ -151,12 +151,12 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//ReferencedContext/accessContextRef"/>
     </genClasses>
     <genClasses ecoreClass="OseeDsl.ecore#//UsersAndGroups">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//UsersAndGroups/userOrGroupGuid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//UsersAndGroups/userOrGroupId"/>
     </genClasses>
     <genClasses ecoreClass="OseeDsl.ecore#//AccessContext">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//AccessContext/name"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//AccessContext/superAccessContexts"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//AccessContext/guid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//AccessContext/id"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//AccessContext/accessRules"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//AccessContext/hierarchyRestrictions"/>
     </genClasses>

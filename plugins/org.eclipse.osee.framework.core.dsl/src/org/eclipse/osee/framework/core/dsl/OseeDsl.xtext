@@ -142,11 +142,11 @@ ReferencedContext:
 	'accessContext' accessContextRef=STRING ';';
 
 UsersAndGroups:
-	'guid' userOrGroupGuid=STRING ';';
+	'id' userOrGroupId=WHOLE_NUM_STR ';';
 
 AccessContext:
 	'accessContext' name=STRING ('extends'
-	superAccessContexts+=[AccessContext|STRING])? '{' 'guid' guid=STRING ';'
+	superAccessContexts+=[AccessContext|STRING])? '{' 'id' id=WHOLE_NUM_STR ';'
 	(accessRules+=ObjectRestriction | hierarchyRestrictions+=HierarchyRestriction)+ '}';
 
 HierarchyRestriction:

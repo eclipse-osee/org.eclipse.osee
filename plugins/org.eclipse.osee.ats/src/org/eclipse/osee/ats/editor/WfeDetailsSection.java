@@ -153,7 +153,8 @@ public class WfeDetailsSection extends SectionPart {
          if (workingBranch == null) {
             try {
                // get what would be if branch created
-               ids = AtsBranchAccessManager.internalGetFromWorkflow(workflow);
+               AtsBranchAccessManager accessMgr = new AtsBranchAccessManager();
+               ids = accessMgr.internalGetFromWorkflow(workflow);
                message = ids.toString();
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

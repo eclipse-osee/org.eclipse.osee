@@ -53,4 +53,5 @@ public class AtsAccessOseeDslProvider extends AbstractOseeDslProvider {
          artifact.persist(getClass().getSimpleName());
       }
    }
+
 }

@@ -8,7 +8,7 @@ When database schema, types or dbinit change, the files in this data directory m
 To do so:
 
 1) Delete C:/Users/<account>/hsql and C:/Users/<account>/attr
-2) Do a normal AtsClient_Integration_TestSuite, stop before ClientResourceTest
+2) Do a normal AtsClient_Integration_TestSuite, stop before AtsTest_AllAts_Suite
 3) Re-launch the application server and client to prime the database 
 	- Close client/server, open hsql directory.  .log file should not be large, .script should
 4) Zip up hsql dir to hsql.zip and copy to this directory

@@ -6612,11 +6612,11 @@ rule__UsersAndGroups__Group__0__Impl
     }
 :
 (
-{ before(grammarAccess.getUsersAndGroupsAccess().getGuidKeyword_0()); }
+{ before(grammarAccess.getUsersAndGroupsAccess().getIdKeyword_0()); }
 
-	'guid' 
+	'id' 
 
-{ after(grammarAccess.getUsersAndGroupsAccess().getGuidKeyword_0()); }
+{ after(grammarAccess.getUsersAndGroupsAccess().getIdKeyword_0()); }
 )
 
 ;
@@ -6643,9 +6643,9 @@ rule__UsersAndGroups__Group__1__Impl
     }
 :
 (
-{ before(grammarAccess.getUsersAndGroupsAccess().getUserOrGroupGuidAssignment_1()); }
-(rule__UsersAndGroups__UserOrGroupGuidAssignment_1)
-{ after(grammarAccess.getUsersAndGroupsAccess().getUserOrGroupGuidAssignment_1()); }
+{ before(grammarAccess.getUsersAndGroupsAccess().getUserOrGroupIdAssignment_1()); }
+(rule__UsersAndGroups__UserOrGroupIdAssignment_1)
+{ after(grammarAccess.getUsersAndGroupsAccess().getUserOrGroupIdAssignment_1()); }
 )
 
 ;
@@ -6828,11 +6828,11 @@ rule__AccessContext__Group__4__Impl
     }
 :
 (
-{ before(grammarAccess.getAccessContextAccess().getGuidKeyword_4()); }
+{ before(grammarAccess.getAccessContextAccess().getIdKeyword_4()); }
 
-	'guid' 
+	'id' 
 
-{ after(grammarAccess.getAccessContextAccess().getGuidKeyword_4()); }
+{ after(grammarAccess.getAccessContextAccess().getIdKeyword_4()); }
 )
 
 ;
@@ -6859,9 +6859,9 @@ rule__AccessContext__Group__5__Impl
     }
 :
 (
-{ before(grammarAccess.getAccessContextAccess().getGuidAssignment_5()); }
-(rule__AccessContext__GuidAssignment_5)
-{ after(grammarAccess.getAccessContextAccess().getGuidAssignment_5()); }
+{ before(grammarAccess.getAccessContextAccess().getIdAssignment_5()); }
+(rule__AccessContext__IdAssignment_5)
+{ after(grammarAccess.getAccessContextAccess().getIdAssignment_5()); }
 )
 
 ;
@@ -9582,14 +9582,14 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__UsersAndGroups__UserOrGroupGuidAssignment_1
+rule__UsersAndGroups__UserOrGroupIdAssignment_1
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getUsersAndGroupsAccess().getUserOrGroupGuidSTRINGTerminalRuleCall_1_0()); }
-	RULE_STRING{ after(grammarAccess.getUsersAndGroupsAccess().getUserOrGroupGuidSTRINGTerminalRuleCall_1_0()); }
+{ before(grammarAccess.getUsersAndGroupsAccess().getUserOrGroupIdWHOLE_NUM_STRTerminalRuleCall_1_0()); }
+	RULE_WHOLE_NUM_STR{ after(grammarAccess.getUsersAndGroupsAccess().getUserOrGroupIdWHOLE_NUM_STRTerminalRuleCall_1_0()); }
 )
 
 ;
@@ -9631,14 +9631,14 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__AccessContext__GuidAssignment_5
+rule__AccessContext__IdAssignment_5
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getAccessContextAccess().getGuidSTRINGTerminalRuleCall_5_0()); }
-	RULE_STRING{ after(grammarAccess.getAccessContextAccess().getGuidSTRINGTerminalRuleCall_5_0()); }
+{ before(grammarAccess.getAccessContextAccess().getIdWHOLE_NUM_STRTerminalRuleCall_5_0()); }
+	RULE_WHOLE_NUM_STR{ after(grammarAccess.getAccessContextAccess().getIdWHOLE_NUM_STRTerminalRuleCall_5_0()); }
 )
 
 ;

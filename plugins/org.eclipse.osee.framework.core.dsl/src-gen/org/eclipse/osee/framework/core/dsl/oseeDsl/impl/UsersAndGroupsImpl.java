@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.UsersAndGroupsImpl#getUserOrGroupGuid <em>User Or Group Guid</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.UsersAndGroupsImpl#getUserOrGroupId <em>User Or Group Id</em>}</li>
  * </ul>
  *
  * @generated
@@ -28,24 +28,24 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups;
 public class UsersAndGroupsImpl extends MinimalEObjectImpl.Container implements UsersAndGroups
 {
   /**
-   * The default value of the '{@link #getUserOrGroupGuid() <em>User Or Group Guid</em>}' attribute.
+   * The default value of the '{@link #getUserOrGroupId() <em>User Or Group Id</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getUserOrGroupGuid()
+   * @see #getUserOrGroupId()
    * @generated
    * @ordered
    */
-  protected static final String USER_OR_GROUP_GUID_EDEFAULT = null;
+  protected static final String USER_OR_GROUP_ID_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getUserOrGroupGuid() <em>User Or Group Guid</em>}' attribute.
+   * The cached value of the '{@link #getUserOrGroupId() <em>User Or Group Id</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getUserOrGroupGuid()
+   * @see #getUserOrGroupId()
    * @generated
    * @ordered
    */
-  protected String userOrGroupGuid = USER_OR_GROUP_GUID_EDEFAULT;
+  protected String userOrGroupId = USER_OR_GROUP_ID_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -73,9 +73,9 @@ public class UsersAndGroupsImpl extends MinimalEObjectImpl.Container implements 
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getUserOrGroupGuid()
+  public String getUserOrGroupId()
   {
-    return userOrGroupGuid;
+    return userOrGroupId;
   }
 
   /**
@@ -83,12 +83,12 @@ public class UsersAndGroupsImpl extends MinimalEObjectImpl.Container implements 
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setUserOrGroupGuid(String newUserOrGroupGuid)
+  public void setUserOrGroupId(String newUserOrGroupId)
   {
-    String oldUserOrGroupGuid = userOrGroupGuid;
-    userOrGroupGuid = newUserOrGroupGuid;
+    String oldUserOrGroupId = userOrGroupId;
+    userOrGroupId = newUserOrGroupId;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.USERS_AND_GROUPS__USER_OR_GROUP_GUID, oldUserOrGroupGuid, userOrGroupGuid));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.USERS_AND_GROUPS__USER_OR_GROUP_ID, oldUserOrGroupId, userOrGroupId));
   }
 
   /**
@@ -101,8 +101,8 @@ public class UsersAndGroupsImpl extends MinimalEObjectImpl.Container implements 
   {
     switch (featureID)
     {
-      case OseeDslPackage.USERS_AND_GROUPS__USER_OR_GROUP_GUID:
-        return getUserOrGroupGuid();
+      case OseeDslPackage.USERS_AND_GROUPS__USER_OR_GROUP_ID:
+        return getUserOrGroupId();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -117,8 +117,8 @@ public class UsersAndGroupsImpl extends MinimalEObjectImpl.Container implements 
   {
     switch (featureID)
     {
-      case OseeDslPackage.USERS_AND_GROUPS__USER_OR_GROUP_GUID:
-        setUserOrGroupGuid((String)newValue);
+      case OseeDslPackage.USERS_AND_GROUPS__USER_OR_GROUP_ID:
+        setUserOrGroupId((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -134,8 +134,8 @@ public class UsersAndGroupsImpl extends MinimalEObjectImpl.Container implements 
   {
     switch (featureID)
     {
-      case OseeDslPackage.USERS_AND_GROUPS__USER_OR_GROUP_GUID:
-        setUserOrGroupGuid(USER_OR_GROUP_GUID_EDEFAULT);
+      case OseeDslPackage.USERS_AND_GROUPS__USER_OR_GROUP_ID:
+        setUserOrGroupId(USER_OR_GROUP_ID_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -151,8 +151,8 @@ public class UsersAndGroupsImpl extends MinimalEObjectImpl.Container implements 
   {
     switch (featureID)
     {
-      case OseeDslPackage.USERS_AND_GROUPS__USER_OR_GROUP_GUID:
-        return USER_OR_GROUP_GUID_EDEFAULT == null ? userOrGroupGuid != null : !USER_OR_GROUP_GUID_EDEFAULT.equals(userOrGroupGuid);
+      case OseeDslPackage.USERS_AND_GROUPS__USER_OR_GROUP_ID:
+        return USER_OR_GROUP_ID_EDEFAULT == null ? userOrGroupId != null : !USER_OR_GROUP_ID_EDEFAULT.equals(userOrGroupId);
     }
     return super.eIsSet(featureID);
   }
@@ -168,8 +168,8 @@ public class UsersAndGroupsImpl extends MinimalEObjectImpl.Container implements 
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (userOrGroupGuid: ");
-    result.append(userOrGroupGuid);
+    result.append(" (userOrGroupId: ");
+    result.append(userOrGroupId);
     result.append(')');
     return result.toString();
   }

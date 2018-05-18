@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class CmAccessProviderTest {
    public static void setup() {
       expectedUser = ArtifactToken.valueOf(13, null, COMMON);
       expectedObject = new Object();
-      contextId1 = MockDataFactory.createAccessContextId(GUID.create(), "context1");
+      contextId1 = MockDataFactory.createAccessContextId(Lib.generateArtifactIdAsInt(), "context1");
    }
 
    @Test

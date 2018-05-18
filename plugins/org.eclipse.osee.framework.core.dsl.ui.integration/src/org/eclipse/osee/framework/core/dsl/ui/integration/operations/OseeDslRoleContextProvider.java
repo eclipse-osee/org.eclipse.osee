@@ -23,7 +23,6 @@ import java.util.logging.Level;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslProvider;
 import org.eclipse.osee.framework.core.dsl.integration.RoleContextProvider;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
@@ -32,8 +31,11 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.ReferencedContext;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.Role;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -65,21 +67,33 @@ public class OseeDslRoleContextProvider implements RoleContextProvider {
       if (!roleDeclarations.isEmpty()) {
 
          //find which roles have the relevant guids
-         List<String> applicableGuids;
+         List<Long> applicableIds;
          try {
-            applicableGuids = getApplicableGuids(user);
+            applicableIds = getApplicableIds(user);
          } catch (OseeCoreException ex) {
             OseeLog.log(OseeDslRoleContextProvider.class, Level.SEVERE, Lib.exceptionToString(ex));
             return Collections.emptyList();
          }
 
          //now go through roles and roll up the inherited roles
-         Set<Role> applicableRoles = getApplicableRoles(dsl.getRoleDeclarations(), applicableGuids);
+         Set<Role> applicableRoles = getApplicableRoles(dsl.getRoleDeclarations(), applicableIds);
 
          if (!applicableRoles.isEmpty()) {
-            Map<String, String> accessContextMap = new HashMap<>();
+            Map<String, Long> accessContextMap = new HashMap<>();
             for (AccessContext ac : dsl.getAccessDeclarations()) {
-               accessContextMap.put(ac.getName(), ac.getGuid());
+               Long id = null;
+               if (Strings.isNumeric(ac.getId())) {
+                  id = Long.valueOf(ac.getId());
+               } else if (GUID.isValid(ac.getId())) {
+                  id = dslProvider.getContextGuidToIdMap().get(ac.getId());
+                  if (id == null) {
+                     throw new OseeArgumentException("Can't find AccessContextId for id [%s] in AccessIdMap artifact.",
+                        ac.getId());
+                  }
+               } else {
+                  throw new OseeArgumentException("Invalid AccessContext id [%s]");
+               }
+               accessContextMap.put(ac.getName(), Long.valueOf(ac.getId()));
             }
 
             //now get the context id's
@@ -87,7 +101,7 @@ public class OseeDslRoleContextProvider implements RoleContextProvider {
             for (Role role : applicableRoles) {
                for (ReferencedContext ref : role.getReferencedContexts()) {
                   String contextName = ref.getAccessContextRef();
-                  toReturn.add(TokenFactory.createAccessContextId(accessContextMap.get(contextName), contextName));
+                  toReturn.add(IAccessContextId.valueOf(accessContextMap.get(contextName), contextName));
                }
             }
          }
@@ -95,11 +109,24 @@ public class OseeDslRoleContextProvider implements RoleContextProvider {
       return toReturn;
    }
 
-   private Set<Role> getApplicableRoles(List<Role> roles, List<String> applicableGuids) {
+   private Set<Role> getApplicableRoles(List<Role> roles, List<Long> applicableIds) {
       Queue<Role> applicableRoles = new LinkedList<>();
       for (Role role : roles) {
          for (UsersAndGroups uag : role.getUsersAndGroups()) {
-            if (applicableGuids.contains(uag.getUserOrGroupGuid()) && !applicableRoles.contains(role)) {
+            String userOrGroupIdStr = uag.getUserOrGroupId();
+            Long userOrGroupId = null;
+            if (Strings.isNumeric(userOrGroupIdStr)) {
+               userOrGroupId = Long.valueOf(userOrGroupIdStr);
+            } else if (GUID.isValid(userOrGroupIdStr)) {
+               userOrGroupId = dslProvider.getContextGuidToIdMap().get(userOrGroupIdStr);
+               if (userOrGroupId == null) {
+                  throw new OseeArgumentException("Can't find UserOrGroupId for guid [%s] in AccessIdMap artifact.",
+                     userOrGroupIdStr);
+               }
+            } else {
+               throw new OseeArgumentException("Invalid UserOrGroupId id [%s]");
+            }
+            if (applicableIds.contains(userOrGroupId) && !applicableRoles.contains(role)) {
                applicableRoles.add(role);
                break;
             }
@@ -107,12 +134,13 @@ public class OseeDslRoleContextProvider implements RoleContextProvider {
       }
 
       Set<Role> includesInherited = new HashSet<>();
+
       getSuperRoles(includesInherited, applicableRoles);
       return includesInherited;
    }
 
-   private List<String> getApplicableGuids(ArtifactToken user) {
-      List<String> applicableGuids = new LinkedList<>();
+   private List<Long> getApplicableIds(ArtifactToken user) {
+      List<Long> applicableIds = new LinkedList<>();
       List<Artifact> groups = Collections.emptyList();
 
       try {
@@ -127,12 +155,12 @@ public class OseeDslRoleContextProvider implements RoleContextProvider {
          OseeLog.log(OseeDslRoleContextProvider.class, Level.SEVERE, Lib.exceptionToString(ex));
       }
 
-      String userGuid = user.getGuid();
-      applicableGuids.add(userGuid);
+      Long userId = user.getId();
+      applicableIds.add(userId);
       for (Artifact group : groups) {
-         applicableGuids.add(group.getGuid());
+         applicableIds.add(group.getId());
       }
-      return applicableGuids;
+      return applicableIds;
    }
 
    private void getSuperRoles(Set<Role> visited, Queue<Role> toVisit) {
@@ -142,5 +170,10 @@ public class OseeDslRoleContextProvider implements RoleContextProvider {
          toVisit.addAll(role.getSuperRoles());
          getSuperRoles(visited, toVisit);
       }
+   }
+
+   @Override
+   public Map<String, Long> getContextGuidToIdMap() {
+      return dslProvider.getContextGuidToIdMap();
    }
 }

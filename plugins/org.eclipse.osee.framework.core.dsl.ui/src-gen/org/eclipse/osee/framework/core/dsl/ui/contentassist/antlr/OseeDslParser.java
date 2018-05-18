@@ -183,10 +183,10 @@ public class OseeDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getRoleAccess().getUsersAndGroupsAssignment_4_0(), "rule__Role__UsersAndGroupsAssignment_4_0");
 					put(grammarAccess.getRoleAccess().getReferencedContextsAssignment_4_1(), "rule__Role__ReferencedContextsAssignment_4_1");
 					put(grammarAccess.getReferencedContextAccess().getAccessContextRefAssignment_1(), "rule__ReferencedContext__AccessContextRefAssignment_1");
-					put(grammarAccess.getUsersAndGroupsAccess().getUserOrGroupGuidAssignment_1(), "rule__UsersAndGroups__UserOrGroupGuidAssignment_1");
+					put(grammarAccess.getUsersAndGroupsAccess().getUserOrGroupIdAssignment_1(), "rule__UsersAndGroups__UserOrGroupIdAssignment_1");
 					put(grammarAccess.getAccessContextAccess().getNameAssignment_1(), "rule__AccessContext__NameAssignment_1");
 					put(grammarAccess.getAccessContextAccess().getSuperAccessContextsAssignment_2_1(), "rule__AccessContext__SuperAccessContextsAssignment_2_1");
-					put(grammarAccess.getAccessContextAccess().getGuidAssignment_5(), "rule__AccessContext__GuidAssignment_5");
+					put(grammarAccess.getAccessContextAccess().getIdAssignment_5(), "rule__AccessContext__IdAssignment_5");
 					put(grammarAccess.getAccessContextAccess().getAccessRulesAssignment_7_0(), "rule__AccessContext__AccessRulesAssignment_7_0");
 					put(grammarAccess.getAccessContextAccess().getHierarchyRestrictionsAssignment_7_1(), "rule__AccessContext__HierarchyRestrictionsAssignment_7_1");
 					put(grammarAccess.getHierarchyRestrictionAccess().getArtifactMatcherRefAssignment_1(), "rule__HierarchyRestriction__ArtifactMatcherRefAssignment_1");

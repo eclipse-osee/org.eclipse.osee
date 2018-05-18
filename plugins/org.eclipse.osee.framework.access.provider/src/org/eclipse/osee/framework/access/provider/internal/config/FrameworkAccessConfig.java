@@ -14,8 +14,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import org.eclipse.osee.framework.access.provider.internal.DefaultFrameworkAccessConstants;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.util.OseeInf;
@@ -45,8 +44,7 @@ public class FrameworkAccessConfig implements IDbInitializationTask {
          inputStream = new BufferedInputStream(url.openStream());
          SkynetTransaction transaction =
             TransactionManager.createTransaction(CoreBranches.COMMON, "Add Framework Access Model");
-         Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.AccessControlModel, CoreBranches.COMMON);
-         artifact.setName(DefaultFrameworkAccessConstants.STORAGE_ARTIFACT_NAME);
+         Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTokens.FrameworkAccessModel);
          artifact.setSoleAttributeFromStream(CoreAttributeTypes.GeneralStringData, inputStream);
          artifact.persist(transaction);
          transaction.execute();

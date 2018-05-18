@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration;
 
+import java.util.Map;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 
 /**
@@ -22,4 +23,6 @@ public interface OseeDslProvider {
    OseeDsl getDsl();
 
    void storeDsl(OseeDsl dsl);
+
+   Map<String, Long> getContextGuidToIdMap();
 }

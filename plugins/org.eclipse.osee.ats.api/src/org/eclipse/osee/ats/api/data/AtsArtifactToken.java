@@ -25,7 +25,7 @@ public final class AtsArtifactToken {
     * bases may be looking at different artifacts for their access control based on the current OSEE Types and Access
     * grammar.
     */
-   public static final ArtifactToken AtsCmAccessControl = ArtifactToken.valueOf(8635612, "ATS CM Access Control", COMMON, CoreArtifactTypes.GeneralData);
+   public static final ArtifactToken AtsCmAccessControl = ArtifactToken.valueOf(9885573, "ATS CM Access Control", COMMON, CoreArtifactTypes.GeneralData);
    public static final ArtifactToken AtsConfig = ArtifactToken.valueOf(5367053, "ATS Config", COMMON, CoreArtifactTypes.GeneralData);
    public static final ArtifactToken RuleDefinitions = ArtifactToken.valueOf(7880473, "Rule Definitions", COMMON, AtsArtifactTypes.RuleDefinition);
    public static final ArtifactToken Users = ArtifactToken.valueOf(95459, "Users", COMMON, CoreArtifactTypes.Folder);

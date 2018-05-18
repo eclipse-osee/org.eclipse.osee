@@ -1351,7 +1351,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getUsersAndGroups_UserOrGroupGuid()
+  public EAttribute getUsersAndGroups_UserOrGroupId()
   {
     return (EAttribute)usersAndGroupsEClass.getEStructuralFeatures().get(0);
   }
@@ -1391,7 +1391,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getAccessContext_Guid()
+  public EAttribute getAccessContext_Id()
   {
     return (EAttribute)accessContextEClass.getEStructuralFeatures().get(2);
   }
@@ -1902,12 +1902,12 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     createEAttribute(referencedContextEClass, REFERENCED_CONTEXT__ACCESS_CONTEXT_REF);
 
     usersAndGroupsEClass = createEClass(USERS_AND_GROUPS);
-    createEAttribute(usersAndGroupsEClass, USERS_AND_GROUPS__USER_OR_GROUP_GUID);
+    createEAttribute(usersAndGroupsEClass, USERS_AND_GROUPS__USER_OR_GROUP_ID);
 
     accessContextEClass = createEClass(ACCESS_CONTEXT);
     createEAttribute(accessContextEClass, ACCESS_CONTEXT__NAME);
     createEReference(accessContextEClass, ACCESS_CONTEXT__SUPER_ACCESS_CONTEXTS);
-    createEAttribute(accessContextEClass, ACCESS_CONTEXT__GUID);
+    createEAttribute(accessContextEClass, ACCESS_CONTEXT__ID);
     createEReference(accessContextEClass, ACCESS_CONTEXT__ACCESS_RULES);
     createEReference(accessContextEClass, ACCESS_CONTEXT__HIERARCHY_RESTRICTIONS);
 
@@ -2124,12 +2124,12 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     initEAttribute(getReferencedContext_AccessContextRef(), ecorePackage.getEString(), "accessContextRef", null, 0, 1, ReferencedContext.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(usersAndGroupsEClass, UsersAndGroups.class, "UsersAndGroups", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getUsersAndGroups_UserOrGroupGuid(), ecorePackage.getEString(), "userOrGroupGuid", null, 0, 1, UsersAndGroups.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getUsersAndGroups_UserOrGroupId(), ecorePackage.getEString(), "userOrGroupId", null, 0, 1, UsersAndGroups.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(accessContextEClass, AccessContext.class, "AccessContext", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getAccessContext_Name(), ecorePackage.getEString(), "name", null, 0, 1, AccessContext.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAccessContext_SuperAccessContexts(), this.getAccessContext(), null, "superAccessContexts", null, 0, -1, AccessContext.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getAccessContext_Guid(), ecorePackage.getEString(), "guid", null, 0, 1, AccessContext.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getAccessContext_Id(), ecorePackage.getEString(), "id", null, 0, 1, AccessContext.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAccessContext_AccessRules(), this.getObjectRestriction(), null, "accessRules", null, 0, -1, AccessContext.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAccessContext_HierarchyRestrictions(), this.getHierarchyRestriction(), null, "hierarchyRestrictions", null, 0, -1, AccessContext.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 

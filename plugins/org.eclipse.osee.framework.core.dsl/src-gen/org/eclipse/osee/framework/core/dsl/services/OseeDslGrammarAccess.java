@@ -1565,26 +1565,26 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	public class UsersAndGroupsElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.eclipse.osee.framework.core.dsl.OseeDsl.UsersAndGroups");
 		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cGuidKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Assignment cUserOrGroupGuidAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cUserOrGroupGuidSTRINGTerminalRuleCall_1_0 = (RuleCall)cUserOrGroupGuidAssignment_1.eContents().get(0);
+		private final Keyword cIdKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cUserOrGroupIdAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cUserOrGroupIdWHOLE_NUM_STRTerminalRuleCall_1_0 = (RuleCall)cUserOrGroupIdAssignment_1.eContents().get(0);
 		private final Keyword cSemicolonKeyword_2 = (Keyword)cGroup.eContents().get(2);
 		
 		//UsersAndGroups:
-		//	'guid' userOrGroupGuid=STRING ';';
+		//	'id' userOrGroupId=WHOLE_NUM_STR ';';
 		@Override public ParserRule getRule() { return rule; }
 
-		//'guid' userOrGroupGuid=STRING ';'
+		//'id' userOrGroupId=WHOLE_NUM_STR ';'
 		public Group getGroup() { return cGroup; }
 
-		//'guid'
-		public Keyword getGuidKeyword_0() { return cGuidKeyword_0; }
+		//'id'
+		public Keyword getIdKeyword_0() { return cIdKeyword_0; }
 
-		//userOrGroupGuid=STRING
-		public Assignment getUserOrGroupGuidAssignment_1() { return cUserOrGroupGuidAssignment_1; }
+		//userOrGroupId=WHOLE_NUM_STR
+		public Assignment getUserOrGroupIdAssignment_1() { return cUserOrGroupIdAssignment_1; }
 
-		//STRING
-		public RuleCall getUserOrGroupGuidSTRINGTerminalRuleCall_1_0() { return cUserOrGroupGuidSTRINGTerminalRuleCall_1_0; }
+		//WHOLE_NUM_STR
+		public RuleCall getUserOrGroupIdWHOLE_NUM_STRTerminalRuleCall_1_0() { return cUserOrGroupIdWHOLE_NUM_STRTerminalRuleCall_1_0; }
 
 		//';'
 		public Keyword getSemicolonKeyword_2() { return cSemicolonKeyword_2; }
@@ -1602,9 +1602,9 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final CrossReference cSuperAccessContextsAccessContextCrossReference_2_1_0 = (CrossReference)cSuperAccessContextsAssignment_2_1.eContents().get(0);
 		private final RuleCall cSuperAccessContextsAccessContextSTRINGTerminalRuleCall_2_1_0_1 = (RuleCall)cSuperAccessContextsAccessContextCrossReference_2_1_0.eContents().get(1);
 		private final Keyword cLeftCurlyBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
-		private final Keyword cGuidKeyword_4 = (Keyword)cGroup.eContents().get(4);
-		private final Assignment cGuidAssignment_5 = (Assignment)cGroup.eContents().get(5);
-		private final RuleCall cGuidSTRINGTerminalRuleCall_5_0 = (RuleCall)cGuidAssignment_5.eContents().get(0);
+		private final Keyword cIdKeyword_4 = (Keyword)cGroup.eContents().get(4);
+		private final Assignment cIdAssignment_5 = (Assignment)cGroup.eContents().get(5);
+		private final RuleCall cIdWHOLE_NUM_STRTerminalRuleCall_5_0 = (RuleCall)cIdAssignment_5.eContents().get(0);
 		private final Keyword cSemicolonKeyword_6 = (Keyword)cGroup.eContents().get(6);
 		private final Alternatives cAlternatives_7 = (Alternatives)cGroup.eContents().get(7);
 		private final Assignment cAccessRulesAssignment_7_0 = (Assignment)cAlternatives_7.eContents().get(0);
@@ -1614,11 +1614,11 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightCurlyBracketKeyword_8 = (Keyword)cGroup.eContents().get(8);
 		
 		//AccessContext:
-		//	'accessContext' name=STRING ('extends' superAccessContexts+=[AccessContext|STRING])? '{' 'guid' guid=STRING ';'
+		//	'accessContext' name=STRING ('extends' superAccessContexts+=[AccessContext|STRING])? '{' 'id' id=WHOLE_NUM_STR ';'
 		//	(accessRules+=ObjectRestriction | hierarchyRestrictions+=HierarchyRestriction)+ '}';
 		@Override public ParserRule getRule() { return rule; }
 
-		//'accessContext' name=STRING ('extends' superAccessContexts+=[AccessContext|STRING])? '{' 'guid' guid=STRING ';'
+		//'accessContext' name=STRING ('extends' superAccessContexts+=[AccessContext|STRING])? '{' 'id' id=WHOLE_NUM_STR ';'
 		//(accessRules+=ObjectRestriction | hierarchyRestrictions+=HierarchyRestriction)+ '}'
 		public Group getGroup() { return cGroup; }
 
@@ -1649,14 +1649,14 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//'{'
 		public Keyword getLeftCurlyBracketKeyword_3() { return cLeftCurlyBracketKeyword_3; }
 
-		//'guid'
-		public Keyword getGuidKeyword_4() { return cGuidKeyword_4; }
+		//'id'
+		public Keyword getIdKeyword_4() { return cIdKeyword_4; }
 
-		//guid=STRING
-		public Assignment getGuidAssignment_5() { return cGuidAssignment_5; }
+		//id=WHOLE_NUM_STR
+		public Assignment getIdAssignment_5() { return cIdAssignment_5; }
 
-		//STRING
-		public RuleCall getGuidSTRINGTerminalRuleCall_5_0() { return cGuidSTRINGTerminalRuleCall_5_0; }
+		//WHOLE_NUM_STR
+		public RuleCall getIdWHOLE_NUM_STRTerminalRuleCall_5_0() { return cIdWHOLE_NUM_STRTerminalRuleCall_5_0; }
 
 		//';'
 		public Keyword getSemicolonKeyword_6() { return cSemicolonKeyword_6; }
@@ -2866,7 +2866,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//UsersAndGroups:
-	//	'guid' userOrGroupGuid=STRING ';';
+	//	'id' userOrGroupId=WHOLE_NUM_STR ';';
 	public UsersAndGroupsElements getUsersAndGroupsAccess() {
 		return pUsersAndGroups;
 	}
@@ -2876,7 +2876,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//AccessContext:
-	//	'accessContext' name=STRING ('extends' superAccessContexts+=[AccessContext|STRING])? '{' 'guid' guid=STRING ';'
+	//	'accessContext' name=STRING ('extends' superAccessContexts+=[AccessContext|STRING])? '{' 'id' id=WHOLE_NUM_STR ';'
 	//	(accessRules+=ObjectRestriction | hierarchyRestrictions+=HierarchyRestriction)+ '}';
 	public AccessContextElements getAccessContextAccess() {
 		return pAccessContext;

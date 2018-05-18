@@ -2577,15 +2577,15 @@ ruleUsersAndGroups returns [EObject current=null]
     @init { enterRule(); 
     }
     @after { leaveRule(); }:
-(	otherlv_0='guid' 
+(	otherlv_0='id' 
     {
-    	newLeafNode(otherlv_0, grammarAccess.getUsersAndGroupsAccess().getGuidKeyword_0());
+    	newLeafNode(otherlv_0, grammarAccess.getUsersAndGroupsAccess().getIdKeyword_0());
     }
 (
 (
-		lv_userOrGroupGuid_1_0=RULE_STRING
+		lv_userOrGroupId_1_0=RULE_WHOLE_NUM_STR
 		{
-			newLeafNode(lv_userOrGroupGuid_1_0, grammarAccess.getUsersAndGroupsAccess().getUserOrGroupGuidSTRINGTerminalRuleCall_1_0()); 
+			newLeafNode(lv_userOrGroupId_1_0, grammarAccess.getUsersAndGroupsAccess().getUserOrGroupIdWHOLE_NUM_STRTerminalRuleCall_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -2593,9 +2593,9 @@ ruleUsersAndGroups returns [EObject current=null]
 	        }
        		setWithLastConsumed(
        			$current, 
-       			"userOrGroupGuid",
-        		lv_userOrGroupGuid_1_0, 
-        		"org.eclipse.osee.framework.core.dsl.OseeDsl.STRING");
+       			"userOrGroupId",
+        		lv_userOrGroupId_1_0, 
+        		"org.eclipse.osee.framework.core.dsl.OseeDsl.WHOLE_NUM_STR");
 	    }
 
 )
@@ -2667,15 +2667,15 @@ ruleAccessContext returns [EObject current=null]
     {
     	newLeafNode(otherlv_4, grammarAccess.getAccessContextAccess().getLeftCurlyBracketKeyword_3());
     }
-	otherlv_5='guid' 
+	otherlv_5='id' 
     {
-    	newLeafNode(otherlv_5, grammarAccess.getAccessContextAccess().getGuidKeyword_4());
+    	newLeafNode(otherlv_5, grammarAccess.getAccessContextAccess().getIdKeyword_4());
     }
 (
 (
-		lv_guid_6_0=RULE_STRING
+		lv_id_6_0=RULE_WHOLE_NUM_STR
 		{
-			newLeafNode(lv_guid_6_0, grammarAccess.getAccessContextAccess().getGuidSTRINGTerminalRuleCall_5_0()); 
+			newLeafNode(lv_id_6_0, grammarAccess.getAccessContextAccess().getIdWHOLE_NUM_STRTerminalRuleCall_5_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -2683,9 +2683,9 @@ ruleAccessContext returns [EObject current=null]
 	        }
        		setWithLastConsumed(
        			$current, 
-       			"guid",
-        		lv_guid_6_0, 
-        		"org.eclipse.osee.framework.core.dsl.OseeDsl.STRING");
+       			"id",
+        		lv_id_6_0, 
+        		"org.eclipse.osee.framework.core.dsl.OseeDsl.WHOLE_NUM_STR");
 	    }
 
 )

@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.api.access;
 
 import org.eclipse.osee.framework.core.data.IAccessContextId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 
 /**
  * @author Donald G. Dunne
@@ -19,7 +18,7 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 public final class AtsBranchAccessContextId {
 
    public static final IAccessContextId DENY_CONTEXT =
-      TokenFactory.createAccessContextId("ABcgU0QxFG_cQU4Ph1wA", "ats.branchobject.deny");
+      IAccessContextId.valueOf(4870045005030602805L, "ats.branchobject.deny");
 
    private AtsBranchAccessContextId() {
       // Branch Object Contexts;

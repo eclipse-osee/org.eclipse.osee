@@ -61,8 +61,7 @@ public class OseeClientQueryTest {
    public void searchForArtifactByLocalId() {
       final int EXPECTED_RESULTS = 1;
       SearchResult results =
-         oseeClient.createQueryBuilder(COMMON).andId(CoreArtifactTokens.UserGroups).getSearchResult(
-            RequestType.IDS);
+         oseeClient.createQueryBuilder(COMMON).andId(CoreArtifactTokens.UserGroups).getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
@@ -113,14 +112,14 @@ public class OseeClientQueryTest {
 
    @Test
    public void searchForExistenceOfAttributeType() {
-      final int EXPECTED_RESULTS = 28;
+      final int EXPECTED_RESULTS = 24;
       SearchResult results = oseeClient.createQueryBuilder(COMMON).andExists(Active).getSearchResult(RequestType.IDS);
       assertGreaterOrEqual(EXPECTED_RESULTS, results.getTotal());
    }
 
    @Test
    public void searchForExistenceOfAttributeTypeIncludeDeleted() {
-      final int EXPECTED_RESULTS = 28;
+      final int EXPECTED_RESULTS = 24;
       SearchResult results =
          oseeClient.createQueryBuilder(COMMON).andExists(Active).includeDeleted().getSearchResult(RequestType.IDS);
       assertGreaterOrEqual(EXPECTED_RESULTS, results.getTotal());
@@ -128,7 +127,7 @@ public class OseeClientQueryTest {
 
    @Test
    public void searchForExistenceOfAttributeTypes() {
-      final int EXPECTED_RESULTS = 28;
+      final int EXPECTED_RESULTS = 24;
       SearchResult results =
          oseeClient.createQueryBuilder(COMMON).andExists(Active, AccessContextId).getSearchResult(RequestType.IDS);
       assertGreaterOrEqual(EXPECTED_RESULTS, results.getTotal());

@@ -28,7 +28,7 @@ artifactMatcher "Software Items" where artifactId EQ "AAMFEcWy0xc4e3tcem99";
 artifactMatcher "Systems" where branchName LIKE "\\w+";
 artifactMatcher "SubSystems" where artifactName EQ "xx";
 accessContext "System Context" {
-	guid "AAMFEcWy0xc4e3tcem11";
+	id 676767676;
 	DENY edit artifactType "Artifact";
 	childrenOf "Software Items" {
 		DENY edit artifactType "Artifact";
@@ -45,7 +45,7 @@ accessContext "System Context" {
 }
 
 accessContext "subsystem.requirement.writer" extends "System Context" {
-	guid "AAMFEcWy0xc4e3tcem22";
+	id 89898989898;
 	DENY edit attributeType "Qualification Method" of artifactType "Software Requirement";
 	ALLOW edit attributeType "Qualification Method" of artifactType "Software Requirement";
 	ALLOW edit attributeType "Qualification Method" of artifactType "Software Requirement";

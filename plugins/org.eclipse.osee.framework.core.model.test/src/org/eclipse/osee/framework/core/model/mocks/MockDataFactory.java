@@ -44,9 +44,9 @@ public final class MockDataFactory {
       // Utility Class
    }
 
-   public static IAccessContextId createAccessContextId(String guid, String name) {
-      IAccessContextId cxt = TokenFactory.createAccessContextId(guid, name);
-      Assert.assertEquals(guid, cxt.getGuid());
+   public static IAccessContextId createAccessContextId(Long id, String name) {
+      IAccessContextId cxt = IAccessContextId.valueOf(id, name);
+      Assert.assertEquals(id, cxt.getId());
       Assert.assertEquals(name, cxt.getName());
       return cxt;
    }
