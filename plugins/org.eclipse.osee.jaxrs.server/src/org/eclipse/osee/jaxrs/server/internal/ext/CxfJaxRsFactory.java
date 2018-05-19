@@ -43,7 +43,6 @@ import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsContainerProvide
 import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsFactory;
 import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsProvider;
 import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsProviders;
-import org.eclipse.osee.jaxrs.server.internal.exceptions.JaxRsExceptions;
 import org.eclipse.osee.logger.Log;
 import org.osgi.framework.Bundle;
 import org.osgi.service.http.HttpService;
@@ -52,10 +51,8 @@ import org.osgi.service.http.HttpService;
  * @author Roberto E. Escobar
  */
 public final class CxfJaxRsFactory implements JaxRsFactory {
-
    private Log logger;
    private HttpService httpService;
-
    private List<Feature> features;
    private List<? extends Object> providers;
    private Map<String, Object> properties;
@@ -82,7 +79,7 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
       waem.setAddMessageToResponse(true);
 
       providers.add(waem);
-      providers.addAll(JaxRsExceptions.newExceptionProviders(logger));
+      providers.add(new GenericExceptionMapper(logger));
       providers.addAll(JacksonFeature.getProviders());
       this.providers = providers;
 

@@ -21,7 +21,6 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.cxf.jaxrs.impl.ResponseImpl;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.jaxrs.ErrorResponse;
 import org.eclipse.osee.jaxrs.JaxRsConstants;
 
 /**
@@ -104,7 +103,7 @@ public final class JaxRsExceptions {
             Object entity = response.getEntity();
             try {
                if (isErrorResponse(response)) {
-                  message = readEntity(response, ErrorResponse.class).toString();
+                  message = readEntity(response, String.class);
                } else if (entity instanceof InputStream) {
                   MediaType mediaType = response.getMediaType();
                   message = readStream((InputStream) entity, mediaType);
