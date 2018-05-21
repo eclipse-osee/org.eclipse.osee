@@ -13,9 +13,11 @@ package org.eclipse.osee.disposition.rest.internal;
 import static org.eclipse.osee.disposition.model.DispoStrings.ANALYZE_CODE;
 import static org.eclipse.osee.disposition.model.DispoStrings.ANALYZE_REQT;
 import static org.eclipse.osee.disposition.model.DispoStrings.ANALYZE_TEST;
+import java.util.Collection;
 import java.util.Map;
-import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 
@@ -34,15 +36,6 @@ public class DispoResolutionValidator {
    }
 
    private Log logger;
-   private IAtsServer atsServer;
-
-   private IAtsServer getAtsServer() {
-      return atsServer;
-   }
-
-   public void setAtsServer(IAtsServer atsServer) {
-      this.atsServer = atsServer;
-   }
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -85,7 +78,9 @@ public class DispoResolutionValidator {
    private boolean isValidWorkItem(String pcr) {
       boolean isValid = false;
       try {
-         String workItemsByLegacyPcrId = getAtsServer().getActionEndpoint().getActionState(filterPcr(pcr));
+         Conditions.assertNotNull(AtsApiService.get(), "AtsApi can't be null.");
+         Collection<IAtsWorkItem> workItemsByLegacyPcrId =
+            AtsApiService.get().getQueryService().getWorkItemsByLegacyPcrId(filterPcr(pcr));
          if (workItemsByLegacyPcrId != null && !workItemsByLegacyPcrId.isEmpty()) {
             isValid = true;
          }

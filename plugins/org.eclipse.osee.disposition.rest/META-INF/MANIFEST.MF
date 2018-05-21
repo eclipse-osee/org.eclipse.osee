@@ -20,9 +20,6 @@ Import-Package:
  org.codehaus.jackson.map.deser.std,
  org.codehaus.jackson.map.type,
  org.codehaus.jackson.type,
- org.eclipse.osee.ats.api.workflow,
- org.eclipse.osee.ats.core.config,
- org.eclipse.osee.ats.rest,
  org.eclipse.osee.disposition.model,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
@@ -34,6 +31,7 @@ Import-Package:
  org.eclipse.osee.framework.jdk.core.util.io.xml,
  org.eclipse.osee.framework.resource.management,
  org.eclipse.osee.framework.resource.management.util,
+ org.eclipse.osee.jaxrs.client,
  org.eclipse.osee.logger,
  org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data,
@@ -44,3 +42,4 @@ Import-Package:
  org.eclipse.osee.vcast.model,
  org.json
 Export-Package: org.eclipse.osee.disposition.rest.external
+Require-Bundle: org.eclipse.osee.ats.api

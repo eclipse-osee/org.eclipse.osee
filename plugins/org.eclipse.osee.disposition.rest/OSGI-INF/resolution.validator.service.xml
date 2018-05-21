@@ -7,5 +7,4 @@
    <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
    <property name="TestScriptResolution" type="String" value="^[a-zA-Z]\d+$"/>
    <property name="CoverageResolution" type="String" value=".*?lba.test.script.*?\.DAT"/>
-   <reference bind="setAtsServer" cardinality="1..1" interface="org.eclipse.osee.ats.rest.IAtsServer" name="IAtsServer" policy="static"/>
 </scr:component>

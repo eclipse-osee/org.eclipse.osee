@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.workitem;
 
-import java.io.StringWriter;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +35,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -293,7 +291,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             workItems.add(workItem);
          }
       }
-      return getActionStateResultString(workItems);
+      return atsApi.getActionFactory().getActionStateJson(workItems);
    }
 
    @Override
@@ -302,35 +300,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Produces({MediaType.APPLICATION_JSON})
    public String getActionState(@PathParam("ids") String ids) {
       List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemsByIds(ids);
-      return getActionStateResultString(workItems);
-   }
-
-   private String getActionStateResultString(List<IAtsWorkItem> workItems) {
-      try {
-         JsonGenerator writer = null;
-         StringWriter stringWriter = new StringWriter();
-         writer = jsonFactory.createJsonGenerator(stringWriter);
-         if (workItems.size() > 1) {
-            writer.writeStartArray();
-         }
-         for (IAtsWorkItem workItem : workItems) {
-            writer.writeStartObject();
-            writer.writeStringField("id", workItem.getIdString());
-            writer.writeStringField("atsId", workItem.getAtsId());
-            writer.writeStringField("legacyId",
-               atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.LegacyPcrId, ""));
-            writer.writeStringField("stateType", workItem.getStateMgr().getStateType().name());
-            writer.writeStringField("state", workItem.getStateMgr().getCurrentStateName());
-            writer.writeEndObject();
-         }
-         if (workItems.size() > 1) {
-            writer.writeEndArray();
-         }
-         writer.close();
-         return stringWriter.toString();
-      } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
-      }
+      return atsApi.getActionFactory().getActionStateJson(workItems);
    }
 
    /**

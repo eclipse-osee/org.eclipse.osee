@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
+import org.codehaus.jackson.JsonFactory;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -64,6 +65,8 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -79,6 +82,7 @@ public class ActionFactory implements IAtsActionFactory {
    private final IAttributeResolver attrResolver;
    private final AtsApi atsApi;
    private IAtsTeamDefinition topTeamDefinition;
+   private JsonFactory jsonFactory;
 
    public ActionFactory(AtsApi atsApi) {
       this.attrResolver = atsApi.getAttributeResolver();
@@ -609,4 +613,20 @@ public class ActionFactory implements IAtsActionFactory {
          changes);
    }
 
+   @Override
+   public String getActionStateJson(Collection<IAtsWorkItem> workItems) {
+      try {
+         ActionFactoryOperations ops = new ActionFactoryOperations(atsApi);
+         return ops.getActionStateJson(workItems, getJsonFactory());
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
+   }
+
+   private JsonFactory getJsonFactory() {
+      if (jsonFactory == null) {
+         jsonFactory = JsonUtil.getFactory();
+      }
+      return jsonFactory;
+   }
 }

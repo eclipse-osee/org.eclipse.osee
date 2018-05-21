@@ -52,4 +52,6 @@ public interface IAtsActionFactory {
 
    ActionResult createAction(NewActionData newActionData, IAtsChangeSet changes);
 
+   String getActionStateJson(Collection<IAtsWorkItem> workItemsByLegacyPcrId2);
+
 }
