@@ -238,7 +238,7 @@ public class WordTemplateProcessor {
          masterTemplateArtifact.getRelatedArtifacts(CoreRelationTypes.SupportingInfo_SupportingInfo);
       String masterTemplateStyles = "";
 
-      if (masterTemplateRelatedArtifacts != null) {
+      if (masterTemplateRelatedArtifacts != null && !masterTemplateRelatedArtifacts.isEmpty()) {
          if (masterTemplateRelatedArtifacts.size() == 1) {
             masterTemplateStyles += masterTemplateRelatedArtifacts.get(0).getSoleAttributeValueAsString(
                CoreAttributeTypes.WholeWordContent, "");
@@ -477,23 +477,25 @@ public class WordTemplateProcessor {
    private void parseMetadataOptions(String metadataOptions) {
       try {
          JSONObject jsonObject = new JSONObject(metadataOptions);
+         JSONObject options = null;
 
          if (!jsonObject.has("MetadataOptions")) {
             return;
          }
 
          JSONArray optionsArray = jsonObject.getJSONArray("MetadataOptions");
-         JSONObject options = optionsArray.getJSONObject(0);
+         for (int i = 0; i < optionsArray.length(); i++) {
+            options = optionsArray.getJSONObject(i);
 
-         metadataType = options.getString("Type");
-         metadataFormat = options.getString("Format");
-         metadataLabel = options.getString("Label");
+            metadataType = options.getString("Type");
+            metadataFormat = options.getString("Format");
+            metadataLabel = options.getString("Label");
 
-         MetadataElement metadataElement = new MetadataElement();
+            MetadataElement metadataElement = new MetadataElement();
 
-         metadataElement.setElements(metadataType, metadataFormat, metadataLabel);
-         metadataElements.add(metadataElement);
-
+            metadataElement.setElements(metadataType, metadataFormat, metadataLabel);
+            metadataElements.add(metadataElement);
+         }
       } catch (JSONException ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
@@ -597,16 +599,10 @@ public class WordTemplateProcessor {
             boolean publishInline = artifact.getSoleAttributeValue(CoreAttributeTypes.PublishInline, false);
             boolean startedSection = false;
             boolean templateOnly = renderer.getBooleanOption("TEMPLATE ONLY");
-            boolean includeUUIDs = renderer.getBooleanOption("INCLUDE UUIDS");
 
             if (!ignoreArtifact && !ignoreArtType) {
                if (outlining && !templateOnly) {
                   String headingText = artifact.getSoleAttributeValue(headingAttributeType, "");
-
-                  if (includeUUIDs) {
-                     String UUIDtext = String.format(" <UUID = %s>", artifact.getArtId());
-                     headingText = headingText.concat(UUIDtext);
-                  }
 
                   Boolean mergeTag = (Boolean) renderer.getOption(ITemplateRenderer.ADD_MERGE_TAG);
                   if (mergeTag != null && mergeTag) {
@@ -701,7 +697,7 @@ public class WordTemplateProcessor {
 
    private void processMetadata(Artifact artifact, WordMLProducer wordMl) {
       for (MetadataElement metadataElement : metadataElements) {
-         processMetadata(artifact, wordMl, metadataElement.getType(), metadataElement.getFormat());
+         processMetadata(artifact, wordMl, metadataElement);
       }
    }
 
@@ -726,9 +722,11 @@ public class WordTemplateProcessor {
       }
    }
 
-   private void processMetadata(Artifact artifact, WordMLProducer wordMl, String name, String format) {
+   private void processMetadata(Artifact artifact, WordMLProducer wordMl, MetadataElement element) {
       wordMl.startParagraph();
-
+      String name = element.getType();
+      String format = element.getFormat();
+      String label = element.getLabel();
       String value = "";
       if (name.equals(APPLICABILITY)) {
          ApplicabilityToken applicabilityToken = applicabilityTokens.get(artifact.getApplicablityId());
@@ -738,8 +736,13 @@ public class WordTemplateProcessor {
       } else if (name.equals(ARTIFACT_ID)) {
          value = artifact.getIdString();
       }
-      if (format.contains(">x<")) {
-         wordMl.addWordMl(format.replace(">x<", ">" + Xml.escape(name + ": " + value).toString() + "<"));
+      if (!format.isEmpty() || !label.isEmpty()) {
+         if (label.contains(">x<")) {
+            wordMl.addWordMl(label.replace(">x<", ">" + Xml.escape(name + ": ").toString() + "<"));
+         }
+         if (format.contains(">x<")) {
+            wordMl.addWordMl(format.replace(">x<", ">" + Xml.escape(value).toString() + "<"));
+         }
       } else {
          wordMl.addTextInsideParagraph(name + ": " + value);
       }

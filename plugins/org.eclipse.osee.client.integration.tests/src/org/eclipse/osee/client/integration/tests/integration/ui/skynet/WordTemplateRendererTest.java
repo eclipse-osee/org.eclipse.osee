@@ -438,13 +438,14 @@ public class WordTemplateRendererTest {
       String contents;
       try {
          contents = getFileAsString(resultPath);
+         System.out.println(contents);
          Assert.assertTrue("Paragraph Number & Name Link not found",
             contents.contains("<w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>2.1 Hardware</w:t></w:r>"));
          basicDocumentCheck(contents, tabString, false, false);
-         Assert.assertTrue("Paragraph Number 2 is not updated", contents.contains(
-            "<w:r><w:t>Notes</w:t></w:r></w:p><w:p><w:r><w:t>Applicability: Base</w:t></w:r></w:p><w:p><w:r><w:t> Paragraph Number: </w:t></w:r><w:r><w:t>2</w:t></w:r>"));
-         Assert.assertTrue("Paragraph Number 2.1 is not updated", contents.contains(
-            "<w:r><w:t>More Notes</w:t></w:r></w:p><w:p><w:r><w:t>Applicability: Base</w:t></w:r></w:p><w:p><w:r><w:t> Paragraph Number: </w:t></w:r><w:r><w:t>2.1</w:t></w:r>"));
+         Assert.assertTrue("Paragraph Number 2 is not updated",
+            contents.contains("<w:p><w:r><w:t> Paragraph Number: </w:t></w:r><w:r><w:t>2</w:t></w:r>"));
+         Assert.assertTrue("Paragraph Number 2.1 is not updated",
+            contents.contains("<w:p><w:r><w:t> Paragraph Number: </w:t></w:r><w:r><w:t>2.1</w:t></w:r>"));
          Matcher m = findBlankPage.matcher(contents);
          int counter = 0;
          while (m.find()) {
@@ -622,8 +623,8 @@ public class WordTemplateRendererTest {
       try {
          String contents = getFileAsString(resultPath);
          basicDocumentCheck(contents, "", false, true);
-         Assert.assertTrue("Appears to have Field Code Diff", contents.contains(
-            "<w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>Hardware Functions</w:t></w:r></w:hlink>"));
+         Assert.assertTrue("Appears to have Field Code Diff",
+            contents.contains("<w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>Hardware"));
       } catch (IOException ex) {
          // Do nothing - test failed
       } finally {
