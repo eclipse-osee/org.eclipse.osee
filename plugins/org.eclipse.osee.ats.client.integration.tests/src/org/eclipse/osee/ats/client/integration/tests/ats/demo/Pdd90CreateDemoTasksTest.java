@@ -12,8 +12,10 @@ package org.eclipse.osee.ats.client.integration.tests.ats.demo;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.demo.populate.Pdd90CreateDemoTasks;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.workflow.task.TaskStates;
@@ -37,27 +39,27 @@ public class Pdd90CreateDemoTasksTest implements IPopulateDemoDatabaseTest {
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
       List<String> taskNames = new LinkedList<String>();
       taskNames.addAll(DemoUtil.Saw_Code_Committed_Task_Titles);
-      for (TaskArtifact task : teamWf.getTaskArtifacts()) {
-         testTaskContents(task, TaskStates.InWork.getName(), TeamState.Implement.getName());
+      for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(teamWf)) {
+         testTaskContents((TaskArtifact) task, TaskStates.InWork.getName(), TeamState.Implement.getName());
          taskNames.remove(task.getName());
          Assert.assertEquals("Joe Smith; Kay Jones", task.getStateMgr().getAssigneesStr());
       }
       if (!taskNames.isEmpty()) {
          Assert.assertEquals(String.format("Not all tasks exist.  [%s] remain", taskNames), taskNames.size(),
-            teamWf.getTaskArtifacts());
+            AtsClientService.get().getTaskService().getTasks(teamWf));
       }
 
       teamWf = DemoUtil.getSawCodeUnCommittedWf();
       taskNames.clear();
       taskNames.addAll(DemoUtil.Saw_Code_UnCommitted_Task_Titles);
-      for (TaskArtifact task : teamWf.getTaskArtifacts()) {
-         testTaskContents(task, TaskStates.InWork.getName(), TeamState.Implement.getName());
+      for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(teamWf)) {
+         testTaskContents((TaskArtifact) task, TaskStates.InWork.getName(), TeamState.Implement.getName());
          taskNames.remove(task.getName());
          Assert.assertEquals("Joe Smith", task.getStateMgr().getAssigneesStr());
       }
       if (!taskNames.isEmpty()) {
          Assert.assertEquals(String.format("Not all tasks exist.  [%s] remain", taskNames), taskNames.size(),
-            teamWf.getTaskArtifacts());
+            AtsClientService.get().getTaskService().getTasks(teamWf));
       }
 
       DemoUtil.setPopulateDbSuccessful(true);

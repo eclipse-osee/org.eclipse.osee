@@ -34,13 +34,10 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.workflow.review.AbstractReviewArtifact;
-import org.eclipse.osee.ats.workflow.review.ReviewManager;
-import org.eclipse.osee.ats.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
@@ -128,94 +125,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public String implementersStr = null;
-
-   public double getEstimatedHoursFromArtifact() {
-      if (isAttributeTypeValid(AtsAttributeTypes.EstimatedHours)) {
-         return getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0);
-      }
-      return 0;
-   }
-
-   public double getEstimatedHoursFromTasks(IStateToken relatedToState) {
-      if (!(this instanceof TeamWorkFlowArtifact)) {
-         return 0;
-      }
-      return getEstimatedHoursFromTasks(((TeamWorkFlowArtifact) this), relatedToState);
-   }
-
-   /**
-    * Return Estimated Hours for all tasks
-    */
-   public double getEstimatedHoursFromTasks() {
-      if (!(this instanceof TeamWorkFlowArtifact)) {
-         return 0;
-      }
-      double hours = 0;
-      for (TaskArtifact taskArt : ((TeamWorkFlowArtifact) this).getTaskArtifacts()) {
-         hours += taskArt.getEstimatedHoursFromArtifact();
-      }
-      return hours;
-   }
-
-   public double getEstimatedHoursFromReviews() {
-      if (isTeamWorkflow()) {
-         return ReviewManager.getEstimatedHours((TeamWorkFlowArtifact) this);
-      }
-      return 0;
-   }
-
-   public double getEstimatedHoursFromReviews(IStateToken relatedToState) {
-      if (isTeamWorkflow()) {
-         return ReviewManager.getEstimatedHours((TeamWorkFlowArtifact) this, relatedToState);
-      }
-      return 0;
-   }
-
-   public double getEstimatedHoursTotal(IStateToken relatedToState) {
-      return getEstimatedHoursFromArtifact() + getEstimatedHoursFromTasks(
-         relatedToState) + getEstimatedHoursFromReviews(relatedToState);
-   }
-
-   public double getEstimatedHoursTotal() {
-      return getEstimatedHoursFromArtifact() + getEstimatedHoursFromTasks() + getEstimatedHoursFromReviews();
-   }
-
-   public double getRemainHoursFromArtifact() {
-      if (isCompleted() || isCancelled()) {
-         return 0;
-      }
-      double est = getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0);
-      if (est == 0) {
-         return getEstimatedHoursFromArtifact();
-      }
-      return est - est * PercentCompleteTotalUtil.getPercentCompleteTotal(this,
-         AtsClientService.get().getServices()) / 100.0;
-   }
-
-   public double getRemainHoursTotal() {
-      return getRemainHoursFromArtifact() + getRemainFromTasks() + getRemainFromReviews();
-   }
-
-   /**
-    * Return Remain Hours for all tasks
-    */
-   public double getRemainFromTasks() {
-      if (!(this instanceof TeamWorkFlowArtifact)) {
-         return 0;
-      }
-      double hours = 0;
-      for (TaskArtifact taskArt : ((TeamWorkFlowArtifact) this).getTaskArtifacts()) {
-         hours += taskArt.getRemainHoursFromArtifact();
-      }
-      return hours;
-   }
-
-   public double getRemainFromReviews() {
-      if (isTeamWorkflow()) {
-         return ReviewManager.getRemainHours((TeamWorkFlowArtifact) this);
-      }
-      return 0;
-   }
 
    public double getManHrsPerDayPreference() {
       return AtsUtil.DEFAULT_HOURS_PER_WORK_DAY;
@@ -309,7 +218,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       if (!(this instanceof TeamWorkFlowArtifact)) {
          return 0;
       }
-      return ((TeamWorkFlowArtifact) this).getPercentCompleteFromTasks(state);
+      return AtsClientService.get().getEarnedValueService().getPercentCompleteFromTasks(this, state);
    }
 
    @Override
@@ -564,54 +473,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          OseeLog.log(Activator.class, Level.WARNING, ex);
       }
       return toReturn;
-   }
-
-   /**
-    * Return Estimated Task Hours of "Related to State" stateName
-    *
-    * @param relatedToState state name of parent workflow's state
-    * @return Returns the Estimated Hours
-    */
-   public double getEstimatedHoursFromTasks(TeamWorkFlowArtifact teamWf, IStateToken relatedToState) {
-      double hours = 0;
-      for (TaskArtifact taskArt : teamWf.getTaskArtifacts(relatedToState)) {
-         hours += taskArt.getEstimatedHoursTotal();
-      }
-      return hours;
-   }
-
-   /**
-    * Return Total Percent Complete / # Tasks for "Related to State" stateName
-    *
-    * @param relatedToState state name of parent workflow's state
-    * @return Returns the Percent Complete.
-    */
-   public int getPercentCompleteFromTasks(IStateToken relatedToState) {
-      int spent = 0, result = 0;
-      if (this instanceof TeamWorkFlowArtifact) {
-         Collection<TaskArtifact> taskArts = ((TeamWorkFlowArtifact) this).getTaskArtifacts(relatedToState);
-         for (TaskArtifact taskArt : taskArts) {
-            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(taskArt, AtsClientService.get().getServices());
-         }
-         if (spent > 0) {
-            result = spent / taskArts.size();
-         }
-      }
-      return result;
-   }
-
-   public int getPercentCompleteFromTasks() {
-      int spent = 0, result = 0;
-      if (this instanceof TeamWorkFlowArtifact) {
-         Collection<TaskArtifact> taskArts = ((TeamWorkFlowArtifact) this).getTaskArtifacts();
-         for (TaskArtifact taskArt : taskArts) {
-            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(taskArt, AtsClientService.get().getServices());
-         }
-         if (spent > 0) {
-            result = spent / taskArts.size();
-         }
-      }
-      return result;
    }
 
    @Override

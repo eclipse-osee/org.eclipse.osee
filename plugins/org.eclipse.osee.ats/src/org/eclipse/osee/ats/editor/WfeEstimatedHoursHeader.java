@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -98,11 +99,10 @@ public class WfeEstimatedHoursHeader extends Composite {
             "Negative estimated hours not allowed.  Please set to the expected estimated hours.");
          PromptChangeUtil.promptChangeAttribute(awa, AtsAttributeTypes.EstimatedHours, true, false);
       } else {
-         totalEst = awa.getEstimatedHoursTotal();
+         totalEst = AtsClientService.get().getEarnedValueService().getEstimatedHoursTotal(awa);
       }
       if (awaEst != totalEst) {
-         return String.format("%s | %s", AtsUtil.doubleToI18nString(awaEst),
-            AtsUtil.doubleToI18nString(totalEst));
+         return String.format("%s | %s", AtsUtil.doubleToI18nString(awaEst), AtsUtil.doubleToI18nString(totalEst));
       } else {
          return AtsUtil.doubleToI18nString(awaEst);
       }

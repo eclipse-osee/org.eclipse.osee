@@ -22,7 +22,8 @@ public class EstimatedHoursUtil {
 
    public static double getEstimatedHours(Object object) {
       if (object instanceof AbstractWorkflowArtifact) {
-         return ((AbstractWorkflowArtifact) object).getEstimatedHoursTotal();
+         return AtsClientService.get().getEarnedValueService().getEstimatedHoursTotal(
+            (AbstractWorkflowArtifact) object);
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          double total = 0;
          for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(object)) {

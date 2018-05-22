@@ -51,7 +51,9 @@ public interface IAtsTaskService {
 
    boolean isRelatedToState(IAtsTask task, String stateName);
 
-   boolean hasTasks(IAtsTeamWorkflow teamWf);
+   default boolean hasTasks(IAtsTeamWorkflow teamWf, IStateToken forState) {
+      return getTasks(teamWf, forState).size() > 0;
+   }
 
    /**
     * @return related ArtifactId or ArtifactId.SENTINAL if not exists
@@ -60,6 +62,12 @@ public interface IAtsTaskService {
 
    default void decache(IAtsTeamWorkflow teamWf) {
       throw new UnsupportedOperationException();
+   }
+
+   boolean hasTasks(IAtsTeamWorkflow teamWf);
+
+   default boolean hasNoTasks(IAtsTeamWorkflow teamWf) {
+      return !hasTasks(teamWf);
    }
 
 }

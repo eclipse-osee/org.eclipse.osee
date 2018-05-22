@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -215,4 +216,86 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
    public void setWorkPackage(IAtsWorkPackage workPackage, IAtsWorkItem workItem, IAtsChangeSet changes) {
       changes.setSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageReference, workPackage);
    }
+
+   @Override
+   public double getRemainHoursFromArtifact(IAtsWorkItem workItem) {
+      if (workItem.isCompletedOrCancelled()) {
+         return 0;
+      }
+      double est = atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.EstimatedHours, 0.0);
+      if (est == 0) {
+         return getEstimatedHoursFromArtifact(workItem);
+      }
+      return est - est * PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, atsApi) / 100.0;
+   }
+
+   @Override
+   public double getRemainHoursTotal(IAtsWorkItem workItem) {
+      return getRemainHoursFromArtifact(workItem) + getRemainFromTasks(workItem) + getRemainFromReviews(workItem);
+   }
+
+   /**
+    * Return Remain Hours for all tasks
+    */
+   @Override
+   public double getRemainFromTasks(IAtsWorkItem workItem) {
+      if (!workItem.isTeamWorkflow()) {
+         return 0;
+      }
+      double hours = 0;
+      for (IAtsTask task : atsApi.getTaskService().getTasks((IAtsTeamWorkflow) workItem)) {
+         hours += getRemainHoursFromArtifact(task);
+      }
+      return hours;
+   }
+
+   @Override
+   public double getRemainFromReviews(IAtsWorkItem workItem) {
+      if (workItem.isTeamWorkflow()) {
+         return atsApi.getEarnedValueService().getEstimatedHoursFromReviews(workItem);
+      }
+      return 0;
+   }
+
+   @Override
+   public double getManHrsPerDayPreference() {
+      return AtsUtil.DEFAULT_HOURS_PER_WORK_DAY;
+   }
+
+   /**
+    * Return Total Percent Complete / # Tasks for "Related to State" stateName
+    *
+    * @param relatedToState state name of parent workflow's state
+    * @return Returns the Percent Complete.
+    */
+   @Override
+   public int getPercentCompleteFromTasks(IAtsWorkItem workItem, IStateToken relatedToState) {
+      int spent = 0, result = 0;
+      if (workItem.isTeamWorkflow()) {
+         Collection<IAtsTask> tasks = atsApi.getTaskService().getTasks((IAtsTeamWorkflow) workItem, relatedToState);
+         for (IAtsTask task : tasks) {
+            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(task, atsApi);
+         }
+         if (spent > 0) {
+            result = spent / tasks.size();
+         }
+      }
+      return result;
+   }
+
+   @Override
+   public int getPercentCompleteFromTasks(IAtsWorkItem workItem) {
+      int spent = 0, result = 0;
+      if (workItem.isTeamWorkflow()) {
+         Collection<IAtsTask> tasks = atsApi.getTaskService().getTasks((IAtsTeamWorkflow) workItem);
+         for (IAtsTask task : tasks) {
+            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(task, atsApi);
+         }
+         if (spent > 0) {
+            result = spent / tasks.size();
+         }
+      }
+      return result;
+   }
+
 }

@@ -88,7 +88,7 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.TeamWorkflow)) {
          TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) object;
          double benefit = getWorldViewWeeklyBenefit(teamArt);
-         double remainHrs = teamArt.getRemainHoursTotal();
+         double remainHrs = AtsClientService.get().getEarnedValueService().getRemainHoursTotal(teamArt);
          return benefit * 52 - remainHrs;
       } else if (object instanceof IAtsWorkItem) {
          return getWorldViewAnnualCostAvoidance(((IAtsWorkItem) object).getStoreObject());

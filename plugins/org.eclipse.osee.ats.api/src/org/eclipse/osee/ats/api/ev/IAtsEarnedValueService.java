@@ -60,4 +60,18 @@ public interface IAtsEarnedValueService {
     */
    IAtsWorkPackage getWorkPackageById(ArtifactId workPackageId);
 
+   double getRemainHoursFromArtifact(IAtsWorkItem workItem);
+
+   double getRemainHoursTotal(IAtsWorkItem workItem);
+
+   double getRemainFromTasks(IAtsWorkItem workItem);
+
+   double getRemainFromReviews(IAtsWorkItem workItem);
+
+   double getManHrsPerDayPreference();
+
+   int getPercentCompleteFromTasks(IAtsWorkItem workItem, IStateToken relatedToState);
+
+   int getPercentCompleteFromTasks(IAtsWorkItem workItem);
+
 }

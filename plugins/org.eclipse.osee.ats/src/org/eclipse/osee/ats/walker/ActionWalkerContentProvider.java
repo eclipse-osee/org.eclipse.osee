@@ -55,14 +55,14 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
          } else if (!isTopArtifactGoal() && entity instanceof TeamWorkFlowArtifact) {
             objs.add(entity);
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) entity;
-            if (!view.isShowAll() && teamArt.getTaskArtifacts().size() > 8) {
+            if (!view.isShowAll() && AtsClientService.get().getTaskService().getTasks(teamArt).size() > 8) {
                TaskWrapper taskWrapper = new TaskWrapper(teamArt);
                objs.add(taskWrapper);
-               if (teamArt.getTaskArtifacts().contains(view.getActiveAwa())) {
+               if (AtsClientService.get().getTaskService().getTasks(teamArt).contains(view.getActiveAwa())) {
                   view.setActiveGraphItem(taskWrapper);
                }
             } else {
-               objs.addAll(((TeamWorkFlowArtifact) entity).getTaskArtifacts());
+               objs.addAll(AtsClientService.get().getTaskService().getTasks(((TeamWorkFlowArtifact) entity)));
             }
             if (!view.isShowAll() && ReviewManager.getReviews(teamArt).size() > 4) {
                ReviewWrapper reviewWrapper = new ReviewWrapper(teamArt);
@@ -114,14 +114,14 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
                } else {
                   objs.addAll(ReviewManager.getReviews(teamArt));
                }
-               if (!view.isShowAll() && teamArt.getTaskArtifacts().size() > 8) {
+               if (!view.isShowAll() && AtsClientService.get().getTaskService().getTasks(teamArt).size() > 8) {
                   TaskWrapper taskWrapper = new TaskWrapper(teamArt);
                   objs.add(taskWrapper);
-                  if (teamArt.getTaskArtifacts().contains(view.getActiveAwa())) {
+                  if (AtsClientService.get().getTaskService().getTasks(teamArt).contains(view.getActiveAwa())) {
                      view.setActiveGraphItem(taskWrapper);
                   }
                } else {
-                  objs.addAll(teamArt.getTaskArtifacts());
+                  objs.addAll(AtsClientService.get().getTaskService().getTasks(teamArt));
                }
             }
             return objs.toArray();

@@ -17,6 +17,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.note.NoteItem;
 import org.eclipse.osee.ats.column.DeadlineColumn;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
@@ -137,7 +138,8 @@ public class WfePrint extends Action {
          rd.addRaw(AHTML.startBorderTable(100, Overview.normalColor, ""));
          rd.addRaw(
             AHTML.addHeaderRowMultiColumnTable(new String[] {"Title", "State", "POC", "%", "Hrs", "Resolution", "ID"}));
-         for (TaskArtifact art : ((TeamWorkFlowArtifact) sma).getTaskArtifacts()) {
+         for (IAtsTask task : AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) sma)) {
+            TaskArtifact art = (TaskArtifact) task;
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
                art.getName(),
                art.getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""),

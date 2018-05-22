@@ -45,7 +45,7 @@ public class ReviewManager {
    public static double getRemainHours(TeamWorkFlowArtifact teamArt) {
       double hours = 0;
       for (AbstractReviewArtifact reviewArt : getReviews(teamArt)) {
-         hours += reviewArt.getRemainHoursFromArtifact();
+         hours += AtsClientService.get().getEarnedValueService().getRemainHoursFromArtifact(reviewArt);
       }
       return hours;
 
@@ -59,7 +59,7 @@ public class ReviewManager {
    public static double getEstimatedHours(TeamWorkFlowArtifact teamArt, IStateToken relatedToState) {
       double hours = 0;
       for (AbstractReviewArtifact revArt : getReviews(teamArt, relatedToState)) {
-         hours += revArt.getEstimatedHoursTotal();
+         hours += AtsClientService.get().getEarnedValueService().getEstimatedHoursTotal(revArt);
       }
       return hours;
    }
@@ -70,7 +70,7 @@ public class ReviewManager {
    public static double getEstimatedHours(TeamWorkFlowArtifact teamArt) {
       double hours = 0;
       for (AbstractReviewArtifact revArt : getReviews(teamArt)) {
-         hours += revArt.getEstimatedHoursTotal();
+         hours += AtsClientService.get().getEarnedValueService().getEstimatedHoursTotal(revArt);
       }
       return hours;
 

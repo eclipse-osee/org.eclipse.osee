@@ -11,10 +11,8 @@
 
 package org.eclipse.osee.ats.workflow.teamwf;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -25,7 +23,6 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.internal.Activator;
@@ -34,8 +31,6 @@ import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.workflow.action.ActionArtifactRollup;
 import org.eclipse.osee.ats.workflow.review.ReviewManager;
-import org.eclipse.osee.ats.workflow.task.TaskArtifact;
-import org.eclipse.osee.ats.workflow.task.internal.AtsTaskCache;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -240,20 +235,6 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    @Override
    public Set<IAtsActionableItem> getActionableItems() {
       return AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(this);
-   }
-
-   public Collection<TaskArtifact> getTaskArtifacts() {
-      return AtsTaskCache.getTaskArtifacts(this);
-   }
-
-   public Collection<TaskArtifact> getTaskArtifacts(IStateToken state) {
-      List<TaskArtifact> arts = new ArrayList<>();
-      for (TaskArtifact taskArt : getTaskArtifacts()) {
-         if (taskArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "").equals(state.getName())) {
-            arts.add(taskArt);
-         }
-      }
-      return arts;
    }
 
 }

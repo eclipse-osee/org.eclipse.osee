@@ -96,7 +96,8 @@ public class PercentCompleteStateTasksColumn extends XViewerAtsColumn implements
       if (!(artifact instanceof TeamWorkFlowArtifact)) {
          return 0;
       }
-      return ((TeamWorkFlowArtifact) artifact).getPercentCompleteFromTasks(relatedToState);
+      return AtsClientService.get().getEarnedValueService().getPercentCompleteFromTasks((TeamWorkFlowArtifact) artifact,
+         relatedToState);
    }
 
 }

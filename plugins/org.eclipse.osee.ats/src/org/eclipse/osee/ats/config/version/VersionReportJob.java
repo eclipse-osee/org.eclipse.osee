@@ -24,10 +24,10 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workflow.ChangeTypeUtil;
-import org.eclipse.osee.ats.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.util.result.Manipulations;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -147,36 +147,36 @@ public class VersionReportJob extends Job {
       return released;
    }
 
-   public static String getTeamWorkflowReport(Collection<TeamWorkFlowArtifact> teamArts, Integer backgroundColor, IProgressMonitor monitor) {
+   public static String getTeamWorkflowReport(Collection<TeamWorkFlowArtifact> teamWfs, Integer backgroundColor, IProgressMonitor monitor) {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.beginMultiColumnTable(100, 1, backgroundColor));
       sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Team", "Priority", "Change", "Title", "ID"}));
       int x = 1;
       Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
-      for (TeamWorkFlowArtifact team : teamArts) {
+      for (TeamWorkFlowArtifact team : teamWfs) {
          teamDefs.add(team.getTeamDefinition());
       }
       for (IAtsTeamDefinition teamDef : teamDefs) {
-         for (TeamWorkFlowArtifact team : teamArts) {
-            if (team.getTeamDefinition().equals(teamDef)) {
-               String str = "Processing team " + x++ + "/" + teamArts.size();
+         for (TeamWorkFlowArtifact teamWf : teamWfs) {
+            if (teamWf.getTeamDefinition().equals(teamDef)) {
+               String str = "Processing team " + x++ + "/" + teamWfs.size();
                if (monitor != null) {
                   monitor.subTask(str);
                }
                sb.append(AHTML.addRowMultiColumnTable(
                   new String[] {
                      "Action",
-                     team.getTeamName(),
-                     team.getSoleAttributeValue(AtsAttributeTypes.PriorityType, ""),
-                     ChangeTypeUtil.getChangeTypeStr(team),
-                     team.getName(),
-                     team.getAtsId()},
+                     teamWf.getTeamName(),
+                     teamWf.getSoleAttributeValue(AtsAttributeTypes.PriorityType, ""),
+                     ChangeTypeUtil.getChangeTypeStr(teamWf),
+                     teamWf.getName(),
+                     teamWf.getAtsId()},
                   null, x % 2 == 0 ? null : "#cccccc"));
 
-               for (TaskArtifact taskArt : team.getTaskArtifacts()) {
-                  sb.append(AHTML.addRowMultiColumnTable(
-                     new String[] {"Task", "", "", "", taskArt.getName(), taskArt.getAtsId()}, null,
-                     x % 2 == 0 ? null : "#cccccc"));
+               for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(teamWf)) {
+                  sb.append(
+                     AHTML.addRowMultiColumnTable(new String[] {"Task", "", "", "", task.getName(), task.getAtsId()},
+                        null, x % 2 == 0 ? null : "#cccccc"));
                }
             }
          }

@@ -132,7 +132,7 @@ public class RemainingHoursColumn extends XViewerAtsColumn implements IXViewerVa
 
    public static double getRemainingHours(Object object) {
       if (object instanceof AbstractWorkflowArtifact) {
-         return ((AbstractWorkflowArtifact) object).getRemainHoursTotal();
+         return AtsClientService.get().getEarnedValueService().getRemainHoursTotal(((AbstractWorkflowArtifact) object));
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          double hours = 0;
          // Add up hours for all children

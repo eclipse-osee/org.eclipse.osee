@@ -78,7 +78,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
          dispose();
       }
       try {
-         if (teamWf.getTaskArtifacts(forState).size() > 0) {
+         if (AtsClientService.get().getTaskService().hasTasks(teamWf, forState)) {
             setValueText(getStatus(teamWf, forState));
          } else {
             setValueText("No Tasks Created");
@@ -117,17 +117,17 @@ public class TaskInfoXWidget extends XLabelValueBase {
 
    private String getStatus(TeamWorkFlowArtifact teamWf, IStateToken state) {
       int completed = 0, cancelled = 0, inWork = 0;
-      for (TaskArtifact taskArt : teamWf.getTaskArtifacts(state)) {
-         if (taskArt.isCompleted()) {
+      for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(teamWf, state)) {
+         if (task.isCompleted()) {
             completed++;
-         } else if (taskArt.isCancelled()) {
+         } else if (task.isCancelled()) {
             cancelled++;
          } else {
             inWork++;
          }
       }
       return String.format("Total: %d - InWork: %d - Completed: %d - Cancelled: %d",
-         teamWf.getTaskArtifacts(state).size(), inWork, completed, cancelled);
+         AtsClientService.get().getTaskService().getTasks(teamWf, state).size(), inWork, completed, cancelled);
    }
 
    public void addAdminRightClickOption() {
@@ -144,7 +144,8 @@ public class TaskInfoXWidget extends XLabelValueBase {
                      }
                      try {
                         IAtsChangeSet changes = AtsClientService.get().createChangeSet("ATS Auto Complete Tasks");
-                        for (TaskArtifact taskArt : teamWf.getTaskArtifacts(forState)) {
+                        for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(teamWf, forState)) {
+                           TaskArtifact taskArt = (TaskArtifact) task.getStoreObject();
                            if (!taskArt.isCompletedOrCancelled()) {
                               if (taskArt.getStateMgr().isUnAssigned()) {
                                  taskArt.getStateMgr().setAssignee(

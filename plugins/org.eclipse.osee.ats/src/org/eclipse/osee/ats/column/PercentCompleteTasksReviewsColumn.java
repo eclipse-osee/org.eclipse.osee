@@ -17,11 +17,11 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
-import org.eclipse.osee.ats.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -88,12 +88,11 @@ public class PercentCompleteTasksReviewsColumn extends XViewerAtsColumn implemen
       int spent = 0;
       int size = 0;
       if (IAtsTeamWorkflow.isOfType(artifact)) {
-         TeamWorkFlowArtifact TeamWorkFlowArtifact = (TeamWorkFlowArtifact) artifact;
-         Collection<TaskArtifact> taskArts = TeamWorkFlowArtifact.getTaskArtifacts();
-         for (TaskArtifact taskArt : taskArts) {
-            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(taskArt, AtsClientService.get().getServices());
+         Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) artifact);
+         for (IAtsTask task : tasks) {
+            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(task, AtsClientService.get().getServices());
          }
-         size = taskArts.size();
+         size = tasks.size();
 
          TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) artifact;
          Collection<IAtsAbstractReview> reviewArts = AtsClientService.get().getReviewService().getReviews(teamWf);

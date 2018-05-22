@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.editor;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.editor.WfePrint;
@@ -40,17 +41,17 @@ public class WfePrintTest {
    public void testSMAPrint() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
-      TeamWorkFlowArtifact teamArt = DemoUtil.getSawCodeUnCommittedWf();
-      Assert.assertNotNull(teamArt);
+      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeUnCommittedWf();
+      Assert.assertNotNull(teamWf);
 
-      WfePrint smaPrint = new WfePrint(teamArt);
+      WfePrint smaPrint = new WfePrint(teamWf);
       XResultData resultData = smaPrint.getResultData();
       Assert.assertNotNull(resultData);
       // Make sure it's a reasonable length
       String html = XResultDataUI.getReport(resultData, "report").getManipulatedHtml();
       Assert.assertTrue(html.length() > 5600);
 
-      PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) ReviewManager.getReviews(teamArt).iterator().next();
+      PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) ReviewManager.getReviews(teamWf).iterator().next();
       smaPrint = new WfePrint(peerArt);
       resultData = smaPrint.getResultData();
       Assert.assertNotNull(resultData);
@@ -60,9 +61,9 @@ public class WfePrintTest {
          XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length() > 3500);
 
       TaskArtifact taskArt = null;
-      for (TaskArtifact taskArtifact : teamArt.getTaskArtifacts()) {
-         if (taskArtifact.getName().equals("Deploy release")) {
-            taskArt = taskArtifact;
+      for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(teamWf)) {
+         if (task.getName().equals("Deploy release")) {
+            taskArt = (TaskArtifact) task.getStoreObject();
          }
       }
       Assert.assertNotNull(taskArt);
@@ -72,10 +73,10 @@ public class WfePrintTest {
       // Make sure it's a reasonable length
       Assert.assertTrue(XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length() > 2600);
 
-      teamArt = (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamWorkflow,
+      teamWf = (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamWorkflow,
          "Button S doesn't work on help", AtsClientService.get().getAtsBranch());
-      Assert.assertNotNull(teamArt);
-      DecisionReviewArtifact decArt = (DecisionReviewArtifact) ReviewManager.getReviews(teamArt).iterator().next();
+      Assert.assertNotNull(teamWf);
+      DecisionReviewArtifact decArt = (DecisionReviewArtifact) ReviewManager.getReviews(teamWf).iterator().next();
       smaPrint = new WfePrint(decArt);
       resultData = smaPrint.getResultData();
       Assert.assertNotNull(resultData);

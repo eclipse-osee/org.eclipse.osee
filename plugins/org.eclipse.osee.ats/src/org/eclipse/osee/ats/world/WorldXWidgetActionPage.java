@@ -337,7 +337,7 @@ public class WorldXWidgetActionPage extends FormPage {
       try {
          if (getTaskComposite() != null) {
             TeamWorkFlowArtifact teamArt = getTaskComposite().getTeamArt();
-            name = String.format("Tasks (%d)", teamArt.getTaskArtifacts().size());
+            name = String.format("Tasks (%d)", AtsClientService.get().getTaskService().getTasks(teamArt).size());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -695,7 +695,8 @@ public class WorldXWidgetActionPage extends FormPage {
                            AtsObjects.getArtifacts(AtsClientService.get().getTaskService().getTasks(team))));
                      }
                   } else if (art instanceof TeamWorkFlowArtifact) {
-                     arts.addAll(((TeamWorkFlowArtifact) art).getTaskArtifacts());
+                     arts.addAll(Collections.castAll(AtsObjects.getArtifacts(
+                        AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) art))));
                   }
                }
                worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), arts);

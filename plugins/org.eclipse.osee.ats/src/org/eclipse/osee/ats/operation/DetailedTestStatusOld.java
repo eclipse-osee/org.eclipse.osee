@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
@@ -45,7 +46,6 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.XVersionList;
 import org.eclipse.osee.ats.util.widgets.XAtsProgramComboWidget;
-import org.eclipse.osee.ats.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.define.ide.traceability.RequirementTraceabilityData;
 import org.eclipse.osee.define.ide.traceability.ScriptTraceabilityOperation;
@@ -564,13 +564,13 @@ public class DetailedTestStatusOld extends AbstractBlam {
    }
 
    private void loadTasksFromWorkflow(TeamWorkFlowArtifact workflow) {
-      Collection<TaskArtifact> tasks = workflow.getTaskArtifacts();
+      Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(workflow);
       String legacyId = workflow.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
 
       List<IAtsUser> implementers = workflow.getImplementers();
       legacyIdToImplementers.put(legacyId, implementers);
 
-      for (TaskArtifact task : tasks) {
+      for (IAtsTask task : tasks) {
 
          taskNameMatcher.reset(task.getName());
          if (taskNameMatcher.find()) {
@@ -584,7 +584,8 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
             int percentComplete =
                PercentCompleteTotalUtil.getPercentCompleteTotal(task, AtsClientService.get().getServices());
-            requirementStatus.addPartitionStatus(percentComplete, taskNameMatcher.group(1), task.getCurrentStateName());
+            requirementStatus.addPartitionStatus(percentComplete, taskNameMatcher.group(1),
+               task.getStateMgr().getCurrentStateName());
             requirementStatus.setTestPocs(task.getImplementers());
          } else {
             logf("odd task:  [%s]", task.getName());

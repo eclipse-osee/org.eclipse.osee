@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -98,7 +99,7 @@ public class TaskMetrics extends AbstractBlam {
                   TeamWorkFlowArtifact workflow = (TeamWorkFlowArtifact) team;
 
                   if (teamCombo.getSelectedTeamDefintions().contains(workflow.getTeamDefinition())) {
-                     for (Artifact task : workflow.getTaskArtifacts()) {
+                     for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(workflow)) {
                         tallyState((TaskArtifact) task);
                      }
                   }

@@ -416,8 +416,8 @@ public class AtsTestUtil {
                throw new OseeStateException("Error deleting working branch [%s]", result.getText());
             }
          }
-         for (TaskArtifact taskArt : teamWfToDelete.getTaskArtifacts()) {
-            changes.addToDelete(taskArt);
+         for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(teamWfToDelete)) {
+            changes.addToDelete(task);
          }
          for (AbstractReviewArtifact revArt : ReviewManager.getReviews(teamWfToDelete)) {
             changes.addToDelete(revArt);

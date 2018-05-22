@@ -326,7 +326,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
                Collection<IAtsUser> users = new HashSet<>();
                users.addAll(team.getStateMgr().getAssignees());
                if (users.contains(user)) {
-                  double hours = team.getRemainHoursTotal();
+                  double hours = AtsClientService.get().getEarnedValueService().getRemainHoursTotal(team);
                   if (hours > 0) {
                      userHoursRemain += hours / users.size();
                   }

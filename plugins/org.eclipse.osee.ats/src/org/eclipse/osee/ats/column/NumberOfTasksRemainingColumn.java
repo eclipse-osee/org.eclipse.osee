@@ -18,11 +18,11 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
-import org.eclipse.osee.ats.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -88,8 +88,8 @@ public class NumberOfTasksRemainingColumn extends XViewerAtsColumn implements IX
    public int getNumTasksInWork(TeamWorkFlowArtifact teamWf) {
       int num = 0;
       try {
-         for (TaskArtifact taskArt : teamWf.getTaskArtifacts()) {
-            if (taskArt.isInWork()) {
+         for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(teamWf)) {
+            if (task.isInWork()) {
                num++;
             }
          }

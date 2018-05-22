@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
@@ -44,7 +47,8 @@ public class ReloadAction extends AbstractAtsAction {
          relatedArts.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) sma));
       }
       if (sma instanceof TeamWorkFlowArtifact) {
-         relatedArts.addAll(((TeamWorkFlowArtifact) sma).getTaskArtifacts());
+         Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) sma);
+         relatedArts.addAll(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(tasks));
       }
       ArtifactQuery.reloadArtifacts(relatedArts);
       // Don't need to re-open editor cause event handler will do that
