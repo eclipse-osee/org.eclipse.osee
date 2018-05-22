@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 
@@ -53,5 +54,9 @@ public interface IAtsReviewService {
    List<IAtsDecisionReviewOption> getDefaultDecisionReviewOptions();
 
    String getDecisionReviewOptionsString(Collection<IAtsDecisionReviewOption> options);
+
+   boolean hasReviews(IAtsTeamWorkflow teamWf);
+
+   Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf, IStateToken relatedToState);
 
 }

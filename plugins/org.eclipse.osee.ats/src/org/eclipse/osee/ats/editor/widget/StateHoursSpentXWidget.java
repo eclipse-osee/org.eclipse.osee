@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.editor.widget;
 
 import java.util.Collections;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.editor.WfePromptChangeStatus;
 import org.eclipse.osee.ats.editor.WorkflowEditor;
@@ -19,6 +20,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -89,9 +91,8 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
                HoursSpentUtil.getHoursSpentFromStateTasks(sma, page, AtsClientService.get().getServices())));
             breakoutNeeded = true;
          }
-         if (sma.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
-            sb.append(String.format("\n     Review Hours: %5.2f",
-               ReviewManager.getHoursSpent((TeamWorkFlowArtifact) sma, page)));
+         if (sma.isTeamWorkflow() && AtsClientService.get().getReviewService().hasReviews((TeamWorkFlowArtifact) sma)) {
+            sb.append(String.format("\n     Review Hours: %5.2f", getHoursSpent((TeamWorkFlowArtifact) sma, page)));
             breakoutNeeded = true;
          }
          if (breakoutNeeded) {
@@ -105,6 +106,19 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return ex.getLocalizedMessage();
       }
+   }
+
+   /**
+    * Return Hours Spent for Reviews of "Related to State" stateName
+    *
+    * @param relatedToState state name of parent workflow's state
+    */
+   private double getHoursSpent(TeamWorkFlowArtifact teamArt, IStateToken relatedToState) {
+      double spent = 0;
+      for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews(teamArt, relatedToState)) {
+         spent += HoursSpentUtil.getHoursSpentTotal(reviewArt, AtsClientService.get().getServices());
+      }
+      return spent;
    }
 
 }

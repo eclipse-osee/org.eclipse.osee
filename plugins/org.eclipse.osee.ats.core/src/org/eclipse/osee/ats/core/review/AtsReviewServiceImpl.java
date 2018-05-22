@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -32,6 +33,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
@@ -270,6 +272,23 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    @Override
    public IAtsPeerReviewRoleManager createPeerReviewRoleManager(IAtsPeerToPeerReview peerRev) {
       return new UserRoleManager(peerRev, atsApi);
+   }
+
+   @Override
+   public boolean hasReviews(IAtsTeamWorkflow teamWf) {
+      return !getReviews(teamWf).isEmpty();
+   }
+
+   @Override
+   public Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf, IStateToken state) {
+      Set<IAtsAbstractReview> reviews = new HashSet<>();
+      for (IAtsAbstractReview review : getReviews(teamWf)) {
+         if (atsApi.getAttributeResolver().getSoleAttributeValue(review, AtsAttributeTypes.RelatedToState, "").equals(
+            state.getName())) {
+            reviews.add(review);
+         }
+      }
+      return reviews;
    }
 
 }

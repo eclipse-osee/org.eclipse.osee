@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -89,9 +88,9 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
                AtsClientService.get().getEarnedValueService().getPercentCompleteFromTasks((sma), page)));
             breakoutNeeded = true;
          }
-         if (sma.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
+         if (sma.isTeamWorkflow() && AtsClientService.get().getReviewService().hasReviews((TeamWorkFlowArtifact) sma)) {
             sb.append(String.format("\n     Review Percent: %d",
-               ReviewManager.getPercentComplete((TeamWorkFlowArtifact) sma, page)));
+               AtsClientService.get().getEarnedValueService().getPercentCompleteFromReviews(sma, page)));
             breakoutNeeded = true;
          }
          if (breakoutNeeded) {

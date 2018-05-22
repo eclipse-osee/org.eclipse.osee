@@ -131,7 +131,8 @@ public class WfeArtifactEventManager implements IArtifactEventListener {
             });
          }
       }
-      if (!refreshed && awa.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) awa)) {
+      if (!refreshed && awa.isTeamWorkflow() && AtsClientService.get().getReviewService().hasReviews(
+         (TeamWorkFlowArtifact) awa)) {
          try {
             // If related review has made a change, redraw
             for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) awa)) {

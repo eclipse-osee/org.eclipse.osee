@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.workflow.WorkflowManager;
-import org.eclipse.osee.ats.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -95,7 +94,8 @@ public class PercentCompleteStateReviewColumn extends XViewerAtsColumn implement
     */
    public static int getPercentCompleteStateReview(Artifact artifact, IStateToken state) {
       if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-         return ReviewManager.getPercentComplete((TeamWorkFlowArtifact) artifact, state);
+         return AtsClientService.get().getEarnedValueService().getPercentCompleteFromReviews(
+            (TeamWorkFlowArtifact) artifact, state);
       }
       return 0;
    }

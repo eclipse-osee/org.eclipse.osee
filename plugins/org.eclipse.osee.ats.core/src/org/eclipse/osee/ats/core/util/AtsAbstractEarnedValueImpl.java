@@ -298,4 +298,26 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
       return result;
    }
 
+   /**
+    * Return Total Percent Complete / # Reviews for "Related to State" stateName
+    *
+    * @param relatedToState state name of parent workflow's state
+    */
+   @Override
+   public int getPercentCompleteFromReviews(IAtsWorkItem workItem, IStateToken relatedToState) {
+      int spent = 0;
+      if (workItem.isTeamWorkflow()) {
+         Collection<IAtsAbstractReview> reviews =
+            atsApi.getReviewService().getReviews((IAtsTeamWorkflow) workItem, relatedToState);
+         for (IAtsAbstractReview review : reviews) {
+            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(review, atsApi);
+         }
+         if (spent == 0) {
+            return 0;
+         }
+         spent = spent / reviews.size();
+      }
+      return spent;
+   }
+
 }

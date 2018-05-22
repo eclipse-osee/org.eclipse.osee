@@ -74,4 +74,6 @@ public interface IAtsEarnedValueService {
 
    int getPercentCompleteFromTasks(IAtsWorkItem workItem);
 
+   int getPercentCompleteFromReviews(IAtsWorkItem workItem, IStateToken state);
+
 }

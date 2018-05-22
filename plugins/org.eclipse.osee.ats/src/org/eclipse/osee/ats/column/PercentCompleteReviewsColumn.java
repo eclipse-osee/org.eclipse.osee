@@ -10,17 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
+import java.util.Collection;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
-import org.eclipse.osee.ats.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -88,7 +90,16 @@ public class PercentCompleteReviewsColumn extends XViewerAtsColumn implements IX
          return rollPercent.intValue();
       }
       if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-         return ReviewManager.getPercentComplete((TeamWorkFlowArtifact) artifact);
+         int spent = 0;
+         Collection<IAtsAbstractReview> reviews =
+            AtsClientService.get().getReviewService().getReviews((TeamWorkFlowArtifact) artifact);
+         for (IAtsAbstractReview review : reviews) {
+            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(review, AtsClientService.get().getServices());
+         }
+         if (spent == 0) {
+            return 0;
+         }
+         return spent / reviews.size();
       }
       return 0;
    }
