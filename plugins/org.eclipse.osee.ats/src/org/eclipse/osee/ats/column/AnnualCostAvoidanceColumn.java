@@ -87,13 +87,24 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
          return hours;
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.TeamWorkflow)) {
          TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) object;
-         double benefit = teamArt.getWorldViewWeeklyBenefit();
+         double benefit = getWorldViewWeeklyBenefit(teamArt);
          double remainHrs = teamArt.getRemainHoursTotal();
          return benefit * 52 - remainHrs;
       } else if (object instanceof IAtsWorkItem) {
          return getWorldViewAnnualCostAvoidance(((IAtsWorkItem) object).getStoreObject());
       }
       return 0;
+   }
+
+   public static double getWorldViewWeeklyBenefit(TeamWorkFlowArtifact teamArt) {
+      if (teamArt.isAttributeTypeValid(AtsAttributeTypes.WeeklyBenefit)) {
+         return 0;
+      }
+      String value = teamArt.getSoleAttributeValue(AtsAttributeTypes.WeeklyBenefit, "");
+      if (!Strings.isValid(value)) {
+         return 0;
+      }
+      return new Float(value).doubleValue();
    }
 
    public static Result isWorldViewAnnualCostAvoidanceValid(Object object) {

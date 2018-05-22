@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkState;
@@ -157,5 +158,9 @@ public interface IAtsStateManager extends WorkStateFactory {
    boolean isInState(IStateToken state);
 
    void setAssignees(String stateName, StateType stateType, List<? extends IAtsUser> assignees);
+
+   void setCreatedBy(IAtsUser user, boolean logChange, Date date, IAtsChangeSet changes);
+
+   void internalSetCreatedBy(IAtsUser user, IAtsChangeSet changes);
 
 }

@@ -37,7 +37,6 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.XAssigneesHyperlinkWidget;
 import org.eclipse.osee.ats.util.widgets.XOriginatorHyperlinkWidget;
 import org.eclipse.osee.ats.util.widgets.XWorkPackageHyperlinkWidget;
-import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -430,8 +429,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
       XOriginatorHyperlinkWidget originatorWidget =
          ((XOriginatorHyperlinkWidget) teamDefFieldToWidget.get(teamDef, WizardFields.Originator));
       if (originatorWidget != null && originatorWidget.getSelected() != null) {
-         ((AbstractWorkflowArtifact) teamWf.getStoreObject()).setCreatedBy(originatorWidget.getSelected(), true,
-            new Date(), changes);
+         teamWf.getStateMgr().setCreatedBy(originatorWidget.getSelected(), true, new Date(), changes);
       }
    }
 

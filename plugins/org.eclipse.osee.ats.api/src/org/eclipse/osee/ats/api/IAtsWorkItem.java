@@ -11,14 +11,17 @@
 package org.eclipse.osee.ats.api;
 
 import java.util.Date;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.HasAssignees;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 
 /**
  * @author Donald G. Dunne
@@ -36,12 +39,6 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
    IAtsWorkDefinition getWorkDefinition();
 
    IAtsStateDefinition getStateDefinition();
-
-   boolean isTask();
-
-   boolean isReview();
-
-   boolean isTeamWorkflow();
 
    IAtsUser getCreatedBy();
 
@@ -65,19 +62,47 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
    IAtsAction getParentAction();
 
-   boolean isGoal();
+   default boolean isTeamWorkflow() {
+      return isOfType(AtsArtifactTypes.TeamWorkflow);
+   }
 
-   boolean isInWork();
+   boolean isOfType(ArtifactTypeId... artifactType);
 
-   boolean isCompleted();
+   default boolean isDecisionReview() {
+      return isOfType(AtsArtifactTypes.DecisionReview);
+   }
 
-   boolean isCompletedOrCancelled();
+   default boolean isPeerReview() {
+      return isOfType(AtsArtifactTypes.PeerToPeerReview);
+   }
 
-   boolean isCancelled();
+   default boolean isTask() {
+      return isOfType(AtsArtifactTypes.Task);
+   }
 
-   boolean isDecisionReview();
+   default boolean isReview() {
+      return isOfType(AtsArtifactTypes.ReviewArtifact);
+   }
 
-   boolean isPeerReview();
+   default boolean isGoal() {
+      return this instanceof IAtsGoal;
+   }
+
+   default boolean isInWork() {
+      return getStateDefinition().getStateType().isWorkingState();
+   }
+
+   default boolean isCompleted() {
+      return getStateDefinition().getStateType().isCompletedState();
+   }
+
+   default boolean isCancelled() {
+      return getStateDefinition().getStateType().isCancelledState();
+   }
+
+   default boolean isCompletedOrCancelled() {
+      return isCompleted() || isCancelled();
+   }
 
    void setStateMgr(IAtsStateManager stateMgr);
 

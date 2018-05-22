@@ -60,11 +60,6 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
       return users;
    }
 
-   @Override
-   public String getArtifactSuperTypeName() {
-      return "Review";
-   }
-
    public boolean isBlocking() {
       return getReviewBlockType() != ReviewBlockType.None;
    }
@@ -136,11 +131,6 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
 
    public boolean isStandAloneReview() {
       return AtsClientService.get().getWorkItemService().getActionableItemService().hasActionableItems(this);
-   }
-
-   @Override
-   public double getWorldViewWeeklyBenefit() {
-      return 0;
    }
 
    public Artifact getArtifact() {

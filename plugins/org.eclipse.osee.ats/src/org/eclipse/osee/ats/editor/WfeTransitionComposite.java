@@ -389,7 +389,7 @@ public class WfeTransitionComposite extends Composite {
             return;
          }
          // Find page corresponding to override state name
-         for (IAtsStateDefinition toState : awa.getToStates()) {
+         for (IAtsStateDefinition toState : awa.getStateDefinition().getToStates()) {
             if (toState.getName().equals(transitionStateOverride)) {
                // Reset selection
                ArrayList<Object> defaultPage = new ArrayList<>();

@@ -15,14 +15,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
-import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -33,15 +29,12 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
-import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workflow.action.ActionArtifact;
@@ -50,11 +43,9 @@ import org.eclipse.osee.ats.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.services.HasCmAccessControl;
@@ -65,13 +56,11 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 
 /**
@@ -90,36 +79,9 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       super(id, guid, branch, artifactType);
    }
 
-   public void initializeNewStateMachine(List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
-      Conditions.checkNotNull(createdDate, "createdDate");
-      Conditions.checkNotNull(createdBy, "createdBy");
-      Conditions.checkNotNull(changes, "changes");
-      IAtsStateDefinition startState = getWorkDefinition().getStartState();
-      StateManagerUtility.initializeStateMachine(getStateMgr(), startState, assignees,
-         createdBy == null ? AtsClientService.get().getUserService().getCurrentUser() : createdBy, changes);
-      IAtsUser user = createdBy == null ? AtsClientService.get().getUserService().getCurrentUser() : createdBy;
-      setCreatedBy(user, true, createdDate, changes);
-      TransitionManager.logStateStartedEvent(this, startState, createdDate, user);
-   }
-
-   public boolean isTargetedVersionable() {
-      if (!isTeamWorkflow()) {
-         return false;
-      }
-      return ((TeamWorkFlowArtifact) this).getTeamDefinition().isTeamUsesVersions();
-   }
-
-   public String getArtifactSuperTypeName() {
-      return getArtifactTypeName();
-   }
-
    @Override
    public List<IAtsUser> getImplementers() {
       return AtsClientService.get().getImplementerService().getImplementers(this);
-   }
-
-   public double getWorldViewWeeklyBenefit() {
-      return 0;
    }
 
    public AbstractWorkflowArtifact getParentAWA() {
@@ -145,7 +107,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public String getEditorTitle() {
-      return getType() + ": " + getName();
+      return getArtifactType() + ": " + getName();
    }
 
    public void clearCaches() {
@@ -155,30 +117,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       parentTeamArt = null;
       AtsClientService.get().getStateFactory().clearStateManager(this);
       atsLog = null;
-   }
-
-   public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) {
-      deleteArts.add(this);
-      for (Artifact relative : getBSideArtifacts()) {
-         allRelated.put(relative, this);
-      }
-   }
-
-   private List<Artifact> getBSideArtifacts() {
-      List<Artifact> sideBArtifacts = new ArrayList<>();
-      List<RelationLink> relatives = getRelationsAll(DeletionFlag.EXCLUDE_DELETED);
-      for (RelationLink link : relatives) {
-         Artifact sideB = link.getArtifactB();
-         if (sideB.notEqual(this)) {
-            sideBArtifacts.add(sideB);
-         }
-      }
-
-      return sideBArtifacts;
-   }
-
-   public String getType() {
-      return getArtifactTypeName();
    }
 
    public String getCurrentStateName() {
@@ -359,14 +297,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       artifacts.add(smaArtifact);
    }
 
-   /**
-    * Called at the end of a transition just before transaction manager persist. SMAs can override to perform tasks due
-    * to transition.
-    */
-   public void transitioned(IAtsStateDefinition fromState, IAtsStateDefinition toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) {
-      // provided for subclass implementation
-   }
-
    @Override
    public Artifact getParentAtsArtifact() {
       return getParentAWA();
@@ -380,14 +310,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          return 0;
       }
       return ((TeamWorkFlowArtifact) this).getPercentCompleteFromTasks(state);
-   }
-
-   public String getWorldViewLastUpdated() {
-      return DateUtil.getMMDDYYHHMM(getLastModified());
-   }
-
-   public String getWorldViewSWEnhancement() {
-      return "";
    }
 
    @Override
@@ -431,14 +353,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return getWorkDefinition().getStateByName(name);
    }
 
-   public boolean isHistoricalVersion() {
-      return isHistorical();
-   }
-
-   public List<IAtsStateDefinition> getToStates() {
-      return getStateDefinition().getToStates();
-   }
-
    public boolean isAccessControlWrite() {
       return AccessControlManager.hasPermission(this, PermissionEnum.WRITE);
    }
@@ -464,57 +378,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          return false;
       }
 
-   }
-
-   public void setCreatedBy(IAtsUser user, boolean logChange, Date date, IAtsChangeSet changes) {
-      if (logChange) {
-         logCreatedByChange(user);
-      }
-      if (changes == null) {
-         if (isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
-            setSoleAttributeValue(AtsAttributeTypes.CreatedBy, user.getUserId());
-         }
-         if (date != null && isAttributeTypeValid(AtsAttributeTypes.CreatedDate)) {
-            setSoleAttributeValue(AtsAttributeTypes.CreatedDate, date);
-         }
-      } else {
-         if (changes.isAttributeTypeValid(this, AtsAttributeTypes.CreatedBy)) {
-            changes.setSoleAttributeValue((IAtsWorkItem) this, AtsAttributeTypes.CreatedBy, user.getUserId());
-         }
-         if (date != null && changes.isAttributeTypeValid(this, AtsAttributeTypes.CreatedDate)) {
-            changes.setSoleAttributeValue((ArtifactId) this, AtsAttributeTypes.CreatedDate, date);
-         }
-         try {
-            changes.addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(
-               AtsClientService.get().getUserService().getCurrentUser(), this, AtsNotifyType.Originator));
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, "Error adding ATS Notification Event", ex);
-         }
-      }
-
-   }
-
-   private void logCreatedByChange(IAtsUser user) {
-      if (getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null) == null) {
-         getLog().addLog(LogType.Originated, "", "", new Date(), user.getUserId());
-      } else {
-         getLog().addLog(LogType.Originated, "",
-            "Changed by " + AtsClientService.get().getUserService().getCurrentUser().getName(), new Date(),
-            user.getUserId());
-      }
-   }
-
-   public void internalSetCreatedBy(IAtsUser user, IAtsChangeSet changes) {
-      if (changes.isAttributeTypeValid(this, AtsAttributeTypes.CreatedBy)) {
-         changes.setSoleAttributeValue((IAtsWorkItem) this, AtsAttributeTypes.CreatedBy, user.getUserId());
-      }
-   }
-
-   public void internalSetCreatedDate(Date date, IAtsChangeSet changes) {
-      getLog().internalResetCreatedDate(date);
-      if (changes.isAttributeTypeValid(this, AtsAttributeTypes.CreatedDate)) {
-         changes.setSoleAttributeValue((ArtifactId) this, AtsAttributeTypes.CreatedDate, date);
-      }
    }
 
    @Override
@@ -610,26 +473,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return fromState;
    }
 
-   @Override
-   public boolean isInWork() {
-      return getStateDefinition().getStateType().isWorkingState();
-   }
-
-   @Override
-   public boolean isCompleted() {
-      return getStateDefinition().getStateType().isCompletedState();
-   }
-
-   @Override
-   public boolean isCancelled() {
-      return getStateDefinition().getStateType().isCancelledState();
-   }
-
-   @Override
-   public boolean isCompletedOrCancelled() {
-      return isCompleted() || isCancelled();
-   }
-
    public void setTransitionAssignees(Collection<IAtsUser> assignees) {
       if (assignees.contains(AtsCoreUsers.SYSTEM_USER) || assignees.contains(AtsCoreUsers.ANONYMOUS_USER)) {
          throw new OseeArgumentException("Can not assign workflow to OseeSystem or Guest");
@@ -667,36 +510,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public IAtsStateManager getStateMgr() {
       return AtsClientService.get().getStateFactory().getStateManager(this);
-   }
-
-   @Override
-   public boolean isTeamWorkflow() {
-      return isOfType(AtsArtifactTypes.TeamWorkflow);
-   }
-
-   @Override
-   public boolean isDecisionReview() {
-      return isOfType(AtsArtifactTypes.DecisionReview);
-   }
-
-   @Override
-   public boolean isPeerReview() {
-      return isOfType(AtsArtifactTypes.PeerToPeerReview);
-   }
-
-   @Override
-   public boolean isTask() {
-      return isOfType(AtsArtifactTypes.Task);
-   }
-
-   @Override
-   public boolean isReview() {
-      return this instanceof AbstractReviewArtifact;
-   }
-
-   @Override
-   public boolean isGoal() {
-      return this instanceof IAtsGoal;
    }
 
    protected void addPrivilegedUsersUpTeamDefinitionTree(IAtsTeamDefinition tda, Set<IAtsUser> users) {

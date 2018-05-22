@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -34,7 +33,6 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.workflow.action.ActionArtifactRollup;
-import org.eclipse.osee.ats.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.workflow.task.internal.AtsTaskCache;
@@ -43,13 +41,11 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -86,11 +82,6 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    }
 
    @Override
-   public String getArtifactSuperTypeName() {
-      return "Team Workflow";
-   }
-
-   @Override
    public void save(IAtsChangeSet changes) {
       super.save(changes);
       try {
@@ -118,7 +109,8 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
       try {
          if (getTeamDefinition().isTeamUsesVersions()) {
             IAtsVersion version = AtsClientService.get().getVersionService().getTargetedVersion(this);
-            return String.format("%s: [%s] - %s", getType(), version != null ? version : "Un-Targeted", getName());
+            return String.format("%s: [%s] - %s", getArtifactType(), version != null ? version : "Un-Targeted",
+               getName());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -151,22 +143,6 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return "!Error";
-      }
-   }
-
-   @Override
-   public String getType() {
-      return getTeamName() + " Workflow";
-   }
-
-   @Override
-   public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) {
-      super.atsDelete(deleteArts, allRelated);
-      for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews(this)) {
-         reviewArt.atsDelete(deleteArts, allRelated);
-      }
-      for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(this)) {
-         ((AbstractWorkflowArtifact) task.getStoreObject()).atsDelete(deleteArts, allRelated);
       }
    }
 
@@ -237,18 +213,6 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
       return 0.0;
    }
 
-   @Override
-   public double getWorldViewWeeklyBenefit() {
-      if (isAttributeTypeValid(AtsAttributeTypes.WeeklyBenefit)) {
-         return 0;
-      }
-      String value = getSoleAttributeValue(AtsAttributeTypes.WeeklyBenefit, "");
-      if (!Strings.isValid(value)) {
-         return 0;
-      }
-      return new Float(value).doubleValue();
-   }
-
    public IOseeBranch getWorkingBranchForceCacheUpdate() {
       return AtsClientService.get().getBranchService().getWorkingBranch(this, true);
    }
@@ -290,20 +254,6 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
          }
       }
       return arts;
-   }
-
-   public Result areTasksComplete() {
-      try {
-         for (TaskArtifact taskArt : getTaskArtifacts()) {
-            if (taskArt.isInWork()) {
-               return new Result(false, "Task " + taskArt.toStringWithId() + " Not Complete");
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-         return new Result(false, "Exception " + ex.getLocalizedMessage());
-      }
-      return Result.TrueResult;
    }
 
 }

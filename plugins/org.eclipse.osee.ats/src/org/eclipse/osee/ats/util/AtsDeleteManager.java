@@ -21,18 +21,24 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workflow.AbstractAtsArtifact;
 import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.workflow.review.AbstractReviewArtifact;
+import org.eclipse.osee.ats.workflow.review.ReviewManager;
+import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -141,11 +147,11 @@ public class AtsDeleteManager {
             AtsClientService.get().getAtsId(deleteArt), deleteArt.getName()) + "\n");
          if (deleteArt.isOfType(AtsArtifactTypes.Action)) {
             for (IAtsTeamWorkflow art : AtsClientService.get().getWorkItemService().getTeams(deleteArt)) {
-               ((AbstractWorkflowArtifact) art).atsDelete(relatedArts, ignoredArts);
+               atsDelete(((AbstractWorkflowArtifact) art), relatedArts, ignoredArts);
             }
          } else if (deleteArt.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
             WorkflowEditor.close(java.util.Collections.singleton((AbstractWorkflowArtifact) deleteArt), true);
-            ((AbstractWorkflowArtifact) deleteArt).atsDelete(relatedArts, ignoredArts);
+            atsDelete(((AbstractWorkflowArtifact) deleteArt), relatedArts, ignoredArts);
             for (Artifact loopArt : relatedArts) {
                if (loopArt.notEqual(deleteArt)) {
                   delBuilder.append(
@@ -175,4 +181,33 @@ public class AtsDeleteManager {
          }
       }
    }
+
+   private static void atsDelete(AbstractWorkflowArtifact awa, Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) {
+      deleteArts.add(awa);
+      for (Artifact relative : getBSideArtifacts(awa)) {
+         allRelated.put(relative, awa);
+      }
+      if (awa.isTeamWorkflow()) {
+         for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) awa)) {
+            atsDelete(reviewArt, deleteArts, allRelated);
+         }
+         for (IAtsTask task : AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) awa)) {
+            atsDelete(((AbstractWorkflowArtifact) task.getStoreObject()), deleteArts, allRelated);
+         }
+      }
+   }
+
+   private static List<Artifact> getBSideArtifacts(AbstractWorkflowArtifact awa) {
+      List<Artifact> sideBArtifacts = new ArrayList<>();
+      List<RelationLink> relatives = awa.getRelationsAll(DeletionFlag.EXCLUDE_DELETED);
+      for (RelationLink link : relatives) {
+         Artifact sideB = link.getArtifactB();
+         if (sideB.notEqual(awa)) {
+            sideBArtifacts.add(sideB);
+         }
+      }
+
+      return sideBArtifacts;
+   }
+
 }

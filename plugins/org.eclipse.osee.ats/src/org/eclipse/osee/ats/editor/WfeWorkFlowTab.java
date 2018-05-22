@@ -413,7 +413,10 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    }
 
    protected boolean isShowTargetedVersion() {
-      return awa.isTargetedVersionable();
+      if (!awa.isTeamWorkflow()) {
+         return false;
+      }
+      return ((TeamWorkFlowArtifact) awa).getTeamDefinition().isTeamUsesVersions();
    }
 
    private void createTargetVersionAndAssigneeHeader(Composite parent, StateXWidgetPage page, XFormToolkit toolkit) {
@@ -652,7 +655,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    }
 
    private void createLatestHeader(Composite comp, XFormToolkit toolkit) {
-      if (awa.isHistoricalVersion()) {
+      if (awa.isHistorical()) {
          Label label = toolkit.createLabel(comp,
             "This is a historical version of this " + awa.getArtifactTypeName() + " and can not be edited; Select \"Open Latest\" to view/edit latest version.");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));

@@ -235,7 +235,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
-         if (awa.isHistoricalVersion()) {
+         if (awa.isHistorical()) {
             AWorkbench.popup("Historical Error",
                "You can not change a historical version of " + awa.getArtifactTypeName() + ":\n\n" + awa);
          } else if (!awa.isAccessControlWrite()) {

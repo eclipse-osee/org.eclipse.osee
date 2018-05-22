@@ -92,17 +92,4 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
       return parentTeamArt;
    }
 
-   @Override
-   public double getWorldViewWeeklyBenefit() {
-      return 0;
-   }
-
-   @Override
-   public String getWorldViewSWEnhancement() {
-      AbstractWorkflowArtifact awa = getParentAWA();
-      if (awa != null) {
-         return awa.getWorldViewSWEnhancement();
-      }
-      return "";
-   }
 }

@@ -22,9 +22,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -39,6 +41,7 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.state.SimpleTeamState;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -660,4 +663,46 @@ public class StateManager implements IAtsStateManager {
    public boolean isInState(IStateToken state) {
       return getCurrentStateName().equals(state.getName());
    }
+
+   @Override
+   public void setCreatedBy(IAtsUser user, boolean logChange, Date date, IAtsChangeSet changes) {
+      if (logChange) {
+         logCreatedByChange(workItem, user);
+      }
+      if (changes == null) {
+         if (atsApi.getStoreService().isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
+            atsApi.getAttributeResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedBy,
+               user.getUserId());
+         }
+         if (date != null && atsApi.getStoreService().isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedDate)) {
+            atsApi.getAttributeResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedDate, date);
+         }
+      } else {
+         if (atsApi.getStoreService().isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
+            atsApi.getAttributeResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedBy,
+               user.getUserId());
+         }
+         if (date != null && atsApi.getStoreService().isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedDate)) {
+            changes.setSoleAttributeValue((ArtifactId) this, AtsAttributeTypes.CreatedDate, date);
+         }
+      }
+
+   }
+
+   @Override
+   public void internalSetCreatedBy(IAtsUser user, IAtsChangeSet changes) {
+      if (changes.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
+         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedBy, user.getUserId());
+      }
+   }
+
+   private void logCreatedByChange(IAtsWorkItem workItem, IAtsUser user) {
+      if (atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CreatedBy, null) == null) {
+         workItem.getLog().addLog(LogType.Originated, "", "", new Date(), user.getUserId());
+      } else {
+         workItem.getLog().addLog(LogType.Originated, "",
+            "Changed by " + atsApi.getUserService().getCurrentUser().getName(), new Date(), user.getUserId());
+      }
+   }
+
 }

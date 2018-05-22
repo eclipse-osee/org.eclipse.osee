@@ -28,7 +28,7 @@ public class ReadOnlyHyperlinkListener implements IHyperlinkListener {
 
    @Override
    public void linkActivated(HyperlinkEvent e) {
-      if (sma.isHistoricalVersion()) {
+      if (sma.isHistorical()) {
          AWorkbench.popup("Historical Error",
             "You can not change a historical version of " + sma.getArtifactTypeName() + ":\n\n" + sma);
       } else {

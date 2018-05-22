@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
@@ -21,7 +22,10 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
+import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -117,7 +121,8 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
          IAtsUser selectedUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(ld.getSelection());
          IAtsChangeSet changes = AtsClientService.get().createChangeSet("ATS Prompt Change Originator");
          for (AbstractWorkflowArtifact awa : awas) {
-            awa.setCreatedBy(selectedUser, true, null, changes);
+            awa.getStateMgr().setCreatedBy(selectedUser, true, null, changes);
+            addOriginatorNotification(awa, changes);
             changes.add(awa);
          }
          if (persist) {
@@ -126,6 +131,16 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
          return true;
       }
       return false;
+   }
+
+   public static void addOriginatorNotification(IAtsWorkItem workItem, IAtsChangeSet changes) {
+      try {
+         changes.addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(
+            AtsClientService.get().getUserService().getCurrentUser(), workItem, AtsNotifyType.Originator));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, "Error adding ATS Notification Event", ex);
+      }
+
    }
 
    @Override
