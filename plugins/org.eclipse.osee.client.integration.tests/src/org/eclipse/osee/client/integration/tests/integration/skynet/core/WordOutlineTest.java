@@ -32,7 +32,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Tests different forms of outline numbers and titles
- * 
+ *
  * @author Karol M. Wilk
  */
 @RunWith(Parameterized.class)
@@ -65,15 +65,14 @@ public final class WordOutlineTest {
    /**
     * Note: some of the data objects need to repeat data from previous test because they are considered to be
     * lastHeaderNumber or lastHeaderName or lastContent
-    * 
+    *
     * @return collection of data sets used as input for parameterized unit test
     */
    @Parameters
    public static Collection<Object[]> getData() {
       List<Object[]> data = new ArrayList<>();
-      addTest(data, OUTLINE_WITH_NUMBER, data("1.0", "Outline TITLE", ""));
-      addTest(data, OUTLINE_WITH_NUMBER_AND_CONTENT, data("5.0", "SCOPE", ""),
-         data("5.0", "SCOPE", "content content content more content"));
+      addTest(data, OUTLINE_WITH_NUMBER, data("1.0", "Outline TITLE"));
+      addTest(data, OUTLINE_WITH_NUMBER_AND_CONTENT, data("5.0", "SCOPE"), data("5.0", "SCOPE"));
 
       StringBuilder builder = new StringBuilder();
       builder.append("This 1.6 is some interesting content 2.3SAMPL");
@@ -82,7 +81,7 @@ public final class WordOutlineTest {
       builder.append(ReservedCharacters.toCharacter("&ldquo;"));
       builder.append("10.");
 
-      addTest(data, NUMBER_EMBED_IN_CONTENT, data("1.0", "SCOPE", ""), data("1.0", "SCOPE", builder.toString()));
+      addTest(data, NUMBER_EMBED_IN_CONTENT, data("1.0", "SCOPE"), data("1.0", "SCOPE"));
       return data;
    }
 
@@ -103,9 +102,8 @@ public final class WordOutlineTest {
 
          String headerNumber = delegate.getLastHeaderNumber().trim();
          String headerName = delegate.getLastHeaderName().trim();
-         String content = delegate.getLastContent().trim();
 
-         actualData.add(data(headerNumber, headerName, content));
+         actualData.add(data(headerNumber, headerName));
       }
 
       Assert.assertTrue("WordOutlineTester no paragraphs found...", foundSomething);
@@ -113,9 +111,9 @@ public final class WordOutlineTest {
          DelegateData expected = expectedData[index];
          DelegateData actual = actualData.get(index);
          Assert.assertEquals(String.format(
-            "\nChecking %s of %s,\nEXPECTED: \n\t Number:\"%s\" \n\t Title:\"%s\" \n\t Content:\"%s\"\nACTUAL: \n\t Number:\"%s\" \n\t Title:\"%s\" \n\t Content:\"%s\"\n",
-            index, dataFileName, expected.getHeaderNumber(), expected.getHeaderName(), expected.getContent(),
-            actual.getHeaderNumber(), actual.getHeaderName(), actual.getContent()), expected, actual);
+            "\nChecking %s of %s,\nEXPECTED: \n\t Number:\"%s\" \n\t Title:\"%s\"\nACTUAL: \n\t Number:\"%s\" \n\t Title:\"%s\"\n",
+            index, dataFileName, expected.getHeaderNumber(), expected.getHeaderName(), actual.getHeaderNumber(),
+            actual.getHeaderName()), expected, actual);
          if (Strings.isValid(expected.getHeaderNumber())) {
             Assert.assertTrue("WordOutlineTester doesn't look like a outline number...",
                OUTLINE_NUMBER_PATTERN.matcher(actual.getHeaderNumber()).matches());
@@ -128,26 +126,23 @@ public final class WordOutlineTest {
       delegate.dispose();
       Assert.assertNull(delegate.getLastHeaderNumber());
       Assert.assertNull(delegate.getLastHeaderName());
-      Assert.assertNull(delegate.getLastContent());
    }
 
    private static void addTest(List<Object[]> data, String dataFileName, DelegateData... expectedData) {
       data.add(new Object[] {dataFileName, expectedData});
    }
 
-   private static DelegateData data(String headerNumber, String headerName, String content) {
-      return new DelegateData(headerNumber, headerName, content);
+   private static DelegateData data(String headerNumber, String headerName) {
+      return new DelegateData(headerNumber, headerName);
    }
 
    private static final class DelegateData {
       private final String headerNumber;
       private final String headerName;
-      private final String content;
 
-      public DelegateData(String headerNumber, String headerName, String content) {
+      public DelegateData(String headerNumber, String headerName) {
          this.headerNumber = headerNumber;
          this.headerName = headerName;
-         this.content = content;
       }
 
       public String getHeaderNumber() {
@@ -158,15 +153,10 @@ public final class WordOutlineTest {
          return headerName;
       }
 
-      public String getContent() {
-         return content;
-      }
-
       @Override
       public int hashCode() {
          final int prime = 31;
          int result = 1;
-         result = prime * result + (content == null ? 0 : content.hashCode());
          result = prime * result + (headerName == null ? 0 : headerName.hashCode());
          result = prime * result + (headerNumber == null ? 0 : headerNumber.hashCode());
          return result;
@@ -184,13 +174,7 @@ public final class WordOutlineTest {
             return false;
          }
          DelegateData other = (DelegateData) obj;
-         if (content == null) {
-            if (other.content != null) {
-               return false;
-            }
-         } else if (!content.equals(other.content)) {
-            return false;
-         }
+
          if (headerName == null) {
             if (other.headerName != null) {
                return false;
@@ -210,8 +194,7 @@ public final class WordOutlineTest {
 
       @Override
       public String toString() {
-         return String.format("DelegateData [headerNumber=[%s], headerName=[%s], content=[%s]]", headerNumber,
-            headerName, content);
+         return String.format("DelegateData [headerNumber=[%s], headerName=[%s]]", headerNumber, headerName);
       }
    }
 }

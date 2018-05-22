@@ -57,13 +57,12 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    private Map<String, RoughArtifact> duplicateCatcher;
    private Map<String, String> roughArtMeta;
 
-   private RoughArtifact previousNamedArtifact;
-   private RoughArtifact roughArtifact;
-   private StringBuilder wordFormattedContent;
+   protected RoughArtifact previousNamedArtifact;
+   protected RoughArtifact roughArtifact;
+   protected StringBuilder wordFormattedContent;
 
-   private StringBuffer lastHeaderNumber;
+   protected StringBuffer lastHeaderNumber;
    private StringBuffer lastHeaderName;
-   private StringBuffer lastContent;
 
    private boolean initalized;
 
@@ -83,7 +82,6 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
       roughArtMeta = new HashMap<>();
       lastHeaderNumber = new StringBuffer();
       lastHeaderName = new StringBuffer();
-      lastContent = new StringBuffer();
       previousNamedArtifact = null;
       roughArtifact = null;
       wordFormattedContent = new StringBuilder();
@@ -102,7 +100,6 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
       roughArtifact = null;
       lastHeaderNumber = null;
       lastHeaderName = null;
-      lastContent = null;
       initalized = false;
       possibleTableOfContents = false;
    }
@@ -123,7 +120,6 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
 
          StringBuilder outlineNumber = new StringBuilder(); //Number i.e. 1.1
          StringBuilder outlineName = new StringBuilder(); //Title i.e. Scope
-         StringBuilder outlineContent = null; // Content, text, table content, etc.
 
          boolean newOutlineNumber = processOutlineNumberAndName(content, outlineNumber, outlineName, paragraphStyle);
 
@@ -134,9 +130,9 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
             previousNamedArtifact = roughArtifact;
             processHeadingText(roughArtifact, WordUtil.textOnly(outlineName.toString()));
             roughArtMeta.put(number, paragraphStyle);
+            resetReqNumber();
          } else {
-            processContentOfParagraph(content, outlineContent);
-            wordFormattedContent.append(content);
+            addChildRoughArtifact(content, collector);
          }
 
       } else {
@@ -146,26 +142,14 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
       }
    }
 
-   /**
-    * Given content a <w:p> paragraph, fill outlineContent with extracted content information from
-    * grabNameAndTemplateContent()
-    * 
-    * @param content a <w:p> paragraph.
-    * @param outlineContent data structure to fill as new content gets extracted.
-    * @return if found any new content or not...
-    */
-   private boolean processContentOfParagraph(String content, StringBuilder outlineContent) {
-      outlineContent = new StringBuilder(content.length());
-      grabNameAndTemplateContent(content, outlineContent);
+   protected void addChildRoughArtifact(String content, RoughArtifactCollector collector) {
+      // Override with inheriting class if needed
+      // Allows child classes to choose to make given content into additional RoughArtifacts
+      wordFormattedContent.append(content);
+   }
 
-      boolean newOutlineContent = outlineContent.length() != 0;
-
-      if (newOutlineContent) {
-         lastContent.setLength(0);
-         lastContent.append(outlineContent.toString());
-      }
-
-      return newOutlineContent;
+   protected void resetReqNumber() {
+      //Override with inheriting class if needed
    }
 
    /**
@@ -216,19 +200,28 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    private boolean determineIfValid(String number, String paragraphStyle) {
       boolean result = false;
 
-      if (previousNamedArtifact != null) {
-         String metaData = roughArtMeta.get(previousNamedArtifact.getSectionNumber().getNumberString());
-
+      if (previousNamedArtifact != null && previousNamedArtifact.getSectionNumber() != null) {
+         String sectionNumber = previousNamedArtifact.getSectionNumber().getNumberString();
+         if (checkSectionNumber(sectionNumber)) {
+            return true; // special case of numbering requirements below a section number
+         }
+         String metaData = roughArtMeta.get(sectionNumber);
          paragraphStyle = Strings.isValid(paragraphStyle) ? paragraphStyle : Strings.EMPTY_STRING;
 
-         boolean invalid = outlineResolution.isInvalidOutlineNumber(number,
-            previousNamedArtifact.getSectionNumber().getNumberString());
+         boolean invalid = outlineResolution.isInvalidOutlineNumber(number, sectionNumber);
          result = !invalid && RoughArtifactMetaData.matches(metaData, paragraphStyle);
       } else {
          result = true; //accept since there is no previous
       }
 
       return result;
+   }
+
+   /**
+    * Allows child classes to handle a special case section number
+    */
+   protected boolean checkSectionNumber(String sectionNumber) {
+      return false;
    }
 
    /**
@@ -299,10 +292,10 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
 
    /**
     * Sets up storage (word formatted storage) for new artifact.
-    * 
+    *
     * @throws OseeCoreException
     */
-   private void setContent() throws OseeCoreException {
+   protected void setContent() throws OseeCoreException {
       if (roughArtifact != null) {
          roughArtifact.addAttribute(CoreAttributeTypes.WordTemplateContent, wordFormattedContent.toString());
          postProcessContent(wordFormattedContent, roughArtifact);
@@ -358,10 +351,6 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
 
    public String getLastHeaderName() {
       return getBufferString(lastHeaderName);
-   }
-
-   public String getLastContent() {
-      return getBufferString(lastContent);
    }
 
    private String getBufferString(StringBuffer builder) {
