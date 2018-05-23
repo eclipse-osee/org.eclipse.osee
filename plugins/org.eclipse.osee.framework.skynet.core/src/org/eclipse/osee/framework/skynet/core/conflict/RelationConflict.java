@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
@@ -100,7 +101,7 @@ public class RelationConflict extends Conflict {
    }
 
    @Override
-   public int getMergeGammaId() throws BranchMergeException {
+   public GammaId getMergeGammaId() throws BranchMergeException {
       throw new BranchMergeException("Relation Conflicts are not implemented yet");
    }
 

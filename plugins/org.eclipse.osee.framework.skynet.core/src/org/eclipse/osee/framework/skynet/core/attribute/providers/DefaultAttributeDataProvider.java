@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -116,7 +117,7 @@ public class DefaultAttributeDataProvider<T> extends AbstractAttributeDataProvid
    }
 
    @Override
-   public void persist(int storageId) {
+   public void persist(GammaId storageId) {
       dataStore.persist(storageId);
    }
 

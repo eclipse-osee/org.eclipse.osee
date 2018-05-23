@@ -15,6 +15,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
@@ -82,8 +83,9 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
                getArtIds().add(bArtId);
 
                getChangeBuilders().add(new RelationChangeBuilder(getSourceBranch(),
-                  ArtifactTypeManager.getTypeByGuid(chStmt.getLong("art_type_id")), chStmt.getInt("gamma_id"), aArtId,
-                  txDelta, modificationType, ArtifactId.valueOf(bArtId), relLinkId, rationale,
+                  ArtifactTypeManager.getTypeByGuid(chStmt.getLong("art_type_id")),
+                  GammaId.valueOf(chStmt.getLong("gamma_id")), aArtId, txDelta, modificationType,
+                  ArtifactId.valueOf(bArtId), relLinkId, rationale,
                   RelationTypeManager.getTypeByGuid(chStmt.getLong("rel_link_type_id")), !hasBranch));
             }
          }

@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.util.result.Manipulations;
@@ -288,7 +289,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
          count++;
          sbFull.append(AHTML.addRowMultiColumnTable(new String[] {
             Integer.toString(relLink.relLinkId),
-            Long.toString(relLink.gammaId),
+            Long.toString(relLink.gammaId.getId()),
             Long.toString(relLink.relTransId),
             relLink.branch.getIdString(),
             Integer.toString(relLink.aArtId),
@@ -309,7 +310,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
       try {
          chStmt.runPreparedQuery(sql);
          while (chStmt.next()) {
-            Long gamma_id = chStmt.getLong("gamma_id");
+            GammaId gamma_id = GammaId.valueOf(chStmt.getLong("gamma_id"));
             Long transactionId = chStmt.getLong("transaction_id");
             int relationId = chStmt.getInt("rel_link_id");
             BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
@@ -320,10 +321,10 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
             int commitTransId = forDelete ? 0 : chStmt.getInt("commit_trans_art_id");
             int modType = forDelete ? -1 : chStmt.getInt("creating_trans_mod_type");
 
-            if (!map.containsKey(gamma_id,
-               transactionId) && (forDelete || !deleteMap.containsKey(gamma_id, transactionId))) {
-               map.put(gamma_id, transactionId, new LocalRelationLink(relationId, gamma_id, transactionId, branch,
-                  a_sideArtifactId, b_sideArtifactId, deletedTransaction, commitTransId, modType));
+            if (!map.containsKey(gamma_id.getId(),
+               transactionId) && (forDelete || !deleteMap.containsKey(gamma_id.getId(), transactionId))) {
+               map.put(gamma_id.getId(), transactionId, new LocalRelationLink(relationId, gamma_id, transactionId,
+                  branch, a_sideArtifactId, b_sideArtifactId, deletedTransaction, commitTransId, modType));
             }
          }
       } finally {

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -42,7 +43,7 @@ public abstract class BaseTransactionData {
 
    private final Id itemId;
    private ModificationType modificationType;
-   private Integer gammaId;
+   private GammaId gammaId;
    private ApplicabilityId applicabilityId;
 
    public BaseTransactionData(Id itemId, ModificationType modificationType) {
@@ -95,7 +96,7 @@ public abstract class BaseTransactionData {
       return applicabilityId;
    }
 
-   protected final int getGammaId() {
+   protected final GammaId getGammaId() {
       if (gammaId == null) {
          gammaId = createGammaId();
       }
@@ -134,7 +135,7 @@ public abstract class BaseTransactionData {
    /**
     * Should not be called by application. This method will be called by the base class when required;
     */
-   protected abstract int createGammaId();
+   protected abstract GammaId createGammaId();
 
    /**
     * Should not be called by application. This method will be called by the base class when required;
@@ -148,7 +149,7 @@ public abstract class BaseTransactionData {
     */
    protected abstract void internalAddToEvents(ArtifactEvent artifactEvent);
 
-   protected int getNextGammaIdFromSequence() {
-      return (int) ConnectionHandler.getNextSequence(GAMMA_ID_SEQ, true);
+   protected GammaId getNextGammaIdFromSequence() {
+      return GammaId.valueOf(ConnectionHandler.getNextSequence(GAMMA_ID_SEQ, true));
    }
 }

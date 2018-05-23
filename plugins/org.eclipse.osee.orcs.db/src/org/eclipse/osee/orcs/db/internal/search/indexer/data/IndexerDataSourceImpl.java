@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -33,12 +34,12 @@ public class IndexerDataSourceImpl implements IndexedResource {
 
    private final int id;
    private final long typeUuid;
-   private final long gammaId;
+   private final GammaId gammaId;
 
    private final String value;
    private final String uri;
 
-   public IndexerDataSourceImpl(IResourceManager resourceManager, int id, long typeUuid, long gammaId, String value, String uri) {
+   public IndexerDataSourceImpl(IResourceManager resourceManager, int id, long typeUuid, GammaId gammaId, String value, String uri) {
       super();
       this.resourceManager = resourceManager;
       this.id = id;
@@ -49,7 +50,7 @@ public class IndexerDataSourceImpl implements IndexedResource {
    }
 
    @Override
-   public long getGammaId() {
+   public GammaId getGammaId() {
       return gammaId;
    }
 
@@ -105,7 +106,7 @@ public class IndexerDataSourceImpl implements IndexedResource {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + (int) (gammaId ^ gammaId >>> 32);
+      result = prime * result + gammaId.hashCode();
       return result;
    }
 
@@ -119,7 +120,7 @@ public class IndexerDataSourceImpl implements IndexedResource {
       }
       if (obj instanceof IndexedResource) {
          IndexedResource other = (IndexedResource) obj;
-         if (getGammaId() != other.getGammaId()) {
+         if (getGammaId().notEqual(other.getGammaId())) {
             return false;
          } else {
             return true;

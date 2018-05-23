@@ -20,10 +20,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -43,7 +43,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
    private WeakReference<Artifact> artifactRef;
    private IAttributeDataProvider attributeDataProvider;
    private AttributeId attrId = AttributeId.SENTINEL;
-   private int gammaId;
+   private GammaId gammaId = GammaId.SENTINEL;
    private boolean dirty;
    private ModificationType modificationType;
    private boolean useBackingData;
@@ -100,7 +100,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
       return attributeChange;
    }
 
-   public void internalInitialize(AttributeTypeId attributeType, Artifact artifact, ModificationType modificationType, ApplicabilityId applicabilityId, AttributeId attributeId, int gammaId, boolean markDirty, boolean setDefaultValue) {
+   public void internalInitialize(AttributeTypeId attributeType, Artifact artifact, ModificationType modificationType, ApplicabilityId applicabilityId, AttributeId attributeId, GammaId gammaId, boolean markDirty, boolean setDefaultValue) {
       internalInitialize(attributeType, artifact, modificationType, applicabilityId, markDirty, setDefaultValue);
       this.attrId = attributeId;
       this.gammaId = gammaId;
@@ -302,7 +302,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
     * @return true if in data store
     */
    public boolean isInDb() {
-      return getGammaId() > 0;
+      return getGammaId().isValid();
    }
 
    /**
@@ -313,7 +313,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
       return attrId.getId();
    }
 
-   public int getGammaId() {
+   public GammaId getGammaId() {
       return gammaId;
    }
 
@@ -321,7 +321,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
       return applicabilityId;
    }
 
-   public void internalSetGammaId(int gammaId) {
+   public void internalSetGammaId(GammaId gammaId) {
       this.gammaId = gammaId;
    }
 
@@ -347,11 +347,11 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
     * artifact.persist(); artifact.reloadAttributesAndRelations(); Will need to be called afterwards to see replaced
     * data in memory
     */
-   public void replaceWithVersion(int gammaId) {
+   public void replaceWithVersion(GammaId gammaId) {
       internalSetPersistenceData(gammaId, ModificationType.REPLACED_WITH_VERSION);
    }
 
-   private void internalSetPersistenceData(int gammaId, ModificationType modType) {
+   private void internalSetPersistenceData(GammaId gammaId, ModificationType modType) {
       internalSetModType(modType, true, true);
       internalSetGammaId(gammaId);
    }

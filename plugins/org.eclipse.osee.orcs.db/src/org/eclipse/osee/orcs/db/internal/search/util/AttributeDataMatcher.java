@@ -18,6 +18,7 @@ import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.executor.HasCancellation;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
@@ -138,8 +139,8 @@ public class AttributeDataMatcher {
       }
 
       @Override
-      public long getGammaId() {
-         return attrData.getVersion().getGammaId().getId();
+      public GammaId getGammaId() {
+         return attrData.getVersion().getGammaId();
       }
 
       @Override

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -92,7 +93,7 @@ public class AttributeTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected int createGammaId() {
+   protected GammaId createGammaId() {
       return attribute.isUseBackingData() ? attribute.getGammaId() : getNextGammaIdFromSequence();
    }
 

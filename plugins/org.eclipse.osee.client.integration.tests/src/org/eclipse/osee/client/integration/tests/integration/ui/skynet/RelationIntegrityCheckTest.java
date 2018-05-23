@@ -17,11 +17,11 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -130,7 +130,7 @@ public class RelationIntegrityCheckTest {
       try {
          chStmt.runPreparedQuery(sqlQuery);
          while (chStmt.next()) {
-            Long gammaId = chStmt.getLong("gamma_id");
+            GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
             Long transactionId = chStmt.getLong("transaction_id");
             int relationId = chStmt.getInt("rel_link_id");
             BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
@@ -142,10 +142,10 @@ public class RelationIntegrityCheckTest {
             int commitTransId = chStmt.getInt("commit_trans_art_id");
             int modType = chStmt.getInt("creating_trans_mod_type");
 
-            if (!map.containsKey(gammaId, transactionId)) {
+            if (!map.containsKey(gammaId.getId(), transactionId)) {
                if (commitTransId > 0 && modType == 1) {
-                  map.put(gammaId, transactionId, new LocalRelationLink(relationId, gammaId, transactionId, branch,
-                     a_sideArtifactId, b_sideArtifactId, deletedTransaction, commitTransId, modType));
+                  map.put(gammaId.getId(), transactionId, new LocalRelationLink(relationId, gammaId, transactionId,
+                     branch, a_sideArtifactId, b_sideArtifactId, deletedTransaction, commitTransId, modType));
                }
             }
          }

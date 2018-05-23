@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -120,7 +121,7 @@ public class WordUtil {
          chStmt.runPreparedQuery(SELECT_WORD_VALUES, artifact, CoreAttributeTypes.WordTemplateContent,
             artifact.getBranch());
 
-         List<Pair<String, Integer>> values = new LinkedList<>();
+         List<Pair<String, GammaId>> values = new LinkedList<>();
          while (chStmt.next()) {
             String content;
             try {
@@ -130,18 +131,18 @@ public class WordUtil {
                } else {
                   content = new String(Streams.getByteArray(stream), "UTF-8");
                }
-               values.add(new Pair<String, Integer>(content, chStmt.getInt("gamma_id")));
+               values.add(new Pair<String, GammaId>(content, GammaId.valueOf(chStmt.getLong("gamma_id"))));
             } catch (UnsupportedEncodingException ex) {
                // should never ever ever occur
                throw new IllegalStateException("Must support UTF-8 format");
             }
          }
 
-         Iterator<Pair<String, Integer>> iter = values.iterator();
+         Iterator<Pair<String, GammaId>> iter = values.iterator();
          if (iter.hasNext()) {
-            Pair<String, Integer> newest;
-            Pair<String, Integer> nextNewest = iter.next();
-            Collection<Integer> repeatGammas = new LinkedList<>();
+            Pair<String, GammaId> newest;
+            Pair<String, GammaId> nextNewest = iter.next();
+            Collection<GammaId> repeatGammas = new LinkedList<>();
             while (iter.hasNext()) {
                newest = nextNewest;
                nextNewest = iter.next();
@@ -164,7 +165,7 @@ public class WordUtil {
             // ConnectionHandler.runUpdate(DELETE_ADDRESSING_PREFIX +
             // Collections.toString(repeatGammas, "(", ",", ")"));
 
-            for (Integer gamma : repeatGammas) {
+            for (GammaId gamma : repeatGammas) {
                ConnectionHandler.runPreparedUpdate("INSERT INTO " + table + " (gamma_id) values (?)", gamma);
             }
 

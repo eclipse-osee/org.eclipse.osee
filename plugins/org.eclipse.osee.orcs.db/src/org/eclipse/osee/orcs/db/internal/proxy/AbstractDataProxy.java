@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.proxy;
 
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
@@ -21,7 +22,7 @@ import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
 public abstract class AbstractDataProxy<T> implements DataProxy<T> {
    private Storage storage;
    private Log logger;
-   private long gammaId;
+   private GammaId gammaId;
    private boolean isNewGammaId;
    private ResourceNameResolver resolver;
    private Attribute<T> attribute;
@@ -41,20 +42,20 @@ public abstract class AbstractDataProxy<T> implements DataProxy<T> {
    }
 
    @Override
-   public void setGamma(long gammaId, boolean isNewGammaId) {
+   public void setGamma(GammaId gammaId, boolean isNewGammaId) {
       this.gammaId = gammaId;
       this.isNewGammaId = isNewGammaId;
    }
 
    @Override
-   public long getGammaId() {
+   public GammaId getGammaId() {
       return gammaId;
    }
 
    @Override
    public void persist() {
       if (isNewGammaId) {
-         storage.persist(gammaId);
+         storage.persist(gammaId.getId());
       }
    }
 

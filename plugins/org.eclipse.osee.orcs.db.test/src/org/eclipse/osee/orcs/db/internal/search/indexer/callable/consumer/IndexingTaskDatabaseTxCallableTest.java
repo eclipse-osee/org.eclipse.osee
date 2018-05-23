@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;
@@ -78,8 +79,8 @@ public class IndexingTaskDatabaseTxCallableTest {
       sources.add(resource2);
       when(resource1.getTypeUuid()).thenReturn(Name.getId());
       when(resource2.getTypeUuid()).thenReturn(QualificationMethod.getId());
-      when(resource1.getGammaId()).thenReturn(1L);
-      when(resource2.getGammaId()).thenReturn(2L);
+      when(resource1.getGammaId()).thenReturn(GammaId.valueOf(1L));
+      when(resource2.getGammaId()).thenReturn(GammaId.valueOf(2L));
       when(engine.hasTagger("")).thenReturn(false);
       when(engine.hasTagger("Tag")).thenReturn(true);
       when(engine.getTagger("Tag")).thenReturn(tagger);
@@ -93,7 +94,7 @@ public class IndexingTaskDatabaseTxCallableTest {
       txCallable.handleTxWork(connection);
 
       verify(logger, times(1)).error("Field has invalid tagger[%s] provider and cannot be tagged - [Gamma: %s]", null,
-         2L);
+         GammaId.valueOf(2L));
       verify(tagger, times(1)).tagIt(Matchers.eq(resource1), Matchers.any(TagCollector.class));
    }
 

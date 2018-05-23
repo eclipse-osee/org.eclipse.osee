@@ -20,6 +20,7 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitor;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -342,8 +343,8 @@ public class RelationCacheTest {
 
       RelationType type = new RelationType(0x00L, "type name", artifactA.getName(), artifactB.getName(),
          CoreArtifactTypes.Artifact, CoreArtifactTypes.Artifact, RelationTypeMultiplicity.MANY_TO_MANY, null);
-      RelationLink link = new RelationLink(artifactA, artifactB, COMMON, type, 77, 88, "", ModificationType.MODIFIED,
-         ApplicabilityId.BASE);
+      RelationLink link = new RelationLink(artifactA, artifactB, COMMON, type, 77, GammaId.valueOf(88), "",
+         ModificationType.MODIFIED, ApplicabilityId.BASE);
       relCache.cache(artifactA, link);
       relCache.cache(artifactB, link);
 

@@ -12,13 +12,14 @@ package org.eclipse.osee.orcs.core.ds;
 
 import com.google.common.io.InputSupplier;
 import java.io.InputStream;
+import org.eclipse.osee.framework.core.data.GammaId;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface IndexedResource extends InputSupplier<InputStream> {
 
-   long getGammaId();
+   GammaId getGammaId();
 
    long getTypeUuid();
 

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
@@ -64,7 +65,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected int createGammaId() {
+   protected GammaId createGammaId() {
       return artifact.isUseBackingdata() ? artifact.getGammaId() : getNextGammaIdFromSequence();
    }
 

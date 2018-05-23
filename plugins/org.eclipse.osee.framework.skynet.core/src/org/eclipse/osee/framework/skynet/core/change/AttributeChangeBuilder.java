@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.change;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 
@@ -26,7 +27,7 @@ public final class AttributeChangeBuilder extends ChangeBuilder {
    private final AttributeTypeToken attributeType;
    private final ModificationType artModType;
 
-   public AttributeChangeBuilder(BranchId branch, ArtifactTypeId artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, String isValue, String wasValue, int attrId, AttributeTypeToken attributeType, ModificationType artModType) {
+   public AttributeChangeBuilder(BranchId branch, ArtifactTypeId artifactType, GammaId sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, String isValue, String wasValue, int attrId, AttributeTypeToken attributeType, ModificationType artModType) {
       super(branch, artifactType, sourceGamma, artId, txDelta, modType, isHistorical);
       this.isValue = isValue;
       this.wasValue = wasValue;

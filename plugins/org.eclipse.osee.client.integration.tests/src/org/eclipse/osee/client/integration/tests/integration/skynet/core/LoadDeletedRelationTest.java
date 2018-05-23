@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestUtil;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -62,7 +63,7 @@ public class LoadDeletedRelationTest {
       RelationManager.addRelation(type, left, right, "");
       left.persist(getClass().getSimpleName());
       RelationLink loaded = RelationManager.getLoadedRelation(type, left, right, SAW_Bld_2);
-      int oldGammaId = loaded.getGammaId();
+      GammaId oldGammaId = loaded.getGammaId();
       RelationManager.deleteRelation(type, left, right);
       left.persist(getClass().getSimpleName());
       RelationManager.addRelation(type, left, right, "");
@@ -76,10 +77,10 @@ public class LoadDeletedRelationTest {
          }
       }
 
-      int newGammaId = loaded.getGammaId();
+      GammaId newGammaId = loaded.getGammaId();
       assertEquals("Deleted relation was not re-used by addRelation; see L3778", 1, linkCount);
       assertFalse(loaded.isDeleted());
-      assertEquals("Gamma ID was changed;", oldGammaId, newGammaId);
+      assertEquals("Gamma ID was changed;", oldGammaId.getId(), newGammaId.getId());
    }
 
    @After

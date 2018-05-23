@@ -120,7 +120,7 @@ public class InterArtifactDropTest {
       Artifact destArtifact = ArtifactQuery.getArtifactFromId(updateTestArtifact, sourceArtifact1.getBranch());
       destArtifact.reloadAttributesAndRelations();
       assertTrue(updateTestArtifact.getName().equals(destArtifact.getName()));
-      assertTrue(updateTestArtifact.getGammaId() == destArtifact.getGammaId());
+      assertTrue(updateTestArtifact.getGammaId().equals(destArtifact.getGammaId()));
       assertTrue(updateTestArtifact.getModType() == destArtifact.getModType());
    }
 

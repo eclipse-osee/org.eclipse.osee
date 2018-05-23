@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -50,7 +51,7 @@ public class AttributeChange implements FrameworkEvent {
    @XmlElement(required = true)
    protected String modTypeGuid;
    protected int attributeId;
-   protected int gammaId;
+   protected GammaId gammaId;
    @XmlElement(required = true)
    protected List<Object> data;
    @XmlElement(required = true)
@@ -80,7 +81,7 @@ public class AttributeChange implements FrameworkEvent {
       this.attributeId = value;
    }
 
-   public int getGammaId() {
+   public GammaId getGammaId() {
       return gammaId;
    }
 
@@ -92,8 +93,8 @@ public class AttributeChange implements FrameworkEvent {
       return applicabilityId;
    }
 
-   public void setGammaId(int value) {
-      this.gammaId = value;
+   public void setGammaId(GammaId gammaId) {
+      this.gammaId = gammaId;
    }
 
    /**

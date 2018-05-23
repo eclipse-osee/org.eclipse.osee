@@ -20,10 +20,10 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -110,7 +110,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
          while (chStmt.next()) {
             int attrId = chStmt.getInt("attr_id");
             int artId = chStmt.getInt("art_id");
-            int sourceGamma = chStmt.getInt("gamma_id");
+            GammaId sourceGamma = GammaId.valueOf(chStmt.getLong("gamma_id"));
             AttributeTypeToken attributeType = AttributeTypeManager.getTypeById(chStmt.getLong("attr_type_id"));
             ArtifactTypeId artifactType = ArtifactTypeId.valueOf(chStmt.getLong("art_type_id"));
             String isValue = chStmt.getString("is_value");
@@ -129,7 +129,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
                if (artModType == ModificationType.MODIFIED && !modifiedArtifacts.contains(artId)) {
 
                   ArtifactChangeBuilder artifactChangeBuilder = new ArtifactChangeBuilder(sourceBranch, artifactType,
-                     -1, artId, txDelta, ModificationType.MODIFIED, !hasBranch);
+                     GammaId.SENTINEL, artId, txDelta, ModificationType.MODIFIED, !hasBranch);
 
                   changeBuilders.add(artifactChangeBuilder);
                   modifiedArtifacts.add(artId);

@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.JoinItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -124,11 +125,11 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       Map<Long, Collection<Long>> toStore = new HashMap<>();
       for (IndexedResource source : sources) {
          long startItemTime = System.currentTimeMillis();
-         Long gamma = source.getGammaId();
-         if (processed.add(gamma)) {
+         GammaId gamma = source.getGammaId();
+         if (processed.add(gamma.getId())) {
             Set<Long> tags = new HashSet<>();
-            toStore.put(gamma, tags);
-            tagCollector.setCurrentTag(gamma, tags);
+            toStore.put(gamma.getId(), tags);
+            tagCollector.setCurrentTag(gamma.getId(), tags);
             try {
                long typeUuid = source.getTypeUuid();
                String taggerId = getTaggerIdByTypeUuid(typeUuid);
@@ -231,9 +232,9 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       return updated;
    }
 
-   private void notifyOnIndexItemComplete(long gammaId, int totalTags, long processingTime) {
+   private void notifyOnIndexItemComplete(GammaId gammaId, int totalTags, long processingTime) {
       if (collector != null) {
-         collector.onIndexItemComplete(getTagQueueQueryId(), gammaId, totalTags, processingTime);
+         collector.onIndexItemComplete(getTagQueueQueryId(), gammaId.getId(), totalTags, processingTime);
       }
    }
 

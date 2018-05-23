@@ -16,6 +16,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -51,7 +52,7 @@ class RelationLoader {
             ArtifactToken bArtifactId = ArtifactToken.valueOf(chStmt.getLong("b_art_id"), branch);
             RelationType relationType = RelationTypeManager.getTypeByGuid(chStmt.getLong("rel_link_type_id"));
 
-            int gammaId = chStmt.getInt("gamma_id");
+            GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
             String rationale = chStmt.getString("rationale");
             ModificationType modificationType = ModificationType.valueOf(chStmt.getInt("mod_type"));
             ApplicabilityId applicabilityId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));

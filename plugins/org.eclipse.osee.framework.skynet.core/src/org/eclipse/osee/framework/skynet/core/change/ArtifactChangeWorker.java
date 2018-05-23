@@ -29,7 +29,7 @@ public class ArtifactChangeWorker implements IChangeWorker {
    @Override
    public void revert() {
       if (change.isBaseline()) {
-         artifact.replaceWithVersion(change.getBaselineGamma().getId().intValue());
+         artifact.replaceWithVersion(change.getBaselineGamma());
       } else {
          artifact.delete();
       }

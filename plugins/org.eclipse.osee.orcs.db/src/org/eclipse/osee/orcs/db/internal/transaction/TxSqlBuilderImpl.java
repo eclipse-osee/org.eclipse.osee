@@ -126,7 +126,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
             updateGamma(data);
 
             DataProxy<?> dataProxy = data.getDataProxy();
-            dataProxy.setGamma(data.getVersion().getGammaId().getId(), createNewGamma);
+            dataProxy.setGamma(data.getVersion().getGammaId(), createNewGamma);
             binaryStores.add(dataProxy);
 
             if (RelationalConstants.DEFAULT_ITEM_ID == data.getLocalId()) {

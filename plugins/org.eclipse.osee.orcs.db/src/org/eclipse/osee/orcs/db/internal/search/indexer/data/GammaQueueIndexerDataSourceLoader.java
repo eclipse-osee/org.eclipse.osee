@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.search.indexer.data;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.function.Consumer;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -46,7 +47,7 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
       Consumer<JdbcStatement> consumer = stmt -> {
          int itemId = stmt.getInt("attr_id");
          long typeUuid = stmt.getLong("attr_type_id");
-         long gammaId = stmt.getLong("gamma_id");
+         GammaId gammaId = GammaId.valueOf(stmt.getLong("gamma_id"));
          String uri = stmt.getString("uri");
          String value = stmt.getString("value");
          attrData.add(new AttributeData(itemId, typeUuid, gammaId, uri, value));
@@ -83,7 +84,7 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
       }
    }
 
-   private IndexedResource createData(int id, long typeUuid, long gammaId, String value, String uri) {
+   private IndexedResource createData(int id, long typeUuid, GammaId gammaId, String value, String uri) {
       return new IndexerDataSourceImpl(resourceManager, id, typeUuid, gammaId, value, uri);
    }
 
@@ -91,11 +92,11 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
 
       private final int itemId;
       private final long typeUuid;
-      private final long gammaId;
+      private final GammaId gammaId;
       private final String uri;
       private final String value;
 
-      public AttributeData(int itemId, long typeUuid, long gammaId, String uri, String value) {
+      public AttributeData(int itemId, long typeUuid, GammaId gammaId, String uri, String value) {
          this.itemId = itemId;
          this.typeUuid = typeUuid;
          this.gammaId = gammaId;
@@ -111,7 +112,7 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
          return typeUuid;
       }
 
-      public long getGammaId() {
+      public GammaId getGammaId() {
          return gammaId;
       }
 

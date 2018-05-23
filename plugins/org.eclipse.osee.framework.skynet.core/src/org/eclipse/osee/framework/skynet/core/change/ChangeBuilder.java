@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.change;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 
@@ -20,7 +21,7 @@ import org.eclipse.osee.framework.core.model.TransactionDelta;
  * @author Jeff C. Phillips
  */
 public abstract class ChangeBuilder {
-   private final int sourceGamma;
+   private final GammaId sourceGamma;
    private final ArtifactId artId;
    private final TransactionDelta txDelta;
    private ModificationType modType;
@@ -28,8 +29,7 @@ public abstract class ChangeBuilder {
    private final ArtifactTypeId artifactType;
    private final boolean isHistorical;
 
-   public ChangeBuilder(BranchId branch, ArtifactTypeId artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical) {
-      super();
+   public ChangeBuilder(BranchId branch, ArtifactTypeId artifactType, GammaId sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical) {
       this.sourceGamma = sourceGamma;
       this.artId = ArtifactId.valueOf(artId);
       this.txDelta = txDelta;
@@ -39,7 +39,7 @@ public abstract class ChangeBuilder {
       this.isHistorical = isHistorical;
    }
 
-   public int getSourceGamma() {
+   public GammaId getSourceGamma() {
       return sourceGamma;
    }
 

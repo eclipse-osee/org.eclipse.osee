@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -84,7 +85,7 @@ public class AttributeLoader {
       public ArtifactId artifactId = ArtifactId.SENTINEL;
       public BranchId branch = BranchId.SENTINEL;
       public AttributeId attrId = AttributeId.SENTINEL;
-      public int gammaId = -1;
+      public GammaId gammaId = GammaId.SENTINEL;
       public ModificationType modType;
       public Long transactionId = -1L;
       public AttributeTypeId attributeType = AttributeTypeId.SENTINEL;
@@ -101,7 +102,7 @@ public class AttributeLoader {
          artifactId = ArtifactId.valueOf(chStmt.getLong("art_id"));
          branch = BranchId.valueOf(chStmt.getLong("id1"));
          attrId = AttributeId.valueOf(chStmt.getLong("attr_id"));
-         gammaId = chStmt.getInt("gamma_id");
+         gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
          modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
 
          transactionId = chStmt.getLong("transaction_id");

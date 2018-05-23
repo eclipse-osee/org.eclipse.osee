@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.utility;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 
@@ -22,7 +23,7 @@ public final class Address implements Comparable<Address> {
    private final BranchId branch;
    private final int itemId;
    private final Long transactionId;
-   private final long gammaId;
+   private final GammaId gammaId;
    private ModificationType modType;
    private ApplicabilityId appId;
    private final TxChange txCurrent;
@@ -30,7 +31,7 @@ public final class Address implements Comparable<Address> {
    private TxChange correctedTxCurrent;
    private boolean purge;
 
-   public Address(boolean isBaseline, BranchId branch, int itemId, Long transactionId, long gammaId, ModificationType modType, ApplicabilityId appId, TxChange txCurrent) {
+   public Address(boolean isBaseline, BranchId branch, int itemId, Long transactionId, GammaId gammaId, ModificationType modType, ApplicabilityId appId, TxChange txCurrent) {
       this.branch = branch;
       this.itemId = itemId;
       this.transactionId = transactionId;
@@ -110,7 +111,7 @@ public final class Address implements Comparable<Address> {
       return transactionId;
    }
 
-   public long getGammaId() {
+   public GammaId getGammaId() {
       return gammaId;
    }
 
@@ -146,9 +147,9 @@ public final class Address implements Comparable<Address> {
    @Override
    public int compareTo(Address otherAddress) {
       if (transactionId != otherAddress.transactionId) {
-         return (int) (transactionId.longValue() - otherAddress.transactionId.longValue());
+         return Long.compare(transactionId, otherAddress.transactionId);
       } else {
-         return (int) (gammaId - otherAddress.gammaId);
+         return Long.compare(gammaId.getId(), otherAddress.gammaId.getId());
       }
    }
 }

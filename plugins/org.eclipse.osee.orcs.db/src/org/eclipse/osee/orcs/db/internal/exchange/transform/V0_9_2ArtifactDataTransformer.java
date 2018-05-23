@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.exchange.transform;
 
 import java.util.Map;
 import javax.xml.stream.XMLStreamException;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;
 import org.xml.sax.Attributes;
 
@@ -30,8 +31,8 @@ public class V0_9_2ArtifactDataTransformer extends SaxTransformer {
       super.startElementFound(uri, localName, qName, attributes);
       if (localName.equals("entry")) {
          int artifactId = Integer.parseInt(attributes.getValue("art_id"));
-         Long gammaId = artIdToNetGammaId.get(artifactId);
-         writer.writeAttribute("gamma_id", String.valueOf(gammaId));
+         GammaId gammaId = GammaId.valueOf(artIdToNetGammaId.get(artifactId));
+         writer.writeAttribute("gamma_id", gammaId.getIdString());
       }
    }
 }

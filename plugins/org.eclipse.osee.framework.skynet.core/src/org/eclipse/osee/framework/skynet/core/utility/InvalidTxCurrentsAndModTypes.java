@@ -16,10 +16,10 @@ import java.util.function.Consumer;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -187,7 +187,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
          ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
          Address address =
             new Address(type.isBaseline(), BranchId.valueOf(stmt.getLong("branch_id")), stmt.getInt(columnName),
-               stmt.getLong("transaction_id"), stmt.getLong("gamma_id"), modType, appId, txCurrent);
+               stmt.getLong("transaction_id"), GammaId.valueOf(stmt.getLong("gamma_id")), modType, appId, txCurrent);
 
          if (!address.isSimilar(previousAddress[0])) {
             if (!addresses.isEmpty()) {

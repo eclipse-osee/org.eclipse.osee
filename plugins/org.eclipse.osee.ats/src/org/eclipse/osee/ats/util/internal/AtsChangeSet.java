@@ -377,7 +377,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public <T> void setAttribute(ArtifactId artifact, AttributeId attrId, T value) {
       Conditions.checkExpressionFailOnTrue(attrId.isInvalid(),
-         "Can not set attribute by id that has not been persisted.  Atrribute Id [%s] ArtifactId [%s]", attrId,
+         "Can not set attribute by id that has not been persisted.  Attribute Id [%s] ArtifactId [%s]", attrId,
          artifact.toString());
       boolean found = false;
       for (Attribute<?> attribute : getArtifact(artifact).getAttributes()) {

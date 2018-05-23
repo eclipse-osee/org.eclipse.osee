@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -524,8 +525,8 @@ public class RelationManager {
       if (relation == null) {
          ensureRelationCanBeAdded(relationType, artifactA, artifactB);
 
-         relation = getOrCreate(artifactA, artifactB, RelationTypeManager.getType(relationType), 0, 0, rationale,
-            ModificationType.NEW, ApplicabilityId.BASE);
+         relation = getOrCreate(artifactA, artifactB, RelationTypeManager.getType(relationType), 0, GammaId.valueOf(0),
+            rationale, ModificationType.NEW, ApplicabilityId.BASE);
          relation.setDirty();
          if (relation.isDeleted()) {
             relation.undelete();
@@ -601,7 +602,7 @@ public class RelationManager {
     *
     * @param relationId 0 or relationId if already created
     */
-   public static synchronized RelationLink getOrCreate(ArtifactToken aArtifactId, ArtifactToken bArtifactId, RelationTypeToken relationType, int relationId, int gammaId, String rationale, ModificationType modificationType, ApplicabilityId applicabilityId) {
+   public static synchronized RelationLink getOrCreate(ArtifactToken aArtifactId, ArtifactToken bArtifactId, RelationTypeToken relationType, int relationId, GammaId gammaId, String rationale, ModificationType modificationType, ApplicabilityId applicabilityId) {
       BranchId branch = aArtifactId.getBranch();
       RelationLink relation = null;
       if (relationId != 0) {

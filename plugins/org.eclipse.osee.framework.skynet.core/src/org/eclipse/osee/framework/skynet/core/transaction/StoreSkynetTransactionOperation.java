@@ -128,7 +128,7 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
             if (!attrData.getAttribute().isUseBackingData()) {
                Attribute<?> attr = ((AttributeTransactionData) transactionData).getAttribute();
                if (attr.getAttributeType().isTaggable()) {
-                  gammasToTag.add((long) transactionData.getGammaId());
+                  gammasToTag.add(transactionData.getGammaId().getId());
                }
             }
          }

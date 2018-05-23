@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -56,7 +57,6 @@ import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
@@ -108,7 +108,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       new HashSet<DefaultBasicUuidRelationReorder>();
    private final BranchId branch;
    private TransactionToken transaction = TransactionToken.SENTINEL;
-   private int gammaId;
+   private GammaId gammaId;
    private boolean linksLoaded;
    private boolean historical;
    private ModificationType modType;
@@ -515,12 +515,12 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return attribute;
    }
 
-   public final <T> Attribute<T> internalInitializeAttribute(AttributeTypeId attributeType, int attributeId, int gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, Object... data) {
+   public final <T> Attribute<T> internalInitializeAttribute(AttributeTypeId attributeType, int attributeId, GammaId gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, Object... data) {
       return internalInitializeAttribute(attributeType, AttributeId.valueOf(attributeId), gammaId, modificationType,
          applicabilityId, markDirty, data);
    }
 
-   public final <T> Attribute<T> internalInitializeAttribute(AttributeTypeId attributeType, AttributeId attributeId, int gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, Object... data) {
+   public final <T> Attribute<T> internalInitializeAttribute(AttributeTypeId attributeType, AttributeId attributeId, GammaId gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, Object... data) {
       Attribute<T> attribute = createAttribute(attributeType);
       attribute.internalInitialize(attributeType, this, modificationType, applicabilityId, attributeId, gammaId,
          markDirty, false);
@@ -1109,16 +1109,16 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * artifact.persist(); artifact.reloadAttributesAndRelations(); Will need to be called afterwards to see replaced
     * data in memory
     */
-   public void replaceWithVersion(int gammaId) {
+   public void replaceWithVersion(GammaId gammaId) {
       replaceWithVersion(gammaId, ModificationType.REPLACED_WITH_VERSION);
    }
 
-   public void replaceWithVersion(int gammaId, ModificationType modType) {
+   public void replaceWithVersion(GammaId gammaId, ModificationType modType) {
       internalSetGammaId(gammaId);
       internalSetModType(modType, true);
    }
 
-   private final void internalSetGammaId(int gammaId) {
+   private final void internalSetGammaId(GammaId gammaId) {
       this.gammaId = gammaId;
    }
 
@@ -1565,7 +1565,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return transaction;
    }
 
-   public final int getGammaId() {
+   public final GammaId getGammaId() {
       return gammaId;
    }
 
@@ -1701,7 +1701,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    /**
     * This method should never be called from outside the OSEE Application Framework
     */
-   void internalSetPersistenceData(int gammaId, TransactionToken transactionId, ModificationType modType, ApplicabilityId applicabilityId, boolean historical, boolean useBackingData) {
+   void internalSetPersistenceData(GammaId gammaId, TransactionToken transactionId, ModificationType modType, ApplicabilityId applicabilityId, boolean historical, boolean useBackingData) {
       this.gammaId = gammaId;
       this.transaction = transactionId;
       this.historical = historical;

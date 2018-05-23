@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
@@ -78,8 +79,8 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
             ModificationType modificationType = ModificationType.valueOf(chStmt.getInt("mod_type"));
 
             ArtifactChangeBuilder artifactChangeBuilder = new ArtifactChangeBuilder(getSourceBranch(),
-               ArtifactTypeManager.getTypeByGuid(chStmt.getLong("art_type_id")), chStmt.getInt("gamma_id"), artId,
-               txDelta, modificationType, !hasBranch);
+               ArtifactTypeManager.getTypeByGuid(chStmt.getLong("art_type_id")),
+               GammaId.valueOf(chStmt.getLong("gamma_id")), artId, txDelta, modificationType, !hasBranch);
 
             getArtIds().add(artId);
             getChangeBuilders().add(artifactChangeBuilder);

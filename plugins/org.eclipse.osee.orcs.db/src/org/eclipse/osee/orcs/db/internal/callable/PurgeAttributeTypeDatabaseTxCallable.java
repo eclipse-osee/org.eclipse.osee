@@ -76,7 +76,7 @@ public final class PurgeAttributeTypeDatabaseTxCallable extends AbstractDatastor
             sql = RETRIEVE_GAMMAS_OF_ATTR_MULT_TYPES;
             param = joinQuery.getQueryId();
          }
-         getJdbcClient().runQuery(stmt -> gammas.add(new Integer[] {stmt.getInt("gamma_id")}), sql, param);
+         getJdbcClient().runQuery(stmt -> gammas.add(new Long[] {stmt.getLong("gamma_id")}), sql, param);
       }
       return gammas;
    }

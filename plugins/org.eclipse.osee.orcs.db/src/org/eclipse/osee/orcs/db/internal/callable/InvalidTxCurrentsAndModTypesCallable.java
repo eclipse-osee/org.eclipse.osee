@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -169,7 +170,7 @@ public class InvalidTxCurrentsAndModTypesCallable extends AbstractDatastoreTxCal
          TransactionDetailsType type = TransactionDetailsType.valueOf(stmt.getInt("tx_type"));
          ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
          Address address = new Address(type.isBaseline(), stmt.getLong("branch_id"), stmt.getInt(columnName),
-            stmt.getLong("transaction_id"), stmt.getLong("gamma_id"), modType, appId, txCurrent);
+            stmt.getLong("transaction_id"), GammaId.valueOf(stmt.getLong("gamma_id")), modType, appId, txCurrent);
 
          if (!address.isSimilar(previousAddress[0])) {
             if (!addresses.isEmpty()) {

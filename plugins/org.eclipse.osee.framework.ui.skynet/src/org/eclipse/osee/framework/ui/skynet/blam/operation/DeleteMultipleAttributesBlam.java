@@ -97,11 +97,11 @@ public class DeleteMultipleAttributesBlam extends AbstractBlam {
                Attribute<Object> toKeep = attributes.get(0);
                for (Attribute<Object> attr : attributes) {
                   if (keepOldest) {
-                     if (attr.getGammaId() < toKeep.getGammaId()) {
+                     if (attr.getGammaId().isLessThan(toKeep.getGammaId())) {
                         toKeep = attr;
                      }
                   } else {
-                     if (attr.getGammaId() > toKeep.getGammaId()) {
+                     if (attr.getGammaId().isGreaterThan(toKeep.getGammaId())) {
                         toKeep = attr;
                      }
                   }

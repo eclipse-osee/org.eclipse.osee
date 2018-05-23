@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.util;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 
@@ -22,7 +23,7 @@ public final class Address implements Comparable<Address> {
    private final BranchId branch;
    private final int itemId;
    private final long transactionId;
-   private final long gammaId;
+   private final GammaId gammaId;
    private ModificationType modType;
    private ApplicabilityId appId;
    private final TxChange txCurrent;
@@ -30,7 +31,7 @@ public final class Address implements Comparable<Address> {
    private TxChange correctedTxCurrent;
    private boolean purge;
 
-   public Address(boolean isBaseline, Long branchId, int itemId, long transactionId, long gammaId, ModificationType modType, ApplicabilityId appId, TxChange txCurrent) {
+   public Address(boolean isBaseline, Long branchId, int itemId, long transactionId, GammaId gammaId, ModificationType modType, ApplicabilityId appId, TxChange txCurrent) {
       super();
       this.branch = BranchId.valueOf(branchId);
       this.itemId = itemId;
@@ -111,7 +112,7 @@ public final class Address implements Comparable<Address> {
       return transactionId;
    }
 
-   public long getGammaId() {
+   public GammaId getGammaId() {
       return gammaId;
    }
 
@@ -147,9 +148,9 @@ public final class Address implements Comparable<Address> {
    @Override
    public int compareTo(Address otherAddress) {
       if (transactionId != otherAddress.transactionId) {
-         return (int) (transactionId - otherAddress.transactionId);
+         return Long.compare(transactionId, otherAddress.transactionId);
       } else {
-         return (int) (gammaId - otherAddress.gammaId);
+         return Long.compare(gammaId.getId(), otherAddress.gammaId.getId());
       }
    }
 }

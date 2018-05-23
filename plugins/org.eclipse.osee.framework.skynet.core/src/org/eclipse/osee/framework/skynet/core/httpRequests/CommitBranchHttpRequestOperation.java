@@ -136,8 +136,8 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                   change.getModificationType().isDeleted() ? RelationEventType.Deleted : change.getModificationType().isUnDeleted() ? RelationEventType.Undeleted : RelationEventType.Added;
 
                DefaultBasicIdRelation defaultBasicGuidRelation = new DefaultBasicIdRelation(relChange.getBranch(),
-                  relChange.getRelationType().getGuid(), relChange.getItemId().getId().intValue(),
-                  relChange.getGamma().getId().intValue(), relChange.getChangeArtifact().getBasicGuidArtifact(),
+                  relChange.getRelationType().getGuid(), relChange.getItemId().getId().intValue(), relChange.getGamma(),
+                  relChange.getChangeArtifact().getBasicGuidArtifact(),
                   relChange.getEndTxBArtifact().getBasicGuidArtifact());
                EventBasicGuidRelation event = new EventBasicGuidRelation(relationEventType, relChange.getArtId(),
                   relChange.getBArtId(), defaultBasicGuidRelation);
@@ -167,7 +167,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                   org.eclipse.osee.framework.skynet.core.event.model.AttributeChange attrChangeEvent =
                      new org.eclipse.osee.framework.skynet.core.event.model.AttributeChange();
                   attrChangeEvent.setAttrTypeGuid(attributeChange.getAttributeType().getId());
-                  attrChangeEvent.setGammaId(attributeChange.getGamma().getId().intValue());
+                  attrChangeEvent.setGammaId(attributeChange.getGamma());
                   attrChangeEvent.setAttributeId(attributeChange.getAttrId().getId().intValue());
                   attrChangeEvent.setModTypeGuid(
                      AttributeEventModificationType.getType(attributeChange.getModificationType()).getGuid());

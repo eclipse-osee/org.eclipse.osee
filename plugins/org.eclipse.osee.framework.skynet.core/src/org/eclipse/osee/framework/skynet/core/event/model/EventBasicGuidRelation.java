@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicIdRelation;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
@@ -32,7 +33,7 @@ public class EventBasicGuidRelation extends DefaultBasicIdRelation {
          guidRel.getArtB());
    }
 
-   public EventBasicGuidRelation(RelationEventType relationEventType, BranchId branchUuid, Long relTypeGuid, int relationId, int gammaId, int artAId, DefaultBasicGuidArtifact artA, int artBId, DefaultBasicGuidArtifact artB) {
+   public EventBasicGuidRelation(RelationEventType relationEventType, BranchId branchUuid, Long relTypeGuid, int relationId, GammaId gammaId, int artAId, DefaultBasicGuidArtifact artA, int artBId, DefaultBasicGuidArtifact artB) {
       super(branchUuid, relTypeGuid, relationId, gammaId, artA, artB);
       this.relationEventType = relationEventType;
       this.artAId = artAId;
@@ -45,7 +46,7 @@ public class EventBasicGuidRelation extends DefaultBasicIdRelation {
 
    @Override
    public String toString() {
-      return String.format("[%s - B:%s - TG:%s - GI:%d - RI:%d - A:%s - B:%s]", relationEventType,
+      return String.format("[%s - B:%s - TG:%s - GI:%s - RI:%s - A:%s - B:%s]", relationEventType,
          getBranch().getIdString(), getBranch().getIdString(), getGammaId(), getRelationId(), getArtA(), getArtB());
    }
 

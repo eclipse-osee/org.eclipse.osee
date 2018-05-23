@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -375,7 +376,7 @@ public final class TransactionManager {
    private static RelationRow loadRelationChange(JdbcStatement chStmt) {
       IRelationType relationType = RelationTypeManager.getTypeByGuid(chStmt.getLong("rel_link_type_id"));
       BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
-      Long gammaId = Long.valueOf(chStmt.getLong("gamma_id"));
+      GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
       Long aArtId = Long.valueOf(chStmt.getInt("a_art_id"));
       Long bArtId = Long.valueOf(chStmt.getInt("b_art_id"));
       Long relId = Long.valueOf(chStmt.getInt("rel_link_id"));
@@ -386,7 +387,7 @@ public final class TransactionManager {
    private static AttributeRow loadAttributeChange(JdbcStatement chStmt) {
       AttributeTypeId attributeType = AttributeTypeManager.getTypeById(chStmt.getLong("attr_type_id"));
       BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
-      Long gammaId = Long.valueOf(chStmt.getLong("gamma_id"));
+      GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
       Integer artId = Integer.valueOf(chStmt.getInt("art_id"));
       ModificationType modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
       AttributeId attrId = AttributeId.valueOf(chStmt.getLong("attr_id"));

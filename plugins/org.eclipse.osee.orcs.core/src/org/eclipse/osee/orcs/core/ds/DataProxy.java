@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.framework.core.data.GammaId;
+
 /**
  * @author Roberto E. Escobar
  */
@@ -33,9 +35,9 @@ public interface DataProxy<T> {
 
    boolean isInMemory();
 
-   void setGamma(long gammaId, boolean isNewGammaId);
+   void setGamma(GammaId gammaId, boolean isNewGammaId);
 
-   long getGammaId();
+   GammaId getGammaId();
 
    void rollBack();
 

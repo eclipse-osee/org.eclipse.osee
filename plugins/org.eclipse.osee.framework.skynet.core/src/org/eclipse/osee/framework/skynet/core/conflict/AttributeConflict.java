@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
@@ -392,7 +393,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public int getMergeGammaId() {
+   public GammaId getMergeGammaId() {
       return getAttribute().getGammaId();
    }
 

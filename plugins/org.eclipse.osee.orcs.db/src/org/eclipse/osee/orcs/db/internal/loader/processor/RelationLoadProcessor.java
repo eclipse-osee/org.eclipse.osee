@@ -45,7 +45,7 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
       ArtifactId aArtId = ArtifactId.valueOf(chStmt.getLong("a_art_id"));
       ArtifactId bArtId = ArtifactId.valueOf(chStmt.getLong("b_art_id"));
       RelationTypeId relationType = RelationTypeId.valueOf(chStmt.getLong("rel_link_type_id"));
-      GammaId gammaId = GammaId.valueOf(chStmt.getInt("gamma_id"));
+      GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
       ApplicabilityId applicId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
 
       boolean historical = OptionsUtil.isHistorical(options);

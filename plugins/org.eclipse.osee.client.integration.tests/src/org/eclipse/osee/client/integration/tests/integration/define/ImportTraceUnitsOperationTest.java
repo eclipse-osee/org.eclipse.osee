@@ -25,6 +25,7 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.define.ide.traceability.operations.ImportTraceUnitsOperation;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -108,7 +109,7 @@ public final class ImportTraceUnitsOperationTest {
    @Test
    public void testImportTraceUnitsJob() throws Exception {
 
-      ArrayList<Integer> gammas = new ArrayList<>(RUNS);
+      ArrayList<GammaId> gammas = new ArrayList<>(RUNS);
 
       for (int i = 0; i < RUNS; i++) {
          runOperation(Arrays.asList(testFile.toURI()));
@@ -118,7 +119,7 @@ public final class ImportTraceUnitsOperationTest {
                ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.CodeUnit, fileNames[j], importToBranch);
             Assert.assertNotNull(artifact);
 
-            Integer gamma = artifact.getGammaId();
+            GammaId gamma = artifact.getGammaId();
             if (!gammas.contains(gamma)) {
                gammas.add(gamma);
             }

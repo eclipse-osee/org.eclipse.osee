@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -86,7 +87,8 @@ public final class TestUtil {
 
    public static RelationLink createRelationLink(int relationId, int artA, int artB, BranchId branch, RelationType relationType) {
       return new RelationLink(ArtifactToken.valueOf(artA, branch), ArtifactToken.valueOf(artB, branch), branch,
-         relationType, relationId, 0, "relation: " + relationId, ModificationType.MODIFIED, ApplicabilityId.BASE);
+         relationType, relationId, GammaId.valueOf(0), "relation: " + relationId, ModificationType.MODIFIED,
+         ApplicabilityId.BASE);
    }
 
    public static List<RelationLink> createLinks(int total, BranchId branch) {

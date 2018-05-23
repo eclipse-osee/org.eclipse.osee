@@ -15,6 +15,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -44,14 +45,14 @@ public class AttributeResourceProcessor {
       return client.getResourcesEndpoint();
    }
 
-   public void saveResource(int gammaId, String name, DataStore dataStore) {
+   public void saveResource(GammaId gammaId, String name, DataStore dataStore) {
       ResourcesEndpoint endpoint = getResourcesEndpoint();
 
       InputStream inputStream = null;
       try {
          inputStream = dataStore.getInputStream();
 
-         String resourceId = String.valueOf(gammaId);
+         String resourceId = gammaId.getIdString();
 
          boolean overwriteAllowed = false;
          boolean compressOnSave = false;

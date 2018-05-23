@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -34,11 +35,11 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
       public int relLinkId;
       public int artId;
       public int attributeId;
-      public int gammaId;
+      public GammaId gammaId;
       public long transactionId;
       public long branchUuid;
 
-      public LocalValues(int artId, int attributeId, long branchUuid, int gammaId, int relLinkId, long transactionId) {
+      public LocalValues(int artId, int attributeId, long branchUuid, GammaId gammaId, int relLinkId, long transactionId) {
          super();
          this.artId = artId;
          this.attributeId = attributeId;
@@ -72,9 +73,9 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
       try {
          chStmt.runPreparedQuery(sql, txChange, modificationType, modificationType);
          while (chStmt.next()) {
-            addressing.add(
-               new LocalValues(chStmt.getInt("art_id"), chStmt.getInt("attr_id"), chStmt.getLong("branch_id"),
-                  chStmt.getInt("gamma_id"), chStmt.getInt("rel_link_id"), chStmt.getLong("transaction_id")));
+            addressing.add(new LocalValues(chStmt.getInt("art_id"), chStmt.getInt("attr_id"),
+               chStmt.getLong("branch_id"), GammaId.valueOf(chStmt.getLong("gamma_id")), chStmt.getInt("rel_link_id"),
+               chStmt.getLong("transaction_id")));
          }
       } finally {
          chStmt.close();

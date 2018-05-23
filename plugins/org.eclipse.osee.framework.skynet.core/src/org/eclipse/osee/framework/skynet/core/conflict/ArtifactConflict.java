@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
@@ -116,7 +117,7 @@ public class ArtifactConflict extends Conflict {
    }
 
    @Override
-   public int getMergeGammaId() throws BranchMergeException {
+   public GammaId getMergeGammaId() throws BranchMergeException {
       throw new BranchMergeException(
          "Artifact Conflicts can not be handled they must be reverted on the Source Branch");
    }

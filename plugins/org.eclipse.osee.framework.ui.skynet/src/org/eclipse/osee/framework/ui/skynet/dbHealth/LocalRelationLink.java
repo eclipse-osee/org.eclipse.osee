@@ -11,14 +11,15 @@
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 
 public class LocalRelationLink {
    public int relLinkId, aArtId, bArtId, transIdForArtifactDeletion, commitTrans, modType;
    public BranchId branch;
-   public Long gammaId;
+   public GammaId gammaId;
    public Long relTransId;
 
-   public LocalRelationLink(int relLinkId, Long gammaId, Long transactionId, BranchId branch, int aArtId, int bArtId, int transIdForArtifactDeletion, int commitTrans, int modType) {
+   public LocalRelationLink(int relLinkId, GammaId gammaId, Long transactionId, BranchId branch, int aArtId, int bArtId, int transIdForArtifactDeletion, int commitTrans, int modType) {
       this.aArtId = aArtId;
       this.bArtId = bArtId;
       this.branch = branch;

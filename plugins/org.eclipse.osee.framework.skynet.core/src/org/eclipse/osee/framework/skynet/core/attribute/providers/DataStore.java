@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.attribute.providers;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeResourceProcessor;
 
@@ -77,7 +78,7 @@ public class DataStore {
       other.encoding = Strings.intern(this.encoding);
    }
 
-   public void persist(int storageId) {
+   public void persist(GammaId storageId) {
       if (this.rawContent != null && this.rawContent.length > 0) {
          resourceProcessor.saveResource(storageId, resourceProcessor.createStorageName(), this);
       }

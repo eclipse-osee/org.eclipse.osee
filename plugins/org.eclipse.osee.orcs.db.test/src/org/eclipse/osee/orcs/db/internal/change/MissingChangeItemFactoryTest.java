@@ -189,8 +189,8 @@ public class MissingChangeItemFactoryTest {
       List<ChangeItem> changes = new LinkedList<>();
       final int ci1AttrId = 1;
       ArtifactId artId = ArtifactId.valueOf(3);
-      final long missingGamma = 9L;
-      long artGamma = 7L;
+      final GammaId missingGamma = GammaId.valueOf(9L);
+      GammaId artGamma = GammaId.valueOf(7L);
 
       ChangeItem ci1 = ChangeItemUtil.newAttributeChange(AttributeId.valueOf(ci1AttrId), AttributeTypeId.valueOf(2L),
          artId, GammaId.valueOf(4L), ModificationType.MODIFIED, Strings.EMPTY_STRING, ApplicabilityToken.BASE);
@@ -198,13 +198,12 @@ public class MissingChangeItemFactoryTest {
 
       List<AttributeData> attrDatas = new LinkedList<>();
       AttributeData attrData1 = createAttributeData(artId, ci1AttrId, GammaId.valueOf(1L), ModificationType.MODIFIED);
-      AttributeData attrData2 =
-         createAttributeData(artId, ci1AttrId + 1, GammaId.valueOf(missingGamma), ModificationType.INTRODUCED);
+      AttributeData attrData2 = createAttributeData(artId, ci1AttrId + 1, missingGamma, ModificationType.INTRODUCED);
       attrDatas.add(attrData1);
       attrDatas.add(attrData2);
 
       List<ArtifactData> artData = new LinkedList<>();
-      ArtifactData artData1 = createArtifactData(artId, GammaId.valueOf(artGamma), ModificationType.NEW);
+      ArtifactData artData1 = createArtifactData(artId, artGamma, ModificationType.NEW);
       artData.add(artData1);
 
       List<ChangeItem> expected = new LinkedList<>();
@@ -220,8 +219,8 @@ public class MissingChangeItemFactoryTest {
    private static Object[] testCase_missingRelation() {
       List<ChangeItem> changes = new LinkedList<>();
       final int ci1AttrId = 22;
-      final long missingGamma = 9L;
-      long artGamma = 7L;
+      final GammaId missingGamma = GammaId.valueOf(9L);
+      GammaId artGamma = GammaId.valueOf(7L);
 
       RelationId relId = RelationId.valueOf(6L);
       ArtifactId artA = ArtifactId.valueOf(65);
@@ -234,13 +233,12 @@ public class MissingChangeItemFactoryTest {
 
       List<AttributeData> attrDatas = new LinkedList<>();
       AttributeData attrData1 = createAttributeData(artA, ci1AttrId, GammaId.valueOf(1L), ModificationType.MODIFIED);
-      AttributeData attrData2 =
-         createAttributeData(artA, ci1AttrId + 1, GammaId.valueOf(missingGamma), ModificationType.INTRODUCED);
+      AttributeData attrData2 = createAttributeData(artA, ci1AttrId + 1, missingGamma, ModificationType.INTRODUCED);
       attrDatas.add(attrData1);
       attrDatas.add(attrData2);
 
       List<ArtifactData> artData = new LinkedList<>();
-      ArtifactData artData1 = createArtifactData(artA, GammaId.valueOf(artGamma), ModificationType.NEW);
+      ArtifactData artData1 = createArtifactData(artA, artGamma, ModificationType.NEW);
       artData.add(artData1);
 
       List<RelationData> relDatas = new LinkedList<>();

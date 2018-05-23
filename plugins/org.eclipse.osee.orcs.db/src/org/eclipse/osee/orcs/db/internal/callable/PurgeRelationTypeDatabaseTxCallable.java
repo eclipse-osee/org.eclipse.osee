@@ -63,7 +63,7 @@ public final class PurgeRelationTypeDatabaseTxCallable extends AbstractDatastore
          for (IRelationType type : types) {
             chStmt.runPreparedQuery(RETRIEVE_GAMMAS_OF_REL_LINK_TXS, type);
             while (chStmt.next()) {
-               gammas.add(new Integer[] {chStmt.getInt("gamma_id")});
+               gammas.add(new Long[] {chStmt.getLong("gamma_id")});
             }
          }
       } finally {

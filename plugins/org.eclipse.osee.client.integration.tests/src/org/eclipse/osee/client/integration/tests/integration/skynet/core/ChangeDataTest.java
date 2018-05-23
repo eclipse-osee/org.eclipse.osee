@@ -73,13 +73,12 @@ public class ChangeDataTest {
       ArtifactDelta artDelta = new ArtifactDelta(null, artifactEnd, artifactStart);
 
       ModificationType modType = ModificationType.MODIFIED;
-      Change change = new ArtifactChange(workingBranch, GammaId.valueOf(artifactStart.getGammaId()), artifactStart,
-         null, modType, "", "", false, artifactStart, artDelta);
+      Change change = new ArtifactChange(workingBranch, artifactStart.getGammaId(), artifactStart, null, modType, "",
+         "", false, artifactStart, artDelta);
       theChanges.add(change);
 
-      change = new AttributeChange(workingBranch, GammaId.valueOf(artifactStart.getGammaId()), artifactStart, null,
-         ModificationType.NEW, "1.2", "", AttributeId.SENTINEL, ParagraphNumber, modType, false, artifactStart,
-         artDelta);
+      change = new AttributeChange(workingBranch, artifactStart.getGammaId(), artifactStart, null, ModificationType.NEW,
+         "1.2", "", AttributeId.SENTINEL, ParagraphNumber, modType, false, artifactStart, artDelta);
       theChanges.add(change);
 
       artifactStart = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch);
@@ -91,18 +90,17 @@ public class ChangeDataTest {
       artDelta = new ArtifactDelta(null, artifactEnd, artifactStart);
       modType = ModificationType.MODIFIED;
 
-      change = new ArtifactChange(workingBranch, GammaId.valueOf(artifactStart.getGammaId()), artifactStart, null,
-         modType, "", "", false, artifactStart, artDelta);
+      change = new ArtifactChange(workingBranch, artifactStart.getGammaId(), artifactStart, null, modType, "", "",
+         false, artifactStart, artDelta);
       theChanges.add(change);
-      change = new AttributeChange(workingBranch, GammaId.valueOf(artifactStart.getGammaId()), artifactStart, null,
-         ModificationType.NEW, "1.2", "", AttributeId.SENTINEL, ParagraphNumber, modType, false, artifactStart,
-         artDelta);
+      change = new AttributeChange(workingBranch, artifactStart.getGammaId(), artifactStart, null, ModificationType.NEW,
+         "1.2", "", AttributeId.SENTINEL, ParagraphNumber, modType, false, artifactStart, artDelta);
       theChanges.add(change);
 
       AttributeType nameAttributeType = AttributeTypeManager.getType(CoreAttributeTypes.Name);
-      change = new AttributeChange(workingBranch, GammaId.valueOf(artifactStart.getGammaId()), artifactStart, null,
-         modType, "test artifact 2A", "test artifact 2", AttributeId.SENTINEL, nameAttributeType, modType, false,
-         artifactStart, artDelta);
+      change = new AttributeChange(workingBranch, artifactStart.getGammaId(), artifactStart, null, modType,
+         "test artifact 2A", "test artifact 2", AttributeId.SENTINEL, nameAttributeType, modType, false, artifactStart,
+         artDelta);
       theChanges.add(change);
 
       artifactStart = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch);

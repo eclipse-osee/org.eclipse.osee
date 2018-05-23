@@ -55,6 +55,7 @@ import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.result.XResultData;
@@ -456,12 +457,14 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                         stateAttr.delete();
                      }
                      // else attempt to delete the oldest
-                     else if (storedStateAttr != null && stateAttr.getGammaId() < storedStateAttr.getGammaId()) {
+                     else if (storedStateAttr != null && stateAttr.getGammaId().isLessThan(
+                        storedStateAttr.getGammaId())) {
                         errorStr += String.format(
                            " - stateStr [%s] earlier than storedStateStr [%s] - deleted stateAttr - FIXED", stateStr,
                            storedStateStr, awa.getLastModified());
                         stateAttr.delete();
-                     } else if (storedStateAttr != null && storedStateAttr.getGammaId() < stateAttr.getGammaId()) {
+                     } else if (storedStateAttr != null && storedStateAttr.getGammaId().isLessThan(
+                        stateAttr.getGammaId())) {
                         errorStr += String.format(
                            " - stateStr [%s] later than storedStateStr [%s] - deleted storeStateAttr - FIXED", stateStr,
                            storedStateStr, awa.getLastModified());
@@ -866,10 +869,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                artifact.getArtifactTypeName(), attrType.getName(), attrType.getMaxOccurrences(), count,
                artifact.getAttributesToString(attrType));
             Map<String, Attribute<?>> valuesAttrMap = new HashMap<>();
-            int latestGamma = 0;
+            GammaId latestGamma = GammaId.valueOf(0);
             StringBuffer fixInfo = new StringBuffer(" - FIX AVAILABLE");
             for (Attribute<?> attr : artifact.getAttributes(attrType)) {
-               if (attr.getGammaId() > latestGamma) {
+               if (attr.getGammaId().isValid()) {
                   latestGamma = attr.getGammaId();
                }
                String info = String.format("[Gamma [%s] Value [%s]]", attr.getGammaId(), attr.getValue());
@@ -878,11 +881,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             }
             fixInfo.append(" - KEEP Gamma");
             fixInfo.append(latestGamma);
-            if (latestGamma != 0) {
+            if (latestGamma.isValid()) {
                result += fixInfo;
                if (fixAttributeValues) {
                   for (Attribute<?> attr : artifact.getAttributes(attrType)) {
-                     if (attr.getGammaId() != latestGamma) {
+                     if (attr.getGammaId().notEqual(latestGamma)) {
                         attr.delete();
                      }
                   }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
+import org.eclipse.osee.framework.core.data.GammaId;
+
 /**
  * @author Roberto E. Escobar
  */
@@ -25,7 +27,7 @@ public interface IAttributeDataProvider {
 
    public Object[] getData();
 
-   public void persist(int storageId);
+   public void persist(GammaId storageId);
 
    public void purge();
 }

@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -226,7 +227,7 @@ public abstract class Conflict implements Adaptable {
 
    public abstract ConflictType getConflictType();
 
-   public abstract int getMergeGammaId();
+   public abstract GammaId getMergeGammaId();
 
    public abstract Id getObjectId();
 

@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -236,25 +235,25 @@ public final class RevisionChangeLoader {
          if (changeArtifact != null) {
             ArtifactDelta delta = new ArtifactDelta(builder.getTxDelta(), changeArtifact, null);
             if (builder instanceof ArtifactChangeBuilder) {
-               toReturn = new ArtifactChange(branch, GammaId.valueOf(builder.getSourceGamma()), builder.getArtId(),
-                  builder.getTxDelta(), builder.getModType(), "", "", isHistorical, changeArtifact, delta);
+               toReturn = new ArtifactChange(branch, builder.getSourceGamma(), builder.getArtId(), builder.getTxDelta(),
+                  builder.getModType(), "", "", isHistorical, changeArtifact, delta);
             } else if (builder instanceof AttributeChangeBuilder) {
                AttributeChangeBuilder attrBuilder = (AttributeChangeBuilder) builder;
-               toReturn = new AttributeChange(branch, GammaId.valueOf(attrBuilder.getSourceGamma()),
-                  attrBuilder.getArtId(), attrBuilder.getTxDelta(), attrBuilder.getModType(), attrBuilder.getIsValue(),
+               toReturn = new AttributeChange(branch, attrBuilder.getSourceGamma(), attrBuilder.getArtId(),
+                  attrBuilder.getTxDelta(), attrBuilder.getModType(), attrBuilder.getIsValue(),
                   attrBuilder.getWasValue(), AttributeId.valueOf(attrBuilder.getAttrId()),
                   attrBuilder.getAttributeType(), attrBuilder.getArtModType(), isHistorical, changeArtifact, delta);
             } else if (builder instanceof RelationChangeBuilder) {
                RelationChangeBuilder relBuilder = (RelationChangeBuilder) builder;
                Artifact bArtifact = loadedMap.get(builder.getTxDelta().getEndTx(), relBuilder.getbArtId());
-               toReturn = new RelationChange(branch, GammaId.valueOf(builder.getSourceGamma()), builder.getArtId(),
-                  builder.getTxDelta(), builder.getModType(), relBuilder.getbArtId(),
+               toReturn = new RelationChange(branch, builder.getSourceGamma(), builder.getArtId(), builder.getTxDelta(),
+                  builder.getModType(), relBuilder.getbArtId(),
                   RelationId.valueOf(Long.valueOf(relBuilder.getRelLinkId())), relBuilder.getRationale(), "",
                   relBuilder.getRelationType(), isHistorical, changeArtifact, delta, bArtifact);
             }
          } else {
-            toReturn = new ArtifactChange(branch, GammaId.valueOf(builder.getSourceGamma()), builder.getArtId(),
-               builder.getTxDelta(), builder.getModType(), "", "", isHistorical, null, null);
+            toReturn = new ArtifactChange(branch, builder.getSourceGamma(), builder.getArtId(), builder.getTxDelta(),
+               builder.getModType(), "", "", isHistorical, null, null);
          }
          changes.add(toReturn);
       }

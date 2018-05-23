@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -43,7 +44,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class RelationLink implements HasBranch {
    private int relationId;
-   private int gammaId;
+   private GammaId gammaId;
    private String rationale;
    private final RelationTypeToken relationType;
    private boolean dirty;
@@ -58,7 +59,7 @@ public class RelationLink implements HasBranch {
 
    private boolean useBackingData;
 
-   public RelationLink(ArtifactToken artifactA, ArtifactToken artifactB, BranchId branch, RelationTypeToken relationType, int relationId, int gammaId, String rationale, ModificationType modificationType, ApplicabilityId applicabilityId) {
+   public RelationLink(ArtifactToken artifactA, ArtifactToken artifactB, BranchId branch, RelationTypeToken relationType, int relationId, GammaId gammaId, String rationale, ModificationType modificationType, ApplicabilityId applicabilityId) {
       this.relationType = relationType;
       this.relationId = relationId;
       this.gammaId = gammaId;
@@ -95,11 +96,11 @@ public class RelationLink implements HasBranch {
     * artifact.persist(); artifact.reloadAttributesAndRelations(); Will need to be called afterwards to see replaced
     * data in memory
     */
-   public void replaceWithVersion(int gammaId) {
+   public void replaceWithVersion(GammaId gammaId) {
       internalSetPersistenceData(gammaId, ModificationType.REPLACED_WITH_VERSION);
    }
 
-   private void internalSetPersistenceData(int gammaId, ModificationType modType) {
+   private void internalSetPersistenceData(GammaId gammaId, ModificationType modType) {
       internalSetModType(modType, true, true);
       internalSetGammaId(gammaId);
    }
@@ -307,7 +308,7 @@ public class RelationLink implements HasBranch {
       return relationId;
    }
 
-   public int getGammaId() {
+   public GammaId getGammaId() {
       return gammaId;
    }
 
@@ -315,7 +316,7 @@ public class RelationLink implements HasBranch {
       return getId() > 0;
    }
 
-   void internalSetGammaId(int gammaId) {
+   void internalSetGammaId(GammaId gammaId) {
       this.gammaId = gammaId;
    }
 
@@ -375,7 +376,7 @@ public class RelationLink implements HasBranch {
       return rightSorter.equals(USER_DEFINED) && leftSorter.equals(USER_DEFINED);
    }
 
-   public void introduce(int sourceGamma, ModificationType sourceModificationType) {
+   public void introduce(GammaId sourceGamma, ModificationType sourceModificationType) {
       internalSetPersistenceData(sourceGamma, sourceModificationType);
    }
 

@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -346,13 +347,13 @@ public final class ArtifactLoader {
          ArtifactTypeId artifactType = ArtifactTypeId.valueOf(chStmt.getLong("art_type_id"));
          ArtifactFactory factory = ArtifactTypeManager.getFactory(artifactType);
 
-         artifact =
-            factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"), artifactType, chStmt.getInt("gamma_id"),
-               branch, transactionId, ModificationType.valueOf(chStmt.getInt("mod_type")), appId, historical);
+         artifact = factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"), artifactType,
+            GammaId.valueOf(chStmt.getLong("gamma_id")), branch, transactionId,
+            ModificationType.valueOf(chStmt.getInt("mod_type")), appId, historical);
       }
 
       if (reload == LoadType.RELOAD_CACHE) {
-         artifact.internalSetPersistenceData(chStmt.getInt("gamma_id"), transactionId,
+         artifact.internalSetPersistenceData(GammaId.valueOf(chStmt.getLong("gamma_id")), transactionId,
             ModificationType.valueOf(chStmt.getInt("mod_type")), appId, historical, false);
       }
       return artifact;

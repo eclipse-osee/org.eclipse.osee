@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.relation;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
@@ -70,8 +71,8 @@ public class RelationTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected int createGammaId() {
-      int newGammaId = 0;
+   protected GammaId createGammaId() {
+      GammaId newGammaId;
       if (relation.isUseBackingData()) {
          newGammaId = relation.getGammaId();
       } else {

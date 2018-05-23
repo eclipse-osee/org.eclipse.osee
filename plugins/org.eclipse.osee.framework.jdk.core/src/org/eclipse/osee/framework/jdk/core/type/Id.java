@@ -86,6 +86,14 @@ public interface Id {
       return clone(getId() + id.getId());
    }
 
+   default <T extends Id> T increment(long increment) {
+      return clone(getId() + increment);
+   }
+
+   default <T extends Id> T increment() {
+      return clone(getId() + 1);
+   }
+
    default <T extends Id> T clone(Long id) {
       throw new UnsupportedOperationException();
    }

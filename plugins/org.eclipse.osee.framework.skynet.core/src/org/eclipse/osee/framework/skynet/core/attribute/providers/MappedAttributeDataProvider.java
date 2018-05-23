@@ -20,6 +20,7 @@ import java.util.zip.ZipInputStream;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -87,7 +88,7 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
    }
 
    @Override
-   public void persist(int storageId) {
+   public void persist(GammaId storageId) {
       try {
          if (isFromLocalWorkspace()) {
             InputStream inputStream = null;
@@ -98,7 +99,7 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
                inputStream = sourceUri.toURL().openStream();
                byte[] compressed = Lib.compressStream(inputStream, getOutfileName());
 
-               String resourceId = String.valueOf(storageId);
+               String resourceId = storageId.getIdString();
                boolean overwriteAllowed = false;
                boolean compressOnSave = false;
 

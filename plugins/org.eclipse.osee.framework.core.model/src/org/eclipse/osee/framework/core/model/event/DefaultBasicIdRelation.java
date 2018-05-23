@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.model.event;
 
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 
 /**
@@ -21,10 +22,10 @@ public class DefaultBasicIdRelation implements IBasicGuidRelation {
    DefaultBasicGuidArtifact artA, artB;
    BranchId branch;
    Long relTypeUuid;
-   int gammaId;
+   GammaId gammaId;
    int relationId;
 
-   public DefaultBasicIdRelation(BranchId branch, Long relTypeUuid, int relationId, int gammaId, DefaultBasicGuidArtifact artA, DefaultBasicGuidArtifact artB) {
+   public DefaultBasicIdRelation(BranchId branch, Long relTypeUuid, int relationId, GammaId gammaId, DefaultBasicGuidArtifact artA, DefaultBasicGuidArtifact artB) {
       this.branch = branch;
       this.relTypeUuid = relTypeUuid;
       this.relationId = relationId;
@@ -49,7 +50,7 @@ public class DefaultBasicIdRelation implements IBasicGuidRelation {
    }
 
    @Override
-   public int getGammaId() {
+   public GammaId getGammaId() {
       return gammaId;
    }
 
@@ -74,7 +75,7 @@ public class DefaultBasicIdRelation implements IBasicGuidRelation {
       this.relTypeUuid = relTypeGuid;
    }
 
-   public void setGammaId(int gammaId) {
+   public void setGammaId(GammaId gammaId) {
       this.gammaId = gammaId;
    }
 
@@ -85,7 +86,7 @@ public class DefaultBasicIdRelation implements IBasicGuidRelation {
       result = prime * result + (artA == null ? 0 : artA.hashCode());
       result = prime * result + (artB == null ? 0 : artB.hashCode());
       result = prime * result + (branch == null ? 0 : branch.hashCode());
-      result = prime * result + gammaId;
+      result = prime * result + gammaId.hashCode();
       result = prime * result + (relTypeUuid == null ? 0 : relTypeUuid.hashCode());
       return result;
    }

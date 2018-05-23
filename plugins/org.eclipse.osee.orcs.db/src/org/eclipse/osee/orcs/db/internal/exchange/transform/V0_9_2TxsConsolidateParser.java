@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.exchange.transform;
 import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
@@ -47,10 +48,10 @@ public class V0_9_2TxsConsolidateParser extends SaxTransformer {
    public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws XMLStreamException {
       skipWrite = false;
 
-      Long gammaId = null;
+      GammaId gammaId = null;
       if (isWriteAllowed) {
          if (localName.equals("entry")) {
-            gammaId = artifactGammaToNetGammaId.get(Long.valueOf(attributes.getValue("gamma_id")));
+            gammaId = GammaId.valueOf(artifactGammaToNetGammaId.get(Long.valueOf(attributes.getValue("gamma_id"))));
          }
          if (gammaId == null) {
             super.startElementFound(uri, localName, qName, attributes);
@@ -59,9 +60,9 @@ public class V0_9_2TxsConsolidateParser extends SaxTransformer {
          }
       } else if (localName.equals("entry")) {
          if (targetBranchIdStr.equals(attributes.getValue("branch_id"))) {
-            gammaId = artifactGammaToNetGammaId.get(Long.valueOf(attributes.getValue("gamma_id")));
+            gammaId = GammaId.valueOf(artifactGammaToNetGammaId.get(Long.valueOf(attributes.getValue("gamma_id"))));
             if (gammaId != null) {
-               addressMap.put(gammaId, createAddress(attributes, gammaId));
+               addressMap.put(gammaId.getId(), createAddress(attributes, gammaId));
             }
          }
       }
@@ -74,7 +75,7 @@ public class V0_9_2TxsConsolidateParser extends SaxTransformer {
       }
    }
 
-   private Address createAddress(Attributes attributes, long gammaId) throws XMLStreamException {
+   private Address createAddress(Attributes attributes, GammaId gammaId) throws XMLStreamException {
       try {
          int modType = Integer.parseInt(attributes.getValue("mod_type"));
          ModificationType modificationType = ModificationType.valueOf(modType);

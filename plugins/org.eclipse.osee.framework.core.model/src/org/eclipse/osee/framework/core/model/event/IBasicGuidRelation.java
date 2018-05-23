@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.event;
 
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 
 /**
@@ -23,5 +24,5 @@ public interface IBasicGuidRelation extends HasBranch {
 
    Long getRelTypeGuid();
 
-   int getGammaId();
+   GammaId getGammaId();
 }
