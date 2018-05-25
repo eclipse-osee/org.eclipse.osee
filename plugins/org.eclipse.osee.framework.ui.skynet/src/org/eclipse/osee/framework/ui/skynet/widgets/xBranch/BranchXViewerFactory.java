@@ -47,13 +47,15 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
       "Inherit Access Control", 100, XViewerAlign.Left, false, SortDataType.Boolean, false, null);
    public final static XViewerColumn transaction = new XViewerColumn("framework.branch.transaction", "Transaction", 100,
       XViewerAlign.Left, true, SortDataType.Integer, false, null);
+   public final static XViewerColumn branchAccessContextId = new XViewerColumn("framework.branch.access",
+      "Branch Access Context Id", 100, XViewerAlign.Left, false, SortDataType.String, false, null);
 
    public final static String NAMESPACE = "osee.skynet.gui.BranchXViewer";
 
    public BranchXViewerFactory(IOseeTreeReportProvider reportProvider) {
       super(NAMESPACE, reportProvider);
       registerColumns(branchName, branchType, branchState, timeStamp, author, comment, associatedArtifact, parentBranch,
-         branchId, archivedState, inheritAccessControl);
+         branchId, archivedState, branchAccessContextId, inheritAccessControl);
    }
 
    @Override
