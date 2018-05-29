@@ -64,6 +64,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
    private final boolean writeChangeReports;
    private final IArtifactType[] DISALLOW_TYPES = {CoreArtifactTypes.ImplementationDetails};
    private final String overrideDataRightsClassification;
+   boolean debug = false;
 
    public ExportChangeReportOperation(List<TeamWorkFlowArtifact> workflows, boolean reverse, boolean writeChangeReports, String overrideDataRightsClassification, Appendable resultFolder, OperationLogger logger) {
       super("Exporting Change Report(s)", Activator.PLUGIN_ID, logger);
@@ -118,8 +119,10 @@ public final class ExportChangeReportOperation extends AbstractOperation {
                      DISALLOW_TYPES) || !artifactType.inheritsFrom(ExportChangeReportUtil.ARTIFACT_ALLOW_TYPES)) {
                      it.remove();
                      artIds.remove(endArtifact.getArtId());
-                     logf("skipping: [" + endArtifact.getName().replaceAll("%",
-                        "%%") + "] type: [" + endArtifact.getArtifactTypeName() + "] branch: [" + endArtifact.getBranch().getIdString() + "] artId: [" + endArtifact.getArtId() + "]");
+                     if (debug) {
+                        logf("skipping: [" + endArtifact.getName().replaceAll("%",
+                           "%%") + "] type: [" + endArtifact.getArtifactTypeName() + "] branch: [" + endArtifact.getBranch().getIdString() + "] artId: [" + endArtifact.getArtId() + "]");
+                     }
                      skippedTypes.add(endArtifact.getArtifactTypeName());
                   }
                }
