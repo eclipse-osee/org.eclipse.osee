@@ -53,7 +53,6 @@ public class ValidationReportOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      ElapsedTime totalTime = new ElapsedTime(getName());
       logf("<b>Validating Requirement Changes for %s</b>\n", teamArt.getName());
 
       List<AbstractValidationRule> rulesSorted = new ArrayList<>(rules);
@@ -131,7 +130,6 @@ public class ValidationReportOperation extends AbstractOperation {
             }
          }
 
-         log(totalTime.end(Units.MIN));
          log("\nValidation Complete");
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
