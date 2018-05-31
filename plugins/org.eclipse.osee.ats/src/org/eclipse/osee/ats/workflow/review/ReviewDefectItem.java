@@ -15,11 +15,13 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.User;
 
 /**
@@ -32,7 +34,7 @@ public class ReviewDefectItem {
    private String location = "";
    private String resolution = "";
    private String userId;
-   private String id = GUID.create();
+   private Long id = Lib.generateId();
    private Severity severity = Severity.None;
    private Disposition disposition = Disposition.None;
    private InjectionActivity injectionActivity = InjectionActivity.None;
@@ -154,10 +156,22 @@ public class ReviewDefectItem {
          //
          "</date><user>" + userId + "</user><description>" + description + "</description><location>" + location +
          //
-         "</location><resolution>" + resolution + "</resolution><closed>" + closed + "</closed><guid>" + id + "</guid>";
+         "</location><resolution>" + resolution + "</resolution><closed>" + closed + "</closed><id>" + id + "</id>";
    }
 
+   private final Pattern guidPattern = Pattern.compile("<guid>(.*)</guid>");
+
    private void fromXml(String xml) {
+      /**
+       * Handle backward compatibility of guid in db. Turn into unique int if guid exists, else it's a long. After
+       * release of 26.0, either db can be converted to longs and this code removed, or leave this in.
+       */
+      Matcher m = guidPattern.matcher(xml);
+      if (m.find()) {
+         String guid = m.group(1);
+         int id = guid.hashCode();
+         xml = m.replaceAll(String.format("<id>%s</id>", id));
+      }
       this.severity = Severity.valueOf(AXml.getTagData(xml, "severity"));
       this.disposition = Disposition.valueOf(AXml.getTagData(xml, "disposition"));
       this.injectionActivity = InjectionActivity.valueOf(AXml.getTagData(xml, "injectionActivity"));
@@ -169,7 +183,7 @@ public class ReviewDefectItem {
       this.location = AXml.getTagData(xml, "location");
       this.resolution = AXml.getTagData(xml, "resolution");
       this.closed = AXml.getTagBooleanData(xml, "closed");
-      this.id = AXml.getTagData(xml, "guid");
+      this.id = Long.valueOf(AXml.getTagData(xml, "id"));
    }
 
    public Date getDate() {
@@ -258,11 +272,11 @@ public class ReviewDefectItem {
       this.closed = closed;
    }
 
-   public String getId() {
+   public Long getId() {
       return id;
    }
 
-   public void setId(String id) {
+   public void setId(Long id) {
       this.id = id;
    }
 

@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.workflow.review.ReviewDefectItem;
 import org.eclipse.osee.ats.workflow.review.ReviewDefectItem.Disposition;
 import org.eclipse.osee.ats.workflow.review.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.workflow.review.ReviewDefectItem.Severity;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 
 /**
@@ -41,4 +42,24 @@ public class ReviewDefectItemTest {
       Assert.assertEquals(item.getLocation(), fromItem.getLocation());
       Assert.assertEquals(item.getDate(), fromItem.getDate());
    }
+
+   /**
+    * See explanation in org.eclipse.osee.ats.workflow.review.ReviewDefectItem.fromXml.
+    */
+   @org.junit.Test
+   public void testFromGuidXmlToIdXml() {
+      Date date = new Date();
+      ReviewDefectItem item =
+         new ReviewDefectItem("1234", Severity.Issue, Disposition.Duplicate, InjectionActivity.Software_Design,
+            "this is the description", "this is the resolution", "this is the location", date);
+      String xmlStr = item.toXml();
+      String guid = GUID.create();
+      xmlStr = xmlStr.replaceFirst("id>.*</id", String.format("guid>%s</guid", guid));
+      Assert.assertTrue(xmlStr.contains("guid"));
+
+      ReviewDefectItem fromItem = new ReviewDefectItem(xmlStr);
+
+      Assert.assertEquals(guid.hashCode(), fromItem.getId().intValue());
+   }
+
 }
