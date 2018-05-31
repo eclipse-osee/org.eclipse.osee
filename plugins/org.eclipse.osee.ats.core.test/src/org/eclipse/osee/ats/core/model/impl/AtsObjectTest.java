@@ -22,7 +22,7 @@ import org.junit.Test;
 public class AtsObjectTest {
 
    @Test
-   public void testGetNameGuidId() {
+   public void testGetNameId() {
       AtsObject obj = new AtsObject("hello", 456);
       Assert.assertEquals("hello", obj.getName());
       Assert.assertEquals(456, obj.getId().longValue());

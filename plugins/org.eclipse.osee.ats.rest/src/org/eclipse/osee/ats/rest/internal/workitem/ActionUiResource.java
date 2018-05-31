@@ -84,7 +84,7 @@ public final class ActionUiResource {
    }
 
    /**
-    * @param id (guid, atsId) of action to display
+    * @param id (id, atsId) of action to display
     * @return html representation of the action
     */
    @Path("{id}/details")

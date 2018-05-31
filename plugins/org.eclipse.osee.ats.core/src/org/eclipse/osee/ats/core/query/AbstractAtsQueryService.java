@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -219,22 +220,6 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T> T getConfigItem(String id) {
-      T atsObject = null;
-      if (Strings.isNumeric(id)) {
-         atsObject = getCache().getAtsObject(Long.valueOf(id));
-         if (atsObject == null) {
-            ArtifactToken artifact = getArtifact(Long.valueOf(id));
-            if (artifact != null && artifact instanceof IAtsConfigObject) {
-               atsObject = (T) AtsObjects.getConfigObject(artifact, atsApi);
-            }
-         }
-      }
-      return atsObject;
-   }
-
-   @SuppressWarnings("unchecked")
-   @Override
    public <T> T getConfigItem(Long id) {
       T atsObject = getCache().getAtsObject(id);
       if (atsObject == null) {
@@ -275,6 +260,48 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
          return atsConfigObject.getStoreObject();
       }
       return getArtifact(atsConfigObject.getId());
+   }
+
+   @Override
+   public ArtifactToken getArtifactByIdOrAtsId(String id) {
+      ArtifactToken art = null;
+      try {
+         if (Strings.isValid(id)) {
+            if (Strings.isNumeric(id)) {
+               art = getArtifact(Long.valueOf(id));
+            } else {
+               art = getArtifactByAtsId(id);
+            }
+         }
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      return art;
+   }
+
+   @Override
+   public Collection<ArtifactToken> getArtifactsByIdsOrAtsIds(String searchStr) {
+      List<ArtifactToken> artifacts = new LinkedList<>();
+      for (String str : searchStr.split(",")) {
+         str = str.replaceAll("^ ", "");
+         str = str.replaceAll("$ ", "");
+         try {
+            if (Strings.isValid(str)) {
+               ArtifactToken art = null;
+               if (Strings.isNumeric(str)) {
+                  art = getArtifact(Long.valueOf(str));
+               } else {
+                  art = getArtifactByAtsId(str);
+               }
+               if (art != null) {
+                  artifacts.add(art);
+               }
+            }
+         } catch (ArtifactDoesNotExist ex) {
+            // do nothing
+         }
+      }
+      return artifacts;
    }
 
 }

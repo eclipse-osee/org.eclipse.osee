@@ -363,4 +363,5 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    public ArtifactToken getArtifactByGuid(String guid) {
       return ArtifactQuery.getArtifactFromId(guid, atsClient.getAtsBranch());
    }
+
 }

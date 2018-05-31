@@ -45,7 +45,7 @@ public final class StateResource {
 
    /**
     * @param form containing information to transition action
-    * @param form.id (guid or atsId) of action to transition
+    * @param form.id (id or atsId) of action to transition
     * @param form.operation - transition
     * @param form.toState - name of state to transition to
     * @param form.reason - reason if this transition is a cancel
@@ -56,7 +56,7 @@ public final class StateResource {
    @Consumes("application/x-www-form-urlencoded")
    public Object addOrUpdateAction(MultivaluedMap<String, String> form, @Context UriInfo uriInfo) throws Exception {
 
-      String id = form.getFirst("guid");
+      String id = form.getFirst("id");
       if (!Strings.isValid(id)) {
          id = form.getFirst("atsId");
       }

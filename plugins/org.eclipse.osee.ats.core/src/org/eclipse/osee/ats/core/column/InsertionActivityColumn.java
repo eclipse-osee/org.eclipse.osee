@@ -33,7 +33,7 @@ public class InsertionActivityColumn extends AbstractServicesColumn {
    }
 
    /**
-    * Set optional map to use as a cache of work item id (Long) or work package guid (String) to Insertion Activity
+    * Set optional map to use as a cache of work item id (Long) or work package id (String) to Insertion Activity
     * artifact.
     */
    public void setIdToInsertionActivityCache(Map<Object, ArtifactToken> idToInsertionActivity) {

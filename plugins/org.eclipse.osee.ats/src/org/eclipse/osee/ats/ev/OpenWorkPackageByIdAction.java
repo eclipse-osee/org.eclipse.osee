@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -54,28 +53,20 @@ public class OpenWorkPackageByIdAction extends Action {
 
    @Override
    public void run() {
-      EntryDialog dialog = new EntryDialog(getText(), "Enter Work Package guid, activity id or financial id");
+      EntryDialog dialog = new EntryDialog(getText(), "Enter Work Package id, activity id or financial id");
       if (dialog.open() == Window.OK) {
          final List<String> ids = new LinkedList<String>();
-         final List<String> guids = new LinkedList<>();
          for (String str : dialog.getEntry().split(",")) {
             str = str.replaceAll("^\\s+", "");
             str = str.replaceAll("\\s+$", "");
-            if (Strings.isValid(str)) {
-               if (GUID.isValid(str)) {
-                  guids.add(str);
-               } else {
-                  ids.add(str);
-               }
+            if (Strings.isNumeric(str)) {
+               ids.add(str);
             }
             Job searchWps = new Job(getText()) {
 
                @Override
                protected IStatus run(IProgressMonitor monitor) {
                   List<Artifact> results = new LinkedList<>();
-                  if (!guids.isEmpty()) {
-                     results.addAll(ArtifactQuery.getArtifactListFromIds(guids, AtsClientService.get().getAtsBranch()));
-                  }
                   if (!ids.isEmpty()) {
                      results.addAll(ArtifactQuery.getArtifactListFromAttributeValues(AtsAttributeTypes.ActivityId, ids,
                         AtsClientService.get().getAtsBranch(), 5));

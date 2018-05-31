@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
- * Provide ATS Caching by id, guid and application tags. These are evacuating caches that will expire 15 minutes after
- * being cached.
+ * Provide ATS Caching by id and application tags. These are evacuating caches that will expire 15 minutes after being
+ * cached.
  *
  * @author Donald G. Dunne
  */

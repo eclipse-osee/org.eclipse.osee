@@ -105,6 +105,8 @@ public interface IAtsQueryService {
 
    ArtifactToken getArtifactByAtsId(String id);
 
+   ArtifactToken getArtifactByIdOrAtsId(String id);
+
    ArtifactToken getArtifactByLegacyPcrId(String id);
 
    Collection<ArtifactToken> getArtifactsByLegacyPcrId(String id);
@@ -119,8 +121,6 @@ public interface IAtsQueryService {
 
    @Nullable
    <T extends IAtsObject> ArtifactToken getArtifact(T atsObject);
-
-   <T> T getConfigItem(String guid);
 
    <T> T getConfigItem(Long id);
 
@@ -151,8 +151,13 @@ public interface IAtsQueryService {
    ArtifactToken getHistoricalArtifactOrNull(ArtifactId artifact, TransactionToken transaction, DeletionFlag deletionFlag);
 
    /**
-    * This should be use sparingly and in many cases, only in database conversions as code moves away from guid
+    * This method should be used sparingly. Use long ids instead.
     */
    ArtifactToken getArtifactByGuid(String guid);
+
+   /**
+    * Search using comma deliminated long ids and/or ATS Ids
+    */
+   Collection<ArtifactToken> getArtifactsByIdsOrAtsIds(String searchStr);
 
 }

@@ -43,12 +43,12 @@ public class AtsObjects {
       return ids;
    }
 
-   public static List<String> toGuids(Collection<? extends IAtsObject> atsObjects) {
-      List<String> guids = new ArrayList<>(atsObjects.size());
+   public static List<ArtifactId> toArtifactIds(Collection<? extends IAtsObject> atsObjects) {
+      List<ArtifactId> ids = new ArrayList<>(atsObjects.size());
       for (IAtsObject atsObject : atsObjects) {
-         guids.add(atsObject.getStoreObject().getGuid());
+         ids.add(atsObject.getStoreObject());
       }
-      return guids;
+      return ids;
    }
 
    public static List<String> toAtsIds(Collection<? extends IAtsWorkItem> workItem) {

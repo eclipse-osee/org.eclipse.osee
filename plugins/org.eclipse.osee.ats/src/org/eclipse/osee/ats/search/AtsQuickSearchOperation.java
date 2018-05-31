@@ -10,23 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.search;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.world.IWorldEditorConsumer;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorOperation;
 import org.eclipse.osee.ats.world.WorldEditorOperationProvider;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 
@@ -64,31 +61,8 @@ class AtsQuickSearchOperation extends AbstractOperation implements WorldEditorOp
    @Override
    public Collection<Artifact> performSearch() {
       allArtifacts.clear();
-      for (String str : data.getSearchStr().split(", ")) {
-         try {
-            Artifact art = AtsArtifactQuery.getArtifactFromId(str);
-            if (art != null) {
-               allArtifacts.add(art);
-            }
-         } catch (ArtifactDoesNotExist ex) {
-            // do nothing
-         }
-      }
-      for (Artifact art : ArtifactQuery.getArtifactListFromAttributeKeywords(AtsClientService.get().getAtsBranch(),
-         data.getSearchStr(), false, EXCLUDE_DELETED, false)) {
-         // only ATS Artifacts
-         if (art instanceof AbstractWorkflowArtifact) {
-            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) art;
-            // default excludes canceled/completed
-            if (data.isIncludeCompleteCancelled() == false) {
-               if (!awa.isCompletedOrCancelled()) {
-                  allArtifacts.add(art);
-               }
-            } else {
-               allArtifacts.add(art);
-            }
-         }
-      }
+      allArtifacts.addAll(
+         Collections.castAll(AtsClientService.get().getQueryService().getArtifactsByIdsOrAtsIds(data.getSearchStr())));
       return allArtifacts;
    }
 

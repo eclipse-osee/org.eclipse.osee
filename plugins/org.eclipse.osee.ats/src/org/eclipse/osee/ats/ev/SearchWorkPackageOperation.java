@@ -24,12 +24,13 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.WorkPackage;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.search.AtsArtifactQuery;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Donald G. Dunne
@@ -61,11 +62,11 @@ public class SearchWorkPackageOperation extends AbstractOperation {
          throw new OseeArgumentException("ERROR", "Must provide Team Definitions or Actionable Items");
       }
       checkForCancelledStatus(monitor);
-      List<String> guids = new ArrayList<>();
-      addAllTeamDefGuids(monitor, teamDefs, includeChildrenTeamDefs, guids);
-      addAllAisGuids(monitor, ais, includeChildrenAis, guids);
+      List<ArtifactId> ids = new ArrayList<>();
+      addAllTeamDefIds(monitor, teamDefs, includeChildrenTeamDefs, ids);
+      addAllAisIds(monitor, ais, includeChildrenAis, ids);
 
-      for (Artifact teamOrAiArt : AtsArtifactQuery.getArtifactListFromIds(guids)) {
+      for (Artifact teamOrAiArt : ArtifactQuery.getArtifactListFrom(ids, AtsClientService.get().getAtsBranch())) {
          for (Artifact workPkgArt : teamOrAiArt.getRelatedArtifacts(AtsRelationTypes.WorkPackage_WorkPackage)) {
             boolean active = workPkgArt.getSoleAttributeValue(AtsAttributeTypes.Active, true);
             if (activeWorkPkgs == Active.Both || active && activeWorkPkgs == Active.Active || !active && activeWorkPkgs == Active.InActive) {
@@ -77,21 +78,21 @@ public class SearchWorkPackageOperation extends AbstractOperation {
       }
    }
 
-   private void addAllAisGuids(IProgressMonitor monitor, Collection<IAtsActionableItem> ais2, boolean includeChildrenAis2, List<String> guids) {
+   private void addAllAisIds(IProgressMonitor monitor, Collection<IAtsActionableItem> ais2, boolean includeChildrenAis2, List<ArtifactId> ids) {
       for (IAtsActionableItem ai : ais2) {
-         guids.add(ai.getStoreObject().getGuid());
+         ids.add(ai.getStoreObject());
          if (includeChildrenAis2) {
-            addAllAisGuids(monitor, ai.getChildrenActionableItems(), includeChildrenAis2, guids);
+            addAllAisIds(monitor, ai.getChildrenActionableItems(), includeChildrenAis2, ids);
             checkForCancelledStatus(monitor);
          }
       }
    }
 
-   private void addAllTeamDefGuids(IProgressMonitor monitor, Collection<IAtsTeamDefinition> teamDefs2, boolean includeChildrenTeamDefs2, List<String> guids) {
+   private void addAllTeamDefIds(IProgressMonitor monitor, Collection<IAtsTeamDefinition> teamDefs2, boolean includeChildrenTeamDefs2, List<ArtifactId> ids) {
       for (IAtsTeamDefinition teamDef : teamDefs2) {
-         guids.add(teamDef.getStoreObject().getGuid());
+         ids.add(teamDef.getStoreObject());
          if (includeChildrenTeamDefs2) {
-            addAllTeamDefGuids(monitor, teamDef.getChildrenTeamDefinitions(), includeChildrenTeamDefs2, guids);
+            addAllTeamDefIds(monitor, teamDef.getChildrenTeamDefinitions(), includeChildrenTeamDefs2, ids);
             checkForCancelledStatus(monitor);
          }
       }

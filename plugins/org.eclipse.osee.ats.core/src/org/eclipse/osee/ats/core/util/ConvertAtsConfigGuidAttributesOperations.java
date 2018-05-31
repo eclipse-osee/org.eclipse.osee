@@ -51,11 +51,11 @@ public class ConvertAtsConfigGuidAttributesOperations {
       List<ArtifactId> neededAiRefIds = new LinkedList<>();
       for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(art, ActionableItem)) {
          String aiArtGuid = (String) attr.getValue();
-         IAtsActionableItem ai = atsApi.getQueryService().getConfigItem(aiArtGuid);
+         ArtifactToken ai = atsApi.getQueryService().getArtifactByGuid(aiArtGuid);
          if (ai == null) {
             atsApi.getLogger().error("AI not found for aiArtGuid " + aiArtGuid + " for art " + art.toStringWithId());
          } else if (!currentAiRefIds.contains(ai.getId())) {
-            neededAiRefIds.add(ai.getStoreObject());
+            neededAiRefIds.add(ai);
          }
       }
 

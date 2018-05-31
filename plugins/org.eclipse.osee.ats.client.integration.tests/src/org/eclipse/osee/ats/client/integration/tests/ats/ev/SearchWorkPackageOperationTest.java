@@ -113,11 +113,11 @@ public class SearchWorkPackageOperationTest {
          ais, includeChildrenAIs, activeOption);
       Operations.executeWorkAndCheckStatus(operation);
       Set<Artifact> resultArtifacts = operation.getResultArtifacts();
-      Collection<Long> resultArtifactGuids = Artifacts.toIdsL(resultArtifacts);
+      Collection<Long> resultArtifactIds = Artifacts.toIdsL(resultArtifacts);
       Assert.assertEquals(resultSize, expectedWpIds.size(), resultArtifacts.size());
       for (Long expectedId : expectedWpIds) {
          Assert.assertTrue("Expected id " + expectedId + " not found in results",
-            resultArtifactGuids.contains(expectedId));
+            resultArtifactIds.contains(expectedId));
       }
    }
 
