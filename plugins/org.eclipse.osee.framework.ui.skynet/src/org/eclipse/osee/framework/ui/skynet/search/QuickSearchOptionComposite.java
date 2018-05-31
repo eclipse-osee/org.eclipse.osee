@@ -601,7 +601,7 @@ public class QuickSearchOptionComposite extends Composite {
             for (String entry : items) {
                try {
                   Long id = Long.parseLong(entry);
-                  ArtifactType type = ArtifactTypeManager.getTypeByGuid(id);
+                  ArtifactType type = ArtifactTypeManager.getType(id);
                   configuration.add(type);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);

@@ -130,8 +130,7 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
                         // get artifact type
                         IArtifactType artifactType = null;
                         if (Strings.isNumeric(dynamicImage.getArtifactTypeUuid())) {
-                           artifactType =
-                              ArtifactTypeManager.getTypeByGuid(Long.valueOf(dynamicImage.getArtifactTypeUuid()));
+                           artifactType = ArtifactTypeManager.getType(Long.valueOf(dynamicImage.getArtifactTypeUuid()));
                         }
                         if (artifactType == null && Strings.isValid(dynamicImage.getArtifactTypeName())) {
                            artifactType = ArtifactTypeManager.getType(dynamicImage.getArtifactTypeName());

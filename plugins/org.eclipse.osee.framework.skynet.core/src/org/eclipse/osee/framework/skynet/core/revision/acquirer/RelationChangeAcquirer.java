@@ -83,7 +83,7 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
                getArtIds().add(bArtId);
 
                getChangeBuilders().add(new RelationChangeBuilder(getSourceBranch(),
-                  ArtifactTypeManager.getTypeByGuid(chStmt.getLong("art_type_id")),
+                  ArtifactTypeManager.getType(chStmt.getLong("art_type_id")),
                   GammaId.valueOf(chStmt.getLong("gamma_id")), aArtId, txDelta, modificationType,
                   ArtifactId.valueOf(bArtId), relLinkId, rationale,
                   RelationTypeManager.getTypeByGuid(chStmt.getLong("rel_link_type_id")), !hasBranch));

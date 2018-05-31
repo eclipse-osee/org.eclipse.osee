@@ -161,7 +161,7 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public IArtifactType getArtifactType(Long artTypeId) {
-      return ArtifactTypeManager.getTypeByGuid(artTypeId);
+      return ArtifactTypeManager.getType(artTypeId);
    }
 
    @Override

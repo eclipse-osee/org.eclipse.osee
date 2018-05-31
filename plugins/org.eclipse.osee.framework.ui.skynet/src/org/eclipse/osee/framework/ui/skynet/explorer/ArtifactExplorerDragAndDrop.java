@@ -340,7 +340,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
             JsonUtil.getMapper().readValue(fromJson, new TypeReference<List<JsonArtifactRepresentation>>() { //
             });
          for (JsonArtifactRepresentation item : reqts) {
-            Artifact art = ArtifactTypeManager.addArtifact(ArtifactTypeManager.getTypeByGuid(item.getArtifactTypeId()),
+            Artifact art = ArtifactTypeManager.addArtifact(ArtifactTypeManager.getType(item.getArtifactTypeId()),
                parentArtifact.getBranch(), item.getName());
             List<JsonAttributeRepresentation> attrs = item.getAttrs();
             for (JsonAttributeRepresentation attr : attrs) {

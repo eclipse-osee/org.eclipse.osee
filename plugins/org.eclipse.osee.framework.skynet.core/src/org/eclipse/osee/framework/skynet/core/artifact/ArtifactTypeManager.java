@@ -98,28 +98,16 @@ public class ArtifactTypeManager {
       return getCache().getAll();
    }
 
-   /**
-    * @return Returns the artifact type matching the id
-    * @param id artifact type guid to match
-    */
    public static ArtifactType getType(Long id) {
-      return getTypeByGuid(id);
-   }
-
-   /**
-    * @return Returns the artifact type matching the guid
-    * @param guid artifact type guid to match
-    */
-   public static ArtifactType getTypeByGuid(Long guid) {
-      if (guid == null) {
-         throw new OseeArgumentException("[%s] is not a valid guid", guid);
+      if (id == null) {
+         throw new OseeArgumentException("[%s] is not a valid guid", id);
       }
-      ArtifactType artifactType = getCache().getByGuid(guid);
+      ArtifactType artifactType = getCache().getByGuid(id);
       if (artifactType == null) {
          getCacheService().reloadTypes();
-         artifactType = getCache().getByGuid(guid);
+         artifactType = getCache().getByGuid(id);
          if (artifactType == null) {
-            throw new OseeTypeDoesNotExist("Artifact type [%s] is not available.", guid);
+            throw new OseeTypeDoesNotExist("Artifact type [%s] is not available.", id);
          }
       }
       return artifactType;
@@ -137,7 +125,7 @@ public class ArtifactTypeManager {
       if (artifactType instanceof ArtifactType) {
          return (ArtifactType) artifactType;
       }
-      return getTypeByGuid(artifactType.getId());
+      return getType(artifactType.getId());
    }
 
    public static boolean inheritsFrom(ArtifactTypeId artifactType, ArtifactTypeId... parentTypes) {

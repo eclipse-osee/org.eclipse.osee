@@ -26,7 +26,7 @@ public class ArtifactTypeProvider implements IArtifactTypeProvider {
 
    @Override
    public IArtifactType getTypeByGuid(Long artTypeGuid) {
-      return ArtifactTypeManager.getTypeByGuid(artTypeGuid);
+      return ArtifactTypeManager.getType(artTypeGuid);
    }
 
    @Override
