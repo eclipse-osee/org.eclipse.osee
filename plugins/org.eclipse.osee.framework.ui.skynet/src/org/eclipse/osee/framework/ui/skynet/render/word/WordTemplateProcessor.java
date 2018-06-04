@@ -165,7 +165,7 @@ public class WordTemplateProcessor {
    private CharSequence paragraphNumber = null;
    private final DataRightInput request;
    private final DataRightProvider provider;
-   private IArtifactType[] excludeArtifactTypes;
+   private IArtifactType[] excludeArtifactTypes = {};
    private HashMap<ApplicabilityId, ApplicabilityToken> applicabilityTokens;
    private HashMap<ArtifactId, ArtifactId> artifactsToExclude;
 
@@ -667,9 +667,11 @@ public class WordTemplateProcessor {
          if (recurseChildren || (renderer.getBooleanOption(
             RECURSE_ON_LOAD) && !renderer.getBooleanOption("Orig Publish As Diff"))) {
             for (Artifact art : artifacts) {
-               allArtifacts.add(art);
+               if (!art.isOfType(excludeArtifactTypes)) {
+                  allArtifacts.add(art);
+               }
                if (!art.isHistorical()) {
-                  allArtifacts.addAll(art.getDescendants());
+                  allArtifacts.addAll(art.getDescendants(excludeArtifactTypes));
                }
             }
          } else {

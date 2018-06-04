@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -395,7 +396,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       return getRelatedArtifacts(Default_Hierarchical__Child, deletionFlag);
    }
 
-   public final List<Artifact> getDescendants(DeletionFlag includeDeleted) throws OseeCoreException {
+   public final List<Artifact> getDescendants(DeletionFlag includeDeleted) {
       List<Artifact> descendants = new LinkedList<>();
       getDescendants(descendants, includeDeleted);
       return descendants;
@@ -410,10 +411,25 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       return descendants;
    }
 
-   private void getDescendants(Collection<Artifact> descendants, DeletionFlag includeDeleted) throws OseeCoreException {
+   public final List<Artifact> getDescendants(IArtifactType[] excludedArtifacts) {
+      List<Artifact> descendants = new LinkedList<>();
+      getDescendants(descendants, excludedArtifacts, DeletionFlag.EXCLUDE_DELETED);
+      return descendants;
+   }
+
+   private void getDescendants(Collection<Artifact> descendants, DeletionFlag includeDeleted) {
       for (Artifact child : getChildren(includeDeleted)) {
          descendants.add(child);
          child.getDescendants(descendants, includeDeleted);
+      }
+   }
+
+   private void getDescendants(Collection<Artifact> descendants, IArtifactType[] excludedArtifacts, DeletionFlag includeDeleted) {
+      for (Artifact child : getChildren(includeDeleted)) {
+         if (!child.isOfType(excludedArtifacts)) {
+            descendants.add(child);
+            child.getDescendants(descendants, excludedArtifacts, includeDeleted);
+         }
       }
    }
 
