@@ -68,7 +68,7 @@ public class AttributeConflict extends Conflict {
 
    private String changeItemName;
 
-   public AttributeConflict(int sourceGamma, int destGamma, ArtifactId artId, TransactionToken toTransactionId, TransactionToken commitTransaction, String sourceValue, AttributeId attrId, AttributeTypeId attributeType, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) {
+   public AttributeConflict(GammaId sourceGamma, GammaId destGamma, ArtifactId artId, TransactionToken toTransactionId, TransactionToken commitTransaction, String sourceValue, AttributeId attrId, AttributeTypeId attributeType, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) {
       super(sourceGamma, destGamma, artId, toTransactionId, commitTransaction, mergeBranch, sourceBranch, destBranch);
       this.attrId = attrId;
       this.attributeType = attributeType;

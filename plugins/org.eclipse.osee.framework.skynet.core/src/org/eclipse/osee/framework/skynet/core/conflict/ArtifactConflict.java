@@ -32,7 +32,7 @@ public class ArtifactConflict extends Conflict {
    private final ModificationType sourceModType;
    private final ModificationType destModType;
 
-   public ArtifactConflict(int sourceGamma, int destGamma, ArtifactId artId, TransactionToken toTransactionId, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch, ModificationType sourceModType, ModificationType destModType, long artTypeId) {
+   public ArtifactConflict(GammaId sourceGamma, GammaId destGamma, ArtifactId artId, TransactionToken toTransactionId, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch, ModificationType sourceModType, ModificationType destModType, long artTypeId) {
       super(sourceGamma, destGamma, artId, toTransactionId, null, mergeBranch, sourceBranch, destBranch);
       this.sourceModType = sourceModType;
       this.destModType = destModType;

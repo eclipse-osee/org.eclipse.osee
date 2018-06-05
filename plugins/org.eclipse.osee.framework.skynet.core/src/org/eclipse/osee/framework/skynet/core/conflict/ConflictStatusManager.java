@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.conflict;
 
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
@@ -36,7 +37,7 @@ public class ConflictStatusManager {
    private static final String MERGE_BRANCH_GAMMAS =
       "UPDATE osee_txs SET gamma_id = ? where (transaction_id, gamma_id) = (SELECT tx.transaction_id, tx.gamma_id FROM osee_txs tx, osee_attribute atr WHERE tx.branch_id = ? AND tx.transaction_id = ? AND atr.gamma_id = tx.gamma_id AND atr.attr_id = ? )";
 
-   public static void setStatus(ConflictStatus status, int sourceGamma, int destGamma, BranchId mergeBranch) {
+   public static void setStatus(ConflictStatus status, GammaId sourceGamma, GammaId destGamma, BranchId mergeBranch) {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       //Gammas should be up to date so you can use them to get entry just update the status field.
       try {
@@ -47,7 +48,7 @@ public class ConflictStatusManager {
       }
    }
 
-   public static ConflictStatus computeStatus(int sourceGamma, int destGamma, BranchId branch, Id objectID, int conflictType, ConflictStatus passedStatus, TransactionId transactionId) {
+   public static ConflictStatus computeStatus(GammaId sourceGamma, GammaId destGamma, BranchId branch, Id objectID, int conflictType, ConflictStatus passedStatus, TransactionId transactionId) {
       //Check for a value in the table, if there is not one in there then
       //add it with an unedited setting and return unedited
       //If gammas are out of date, update the gammas and down grade markedMerged to Edited
@@ -59,8 +60,8 @@ public class ConflictStatusManager {
          if (chStmt.next()) {
             //There was an entry so lets check it and update it.
             int intStatus = chStmt.getInt("status");
-            if ((chStmt.getInt("source_gamma_id") != sourceGamma || chStmt.getInt(
-               "dest_gamma_id") != destGamma) && intStatus != ConflictStatus.COMMITTED.getValue()) {
+            if (sourceGamma.notEqual(chStmt.getLong("source_gamma_id")) || destGamma.notEqual(
+               chStmt.getLong("dest_gamma_id")) && intStatus != ConflictStatus.COMMITTED.getValue()) {
                if (intStatus == ConflictStatus.RESOLVED.getValue() || intStatus == ConflictStatus.PREVIOUS_MERGE_APPLIED_SUCCESS.getValue()) {
                   intStatus = ConflictStatus.OUT_OF_DATE_RESOLVED.getValue();
                }

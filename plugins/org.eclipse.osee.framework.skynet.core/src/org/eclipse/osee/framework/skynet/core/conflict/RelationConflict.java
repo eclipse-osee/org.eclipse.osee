@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
  */
 public class RelationConflict extends Conflict {
 
-   public RelationConflict(int sourceGamma, int destGamma, ArtifactId artId, TransactionRecord toTransactionId, IOseeBranch mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) {
+   public RelationConflict(GammaId sourceGamma, GammaId destGamma, ArtifactId artId, TransactionRecord toTransactionId, IOseeBranch mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) {
       super(sourceGamma, destGamma, artId, toTransactionId, null, mergeBranch, sourceBranch, destBranch);
    }
 

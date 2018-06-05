@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -109,10 +110,10 @@ public class ConflictManagerInternal {
             if (BranchManager.isArchived(sourceBranch)) {
                sourceBranch = null;
             }
-            AttributeConflict attributeConflict = new AttributeConflict(chStmt.getInt("source_gamma_id"),
-               chStmt.getInt("dest_gamma_id"), ArtifactId.valueOf(chStmt.getLong("art_id")), null, commitTransaction,
-               chStmt.getString("source_value"), AttributeId.valueOf(chStmt.getInt("attr_id")),
-               AttributeTypeId.valueOf(chStmt.getLong("attr_type_id")),
+            AttributeConflict attributeConflict = new AttributeConflict(
+               GammaId.valueOf(chStmt.getLong("source_gamma_id")), GammaId.valueOf(chStmt.getLong("dest_gamma_id")),
+               ArtifactId.valueOf(chStmt.getLong("art_id")), null, commitTransaction, chStmt.getString("source_value"),
+               AttributeId.valueOf(chStmt.getInt("attr_id")), AttributeTypeId.valueOf(chStmt.getLong("attr_type_id")),
                BranchId.valueOf(chStmt.getLong("merge_branch_id")), sourceBranch,
                BranchManager.getBranchToken(chStmt.getLong("dest_branch_id")));
             attributeConflict.setStatus(ConflictStatus.valueOf(chStmt.getInt("status")));
@@ -249,8 +250,8 @@ public class ConflictManagerInternal {
          while (chStmt.next()) {
             hadEntries = true;
             ArtifactId nextArtId = ArtifactId.valueOf(chStmt.getLong("art_id"));
-            int sourceGamma = chStmt.getInt("source_gamma");
-            int destGamma = chStmt.getInt("dest_gamma");
+            GammaId sourceGamma = GammaId.valueOf(chStmt.getLong("source_gamma"));
+            GammaId destGamma = GammaId.valueOf(chStmt.getLong("dest_gamma"));
             ModificationType sourceModType = ModificationType.valueOf(chStmt.getInt("source_mod_type"));
             ModificationType destModType = ModificationType.valueOf(chStmt.getInt("dest_mod_type"));
             long artTypeId = chStmt.getLong("art_type_id");
@@ -295,8 +296,8 @@ public class ConflictManagerInternal {
          while (chStmt.next()) {
             AttributeId nextAttrId = AttributeId.valueOf(chStmt.getInt("attr_id"));
             ArtifactId artId = ArtifactId.valueOf(chStmt.getLong("art_id"));
-            int sourceGamma = chStmt.getInt("source_gamma");
-            int destGamma = chStmt.getInt("dest_gamma");
+            GammaId sourceGamma = GammaId.valueOf(chStmt.getLong("source_gamma"));
+            GammaId destGamma = GammaId.valueOf(chStmt.getLong("dest_gamma"));
             AttributeTypeId attrTypeId = AttributeTypeId.valueOf(chStmt.getLong("attr_type_id"));
             String sourceValue = chStmt.getString("source_value") != null ? chStmt.getString(
                "source_value") : chStmt.getString("dest_value");
@@ -320,7 +321,7 @@ public class ConflictManagerInternal {
     *
     * @return Returns True if the AttributeConflict candidate is really a conflict.
     */
-   private static boolean isAttributeConflictValid(int destinationGammaId, BranchId sourceBranch) {
+   private static boolean isAttributeConflictValid(GammaId destinationGammaId, BranchId sourceBranch) {
       boolean isValidConflict = true;
       // We just need the largest value at first so the complete source branch
       // will be searched
@@ -345,7 +346,7 @@ public class ConflictManagerInternal {
    /**
     * @return Returns True if the destination gamma does not exist on a branch else false if it does.
     */
-   private static boolean isAttributeConflictValidOnBranch(int destinationGammaId, BranchId branch, TransactionId endTransaction) {
+   private static boolean isAttributeConflictValidOnBranch(GammaId destinationGammaId, BranchId branch, TransactionId endTransaction) {
       String sql =
          "SELECT count(1) FROM osee_txs txs WHERE txs.gamma_id = ? AND txs.branch_id = ? AND txs.transaction_id <= ?";
       return ConnectionHandler.getJdbcClient().fetch(0, sql, destinationGammaId, branch, endTransaction) == 0;

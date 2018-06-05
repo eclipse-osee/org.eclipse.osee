@@ -38,8 +38,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 public abstract class Conflict implements Adaptable {
    protected ConflictStatus status;
-   protected int sourceGamma;
-   protected int destGamma;
+   protected GammaId sourceGamma;
+   protected GammaId destGamma;
    private final ArtifactId artId;
    private final TransactionToken toTransactionId;
    private final TransactionToken commitTransactionId;
@@ -53,7 +53,7 @@ public abstract class Conflict implements Adaptable {
    private String sourceDiffFile = null;
    private String destDiffFile = null;
 
-   protected Conflict(int sourceGamma, int destGamma, ArtifactId artId, TransactionToken toTransactionId, TransactionToken commitTransactionId, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) {
+   protected Conflict(GammaId sourceGamma, GammaId destGamma, ArtifactId artId, TransactionToken toTransactionId, TransactionToken commitTransactionId, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) {
       this.sourceGamma = sourceGamma;
       this.destGamma = destGamma;
       this.artId = artId;
@@ -108,19 +108,19 @@ public abstract class Conflict implements Adaptable {
       return destBranch;
    }
 
-   public int getSourceGamma() {
+   public GammaId getSourceGamma() {
       return sourceGamma;
    }
 
-   public void setSourceGamma(int sourceGamma) {
+   public void setSourceGamma(GammaId sourceGamma) {
       this.sourceGamma = sourceGamma;
    }
 
-   public int getDestGamma() {
+   public GammaId getDestGamma() {
       return destGamma;
    }
 
-   public void setDestGamma(int destGamma) {
+   public void setDestGamma(GammaId destGamma) {
       this.destGamma = destGamma;
    }
 
