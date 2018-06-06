@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -115,7 +116,8 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
       @Override
       public void aboutToRun(IJobChangeEvent event) {
          startTime = System.currentTimeMillis();
-         overviewPage.setOuputText(String.format("Starting BLAM at [%s]\n", Lib.getElapseString(startTime)));
+         Date date = new Date();
+         overviewPage.setOuputText(String.format("Starting BLAM at [%s]\n", date.toString()));
       }
 
       @Override
