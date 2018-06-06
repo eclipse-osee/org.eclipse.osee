@@ -11,7 +11,7 @@
 	</parent>
 
 	<groupId>org.eclipse.osee</groupId>
-	<artifactId>org.eclipse.osee.x.ats.parent</artifactId>
+	<artifactId>org.eclipse.osee.ats.server.parent</artifactId>
 	<packaging>pom</packaging>
 	<name>OSEE X ATS - Parent (Incubation)</name>
 	<version>0.26.0-SNAPSHOT</version>
@@ -31,8 +31,8 @@
 		<module>../../plugins/org.eclipse.osee.ats.rest</module>
 		<module>../../plugins/org.eclipse.osee.ats.rest.test</module>
 
-		<module>../../features/org.eclipse.osee.x.ats.feature</module>
-		<module>../../plugins/org.eclipse.osee.x.ats.p2</module>
+		<module>../../features/org.eclipse.osee.ats.server.feature</module>
+		<module>../../plugins/org.eclipse.osee.ats.server.p2</module>
 	</modules>
 
 </project>

@@ -42,7 +42,7 @@
 			</case>
 			<case value="x-ats">
 				<property name="osee-build-stage" value="osee-x-ats" />
-				<property name="osee-build-directory" value="org.eclipse.osee.x.ats.parent" />
+				<property name="osee-build-directory" value="org.eclipse.osee.ats.server.parent" />
 			</case>
 			<case value="x-server">
 				<property name="osee-build-stage" value="osee-x-server" />

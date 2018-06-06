@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.eclipse.osee</groupId>
-		<artifactId>org.eclipse.osee.x.ats.parent</artifactId>
+		<artifactId>org.eclipse.osee.ats.server.parent</artifactId>
 		<version>0.26.0-SNAPSHOT</version>
-		<relativePath>../../plugins/org.eclipse.osee.x.ats.parent</relativePath>
+		<relativePath>../../plugins/org.eclipse.osee.ats.server.parent</relativePath>
 	</parent>
-	<artifactId>org.eclipse.osee.x.ats.feature</artifactId>
+	<artifactId>org.eclipse.osee.ats.server.feature</artifactId>
 	<packaging>eclipse-feature</packaging>
 	<name>OSEE X ATS Feature - (Incubation)</name>
 </project>

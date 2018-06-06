@@ -103,7 +103,7 @@
 				<module>../../features/org.eclipse.osee.x.core.feature</module>
 				<module>../../features/org.eclipse.osee.orcs.feature</module>
 				<module>../../features/org.eclipse.osee.disposition.feature</module>
-				<module>../../features/org.eclipse.osee.x.ats.feature</module>
+				<module>../../features/org.eclipse.osee.ats.server.feature</module>
 			</modules>
 		</profile>
 	</profiles>

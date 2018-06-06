@@ -34,7 +34,7 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.osee.x.ats.feature"
+         id="org.eclipse.osee.ats.server.feature"
          version="0.0.0"/>
 
    <includes
