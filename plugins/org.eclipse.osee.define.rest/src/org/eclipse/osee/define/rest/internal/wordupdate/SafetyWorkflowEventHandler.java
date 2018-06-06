@@ -65,7 +65,7 @@ public class SafetyWorkflowEventHandler implements EventHandler {
       this.logger = logger;
    }
 
-   public void setAtsServer(AtsApi atsApi) {
+   public void setAtsApi(AtsApi atsApi) {
       this.atsApi = atsApi;
    }
 
