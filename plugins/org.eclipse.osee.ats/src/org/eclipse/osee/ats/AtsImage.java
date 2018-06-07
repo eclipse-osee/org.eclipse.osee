@@ -63,7 +63,7 @@ public enum AtsImage implements KeyedImage {
    RELEASED("orangeR_8_8.gif"),
    REPORT("report.gif"),
    REVIEW("review.gif"),
-   REVIEW_SEARCH("reviewSearch.gif"),
+   REVIEW_SEARCH("reviewSearch2.gif"),
    RIGHT_ARROW_SM("right_arrow_sm.gif"),
    ROLE("role.gif"),
    RULE_DEFINITION("workDef.gif"),
