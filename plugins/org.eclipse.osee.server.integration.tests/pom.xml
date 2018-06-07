@@ -1,0 +1,254 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.eclipse.osee</groupId>
+		<artifactId>org.eclipse.osee.server.parent</artifactId>
+		<version>0.26.0-SNAPSHOT</version>
+		<relativePath>../../plugins/org.eclipse.osee.server.parent</relativePath>
+	</parent>
+
+	<artifactId>org.eclipse.osee.server.integration.tests</artifactId>
+	<packaging>eclipse-test-plugin</packaging>
+	<name>OSEE X Server Integration Tests (Incubation)</name>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<testSuite>org.eclipse.osee.server.integration.tests</testSuite>
+					<testClass>org.eclipse.osee.server.integration.tests.ServerIntegrationTestSuite</testClass>
+					<systemProperties combine.children="append">
+						<osee.log.default>WARNING</osee.log.default>
+						<eventDebug>log</eventDebug>
+						<eventSystem>new</eventSystem>
+						<osee.is.in.db.init>true</osee.is.in.db.init>
+						<osee.application.server>http://localhost:${osee-server-port}</osee.application.server>
+					</systemProperties>
+					<redirectTestOutputToFile>false</redirectTestOutputToFile>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<dependency-resolution>
+						<extraRequirements>
+							<requirement>
+								<type>eclipse-feature</type>
+								<id>org.eclipse.osee.orcs.feature</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-feature</type>
+								<id>org.eclipse.osee.core.server.external.feature</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-feature</type>
+								<id>org.eclipse.osee.core.server.feature</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eclipse.equinox.cm</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eclipse.equinox.ds</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eclipse.osee.orcs.db.mock</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eclipse.equinox.registry</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>                        
+								<id>org.apache.httpcomponents.httpclient</id>   
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>                        
+								<id>org.apache.httpcomponents.httpcore</id>   
+								<versionRange>0.0.0</versionRange>
+							</requirement>							
+							<requirement>
+								<type>eclipse-plugin</type>                        
+								<id>org.apache.commons.lang</id>   
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>                        
+								<id>org.apache.commons.logging</id>   
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>                        
+								<id>org.hamcrest.core</id>   
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>                        
+								<id>rest.assured</id>   
+								<versionRange>0.0.0</versionRange>
+							</requirement>																
+						</extraRequirements>
+					</dependency-resolution>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>osee-server-int-test-debug</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<int-test-debug-port>9009</int-test-debug-port>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.eclipse.tycho</groupId>
+						<artifactId>tycho-surefire-plugin</artifactId>
+						<version>${tycho-version}</version>
+						<configuration>
+							<debugPort>${int-test-debug-port}</debugPort>
+							<!-- <systemProperties combine.children="append"> <equinox.ds.debug>true</equinox.ds.debug> 
+								</systemProperties> -->
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>osee-server-int-test-remote-server</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<osee-server-port>8089</osee-server-port>
+			</properties>
+		</profile>
+		<profile>
+			<id>osee-server-int-test-local-server</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>build-helper-maven-plugin</artifactId>
+						<version>${build-helper-maven-plugin-version}</version>
+						<executions>
+							<execution>
+								<id>reserve-ports</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>reserve-network-port</goal>
+								</goals>
+								<configuration>
+									<portNames>
+										<portName>osee-server-port</portName>
+										<portName>osee-server-db-port</portName>
+										<portName>osee-server-db-web-port</portName>
+										<portName>osee-server-telnet-port</portName>
+									</portNames>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>${maven-antrun-version}</version>
+						<executions>
+							<execution>
+								<id>osee-server-start</id>
+								<phase>pre-integration-test</phase>
+								<configuration>
+									<target>
+										<property name="plugin_classpath" refid="maven.plugin.classpath" />
+										<taskdef resource="net/sf/antcontrib/antlib.xml">
+											<classpath>
+												<pathelement path="${classpath}" />
+												<pathelement path="${plugin_classpath}" />
+											</classpath>
+										</taskdef>
+
+										<property name="xserver-project"
+											value="${project.basedir}/../org.eclipse.osee.server.p2" />
+										<property name="xserver-home" value="${xserver-project}/target/server" />
+										<property name="xserver-port" value="${osee-server-port}" />
+										<property name="xserver-telnet-port" value="${osee-server-telnet-port}" />
+										<property name="xserver-authentication" value="demo" />
+										<property name="xserver-data"
+											value="${project.build.directory}/server-data" />
+										<property name="xserver-log-config" value="${project.basedir}/logback-test.xml" />
+
+										<property name="xserver-use-demo-data" value="true" />
+										<property name="xserver-db-home" value="file:${xserver-data}/osee-test-db" />
+										<property name="xserver-db-name" value="osee-test-db" />
+										<property name="xserver-db-username" value="public" />
+										<property name="xserver-db-password" value="" />
+										<property name="xserver-db-address" value="127.0.0.1" />
+										<property name="xserver-db-port" value="${osee-server-db-port}" />
+										<property name="xserver-db-web-port" value="${osee-server-db-web-port}" />
+										<property name="xserver-db-type" value="HSQL" />
+										<property name="additionalJvmArgs" value=" " />
+
+										<property name="xserver-log-output" value="${xserver-data}/server-output.log" />
+										
+										<ant antfile="${osee-application-server-launch-ant}"
+											target="run" inheritRefs="true" output="${xserver-log-output}" />
+									</target>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>osee-server-stop</id>
+								<phase>post-integration-test</phase>
+								<configuration>
+									<target>
+										<property name="plugin_classpath" refid="maven.plugin.classpath" />
+										<taskdef resource="net/sf/antcontrib/antlib.xml">
+											<classpath>
+												<pathelement path="${classpath}" />
+												<pathelement path="${plugin_classpath}" />
+											</classpath>
+										</taskdef>
+										<property name="xserver-port" value="${osee-server-port}" />
+										<property name="xserver-telnet-port" value="${osee-server-telnet-port}" />
+
+										<ant antfile="${osee-application-server-launch-ant}"
+											target="stopServer" inheritRefs="true" />
+									</target>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

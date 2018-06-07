@@ -21,7 +21,7 @@
 		<module>../../plugins/org.eclipse.osee.orcs.parent</module>
 		<module>../../plugins/org.eclipse.osee.disposition.parent</module>
 		<module>../../plugins/org.eclipse.osee.ats.server.parent</module>
-		<module>../../plugins/org.eclipse.osee.x.server.parent</module>
-		<module>../../plugins/org.eclipse.osee.x.server.application</module>
+		<module>../../plugins/org.eclipse.osee.server.parent</module>
+		<module>../../plugins/org.eclipse.osee.server.application</module>
 	</modules>
 </project>

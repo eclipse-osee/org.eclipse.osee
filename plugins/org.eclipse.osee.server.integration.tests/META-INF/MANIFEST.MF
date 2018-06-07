@@ -1,0 +1,35 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE X Server Integration Tests
+Bundle-SymbolicName: org.eclipse.osee.server.integration.tests
+Bundle-Version: 0.26.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Import-Package: javax.ws.rs.core;version="2.0.0",
+ org.apache.commons.lang.math,
+ org.eclipse.osee.account.rest.client,
+ org.eclipse.osee.account.rest.model,
+ org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.server.ide.api,
+ org.eclipse.osee.framework.server.ide.api.client,
+ org.eclipse.osee.framework.server.ide.api.model,
+ org.eclipse.osee.jaxrs,
+ org.eclipse.osee.jaxrs.client,
+ org.eclipse.osee.orcs.rest.client,
+ org.eclipse.osee.orcs.rest.model,
+ org.eclipse.osee.orcs.rest.model.search.artifact,
+ org.junit,
+ org.junit.rules,
+ org.junit.runner,
+ org.junit.runners
+Require-Bundle: org.eclipse.osee.ats.api,
+ rest.assured,
+ org.apache.httpcomponents.httpclient,
+ org.apache.httpcomponents.httpcore,
+ org.apache.commons.lang,
+ org.apache.commons.logging,
+ org.hamcrest.core

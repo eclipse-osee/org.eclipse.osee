@@ -21,9 +21,9 @@ Run the following in a git bash
 cd /c/UserData/git_fix/org.eclipse.osee/plugins/org.eclipse.osee.ats.mocks/data
 
 Paste the following in git bash
-cp binary_data.zip ../../../../lba.osee/plugins/lba.osee.x.server.p2/demo/
-cp hsql.zip ../../../../lba.osee/plugins/lba.osee.x.server.p2/demo/
+cp binary_data.zip ../../../../lba.osee/plugins/lba.osee.server.p2/demo/
+cp hsql.zip ../../../../lba.osee/plugins/lba.osee.server.p2/demo/
 cp binary_data.zip ../../org.eclipse.osee.orcs.db.mock/data
 cp hsql.zip ../../org.eclipse.osee.orcs.db.mock/data
-cp binary_data.zip ../../org.eclipse.osee.x.server.p2/demo
-cp hsql.zip ../../org.eclipse.osee.x.server.p2/demo
+cp binary_data.zip ../../org.eclipse.osee.server.p2/demo
+cp hsql.zip ../../org.eclipse.osee.server.p2/demo

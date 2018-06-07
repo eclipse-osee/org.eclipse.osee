@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.osee.server.feature"
+      label="%featureName"
+      version="0.26.0.qualifier"
+      provider-name="%providerName">
+
+   <description>
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <includes
+         id="org.eclipse.osee.core.server.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.osee.server.external.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.osee.orcs.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.osee.server.legacy.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.osee.ats.server.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.osee.disposition.feature"
+         version="0.0.0"/>
+
+   <requires>
+      <import plugin="javax.servlet"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.apache.commons.lang" version="2.6.0" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="org.eclipse.osee.app"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.define.rest"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.define.api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.web.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.osee.server.application"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

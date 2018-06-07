@@ -29,9 +29,9 @@
 <setEntry value="org.eclipse.osee.ats.server.feature:default"/>
 <setEntry value="org.eclipse.osee.core.server.external.feature:default"/>
 <setEntry value="org.eclipse.osee.core.server.feature:default"/>
-<setEntry value="org.eclipse.osee.x.server.external.feature:default"/>
-<setEntry value="org.eclipse.osee.x.server.feature:default"/>
-<setEntry value="org.eclipse.osee.x.server.legacy.feature:default"/>
+<setEntry value="org.eclipse.osee.server.external.feature:default"/>
+<setEntry value="org.eclipse.osee.server.feature:default"/>
+<setEntry value="org.eclipse.osee.server.legacy.feature:default"/>
 </setAttribute>
 <booleanAttribute key="show_selected_only" value="true"/>
 <stringAttribute key="target_bundles" value="org.postgresql.driver@default:default"/>

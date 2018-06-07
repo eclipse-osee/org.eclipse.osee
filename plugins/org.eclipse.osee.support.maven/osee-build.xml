@@ -46,7 +46,7 @@
 			</case>
 			<case value="x-server">
 				<property name="osee-build-stage" value="osee-x-server" />
-				<property name="osee-build-directory" value="org.eclipse.osee.x.server.parent" />
+				<property name="osee-build-directory" value="org.eclipse.osee.server.parent" />
 			</case>			
 			<case value="runtime">
 				<property name="osee-build-stage" value="osee-client-runtime" />

@@ -151,7 +151,7 @@
 										</taskdef>
 
 										<property name="xserver-project"
-											value="${project.basedir}/../org.eclipse.osee.x.server.p2" />
+											value="${project.basedir}/../org.eclipse.osee.server.p2" />
 										<property name="xserver-home" value="${xserver-project}/target/server" />
 										<property name="xserver-port" value="${ats-server-port}" />
 										<property name="xserver-telnet-port" value="${ats-server-telnet-port}" />
