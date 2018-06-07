@@ -44,12 +44,12 @@
 							</requirement>
 							<requirement>
 								<type>eclipse-feature</type>
-								<id>org.eclipse.osee.x.core.external.feature</id>
+								<id>org.eclipse.osee.core.server.external.feature</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
 							<requirement>
 								<type>eclipse-feature</type>
-								<id>org.eclipse.osee.x.core.feature</id>
+								<id>org.eclipse.osee.core.server.feature</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
 							<requirement>

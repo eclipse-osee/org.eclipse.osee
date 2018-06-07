@@ -17,7 +17,7 @@
 	<version>0.26.0-SNAPSHOT</version>
 
 	<modules>
-		<module>../../plugins/org.eclipse.osee.x.core.parent</module>
+		<module>../../plugins/org.eclipse.osee.core.server.parent</module>
 		<module>../../plugins/org.eclipse.osee.orcs.parent</module>
 		<module>../../plugins/org.eclipse.osee.disposition.parent</module>
 		<module>../../plugins/org.eclipse.osee.ats.server.parent</module>

@@ -18,7 +18,7 @@
    </license>
 
    <includes
-         id="org.eclipse.osee.x.core.feature"
+         id="org.eclipse.osee.core.server.feature"
          version="0.0.0"/>
 
    <includes

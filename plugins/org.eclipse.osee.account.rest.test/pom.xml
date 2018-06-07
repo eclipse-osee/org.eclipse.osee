@@ -5,9 +5,9 @@
 
 	<parent>
 		<groupId>org.eclipse.osee</groupId>
-		<artifactId>org.eclipse.osee.x.core.parent</artifactId>
+		<artifactId>org.eclipse.osee.core.server.parent</artifactId>
 		<version>0.26.0-SNAPSHOT</version>
-		<relativePath>../../plugins/org.eclipse.osee.x.core.parent</relativePath>
+		<relativePath>../../plugins/org.eclipse.osee.core.server.parent</relativePath>
 	</parent>
 
 	<artifactId>org.eclipse.osee.account.rest.test</artifactId>

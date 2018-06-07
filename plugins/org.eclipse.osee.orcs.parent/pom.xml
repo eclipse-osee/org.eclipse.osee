@@ -114,7 +114,7 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
-				<osee-xcore-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.x.core.p2/target/repository</osee-xcore-site>
+				<osee-xcore-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.core.server.p2/target/repository</osee-xcore-site>
 			</properties>
 			<repositories>
 				<repository>

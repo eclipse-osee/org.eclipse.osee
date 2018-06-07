@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.eclipse.osee.core.server.feature_0.26.0.qualifier.jar" id="org.eclipse.osee.core.server.feature" version="0.26.0.qualifier">
+      <category name="org.eclipse.osee.core.server"/>
+   </feature>
+   <feature url="features/org.eclipse.osee.core.server.feature.source_0.26.0.qualifier.jar" id="org.eclipse.osee.core.server.feature.source" version="0.26.0.qualifier">
+      <category name="org.eclipse.osee.core.server"/>
+   </feature>
+   <category-def name="org.eclipse.osee.core.server" label="Eclipse OSEE X Core - (Incubation)">
+      <description>
+         Eclipse OSEE Core Server - (Incubation)
+      </description>
+   </category-def>
+</site>

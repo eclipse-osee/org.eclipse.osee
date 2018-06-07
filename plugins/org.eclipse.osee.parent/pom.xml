@@ -584,7 +584,7 @@
 			</activation>
 			<properties>
 				<eclipse-ip-site>${git-repo-root}/org.eclipse.ip/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
-				<osee-xcore-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.x.core.p2/target/repository</osee-xcore-site>
+				<osee-xcore-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.core.server.p2/target/repository</osee-xcore-site>
 			</properties>
 			<repositories>
 				<repository>
@@ -610,7 +610,7 @@
 			</activation>
 			<properties>
 				<eclipse-ip-site>${git-repo-root}/org.eclipse.ip/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
-				<osee-xcore-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.x.core.p2/target/repository</osee-xcore-site>
+				<osee-xcore-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.core.server.p2/target/repository</osee-xcore-site>
 				<osee-orcs-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.orcs.p2/target/repository</osee-orcs-site>
 			</properties>
 			<repositories>
@@ -642,7 +642,7 @@
 			</activation>
 			<properties>
 				<eclipse-ip-site>${git-repo-root}/org.eclipse.ip/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
-				<osee-xcore-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.x.core.p2/target/repository</osee-xcore-site>
+				<osee-xcore-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.core.server.p2/target/repository</osee-xcore-site>
 				<osee-orcs-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.orcs.p2/target/repository</osee-orcs-site>
 			</properties>
 			<repositories>
@@ -674,7 +674,7 @@
 			</activation>
 			<properties>
 				<eclipse-ip-site>${git-repo-root}/org.eclipse.ip/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
-				<osee-xcore-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.x.core.p2/target/repository</osee-xcore-site>
+				<osee-xcore-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.core.server.p2/target/repository</osee-xcore-site>
 				<osee-orcs-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.orcs.p2/target/repository</osee-orcs-site>
 				<osee-disposition-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.disposition.p2/target/repository</osee-disposition-site>
 				<osee-xats-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.ats.server.p2/target/repository</osee-xats-site>

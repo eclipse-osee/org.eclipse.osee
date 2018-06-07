@@ -99,8 +99,8 @@
 			</activation>
 			<!-- Add features required to generate source features -->
 			<modules>
-				<module>../../features/org.eclipse.osee.x.core.external.feature</module>
-				<module>../../features/org.eclipse.osee.x.core.feature</module>
+				<module>../../features/org.eclipse.osee.core.server.external.feature</module>
+				<module>../../features/org.eclipse.osee.core.server.feature</module>
 				<module>../../features/org.eclipse.osee.orcs.feature</module>
 				<module>../../features/org.eclipse.osee.disposition.feature</module>
 				<module>../../features/org.eclipse.osee.ats.server.feature</module>

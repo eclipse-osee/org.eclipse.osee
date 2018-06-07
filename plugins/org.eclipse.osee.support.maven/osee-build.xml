@@ -30,7 +30,7 @@
 			</case>
 			<case value="x-core">
 				<property name="osee-build-stage" value="osee-x-core" />
-				<property name="osee-build-directory" value="org.eclipse.osee.x.core.parent" />
+				<property name="osee-build-directory" value="org.eclipse.osee.core.server.parent" />
 			</case>
 			<case value="orcs">
 				<property name="osee-build-stage" value="osee-orcs" />

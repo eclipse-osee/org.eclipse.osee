@@ -11,7 +11,7 @@
 	</parent>
 
 	<groupId>org.eclipse.osee</groupId>
-	<artifactId>org.eclipse.osee.x.core.parent</artifactId>
+	<artifactId>org.eclipse.osee.core.server.parent</artifactId>
 	<packaging>pom</packaging>
 	<name>OSEE X Core - Parent (Incubation)</name>
 	<version>0.26.0-SNAPSHOT</version>
@@ -74,10 +74,10 @@
 		<module>../../plugins/org.eclipse.osee.jdbc</module>
 		<module>../../plugins/org.eclipse.osee.jdbc.test</module>
 		
-		<module>../../features/org.eclipse.osee.x.core.external.feature</module>
-		<module>../../features/org.eclipse.osee.x.core.feature</module>
+		<module>../../features/org.eclipse.osee.core.server.external.feature</module>
+		<module>../../features/org.eclipse.osee.core.server.feature</module>
 
-		<module>../../plugins/org.eclipse.osee.x.core.p2</module>
+		<module>../../plugins/org.eclipse.osee.core.server.p2</module>
 	</modules>
 
 </project>

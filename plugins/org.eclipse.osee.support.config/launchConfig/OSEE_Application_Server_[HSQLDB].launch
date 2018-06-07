@@ -28,8 +28,8 @@
 <setEntry value="org.eclipse.osee.disposition.feature:default"/>
 <setEntry value="org.eclipse.osee.orcs.feature:default"/>
 <setEntry value="org.eclipse.osee.ats.server.feature:default"/>
-<setEntry value="org.eclipse.osee.x.core.external.feature:default"/>
-<setEntry value="org.eclipse.osee.x.core.feature:default"/>
+<setEntry value="org.eclipse.osee.core.server.external.feature:default"/>
+<setEntry value="org.eclipse.osee.core.server.feature:default"/>
 <setEntry value="org.eclipse.osee.x.server.external.feature:default"/>
 <setEntry value="org.eclipse.osee.x.server.feature:default"/>
 <setEntry value="org.eclipse.osee.x.server.legacy.feature:default"/>

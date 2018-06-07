@@ -44,8 +44,8 @@
 <booleanAttribute key="run_in_ui_thread" value="false"/>
 <setAttribute key="selected_features">
 <setEntry value="org.eclipse.osee.orcs.feature:default"/>
-<setEntry value="org.eclipse.osee.x.core.external.feature:default"/>
-<setEntry value="org.eclipse.osee.x.core.feature:default"/>
+<setEntry value="org.eclipse.osee.core.server.external.feature:default"/>
+<setEntry value="org.eclipse.osee.core.server.feature:default"/>
 </setAttribute>
 <booleanAttribute key="show_selected_only" value="true"/>
 <stringAttribute key="timestamp" value="1342653904563"/>
