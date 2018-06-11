@@ -16,5 +16,7 @@ package org.eclipse.osee.framework.skynet.core.importing;
 public enum RoughArtifactKind {
    PRIMARY,
    SECONDARY,
+   TERTIARY,
+   QUATERNARY,
    CONTAINER
 }

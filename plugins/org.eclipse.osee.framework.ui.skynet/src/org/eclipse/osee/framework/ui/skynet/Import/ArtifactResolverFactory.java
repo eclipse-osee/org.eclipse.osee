@@ -49,7 +49,8 @@ public final class ArtifactResolverFactory {
 
    public static IArtifactImportResolver createAlwaysNewArtifacts(IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType) {
       IRoughArtifactTranslator translator = new RoughArtifactTranslatorImpl();
-      return new NewArtifactImportResolver(translator, primaryArtifactType, secondaryArtifactType);
+      return new NewArtifactImportResolver(translator, primaryArtifactType, secondaryArtifactType,
+         CoreArtifactTypes.Design, CoreArtifactTypes.SubsystemDesign);
    }
 
    public static IArtifactImportResolver createResolver(ArtifactCreationStrategy strategy, IArtifactType primaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {

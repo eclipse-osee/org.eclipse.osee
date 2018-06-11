@@ -28,6 +28,8 @@ import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifact
  */
 public class DoorsWordOutlineExtractor extends WordOutlineExtractorDelegate {
    private static final Pattern reqnamePattern = Pattern.compile("(\\{[^}]+\\})(.*?</w:p>)");
+   private static final Pattern outlinePattern = Pattern.compile("(\\{[^}]+\\})");
+   private static final Pattern doorsIdPattern = Pattern.compile("\\{[^-]+\\-([^}]+)\\}");
    private int lastReqNumber = 1;
 
    @Override
@@ -37,7 +39,8 @@ public class DoorsWordOutlineExtractor extends WordOutlineExtractorDelegate {
       if (needsNewArt(content, newName, newContent)) {
          setContent(); // finishes the previous rough artifact
          String number = String.format("%s.0.%d", lastHeaderNumber.toString(), lastReqNumber++);
-         roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY);
+
+         roughArtifact = new RoughArtifact(getRoughArtifactType(newName.toString()));
          if (collector != null) {
             collector.addRoughArtifact(roughArtifact);
          }
@@ -45,13 +48,43 @@ public class DoorsWordOutlineExtractor extends WordOutlineExtractorDelegate {
             roughArtifact.setSectionNumber(number);
             roughArtifact.addAttribute(CoreAttributeTypes.ParagraphNumber, number);
          }
-         roughArtifact.setName(newName.toString());
+         String name = newName.toString();
+         roughArtifact.setName(name);
+         Matcher match = doorsIdPattern.matcher(name);
+         if (match.find()) {
+            roughArtifact.addAttribute(CoreAttributeTypes.StaticId, match.group(1));
+         }
          roughArtifact.addAttribute(CoreAttributeTypes.PublishInline, "True");
          wordFormattedContent.append(newContent.toString());
          previousNamedArtifact = roughArtifact;
       } else {
          wordFormattedContent.append(content);
       }
+   }
+
+   private RoughArtifactKind getRoughArtifactType(String newName) {
+      RoughArtifactKind toReturn = RoughArtifactKind.PRIMARY;
+      if (newName.contains("Doc Dsc")) {
+         toReturn = RoughArtifactKind.TERTIARY;
+      } else if (newName.contains("Dsg Dsc")) {
+         toReturn = RoughArtifactKind.QUATERNARY;
+      }
+      return toReturn;
+   }
+
+   @Override
+   public void processHeadingText(RoughArtifact roughArtifact, String headingText) throws OseeCoreException {
+      roughArtifact.setRoughArtifactKind(RoughArtifactKind.SECONDARY);
+      Matcher match = outlinePattern.matcher(headingText);
+      if (match.find()) {
+         roughArtifact.setName(headingText.substring(0, match.start(1)).trim());
+         Matcher matchId = doorsIdPattern.matcher(headingText);
+         if (matchId.find()) {
+            roughArtifact.addAttribute(CoreAttributeTypes.StaticId, matchId.group(1));
+         }
+         return;
+      }
+      roughArtifact.setName(headingText.trim());
    }
 
    @Override
@@ -73,19 +106,16 @@ public class DoorsWordOutlineExtractor extends WordOutlineExtractorDelegate {
    }
 
    private boolean needsNewArt(String content, StringBuilder newName, StringBuilder newContent) {
+      if (content.contains("####")) {
+         return false; // special case for match in description
+      }
       Matcher match = reqnamePattern.matcher(content);
-      boolean again = false;
-      while (match.find()) {
-         if (again) {
-            throw new OseeCoreException("new Artifact processor found too many requirement names in this block: %s",
-               content);
-         }
-         again = true;
+      if (match.find()) {
          String begin = content.substring(0, match.start(1));
          newName.append(content.substring(match.start(1), match.start(2)));
          String endString = content.substring(match.start(2), match.end(2));
          newContent.append(begin + endString);
-         return true;
+         return true; // only finds the first one
       }
       return false;
    }

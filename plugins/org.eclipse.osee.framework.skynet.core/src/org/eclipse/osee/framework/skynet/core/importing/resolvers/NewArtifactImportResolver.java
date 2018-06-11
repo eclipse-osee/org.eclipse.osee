@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.importing.resolvers;
 
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -29,11 +29,23 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
    private final IRoughArtifactTranslator translator;
    private final IArtifactType primaryArtifactType;
    private final IArtifactType secondaryArtifactType;
+   private final IArtifactType tertiaryArtifactType;
+   private final IArtifactType quaternaryArtifactType;
 
    public NewArtifactImportResolver(IRoughArtifactTranslator translator, IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType) {
       this.translator = translator;
       this.primaryArtifactType = primaryArtifactType;
       this.secondaryArtifactType = secondaryArtifactType;
+      this.tertiaryArtifactType = secondaryArtifactType;
+      this.quaternaryArtifactType = secondaryArtifactType;
+   }
+
+   public NewArtifactImportResolver(IRoughArtifactTranslator translator, IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType, IArtifactType tertiaryArtifactType, IArtifactType quaternaryArtifactType) {
+      this.translator = translator;
+      this.primaryArtifactType = primaryArtifactType;
+      this.secondaryArtifactType = secondaryArtifactType;
+      this.tertiaryArtifactType = tertiaryArtifactType;
+      this.quaternaryArtifactType = quaternaryArtifactType;
    }
 
    protected IRoughArtifactTranslator getTranslator() {
@@ -58,6 +70,10 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
             return primaryArtifactType;
          case SECONDARY:
             return secondaryArtifactType;
+         case TERTIARY:
+            return tertiaryArtifactType;
+         case QUATERNARY:
+            return quaternaryArtifactType;
          case CONTAINER:
             return CoreArtifactTypes.Folder;
          default:
