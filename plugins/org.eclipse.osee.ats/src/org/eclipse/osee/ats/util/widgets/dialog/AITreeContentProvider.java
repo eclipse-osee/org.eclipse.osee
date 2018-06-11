@@ -31,7 +31,6 @@ public class AITreeContentProvider implements ITreeContentProvider {
    private boolean showChildren = true;
 
    public AITreeContentProvider(Active active) {
-      super();
       this.active = active;
    }
 

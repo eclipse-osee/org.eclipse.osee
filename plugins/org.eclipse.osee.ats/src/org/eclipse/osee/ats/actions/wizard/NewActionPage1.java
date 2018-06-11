@@ -18,9 +18,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -35,7 +32,6 @@ import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.ats.util.IAtsClient;
 import org.eclipse.osee.ats.util.widgets.dialog.AITreeContentProvider;
 import org.eclipse.osee.ats.util.widgets.dialog.AtsObjectNameSorter;
@@ -51,7 +47,10 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTree;
+import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.CheckBoxStateFilteredTreeViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.CheckBoxStateTreeLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.ICheckBoxStateTreeListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.ICheckBoxStateTreeViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -71,7 +70,7 @@ import org.eclipse.swt.widgets.Text;
 public class NewActionPage1 extends WizardPage {
    private final NewActionWizard wizard;
    private XWidgetPage page;
-   protected FilteredCheckboxTree treeViewer;
+   protected CheckBoxStateFilteredTreeViewer<IAtsActionableItem> treeViewer;
    private Text descriptionLabel;
    private boolean debugPopulated = false;
    private static IAtsActionableItem atsAi;
@@ -117,23 +116,23 @@ public class NewActionPage1 extends WizardPage {
             }
          });
 
-         Pair<FilteredCheckboxTree, Text> results = createActionableItemTreeViewer(comp, wizard.getSelectableAis());
+         Pair<CheckBoxStateFilteredTreeViewer<IAtsActionableItem>, Text> results =
+            createActionableItemTreeViewer(comp, wizard.getSelectableAis());
          treeViewer = results.getFirst();
          descriptionLabel = results.getSecond();
-         treeViewer.getCheckboxTreeViewer().addCheckStateListener(new ICheckStateListener() {
-
+         treeViewer.addCheckListener(new ICheckBoxStateTreeListener() {
             @Override
-            public void checkStateChanged(CheckStateChangedEvent event) {
+            public void checkStateNodesChanged() {
                getContainer().updateButtons();
             }
          });
-         treeViewer.getCheckboxTreeViewer().addCheckStateListener(new CheckStateListener());
+         treeViewer.addCheckListener(new CheckStateListener());
 
          setControl(comp);
          setHelpContexts();
 
          if (wizard.getInitialAias() != null) {
-            treeViewer.setInitalChecked(wizard.getInitialAias());
+            treeViewer.setChecked(wizard.getInitialAias());
          }
          ((XText) getXWidget(TITLE)).setFocus();
       } catch (Exception ex) {
@@ -141,17 +140,18 @@ public class NewActionPage1 extends WizardPage {
       }
    }
 
-   public static Pair<FilteredCheckboxTree, Text> createActionableItemTreeViewer(Composite comp, Collection<IAtsActionableItem> selectableAis) {
+   public static Pair<CheckBoxStateFilteredTreeViewer<IAtsActionableItem>, Text> createActionableItemTreeViewer(Composite comp, Collection<IAtsActionableItem> selectableAis) {
       Composite aiComp = new Composite(comp, SWT.NONE);
       aiComp.setLayout(new GridLayout(1, false));
       aiComp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
       new Label(aiComp, SWT.NONE).setText("Select Actionable Items:");
-      FilteredCheckboxTree treeViewer = new FilteredCheckboxTree(aiComp,
-         SWT.CHECK | SWT.MULTI | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+      CheckBoxStateFilteredTreeViewer<IAtsActionableItem> treeViewer =
+         new CheckBoxStateFilteredTreeViewer<IAtsActionableItem>(aiComp,
+            SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
       treeViewer.getViewer().getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       treeViewer.getViewer().setContentProvider(new AITreeContentProvider(Active.Active));
-      treeViewer.getViewer().setLabelProvider(new AtsObjectLabelProvider());
+      treeViewer.getViewer().setLabelProvider(new AITreeLabelProvider(treeViewer));
       try {
          if (selectableAis == null) {
             List<IAtsActionableItem> activeActionableItemTree = new LinkedList<>();
@@ -188,11 +188,31 @@ public class NewActionPage1 extends WizardPage {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            treeViewer.clearChecked();
+            treeViewer.deSelectAll();
          };
       });
 
-      return new Pair<FilteredCheckboxTree, Text>(treeViewer, descriptionLabel);
+      return new Pair<CheckBoxStateFilteredTreeViewer<IAtsActionableItem>, Text>(treeViewer, descriptionLabel);
+   }
+
+   public static class AITreeLabelProvider extends CheckBoxStateTreeLabelProvider {
+
+      public AITreeLabelProvider(ICheckBoxStateTreeViewer treeViewer) {
+         super(treeViewer);
+      }
+
+      @Override
+      protected boolean isEnabled(Object element) {
+         boolean enabled = false;
+         if (element instanceof IAtsActionableItem) {
+            IAtsActionableItem ai = (IAtsActionableItem) element;
+            if (ai.isActionable()) {
+               enabled = true;
+            }
+         }
+         return enabled;
+      }
+
    }
 
    /**
@@ -210,7 +230,7 @@ public class NewActionPage1 extends WizardPage {
                AtsArtifactToken.TopActionableItem);
             if (atsAi != null) {
                treeViewer.getViewer().setSelection(new StructuredSelection(Arrays.asList(atsAi)));
-               treeViewer.setInitalChecked(Arrays.asList(atsAi));
+               treeViewer.setChecked(atsAi, true);
             }
          }
          getContainer().updateButtons();
@@ -220,27 +240,20 @@ public class NewActionPage1 extends WizardPage {
       }
    }
 
-   private class CheckStateListener implements ICheckStateListener {
+   private class CheckStateListener implements ICheckBoxStateTreeListener {
       @Override
-      public void checkStateChanged(CheckStateChangedEvent event) {
-         IStructuredSelection sel = (IStructuredSelection) treeViewer.getViewer().getSelection();
-         if (sel.isEmpty()) {
-            return;
-         }
-         Collection<Object> checked = treeViewer.getChecked();
-         if (checked.isEmpty()) {
-            descriptionLabel.setText("");
-         } else {
-            Object obj = checked.iterator().next();
-            if (obj instanceof IAtsActionableItem) {
-               IAtsActionableItem ai = (IAtsActionableItem) obj;
+      public void checkStateChanged(Object obj) {
+         if (descriptionLabel != null) {
+            Collection<IAtsActionableItem> checked = treeViewer.getChecked();
+            if (checked.isEmpty()) {
+               descriptionLabel.setText("");
+            } else {
+               IAtsActionableItem ai = checked.iterator().next();
                descriptionLabel.setText(ai.getDescription());
-            } else if (obj instanceof JaxActionableItem) {
-               JaxActionableItem jai = (JaxActionableItem) obj;
-               descriptionLabel.setText(jai.getDescription());
             }
          }
       }
+
    }
 
    private void setHelpContexts() {
@@ -274,7 +287,7 @@ public class NewActionPage1 extends WizardPage {
          for (IAtsActionableItem aia : getSelectedIAtsActionableItems()) {
             if (!aia.isActionable() || !userActionCreationEnabled(aia)) {
                AWorkbench.popup("ERROR", ActionableItems.getNotActionableItemError(aia));
-               treeViewer.getCheckboxTreeViewer().setChecked(aia, false);
+               treeViewer.setChecked(aia, false);
                return false;
             }
          }
@@ -298,7 +311,7 @@ public class NewActionPage1 extends WizardPage {
       return aia.isAllowUserActionCreation();
    }
 
-   public FilteredCheckboxTree getTreeViewer() {
+   public CheckBoxStateFilteredTreeViewer<IAtsActionableItem> getTreeViewer() {
       return treeViewer;
    }
 

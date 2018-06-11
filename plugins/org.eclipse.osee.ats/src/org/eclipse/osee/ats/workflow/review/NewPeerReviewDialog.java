@@ -14,8 +14,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.osee.ats.actions.wizard.NewActionPage1;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
@@ -27,8 +25,8 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.CheckBoxStateFilteredTreeViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTree;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -46,8 +44,7 @@ public class NewPeerReviewDialog extends EntryDialog {
    private final Collection<IAtsActionableItem> selectedAis;
    private final String defaultRelatedToState;
    private final Collection<IAtsActionableItem> ais;
-   private FilteredCheckboxTree aiFilteredTree;
-   private Text descriptionLabel;
+   private CheckBoxStateFilteredTreeViewer<IAtsActionableItem> treeViewer;
    private XCombo relatedToStateCombo;
    private XCombo blockingTypeCombo;
 
@@ -83,30 +80,14 @@ public class NewPeerReviewDialog extends EntryDialog {
    }
 
    private void createAisSelection(Composite parent) {
-      Pair<FilteredCheckboxTree, Text> results = NewActionPage1.createActionableItemTreeViewer(parent, null);
-      aiFilteredTree = results.getFirst();
-      descriptionLabel = results.getSecond();
-      aiFilteredTree.getCheckboxTreeViewer().addCheckStateListener(new CheckStateListener());
-
-   }
-   private class CheckStateListener implements ICheckStateListener {
-      @Override
-      public void checkStateChanged(CheckStateChangedEvent event) {
-         selectedAis.clear();
-         for (Object obj : aiFilteredTree.getChecked()) {
-            selectedAis.add((IAtsActionableItem) obj);
-         }
-         if (!selectedAis.isEmpty()) {
-            IAtsActionableItem aia = selectedAis.iterator().next();
-            descriptionLabel.setText(aia.getDescription());
-         }
-         handleModified();
-      }
+      Pair<CheckBoxStateFilteredTreeViewer<IAtsActionableItem>, Text> results =
+         NewActionPage1.createActionableItemTreeViewer(parent, null);
+      treeViewer = results.getFirst();
    }
 
    public Set<IAtsActionableItem> getSelectedActionableItems() {
       Set<IAtsActionableItem> selected = new HashSet<>();
-      for (Object obj : aiFilteredTree.getChecked()) {
+      for (Object obj : treeViewer.getChecked()) {
          selected.add((IAtsActionableItem) obj);
       }
       return selected;
@@ -179,7 +160,7 @@ public class NewPeerReviewDialog extends EntryDialog {
          setErrorString("Must select Review Type");
          return false;
       }
-      if (aiFilteredTree != null) {
+      if (treeViewer != null) {
          if (selectedAis.isEmpty()) {
             setErrorString("Must select Actionable Item");
             return false;
@@ -191,7 +172,7 @@ public class NewPeerReviewDialog extends EntryDialog {
          IAtsTeamDefinition teamDef = ai.getTeamDefinitionInherited();
          if (teamDef == null) {
             AWorkbench.popup("No related Team Definition for selected Actionable Item.  Choose another");
-            aiFilteredTree.getCheckboxTreeViewer().setChecked(ai, false);
+            treeViewer.setChecked(ai, false);
          }
       }
       return true;

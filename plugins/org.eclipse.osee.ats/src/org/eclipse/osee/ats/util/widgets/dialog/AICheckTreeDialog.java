@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class AICheckTreeDialog extends FilteredCheckboxTreeDialog {
+public class AICheckTreeDialog extends FilteredCheckboxTreeDialog<IAtsActionableItem> {
 
    private final Active active;
    private Collection<IAtsActionableItem> initialAias;
@@ -42,7 +42,6 @@ public class AICheckTreeDialog extends FilteredCheckboxTreeDialog {
       this.active = active;
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public Collection<IAtsActionableItem> getChecked() {
       return super.getTreeViewer().getChecked();

@@ -6,21 +6,22 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- * Boeing - initial API and implementation
+ *     Boeing - initial API and implementation
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.checkbox;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.dialogs.FilteredTree;
+import org.eclipse.ui.dialogs.PatternFilter;
 
 /**
  * Tree Viewer with ability to disable items from being checked. Override the Label Provider to provide own images. Run
@@ -28,16 +29,16 @@ import org.eclipse.swt.widgets.Composite;
  *
  * @author Donald G. Dunne
  */
-public class CheckBoxStateTreeViewer<T> extends TreeViewer implements ICheckBoxStateTreeViewer {
+public class CheckBoxStateFilteredTreeViewer<T> extends FilteredTree implements ICheckBoxStateTreeViewer {
 
    private final List<ICheckBoxStateTreeListener> listeners = new ArrayList<>();
-   private final Map<T, Boolean> checked = new HashMap<T, Boolean>();
-   private final Map<T, Boolean> enabled = new HashMap<T, Boolean>();
+   private final Set<T> checked = new HashSet<T>();
+   private final Set<T> disabled = new HashSet<T>();
 
-   public CheckBoxStateTreeViewer(Composite parent, int style) {
-      super(parent, style);
-      setLabelProvider(new CheckBoxStateTreeLabelProvider(this));
-      addSelectionChangedListener(new ISelectionChangedListener() {
+   public CheckBoxStateFilteredTreeViewer(Composite parent, int style) {
+      super(parent, style, new PatternFilter(), true);
+      treeViewer.setLabelProvider(new CheckBoxStateTreeLabelProvider(this));
+      treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
          @SuppressWarnings("unchecked")
          @Override
@@ -47,12 +48,9 @@ public class CheckBoxStateTreeViewer<T> extends TreeViewer implements ICheckBoxS
             if (isEnabled(selected)) {
                setChecked((T) selected, !isChecked(selected));
                for (ICheckBoxStateTreeListener listener : listeners) {
-                  listener.checkStateChanged(selected);
-               }
-               for (ICheckBoxStateTreeListener listener : listeners) {
                   listener.checkStateNodesChanged();
                }
-               refresh(selected);
+               treeViewer.refresh(selected);
             }
          }
       });
@@ -60,34 +58,21 @@ public class CheckBoxStateTreeViewer<T> extends TreeViewer implements ICheckBoxS
 
    @Override
    public boolean isEnabled(Object obj) {
-      Boolean enabled = this.enabled.get(obj);
-      if (enabled != null) {
-         return enabled;
-      }
-      return true;
+      return !this.disabled.contains(obj);
    }
 
    @Override
    public boolean isChecked(Object obj) {
-      Boolean checked = this.checked.get(obj);
-      if (checked != null) {
-         return checked;
-      }
-      return false;
-   }
-
-   public void deSelectAll(Collection<T> selection) {
-      for (Entry<T, Boolean> entry : this.checked.entrySet()) {
-         if (selection.contains(entry.getKey())) {
-            entry.setValue(false);
-         }
-      }
-      refresh();
+      return this.checked.contains(obj);
    }
 
    public void setChecked(T obj, boolean checked) {
-      this.checked.put(obj, checked);
-      refresh();
+      if (checked) {
+         this.checked.add(obj);
+      } else {
+         this.checked.remove(obj);
+      }
+      treeViewer.refresh();
       for (ICheckBoxStateTreeListener listener : listeners) {
          listener.checkStateChanged(obj);
       }
@@ -96,7 +81,12 @@ public class CheckBoxStateTreeViewer<T> extends TreeViewer implements ICheckBoxS
    @SuppressWarnings("unchecked")
    @Override
    public void setEnabled(Object obj, boolean enabled) {
-      this.enabled.put((T) obj, enabled);
+      if (enabled) {
+         this.disabled.remove(obj);
+      } else {
+         this.disabled.add((T) obj);
+      }
+      treeViewer.refresh();
    }
 
    public void addCheckListener(ICheckBoxStateTreeListener listener) {
@@ -104,35 +94,46 @@ public class CheckBoxStateTreeViewer<T> extends TreeViewer implements ICheckBoxS
    }
 
    public void deSelectAll() {
-      for (Entry<T, Boolean> entry : this.checked.entrySet()) {
-         if (entry.getValue()) {
-            setChecked(entry.getKey(), false);
-         }
-      }
-      refresh();
+      this.checked.clear();
       for (ICheckBoxStateTreeListener listener : listeners) {
          listener.checkStateNodesChanged();
       }
+      treeViewer.refresh();
    }
 
-   public List<T> getChecked() {
-      List<T> results = new ArrayList<>();
-      for (Entry<T, Boolean> entry : this.checked.entrySet()) {
-         if (entry.getValue()) {
-            results.add(entry.getKey());
-         }
-      }
-      return results;
+   public Collection<T> getChecked() {
+      return this.checked;
    }
 
    public void setChecked(Collection<T> checked) {
-      for (Entry<T, Boolean> entry : this.checked.entrySet()) {
-         entry.setValue(false);
-         if (checked.contains(entry.getKey())) {
-            entry.setValue(true);
-         }
-      }
-      refresh();
+      this.checked.addAll(checked);
+      treeViewer.refresh();
    }
 
+   public void expandChecked() {
+      TreeItem[] items = treeViewer.getTree().getItems();
+      expandChecked(items);
+   }
+
+   private void expandChecked(TreeItem[] items) {
+      for (int i = 0; i < items.length; i++) {
+         TreeItem item = items[i];
+         if (item.getData() != null) {
+            if (item.getChecked()) {
+               expandParents(item);
+            }
+         }
+         expandChecked(item.getItems());
+      }
+   }
+
+   public void expandParents(TreeItem item) {
+      if (item.getParentItem() != null) {
+         TreeItem parent = item.getParentItem();
+         if (!parent.getExpanded()) {
+            parent.setExpanded(true);
+         }
+         expandParents(parent);
+      }
+   }
 }
