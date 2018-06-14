@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -40,12 +39,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.RelationOrderContributionItem.SelectionListener;
-import org.eclipse.osee.framework.ui.skynet.action.RevealInExplorerAction;
-import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -75,7 +74,7 @@ import org.eclipse.swt.widgets.TreeColumn;
 /**
  * @author Ryan D. Brooks
  */
-public class RelationsComposite extends Composite implements ISelectedArtifact {
+public class RelationsComposite extends Composite implements ISelectedArtifact, ISelectedArtifacts {
    private TreeViewer treeViewer;
    private Tree tree;
    private NeedSelectedArtifactListener needSelectedArtifactListener;
@@ -84,8 +83,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
    public static final String[] columnNames = new String[] {"Type/Side/Name", "Art Id", "Rationale", "Id", "Gamma Id"};
    public static final Integer[] columnLengths = new Integer[] {600, 50, 300, 50, 50};
 
-   private MenuItem openMenuItem, wordPreviewItem, editMenuItem, viewRelationTreeItem, deleteRelationMenuItem,
-      massEditMenuItem, deleteArtifactMenuItem, revealInArtifactExporerMenuItem;
+   private MenuItem openMenuItem, viewRelationTreeItem, deleteRelationMenuItem, deleteArtifactMenuItem;
 
    private final Artifact artifact;
    private final RelationLabelProvider relationLabelProvider;
@@ -137,6 +135,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       treeViewer.setLabelProvider(relationLabelProvider);
       treeViewer.setUseHashlookup(true);
       treeViewer.setInput(artifact);
+      AWorkbench.getActivePage().getActivePart().getSite().setSelectionProvider(treeViewer);
 
       treeViewer.addDoubleClickListener(new DoubleClickListener());
       tree.addMouseListener(new MouseListener() {
@@ -202,13 +201,10 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       popupMenu.addMenuListener(needSelectedArtifactListener);
 
       createOpenMenuItem(popupMenu);
-      createWordPreviewMenuItem(popupMenu);
-      //      createOpenWithMenuItem(popupMenu);
-      new MenuItem(popupMenu, SWT.SEPARATOR);
-      createEditMenuItem(popupMenu);
-      createMassEditMenuItem(popupMenu);
-      new MenuItem(popupMenu, SWT.SEPARATOR);
-      createRevealInArtifactExplorerMenuItem(popupMenu);
+
+      OpenContributionItem contrib = new OpenContributionItem(getClass().getSimpleName() + ".open");
+      contrib.fill(popupMenu, -1, false);
+
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createViewRelationTreeMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
@@ -281,41 +277,6 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       deleteArtifactMenuItem.setEnabled(true);
    }
 
-   private void createRevealInArtifactExplorerMenuItem(final Menu parentMenu) {
-      revealInArtifactExporerMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
-      revealInArtifactExporerMenuItem.setText("&Reveal in Artifact Explorer");
-      revealInArtifactExporerMenuItem.setImage(ImageManager.getImage(FrameworkImage.MAGNIFY));
-      needSelectedArtifactListener.addArtifactEnabled(revealInArtifactExporerMenuItem);
-      final RelationsComposite fRelComp = this;
-      revealInArtifactExporerMenuItem.addSelectionListener(new SelectionAdapter() {
-
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            new RevealInExplorerAction(fRelComp).run();
-         }
-      });
-
-      revealInArtifactExporerMenuItem.setEnabled(true);
-   }
-
-   private void createMassEditMenuItem(final Menu parentMenu) {
-      massEditMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
-      massEditMenuItem.setText("&Mass Edit");
-      massEditMenuItem.setImage(ImageManager.getImage(FrameworkImage.ARTIFACT_EDITOR));
-      needSelectedArtifactListener.add(massEditMenuItem);
-      massEditMenuItem.addSelectionListener(new SelectionAdapter() {
-
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-
-            performMassEdit(selection);
-         }
-      });
-
-      massEditMenuItem.setEnabled(true);
-   }
-
    private void createViewRelationTreeMenuItem(Menu menu) {
       viewRelationTreeItem = new MenuItem(menu, SWT.PUSH);
       viewRelationTreeItem.setText("&View Relation Table Report");
@@ -357,35 +318,6 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       }
    }
 
-   private void createWordPreviewMenuItem(Menu parentMenu) {
-      wordPreviewItem = new MenuItem(parentMenu, SWT.PUSH);
-      wordPreviewItem.setText("Open Preview");
-      needSelectedArtifactListener.addArtifactEnabled(wordPreviewItem);
-      wordPreviewItem.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent event) {
-            openWordViewer((IStructuredSelection) treeViewer.getSelection());
-         }
-      });
-   }
-
-   private void openWordViewer(IStructuredSelection selection) {
-      List<Artifact> artifacts = new ArrayList<>();
-
-      for (Object object : selection.toArray()) {
-         if (object instanceof WrapperForRelationLink) {
-            WrapperForRelationLink link = (WrapperForRelationLink) object;
-            artifacts.add(link.getOther());
-         }
-      }
-      RendererManager.openInJob(artifacts, PresentationType.PREVIEW);
-   }
-
-   private void performMassEdit(IStructuredSelection selection) {
-      Set<Artifact> selectedArtifacts = getSelectedArtifacts(selection);
-      MassArtifactEditor.editArtifacts("Mass Edit", selectedArtifacts);
-   }
-
    private Set<Artifact> getSelectedArtifacts(IStructuredSelection selection) {
       Set<Artifact> selectedArtifacts = new HashSet<>();
       Iterator<?> iter = selection.iterator();
@@ -397,25 +329,6 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
          }
       }
       return selectedArtifacts;
-   }
-
-   private void createEditMenuItem(Menu parentMenu) {
-      editMenuItem = new MenuItem(parentMenu, SWT.PUSH);
-      editMenuItem.setText("&Edit");
-
-      needSelectedArtifactListener.add(editMenuItem);
-      editMenuItem.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent event) {
-            IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-            Object object = selection.getFirstElement();
-
-            if (object instanceof WrapperForRelationLink) {
-               RendererManager.openInJob(((WrapperForRelationLink) object).getOther(),
-                  PresentationType.SPECIALIZED_EDIT);
-            }
-         }
-      });
    }
 
    private void createExpandAllMenuItem(Menu parentMenu) {
@@ -662,6 +575,14 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
          }
       }
       return null;
+   }
+
+   @Override
+   public Collection<Artifact> getSelectedArtifacts() {
+      if (!treeViewer.getSelection().isEmpty()) {
+         return getSelectedArtifacts((IStructuredSelection) treeViewer.getSelection());
+      }
+      return java.util.Collections.emptyList();
    }
 
 }

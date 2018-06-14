@@ -121,28 +121,38 @@ public class OpenContributionItem extends ContributionItem {
 
    @Override
    public void fill(final Menu parent, int index) {
+      fill(parent, index, true);
+   }
+
+   public void fill(final Menu parent, int index, boolean includeOpen) {
       if (index == -1) {
          index = parent.getItemCount();
       }
-      IContributionItem openItem = createDefaultOpenItem();
-      openItem.fill(parent, index);
-      MenuItem open = parent.getItem(0);
-      if (open != null) {
-         open.setEnabled(parent.isEnabled());
+      if (includeOpen) {
+         IContributionItem openItem = createDefaultOpenItem();
+         openItem.fill(parent, index);
+         MenuItem open = parent.getItem(0);
+         if (open != null) {
+            open.setEnabled(parent.isEnabled());
+         }
       }
 
-      final MenuItem item = new MenuItem(parent, SWT.CASCADE, index + 1);
-      item.setText("Open With");
+      MenuItem openWithMenuItem = null;
+      if (includeOpen) {
+         openWithMenuItem = new MenuItem(parent, SWT.CASCADE, index + 1);
+      } else {
+         openWithMenuItem = new MenuItem(parent, SWT.CASCADE, index);
+      }
+      openWithMenuItem.setText("Open With");
 
-      Menu subMenu = new Menu(item);
+      Menu subMenu = new Menu(openWithMenuItem);
       fillOpenWithSubMenu(subMenu);
-      item.setMenu(subMenu);
-      item.setEnabled(isMenuEnabled(subMenu));
+      openWithMenuItem.setMenu(subMenu);
 
-      final OpenWithOnShowListener listener = new OpenWithOnShowListener(item);
+      final OpenWithOnShowListener listener = new OpenWithOnShowListener(openWithMenuItem);
       parent.addMenuListener(listener);
 
-      item.addDisposeListener(new DisposeListener() {
+      openWithMenuItem.addDisposeListener(new DisposeListener() {
 
          @Override
          public void widgetDisposed(DisposeEvent e) {
@@ -171,15 +181,6 @@ public class OpenContributionItem extends ContributionItem {
       }
    };
 
-   private static boolean isMenuEnabled(Menu menu) {
-      for (MenuItem item : menu.getItems()) {
-         if (item.isEnabled()) {
-            return true;
-         }
-      }
-      return false;
-   }
-
    private IContributionItem createDefaultOpenItem() {
       clearDefaultOpenItem();
       defaultOpenItem = createContributionItem(DEFAULT_OPEN_CMD_ID, null);
@@ -188,7 +189,7 @@ public class OpenContributionItem extends ContributionItem {
 
    private Collection<IContributionItem> createOpenWithItems() {
       clearOpenWithItems();
-      List<Artifact> artifacts = getSelectedArtifacts();
+      Collection<Artifact> artifacts = getSelectedArtifacts();
       boolean readOnly = false;
       if (!artifacts.isEmpty()) {
          for (Artifact art : artifacts) {
@@ -270,7 +271,7 @@ public class OpenContributionItem extends ContributionItem {
       return toReturn;
    }
 
-   private List<Artifact> getSelectedArtifacts() {
+   private Collection<Artifact> getSelectedArtifacts() {
       List<Artifact> toReturn = Collections.emptyList();
       ISelectionProvider selectionProvider = getSelectionProvider();
       if (selectionProvider != null) {
@@ -306,7 +307,6 @@ public class OpenContributionItem extends ContributionItem {
          Menu subMenu = new Menu(parentItem);
          fillOpenWithSubMenu(subMenu);
          parentItem.setMenu(subMenu);
-         parentItem.setEnabled(isMenuEnabled(subMenu));
       }
 
       @Override
@@ -356,4 +356,5 @@ public class OpenContributionItem extends ContributionItem {
          }
       }
    }
+
 }
