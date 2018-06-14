@@ -142,7 +142,8 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) {
-      return worldParameterSearchItem.performSearch(searchType);
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
+         worldParameterSearchItem.performSearch(searchType));
    }
 
 }

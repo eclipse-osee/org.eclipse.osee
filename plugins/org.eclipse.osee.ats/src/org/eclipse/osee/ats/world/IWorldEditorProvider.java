@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 
 /**
@@ -43,6 +43,6 @@ public interface IWorldEditorProvider {
     * Called in background during run process to perform the search. Implementers should perform new searches of the
     * objects so they get loaded fresh. At this point, any items have already been de-cached.
     */
-   Collection<Artifact> performSearch(SearchType searchType);
+   Collection<? extends ArtifactId> performSearch(SearchType searchType);
 
 }

@@ -21,6 +21,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -133,7 +134,7 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
             worldEditor.getWorldComposite().getXViewer().clear(forcePend);
 
             // This will re-perform the search and since items are not cached, will load fresh
-            Collection<Artifact> artifacts = performSearch(searchType);
+            Collection<Artifact> artifacts = Collections.castAll(performSearch(searchType));
 
             if (cancel) {
                monitor.done();

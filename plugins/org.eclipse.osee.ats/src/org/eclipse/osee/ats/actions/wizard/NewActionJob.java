@@ -27,6 +27,8 @@ import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsEditors;
+import org.eclipse.osee.ats.world.WorldEditor;
+import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -87,7 +89,11 @@ public class NewActionJob extends Job {
             // Because this is a job, it will automatically kill any popups that are created during.
             // Thus, if multiple teams were selected to create, don't popup on openAction or dialog
             // will exception out when it is killed at the end of this job.
-            AtsEditors.openATSAction(result.getFirstTeam().getStoreObject(), AtsOpenOption.OpenAll);
+            if (result.getTeamWfs().size() == 1) {
+               AtsEditors.openATSAction(result.getFirstTeam().getStoreObject(), AtsOpenOption.OpenAll);
+            } else {
+               WorldEditor.open(new WorldEditorSimpleProvider("Workflows", result.getTeamWfArts()));
+            }
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

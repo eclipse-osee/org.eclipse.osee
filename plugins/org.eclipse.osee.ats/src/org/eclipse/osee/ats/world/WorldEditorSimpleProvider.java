@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -25,24 +25,24 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 public class WorldEditorSimpleProvider extends WorldEditorProvider {
 
    private final String name;
-   private Collection<Artifact> artifacts;
+   private Collection<? extends ArtifactId> artifacts;
    private final Artifact expandToArtifact;
 
-   public WorldEditorSimpleProvider(String name, Collection<? extends Artifact> artifacts) {
-      this(name, artifacts, null, TableLoadOption.None);
+   public WorldEditorSimpleProvider(String name, Collection<? extends ArtifactId> collection) {
+      this(name, collection, null, TableLoadOption.None);
    }
 
-   public WorldEditorSimpleProvider(String name, Collection<? extends Artifact> artifacts, CustomizeData customizeData, TableLoadOption... tableLoadOption) {
-      this(name, artifacts, customizeData, null, tableLoadOption);
+   public WorldEditorSimpleProvider(String name, Collection<? extends ArtifactId> collection, CustomizeData customizeData, TableLoadOption... tableLoadOption) {
+      this(name, collection, customizeData, null, tableLoadOption);
    }
 
    /**
     * @param expandToArtifact if given, expand World Editor and highlight this item
     */
-   public WorldEditorSimpleProvider(String name, Collection<? extends Artifact> artifacts, CustomizeData customizeData, Artifact expandToArtifact, TableLoadOption... tableLoadOption) {
+   public WorldEditorSimpleProvider(String name, Collection<? extends ArtifactId> artifacts, CustomizeData customizeData, Artifact expandToArtifact, TableLoadOption... tableLoadOption) {
       super(customizeData, tableLoadOption);
       this.name = name;
-      this.artifacts = Collections.castAll(artifacts);
+      this.artifacts = artifacts;
       this.expandToArtifact = expandToArtifact;
    }
 
@@ -61,7 +61,7 @@ public class WorldEditorSimpleProvider extends WorldEditorProvider {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) {
+   public Collection<? extends ArtifactId> performSearch(SearchType searchType) {
       if (searchType == SearchType.ReSearch) {
          artifacts = ArtifactQuery.getArtifactListFrom(artifacts, AtsClientService.get().getAtsBranch());
       }
