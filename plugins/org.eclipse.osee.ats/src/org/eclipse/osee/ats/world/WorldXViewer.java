@@ -32,6 +32,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
 import org.eclipse.nebula.widgets.xviewer.action.ColumnMultiEditAction;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
+import org.eclipse.osee.ats.actions.AddTaskAction;
 import org.eclipse.osee.ats.actions.DeletePurgeAtsArtifactsAction;
 import org.eclipse.osee.ats.actions.DeleteTasksAction;
 import org.eclipse.osee.ats.actions.DeleteTasksAction.TaskArtifactProvider;
@@ -155,6 +156,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    EmailActionAction emailAction;
    Action resetActionArtifactAction;
    DeleteTasksAction deleteTasksAction;
+   AddTaskAction addTaskAction;
 
    public void createMenuActions() {
 
@@ -164,6 +166,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       emailAction = new EmailActionAction(this);
       editStatusAction = new EditStatusAction(this, this, this);
       editAssigneeAction = new EditAssigneeAction(this, this);
+      addTaskAction = new AddTaskAction(this);
       TaskArtifactProvider taskProvider = new TaskArtifactProvider() {
 
          @Override
@@ -371,6 +374,11 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          mm.insertBefore(XViewer.MENU_GROUP_PRE, deletePurgeAtsObjectAction);
          deletePurgeAtsObjectAction.setEnabled(getSelectedAtsArtifacts().size() > 0);
       }
+
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
+
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, addTaskAction);
+      addTaskAction.updateEnablement(getSelectedTeamWorkflowArtifacts());
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, deleteTasksAction);
       deleteTasksAction.updateEnablement(getSelectedArtifacts());

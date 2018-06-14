@@ -123,6 +123,10 @@ public class TaskXViewer extends WorldXViewer {
    }
 
    public TaskArtifact handleNewTask() {
+      return handleNewTask(teamWf);
+   }
+
+   public static TaskArtifact handleNewTask(IAtsTeamWorkflow teamWf) {
       TaskArtifact taskArt = null;
       try {
          EntryComboDialog ed = new EntryComboDialog("Create New Task", "Enter Task Title",
