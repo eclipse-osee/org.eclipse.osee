@@ -164,9 +164,10 @@ public class QuickSearchView extends GenericViewPart {
    public void createPartControl(Composite parent) {
       if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
-         ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+         ScrolledComposite sc = new ScrolledComposite(parent, SWT.V_SCROLL);
          sc.setExpandHorizontal(true);
          sc.setExpandVertical(true);
+         sc.setMinSize(400, 400);
 
          Composite group = new Composite(sc, SWT.NONE);
          sc.setContent(group);
@@ -225,6 +226,8 @@ public class QuickSearchView extends GenericViewPart {
          createClearHistoryAction();
 
          setFocusWidget(attrSearchComposite);
+
+         sc.layout();
       }
    }
 
