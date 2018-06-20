@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.HyperLinkLabel;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
@@ -45,6 +46,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -212,6 +215,7 @@ public class EntryDialog extends MessageDialog {
          text.selectAll();
       }
       text.addModifyListener(textModifyListener);
+      addContextMenu(text.getStyledText());
    }
 
    @Override
@@ -348,4 +352,58 @@ public class EntryDialog extends MessageDialog {
    public Label getErrorLabel() {
       return errorLabel;
    }
+
+   /**
+    * Since adding new menu replaces the default menu, we must re-create the default copy/paste options
+    */
+   private void addContextMenu(final StyledText control) {
+      Menu menu = new Menu(control);
+      MenuItem item = new MenuItem(menu, SWT.PUSH);
+      item.setText("Cut");
+      item.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            control.cut();
+         }
+      });
+      item = new MenuItem(menu, SWT.PUSH);
+      item.setText("Copy");
+      item.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            control.copy();
+         }
+      });
+      item = new MenuItem(menu, SWT.PUSH);
+      item.setText("Paste");
+      item.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            control.paste();
+         }
+      });
+      // Add Paste-and-Go menu option
+      item = new MenuItem(menu, SWT.PUSH);
+      item.setText("Paste-and-Go");
+      item.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            control.setText("");
+            control.paste();
+            okPressed();
+         }
+      });
+
+      item = new MenuItem(menu, SWT.PUSH);
+      item.setText("Select All");
+      item.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            control.selectAll();
+         }
+      });
+
+      control.setMenu(menu);
+   }
+
 }

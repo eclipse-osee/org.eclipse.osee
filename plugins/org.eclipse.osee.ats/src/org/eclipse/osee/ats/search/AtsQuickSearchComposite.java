@@ -32,6 +32,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -94,11 +98,68 @@ public class AtsQuickSearchComposite extends Composite {
             }
          }
       });
-      searchArea.setToolTipText("ATS Quick Search - Type in a search string.");
+
+      searchArea.setToolTipText(
+         "ATS Quick Search - Type in a search string and press enter.\nOr right-click Paste and Go.");
+      addContextMenu(searchArea);
+
       completeCancelledCheck = new XCheckBox("IC");
       completeCancelledCheck.createWidgets(this, 2);
       completeCancelledCheck.setToolTip("Include completed/cancelled ATS Artifacts");
 
+   }
+
+   /**
+    * Since adding new menu replaces the default menu, we must re-create the default copy/paste options
+    */
+   private void addContextMenu(final Text control) {
+      Menu menu = new Menu(control);
+      MenuItem item = new MenuItem(menu, SWT.PUSH);
+      item.setText("Cut");
+      item.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            control.cut();
+         }
+      });
+      item = new MenuItem(menu, SWT.PUSH);
+      item.setText("Copy");
+      item.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            control.copy();
+         }
+      });
+      item = new MenuItem(menu, SWT.PUSH);
+      item.setText("Paste");
+      item.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            control.paste();
+         }
+      });
+      // Add Paste-and-Go menu option
+      item = new MenuItem(menu, SWT.PUSH);
+      item.setText("Paste-and-Go");
+      item.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            control.setText("");
+            control.paste();
+            handleSearch();
+         }
+      });
+
+      item = new MenuItem(menu, SWT.PUSH);
+      item.setText("Select All");
+      item.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            control.selectAll();
+         }
+      });
+
+      control.setMenu(menu);
    }
 
    private void handleSearch() {

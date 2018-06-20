@@ -40,6 +40,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Widget;
 
 /**
@@ -117,6 +119,7 @@ public class SearchComposite extends Composite implements Listener {
             }
          }
       });
+      addContextMenu(searchArea);
 
       this.searchArea.addModifyListener(new ModifyListener() {
          @Override
@@ -321,4 +324,61 @@ public class SearchComposite extends Composite implements Listener {
    public void setOptionsComposite(QuickSearchOptionComposite optionsComposite) {
       this.optionsComposite = optionsComposite;
    }
+
+   /**
+    * Since adding new menu replaces the default menu, we must re-create the default copy/paste options
+    */
+   private void addContextMenu(final Combo searchArea) {
+      Menu menu = new Menu(searchArea);
+      MenuItem item = new MenuItem(menu, SWT.PUSH);
+      item.setText("Cut");
+      item.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            searchArea.cut();
+         }
+      });
+      item = new MenuItem(menu, SWT.PUSH);
+      item.setText("Copy");
+      item.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            searchArea.copy();
+         }
+      });
+      item = new MenuItem(menu, SWT.PUSH);
+      item.setText("Paste");
+      item.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            searchArea.paste();
+         }
+      });
+      // Add Paste-and-Go menu option
+      item = new MenuItem(menu, SWT.PUSH);
+      item.setText("Paste-and-Go");
+      item.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            searchArea.setText("");
+            searchArea.paste();
+            executeSearch.notifyListeners(SWT.Selection, null);
+         }
+      });
+
+      searchArea.setMenu(menu);
+   }
+
+   public QuickSearchOptionComposite getOptionsComposite() {
+      return optionsComposite;
+   }
+
+   public Combo getSearchArea() {
+      return searchArea;
+   }
+
+   public Button getExecuteSearch() {
+      return executeSearch;
+   }
+
 }

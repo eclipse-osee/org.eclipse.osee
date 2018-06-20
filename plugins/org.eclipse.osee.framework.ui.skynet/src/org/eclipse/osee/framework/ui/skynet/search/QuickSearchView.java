@@ -56,12 +56,15 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
@@ -81,7 +84,7 @@ public class QuickSearchView extends GenericViewPart {
    private Label branchLabel;
    private XBranchSelectWidget branchSelect;
    private SearchComposite attrSearchComposite;
-   private SearchComposite guidSearchComposite;
+   private SearchComposite idSearchComposite;
    private QuickSearchOptionComposite optionsComposite;
    private IMemento memento;
    private Button includeDeleted;
@@ -208,8 +211,10 @@ public class QuickSearchView extends GenericViewPart {
          attrSearchComposite.setOptionsComposite(optionsComposite);
          optionsComposite.setAttrSearchComposite(attrSearchComposite);
 
-         guidSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by ID:");
-         guidSearchComposite.addListener(idSearchListener);
+         idSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by ID:");
+         idSearchComposite.addListener(idSearchListener);
+
+         addContextMenu(idSearchComposite.getSearchArea());
 
          includeDeleted = new Button(group, SWT.CHECK);
          includeDeleted.setToolTipText("When selected, does not filter out deleted artifacts from search results.");
@@ -339,8 +344,8 @@ public class QuickSearchView extends GenericViewPart {
                if (event.widget instanceof Button && ((Button) event.widget).getText().equals("Search")) {
                   AWorkbench.popup(String.format("Access Denied for branch [%s]", branch));
                }
-            } else if (Widgets.isAccessible(guidSearchComposite) && guidSearchComposite.isExecuteSearchEvent(event)) {
-               String searchString = guidSearchComposite.getQuery();
+            } else if (Widgets.isAccessible(idSearchComposite) && idSearchComposite.isExecuteSearchEvent(event)) {
+               String searchString = idSearchComposite.getQuery();
                List<String> invalids = new LinkedList<>();
                for (String id : Arrays.asList(searchString.split("[\\s,]+"))) {
                   if (!Strings.isValid(id) || !(GUID.isValid(id) || Strings.isNumeric(id))) {
@@ -365,6 +370,50 @@ public class QuickSearchView extends GenericViewPart {
             }
          }
       }
+   }
+
+   /**
+    * Since adding new menu replaces the default menu, we must re-create the default copy/paste options
+    */
+   private void addContextMenu(final Combo searchArea) {
+      Menu menu = new Menu(searchArea);
+      MenuItem item = new MenuItem(menu, SWT.PUSH);
+      item.setText("Cut");
+      item.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            searchArea.cut();
+         }
+      });
+      item = new MenuItem(menu, SWT.PUSH);
+      item.setText("Copy");
+      item.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            searchArea.copy();
+         }
+      });
+      item = new MenuItem(menu, SWT.PUSH);
+      item.setText("Paste");
+      item.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            searchArea.paste();
+         }
+      });
+      // Add Paste-and-Go menu option
+      item = new MenuItem(menu, SWT.PUSH);
+      item.setText("Paste-and-Go");
+      item.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            searchArea.setText("");
+            searchArea.paste();
+            idSearchComposite.getExecuteSearch().notifyListeners(SWT.Selection, null);
+         }
+      });
+
+      searchArea.setMenu(menu);
    }
 
 }
