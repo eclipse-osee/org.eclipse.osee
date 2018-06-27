@@ -11,6 +11,9 @@
 package org.eclipse.osee.orcs.core.internal;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -24,6 +27,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.OseeInf;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.OrcsTopicEvents;
@@ -94,7 +98,20 @@ public class CreateSystemBranches {
 
       createOrcsTypesArtifacts(typeModel);
 
+      addFrameworkAccessModel(tx);
+
       tx.commit();
+   }
+
+   private void addFrameworkAccessModel(TransactionBuilder tx) {
+      InputStream inputStream = OseeInf.getResourceAsStream("access/OseeAccess_FrameworkAccess.osee", getClass());
+
+      try (InputStream stream = new BufferedInputStream(inputStream)) {
+         ArtifactId accessModel = tx.createArtifact(CoreArtifactTokens.FrameworkAccessModel);
+         tx.setSoleAttributeFromStream(accessModel, CoreAttributeTypes.GeneralStringData, stream);
+      } catch (IOException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
    }
 
    private void createUsers(TransactionBuilder tx, Iterable<UserToken> users) {

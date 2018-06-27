@@ -11,6 +11,8 @@
 package org.eclipse.osee.client.integration.tests.integration.dsl.ui.integration;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -21,11 +23,12 @@ import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.ui.integration.operations.OseeDslRoleContextProvider;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -62,9 +65,10 @@ public class OseeDslRoleContextProviderTest {
    public void testGetContextIdExtended() throws Exception {
       Long contextId1 = Lib.generateArtifactIdAsInt();
       Long contextId2 = Lib.generateArtifactIdAsInt();
-      Long role2Id = Lib.generateArtifactIdAsInt();
       Artifact user = ArtifactQuery.getArtifactFromToken(SystemUser.Anonymous);
-      String testSheet = getTestSheet2(contextId1, user.getId(), contextId2, role2Id);
+      Artifact role2User = ArtifactTypeManager.addArtifact(Artifact, COMMON, "Role 2 user");
+
+      String testSheet = getTestSheet2(contextId1, user.getId(), contextId2, role2User);
       OseeDsl model = OseeDslResourceUtil.loadModel("osee:/text.osee", testSheet).getModel();
       MockDslProvider dslProvider = new MockDslProvider(model);
       OseeDslRoleContextProvider contextProvider = new OseeDslRoleContextProvider(dslProvider);
@@ -73,7 +77,6 @@ public class OseeDslRoleContextProviderTest {
       Assert.assertEquals(1, contextIds.size());
       Assert.assertEquals(contextId1, contextIds.iterator().next().getId());
 
-      Artifact role2User = ArtifactQuery.getOrCreate(role2Id, CoreArtifactTypes.Artifact, CoreBranches.COMMON);
       role2User.persist("Test User");
       contextIds = contextProvider.getContextId(role2User);
 
@@ -86,6 +89,13 @@ public class OseeDslRoleContextProviderTest {
       Assert.assertTrue(contextList.remove(iterator.next().getId()));
 
       role2User.deleteAndPersist();
+   }
+
+   @Test
+   public void testDbInitCreationOfAccessModel() throws Exception {
+      Artifact model = ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.FrameworkAccessModel);
+      String xtext = model.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData);
+      Assert.assertTrue(xtext.contains("guest.context"));
    }
 
    private String getTestSheet1(Long contextId, Long role1Id) {
@@ -106,11 +116,11 @@ public class OseeDslRoleContextProviderTest {
       return sb.toString();
    }
 
-   private String getTestSheet2(Long context1, Long role1Id, Long context2, Long role2Id) {
+   private String getTestSheet2(Long context1, Long role1Id, Long context2, Artifact role2) {
       StringBuilder sb = new StringBuilder(getTestSheet1(context1, role1Id));
       sb.append("\nrole \"role2\" extends \"role1\" {\n");
       sb.append("   id ");
-      sb.append(role2Id);
+      sb.append(role2.getIdString());
       sb.append(";\n");
       sb.append("   accessContext \"role2.context\";\n");
       sb.append("}\n\n");
