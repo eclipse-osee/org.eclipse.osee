@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
@@ -126,7 +125,10 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
          if (newOutlineNumber) {
             setContent();
             String number = outlineNumber.toString();
-            roughArtifact = setUpNewArtifact(collector, number);
+            roughArtifact = setUpNewArtifact(collector, number, logger);
+            if (roughArtifact == null) {
+               return;
+            }
             previousNamedArtifact = roughArtifact;
             processHeadingText(roughArtifact, WordUtil.textOnly(outlineName.toString()));
             roughArtMeta.put(number, paragraphStyle);
@@ -315,7 +317,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    /**
     * Checks if another artifact with the same outlineNumber was created
     */
-   private RoughArtifact setUpNewArtifact(RoughArtifactCollector collector, String outlineNumber) throws OseeCoreException {
+   private RoughArtifact setUpNewArtifact(RoughArtifactCollector collector, String outlineNumber, OperationLogger logger) throws OseeCoreException {
       RoughArtifact duplicateArtifact = duplicateCatcher.get(outlineNumber);
       if (duplicateArtifact == null) {
          RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY);
@@ -331,8 +333,9 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
          return roughArtifact;
       } else {
          String previousArtifcatName = previousNamedArtifact != null ? previousNamedArtifact.getName() : "null";
-         throw new OseeStateException("Paragraph %s found more than once following \"%s\" which is a duplicate of %s",
-            outlineNumber, previousArtifcatName, duplicateArtifact.getName());
+         logger.log("Paragraph %s found more than once following \"%s\" which is a duplicate of %s", outlineNumber,
+            previousArtifcatName, duplicateArtifact.getName());
+         return null;
       }
    }
 

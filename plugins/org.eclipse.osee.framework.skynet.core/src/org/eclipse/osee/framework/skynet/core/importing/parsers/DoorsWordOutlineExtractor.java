@@ -40,7 +40,13 @@ public class DoorsWordOutlineExtractor extends WordOutlineExtractorDelegate {
          setContent(); // finishes the previous rough artifact
          String number = String.format("%s.0.%d", lastHeaderNumber.toString(), lastReqNumber++);
 
-         roughArtifact = new RoughArtifact(getRoughArtifactType(newName.toString()));
+         String name = newName.toString();
+         if (name.contains("<w")) { // remove invalid tags from names
+            name = name.replaceAll("<[^>]+>", "");
+         }
+         roughArtifact = new RoughArtifact(getRoughArtifactType(name));
+         roughArtifact.setName(name);
+
          if (collector != null) {
             collector.addRoughArtifact(roughArtifact);
          }
@@ -48,11 +54,10 @@ public class DoorsWordOutlineExtractor extends WordOutlineExtractorDelegate {
             roughArtifact.setSectionNumber(number);
             roughArtifact.addAttribute(CoreAttributeTypes.ParagraphNumber, number);
          }
-         String name = newName.toString();
-         roughArtifact.setName(name);
          Matcher match = doorsIdPattern.matcher(name);
          if (match.find()) {
-            roughArtifact.addAttribute(CoreAttributeTypes.StaticId, match.group(1));
+            String toSet = match.group(1);
+            roughArtifact.addAttribute(CoreAttributeTypes.StaticId, toSet);
          }
          roughArtifact.addAttribute(CoreAttributeTypes.PublishInline, "True");
          wordFormattedContent.append(newContent.toString());
