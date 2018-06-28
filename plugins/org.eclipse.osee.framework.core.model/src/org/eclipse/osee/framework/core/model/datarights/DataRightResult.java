@@ -29,11 +29,7 @@ public class DataRightResult {
       "<w:ftr w:type=\"odd\"><w:p><w:pPr><w:pStyle w:val=\"para8pt\"/><w:jc w:val=\"center\"/></w:pPr><w:r><w:rPr><w:rStyle w:val=\"PageNumber\"/></w:rPr><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:rPr><w:rStyle w:val=\"PageNumber\"/></w:rPr><w:instrText> PAGE </w:instrText></w:r><w:r><w:rPr><w:rStyle w:val=\"PageNumber\"/></w:rPr><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:rPr><w:rStyle w:val=\"PageNumber\"/><w:noProof/></w:rPr><w:t>5</w:t></w:r><w:r><w:rPr><w:rStyle w:val=\"PageNumber\"/></w:rPr><w:fldChar w:fldCharType=\"end\"/></w:r></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t>UNSPECIFIED - PLEASE TAG WITH CORRECT DATA RIGHTS ATTRIBUTE!!!</w:t></w:r></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t>Contract No.: </w:t></w:r></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t>Contractor Name: The Boeing Company</w:t></w:r></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t>Contractor Address: 5000 E. McDowell Road; Mesa, AZ 85215-9797 </w:t></w:r></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t></w:t></w:r></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t>The Government's rights to use, modify, reproduce, release, perform, display, or disclose this software are restricted by paragraph (b)(3) of the Rights in Noncommercial Computer Software and Noncommercial Computer Software Documentation clause contained in the above identified contract.  Any reproduction of computer software or portions thereof marked with this legend must also reproduce the markings.  Any person, other than the Government, who has been provided access to such software must promptly notify the above named Contractor. </w:t></w:r></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t>Copyright (c) 2017 – The Boeing Company</w:t></w:r></w:p></w:ftr>";
 
    private List<DataRightAnchor> dataRightAnchors;
-
    private List<DataRight> dataRights;
-
-   private Map<DataRightId, DataRight> dataRightIdToDataRight;
-
    private Map<ArtifactId, DataRightAnchor> idToAnchor;
 
    public Collection<DataRightAnchor> getDataRightAnchors() {
@@ -74,13 +70,10 @@ public class DataRightResult {
          boolean isContinuous = anchor.isContinuous();
          if (isSetDataRightFooter) {
             // set footer section since next footer differs
-            DataRightId key = anchor.getDataRightId();
-            if (key != null) {
-               DataRight dataRight = dataRightIdToDataRight.get(key);
-               if (dataRight != null) {
-                  footer = normalize(dataRight.getContent());
-                  footer = String.format(ReportConstants.NEW_PAGE_TEMPLATE, footer + page_adds);
-               }
+            DataRight dataRight = anchor.getDataRight();
+            if (dataRight != null) {
+               footer = normalize(dataRight.getContent());
+               footer = String.format(ReportConstants.NEW_PAGE_TEMPLATE, footer + page_adds);
             }
          } else if (!isContinuous) {
             // set page break since next footer differs;
@@ -99,20 +92,14 @@ public class DataRightResult {
    }
 
    public void reset() {
-      dataRightIdToDataRight = null;
       idToAnchor = null;
    }
 
    private void checkInitialized() {
-      if (dataRightIdToDataRight == null || idToAnchor == null) {
-         dataRightIdToDataRight = new HashMap<>();
+      if (idToAnchor == null) {
          idToAnchor = new HashMap<>();
          for (DataRightAnchor anchor : dataRightAnchors) {
             idToAnchor.put(anchor.getId(), anchor);
-         }
-
-         for (DataRight dataRight : dataRights) {
-            dataRightIdToDataRight.put(dataRight.getId(), dataRight);
          }
       }
    }

@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 public class DataRightAnchor {
 
    private ArtifactId id;
-   private DataRightId dataRightId;
+   private DataRight dataRight;
    private boolean isSetDataRightFooter = false;
    private boolean isContinuous = false;
 
@@ -30,12 +30,12 @@ public class DataRightAnchor {
       this.id = id;
    }
 
-   public DataRightId getDataRightId() {
-      return dataRightId;
+   public DataRight getDataRight() {
+      return dataRight;
    }
 
-   public void setDataRightId(DataRightId rightId) {
-      this.dataRightId = rightId;
+   public void setDataRight(DataRight dataRight) {
+      this.dataRight = dataRight;
    }
 
    public boolean isSetDataRightFooter() {

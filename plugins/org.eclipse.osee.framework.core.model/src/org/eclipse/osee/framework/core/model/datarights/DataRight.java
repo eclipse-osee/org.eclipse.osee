@@ -14,17 +14,7 @@ package org.eclipse.osee.framework.core.model.datarights;
  * @author Angel Avila
  */
 public class DataRight {
-
-   private DataRightId id;
    private String content;
-
-   public DataRightId getId() {
-      return id;
-   }
-
-   public void setId(DataRightId id) {
-      this.id = id;
-   }
 
    public String getContent() {
       return content;
@@ -33,5 +23,4 @@ public class DataRight {
    public void setContent(String content) {
       this.content = content;
    }
-
 }

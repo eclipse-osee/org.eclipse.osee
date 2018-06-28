@@ -30,11 +30,9 @@ import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.model.datarights.DataRight;
 import org.eclipse.osee.framework.core.model.datarights.DataRightAnchor;
 import org.eclipse.osee.framework.core.model.datarights.DataRightEntry;
-import org.eclipse.osee.framework.core.model.datarights.DataRightId;
 import org.eclipse.osee.framework.core.model.datarights.DataRightInput;
 import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 import org.eclipse.osee.framework.core.util.PageOrientation;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -138,7 +136,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
          DataRightAnchor anchor = new DataRightAnchor();
          anchor.setSetDataRightFooter(isSetDataRightFooter);
          anchor.setId(currentArtifact.getId());
-         anchor.setDataRightId(dataRight.getId());
+         anchor.setDataRight(dataRight);
          anchors.add(anchor);
 
          previousArtifact = currentArtifact;
@@ -169,22 +167,13 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
          for (String footer : footers) {
             String[] enumToFooter = footer.split("\\n", 2);
             if (enumToFooter.length == 2) {
-               DataRightId id = new DataRightId();
-               id.setId(GUID.create());
-
                DataRight dataRight = new DataRight();
-               dataRight.setId(id);
                dataRight.setContent(enumToFooter[1].trim());
-
                toReturn.put(enumToFooter[0].trim(), dataRight);
             }
          }
       } else {
-         DataRightId id = new DataRightId();
-         id.setId(GUID.create());
-
          DataRight dataRight = new DataRight();
-         dataRight.setId(id);
          dataRight.setContent(DataRightResult.UNSPECIFIED);
          toReturn.put("Unspecified", dataRight);
       }
