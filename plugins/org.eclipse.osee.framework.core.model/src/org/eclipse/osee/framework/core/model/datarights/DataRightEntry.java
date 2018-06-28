@@ -10,22 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.datarights;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.util.PageOrientation;
 
 /**
  * @author Angel Avila
  */
 public class DataRightEntry {
-   private Long id;
+   private ArtifactId id;
    private String classification;
    private PageOrientation orientation;
    private int index;
 
-   public Long getId() {
+   public ArtifactId getId() {
       return id;
    }
 
-   public void setId(Long id) {
+   public void setId(ArtifactId id) {
       this.id = id;
    }
 

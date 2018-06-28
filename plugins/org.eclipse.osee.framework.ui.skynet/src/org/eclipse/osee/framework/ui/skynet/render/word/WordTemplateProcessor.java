@@ -675,7 +675,7 @@ public class WordTemplateProcessor {
                   }
                }
                PageOrientation orientation = WordRendererUtil.getPageOrientation(artifact);
-               String footer = data.getContent(artifact.getId(), orientation);
+               String footer = data.getContent(artifact, orientation);
 
                processMetadata(artifact, wordMl);
 

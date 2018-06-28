@@ -10,21 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.datarights;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
+
 /**
  * @author Angel Avila
  */
 public class DataRightAnchor {
 
-   private Long id;
+   private ArtifactId id;
    private DataRightId dataRightId;
    private boolean isSetDataRightFooter = false;
    private boolean isContinuous = false;
 
-   public Long getId() {
+   public ArtifactId getId() {
       return id;
    }
 
-   public void setId(Long id) {
+   public void setId(ArtifactId id) {
       this.id = id;
    }
 

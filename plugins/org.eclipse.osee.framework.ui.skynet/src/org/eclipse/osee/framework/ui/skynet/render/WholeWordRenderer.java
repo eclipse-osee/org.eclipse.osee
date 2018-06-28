@@ -161,7 +161,7 @@ public class WholeWordRenderer extends WordRenderer {
       DataRightResult dataRights = ServiceUtil.getOseeClient().getDataRightsEndpoint().getDataRights(
          artifact.getBranch(), classification, Collections.singletonList(ArtifactId.valueOf(artifact.getId())));
 
-      String footer = dataRights.getContent(artifact.getId(), orientation);
+      String footer = dataRights.getContent(artifact, orientation);
 
       Matcher startFtr = START_PATTERN.matcher(footer);
       Matcher endFtr = END_PATTERN.matcher(footer);

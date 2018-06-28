@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.util.PageOrientation;
 import org.eclipse.osee.framework.core.util.ReportConstants;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -33,7 +34,7 @@ public class DataRightResult {
 
    private Map<DataRightId, DataRight> dataRightIdToDataRight;
 
-   private Map<Long, DataRightAnchor> idToAnchor;
+   private Map<ArtifactId, DataRightAnchor> idToAnchor;
 
    public Collection<DataRightAnchor> getDataRightAnchors() {
       if (dataRightAnchors == null) {
@@ -57,7 +58,7 @@ public class DataRightResult {
       this.dataRights = dataRights;
    }
 
-   public String getContent(Long id, PageOrientation orientation) {
+   public String getContent(ArtifactId id, PageOrientation orientation) {
 
       checkInitialized();
       String footer = null;

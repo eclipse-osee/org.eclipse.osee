@@ -88,12 +88,12 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
             orientation = art.getSoleAttributeValue(CoreAttributeTypes.PageType, "Portrait");
          }
 
-         request.addData(artifact.getId(), classification, PageOrientation.fromString(orientation), index);
+         request.addData(artifact, classification, PageOrientation.fromString(orientation), index);
          index++;
       }
    }
 
-   private DataRightAnchor getAnchor(Long id, Collection<DataRightAnchor> anchors) {
+   private DataRightAnchor getAnchor(ArtifactId id, Collection<DataRightAnchor> anchors) {
       for (DataRightAnchor anchor : anchors) {
          if (anchor.getId().equals(id)) {
             return anchor;

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.model.datarights;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.util.PageOrientation;
 
 /**
@@ -40,7 +41,7 @@ public class DataRightInput implements Iterable<DataRightEntry> {
       data = null;
    }
 
-   public void addData(Long id, String classification, PageOrientation orientation, int index) {
+   public void addData(ArtifactId id, String classification, PageOrientation orientation, int index) {
       DataRightEntry toAdd = new DataRightEntry();
       toAdd.setClassification(classification);
       toAdd.setId(id);
