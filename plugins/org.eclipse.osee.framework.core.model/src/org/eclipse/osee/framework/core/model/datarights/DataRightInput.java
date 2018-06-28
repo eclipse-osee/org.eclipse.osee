@@ -13,17 +13,12 @@ package org.eclipse.osee.framework.core.model.datarights;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import org.eclipse.osee.framework.core.util.PageOrientation;
 
 /**
  * @author Angel Avila
  */
-@XmlRootElement
 public class DataRightInput implements Iterable<DataRightEntry> {
-
-   @XmlTransient
    private Set<DataRightEntry> data;
 
    public Set<DataRightEntry> getData() {

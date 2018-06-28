@@ -10,14 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.datarights;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.core.util.PageOrientation;
 
 /**
  * @author Angel Avila
  */
-
-@XmlRootElement
 public class DataRightEntry {
    private Long id;
    private String classification;

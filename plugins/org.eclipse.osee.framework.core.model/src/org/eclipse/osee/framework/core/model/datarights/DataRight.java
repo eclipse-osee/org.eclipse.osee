@@ -10,12 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.datarights;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  * @author Angel Avila
  */
-@XmlRootElement
 public class DataRight {
 
    private DataRightId id;

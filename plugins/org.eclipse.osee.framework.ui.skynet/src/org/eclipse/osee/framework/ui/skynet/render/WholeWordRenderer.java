@@ -159,7 +159,7 @@ public class WholeWordRenderer extends WordRenderer {
       PageOrientation orientation = WordRendererUtil.getPageOrientation(artifact);
 
       DataRightResult dataRights = ServiceUtil.getOseeClient().getDataRightsEndpoint().getDataRights(
-         Collections.singletonList(ArtifactId.valueOf(artifact.getId())), artifact.getBranch(), classification);
+         artifact.getBranch(), classification, Collections.singletonList(ArtifactId.valueOf(artifact.getId())));
 
       String footer = dataRights.getContent(artifact.getId(), orientation);
 

@@ -263,7 +263,7 @@ public class WordTemplateRenderer extends WordRenderer {
                if (templateRelatedArtifacts.size() == 1) {
                   templateStyles = templateRelatedArtifacts.get(0).getSoleAttributeValueAsString(
                      CoreAttributeTypes.WholeWordContent, "");
-               } else {
+               } else if (templateRelatedArtifacts.size() > 1) {
                   OseeLog.log(this.getClass(), Level.INFO,
                      "More than one style relation currently not supported. Defaulting to styles defined in the template.");
                }

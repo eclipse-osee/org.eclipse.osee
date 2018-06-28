@@ -32,13 +32,13 @@ public interface DataRightsEndpoint {
    @POST
    @Path("artifacts/branch/{branch}/classification/{classification}")
    @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_XML)
-   public DataRightResult getDataRights(List<ArtifactId> artifacts, @PathParam("branch") BranchId branch, @PathParam("classification") @DefaultValue("invalid") String overrideClassification);
+   @Produces(MediaType.APPLICATION_JSON)
+   public DataRightResult getDataRights(@PathParam("branch") BranchId branch, @PathParam("classification") @DefaultValue("invalid") String overrideClassification, List<ArtifactId> artifacts);
 
    @POST
    @Path("artifacts/branch/{branch}")
    @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_XML)
-   public DataRightResult getDataRights(List<ArtifactId> artifacts, @PathParam("branch") BranchId branch);
+   @Produces(MediaType.APPLICATION_JSON)
+   public DataRightResult getDataRights(@PathParam("branch") BranchId branch, List<ArtifactId> artifacts);
 
 }

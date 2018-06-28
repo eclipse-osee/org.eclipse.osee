@@ -81,8 +81,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
 
          String classification = null;
          String orientation = "Portrait";
-         if (overrideClassification != null && !overrideClassification.isEmpty() && !overrideClassification.equals(
-            "invalid") && DataRightsClassification.isValid(overrideClassification)) {
+         if (DataRightsClassification.isValid(overrideClassification)) {
             classification = overrideClassification;
          } else if (art != null) {
             classification = art.getSoleAttributeAsString(CoreAttributeTypes.DataRightsClassification, "");

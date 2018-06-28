@@ -30,12 +30,12 @@ public class DataRightsEndpointImpl implements DataRightsEndpoint {
    }
 
    @Override
-   public DataRightResult getDataRights(List<ArtifactId> artifacts, BranchId branch, String overrideClassification) {
+   public DataRightResult getDataRights(BranchId branch, String overrideClassification, List<ArtifactId> artifacts) {
       return defineApi.getDataRightsOperations().getDataRights(artifacts, branch, overrideClassification);
    }
 
    @Override
-   public DataRightResult getDataRights(List<ArtifactId> artifacts, BranchId branch) {
+   public DataRightResult getDataRights(BranchId branch, List<ArtifactId> artifacts) {
       return defineApi.getDataRightsOperations().getDataRights(artifacts, branch);
    }
 

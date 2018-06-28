@@ -590,8 +590,8 @@ public class WordTemplateProcessor {
             allArtifacts.addAll(artifacts);
          }
 
-         DataRightResult response = ServiceUtil.getOseeClient().getDataRightsEndpoint().getDataRights(allArtifacts,
-            branch, overrideClassification);
+         DataRightResult response = ServiceUtil.getOseeClient().getDataRightsEndpoint().getDataRights(branch,
+            overrideClassification, allArtifacts);
 
          for (Artifact artifact : artifacts) {
             processObjectArtifact(artifact, wordMl, outlineType, presentationType, response);
