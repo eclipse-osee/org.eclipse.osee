@@ -4,11 +4,8 @@ Bundle-Name: OSEE JDK Core Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.jdk.core
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Export-Package: org.eclipse.osee.framework.jdk.core.collection.tree,
- org.eclipse.osee.framework.jdk.core.directory,
- org.eclipse.osee.framework.jdk.core.persistence,
+Export-Package: org.eclipse.osee.framework.jdk.core.persistence,
  org.eclipse.osee.framework.jdk.core.reportdata,
- org.eclipse.osee.framework.jdk.core.stateMachine,
  org.eclipse.osee.framework.jdk.core.text,
  org.eclipse.osee.framework.jdk.core.text.change,
  org.eclipse.osee.framework.jdk.core.text.rules,
@@ -23,10 +20,7 @@ Export-Package: org.eclipse.osee.framework.jdk.core.collection.tree,
  org.eclipse.osee.framework.jdk.core.util.network,
  org.eclipse.osee.framework.jdk.core.util.time,
  org.eclipse.osee.framework.jdk.core.util.windows,
- org.eclipse.osee.framework.jdk.core.util.xml,
- org.eclipse.osee.framework.jdk.core.util.xml.excel,
- org.eclipse.osee.framework.jdk.core.util.xml.parser,
- org.eclipse.osee.framework.jdk.core.validate
+ org.eclipse.osee.framework.jdk.core.util.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.collect,
  javax.ws.rs.core,

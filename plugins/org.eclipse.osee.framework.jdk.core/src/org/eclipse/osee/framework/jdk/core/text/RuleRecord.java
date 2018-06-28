@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.jdk.core.text;
 
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -20,7 +19,7 @@ import org.w3c.dom.Element;
 /**
  * @author Michael A. Winston
  */
-public class RuleRecord extends LogRecord implements Xmlizable {
+public class RuleRecord extends LogRecord {
 
    private static final long serialVersionUID = 6974861818239720347L;
 
@@ -28,7 +27,7 @@ public class RuleRecord extends LogRecord implements Xmlizable {
     * RuleRecord Constructor. This is an abstract class so this constructor is called via the super() call from the
     * extended class. This sets the source, the logging level, the log message and whether a timestamp should be
     * included.
-    * 
+    *
     * @param level The logging level.
     * @param msg The log message.
     */
@@ -38,13 +37,11 @@ public class RuleRecord extends LogRecord implements Xmlizable {
 
    /**
     * Converts log element to XML format.
-    * 
+    *
     * @return xml formated element.
     */
-   @Override
    public Element toXml(Document doc) {
       Element recordElement = Jaxp.createElement(doc, getLevel().getName(), getMessage());
       return recordElement;
    }
-
 }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql;
 
-import org.eclipse.osee.framework.jdk.core.type.HasPriority;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
@@ -18,7 +17,7 @@ import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class SqlHandler<T extends Criteria> implements HasPriority {
+public abstract class SqlHandler<T extends Criteria> {
 
    private Log logger;
    private IdentityLocator idService;
@@ -48,7 +47,6 @@ public abstract class SqlHandler<T extends Criteria> implements HasPriority {
       this.level = level;
    }
 
-   @Override
    public abstract int getPriority();
 
    public void setData(T criteria) {
