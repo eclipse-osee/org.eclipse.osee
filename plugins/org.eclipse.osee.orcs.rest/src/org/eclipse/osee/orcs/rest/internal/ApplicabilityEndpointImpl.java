@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -230,11 +231,11 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public void createNewApplicabilityForView(ArtifactId viewId, String applicability) {
+   public TransactionToken createNewApplicabilityForView(ArtifactId viewId, String applicability) {
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem, "Create new applicability");
       tx.addTuple2(CoreTupleTypes.ViewApplicability, viewId, applicability);
-      tx.commit();
+      return tx.commit();
    }
 
    @Override
