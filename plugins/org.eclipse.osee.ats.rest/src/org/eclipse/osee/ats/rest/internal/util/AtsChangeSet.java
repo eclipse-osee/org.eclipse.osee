@@ -144,7 +144,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value) {
+   public <T> void setValue(IAtsWorkItem workItem, IAttribute<T> attr, AttributeTypeId attributeType, T value) {
       ArtifactId artifactId = getArtifact(workItem);
       getTransaction().setAttributeById(artifactId, attr, value);
       add(workItem);

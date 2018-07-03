@@ -57,6 +57,7 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken CompletedDate = createType(1152921504606847166L, "Completed Date", "Date the workflow was completed.");
    public static final AttributeTypeToken CompletedFromState = createType(1152921504606847168L, "Completed From State", "State workflow was in when completed.");
    public static final AttributeTypeToken CreatedBy = createType(1152921504606847174L, "Created By", "UserId of the user who created the workflow.");
+   public static final AttributeTypeToken CreatedByReference = createType(32875234523958L, "Created By Reference", "Id of the user artifact who created the workflow.");
    public static final AttributeTypeToken CreatedDate = createType(1152921504606847173L, "Created Date", "Date the workflow was created.");
    public static final AttributeTypeToken CurrentState = createType(1152921504606847192L, "Current State", "Current state of workflow state machine.");
    public static final AttributeTypeToken CurrentStateType = createType(1152921504606847147L, "Current State Type", "Type of Current State: InWork, Completed or Cancelled.");

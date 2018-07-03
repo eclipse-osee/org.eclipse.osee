@@ -242,9 +242,8 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value) {
+   public <T> void setValue(IAtsWorkItem workItem, IAttribute<T> attr, AttributeTypeId attributeType, T value) {
       Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(workItem);
-      @SuppressWarnings("unchecked")
       Attribute<T> attribute = (Attribute<T>) attr;
       attribute.setValue(value);
       add(artifact);

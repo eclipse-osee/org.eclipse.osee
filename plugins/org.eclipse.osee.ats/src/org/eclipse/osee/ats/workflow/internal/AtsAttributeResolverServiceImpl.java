@@ -224,11 +224,10 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value, IAtsChangeSet changes) {
+   public <T> void setValue(IAtsWorkItem workItem, IAttribute<T> attr, AttributeTypeId attributeType, T value, IAtsChangeSet changes) {
       if (changes != null) {
          changes.setValue(workItem, attr, attributeType, value);
       } else {
-         @SuppressWarnings("unchecked")
          Attribute<T> attribute = (Attribute<T>) attr;
          attribute.setValue(value);
       }

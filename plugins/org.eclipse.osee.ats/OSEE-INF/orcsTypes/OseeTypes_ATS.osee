@@ -986,6 +986,15 @@ attributeType "ats.Created By" extends StringAttribute {
 	mediaType "text/plain"
 }
 
+attributeType "ats.Created By Reference" extends ArtifactReferenceAttribute {
+	id 32875234523958
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
 attributeType "ats.Release Date" extends DateAttribute {
 	id 1152921504606847175
 	dataProvider DefaultAttributeDataProvider

@@ -62,7 +62,7 @@ public interface IAtsChangeSet {
 
    void addAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value);
 
-   <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value);
+   <T> void setValue(IAtsWorkItem workItem, IAttribute<T> attr, AttributeTypeId attributeType, T value);
 
    <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr);
 
