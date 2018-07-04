@@ -71,6 +71,8 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    ResultSet<? extends AttributeReadable<Object>> getAttributes(DeletionFlag deletionFlag) throws OseeCoreException;
 
+   String getAttributeValuesAsString(AttributeTypeId attributeType);
+
    <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeId attributeType, DeletionFlag deletionFlag) throws OseeCoreException;
 
    ////////////////////
@@ -91,6 +93,8 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
    ResultSet<ArtifactReadable> getChildren() throws OseeCoreException;
 
    ResultSet<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide) throws OseeCoreException;
+
+   List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeId artifactType);
 
    ResultSet<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, DeletionFlag deletionFlag) throws OseeCoreException;
 

@@ -163,6 +163,12 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
+   public String getAttributeValuesAsString(AttributeTypeId attributeType) {
+      List<Attribute<Object>> attributes = getProxiedObject().getAttributes(attributeType);
+      return Collections.toString(", ", attributes);
+   }
+
+   @Override
    public ResultSet<? extends AttributeReadable<Object>> getAttributes() throws OseeCoreException {
       List<Attribute<Object>> attributes = getProxiedObject().getAttributes();
       return getProxyManager().asExternalAttributes(getSession(), attributes);
@@ -248,6 +254,17 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    @Override
    public ResultSet<ArtifactReadable> getRelated(RelationTypeSide typeAndSide) throws OseeCoreException {
       return getRelated(typeAndSide, EXCLUDE_DELETED);
+   }
+
+   @Override
+   public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeId artifactType) {
+      List<ArtifactReadable> artifacts = new ArrayList<>();
+      for (ArtifactReadable artifact : getRelated(relationTypeSide)) {
+         if (artifact.isOfType(artifactType)) {
+            artifacts.add(artifact);
+         }
+      }
+      return artifacts;
    }
 
    @Override
