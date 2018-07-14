@@ -192,16 +192,13 @@ public class WordTemplateProcessor {
          List<Artifact> slaveTemplateRelatedArtifacts =
             slaveTemplateArtifact.getRelatedArtifacts(CoreRelationTypes.SupportingInfo_SupportingInfo);
 
-         if (slaveTemplateRelatedArtifacts != null) {
-            if (slaveTemplateRelatedArtifacts.size() == 1) {
-               slaveTemplateStyles += slaveTemplateRelatedArtifacts.get(0).getSoleAttributeValueAsString(
-                  CoreAttributeTypes.WholeWordContent, "");
-            } else {
-               OseeLog.log(this.getClass(), Level.INFO,
-                  "More than one style relation currently not supported. Defaulting to styles defined in the template.");
-            }
+         if (slaveTemplateRelatedArtifacts.size() == 1) {
+            slaveTemplateStyles += slaveTemplateRelatedArtifacts.get(0).getSoleAttributeValueAsString(
+               CoreAttributeTypes.WholeWordContent, "");
+         } else {
+            OseeLog.log(this.getClass(), Level.INFO,
+               "More than one style relation currently not supported. Defaulting to styles defined in the template.");
          }
-
       }
 
       try {
@@ -229,14 +226,12 @@ public class WordTemplateProcessor {
          masterTemplateArtifact.getRelatedArtifacts(CoreRelationTypes.SupportingInfo_SupportingInfo);
       String masterTemplateStyles = "";
 
-      if (masterTemplateRelatedArtifacts != null && !masterTemplateRelatedArtifacts.isEmpty()) {
-         if (masterTemplateRelatedArtifacts.size() == 1) {
-            masterTemplateStyles += masterTemplateRelatedArtifacts.get(0).getSoleAttributeValueAsString(
-               CoreAttributeTypes.WholeWordContent, "");
-         } else {
-            OseeLog.log(this.getClass(), Level.INFO,
-               "More than one style relation currently not supported. Defaulting to styles defined in the template.");
-         }
+      if (masterTemplateRelatedArtifacts.size() == 1) {
+         masterTemplateStyles += masterTemplateRelatedArtifacts.get(0).getSoleAttributeValueAsString(
+            CoreAttributeTypes.WholeWordContent, "");
+      } else {
+         OseeLog.log(this.getClass(), Level.INFO,
+            "More than one style relation currently not supported. Defaulting to styles defined in the template.");
       }
 
       getExcludeArtifactTypes();

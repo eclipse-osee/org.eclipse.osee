@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -104,11 +105,11 @@ public class RelationManager {
       return getRelatedArtifacts(artifact, relationType, relationSide, false);
    }
 
-   public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationType relationType, RelationSide relationSide) {
+   public static @NonNull List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationType relationType, RelationSide relationSide) {
       return getRelatedArtifacts(artifact, relationType, relationSide, true);
    }
 
-   private static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationType relationType, RelationSide relationSide, boolean sort) {
+   private static @NonNull List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationType relationType, RelationSide relationSide, boolean sort) {
       if (artifact.isHistorical()) {
          throw new OseeCoreException("Artifact [%s] is historical.  Historical relations are only supported on server",
             artifact);
@@ -266,7 +267,7 @@ public class RelationManager {
       return getRelatedArtifactsUnSorted(artifact, relationEnum, relationEnum.getSide());
    }
 
-   public static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationTypeSide relationEnum) {
+   public static @NonNull List<Artifact> getRelatedArtifacts(Artifact artifact, RelationTypeSide relationEnum) {
       return getRelatedArtifacts(artifact, relationEnum, relationEnum.getSide());
    }
 

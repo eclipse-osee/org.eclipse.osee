@@ -192,7 +192,7 @@ public class SystemSubsystemReport extends AbstractBlam {
 
          Artifact component = productComponent.getChild(subSysName);
          List<Artifact> sysReqByComp = component.getRelatedArtifacts(CoreRelationTypes.Allocation__Requirement);
-         if (sysReqByComp != null && !sysReqByComp.isEmpty()) {
+         if (!sysReqByComp.isEmpty()) {
             ViewIdUtility.removeExcludedArtifacts(sysReqByComp.iterator(), findExcludedArtifactsByView);
          }
          storeInHierarchyOrderBySubsystem(subSysName, sysReqByComp);
@@ -299,7 +299,7 @@ public class SystemSubsystemReport extends AbstractBlam {
 
             boolean isRelated = false;
             List<Artifact> relatedArtifacts = artifact.getRelatedArtifacts(CoreRelationTypes.Allocation__Component);
-            if (relatedArtifacts != null && !relatedArtifacts.isEmpty()) {
+            if (!relatedArtifacts.isEmpty()) {
                ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), findExcludedArtifactsByView);
                isRelated = true;
             }
@@ -334,7 +334,7 @@ public class SystemSubsystemReport extends AbstractBlam {
          excelWriter.writeRow("PIDS Paragraph #", "PIDS Paragraph Title", "Notes <rationale>");
 
          List<Artifact> relatedArtifacts = component.getRelatedArtifacts(CoreRelationTypes.Allocation__Requirement);
-         if (relatedArtifacts != null && !relatedArtifacts.isEmpty()) {
+         if (!relatedArtifacts.isEmpty()) {
             ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), findExcludedArtifactsByView);
          }
          for (Artifact subsysReq : relatedArtifacts) {
@@ -420,7 +420,7 @@ public class SystemSubsystemReport extends AbstractBlam {
 
          boolean isRelated = false;
          List<Artifact> relatedArtifacts = sysReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Lower_Level);
-         if (relatedArtifacts != null && !relatedArtifacts.isEmpty()) {
+         if (!relatedArtifacts.isEmpty()) {
             ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), findExcludedArtifactsByView);
             isRelated = true;
          }
@@ -470,7 +470,7 @@ public class SystemSubsystemReport extends AbstractBlam {
          boolean isRelated = false;
          List<Artifact> relatedArtifacts =
             subsysReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Higher_Level);
-         if (relatedArtifacts != null && !relatedArtifacts.isEmpty()) {
+         if (!relatedArtifacts.isEmpty()) {
             ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), findExcludedArtifactsByView);
             isRelated = true;
          }

@@ -120,9 +120,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
             boolean loopNeverRan = true;
             List<Artifact> relatedArtifacts =
                subsystemRequirement.getRelatedArtifacts(CoreRelationTypes.Design__Design);
-            if (relatedArtifacts != null) {
-               ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), excludedArtifactIdMap);
-            }
+            ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), excludedArtifactIdMap);
             for (Artifact subsystemDesign : relatedArtifacts) {
                if (subsystemDesign.isOfType(CoreArtifactTypes.SubsystemDesign)) {
                   loopNeverRan = false;

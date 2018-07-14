@@ -117,9 +117,7 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
 
       for (Artifact req : reqs) {
          List<Artifact> verifiers = req.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier);
-         if (verifiers != null) {
-            ViewIdUtility.removeExcludedArtifacts(verifiers.iterator(), excludedArtifactIdMap);
-         }
+         ViewIdUtility.removeExcludedArtifacts(verifiers.iterator(), excludedArtifactIdMap);
          Set<String> verifierNames = new HashSet<>();
          String inspection = getInspectionQual(req);
          if (Strings.isValid(inspection)) {

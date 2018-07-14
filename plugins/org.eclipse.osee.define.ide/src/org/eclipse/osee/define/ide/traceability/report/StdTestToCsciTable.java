@@ -167,9 +167,7 @@ public class StdTestToCsciTable implements ISimpleTable {
       for (Artifact requirement : source.getAllSwRequirements()) {
          List<String> testScripts = new ArrayList<String>();
          requirementsToCodeUnits.forEachValue(requirement, testScripts::add);
-         if (testScripts != null) {
-            toReturn.put(requirement, testScripts);
-         }
+         toReturn.put(requirement, testScripts);
       }
       return toReturn;
    }

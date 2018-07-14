@@ -238,15 +238,12 @@ public class WordTemplateRenderer extends WordRenderer {
             List<Artifact> templateRelatedArtifacts =
                template.getRelatedArtifacts(CoreRelationTypes.SupportingInfo_SupportingInfo);
 
-            if (templateRelatedArtifacts != null) {
-
-               if (templateRelatedArtifacts.size() == 1) {
-                  templateStyles = templateRelatedArtifacts.get(0).getSoleAttributeValueAsString(
-                     CoreAttributeTypes.WholeWordContent, "");
-               } else if (templateRelatedArtifacts.size() > 1) {
-                  OseeLog.log(this.getClass(), Level.INFO,
-                     "More than one style relation currently not supported. Defaulting to styles defined in the template.");
-               }
+            if (templateRelatedArtifacts.size() == 1) {
+               templateStyles = templateRelatedArtifacts.get(0).getSoleAttributeValueAsString(
+                  CoreAttributeTypes.WholeWordContent, "");
+            } else if (templateRelatedArtifacts.size() > 1) {
+               OseeLog.log(this.getClass(), Level.INFO,
+                  "More than one style relation currently not supported. Defaulting to styles defined in the template.");
             }
          }
       } else {
@@ -259,14 +256,12 @@ public class WordTemplateRenderer extends WordRenderer {
             List<Artifact> templateRelatedArtifacts =
                template.getRelatedArtifacts(CoreRelationTypes.SupportingInfo_SupportingInfo);
 
-            if (templateRelatedArtifacts != null) {
-               if (templateRelatedArtifacts.size() == 1) {
-                  templateStyles = templateRelatedArtifacts.get(0).getSoleAttributeValueAsString(
-                     CoreAttributeTypes.WholeWordContent, "");
-               } else if (templateRelatedArtifacts.size() > 1) {
-                  OseeLog.log(this.getClass(), Level.INFO,
-                     "More than one style relation currently not supported. Defaulting to styles defined in the template.");
-               }
+            if (templateRelatedArtifacts.size() == 1) {
+               templateStyles = templateRelatedArtifacts.get(0).getSoleAttributeValueAsString(
+                  CoreAttributeTypes.WholeWordContent, "");
+            } else if (templateRelatedArtifacts.size() > 1) {
+               OseeLog.log(this.getClass(), Level.INFO,
+                  "More than one style relation currently not supported. Defaulting to styles defined in the template.");
             }
          }
 

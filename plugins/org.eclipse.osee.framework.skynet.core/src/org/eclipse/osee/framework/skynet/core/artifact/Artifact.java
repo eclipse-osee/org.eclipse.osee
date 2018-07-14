@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -187,7 +188,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return RelationManager.getRelatedArtifacts(this, new RelationTypeSide(relationType, RelationSide.SIDE_B));
    }
 
-   public List<Artifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) {
+   public @NonNull List<Artifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) {
       return RelationManager.getRelatedArtifacts(this, relationTypeSide);
    }
 
