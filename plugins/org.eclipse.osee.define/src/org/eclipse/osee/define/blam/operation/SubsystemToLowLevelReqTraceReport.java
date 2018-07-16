@@ -15,8 +15,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.core.resources.IFile;
@@ -123,38 +125,34 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       excelWriter.writeRow("5.2  Lower Level Requirements Traceability to Subsystem Requirements");
       excelWriter.writeRow("Lower Level Requirements", null, null, null, "Traceable Subsystem Requirement");
       excelWriter.writeRow("Paragraph #", "Paragraph Title", "Qualification Method", "Higher Level Folder",
-         "Paragraph #", "Paragraph Title", CoreAttributeTypes.Subsystem.getName(), "Artifact Type", "Partition", "IDAL",
-         "Lower Level Req Artifact ID");
+         "Paragraph #", "Paragraph Title", CoreAttributeTypes.Subsystem.getName(), "Lower Level Req Artifact Type",
+         "Partition", "IDAL", "Lower Level Req Artifact ID");
 
       String[] row = new String[11];
 
       for (Artifact lowLevelReq : lowLevelReqs) {
-         row[0] = correct(lowLevelReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
+         row[0] = lowLevelReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, null);
          row[1] = lowLevelReq.getName();
          boolean isRelated = false;
-         if (isLowerLevelRequirement(lowLevelReq)) {
 
-            row[2] = lowLevelReq.getAttributesToStringSorted(CoreAttributeTypes.QualificationMethod);
-            row[7] = lowLevelReq.getArtifactType().getName();
-            row[8] = lowLevelReq.getAttributesToStringSorted(CoreAttributeTypes.Partition);
-            row[9] = lowLevelReq.getSoleAttributeValue(CoreAttributeTypes.ItemDAL, "");
-            row[10] = lowLevelReq.getIdString();
+         row[2] = lowLevelReq.getAttributesToStringSorted(CoreAttributeTypes.QualificationMethod);
+         row[7] = lowLevelReq.getArtifactType().getName();
+         row[8] = lowLevelReq.getAttributesToStringSorted(CoreAttributeTypes.Partition);
+         row[9] = lowLevelReq.getSoleAttributeValue(CoreAttributeTypes.ItemDAL, "");
+         row[10] = lowLevelReq.getIdString();
 
-            List<Artifact> relatedArtifacts =
-               lowLevelReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Higher_Level);
-            if (relatedArtifacts != null && !relatedArtifacts.isEmpty()) {
-               ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), excludedArtifactIdMap);
-               isRelated = true;
-            }
-            for (Artifact subSysReq : relatedArtifacts) {
-               row[3] = getAssociatedSubSystem(subSysReq);
-               row[4] = correct(subSysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
-               row[5] = subSysReq.getName();
-               row[6] = subSysReq.getSoleAttributeValue(CoreAttributeTypes.Subsystem, "");
-               excelWriter.writeRow(row);
-            }
-         } else {
-            row[7] = lowLevelReq.getArtifactTypeName();
+         List<Artifact> relatedArtifacts =
+            lowLevelReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Higher_Level);
+         if (relatedArtifacts != null && !relatedArtifacts.isEmpty()) {
+            ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), excludedArtifactIdMap);
+            isRelated = true;
+         }
+         for (Artifact subSysReq : relatedArtifacts) {
+            row[3] = getAssociatedSubSystem(subSysReq);
+            row[4] = subSysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, null);
+            row[5] = subSysReq.getName();
+            row[6] = subSysReq.getSoleAttributeValue(CoreAttributeTypes.Subsystem, "");
+            excelWriter.writeRow(row);
          }
 
          if (row[0] != null && !isRelated) { // if this requirement is not traced to any lower level req (i.e. the for loop didn't run)
@@ -165,7 +163,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       excelWriter.endSheet();
    }
 
-   private boolean isLowerLevelRequirement(Artifact artifact) {
+   private boolean isOfLowerLevelRequirementType(Artifact artifact) {
       for (ArtifactType artifactType : lowerLevelTypes) {
          if (artifact.isOfType(artifactType)) {
             return true;
@@ -178,69 +176,70 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       excelWriter.startSheet("5.3", 6);
 
       excelWriter.writeRow("5.3 Subsystem Requirements Allocation Traceability to Lower Level Requirements");
+      excelWriter.writeRow(null, "Subsystem Requirement", null, "Traceable Lower Level Requirements", null);
+      excelWriter.writeRow("Subsystem", "Paragraph #", "Paragraph Title", "Paragraph #", "Paragraph Title",
+         "Component");
       excelWriter.writeRow();
 
-      int count = 1;
       for (Entry<String, List<Artifact>> entry : subsysToSubsysReqsMap.entrySet()) {
-         String subSysName = entry.getKey();
          List<Artifact> subsysReqs = entry.getValue();
 
-         excelWriter.writeRow();
-         excelWriter.writeRow();
-         excelWriter.writeRow(
-            "5.3." + count++ + " " + subSysName + " Requirements Allocation Traceability to Lower Level Requirements");
-         excelWriter.writeRow(CoreArtifactTypes.SubsystemRequirementMSWord.getName(), null,
-            "Traceable Lower Level Requirements", null);
-         excelWriter.writeRow("Paragraph #", "Paragraph Title", "Paragraph #", "Paragraph Title");
-
-         String[] row = new String[4];
-
+         String[] row = new String[6];
+         row[0] = entry.getKey();
          for (Artifact higherLevelReq : subsysReqs) {
-            if (isAllocated(higherLevelReq)) {
-               row[0] = correct(higherLevelReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
-               row[1] = higherLevelReq.getName();
-               List<Artifact> relatedArtifacts =
-                  higherLevelReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Lower_Level);
-               boolean isRelated = false;
-               if (relatedArtifacts != null && !relatedArtifacts.isEmpty()) {
-                  ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), excludedArtifactIdMap);
-                  isRelated = true;
-               }
-               for (Artifact lowerLevelReq : relatedArtifacts) {
-                  if (lowLevelReqs.contains(lowerLevelReq)) {
-                     row[2] = correct(lowerLevelReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
-                     row[3] = lowerLevelReq.getName();
-                     excelWriter.writeRow(row);
-                  }
-               }
-               if (row[0] != null && !isRelated) { // if this requirement is not traced to any low level requirement(i.e. the for loop didn't run)
-                  row[2] = row[3] = null;
-                  excelWriter.writeRow(row);
-               }
-            }
+
+            processSubsystemReq(row, higherLevelReq);
          }
       }
       excelWriter.endSheet();
    }
 
-   private boolean isAllocated(Artifact higherLevelReq) throws OseeCoreException {
-      for (Artifact component : higherLevelReq.getRelatedArtifacts(CoreRelationTypes.Allocation__Component)) {
-         if (components.contains(component)) {
-            return true;
+   private void processSubsystemReq(String[] row, Artifact higherLevelReq) throws IOException {
+      List<Artifact> relatedArtifacts =
+         higherLevelReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Lower_Level);
+      boolean isTraced = !relatedArtifacts.isEmpty();
+      List<Artifact> allocatedComponets = higherLevelReq.getRelatedArtifacts(CoreRelationTypes.Allocation__Component);
+      boolean allocated = !Collections.disjoint(components, allocatedComponets);
+
+      /*
+       * Do not include if a subsystem requirement is not allocated to the any of the relevant components and this does
+       * not appear to be simply a case of missing allocation (i.e. also not traced to any lower-level requirements).
+       */
+      if (isTraced || allocated) {
+         row[1] = correct(higherLevelReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
+         row[2] = higherLevelReq.getName();
+         if (isTraced) {
+            ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), excludedArtifactIdMap);
+         }
+         for (Artifact lowerLevelReq : relatedArtifacts) {
+            if (lowLevelReqs.contains(lowerLevelReq)) {
+               row[3] = correct(lowerLevelReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
+               row[4] = lowerLevelReq.getName();
+
+               if (allocated) {
+                  row[5] = org.eclipse.osee.framework.jdk.core.util.Collections.toString(", ", allocatedComponets);
+               } else {
+                  row[5] = "Missing allocation";
+               }
+               excelWriter.writeRow(row);
+            }
+         }
+         if (!isTraced) { // if this requirement is not traced to any low level requirement(i.e. the for loop didn't run)
+            row[3] = row[4] = row[5] = null;
+            excelWriter.writeRow(row);
          }
       }
-      return false;
    }
 
    private void initLowLevelRequirements(List<Artifact> artifacts) throws OseeCoreException {
       RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED,
          CoreRelationTypes.Default_Hierarchical__Child);
       for (Artifact artifact : artifacts) {
-         if (!artifact.isOfType(CoreArtifactTypes.Folder, CoreArtifactTypes.AbstractImplementationDetails)) {
+         if (isOfLowerLevelRequirementType(artifact)) {
             lowLevelReqs.add(artifact);
          }
          for (Artifact descendant : artifact.getDescendants()) {
-            if (!descendant.isOfType(CoreArtifactTypes.Folder, CoreArtifactTypes.AbstractImplementationDetails)) {
+            if (isOfLowerLevelRequirementType(descendant)) {
                lowLevelReqs.add(descendant);
             }
          }
@@ -252,11 +251,11 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED,
          CoreRelationTypes.Default_Hierarchical__Child);
       for (Artifact artifact : artifacts) {
-         if (!artifact.isOfType(CoreArtifactTypes.Folder, CoreArtifactTypes.AbstractImplementationDetails)) {
+         if (!artifact.isOfType(CoreArtifactTypes.Folder)) {
             components.add(artifact);
          }
          for (Artifact descendant : artifact.getDescendants()) {
-            if (!descendant.isOfType(CoreArtifactTypes.Folder, CoreArtifactTypes.AbstractImplementationDetails)) {
+            if (!descendant.isOfType(CoreArtifactTypes.Folder)) {
                components.add(descendant);
             }
          }
@@ -280,14 +279,18 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    }
 
    private void orderSubsystemReqs(Artifact subsysTopFolder) throws OseeCoreException {
-      List<Artifact> children = subsysTopFolder.getChildren();
-      if (children != null) {
-         ViewIdUtility.removeExcludedArtifacts(children.iterator(), excludedArtifactIdMap);
-      }
       for (Artifact subsysFolder : subsysTopFolder.getChildren()) {
-         String subSysName = subsysFolder.getName();
          List<Artifact> subsysReqs = subsysFolder.getDescendants();
-         subsysToSubsysReqsMap.put(subSysName, subsysReqs);
+         ViewIdUtility.removeExcludedArtifacts(subsysReqs.iterator(), excludedArtifactIdMap);
+
+         Iterator<Artifact> iterator = subsysReqs.iterator();
+         while (iterator.hasNext()) {
+            if (!iterator.next().isOfType(CoreArtifactTypes.AbstractSubsystemRequirement)) {
+               iterator.remove();
+            }
+         }
+
+         subsysToSubsysReqsMap.put(subsysFolder.getName(), subsysReqs);
       }
    }
 
@@ -336,6 +339,6 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
    @Override
    public String getDescriptionUsage() {
-      return "The Low Level Requirement artifacts will be filtered based on the type(s) selected.  E.g. if you want all kinds of software requirements included, then select \"Abstract Software Requirement\".";
+      return "The Low Level Requirement artifacts will be filtered based on the type(s) selected.  The standard is to select \"Direct Software Requirement\".";
    }
 }
