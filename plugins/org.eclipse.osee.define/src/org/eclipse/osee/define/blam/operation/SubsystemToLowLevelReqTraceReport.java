@@ -197,35 +197,37 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    private void processSubsystemReq(String[] row, Artifact higherLevelReq) throws IOException {
       List<Artifact> relatedArtifacts =
          higherLevelReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Lower_Level);
-      boolean isTraced = !relatedArtifacts.isEmpty();
+      ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), excludedArtifactIdMap);
+      boolean isTraced = !Collections.disjoint(lowLevelReqs, relatedArtifacts);
+
       List<Artifact> allocatedComponets = higherLevelReq.getRelatedArtifacts(CoreRelationTypes.Allocation__Component);
       boolean allocated = !Collections.disjoint(components, allocatedComponets);
 
       /*
-       * Do not include if a subsystem requirement is not allocated to the any of the relevant components and this does
-       * not appear to be simply a case of missing allocation (i.e. also not traced to any lower-level requirements).
+       * Do not include if a subsystem requirement is not allocated to the any of the relevant components, except when
+       * this appears to be a case of missing allocation (i.e. it is still traced to any lower-level requirements).
        */
       if (isTraced || allocated) {
-         row[1] = correct(higherLevelReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
+         row[1] = higherLevelReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, null);
          row[2] = higherLevelReq.getName();
-         if (isTraced) {
-            ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), excludedArtifactIdMap);
-         }
-         for (Artifact lowerLevelReq : relatedArtifacts) {
-            if (lowLevelReqs.contains(lowerLevelReq)) {
-               row[3] = correct(lowerLevelReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
-               row[4] = lowerLevelReq.getName();
 
-               if (allocated) {
-                  row[5] = org.eclipse.osee.framework.jdk.core.util.Collections.toString(", ", allocatedComponets);
-               } else {
-                  row[5] = "Missing allocation";
-               }
-               excelWriter.writeRow(row);
-            }
+         if (allocated) {
+            row[5] = org.eclipse.osee.framework.jdk.core.util.Collections.toString(", ", allocatedComponets);
+         } else {
+            row[5] = "Missing allocation";
          }
-         if (!isTraced) { // if this requirement is not traced to any low level requirement(i.e. the for loop didn't run)
-            row[3] = row[4] = row[5] = null;
+
+         if (isTraced) {
+            for (Artifact lowerLevelReq : relatedArtifacts) {
+               if (lowLevelReqs.contains(lowerLevelReq)) {
+                  row[3] = lowerLevelReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, null);
+                  row[4] = lowerLevelReq.getName();
+                  excelWriter.writeRow(row);
+               }
+            }
+         } else {
+            row[3] = null;
+            row[4] = null;
             excelWriter.writeRow(row);
          }
       }
@@ -261,10 +263,6 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
          }
       }
       ViewIdUtility.removeExcludedArtifacts(components.iterator(), excludedArtifactIdMap);
-   }
-
-   private String correct(String value) {
-      return value.equals("") ? null : value;
    }
 
    private String getAssociatedSubSystem(Artifact subSysReq) {
