@@ -170,4 +170,11 @@ public interface IAtsChangeSet {
 
    void addChild(IAtsObject parent, IAtsObject child);
 
+   /**
+    * Don't use this unless converting from guid referenced objects to artifact. Remove method once not used for
+    * conversions.
+    */
+   @Deprecated
+   ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid);
+
 }

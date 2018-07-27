@@ -183,6 +183,13 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
+   public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid) {
+      ArtifactToken artifact = getTransaction().createArtifact(artifactType, name, guid);
+      add(artifact);
+      return artifact;
+   }
+
+   @Override
    public void deleteAttributes(IAtsObject atsObject, AttributeTypeId attributeType) {
       ArtifactReadable artifact = getArtifact(atsObject);
       getTransaction().deleteAttributes(artifact, attributeType);

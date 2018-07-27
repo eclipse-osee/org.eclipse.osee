@@ -507,4 +507,9 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       setAttributeValues(getArtifact(atsObject), attributeType, objValues);
    }
 
+   @Override
+   public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid) {
+      throw new UnsupportedOperationException();
+   }
+
 }
