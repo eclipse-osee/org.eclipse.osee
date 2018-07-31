@@ -66,6 +66,8 @@ public interface TransactionBuilder {
 
    ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid);
 
+   ArtifactToken createArtifact(IArtifactType artifactType, String name, Long artifactId, String guid);
+
    /**
     * If parent is invalid, the artifact will be created with no parent
     */

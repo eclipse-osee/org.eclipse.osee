@@ -508,8 +508,11 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid) {
-      throw new UnsupportedOperationException();
+   public ArtifactToken createArtifact(IArtifactType artifactType, String name, Long artifactId, String guid) {
+      Artifact artifact =
+         ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), name, guid, artifactId);
+      add(artifact);
+      return artifact;
    }
 
 }

@@ -175,6 +175,6 @@ public interface IAtsChangeSet {
     * conversions.
     */
    @Deprecated
-   ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid);
+   ArtifactToken createArtifact(IArtifactType artifactType, String name, Long id, String guid);
 
 }
