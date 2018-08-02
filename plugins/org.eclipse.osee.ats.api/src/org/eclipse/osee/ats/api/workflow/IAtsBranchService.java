@@ -153,4 +153,6 @@ public interface IAtsBranchService {
 
    CommitOverrideOperations getCommitOverrideOps();
 
+   boolean isBaselinBranchConfigured(ICommitConfigItem commitConfigArt);
+
 }

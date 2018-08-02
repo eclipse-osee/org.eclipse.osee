@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
@@ -211,4 +212,10 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
          throw new OseeWrappedException(ex, "Error setting associated branch %s to artifact %s", branch, artifact);
       }
    }
+
+   @Override
+   public boolean isBaselinBranchConfigured(ICommitConfigItem commitConfigArt) {
+      return commitConfigArt.getBaselineBranchId().isValid();
+   }
+
 }

@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.KindType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -41,13 +42,6 @@ public class ChangeData {
 
    private static final String IMPL_DETAILS = " (Impl Details)";
    private static final String DELETED = " (Deleted)";
-
-   public static enum KindType {
-      Artifact,
-      Relation,
-      ArtifactOrRelation,
-      RelationOnly
-   };
 
    private final Collection<Change> changes;
 

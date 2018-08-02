@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.model.change;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
@@ -262,5 +263,10 @@ public class ChangeItem implements Comparable<ChangeItem> {
    @Override
    public int hashCode() {
       return itemId.getId().hashCode();
+   }
+
+   public boolean isDeleted() {
+      return getNetChange().getModType().equals(
+         ModificationType.ARTIFACT_DELETED) || getNetChange().getModType().equals(ModificationType.ARTIFACT_DELETED);
    }
 }

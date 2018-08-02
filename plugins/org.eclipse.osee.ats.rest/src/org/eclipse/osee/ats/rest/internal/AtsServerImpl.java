@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
+import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -138,8 +139,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
 
       queryService = new AtsQueryServiceImpl(this, jdbcService, orcsApi);
       actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, storeService, this);
-      actionFactory =
-         new ActionFactory(attributeResolverService, this);
+      actionFactory = new ActionFactory(attributeResolverService, this);
 
       agileService = new AgileService(logger, this);
       taskService = new AtsTaskService(this, orcsApi);
@@ -376,4 +376,10 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    public boolean isWorkDefAsName() {
       return "true".equals(OseeInfo.getCachedValue(getJdbcService().getClient(), "osee.work.def.as.name"));
    }
+
+   @Override
+   public IAtsTaskRelatedService getTaskRelatedService() {
+      return taskRelatedService;
+   }
+
 }

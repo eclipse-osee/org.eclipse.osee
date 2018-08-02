@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
+import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
@@ -114,6 +115,7 @@ public abstract class AtsApiImpl implements AtsApi {
    protected IAtsTeamDefinitionService teamDefinitionService;
    protected IAtsQueryService queryService;
    protected IAtsStoreService storeService;
+   protected IAtsTaskRelatedService taskRelatedService;
    Collection<IAgileSprintHtmlOperation> agileSprintHtmlReportOperations = new LinkedList<>();
 
    private EventAdmin eventAdmin;

@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
+import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -73,6 +74,7 @@ import org.eclipse.osee.ats.workflow.internal.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.workflow.internal.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.workflow.task.internal.AtsTaskService;
+import org.eclipse.osee.ats.workflow.task.related.AtsTaskRelatedService;
 import org.eclipse.osee.ats.workflow.transition.TransitionListeners;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -448,6 +450,14 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    @Override
    public IAtsQueryService getQueryService() {
       return queryService;
+   }
+
+   @Override
+   public IAtsTaskRelatedService getTaskRelatedService() {
+      if (taskRelatedService == null) {
+         taskRelatedService = new AtsTaskRelatedService(this);
+      }
+      return taskRelatedService;
    }
 
 }
