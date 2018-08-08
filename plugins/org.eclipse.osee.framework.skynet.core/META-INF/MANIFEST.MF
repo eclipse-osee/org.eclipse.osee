@@ -7,7 +7,6 @@ Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.eclipse.osee.framework.skynet.core.internal.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
- net.jini,
  org.eclipse.osee.framework.jdk.core,
  org.eclipse.osee.framework.messaging.event.res,
  org.eclipse.osee.framework.messaging,
