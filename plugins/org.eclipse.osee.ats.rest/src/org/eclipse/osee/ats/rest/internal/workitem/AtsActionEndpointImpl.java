@@ -237,7 +237,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          Collection<ArtifactToken> tokens = atsApi.getQueryService().getArtifacts(artIds, versionBranch);
          for (ArtifactToken token : tokens) {
             requirements.add(
-               String.format("{ \"rpcrUuid\": \"%s\", \"rpcrName\": \"%s\" }", token.getIdString(), token.getName()));
+               String.format("{ \"reqUuid\": \"%s\", \"reqName\": \"%s\" }", token.getIdString(), token.getName()));
          }
       }
       return requirements;

@@ -131,7 +131,7 @@ app.controller('oseeAppController', [
 
                 var artNodes = div.getElementsByTagName('A');
                 var parsedTableData = "[  \n";
-                for (i = 0; i < artNodes.length; ++i) {
+                for (i = 0; i < artNodes.length; i++) {
                     var artName = artNodes[i].innerText;
                     var artId = "";
                     artNodes[i].href.split("&").forEach(function (part) {
@@ -141,7 +141,7 @@ app.controller('oseeAppController', [
                         }
                     });
                     if(!OseeAppSchema.contains(jsonData, artId))
-                        jsonData.push({ rpcrUuid: artId, rpcrName: artName });
+                        jsonData.push({ reqUuid: artId, reqName: artName });
                 }
                 parsedTableData += "\n ]";
                 return parsedTableData;
@@ -149,7 +149,7 @@ app.controller('oseeAppController', [
             OseeAppSchema.contains = function (jsonData, artId) {
                var found = false;
                  for(var i = 0; i < jsonData.length; i++) {
-                   if (jsonData[i].rpcrUuid == artId) {
+                   if (jsonData[i].reqUuid == artId) {
                      found = true;
                    break;
                  }

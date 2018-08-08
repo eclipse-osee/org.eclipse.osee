@@ -9,14 +9,9 @@ app.directive('oseeInputControl', function () {
                 vm.parseHtmlForTableData = OseeAppSchema.parseHtmlForTableData;
                 vm.gridOptions = {
                     enableColumnResizing : true,
-                    columnDefs: [ { name: " ", 
-                                    enableColumnMenu: false,
-                                    width: "10%", 
-                                    cellTemplate: '<div style="padding:5px"><button class="btn btn-xs" ng-click="grid.appScope.deleteRow(row)"><i class="glyphicon glyphicon-remove"></i></button></div>' },
-                                  { name: "Rpcr Uuid", field: "rpcrUuid", visible: false },
-                                  { name: "Rpcr Name", width: "90%", field: "rpcrName"} ],
                     data: []
                 };   
+                vm.gridOptions.columnDefs = $scope.uischema.options.columnDefs;
                 var schemaElement = OseeAppSchema.getElement(); 
                 var schemaAttr = OseeControlValues.parseAttribute($scope.uischema.scope.$ref);            
                 OseeControlValues.queryUrl($scope.uischema.options.getUrl, true).query({ element: schemaElement, attribute: schemaAttr }, function (selections) {
@@ -37,9 +32,9 @@ app.directive('oseeInputControl', function () {
                 }
                 $scope.onNgChange = function () {  
                     var putData = "[ " + schemaAttr; 
-                    for(var i = 0; i < vm.gridOptions.data.length; ++i) {
-                       console.log(vm.gridOptions.data[i].rpcrUuid); 
-                       putData += ", " + vm.gridOptions.data[i].rpcrUuid;
+                    for(var i = 0; i < vm.gridOptions.data.length; i++) {
+                       console.log(vm.gridOptions.data[i].reqUuid); 
+                       putData += ", " + vm.gridOptions.data[i].reqUuid;
                     }
                     putData += " ]";
                     OseeControlValues.putUrl($scope.uischema.options.putUrl, false).submit({
