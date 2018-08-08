@@ -115,14 +115,9 @@ public class ViewApplicabilityUtil {
    }
 
    public static BranchId getParentBranch(BranchId branch) {
-      if (branch != null) {
-         BranchId parentBranch = BranchManager.getParentBranch(branch);
-         if (ViewApplicabilityUtil.isBranchOfProductLine(parentBranch)) {
-            return parentBranch;
-         }
-         return branch;
+      if (BranchManager.getType(branch).isMergeBranch()) {
+         branch = BranchManager.getParentBranch(branch);
       }
-      return null;
+      return branch;
    }
-
 }
