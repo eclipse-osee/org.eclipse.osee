@@ -65,6 +65,7 @@ public class LisFileParser implements DispoImporterApi {
    private static final String LOG = "\\s*(log).*";
    private static final String EXIT_WHEN = "\\s*\\( \\)\\s*\\( \\)\\s*(EXIT WHEN).*";
    private static final String WHEN_FOR = "\\s*\\( \\)\\s*(WHEN|FOR).*";
+   private static final String WHEN_CASE = "^(?=.*WHEN)(?!.*OTHERS).*";
 
    private final DispoDataFactory dataFactory;
 
@@ -344,6 +345,10 @@ public class LisFileParser implements DispoImporterApi {
                } else {
                   addDiscrepancy(discrepancies, location, text);
                }
+            } else if (statementCoverageItem.getNumConditions() == 1 //
+               && lineData.getFirst().matches(WHEN_CASE)) {
+               location = String.format("%s.%s", lineNumber, "T");
+               addDiscrepancy(discrepancies, location, text);
             } else {
                location = String.valueOf(lineNumber);
                addDiscrepancy(discrepancies, location, text);
