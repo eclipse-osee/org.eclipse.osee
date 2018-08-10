@@ -7,7 +7,7 @@
 					"service.id": "1001",
 					"jdbc.server.host": "127.0.0.1",
 					"jdbc.server.port": "8088",
-					"jdbc.server.db.data.path": "file:~/hsql/osee.hsql.db",
+					"jdbc.server.db.data.path": "file:demo/hsql/osee.hsql.db",
 					"jdbc.client.db.username": "public",
 					"jdbc.client.connection.pool.enabled": "true",
 					"jdbc.client.connection.pool.max.active.connections": "100",
