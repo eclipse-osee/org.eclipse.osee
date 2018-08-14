@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
-import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
+import org.eclipse.osee.framework.core.data.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -80,7 +80,7 @@ public interface ApplicabilityEndpoint {
    @GET
    @Path("feature-data")
    @Produces(MediaType.APPLICATION_JSON)
-   List<FeatureDefinitionData> getFeatureDefinitionData();
+   List<FeatureDefinition> getFeatureDefinitionData();
 
    /**
     * @return a list of branches that contain the injected change (prior to removalDate)

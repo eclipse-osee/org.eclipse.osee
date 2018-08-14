@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
+import org.eclipse.osee.framework.core.data.FeatureDefinition;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
@@ -26,11 +26,11 @@ public class ApplicabilityUtility {
 
       OseeClient oseeClient = ServiceUtil.getOseeClient();
 
-      List<FeatureDefinitionData> featureDefinitionData =
+      List<FeatureDefinition> featureDefinitionData =
          oseeClient.getApplicabilityEndpoint(branch).getFeatureDefinitionData();
 
       HashCollection<String, String> validFeatureValues = new HashCollection<>();
-      for (FeatureDefinitionData feat : featureDefinitionData) {
+      for (FeatureDefinition feat : featureDefinitionData) {
          validFeatureValues.put(feat.getName().toUpperCase(), feat.getValues());
       }
 

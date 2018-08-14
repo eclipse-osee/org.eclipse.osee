@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
+import org.eclipse.osee.framework.core.data.FeatureDefinition;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.type.LinkType;
@@ -239,11 +239,11 @@ public class WordUpdateArtifact {
    }
 
    private HashCollection<String, String> getValidFeatureValuesForBranch(BranchId branch) {
-      List<FeatureDefinitionData> featureDefinitionData =
+      List<FeatureDefinition> featureDefinitionData =
          orcsApi.getQueryFactory().applicabilityQuery().getFeatureDefinitionData(branch);
 
       HashCollection<String, String> validFeatureValues = new HashCollection<>();
-      for (FeatureDefinitionData feat : featureDefinitionData) {
+      for (FeatureDefinition feat : featureDefinitionData) {
          validFeatureValues.put(feat.getName().toUpperCase(), feat.getValues());
       }
 

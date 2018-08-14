@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
-import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
+import org.eclipse.osee.framework.core.data.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
@@ -42,7 +42,7 @@ public interface ApplicabilityQuery {
 
    HashMap<Long, ApplicabilityToken> getApplicabilityTokens(BranchId branch1, BranchId branch2);
 
-   List<FeatureDefinitionData> getFeatureDefinitionData(BranchId branch);
+   List<FeatureDefinition> getFeatureDefinitionData(BranchId branch);
 
    Map<String, List<String>> getNamedViewApplicabilityMap(BranchId branch, ArtifactId viewId);
 

@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
-import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
+import org.eclipse.osee.framework.core.data.FeatureDefinition;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -577,9 +577,9 @@ public class WordMLApplicabilityHandler {
 
    private String getDefaultValue(String feature) {
       String toReturn = null;
-      FeatureDefinitionData[] featDataList = JsonUtil.readValue(featureDefinitionJson, FeatureDefinitionData[].class);
+      FeatureDefinition[] featDataList = JsonUtil.readValue(featureDefinitionJson, FeatureDefinition[].class);
 
-      for (FeatureDefinitionData featData : featDataList) {
+      for (FeatureDefinition featData : featDataList) {
          if (featData.getName().equalsIgnoreCase(feature)) {
             toReturn = featData.getDefaultValue();
             break;

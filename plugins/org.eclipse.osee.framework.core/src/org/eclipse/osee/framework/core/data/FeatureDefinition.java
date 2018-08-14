@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.data;
 
 import java.util.List;
 
-public class FeatureDefinitionData {
+public class FeatureDefinition {
 
    private String name;
    private String type;
@@ -20,11 +20,11 @@ public class FeatureDefinitionData {
    private String defaultValue;
    private String description;
 
-   public FeatureDefinitionData() {
+   public FeatureDefinition() {
       // Not doing anything
    }
 
-   public FeatureDefinitionData(String name, String type, List<String> values, String defaultValue, String description) {
+   public FeatureDefinition(String name, String type, List<String> values, String defaultValue, String description) {
       this.name = name;
       this.type = type;
       this.values = values;

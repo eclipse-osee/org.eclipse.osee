@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
-import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
+import org.eclipse.osee.framework.core.data.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -123,7 +123,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
-   public List<FeatureDefinitionData> getFeatureDefinitionData(BranchId branch) {
+   public List<FeatureDefinition> getFeatureDefinitionData(BranchId branch) {
       BranchId branchToUse = branch;
       Branch br = branchQuery.andId(branch).getResults().getExactlyOne();
       if (br.getBranchType().equals(BranchType.MERGE)) {
@@ -133,11 +133,11 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       List<ArtifactReadable> featureDefinitionArts =
          queryFactory.fromBranch(branchToUse).andTypeEquals(CoreArtifactTypes.FeatureDefinition).getResults().getList();
 
-      List<FeatureDefinitionData> featureDefinition = new ArrayList<>();
+      List<FeatureDefinition> featureDefinition = new ArrayList<>();
 
       for (ArtifactReadable art : featureDefinitionArts) {
          String json = art.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
-         FeatureDefinitionData[] readValue = JsonUtil.readValue(json, FeatureDefinitionData[].class);
+         FeatureDefinition[] readValue = JsonUtil.readValue(json, FeatureDefinition[].class);
          featureDefinition.addAll(Arrays.asList(readValue));
       }
       return featureDefinition;
@@ -200,11 +200,11 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
             html.append("<table border=\"1\">");
             List<ArtifactId> branchViews = branchView.getBranchViews();
 
-            List<FeatureDefinitionData> featureDefinitionData = getFeatureDefinitionData(branch);
+            List<FeatureDefinition> featureDefinitionData = getFeatureDefinitionData(branch);
 
-            Collections.sort(featureDefinitionData, new Comparator<FeatureDefinitionData>() {
+            Collections.sort(featureDefinitionData, new Comparator<FeatureDefinition>() {
                @Override
-               public int compare(FeatureDefinitionData obj1, FeatureDefinitionData obj2) {
+               public int compare(FeatureDefinition obj1, FeatureDefinition obj2) {
                   return obj1.getName().compareTo(obj2.getName());
                }
             });
@@ -215,7 +215,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
             for (ArtifactId artId : branchViews) {
                branchViewsMap.put(artId, getNamedViewApplicabilityMap(branch, artId));
             }
-            for (FeatureDefinitionData featureDefinition : featureDefinitionData) {
+            for (FeatureDefinition featureDefinition : featureDefinitionData) {
                html.append("<tr>");
                html.append(String.format("<td>%s</td>", featureDefinition.getName()));
                html.append(String.format("<td>%s</td>", featureDefinition.getDescription()));

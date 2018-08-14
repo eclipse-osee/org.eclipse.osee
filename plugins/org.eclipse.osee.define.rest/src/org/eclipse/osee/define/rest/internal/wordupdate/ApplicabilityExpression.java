@@ -20,7 +20,7 @@ import java.util.regex.Matcher;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
+import org.eclipse.osee.framework.core.data.FeatureDefinition;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
@@ -191,9 +191,9 @@ public class ApplicabilityExpression {
       String toReturn = null;
       String json = featureDefArt.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
 
-      FeatureDefinitionData[] featDataList = JsonUtil.readValue(json, FeatureDefinitionData[].class);
+      FeatureDefinition[] featDataList = JsonUtil.readValue(json, FeatureDefinition[].class);
 
-      for (FeatureDefinitionData featData : featDataList) {
+      for (FeatureDefinition featData : featDataList) {
          if (featData.getName().equalsIgnoreCase(feature)) {
             toReturn = featData.getDefaultValue();
             break;
