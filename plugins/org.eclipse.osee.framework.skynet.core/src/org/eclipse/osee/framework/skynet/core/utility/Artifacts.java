@@ -253,18 +253,17 @@ public final class Artifacts {
    }
 
    public static String getDirtyReport(Artifact artifact) {
-      String rString = null;
+      StringBuilder strB = new StringBuilder();
       for (Attribute<?> attribute : artifact.internalGetAttributes()) {
          if (attribute.isDirty()) {
-            rString = "Attribute: " + attribute.getNameValueDescription();
-            break;
+            strB.append("Attribute: ");
+            strB.append(attribute.getNameValueDescription());
+            strB.append("\n");
          }
       }
 
-      if (rString == null) {
-         rString = RelationManager.reportHasDirtyLinks(artifact);
-      }
-      return rString;
+      strB.append(RelationManager.reportHasDirtyLinks(artifact));
+      return strB.toString();
    }
 
    public static Collection<Long> toUuids(Set<Artifact> artifacts) {

@@ -135,10 +135,10 @@ public class ConflictIntroduceTest {
 
    @Test
    public void testDeletedButModifiedConflict() {
-      Artifact dArtifact =
+      Artifact sourceArt =
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, "Chassis", sourceBranch);
-      assertNotNull(dArtifact);
-      dArtifact.deleteAndPersist();
+      assertNotNull(sourceArt);
+      sourceArt.deleteAndPersist();
 
       Artifact artifactToModify =
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, "Chassis", destinationBranch);
