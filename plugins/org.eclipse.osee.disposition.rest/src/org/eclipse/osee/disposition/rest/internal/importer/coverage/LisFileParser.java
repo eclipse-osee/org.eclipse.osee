@@ -66,7 +66,7 @@ public class LisFileParser implements DispoImporterApi {
    private static final String LOG = "\\s*(log).*";
    private static final String EXIT_WHEN = "\\s*\\( \\)\\s*\\( \\)\\s*(EXIT WHEN).*";
    private static final String WHEN_FOR = "\\s*\\( \\)\\s*(WHEN|FOR).*";
-   private static final String WHEN_CASE = "^(?=.*WHEN)(?!.*OTHERS).*";
+   private static final String WHEN_CASE = "(.*\\bWHEN\\b\\s*[^:]*$)";
 
    private final DispoDataFactory dataFactory;
 
