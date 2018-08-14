@@ -98,6 +98,7 @@ public enum FrameworkImage implements KeyedImage {
    EXPORT_DATA("export_data.gif"),
    EXPORT_TABLE("export_table.gif"),
    EXCLAIM_RED("redExclaim.gif"),
+   FEATURE("feature.gif"),
    FLASHLIGHT("flashlight.gif"),
    FILTERS("filter.gif"),
    GEAR("gear.gif"),
