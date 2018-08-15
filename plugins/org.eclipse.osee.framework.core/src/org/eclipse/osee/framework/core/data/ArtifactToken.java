@@ -127,4 +127,8 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, Identity<
       }
       return new ArtifactTokenImpl(id, guid, name, branch, artifactType);
    }
+
+   static ArtifactToken getSentinal() {
+      return valueOf(ArtifactId.SENTINEL, BranchId.SENTINEL);
+   }
 }

@@ -89,6 +89,53 @@ attributeType "Extension" extends StringAttribute {
 	mediaType "text/plain"
 }
 
+attributeType "Default Value" extends StringAttribute {
+	id 2221435335730390044
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "Value" extends StringAttribute {
+	id 861995499338466438
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "Feature Multivalued" extends BooleanAttribute {
+	id 3641431177461038717
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	defaultValue "fale"
+	mediaType "text/plain"
+}
+
+oseeEnumType "enum.feature.value.type" {
+	id 981613428814575859
+	entry "String"
+	entry "Boolean"
+	entry "Decimal"
+	entry "Integer"
+}
+
+attributeType "Feature Value Type" extends EnumeratedAttribute {
+	id 31669009535111027
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	enumType "enum.feature.value.type"
+	mediaType "text/plain"
+	taggerId DefaultAttributeTaggerProvider
+	defaultValue "String"
+}
+
 artifactType "User" extends "Artifact" {
 	id 5
 	attribute "Active"
@@ -1868,6 +1915,10 @@ artifactType "Osee Type Definition" extends "Artifact" {
 
 artifactType "Feature" extends "Artifact" {
 	id 87
+	attribute "Default Value"
+	attribute "Value"
+	attribute "Feature Multivalued"
+	attribute "Feature Value Type"
 }
 
 relationType "Related Feature" {

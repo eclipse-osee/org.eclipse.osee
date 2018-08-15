@@ -27,12 +27,12 @@ public class VersionResourceTest extends AbstractRestTest {
 
    @Test
    public void testAtsVersionsRestCall() {
-      testVersionUrl("/ats/version", 6, false);
+      testVersionUrl("/ats/version", 8, false);
    }
 
    @Test
    public void testAtsVersionsDetailsRestCall() {
-      testVersionUrl("/ats/version/details", 6, true);
+      testVersionUrl("/ats/version/details", 8, true);
    }
 
    @Test

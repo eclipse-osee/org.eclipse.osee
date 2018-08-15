@@ -16,6 +16,8 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.ProductLi
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.CIS_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
+import java.util.Arrays;
+import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -26,29 +28,37 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
+import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoSubsystems;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.Requirements;
 import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.OrcsApplicability;
 import org.eclipse.osee.orcs.OrcsBranch;
+import org.eclipse.osee.orcs.core.util.Artifacts;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
 /**
  * @author Ryan D. Brooks
+ * @author Donald G. Dunne
  */
 public class CreateDemoBranches {
    private final OrcsApi orcsApi;
    private final TransactionFactory txFactory;
    private final QueryBuilder query;
+   private final OrcsApplicability ops;
 
    public CreateDemoBranches(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
       txFactory = orcsApi.getTransactionFactory();
       query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
+      ops = orcsApi.getApplicabilityOps();
    }
 
    public void populate() {
@@ -58,15 +68,11 @@ public class CreateDemoBranches {
       tx.commit();
 
       createDemoProgramBranch(SAW_Bld_1, account);
-      createPlConfig(SAW_Bld_1, account);
 
       createDemoProgramBranch(CIS_Bld_1, account);
-   }
 
-   private void configureFeature(TransactionBuilder tx, String featureName, ArtifactId[] products, String... featureValues) {
-      for (int i = 0; i < products.length; i++) {
-         tx.addTuple2(CoreTupleTypes.ViewApplicability, products[i], featureName + " = " + featureValues[i]);
-      }
+      createProductLineBranch();
+      createProductLineConfig(DemoBranches.SAW_PL, account);
    }
 
    private void configureProducts(TransactionBuilder tx, ArtifactToken[] products) {
@@ -76,15 +82,27 @@ public class CreateDemoBranches {
       }
    }
 
-   private void createPlConfig(BranchId branch, UserId account) {
+   public void createProductLineBranch() {
+      OrcsBranch branchOps = orcsApi.getBranchOps();
+      BranchId plBranch;
+      try {
+         plBranch = branchOps.createBaselineBranch(DemoBranches.SAW_PL, DemoUsers.Joe_Smith, DemoBranches.SAW_Bld_1,
+            SystemUser.OseeSystem).call();
+         branchOps.createBaselineBranch(DemoBranches.SAW_PL_Hardening_Branch, DemoUsers.Joe_Smith, DemoBranches.SAW_PL,
+            SystemUser.OseeSystem).call();
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
+      branchOps.setBranchPermission(DemoUsers.Joe_Smith, plBranch, PermissionEnum.FULLACCESS);
+   }
 
-      TransactionBuilder tx0 =
-         txFactory.createTransaction(branch, SystemUser.OseeSystem, "Create Product Line folders");
-      tx0.createArtifact(DefaultHierarchyRoot, ProductLineFolder);
-      tx0.createArtifact(ProductLineFolder, CoreArtifactTokens.ProductsFolder);
-      tx0.commit();
+   private void createProductLineConfig(BranchId branch, UserId account) {
 
-      TransactionBuilder tx = txFactory.createTransaction(branch, SystemUser.OseeSystem, "Configure Product Line");
+      TransactionBuilder tx = txFactory.createTransaction(branch, SystemUser.OseeSystem, "Create Product Line folders");
+
+      ArtifactToken plFolder = Artifacts.getOrCreate(ProductLineFolder, DefaultHierarchyRoot, tx, orcsApi);
+      Artifacts.getOrCreate(CoreArtifactTokens.ProductsFolder, plFolder, tx, orcsApi);
+      ArtifactToken featuresFolder = Artifacts.getOrCreate(CoreArtifactTokens.FeaturesFolder, plFolder, tx, orcsApi);
 
       ArtifactToken productA = tx.createView(branch, "Product A");
       ArtifactToken productB = tx.createView(branch, "Product B");
@@ -94,10 +112,44 @@ public class CreateDemoBranches {
 
       configureProducts(tx, products);
 
-      configureFeature(tx, "Feature 1", products, "Excluded", "Included", "Excluded", "Included");
-      configureFeature(tx, "Unit Type", products, "Metric", "Metric", "Metric", "English");
-      configureFeature(tx, "Feature 3", products, "Excluded", "Included", "Included", "Excluded");
-      configureFeature(tx, "Feature 4", products, "Included", "Included", "Included", "Excluded");
+      createFeatureConfigs(featuresFolder, tx);
+
+      configureFeature(tx, "Feature 1", products, "Excluded", "Included", "Excluded", "Mod A");
+      configureFeature(tx, "Unit Type", products, "Metric", "Metric", "Metric", "Mod B");
+      configureFeature(tx, "Feature 3", products, "Excluded", "Included", "Included", "Mod A");
+      configureFeature(tx, "Feature 4", products, "Included", "Included", "Included", "Mod A");
+
+      createLegacyFeatureConfig(featuresFolder, tx);
+
+      tx.commit();
+   }
+
+   private void configureFeature(TransactionBuilder tx, String featureName, ArtifactId[] products, String... featureValues) {
+      for (int i = 0; i < products.length; i++) {
+         tx.addTuple2(CoreTupleTypes.ViewApplicability, products[i], featureName + " = " + featureValues[i]);
+      }
+   }
+
+   private void createFeatureConfigs(ArtifactId folder, TransactionBuilder tx) {
+      FeatureDefinition def1 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), "Feature 1", "String",
+         Arrays.asList("Included", "Excluded"), "Included", false, "A significant capability");
+      ops.storeFeatureDefinition(def1, tx);
+      FeatureDefinition def2 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), "Unit Type", "String",
+         Arrays.asList("Metrics", "English"), "", false, "Used select type of units");
+      ops.storeFeatureDefinition(def2, tx);
+      FeatureDefinition def3 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), "Feature 3", "String",
+         Arrays.asList("Included", "Excluded"), "Included", false, "A small point of variation");
+      ops.storeFeatureDefinition(def3, tx);
+      FeatureDefinition def4 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), "Feature 4", "String",
+         Arrays.asList("Mod A", "Mod B", "Mod C"), "Mod A", true, "This feature depends of Feature 1");
+      ops.storeFeatureDefinition(def4, tx);
+      orcsApi.getApplicabilityOps();
+   }
+
+   /**
+    * Can be removed after 26.0 release which converted feature definitions from a single json string
+    */
+   private void createLegacyFeatureConfig(ArtifactId folder, TransactionBuilder tx) {
 
       ArtifactId featureDefinition = tx.createArtifact(CoreArtifactTokens.ProductsFolder,
          CoreArtifactTypes.FeatureDefinition, "Feature Definition");
@@ -122,15 +174,13 @@ public class CreateDemoBranches {
          "},{" + //
          "\"name\": \"Feature 4\"," + //
          "\"type\": \"single\"," + //
-         "\"values\": [\"Included\", \"Excluded\"]," + //
-         "\"defaultValue\": \"Included\"," + //
+         "\"values\": [\"Mod A\", \"Mod B\", \"Mod C\"]," + //
+         "\"defaultValue\": \"Mod A\"," + //
          "\"description\": \"This feature depends of Feature 1\"" + //
          "}" + //
          "]";
 
       tx.createAttribute(featureDefinition, CoreAttributeTypes.GeneralStringData, featureDefJson);
-
-      tx.commit();
    }
 
    public void createDemoProgramBranch(IOseeBranch branch, UserId account) {

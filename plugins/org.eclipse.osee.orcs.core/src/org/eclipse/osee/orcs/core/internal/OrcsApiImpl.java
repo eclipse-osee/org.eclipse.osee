@@ -23,6 +23,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.OrcsApplicability;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsPerformance;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -85,6 +86,7 @@ public class OrcsApiImpl implements OrcsApi {
    private TxDataManager txDataManager;
    private TxCallableFactory txCallableFactory;
    private ScriptEngineManager manager;
+   private OrcsApplicability applicability;
 
    ExternalArtifactManager proxyManager;
 
@@ -202,6 +204,8 @@ public class OrcsApiImpl implements OrcsApi {
 
       OrcsScriptCompiler compiler = new OrcsScriptCompilerImpl(getSystemSession(), module, orcsTypes);
       manager = ScriptEngines.newScriptEngineManager(compiler);
+
+      applicability = new OrcsApplicabilityOps(this);
    }
 
    public void stop() {
@@ -290,5 +294,10 @@ public class OrcsApiImpl implements OrcsApi {
    @Override
    public SystemPreferences getSystemPreferences() {
       return preferences;
+   }
+
+   @Override
+   public OrcsApplicability getApplicabilityOps() {
+      return applicability;
    }
 }

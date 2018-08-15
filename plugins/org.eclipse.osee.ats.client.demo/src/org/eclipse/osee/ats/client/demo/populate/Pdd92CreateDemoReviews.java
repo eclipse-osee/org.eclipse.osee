@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.client.demo.populate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.Role;
@@ -22,7 +21,6 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
-import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.ats.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.workflow.review.DecisionReviewManager;
 import org.eclipse.osee.ats.workflow.review.DecisionReviewState;
@@ -159,15 +157,6 @@ public class Pdd92CreateDemoReviews {
          defect.setClosed(true);
       }
       changes.execute();
-
-      ArtifactId workDefId = AtsClientService.get().getAttributeResolver().getSoleAttributeValue((IAtsObject) reviewArt,
-         AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.SENTINEL);
-      System.err.println("Work Def Ref " + workDefId);
-      String workDefName = AtsClientService.get().getAttributeResolver().getSoleAttributeValue((IAtsObject) reviewArt,
-         ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition, "");
-      System.err.println("Work Def " + workDefName);
-      System.err.println(String.format("Work Def [%s], work def as name == %s", reviewArt.getWorkDefinition(),
-         AtsClientService.get().isWorkDefAsName()));
 
       changes = AtsClientService.get().createChangeSet("Populate Demo DB - Create PeerToPeer Reviews 2");
       PeerToPeerReviewManager.setPrepareStateData(false, reviewArt, roles, "here", 100, 2.5, changes);

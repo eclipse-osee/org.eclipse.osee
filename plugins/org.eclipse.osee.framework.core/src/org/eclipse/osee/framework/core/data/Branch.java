@@ -12,12 +12,11 @@ package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Ryan D. Brooks
  */
-public class Branch extends NamedIdBase implements IOseeBranch {
+public class Branch extends BranchViewToken implements IOseeBranch {
    private final ArtifactId associatedArtifact;
    private final TransactionId baselineTx;
    private final TransactionId parentTx;
@@ -29,7 +28,7 @@ public class Branch extends NamedIdBase implements IOseeBranch {
    private final ArtifactId viewId;
 
    public Branch(Long id, String name, ArtifactId associatedArtifact, TransactionId baselineTx, TransactionId parentTx, BranchId parentBranch, boolean isArchived, BranchState branchState, BranchType branchType, boolean inheritAccessControl, ArtifactId viewId) {
-      super(id, name);
+      super(id, name, viewId);
       this.associatedArtifact = associatedArtifact;
       this.baselineTx = baselineTx;
       this.parentTx = parentTx;

@@ -48,6 +48,8 @@ public final class CoreAttributeTypes {
    public static final AttributeTypeToken Extension = AttributeTypeToken.valueOf(1152921504606847064L, "Extension");
    public static final AttributeTypeToken FavoriteBranch = AttributeTypeToken.valueOf(1152921504606847074L, "Favorite Branch");
    public static final AttributeTypeToken FaxPhone = AttributeTypeToken.valueOf(1152921504606847081L, "Fax Phone");
+   public static final AttributeTypeToken FeatureMultivalued = AttributeTypeToken.valueOf(3641431177461038717L, "Feature Multivalued");
+   public static final AttributeTypeToken FeatureValueType = AttributeTypeToken.valueOf(31669009535111027L, "Feature Value Type");
    public static final AttributeTypeToken FunctionalCategory = AttributeTypeToken.valueOf(1152921504606847871L, "Functional Category");
    public static final AttributeTypeToken FunctionalDAL = AttributeTypeToken.valueOf(8007959514939954596L, "Functional Development Assurance Level");
    public static final AttributeTypeToken FunctionalDALRationale = AttributeTypeToken.valueOf(926274413268034710L, "Functional Development Assurance Level Rationale");
@@ -106,6 +108,8 @@ public final class CoreAttributeTypes {
    public static final AttributeTypeToken XViewerCustomization = AttributeTypeToken.valueOf(1152921504606847077L, "XViewer Customization");
    public static final AttributeTypeToken XViewerDefaults = AttributeTypeToken.valueOf(1152921504606847078L, "XViewer Defaults");
    public static final AttributeTypeToken Zip = AttributeTypeToken.valueOf(1152921504606847071L, "Zip");
+   public static final AttributeTypeToken DefaultValue = AttributeTypeToken.valueOf(2221435335730390044L, "Default Value");
+   public static final AttributeTypeToken Value = AttributeTypeToken.valueOf(861995499338466438L, "Value");
 
    // @formatter:on
 

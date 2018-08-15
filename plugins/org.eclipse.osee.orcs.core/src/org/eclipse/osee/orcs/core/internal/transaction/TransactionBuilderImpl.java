@@ -416,9 +416,12 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public ArtifactToken createView(BranchId branch, String viewName) {
-      ArtifactReadable folder =
-         queryFactory.fromBranch(branch).andId(CoreArtifactTokens.ProductsFolder).getResults().getExactlyOne();
-      return createArtifact(folder, CoreArtifactTypes.BranchView, viewName);
+      // Retrieve from transaction in case it has not be persisted yet
+      ArtifactId plFolder = txData.getWriteable(CoreArtifactTokens.ProductsFolder);
+      if (plFolder == null) {
+         plFolder = CoreArtifactTokens.ProductsFolder;
+      }
+      return createArtifact(plFolder, CoreArtifactTypes.BranchView, viewName);
    }
 
    @Override
@@ -473,6 +476,27 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    @Override
    public <E1, E2, E3, E4> boolean deleteTupple4(Tuple4Type<E1, E2, E3, E4> tupleType, E1 element1, E2 element2, E3 element3, E4 element4) {
       return false;
+   }
+
+   @Override
+   public void addKeyValueOps(Long id, String name) {
+      keyValueOps.putByKey(id, name);
+   }
+
+   @Override
+   public ArtifactToken createArtifact(ArtifactToken parent, IArtifactType artifactType, String name, Long id) {
+      ArtifactToken art = createArtifact(artifactType, name, id);
+      txManager.addChild(txData, parent, art);
+      return art;
+   }
+
+   @Override
+   public ArtifactToken getWriteable(ArtifactId artifact) {
+      ArtifactToken art = txData.getWriteable(artifact);
+      if (art == null) {
+         art = ArtifactToken.getSentinal();
+      }
+      return art;
    }
 
 }

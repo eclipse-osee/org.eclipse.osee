@@ -26,7 +26,7 @@ public final class CoreRelationTypes {
    public static final RelationTypeSide CodeRequirement_CodeUnit = RelationTypeSide.create(SIDE_A, 0x2000000000000158L, "Code-Requirement");
    public static final RelationTypeSide CodeRequirement_Requirement = CodeRequirement_CodeUnit.getOpposite();
 
-   public static final RelationTypeSide Default_Hierarchical__Parent = RelationTypeSide.create(SIDE_A, 0x2000000000000154L, "Default Hierarchical");
+   public static final RelationTypeSide Default_Hierarchical__Parent = RelationTypeSide.create(SIDE_A, 2305843009213694292L, "Default Hierarchical");
    public static final RelationTypeSide Default_Hierarchical__Child = Default_Hierarchical__Parent.getOpposite();
    public static final RelationTypeToken DEFAULT_HIERARCHY = Default_Hierarchical__Parent;
    public static final RelationSide IS_PARENT = RelationSide.SIDE_A;

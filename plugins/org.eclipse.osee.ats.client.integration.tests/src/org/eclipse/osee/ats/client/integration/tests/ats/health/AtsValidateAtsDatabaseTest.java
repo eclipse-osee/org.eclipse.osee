@@ -11,17 +11,20 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.health;
 
 import static org.junit.Assert.fail;
+import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.eclipse.swt.program.Program;
 
 /**
  * This test runs the validate ats database check against whatever database is run against.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsValidateAtsDatabaseTest {
@@ -34,9 +37,12 @@ public class AtsValidateAtsDatabaseTest {
       XResultData rd = new XResultData();
       validateAtsDatabase.setFixAttributeValues(false);
       validateAtsDatabase.runIt(null, rd);
-      Matcher m = Pattern.compile("Error:.*$").matcher(XResultDataUI.getReport(rd, "").getManipulatedHtml());
+      String html = XResultDataUI.getReport(rd, "").getManipulatedHtml();
+      Matcher m = Pattern.compile("Error:.*$").matcher(html);
       while (m.find()) {
-         fail(m.group());
+         File file = OseeData.writeToFile("ValidateAtsDatabaseTest.html", html);
+         Program.launch(file.getAbsolutePath());
+         fail("Note: Failure html opened in browser.  " + m.group());
       }
 
       TestUtil.severeLoggingEnd(monitorLog);

@@ -34,6 +34,7 @@ public final class CoreArtifactTokens {
    public static ArtifactToken FrameworkAccessModel = ArtifactToken.valueOf(35975422L, null, "Framework Access Model", COMMON, CoreArtifactTypes.AccessControlModel);
    public static ArtifactToken ProductLineFolder = ArtifactToken.valueOf(8255179, "Product Line", CoreArtifactTypes.Folder);
    public static ArtifactToken ProductsFolder = ArtifactToken.valueOf(10039752, "Products", CoreArtifactTypes.Folder);
+   public static ArtifactToken FeaturesFolder = ArtifactToken.valueOf(239420307, "Features", CoreArtifactTypes.Folder);
 
    // @formatter:on
 

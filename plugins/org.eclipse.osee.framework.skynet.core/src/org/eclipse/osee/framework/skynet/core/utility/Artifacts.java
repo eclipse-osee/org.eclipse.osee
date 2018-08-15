@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
- * Utility methods for common tasks performed on Artifact's.
+ * Utility methods for common tasks performed on Artifacts.
  *
  * @author Robert A. Fisher
  * @author Donald G. Dunne

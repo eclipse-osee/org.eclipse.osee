@@ -20,7 +20,7 @@ import java.util.regex.Matcher;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import org.eclipse.osee.framework.core.data.FeatureDefinition;
+import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;

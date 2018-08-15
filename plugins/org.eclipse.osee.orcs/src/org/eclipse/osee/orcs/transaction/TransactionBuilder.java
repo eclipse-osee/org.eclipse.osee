@@ -177,5 +177,15 @@ public interface TransactionBuilder {
 
    <E1, E2, E3, E4> boolean deleteTupple4(Tuple4Type<E1, E2, E3, E4> tupleType, E1 e1, E2 e2, E3 e3, E4 e4);
 
+   void addKeyValueOps(Long id, String name);
+
+   ArtifactToken createArtifact(ArtifactToken parent, IArtifactType artifactType, String name, Long id);
+
+   /**
+    * @return writable artifact or sentinal
+    */
+   ArtifactToken getWriteable(ArtifactId artifact);
+
    List<ArtifactToken> createArtifacts(ArtifactTypeId artifactType, ArtifactId parent, List<String> names);
+
 }

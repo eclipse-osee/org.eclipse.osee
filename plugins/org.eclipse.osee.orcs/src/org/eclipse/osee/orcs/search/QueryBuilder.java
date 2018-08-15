@@ -75,4 +75,6 @@ public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query 
     */
    CancellableCallable<ResultSet<? extends ArtifactId>> createSearchResultsAsIds();
 
+   ArtifactToken getArtifactOrNull();
+
 }

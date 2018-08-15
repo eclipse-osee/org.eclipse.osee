@@ -52,7 +52,7 @@ public class AtsRelationResolverServiceTest {
 
    @Test
    public void testGetRelatedArtifactIdRelationTypeSide() {
-      Assert.assertEquals(6, relationResolver.getRelated(topAi, CoreRelationTypes.Default_Hierarchical__Child).size());
+      Assert.assertEquals(7, relationResolver.getRelated(topAi, CoreRelationTypes.Default_Hierarchical__Child).size());
    }
 
    @Test

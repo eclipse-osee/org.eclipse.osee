@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -68,6 +69,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
    private final String modelName;
    private final Map<String, Artifact> teamNameToTeamDefArt = new HashMap<>();
    private final Map<String, ArtifactToken> sheetNameToArtifactIdMap;
+   private final Set<Long> importedIds = new HashSet<>();
 
    public ImportAIsAndTeamDefinitionsToDb(String modelName, AtsDsl atsDsl, Map<String, ArtifactToken> sheetNameToArtifactIdMap, IAtsChangeSet changes) {
       this.modelName = modelName;
@@ -127,6 +129,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
          }
          if (newTeam == null) {
             long id = dslTeamDef.getUuid() > 0 ? dslTeamDef.getUuid() : Lib.generateArtifactIdAsInt();
+            checkImportedId(id);
             newTeam = ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition,
                AtsClientService.get().getAtsBranch(), dslTeamName, id);
          }
@@ -208,6 +211,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
          String dslVerName = Strings.unquote(dslVersionDef.getName());
          // System.out.println("   - Importing Version " + dslVerName);
          long id = dslVersionDef.getUuid() > 0 ? dslVersionDef.getUuid() : Lib.generateArtifactIdAsInt();
+         checkImportedId(id);
          Artifact newVer = ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version,
             AtsClientService.get().getAtsBranch(), dslVerName, id);
 
@@ -252,6 +256,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
          }
          if (newAi == null) {
             long id = dslAIDef.getUuid() > 0 ? dslAIDef.getUuid() : Lib.generateArtifactIdAsInt();
+            checkImportedId(id);
             newAi = ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem,
                AtsClientService.get().getAtsBranch(), dslAIName, id);
          }
@@ -300,6 +305,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
             programArtifactType = ArtifactTypeManager.getType(artifactTypeName);
          }
          long id = dslProgramDef.getUuid() > 0 ? dslProgramDef.getUuid() : Lib.generateArtifactIdAsInt();
+         checkImportedId(id);
          newProgramArt = ArtifactTypeManager.addArtifact(programArtifactType, AtsClientService.get().getAtsBranch(),
             dslProgramName, id);
          changes.add(newProgramArt);
@@ -311,6 +317,13 @@ public class ImportAIsAndTeamDefinitionsToDb {
          }
          importProgramAttributes(dslProgramDef, newProgramArt);
       }
+   }
+
+   private void checkImportedId(long id) {
+      if (importedIds.contains(id)) {
+         throw new OseeArgumentException("Duplicate Id [%s] in Import Sheets", id);
+      }
+      importedIds.add(id);
    }
 
    private void importProgramAttributes(ProgramDef dslProgramDef, Artifact newProgramArt) {

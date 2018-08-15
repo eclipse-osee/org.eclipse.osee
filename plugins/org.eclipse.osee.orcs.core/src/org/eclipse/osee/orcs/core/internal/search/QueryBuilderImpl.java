@@ -85,6 +85,11 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
    }
 
    @Override
+   public ArtifactReadable getArtifactOrNull() {
+      return getResults().getAtMostOneOrNull();
+   }
+
+   @Override
    public ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches() {
       try {
          return createSearchWithMatches().call();

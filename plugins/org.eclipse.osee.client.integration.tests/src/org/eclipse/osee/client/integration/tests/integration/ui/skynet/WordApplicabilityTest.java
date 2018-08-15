@@ -37,15 +37,15 @@ public class WordApplicabilityTest {
 
    @Before
    public void setup() {
-      validFeatureValuesForBranch = ApplicabilityUtility.getValidFeatureValuesForBranch(DemoBranches.SAW_Bld_1);
-      validConfigurations = ApplicabilityUtility.getBranchViewNamesUpperCase(DemoBranches.SAW_Bld_1);
+      validFeatureValuesForBranch = ApplicabilityUtility.getValidFeatureValuesForBranch(DemoBranches.SAW_PL);
+      validConfigurations = ApplicabilityUtility.getBranchViewNamesUpperCase(DemoBranches.SAW_PL);
    }
 
    @Test
    public void testInvalidApplicabilityTags() throws IOException {
       String content = Lib.fileToString(getClass(), TEST_INVALID_TAGS);
 
-      assertTrue(WordCoreUtil.areApplicabilityTagsInvalid(content, DemoBranches.SAW_Bld_1, validFeatureValuesForBranch,
+      assertTrue(WordCoreUtil.areApplicabilityTagsInvalid(content, DemoBranches.SAW_PL, validFeatureValuesForBranch,
          validConfigurations));
    }
 
@@ -53,7 +53,7 @@ public class WordApplicabilityTest {
    public void testValidElseApplicabilityTags() throws IOException {
       String content = Lib.fileToString(getClass(), TEST_ElSE_TAGS);
 
-      assertFalse(WordCoreUtil.areApplicabilityTagsInvalid(content, DemoBranches.SAW_Bld_1, validFeatureValuesForBranch,
+      assertFalse(WordCoreUtil.areApplicabilityTagsInvalid(content, DemoBranches.SAW_PL, validFeatureValuesForBranch,
          validConfigurations));
    }
 
@@ -61,7 +61,7 @@ public class WordApplicabilityTest {
    public void testValidEmbeddedApplicabilityTags() throws IOException {
       String content = Lib.fileToString(getClass(), TEST_EMBEDDED_TAGS);
 
-      assertFalse(WordCoreUtil.areApplicabilityTagsInvalid(content, DemoBranches.SAW_Bld_1, validFeatureValuesForBranch,
+      assertFalse(WordCoreUtil.areApplicabilityTagsInvalid(content, DemoBranches.SAW_PL, validFeatureValuesForBranch,
          validConfigurations));
    }
 
@@ -69,7 +69,7 @@ public class WordApplicabilityTest {
    public void testValidApplicabilityTags() throws IOException {
       String content = Lib.fileToString(getClass(), TEST_VALID_TAGS);
 
-      assertFalse(WordCoreUtil.areApplicabilityTagsInvalid(content, DemoBranches.SAW_Bld_1, validFeatureValuesForBranch,
+      assertFalse(WordCoreUtil.areApplicabilityTagsInvalid(content, DemoBranches.SAW_PL, validFeatureValuesForBranch,
          validConfigurations));
    }
 }

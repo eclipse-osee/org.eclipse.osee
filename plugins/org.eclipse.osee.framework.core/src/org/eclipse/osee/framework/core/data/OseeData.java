@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.data;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
@@ -23,6 +24,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -127,5 +129,15 @@ public class OseeData {
       } catch (CoreException ex) {
          throw OseeCoreException.wrap(ex);
       }
+   }
+
+   public static File writeToFile(String filename, String html) {
+      File outFile = getFile(filename);
+      try {
+         Lib.writeStringToFile(html, outFile);
+      } catch (IOException ex) {
+         throw new OseeCoreException(ex);
+      }
+      return outFile;
    }
 }
