@@ -570,8 +570,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       for (AttributeTypeToken attributeType : getValidAttributeTypes()) {
          int missingCount = getRemainingAttributeCount(attributeType);
          for (int i = 0; i < missingCount; i++) {
-            Attribute<Object> attr = attributeFactory.createAttributeWithDefaults(this, getOrcsData(), attributeType);
-            attr.clearDirty();
+            attributeFactory.createAttributeWithDefaults(this, getOrcsData(), attributeType);
          }
       }
    }

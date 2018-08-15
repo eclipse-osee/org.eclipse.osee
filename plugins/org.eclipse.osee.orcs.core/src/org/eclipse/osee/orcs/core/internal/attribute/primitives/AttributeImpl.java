@@ -35,7 +35,6 @@ import org.eclipse.osee.orcs.data.AttributeTypes;
 public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, Attribute<T> {
    private AttributeTypes attributeTypeCache;
    private Reference<AttributeContainer> containerReference;
-   private String defaultValue;
    private Log logger;
    private AttributeData<T> attributeData;
 
@@ -105,6 +104,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    }
 
    protected void setToDefaultValue() {
+      String defaultValue = attributeTypeCache.getDefaultValue(attributeData.getType());
       if (defaultValue != null) {
          subClassSetValue(convertStringToValue(defaultValue));
       }
