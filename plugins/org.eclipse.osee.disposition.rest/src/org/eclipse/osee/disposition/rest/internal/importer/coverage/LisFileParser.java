@@ -62,6 +62,7 @@ import org.eclipse.osee.vcast.model.VCastStatementCoverage;
  */
 public class LisFileParser implements DispoImporterApi {
    private static final String RESULTS = "results";
+   private static final String IMPORTED_RESULTS = "IMPORTED_RESULTS";
    private static final String LOG = "\\s*(log).*";
    private static final String EXIT_WHEN = "\\s*\\( \\)\\s*\\( \\)\\s*(EXIT WHEN).*";
    private static final String WHEN_FOR = "\\s*\\( \\)\\s*(WHEN|FOR).*";
@@ -387,19 +388,23 @@ public class LisFileParser implements DispoImporterApi {
       boolean exists = false;
       File resultsFile = new File(resultPathAbs);
       if (!resultsFile.exists()) {
-         File resultsDir = new File(vCastDir + File.separator + RESULTS);
-         File[] files = resultsDir.listFiles();
-         for (File file : files) {
-            String inputF = file.toString();
-            String outputF = inputF.replaceAll(config.getResultsFileExtRegex(), "");
-            if (outputF.toString().equalsIgnoreCase(resultsFile.toString())) {
-               process(report, resultPath, file);
-               exists = true;
-               break;
+         List<File> resultsDirs = new ArrayList<File>();
+         resultsDirs.add(new File(vCastDir + File.separator + RESULTS));
+         resultsDirs.add(new File(vCastDir + File.separator + RESULTS + File.separator + IMPORTED_RESULTS));
+         for (File resultsDir : resultsDirs) {
+            File[] files = resultsDir.listFiles();
+            for (File file : files) {
+               String inputF = file.toString();
+               String outputF = inputF.replaceAll(config.getResultsFileExtRegex(), "");
+               if (outputF.toString().equalsIgnoreCase(resultsFile.toString())) {
+                  process(report, resultPath, file);
+                  exists = true;
+                  break;
+               }
             }
-         }
-         if (!exists) {
-            report.addEntry("SQL", String.format("Could not find DAT file [%s]", resultPathAbs), WARNING);
+            if (!exists) {
+               report.addEntry("SQL", String.format("Could not find DAT file [%s]", resultPathAbs), WARNING);
+            }
          }
       } else {
          process(report, resultPath, resultsFile);
