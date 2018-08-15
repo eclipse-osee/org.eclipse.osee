@@ -38,4 +38,8 @@ public interface DatastoreEndpoint {
    @Path("migrate")
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
    Response migrate();
+
+   @POST
+   @Path("initialize/createDemoBranches")
+   void createDemoBranches();
 }

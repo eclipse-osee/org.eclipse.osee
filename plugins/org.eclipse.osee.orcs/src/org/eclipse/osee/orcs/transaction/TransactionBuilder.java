@@ -161,8 +161,6 @@ public interface TransactionBuilder {
 
    void createApplicabilityForView(ArtifactId viewId, String applicability);
 
-   void createDemoApplicability();
-
    // Tuples
    <E1, E2> GammaId addTuple2(Tuple2Type<E1, E2> tupleType, E1 e1, E2 e2);
 

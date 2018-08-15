@@ -27,4 +27,6 @@ public interface OrcsAdmin {
 
    void createSystemBranches(String typeModel);
 
+   void createDemoBranches();
+
 }

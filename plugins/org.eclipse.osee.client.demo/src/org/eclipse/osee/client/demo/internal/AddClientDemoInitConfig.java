@@ -26,10 +26,7 @@ public class AddClientDemoInitConfig implements IAddDbInitChoice {
    public void addDbInitChoice(IGroupSelector groupSelection) {
       DatabaseInitConfiguration config = new DatabaseInitConfiguration();
 
-      config.addTask(asLocalExtensionId("AddDemoUsers"));
       config.addTask(DefaultDbInitTasks.SIMPLE_TEMPLATE_PROVIDER.getExtensionId());
-      config.addTask(asLocalExtensionId("AddSawBranch"));
-      config.addTask(asLocalExtensionId("AddCisBranch"));
       config.addTask(asLocalExtensionId("AddRequirementData"));
 
       config.addOseeType(DefaultOseeTypeDefinitions.OSEE_BASE_TYPES);

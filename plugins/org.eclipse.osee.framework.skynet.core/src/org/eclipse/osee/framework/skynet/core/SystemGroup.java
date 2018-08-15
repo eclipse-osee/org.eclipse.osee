@@ -64,5 +64,4 @@ public enum SystemGroup {
    public boolean isCurrentUserTemporaryOverride() {
       return group.isCurrentUserTemporaryOverride();
    }
-
 }

@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.data.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -181,28 +180,6 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
          orcsApi.getTransactionFactory().createTransaction(branch, account, "Create new applicability");
       tx.createApplicabilityForView(viewId, applicability);
       return tx.commit();
-   }
-
-   @Override
-   public void createDemoApplicability() {
-      TransactionBuilder tx =
-         orcsApi.getTransactionFactory().createTransaction(branch, account, "Create Demo Applicability");
-      tx.createDemoApplicability();
-      tx.commit();
-
-      // set the view on common branch
-      List<ArtifactReadable> branchViewArtifacts = orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(
-         CoreArtifactTypes.BranchView).getResults().getList();
-
-      TransactionBuilder tx2 =
-         orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, account, "Create Branch View");
-
-      for (ArtifactReadable artifact : branchViewArtifacts) {
-         tx2.addTuple2(CoreTupleTypes.BranchView, branch, artifact);
-      }
-
-      tx2.commit();
-
    }
 
    @Override

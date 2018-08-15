@@ -156,12 +156,6 @@ public interface ApplicabilityEndpoint {
    TransactionToken createApplicabilityForView(@PathParam("viewId") ArtifactId viewId, String applicability);
 
    /**
-    * Used for Demo DB Init.
-    */
-   @POST
-   void createDemoApplicability();
-
-   /**
     * Copy missing tuples of type CoreTupleTypes.ViewApplicability from parent branch onto this branch
     */
    @POST

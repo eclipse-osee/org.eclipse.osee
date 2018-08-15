@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
@@ -50,8 +51,9 @@ public class DbBootstrapTask implements IDbInitializationTask {
       Conditions.checkExpressionFailOnTrue(oseeTypeExtensions.isEmpty(), "osee types cannot be empty");
 
       String typeModel = OseeTypesSetup.getOseeTypeModelByExtensions(oseeTypeExtensions);
-
-      OsgiUtil.getService(getClass(), OseeClient.class).getDatastoreEndpoint().initialize(typeModel);
+      DatastoreEndpoint datastoreEndpoint = OsgiUtil.getService(getClass(), OseeClient.class).getDatastoreEndpoint();
+      datastoreEndpoint.initialize(typeModel);
+      datastoreEndpoint.createDemoBranches();
 
       Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.skynet.core");
       int state = bundle.getState();

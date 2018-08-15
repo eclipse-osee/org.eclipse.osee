@@ -75,4 +75,9 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
       info.setProperties(metaData.getProperties());
       return info;
    }
+
+   @Override
+   public void createDemoBranches() {
+      adminOps.createDemoBranches();
+   }
 }

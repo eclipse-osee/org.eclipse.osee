@@ -2,27 +2,6 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         id="AddDemoUsers"
-         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
-      <DatabaseInitializationTask
-            classname="org.eclipse.osee.client.demo.internal.AddDemoUsers">
-      </DatabaseInitializationTask>
-   </extension>
-   <extension
-         id="AddSawBranch"
-         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
-      <DatabaseInitializationTask
-            classname="org.eclipse.osee.client.demo.internal.AddSawBranch">
-      </DatabaseInitializationTask>
-   </extension>
-   <extension
-         id="AddCisBranch"
-         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
-      <DatabaseInitializationTask
-            classname="org.eclipse.osee.client.demo.internal.AddCisBranch">
-      </DatabaseInitializationTask>
-   </extension>
-   <extension
          id="AddRequirementData"
          point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
       <DatabaseInitializationTask

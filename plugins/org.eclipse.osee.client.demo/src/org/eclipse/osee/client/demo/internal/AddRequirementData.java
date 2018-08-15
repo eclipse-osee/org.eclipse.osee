@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.OseeInf;
-import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -49,8 +48,6 @@ import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationFactory;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationParameter;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory;
-import org.eclipse.osee.orcs.rest.client.OseeClient;
-import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 
 /**
  * @author Donald G. Dunne
@@ -63,11 +60,7 @@ public class AddRequirementData implements IDbInitializationTask {
    @Override
    public void run() {
       try {
-         // Import all requirements on SAW_Bld_1 Branch
          BranchId branch = SAW_Bld_1;
-         ApplicabilityEndpoint applEndpoint =
-            OsgiUtil.getService(getClass(), OseeClient.class).getApplicabilityEndpoint(branch);
-         applEndpoint.createDemoApplicability();
 
          //@formatter:off
          importRequirements(branch, CoreArtifactTypes.SoftwareRequirement, "Software Requirements", OseeInf.getResourceAsFile("requirements/SAW-SoftwareRequirements.xml", getClass()));
@@ -81,10 +74,6 @@ public class AddRequirementData implements IDbInitializationTask {
          demoDbTraceability.execute();
 
          // Create SAW_Bld_2 Child Main Working Branch off SAW_Bld_1
-         if (DEBUG) {
-            OseeLog.log(AddRequirementData.class, Level.INFO, "Creating SAW_Bld_2 branch off SAW_Bld_1");
-         }
-         // Create SAW_Bld_2 branch off SAW_Bld_1
          BranchId childBranch = BranchManager.createBaselineBranch(SAW_Bld_1, SAW_Bld_2);
          AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), SAW_Bld_2,
             PermissionEnum.FULLACCESS);

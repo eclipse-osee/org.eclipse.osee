@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -100,8 +101,8 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
             isLocked = false;
          } else {
             AccessControlData data = datas.iterator().next();
-            if (data.getSubject().equals(
-               SystemGroup.Everyone.getArtifact()) && data.getBranchPermission() == PermissionEnum.READ) {
+            if (data.getSubject().equals(CoreArtifactTokens.Everyone) && data.getBranchPermission().equals(
+               PermissionEnum.READ)) {
                isLocked = true;
             } else {
                manuallyLocked = true;

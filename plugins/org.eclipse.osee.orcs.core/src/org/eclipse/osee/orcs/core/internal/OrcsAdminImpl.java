@@ -51,6 +51,11 @@ public class OrcsAdminImpl implements OrcsAdmin {
    }
 
    @Override
+   public void createDemoBranches() {
+      new CreateDemoBranches(orcsApi).populate();
+   }
+
+   @Override
    public Callable<OrcsMetaData> migrateDatastore() {
       return new MigrateDatastoreAdminCallable(logger, session, dataStoreAdmin);
    }

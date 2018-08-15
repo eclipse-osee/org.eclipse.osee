@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.transaction;
 
-import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
@@ -403,56 +402,6 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    public void createApplicabilityForView(ArtifactId viewId, String applicability) {
       addTuple2(CoreTupleTypes.ViewApplicability, viewId, applicability);
 
-   }
-
-   @Override
-   public void createDemoApplicability() {
-      ArtifactId folder =
-         createArtifact(CoreArtifactTokens.DefaultHierarchyRoot, CoreArtifactTypes.Folder, "Product Line");
-      ArtifactId config1 = createArtifact(folder, CoreArtifactTypes.BranchView, "Config1");
-      ArtifactId config2 = createArtifact(folder, CoreArtifactTypes.BranchView, "Config2");
-      ArtifactId featureDefinition =
-         createArtifact(folder, CoreArtifactTypes.FeatureDefinition, "Feature Definition_SAW_Bld_1");
-
-      keyValueOps.putByKey(BASE, BASE.getName());
-
-      addTuple2(CoreTupleTypes.ViewApplicability, config1, "Base");
-      addTuple2(CoreTupleTypes.ViewApplicability, config2, "Base");
-
-      addTuple2(CoreTupleTypes.ViewApplicability, config1, "Config = Config1");
-      addTuple2(CoreTupleTypes.ViewApplicability, config2, "Config = Config2");
-
-      addTuple2(CoreTupleTypes.ViewApplicability, config1, "A = Included");
-      addTuple2(CoreTupleTypes.ViewApplicability, config2, "A = Excluded");
-
-      addTuple2(CoreTupleTypes.ViewApplicability, config1, "B = Choice1");
-      addTuple2(CoreTupleTypes.ViewApplicability, config2, "B = Choice2");
-      addTuple2(CoreTupleTypes.ViewApplicability, config2, "B = Choice3");
-
-      addTuple2(CoreTupleTypes.ViewApplicability, config1, "C = Included");
-      addTuple2(CoreTupleTypes.ViewApplicability, config2, "C = Excluded");
-
-      String featureDefJson = "[{" + "\"name\": \"A\"," + //
-         "\"type\": \"single\"," + //
-         "\"values\": [\"Included\", \"Excluded\"]," + //
-         "\"defaultValue\": \"Included\"," + //
-         "\"description\": \"Test A\"" + //
-         "}, {" + //
-         "\"name\": \"B\"," + //
-         "\"type\": \"multiple\"," + //
-         "\"values\": [\"Choice1\", \"Choice2\", \"Choice3\"]," + //
-         "\"defaultValue\": \"\"," + //
-         "\"description\": \"Test B\"" + //
-         "},{" + //
-         "\"name\": \"C\"," + //
-         "\"type\": \"single\"," + //
-         "\"values\": [\"Included\", \"Excluded\"]," + //
-         "\"defaultValue\": \"Included\"," + //
-         "\"description\": \"Test C\"" + //
-         "}" + //
-         "]";
-
-      createAttribute(featureDefinition, CoreAttributeTypes.GeneralStringData, featureDefJson);
    }
 
    private Long insertValue(String value) {

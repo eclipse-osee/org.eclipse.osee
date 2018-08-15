@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
+import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -54,6 +55,8 @@ public class CreateSystemBranches {
    }
 
    public void create(String typeModel) {
+      orcsApi.getKeyValueOps().putByKey(BASE, BASE.getName());
+
       populateSystemBranch();
 
       orcsApi.getBranchOps().createTopLevelBranch(COMMON, SystemUser.OseeSystem);
@@ -78,8 +81,9 @@ public class CreateSystemBranches {
       tx.setSoleAttributeValue(everyOne, CoreAttributeTypes.DefaultGroup, true);
 
       tx.createArtifact(CoreArtifactTokens.OseeAdmin);
+      tx.createArtifact(CoreArtifactTokens.OseeAccessAdmin);
 
-      createUsers(tx, SystemUser.values());
+      createUsers(tx, SystemUser.values(), query);
 
       ArtifactId globalPreferences = tx.createArtifact(CoreArtifactTokens.GlobalPreferences);
       tx.setSoleAttributeValue(globalPreferences, CoreAttributeTypes.GeneralStringData, JSON_ATTR_VALUE);
@@ -114,7 +118,7 @@ public class CreateSystemBranches {
       }
    }
 
-   private void createUsers(TransactionBuilder tx, Iterable<UserToken> users) {
+   public static void createUsers(TransactionBuilder tx, Iterable<UserToken> users, QueryBuilder query) {
       List<? extends ArtifactId> defaultGroups =
          query.and(CoreAttributeTypes.DefaultGroup, "true").getResultsIds().getList();
 
@@ -123,6 +127,11 @@ public class CreateSystemBranches {
          tx.setSoleAttributeValue(user, CoreAttributeTypes.Active, userToken.isActive());
          tx.setSoleAttributeValue(user, CoreAttributeTypes.UserId, userToken.getUserId());
          tx.setSoleAttributeValue(user, CoreAttributeTypes.Email, userToken.getEmail());
+
+         if (userToken.isAdmin()) {
+            tx.relate(CoreArtifactTokens.OseeAdmin, CoreRelationTypes.Users_User, user);
+            tx.relate(CoreArtifactTokens.OseeAccessAdmin, CoreRelationTypes.Users_User, user);
+         }
 
          for (ArtifactId userGroup : defaultGroups) {
             tx.relate(userGroup, CoreRelationTypes.Users_User, user);
