@@ -40,6 +40,7 @@
 								<property name="server-path" value="${output-path}/server" />
 								<property name="demo-content-path" value="${project.basedir}/demo" />
 								<property name="etc-content-path" value="${project.basedir}/etc" />
+								<property name="project-base-path" value="${project.basedir}" />
 
 								<ant antfile="package-server-runtime.xml" target="run"
 									inheritRefs="true" />

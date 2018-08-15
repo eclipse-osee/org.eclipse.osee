@@ -1,0 +1,26 @@
+<configuration debug="true">
+	<!-- See documentation at http://logback.qos.ch/manual/joran.html -->
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
+			by default -->
+		<encoder>
+			<pattern>%-50(%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread]
+				[%-25.25logger{26}] %-5level) - %msg%n</pattern>
+			<outputPatternAsHeader>true</outputPatternAsHeader>
+		</encoder>
+	</appender>
+
+	<!-- Configure OSEE log messages -->
+	<logger name="org.eclipse.osee.orcs.db" level="WARN" />
+	<logger name="org.eclipse.osee.database" level="WARN" />
+	<logger name="org.eclipse.osee.framework.core.server" level="WARN" />
+	<logger name="org.eclipse.osee.orcs.core" level="WARN" />
+	<logger name="org.eclipse.osee" level="WARN" />
+	<logger name="org.eclipse.osee.ats.impl" level="WARN" />
+	<logger name="org.eclipse.osee.ats.rest" level="WARN" />
+
+	<root level="WARN">
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>

@@ -78,6 +78,8 @@
 		<copy file="${server-path}/runDemo.sh" tofile="${server-path}/runDemo.bat" overwrite="true" />
 		<replaceregexp file="${server-path}/runDemo.bat" match="\\" replace="^" flags="g" />
 
+		<copy file="${project-base-path}/logback-dev.xml" tofile="${server-path}/logback-dev.xml" overwrite="true" />
+
 		<!-- Copy Demo Files -->
 		<property name="server-demo-path" value="${server-path}/demo" />
 
@@ -177,7 +179,7 @@ osee.log.default=INFO
 		<attribute name="serverport" />
 		<attribute name="launcher" />
 		<attribute name="session.timeout" default="3600" />
-		<attribute name="serverMaxMem" default="1024m" />
+		<attribute name="serverMaxMem" default="3G" />
 		<attribute name="executable" default="true" />
 		<attribute name="extraVMArgs" default=" " />
 		<attribute name="cm.cfg.uri" />
@@ -185,6 +187,7 @@ osee.log.default=INFO
 			<echo file="@{filepath}" append="false">java -server \
 -Xmx@{serverMaxMem} \
 -Dorg.osgi.service.http.port=@{serverport} \
+-Dlogback.configurationFile=logback-dev.xml \
 -Dorg.eclipse.equinox.http.jetty.context.sessioninactiveinterval=@{session.timeout} \
 -Dcm.config.uri=&quot;@{cm.cfg.uri}&quot; \
 @{extraVMArgs} \
