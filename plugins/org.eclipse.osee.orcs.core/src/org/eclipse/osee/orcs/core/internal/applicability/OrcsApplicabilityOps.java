@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal;
+package org.eclipse.osee.orcs.core.internal.applicability;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
-import org.eclipse.osee.orcs.core.util.Artifacts;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -42,6 +41,9 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public class OrcsApplicabilityOps implements OrcsApplicability {
 
    private final OrcsApi orcsApi;
+   private ArtifactToken plFolder = ArtifactToken.getSentinal();
+   private ArtifactToken featureFolder = ArtifactToken.getSentinal();
+   private ArtifactToken variantsFolder = ArtifactToken.getSentinal();
 
    public OrcsApplicabilityOps(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -55,12 +57,18 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       ApplicabilityBranchConfig config = new ApplicabilityBranchConfig();
       Branch branch = orcsApi.getQueryFactory().branchQuery().andId(branchId).getResults().getAtMostOneOrNull();
       config.setBranch(branch);
+
+      // Load all variants (stored as branch views)
       List<ArtifactReadable> branchViews =
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).getResults().getList();
       Collections.sort(branchViews, new NamedComparator(SortOrder.ASCENDING));
+      Map<ArtifactId, Map<String, List<String>>> branchViewsMap = new HashMap<>();
       for (ArtifactToken branchView : branchViews) {
          config.addVariant(branchView);
+         branchViewsMap.put(branchView,
+            orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branch, branchView));
       }
+
       List<ArtifactReadable> featureArts =
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Feature).getResults().getList();
       Collections.sort(featureArts, new NamedComparator(SortOrder.ASCENDING));
@@ -81,20 +89,23 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       }
 
       // Add variants and values
+      int count = 0;
       for (FeatureDefinition fDef : config.getFeatures()) {
-         int count = 0;
          for (ArtifactToken variant : config.getVariants()) {
             Map<String, String> variantToValue = config.getFeatureToValues(count);
-            variantToValue.put(variant.getName().toLowerCase(), getVariantToFeatureValue(variant, fDef));
-            count++;
+            String variantToFeatureValue = getVariantToFeatureValue(variant, fDef, branchViewsMap);
+            variantToValue.put(variant.getName().toLowerCase(), variantToFeatureValue);
          }
+         count++;
       }
 
       return config;
    }
 
-   private String getVariantToFeatureValue(ArtifactToken variant, FeatureDefinition fDef) {
-      return "Included";
+   private String getVariantToFeatureValue(ArtifactToken variant, FeatureDefinition fDef, Map<ArtifactId, Map<String, List<String>>> branchViewsMap) {
+      Map<String, List<String>> map = branchViewsMap.get(variant);
+      List<String> list = map.get(fDef.getName());
+      return org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", list);
    }
 
    @Override
@@ -113,35 +124,18 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public ArtifactToken getProductLineFolder(BranchId branch) {
-      return Artifacts.get(CoreArtifactTokens.ProductLineFolder, branch, orcsApi);
-   }
-
-   @Override
-   public ArtifactToken getFeatureFolder(BranchId branch) {
-      return Artifacts.get(CoreArtifactTokens.FeaturesFolder, branch, orcsApi);
-   }
-
-   @Override
-   public ArtifactToken getProductsFolder(BranchId branch) {
-      return Artifacts.get(CoreArtifactTokens.ProductsFolder, branch, orcsApi);
-   }
-
-   @Override
-   public ArtifactToken storeFeatureDefinition(FeatureDefinition featureDef, TransactionBuilder tx) {
+   public ArtifactToken createUpdateFeatureDefinition(FeatureDefinition featureDef, TransactionBuilder tx) {
       ArtifactToken fDefArt = orcsApi.getQueryFactory().fromBranch(tx.getBranch()).andId(
          ArtifactId.valueOf(featureDef.getId())).getResults().getAtMostOneOrNull();
       if (fDefArt == null) {
-         fDefArt = tx.getWriteable(ArtifactId.valueOf(featureDef.getId()));
-      }
-      if (fDefArt == null || fDefArt.isInvalid()) {
-         ArtifactToken featureFolder = tx.getWriteable(CoreArtifactTokens.FeaturesFolder);
-         if (featureFolder.isInvalid()) {
-            featureFolder = getFeatureFolder(tx.getBranch());
+         ArtifactToken featuresFolder = tx.getWriteable(CoreArtifactTokens.FeaturesFolder);
+         // Check current transaction first
+         if (featuresFolder == null) {
+            featuresFolder = getFeaturesFolder(tx.getBranch());
          }
-         Conditions.assertNotNull(featureFolder, "Feature Folder missing from branch %s", tx.getBranch());
+         Conditions.assertNotNull(featuresFolder, "Features Folder cannot be null");
          fDefArt =
-            tx.createArtifact(featureFolder, CoreArtifactTypes.Feature, featureDef.getName(), featureDef.getId());
+            tx.createArtifact(featuresFolder, CoreArtifactTypes.Feature, featureDef.getName(), featureDef.getId());
       }
       updateFeatureDefinition(fDefArt, featureDef, tx);
       return fDefArt;
@@ -167,6 +161,48 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          }
       }
       return tokens;
+   }
+
+   @Override
+   public ArtifactToken getFeaturesFolder(BranchId branch) {
+      if (featureFolder.isInvalid()) {
+         featureFolder = orcsApi.getQueryFactory().fromBranch(branch).andId(
+            CoreArtifactTokens.FeaturesFolder).getArtifactOrSentinal();
+      }
+      if (featureFolder.isInvalid()) {
+         featureFolder = orcsApi.getQueryFactory().fromBranch(branch).andNameEquals(
+            CoreArtifactTokens.FeaturesFolder.getName()).getAtMostOneOrSentinal();
+      }
+      return featureFolder;
+   }
+
+   @Override
+   public ArtifactToken getVariantsFolder(BranchId branch) {
+      if (variantsFolder.isInvalid()) {
+         variantsFolder = orcsApi.getQueryFactory().fromBranch(branch).andId(
+            CoreArtifactTokens.VariantsFolder).getArtifactOrSentinal();
+      }
+      if (variantsFolder.isInvalid()) {
+         variantsFolder = orcsApi.getQueryFactory().fromBranch(branch).andNameEquals(
+            CoreArtifactTokens.VariantsFolder.getName()).getAtMostOneOrSentinal();
+      }
+      if (variantsFolder.isInvalid()) {
+         variantsFolder =
+            orcsApi.getQueryFactory().fromBranch(branch).andNameEquals("Products").getAtMostOneOrSentinal();
+      }
+      return variantsFolder;
+   }
+
+   @Override
+   public ArtifactToken getProductLineFolder(BranchId branch) {
+      if (plFolder.isInvalid()) {
+         plFolder = orcsApi.getQueryFactory().fromBranch(branch).andId(
+            CoreArtifactTokens.ProductLineFolder).getArtifactOrSentinal();
+      }
+      if (plFolder.isInvalid()) {
+         plFolder = orcsApi.getQueryFactory().fromBranch(branch).andNameEquals("Product Line").getAtMostOneOrSentinal();
+      }
+      return plFolder;
    }
 
 }

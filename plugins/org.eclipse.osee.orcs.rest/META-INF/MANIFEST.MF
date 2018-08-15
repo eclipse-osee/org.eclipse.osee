@@ -53,4 +53,5 @@ Import-Package: com.google.common.base;version="15.0.0",
 Osee-JaxRs-Resource: OSEE-INF/web/script/*;path=/orcs/script/ui,
  OSEE-INF/web/example/*;path=/orcs/example/ui,
  OSEE-INF/web/writer/*;path=/orcs/writer/ui,
- OSEE-INF/web/config/*;path=/orcs/types/config/ui
+ OSEE-INF/web/config/*;path=/orcs/types/config/ui,
+ OSEE-INF/web/applicui/config/*;path=/orcs/applicui/config

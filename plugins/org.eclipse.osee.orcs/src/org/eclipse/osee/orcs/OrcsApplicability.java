@@ -29,12 +29,12 @@ public interface OrcsApplicability {
 
    ArtifactToken getProductLineFolder(BranchId branch);
 
-   ArtifactToken getFeatureFolder(BranchId branch);
+   ArtifactToken getFeaturesFolder(BranchId branch);
 
-   ArtifactToken getProductsFolder(BranchId branch);
-
-   ArtifactToken storeFeatureDefinition(FeatureDefinition featureDef, TransactionBuilder tx);
+   ArtifactToken createUpdateFeatureDefinition(FeatureDefinition featureDef, TransactionBuilder tx);
 
    List<BranchViewToken> getApplicabilityBranches();
+
+   ArtifactToken getVariantsFolder(BranchId branch);
 
 }

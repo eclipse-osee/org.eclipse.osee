@@ -18,10 +18,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewToken;
@@ -45,7 +43,7 @@ public class ApplicabilityUiEndpointImpl implements ApplicabilityUiEndpoint {
    @Override
    @GET
    @Produces({MediaType.TEXT_HTML})
-   public Response get(@Context UriInfo uriInfo) {
+   public Response get() {
       URI uri;
       try {
          uri = new URI("/applicui/config/main.html");

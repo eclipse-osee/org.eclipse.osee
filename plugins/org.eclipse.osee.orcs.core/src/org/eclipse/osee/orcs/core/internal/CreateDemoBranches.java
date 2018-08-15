@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
 import org.eclipse.osee.orcs.OrcsBranch;
+import org.eclipse.osee.orcs.core.internal.applicability.DemoFeatures;
 import org.eclipse.osee.orcs.core.util.Artifacts;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -89,7 +90,7 @@ public class CreateDemoBranches {
       TransactionBuilder tx = txFactory.createTransaction(branch, OseeSystem, "Create Product Line folders");
 
       ArtifactToken plFolder = Artifacts.getOrCreate(ProductLineFolder, DefaultHierarchyRoot, tx, orcsApi);
-      Artifacts.getOrCreate(CoreArtifactTokens.ProductsFolder, plFolder, tx, orcsApi);
+      Artifacts.getOrCreate(CoreArtifactTokens.VariantsFolder, plFolder, tx, orcsApi);
       ArtifactToken featuresFolder = Artifacts.getOrCreate(CoreArtifactTokens.FeaturesFolder, plFolder, tx, orcsApi);
 
       ArtifactToken productA = tx.createView(branch, "Product A");
@@ -102,35 +103,32 @@ public class CreateDemoBranches {
 
       createFeatureConfigs(featuresFolder, tx);
 
-      configureFeature(tx, "Feature 1", products, "Excluded", "Included", "Excluded", "Mod A");
-      configureFeature(tx, "Unit Type", products, "Metric", "Metric", "Metric", "Mod B");
-      configureFeature(tx, "Feature 3", products, "Excluded", "Included", "Included", "Mod A");
-      configureFeature(tx, "Feature 4", products, "Included", "Included", "Included", "Mod A");
+      // Configure productions for each feature
+      configureFeature(tx, DemoFeatures.ROBOT_ARM_LIGHT.name(), products, "Excluded", "Included", "Excluded",
+         "Excluded");
+      configureFeature(tx, DemoFeatures.ENGINE_5.name(), products, "25-43A", "25-43A", "25-43A", "55-43A");
+      configureFeature(tx, DemoFeatures.JHU_CONTROLLER.name(), products, "Excluded", "Included", "Included",
+         "Excluded");
+      configureFeature(tx, DemoFeatures.ROBOT_SPEAKER.name(), products, "SPKR A", "SPKR A", "SPKR B", "SPKR B");
 
       createLegacyFeatureConfig(featuresFolder, tx);
 
       tx.commit();
    }
 
-   private void configureFeature(TransactionBuilder tx, String featureName, ArtifactId[] products, String... featureValues) {
-      for (int i = 0; i < products.length; i++) {
-         tx.addTuple2(CoreTupleTypes.ViewApplicability, products[i], featureName + " = " + featureValues[i]);
-      }
-   }
-
    private void createFeatureConfigs(ArtifactId folder, TransactionBuilder tx) {
-      FeatureDefinition def1 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), "Feature 1", "String",
-         Arrays.asList("Included", "Excluded"), "Included", false, "A significant capability");
-      ops.storeFeatureDefinition(def1, tx);
-      FeatureDefinition def2 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), "Unit Type", "String",
-         Arrays.asList("Metrics", "English"), "", false, "Used select type of units");
-      ops.storeFeatureDefinition(def2, tx);
-      FeatureDefinition def3 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), "Feature 3", "String",
-         Arrays.asList("Included", "Excluded"), "Included", false, "A small point of variation");
-      ops.storeFeatureDefinition(def3, tx);
-      FeatureDefinition def4 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), "Feature 4", "String",
-         Arrays.asList("Mod A", "Mod B", "Mod C"), "Mod A", true, "This feature depends of Feature 1");
-      ops.storeFeatureDefinition(def4, tx);
+      FeatureDefinition def1 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), DemoFeatures.ROBOT_ARM_LIGHT.name(),
+         "String", Arrays.asList("Included", "Excluded"), "Included", false, "A significant capability");
+      ops.createUpdateFeatureDefinition(def1, tx);
+      FeatureDefinition def2 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), DemoFeatures.ENGINE_5.name(),
+         "String", Arrays.asList("A2543", "B5543"), "", false, "Used select type of engine");
+      ops.createUpdateFeatureDefinition(def2, tx);
+      FeatureDefinition def3 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), DemoFeatures.JHU_CONTROLLER.name(),
+         "String", Arrays.asList("Included", "Excluded"), "Included", false, "A small point of variation");
+      ops.createUpdateFeatureDefinition(def3, tx);
+      FeatureDefinition def4 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), DemoFeatures.ROBOT_SPEAKER.name(),
+         "String", Arrays.asList("SPKR A", "SPKR B", "SPKR C"), "SPKR A", true, "This feature is multi-select.");
+      ops.createUpdateFeatureDefinition(def4, tx);
       orcsApi.getApplicabilityOps();
    }
 
@@ -138,37 +136,41 @@ public class CreateDemoBranches {
     * TODO: Remove after 26.0 release which converted feature definitions from a single json string
     */
    private void createLegacyFeatureConfig(ArtifactId folder, TransactionBuilder tx) {
-
-      ArtifactId featureDefinition = tx.createArtifact(CoreArtifactTokens.ProductsFolder,
-         CoreArtifactTypes.FeatureDefinition, "Feature Definition");
-
-      String featureDefJson = "[{" + "\"name\": \"Feature 1\"," + //
+      ArtifactId featureDefinition =
+         tx.createArtifact(folder, CoreArtifactTypes.FeatureDefinition, "Feature Definition_SAW_Bld_1");
+      String featureDefJson = "[{" + "\"name\": \"" + DemoFeatures.ROBOT_ARM_LIGHT.name() + "\"," + //
          "\"type\": \"single\"," + //
          "\"values\": [\"Included\", \"Excluded\"]," + //
          "\"defaultValue\": \"Included\"," + //
-         "\"description\": \"A significant capability\"" + //
+         "\"description\": \"Test It\"" + //
          "}, {" + //
-         "\"name\": \"Unit Type\"," + //
+         "\"name\": \"" + DemoFeatures.ENGINE_5.name() + "\"," + //
          "\"type\": \"single\"," + //
-         "\"values\": [\"Metric\", \"English\"]," + //
-         "\"defaultValue\": \"\"," + //
-         "\"description\": \"Used select type of units\"" + //
+         "\"values\": [\"A2543\", \"B5543\"]," + //
+         "\"defaultValue\": \"Excluded\"," + //
+         "\"description\": \"Test It\"" + //
          "},{" + //
-         "\"name\": \"Feature 3\"," + //
+         "\"name\": \"" + DemoFeatures.JHU_CONTROLLER.name() + "\"," + //
          "\"type\": \"single\"," + //
          "\"values\": [\"Included\", \"Excluded\"]," + //
-         "\"defaultValue\": \"Included\"," + //
-         "\"description\": \"A small point of variation\"" + //
+         "\"defaultValue\": \"luded\"," + //
+         "\"description\": \"Test It\"" + //
          "},{" + //
-         "\"name\": \"Feature 4\"," + //
-         "\"type\": \"single\"," + //
-         "\"values\": [\"Mod A\", \"Mod B\", \"Mod C\"]," + //
-         "\"defaultValue\": \"Mod A\"," + //
-         "\"description\": \"This feature depends of Feature 1\"" + //
+         "\"name\": \"" + DemoFeatures.ROBOT_SPEAKER.name() + "\"," + //
+         "\"type\": \"multiple\"," + //
+         "\"values\": [\"SPKR A\", \"SPKR B\", \"SPKR C\"]," + //
+         "\"defaultValue\": \"luded\"," + //
+         "\"description\": \"Test It\"" + //
          "}" + //
          "]";
 
       tx.createAttribute(featureDefinition, CoreAttributeTypes.GeneralStringData, featureDefJson);
+   }
+
+   private void configureFeature(TransactionBuilder tx, String featureName, ArtifactId[] products, String... featureValues) {
+      for (int i = 0; i < products.length; i++) {
+         tx.addTuple2(CoreTupleTypes.ViewApplicability, products[i], featureName + " = " + featureValues[i]);
+      }
    }
 
    private void createDemoProgramBranch(IOseeBranch branch, UserId account) {

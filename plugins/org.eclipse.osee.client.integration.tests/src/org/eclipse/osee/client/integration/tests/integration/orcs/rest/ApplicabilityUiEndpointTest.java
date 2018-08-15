@@ -12,6 +12,7 @@ package org.eclipse.osee.client.integration.tests.integration.orcs.rest;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.List;
+import javax.ws.rs.core.Response;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
@@ -38,9 +39,20 @@ public class ApplicabilityUiEndpointTest {
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
    @Test
+   public void testGet() throws Exception {
+      ApplicabilityUiEndpoint applUiEndpoint = ServiceUtil.getOseeClient().getApplicabilityUiEndpoint();
+      Assert.assertNotNull(applUiEndpoint);
+
+      Response response = applUiEndpoint.get();
+      String html = response.readEntity(String.class);
+      Assert.assertTrue(html.contains("ORCS Product Line Configuration"));
+   }
+
+   @Test
    public void testGetApplicabilityBranches() throws Exception {
       ApplicabilityUiEndpoint applUiEndpoint = ServiceUtil.getOseeClient().getApplicabilityUiEndpoint();
       Assert.assertNotNull(applUiEndpoint);
+
       List<BranchViewToken> applBranches = applUiEndpoint.getApplicabilityBranches();
       Assert.assertTrue("Should be at least 1 branches, was " + applBranches.size(), applBranches.size() == 1);
    }

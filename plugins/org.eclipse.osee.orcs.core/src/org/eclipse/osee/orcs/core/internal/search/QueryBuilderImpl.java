@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryData;
@@ -140,5 +141,25 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
    @Override
    public CancellableCallable<ResultSet<? extends ArtifactId>> createSearchResultsAsIds() {
       return queryFactory.createLocalIdSearch(session, getQueryData());
+   }
+
+   @Override
+   public ArtifactToken getArtifactOrSentinal() {
+      ArtifactToken art = getArtifactOrNull();
+      if (art == null) {
+         return ArtifactToken.getSentinal();
+      }
+      return art;
+   }
+
+   @Override
+   public ArtifactToken getAtMostOneOrSentinal() {
+      ResultSet<ArtifactReadable> artifacts = getResults();
+      if (artifacts.isEmpty()) {
+         return ArtifactToken.getSentinal();
+      } else if (artifacts.size() > 1) {
+         throw new OseeStateException(String.format("Expected 0..1, found %s", artifacts.size()));
+      }
+      return artifacts.iterator().next();
    }
 }

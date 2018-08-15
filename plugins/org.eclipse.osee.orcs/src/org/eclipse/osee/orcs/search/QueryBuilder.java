@@ -78,4 +78,15 @@ public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query 
    CancellableCallable<ResultSet<? extends ArtifactId>> createSearchResultsAsIds();
 
    ArtifactToken getArtifactOrNull();
+
+   /**
+    * @return first artifact or sentinal
+    */
+   ArtifactToken getArtifactOrSentinal();
+
+   /**
+    * @return sole artifact or sentinal or exception if > 1
+    */
+   ArtifactToken getAtMostOneOrSentinal();
+
 }

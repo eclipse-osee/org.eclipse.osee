@@ -31,6 +31,7 @@ import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
+import org.eclipse.osee.orcs.core.internal.applicability.OrcsApplicabilityOps;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.graph.GraphBuilderFactory;
@@ -86,7 +87,7 @@ public class OrcsApiImpl implements OrcsApi {
    private TxDataManager txDataManager;
    private TxCallableFactory txCallableFactory;
    private ScriptEngineManager manager;
-   private OrcsApplicability applicability;
+   private OrcsApplicabilityOps applicability;
 
    ExternalArtifactManager proxyManager;
 
