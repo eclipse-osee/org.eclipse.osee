@@ -37,4 +37,6 @@ public interface OrcsApplicability {
 
    ArtifactToken getVariantsFolder(BranchId branch);
 
+   String convertConfigToArtifact(BranchId branch);
+
 }

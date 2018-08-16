@@ -50,5 +50,6 @@ Import-Package: com.google.common.base;version="15.0.0",
 Export-Package: org.eclipse.osee.orcs.core,
  org.eclipse.osee.orcs.core.ds,
  org.eclipse.osee.orcs.core.ds.criteria,
+ org.eclipse.osee.orcs.core.internal.applicability,
  org.eclipse.osee.orcs.core.internal.tuple
 Bundle-ActivationPolicy: lazy

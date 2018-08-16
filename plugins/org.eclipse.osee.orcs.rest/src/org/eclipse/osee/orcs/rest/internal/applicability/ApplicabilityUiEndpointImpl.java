@@ -71,4 +71,9 @@ public class ApplicabilityUiEndpointImpl implements ApplicabilityUiEndpoint {
       return ops.getConfig(branch);
    }
 
+   @Override
+   public String convertConfigToArtifact(BranchId branch) {
+      return ops.convertConfigToArtifact(branch);
+   }
+
 }

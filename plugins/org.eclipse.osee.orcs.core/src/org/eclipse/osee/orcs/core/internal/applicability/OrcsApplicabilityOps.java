@@ -27,6 +27,8 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
@@ -203,6 +205,33 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          plFolder = orcsApi.getQueryFactory().fromBranch(branch).andNameEquals("Product Line").getAtMostOneOrSentinal();
       }
       return plFolder;
+   }
+
+   @Override
+   public String convertConfigToArtifact(BranchId branch) {
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem,
+         "Convert Feature Defs to Artifact");
+
+      for (FeatureDefinition feature : orcsApi.getQueryFactory().applicabilityQuery().getFeatureDefinitionData(
+         branch)) {
+         ArtifactToken featureArt = getFeaturesFolder(branch);
+
+         // type goes to multivalued
+         if (feature.getValueType().equals("single")) {
+            // do nothing
+         } else if (feature.getValueType().equals("multiple")) {
+            feature.setMultiValued(true);
+         } else {
+            throw new IllegalArgumentException(String.format("Unexpected value type [%s]", feature.getValueType()));
+         }
+
+         // set feature value type
+         feature.setValueType("String");
+
+         updateFeatureDefinition(featureArt, feature, tx);
+      }
+      tx.commit();
+      return AHTML.simplePage("Completed");
    }
 
 }

@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.rest.model;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -45,5 +46,11 @@ public interface ApplicabilityUiEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    public ApplicabilityBranchConfig getConfig(@PathParam("branch") BranchId branch);
+
+   @POST
+   @Path("branch/{branch}/convert")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.TEXT_HTML})
+   public String convertConfigToArtifact(@PathParam("branch") BranchId branch);
 
 }
