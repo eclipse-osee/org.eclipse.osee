@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import javax.ws.rs.PathParam;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
@@ -24,10 +25,13 @@ import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.VariantDefinition;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.OrcsApplicability;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
@@ -42,12 +46,14 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    private final BranchId branch;
    private final ApplicabilityQuery applicabilityQuery;
    private final UserId account;
+   private final OrcsApplicability ops;
 
    public ApplicabilityEndpointImpl(OrcsApi orcsApi, BranchId branch, UserId account) {
       this.orcsApi = orcsApi;
       this.branch = branch;
       this.applicabilityQuery = orcsApi.getQueryFactory().applicabilityQuery();
       this.account = account;
+      ops = orcsApi.getApplicabilityOps();
    }
 
    @Override
@@ -195,6 +201,41 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    @Override
    public String getViewTable() {
       return applicabilityQuery.getViewTable(branch);
+   }
+
+   @Override
+   public FeatureDefinition getFeature(String feature) {
+      return ops.getFeature(feature, branch);
+   }
+
+   @Override
+   public XResultData createUpdateFeature(FeatureDefinition feature) {
+      return ops.createUpdateFeature(feature, branch, account);
+   }
+
+   @Override
+   public XResultData deleteFeature(@PathParam("feature") String feature) {
+      return ops.deleteFeature(feature, branch, account);
+   }
+
+   @Override
+   public XResultData createUpdateVariant(VariantDefinition variant) {
+      return ops.createUpdateVariant(variant, branch, account);
+   }
+
+   @Override
+   public XResultData deleteVariant(@PathParam("variant") String variant) {
+      return ops.deleteVariant(variant, branch, account);
+   }
+
+   @Override
+   public VariantDefinition getVariant(String variant) {
+      return ops.getVariant(variant, branch);
+   }
+
+   @Override
+   public XResultData setApplicability(ArtifactId variant, ArtifactId feature, String applicability) {
+      return ops.setApplicability(branch, variant, feature, applicability, account);
    }
 
 }

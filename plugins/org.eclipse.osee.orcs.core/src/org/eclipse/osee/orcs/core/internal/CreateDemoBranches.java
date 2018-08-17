@@ -33,6 +33,8 @@ import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoSubsystems;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
@@ -117,19 +119,21 @@ public class CreateDemoBranches {
    }
 
    private void createFeatureConfigs(ArtifactId folder, TransactionBuilder tx) {
+      XResultData results = new XResultData();
       FeatureDefinition def1 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), DemoFeatures.ROBOT_ARM_LIGHT.name(),
          "String", Arrays.asList("Included", "Excluded"), "Included", false, "A significant capability");
-      ops.createUpdateFeatureDefinition(def1, tx);
+      ops.createUpdateFeatureDefinition(def1, tx, results);
       FeatureDefinition def2 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), DemoFeatures.ENGINE_5.name(),
          "String", Arrays.asList("A2543", "B5543"), "", false, "Used select type of engine");
-      ops.createUpdateFeatureDefinition(def2, tx);
+      ops.createUpdateFeatureDefinition(def2, tx, results);
       FeatureDefinition def3 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), DemoFeatures.JHU_CONTROLLER.name(),
          "String", Arrays.asList("Included", "Excluded"), "Included", false, "A small point of variation");
-      ops.createUpdateFeatureDefinition(def3, tx);
+      ops.createUpdateFeatureDefinition(def3, tx, results);
       FeatureDefinition def4 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), DemoFeatures.ROBOT_SPEAKER.name(),
-         "String", Arrays.asList("SPKR A", "SPKR B", "SPKR C"), "SPKR A", true, "This feature is multi-select.");
-      ops.createUpdateFeatureDefinition(def4, tx);
+         "String", Arrays.asList("SPKR_A", "SPKR_B", "SPKR_C"), "SPKR_A", true, "This feature is multi-select.");
+      ops.createUpdateFeatureDefinition(def4, tx, results);
       orcsApi.getApplicabilityOps();
+      Conditions.assertFalse(results.isErrors(), results.toString());
    }
 
    /**
@@ -153,13 +157,13 @@ public class CreateDemoBranches {
          "\"name\": \"" + DemoFeatures.JHU_CONTROLLER.name() + "\"," + //
          "\"type\": \"single\"," + //
          "\"values\": [\"Included\", \"Excluded\"]," + //
-         "\"defaultValue\": \"luded\"," + //
+         "\"defaultValue\": \"Excluded\"," + //
          "\"description\": \"Test It\"" + //
          "},{" + //
          "\"name\": \"" + DemoFeatures.ROBOT_SPEAKER.name() + "\"," + //
          "\"type\": \"multiple\"," + //
-         "\"values\": [\"SPKR A\", \"SPKR B\", \"SPKR C\"]," + //
-         "\"defaultValue\": \"luded\"," + //
+         "\"values\": [\"SPKR_A\", \"SPKR_B\", \"SPKR_C\"]," + //
+         "\"defaultValue\": \"SPKR_A\"," + //
          "\"description\": \"Test It\"" + //
          "}" + //
          "]";

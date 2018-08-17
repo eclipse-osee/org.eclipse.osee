@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -32,6 +33,8 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.VariantDefinition;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
@@ -82,6 +85,49 @@ public interface ApplicabilityEndpoint {
    @Path("feature-data")
    @Produces(MediaType.APPLICATION_JSON)
    List<FeatureDefinition> getFeatureDefinitionData();
+
+   @GET
+   @Path("feature/{feature}")
+   @Produces({MediaType.APPLICATION_JSON})
+   FeatureDefinition getFeature(@PathParam("feature") String feature);
+
+   @PUT
+   @Path("feature")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   XResultData createUpdateFeature(FeatureDefinition feature);
+
+   @DELETE
+   @Path("feature/{feature}")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   XResultData deleteFeature(@PathParam("feature") String feature);
+
+   @GET
+   @Path("variant/{variant}")
+   @Produces({MediaType.APPLICATION_JSON})
+   VariantDefinition getVariant(@PathParam("variant") String variant);
+
+   @PUT
+   @Path("variant")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   XResultData createUpdateVariant(VariantDefinition variant);
+
+   @DELETE
+   @Path("variant/{variant}")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   XResultData deleteVariant(@PathParam("variant") String variant);
+
+   @PUT
+   @Path("variant/{variant}/feature/{feature}/applic/{applicability}")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   /**
+    * @param applicability - comma delimited list of applicabilities, if feature is Multiple
+    */
+   XResultData setApplicability(@PathParam("variant") ArtifactId variant, @PathParam("feature") ArtifactId feature, @PathParam("applicability") String applicability);
 
    /**
     * @return a list of branches that contain the injected change (prior to removalDate)

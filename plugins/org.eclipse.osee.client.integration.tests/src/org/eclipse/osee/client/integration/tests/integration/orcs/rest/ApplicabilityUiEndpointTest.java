@@ -65,7 +65,7 @@ public class ApplicabilityUiEndpointTest {
       ApplicabilityBranchConfig config = applUiEndpoint.getConfig(BranchId.valueOf(DemoBranches.SAW_PL.getId()));
       Assert.assertNotNull(config);
 
-      Assert.assertEquals(4, config.getFeatures().size());
+      Assert.assertEquals(4, config.getFeatureIdToFeature().size());
       Assert.assertEquals(4, config.getVariants().size());
       Assert.assertEquals(DemoBranches.SAW_PL.getId(), config.getBranch().getId());
       Assert.assertEquals(4, config.getFeatureToValueMaps().size());

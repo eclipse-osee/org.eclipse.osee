@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.applicability;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -22,15 +23,17 @@ import org.eclipse.osee.framework.core.data.BranchViewToken;
 public class ApplicabilityBranchConfig {
 
    BranchViewToken branch;
-   List<FeatureDefinition> features = new LinkedList<>();
+   Map<String, FeatureDefinition> featureIdToFeature = new HashMap<>();
    List<String> featuresOrdered = new LinkedList<>();
    List<ArtifactToken> variants = new LinkedList<>();
    List<String> variantsOrdered = new LinkedList<>();
    List<Map<String, String>> featureToValueMaps = new LinkedList<>();
+   List<FeatureDefinition> features = new LinkedList<>();
 
    public void addFeature(FeatureDefinition fDef) {
-      features.add(fDef);
+      featureIdToFeature.put(fDef.getIdString(), fDef);
       featuresOrdered.add(fDef.getName());
+      features.add(fDef);
    }
 
    public void addVariant(ArtifactToken variant) {
@@ -45,14 +48,6 @@ public class ApplicabilityBranchConfig {
    public void setBranch(BranchViewToken branch) {
       // Create new token so Branch serializer does not take over
       this.branch = new BranchViewToken(branch.getId(), branch.getName(), branch.getViewId());
-   }
-
-   public List<FeatureDefinition> getFeatures() {
-      return features;
-   }
-
-   public void setFeatures(List<FeatureDefinition> features) {
-      this.features = features;
    }
 
    public List<ArtifactToken> getVariants() {
@@ -85,6 +80,22 @@ public class ApplicabilityBranchConfig {
 
    public void setVariantsOrdered(List<String> variantsOrdered) {
       this.variantsOrdered = variantsOrdered;
+   }
+
+   public Map<String, FeatureDefinition> getFeatureIdToFeature() {
+      return featureIdToFeature;
+   }
+
+   public void setFeatureIdToFeature(Map<String, FeatureDefinition> featureIdToFeature) {
+      this.featureIdToFeature = featureIdToFeature;
+   }
+
+   public List<FeatureDefinition> getFeatures() {
+      return features;
+   }
+
+   public void setFeatures(List<FeatureDefinition> features) {
+      this.features = features;
    }
 
 }

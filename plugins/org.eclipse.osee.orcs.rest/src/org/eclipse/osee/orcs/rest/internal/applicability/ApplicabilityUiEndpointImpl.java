@@ -46,7 +46,7 @@ public class ApplicabilityUiEndpointImpl implements ApplicabilityUiEndpoint {
    public Response get() {
       URI uri;
       try {
-         uri = new URI("/applicui/config/main.html");
+         uri = new URI("/applicui/config/plconfig.html");
          return Response.seeOther(uri).build();
       } catch (URISyntaxException ex) {
          throw new OseeCoreException("Exception ", ex);

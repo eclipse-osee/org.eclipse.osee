@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8"></meta>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+
+<title>OSEE - Product Line Configuration</title>
+
+<link rel="stylesheet" type="text/css"
+	href="/ajax/libs/bootstrap/3.3.2/css/bootstrap.min.css"></link>
+<link rel="stylesheet" type="text/css" src="plconfig.css"></link>
+<link rel="stylesheet" type="text/css"
+	href="/ajax/libs/ui-grid/4.0.4/ui-grid.min.css"></link>
+
+<script src="/ajax/libs/angularjs/1.3.11/angular.min.js"></script>
+<script src="/ajax/libs/angularjs/1.3.11/angular-resource.min.js"></script>
+<script src="/ajax/libs/angularjs/1.3.11/angular-animate.min.js"></script>
+<script src="/ajax/libs/angularjs/1.3.11/angular-touch.min.js"></script>
+<script src="/ajax/libs/angularjs/1.3.11/angular-aria.min.js"></script>
+<script src="/ajax/libs/ui-grid/4.0.4/ui-grid.min.js"></script>
+<script
+	src="http://vitalets.github.io/checklist-model/checklist-model.js"></script>
+<script src="plconfig.js"></script>
+<body>
+	<div ng-app="app" class="row" ng-controller="appCtrl">
+
+
+		<nav class="navbar navbar-default" role="navigation">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse"
+						data-target="#bs-example-navbar-collapse-1">
+						<span class="sr-only">Toggle navigation</span> <span
+							class="icon-bar"></span> <span class="icon-bar"></span> <span
+							class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="plconfig.html">&nbsp;&nbsp;&nbsp;OSEE
+						- Product Line Configuration</a>
+				</div>
+			</div>
+		</nav>
+
+		<div class="container">
+			<table>
+				<tr>
+					<td>
+						<div id="editVariantPane" ng-show="htmlVariantPane"
+							style="height: 100%; width: 350px; border: 3px solid #666; padding: 10px"
+							important>
+
+							<label ng-show="htmlVariantEdit">Edit Variant
+								{{variant.name}}</label><label ng-show="htmlVariantDelete">Delete
+								Variant</label><br />
+
+							<!-- SELECT VARIANT -->
+							<label ng-show="htmlVariantSelect">Variant: </label> <select
+								ng-model="variant" ng-show="htmlVariantSelect"
+								ng-options="variant as variant.name for variant in variants track by variant.id | orderBy : 'name'">
+							</select><br />
+
+							<!-- TITLE -->
+							<label ng-show="htmlVariantTitle">Title: <input
+								type="text" ng-model="variant.name" ng-show="htmlVariantTitle" /></label><br />
+
+							<!-- COPY FROM -->
+							<label ng-show="htmlVariantCopyFrom">Copy From: </label> <select
+								ng-model="edit.variant.copyFrom" ng-show="htmlVariantCopyFrom"
+								ng-options="variant.id as variant.name for variant in variants | orderBy : 'name'">
+							</select><br />
+
+							<button type="button" class="btn btn-primary"
+								ng-click="saveVariantEdit($event)" ng-show="htmlVariantSave">Save</button>
+							<button type="button" class="btn btn-primary"
+								ng-click="saveVariantDelete($event)" ng-show="htmlVariantDelete">Delete</button>
+							<button type="button" class="btn btn-primary"
+								ng-click="cancelVariantEdit($event)">Cancel</button>
+						</div>
+					</td>
+
+					<td>
+						<div id="editFeaturePane" ng-show="htmlFeaturePane"
+							style="height: 100%; width: 350px; border: 3px solid #666; padding: 10px"
+							important>
+							<label ng-show="htmlFeatureEditTitle">Edit Feature
+								{{feature.name}}</label><label ng-show="htmlFeatureDelete">Delete
+								Feature</label><br />
+
+							<!-- SELECT FEATURE -->
+							<label ng-show="htmlFeatureSelect">Feature: </label> <select
+								ng-model="feature" ng-show="htmlFeatureSelect"
+								ng-options="feature as feature.name for feature in features | orderBy : 'name'"
+								ng-change="handleEditFeatureValues()">
+							</select><br />
+
+							<!-- TITLE -->
+							<label ng-show="htmlFeatureEdit">Title: <input
+								type="text" ng-model="feature.name" ng-show="htmlFeatureEdit" /></label><br />
+
+							<!-- DESCRIPTION -->
+							<label for="textarea" ng-show="htmlFeatureEdit">Description:
+								<textarea id="textarea" rows name="Description" cols="30"
+									ng-model="feature.description" rows="5"
+									ng-show="htmlFeatureEdit"></textarea>
+							</label><br />
+
+							<!-- VALUES -->
+							<label ng-show="htmlFeatureEdit">Values:</label> <input
+								type="text" name="valueStr" ng-model="feature.valueStr"
+								ng-show="htmlFeatureEdit"><br />
+
+							<!-- DEFAULT VALUE -->
+							<label ng-show="htmlFeatureEdit">Default Value:</label> <input
+								type="text" name="defaultValue" ng-model="feature.defaultValue"
+								ng-show="htmlFeatureEdit"><br />
+
+							<!-- UN-PLANNED -->
+							<label ng-show="htmlFeatureEdit">Multi-Valued:</label> <input
+								type="checkbox" name="multiValued"
+								ng-model="feature.multiValued" ng-show="htmlFeatureEdit"><br />
+
+							<!-- VALUE TYPE -->
+							<label ng-show="htmlFeatureEdit">Value Type: </label> <select
+								ng-model="feature.valueType" ng-show="htmlFeatureEdit">
+								<option value="String">String</option>
+								<option value="Integer">Integer</option>
+								<option value="Decimal">Decimal</option>
+								<option value="Boolean">Boolean</option>
+							</select><br />
+
+							<button type="button" class="btn btn-primary"
+								ng-click="saveFeatureEdit($event)" ng-show="htmlFeatureSave">Save</button>
+							<button type="button" class="btn btn-primary"
+								ng-click="saveFeatureDelete($event)" ng-show="htmlFeatureDelete">Delete</button>
+							<button type="button" class="btn btn-primary"
+								ng-click="cancelFeatureEdit($event)">Cancel</button>
+						</div>
+					</td>
+
+					<td>
+						<div class="container">
+							<p>
+								<b> ORCS Product Line Configuration provides the ability to
+									view and edit the Branch Configuration.<br /> <br /> Note: If
+									you have permissions, configuration can be edited on the
+									Baseline Branch.<br /> OR you can edit the configuration on a
+									working branch and commit when ready. Changes will not show on
+									the main Product Line branch until commit.
+								</b>
+							</p>
+						</div>
+
+						<div class="container">
+							<label>Branch: </label> <select ng-model="selectedBranch"
+								ng-options="branch.name for branch in branches | orderBy : 'name'"
+								ng-change="handleBranchSelection()">
+							</select>
+						</div>
+						<div class="container">
+							<button type="submit" class="btn btn-default btn-xs"
+								ng-click="handleAddVariant()">
+								<span class="glyphicon glyphicon-th-large"></span> Add Variant
+							</button>
+							<button type="submit" class="btn btn-default btn-xs"
+								ng-click="handleEditVariant()">
+								<span class="glyphicon glyphicon-th-large"></span> Edit Variant
+							</button>
+							<button type="submit" class="btn btn-default btn-xs"
+								ng-click="handleDeleteVariant()">
+								<span class="glyphicon glyphicon-th-large"></span> Delete
+								Variant
+							</button>
+							<button type="submit" class="btn btn-default btn-xs"
+								ng-click="handleAddFeature()">
+								<span class="glyphicon glyphicon-triangle-top"></span> Add
+								Feature
+							</button>
+							<button type="submit" class="btn btn-default btn-xs"
+								ng-click="handleEditFeatureSelect()">
+								<span class="glyphicon glyphicon-triangle-top"></span> Edit
+								Feature
+							</button>
+							<button type="submit" class="btn btn-default btn-xs"
+								ng-click="handleDeleteFeature()">
+								<span class="glyphicon glyphicon-triangle-top"></span> Delete
+								Feature
+							</button>
+						</div>
+						<div class="container">
+							<div ui-grid="itemsGridOptions" class="myGrid" ui-grid-selection
+								ui-grid-edit ui-grid-resize-columns></div>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="container">
+			&nbsp;&nbsp;&nbsp;<label ng-show="showErrorLabel"><font
+				color="red">Error: {{errorMsg}}</font></label>
+		</div>
+
+	</div>
+</body>
+</html>
