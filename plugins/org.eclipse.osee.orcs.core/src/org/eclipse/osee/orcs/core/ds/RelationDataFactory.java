@@ -12,14 +12,14 @@ package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface RelationDataFactory {
 
-   RelationData createRelationData(RelationTypeId relationType, BranchId branch, ArtifactId aArtifact, ArtifactId bArtifact, String rationale);
+   RelationData createRelationData(RelationTypeToken relationType, BranchId branch, ArtifactId aArtifact, ArtifactId bArtifact, String rationale);
 
    RelationData clone(RelationData source);
 

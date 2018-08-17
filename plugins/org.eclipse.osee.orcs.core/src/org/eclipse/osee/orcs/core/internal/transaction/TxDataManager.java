@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
@@ -354,31 +355,31 @@ public class TxDataManager {
       relationManager.addChild(session, asArtifact, getForWrite(txData, child));
    }
 
-   public void relate(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB) {
+   public void relate(TxData txData, ArtifactId artA, RelationTypeToken type, ArtifactId artB) {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
       relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB);
    }
 
-   public void relate(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, String rationale) {
+   public void relate(TxData txData, ArtifactId artA, RelationTypeToken type, ArtifactId artB, String rationale) {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
       relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB, rationale);
    }
 
-   public void relate(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, RelationSorter sortType) {
+   public void relate(TxData txData, ArtifactId artA, RelationTypeToken type, ArtifactId artB, RelationSorter sortType) {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
       relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB, sortType);
    }
 
-   public void relate(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, String rationale, RelationSorter sortType) {
+   public void relate(TxData txData, ArtifactId artA, RelationTypeToken type, ArtifactId artB, String rationale, RelationSorter sortType) {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
       relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB, rationale, sortType);
    }
 
-   public void setRelations(TxData txData, ArtifactId artA, IRelationType type, Iterable<? extends ArtifactId> artBs) {
+   public void setRelations(TxData txData, ArtifactId artA, RelationTypeToken type, Iterable<? extends ArtifactId> artBs) {
       Artifact asArtifactA = getForWrite(txData, artA);
       Set<Artifact> asArtifactBs = Sets.newLinkedHashSet(getForWrite(txData, artBs));
 

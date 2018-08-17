@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
@@ -126,7 +126,7 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public RelationData createRelationData(RelationTypeId relationType, BranchId branch, ArtifactId aArtifact, ArtifactId bArtifact, String rationale) {
+   public RelationData createRelationData(RelationTypeToken relationType, BranchId branch, ArtifactId aArtifact, ArtifactId bArtifact, String rationale) {
       VersionData version = objectFactory.createDefaultVersionData();
       version.setBranch(branch);
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
@@ -276,27 +277,27 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public void relate(ArtifactId artA, IRelationType relType, ArtifactId artB) {
+   public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB) {
       txManager.relate(txData, artA, relType, artB);
    }
 
    @Override
-   public void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale) {
+   public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale) {
       txManager.relate(txData, artA, relType, artB, rationale);
    }
 
    @Override
-   public void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, RelationSorter sortType) {
+   public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, RelationSorter sortType) {
       txManager.relate(txData, artA, relType, artB, sortType);
    }
 
    @Override
-   public void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale, RelationSorter sortType) {
+   public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale, RelationSorter sortType) {
       txManager.relate(txData, artA, relType, artB, rationale, sortType);
    }
 
    @Override
-   public void setRelations(ArtifactId artA, IRelationType relType, Iterable<? extends ArtifactId> artBs) {
+   public void setRelations(ArtifactId artA, RelationTypeToken relType, Iterable<? extends ArtifactId> artBs) {
       txManager.setRelations(txData, artA, relType, artBs);
    }
 

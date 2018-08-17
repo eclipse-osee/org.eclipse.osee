@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -66,13 +67,13 @@ public interface RelationManager {
 
    void addChild(OrcsSession session, Artifact parent, Artifact child);
 
-   void relate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode);
+   void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode);
 
-   void relate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode, String rationale);
+   void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale);
 
-   void relate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode, RelationSorter sortType);
+   void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, RelationSorter sortType);
 
-   void relate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode, String rationale, RelationSorter sortType);
+   void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale, RelationSorter sortType);
 
    void setRationale(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode, String rationale);
 

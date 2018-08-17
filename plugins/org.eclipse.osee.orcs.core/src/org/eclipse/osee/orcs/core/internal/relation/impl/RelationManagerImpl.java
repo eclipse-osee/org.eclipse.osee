@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -205,22 +206,22 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public void relate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode) {
+   public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode) {
       relate(session, aNode, type, bNode, emptyString(), PREEXISTING);
    }
 
    @Override
-   public void relate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode, String rationale) {
+   public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale) {
       relate(session, aNode, type, bNode, rationale, PREEXISTING);
    }
 
    @Override
-   public void relate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode, RelationSorter sortType) {
+   public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, RelationSorter sortType) {
       relate(session, aNode, type, bNode, emptyString(), sortType);
    }
 
    @Override
-   public void relate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode, String rationale, RelationSorter sortType) {
+   public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale, RelationSorter sortType) {
       checkBranch(aNode, bNode);
       checkRelateSelf(aNode, bNode);
       GraphData graph = getGraph(aNode, bNode);

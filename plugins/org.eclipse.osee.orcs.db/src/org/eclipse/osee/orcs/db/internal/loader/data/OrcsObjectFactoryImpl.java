@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
@@ -32,6 +33,7 @@ import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.eclipse.osee.orcs.data.RelationTypes;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.proxy.AttributeDataProxyFactory;
 
@@ -39,12 +41,12 @@ import org.eclipse.osee.orcs.db.internal.proxy.AttributeDataProxyFactory;
  * @author Roberto E. Escobar
  */
 public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
-
    private final AttributeDataProxyFactory proxyFactory;
+   private final RelationTypes relationTypes;
 
-   public OrcsObjectFactoryImpl(AttributeDataProxyFactory proxyFactory) {
-      super();
+   public OrcsObjectFactoryImpl(AttributeDataProxyFactory proxyFactory, RelationTypes relationTypes) {
       this.proxyFactory = proxyFactory;
+      this.relationTypes = relationTypes;
    }
 
    @Override
@@ -129,9 +131,15 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public RelationData createRelationData(VersionData version, Integer id, RelationTypeId relationType, ModificationType modType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityId applicId) {
+   public RelationData createRelationData(VersionData version, Integer id, RelationTypeToken relationType, ModificationType modType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityId applicId) {
       long typeId = relationType.getId();
       return createRelationData(version, id, typeId, modType, typeId, modType, aArtId, bArtId, rationale, applicId);
+   }
+
+   @Override
+   public RelationData createRelationData(VersionData version, Integer id, RelationTypeId relationType, ModificationType modType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityId applicId) {
+      return createRelationData(version, id, relationTypes.get(relationType), modType, aArtId, bArtId, rationale,
+         applicId);
    }
 
    private ArtifactData createArtifactFromRow(VersionData version, int id, long localTypeID, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, String guid, ApplicabilityId applicId) {

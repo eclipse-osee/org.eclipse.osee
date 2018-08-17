@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
@@ -124,15 +125,15 @@ public interface TransactionBuilder {
 
    void addChild(ArtifactId parent, ArtifactId child);
 
-   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB);
+   void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB);
 
-   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale);
+   void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale);
 
-   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, RelationSorter sortType);
+   void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, RelationSorter sortType);
 
-   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale, RelationSorter sortType);
+   void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale, RelationSorter sortType);
 
-   void setRelations(ArtifactId artA, IRelationType relType, Iterable<? extends ArtifactId> artBs);
+   void setRelations(ArtifactId artA, RelationTypeToken relType, Iterable<? extends ArtifactId> artBs);
 
    void setRationale(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale);
 

@@ -21,11 +21,12 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -36,6 +37,7 @@ import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
+import org.eclipse.osee.orcs.data.RelationTypes;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
@@ -69,6 +71,7 @@ public class DataFactoryImplTest {
    @Mock private AttributeDataProxyFactory proxyFactory;
    @Mock private IdentityLocator identityService;
    @Mock private ArtifactTypes artifactCache;
+   @Mock private RelationTypes relationTypes;
 
    @Mock private ArtifactData artData;
    @Mock private AttributeData attrData;
@@ -94,7 +97,7 @@ public class DataFactoryImplTest {
 
       guid = GUID.create();
 
-      OrcsObjectFactory objectFactory = new OrcsObjectFactoryImpl(proxyFactory);
+      OrcsObjectFactory objectFactory = new OrcsObjectFactoryImpl(proxyFactory, relationTypes);
       dataFactory = new DataFactoryImpl(idFactory, objectFactory, artifactCache);
 
       // VERSION
@@ -250,7 +253,7 @@ public class DataFactoryImplTest {
 
    @Test
    public void testCreateRelationData() {
-      RelationTypeId relationType = RelationTypeId.valueOf(2389);
+      RelationTypeToken relationType = CoreRelationTypes.Default_Hierarchical__Child;
 
       ArtifactId aArt = ArtifactId.valueOf(4562);
       ArtifactId bArt = ArtifactId.valueOf(9513);
@@ -268,9 +271,9 @@ public class DataFactoryImplTest {
 
       Assert.assertTrue("local id must be valid", actual.getLocalId() > 0);
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
-      assertEquals(2389L, actual.getTypeUuid());
+      assertEquals(relationType.getId().longValue(), actual.getTypeUuid());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
-      assertEquals(2389L, actual.getBaseTypeUuid());
+      assertEquals(relationType.getId().longValue(), actual.getBaseTypeUuid());
 
       assertEquals(aArt, actual.getArtifactIdA());
       assertEquals(bArt, actual.getArtifactIdB());

@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -52,7 +52,7 @@ public class OrcsCollectorWriter {
    private final OrcsApi orcsApi;
    private Map<Long, ArtifactId> idToArtifact;
    private TransactionBuilder transaction;
-   private BranchId branch;
+   private final BranchId branch;
    private ArtifactReadable user;
    private final XResultData results;
 
@@ -284,7 +284,7 @@ public class OrcsCollectorWriter {
    private void createMissingRelations(List<OwRelation> relations, ArtifactId artifact, XResultData results) {
       for (OwRelation relation : relations) {
          OwRelationType owRelType = relation.getType();
-         IRelationType relType = orcsApi.getOrcsTypes().getRelationTypes().get(owRelType.getId());
+         RelationTypeToken relType = orcsApi.getOrcsTypes().getRelationTypes().get(owRelType.getId());
 
          OwArtifactToken artToken = relation.getArtToken();
 
