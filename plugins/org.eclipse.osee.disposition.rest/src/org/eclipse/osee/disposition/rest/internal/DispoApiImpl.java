@@ -534,7 +534,8 @@ public class DispoApiImpl implements DispoApi {
       Note genOpNotes = generateOperationNotes(operation);
       notesList.add(genOpNotes);
       newSet.setNotesList(notesList);
-      newSet.setTime(new Date());
+      DispoSetArtifact dispoSetArtifact = new DispoSetArtifact(author);
+      newSet.setTime(dispoSetArtifact.getTime());
 
       // Generate report
       getWriter().updateOperationSummary(author, branch, setToEdit.getGuid(), report);
@@ -661,10 +662,12 @@ public class DispoApiImpl implements DispoApi {
          sb = sb.append(DispoStrings.IS_RUNNABLE);
          sb = sb.append(DispoStrings.SCRIPT_ENTRY_END);
       }
+
       DispoSetData dispoSetData = new DispoSetData();
-      dispoSetData.setTime(new Date());
       dispoSetData.setRerunList(DispoStrings.BATCH_RERUN_LIST + sb.toString() + DispoStrings.BATCH_RERUN_LIST_END);
       ArtifactReadable author = getQuery().findUser();
+      DispoSetArtifact dispoSetArtifact = new DispoSetArtifact(author);
+      dispoSetData.setTime(dispoSetArtifact.getTime());
       storageProvider.get().updateDispoSet(author, branch, destSetId, dispoSetData);
    }
 

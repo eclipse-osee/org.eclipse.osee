@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.disposition.model;
 
-import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
@@ -35,5 +34,5 @@ public interface DispoSet extends Identifiable<String> {
 
    String getRerunList();
 
-   Date getTime();
+   String getTime();
 }

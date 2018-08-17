@@ -276,7 +276,7 @@ public class OrcsStorageImpl implements Storage {
       String importPath = newData.getImportPath();
       String ciSet = newData.getCiSet();
       String rerunList = newData.getRerunList();
-      Date time = newData.getTime();
+      String time = newData.getTime();
 
       JSONArray notesList = null;
       if (newData.getNotesList() != null) {

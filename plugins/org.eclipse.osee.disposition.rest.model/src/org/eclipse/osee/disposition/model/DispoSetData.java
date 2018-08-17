@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.disposition.model;
 
-import java.util.Date;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -29,7 +28,7 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
    private OperationReport operationSummary;
    private String ciSet;
    private String rerunList;
-   private Date time;
+   private String time;
 
    public DispoSetData() {
 
@@ -98,12 +97,11 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
    }
 
    @Override
-   public Date getTime() {
+   public String getTime() {
       return time;
    }
 
-   public void setTime(Date time) {
+   public void setTime(String time) {
       this.time = time;
    }
-
 }
