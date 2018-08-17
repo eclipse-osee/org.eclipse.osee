@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.db.internal.loader.data;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -106,7 +106,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public AttributeData createAttributeData(VersionData version, Integer id, AttributeTypeId attributeType, ModificationType modType, int artifactId, Object value, String uri, ApplicabilityId applicId) {
+   public AttributeData createAttributeData(VersionData version, Integer id, AttributeTypeToken attributeType, ModificationType modType, int artifactId, Object value, String uri, ApplicabilityId applicId) {
       Long typeId = attributeType.getId();
       DataProxy proxy = proxyFactory.createProxy(typeId, value, uri);
       return createAttributeFromRow(version, id, typeId, modType, typeId, modType, artifactId, proxy, applicId);
@@ -124,7 +124,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public AttributeData createAttributeData(VersionData version, Integer id, AttributeTypeId attributeType, ModificationType modType, int artId, ApplicabilityId applicId) {
+   public AttributeData createAttributeData(VersionData version, Integer id, AttributeTypeToken attributeType, ModificationType modType, int artId, ApplicabilityId applicId) {
       long typeId = attributeType.getId();
       DataProxy proxy = proxyFactory.createProxy(typeId, "", "");
       return createAttributeFromRow(version, id, typeId, modType, typeId, modType, artId, proxy, applicId);

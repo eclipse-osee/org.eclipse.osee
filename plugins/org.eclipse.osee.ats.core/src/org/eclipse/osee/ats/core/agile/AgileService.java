@@ -55,7 +55,6 @@ import org.eclipse.osee.ats.core.agile.operations.SprintBurndownOperations;
 import org.eclipse.osee.ats.core.agile.operations.SprintBurnupOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -252,8 +251,8 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public AttributeTypeId getAgileTeamPointsAttributeType(IAgileTeam team) {
-      AttributeTypeId type = AtsAttributeTypes.Points;
+   public AttributeTypeToken getAgileTeamPointsAttributeType(IAgileTeam team) {
+      AttributeTypeToken type = AtsAttributeTypes.Points;
       String attrTypeName =
          atsApi.getAttributeResolver().getSoleAttributeValue(team, AtsAttributeTypes.PointsAttributeType, null);
       if (Strings.isValid(attrTypeName)) {
@@ -262,8 +261,8 @@ public class AgileService implements IAgileService {
       return type;
    }
 
-   private AttributeTypeId getTypeFromName(String attrTypeName) {
-      AttributeTypeId type = null;
+   private AttributeTypeToken getTypeFromName(String attrTypeName) {
+      AttributeTypeToken type = null;
       for (AttributeTypeToken attrType : atsApi.getStoreService().getAttributeTypes()) {
          if (attrType.getName().equals(attrTypeName)) {
             type = attrType;

@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.db.internal.loader.processor;
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -66,7 +66,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
             version.setStripeId(TransactionId.valueOf(chStmt.getLong("stripe_transaction_id")));
          }
 
-         AttributeTypeId attributeType = AttributeTypeId.valueOf(chStmt.getLong("attr_type_id"));
+         AttributeTypeToken attributeType = attributeTypes.get(chStmt.getLong("attr_type_id"));
 
          String baseAttributeType = attributeTypes.getBaseAttributeTypeId(attributeType);
          Object value = null;

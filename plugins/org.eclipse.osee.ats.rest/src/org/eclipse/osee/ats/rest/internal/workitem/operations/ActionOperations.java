@@ -32,12 +32,14 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Donald G. Dunne
@@ -47,17 +49,19 @@ public class ActionOperations {
    private final AtsApi atsApi;
    private IAtsWorkItem workItem;
    private final IAtsUser asUser;
+   private final OrcsApi orcsApi;
 
-   public ActionOperations(IAtsUser asUser, IAtsWorkItem workItem, AtsApi atsApi) {
+   public ActionOperations(IAtsUser asUser, IAtsWorkItem workItem, AtsApi atsApi, OrcsApi orcsApi) {
       this.asUser = asUser;
       this.workItem = workItem;
       this.atsApi = atsApi;
+      this.orcsApi = orcsApi;
    }
 
    public Attribute setActionAttributeByType(String id, String attrTypeIdOrKey, List<String> values) {
       Conditions.assertNotNull(values, "values can not be null");
       IAtsChangeSet changes = atsApi.createChangeSet("set attr by type or key " + attrTypeIdOrKey);
-      AttributeTypeId attrTypeId = null;
+      AttributeTypeToken attrTypeId = null;
       if (attrTypeIdOrKey.equals(AttributeKey.Title.name())) {
          changes.setSoleAttributeValue(workItem, CoreAttributeTypes.Name, values.iterator().next());
          attrTypeId = CoreAttributeTypes.Name;
@@ -146,7 +150,7 @@ public class ActionOperations {
          }
       } else if (attrTypeIdOrKey.equals(AttributeKey.assocArt.name())) {
          if (values != null && Strings.isNumeric(values.get(0))) {
-            attrTypeId = atsApi.getStoreService().getAttributeType(Long.valueOf(values.get(0)));
+            attrTypeId = getAttributeType(values.get(0));
             if (attrTypeId != null) {
                values.remove(0);
                // check to make sure the rest of the items are valid requirements
@@ -154,7 +158,7 @@ public class ActionOperations {
             }
          }
       } else {
-         attrTypeId = atsApi.getStoreService().getAttributeType(Long.valueOf(attrTypeIdOrKey));
+         attrTypeId = getAttributeType(attrTypeIdOrKey);
          if (attrTypeId != null) {
             changes.setAttributeValuesAsStrings(workItem, attrTypeId, values);
          }
@@ -167,6 +171,10 @@ public class ActionOperations {
          return getActionAttributeValues(attrTypeId, workItem);
       }
       return null;
+   }
+
+   private AttributeTypeToken getAttributeType(String id) {
+      return orcsApi.getOrcsTypes().getAttributeTypes().get(Long.valueOf(id));
    }
 
    public Attribute getActionAttributeValues(String attrTypeId, IAtsWorkItem workItem) {

@@ -54,6 +54,7 @@ import org.eclipse.osee.ats.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.result.XResultData;
@@ -112,7 +113,8 @@ public class ExcelAtsActionArtifactExtractor {
                   Collection<IAtsActionableItem> aias = new ArrayList<>();
                   for (Artifact aiaArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem,
                      actionableItemName, AtsClientService.get().getAtsBranch())) {
-                     IAtsActionableItem ai = AtsClientService.get().getActionableItemService().getActionableItemById(aiaArt);
+                     IAtsActionableItem ai =
+                        AtsClientService.get().getActionableItemService().getActionableItemById(aiaArt);
                      if (ai != null) {
                         aias.add(ai);
                      }
@@ -236,7 +238,8 @@ public class ExcelAtsActionArtifactExtractor {
                for (String actionableItemName : aData.actionableItems) {
                   for (Artifact aiaArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem,
                      actionableItemName, AtsClientService.get().getAtsBranch())) {
-                     IAtsActionableItem ai = AtsClientService.get().getActionableItemService().getActionableItemById(aiaArt);
+                     IAtsActionableItem ai =
+                        AtsClientService.get().getActionableItemService().getActionableItemById(aiaArt);
                      if (ai != null) {
                         aias.add(ai);
                      }
@@ -257,7 +260,7 @@ public class ExcelAtsActionArtifactExtractor {
                   addToAgile(changes, aData, teamWf);
 
                   for (JaxAttribute attr : aData.attributes) {
-                     AttributeTypeId attrType = AttributeTypeManager.getType(attr.getAttrTypeName());
+                     AttributeTypeToken attrType = AttributeTypeManager.getType(attr.getAttrTypeName());
                      changes.setAttributeValues(teamWf, attrType, attr.getValues());
                   }
                   newTeamWfs.add((TeamWorkFlowArtifact) teamWf.getStoreObject());
@@ -329,7 +332,7 @@ public class ExcelAtsActionArtifactExtractor {
       // If Agile points, add points to workflow
       if (Strings.isValid(aData.agilePoints)) {
          IAgileTeam aTeam = getAgileTeamByName(aData.agileTeamName);
-         AttributeTypeId attrType = AtsClientService.get().getAgileService().getAgileTeamPointsAttributeType(aTeam);
+         AttributeTypeToken attrType = AtsClientService.get().getAgileService().getAgileTeamPointsAttributeType(aTeam);
          if (attrType.getId().equals(AtsAttributeTypes.Points.getId())) {
             changes.setSoleAttributeValue(teamWf, attrType, aData.agilePoints);
          } else if (attrType.getId().equals(AtsAttributeTypes.PointsNumeric.getId())) {

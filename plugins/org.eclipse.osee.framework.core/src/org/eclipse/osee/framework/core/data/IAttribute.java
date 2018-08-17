@@ -17,5 +17,5 @@ public interface IAttribute<T> extends AttributeId {
 
    public T getValue();
 
-   public AttributeTypeId getAttributeType();
+   public AttributeTypeToken getAttributeType();
 }

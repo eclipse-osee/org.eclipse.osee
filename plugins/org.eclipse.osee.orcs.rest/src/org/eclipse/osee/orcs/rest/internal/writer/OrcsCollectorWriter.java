@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -108,7 +109,7 @@ public class OrcsCollectorWriter {
 
          try {
             for (OwAttribute owAttribute : owArtifact.getAttributes()) {
-               AttributeTypeId attrType =
+               AttributeTypeToken attrType =
                   getAttributeType(orcsApi.getOrcsTypes().getAttributeTypes(), owAttribute.getType());
 
                if (artifact.getAttributeCount(attrType) <= 1 && owAttribute.getValues().size() <= 1) {
@@ -233,9 +234,9 @@ public class OrcsCollectorWriter {
       return null;
    }
 
-   protected static AttributeTypeId getAttributeType(AttributeTypes attributeTypeCache, OwAttributeType attributeType) {
-      if (attributeType.getId() <= 0L) {
-         AttributeTypeId attributeTypeId = attributeTypeCache.getByName(attributeType.getName());
+   protected static AttributeTypeToken getAttributeType(AttributeTypes attributeTypeCache, OwAttributeType attributeType) {
+      if (attributeType.isInvalid()) {
+         AttributeTypeToken attributeTypeId = attributeTypeCache.getByName(attributeType.getName());
          if (attributeTypeId == null) {
             throw new OseeArgumentException("Invalid attribute type name [%s]", attributeType);
          }
@@ -317,7 +318,7 @@ public class OrcsCollectorWriter {
       for (OwAttribute owAttribute : owArtifact.getAttributes()) {
          if (CoreAttributeTypes.Name.notEqual(owAttribute.getType().getId())) {
             OwAttributeType owAttrType = owAttribute.getType();
-            AttributeTypeId attrType = getAttributeType(orcsApi.getOrcsTypes().getAttributeTypes(), owAttrType);
+            AttributeTypeToken attrType = getAttributeType(orcsApi.getOrcsTypes().getAttributeTypes(), owAttrType);
 
             List<Object> values = owAttribute.getValues();
             for (Object value : values) {

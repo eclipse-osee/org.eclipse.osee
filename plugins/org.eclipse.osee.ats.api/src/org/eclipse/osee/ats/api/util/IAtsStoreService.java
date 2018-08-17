@@ -73,11 +73,11 @@ public interface IAtsStoreService {
 
    void clearCaches(IAtsWorkItem workItem);
 
+   AttributeTypeToken getAttributeType(Long attrTypeId);
+
    boolean isArtifactTypeInheritsFrom(IArtifactType artifactType, IArtifactType baseArtifactType);
 
    Result setTransactionAssociatedArtifact(TransactionId trans, IAtsTeamWorkflow teamWf);
-
-   AttributeTypeId getAttributeType(Long attrTypeId);
 
    boolean isDeleted(ArtifactId artifact);
 

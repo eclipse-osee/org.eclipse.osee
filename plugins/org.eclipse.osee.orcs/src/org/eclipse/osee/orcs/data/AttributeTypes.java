@@ -55,7 +55,7 @@ public interface AttributeTypes extends IdCollection<AttributeTypeToken> {
 
    boolean isFloatingType(AttributeTypeId attrType);
 
-   AttributeTypeId getByName(String attrTypeName);
+   AttributeTypeToken getByName(String attrTypeName);
 
    boolean isStringType(AttributeTypeId attrType);
 

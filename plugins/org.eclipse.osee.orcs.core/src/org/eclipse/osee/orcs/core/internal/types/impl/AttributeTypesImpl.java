@@ -231,8 +231,8 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public AttributeTypeId getByName(String attrTypeName) {
-      AttributeTypeId attrType = null;
+   public AttributeTypeToken getByName(String attrTypeName) {
+      AttributeTypeToken attrType = null;
       for (AttributeTypeToken type : getAll()) {
          if (type.getName().equals(attrTypeName)) {
             attrType = type;

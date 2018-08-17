@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -185,7 +185,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    }
 
    @Override
-   public void setSoleAttributeFromString(IAtsObject atsObject, AttributeTypeId attributeType, String value) {
+   public void setSoleAttributeFromString(IAtsObject atsObject, AttributeTypeToken attributeType, String value) {
       setSoleAttributeFromString(atsObject.getStoreObject(), attributeType, value);
    }
 

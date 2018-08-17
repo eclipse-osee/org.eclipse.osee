@@ -22,7 +22,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.app.OseeAppletPage;
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -204,7 +204,7 @@ public final class DataRightsSwReqAndCodeResource {
       return txFactory.createTransaction(branchId, userArtifact, comment);
    }
 
-   private void setBestValue(TransactionBuilder txBuilder, ArtifactReadable source, ArtifactReadable dest, AttributeTypeId attributeType, StringBuilder strb) {
+   private void setBestValue(TransactionBuilder txBuilder, ArtifactReadable source, ArtifactReadable dest, AttributeTypeToken attributeType, StringBuilder strb) {
       String value = dest.getSoleAttributeValue(attributeType, "");
       String sourceValue = source.getSoleAttributeValue(attributeType, AttributeId.UNSPECIFIED);
       if (sourceValue.equals(AttributeId.UNSPECIFIED)) {

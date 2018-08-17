@@ -277,7 +277,8 @@ public class CreateTasksOperation {
             }
 
             for (JaxAttribute attribute : jaxTask.getAttributes()) {
-               AttributeTypeId attrType = atsApi.getStoreService().getAttributeType(attribute.getAttrTypeName());
+               AttributeTypeToken attrType =
+                  orcsApi.getOrcsTypes().getAttributeTypes().getByName(attribute.getAttrTypeName());
                if (attrType == null) {
                   resultData.errorf("Attribute Type [%s] not valid for Task creation in %s",
                      attribute.getAttrTypeName(), task);

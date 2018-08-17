@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -214,7 +215,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    }
 
    @Override
-   public TransactionId setSoleAttributeValue(BranchId branch, ArtifactId artifact, AttributeTypeId attributeType, String value) {
+   public TransactionId setSoleAttributeValue(BranchId branch, ArtifactId artifact, AttributeTypeToken attributeType, String value) {
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(branch, account, "rest - setSoleAttributeValue");
       tx.setSoleAttributeFromString(artifact, attributeType, value);

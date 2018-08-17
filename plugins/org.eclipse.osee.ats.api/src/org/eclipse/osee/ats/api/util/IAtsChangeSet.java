@@ -54,13 +54,13 @@ public interface IAtsChangeSet {
 
    void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType);
 
-   void setSoleAttributeValue(IAtsWorkItem workItem, AttributeTypeId attributeType, String value);
+   void setSoleAttributeValue(IAtsWorkItem workItem, AttributeTypeToken attributeType, String value);
 
-   void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value);
+   void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeToken attributeType, Object value);
 
-   void setSoleAttributeValue(ArtifactId artifact, AttributeTypeId attributeType, Object value);
+   void setSoleAttributeValue(ArtifactId artifact, AttributeTypeToken attributeType, Object value);
 
-   void addAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value);
+   void addAttribute(IAtsObject atsObject, AttributeTypeToken attributeType, Object value);
 
    <T> void setValue(IAtsWorkItem workItem, IAttribute<T> attr, AttributeTypeId attributeType, T value);
 
@@ -112,9 +112,9 @@ public interface IAtsChangeSet {
 
    void deleteArtifact(IAtsWorkItem workItem);
 
-   void setAttributeValues(IAtsObject atsObject, AttributeTypeId attrType, List<Object> values);
+   void setAttributeValues(IAtsObject atsObject, AttributeTypeToken attrType, List<Object> values);
 
-   void setAttributeValues(ArtifactId artifact, AttributeTypeId attrType, List<Object> values);
+   void setAttributeValues(ArtifactId artifact, AttributeTypeToken attrType, List<Object> values);
 
    String getComment();
 
@@ -138,13 +138,13 @@ public interface IAtsChangeSet {
 
    void unrelate(IAtsObject atsObject, RelationTypeSide relationSide, ArtifactId artifact);
 
-   void addAttribute(ArtifactId artifactId, AttributeTypeId attrType, Object value);
+   void addAttribute(ArtifactId artifactId, AttributeTypeToken attrType, Object value);
 
-   void setSoleAttributeFromString(ArtifactId artifact, AttributeTypeId attrType, String value);
+   void setSoleAttributeFromString(ArtifactId artifact, AttributeTypeToken attrType, String value);
 
-   void setSoleAttributeFromString(IAtsObject atsObject, AttributeTypeId attributeType, String value);
+   void setSoleAttributeFromString(IAtsObject atsObject, AttributeTypeToken attributeType, String value);
 
-   void setSoleAttributeFromStream(ArtifactId artifact, AttributeTypeId attributeType, InputStream inputStream);
+   void setSoleAttributeFromStream(ArtifactId artifact, AttributeTypeToken attributeType, InputStream inputStream);
 
    void reset(String string);
 
@@ -164,9 +164,9 @@ public interface IAtsChangeSet {
     * This can be removed when both the client and server accept ArtifactId as a value. In 25.0, client accepts
     * ArtifactId while server expects String.
     */
-   void addArtifactReferencedAttribute(ArtifactId artifact, AttributeTypeId attributeType, ArtifactId artifactRef);
+   void addArtifactReferencedAttribute(ArtifactId artifact, AttributeTypeToken attributeType, ArtifactId artifactRef);
 
-   void setAttributeValuesAsStrings(IAtsObject atsObject, AttributeTypeId attrType, List<String> values);
+   void setAttributeValuesAsStrings(IAtsObject atsObject, AttributeTypeToken attrType, List<String> values);
 
    void addChild(IAtsObject parent, IAtsObject child);
 

@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
@@ -48,7 +49,7 @@ public class AttributeFactory {
       this.cache = cache;
    }
 
-   public <T> Attribute<T> createAttributeWithDefaults(AttributeContainer container, ArtifactData artifactData, AttributeTypeId attributeType) {
+   public <T> Attribute<T> createAttributeWithDefaults(AttributeContainer container, ArtifactData artifactData, AttributeTypeToken attributeType) {
       AttributeData<T> data = dataFactory.create(artifactData, attributeType);
       return createAttribute(container, data, true, true);
    }

@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.db.internal.loader;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -101,7 +101,7 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public AttributeData create(ArtifactData parent, AttributeTypeId attributeType) {
+   public AttributeData create(ArtifactData parent, AttributeTypeToken attributeType) {
       VersionData version = objectFactory.createDefaultVersionData();
       version.setBranch(parent.getVersion().getBranch());
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;

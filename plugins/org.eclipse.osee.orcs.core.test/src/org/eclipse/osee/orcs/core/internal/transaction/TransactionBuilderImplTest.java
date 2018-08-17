@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -102,13 +101,11 @@ public class TransactionBuilderImplTest {
    // @formatter:on
 
    private TransactionBuilderImpl factory;
-   private String guid;
 
    @SuppressWarnings("unchecked")
    @Before
    public void init() {
       initMocks(this);
-      guid = GUID.create();
       factory = new TransactionBuilderImpl(txCallableFactory, txDataManager, txData, query, keyValueOps);
 
       when(attrId.getId()).thenReturn(12345L);

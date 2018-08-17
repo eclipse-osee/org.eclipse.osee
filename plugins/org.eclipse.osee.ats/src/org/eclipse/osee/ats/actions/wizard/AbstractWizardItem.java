@@ -39,7 +39,7 @@ import org.eclipse.osee.ats.util.widgets.XOriginatorHyperlinkWidget;
 import org.eclipse.osee.ats.util.widgets.XWorkPackageHyperlinkWidget;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -394,7 +394,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
          AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
       if (agileTeamArt != null) {
          IAgileTeam agileTeam = AtsClientService.get().getAgileService().getAgileTeam(agileTeamArt);
-         AttributeTypeId agileTeamPointsAttributeType =
+         AttributeTypeToken agileTeamPointsAttributeType =
             AtsClientService.get().getAgileService().getAgileTeamPointsAttributeType(agileTeam);
          XWidget widget = (XWidget) teamDefFieldToWidget.get(teamDef, agileTeamPointsAttributeType.equals(
             AtsAttributeTypes.Points) ? WizardFields.Points : WizardFields.PointsNumeric);

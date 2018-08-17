@@ -214,21 +214,21 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void setSoleAttributeValue(IAtsWorkItem workItem, AttributeTypeId attributeType, String value) {
+   public void setSoleAttributeValue(IAtsWorkItem workItem, AttributeTypeToken attributeType, String value) {
       Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(workItem);
       artifact.setSoleAttributeValue(attributeType, value);
       add(artifact);
    }
 
    @Override
-   public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value) {
+   public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeToken attributeType, Object value) {
       Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(atsObject);
       artifact.setSoleAttributeValue(attributeType, value);
       add(artifact);
    }
 
    @Override
-   public void addAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) {
+   public void addAttribute(IAtsObject atsObject, AttributeTypeToken attributeType, Object value) {
       Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(atsObject);
       artifact.addAttribute(attributeType, value);
       add(artifact);
@@ -361,14 +361,14 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void setAttributeValues(IAtsObject atsObject, AttributeTypeId attrType, List<Object> values) {
+   public void setAttributeValues(IAtsObject atsObject, AttributeTypeToken attrType, List<Object> values) {
       Artifact artifact = getArtifact(atsObject);
       artifact.setAttributeFromValues(attrType, values);
       add(artifact);
    }
 
    @Override
-   public void setAttributeValues(ArtifactId artifact, AttributeTypeId attrType, List<Object> values) {
+   public void setAttributeValues(ArtifactId artifact, AttributeTypeToken attrType, List<Object> values) {
       ((Artifact) artifact).setAttributeFromValues(attrType, values);
       add(artifact);
    }
@@ -400,7 +400,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void setSoleAttributeValue(ArtifactId artifact, AttributeTypeId attrType, Object value) {
+   public void setSoleAttributeValue(ArtifactId artifact, AttributeTypeToken attrType, Object value) {
       Artifact art = getArtifact(artifact);
       art.setSoleAttributeValue(attrType, value);
       add(artifact);
@@ -416,21 +416,21 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void addAttribute(ArtifactId artifact, AttributeTypeId attrType, Object value) {
+   public void addAttribute(ArtifactId artifact, AttributeTypeToken attrType, Object value) {
       Artifact art = getArtifact(artifact);
       art.addAttribute(attrType, value);
       add(art);
    }
 
    @Override
-   public void setSoleAttributeFromString(ArtifactId artifact, AttributeTypeId attrType, String value) {
+   public void setSoleAttributeFromString(ArtifactId artifact, AttributeTypeToken attrType, String value) {
       Artifact art = getArtifact(artifact);
       art.setSoleAttributeFromString(attrType, value);
       add(art);
    }
 
    @Override
-   public void setSoleAttributeFromStream(ArtifactId artifact, AttributeTypeId attributeType, InputStream inputStream) {
+   public void setSoleAttributeFromStream(ArtifactId artifact, AttributeTypeToken attributeType, InputStream inputStream) {
       Artifact art = getArtifact(artifact);
       art.setSoleAttributeFromStream(attributeType, inputStream);
       add(art);
@@ -443,7 +443,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void addArtifactReferencedAttribute(ArtifactId artifact, AttributeTypeId attributeType, ArtifactId artifactRef) {
+   public void addArtifactReferencedAttribute(ArtifactId artifact, AttributeTypeToken attributeType, ArtifactId artifactRef) {
       Artifact art = getArtifact(artifact);
       art.addAttributeFromString(attributeType, artifactRef.getId().toString());
    }
@@ -456,7 +456,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void setAttributeValuesAsStrings(IAtsObject atsObject, AttributeTypeId attributeType, List<String> values) {
+   public void setAttributeValuesAsStrings(IAtsObject atsObject, AttributeTypeToken attributeType, List<String> values) {
       List<Object> objValues = new LinkedList<>();
       for (String value : values) {
          if (AttributeTypeManager.isBaseTypeCompatible(StringAttribute.class, attributeType)) {

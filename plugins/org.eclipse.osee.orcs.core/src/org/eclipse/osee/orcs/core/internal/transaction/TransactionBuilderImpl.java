@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -164,31 +165,31 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public AttributeId createAttribute(ArtifactId sourceArtifact, AttributeTypeId attributeType) {
+   public AttributeId createAttribute(ArtifactId sourceArtifact, AttributeTypeToken attributeType) {
       Artifact asArtifact = getForWrite(sourceArtifact);
       return asArtifact.createAttribute(attributeType);
    }
 
    @Override
-   public <T> AttributeId createAttribute(ArtifactId sourceArtifact, AttributeTypeId attributeType, T value) {
+   public <T> AttributeId createAttribute(ArtifactId sourceArtifact, AttributeTypeToken attributeType, T value) {
       Artifact asArtifact = getForWrite(sourceArtifact);
       return asArtifact.createAttribute(attributeType, value);
    }
 
    @Override
-   public <T> void setSoleAttributeValue(ArtifactId sourceArtifact, AttributeTypeId attributeType, T value) {
+   public <T> void setSoleAttributeValue(ArtifactId sourceArtifact, AttributeTypeToken attributeType, T value) {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setSoleAttributeValue(attributeType, value);
    }
 
    @Override
-   public void setSoleAttributeFromStream(ArtifactId sourceArtifact, AttributeTypeId attributeType, InputStream stream) {
+   public void setSoleAttributeFromStream(ArtifactId sourceArtifact, AttributeTypeToken attributeType, InputStream stream) {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setSoleAttributeFromStream(attributeType, stream);
    }
 
    @Override
-   public void setSoleAttributeFromString(ArtifactId sourceArtifact, AttributeTypeId attributeType, String value) {
+   public void setSoleAttributeFromString(ArtifactId sourceArtifact, AttributeTypeToken attributeType, String value) {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setSoleAttributeFromString(attributeType, value);
    }
@@ -199,25 +200,19 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public <T> void setAttributesFromValues(ArtifactId sourceArtifact, AttributeTypeId attributeType, T... values) {
+   public <T> void setAttributesFromValues(ArtifactId sourceArtifact, AttributeTypeToken attributeType, Collection<T> values) {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setAttributesFromValues(attributeType, values);
    }
 
    @Override
-   public <T> void setAttributesFromValues(ArtifactId sourceArtifact, AttributeTypeId attributeType, Collection<T> values) {
-      Artifact asArtifact = getForWrite(sourceArtifact);
-      asArtifact.setAttributesFromValues(attributeType, values);
-   }
-
-   @Override
-   public void setAttributesFromStrings(ArtifactId sourceArtifact, AttributeTypeId attributeType, String... values) {
+   public void setAttributesFromStrings(ArtifactId sourceArtifact, AttributeTypeToken attributeType, String... values) {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setAttributesFromStrings(attributeType, values);
    }
 
    @Override
-   public void setAttributesFromStrings(ArtifactId sourceArtifact, AttributeTypeId attributeType, Collection<String> values) {
+   public void setAttributesFromStrings(ArtifactId sourceArtifact, AttributeTypeToken attributeType, Collection<String> values) {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setAttributesFromStrings(attributeType, values);
    }

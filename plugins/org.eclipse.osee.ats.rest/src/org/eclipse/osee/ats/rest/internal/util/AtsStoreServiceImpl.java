@@ -199,7 +199,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public AttributeTypeId getAttributeType(Long attrTypeId) {
+   public AttributeTypeToken getAttributeType(Long attrTypeId) {
       return orcsApi.getOrcsTypes().getAttributeTypes().get(attrTypeId);
    }
 

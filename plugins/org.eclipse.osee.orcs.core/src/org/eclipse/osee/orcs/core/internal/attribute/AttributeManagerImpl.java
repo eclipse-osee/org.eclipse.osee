@@ -296,23 +296,23 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public <T> void setSoleAttributeValue(AttributeTypeId attributeType, T value) {
+   public <T> void setSoleAttributeValue(AttributeTypeToken attributeType, T value) {
       Attribute<T> attribute = (Attribute<T>) getOrCreateSoleAttribute(attributeType);
       attribute.setValue(value);
    }
 
    @Override
-   public void setSoleAttributeFromString(AttributeTypeId attributeType, String value) {
+   public void setSoleAttributeFromString(AttributeTypeToken attributeType, String value) {
       getOrCreateSoleAttribute(attributeType).setFromString(value);
    }
 
    @Override
-   public void setSoleAttributeFromStream(AttributeTypeId attributeType, InputStream inputStream) {
+   public void setSoleAttributeFromStream(AttributeTypeToken attributeType, InputStream inputStream) {
       getOrCreateSoleAttribute(attributeType).setValueFromInputStream(inputStream);
    }
 
    @Override
-   public void setAttributesFromStrings(AttributeTypeId attributeType, String... values) {
+   public void setAttributesFromStrings(AttributeTypeToken attributeType, String... values) {
       setAttributesFromStrings(attributeType, Arrays.asList(values));
    }
 
@@ -321,7 +321,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
     * the createAttributeFromString() method.
     */
    @Override
-   public void setAttributesFromStrings(AttributeTypeId attributeType, Collection<String> values) {
+   public void setAttributesFromStrings(AttributeTypeToken attributeType, Collection<String> values) {
       Set<String> uniqueItems = new LinkedHashSet<>(values);
       List<Attribute<Object>> remainingAttributes = getAttributes(attributeType);
       List<String> remainingNewValues = new ArrayList<>(uniqueItems.size());
@@ -359,12 +359,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public <T> void setAttributesFromValues(AttributeTypeId attributeType, T... values) {
-      setAttributesFromValues(attributeType, Arrays.asList(values));
-   }
-
-   @Override
-   public <T> void setAttributesFromValues(AttributeTypeId attributeType, Collection<T> values) {
+   public <T> void setAttributesFromValues(AttributeTypeToken attributeType, Collection<T> values) {
       Set<T> uniqueItems = new LinkedHashSet<>(values);
       List<Attribute<Object>> remainingAttributes = getAttributes(attributeType);
       List<T> remainingNewValues = new ArrayList<>(uniqueItems.size());
@@ -456,7 +451,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public <T> Attribute<T> createAttribute(AttributeTypeId attributeType) {
+   public <T> Attribute<T> createAttribute(AttributeTypeToken attributeType) {
       checkTypeValid(attributeType);
       checkMultiplicityCanAdd(attributeType);
       Attribute<Object> attr = attributeFactory.createAttributeWithDefaults(this, getOrcsData(), attributeType);
@@ -464,13 +459,13 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public <T> Attribute<T> createAttribute(AttributeTypeId attributeType, T value) {
+   public <T> Attribute<T> createAttribute(AttributeTypeToken attributeType, T value) {
       Attribute<T> attribute = createAttribute(attributeType);
       attribute.setValue(value);
       return attribute;
    }
 
-   private <T> Attribute<T> createAttributeFromString(AttributeTypeId attributeType, String value) {
+   private <T> Attribute<T> createAttributeFromString(AttributeTypeToken attributeType, String value) {
       Attribute<T> attribute = createAttribute(attributeType);
       attribute.setFromString(value);
       return attribute;
@@ -483,7 +478,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
 
    //////////////////////////////////////////////////////////////
 
-   private Attribute<Object> getOrCreateSoleAttribute(AttributeTypeId attributeType) {
+   private Attribute<Object> getOrCreateSoleAttribute(AttributeTypeToken attributeType) {
       List<Attribute<Object>> filterAttributes = getAttributes(attributeType);
       int count = filterAttributes.size();
       if (count > 1) {
@@ -570,7 +565,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    private void meetMinimumAttributes() {
-      for (AttributeTypeId attributeType : getValidAttributeTypes()) {
+      for (AttributeTypeToken attributeType : getValidAttributeTypes()) {
          int missingCount = getRemainingAttributeCount(attributeType);
          for (int i = 0; i < missingCount; i++) {
             Attribute<Object> attr = attributeFactory.createAttributeWithDefaults(this, getOrcsData(), attributeType);

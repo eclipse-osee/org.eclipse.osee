@@ -143,7 +143,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
       actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, storeService, this);
 
       actionFactory =
-         new ActionFactory(sequenceProvider, actionableItemManager, attributeResolverService, stateFactory, this);
+         new ActionFactory(attributeResolverService, this);
       taskService = new AtsTaskService(this);
 
       eventService = new AtsEventServiceImpl();

@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -134,7 +135,7 @@ public class ConvertWorkDefinitionOperations {
     */
    private void convertMissingTeamDefinitionWorkDefAttributes(XResultData rd) {
 
-      Map<AttributeTypeId, AttributeTypeId> oldAttrTypeToNewTypeMap = new HashMap<>();
+      Map<AttributeTypeToken, AttributeTypeToken> oldAttrTypeToNewTypeMap = new HashMap<>();
       oldAttrTypeToNewTypeMap.put(ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition,
          AtsAttributeTypes.WorkflowDefinitionReference);
       oldAttrTypeToNewTypeMap.put(ConvertAtsConfigGuidAttributesOperations.RelatedTaskWorkDefinition,
@@ -143,7 +144,7 @@ public class ConvertWorkDefinitionOperations {
          AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference);
 
       Set<ArtifactToken> artifacts = new HashSet<>();
-      for (Entry<AttributeTypeId, AttributeTypeId> entry : oldAttrTypeToNewTypeMap.entrySet()) {
+      for (Entry<AttributeTypeToken, AttributeTypeToken> entry : oldAttrTypeToNewTypeMap.entrySet()) {
          artifacts.addAll(orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andIsOfType(
             AtsArtifactTypes.TeamDefinition).andExists(entry.getKey()).getResults().getList());
       }
@@ -158,9 +159,9 @@ public class ConvertWorkDefinitionOperations {
             continue;
          }
          System.err.println(String.format("TeamDef: Processing %s / %s", count++, size));
-         for (Entry<AttributeTypeId, AttributeTypeId> entry : oldAttrTypeToNewTypeMap.entrySet()) {
-            AttributeTypeId oldAttrType = entry.getKey();
-            AttributeTypeId newAttrType = entry.getValue();
+         for (Entry<AttributeTypeToken, AttributeTypeToken> entry : oldAttrTypeToNewTypeMap.entrySet()) {
+            AttributeTypeToken oldAttrType = entry.getKey();
+            AttributeTypeToken newAttrType = entry.getValue();
             updatedCount = setNewWorkDefRefIfNecessary(rd, updatedCount, changes, teamDefArt, oldAttrType, newAttrType);
          }
       }
@@ -169,7 +170,7 @@ public class ConvertWorkDefinitionOperations {
       System.gc();
    }
 
-   private int setNewWorkDefRefIfNecessary(XResultData rd, int updatedCount, IAtsChangeSet changes, ArtifactToken artifact, AttributeTypeId oldAttrType, AttributeTypeId newAttrType) {
+   private int setNewWorkDefRefIfNecessary(XResultData rd, int updatedCount, IAtsChangeSet changes, ArtifactToken artifact, AttributeTypeId oldAttrType, AttributeTypeToken newAttrType) {
       String oldWorkDefName = atsApi.getAttributeResolver().getSoleAttributeValue(artifact, oldAttrType, "");
       if (Strings.isValid(oldWorkDefName)) {
 

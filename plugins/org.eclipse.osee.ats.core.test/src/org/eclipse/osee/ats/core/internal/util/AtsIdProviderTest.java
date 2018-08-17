@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -157,7 +157,7 @@ public class AtsIdProviderTest {
 
       atsIdProvider.setAtsId(changes);
 
-      verify(attrResolver, never()).setSoleAttributeValue(any(IAtsObject.class), any(AttributeTypeId.class),
+      verify(attrResolver, never()).setSoleAttributeValue(any(IAtsObject.class), any(AttributeTypeToken.class),
          any(String.class), any(IAtsChangeSet.class));
    }
 }

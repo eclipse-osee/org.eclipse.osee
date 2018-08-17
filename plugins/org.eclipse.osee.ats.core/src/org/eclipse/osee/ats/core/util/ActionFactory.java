@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -39,7 +38,6 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -52,7 +50,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.internal.util.AtsIdProvider;
@@ -60,7 +57,6 @@ import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -84,11 +80,10 @@ public class ActionFactory implements IAtsActionFactory {
    private JsonFactory jsonFactory;
 
    public ActionFactory(AtsApi atsApi) {
-      this.attrResolver = atsApi.getAttributeResolver();
-      this.atsApi = atsApi;
+      this(atsApi.getAttributeResolver(), atsApi);
    }
 
-   public ActionFactory(ISequenceProvider sequenceProvider, IAtsActionableItemService actionableItemManager, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, AtsApi atsApi) {
+   public ActionFactory(IAttributeResolver attrResolver, AtsApi atsApi) {
       this.attrResolver = attrResolver;
       this.atsApi = atsApi;
    }
@@ -290,7 +285,7 @@ public class ActionFactory implements IAtsActionFactory {
          if (!Strings.isNumeric(attr.getKey())) {
             throw new OseeArgumentException("Invalid attribute type id %s", attr.getKey());
          }
-         AttributeTypeId attributeType = atsApi.getStoreService().getAttributeType(Long.valueOf(attr.getKey()));
+         AttributeTypeToken attributeType = atsApi.getStoreService().getAttributeType(Long.valueOf(attr.getKey()));
          if (attributeType == null) {
             throw new OseeArgumentException("Invalid attribute type id %s", attr.getKey());
          }

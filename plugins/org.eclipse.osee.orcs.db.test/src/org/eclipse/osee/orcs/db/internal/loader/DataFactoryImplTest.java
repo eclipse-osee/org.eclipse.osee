@@ -13,11 +13,10 @@ package org.eclipse.osee.orcs.db.internal.loader;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -25,6 +24,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -222,9 +222,8 @@ public class DataFactoryImplTest {
 
    @Test
    public void testCreateAttributeData() {
-      AttributeTypeId attributeType = mock(AttributeTypeId.class);
+      AttributeTypeToken attributeType = CoreAttributeTypes.Name;
 
-      when(attributeType.getId()).thenReturn(2389L);
       when(proxyFactory.createProxy(2389L, 2389, "")).thenReturn(otherDataProxy);
       when(otherDataProxy.getRawValue()).thenReturn(2389);
       when(otherDataProxy.getUri()).thenReturn("");
@@ -243,9 +242,9 @@ public class DataFactoryImplTest {
 
       Assert.assertTrue("local id must be valid", actual.getLocalId() > 0);
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
-      assertEquals(2389L, actual.getTypeUuid());
+      assertEquals(attributeType.getId().longValue(), actual.getTypeUuid());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
-      assertEquals(2389L, actual.getBaseTypeUuid());
+      assertEquals(attributeType.getId().longValue(), actual.getBaseTypeUuid());
 
       assertEquals(555, actual.getArtifactId());
       assertNotSame(dataProxy, actual.getDataProxy());

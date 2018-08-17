@@ -122,7 +122,7 @@ public class ClientStorage {
       InputSupplier<InputStream> supplier = data.getApplicationLogoSupplier();
       if (supplier != null) {
          try {
-            tx.setAttributesFromValues(artId, CoreAttributeTypes.ImageContent, supplier.getInput());
+            tx.setSoleAttributeValue(artId, CoreAttributeTypes.ImageContent, supplier.getInput());
          } catch (Exception ex) {
             throw new OseeCoreException(ex, "Error reading logo data for [%s]", artId);
          }

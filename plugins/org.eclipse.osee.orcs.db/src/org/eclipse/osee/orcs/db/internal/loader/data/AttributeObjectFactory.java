@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
@@ -21,9 +21,9 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
  */
 public interface AttributeObjectFactory extends VersionObjectFactory {
 
-   AttributeData createAttributeData(VersionData version, Integer id, AttributeTypeId attributeType, ModificationType modType, int artId, Object value, String uri, ApplicabilityId applicId);
+   AttributeData createAttributeData(VersionData version, Integer id, AttributeTypeToken attributeType, ModificationType modType, int artId, Object value, String uri, ApplicabilityId applicId);
 
-   AttributeData createAttributeData(VersionData version, Integer id, AttributeTypeId attributeType, ModificationType modType, int artId, ApplicabilityId applicId);
+   AttributeData createAttributeData(VersionData version, Integer id, AttributeTypeToken attributeType, ModificationType modType, int artId, ApplicabilityId applicId);
 
    AttributeData createCopy(AttributeData source);
 }

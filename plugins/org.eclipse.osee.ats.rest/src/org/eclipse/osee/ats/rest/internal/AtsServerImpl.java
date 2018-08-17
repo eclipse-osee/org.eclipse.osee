@@ -139,7 +139,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
       queryService = new AtsQueryServiceImpl(this, jdbcService, orcsApi);
       actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, storeService, this);
       actionFactory =
-         new ActionFactory(sequenceProvider, actionableItemManager, attributeResolverService, stateFactory, this);
+         new ActionFactory(attributeResolverService, this);
 
       agileService = new AgileService(logger, this);
       taskService = new AtsTaskService(this, orcsApi);

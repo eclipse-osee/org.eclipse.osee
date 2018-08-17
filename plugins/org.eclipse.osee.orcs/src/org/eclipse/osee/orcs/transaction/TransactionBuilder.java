@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -86,24 +87,21 @@ public interface TransactionBuilder {
 
    void setName(ArtifactId art, String value);
 
-   AttributeId createAttribute(ArtifactId art, AttributeTypeId attributeType);
+   AttributeId createAttribute(ArtifactId art, AttributeTypeToken attributeType);
 
-   <T> AttributeId createAttribute(ArtifactId art, AttributeTypeId attributeType, T value);
+   <T> AttributeId createAttribute(ArtifactId art, AttributeTypeToken attributeType, T value);
 
-   <T> void setSoleAttributeValue(ArtifactId art, AttributeTypeId attributeType, T value);
+   <T> void setSoleAttributeValue(ArtifactId art, AttributeTypeToken attributeType, T value);
 
-   void setSoleAttributeFromStream(ArtifactId art, AttributeTypeId attributeType, InputStream stream);
+   void setSoleAttributeFromStream(ArtifactId art, AttributeTypeToken attributeType, InputStream stream);
 
-   void setSoleAttributeFromString(ArtifactId art, AttributeTypeId attributeType, String value);
+   void setSoleAttributeFromString(ArtifactId art, AttributeTypeToken attributeType, String value);
 
-   @SuppressWarnings("unchecked")
-   <T> void setAttributesFromValues(ArtifactId art, AttributeTypeId attributeType, T... values);
+   <T> void setAttributesFromValues(ArtifactId art, AttributeTypeToken attributeType, Collection<T> values);
 
-   <T> void setAttributesFromValues(ArtifactId art, AttributeTypeId attributeType, Collection<T> values);
+   void setAttributesFromStrings(ArtifactId art, AttributeTypeToken attributeType, String... values);
 
-   void setAttributesFromStrings(ArtifactId art, AttributeTypeId attributeType, String... values);
-
-   void setAttributesFromStrings(ArtifactId art, AttributeTypeId attributeType, Collection<String> values);
+   void setAttributesFromStrings(ArtifactId art, AttributeTypeToken attributeType, Collection<String> values);
 
    <T> void setAttributeById(ArtifactId art, AttributeId attrId, T value);
 

@@ -250,7 +250,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public Attribute getActionAttributeByType(@PathParam("id") String id, @PathParam("attrTypeId") String attrTypeId) {
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
       Conditions.assertNotNull(workItem, "workItem can not be found");
-      ActionOperations ops = new ActionOperations(null, workItem, atsApi);
+      ActionOperations ops = new ActionOperations(null, workItem, atsApi, orcsApi);
       Attribute attribute = ops.getActionAttributeValues(attrTypeId, workItem);
       return attribute;
    }
@@ -268,7 +268,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       if (asUser == null) {
          asUser = AtsCoreUsers.SYSTEM_USER;
       }
-      ActionOperations ops = new ActionOperations(asUser, workItem, atsApi);
+      ActionOperations ops = new ActionOperations(asUser, workItem, atsApi, orcsApi);
       return ops.setActionAttributeByType(id, attrTypeIdOrKey, values);
    }
 
@@ -284,7 +284,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          if (asUser == null) {
             asUser = AtsCoreUsers.SYSTEM_USER;
          }
-         ActionOperations ops = new ActionOperations(asUser, workItem, atsApi);
+         ActionOperations ops = new ActionOperations(asUser, workItem, atsApi, orcsApi);
          ops.setActionAttributeByType(id, AttributeKey.State.name(), Arrays.asList("Cancelled"));
       }
       String htmlUrl = atsApi.getWorkItemService().getHtmlUrl(workItem, atsApi);
@@ -307,7 +307,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       if (asUser == null) {
          asUser = AtsCoreUsers.SYSTEM_USER;
       }
-      ActionOperations ops = new ActionOperations(asUser, workItem, atsApi);
+      ActionOperations ops = new ActionOperations(asUser, workItem, atsApi, orcsApi);
       return ops.setByArtifactToken(workItem, changeType, artifacts);
 
    }

@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -48,19 +49,17 @@ public interface AttributeManager extends AttributeContainer {
 
    Iterable<Collection<? extends AttributeReadable<Object>>> getAttributeIterable();
 
-   <T> void setSoleAttributeValue(AttributeTypeId attributeType, T value);
+   <T> void setSoleAttributeValue(AttributeTypeToken attributeType, T value);
 
-   void setSoleAttributeFromStream(AttributeTypeId attributeType, InputStream inputStream);
+   void setSoleAttributeFromStream(AttributeTypeToken attributeType, InputStream inputStream);
 
-   void setSoleAttributeFromString(AttributeTypeId attributeType, String value);
+   void setSoleAttributeFromString(AttributeTypeToken attributeType, String value);
 
-   <T> void setAttributesFromValues(AttributeTypeId attributeType, T... values);
+   <T> void setAttributesFromValues(AttributeTypeToken attributeType, Collection<T> values);
 
-   <T> void setAttributesFromValues(AttributeTypeId attributeType, Collection<T> values);
+   void setAttributesFromStrings(AttributeTypeToken attributeType, String... values);
 
-   void setAttributesFromStrings(AttributeTypeId attributeType, String... values);
-
-   void setAttributesFromStrings(AttributeTypeId attributeType, Collection<String> values);
+   void setAttributesFromStrings(AttributeTypeToken attributeType, Collection<String> values);
 
    void deleteSoleAttribute(AttributeTypeId attributeType);
 
@@ -68,9 +67,9 @@ public interface AttributeManager extends AttributeContainer {
 
    void deleteAttributesWithValue(AttributeTypeId attributeType, Object value);
 
-   <T> Attribute<T> createAttribute(AttributeTypeId attributeType);
+   <T> Attribute<T> createAttribute(AttributeTypeToken attributeType);
 
-   <T> Attribute<T> createAttribute(AttributeTypeId attributeType, T value);
+   <T> Attribute<T> createAttribute(AttributeTypeToken attributeType, T value);
 
    List<Attribute<Object>> getAttributes();
 
