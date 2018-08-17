@@ -32,8 +32,8 @@ import org.eclipse.osee.ats.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.workflow.action.ActionArtifactRollup;
 import org.eclipse.osee.ats.workflow.review.ReviewManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -55,11 +55,11 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    private boolean creatingWorkingBranch = false;
    private boolean committingWorkingBranch = false;
 
-   public TeamWorkFlowArtifact(Long id, String guid, BranchId branch, ArtifactTypeId artifactType) {
+   public TeamWorkFlowArtifact(Long id, String guid, BranchId branch, IArtifactType artifactType) {
       super(id, guid, branch, artifactType);
    }
 
-   public TeamWorkFlowArtifact(ArtifactTypeId artifactType) {
+   public TeamWorkFlowArtifact(IArtifactType artifactType) {
       super(Lib.generateId(), null, CoreBranches.COMMON, artifactType);
    }
 

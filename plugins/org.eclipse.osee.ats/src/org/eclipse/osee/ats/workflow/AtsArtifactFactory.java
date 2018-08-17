@@ -45,6 +45,7 @@ import org.eclipse.osee.ats.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -79,7 +80,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public Artifact getArtifactInstance(Long id, String guid, BranchId branch, ArtifactTypeId artifactType, boolean inDataStore) {
+   public Artifact getArtifactInstance(Long id, String guid, BranchId branch, IArtifactType artifactType, boolean inDataStore) {
       Artifact toReturn;
       if (artifactType.equals(Task)) {
          toReturn = new TaskArtifact(id, guid, branch, artifactType);

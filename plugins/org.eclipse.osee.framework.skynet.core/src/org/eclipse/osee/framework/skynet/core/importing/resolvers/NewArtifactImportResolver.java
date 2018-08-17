@@ -55,18 +55,19 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
 
    @Override
    public Artifact resolve(final RoughArtifact roughArtifact, final BranchId branch, Artifact realParent, Artifact root) {
-      ArtifactTypeId artifactType = getArtifactType(roughArtifact);
+      IArtifactType artifactType = getArtifactType(roughArtifact);
 
       OseeLog.logf(NewArtifactImportResolver.class, Level.INFO, "New artifact: [%s]. Attributes: [%s]", roughArtifact,
          roughArtifact.getAttributes());
 
-      Artifact realArtifact = ArtifactTypeManager.addArtifact(artifactType, branch, null, roughArtifact.getGuid());
+      Artifact realArtifact =
+         ArtifactTypeManager.addArtifact(artifactType, branch, null, roughArtifact.getGuid(), null);
       translator.translate(roughArtifact, realArtifact);
       return realArtifact;
    }
 
-   private ArtifactTypeId getArtifactType(RoughArtifact art) {
-      ArtifactTypeId type = art.getType();
+   private IArtifactType getArtifactType(RoughArtifact art) {
+      IArtifactType type = art.getType();
       if (!type.equals(ArtifactTypeId.SENTINEL)) {
          return type;
       } else {
@@ -87,5 +88,4 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
          }
       }
    }
-
 }

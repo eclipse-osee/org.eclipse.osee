@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.workflow;
 
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public abstract class AbstractAtsArtifact extends Artifact implements IAtsObject {
 
-   public AbstractAtsArtifact(Long id, String guid, BranchId branch, ArtifactTypeId artifactType) {
+   public AbstractAtsArtifact(Long id, String guid, BranchId branch, IArtifactType artifactType) {
       super(id, guid, branch, artifactType);
    }
 

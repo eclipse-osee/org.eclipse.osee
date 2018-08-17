@@ -14,7 +14,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -38,7 +37,7 @@ public class RoughArtifact {
    private final RoughAttributeSet attributes;
    private final Collection<RoughArtifact> children;
    private IArtifactType primaryArtifactType;
-   private ArtifactTypeId type = ArtifactTypeId.SENTINEL;
+   private IArtifactType type = IArtifactType.SENTINEL;
 
    public RoughArtifact(RoughArtifactKind roughArtifactKind, String name) {
       this.attributes = new RoughAttributeSet();
@@ -207,7 +206,7 @@ public class RoughArtifact {
       return attributes.getSoleAttributeValue(attributeName);
    }
 
-   public ArtifactTypeId getPrimaryArtifactType() {
+   public IArtifactType getPrimaryArtifactType() {
       return primaryArtifactType;
    }
 
@@ -215,12 +214,11 @@ public class RoughArtifact {
       this.primaryArtifactType = primaryArtifactType;
    }
 
-   public ArtifactTypeId getType() {
+   public IArtifactType getType() {
       return type;
    }
 
-   public void setType(ArtifactTypeId type) {
+   public void setType(IArtifactType type) {
       this.type = type;
    }
-
 }

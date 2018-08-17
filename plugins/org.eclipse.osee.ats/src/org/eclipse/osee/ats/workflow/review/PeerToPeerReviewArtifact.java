@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.workflow.review;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 
 /**
@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
  */
 public class PeerToPeerReviewArtifact extends AbstractReviewArtifact implements IATSStateMachineArtifact, IAtsPeerToPeerReview {
 
-   public PeerToPeerReviewArtifact(Long id, String guid, BranchId branch, ArtifactTypeId artifactType) {
+   public PeerToPeerReviewArtifact(Long id, String guid, BranchId branch, IArtifactType artifactType) {
       super(id, guid, branch, artifactType);
    }
 

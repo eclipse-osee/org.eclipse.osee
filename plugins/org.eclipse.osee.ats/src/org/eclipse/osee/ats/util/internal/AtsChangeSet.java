@@ -32,10 +32,10 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.search.AtsArtifactQuery;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -271,7 +271,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public ArtifactToken createArtifact(ArtifactTypeId artifactType, String name, Long artifactId) {
+   public ArtifactToken createArtifact(IArtifactType artifactType, String name, Long artifactId) {
       Artifact artifact =
          ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), name, artifactId);
       add(artifact);
@@ -279,7 +279,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public ArtifactToken createArtifact(ArtifactTypeId artifactType, String name) {
+   public ArtifactToken createArtifact(IArtifactType artifactType, String name) {
       Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), name);
       add(artifact);
       return artifact;

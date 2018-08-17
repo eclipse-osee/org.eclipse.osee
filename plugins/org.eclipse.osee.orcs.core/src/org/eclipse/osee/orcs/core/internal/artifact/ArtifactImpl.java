@@ -107,7 +107,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public ArtifactTypeId getArtifactTypeId() {
+   public IArtifactType getArtifactTypeId() {
       return getArtifactType();
    }
 

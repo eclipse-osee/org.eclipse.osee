@@ -26,6 +26,10 @@ public final class TokenFactory {
       return new ArtifactTypeToken(guid, name);
    }
 
+   public static IArtifactType createArtifactType() {
+      return new ArtifactTypeToken();
+   }
+
    /**
     * @param token as [name]-[uuid]
     */
@@ -44,6 +48,11 @@ public final class TokenFactory {
    }
 
    private final static class ArtifactTypeToken extends NamedIdBase implements IArtifactType {
+
+      public ArtifactTypeToken() {
+         super();
+      }
+
       public ArtifactTypeToken(Long id, String name) {
          super(id, name);
       }

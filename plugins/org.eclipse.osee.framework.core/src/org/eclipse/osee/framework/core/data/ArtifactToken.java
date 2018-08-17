@@ -30,8 +30,8 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, Identity<
       throw new UnsupportedOperationException("getGuid() is not supported");
    }
 
-   default ArtifactTypeId getArtifactTypeId() {
-      return ArtifactTypeId.SENTINEL;
+   default IArtifactType getArtifactTypeId() {
+      return IArtifactType.SENTINEL;
    }
 
    default boolean isTypeEqual(ArtifactTypeId artifactType) {
@@ -39,18 +39,18 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, Identity<
    }
 
    public static ArtifactToken valueOf(Id id, BranchId branch) {
-      return valueOf(id.getId(), GUID.create(), null, branch, ArtifactTypeId.SENTINEL);
+      return valueOf(id.getId(), GUID.create(), null, branch, IArtifactType.SENTINEL);
    }
 
    public static ArtifactToken valueOf(ArtifactId id, String name) {
-      return valueOf(id.getId(), GUID.create(), name, BranchId.SENTINEL, ArtifactTypeId.SENTINEL);
+      return valueOf(id.getId(), GUID.create(), name, BranchId.SENTINEL, IArtifactType.SENTINEL);
    }
 
    public static ArtifactToken valueOf(ArtifactId id, BranchId branch) {
       if (id instanceof ArtifactToken) {
          return valueOf((ArtifactToken) id, branch);
       }
-      return valueOf(id.getId(), GUID.create(), "", branch, ArtifactTypeId.SENTINEL);
+      return valueOf(id.getId(), GUID.create(), "", branch, IArtifactType.SENTINEL);
    }
 
    public static ArtifactToken valueOf(ArtifactToken token, BranchId branch) {
@@ -64,32 +64,32 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, Identity<
    }
 
    public static ArtifactToken valueOf(long id, BranchId branch) {
-      return valueOf(id, GUID.create(), "", branch, ArtifactTypeId.SENTINEL);
+      return valueOf(id, GUID.create(), "", branch, IArtifactType.SENTINEL);
    }
 
    public static ArtifactToken valueOf(long id, String name, BranchId branch) {
-      return valueOf(id, GUID.create(), name, branch, ArtifactTypeId.SENTINEL);
+      return valueOf(id, GUID.create(), name, branch, IArtifactType.SENTINEL);
    }
 
    public static ArtifactToken valueOf(long id, String name) {
-      return valueOf(id, GUID.create(), name, BranchId.SENTINEL, ArtifactTypeId.SENTINEL);
+      return valueOf(id, GUID.create(), name, BranchId.SENTINEL, IArtifactType.SENTINEL);
    }
 
-   public static ArtifactToken valueOf(long id, String name, ArtifactTypeId artifactType) {
+   public static ArtifactToken valueOf(long id, String name, IArtifactType artifactType) {
       return valueOf(id, GUID.create(), name, BranchId.SENTINEL, artifactType);
    }
 
-   public static ArtifactToken valueOf(long id, String name, BranchId branch, ArtifactTypeId artifactType) {
+   public static ArtifactToken valueOf(long id, String name, BranchId branch, IArtifactType artifactType) {
       return valueOf(id, GUID.create(), name, branch, artifactType);
    }
 
-   public static ArtifactToken valueOf(long id, String guid, String name, BranchId branch, ArtifactTypeId artifactType) {
+   public static ArtifactToken valueOf(long id, String guid, String name, BranchId branch, IArtifactType artifactType) {
       final class ArtifactTokenImpl extends NamedIdBase implements ArtifactToken {
          private final BranchId branch;
-         private final ArtifactTypeId artifactType;
+         private final IArtifactType artifactType;
          private final String guid;
 
-         public ArtifactTokenImpl(Long id, String guid, String name, BranchId branch, ArtifactTypeId artifactType) {
+         public ArtifactTokenImpl(Long id, String guid, String name, BranchId branch, IArtifactType artifactType) {
             super(id, name);
             this.branch = branch;
             this.artifactType = artifactType;
@@ -97,7 +97,7 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, Identity<
          }
 
          @Override
-         public ArtifactTypeId getArtifactTypeId() {
+         public IArtifactType getArtifactTypeId() {
             return artifactType;
          }
 

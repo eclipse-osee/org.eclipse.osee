@@ -99,7 +99,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public ArtifactTypeId getArtifactTypeId() {
+   public IArtifactType getArtifactTypeId() {
       return artifactType;
    }
 

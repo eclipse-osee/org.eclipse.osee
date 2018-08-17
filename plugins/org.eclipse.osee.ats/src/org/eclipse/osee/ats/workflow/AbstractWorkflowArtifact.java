@@ -40,8 +40,8 @@ import org.eclipse.osee.ats.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
@@ -72,7 +72,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    private IAtsLog atsLog;
    private TransactionId atsLogTx;
 
-   public AbstractWorkflowArtifact(Long id, String guid, BranchId branch, ArtifactTypeId artifactType) {
+   public AbstractWorkflowArtifact(Long id, String guid, BranchId branch, IArtifactType artifactType) {
       super(id, guid, branch, artifactType);
    }
 

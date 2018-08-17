@@ -16,5 +16,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedId;
  * @author Ryan D. Brooks
  */
 public interface IArtifactType extends NamedId, ArtifactTypeId {
+   IArtifactType SENTINEL = TokenFactory.createArtifactType();
+
    Long getGuid();
 }

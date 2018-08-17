@@ -22,6 +22,11 @@ public class NamedIdBase extends BaseId implements NamedId {
       this.name = name;
    }
 
+   public NamedIdBase() {
+      super(Id.SENTINEL);
+      this.name = "SENTINEL";
+   }
+
    @Override
    public String getName() {
       return name;

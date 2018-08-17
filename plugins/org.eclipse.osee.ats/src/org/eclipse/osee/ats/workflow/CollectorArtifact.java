@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.workflow;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import org.eclipse.osee.ats.workflow.goal.HasMembers;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -25,7 +25,7 @@ public abstract class CollectorArtifact extends AbstractWorkflowArtifact impleme
 
    private final RelationTypeSide membersRelationType;
 
-   public CollectorArtifact(Long id, String guid, BranchId branch, ArtifactTypeId artifactType, RelationTypeSide membersRelationType) {
+   public CollectorArtifact(Long id, String guid, BranchId branch, IArtifactType artifactType, RelationTypeSide membersRelationType) {
       super(id, guid, branch, artifactType);
       this.membersRelationType = membersRelationType;
    }
