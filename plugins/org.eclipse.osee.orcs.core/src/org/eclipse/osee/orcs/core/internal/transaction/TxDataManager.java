@@ -20,10 +20,10 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
@@ -258,14 +258,14 @@ public class TxDataManager {
       return tuple.getVersion().getGammaId();
    }
 
-   public ArtifactReadable createArtifact(TxData txData, ArtifactTypeId artifactType, String name, String guid) {
+   public ArtifactReadable createArtifact(TxData txData, IArtifactType artifactType, String name, String guid) {
       checkChangesAllowed(txData);
       Artifact artifact = artifactFactory.createArtifact(txData.getSession(), txData.getBranch(), artifactType, guid);
       artifact.setName(name);
       return asExternalArtifact(txData, artifact);
    }
 
-   public ArtifactReadable createArtifact(TxData txData, ArtifactTypeId artifactType, String name, long uuid) {
+   public ArtifactReadable createArtifact(TxData txData, IArtifactType artifactType, String name, long uuid) {
       checkChangesAllowed(txData);
       Artifact artifact = artifactFactory.createArtifact(txData.getSession(), txData.getBranch(), artifactType, uuid);
       artifact.setName(name);

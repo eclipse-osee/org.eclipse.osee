@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -195,8 +196,10 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       List<ArtifactToken> tokens = new ArrayList<>(names.size());
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(branch, account, "rest - create artifacts");
+
+      IArtifactType artifactTypeToken = orcsApi.getOrcsTypes().getArtifactTypes().get(artifactType);
       for (String name : names) {
-         tokens.add(tx.createArtifact(parent, artifactType, name));
+         tokens.add(tx.createArtifact(parent, artifactTypeToken, name));
       }
       tx.commit();
       return tokens;

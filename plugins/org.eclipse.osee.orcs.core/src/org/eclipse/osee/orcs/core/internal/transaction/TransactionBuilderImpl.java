@@ -19,11 +19,11 @@ import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
@@ -104,7 +104,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactToken createArtifact(ArtifactId parent, ArtifactTypeId artifactType, String name) {
+   public ArtifactToken createArtifact(ArtifactId parent, IArtifactType artifactType, String name) {
       ArtifactToken child = createArtifact(artifactType, name);
       if (parent.isValid()) {
          addChild(parent, child);
@@ -113,7 +113,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactToken createArtifact(ArtifactTypeId artifactType, String name) {
+   public ArtifactToken createArtifact(IArtifactType artifactType, String name) {
       return txManager.createArtifact(txData, artifactType, name, (String) null);
    }
 
@@ -123,7 +123,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactToken createArtifact(ArtifactTypeId artifactType, String name, Long artifactId) {
+   public ArtifactToken createArtifact(IArtifactType artifactType, String name, Long artifactId) {
       return txManager.createArtifact(txData, artifactType, name, artifactId);
    }
 

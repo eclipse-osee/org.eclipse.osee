@@ -12,10 +12,10 @@ package org.eclipse.osee.orcs.db.internal.loader;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -53,17 +53,17 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public ArtifactData create(BranchId branch, ArtifactTypeId token, String guid) {
+   public ArtifactData create(BranchId branch, IArtifactType token, String guid) {
       return this.create(branch, token, guid, idFactory.getNextArtifactId());
    }
 
    @Override
-   public ArtifactData create(BranchId branch, ArtifactTypeId token, Long artifactId) {
+   public ArtifactData create(BranchId branch, IArtifactType token, Long artifactId) {
       return this.create(branch, token, null, artifactId);
    }
 
    @Override
-   public ArtifactData create(BranchId branchId, ArtifactTypeId token, String guid, long artifactId) {
+   public ArtifactData create(BranchId branchId, IArtifactType token, String guid, long artifactId) {
       Conditions.checkNotNull(branchId, "branch");
 
       Conditions.checkExpressionFailOnTrue(artifactCache.isAbstract(token),

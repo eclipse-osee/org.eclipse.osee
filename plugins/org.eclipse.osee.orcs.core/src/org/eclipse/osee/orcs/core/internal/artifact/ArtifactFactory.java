@@ -14,9 +14,9 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.RelationO
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -47,21 +47,21 @@ public class ArtifactFactory {
       return new ArtifactImpl(artifactTypeCache, artifactData, attributeFactory);
    }
 
-   public Artifact createArtifact(OrcsSession session, BranchId branch, ArtifactTypeId artifactType, String guid) {
+   public Artifact createArtifact(OrcsSession session, BranchId branch, IArtifactType artifactType, String guid) {
       ArtifactData artifactData = factory.create(branch, artifactType, guid);
       Artifact artifact = createArtifact(session, artifactData);
       artifact.setLoaded(true);
       return artifact;
    }
 
-   public Artifact createArtifact(OrcsSession session, BranchId branch, ArtifactTypeId artifactType, String guid, long uuid) {
+   public Artifact createArtifact(OrcsSession session, BranchId branch, IArtifactType artifactType, String guid, long uuid) {
       ArtifactData artifactData = factory.create(branch, artifactType, guid, uuid);
       Artifact artifact = createArtifact(session, artifactData);
       artifact.setLoaded(true);
       return artifact;
    }
 
-   public Artifact createArtifact(OrcsSession session, BranchId branch, ArtifactTypeId artifactType, Long artifactId) {
+   public Artifact createArtifact(OrcsSession session, BranchId branch, IArtifactType artifactType, Long artifactId) {
       ArtifactData artifactData = factory.create(branch, artifactType, artifactId);
       Artifact artifact = createArtifact(session, artifactData);
       artifact.setLoaded(true);
