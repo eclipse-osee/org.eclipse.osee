@@ -77,8 +77,8 @@ public class IndexingTaskDatabaseTxCallableTest {
       ArrayList<IndexedResource> sources = new ArrayList<>();
       sources.add(resource1);
       sources.add(resource2);
-      when(resource1.getTypeUuid()).thenReturn(Name.getId());
-      when(resource2.getTypeUuid()).thenReturn(QualificationMethod.getId());
+      when(resource1.getAttributeType()).thenReturn(Name);
+      when(resource2.getAttributeType()).thenReturn(QualificationMethod);
       when(resource1.getGammaId()).thenReturn(GammaId.valueOf(1L));
       when(resource2.getGammaId()).thenReturn(GammaId.valueOf(2L));
       when(engine.hasTagger("")).thenReturn(false);

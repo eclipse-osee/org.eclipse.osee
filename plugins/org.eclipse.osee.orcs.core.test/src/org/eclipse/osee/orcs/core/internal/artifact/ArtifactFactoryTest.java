@@ -105,10 +105,6 @@ public class ArtifactFactoryTest {
       when(otherArtifactData.getGuid()).thenReturn(guid);
       when(otherArtifactData.getType()).thenReturn(Artifact);
       when(otherArtifactData.getVersion()).thenReturn(artifactVersion);
-
-      // TODO RDB: make this line unnecessary
-      when(artifactTypeCache.get(Artifact.getId())).thenReturn(Artifact);
-
    }
 
    @Test

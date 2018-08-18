@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.JoinItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -112,11 +111,6 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       return totalTags;
    }
 
-   private String getTaggerIdByTypeUuid(long typeUuid) {
-      AttributeTypeId type = attributeTypes.get(typeUuid);
-      return attributeTypes.getTaggerId(type);
-   }
-
    private long createTags(JdbcConnection connection, Collection<IndexedResource> sources) {
       SearchTagCollector tagCollector = new SearchTagCollector();
 
@@ -131,8 +125,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
             toStore.put(gamma.getId(), tags);
             tagCollector.setCurrentTag(gamma.getId(), tags);
             try {
-               long typeUuid = source.getTypeUuid();
-               String taggerId = getTaggerIdByTypeUuid(typeUuid);
+               String taggerId = attributeTypes.getTaggerId(source.getAttributeType());
                if (taggingEngine.hasTagger(taggerId)) {
                   Tagger tagger = taggingEngine.getTagger(taggerId);
                   tagger.tagIt(source, tagCollector);

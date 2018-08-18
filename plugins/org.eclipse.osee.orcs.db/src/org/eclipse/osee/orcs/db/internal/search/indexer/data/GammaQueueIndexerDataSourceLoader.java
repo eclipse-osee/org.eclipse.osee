@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -46,11 +47,11 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
       Collection<AttributeData> attrData = new HashSet<>();
       Consumer<JdbcStatement> consumer = stmt -> {
          int itemId = stmt.getInt("attr_id");
-         long typeUuid = stmt.getLong("attr_type_id");
+         AttributeTypeId attributeType = AttributeTypeId.valueOf(stmt.getLong("attr_type_id"));
          GammaId gammaId = GammaId.valueOf(stmt.getLong("gamma_id"));
          String uri = stmt.getString("uri");
          String value = stmt.getString("value");
-         attrData.add(new AttributeData(itemId, typeUuid, gammaId, uri, value));
+         attrData.add(new AttributeData(itemId, attributeType, gammaId, uri, value));
       };
 
       int loaded = jdbcClient.runQuery(consumer, LOAD_ATTRIBUTE, tagQueueQueryId);
@@ -59,8 +60,8 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
          StringBuffer sb = new StringBuffer();
          sb = sb.append(attributeData.getValue());
          sb = sb.append(AttributeDataUtil.getNameByGuid(attributeData.getValue(), jdbcClient));
-         IndexedResource data = createData(attributeData.getItemId(), attributeData.getTypeUuid(),
-            attributeData.getGammaId(), sb.toString(), attributeData.getUri());
+         IndexedResource data = new IndexerDataSourceImpl(resourceManager, attributeData.getItemId(),
+            attributeData.getAttributeType(), attributeData.getGammaId(), sb.toString(), attributeData.getUri());
          handler.onData(data);
       }
       return loaded;
@@ -84,21 +85,17 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
       }
    }
 
-   private IndexedResource createData(int id, long typeUuid, GammaId gammaId, String value, String uri) {
-      return new IndexerDataSourceImpl(resourceManager, id, typeUuid, gammaId, value, uri);
-   }
-
    private class AttributeData {
 
       private final int itemId;
-      private final long typeUuid;
+      private final AttributeTypeId attributeType;
       private final GammaId gammaId;
       private final String uri;
       private final String value;
 
-      public AttributeData(int itemId, long typeUuid, GammaId gammaId, String uri, String value) {
+      public AttributeData(int itemId, AttributeTypeId attributeType, GammaId gammaId, String uri, String value) {
          this.itemId = itemId;
-         this.typeUuid = typeUuid;
+         this.attributeType = attributeType;
          this.gammaId = gammaId;
          this.uri = uri;
          this.value = value;
@@ -108,8 +105,8 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
          return itemId;
       }
 
-      public long getTypeUuid() {
-         return typeUuid;
+      public AttributeTypeId getAttributeType() {
+         return attributeType;
       }
 
       public GammaId getGammaId() {

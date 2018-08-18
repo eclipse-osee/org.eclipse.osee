@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -33,17 +34,16 @@ public class IndexerDataSourceImpl implements IndexedResource {
    private final IResourceManager resourceManager;
 
    private final int id;
-   private final long typeUuid;
+   private final AttributeTypeId attributeType;
    private final GammaId gammaId;
 
    private final String value;
    private final String uri;
 
-   public IndexerDataSourceImpl(IResourceManager resourceManager, int id, long typeUuid, GammaId gammaId, String value, String uri) {
-      super();
+   public IndexerDataSourceImpl(IResourceManager resourceManager, int id, AttributeTypeId attributeType, GammaId gammaId, String value, String uri) {
       this.resourceManager = resourceManager;
       this.id = id;
-      this.typeUuid = typeUuid;
+      this.attributeType = attributeType;
       this.gammaId = gammaId;
       this.value = value;
       this.uri = uri;
@@ -55,8 +55,8 @@ public class IndexerDataSourceImpl implements IndexedResource {
    }
 
    @Override
-   public long getTypeUuid() {
-      return typeUuid;
+   public AttributeTypeId getAttributeType() {
+      return attributeType;
    }
 
    private String getStringValue() {
@@ -132,7 +132,7 @@ public class IndexerDataSourceImpl implements IndexedResource {
 
    @Override
    public String toString() {
-      return "IndexerDataSourceImpl [id=" + id + ", typeUuid=" + typeUuid + ", gammaId=" + gammaId + ", uri=" + uri + ", value=" + value + "]";
+      return "IndexerDataSourceImpl [id=" + id + ", typeUuid=" + attributeType + ", gammaId=" + gammaId + ", uri=" + uri + ", value=" + value + "]";
    }
 
 }
