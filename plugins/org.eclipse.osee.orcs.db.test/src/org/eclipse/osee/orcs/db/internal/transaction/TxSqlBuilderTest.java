@@ -19,7 +19,7 @@ import static org.eclipse.osee.framework.core.enums.ModificationType.MODIFIED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import static org.eclipse.osee.framework.core.enums.ModificationType.REPLACED_WITH_VERSION;
 import static org.eclipse.osee.framework.core.enums.ModificationType.UNDELETED;
-import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.integrationRule;
+import static org.eclipse.osee.orcs.db.mock.OseeDatabase.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;

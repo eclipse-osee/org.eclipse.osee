@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.db.intergration;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DemoUsers.Joe_Smith;
-import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.integrationRule;
+import static org.eclipse.osee.orcs.db.mock.OseeDatabase.integrationRule;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeId;

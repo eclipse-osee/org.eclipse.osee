@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.db.internal.loader;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
-import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.integrationRule;
+import static org.eclipse.osee.orcs.db.mock.OseeDatabase.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

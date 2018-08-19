@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.mock;
 
 import org.junit.Assert;
+import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -19,11 +20,14 @@ import org.junit.runners.model.Statement;
  * @author Roberto E. Escobar
  */
 public class OseeDatabase implements TestRule {
-
    private final String[] osgiBindings;
 
    public OseeDatabase(String... osgiBindings) {
       this.osgiBindings = osgiBindings;
+   }
+
+   public static TestRule integrationRule(Object testObject) {
+      return RuleChain.outerRule(new OseeDatabase("orcs.jdbc.service")).around(new OsgiRule(testObject));
    }
 
    @Override
