@@ -118,7 +118,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    }
 
    @Override
-   public void visit(AttributeData data) {
+   public <T> void visit(AttributeData<T> data) {
       if (!isNewAndDeleted(data)) {
          boolean createNewGamma = !reuseGamma(data);
          updateTxValues(data);

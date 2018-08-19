@@ -90,7 +90,7 @@ public class ComodificationCheck implements TransactionProcessor {
       }
 
       @Override
-      public void visit(AttributeData data) {
+      public <T> void visit(AttributeData<T> data) {
          if (data.getVersion().isInStorage()) {
             attributes.put(data.getLocalId(), data);
          }
@@ -121,8 +121,8 @@ public class ComodificationCheck implements TransactionProcessor {
       }
 
       @Override
-      public void onData(AttributeData data) {
-         AttributeData modified = attributes.get(data.getLocalId());
+      public <T> void onData(AttributeData<T> data) {
+         AttributeData<T> modified = attributes.get(data.getLocalId());
          checkCoModified(data, modified);
       }
    }

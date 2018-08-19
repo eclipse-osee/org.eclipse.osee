@@ -46,7 +46,7 @@ public class TransactionIndexer implements TransactionProcessor {
          final Set<Long> datas = new LinkedHashSet<>();
          txData.getChangeSet().accept(new OrcsVisitorAdapter() {
             @Override
-            public void visit(AttributeData data) {
+            public <T> void visit(AttributeData<T> data) {
                AttributeTypeId type = types.get(data.getTypeUuid());
                if (types.isTaggable(type)) {
                   datas.add(data.getVersion().getGammaId().getId());

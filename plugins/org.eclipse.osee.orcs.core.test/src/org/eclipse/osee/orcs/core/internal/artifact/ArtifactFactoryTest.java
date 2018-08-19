@@ -67,7 +67,7 @@ public class ArtifactFactoryTest {
    @Mock private ArtifactTypes artifactTypeCache;
 
    @Mock private Attribute<Object> attribute;
-   @Mock private AttributeData<?> attributeData;
+   @Mock private AttributeData<Object> attributeData;
    @Mock private Artifact source;
    @Mock private Artifact destination;
    @Mock private OrcsSession session;

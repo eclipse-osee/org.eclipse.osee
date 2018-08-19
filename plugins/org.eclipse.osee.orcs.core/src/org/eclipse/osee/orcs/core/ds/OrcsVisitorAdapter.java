@@ -21,7 +21,7 @@ public class OrcsVisitorAdapter implements OrcsVisitor {
    }
 
    @Override
-   public void visit(AttributeData data) {
+   public <T> void visit(AttributeData<T> data) {
       //
    }
 

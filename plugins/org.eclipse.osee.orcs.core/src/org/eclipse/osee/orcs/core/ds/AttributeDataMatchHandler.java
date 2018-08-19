@@ -17,6 +17,6 @@ import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
  */
 public interface AttributeDataMatchHandler {
 
-   void onData(AttributeData data, MatchLocation match);
+   <T> void onData(AttributeData<T> data, MatchLocation match);
 
 }

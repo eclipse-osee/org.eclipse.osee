@@ -37,10 +37,10 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    private Reference<AttributeContainer> containerReference;
    private String defaultValue;
    private Log logger;
-   private AttributeData attributeData;
+   private AttributeData<T> attributeData;
 
    @Override
-   public void internalInitialize(AttributeTypes attributeTypeCache, Reference<AttributeContainer> containerReference, AttributeData attributeData, boolean isDirty, boolean setDefaultValue) {
+   public void internalInitialize(AttributeTypes attributeTypeCache, Reference<AttributeContainer> containerReference, AttributeData<T> attributeData, boolean isDirty, boolean setDefaultValue) {
       this.attributeTypeCache = attributeTypeCache;
       this.containerReference = containerReference;
       this.attributeData = attributeData;
@@ -57,12 +57,12 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    }
 
    @Override
-   public AttributeData getOrcsData() {
+   public AttributeData<T> getOrcsData() {
       return attributeData;
    }
 
    @Override
-   public void setOrcsData(AttributeData data) {
+   public void setOrcsData(AttributeData<T> data) {
       this.attributeData = data;
    }
 

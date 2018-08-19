@@ -63,7 +63,7 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
    }
 
    @Override
-   public void onData(AttributeData data, MatchLocation match) {
+   public <T> void onData(AttributeData<T> data, MatchLocation match) {
       super.onData(data, match);
       Integer artId = data.getArtifactId();
       synchronized (matches) {

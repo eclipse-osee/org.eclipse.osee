@@ -245,13 +245,13 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
       }
 
       @Override
-      public void onData(AttributeData data) {
+      public <T> void onData(AttributeData<T> data) {
          super.onData(data);
          consumer.onData(data, this);
       }
 
       @Override
-      public void onData(AttributeData data, MatchLocation match) {
+      public <T> void onData(AttributeData<T> data, MatchLocation match) {
          acceptedArtIds.add(data.getArtifactId());
          forwardArtifacts(data.getArtifactId());
          super.onData(data, match);
@@ -376,7 +376,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
       }
 
       @Override
-      public void onData(AttributeData data) {
+      public <T> void onData(AttributeData<T> data) {
          buffer.addData(data);
       }
 

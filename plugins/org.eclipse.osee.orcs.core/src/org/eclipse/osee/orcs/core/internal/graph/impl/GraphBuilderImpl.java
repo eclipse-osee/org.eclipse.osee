@@ -86,7 +86,7 @@ public class GraphBuilderImpl extends LoadDataHandlerAdapter implements GraphBui
    }
 
    @Override
-   public void onData(AttributeData data) {
+   public <T> void onData(AttributeData<T> data) {
       GraphData graph = getGraph();
       AttributeManager container = graph.getNode(data.getArtifactId());
       if (container == null) {

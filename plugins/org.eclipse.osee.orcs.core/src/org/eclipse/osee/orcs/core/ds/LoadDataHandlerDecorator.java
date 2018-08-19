@@ -40,7 +40,7 @@ public class LoadDataHandlerDecorator extends LoadDataHandlerAdapter {
    }
 
    @Override
-   public void onData(AttributeData data, MatchLocation match) {
+   public <T> void onData(AttributeData<T> data, MatchLocation match) {
       if (handler != null) {
          handler.onData(data, match);
       }
@@ -61,7 +61,7 @@ public class LoadDataHandlerDecorator extends LoadDataHandlerAdapter {
    }
 
    @Override
-   public void onData(AttributeData data) {
+   public <T> void onData(AttributeData<T> data) {
       if (handler != null) {
          handler.onData(data);
       }

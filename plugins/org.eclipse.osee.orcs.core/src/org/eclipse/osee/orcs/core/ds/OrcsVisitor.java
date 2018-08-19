@@ -17,7 +17,7 @@ public interface OrcsVisitor {
 
    void visit(ArtifactData data);
 
-   void visit(AttributeData data);
+   <T> void visit(AttributeData<T> data);
 
    void visit(RelationData data);
 

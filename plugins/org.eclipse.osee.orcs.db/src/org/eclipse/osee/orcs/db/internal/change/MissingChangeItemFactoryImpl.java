@@ -162,7 +162,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
          }
 
          @Override
-         public void onData(AttributeData data) {
+         public <T> void onData(AttributeData<T> data) {
             if (!modifiedAttrIds.get(ArtifactId.valueOf(data.getArtifactId())).contains(data)) {
                toReturn.add(createAttributeChangeItem(data));
             }

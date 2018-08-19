@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.data.AttributeTypes;
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface Attribute<T> extends OrcsWriteable, AttributeReadable<T>, HasOrcsData<AttributeData> {
+public interface Attribute<T> extends OrcsWriteable, AttributeReadable<T>, HasOrcsData<AttributeData<T>> {
 
    void setValue(T value);
 
@@ -38,7 +38,7 @@ public interface Attribute<T> extends OrcsWriteable, AttributeReadable<T>, HasOr
 
    /////////
 
-   void internalInitialize(AttributeTypes attributeTypeCache, Reference<AttributeContainer> containerReference, AttributeData attributeData, boolean isDirty, boolean setDefaultValue);
+   void internalInitialize(AttributeTypes attributeTypeCache, Reference<AttributeContainer> containerReference, AttributeData<T> attributeData, boolean isDirty, boolean setDefaultValue);
 
    ArtifactToken getContainer();
 

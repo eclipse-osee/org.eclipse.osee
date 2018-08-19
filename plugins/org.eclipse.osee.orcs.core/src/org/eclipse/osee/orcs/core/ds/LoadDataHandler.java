@@ -21,7 +21,7 @@ public interface LoadDataHandler extends AttributeDataMatchHandler, DynamicDataH
 
    void onData(ArtifactData data);
 
-   void onData(AttributeData data);
+   <T> void onData(AttributeData<T> data);
 
    void onData(RelationData data);
 

@@ -34,7 +34,7 @@ public class LoadDataHandlerAdapter implements LoadDataHandler {
    }
 
    @Override
-   public void onData(AttributeData data) {
+   public <T> void onData(AttributeData<T> data) {
       //
    }
 
@@ -44,7 +44,7 @@ public class LoadDataHandlerAdapter implements LoadDataHandler {
    }
 
    @Override
-   public void onData(AttributeData data, MatchLocation match) {
+   public <T> void onData(AttributeData<T> data, MatchLocation match) {
       //
    }
 
