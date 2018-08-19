@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
  * @author Ryan D. Brooks
  */
 @JsonSerialize(using = IdSerializer.class)
-// TODO: Rename to RelationTypeId
+// TODO: Replace usage with RelationTypeId or RelationTypeToken as applicable
 public interface IRelationType extends RelationTypeId {
 
    public static IRelationType valueOf(long id, String name) {

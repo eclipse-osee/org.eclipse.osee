@@ -14,12 +14,13 @@ import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
 import org.eclipse.osee.framework.jdk.core.type.HasDescription;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Ryan D. Brooks
  */
-public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDescription {
+public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDescription, NamedId {
    AttributeTypeToken SENTINEL = valueOf(Id.SENTINEL, Named.SENTINEL);
 
    public static AttributeTypeToken valueOf(String id) {

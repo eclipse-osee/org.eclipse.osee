@@ -12,12 +12,13 @@ package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Ryan D. Brooks
  */
-public interface RelationTypeToken extends IRelationType, Named {
+public interface RelationTypeToken extends IRelationType, NamedId {
    RelationTypeToken SENTINEL = create(Id.SENTINEL, Named.SENTINEL);
 
    public static RelationTypeToken create(long id, String name) {
