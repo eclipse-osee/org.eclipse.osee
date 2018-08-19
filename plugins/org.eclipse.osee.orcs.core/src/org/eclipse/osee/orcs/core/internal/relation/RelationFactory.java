@@ -17,18 +17,14 @@ import org.eclipse.osee.orcs.core.ds.RelationDataFactory;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.relation.impl.RelationNodeAdjacencies;
 import org.eclipse.osee.orcs.core.internal.util.OrcsConditions;
-import org.eclipse.osee.orcs.data.RelationTypes;
 
 /**
  * @author Roberto E. Escobar
  */
 public class RelationFactory {
-
-   private final RelationTypes relationTypes;
    private final RelationDataFactory relationDataFactory;
 
-   public RelationFactory(RelationTypes relationTypes, RelationDataFactory relationDataFactory) {
-      this.relationTypes = relationTypes;
+   public RelationFactory(RelationDataFactory relationDataFactory) {
       this.relationDataFactory = relationDataFactory;
    }
 
@@ -37,7 +33,7 @@ public class RelationFactory {
    }
 
    public Relation createRelation(RelationData data) {
-      return new Relation(relationTypes, data);
+      return new Relation(data);
    }
 
    public Relation createRelation(Artifact aNode, RelationTypeToken type, Artifact bNode) {

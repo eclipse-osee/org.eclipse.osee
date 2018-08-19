@@ -14,26 +14,21 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.orcs.core.ds.HasOrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.internal.util.OrcsWriteable;
 import org.eclipse.osee.orcs.data.RelationReadable;
-import org.eclipse.osee.orcs.data.RelationTypes;
 
 /**
  * @author Roberto E. Escobar
  */
-public class Relation implements RelationReadable, HasOrcsData<RelationData>, OrcsWriteable {
-
-   private final RelationTypes relationTypes;
-
+public class Relation implements RelationReadable, HasOrcsData<RelationTypeToken, RelationData>, OrcsWriteable {
    private RelationData relationData;
 
-   public Relation(RelationTypes relationTypes, RelationData relationData) {
-      super();
-      this.relationTypes = relationTypes;
+   public Relation(RelationData relationData) {
       this.relationData = relationData;
    }
 
@@ -49,7 +44,7 @@ public class Relation implements RelationReadable, HasOrcsData<RelationData>, Or
 
    @Override
    public RelationTypeId getRelationType() {
-      return relationTypes.get(getOrcsData().getTypeUuid());
+      return getOrcsData().getType();
    }
 
    @Override
@@ -185,5 +180,4 @@ public class Relation implements RelationReadable, HasOrcsData<RelationData>, Or
    public int getArtIdB() {
       return getOrcsData().getArtIdB();
    }
-
 }

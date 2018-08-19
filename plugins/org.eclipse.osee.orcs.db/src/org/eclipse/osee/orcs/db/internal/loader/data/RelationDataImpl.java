@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.orcs.core.ds.OrcsVersionedObjectImpl;
@@ -20,7 +21,7 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class RelationDataImpl extends OrcsVersionedObjectImpl implements RelationData {
+public class RelationDataImpl extends OrcsVersionedObjectImpl<RelationTypeToken> implements RelationData {
 
    private ArtifactId artIdA = ArtifactId.SENTINEL;
    private ArtifactId artIdB = ArtifactId.SENTINEL;

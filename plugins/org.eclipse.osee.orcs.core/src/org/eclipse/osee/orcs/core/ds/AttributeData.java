@@ -12,11 +12,12 @@ package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface AttributeData<T> extends OrcsData, AttributeId {
+public interface AttributeData<T> extends OrcsData<AttributeTypeToken>, AttributeId {
 
    ArtifactId getArtifactId();
 

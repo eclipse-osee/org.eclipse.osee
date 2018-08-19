@@ -10,23 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Design;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Design__Design;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -98,7 +101,7 @@ public class DataFactoryImplTest {
 
       guid = GUID.create();
 
-      OrcsObjectFactory objectFactory = new OrcsObjectFactoryImpl(proxyFactory, relationTypes);
+      OrcsObjectFactory objectFactory = new OrcsObjectFactoryImpl(proxyFactory, relationTypes, artifactCache);
       dataFactory = new DataFactoryImpl(idFactory, objectFactory, artifactCache);
       when(idFactory.getNextArtifactId()).thenReturn(ART_ID.intValue());
 
@@ -113,24 +116,24 @@ public class DataFactoryImplTest {
       artData = new ArtifactDataImpl(verData);
       artData.setLocalId(SHARED_ID.intValue());
       artData.setModType(ModificationType.MODIFIED);
-      artData.setTypeUuid(666L);
+      artData.setType(Artifact);
       artData.setBaseModType(ModificationType.NEW);
-      artData.setBaseTypeUuid(777L);
+      artData.setBaseType(Folder);
 
       // ATTRIBUTE
       when(attrData.getVersion()).thenReturn(verData);
       when(attrData.getLocalId()).thenReturn(SHARED_ID.intValue());
       when(attrData.getId()).thenReturn(SHARED_ID);
       when(attrData.getModType()).thenReturn(ModificationType.MODIFIED);
-      when(attrData.getTypeUuid()).thenReturn(666L);
+      when(attrData.getType()).thenReturn(Name);
       when(attrData.getBaseModType()).thenReturn(ModificationType.NEW);
-      when(attrData.getBaseTypeUuid()).thenReturn(777L);
+      when(attrData.getBaseType()).thenReturn(Active);
       when(attrData.getArtifactId()).thenReturn(art88);
       when(attrData.getDataProxy()).thenReturn(dataProxy);
 
       when(dataProxy.getRawValue()).thenReturn(expectedProxyValue);
       when(dataProxy.getUri()).thenReturn(expectedProxyUri);
-      when(proxyFactory.createProxy(666L, expectedProxyValue, expectedProxyUri)).thenReturn(otherDataProxy);
+      when(proxyFactory.createProxy(Name, expectedProxyValue, expectedProxyUri)).thenReturn(otherDataProxy);
       when(otherDataProxy.getRawValue()).thenReturn(expectedProxyValue);
       when(otherDataProxy.getUri()).thenReturn(expectedProxyUri);
 
@@ -138,9 +141,9 @@ public class DataFactoryImplTest {
       relData = new RelationDataImpl(verData);
       relData.setLocalId(SHARED_ID.intValue());
       relData.setModType(ModificationType.MODIFIED);
-      relData.setTypeUuid(666);
+      relData.setType(Design__Design);
       relData.setBaseModType(ModificationType.NEW);
-      relData.setBaseTypeUuid(777);
+      relData.setBaseType(DEFAULT_HIERARCHY);
       relData.setArtIdA(art88);
       relData.setArtIdB(art99);
       relData.setRationale("this is the rationale");
@@ -158,8 +161,6 @@ public class DataFactoryImplTest {
 
    @Test
    public void testCreateArtifactDataInvalidGuid() {
-      when(artifactCache.get(artifactType)).thenReturn(artifactType);
-      when(artifactCache.isAbstract(artifactType)).thenReturn(false);
       when(idFactory.getUniqueGuid(guid)).thenReturn("123");
 
       thrown.expect(OseeArgumentException.class);
@@ -170,10 +171,10 @@ public class DataFactoryImplTest {
 
    @Test
    public void testCreateArtifactData() {
-      when(artifactCache.isAbstract(artifactType)).thenReturn(false);
+      when(artifactCache.isAbstract(Design)).thenReturn(false);
       when(idFactory.getUniqueGuid(guid)).thenReturn(guid);
 
-      ArtifactData actual = dataFactory.create(COMMON, artifactType, guid);
+      ArtifactData actual = dataFactory.create(COMMON, Design, guid);
       verify(idFactory).getUniqueGuid(guid);
       verify(idFactory).getNextArtifactId();
 
@@ -188,19 +189,17 @@ public class DataFactoryImplTest {
 
       assertEquals(ART_ID, actual.getId());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
-      assertEquals(artifactType, actual.getTypeUuid());
+      assertEquals(Design, actual.getType());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
-      assertEquals(artifactType, actual.getBaseTypeUuid());
+      assertEquals(Design, actual.getBaseType());
       assertEquals(guid, actual.getGuid());
    }
 
    @Test
    public void testCreateArtifactDataGenerateGuid() {
-      when(artifactCache.get(artifactType)).thenReturn(artifactType);
-      when(artifactCache.isAbstract(artifactType)).thenReturn(false);
       when(idFactory.getUniqueGuid(guid)).thenReturn(guid);
 
-      ArtifactData actual = dataFactory.create(COMMON, artifactType, guid);
+      ArtifactData actual = dataFactory.create(COMMON, Artifact, guid);
       verify(idFactory).getUniqueGuid(guid);
       verify(idFactory).getNextArtifactId();
 
@@ -214,23 +213,21 @@ public class DataFactoryImplTest {
 
       assertEquals(ART_ID, actual.getId());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
-      assertEquals(artifactType, actual.getTypeUuid());
+      assertEquals(Artifact, actual.getType());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
-      assertEquals(artifactType, actual.getBaseTypeUuid());
+      assertEquals(Artifact, actual.getBaseType());
       assertEquals(guid, actual.getGuid());
    }
 
    @Test
    public void testCreateAttributeData() {
-      AttributeTypeToken attributeType = CoreAttributeTypes.Name;
-
-      when(proxyFactory.createProxy(2389L, 2389, "")).thenReturn(otherDataProxy);
+      when(proxyFactory.createProxy(Name, "", "")).thenReturn(otherDataProxy);
       when(otherDataProxy.getRawValue()).thenReturn(2389);
       when(otherDataProxy.getUri()).thenReturn("");
 
       when(idFactory.getNextAttributeId()).thenReturn(1);
 
-      AttributeData actual = dataFactory.create(artData, attributeType);
+      AttributeData actual = dataFactory.create(artData, Name);
 
       VersionData actualVer = actual.getVersion();
       assertEquals(BRANCH, actualVer.getBranch());
@@ -240,11 +237,11 @@ public class DataFactoryImplTest {
       assertEquals(false, actualVer.isHistorical());
       assertEquals(false, actualVer.isInStorage());
 
-      Assert.assertTrue("local id must be valid", actual.getLocalId() > 0);
+      Assert.assertTrue("local id must be valid", actual.isValid());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
-      assertEquals(attributeType.getId().longValue(), actual.getTypeUuid());
+      assertEquals(Name, actual.getType());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
-      assertEquals(attributeType.getId().longValue(), actual.getBaseTypeUuid());
+      assertEquals(Name, actual.getBaseType());
 
       assertEquals(artifactId555, actual.getArtifactId());
       assertNotSame(dataProxy, actual.getDataProxy());
@@ -252,13 +249,11 @@ public class DataFactoryImplTest {
 
    @Test
    public void testCreateRelationData() {
-      RelationTypeToken relationType = CoreRelationTypes.Default_Hierarchical__Child;
-
       ArtifactId aArt = ArtifactId.valueOf(4562);
       ArtifactId bArt = ArtifactId.valueOf(9513);
       when(idFactory.getNextRelationId()).thenReturn(1);
 
-      RelationData actual = dataFactory.createRelationData(relationType, COMMON, aArt, bArt, "My rationale");
+      RelationData actual = dataFactory.createRelationData(Design__Design, COMMON, aArt, bArt, "My rationale");
 
       VersionData actualVer = actual.getVersion();
       assertEquals(COMMON, actualVer.getBranch());
@@ -270,9 +265,9 @@ public class DataFactoryImplTest {
 
       Assert.assertTrue("local id must be valid", actual.getLocalId() > 0);
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
-      assertEquals(relationType.getId().longValue(), actual.getTypeUuid());
+      assertEquals(Design__Design, actual.getType());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
-      assertEquals(relationType.getId().longValue(), actual.getBaseTypeUuid());
+      assertEquals(Design__Design, actual.getBaseType());
 
       assertEquals(aArt, actual.getArtifactIdA());
       assertEquals(bArt, actual.getArtifactIdB());
@@ -294,9 +289,9 @@ public class DataFactoryImplTest {
 
       assertEquals(artifactId555, actual);
       assertEquals(artData.getModType(), actual.getModType());
-      assertEquals(666L, actual.getTypeUuid());
+      assertEquals(Artifact, actual.getType());
       assertEquals(ModificationType.NEW, actual.getBaseModType());
-      assertEquals(777L, actual.getBaseTypeUuid());
+      assertEquals(Folder, actual.getBaseType());
    }
 
    @Test
@@ -314,9 +309,9 @@ public class DataFactoryImplTest {
 
       assertEquals(SHARED_ID, actual.getId());
       assertEquals(attrData.getModType(), actual.getModType());
-      assertEquals(666L, actual.getTypeUuid());
+      assertEquals(Name, actual.getType());
       assertEquals(ModificationType.NEW, actual.getBaseModType());
-      assertEquals(777L, actual.getBaseTypeUuid());
+      assertEquals(Active, actual.getBaseType());
 
       assertEquals(art88, actual.getArtifactId());
       assertNotSame(dataProxy, actual.getDataProxy());
@@ -345,9 +340,9 @@ public class DataFactoryImplTest {
 
       assertEquals(ART_ID, actual.getId());
       assertEquals(ModificationType.NEW, actual.getModType());
-      assertEquals(666L, actual.getTypeUuid());
+      assertEquals(actual.getType(), Artifact);
       assertEquals(ModificationType.NEW, actual.getBaseModType());
-      assertEquals(777L, actual.getBaseTypeUuid());
+      assertEquals(Folder, actual.getBaseType());
       assertEquals(newGuid, actual.getGuid());
    }
 
@@ -366,9 +361,9 @@ public class DataFactoryImplTest {
 
       assertEquals(RelationalConstants.DEFAULT_ITEM_ID, actual.getLocalId());
       assertEquals(ModificationType.NEW, actual.getModType());
-      assertEquals(666L, actual.getTypeUuid());
+      assertEquals(Name, actual.getType());
       assertEquals(ModificationType.NEW, actual.getBaseModType());
-      assertEquals(777L, actual.getBaseTypeUuid());
+      assertEquals(Active, actual.getBaseType());
 
       assertEquals(art88, actual.getArtifactId());
       assertNotSame(dataProxy, actual.getDataProxy());
@@ -394,15 +389,15 @@ public class DataFactoryImplTest {
 
       assertEquals(artifactId555, actual);
       assertEquals(ModificationType.MODIFIED, actual.getModType());
-      assertEquals(666L, actual.getTypeUuid());
+      assertEquals(Artifact, actual.getType());
       assertEquals(ModificationType.NEW, actual.getBaseModType());
-      assertEquals(777L, actual.getBaseTypeUuid());
+      assertEquals(Folder, actual.getBaseType());
    }
 
    @Test
    public void testCloneAttributeData() {
       AttributeData actual = dataFactory.clone(attrData);
-      verify(proxyFactory).createProxy(666L, expectedProxyValue, expectedProxyUri);
+      verify(proxyFactory).createProxy(Name, expectedProxyValue, expectedProxyUri);
 
       VersionData actualVer = actual.getVersion();
 
@@ -418,9 +413,9 @@ public class DataFactoryImplTest {
 
       assertEquals(SHARED_ID, actual.getId());
       assertEquals(ModificationType.MODIFIED, actual.getModType());
-      assertEquals(666L, actual.getTypeUuid());
+      assertEquals(Name, actual.getType());
       assertEquals(ModificationType.NEW, actual.getBaseModType());
-      assertEquals(777L, actual.getBaseTypeUuid());
+      assertEquals(Active, actual.getBaseType());
 
       assertEquals(art88, actual.getArtifactId());
       assertNotSame(dataProxy, actual.getDataProxy());
@@ -446,13 +441,12 @@ public class DataFactoryImplTest {
 
       assertEquals(SHARED_ID, actual.getId());
       assertEquals(ModificationType.MODIFIED, actual.getModType());
-      assertEquals(666L, actual.getTypeUuid());
+      assertEquals(Design__Design, actual.getType());
       assertEquals(ModificationType.NEW, actual.getBaseModType());
-      assertEquals(777L, actual.getBaseTypeUuid());
+      assertEquals(DEFAULT_HIERARCHY, actual.getBaseType());
 
       assertEquals(art88, actual.getArtifactIdA());
       assertEquals(art99, actual.getArtifactIdB());
       assertEquals("this is the rationale", actual.getRationale());
    }
-
 }

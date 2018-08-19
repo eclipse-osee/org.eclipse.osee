@@ -13,20 +13,21 @@ package org.eclipse.osee.orcs.core.ds;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.DirtyState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
-public interface OrcsData extends HasVersion {
+public interface OrcsData<T extends Id> extends HasVersion {
 
    void setLocalId(Integer localId);
 
    Integer getLocalId();
 
-   long getTypeUuid();
+   T getType();
 
-   void setTypeUuid(long typeUuid);
+   void setType(T type);
 
-   long getBaseTypeUuid();
+   T getBaseType();
 
-   void setBaseTypeUuid(long originalTypeUuid);
+   void setBaseType(T originalType);
 
    ModificationType getModType();
 

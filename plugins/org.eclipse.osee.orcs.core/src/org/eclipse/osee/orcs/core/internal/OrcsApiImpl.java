@@ -150,7 +150,7 @@ public class OrcsApiImpl implements OrcsApi {
       ArtifactFactory artifactFactory =
          new ArtifactFactory(module.getDataFactory(), attributeFactory, orcsTypes.getArtifactTypes());
 
-      RelationFactory relationFactory = new RelationFactory(orcsTypes.getRelationTypes(), module.getDataFactory());
+      RelationFactory relationFactory = new RelationFactory(module.getDataFactory());
 
       final GraphFactory graphFactory = new GraphFactoryImpl();
       GraphBuilderFactory graphBuilderFactory =

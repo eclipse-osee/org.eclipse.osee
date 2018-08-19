@@ -28,6 +28,7 @@ import org.eclipse.osee.orcs.db.internal.branch.BranchModule;
 import org.eclipse.osee.orcs.db.internal.branch.KeyValueModule;
 import org.eclipse.osee.orcs.db.internal.loader.LoaderModule;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
+import org.eclipse.osee.orcs.db.internal.loader.data.OrcsObjectFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.loader.processor.DynamicLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.proxy.AttributeDataProxyFactory;
 import org.eclipse.osee.orcs.db.internal.search.QueryModule;
@@ -66,7 +67,7 @@ public class DataModuleFactory {
 
       final QueryEngineIndexer indexer = queryModule.getQueryIndexer();
       final AttributeDataProxyFactory proxyFactory = loaderModule.createProxyDataFactory(attributeTypes);
-      final OrcsObjectFactory objectFactory = loaderModule.createOrcsObjectFactory(proxyFactory, relationTypes);
+      final OrcsObjectFactory objectFactory = new OrcsObjectFactoryImpl(proxyFactory, relationTypes, artifactTypes);
       final DataFactory dataFactory = loaderModule.createDataFactory(objectFactory, artifactTypes);
       final DynamicLoadProcessor loadProcessor = loaderModule.createDynamicLoadProcessor(orcsTypes, proxyFactory);
       SqlObjectLoader sqlObjectLoader =

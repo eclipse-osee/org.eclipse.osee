@@ -51,7 +51,7 @@ public class OrcsMockUtility {
       version.setBranch(branch);
 
       ArtifactData artifactData = new ArtifactDataImpl(version);
-      artifactData.setTypeUuid(artifactType.getId());
+      artifactData.setType(artifactType);
       artifactData.setLocalId(artifactId.intValue());
       artifactData.setModType(ModificationType.NEW);
 

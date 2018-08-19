@@ -191,7 +191,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
     */
    @Override
    public AttributeTypeToken getAttributeType() {
-      return attributeTypeCache.get(getOrcsData().getTypeUuid());
+      return attributeData.getType();
    }
 
    /**

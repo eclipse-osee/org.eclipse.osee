@@ -11,12 +11,13 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.TupleTypeId;
+import org.eclipse.osee.framework.core.data.TupleTypeToken;
 /**
  * @author Angel Avila
  */
 import org.eclipse.osee.orcs.core.internal.tuple.TupleVisitor;
 
-public interface TupleData extends OrcsData {
+public interface TupleData extends OrcsData<TupleTypeToken> {
 
    TupleTypeId getTupleType();
 

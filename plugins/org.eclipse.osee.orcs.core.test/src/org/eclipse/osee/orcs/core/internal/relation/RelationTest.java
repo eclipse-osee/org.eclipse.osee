@@ -10,15 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation;
 
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Design__Design;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DirtyState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -37,8 +37,6 @@ import org.mockito.MockitoAnnotations;
  */
 public class RelationTest {
 
-   private static final long TYPE_UUID = 123124514L;
-
    // @formatter:off
    @Mock private RelationTypes relationTypes;
    @Mock RelationData data;
@@ -50,9 +48,8 @@ public class RelationTest {
    public void init() {
       MockitoAnnotations.initMocks(this);
 
-      relation = new Relation(relationTypes, data);
-
-      when(data.getTypeUuid()).thenReturn(TYPE_UUID);
+      relation = new Relation(data);
+      when(data.getType()).thenReturn(Design__Design);
    }
 
    @Test
@@ -81,13 +78,6 @@ public class RelationTest {
       verify(data).setModType(ModificationType.MODIFIED);
       when(data.isDirty()).thenReturn(true);
       assertTrue(relation.isDirty());
-   }
-
-   @Test
-   public void testGetRelationType() {
-      relation.getRelationType();
-
-      verify(relationTypes).get(TYPE_UUID);
    }
 
    @Test
@@ -142,13 +132,8 @@ public class RelationTest {
 
    @Test
    public void testIsOfType() {
-      RelationTypeToken type1 = mock(RelationTypeToken.class);
-      RelationTypeToken type2 = mock(RelationTypeToken.class);
-
-      when(relationTypes.get(TYPE_UUID)).thenReturn(type1);
-
-      assertTrue(relation.isOfType(type1));
-      assertFalse(relation.isOfType(type2));
+      assertTrue(relation.isOfType(Design__Design));
+      assertFalse(relation.isOfType(CoreRelationTypes.DEFAULT_HIERARCHY));
    }
 
 }

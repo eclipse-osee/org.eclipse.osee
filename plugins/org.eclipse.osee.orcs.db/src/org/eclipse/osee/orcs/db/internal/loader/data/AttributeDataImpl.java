@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.OrcsVersionedObjectImpl;
@@ -19,7 +20,7 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeDataImpl<T> extends OrcsVersionedObjectImpl implements AttributeData<T> {
+public class AttributeDataImpl<T> extends OrcsVersionedObjectImpl<AttributeTypeToken> implements AttributeData<T> {
 
    private ArtifactId artifactId = ArtifactId.SENTINEL;
    private boolean useBackingData = false;

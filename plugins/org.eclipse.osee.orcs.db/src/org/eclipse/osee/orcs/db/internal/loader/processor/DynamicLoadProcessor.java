@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.loader.processor;
 import static org.eclipse.osee.orcs.db.internal.sql.SqlFieldResolver.getObjectField;
 import java.sql.Timestamp;
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -145,12 +146,10 @@ public class DynamicLoadProcessor extends AbstractLoadProcessor<DynamicDataHandl
 
    private void processCompositeField(JdbcStatement chStmt, DynamicObjectBuilder builder, DynamicData data) {
       Collection<String> columnIds = SqlFieldResolver.getColumnUniqueIds(data);
-      Object value = getProxyData(chStmt, columnIds);
-
-      builder.onDynamicField(data, data.getName(), value);
+      builder.onDynamicField(data, data.getName(), getProxyData(chStmt, columnIds));
    }
 
-   private DataProxy getProxyData(JdbcStatement chStmt, Collection<String> columnIds) {
+   private <T> DataProxy<T> getProxyData(JdbcStatement chStmt, Collection<String> columnIds) {
       String typeColumnName = null;
       String uriColumnName = null;
       String valueColumnName = null;
@@ -163,10 +162,10 @@ public class DynamicLoadProcessor extends AbstractLoadProcessor<DynamicDataHandl
             valueColumnName = id;
          }
       }
-      long typeUuid = chStmt.getLong(typeColumnName);
+      AttributeTypeToken attributeType = orcsTypes.getAttributeTypes().get(chStmt.getLong(typeColumnName));
       String value = chStmt.getString(valueColumnName);
       String uri = chStmt.getString(uriColumnName);
-      return proxyFactory.createProxy(typeUuid, value, uri);
+      return proxyFactory.createProxy(attributeType, value, uri);
    }
 
    private BranchType getBranchType(JdbcStatement chStmt, String columnName) {

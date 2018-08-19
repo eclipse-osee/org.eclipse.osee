@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.proxy;
 
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
@@ -32,11 +31,7 @@ public class AttributeDataProxyFactory {
       this.logger = logger;
    }
 
-   public DataProxy createProxy(long typeUuid, Object value, String uri) {
-      AttributeTypeId attributeType = attributeTypeCache.get(typeUuid);
-
-      Conditions.checkNotNull(attributeType, "AttributeType", "Unable to find attributeType for [%s]", typeUuid);
-
+   public DataProxy createProxy(AttributeTypeId attributeType, Object value, String uri) {
       String attributeProviderId = attributeTypeCache.getAttributeProviderId(attributeType);
 
       Object checkedValue = intern(attributeType, value);

@@ -109,7 +109,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
             updateTxValues(data);
             if (!isApplicOnly && !reuseGamma) {
                updateGamma(data);
-               addRow(SqlOrderEnum.ARTIFACTS, data.getLocalId(), data.getTypeUuid(), data.getVersion().getGammaId(),
+               addRow(SqlOrderEnum.ARTIFACTS, data.getLocalId(), data.getType(), data.getVersion().getGammaId(),
                   data.getGuid());
             }
             addTxs(SqlOrderEnum.ARTIFACTS, data);
@@ -133,7 +133,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
                int id = idManager.getNextAttributeId();
                data.setLocalId(id);
             }
-            addRow(SqlOrderEnum.ATTRIBUTES, data.getLocalId(), data.getTypeUuid(), data.getVersion().getGammaId(),
+            addRow(SqlOrderEnum.ATTRIBUTES, data.getLocalId(), data.getType(), data.getVersion().getGammaId(),
                data.getArtifactId(), dataProxy.getStorageString(), dataProxy.getUri());
          }
          addTxs(SqlOrderEnum.ATTRIBUTES, data);
@@ -183,7 +183,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
                int id = idManager.getNextRelationId();
                data.setLocalId(id);
             }
-            addRow(SqlOrderEnum.RELATIONS, data.getLocalId(), data.getTypeUuid(), data.getVersion().getGammaId(),
+            addRow(SqlOrderEnum.RELATIONS, data.getLocalId(), data.getType(), data.getVersion().getGammaId(),
                data.getArtIdA(), data.getArtIdB(), data.getRationale());
          }
          addTxs(SqlOrderEnum.RELATIONS, data);

@@ -18,10 +18,8 @@ import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
-import org.eclipse.osee.orcs.data.RelationTypes;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
-import org.eclipse.osee.orcs.db.internal.loader.data.OrcsObjectFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.loader.handlers.LoaderSqlHandlerFactoryUtil;
 import org.eclipse.osee.orcs.db.internal.loader.processor.DynamicLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.proxy.AttributeDataProxyFactory;
@@ -48,10 +46,6 @@ public class LoaderModule {
 
    public AttributeDataProxyFactory createProxyDataFactory(AttributeTypes attributeTypes) {
       return new AttributeDataProxyFactory(attributeTypes, resourceManager, logger);
-   }
-
-   public OrcsObjectFactory createOrcsObjectFactory(AttributeDataProxyFactory proxyFactory, RelationTypes relationTypes) {
-      return new OrcsObjectFactoryImpl(proxyFactory, relationTypes);
    }
 
    public DataFactory createDataFactory(OrcsObjectFactory factory, ArtifactTypes artifactTypes) {

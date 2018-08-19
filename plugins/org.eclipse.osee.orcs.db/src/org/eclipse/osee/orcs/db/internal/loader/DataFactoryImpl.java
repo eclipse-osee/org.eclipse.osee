@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -46,7 +47,6 @@ public class DataFactoryImpl implements DataFactory {
    private final ArtifactTypes artifactCache;
 
    public DataFactoryImpl(IdentityManager idFactory, OrcsObjectFactory objectFactory, ArtifactTypes artifactTypes) {
-      super();
       this.idFactory = idFactory;
       this.objectFactory = objectFactory;
       this.artifactCache = artifactTypes;
@@ -178,7 +178,7 @@ public class DataFactoryImpl implements DataFactory {
       return objectFactory.createCopy(source);
    }
 
-   private void updateDataForCopy(BranchId destination, OrcsData data) {
+   private <T extends Id> void updateDataForCopy(BranchId destination, OrcsData<T> data) {
       VersionData version = data.getVersion();
       version.setBranch(destination);
       version.setTransactionId(TransactionId.SENTINEL);
@@ -189,7 +189,7 @@ public class DataFactoryImpl implements DataFactory {
       data.setModType(ModificationType.NEW);
    }
 
-   private void updateDataForIntroduce(BranchId destination, OrcsData data) {
+   private <T extends Id> void updateDataForIntroduce(BranchId destination, OrcsData<T> data) {
       VersionData version = data.getVersion();
       version.setBranch(destination);
       version.setHistorical(false);

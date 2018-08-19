@@ -24,7 +24,7 @@ import org.eclipse.osee.orcs.data.HasTransaction;
 /**
  * @author Megumi Telles
  */
-public interface Artifact extends AttributeManager, HasTransaction, ArtifactVisitable, HasOrcsData<ArtifactData>, OrcsWriteable, GraphNode, OrderStore {
+public interface Artifact extends AttributeManager, HasTransaction, ArtifactVisitable, HasOrcsData<IArtifactType, ArtifactData>, OrcsWriteable, GraphNode, OrderStore {
 
    TransactionId getLastModifiedTransaction();
 

@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.executor.HasCancellation;
@@ -362,6 +363,7 @@ public class MissingChangeItemFactoryTest {
       data.setModType(modType);
       data.setLocalId(attrId);
       data.setDataProxy(proxy);
+      data.setBaseType(CoreAttributeTypes.Name);
       data.setApplicabilityId(ApplicabilityId.BASE);
       return data;
    }

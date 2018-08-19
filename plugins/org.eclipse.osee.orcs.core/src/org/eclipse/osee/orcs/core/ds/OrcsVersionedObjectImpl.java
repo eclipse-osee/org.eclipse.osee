@@ -19,10 +19,10 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class OrcsVersionedObjectImpl implements OrcsData {
+public abstract class OrcsVersionedObjectImpl<T extends Id> implements OrcsData<T> {
    private Integer localId = Id.SENTINEL.intValue();
-   private long typeUuid = RelationalConstants.DEFAULT_TYPE_UUID;
-   private long baseTypeUuid = RelationalConstants.DEFAULT_TYPE_UUID;
+   private T type;
+   private T baseType;
 
    private ModificationType baseModType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
    private ModificationType previousModType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
@@ -40,23 +40,23 @@ public abstract class OrcsVersionedObjectImpl implements OrcsData {
    }
 
    @Override
-   public long getTypeUuid() {
-      return typeUuid;
+   public T getType() {
+      return type;
    }
 
    @Override
-   public void setTypeUuid(long typeUuid) {
-      this.typeUuid = typeUuid;
+   public void setType(T type) {
+      this.type = type;
    }
 
    @Override
-   public long getBaseTypeUuid() {
-      return baseTypeUuid;
+   public T getBaseType() {
+      return baseType;
    }
 
    @Override
-   public void setBaseTypeUuid(long baseTypeUuid) {
-      this.baseTypeUuid = baseTypeUuid;
+   public void setBaseType(T baseType) {
+      this.baseType = baseType;
    }
 
    @Override
@@ -87,7 +87,7 @@ public abstract class OrcsVersionedObjectImpl implements OrcsData {
 
    @Override
    public boolean hasTypeUuidChange() {
-      return getBaseTypeUuid() != getTypeUuid();
+      return type.notEqual(baseType);
    }
 
    @Override
@@ -148,15 +148,15 @@ public abstract class OrcsVersionedObjectImpl implements OrcsData {
 
    @Override
    public boolean equals(Object obj) {
-      if (obj instanceof OrcsVersionedObjectImpl) {
-         OrcsVersionedObjectImpl other = (OrcsVersionedObjectImpl) obj;
+      if (obj instanceof OrcsVersionedObjectImpl<?>) {
+         OrcsVersionedObjectImpl<?> other = (OrcsVersionedObjectImpl<?>) obj;
          if (!getLocalId().equals(other.getLocalId())) {
             return false;
          }
          if (baseModType != other.baseModType) {
             return false;
          }
-         if (baseTypeUuid != other.baseTypeUuid) {
+         if (baseType.notEqual(other.baseType)) {
             return false;
          }
          if (version == null) {
@@ -174,7 +174,7 @@ public abstract class OrcsVersionedObjectImpl implements OrcsData {
 
    @Override
    public String toString() {
-      return "OrcsVersionedObject [" + super.toString() + ", typeUuid=" + typeUuid + ", baseTypeUuid=" + baseTypeUuid + ", modType=" + currentModType + ", previousModType=" + previousModType + ", baseModType=" + baseModType + ", version=" + version + "]";
+      return "OrcsVersionedObject [" + super.toString() + ", type=" + type + ", baseType=" + baseType + ", modType=" + currentModType + ", previousModType=" + previousModType + ", baseModType=" + baseModType + ", version=" + version + "]";
    }
 
    @Override

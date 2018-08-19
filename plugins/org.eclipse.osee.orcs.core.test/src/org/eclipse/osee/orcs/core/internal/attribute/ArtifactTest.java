@@ -99,7 +99,7 @@ public class ArtifactTest {
 
       when(artifactData.getGuid()).thenReturn(guid);
       when(artifactData.getVersion()).thenReturn(version);
-      when(artifactData.getTypeUuid()).thenReturn(artifactType.getGuid());
+      when(artifactData.getType()).thenReturn(artifactType);
       when(artifactData.getLocalId()).thenReturn(0);
 
       when(deleted.getModificationType()).thenReturn(ModificationType.ARTIFACT_DELETED);
@@ -127,7 +127,7 @@ public class ArtifactTest {
    }
 
    @Test
-   @SuppressWarnings({"rawtypes", "unchecked"})
+   @SuppressWarnings("rawtypes")
    public void testAddException() {
       Attribute one = mock(Attribute.class);
       Attribute two = mock(Attribute.class);
@@ -180,12 +180,6 @@ public class ArtifactTest {
    }
 
    @Test
-   public void testArtifactType() {
-      artifact.getArtifactTypeId();
-      verify(types).get(artifactData.getTypeUuid());
-   }
-
-   @Test
    @SuppressWarnings({"rawtypes", "unchecked"})
    public void testSetName() {
       Attribute attr = mock(Attribute.class);
@@ -201,7 +195,7 @@ public class ArtifactTest {
 
       artifact.setArtifactType(CoreArtifactTypes.CodeUnit);
 
-      verify(artifactData).setTypeUuid(CoreArtifactTypes.CodeUnit.getGuid());
+      verify(artifactData).setType(CoreArtifactTypes.CodeUnit);
       verify(artifactData).setModType(ModificationType.MODIFIED);
 
       reset(version);
@@ -210,7 +204,7 @@ public class ArtifactTest {
       when(artifactData.getVersion()).thenReturn(version);
       when(artifactData.getGuid()).thenReturn(guid);
       when(artifactData.getVersion()).thenReturn(version);
-      when(artifactData.getTypeUuid()).thenReturn(artifactType.getGuid());
+      when(artifactData.getType()).thenReturn(artifactType);
 
       artifact.setArtifactType(CoreArtifactTypes.CodeUnit);
       verify(artifactData, never()).setModType(ModificationType.MODIFIED);
@@ -224,7 +218,7 @@ public class ArtifactTest {
    }
 
    @Test
-   @SuppressWarnings({"rawtypes", "unchecked"})
+   @SuppressWarnings("rawtypes")
    public void testIsDirty() {
       Assert.assertFalse(artifact.isDirty());
 
@@ -270,7 +264,7 @@ public class ArtifactTest {
    }
 
    @Test
-   @SuppressWarnings({"rawtypes", "unchecked"})
+   @SuppressWarnings("rawtypes")
    public void testSetAttributesNotDirty() {
       Attribute one = mock(Attribute.class);
       Attribute two = mock(Attribute.class);
@@ -328,7 +322,6 @@ public class ArtifactTest {
    }
 
    @Test
-   @SuppressWarnings("unchecked")
    public void testGetAttributeCount() {
       artifact.add(CoreAttributeTypes.AccessContextId, notDeleted);
       artifact.add(CoreAttributeTypes.AccessContextId, deleted);
@@ -340,7 +333,6 @@ public class ArtifactTest {
    }
 
    @Test
-   @SuppressWarnings("unchecked")
    public void testGetAttributes() {
       artifact.add(CoreAttributeTypes.AccessContextId, notDeleted);
       artifact.add(CoreAttributeTypes.AccessContextId, deleted);
@@ -356,7 +348,6 @@ public class ArtifactTest {
    }
 
    @Test
-   @SuppressWarnings("unchecked")
    public void testGetAttributeValues() {
       artifact.add(CoreAttributeTypes.AccessContextId, notDeleted);
       artifact.add(CoreAttributeTypes.AccessContextId, deleted);
@@ -368,7 +359,6 @@ public class ArtifactTest {
    }
 
    @Test
-   @SuppressWarnings("unchecked")
    public void testGetSoleAttributeAsString() {
       when(notDeleted.getValue()).thenReturn(new Integer(5));
       artifact.add(CoreAttributeTypes.AccessContextId, notDeleted);
@@ -380,7 +370,7 @@ public class ArtifactTest {
    }
 
    @Test
-   @SuppressWarnings({"rawtypes", "unchecked"})
+   @SuppressWarnings("rawtypes")
    public void testGetSoleAttributeAsStringException() {
       Attribute one = mock(Attribute.class);
       Attribute two = mock(Attribute.class);
@@ -393,7 +383,6 @@ public class ArtifactTest {
    }
 
    @Test
-   @SuppressWarnings("unchecked")
    public void testDeleteAttributesByArtifact() {
       artifact.add(CoreAttributeTypes.AccessContextId, notDeleted);
       artifact.add(CoreAttributeTypes.AccessContextId, deleted);
@@ -405,7 +394,6 @@ public class ArtifactTest {
    }
 
    @Test
-   @SuppressWarnings("unchecked")
    public void testDeleteSoleAttribute() {
       when(attributeFactory.getMinOccurrenceLimit(attributeType)).thenReturn(0);
       when(notDeleted.getContainer()).thenReturn(artifact);
@@ -415,7 +403,6 @@ public class ArtifactTest {
    }
 
    @Test
-   @SuppressWarnings("unchecked")
    public void testDeleteSoleAttributeException() {
       when(attributeFactory.getMinOccurrenceLimit(attributeType)).thenReturn(1);
       artifact.add(attributeType, notDeleted);

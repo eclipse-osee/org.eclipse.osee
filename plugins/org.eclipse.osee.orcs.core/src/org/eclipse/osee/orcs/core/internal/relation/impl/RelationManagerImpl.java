@@ -465,8 +465,7 @@ public class RelationManagerImpl implements RelationManager {
             destination.getGraph().addAdjacencies(destination, adjacencies2);
             for (Relation relation : adjacencies1.getAll()) {
                Relation newRel = relationFactory.clone(relation);
-               RelationTypeId relationType = RelationTypeId.valueOf(newRel.getOrcsData().getTypeUuid());
-               adjacencies2.add(relationType, newRel);
+               adjacencies2.add(newRel.getOrcsData().getType(), newRel);
             }
          }
       }

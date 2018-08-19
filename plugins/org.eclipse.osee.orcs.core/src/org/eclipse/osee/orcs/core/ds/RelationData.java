@@ -12,12 +12,13 @@ package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.RelationId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public interface RelationData extends OrcsData, RelationId {
+public interface RelationData extends OrcsData<RelationTypeToken>, RelationId {
 
    ArtifactId getArtifactIdA();
 

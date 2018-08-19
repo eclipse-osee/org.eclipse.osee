@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -59,10 +58,7 @@ public class AttributeFactory {
    }
 
    private <T> Attribute<T> createAttribute(AttributeContainer container, AttributeData<T> data, boolean isDirty, boolean createWithDefaults) {
-      AttributeTypeId type = cache.get(data.getTypeUuid());
-      Conditions.checkNotNull(type, "attributeType", "Cannot find attribute type with uuid[%s]", data.getTypeUuid());
-
-      Attribute<T> attribute = createAttribute(type);
+      Attribute<T> attribute = createAttribute(data.getType());
 
       DataProxy<T> proxy = data.getDataProxy();
       ResourceNameResolver resolver = createResolver(attribute);
@@ -72,7 +68,7 @@ public class AttributeFactory {
       Reference<AttributeContainer> artifactRef = new WeakReference<>(container);
 
       attribute.internalInitialize(cache, artifactRef, data, isDirty, createWithDefaults);
-      container.add(type, attribute);
+      container.add(data.getType(), attribute);
 
       return attribute;
    }

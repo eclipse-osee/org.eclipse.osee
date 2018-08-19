@@ -94,7 +94,7 @@ public class ArtifactFactoryTest {
 
       when(artifactData.getLocalId()).thenReturn(45);
       when(artifactData.getGuid()).thenReturn(guid);
-      when(artifactData.getTypeUuid()).thenReturn(Artifact.getId());
+      when(artifactData.getType()).thenReturn(Artifact);
       when(artifactData.getVersion()).thenReturn(artifactVersion);
       when(artifactVersion.getBranch()).thenReturn(COMMON);
       when(source.getOrcsData()).thenReturn(artifactData);
@@ -103,7 +103,7 @@ public class ArtifactFactoryTest {
 
       when(otherArtifactData.getLocalId()).thenReturn(45);
       when(otherArtifactData.getGuid()).thenReturn(guid);
-      when(otherArtifactData.getTypeUuid()).thenReturn(Artifact.getId());
+      when(otherArtifactData.getType()).thenReturn(Artifact);
       when(otherArtifactData.getVersion()).thenReturn(artifactVersion);
 
       // TODO RDB: make this line unnecessary

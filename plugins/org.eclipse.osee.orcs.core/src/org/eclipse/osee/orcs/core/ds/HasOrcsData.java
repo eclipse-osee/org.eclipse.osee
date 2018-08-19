@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.framework.jdk.core.type.Id;
+
 /**
  * @author John Misinco
  */
-public interface HasOrcsData<T extends OrcsData> {
+public interface HasOrcsData<S extends Id, T extends OrcsData<S>> {
 
    T getOrcsData();
 

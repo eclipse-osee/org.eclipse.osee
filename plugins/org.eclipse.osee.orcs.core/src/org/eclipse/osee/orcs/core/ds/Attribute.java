@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.ds;
 import java.io.InputStream;
 import java.lang.ref.Reference;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeContainer;
 import org.eclipse.osee.orcs.core.internal.util.OrcsWriteable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -22,7 +23,7 @@ import org.eclipse.osee.orcs.data.AttributeTypes;
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface Attribute<T> extends OrcsWriteable, AttributeReadable<T>, HasOrcsData<AttributeData<T>> {
+public interface Attribute<T> extends OrcsWriteable, AttributeReadable<T>, HasOrcsData<AttributeTypeToken, AttributeData<T>> {
 
    void setValue(T value);
 

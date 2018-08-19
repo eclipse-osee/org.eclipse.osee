@@ -135,7 +135,7 @@ public class AttributeDataMatcher {
 
       @Override
       public long getTypeUuid() {
-         return attrData.getTypeUuid();
+         return attrData.getType().getId();
       }
 
       @Override

@@ -22,10 +22,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationId;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -210,7 +207,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       return toReturn;
    }
 
-   private ModificationType determineModType(OrcsData data) {
+   private <T extends Id> ModificationType determineModType(OrcsData<T> data) {
       if (data.getModType().matches(ModificationType.DELETED, ModificationType.ARTIFACT_DELETED)) {
          return data.getModType();
       } else {
@@ -220,25 +217,24 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
 
    private ChangeItem createArtifactChangeItem(ArtifactData data) {
       ApplicabilityId appId = data.getApplicabilityId();
-      ChangeItem artChange = ChangeItemUtil.newArtifactChange(ArtifactId.valueOf(data.getLocalId()),
-         ArtifactTypeId.valueOf(data.getTypeUuid()), data.getVersion().getGammaId(), determineModType(data),
-         getApplicabilityToken(appId));
+      ChangeItem artChange = ChangeItemUtil.newArtifactChange(ArtifactId.valueOf(data.getLocalId()), data.getType(),
+         data.getVersion().getGammaId(), determineModType(data), getApplicabilityToken(appId));
       return artChange;
    }
 
-   private ChangeItem createAttributeChangeItem(AttributeData<?> data) {
+   private <T> ChangeItem createAttributeChangeItem(AttributeData<T> data) {
       ApplicabilityId appId = data.getApplicabilityId();
-      ChangeItem attrChange = ChangeItemUtil.newAttributeChange(data, AttributeTypeId.valueOf(data.getTypeUuid()),
-         data.getArtifactId(), data.getVersion().getGammaId(), determineModType(data),
-         data.getDataProxy().getDisplayableString(), getApplicabilityToken(appId));
+      ChangeItem attrChange =
+         ChangeItemUtil.newAttributeChange(data, data.getType(), data.getArtifactId(), data.getVersion().getGammaId(),
+            determineModType(data), data.getDataProxy().getDisplayableString(), getApplicabilityToken(appId));
       attrChange.getNetChange().copy(attrChange.getCurrentVersion());
       return attrChange;
    }
 
    private ChangeItem createRelationChangeItem(RelationData data) {
       ApplicabilityId appId = data.getApplicabilityId();
-      return ChangeItemUtil.newRelationChange(RelationId.valueOf(Long.valueOf(data.getLocalId())),
-         RelationTypeId.valueOf(data.getTypeUuid()), data.getVersion().getGammaId(), determineModType(data),
-         data.getArtifactIdA(), data.getArtifactIdB(), data.getRationale(), getApplicabilityToken(appId));
+      return ChangeItemUtil.newRelationChange(RelationId.valueOf(data.getLocalId().longValue()), data.getType(),
+         data.getVersion().getGammaId(), determineModType(data), data.getArtifactIdA(), data.getArtifactIdB(),
+         data.getRationale(), getApplicabilityToken(appId));
    }
 }

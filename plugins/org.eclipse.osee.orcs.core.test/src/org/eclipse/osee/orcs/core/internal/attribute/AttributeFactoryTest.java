@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -72,30 +71,20 @@ public class AttributeFactoryTest {
 
       factory = new AttributeFactory(dataFactory, cache);
 
-      when(attributeData.getTypeUuid()).thenReturn(attributeType.getId());
+      when(attributeData.getType()).thenReturn(attributeType);
       when(cache.get(attributeType.getId())).thenReturn(attributeType);
       when(cache.getBaseAttributeTypeId(attributeType)).thenReturn("StringAttribute");
       when(attributeData.getDataProxy()).thenReturn(proxy);
    }
 
-   @Test
-   public void testCreateAttributeNullType() {
-      when(cache.get(attributeType.getId())).thenReturn(null);
-
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage(
-         "attributeType cannot be null - Cannot find attribute type with uuid[" + attributeType.getId() + "]");
-      factory.createAttribute(container, attributeData);
-   }
-
-   @SuppressWarnings({"unchecked", "rawtypes"})
+   @SuppressWarnings("unchecked")
    @Test
    public void testCreateAttribute() {
       Attribute<Object> actual = factory.createAttribute(container, attributeData);
       assertEquals(attribute.getId(), actual.getId());
    }
 
-   @SuppressWarnings({"unchecked", "rawtypes"})
+   @SuppressWarnings("rawtypes")
    @Test
    public void testCreateAttributeFromArtifactDataAndType() {
       ArtifactData artifactData = mock(ArtifactData.class);
@@ -120,7 +109,7 @@ public class AttributeFactoryTest {
       AttributeData copiedAttributeData = mock(AttributeData.class);
 
       when(dataFactory.copy(COMMON, attributeData)).thenReturn(copiedAttributeData);
-      when(copiedAttributeData.getTypeUuid()).thenReturn(attributeType.getId());
+      when(copiedAttributeData.getType()).thenReturn(attributeType);
       when(copiedAttributeData.getDataProxy()).thenReturn(proxy);
 
       Attribute<Object> actual = factory.copyAttribute(attributeData, COMMON, container);
@@ -148,7 +137,7 @@ public class AttributeFactoryTest {
       when(attributeData.getLocalId()).thenReturn(12345);
 
       when(dataFactory.introduce(COMMON, attributeData)).thenReturn(introducedAttributeData);
-      when(introducedAttributeData.getTypeUuid()).thenReturn(attributeType.getId());
+      when(introducedAttributeData.getType()).thenReturn(attributeType);
       when(introducedAttributeData.getDataProxy()).thenReturn(proxy);
 
       when(container.getAttributeById(attributeData, DeletionFlag.INCLUDE_DELETED)).thenReturn(destinationAttribute);

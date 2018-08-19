@@ -104,7 +104,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    @Override
    public IArtifactType getArtifactTypeId() {
-      return artifactTypeCache.get(getOrcsData().getTypeUuid());
+      return getOrcsData().getType();
    }
 
    @Override
@@ -115,7 +115,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    @Override
    public void setArtifactType(IArtifactType artifactType) {
       if (!isTypeEqual(artifactType)) {
-         getOrcsData().setTypeUuid(artifactType.getGuid());
+         getOrcsData().setType(artifactType);
          objectEditState = EditState.ARTIFACT_TYPE_MODIFIED;
          if (getOrcsData().getVersion().isInStorage()) {
             getOrcsData().setModType(ModificationType.MODIFIED);
@@ -214,7 +214,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    @Override
    public String toString() {
       try {
-         return String.format("artifact [type=[%s] guid=[%s] branch=[%s]]", getArtifactTypeId(), getGuid(),
+         return String.format("artifact [type=[%s] artifact id=[%s] branch=[%s]]", getArtifactTypeId(), getId(),
             getBranch());
       } catch (OseeCoreException ex) {
          return Lib.exceptionToString(ex);

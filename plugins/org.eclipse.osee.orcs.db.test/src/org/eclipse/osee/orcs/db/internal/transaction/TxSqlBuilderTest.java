@@ -30,13 +30,20 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataImpl;
@@ -83,7 +90,9 @@ public class TxSqlBuilderTest {
 
    private static final int ITEM_ID = 789;
    private static final String EXP_GUID = GUID.create();
-   private static final long TYPE_UUID = 72132144189L;
+   private static final IArtifactType artfactType = CoreArtifactTypes.Artifact;
+   private static final RelationTypeToken relationType = CoreRelationTypes.DEFAULT_HIERARCHY;
+   private static final AttributeTypeToken attributeType = CoreAttributeTypes.Name;
 
    private static final GammaId NEXT_GAMMA_ID = GammaId.valueOf(751382);
 
@@ -123,18 +132,18 @@ public class TxSqlBuilderTest {
 
       artData = new ArtifactDataImpl(versionData);
       artData.setLocalId(ITEM_ID);
-      artData.setTypeUuid(TYPE_UUID);
+      artData.setType(artfactType);
       artData.setGuid(EXP_GUID);
 
       attrData = new AttributeDataImpl(versionData);
       attrData.setLocalId(ITEM_ID);
-      attrData.setTypeUuid(TYPE_UUID);
+      attrData.setType(attributeType);
       attrData.setArtifactId(ATTR_ARTIFACT_ID);
       attrData.setDataProxy(dataProxy);
 
       relData = new RelationDataImpl(versionData);
       relData.setLocalId(ITEM_ID);
-      relData.setTypeUuid(TYPE_UUID);
+      relData.setType(relationType);
       relData.setArtIdA(A_ART_ID);
       relData.setArtIdB(B_ART_ID);
       relData.setRationale(RATIONALE);
@@ -191,7 +200,7 @@ public class TxSqlBuilderTest {
          verifyEmpty(allExcept(SqlOrderEnum.TXS_DETAIL, SqlOrderEnum.TXS, SqlOrderEnum.ARTIFACTS));
 
          // @formatter:off
-         verifyRow(SqlOrderEnum.ARTIFACTS, ITEM_ID, TYPE_UUID, NEXT_GAMMA_ID, EXP_GUID);
+         verifyRow(SqlOrderEnum.ARTIFACTS, ITEM_ID, artfactType, NEXT_GAMMA_ID, EXP_GUID);
          verifyRow(SqlOrderEnum.TXS, EXPECTED_TX, NEXT_GAMMA_ID, modType, TxChange.CURRENT, COMMON);
          verifyQuery(SqlOrderEnum.ARTIFACTS);
          // @formatter:on
@@ -239,8 +248,8 @@ public class TxSqlBuilderTest {
 
       // test existing artifact with no changes
       artData.setBaseModType(ModificationType.DELETED);
-      artData.setBaseTypeUuid(0);
-      artData.setTypeUuid(0);
+      artData.setBaseType(artfactType);
+      artData.setType(artfactType);
       builder.visit(artData);
 
       assertTrue(builder.getBinaryStores().isEmpty());
@@ -261,7 +270,7 @@ public class TxSqlBuilderTest {
          verifyEmpty(allExcept(SqlOrderEnum.TXS_DETAIL, SqlOrderEnum.TXS, SqlOrderEnum.RELATIONS));
 
          // @formatter:off
-         verifyRow(SqlOrderEnum.RELATIONS, ITEM_ID, TYPE_UUID, NEXT_GAMMA_ID, A_ART_ID.getId().intValue(), B_ART_ID.getId().intValue(), RATIONALE);
+         verifyRow(SqlOrderEnum.RELATIONS, ITEM_ID, relationType, NEXT_GAMMA_ID, A_ART_ID.getId().intValue(), B_ART_ID.getId().intValue(), RATIONALE);
          verifyRow(SqlOrderEnum.TXS, EXPECTED_TX, NEXT_GAMMA_ID, modType, TxChange.CURRENT, COMMON);
          verifyQuery(SqlOrderEnum.RELATIONS);
          // @formatter:on
@@ -306,7 +315,7 @@ public class TxSqlBuilderTest {
          verifyEmpty(allExcept(SqlOrderEnum.TXS_DETAIL, SqlOrderEnum.TXS, SqlOrderEnum.ATTRIBUTES));
 
          // @formatter:off
-         verifyRow(SqlOrderEnum.ATTRIBUTES, ITEM_ID, TYPE_UUID, NEXT_GAMMA_ID, ATTR_ARTIFACT_ID,  ATTR_VALUE, ATTR_URI);
+         verifyRow(SqlOrderEnum.ATTRIBUTES, ITEM_ID, attributeType, NEXT_GAMMA_ID, ATTR_ARTIFACT_ID,  ATTR_VALUE, ATTR_URI);
          verifyRow(SqlOrderEnum.TXS, EXPECTED_TX, NEXT_GAMMA_ID, modType, TxChange.CURRENT, COMMON);
          verifyQuery(SqlOrderEnum.ATTRIBUTES);
          // @formatter:on
@@ -319,7 +328,7 @@ public class TxSqlBuilderTest {
          when(dataProxy.getUri()).thenReturn("aURI");
 
          builder.updateAfterBinaryStorePersist();
-         verifyRow(SqlOrderEnum.ATTRIBUTES, ITEM_ID, TYPE_UUID, NEXT_GAMMA_ID, ATTR_ARTIFACT_ID, "aValue", "aURI");
+         verifyRow(SqlOrderEnum.ATTRIBUTES, ITEM_ID, attributeType, NEXT_GAMMA_ID, ATTR_ARTIFACT_ID, "aValue", "aURI");
 
          reset(attrData);
       }
@@ -347,7 +356,7 @@ public class TxSqlBuilderTest {
       }
    }
 
-   private void reset(OrcsData data) {
+   private <T extends Id> void reset(OrcsData<T> data) {
       data.getVersion().setTransactionId(LOADED_TX_ID);
       data.getVersion().setGammaId(GammaId.SENTINEL);
    }
