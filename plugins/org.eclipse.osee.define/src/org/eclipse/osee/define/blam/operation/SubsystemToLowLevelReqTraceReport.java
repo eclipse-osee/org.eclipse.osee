@@ -173,18 +173,17 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    }
 
    private void generateSubsystemToLowLevelReqTrace() throws IOException, OseeCoreException {
-      excelWriter.startSheet("5.3", 6);
+      excelWriter.startSheet("5.3", 7);
 
       excelWriter.writeRow("5.3 Subsystem Requirements Allocation Traceability to Lower Level Requirements");
       excelWriter.writeRow(null, "Subsystem Requirement", null, "Traceable Lower Level Requirements", null);
-      excelWriter.writeRow("Subsystem", "Paragraph #", "Paragraph Title", "Paragraph #", "Paragraph Title",
-         "Component");
-      excelWriter.writeRow();
+      excelWriter.writeRow("Subsystem", "Paragraph #", "Paragraph Title", "Paragraph #", "Paragraph Title", "Component",
+         "Artifact Type");
 
       for (Entry<String, List<Artifact>> entry : subsysToSubsysReqsMap.entrySet()) {
          List<Artifact> subsysReqs = entry.getValue();
 
-         String[] row = new String[6];
+         String[] row = new String[7];
          row[0] = entry.getKey();
          for (Artifact higherLevelReq : subsysReqs) {
 
@@ -222,6 +221,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
                if (lowLevelReqs.contains(lowerLevelReq)) {
                   row[3] = lowerLevelReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, null);
                   row[4] = lowerLevelReq.getName();
+                  row[6] = lowerLevelReq.getArtifactType().getName();
                   excelWriter.writeRow(row);
                }
             }
