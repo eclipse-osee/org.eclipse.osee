@@ -486,6 +486,15 @@ attributeType "Static Id" extends StringAttribute {
 	mediaType "text/plain"
 }
 
+attributeType "Safety Impact" extends StringAttribute {
+	id 1684721504606847095
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
 attributeType "General String Data" extends StringAttribute {
 	id 1152921504606847096
 	dataProvider DefaultAttributeDataProvider
@@ -669,7 +678,8 @@ artifactType "Abstract Spec Requirement" extends "Requirement" {
 	attribute "Legacy DAL"
 	attribute "Qualification Method"
 	attribute "Subsystem"
-	attribute "Technical Performance Parameter"	
+	attribute "Technical Performance Parameter"
+	attribute "Safety Impact"
 }
 
 attributeType "Test Frequency" extends EnumeratedAttribute {
@@ -827,6 +837,10 @@ abstract artifactType "Abstract System Requirement" extends "Abstract Spec Requi
 
 artifactType "System Requirement - MS Word" extends "Abstract System Requirement" , "MS Word Template" {
 	id 30
+}
+
+artifactType "Customer Requirement - MS Word" extends "Abstract Spec Requirement" , "MS Word Template" {
+	id 809
 }
 
 artifactType "System Requirement - HTML" extends "Abstract System Requirement" , "HTML Artifact" {
@@ -1662,6 +1676,14 @@ relationType "Supporting Requirement" {
 
 artifactType "Heading - MS Word" extends "Abstract Heading", "MS Word Template" {
 	id 56
+}
+
+artifactType "Document Description - MS Word" extends "Abstract Heading", "MS Word Template" {
+	id 806
+}
+
+artifactType "Design Description - MS Word" extends "Abstract Heading", "MS Word Template" {
+	id 807
 }
 
 artifactType "Heading - HTML" extends "Abstract Heading", "HTML Artifact" {  
