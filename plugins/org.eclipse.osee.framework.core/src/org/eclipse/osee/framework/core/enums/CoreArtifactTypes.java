@@ -97,6 +97,9 @@ public final class CoreArtifactTypes {
    public static final IArtifactType User = TokenFactory.createArtifactType(5, "User");
    public static final IArtifactType UserGroup = TokenFactory.createArtifactType(7, "User Group");
    public static final IArtifactType XViewerGlobalCustomization = TokenFactory.createArtifactType(55, "XViewer Global Customization");
+
+   public static final IArtifactType DocumentDescriptionMSWord = TokenFactory.createArtifactType(806, "Document Description - MS Word");
+   public static final IArtifactType DesignDescriptionMSWord = TokenFactory.createArtifactType(807, "Design Description - MS Word");
    // @formatter:on
 
    private CoreArtifactTypes() {

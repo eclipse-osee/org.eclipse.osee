@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.importing.resolvers;
 
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -54,7 +55,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
 
    @Override
    public Artifact resolve(final RoughArtifact roughArtifact, final BranchId branch, Artifact realParent, Artifact root) throws OseeCoreException {
-      IArtifactType artifactType = getArtifactType(roughArtifact.getRoughArtifactKind());
+      ArtifactTypeId artifactType = getArtifactType(roughArtifact);
 
       OseeLog.logf(NewArtifactImportResolver.class, Level.INFO, "New artifact: [%s]. Attributes: [%s]", roughArtifact,
          roughArtifact.getAttributes());
@@ -64,20 +65,26 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
       return realArtifact;
    }
 
-   private IArtifactType getArtifactType(RoughArtifactKind kind) throws OseeCoreException {
-      switch (kind) {
-         case PRIMARY:
-            return primaryArtifactType;
-         case SECONDARY:
-            return secondaryArtifactType;
-         case TERTIARY:
-            return tertiaryArtifactType;
-         case QUATERNARY:
-            return quaternaryArtifactType;
-         case CONTAINER:
-            return CoreArtifactTypes.Folder;
-         default:
-            throw new OseeCoreException("Unknown Artifact Kind " + kind);
+   private ArtifactTypeId getArtifactType(RoughArtifact art) throws OseeCoreException {
+      ArtifactTypeId type = art.getType();
+      if (!type.equals(ArtifactTypeId.SENTINEL)) {
+         return type;
+      } else {
+         RoughArtifactKind kind = art.getRoughArtifactKind();
+         switch (kind) {
+            case PRIMARY:
+               return primaryArtifactType;
+            case SECONDARY:
+               return secondaryArtifactType;
+            case TERTIARY:
+               return tertiaryArtifactType;
+            case QUATERNARY:
+               return quaternaryArtifactType;
+            case CONTAINER:
+               return CoreArtifactTypes.Folder;
+            default:
+               throw new OseeCoreException("Unknown Artifact Kind " + kind);
+         }
       }
    }
 

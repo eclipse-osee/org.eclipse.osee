@@ -50,7 +50,7 @@ public final class ArtifactResolverFactory {
    public static IArtifactImportResolver createAlwaysNewArtifacts(IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType) {
       IRoughArtifactTranslator translator = new RoughArtifactTranslatorImpl();
       return new NewArtifactImportResolver(translator, primaryArtifactType, secondaryArtifactType,
-         CoreArtifactTypes.Design, CoreArtifactTypes.SubsystemDesign);
+         CoreArtifactTypes.DocumentDescriptionMSWord, CoreArtifactTypes.DesignDescriptionMSWord);
    }
 
    public static IArtifactImportResolver createResolver(ArtifactCreationStrategy strategy, IArtifactType primaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
