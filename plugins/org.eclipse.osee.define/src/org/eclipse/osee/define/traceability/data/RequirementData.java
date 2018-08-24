@@ -22,8 +22,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.traceability.TraceabilityExtractor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -109,6 +109,15 @@ public class RequirementData extends BaseTraceDataCache {
     */
    public Artifact getRequirementFromTraceMark(String traceMark) {
       return allRequirementsMap.get(extractor.getCanonicalRequirementName(traceMark));
+   }
+
+   public Artifact getRequirementFromArtifactId(ArtifactId artId) {
+      for (Artifact art : directRequirements) {
+         if (art.equals(artId)) {
+            return art;
+         }
+      }
+      return null;
    }
 
    /**

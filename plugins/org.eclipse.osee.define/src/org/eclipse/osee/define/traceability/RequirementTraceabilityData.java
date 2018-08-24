@@ -154,6 +154,10 @@ public class RequirementTraceabilityData {
       return this.requirementData.getRequirementFromTraceMarkIncludeStructuredRequirements(traceMark);
    }
 
+   public Artifact getRequirementFromArtifactId(ArtifactId artId) {
+      return this.requirementData.getRequirementFromArtifactId(artId);
+   }
+
    /**
     * @return the requirementsToCodeUnits
     */
