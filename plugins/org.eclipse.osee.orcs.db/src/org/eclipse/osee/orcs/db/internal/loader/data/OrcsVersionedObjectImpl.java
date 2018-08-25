@@ -21,8 +21,8 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class OrcsVersionedObjectImpl extends OrcsObjectImpl<Integer> implements OrcsData {
-
+public abstract class OrcsVersionedObjectImpl implements OrcsData {
+   private Integer localId = Id.SENTINEL.intValue();
    private long typeUuid = RelationalConstants.DEFAULT_TYPE_UUID;
    private long baseTypeUuid = RelationalConstants.DEFAULT_TYPE_UUID;
 
@@ -179,4 +179,13 @@ public abstract class OrcsVersionedObjectImpl extends OrcsObjectImpl<Integer> im
       return "OrcsVersionedObject [" + super.toString() + ", typeUuid=" + typeUuid + ", baseTypeUuid=" + baseTypeUuid + ", modType=" + currentModType + ", previousModType=" + previousModType + ", baseModType=" + baseModType + ", version=" + version + "]";
    }
 
+   @Override
+   public Integer getLocalId() {
+      return localId;
+   }
+
+   @Override
+   public void setLocalId(Integer localId) {
+      this.localId = localId;
+   }
 }
