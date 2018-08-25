@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 import com.google.common.base.Predicate;
 import java.util.Date;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.data.HasId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.orcs.core.ds.Attribute;
@@ -64,14 +64,12 @@ public class OrcsPredicatesTest {
    @Mock private Attribute attribute4;
    @SuppressWarnings("rawtypes")
    @Mock private Attribute attribute5;
-
-   @Mock private HasId id1;
-   @Mock private HasId id2;
-
    @Mock private Relation relation1;
    // @formatter:on
 
    private Date date;
+   private static final ArtifactId id1 = ArtifactId.valueOf(1);
+   private static final ArtifactId id2 = ArtifactId.valueOf(2);
 
    @Before
    public void init() {
@@ -94,11 +92,8 @@ public class OrcsPredicatesTest {
       when(attribute4.getValue()).thenReturn("Hello");
       when(attribute5.getValue()).thenReturn(true);
 
-      when(id1.getLocalId()).thenReturn(11);
-      when(id2.getLocalId()).thenReturn(22);
-
-      when(relation1.getIdForSide(RelationSide.SIDE_A)).thenReturn(11);
-      when(relation1.getIdForSide(RelationSide.SIDE_B)).thenReturn(22);
+      when(relation1.getIdForSide(RelationSide.SIDE_A)).thenReturn(id1.getIdIntValue());
+      when(relation1.getIdForSide(RelationSide.SIDE_B)).thenReturn(id2.getIdIntValue());
    }
 
    @Test

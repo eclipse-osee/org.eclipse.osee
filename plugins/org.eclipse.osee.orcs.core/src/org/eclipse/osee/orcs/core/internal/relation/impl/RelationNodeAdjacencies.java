@@ -15,7 +15,7 @@ import static org.eclipse.osee.orcs.core.internal.util.OrcsPredicates.deletionFl
 import static org.eclipse.osee.orcs.core.internal.util.OrcsPredicates.nodeIdOnSideEquals;
 import com.google.common.base.Predicate;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.HasId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -62,7 +62,7 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<RelationType
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public List<Relation> getList(RelationTypeId relationType, DeletionFlag includeDeleted, HasId<Integer> id, RelationSide side) {
+   public List<Relation> getList(RelationTypeId relationType, DeletionFlag includeDeleted, ArtifactId id, RelationSide side) {
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
       Predicate relIdOnSide = nodeIdOnSideEquals(id, side);
       Predicate matcher = and(deletionFlagEquals, relIdOnSide);
@@ -76,7 +76,7 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<RelationType
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public ResultSet<Relation> getResultSet(IRelationType type, DeletionFlag includeDeleted, HasId<Integer> id, RelationSide side) {
+   public ResultSet<Relation> getResultSet(IRelationType type, DeletionFlag includeDeleted, ArtifactId id, RelationSide side) {
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
       Predicate relIdOnSide = nodeIdOnSideEquals(id, side);
       Predicate matcher = and(deletionFlagEquals, relIdOnSide);

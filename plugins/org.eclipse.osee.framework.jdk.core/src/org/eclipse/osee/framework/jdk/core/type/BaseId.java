@@ -18,6 +18,8 @@ import org.codehaus.jackson.map.ser.std.ToStringSerializer;
  * @author Ryan D. Brooks
  */
 public class BaseId implements Id, Cloneable {
+   public static final Id SENTINEL = Id.valueOf(Id.SENTINEL);
+
    @JsonSerialize(using = ToStringSerializer.class)
    protected Long id;
 
@@ -40,6 +42,9 @@ public class BaseId implements Id, Cloneable {
       }
       if (obj instanceof Long) {
          return id.equals(obj);
+      }
+      if (obj instanceof Integer) {
+         return id.longValue() == ((Integer) obj).longValue();
       }
       return false;
    }

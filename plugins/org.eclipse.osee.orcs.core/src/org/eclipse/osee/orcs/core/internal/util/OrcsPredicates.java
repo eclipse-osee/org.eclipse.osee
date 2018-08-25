@@ -18,8 +18,8 @@ import static com.google.common.base.Predicates.not;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.HasId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -156,18 +156,18 @@ public final class OrcsPredicates {
       }
    }
 
-   public static Predicate<Relation> nodeIdOnSideEquals(final HasId<Integer> id, final RelationSide side) {
+   public static Predicate<Relation> nodeIdOnSideEquals(final ArtifactId id, final RelationSide side) {
       return new Predicate<Relation>() {
 
          @Override
          public boolean apply(Relation relation) {
-            return relation.getIdForSide(side).equals(id.getLocalId());
+            return id.equals(relation.getIdForSide(side));
          }
       };
    }
 
-   public static Predicate<Relation> nodeIdsEquals(final HasId<Integer> aId, final HasId<Integer> bId) {
-      return nodeIdsEquals(aId.getLocalId(), bId.getLocalId());
+   public static Predicate<Relation> nodeIdsEquals(final ArtifactId aId, final ArtifactId bId) {
+      return nodeIdsEquals(aId.getId().intValue(), bId.getId().intValue());
    }
 
    public static Predicate<Relation> nodeIdsEquals(final Integer aId, final Integer bId) {
