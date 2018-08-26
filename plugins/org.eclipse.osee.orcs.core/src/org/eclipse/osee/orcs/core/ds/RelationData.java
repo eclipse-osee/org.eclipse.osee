@@ -31,7 +31,7 @@ public interface RelationData extends OrcsData, RelationId {
 
    void setArtIdB(ArtifactId artIdB);
 
-   int getArtIdOn(RelationSide side);
+   ArtifactId getArtIdOn(RelationSide side);
 
    String getRationale();
 

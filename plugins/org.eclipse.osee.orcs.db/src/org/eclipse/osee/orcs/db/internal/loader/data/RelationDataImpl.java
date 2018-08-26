@@ -69,8 +69,8 @@ public class RelationDataImpl extends OrcsVersionedObjectImpl implements Relatio
    }
 
    @Override
-   public int getArtIdOn(RelationSide side) {
-      return RelationSide.SIDE_A == side ? getArtIdA() : getArtIdB();
+   public ArtifactId getArtIdOn(RelationSide side) {
+      return RelationSide.SIDE_A == side ? getArtifactIdA() : getArtifactIdB();
    }
 
    @Override

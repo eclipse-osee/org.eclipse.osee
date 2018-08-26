@@ -167,12 +167,7 @@ public final class OrcsPredicates {
    }
 
    public static Predicate<Relation> nodeIdsEquals(final ArtifactId aId, final ArtifactId bId) {
-      return nodeIdsEquals(aId.getId().intValue(), bId.getId().intValue());
-   }
-
-   public static Predicate<Relation> nodeIdsEquals(final Integer aId, final Integer bId) {
       return new Predicate<Relation>() {
-
          @Override
          public boolean apply(Relation relation) {
             return aId.equals(relation.getIdForSide(RelationSide.SIDE_A)) && //

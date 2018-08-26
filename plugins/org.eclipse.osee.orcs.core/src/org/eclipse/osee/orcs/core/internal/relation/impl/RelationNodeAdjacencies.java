@@ -92,7 +92,7 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<RelationType
       return listByFilter.isEmpty() ? null : listByFilter.get(0);
    }
 
-   public Relation getRelation(int artIdA, RelationTypeId relationType, int artIdB) {
+   public Relation getRelation(ArtifactId artIdA, RelationTypeId relationType, ArtifactId artIdB) {
       Predicate<Relation> nodeMatcher = OrcsPredicates.nodeIdsEquals(artIdA, artIdB);
       List<Relation> listByFilter = getListByFilter(relationType, nodeMatcher);
       return listByFilter.isEmpty() ? null : listByFilter.get(0);

@@ -318,7 +318,7 @@ public class TxDataManager {
       GraphData graph = txData.getGraph();
       if (adjacencies != null) {
          for (Relation rel : adjacencies.getAll()) {
-            graph.addAdjacencies(rel.getIdForSide(RelationSide.SIDE_A), adjacencies);
+            graph.addAdjacencies(rel.getIdForSide(RelationSide.SIDE_A).getIdIntValue(), adjacencies);
          }
       }
    }

@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -43,6 +44,12 @@ import org.mockito.MockitoAnnotations;
  * @author Roberto E. Escobar
  */
 public class RelationResolverTest {
+   private static final ArtifactId artifactId11 = ArtifactId.valueOf(11);
+   private static final ArtifactId artifactId22 = ArtifactId.valueOf(22);
+   private static final ArtifactId artifactId33 = ArtifactId.valueOf(33);
+   private static final ArtifactId artifactId44 = ArtifactId.valueOf(44);
+   private static final ArtifactId artifactId55 = ArtifactId.valueOf(55);
+   private static final ArtifactId artifactId66 = ArtifactId.valueOf(66);
 
    // @formatter:off
    @Mock private RelationNodeLoader loader;
@@ -86,17 +93,17 @@ public class RelationResolverTest {
       when(node5.getLocalId()).thenReturn(55);
       when(node6.getLocalId()).thenReturn(66);
 
-      when(relation1.getIdForSide(RelationSide.SIDE_A)).thenReturn(11);
-      when(relation1.getIdForSide(RelationSide.SIDE_B)).thenReturn(22);
+      when(relation1.getIdForSide(RelationSide.SIDE_A)).thenReturn(artifactId11);
+      when(relation1.getIdForSide(RelationSide.SIDE_B)).thenReturn(artifactId22);
 
-      when(relation2.getIdForSide(RelationSide.SIDE_A)).thenReturn(33);
-      when(relation2.getIdForSide(RelationSide.SIDE_B)).thenReturn(44);
+      when(relation2.getIdForSide(RelationSide.SIDE_A)).thenReturn(artifactId33);
+      when(relation2.getIdForSide(RelationSide.SIDE_B)).thenReturn(artifactId44);
 
-      when(relation3.getIdForSide(RelationSide.SIDE_A)).thenReturn(55);
-      when(relation3.getIdForSide(RelationSide.SIDE_B)).thenReturn(66);
+      when(relation3.getIdForSide(RelationSide.SIDE_A)).thenReturn(artifactId55);
+      when(relation3.getIdForSide(RelationSide.SIDE_B)).thenReturn(artifactId66);
 
-      when(relation4.getIdForSide(RelationSide.SIDE_A)).thenReturn(11);
-      when(relation4.getIdForSide(RelationSide.SIDE_B)).thenReturn(66);
+      when(relation4.getIdForSide(RelationSide.SIDE_A)).thenReturn(artifactId11);
+      when(relation4.getIdForSide(RelationSide.SIDE_B)).thenReturn(artifactId66);
 
       when(loader.loadNodes(eq(session), eq(graphData), anyCollectionOf(Integer.class), eq(LoadLevel.ALL))).thenReturn(
          resultSet);

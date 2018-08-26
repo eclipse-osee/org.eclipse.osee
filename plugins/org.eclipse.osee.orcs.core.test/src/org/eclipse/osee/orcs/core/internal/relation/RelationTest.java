@@ -17,6 +17,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DirtyState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -117,11 +118,14 @@ public class RelationTest {
 
    @Test
    public void testGetLocalIdForSide() {
-      when(data.getArtIdOn(RelationSide.SIDE_A)).thenReturn(45);
-      when(data.getArtIdOn(RelationSide.SIDE_B)).thenReturn(33);
+      ArtifactId artifactId33 = ArtifactId.valueOf(33);
+      ArtifactId artifactId45 = ArtifactId.valueOf(45);
 
-      assertEquals(45, relation.getIdForSide(RelationSide.SIDE_A).intValue());
-      assertEquals(33, relation.getIdForSide(RelationSide.SIDE_B).intValue());
+      when(data.getArtIdOn(RelationSide.SIDE_A)).thenReturn(artifactId45);
+      when(data.getArtIdOn(RelationSide.SIDE_B)).thenReturn(artifactId33);
+
+      assertEquals(artifactId45, relation.getIdForSide(RelationSide.SIDE_A));
+      assertEquals(artifactId33, relation.getIdForSide(RelationSide.SIDE_B));
    }
 
    @Test

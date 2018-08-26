@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.relation;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -146,7 +147,7 @@ public class Relation implements RelationReadable, HasOrcsData<RelationData>, Or
       return true;
    }
 
-   public Integer getIdForSide(RelationSide side) {
+   public ArtifactId getIdForSide(RelationSide side) {
       return getOrcsData().getArtIdOn(side);
    }
 

@@ -116,7 +116,7 @@ public class GraphBuilderImpl extends LoadDataHandlerAdapter implements GraphBui
 
    private Relation findRelation(RelationNodeAdjacencies adjacencies, RelationData data) {
       RelationTypeId relationType = RelationTypeId.valueOf(data.getTypeUuid());
-      return adjacencies.getRelation(data.getArtIdA(), relationType, data.getArtIdB());
+      return adjacencies.getRelation(data.getArtifactIdA(), relationType, data.getArtifactIdB());
    }
 
    private RelationNodeAdjacencies getAdjacencies(GraphData graph, int id) {

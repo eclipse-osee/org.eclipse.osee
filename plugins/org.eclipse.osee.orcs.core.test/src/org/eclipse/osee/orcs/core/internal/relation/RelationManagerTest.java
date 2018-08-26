@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -142,31 +143,37 @@ public class RelationManagerTest {
       mockDb.put(55, node5);
       mockDb.put(66, node6);
 
-      when(relation1.getIdForSide(RelationSide.SIDE_A)).thenReturn(11);
-      when(relation1.getIdForSide(RelationSide.SIDE_B)).thenReturn(22);
+      ArtifactId artifactId11 = ArtifactId.valueOf(11);
+      ArtifactId artifactId22 = ArtifactId.valueOf(22);
+      ArtifactId artifactId33 = ArtifactId.valueOf(33);
+      ArtifactId artifactId44 = ArtifactId.valueOf(44);
+      ArtifactId artifactId55 = ArtifactId.valueOf(55);
+
+      when(relation1.getIdForSide(RelationSide.SIDE_A)).thenReturn(artifactId11);
+      when(relation1.getIdForSide(RelationSide.SIDE_B)).thenReturn(artifactId22);
       when(relation1.getRelationType()).thenReturn(DEFAULT_HIERARCHY);
       when(relation1.getRationale()).thenReturn("rationale on relation1");
       when(relation1.getOrcsData()).thenReturn(data1);
       when(relation1.getOrcsData().getLocalId()).thenReturn(10);
       when(relation1.getModificationType()).thenReturn(ModificationType.NEW);
 
-      when(relation2.getIdForSide(RelationSide.SIDE_A)).thenReturn(11);
-      when(relation2.getIdForSide(RelationSide.SIDE_B)).thenReturn(33);
+      when(relation2.getIdForSide(RelationSide.SIDE_A)).thenReturn(artifactId11);
+      when(relation2.getIdForSide(RelationSide.SIDE_B)).thenReturn(artifactId33);
       when(relation2.getRelationType()).thenReturn(DEFAULT_HIERARCHY);
       when(relation2.getRationale()).thenReturn("rationale on relation2");
       when(relation2.getOrcsData()).thenReturn(data2);
       when(relation2.getOrcsData().getLocalId()).thenReturn(11);
 
-      when(relation3.getIdForSide(RelationSide.SIDE_A)).thenReturn(44);
-      when(relation3.getIdForSide(RelationSide.SIDE_B)).thenReturn(11);
+      when(relation3.getIdForSide(RelationSide.SIDE_A)).thenReturn(artifactId44);
+      when(relation3.getIdForSide(RelationSide.SIDE_B)).thenReturn(artifactId11);
       when(relation3.getRelationType()).thenReturn(DEFAULT_HIERARCHY);
       when(relation3.getRationale()).thenReturn("rationale on relation3");
       when(relation3.getOrcsData()).thenReturn(data3);
       when(relation3.getOrcsData().getLocalId()).thenReturn(12);
       when(relation3.getModificationType()).thenReturn(ModificationType.NEW);
 
-      when(relation4.getIdForSide(RelationSide.SIDE_A)).thenReturn(11);
-      when(relation4.getIdForSide(RelationSide.SIDE_B)).thenReturn(55);
+      when(relation4.getIdForSide(RelationSide.SIDE_A)).thenReturn(artifactId11);
+      when(relation4.getIdForSide(RelationSide.SIDE_B)).thenReturn(artifactId55);
       when(relation4.getRelationType()).thenReturn(DEFAULT_HIERARCHY);
       when(relation4.getRationale()).thenReturn("rationale on relation4");
       when(relation4.getOrcsData()).thenReturn(data4);

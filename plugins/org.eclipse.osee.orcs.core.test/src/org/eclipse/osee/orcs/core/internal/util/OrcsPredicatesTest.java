@@ -92,8 +92,8 @@ public class OrcsPredicatesTest {
       when(attribute4.getValue()).thenReturn("Hello");
       when(attribute5.getValue()).thenReturn(true);
 
-      when(relation1.getIdForSide(RelationSide.SIDE_A)).thenReturn(id1.getIdIntValue());
-      when(relation1.getIdForSide(RelationSide.SIDE_B)).thenReturn(id2.getIdIntValue());
+      when(relation1.getIdForSide(RelationSide.SIDE_A)).thenReturn(id1);
+      when(relation1.getIdForSide(RelationSide.SIDE_B)).thenReturn(id2);
    }
 
    @Test

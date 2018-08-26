@@ -300,8 +300,7 @@ public class RelationManagerImpl implements RelationManager {
       Set<Artifact> otherNodes = new LinkedHashSet<>();
       for (Relation relation : relations) {
          relation.delete();
-         Integer artId = relation.getIdForSide(otherSide);
-         Artifact otherNode = graph.getNode(artId);
+         Artifact otherNode = graph.getNode(relation.getIdForSide(otherSide).getIdIntValue());
          otherNodes.add(otherNode);
          modified = true;
       }
@@ -336,7 +335,7 @@ public class RelationManagerImpl implements RelationManager {
                for (Relation relation : relations) {
                   relation.delete();
                   RelationTypeId type = relation.getRelationType();
-                  RelationSide otherSide = relation.getIdForSide(SIDE_A) == node.getLocalId() ? SIDE_B : SIDE_A;
+                  RelationSide otherSide = relation.getIdForSide(SIDE_A).equals(node) ? SIDE_B : SIDE_A;
                   typesToRemove.put(type, otherSide);
                }
 

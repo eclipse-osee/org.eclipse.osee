@@ -49,7 +49,7 @@ public class RelationResolverImpl implements RelationResolver {
          LinkedHashMap<Integer, T> items = new LinkedHashMap<>();
          for (Relation relation : links) {
             for (RelationSide side : sides) {
-               int id = relation.getIdForSide(side);
+               int id = relation.getIdForSide(side).getIdIntValue();
                Artifact node = graph.getNode(id);
                if (node == null) {
                   if (toLoad == null) {

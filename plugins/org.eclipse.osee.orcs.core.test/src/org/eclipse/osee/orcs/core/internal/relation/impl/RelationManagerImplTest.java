@@ -40,6 +40,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -89,6 +90,12 @@ import org.mockito.stubbing.Answer;
  * @author Roberto E. Escobar
  */
 public class RelationManagerImplTest {
+   private static final ArtifactId artifactId11 = ArtifactId.valueOf(11);
+   private static final ArtifactId artifactId22 = ArtifactId.valueOf(22);
+   private static final ArtifactId artifactId33 = ArtifactId.valueOf(33);
+   private static final ArtifactId artifactId44 = ArtifactId.valueOf(44);
+   private static final ArtifactId artifactId55 = ArtifactId.valueOf(55);
+   private static final ArtifactId artifactId66 = ArtifactId.valueOf(66);
 
    private static final RelationTypeToken TYPE_1 = RelationTypeToken.create(123456789, "TYPE_1");
 
@@ -160,17 +167,17 @@ public class RelationManagerImplTest {
       when(graph.getAdjacencies(node1)).thenReturn(container1);
       when(graph.getAdjacencies(node2)).thenReturn(container2);
 
-      when(relation1.getIdForSide(RelationSide.SIDE_A)).thenReturn(11);
-      when(relation1.getIdForSide(RelationSide.SIDE_B)).thenReturn(22);
+      when(relation1.getIdForSide(RelationSide.SIDE_A)).thenReturn(artifactId11);
+      when(relation1.getIdForSide(RelationSide.SIDE_B)).thenReturn(artifactId22);
 
-      when(relation2.getIdForSide(RelationSide.SIDE_A)).thenReturn(33);
-      when(relation2.getIdForSide(RelationSide.SIDE_B)).thenReturn(44);
+      when(relation2.getIdForSide(RelationSide.SIDE_A)).thenReturn(artifactId33);
+      when(relation2.getIdForSide(RelationSide.SIDE_B)).thenReturn(artifactId44);
 
-      when(relation3.getIdForSide(RelationSide.SIDE_A)).thenReturn(55);
-      when(relation3.getIdForSide(RelationSide.SIDE_B)).thenReturn(66);
+      when(relation3.getIdForSide(RelationSide.SIDE_A)).thenReturn(artifactId55);
+      when(relation3.getIdForSide(RelationSide.SIDE_B)).thenReturn(artifactId66);
 
-      when(relation4.getIdForSide(RelationSide.SIDE_A)).thenReturn(11);
-      when(relation4.getIdForSide(RelationSide.SIDE_B)).thenReturn(66);
+      when(relation4.getIdForSide(RelationSide.SIDE_A)).thenReturn(artifactId11);
+      when(relation4.getIdForSide(RelationSide.SIDE_B)).thenReturn(artifactId66);
    }
 
    @Test
@@ -692,7 +699,7 @@ public class RelationManagerImplTest {
 
       when(container1.getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_PARENT)).thenReturn(relations1);
 
-      when(relation1.getIdForSide(SIDE_B)).thenReturn(22);
+      when(relation1.getIdForSide(SIDE_B)).thenReturn(artifactId22);
       when(graph.getNode(22)).thenReturn(node2);
 
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
@@ -721,7 +728,7 @@ public class RelationManagerImplTest {
       when(container1.getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_PARENT)).thenReturn(asAParent);
       when(container1.getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_CHILD)).thenReturn(asAChild);
 
-      when(relation1.getIdForSide(SIDE_A)).thenReturn(11);
+      when(relation1.getIdForSide(SIDE_A)).thenReturn(artifactId11);
 
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 

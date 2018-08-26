@@ -202,8 +202,8 @@ public class RelationNodeAdjacenciesTest {
       ArtifactId id1 = ArtifactId.valueOf(1);
       ArtifactId id2 = ArtifactId.valueOf(2);
       when(relation.isDeleted()).thenReturn(false);
-      when(relation.getIdForSide(RelationSide.SIDE_A)).thenReturn(id1.getIdIntValue());
-      when(relation.getIdForSide(RelationSide.SIDE_B)).thenReturn(id2.getIdIntValue());
+      when(relation.getIdForSide(RelationSide.SIDE_A)).thenReturn(id1);
+      when(relation.getIdForSide(RelationSide.SIDE_B)).thenReturn(id2);
 
       collection.add(TYPE_1, relation);
 
