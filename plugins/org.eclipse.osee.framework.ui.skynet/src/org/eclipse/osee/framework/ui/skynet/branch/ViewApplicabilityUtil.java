@@ -128,13 +128,20 @@ public class ViewApplicabilityUtil {
    }
 
    public static boolean isBranchOfProductLine(BranchId branch) {
-      return ArtifactQuery.createQueryBuilder(branch).andIsOfType(CoreArtifactTypes.FeatureDefinition).getCount() > 0;
+      int count = ArtifactQuery.createQueryBuilder(branch).andIsOfType(CoreArtifactTypes.FeatureDefinition).getCount();
+      return count > 0;
+
    }
 
    public static BranchId getParentBranch(BranchId branch) {
-      if (BranchManager.getType(branch).isMergeBranch()) {
-         branch = BranchManager.getParentBranch(branch);
+      if (branch != null) {
+         BranchId parentBranch = BranchManager.getParentBranch(branch);
+         if (ViewApplicabilityUtil.isBranchOfProductLine(parentBranch)) {
+            return parentBranch;
+         }
+         return branch;
       }
-      return branch;
+      return null;
    }
+
 }
