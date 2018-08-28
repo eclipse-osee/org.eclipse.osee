@@ -346,6 +346,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
             String name = stmt.getString("name");
             Integer project_id = stmt.getInt("project_id");
             String path = stmt.getString("path");
+            path = path.replaceAll("imported_results", "IMPORTED_RESULTS");
             String fullname = stmt.getString("fullname");
             boolean enabled = stmt.getBoolean("enabled");
             boolean imported = stmt.getBoolean("imported");
