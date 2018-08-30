@@ -385,31 +385,35 @@ public class LisFileParser implements DispoImporterApi {
    private void processResult(VCastResult result, OperationReport report) throws Exception {
       String resultPath = result.getPath();
       String resultPathAbs = vCastDir + File.separator + resultPath;
-
-      boolean exists = false;
       File resultsFile = new File(resultPathAbs);
       if (!resultsFile.exists()) {
-         List<File> resultsDirs = new ArrayList<File>();
-         resultsDirs.add(new File(vCastDir + File.separator + RESULTS));
-         resultsDirs.add(new File(vCastDir + File.separator + RESULTS + File.separator + IMPORTED_RESULTS));
-         for (File resultsDir : resultsDirs) {
-            File[] files = resultsDir.listFiles();
-            for (File file : files) {
-               String inputF = file.toString();
-               String outputF = inputF.replaceAll(config.getResultsFileExtRegex(), "");
-               if (outputF.toString().equalsIgnoreCase(resultsFile.toString())) {
-                  process(report, resultPath, file);
-                  exists = true;
-                  break;
-               }
-            }
-            if (!exists) {
-               report.addEntry("SQL", String.format("Could not find DAT file [%s]", resultPathAbs), WARNING);
-            }
+         boolean fileExists = findAndProcessResultFile(resultsFile, resultPath, report);
+
+         if (!fileExists) {
+            report.addEntry("SQL", String.format("Could not find DAT file [%s]", resultPathAbs), WARNING);
          }
       } else {
          process(report, resultPath, resultsFile);
       }
+   }
+
+   private boolean findAndProcessResultFile(File resultsFile, String resultPath, OperationReport report) {
+      List<File> resultsDirs = new ArrayList<File>();
+      resultsDirs.add(new File(vCastDir + File.separator + RESULTS));
+      resultsDirs.add(new File(vCastDir + File.separator + RESULTS + File.separator + IMPORTED_RESULTS));
+
+      for (File resultsDir : resultsDirs) {
+         File[] files = resultsDir.listFiles();
+         for (File file : files) {
+            String inputF = file.toString();
+            String outputF = inputF.replaceAll(config.getResultsFileExtRegex(), "");
+            if (outputF.toString().equalsIgnoreCase(resultsFile.toString())) {
+               process(report, resultPath, file);
+               return true; // File exists
+            }
+         }
+      }
+      return false; // File does not exist
    }
 
    private void process(OperationReport report, String resultPath, File resultsFile) {
