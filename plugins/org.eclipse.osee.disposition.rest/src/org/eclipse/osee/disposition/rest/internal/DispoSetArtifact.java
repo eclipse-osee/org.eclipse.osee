@@ -101,8 +101,9 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
 
    @Override
    public String getTime() {
+      Date date = artifact.getSoleAttributeValue(DispoConstants.DispoTime, null);
       SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
-      return sdf.format(new Date(System.currentTimeMillis()));
+      return sdf.format(date);
    }
 
 }
