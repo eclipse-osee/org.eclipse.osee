@@ -77,7 +77,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    @Override
    public Integer getLocalId() {
-      return getOrcsData().getLocalId();
+      return getId().intValue();
    }
 
    @Override
@@ -102,13 +102,9 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
       return artifactData.getVersion().getBranch();
    }
 
-   private IArtifactType getArtifactType() {
-      return artifactTypeCache.get(getOrcsData().getTypeUuid());
-   }
-
    @Override
    public IArtifactType getArtifactTypeId() {
-      return getArtifactType();
+      return artifactTypeCache.get(getOrcsData().getTypeUuid());
    }
 
    @Override
@@ -165,7 +161,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    @Override
    public String getExceptionString() {
       try {
-         return String.format("artifact type[%s] id[%s] on branch[%s]", getArtifactType(), getId(), getBranch());
+         return String.format("artifact type[%s] id[%s] on branch[%s]", getArtifactTypeId(), getId(), getBranch());
       } catch (OseeCoreException ex) {
          return Lib.exceptionToString(ex);
       }
@@ -218,15 +214,11 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    @Override
    public String toString() {
       try {
-         return String.format("artifact [type=[%s] guid=[%s] branch=[%s]]", getArtifactType(), getGuid(), getBranch());
+         return String.format("artifact [type=[%s] guid=[%s] branch=[%s]]", getArtifactTypeId(), getGuid(),
+            getBranch());
       } catch (OseeCoreException ex) {
          return Lib.exceptionToString(ex);
       }
-   }
-
-   @Override
-   public Long getId() {
-      return Long.valueOf(getLocalId());
    }
 
    @Override

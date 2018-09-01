@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirement;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_CHILD;
@@ -43,6 +44,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.OrcsMockUtility;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
@@ -85,13 +87,6 @@ public class RelationManagerTest {
    @Mock private OrcsSession session;
    @Mock private GraphData graph;
 
-   @Mock private Artifact node1;
-   @Mock private Artifact node2;
-   @Mock private Artifact node3;
-   @Mock private Artifact node4;
-   @Mock private Artifact node5;
-   @Mock private Artifact node6;
-
    @Mock private RelationNodeAdjacencies adjancies1;
    @Mock private RelationNodeAdjacencies adjancies2;
 
@@ -110,6 +105,12 @@ public class RelationManagerTest {
 
    private RelationManager manager;
    private Map<Integer, Artifact> mockDb;
+   private Artifact node1;
+   private Artifact node2;
+   private Artifact node3;
+   private Artifact node4;
+   private Artifact node5;
+   private Artifact node6;
 
    @SuppressWarnings({"unchecked", "rawtypes"})
    @Before
@@ -119,48 +120,19 @@ public class RelationManagerTest {
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
 
+      node1 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 11L, "z");
+      node2 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 22L, "y");
+      node3 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 33L, "x");
+      node4 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 44L, "w");
+      node5 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 55L, "v");
+      node6 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 66L, "u");
+
       manager = RelationManagerFactory.createRelationManager(logger, types, relationFactory, loader, provider);
 
       when(loader.loadNodes(eq(session), eq(graph), anyCollectionOf(Integer.class), eq(LoadLevel.ALL))).thenAnswer(
          new LoaderAnswer());
 
-      when(node1.getLocalId()).thenReturn(11);
-      when(node2.getLocalId()).thenReturn(22);
-      when(node3.getLocalId()).thenReturn(33);
-      when(node4.getLocalId()).thenReturn(44);
-      when(node5.getLocalId()).thenReturn(55);
-      when(node6.getLocalId()).thenReturn(66);
-
-      when(node1.getBranch()).thenReturn(COMMON);
-      when(node2.getBranch()).thenReturn(COMMON);
-      when(node3.getBranch()).thenReturn(COMMON);
-      when(node4.getBranch()).thenReturn(COMMON);
-      when(node5.getBranch()).thenReturn(COMMON);
-      when(node6.getBranch()).thenReturn(COMMON);
-
-      when(node1.getName()).thenReturn("z");
-      when(node2.getName()).thenReturn("y");
-      when(node3.getName()).thenReturn("x");
-      when(node4.getName()).thenReturn("w");
-      when(node5.getName()).thenReturn("v");
-      when(node6.getName()).thenReturn("u");
-
-      when(node1.getGraph()).thenReturn(graph);
-      when(node2.getGraph()).thenReturn(graph);
-      when(node3.getGraph()).thenReturn(graph);
-      when(node4.getGraph()).thenReturn(graph);
-      when(node5.getGraph()).thenReturn(graph);
-      when(node6.getGraph()).thenReturn(graph);
-
       when(graph.getTransaction()).thenReturn(TransactionId.SENTINEL);
-
-      when(node1.getArtifactTypeId()).thenReturn(CoreArtifactTypes.SoftwareRequirement);
-      when(node2.getArtifactTypeId()).thenReturn(CoreArtifactTypes.SoftwareRequirement);
-      when(node3.getArtifactTypeId()).thenReturn(CoreArtifactTypes.SoftwareRequirement);
-
-      when(node1.getOrderData()).thenReturn("");
-      when(node2.getOrderData()).thenReturn("");
-      when(node3.getOrderData()).thenReturn("");
 
       mockDb = new HashMap<>();
       mockDb.put(11, node1);
@@ -217,7 +189,6 @@ public class RelationManagerTest {
 
    private void setupAdjacencies(Artifact node, Relation... relations) {
       RelationNodeAdjacencies adjacents = new RelationNodeAdjacencies();
-      graph.addAdjacencies(node, adjacents);
       when(graph.getAdjacencies(node)).thenReturn(adjacents);
       for (Relation relation : relations) {
          adjacents.add(relation.getRelationType(), relation);

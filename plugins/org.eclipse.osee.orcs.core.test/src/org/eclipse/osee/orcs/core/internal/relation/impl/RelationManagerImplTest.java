@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation.impl;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirement;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
@@ -55,6 +56,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.OrcsMockUtility;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
@@ -105,13 +107,6 @@ public class RelationManagerImplTest {
 
    @Mock private GraphData graph;
 
-   @Mock private Artifact node1;
-   @Mock private Artifact node2;
-   @Mock private Artifact node3;
-   @Mock private Artifact node4;
-   @Mock private Artifact node5;
-   @Mock private Artifact node6;
-
    @Mock private RelationNodeAdjacencies container1;
    @Mock private RelationNodeAdjacencies container2;
 
@@ -137,6 +132,12 @@ public class RelationManagerImplTest {
 
    private final RelationTypes relationTypes = new RelationTypesImpl(null);
    private RelationManager manager;
+   private Artifact node1;
+   private Artifact node2;
+   private Artifact node3;
+   private Artifact node4;
+   private Artifact node5;
+   private Artifact node6;
 
    @Before
    public void setUp() {
@@ -147,23 +148,12 @@ public class RelationManagerImplTest {
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
 
-      when(node1.getLocalId()).thenReturn(11);
-      when(node2.getLocalId()).thenReturn(22);
-      when(node3.getLocalId()).thenReturn(33);
-      when(node4.getLocalId()).thenReturn(44);
-      when(node5.getLocalId()).thenReturn(55);
-      when(node6.getLocalId()).thenReturn(66);
-
-      when(node1.getGraph()).thenReturn(graph);
-      when(node2.getGraph()).thenReturn(graph);
-      when(node3.getGraph()).thenReturn(graph);
-      when(node4.getGraph()).thenReturn(graph);
-      when(node5.getGraph()).thenReturn(graph);
-      when(node6.getGraph()).thenReturn(graph);
-
-      when(node1.getBranch()).thenReturn(COMMON);
-      when(node2.getBranch()).thenReturn(COMMON);
-      when(node3.getBranch()).thenReturn(SYSTEM_ROOT);
+      node1 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 11L, "z");
+      node2 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 22L, "y");
+      node3 = OrcsMockUtility.createTestArtifact(graph, SYSTEM_ROOT, SoftwareRequirement, 33L, "x");
+      node4 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 44L, "w");
+      node5 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 55L, "v");
+      node6 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 66L, "u");
 
       when(graph.getTransaction()).thenReturn(TransactionId.SENTINEL);
 
@@ -726,7 +716,6 @@ public class RelationManagerImplTest {
       List<Artifact> children = Arrays.asList(node2);
 
       when(relation1.getRelationType()).thenReturn(DEFAULT_HIERARCHY);
-      when(node1.isDeleteAllowed()).thenReturn(true);
       when(container1.getList(EXCLUDE_DELETED)).thenReturn(allRelations);
       when(container1.getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_PARENT)).thenReturn(allRelations);
       when(container1.getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_PARENT)).thenReturn(asAParent);
@@ -744,7 +733,6 @@ public class RelationManagerImplTest {
       verify(container1).getList(EXCLUDE_DELETED);
       verify(resolver).resolve(session, graph, allRelations, SIDE_A, SIDE_B);
       verify(container1).getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_PARENT);
-      verify(node1).delete();
 
       verify(relation1).getIdForSide(SIDE_A);
       verify(relation1).delete();

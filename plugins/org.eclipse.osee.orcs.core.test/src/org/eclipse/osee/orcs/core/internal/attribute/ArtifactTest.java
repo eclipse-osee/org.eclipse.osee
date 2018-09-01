@@ -158,12 +158,6 @@ public class ArtifactTest {
    }
 
    @Test
-   public void testGetLocalId() {
-      artifact.getLocalId();
-      verify(artifactData).getLocalId();
-   }
-
-   @Test
    public void testGetGuid() {
       artifact.getGuid();
       verify(artifactData).getGuid();
