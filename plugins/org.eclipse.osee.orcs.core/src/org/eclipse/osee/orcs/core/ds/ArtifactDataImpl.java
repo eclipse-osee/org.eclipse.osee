@@ -8,12 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.loader.data;
+package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
-import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.VersionData;
 
 /**
  * @author Roberto E. Escobar

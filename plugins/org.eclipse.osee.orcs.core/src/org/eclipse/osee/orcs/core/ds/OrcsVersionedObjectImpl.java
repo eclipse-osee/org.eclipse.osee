@@ -8,15 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.loader.data;
+package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.DirtyState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.orcs.core.ds.OrcsData;
-import org.eclipse.osee.orcs.core.ds.VersionData;
 
 /**
  * @author Roberto E. Escobar
