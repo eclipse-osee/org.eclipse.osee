@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.core.internal.graph.impl;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.HasId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -26,8 +26,8 @@ import org.eclipse.osee.orcs.core.internal.graph.GraphNode;
  */
 public class GraphDataImpl implements GraphData {
 
-   private final Map<Integer, GraphNode> nodesById = new ConcurrentHashMap<>();
-   private final Map<Integer, GraphAdjacencies> adjacenciesById = new ConcurrentHashMap<>();
+   private final Map<ArtifactId, GraphNode> nodesById = new ConcurrentHashMap<>();
+   private final Map<ArtifactId, GraphAdjacencies> adjacenciesById = new ConcurrentHashMap<>();
 
    private final BranchId branch;
    private final TransactionId txId;
@@ -46,14 +46,8 @@ public class GraphDataImpl implements GraphData {
    }
 
    @Override
-   public <T extends GraphNode> T getNode(HasId<Integer> data) {
-      return getNode(data.getLocalId());
-   }
-
-   @SuppressWarnings("unchecked")
-   @Override
-   public <T extends GraphNode> T getNode(Integer id) {
-      return (T) nodesById.get(id);
+   public <T extends GraphNode> T getNode(ArtifactId artifactId) {
+      return (T) nodesById.get(artifactId);
    }
 
    @Override
@@ -69,54 +63,31 @@ public class GraphDataImpl implements GraphData {
          if (oldGraph != null) {
             oldGraph.removeNode(node);
          }
-         nodesById.put(node.getLocalId(), node);
+         nodesById.put(node, node);
          node.setGraph(this);
       }
    }
 
    @Override
-   public <T extends GraphNode> T removeNode(HasId<Integer> node) {
-      return removeNode(node.getLocalId());
-   }
-
-   @SuppressWarnings("unchecked")
-   @Override
-   public <T extends GraphNode> T removeNode(Integer id) {
-      T removed = (T) nodesById.remove(id);
-      removeAdjacencies(id);
+   public <T extends GraphNode> T removeNode(ArtifactId node) {
+      T removed = (T) nodesById.remove(node);
+      removeAdjacencies(node);
       return removed;
    }
 
    @Override
-   public <T extends GraphAdjacencies> T getAdjacencies(HasId<Integer> node) {
-      return getAdjacencies(node.getLocalId());
-   }
-
-   @SuppressWarnings("unchecked")
-   @Override
-   public <T extends GraphAdjacencies> T getAdjacencies(Integer id) {
-      return (T) adjacenciesById.get(id);
+   public <T extends GraphAdjacencies> T getAdjacencies(ArtifactId node) {
+      return (T) adjacenciesById.get(node);
    }
 
    @Override
-   public void addAdjacencies(HasId<Integer> node, GraphAdjacencies adjacencies) {
-      addAdjacencies(node.getLocalId(), adjacencies);
+   public void addAdjacencies(ArtifactId node, GraphAdjacencies adjacencies) {
+      adjacenciesById.put(node, adjacencies);
    }
 
    @Override
-   public void addAdjacencies(Integer id, GraphAdjacencies adjacencies) {
-      adjacenciesById.put(id, adjacencies);
-   }
-
-   @Override
-   public <T extends GraphAdjacencies> T removeAdjacencies(HasId<Integer> node) {
-      return removeAdjacencies(node.getLocalId());
-   }
-
-   @SuppressWarnings("unchecked")
-   @Override
-   public <T extends GraphAdjacencies> T removeAdjacencies(Integer id) {
-      return (T) adjacenciesById.remove(id);
+   public <T extends GraphAdjacencies> T removeAdjacencies(ArtifactId node) {
+      return (T) adjacenciesById.remove(node);
    }
 
    @Override

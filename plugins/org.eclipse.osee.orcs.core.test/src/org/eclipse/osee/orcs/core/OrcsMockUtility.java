@@ -20,9 +20,11 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
+import org.eclipse.osee.orcs.core.ds.ArtifactDataImpl;
 import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.eclipse.osee.orcs.core.ds.VersionDataImpl;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
@@ -36,21 +38,25 @@ import org.mockito.Matchers;
 public class OrcsMockUtility {
 
    public static Artifact createTestArtifact(GraphData graph, BranchId branch, IArtifactType artifactType, Long artifactId, String name) {
+      Artifact artifact = createTestArtifact(branch, artifactType, artifactId, name);
+      artifact.setGraph(graph);
+      return artifact;
+   }
+
+   public static Artifact createTestArtifact(BranchId branch, IArtifactType artifactType, Long artifactId, String name) {
       AttributeFactory attributeFactory = mock(AttributeFactory.class);
       ArtifactTypes artifactTypeCache = mock(ArtifactTypes.class);
 
-      VersionData version = mock(VersionData.class);
-      when(version.getBranch()).thenReturn(branch);
+      VersionData version = new VersionDataImpl();
+      version.setBranch(branch);
 
-      ArtifactData artifactData = mock(ArtifactData.class);
-      when(artifactData.getVersion()).thenReturn(version);
-      when(artifactData.getTypeUuid()).thenReturn(artifactType.getId());
-      when(artifactData.getId()).thenReturn(artifactId);
-      when(artifactData.getModType()).thenReturn(ModificationType.NEW);
+      ArtifactData artifactData = new ArtifactDataImpl(version);
+      artifactData.setTypeUuid(artifactType.getId());
+      artifactData.setLocalId(artifactId.intValue());
+      artifactData.setModType(ModificationType.NEW);
 
       when(artifactTypeCache.get(artifactType.getId())).thenReturn(artifactType);
       Artifact artifact = new ArtifactImpl(artifactTypeCache, artifactData, attributeFactory);
-      artifact.setGraph(graph);
 
       when(attributeFactory.getMaxOccurrenceLimit(Matchers.any(AttributeTypeId.class))).thenReturn(1);
 

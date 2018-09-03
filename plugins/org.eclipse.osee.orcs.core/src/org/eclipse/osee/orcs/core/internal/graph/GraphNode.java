@@ -11,13 +11,12 @@
 package org.eclipse.osee.orcs.core.internal.graph;
 
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.HasId;
 
 /**
  * @author Roberto E. Escobar
  * @author Megumi Telles
  */
-public interface GraphNode extends ArtifactToken, HasId<Integer> {
+public interface GraphNode extends ArtifactToken {
 
    void setGraph(GraphData graph);
 

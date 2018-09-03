@@ -154,17 +154,15 @@ public class RelationResolverTest {
    public void testLoadSideAFromCacheAndSideBFromLoader() {
       List<Artifact> loaded = Arrays.asList(node2, node4, node6);
 
-      when(graphData.getNode(11)).thenReturn(node1);
-      when(graphData.getNode(33)).thenReturn(node3);
-      when(graphData.getNode(55)).thenReturn(node5);
+      when(graphData.getNode(artifactId11)).thenReturn(node1);
+      when(graphData.getNode(artifactId33)).thenReturn(node3);
+      when(graphData.getNode(artifactId55)).thenReturn(node5);
 
       when(resultSet.iterator()).thenReturn(loaded.iterator());
 
       List<Artifact> arts = resolver.resolve(session, graphData, links, RelationSide.SIDE_A, RelationSide.SIDE_B);
 
-      verify(graphData, times(2)).getNode(11);
-      verify(graphData).getNode(33);
-      verify(graphData).getNode(55);
+      verify(graphData, times(2)).getNode(artifactId11);
 
       verify(loader).loadNodes(eq(session), eq(graphData), captor.capture(), eq(LoadLevel.ALL));
 

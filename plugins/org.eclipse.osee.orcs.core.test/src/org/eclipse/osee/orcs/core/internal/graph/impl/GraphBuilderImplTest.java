@@ -16,6 +16,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -47,7 +48,7 @@ import org.mockito.Mock;
  * @author Megumi Telles
  */
 public class GraphBuilderImplTest {
-
+   private static final ArtifactId artifactId60 = ArtifactId.valueOf(60);
    private static final RelationTypeToken TYPE_1 = TokenFactory.createRelationType(123456789L, "TYPE_1");
    private static final TransactionId TRANSACTION_ID = TransactionId.valueOf(231214214);
 
@@ -95,7 +96,7 @@ public class GraphBuilderImplTest {
       when(relationFactory.createRelation(relationData)).thenReturn(relation);
       when(relation.getRelationType()).thenReturn(TYPE_1);
 
-      when(attributeData.getArtifactId()).thenReturn(60);
+      when(attributeData.getArtifactId()).thenReturn(artifactId60.getIdIntValue());
    }
 
    @Test
@@ -127,8 +128,7 @@ public class GraphBuilderImplTest {
       when(artifact.getOrcsData()).thenReturn(artifactData);
       when(artifactData.isExistingVersionUsed()).thenReturn(false);
 
-      when(graphData.getNode(60)).thenReturn(null);
-      when(graphData.getNode(relationData)).thenReturn(null);
+      when(graphData.getNode(artifactId60)).thenReturn(null);
       when(graphData.getSession()).thenReturn(session);
 
       builder.onLoadStart();
@@ -156,8 +156,7 @@ public class GraphBuilderImplTest {
    @Test
    public void testOnData() {
       when(graphData.getNode(artifactData)).thenReturn(artifact);
-      when(graphData.getNode(60)).thenReturn(container);
-      when(graphData.getAdjacencies(59)).thenReturn(adjacencies);
+      when(graphData.getNode(artifactId60)).thenReturn(container);
 
       builder.onLoadStart();
       builder.onLoadDescription(description);

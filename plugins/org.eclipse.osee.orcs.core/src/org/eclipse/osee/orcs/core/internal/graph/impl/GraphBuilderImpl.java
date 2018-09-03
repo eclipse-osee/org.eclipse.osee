@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.graph.impl;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
@@ -80,7 +81,7 @@ public class GraphBuilderImpl extends LoadDataHandlerAdapter implements GraphBui
          graph.addNode(artifact, artifact.getOrcsData().isExistingVersionUsed());
 
          RelationNodeAdjacencies adjacencies = relationFactory.createRelationContainer();
-         graph.addAdjacencies(data.getLocalId(), adjacencies);
+         graph.addAdjacencies(data, adjacencies);
       }
       updated.add(artifact);
    }
@@ -88,7 +89,7 @@ public class GraphBuilderImpl extends LoadDataHandlerAdapter implements GraphBui
    @Override
    public <T> void onData(AttributeData<T> data) {
       GraphData graph = getGraph();
-      AttributeManager container = graph.getNode(data.getArtifactId());
+      AttributeManager container = graph.getNode(ArtifactId.valueOf(data.getArtifactId()));
       if (container == null) {
          logger.warn("Orphaned attribute detected - data[%s]", data);
       } else {
@@ -100,8 +101,8 @@ public class GraphBuilderImpl extends LoadDataHandlerAdapter implements GraphBui
    public void onData(RelationData data) {
       GraphData graph = getGraph();
 
-      RelationNodeAdjacencies aAdjacencies = getAdjacencies(graph, data.getArtIdA());
-      RelationNodeAdjacencies bAdjacencies = getAdjacencies(graph, data.getArtIdB());
+      RelationNodeAdjacencies aAdjacencies = getAdjacencies(graph, data.getArtifactIdA());
+      RelationNodeAdjacencies bAdjacencies = getAdjacencies(graph, data.getArtifactIdB());
       Relation relation = findRelation(aAdjacencies, data);
       if (relation == null) {
          relation = findRelation(bAdjacencies, data);
@@ -119,7 +120,7 @@ public class GraphBuilderImpl extends LoadDataHandlerAdapter implements GraphBui
       return adjacencies.getRelation(data.getArtifactIdA(), relationType, data.getArtifactIdB());
    }
 
-   private RelationNodeAdjacencies getAdjacencies(GraphData graph, int id) {
+   private RelationNodeAdjacencies getAdjacencies(GraphData graph, ArtifactId id) {
       RelationNodeAdjacencies adjacencies = graph.getAdjacencies(id);
       if (adjacencies == null) {
          adjacencies = relationFactory.createRelationContainer();

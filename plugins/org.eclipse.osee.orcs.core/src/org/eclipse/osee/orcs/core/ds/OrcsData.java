@@ -11,13 +11,14 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
-import org.eclipse.osee.framework.core.data.HasId;
 import org.eclipse.osee.framework.core.enums.DirtyState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 
-public interface OrcsData extends HasId<Integer>, HasVersion {
+public interface OrcsData extends HasVersion {
 
    void setLocalId(Integer localId);
+
+   Integer getLocalId();
 
    long getTypeUuid();
 

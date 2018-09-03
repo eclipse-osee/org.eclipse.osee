@@ -19,6 +19,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -49,8 +50,9 @@ public class RelationResolverImpl implements RelationResolver {
          LinkedHashMap<Integer, T> items = new LinkedHashMap<>();
          for (Relation relation : links) {
             for (RelationSide side : sides) {
-               int id = relation.getIdForSide(side).getIdIntValue();
-               Artifact node = graph.getNode(id);
+               ArtifactId artifactId = relation.getIdForSide(side);
+               int id = artifactId.getIdIntValue();
+               Artifact node = graph.getNode(artifactId);
                if (node == null) {
                   if (toLoad == null) {
                      toLoad = new LinkedHashSet<>();

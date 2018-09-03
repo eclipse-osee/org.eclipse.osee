@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation.impl;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirement;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
@@ -117,9 +118,6 @@ public class RelationManagerImplTest {
    @Mock private RelationNodeAdjacencies container1;
    @Mock private RelationNodeAdjacencies container2;
 
-   @Mock private IArtifactType artifactType1;
-   @Mock private IArtifactType artifactType2;
-
    @Mock private Relation relation1;
    @Mock private Relation relation2;
    @Mock private Relation relation3;
@@ -145,6 +143,8 @@ public class RelationManagerImplTest {
    private Artifact node4;
    private Artifact node5;
    private Artifact node6;
+   private IArtifactType artifactType1;
+   private IArtifactType artifactType2;
 
    @Before
    public void setUp() {
@@ -156,11 +156,14 @@ public class RelationManagerImplTest {
       when(session.getGuid()).thenReturn(sessionId);
 
       node1 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 11L, "z");
-      node2 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 22L, "y");
+      node2 = OrcsMockUtility.createTestArtifact(graph, COMMON, Folder, 22L, "y");
       node3 = OrcsMockUtility.createTestArtifact(graph, SYSTEM_ROOT, SoftwareRequirement, 33L, "x");
       node4 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 44L, "w");
       node5 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 55L, "v");
       node6 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 66L, "u");
+
+      artifactType1 = node1.getArtifactTypeId();
+      artifactType2 = node2.getArtifactTypeId();
 
       when(graph.getTransaction()).thenReturn(TransactionId.SENTINEL);
 
@@ -183,8 +186,6 @@ public class RelationManagerImplTest {
    @Test
    public void testGetValidRelationTypes() {
       final List<IRelationType> expected = new ArrayList<>();
-      when(node1.getArtifactTypeId()).thenReturn(artifactType1);
-      when(node2.getArtifactTypeId()).thenReturn(artifactType2);
       when(validity.getValidRelationTypes(artifactType1)).thenAnswer(new Answer<List<IRelationType>>() {
          @Override
          public List<IRelationType> answer(InvocationOnMock invocation) throws Throwable {
@@ -198,8 +199,6 @@ public class RelationManagerImplTest {
 
    @Test
    public void testGetMaximumRelationAllowed() {
-      when(node1.getArtifactTypeId()).thenReturn(artifactType1);
-      when(node2.getArtifactTypeId()).thenReturn(artifactType2);
       when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType1, SIDE_A)).thenReturn(11);
 
       int actual = manager.getMaximumRelationAllowed(session, TYPE_1, node1, SIDE_A);
@@ -475,8 +474,6 @@ public class RelationManagerImplTest {
    public void testRelateErrorMultiplicityNode1() {
       thrown.expect(OseeStateException.class);
 
-      when(node1.getArtifactTypeId()).thenReturn(artifactType1);
-      when(node2.getArtifactTypeId()).thenReturn(artifactType2);
       when(validity.getMaximumRelationsAllowed(Default_Hierarchical__Child, artifactType1, SIDE_A)).thenReturn(1);
 
       manager.relate(session, node1, TYPE_1, node2);
@@ -523,8 +520,6 @@ public class RelationManagerImplTest {
          relation1);
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
-      when(node1.getArtifactTypeId()).thenReturn(artifactType1);
-      when(node2.getArtifactTypeId()).thenReturn(artifactType2);
       when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType1, SIDE_A)).thenReturn(10);
       when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType2, SIDE_B)).thenReturn(10);
 
@@ -552,8 +547,6 @@ public class RelationManagerImplTest {
       RelationTypeSide typeSide = RelationTypeSide.create(TYPE_1, SIDE_B);
       when(orderManager1.getSorterId(typeSide)).thenReturn(UNORDERED);
 
-      when(node1.getArtifactTypeId()).thenReturn(artifactType1);
-      when(node2.getArtifactTypeId()).thenReturn(artifactType2);
       when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType1, SIDE_A)).thenReturn(10);
       when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType2, SIDE_B)).thenReturn(10);
 
@@ -582,8 +575,6 @@ public class RelationManagerImplTest {
       List<Artifact> nodesToOrder = Arrays.asList(node3, node4, node5, node6);
       when(resolver.resolve(session, graph, toOrder, SIDE_B)).thenReturn(nodesToOrder);
 
-      when(node1.getArtifactTypeId()).thenReturn(artifactType1);
-      when(node2.getArtifactTypeId()).thenReturn(artifactType2);
       when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType1, SIDE_A)).thenReturn(10);
       when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType2, SIDE_B)).thenReturn(10);
 
@@ -621,8 +612,6 @@ public class RelationManagerImplTest {
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
       when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(UNORDERED);
 
-      when(node1.getArtifactTypeId()).thenReturn(artifactType1);
-      when(node2.getArtifactTypeId()).thenReturn(artifactType2);
       when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType1, SIDE_A)).thenReturn(10);
       when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType2, SIDE_B)).thenReturn(10);
 
@@ -646,8 +635,6 @@ public class RelationManagerImplTest {
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
       when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(UNORDERED);
 
-      when(node1.getArtifactTypeId()).thenReturn(artifactType1);
-      when(node2.getArtifactTypeId()).thenReturn(artifactType2);
       when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType1, SIDE_A)).thenReturn(10);
       when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType2, SIDE_B)).thenReturn(10);
 
@@ -700,7 +687,7 @@ public class RelationManagerImplTest {
       when(container1.getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_PARENT)).thenReturn(relations1);
 
       when(relation1.getIdForSide(SIDE_B)).thenReturn(artifactId22);
-      when(graph.getNode(22)).thenReturn(node2);
+      when(graph.getNode(artifactId22)).thenReturn(node2);
 
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
       when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(PREEXISTING);
@@ -708,7 +695,7 @@ public class RelationManagerImplTest {
       manager.unrelateFromAll(session, DEFAULT_HIERARCHY, node1, IS_PARENT);
 
       verify(relation1).getIdForSide(SIDE_B);
-      verify(graph).getNode(22);
+      verify(graph).getNode(artifactId22);
       verify(container1).getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_PARENT);
       verify(resolver).resolve(session, graph, relations1, SIDE_B);
       verify(relation1).delete();
