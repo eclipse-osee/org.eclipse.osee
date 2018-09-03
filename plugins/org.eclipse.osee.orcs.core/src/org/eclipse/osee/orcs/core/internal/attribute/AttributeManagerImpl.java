@@ -24,6 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -84,13 +85,13 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    @Override
    public synchronized void add(AttributeTypeId attributeType, Attribute<?> attribute) {
       attributes.put(attributeType, (Attribute<Object>) attribute);
-      attribute.getOrcsData().setArtifactId(getId().intValue());
+      attribute.getOrcsData().setArtifactId(this);
    }
 
    @Override
    public synchronized void remove(AttributeTypeId type, Attribute<?> attribute) {
       attributes.removeValue(type, (Attribute<Object>) attribute);
-      attribute.getOrcsData().setArtifactId(-1);
+      attribute.getOrcsData().setArtifactId(ArtifactId.SENTINEL);
    }
 
    @Override

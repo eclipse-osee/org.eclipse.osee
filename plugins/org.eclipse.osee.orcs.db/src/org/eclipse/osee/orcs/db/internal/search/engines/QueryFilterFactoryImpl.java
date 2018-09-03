@@ -152,7 +152,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
                            CriteriaMatchTracker tracker = artIdToCriteriaTracker.get(item.getArtifactId());
                            if (tracker == null) {
                               tracker = new CriteriaMatchTracker(criterias);
-                              artIdToCriteriaTracker.put(item.getArtifactId(), tracker);
+                              artIdToCriteriaTracker.put(item.getArtifactId().getIdIntValue(), tracker);
                            }
                            checkForCancelled();
                            List<MatchLocation> matches = process(this, item, handler, tracker.remainingCriteriaToMatch);
@@ -252,8 +252,9 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
 
       @Override
       public <T> void onData(AttributeData<T> data, MatchLocation match) {
-         acceptedArtIds.add(data.getArtifactId());
-         forwardArtifacts(data.getArtifactId());
+         Integer artId = data.getArtifactId().getIdIntValue();
+         acceptedArtIds.add(artId);
+         forwardArtifacts(artId);
          super.onData(data, match);
       }
 

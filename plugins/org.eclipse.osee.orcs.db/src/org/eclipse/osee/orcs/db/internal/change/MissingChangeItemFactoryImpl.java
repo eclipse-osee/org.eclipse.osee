@@ -163,7 +163,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
 
          @Override
          public <T> void onData(AttributeData<T> data) {
-            if (!modifiedAttrIds.get(ArtifactId.valueOf(data.getArtifactId())).contains(data)) {
+            if (!modifiedAttrIds.get(data.getArtifactId()).contains(data)) {
                toReturn.add(createAttributeChangeItem(data));
             }
          }
@@ -226,10 +226,10 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       return artChange;
    }
 
-   private ChangeItem createAttributeChangeItem(AttributeData data) {
+   private ChangeItem createAttributeChangeItem(AttributeData<?> data) {
       ApplicabilityId appId = data.getApplicabilityId();
       ChangeItem attrChange = ChangeItemUtil.newAttributeChange(data, AttributeTypeId.valueOf(data.getTypeUuid()),
-         ArtifactId.valueOf(data.getArtifactId()), data.getVersion().getGammaId(), determineModType(data),
+         data.getArtifactId(), data.getVersion().getGammaId(), determineModType(data),
          data.getDataProxy().getDisplayableString(), getApplicabilityToken(appId));
       attrChange.getNetChange().copy(attrChange.getCurrentVersion());
       return attrChange;
@@ -241,5 +241,4 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
          RelationTypeId.valueOf(data.getTypeUuid()), data.getVersion().getGammaId(), determineModType(data),
          data.getArtifactIdA(), data.getArtifactIdB(), data.getRationale(), getApplicabilityToken(appId));
    }
-
 }

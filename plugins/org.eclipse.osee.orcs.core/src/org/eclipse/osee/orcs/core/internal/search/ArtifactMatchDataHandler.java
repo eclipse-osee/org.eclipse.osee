@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
@@ -41,7 +42,7 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
    private final OrcsSession session;
    private final ExternalArtifactManager proxyManager;
 
-   private Map<Integer, ArtifactMatch> matches;
+   private Map<ArtifactId, ArtifactMatch> matches;
    private List<Match<ArtifactReadable, AttributeReadable<?>>> results;
 
    public ArtifactMatchDataHandler(OrcsSession session, GraphBuilder handler, ExternalArtifactManager proxyManager) {
@@ -65,7 +66,7 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
    @Override
    public <T> void onData(AttributeData<T> data, MatchLocation match) {
       super.onData(data, match);
-      Integer artId = data.getArtifactId();
+      ArtifactId artId = data.getArtifactId();
       synchronized (matches) {
          ArtifactMatch artifactMatch = matches.get(artId);
          if (artifactMatch == null) {
@@ -86,7 +87,7 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
       Iterable<Artifact> loaded = getHandler().getArtifacts();
 
       for (Artifact item : loaded) {
-         ArtifactMatch artifactMatch = matches.get(new Long(item.getUuid()).intValue());
+         ArtifactMatch artifactMatch = matches.get(item);
          if (artifactMatch != null) {
             ArtifactReadable readable = proxyManager.asExternalArtifact(session, item);
             artifactMatch.setArtifactReadable(readable);

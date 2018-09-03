@@ -332,7 +332,7 @@ public class MissingChangeItemFactoryTest {
    }
 
    private static ChangeItem createExpected(AttributeData data) {
-      return ChangeItemUtil.newAttributeChange(data, AttributeTypeId.SENTINEL, ArtifactId.valueOf(data.getArtifactId()),
+      return ChangeItemUtil.newAttributeChange(data, AttributeTypeId.SENTINEL, data.getArtifactId(),
          data.getVersion().getGammaId(), determineModType(data), "", ApplicabilityToken.BASE);
    }
 
@@ -358,7 +358,7 @@ public class MissingChangeItemFactoryTest {
       DataProxy<?> proxy = mock(DataProxy.class);
 
       AttributeData data = new AttributeDataImpl(version);
-      data.setArtifactId(artId.getId().intValue());
+      data.setArtifactId(artId);
       data.setModType(modType);
       data.setLocalId(attrId);
       data.setDataProxy(proxy);

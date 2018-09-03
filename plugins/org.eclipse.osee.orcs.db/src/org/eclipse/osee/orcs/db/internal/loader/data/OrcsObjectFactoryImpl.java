@@ -108,7 +108,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public <T> AttributeData<T> createAttributeData(VersionData version, Integer id, AttributeTypeToken attributeType, ModificationType modType, int artifactId, T value, String uri, ApplicabilityId applicId) {
+   public <T> AttributeData<T> createAttributeData(VersionData version, Integer id, AttributeTypeToken attributeType, ModificationType modType, ArtifactId artifactId, T value, String uri, ApplicabilityId applicId) {
       Long typeId = attributeType.getId();
       DataProxy<T> proxy = proxyFactory.createProxy(typeId, value, uri);
       return createAttributeFromRow(version, id, typeId, modType, typeId, modType, artifactId, proxy, applicId);
@@ -126,7 +126,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public <T> AttributeData<T> createAttributeData(VersionData version, Integer id, AttributeTypeToken attributeType, ModificationType modType, int artId, ApplicabilityId applicId) {
+   public <T> AttributeData<T> createAttributeData(VersionData version, Integer id, AttributeTypeToken attributeType, ModificationType modType, ArtifactId artId, ApplicabilityId applicId) {
       long typeId = attributeType.getId();
       DataProxy<T> proxy = proxyFactory.createProxy(typeId, "", "");
       return createAttributeFromRow(version, id, typeId, modType, typeId, modType, artId, proxy, applicId);
@@ -156,7 +156,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       return data;
    }
 
-   private <T> AttributeData<T> createAttributeFromRow(VersionData version, int id, long localTypeID, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, int artifactId, DataProxy<T> proxy, ApplicabilityId applicId) {
+   private <T> AttributeData<T> createAttributeFromRow(VersionData version, int id, long localTypeID, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, ArtifactId artifactId, DataProxy<T> proxy, ApplicabilityId applicId) {
       AttributeData<T> data = new AttributeDataImpl<>(version);
       data.setLocalId(id);
       data.setTypeUuid(localTypeID);

@@ -91,7 +91,7 @@ public class TxSqlBuilderTest {
    private static final ArtifactId B_ART_ID = ArtifactId.valueOf(1231);
    private static final String RATIONALE = "a rationale";
 
-   private static final int ATTR_ARTIFACT_ID = 12341242;
+   private static final ArtifactId ATTR_ARTIFACT_ID = ArtifactId.valueOf(12341242);
    private static final String ATTR_URI = "attr://123/123/123/14/some.zip";
    private static final String ATTR_VALUE = "ksahfkashfdlakshfashfaer";
 

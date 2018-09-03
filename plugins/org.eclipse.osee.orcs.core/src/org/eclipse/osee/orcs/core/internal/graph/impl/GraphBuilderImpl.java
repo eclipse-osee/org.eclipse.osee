@@ -89,7 +89,7 @@ public class GraphBuilderImpl extends LoadDataHandlerAdapter implements GraphBui
    @Override
    public <T> void onData(AttributeData<T> data) {
       GraphData graph = getGraph();
-      AttributeManager container = graph.getNode(ArtifactId.valueOf(data.getArtifactId()));
+      AttributeManager container = graph.getNode(data.getArtifactId());
       if (container == null) {
          logger.warn("Orphaned attribute detected - data[%s]", data);
       } else {

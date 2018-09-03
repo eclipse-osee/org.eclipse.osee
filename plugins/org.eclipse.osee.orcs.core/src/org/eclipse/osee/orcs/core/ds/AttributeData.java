@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 
 /**
@@ -17,9 +18,9 @@ import org.eclipse.osee.framework.core.data.AttributeId;
  */
 public interface AttributeData<T> extends OrcsData, AttributeId {
 
-   int getArtifactId();
+   ArtifactId getArtifactId();
 
-   void setArtifactId(int artifactId);
+   void setArtifactId(ArtifactId artifactId);
 
    DataProxy<T> getDataProxy();
 

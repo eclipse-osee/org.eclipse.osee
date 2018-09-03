@@ -47,7 +47,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
       AttributeData toReturn = null;
 
       BranchId branch = BranchId.create(chStmt.getLong("branch_id"), OptionsUtil.getFromBranchView(options));
-      int artId = chStmt.getInt("id2");
+      ArtifactId artId = ArtifactId.valueOf(chStmt.getLong("id2"));
       int attrId = chStmt.getInt("attr_id");
       GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
       ModificationType modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
@@ -121,23 +121,22 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
    }
 
    private static final class CreateConditions {
-      int previousArtId = -1;
+      ArtifactId previousArtId = ArtifactId.SENTINEL;
       BranchId previousBranchId = BranchId.SENTINEL;
       int previousAttrId = -1;
       GammaId previousGammaId = GammaId.SENTINEL;
       ModificationType previousModType = null;
 
-      boolean isSame(BranchId branch, int artifactId, int attrId) {
-         return previousBranchId.equals(branch) && previousArtId == artifactId && previousAttrId == attrId;
+      boolean isSame(BranchId branch, ArtifactId artifactId, int attrId) {
+         return previousBranchId.equals(branch) && previousArtId.equals(artifactId) && previousAttrId == attrId;
       }
 
-      void saveConditions(BranchId branch, int artifactId, int attrId, GammaId gammaId, ModificationType modType) {
+      void saveConditions(BranchId branch, ArtifactId artifactId, int attrId, GammaId gammaId, ModificationType modType) {
          previousBranchId = branch;
          previousArtId = artifactId;
          previousAttrId = attrId;
          previousGammaId = gammaId;
          previousModType = modType;
       }
-
    }
 }

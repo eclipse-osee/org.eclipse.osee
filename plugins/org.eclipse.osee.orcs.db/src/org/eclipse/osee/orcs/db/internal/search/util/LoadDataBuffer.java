@@ -52,7 +52,7 @@ public class LoadDataBuffer {
 
    public void addData(AttributeData<?> data) {
       synchronized (attributes) {
-         attributes.put(data.getArtifactId(), data);
+         attributes.put(data.getArtifactId().getIdIntValue(), data);
       }
    }
 

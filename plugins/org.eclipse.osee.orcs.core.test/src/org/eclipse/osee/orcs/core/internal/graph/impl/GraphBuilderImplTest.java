@@ -96,7 +96,7 @@ public class GraphBuilderImplTest {
       when(relationFactory.createRelation(relationData)).thenReturn(relation);
       when(relation.getRelationType()).thenReturn(TYPE_1);
 
-      when(attributeData.getArtifactId()).thenReturn(artifactId60.getIdIntValue());
+      when(attributeData.getArtifactId()).thenReturn(artifactId60);
    }
 
    @Test
