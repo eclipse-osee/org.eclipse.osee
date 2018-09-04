@@ -20,7 +20,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,8 +27,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
@@ -39,8 +36,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.jdbc.JdbcStatement;
 
@@ -288,20 +283,5 @@ public class WordUtil {
          newTemplate = template;
       }
       return newTemplate;
-   }
-
-   public static HashSet<String> getValidConfigurations(BranchId branch) {
-      HashSet<String> validConfigurations = new HashSet<>();
-
-      List<BranchViewData> branchViews = ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch).getViews();
-      for (BranchViewData branchView : branchViews) {
-         List<Artifact> artifacts = ArtifactQuery.getArtifactListFrom(branchView.getBranchViews(), branch);
-
-         for (Artifact artifact : artifacts) {
-            validConfigurations.add(artifact.getName());
-         }
-      }
-
-      return validConfigurations;
    }
 }

@@ -163,9 +163,10 @@ public class WordCoreUtil {
       String applicExpText = beginConfig.substring(start, end);
 
       String[] configs = applicExpText.split("&|\\|");
-      for (int i = 0; i < configs.length; i++) {
-         configs[i] = configs[i].split("=")[0].trim();
-         if (!containsIgnoreCase(allValidConfigurations, configs[i])) {
+
+      for (String config : configs) {
+         String configKey = config.split("=")[0].trim().toUpperCase();
+         if (!allValidConfigurations.contains(configKey)) {
             return false;
          }
       }

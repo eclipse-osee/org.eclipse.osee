@@ -10,10 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.BranchView;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.FeatureDefinition;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 
@@ -35,5 +40,15 @@ public class ApplicabilityUtility {
       }
 
       return validFeatureValues;
+   }
+
+   public static HashSet<String> getValidConfigurations(BranchId branch) {
+      HashSet<String> validConfigurations = new HashSet<>();
+
+      Collection<ArtifactToken> views = ArtifactQuery.getArtifactTokenListFromType(BranchView, branch);
+      for (ArtifactToken view : views) {
+         validConfigurations.add(view.getName().toUpperCase());
+      }
+      return validConfigurations;
    }
 }

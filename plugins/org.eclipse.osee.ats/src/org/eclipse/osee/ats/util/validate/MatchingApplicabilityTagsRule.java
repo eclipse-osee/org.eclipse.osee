@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.ApplicabilityUtility;
-import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
  * @author Morgan E. Cook
@@ -39,7 +38,7 @@ public class MatchingApplicabilityTagsRule extends AbstractValidationRule {
       }
 
       if (validConfigurations == null) {
-         validConfigurations = WordUtil.getValidConfigurations(artToValidate.getBranch());
+         validConfigurations = ApplicabilityUtility.getValidConfigurations(artToValidate.getBranch());
       }
 
       boolean validationPassed = true;

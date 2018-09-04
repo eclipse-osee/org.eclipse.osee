@@ -14,13 +14,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.HashSet;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.utility.ApplicabilityUtility;
-import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,7 +38,7 @@ public class WordApplicabilityTest {
    @Before
    public void setup() {
       validFeatureValuesForBranch = ApplicabilityUtility.getValidFeatureValuesForBranch(DemoBranches.SAW_Bld_1);
-      validConfigurations = getValidConfigurations(DemoBranches.SAW_Bld_1);
+      validConfigurations = ApplicabilityUtility.getValidConfigurations(DemoBranches.SAW_Bld_1);
    }
 
    @Test
@@ -73,9 +71,5 @@ public class WordApplicabilityTest {
 
       assertFalse(WordCoreUtil.areApplicabilityTagsInvalid(content, DemoBranches.SAW_Bld_1, validFeatureValuesForBranch,
          validConfigurations));
-   }
-
-   private HashSet<String> getValidConfigurations(BranchId branch) {
-      return WordUtil.getValidConfigurations(branch);
    }
 }
