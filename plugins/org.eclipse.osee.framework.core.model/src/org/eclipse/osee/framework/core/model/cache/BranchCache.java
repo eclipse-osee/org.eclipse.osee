@@ -14,12 +14,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
+import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
@@ -28,7 +31,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  */
 public class BranchCache extends AbstractOseeLoadingCache<Branch> {
 
-   private final List<Branch> views = new ArrayList<>();
+   private final CompositeKeyHashMap<BranchId, ArtifactId, Branch> branchViews = new CompositeKeyHashMap<>(50, false);
 
    public BranchCache(IOseeDataAccessor<Branch> dataAccessor) {
       super(OseeCacheEnum.BRANCH_CACHE, dataAccessor);
@@ -78,13 +81,14 @@ public class BranchCache extends AbstractOseeLoadingCache<Branch> {
       return toReturn;
    }
 
-   public void setBranchViews(List<Branch> views) {
-      this.views.clear();
-      this.views.addAll(views);
+   public Branch getBranchWithView(BranchId branchId, ArtifactId viewId) {
+      return branchViews.get(branchId, viewId);
    }
 
-   public List<Branch> getViews() {
-      return views;
+   public Branch cacheBranchWithView(Branch branch, ArtifactToken view) {
+      Branch branchView = Branch.createBranchView(branch, view, branch.getName() + " [view: " + view.getName() + "]");
+      branchViews.put(branchView, view, branchView);
+      return branchView;
    }
 
    public synchronized List<IOseeBranch> getBranches(Predicate<Branch> branchFilter) {

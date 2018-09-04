@@ -177,16 +177,20 @@ public final class BranchManager {
       } else if (branchId.isInvalid()) {
          throw new BranchDoesNotExist("Branch id is invalid");
       }
+      BranchCache cache = getCache();
+
       Branch branch = null;
       if (view.notEqual(ArtifactId.SENTINEL)) {
-         for (Branch branchView : getCache().getViews()) {
-            if (branchView.equals(branchId) && branchView.getBranchView().equals(view)) {
-               branch = branchView;
-               break;
+         branch = cache.getBranchWithView(branchId, view);
+         if (branch == null) {
+            branch = cache.get(branchId);
+            if (branch == null) {
+               branch = loadBranchToCache(branchId);
             }
+            branch = cache.cacheBranchWithView(branch, ArtifactQuery.getArtifactTokenFromId(branch, view));
          }
       } else {
-         branch = getCache().get(branchId);
+         branch = cache.get(branchId);
          if (branch == null) {
             branch = loadBranchToCache(branchId);
          }
@@ -195,7 +199,7 @@ public final class BranchManager {
    }
 
    /**
-    * Do not call this method unless absolutely neccessary due to performance impacts.
+    * Do not call this method unless absolutely necessary due to performance impacts.
     */
    public static synchronized void checkAndReload(BranchId branch) {
       if (!branchExists(branch)) {
