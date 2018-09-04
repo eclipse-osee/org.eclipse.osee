@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.define.rest.internal.wordupdate;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.BranchView;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.FeatureDefinition;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GeneralStringData;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,23 +31,21 @@ import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.FeatureDefinition;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock.ApplicabilityType;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarLexer;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarParser;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
 public class WordMLApplicabilityHandler {
 
@@ -65,24 +66,26 @@ public class WordMLApplicabilityHandler {
       ScriptEngineManager sem = new ScriptEngineManager();
       se = sem.getEngineByName(SCRIPT_ENGINE_NAME);
 
-      BranchId branchToUse = getBranchToUse(orcsApi, branch, view);
+      QueryFactory query = orcsApi.getQueryFactory();
 
-      validConfigurations = getValidConfigurations(orcsApi, branch);
+      branch = getProductLineBranch(query, branch);
+      validConfigurations = getValidConfigurations(query, branch);
 
-      viewApplicabilitiesMap =
-         orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branchToUse, view);
-      ArtifactReadable viewArtifact =
-         orcsApi.getQueryFactory().fromBranch(branchToUse).andId(view).getResults().getAtMostOneOrNull();
+      viewApplicabilitiesMap = query.applicabilityQuery().getNamedViewApplicabilityMap(branch, view);
+      ArtifactToken viewArtifact = query.fromBranch(branch).andId(view).loadArtifactToken();
       configurationToView = viewArtifact.getName();
 
-      Branch br = orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getOneOrNull();
+      ArtifactReadable featureDefArt =
+         query.fromBranch(branch).andTypeEquals(FeatureDefinition).getResults().getExactlyOne();
+      featureDefinitionJson = featureDefArt.getSoleAttributeAsString(GeneralStringData);
+   }
+
+   public static BranchId getProductLineBranch(QueryFactory query, BranchId branch) {
+      Branch br = query.branchQuery().andId(branch).getResults().getExactlyOne();
       if (br.getBranchType().equals(BranchType.MERGE)) {
          branch = br.getParentBranch();
       }
-
-      ArtifactReadable featureDefArt = orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(
-         CoreArtifactTypes.FeatureDefinition).getResults().getExactlyOne();
-      featureDefinitionJson = featureDefArt.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
+      return branch;
    }
 
    public String previewValidApplicabilityContent(String content) {
@@ -366,31 +369,6 @@ public class WordMLApplicabilityHandler {
       return applic;
    }
 
-   private static BranchId getBranchToUse(OrcsApi orcsApi, BranchId branch, ArtifactId viewId) {
-      BranchId branchView = findBranchView(orcsApi, viewId);
-      return branchView == null ? branch : branchView;
-   }
-
-   private static BranchId findBranchView(OrcsApi orcsApi, ArtifactId viewId) {
-      BranchId branchToUse = null;
-      boolean foundBranchView = false;
-      List<BranchViewData> views = orcsApi.getQueryFactory().applicabilityQuery().getViews();
-      for (BranchViewData viewData : views) {
-         List<ArtifactId> branchViews = viewData.getBranchViews();
-         for (ArtifactId id : branchViews) {
-            if (viewId.equals(id)) {
-               branchToUse = viewData.getBranch();
-               foundBranchView = true;
-               break;
-            }
-         }
-         if (foundBranchView) {
-            break;
-         }
-      }
-      return branchToUse;
-   }
-
    private String evaluateApplicabilityExpression(ApplicabilityBlock applic) {
       String applicabilityExpression = applic.getApplicabilityExpression();
       String toInsert = "";
@@ -588,20 +566,13 @@ public class WordMLApplicabilityHandler {
       return toReturn;
    }
 
-   public static HashSet<String> getValidConfigurations(OrcsApi orcsApi, BranchId branch) {
+   public static HashSet<String> getValidConfigurations(QueryFactory query, BranchId branch) {
       HashSet<String> validConfigurations = new HashSet<>();
-      List<BranchViewData> branchViews = orcsApi.getQueryFactory().applicabilityQuery().getViews();
 
-      for (BranchViewData branchView : branchViews) {
-
-         ResultSet<ArtifactReadable> configs =
-            orcsApi.getQueryFactory().fromBranch(branch).andIds(branchView.getBranchViews()).getResults();
-
-         for (ArtifactReadable config : configs) {
-            validConfigurations.add(config.getName());
-         }
+      List<ArtifactToken> views = query.fromBranch(branch).andTypeEquals(BranchView).loadArtifactTokens();
+      for (ArtifactToken view : views) {
+         validConfigurations.add(view.getName().toUpperCase());
       }
-
       return validConfigurations;
    }
 }

@@ -26,10 +26,8 @@ import org.eclipse.osee.define.api.WordUpdateChange;
 import org.eclipse.osee.define.api.WordUpdateData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.FeatureDefinition;
-import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.type.LinkType;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
@@ -143,12 +141,14 @@ public class WordUpdateArtifact {
                   new ByteArrayInputStream(WordUtilities.getFormattedContent(extractorData.getParentEelement())));
 
                boolean hasTrackedChanges = WordCoreUtil.containsWordAnnotations(content);
-               HashCollection<String, String> validFeatureValues = getValidFeatureValuesForBranch(data.getBranch());
-               HashSet<String> validConfigurations = getValidConfigurations(data.getBranch());
+               QueryFactory query = orcsApi.getQueryFactory();
+               BranchId plBranch = WordMLApplicabilityHandler.getProductLineBranch(query, data.getBranch());
+               HashCollection<String, String> validFeatureValues = getValidFeatureValuesForBranch(query, plBranch);
+               HashSet<String> validConfigurations = WordMLApplicabilityHandler.getValidConfigurations(query, plBranch);
 
                // If artifact has InvalidApplicabilityTags, do not block the save
-               boolean hasInvalidApplicabilityTags = WordCoreUtil.areApplicabilityTagsInvalid(content, data.getBranch(),
-                  validFeatureValues, validConfigurations);
+               boolean hasInvalidApplicabilityTags =
+                  WordCoreUtil.areApplicabilityTagsInvalid(content, plBranch, validFeatureValues, validConfigurations);
 
                /**
                 * Only update if: a. editing a single artifact or b. in multi-edit mode only update if the artifact has
@@ -238,9 +238,8 @@ public class WordUpdateArtifact {
       return "A".equals(dal) || "B".equals(dal) || "C".equals(dal);
    }
 
-   private HashCollection<String, String> getValidFeatureValuesForBranch(BranchId branch) {
-      List<FeatureDefinition> featureDefinitionData =
-         orcsApi.getQueryFactory().applicabilityQuery().getFeatureDefinitionData(branch);
+   private HashCollection<String, String> getValidFeatureValuesForBranch(QueryFactory query, BranchId branch) {
+      List<FeatureDefinition> featureDefinitionData = query.applicabilityQuery().getFeatureDefinitionData(branch);
 
       HashCollection<String, String> validFeatureValues = new HashCollection<>();
       for (FeatureDefinition feat : featureDefinitionData) {
@@ -248,13 +247,5 @@ public class WordUpdateArtifact {
       }
 
       return validFeatureValues;
-   }
-
-   private HashSet<String> getValidConfigurations(BranchId branch) {
-      Branch br = orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getOneOrNull();
-      if (br.getBranchType().equals(BranchType.MERGE)) {
-         branch = br.getParentBranch();
-      }
-      return WordMLApplicabilityHandler.getValidConfigurations(orcsApi, branch);
    }
 }
