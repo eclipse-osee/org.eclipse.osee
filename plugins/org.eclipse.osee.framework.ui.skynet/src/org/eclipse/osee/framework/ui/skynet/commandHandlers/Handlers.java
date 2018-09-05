@@ -110,13 +110,11 @@ public class Handlers {
                return viewId == null ? ArtifactId.SENTINEL : viewId;
             }
             if (activePart instanceof ChangeReportEditor) {
-               ArtifactId viewId = ((ChangeReportEditor) activePart).getViewId();
-               return viewId == null ? ArtifactId.SENTINEL : viewId;
+               return ((ChangeReportEditor) activePart).getViewId();
             }
             IEditorPart activeEditor = page.getActiveEditor();
             if (activeEditor instanceof ChangeReportEditor) {
-               ArtifactId viewId = ((ChangeReportEditor) activeEditor).getViewId();
-               return viewId == null ? ArtifactId.SENTINEL : viewId;
+               return ((ChangeReportEditor) activeEditor).getViewId();
             }
          }
       }

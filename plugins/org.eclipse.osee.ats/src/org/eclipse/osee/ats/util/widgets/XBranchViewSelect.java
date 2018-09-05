@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -112,14 +113,13 @@ public class XBranchViewSelect extends GenericXWidget {
          try {
             ArtifactId versionConfig = applEndpoint.getVersionConfig(artifact);
             String baselineBranch = artifact.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchId, "");
-            Map<Long, String> branchViews = ViewApplicabilityUtil.getBranchViews(BranchId.valueOf(baselineBranch));
-            result = branchViews.get(versionConfig);
+            result = ArtifactQuery.getArtifactTokenFromId(BranchId.valueOf(baselineBranch), versionConfig).getName();
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             result = "Error retrieving applicability. (see log)";
          }
       }
-      return String.format("%s", result == null ? NOT_SELECTED : result);
+      return result == null ? NOT_SELECTED : result;
    }
 
    private boolean changeView(BranchId branch) {

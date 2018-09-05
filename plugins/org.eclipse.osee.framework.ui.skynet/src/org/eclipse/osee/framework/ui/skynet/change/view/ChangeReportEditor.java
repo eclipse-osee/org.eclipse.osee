@@ -47,7 +47,7 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
    private BranchTransactionActionBarContributor branchTransactionActionBarContributor;
    private final EventRelay eventRelay;
    private BranchTransactionPage branchTransactionPage;
-   private ArtifactId viewId;
+   private ArtifactId viewId = ArtifactId.SENTINEL;
 
    public ChangeReportEditor() {
       eventRelay = new EventRelay();

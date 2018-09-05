@@ -42,13 +42,13 @@ public class ApplicabilityUtility {
       return validFeatureValues;
    }
 
-   public static HashSet<String> getValidConfigurations(BranchId branch) {
-      HashSet<String> validConfigurations = new HashSet<>();
+   public static HashSet<String> getBranchViewNamesUpperCase(BranchId branch) {
+      HashSet<String> names = new HashSet<>();
 
       Collection<ArtifactToken> views = ArtifactQuery.getArtifactTokenListFromType(BranchView, branch);
       for (ArtifactToken view : views) {
-         validConfigurations.add(view.getName().toUpperCase());
+         names.add(view.getName().toUpperCase());
       }
-      return validConfigurations;
+      return names;
    }
 }

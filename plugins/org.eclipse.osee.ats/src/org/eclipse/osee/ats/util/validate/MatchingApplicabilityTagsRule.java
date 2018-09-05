@@ -38,7 +38,7 @@ public class MatchingApplicabilityTagsRule extends AbstractValidationRule {
       }
 
       if (validConfigurations == null) {
-         validConfigurations = ApplicabilityUtility.getValidConfigurations(artToValidate.getBranch());
+         validConfigurations = ApplicabilityUtility.getBranchViewNamesUpperCase(artToValidate.getBranch());
       }
 
       boolean validationPassed = true;

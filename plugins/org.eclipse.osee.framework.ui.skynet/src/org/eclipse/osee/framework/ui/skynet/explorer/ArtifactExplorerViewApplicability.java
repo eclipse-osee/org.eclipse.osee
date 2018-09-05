@@ -17,6 +17,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ViewBranchViewFilterTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -87,7 +88,6 @@ public class ArtifactExplorerViewApplicability {
    }
 
    private String getArtifactViewApplicabiltyText() {
-      Map<Long, String> branchViews;
       String result = null;
       try {
          if (explorer != null) {
@@ -103,8 +103,7 @@ public class ArtifactExplorerViewApplicability {
                      button.setEnabled(true);
                      viewId = explorer.getViewId();
                   }
-                  branchViews = ViewApplicabilityUtil.getBranchViews(explorer.getBranch());
-                  result = branchViews.get(viewId);
+                  result = ArtifactQuery.getArtifactTokenFromId(explorer.getBranch(), viewId).getName();
                }
             }
          }

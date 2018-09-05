@@ -17,6 +17,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInput;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
@@ -89,9 +90,9 @@ public class ChangeReportPageViewApplicability {
    }
 
    private String getArtifactViewApplicabiltyText() {
-      Map<Long, String> branchViews = ViewApplicabilityUtil.getBranchViews(getBranch());
-      String result = branchViews.get(editor.getViewId());
-      return String.format("<form><p><b>Branch View:</b> %s</p></form>", result == null ? "Not Set" : result);
+      ArtifactId view = editor.getViewId();
+      String viewText = view.isValid() ? ArtifactQuery.getArtifactTokenFromId(getBranch(), view).getName() : "Not Set";
+      return "<form><p><b>Branch View:</b> " + viewText + "</p></form>";
    }
 
    private BranchId getBranch() {
@@ -131,5 +132,4 @@ public class ChangeReportPageViewApplicability {
       }
       return false;
    }
-
 }

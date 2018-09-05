@@ -38,7 +38,7 @@ public class WordApplicabilityTest {
    @Before
    public void setup() {
       validFeatureValuesForBranch = ApplicabilityUtility.getValidFeatureValuesForBranch(DemoBranches.SAW_Bld_1);
-      validConfigurations = ApplicabilityUtility.getValidConfigurations(DemoBranches.SAW_Bld_1);
+      validConfigurations = ApplicabilityUtility.getBranchViewNamesUpperCase(DemoBranches.SAW_Bld_1);
    }
 
    @Test
