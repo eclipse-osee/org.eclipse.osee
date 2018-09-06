@@ -91,20 +91,14 @@ public class OrcsStorageImpl implements Storage {
       orcsApi.getOrcsTypes().invalidateAll();
    }
 
-   private ResultSet<ArtifactReadable> getDispoTypesArtifact() throws OseeCoreException {
-      return getQuery().fromBranch(COMMON).andUuid(DISPO_ARTIFACT.getUuid()).andTypeEquals(
-         DISPO_ARTIFACT.getArtifactType()).getResults();
-   }
-
    @Override
    public boolean typesExist() {
-      boolean result = false;
       try {
-         result = !getDispoTypesArtifact().isEmpty();
+         return getQuery().fromBranch(COMMON).andId(DISPO_ARTIFACT).getResults().getAtMostOneOrNull() != null;
       } catch (OseeCoreException ex) {
          logger.warn(ex, "Error checking for Dispo Types");
+         return false;
       }
-      return result;
    }
 
    @Override
