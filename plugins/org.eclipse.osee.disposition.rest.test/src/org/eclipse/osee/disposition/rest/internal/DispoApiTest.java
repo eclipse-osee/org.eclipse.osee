@@ -45,7 +45,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
@@ -297,7 +296,6 @@ public class DispoApiTest {
       // Only need to createUpdatedItem with updateStatus = True when annotation is valid and current status is INCOMPLETE
       annotationToCreate.setResolution("VALID");
       when(dispoItem.getStatus()).thenReturn("COMPLETE");
-      when(validator.validate(Matchers.any(DispoAnnotationData.class))).thenReturn(true);
       String acutal = dispoApi.createDispoAnnotation(branch, itemId.getGuid(), annotationToCreate, "name", false);
       assertEquals(expectedId, acutal);
 
@@ -372,24 +370,22 @@ public class DispoApiTest {
       annotations.set(0, origAnnotation);
       // Now change Location Refs, disconnector should be called
       newAnnotation.setLocationRefs("1-10");
-      when(validator.validate(Matchers.any(DispoAnnotationData.class))).thenReturn(false);
       actual = dispoApi.editDispoAnnotation(branch, itemId.getGuid(), expectedId, newAnnotation, "name", false);
       assertTrue(actual);
       annotations.set(0, origAnnotation);
       // reset the resolution and change just the resolution type, disconnector and should be called
       newAnnotation.setLocationRefs("5-10");
       newAnnotation.setResolutionType("TEST");
-      when(validator.validate(Matchers.any(DispoAnnotationData.class))).thenReturn(true);
       actual = dispoApi.editDispoAnnotation(branch, itemId.getGuid(), expectedId, newAnnotation, "name", false);
       assertTrue(actual);
       annotations.set(0, origAnnotation);
       // Reset resolution type, only change to resolution, disconnector is called
       newAnnotation.setResolutionType("CODE");
       newAnnotation.setResolution("NEW");
-      when(validator.validate(Matchers.any(DispoAnnotationData.class))).thenReturn(true);
       actual = dispoApi.editDispoAnnotation(branch, itemId.getGuid(), expectedId, newAnnotation, "name", false);
       assertTrue(actual);
 
+      verify(validator, times(2)).validate(newAnnotation);
       verify(dispoConnector, times(3)).connectAnnotation(any(DispoAnnotationData.class), eq(mockDiscrepancies));
    }
 

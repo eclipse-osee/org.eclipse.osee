@@ -403,6 +403,9 @@ public final class DispoUtil {
          if (object.has("isValid")) {
             dispoAnnotation.setIsConnected(object.getBoolean("isValid"));
          }
+         if (object.has("isAnalyze")) {
+            dispoAnnotation.setIsAnalyze(object.getBoolean("isAnalyze"));
+         }
          if (object.has("developerNotes")) {
             dispoAnnotation.setDeveloperNotes(object.getString("developerNotes"));
          }

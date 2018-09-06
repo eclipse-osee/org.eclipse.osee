@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.JunitLaunchConfig">
 <setAttribute key="additional_plugins">
-<setEntry value="org.eclipse.equinox.ds:1.4.300.v20150423-1356:default:false"/>
-<setEntry value="org.eclipse.osee.orcs.db.mock:0.24.0.qualifier:default:false"/>
+<setEntry value="org.eclipse.equinox.ds:1.4.400.v20160226-2036:default:false"/>
+<setEntry value="org.eclipse.osee.orcs.db.mock:0.25.4.qualifier:default:false"/>
 <setEntry value="org.hsqldb:2.2.9.qualifier:default:false"/>
 <setEntry value="org.mockito:1.9.0.qualifier:default:false"/>
 </setAttribute>

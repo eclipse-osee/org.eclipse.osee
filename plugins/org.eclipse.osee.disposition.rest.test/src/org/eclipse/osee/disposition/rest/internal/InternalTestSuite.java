@@ -17,7 +17,11 @@ import org.junit.runners.Suite;
  * @author Angel Avila
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({DispoApiTest.class, DispoConnectorTest.class, LocationRangesCompressorTest.class})
+@Suite.SuiteClasses({
+   DispoApiTest.class,
+   DispoConnectorTest.class,
+   LocationRangesCompressorTest.class,
+   DispoResolutionValidatorTest.class})
 public class InternalTestSuite {
    // Test Suite
 }

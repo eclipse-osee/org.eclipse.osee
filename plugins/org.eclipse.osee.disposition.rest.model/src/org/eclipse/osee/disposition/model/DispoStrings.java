@@ -43,6 +43,7 @@ public class DispoStrings {
    public static final String Item_Pass = "PASS";
    public static final String Item_Complete = "COMPLETE";
    public static final String Item_InComplete = "INCOMPLETE";
+   public static final String Item_Analyzed = "ANALYZED";
 
    public static final String Operation_Import = "Import";
    public static final String Operation_MassSendStatus = "MassSendDispoItemStatus";
@@ -63,5 +64,9 @@ public class DispoStrings {
    public static final String IS_RUNNABLE = "\t\t\t<IsRunnable>true</IsRunnable>\n";
    public static final String SCRIPT_NAME = "\t\t\t<Name>%s</Name>\n";
    public static final String SCRIPT_PATH = "\t\t\t<Path>%s</Path>\n";
+
+   public static final String ANALYZE_CODE = "Modify_Code";
+   public static final String ANALYZE_TEST = "Modify_Test";
+   public static final String ANALYZE_REQT = "Modify_Reqt";
 
 }

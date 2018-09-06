@@ -343,10 +343,12 @@ public class DispoApiImpl implements DispoApi {
          String newResolution = newAnnotation.getResolution();
          String newResolutionType = newAnnotation.getResolutionType();
 
-         if (!origAnnotation.getResolutionType().equals(newResolutionType) || !origAnnotation.getResolution().equals(
-            newResolution)) {
-            newAnnotation.setIsResolutionValid(validateResolution(newAnnotation));
+         boolean isTypeChange = !origAnnotation.getResolutionType().equals(newResolutionType);
+         boolean isResolutionChange = !origAnnotation.getResolution().equals(newResolution);
+
+         if (isTypeChange || isResolutionChange) {
             needToReconnect = true;
+            resolutionValidator.validate(newAnnotation);
          }
          if (!origAnnotation.getLocationRefs().equals(newLocationRefs)) {
             needToReconnect = true;
@@ -357,7 +359,6 @@ public class DispoApiImpl implements DispoApi {
             dispoConnector.connectAnnotation(newAnnotation, discrepanciesList);
          }
          annotationsList.set(indexOfAnnotation, newAnnotation);
-         dispoItem.getAnnotationsList().get(0);
          ArtifactReadable author = getQuery().findUser();
          DispoItemData modifiedDispoItem = DispoUtil.itemArtToItemData(getDispoItemById(branch, itemId), true);
 
@@ -592,10 +593,6 @@ public class DispoApiImpl implements DispoApi {
          newIndex++;
       }
       return newList;
-   }
-
-   private boolean validateResolution(DispoAnnotationData annotation) {
-      return resolutionValidator.validate(annotation);
    }
 
    @Override

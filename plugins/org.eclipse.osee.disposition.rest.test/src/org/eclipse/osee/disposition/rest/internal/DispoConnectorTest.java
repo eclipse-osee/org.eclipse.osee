@@ -114,6 +114,48 @@ public class DispoConnectorTest {
    }
 
    @Test
+   public void testConnectAnnotationsStringAnalyze() {
+      // Convert Location Refs to have characters
+      for (Discrepancy discrepancy : dispoItem.getDiscrepanciesList().values()) {
+         discrepancy.setLocation(discrepancy.getLocation() + "zzz");
+      }
+
+      int idsSize = 13;
+      // Create one annotation with every discrepancy covered
+      DispoAnnotationData annotationOne = new DispoAnnotationData();
+      annotationOne.setLocationRefs("1zzz, 2zzz, 3zzz,4zzz,5zzz,12zzz,13zzz,14zzz,15zzz,16zzz,17zzz,18zzz,20zzz");
+      annotationOne.setIsResolutionValid(true);
+      annotationOne.setResolutionType("Modify_Code");
+      annotationOne.setIsAnalyze(true);
+      annotationOne.setId(annotIdOne);
+      List<String> idsOfCoveredDisc = new ArrayList<String>();
+      annotationOne.setIdsOfCoveredDiscrepancies(idsOfCoveredDisc);
+
+      dispoConnector.connectAnnotation(annotationOne, dispoItem.getDiscrepanciesList());
+      List<DispoAnnotationData> annotationsList = new ArrayList<DispoAnnotationData>();
+      annotationsList.add(annotationOne);
+      dispoItem.setAnnotationsList(annotationsList);
+
+      // annotation 1 should be connected to all Discrepancies
+      List<String> idsOfCoveredDiscrepancies = annotationOne.getIdsOfCoveredDiscrepancies();
+      Assert.assertTrue(idsOfCoveredDiscrepancies.size() == idsSize);
+      for (int i = 0; i < idsOfCoveredDiscrepancies.size(); i++) {
+         if (i < 5) {//first 5 discrepancies are from ids array 1-5
+            assertEquals(idsOfCoveredDiscrepancies.get(i), idsForDiscrepancies1_5[i]);
+         } else if (i < 12) {
+            assertEquals(idsOfCoveredDiscrepancies.get(i), idsForDiscrepancies12_18[i - 5]);
+         } else {
+            assertEquals(idsOfCoveredDiscrepancies.get(i), id20);
+         }
+      }
+
+      assertTrue(annotationOne.getIsConnected());
+
+      String actual = dispoConnector.getItemStatus(dispoItem);
+      assertEquals(DispoStrings.Item_Analyzed, actual);
+   }
+
+   @Test
    public void testConnectAnnotationsStringIncomplete() {
       // Convert Location Refs to have characters
       for (Discrepancy discrepancy : dispoItem.getDiscrepanciesList().values()) {

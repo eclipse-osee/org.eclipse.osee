@@ -34,6 +34,7 @@ public class DispoAnnotationData implements Identifiable<String> {
    private boolean isResolutionValid;
    private String resolutionType;
    private boolean isDefault;
+   private boolean isAnalyze;
 
    public DispoAnnotationData() {
 
@@ -93,6 +94,10 @@ public class DispoAnnotationData implements Identifiable<String> {
       return isDefault;
    }
 
+   public boolean getIsAnalyze() {
+      return isAnalyze;
+   }
+
    public void setLocationRefs(String locationRefs) {
       this.locationRefs = locationRefs;
    }
@@ -135,6 +140,10 @@ public class DispoAnnotationData implements Identifiable<String> {
 
    public void setIsDefault(boolean isDefault) {
       this.isDefault = isDefault;
+   }
+
+   public void setIsAnalyze(boolean isAnalyzed) {
+      this.isAnalyze = isAnalyzed;
    }
 
    public boolean isValid() {

@@ -12,6 +12,7 @@ package org.eclipse.osee.disposition.rest.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -68,24 +69,38 @@ public class DispoConnector {
 
       if (item.getDiscrepanciesList().size() == 0) {
          toReturn = DispoStrings.Item_Pass;
-      } else if (allAnnotationsValid(annotations) && allUncoveredDiscprepancies.isEmpty()) {
-         toReturn = DispoStrings.Item_Complete;
       } else {
-         toReturn = DispoStrings.Item_InComplete;
+         Collection<DispoAnnotationData> defaultAnnotations = new HashSet<>();
+         Collection<DispoAnnotationData> invalidAnotations = new HashSet<>();
+         Collection<DispoAnnotationData> analyzeAnnotations = new HashSet<>();
+         parseThroughAnnotations(annotations, defaultAnnotations, invalidAnotations, analyzeAnnotations);
+
+         if (invalidAnotations.isEmpty() && allUncoveredDiscprepancies.isEmpty()) {
+            if (analyzeAnnotations.isEmpty()) {
+               toReturn = DispoStrings.Item_Complete;
+            } else {
+               toReturn = DispoStrings.Item_Analyzed;
+            }
+         } else {
+            toReturn = DispoStrings.Item_InComplete;
+         }
       }
 
       return toReturn;
    }
 
-   private boolean allAnnotationsValid(List<DispoAnnotationData> annotations) {
-      if (annotations != null) {
-         for (DispoAnnotationData annotation : annotations) {
-            if (!annotation.getIsDefault() && !annotation.isValid()) {
-               return false;
-            }
+   private void parseThroughAnnotations(Collection<DispoAnnotationData> annotations, Collection<DispoAnnotationData> defaultAnnotations, Collection<DispoAnnotationData> invalidAnnotations, Collection<DispoAnnotationData> analyzeAnnotations) {
+      for (DispoAnnotationData annotation : annotations) {
+         if (annotation.getIsDefault()) {
+            defaultAnnotations.add(annotation);
+         }
+         if (!annotation.isValid()) {
+            invalidAnnotations.add(annotation);
+         }
+         if (annotation.getIsAnalyze()) {
+            analyzeAnnotations.add(annotation);
          }
       }
-      return true;
    }
 
    private ArrayList<String> createDiscrepanciesList(Map<String, Discrepancy> discrepancies) {
