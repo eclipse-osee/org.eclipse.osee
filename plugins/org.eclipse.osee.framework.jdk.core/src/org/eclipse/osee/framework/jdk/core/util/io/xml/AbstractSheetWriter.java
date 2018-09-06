@@ -76,6 +76,11 @@ public abstract class AbstractSheetWriter implements ISheetWriter {
       writeCell(cellData, implicitCellIndex);
    }
 
+   @Override
+   public void writeEmptyCell() throws IOException {
+      writeCell(null);
+   }
+
    protected abstract void startRow() throws IOException;
 
    protected abstract void writeEndRow() throws IOException;

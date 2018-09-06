@@ -37,6 +37,8 @@ public interface ISheetWriter {
     */
    public void writeCell(Object cellData, int cellIndex) throws IOException;
 
+   public void writeEmptyCell() throws IOException;
+
    public void endRow() throws IOException;
 
    public void endWorkbook() throws IOException;
