@@ -70,6 +70,11 @@ public class DispoApiImpl implements DispoApi {
    private DispoImporterFactory importerFactory;
    private DispoUpdateBroadcaster updateBroadcaster;
    private volatile DispoApiConfiguration config;
+   private final Date newDate;
+
+   public DispoApiImpl() {
+      newDate = new Date();
+   }
 
    @Override
    public DispoApiConfiguration getConfig() {
@@ -534,8 +539,8 @@ public class DispoApiImpl implements DispoApi {
       Note genOpNotes = generateOperationNotes(operation);
       notesList.add(genOpNotes);
       newSet.setNotesList(notesList);
-      DispoSetArtifact dispoSetArtifact = new DispoSetArtifact(author);
-      newSet.setTime(dispoSetArtifact.getTime());
+      newDate.setTime(System.currentTimeMillis());
+      newSet.setTime(newDate);
 
       // Generate report
       getWriter().updateOperationSummary(author, branch, setToEdit.getGuid(), report);
@@ -568,8 +573,8 @@ public class DispoApiImpl implements DispoApi {
 
    private Note generateOperationNotes(String operation) {
       Note operationNote = new Note();
-      Date date = new Date();
-      operationNote.setDateString(date.toString());
+      newDate.setTime(System.currentTimeMillis());
+      operationNote.setDateString(newDate.toString());
       operationNote.setType("SYSTEM");
       operationNote.setContent(operation);
       return operationNote;
@@ -664,10 +669,10 @@ public class DispoApiImpl implements DispoApi {
       }
 
       DispoSetData dispoSetData = new DispoSetData();
+      newDate.setTime(System.currentTimeMillis());
+      dispoSetData.setTime(newDate);
       dispoSetData.setRerunList(DispoStrings.BATCH_RERUN_LIST + sb.toString() + DispoStrings.BATCH_RERUN_LIST_END);
       ArtifactReadable author = getQuery().findUser();
-      DispoSetArtifact dispoSetArtifact = new DispoSetArtifact(author);
-      dispoSetData.setTime(dispoSetArtifact.getTime());
       storageProvider.get().updateDispoSet(author, branch, destSetId, dispoSetData);
    }
 

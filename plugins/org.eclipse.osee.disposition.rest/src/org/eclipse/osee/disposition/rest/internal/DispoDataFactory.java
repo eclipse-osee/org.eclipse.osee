@@ -12,6 +12,7 @@
 package org.eclipse.osee.disposition.rest.internal;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,7 @@ public class DispoDataFactory {
    public DispoSetData creteSetDataFromDescriptor(DispoSetDescriptorData descriptor) {
       DispoSetData newSet = new DispoSetData();
       newSet.setName(descriptor.getName());
+      newSet.setTime(new Date());
       newSet.setImportPath(descriptor.getImportPath());
       newSet.setImportState("NONE");
       newSet.setNotesList(new ArrayList<Note>());

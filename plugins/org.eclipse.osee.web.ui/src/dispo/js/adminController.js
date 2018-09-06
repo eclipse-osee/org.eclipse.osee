@@ -1,7 +1,8 @@
 app.controller('adminController', [
 	'$scope', 
 	'$rootScope', 
-	'$modal', 
+	'$modal',
+	'$filter',
 	'Program', 
 	'Set', 
 	'Report', 
@@ -10,7 +11,7 @@ app.controller('adminController', [
 	'MultiItemEdit',
 	'Config',
     'uiGridConstants',
-		    function($scope, $rootScope,  $modal, Program, Set, Report, CopySet, CopySetCoverage, MultiItemEdit, Config, uiGridConstants) {
+		    function($scope, $rootScope,  $modal, $filter, Program, Set, Report, CopySet, CopySetCoverage, MultiItemEdit, Config, uiGridConstants) {
 		        $scope.readOnly = true;
 		        $scope.programSelection = null;
 		        $scope.modalShown = false;
@@ -326,6 +327,7 @@ app.controller('adminController', [
 		                newSet.$save({
 		                    programId: $scope.programSelection
 		                }, function(data) {
+		                	data.time = formatDate(data.time);
 		                    $scope.sets.push(data);
 		                });
 		            }
@@ -816,6 +818,10 @@ app.controller('adminController', [
 		            $scope.cancel = function() {
 		                $modalInstance.dismiss('cancel');
 		            };
+		        }
+		        
+		        var formatDate = function(time) {
+		        	return $filter('date')(new Date(time), 'EEE MMM dd HH:mm:ss UTC yyyy');
 		        }
 		    }
 		]);

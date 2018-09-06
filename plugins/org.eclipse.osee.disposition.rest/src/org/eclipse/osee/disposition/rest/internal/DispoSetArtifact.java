@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -100,10 +99,8 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
    }
 
    @Override
-   public String getTime() {
-      Date date = artifact.getSoleAttributeValue(DispoConstants.DispoTime, null);
-      SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
-      return sdf.format(date);
+   public Date getTime() {
+      return artifact.getSoleAttributeValue(DispoConstants.DispoTime, null);
    }
 
 }

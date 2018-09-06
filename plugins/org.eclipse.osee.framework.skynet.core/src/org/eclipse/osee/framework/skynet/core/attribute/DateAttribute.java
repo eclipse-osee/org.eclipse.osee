@@ -20,11 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  * @author Ryan D. Brooks
  */
 public class DateAttribute extends CharacterBackedAttribute<Date> {
-   public static final DateFormat MMDDYY = new SimpleDateFormat("MM/dd/yyyy");
-   public static final DateFormat HHMM = new SimpleDateFormat("hh:mm");
    public final DateFormat MMDDYYHHMM = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
-   public final DateFormat MMDDYYYYHHMMSSAMPM = new SimpleDateFormat("MMM dd,yyyy hh:mm:ss a");
-   public final DateFormat ALLDATETIME = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy");
 
    @Override
    public Date getValue() throws OseeCoreException {

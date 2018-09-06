@@ -23,15 +23,11 @@ import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
  */
 @OseeAttribute("DateAttribute")
 public class DateAttribute extends CharacterBackedAttribute<Date> {
-   public static final DateFormat MMDDYY = new SimpleDateFormat("MM/dd/yyyy");
-   public static final DateFormat HHMM = new SimpleDateFormat("hh:mm");
-   public final DateFormat MMDDYYHHMM = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
-   public final DateFormat MMDDYYYYHHMMSSAMPM = new SimpleDateFormat("MMM dd,yyyy hh:mm:ss a");
-   public final DateFormat ALLDATETIME = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy");
+   private static final DateFormat MMDDYYHHMM = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
 
    /**
     * Return current date or null if not set
-    * 
+    *
     * @return date or null if not set
     */
    @Override
@@ -52,7 +48,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
 
    /**
     * Sets date
-    * 
+    *
     * @param value value or null to clear
     */
    @Override
@@ -75,7 +71,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
 
    /**
     * Return date in format given by pattern or "" if not set
-    * 
+    *
     * @param pattern DateAttribute.MMDDYY, etc...
     * @return formated date
     */
