@@ -280,6 +280,10 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public void clearCaches() {
+      parentAction = null;
+      atsApi.getStateFactory().clearStateManager(this);
       atsLog = null;
+      atsApi.getWorkDefinitionService().internalClearWorkDefinition(this);
    }
+
 }

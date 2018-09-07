@@ -107,6 +107,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return getArtifactType() + ": " + getName();
    }
 
+   @Override
    public void clearCaches() {
       implementersStr = null;
       parentAction = null;
@@ -114,6 +115,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       parentTeamArt = null;
       AtsClientService.get().getStateFactory().clearStateManager(this);
       atsLog = null;
+      AtsClientService.get().getWorkDefinitionService().internalClearWorkDefinition(this);
    }
 
    public String getCurrentStateName() {

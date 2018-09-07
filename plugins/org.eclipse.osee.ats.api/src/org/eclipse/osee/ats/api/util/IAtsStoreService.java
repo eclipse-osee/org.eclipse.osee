@@ -92,5 +92,4 @@ public interface IAtsStoreService {
    boolean isProductionDb();
 
    boolean isHistorical(IAtsObject atsObject);
-
 }

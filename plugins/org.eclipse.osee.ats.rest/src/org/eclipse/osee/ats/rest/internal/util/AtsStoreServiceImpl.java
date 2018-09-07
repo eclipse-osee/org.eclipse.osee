@@ -250,5 +250,4 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    public boolean isHistorical(IAtsObject atsObject) {
       return ((ArtifactReadable) atsApi.getQueryService().getArtifact(atsObject)).isHistorical();
    }
-
 }

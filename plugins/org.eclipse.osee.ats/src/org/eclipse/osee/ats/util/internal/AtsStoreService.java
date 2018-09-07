@@ -29,8 +29,9 @@ import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.core.workflow.WorkItem;
+import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -194,11 +195,6 @@ public class AtsStoreService implements IAtsStoreService {
    }
 
    @Override
-   public void clearCaches(IAtsWorkItem workItem) {
-      ((WorkItem) workItem).clearCaches();
-   }
-
-   @Override
    public boolean isArtifactTypeInheritsFrom(IArtifactType artifactType, IArtifactType baseArtifactType) {
       return ArtifactTypeManager.inheritsFrom(artifactType, baseArtifactType);
    }
@@ -259,4 +255,9 @@ public class AtsStoreService implements IAtsStoreService {
       return ((Artifact) AtsClientService.get().getQueryService().getArtifact(atsObject)).isHistorical();
    }
 
+   @Override
+   public void clearCaches(IAtsWorkItem workItem) {
+      ((WorkItem) workItem).clearCaches();
+      ((AbstractWorkflowArtifact) workItem.getStoreObject()).clearCaches();
+   }
 }
