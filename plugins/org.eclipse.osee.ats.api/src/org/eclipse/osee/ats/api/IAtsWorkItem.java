@@ -85,4 +85,6 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
    boolean isPeerReview();
 
+   void clearCaches();
+
 }

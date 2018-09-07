@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.core.client.internal.store.AtsChangeSet;
+import org.eclipse.osee.ats.core.workflow.WorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -188,6 +189,11 @@ public class AtsStoreService implements IAtsStoreService {
    @Override
    public boolean isOfType(IAtsObject atsObject, IArtifactType artifactType) {
       return isOfType(AtsClientService.get().getArtifact(atsObject), artifactType);
+   }
+
+   @Override
+   public void clearCaches(IAtsWorkItem workItem) {
+      ((WorkItem) workItem).clearCaches();
    }
 
 }

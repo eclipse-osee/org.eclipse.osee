@@ -266,4 +266,9 @@ public class MockWorkItem implements IAtsWorkItem {
    public boolean isOfType(ArtifactTypeId... artifactTypes) {
       return false;
    }
+
+   @Override
+   public void clearCaches() {
+      // do nothing
+   }
 }

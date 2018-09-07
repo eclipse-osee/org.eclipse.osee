@@ -69,4 +69,6 @@ public interface IAtsStoreService {
 
    boolean isOfType(IAtsObject atsObject, IArtifactType artifactType);
 
+   void clearCaches(IAtsWorkItem workItem);
+
 }

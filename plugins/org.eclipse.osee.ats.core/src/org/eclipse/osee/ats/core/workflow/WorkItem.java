@@ -320,4 +320,11 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
       return services.getStoreService().isOfType(this.getStoreObject(), artifactTypes);
    }
 
+   @Override
+   public void clearCaches() {
+      stateMgr = null;
+      atsLog = null;
+      match = null;
+   }
+
 }
