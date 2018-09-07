@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.agile.IAgileSprintHtmlOperation;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
-import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -53,7 +52,6 @@ import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
-import org.eclipse.osee.ats.core.config.AtsCache;
 import org.eclipse.osee.ats.core.config.TeamDefinitionServiceImpl;
 import org.eclipse.osee.ats.core.program.AtsProgramService;
 import org.eclipse.osee.ats.core.review.AtsReviewServiceImpl;
@@ -87,7 +85,6 @@ public abstract class AtsApiImpl implements AtsApi {
    private static final String ATS_BRANCH_ID = "ats.branch.id";
    private final List<IAtsSearchDataProvider> searchDataProviders;
    protected Log logger;
-   protected IAtsCache atsCache;
    protected JdbcService jdbcService;
    protected AtsWorkDefinitionStoreService workDefinitionStore;
    protected IAtsWorkDefinitionService workDefinitionService;
@@ -156,7 +153,6 @@ public abstract class AtsApiImpl implements AtsApi {
    public void start() {
       Conditions.checkNotNull(workDefinitionDslService, "IAtsWorkDefinitionService");
 
-      atsCache = new AtsCache(this);
       teamWorkflowProvidersLazy = new TeamWorkflowProviders();
       workItemService = new AtsWorkItemServiceImpl(this, teamWorkflowProvidersLazy);
 
@@ -172,14 +168,12 @@ public abstract class AtsApiImpl implements AtsApi {
          workDefinitionService.clearCaches();
       }
       workDefinitionService = null;
-      atsCache = null;
       jdbcService = null;
       versionFactory = null;
    }
 
    @Override
    public void clearCaches() {
-      atsCache.invalidate();
       workDefinitionService.clearCaches();
       userService.reloadCache();
    }
@@ -288,11 +282,6 @@ public abstract class AtsApiImpl implements AtsApi {
    public void storeAtsBranch(BranchId branch, String name) {
       AtsPreferencesService.get().put(ATS_BRANCH_ID, branch.getIdString());
       AtsPreferencesService.get().put(ATS_BRANCH_NAME, name);
-   }
-
-   @Override
-   public IAtsCache getCache() {
-      return atsCache;
    }
 
    @Override

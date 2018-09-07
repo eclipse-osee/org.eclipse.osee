@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.api.agile.IAgileSprintHtmlOperation;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.AtsConfigKey;
-import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
@@ -111,8 +110,6 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkDefiniti
    IAtsImplementerService getImplementerService();
 
    IAtsColumnService getColumnService();
-
-   IAtsCache getCache();
 
    ISequenceProvider getSequenceProvider();
 

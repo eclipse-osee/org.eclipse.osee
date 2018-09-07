@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.ev.SearchWorkPackageOperation;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -99,13 +100,15 @@ public class SearchWorkPackageOperationTest {
    public void testSearchResults() {
       List<IAtsTeamDefinition> teamDefs = new ArrayList<>();
       for (Long teamDefId : teamDefIds) {
-         IAtsTeamDefinition teamDef = AtsClientService.get().getCache().getAtsObject(teamDefId);
+         IAtsTeamDefinition teamDef =
+            AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(ArtifactId.valueOf(teamDefId));
          teamDefs.add(teamDef);
       }
 
       List<IAtsActionableItem> ais = new ArrayList<>();
       for (Long aiId : aiIds) {
-         IAtsActionableItem ai = AtsClientService.get().getCache().getAtsObject(aiId);
+         IAtsActionableItem ai =
+            AtsClientService.get().getActionableItemService().getActionableItemById(ArtifactId.valueOf(aiId));
          ais.add(ai);
       }
 

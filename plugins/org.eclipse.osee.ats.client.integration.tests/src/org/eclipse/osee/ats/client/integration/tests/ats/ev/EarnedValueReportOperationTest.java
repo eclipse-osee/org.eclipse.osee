@@ -37,7 +37,8 @@ public class EarnedValueReportOperationTest {
    @Test
    public void testReport() {
       List<IAtsTeamDefinition> teamDefs = new ArrayList<>();
-      IAtsTeamDefinition teamDef = AtsClientService.get().getCache().getAtsObject(DemoArtifactToken.SAW_SW);
+      IAtsTeamDefinition teamDef =
+         AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(DemoArtifactToken.SAW_SW);
       teamDefs.add(teamDef);
       SearchWorkPackageOperation srch = new SearchWorkPackageOperation("srch", teamDefs, true,
          new ArrayList<IAtsActionableItem>(), false, Active.Both);

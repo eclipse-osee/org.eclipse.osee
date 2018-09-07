@@ -48,7 +48,7 @@ public class DemoTeamWorkflowTest {
    @Test
    public void testCreateSawTestWf() throws Exception {
       Collection<IAtsActionableItem> aias = new HashSet<>();
-      aias.add(AtsClientService.get().getCache().getAtsObject(DemoArtifactToken.SAW_Test_AI));
+      aias.add(AtsClientService.get().getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_Test_AI));
       String title = getClass().getSimpleName() + " testCreateSawTestWf";
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Create SAW Test Action title: " + title);
@@ -76,7 +76,7 @@ public class DemoTeamWorkflowTest {
       results = transitionMgr.handleAllAndPersist();
       assertTrue("Transition Error - " + results.toString(), results.isEmpty());
 
-      IAtsVersion sawBuild2Version = AtsClientService.get().getCache().getAtsObject(DemoArtifactToken.SAW_Bld_2);
+      IAtsVersion sawBuild2Version = AtsClientService.get().getVersionService().getById(DemoArtifactToken.SAW_Bld_2);
       assertNotNull(sawBuild2Version);
       AtsClientService.get().getVersionService().setTargetedVersion(teamWf, sawBuild2Version, changes);
       changes.execute();

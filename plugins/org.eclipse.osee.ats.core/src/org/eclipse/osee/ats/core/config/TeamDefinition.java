@@ -44,6 +44,7 @@ import org.eclipse.osee.logger.Log;
 public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinition {
 
    private JaxTeamDefinition jaxTeamDef;
+   private IAtsTeamDefinition parentTeamDef;
 
    public TeamDefinition(Log logger, AtsApi atsApi, JaxTeamDefinition jaxTeamDef) {
       super(logger, atsApi, ArtifactToken.valueOf(jaxTeamDef.getId(), jaxTeamDef.getGuid(), jaxTeamDef.getName(),
@@ -76,19 +77,17 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public IAtsTeamDefinition getParentTeamDef() {
-      IAtsTeamDefinition parent = null;
-      try {
-         ArtifactToken parentArt = atsApi.getRelationResolver().getParent(artifact);
-         if (parentArt != null && !parentArt.equals(AtsArtifactToken.HeadingFolder)) {
-            parent = atsApi.getCache().getAtsObject(parentArt.getId());
-            if (parent == null) {
-               parent = atsApi.getTeamDefinitionService().getTeamDefinitionById(parentArt);
+      if (parentTeamDef == null) {
+         try {
+            ArtifactToken parentArt = atsApi.getRelationResolver().getParent(artifact);
+            if (parentArt != null && !parentArt.equals(AtsArtifactToken.HeadingFolder)) {
+               parentTeamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(parentArt);
             }
+         } catch (OseeCoreException ex) {
+            getLogger().error(ex, "Error getParentTeamDef");
          }
-      } catch (OseeCoreException ex) {
-         getLogger().error(ex, "Error getParentTeamDef");
       }
-      return parent;
+      return parentTeamDef;
    }
 
    @Override

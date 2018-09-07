@@ -21,13 +21,12 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
-import org.eclipse.osee.ats.core.config.IAtsCacheProvider;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Donald G Dunne
  */
-public interface IAtsServer extends AtsApi, IAtsNotifier, IAtsCacheProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider {
+public interface IAtsServer extends AtsApi, IAtsNotifier, IAtsReviewServiceProvider, IAtsBranchServiceProvider {
 
    OrcsApi getOrcsApi();
 

@@ -168,16 +168,16 @@ public class DemoTestUtil {
    }
 
    public static IAtsTeamDefinition getTeamDef(ArtifactId artifactId) {
-      IAtsTeamDefinition results = null;
+      IAtsTeamDefinition teamDef = null;
       // Add check to keep exception from occurring for OSEE developers running against production
       if (!ClientSessionManager.isProductionDataStore()) {
          try {
-            results = AtsClientService.get().getCache().getAtsObject(artifactId);
+            teamDef = AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(artifactId);
          } catch (Exception ex) {
             OseeLog.log(DemoTestUtil.class, Level.SEVERE, ex);
          }
       }
-      return results;
+      return teamDef;
    }
 
    public static void assertTypes(Collection<? extends Object> objects, int count, Class<?> clazz) {

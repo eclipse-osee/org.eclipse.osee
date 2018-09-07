@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -44,7 +45,8 @@ public class VersionSearchWidget extends AbstractXComboViewerSearchWidget<IAtsVe
       if (getWidget() != null) {
          setup(getWidget());
          if (data.getVersionId() > 0) {
-            IAtsVersion version = AtsClientService.get().getCache().getAtsObject(data.getVersionId());
+            IAtsVersion version =
+               AtsClientService.get().getVersionService().getById(ArtifactId.valueOf(data.getVersionId()));
             if (version != null) {
                getWidget().setSelected(Arrays.asList(version));
             }

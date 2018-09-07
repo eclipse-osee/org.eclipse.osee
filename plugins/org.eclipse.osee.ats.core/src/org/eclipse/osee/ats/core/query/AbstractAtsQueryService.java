@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
@@ -204,29 +203,24 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
       return idStrs;
    }
 
+   @SuppressWarnings("unchecked")
    @Override
-   public <A extends IAtsConfigObject> A getSoleById(long id, Class<A> clazz) {
-      return getCache().getAtsObject(id);
-   }
-
-   private IAtsCache getCache() {
-      return atsApi.getCache();
-   }
-
-   @Override
-   public <T> T getConfigItem(ArtifactId artifact) {
-      return getConfigItem(artifact.getId());
+   public <T> T getConfigItem(ArtifactId artId) {
+      T atsObject = null;
+      ArtifactToken artifact = getArtifact(artId);
+      if (artifact != null) {
+         atsObject = (T) AtsObjects.getConfigObject(artifact, atsApi);
+      }
+      return atsObject;
    }
 
    @SuppressWarnings("unchecked")
    @Override
    public <T> T getConfigItem(Long id) {
-      T atsObject = getCache().getAtsObject(id);
-      if (atsObject == null) {
-         ArtifactToken artifact = getArtifact(id);
-         if (artifact != null && artifact instanceof IAtsConfigObject) {
-            atsObject = (T) AtsObjects.getConfigObject(artifact, atsApi);
-         }
+      T atsObject = null;
+      ArtifactToken artifact = getArtifact(id);
+      if (artifact != null && atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AtsConfigObject)) {
+         atsObject = (T) AtsObjects.getConfigObject(artifact, atsApi);
       }
       return atsObject;
    }

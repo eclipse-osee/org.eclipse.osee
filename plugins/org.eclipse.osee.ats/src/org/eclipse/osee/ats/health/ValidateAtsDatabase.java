@@ -612,7 +612,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             continue;
          }
          if (artifact.isOfType(AtsArtifactTypes.Version)) {
-            IAtsVersion version = AtsClientService.get().getCache().getAtsObject(artifact.getId());
+            IAtsVersion version = AtsClientService.get().getVersionService().getById(artifact);
             if (version != null) {
                try {
                   BranchId parentBranchId = version.getBaselineBranchId();
@@ -641,7 +641,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             continue;
          }
          if (artifact.isOfType(AtsArtifactTypes.Version)) {
-            IAtsVersion version = AtsClientService.get().getCache().getAtsObject(artifact.getId());
+            IAtsVersion version = AtsClientService.get().getVersionService().getById(artifact);
             if (version != null) {
                for (IAtsVersion parallelVersion : Versions.getParallelVersions(version, AtsClientService.get())) {
                   if (parallelVersion != null) {
@@ -669,7 +669,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             continue;
          }
          if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {
-            IAtsTeamDefinition teamDef = AtsClientService.get().getCache().getAtsObject(art.getId());
+            IAtsTeamDefinition teamDef = AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(art);
             try {
                BranchId parentBranchId = teamDef.getBaselineBranchId();
                if (parentBranchId.isValid()) {
@@ -1002,7 +1002,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
          try {
             if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
-               IAtsActionableItem aia = AtsClientService.get().getCache().getAtsObject(artifact.getId());
+               IAtsActionableItem aia =
+                  AtsClientService.get().getActionableItemService().getActionableItemById(artifact);
                if (aia.isActionable() && TeamDefinitions.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
                   results.log(artifact, "testActionableItemToTeamDefinition",
                      "Error: ActionableItem " + XResultDataUI.getHyperlink(artifact.getName(),

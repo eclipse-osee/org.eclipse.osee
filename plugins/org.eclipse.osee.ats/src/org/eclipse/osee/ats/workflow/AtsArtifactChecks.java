@@ -176,7 +176,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
    private Set<ArtifactId> getActionableItemIdsWithRecurse(HashSet<ArtifactId> aiIds, Collection<Artifact> artifacts) {
       for (Artifact art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.ActionableItem)) {
-            IAtsActionableItem ai = AtsClientService.get().getCache().getAtsObject(art.getId());
+            IAtsActionableItem ai = AtsClientService.get().getActionableItemService().getActionableItemById(art);
             if (ai != null) {
                aiIds.add(ArtifactId.valueOf(ai));
                Collection<Artifact> childArts = art.getChildren();

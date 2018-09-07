@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
  * @author Donald G. Dunne
@@ -68,7 +69,8 @@ public class TeamDefinitionSearchWidget {
          getWidget().handleClear();
          List<IAtsTeamDefinition> teamDefs = new LinkedList<>();
          for (Long id : data.getTeamDefIds()) {
-            IAtsTeamDefinition teamDef = AtsClientService.get().getCache().getAtsObject(id);
+            IAtsTeamDefinition teamDef =
+               AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(ArtifactId.valueOf(id));
             if (teamDef != null) {
                teamDefs.add(teamDef);
             }

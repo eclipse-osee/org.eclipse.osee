@@ -26,10 +26,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
-import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
-import org.eclipse.osee.ats.api.config.JaxActionableItem;
-import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -50,10 +47,8 @@ import org.eclipse.osee.ats.branch.internal.AtsBranchServiceImpl;
 import org.eclipse.osee.ats.config.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
-import org.eclipse.osee.ats.core.config.ActionableItem;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
-import org.eclipse.osee.ats.core.config.TeamDefinition;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsApiImpl;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
@@ -142,8 +137,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
       queryService = new AtsQueryServiceImpl(this, jdbcService);
       actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, storeService, this);
 
-      actionFactory =
-         new ActionFactory(attributeResolverService, this);
+      actionFactory = new ActionFactory(attributeResolverService, this);
       taskService = new AtsTaskService(this);
 
       eventService = new AtsEventServiceImpl();
@@ -222,7 +216,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
 
    @Override
    public void reloadConfigCache(boolean pend) {
-      final AtsApi client = this;
       Runnable reload = new Runnable() {
 
          @Override
@@ -231,28 +224,11 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
                // load artifacts to ensure they're in ArtifactCache prior to ATS chaching
                ArtifactQuery.getArtifactListFromTypeWithInheritence(AtsArtifactTypes.AtsConfigObject, getAtsBranch(),
                   DeletionFlag.EXCLUDE_DELETED);
-
-               AtsConfigurations configs = getConfigService().getConfigurations();
-               cacheActionableItems(configs.getIdToAi().get(configs.getTopActionableItem().getId()));
-               cacheTeamDefinitions(configs.getIdToTeamDef().get(configs.getTopTeamDefinition().getId()));
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
 
-         private void cacheTeamDefinitions(JaxTeamDefinition jaxTeamDef) {
-            atsCache.cacheAtsObject(new TeamDefinition(getLogger(), client, jaxTeamDef));
-            for (Long childId : jaxTeamDef.getChildren()) {
-               cacheTeamDefinitions(getConfigService().getConfigurations().getIdToTeamDef().get(childId));
-            }
-         }
-
-         private void cacheActionableItems(JaxActionableItem jaxAi) {
-            atsCache.cacheAtsObject(new ActionableItem(getLogger(), client, jaxAi));
-            for (Long child : jaxAi.getChildren()) {
-               cacheActionableItems(getConfigService().getConfigurations().getIdToAi().get(child));
-            }
-         }
       };
       if (pend) {
          reload.run();
@@ -287,7 +263,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    @Override
    public IAtsTeamDefinition createTeamDefinition(String name, long id, IAtsChangeSet changes, AtsApi atsApi) {
       IAtsTeamDefinition item = teamDefFactory.createTeamDefinition(name, id, changes, atsApi);
-      atsCache.cacheAtsObject(item);
       return item;
    }
 
@@ -299,7 +274,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    @Override
    public IAtsActionableItem createActionableItem(String name, long id, IAtsChangeSet changes, AtsApi atsApi) {
       IAtsActionableItem item = actionableItemFactory.createActionableItem(name, id, changes, atsApi);
-      atsCache.cacheAtsObject(item);
       return item;
    }
 

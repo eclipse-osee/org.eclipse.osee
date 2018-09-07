@@ -136,8 +136,6 @@ public interface IAtsQueryService {
 
    List<ArtifactToken> getArtifacts(IArtifactType artifactType);
 
-   <A extends IAtsConfigObject> A getSoleById(long id, Class<A> clazz);
-
    ArtifactToken getConfigArtifact(IAtsConfigObject atsConfigObject);
 
    ArtifactToken getArtifact(ArtifactId artifact, BranchId branch);

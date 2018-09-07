@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
@@ -241,24 +240,6 @@ public class AtsTestUtil {
       verArt4 = null;
       decRevArt = null;
       peerRevArt = null;
-      for (IAtsActionableItem aia : AtsClientService.get().getQueryService().createQuery(
-         AtsArtifactTypes.ActionableItem).getItems(IAtsActionableItem.class)) {
-         if (aia.getName().contains("AtsTestUtil")) {
-            AtsClientService.get().getCache().deCacheAtsObject(aia);
-         }
-      }
-      for (IAtsTeamDefinition aia : AtsClientService.get().getQueryService().createQuery(
-         AtsArtifactTypes.TeamDefinition).getItems(IAtsTeamDefinition.class)) {
-         if (aia.getName().contains("AtsTestUtil")) {
-            AtsClientService.get().getCache().deCacheAtsObject(aia);
-         }
-      }
-      for (IAtsVersion ver : AtsClientService.get().getQueryService().createQuery(AtsArtifactTypes.Version).getItems(
-         IAtsVersion.class)) {
-         if (ver.getName().contains("AtsTestUtil")) {
-            AtsClientService.get().getCache().deCacheAtsObject(ver);
-         }
-      }
    }
 
    private static String getTitle(String objectName, String postFixName) {
@@ -753,7 +734,6 @@ public class AtsTestUtil {
       verArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow,
          Arrays.asList((Artifact) getTeamWf().getStoreObject()));
       verArt.persist(AtsTestUtil.class.getSimpleName() + "-SetTeamWfTargetedVer1");
-      AtsClientService.get().getCache().deCacheAtsObject(version);
    }
 
    public static String getName() {

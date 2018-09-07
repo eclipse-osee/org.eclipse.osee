@@ -19,7 +19,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.rule.JaxRuleDefinitions;
@@ -94,10 +93,7 @@ public class AtsRuleEndpointImpl implements AtsRuleEndpointApi {
             atsApi.getStoreService().createAtsChangeSet("Update artifact with Rule", AtsCoreUsers.SYSTEM_USER);
          changes.addAttribute(artifact, AtsAttributeTypes.RuleDefinition, setRuleData.getRuleName());
          changes.execute();
-         IAtsConfigObject atsObject = atsApi.getCache().getAtsObject(setRuleData.getConfigItemId());
-         atsApi.getCache().deCacheAtsObject(atsObject);
       }
-
       return Response.ok().build();
    }
 
