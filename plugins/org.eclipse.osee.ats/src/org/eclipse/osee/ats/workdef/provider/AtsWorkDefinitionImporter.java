@@ -95,7 +95,7 @@ public class AtsWorkDefinitionImporter {
       }
       Integer.valueOf(idStr);
       ArtifactId artId = ArtifactId.valueOf(idStr);
-      if (artToken != null && artToken.isValid() && !artToken.equals(artId)) {
+      if (artToken != null && artToken.isValid() && artToken.notEqual(artId)) {
          throw new OseeArgumentException("Sheet Id [%s] and Artifact Token id [%s] must match.", idStr,
             artToken.getIdString());
       }

@@ -87,7 +87,7 @@ public class BranchGraphEditorInput implements IEditorInput, Adaptable {
          if (other.branch != null) {
             return false;
          }
-      } else if (!branch.equals(other.branch)) {
+      } else if (branch.notEqual(other.branch)) {
          return false;
       }
       return true;

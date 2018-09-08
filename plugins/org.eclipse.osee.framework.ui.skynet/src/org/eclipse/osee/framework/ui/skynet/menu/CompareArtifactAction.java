@@ -104,7 +104,7 @@ public final class CompareArtifactAction extends Action {
          Change changeA = (Change) selectionA;
          Change changeB = (Change) selectionB;
 
-         Conditions.checkExpressionFailOnTrue(!changeA.getArtId().equals(changeB.getArtId()),
+         Conditions.checkExpressionFailOnTrue(changeA.getArtId().notEqual(changeB.getArtId()),
             "Change art ids don't match [%s:%s]", changeA.getArtId(), changeB.getArtId());
 
          ArtifactId artId = changeA.getArtId();

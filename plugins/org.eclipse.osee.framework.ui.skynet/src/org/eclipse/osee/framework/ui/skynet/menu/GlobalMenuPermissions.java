@@ -73,7 +73,7 @@ public class GlobalMenuPermissions {
             if (combinationSubject == null) {
                combinationSubject = subject;
                subjectFromLockedObjectName = combinationSubject.getName();
-            } else if (!combinationSubject.equals(subject)) {
+            } else if (combinationSubject.notEqual(subject)) {
                subjectFromLockedObjectName = "Mixed names";
             }
          }

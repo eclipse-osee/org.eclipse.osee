@@ -46,7 +46,7 @@ public class WfeEditorAddSupportingArtifacts extends Job {
          results.error("Must pass in supporting artifacts");
       }
       for (Artifact art : supportingArtifacts) {
-         if (!art.getBranch().equals(AtsClientService.get().getAtsBranch())) {
+         if (!art.isOnBranch(AtsClientService.get().getAtsBranch())) {
             results.error("Can not relate artifacts that are not on the ATS Branch");
          }
       }

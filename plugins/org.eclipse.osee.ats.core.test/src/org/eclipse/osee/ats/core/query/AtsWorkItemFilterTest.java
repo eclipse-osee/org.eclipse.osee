@@ -26,6 +26,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
+import org.eclipse.osee.ats.core.config.TeamDefinition;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,12 +41,11 @@ public class AtsWorkItemFilterTest {
 
    // @formatter:off
    @Mock IAtsTeamWorkflow teamWf1;
-   @Mock IAtsTeamDefinition teamDef1;
+
    @Mock IAtsStateManager teamWf1StateMgr;
    @Mock IAtsAction action1;
 
    @Mock IAtsTeamWorkflow teamWf2;
-   @Mock IAtsTeamDefinition teamDef2;
    @Mock IAtsStateManager teamWf2StateMgr;
    @Mock IAtsAction action2;
 
@@ -55,6 +56,9 @@ public class AtsWorkItemFilterTest {
    @Mock IArtifactResolver artifactResolver;
    @Mock IAttributeResolver attributeResolver;
    // @formatter:on
+
+   private final IAtsTeamDefinition teamDef1 = new TeamDefinition(null, atsApi, CoreArtifactTokens.UserGroups);
+   private final IAtsTeamDefinition teamDef2 = new TeamDefinition(null, atsApi, CoreArtifactTokens.Everyone);
 
    @Before
    public void setup() {
@@ -103,9 +107,6 @@ public class AtsWorkItemFilterTest {
 
    @Test
    public void testFromTeam() {
-      when(teamDef1.getId()).thenReturn(23L);
-      when(teamDef2.getId()).thenReturn(55L);
-
       AtsWorkItemFilter filter = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), atsApi);
       filter.fromTeam(teamDef1);
       Assert.assertEquals(2, filter.getItems().size());

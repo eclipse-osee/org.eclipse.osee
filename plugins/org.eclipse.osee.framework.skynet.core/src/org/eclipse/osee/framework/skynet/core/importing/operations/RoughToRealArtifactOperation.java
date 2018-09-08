@@ -136,7 +136,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
    }
 
    private boolean hasDifferentParent(Artifact art, Artifact parent) {
-      return art.hasParent() && !art.getParent().equals(parent);
+      return art.hasParent() && art.getParent().notEqual(parent);
    }
 
    // TODO move these two functions into jdk.core or find existing library functions

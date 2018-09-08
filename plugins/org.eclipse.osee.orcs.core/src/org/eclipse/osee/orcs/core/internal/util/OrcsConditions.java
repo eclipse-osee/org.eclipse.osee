@@ -39,7 +39,7 @@ public final class OrcsConditions {
       for (Artifact node : nodes) {
          checkNotNull(node, "node");
          GraphData graph2 = node.getGraph();
-         checkExpressionFailOnTrue(!graph.getBranch().equals(graph2.getBranch()),
+         checkExpressionFailOnTrue(!graph.isOnSameBranch(graph2),
             "Error - Node[%s] is on branch[%d] but should be on branch[%d]", node, graph2.getBranch(),
             graph.getBranch());
       }

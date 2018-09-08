@@ -603,7 +603,7 @@ public class WordTemplateProcessor {
       if (artifacts != null && !artifacts.isEmpty()) {
          Object[] objs = {branch, view, branch};
 
-         if (!view.equals(ArtifactId.SENTINEL)) {
+         if (view.isValid()) {
             List<ArtifactId> excludedArtifacts = ArtifactLoader.selectArtifactIds(LOAD_EXCLUDED_ARTIFACTIDS, objs, 300);
             for (ArtifactId artId : excludedArtifacts) {
                toReturn.put(artId, artId);

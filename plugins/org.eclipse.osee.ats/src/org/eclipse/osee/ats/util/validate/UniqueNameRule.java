@@ -51,8 +51,8 @@ public class UniqueNameRule extends AbstractValidationRule {
          // validate that no other artifact of the given Artifact Type has the same name.
          List<Artifact> arts = getArtifactsOfType(artToValidate.getBranchToken(), artToValidate.getArtifactType());
          for (Artifact art : arts) {
-            if (art.getName().equalsIgnoreCase(artToValidate.getName()) && !art.getId().equals(
-               artToValidate.getId()) && !hasIdPairAlreadyBeenEvaluated(art.getId(), artToValidate.getId())) {
+            if (art.getName().equalsIgnoreCase(artToValidate.getName()) && art.notEqual(
+               artToValidate) && !hasIdPairAlreadyBeenEvaluated(art.getId(), artToValidate.getId())) {
                /**************************************************************************
                 * Special case: Allow duplicate names of artifacts if<br/>
                 * 1) Artifact name is numeric <br/>

@@ -475,7 +475,7 @@ public class OrcsTransactionTest {
       verifyHistoricalArtifacts(artifacts, artifact1, artifact2);
       Iterator<ArtifactReadable> iter = artifacts.iterator();
       ArtifactReadable artifact1Actual = iter.next();
-      if (!artifact1Actual.equals(artifact2)) {
+      if (artifact1Actual.notEqual(artifact2)) {
          artifact1Actual = iter.next();
       }
       builder = query.fromBranch(COMMON);
@@ -525,7 +525,7 @@ public class OrcsTransactionTest {
       verifyHistoricalArtifacts(artifacts, artifact1, artifact2);
       Iterator<ArtifactReadable> iter = artifacts.iterator();
       ArtifactReadable artifact1Actual = iter.next();
-      if (!artifact1Actual.equals(artifact2)) {
+      if (artifact1Actual.notEqual(artifact2)) {
          artifact1Actual = iter.next();
       }
       builder = query.fromBranch(COMMON);

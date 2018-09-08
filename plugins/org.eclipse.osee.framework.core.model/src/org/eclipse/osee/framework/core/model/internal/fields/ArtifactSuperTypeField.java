@@ -33,7 +33,7 @@ public final class ArtifactSuperTypeField extends CollectionField<ArtifactType> 
    protected Collection<ArtifactType> checkInput(Collection<ArtifactType> input) {
       Collection<ArtifactType> toReturn = Collections.emptyList();
       if (input == null || input.isEmpty()) {
-         if (!baseType.equals(CoreArtifactTypes.Artifact)) {
+         if (baseType.notEqual(CoreArtifactTypes.Artifact)) {
             throw new OseeInvalidInheritanceException(
                "All artifacts must inherit from [Artifact] - attempted make [%s] have null inheritance", baseType);
          }

@@ -47,7 +47,7 @@ public class BranchFilter implements Predicate<Branch> {
 
    @Override
    public boolean test(Branch branch) {
-      if (associatedArtifact != null && !branch.getAssociatedArtifactId().equals(associatedArtifact)) {
+      if (associatedArtifact != null && branch.getAssociatedArtifactId().notEqual(associatedArtifact)) {
          return false;
       }
       if (!archivedState.matches(branch.isArchived())) {

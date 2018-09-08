@@ -109,7 +109,7 @@ public class VersionDataImpl implements VersionData {
          return false;
       }
       VersionDataImpl other = (VersionDataImpl) obj;
-      if (!branch.equals(other.branch)) {
+      if (branch.notEqual(other.branch)) {
          return false;
       }
       if (gamma != other.gamma) {

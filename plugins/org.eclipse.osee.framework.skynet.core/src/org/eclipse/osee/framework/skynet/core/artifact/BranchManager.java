@@ -589,7 +589,7 @@ public final class BranchManager {
    }
 
    public static boolean hasChanges(BranchId branch) {
-      return !getBaseTransaction(branch).equals(TransactionManager.getHeadTransaction(branch));
+      return getBaseTransaction(branch).notEqual(TransactionManager.getHeadTransaction(branch));
    }
 
    public static boolean isChangeManaged(BranchId branch) {

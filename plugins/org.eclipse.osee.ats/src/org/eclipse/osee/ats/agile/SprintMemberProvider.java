@@ -95,7 +95,7 @@ public class SprintMemberProvider extends AbstractMemberProvider {
       StringBuilder builder = new StringBuilder();
       for (Artifact art : artifacts) {
          List<Artifact> relatedSprints = art.getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_Sprint);
-         if (relatedSprints.size() > 1 || relatedSprints.size() == 1 && !relatedSprints.iterator().next().equals(
+         if (relatedSprints.size() > 1 || relatedSprints.size() == 1 && relatedSprints.iterator().next().notEqual(
             getArtifact())) {
             builder.append(art.getArtifactTypeName());
             builder.append(" ");

@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.access.internal;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import java.lang.reflect.Array;
@@ -42,7 +43,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
@@ -377,8 +377,7 @@ public class AccessControlService implements IAccessControlService {
       PermissionEnum userPermission = null;
       AccessObject accessObject = BranchAccessObject.getBranchAccessObjectFromCache(branch);
 
-      if (accessObject == null && (!CoreBranches.COMMON.getId().equals(branch.getId()) && BranchManager.getType(
-         branch).isBaselineBranch())) {
+      if (accessObject == null && (branch.notEqual(COMMON) && BranchManager.getType(branch).isBaselineBranch())) {
          userPermission = PermissionEnum.READ;
       } else if (accessObject == null) {
          userPermission = PermissionEnum.FULLACCESS;

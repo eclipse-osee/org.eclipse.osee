@@ -117,7 +117,7 @@ public final class ChangeVersion {
          if (other.gammaId != null) {
             return false;
          }
-      } else if (!gammaId.equals(other.gammaId)) {
+      } else if (gammaId.notEqual(other.gammaId)) {
          return false;
       }
       if (modType == null) {

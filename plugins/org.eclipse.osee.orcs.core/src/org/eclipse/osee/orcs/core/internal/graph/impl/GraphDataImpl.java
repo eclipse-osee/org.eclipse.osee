@@ -113,10 +113,10 @@ public class GraphDataImpl implements GraphData {
          return false;
       }
       GraphData other = (GraphData) obj;
-      if (!getBranch().equals(other.getBranch())) {
+      if (!isOnSameBranch(other)) {
          return false;
       }
-      if (getTransaction() != other.getTransaction()) {
+      if (getTransaction().notEqual(other.getTransaction())) {
          return false;
       }
       return true;

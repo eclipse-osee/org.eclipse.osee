@@ -181,10 +181,10 @@ public class ChangeItem implements Comparable<ChangeItem> {
 
       ChangeItem other = (ChangeItem) obj;
 
-      if (!itemId.equals(other.itemId)) {
+      if (itemId.notEqual(other.itemId)) {
          return false;
       }
-      if (!artId.equals(other.artId)) {
+      if (artId.notEqual(other.artId)) {
          return false;
       }
       if (currentVersion == null) {
@@ -195,7 +195,7 @@ public class ChangeItem implements Comparable<ChangeItem> {
       if (!currentVersion.equals(other.currentVersion)) {
          return false;
       }
-      if (!itemTypeId.equals(other.itemTypeId)) {
+      if (itemTypeId.notEqual(other.itemTypeId)) {
          return false;
       }
       return true;

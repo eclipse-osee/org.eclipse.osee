@@ -80,7 +80,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       if (parentTeamDef == null) {
          try {
             ArtifactToken parentArt = atsApi.getRelationResolver().getParent(artifact);
-            if (parentArt != null && !parentArt.equals(AtsArtifactToken.HeadingFolder)) {
+            if (parentArt != null && parentArt.notEqual(AtsArtifactToken.HeadingFolder)) {
                parentTeamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(parentArt);
             }
          } catch (OseeCoreException ex) {

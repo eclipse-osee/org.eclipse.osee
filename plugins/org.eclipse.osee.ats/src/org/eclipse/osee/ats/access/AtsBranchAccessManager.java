@@ -86,7 +86,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
    public boolean isApplicable(BranchId objectBranch) {
       boolean result = false;
       try {
-         if (!AtsClientService.get().getAtsBranch().equals(objectBranch)) {
+         if (AtsClientService.get().getAtsBranch().notEqual(objectBranch)) {
             result = BranchManager.getAssociatedArtifact(objectBranch).isOfType(AtsArtifactTypes.AtsArtifact);
          }
       } catch (OseeCoreException ex) {
@@ -114,7 +114,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
       branchIdToContextIdCache.put(branch, contextIds);
       try {
          // don't access control common branch artifacts...yet
-         if (!AtsClientService.get().getAtsBranch().equals(branch)) {
+         if (AtsClientService.get().getAtsBranch().notEqual(branch)) {
             // do this check first since role will supersede others
             if (roleContextProvider != null) {
                contextIds.addAll(roleContextProvider.getContextId(UserManager.getUser()));

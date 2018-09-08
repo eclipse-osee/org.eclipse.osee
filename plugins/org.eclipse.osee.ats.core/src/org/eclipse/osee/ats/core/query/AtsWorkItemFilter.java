@@ -78,7 +78,7 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
    public IAtsWorkItemFilter fromTeam(IAtsTeamDefinition teamDef) {
       for (IAtsWorkItem workItem : new CopyOnWriteArrayList<IAtsWorkItem>(items)) {
          IAtsTeamDefinition itemTeamDef = workItem.getParentTeamWorkflow().getTeamDefinition();
-         if (!itemTeamDef.getId().equals(teamDef.getId())) {
+         if (itemTeamDef.notEqual(teamDef)) {
             items.remove(workItem);
          }
       }
