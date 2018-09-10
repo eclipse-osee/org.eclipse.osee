@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.swt;
 
-import java.io.File;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -107,8 +106,7 @@ public final class ImageManager {
    }
 
    public static ImageDescriptor createImageDescriptor(String symbolicBundleName, String imageFileName) {
-      return AbstractUIPlugin.imageDescriptorFromPlugin(symbolicBundleName,
-         "OSEE-INF/images" + File.separator + imageFileName);
+      return AbstractUIPlugin.imageDescriptorFromPlugin(symbolicBundleName, "OSEE-INF/images" + "/" + imageFileName);
    }
 
    public static KeyedImage createKeyedImage(String imageKey, ImageDescriptor descriptor) {

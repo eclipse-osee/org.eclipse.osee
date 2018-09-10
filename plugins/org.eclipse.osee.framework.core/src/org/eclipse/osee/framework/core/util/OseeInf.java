@@ -54,7 +54,7 @@ public class OseeInf {
 
    public static URL getResourceAsUrl(String path, Class<?> clazz) {
       Bundle bundle = FrameworkUtil.getBundle(clazz);
-      URL url = bundle.getEntry("OSEE-INF" + File.separator + path);
+      URL url = bundle.getEntry("OSEE-INF" + "/" + path);
       try {
          return FileLocator.toFileURL(url);
       } catch (Exception ex) {
