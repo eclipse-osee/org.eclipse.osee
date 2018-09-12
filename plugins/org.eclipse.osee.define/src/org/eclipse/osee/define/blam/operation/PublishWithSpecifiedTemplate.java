@@ -86,6 +86,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    private final String IS_ARTIFACTS = "IS Artifacts";
    private final String PUBLISH_AS_DIFF = "Publish As Diff";
    private final String WAS_BRANCH = "WAS Branch";
+   private final String INCLUDE_ARTIFACT_UUIDS = "Include Artifact UUIDs";
    private final String ORCS_QUERY = "Orcs Query";
    private final String VIEW = "Branch View (For IS Artifacts)";
 
@@ -100,6 +101,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
       boolean useArtifactNameInLinks = variableMap.getBoolean(USE_ARTIFACT_NAMES);
       boolean useParagraphNumbersInLinks = variableMap.getBoolean(USE_PARAGRAPH_NUMBERS);
+      variableMap.getBoolean(INCLUDE_ARTIFACT_UUIDS);
 
       if (!useParagraphNumbersInLinks && !useArtifactNameInLinks) {
          throw new OseeArgumentException("Please select at least one Document Link Format");
@@ -161,6 +163,8 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
          variableMap.getBranch(WAS_BRANCH),
          "Publish As Diff",
          variableMap.getValue(PUBLISH_AS_DIFF),
+         "INCLUDE UUIDS",
+         variableMap.getValue(INCLUDE_ARTIFACT_UUIDS),
          "linkType",
          linkType,
          WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
@@ -285,7 +289,9 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       builder.append(String.format(
          "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
          UPDATE_PARAGRAPH_NUMBERS));
-
+      builder.append(String.format(
+         "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
+         INCLUDE_ARTIFACT_UUIDS));
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Document Link Format:\"/>");
       builder.append(String.format(
          "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" defaultValue=\"true\"/>",
