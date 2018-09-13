@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsRuleEndpointApi;
 import org.eclipse.osee.ats.core.client.IAtsClient;
-import org.eclipse.osee.ats.core.client.workflow.WorkItemJsonReader;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
@@ -47,7 +46,7 @@ public class AtsClientService {
          String appServer = OseeClientProperties.getOseeApplicationServer();
          String atsUri = String.format("%s/ats", appServer);
          JaxRsClient jaxRsClient = JaxRsClient.newBuilder().createThreadSafeProxyClients(true).build();
-         target = jaxRsClient.target(atsUri).register(WorkItemJsonReader.class);
+         target = jaxRsClient.target(atsUri);
       }
       return target;
    }
