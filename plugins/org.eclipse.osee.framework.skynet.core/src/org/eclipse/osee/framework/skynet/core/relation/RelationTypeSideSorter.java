@@ -14,7 +14,9 @@ package org.eclipse.osee.framework.skynet.core.relation;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -35,6 +37,7 @@ public class RelationTypeSideSorter extends RelationTypeSide {
    private final RelationType relationType;
    private final RelationOrderData orderData;
    private final RelationSorterProvider sorterProvider;
+   private final Map<Artifact, RelationLink> artToRelation = new HashMap<>();
 
    public RelationTypeSideSorter(RelationType relationType, RelationSide side, RelationSorterProvider sorterProvider, RelationOrderData orderData) {
       super(relationType, side);
@@ -73,6 +76,10 @@ public class RelationTypeSideSorter extends RelationTypeSide {
       IRelationSorter order = sorterProvider.getRelationOrder(getSorterId());
       List<String> relativeOrder = orderData.getOrderList(getRelationType(), getSide());
       order.sort(listToOrder, relativeOrder);
+   }
+
+   public RelationLink getRelation(Artifact artifact) {
+      return artToRelation.get(artifact);
    }
 
    public void addItem(RelationSorter sorterId, Artifact itemToAdd) throws OseeCoreException {

@@ -71,13 +71,13 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
             }
             return areDeltasEqual && change.getArtId() == getArtId() &&
             //
-            change.getGamma() == getGamma() &&
-            //
-            change.getChangeArtifact().equals(getChangeArtifact()) &&
-            //
-            change.getModificationType() == getModificationType() &&
-            //
-            change.getTxDelta().equals(getTxDelta());
+               change.getGamma() == getGamma() &&
+               //
+               change.getChangeArtifact().equals(getChangeArtifact()) &&
+               //
+               change.getModificationType() == getModificationType() &&
+               //
+               change.getTxDelta().equals(getTxDelta());
          }
       }
       return false;
@@ -120,7 +120,7 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
    }
 
    public String getArtifactName() {
-      return getChangeArtifact().getName();
+      return getChangeArtifact().toStringWithId();
    }
 
    public GammaId getGamma() {

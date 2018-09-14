@@ -81,11 +81,8 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
    private NeedSelectedArtifactListener needSelectedArtifactListener;
    private final IDirtiableEditor editor;
    public static final String VIEW_ID = "osee.define.relation.RelationExplorer";
-   public static final String[] columnNames = new String[] {" ", "Rationale"};
-   public static final Integer[] columnLengths = new Integer[] {500, 50};
-
-   // the index of column order
-   private static int COLUMN_ORDER = 1;
+   public static final String[] columnNames = new String[] {"Type/Side/Name", "Art Id", "Rationale", "Id", "Gamma Id"};
+   public static final Integer[] columnLengths = new Integer[] {600, 50, 300, 50, 50};
 
    private MenuItem openMenuItem, wordPreviewItem, editMenuItem, viewRelationTreeItem, deleteRelationMenuItem,
       massEditMenuItem, deleteArtifactMenuItem, revealInArtifactExporerMenuItem;
@@ -330,8 +327,6 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
             TreeViewerReport report =
                new TreeViewerReport("Relation View Report for " + artifact.getName(), treeViewer);
             ArrayList<Integer> ignoreCols = new ArrayList<>();
-            ignoreCols.add(COLUMN_ORDER);
-            report.setIgnoreColumns(ignoreCols);
             report.open();
          }
       });

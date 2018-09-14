@@ -395,4 +395,8 @@ public class RelationLink implements HasBranch {
    public boolean isUseBackingData() {
       return useBackingData;
    }
+
+   public String getIdString() {
+      return String.valueOf(getId());
+   }
 }

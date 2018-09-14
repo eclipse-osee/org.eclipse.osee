@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
@@ -33,7 +34,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 /**
  * The basis for the comments in this class can be found at
  * http://www.eclipse.org/articles/treeviewer-cg/TreeViewerArticle.htm
- * 
+ *
  * @author Ryan D. Brooks
  */
 public class RelationContentProvider implements ITreeContentProvider {
@@ -53,7 +54,7 @@ public class RelationContentProvider implements ITreeContentProvider {
     * model-specific means), and deregistering the viewer from the old input. In response to these change notifications,
     * the content provider propagates the changes to the viewer.
     * </p>
-    * 
+    *
     * @param viewer the viewer
     * @param oldInput the old input element, or <code>null</code> if the viewer did not previously have an input
     * @param newInput the new input element, or <code>null</code> if the viewer does not have an input
@@ -68,7 +69,7 @@ public class RelationContentProvider implements ITreeContentProvider {
     * The tree viewer calls its content provider&#8217;s getChildren method when it needs to create or display the child
     * elements of the domain object, <b>parent </b>. This method should answer an array of domain objects that represent
     * the unfiltered children of <b>parent </b>
-    * 
+    *
     * @see ITreeContentProvider#getChildren(Object)
     */
    @Override
@@ -108,16 +109,16 @@ public class RelationContentProvider implements ITreeContentProvider {
             }
          } else if (parentElement instanceof RelationTypeSideSorter) {
             RelationTypeSideSorter relationSorter = (RelationTypeSideSorter) parentElement;
-            List<Artifact> artifacts = artifactRoot.getRelatedArtifacts(relationSorter);
-            WrapperForRelationLink[] wrapper = new WrapperForRelationLink[artifacts.size()];
-            for (int i = 0; i < artifacts.size(); i++) {
-               Artifact sideArtifact = artifacts.get(i);
+            List<RelationLink> relations = artifactRoot.getRelations(relationSorter);
+            WrapperForRelationLink[] wrapper = new WrapperForRelationLink[relations.size()];
+            for (int i = 0; i < relations.size(); i++) {
+               RelationLink relation = relations.get(i);
                if (relationSorter.getSide().isSideA()) {
-                  wrapper[i] = new WrapperForRelationLink(relationSorter.getRelationType(), sideArtifact, sideArtifact,
-                     relationSorter.getArtifact());
+                  wrapper[i] = new WrapperForRelationLink(relation, relationSorter.getRelationType(),
+                     relation.getArtifactA(), relation.getArtifactA(), relationSorter.getArtifact());
                } else {
-                  wrapper[i] = new WrapperForRelationLink(relationSorter.getRelationType(), sideArtifact,
-                     relationSorter.getArtifact(), sideArtifact);
+                  wrapper[i] = new WrapperForRelationLink(relation, relationSorter.getRelationType(),
+                     relation.getArtifactB(), relationSorter.getArtifact(), relation.getArtifactB());
                }
                childToParentMap.put(wrapper[i], parentElement);
             }
@@ -139,7 +140,7 @@ public class RelationContentProvider implements ITreeContentProvider {
     * The tree viewer asks its content provider if the domain object represented by <b>element </b> has any children.
     * This method is used by the tree viewer to determine whether or not a plus or minus should appear on the tree
     * widget.
-    * 
+    *
     * @see ITreeContentProvider#hasChildren(Object)
     */
    @Override
@@ -161,13 +162,13 @@ public class RelationContentProvider implements ITreeContentProvider {
    }
 
    /**
-    * This is the method invoked by calling the <b>setInput </b> method on the tree viewer. In fact, the
-    * <b>getElements </b> method is called only in response to the tree viewer's <b>setInput </b> method and should
-    * answer with the appropriate domain objects of the inputElement. The <b>getElements </b> and <b>getChildren </b>
-    * methods operate in a similar way. Depending on your domain objects, you may have the <b>getElements </b> simply
-    * return the result of calling <b>getChildren </b>. The two methods are kept distinct because it provides a clean
-    * way to differentiate between the root domain object and all other domain objects.
-    * 
+    * This is the method invoked by calling the <b>setInput </b> method on the tree viewer. In fact, the <b>getElements
+    * </b> method is called only in response to the tree viewer's <b>setInput </b> method and should answer with the
+    * appropriate domain objects of the inputElement. The <b>getElements </b> and <b>getChildren </b> methods operate in
+    * a similar way. Depending on your domain objects, you may have the <b>getElements </b> simply return the result of
+    * calling <b>getChildren </b>. The two methods are kept distinct because it provides a clean way to differentiate
+    * between the root domain object and all other domain objects.
+    *
     * @see IStructuredContentProvider#getElements(Object)
     */
    @Override

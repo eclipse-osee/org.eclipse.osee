@@ -113,7 +113,20 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
          } catch (OseeCoreException ex) {
             return ex.toString();
          }
-      } else if (element instanceof RelationType) {
+      }
+      if (columnIndex == 1 && element instanceof WrapperForRelationLink) {
+         WrapperForRelationLink wrapper = (WrapperForRelationLink) element;
+         return wrapper.getOther().getIdString();
+      }
+      if (columnIndex == 3 && element instanceof WrapperForRelationLink) {
+         WrapperForRelationLink wrapper = (WrapperForRelationLink) element;
+         return wrapper.getRelation().getIdString();
+      }
+      if (columnIndex == 4 && element instanceof WrapperForRelationLink) {
+         WrapperForRelationLink wrapper = (WrapperForRelationLink) element;
+         return String.valueOf(wrapper.getRelation().getGammaId());
+      }
+      if (element instanceof RelationType) {
          if (columnIndex == 0) {
             return ((RelationType) element).getName();
          }
@@ -125,14 +138,14 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
-         } else if (columnIndex == 1) {
+         } else if (columnIndex == 2) {
             return link.getRationale();
          }
       } else if (element instanceof WrapperForRelationLink) {
          WrapperForRelationLink wrapper = (WrapperForRelationLink) element;
          if (columnIndex == 0) {
             return wrapper.getOther().getName();
-         } else if (columnIndex == 1) {
+         } else if (columnIndex == 2) {
             String rationale = "";
             try {
                RelationLink link = RelationManager.getRelationLink(wrapper.getArtifactA(), wrapper.getArtifactB(),

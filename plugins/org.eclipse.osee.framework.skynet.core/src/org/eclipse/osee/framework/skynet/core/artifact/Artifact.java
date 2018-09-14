@@ -1793,4 +1793,8 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    public ArtifactToken getHashableToken() {
       return ArtifactToken.valueOf(getId(), getBranch());
    }
+
+   public String getGammaIdString() {
+      return String.valueOf(getGammaId());
+   }
 }
