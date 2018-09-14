@@ -92,7 +92,6 @@ public class DetailedTestStatusOld extends AbstractBlam {
    private static final String REQUIREMENTS_BRANCH = "Requirements Branch";
    private static final String PROGRAM = "Program";
    private static final Pattern taskNamePattern = Pattern.compile("(?:\"([^\"]+)\")? for \"([^\"]+)\"");
-   private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy");
    private final Matcher taskNameMatcher = taskNamePattern.matcher("");
    private CharBackedInputStream charBak;
    private ISheetWriter excelWriter;
@@ -141,6 +140,10 @@ public class DetailedTestStatusOld extends AbstractBlam {
       FAILED_TP,
       HOURS_REMAINING
    };
+
+   public static SimpleDateFormat getDateFormatter() {
+      return new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy");
+   }
 
    private class BranchChangeListener implements ISelectionChangedListener {
       @Override
@@ -325,7 +328,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
          if (testRunArtifact != null) {
             ArtifactTestRunOperator runOperator = new ArtifactTestRunOperator(testRunArtifact);
             try {
-               runDate = dateFormatter.format(runOperator.getEndDate());
+               runDate = getDateFormatter().format(runOperator.getEndDate());
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -440,7 +443,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
                ArtifactTestRunOperator runOperator = new ArtifactTestRunOperator(testRunArtifact);
 
                try {
-                  statusLine[Index.RUN_DATE.ordinal()] = dateFormatter.format(runOperator.getEndDate());
+                  statusLine[Index.RUN_DATE.ordinal()] = getDateFormatter().format(runOperator.getEndDate());
                } catch (Exception ex) {
                   log(ex);
                }

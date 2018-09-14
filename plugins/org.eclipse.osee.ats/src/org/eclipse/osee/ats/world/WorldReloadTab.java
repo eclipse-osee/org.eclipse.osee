@@ -45,7 +45,6 @@ import org.eclipse.ui.forms.editor.FormPage;
 public class WorldReloadTab extends FormPage {
    private IManagedForm managedForm;
    private Composite bodyComp;
-   private Composite atsBody;
    public final static String ID = "ats.world.reload.tab";
    private final WorldEditor editor;
    private final WorldEditorReloadProvider provider;
@@ -92,8 +91,8 @@ public class WorldReloadTab extends FormPage {
    }
 
    private void handleException(Exception ex) {
-      if (Widgets.isAccessible(atsBody)) {
-         atsBody.dispose();
+      if (Widgets.isAccessible(bodyComp)) {
+         bodyComp.dispose();
       }
       OseeLog.log(Activator.class, Level.SEVERE, ex);
       new ExceptionComposite(bodyComp, ex);

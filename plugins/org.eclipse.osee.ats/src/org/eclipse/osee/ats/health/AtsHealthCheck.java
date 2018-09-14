@@ -26,12 +26,12 @@ import org.osgi.framework.Bundle;
  */
 public class AtsHealthCheck {
 
-   private static Set<IAtsHealthCheck> healthCheckItems;
+   private static Set<IAtsHealthCheck> healthCheckItems = new HashSet<>();
+   private static boolean loaded = false;
 
    public static Set<IAtsHealthCheck> getAtsHealthCheckItems() {
-      if (healthCheckItems == null) {
-         healthCheckItems = new HashSet<>();
-
+      if (!loaded) {
+         loaded = true;
          IExtensionPoint point =
             Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsHealthCheck");
          if (point == null) {

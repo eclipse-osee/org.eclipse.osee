@@ -118,7 +118,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
                   if (artifactType.inheritsFrom(
                      DISALLOW_TYPES) || !artifactType.inheritsFrom(ExportChangeReportUtil.ARTIFACT_ALLOW_TYPES)) {
                      it.remove();
-                     artIds.remove(endArtifact.getArtId());
+                     artIds.remove(ArtifactId.valueOf(endArtifact.getArtId()));
                      if (debug) {
                         logf("skipping: [" + endArtifact.getName().replaceAll("%",
                            "%%") + "] type: [" + endArtifact.getArtifactTypeName() + "] branch: [" + endArtifact.getBranch().getIdString() + "] artId: [" + endArtifact.getArtId() + "]");

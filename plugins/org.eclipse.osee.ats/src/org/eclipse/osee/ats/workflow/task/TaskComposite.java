@@ -67,8 +67,7 @@ public class TaskComposite extends WorldComposite {
 
    @Override
    protected WorldXViewer createXViewer(IXViewerFactory xViewerFactory, Composite mainComp) {
-      taskXViewer =
-         new TaskXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, xViewerFactory, dirtiableEditor);
+      taskXViewer = new TaskXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, xViewerFactory, null);
       return taskXViewer;
    }
 

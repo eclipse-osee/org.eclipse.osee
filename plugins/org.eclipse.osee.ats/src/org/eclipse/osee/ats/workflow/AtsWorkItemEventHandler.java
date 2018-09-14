@@ -29,7 +29,7 @@ public class AtsWorkItemEventHandler implements EventHandler {
    @Override
    public void handleEvent(Event event) {
       try {
-         if (event.getTopic().equals(AtsTopicEvent.WORK_ITEM_MODIFIED)) {
+         if (event.getTopic().equals(AtsTopicEvent.WORK_ITEM_MODIFIED.getTopic())) {
             String ids = (String) event.getProperty(AtsTopicEvent.WORK_ITEM_IDS_KEY);
             for (Long workItemId : Collections.fromString(ids, ";", Long::valueOf)) {
                Artifact artifact = ArtifactCache.getActive(workItemId, AtsClientService.get().getAtsBranch());

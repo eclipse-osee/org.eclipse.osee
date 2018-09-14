@@ -460,14 +460,14 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      else if (storedStateAttr != null && stateAttr.getGammaId().isLessThan(
                         storedStateAttr.getGammaId())) {
                         errorStr += String.format(
-                           " - stateStr [%s] earlier than storedStateStr [%s] - deleted stateAttr - FIXED", stateStr,
-                           storedStateStr, awa.getLastModified());
+                           " - stateStr [%s] earlier than storedStateStr [%s] - deleted stateAttr - FIXED - last mod %s",
+                           stateStr, storedStateStr, awa.getLastModified());
                         stateAttr.delete();
                      } else if (storedStateAttr != null && storedStateAttr.getGammaId().isLessThan(
                         stateAttr.getGammaId())) {
                         errorStr += String.format(
-                           " - stateStr [%s] later than storedStateStr [%s] - deleted storeStateAttr - FIXED", stateStr,
-                           storedStateStr, awa.getLastModified());
+                           " - stateStr [%s] later than storedStateStr [%s] - deleted storeStateAttr - FIXED - last mod %s",
+                           stateStr, storedStateStr, awa.getLastModified());
                         storedStateAttr.delete();
                      } else {
                         errorStr += " - NO FIX AVAIL";

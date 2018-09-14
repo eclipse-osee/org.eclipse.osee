@@ -57,7 +57,6 @@ import org.eclipse.ui.forms.editor.FormPage;
 public class WfeReloadTab extends FormPage {
    private IManagedForm managedForm;
    private Composite bodyComp;
-   private Composite atsBody;
    public final static String ID = "ats.reload.tab";
    private final WorkflowEditor editor;
    private final String title;
@@ -113,8 +112,8 @@ public class WfeReloadTab extends FormPage {
    }
 
    private void handleException(Exception ex) {
-      if (Widgets.isAccessible(atsBody)) {
-         atsBody.dispose();
+      if (Widgets.isAccessible(bodyComp)) {
+         bodyComp.dispose();
       }
       OseeLog.log(Activator.class, Level.SEVERE, ex);
       new ExceptionComposite(bodyComp, ex);

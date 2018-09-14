@@ -44,7 +44,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
-import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -67,7 +66,6 @@ import org.eclipse.swt.widgets.Tree;
 public class XCommitManager extends GenericXWidget implements IArtifactWidget, IBranchEventListener {
 
    private CommitXManager xCommitManager;
-   private IDirtiableEditor editor;
    public final static String normalColor = "#EEEEEE";
    private TeamWorkFlowArtifact teamArt;
    private static final int paddedTableHeightHint = 2;
@@ -302,7 +300,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
       try {
          int backgroundColor = SWT.COLOR_BLACK;
          String infoStr = "Double-click item to perform Action";
-         if (xCommitManager != null && xCommitManager.getXCommitViewer() != null && xCommitManager.getXCommitViewer().getTeamArt() != null && xCommitManager.getXCommitViewer().getTeamArt() != null) {
+         if (xCommitManager != null && xCommitManager.getXCommitViewer() != null && xCommitManager.getXCommitViewer().getTeamArt() != null) {
             boolean workingBranchInWork = AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt);
             if (workingBranchInWork && !AtsClientService.get().getBranchService().isAllObjectsToCommitToConfigured(
                xCommitManager.getXCommitViewer().getTeamArt())) {
@@ -327,10 +325,6 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
    @Override
    public Object getData() {
       return xCommitManager.getInput();
-   }
-
-   public IDirtiableEditor getEditor() {
-      return editor;
    }
 
    @Override

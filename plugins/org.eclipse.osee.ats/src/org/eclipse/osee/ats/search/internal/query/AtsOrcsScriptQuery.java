@@ -22,8 +22,9 @@ import org.eclipse.osee.orcs.rest.client.OseeClient;
  */
 public class AtsOrcsScriptQuery implements IAtsOrcsScriptQuery {
 
-   AtsOrcsScriptQuery(String query, IAtsClient atsClient) {
+   AtsOrcsScriptQuery(String query, String data, IAtsClient atsClient) {
       super();
+      this.data = data;
       this.atsClient = atsClient;
       this.query = query;
    }

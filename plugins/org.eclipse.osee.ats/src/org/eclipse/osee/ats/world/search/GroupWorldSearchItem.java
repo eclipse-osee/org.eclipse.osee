@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeA
  */
 public class GroupWorldSearchItem extends WorldUISearchItem {
 
-   private Collection<Artifact> groups;
+   private Collection<Artifact> groups = new ArrayList<>();
    private Collection<Artifact> selectedGroups;
    private String groupName;
    private final BranchId branch;
@@ -41,7 +41,6 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
 
    public GroupWorldSearchItem(Artifact group) {
       super("Group Search", FrameworkImage.GROUP);
-      this.groups = new ArrayList<>();
       this.groups.add(group);
       this.branch = group.getBranch();
    }
@@ -78,10 +77,10 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
       if (groupName == null) {
          return;
       }
-      if (groups == null && branch != null) {
+      if (groups.isEmpty() && branch != null) {
          groups.add(UniversalGroup.getGroups(groupName, branch).iterator().next());
       }
-      if (groups == null) {
+      if (groups.isEmpty()) {
          throw new OseeArgumentException("Can't Find Universal Group for [%s]", getName());
       }
    }

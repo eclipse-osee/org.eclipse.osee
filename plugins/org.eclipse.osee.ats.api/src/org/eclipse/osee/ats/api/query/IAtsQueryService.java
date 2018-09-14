@@ -63,8 +63,6 @@ public interface IAtsQueryService {
 
    void runUpdate(String query, Object... data);
 
-   IAtsOrcsScriptQuery createOrcsScriptQuery(String query, Object... data);
-
    Collection<ArtifactToken> getArtifactsFromQuery(String query, Object... data);
 
    Collection<ArtifactToken> getArtifacts(BranchId branch, boolean includeInherited, IArtifactType... artifactType);

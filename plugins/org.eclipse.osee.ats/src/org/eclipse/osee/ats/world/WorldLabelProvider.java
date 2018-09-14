@@ -29,15 +29,12 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
  */
 public class WorldLabelProvider extends XViewerLabelProvider {
-
-   protected Font font;
 
    public WorldLabelProvider(WorldXViewer worldXViewer) {
       super(worldXViewer);
@@ -130,10 +127,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
 
    @Override
    public void dispose() {
-      if (font != null) {
-         font.dispose();
-      }
-      font = null;
+      // do nothing
    }
 
    @Override

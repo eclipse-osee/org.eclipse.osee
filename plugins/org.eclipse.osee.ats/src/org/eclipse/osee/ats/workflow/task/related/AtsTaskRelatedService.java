@@ -51,7 +51,7 @@ public class AtsTaskRelatedService extends AbstractAtsTaskRelatedService {
          return new TaskRelatedData(new Result("No requirement to show for CDB"));
       }
       if (!data.isRequirement()) {
-         new TaskRelatedData(new Result(
+         return new TaskRelatedData(new Result(
             "Task is not against artifact or is named incorrectly.\n\n" + "Must be \"Code|Test \"<partition>\" for \"<requirement name>\""));
       }
 

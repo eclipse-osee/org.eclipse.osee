@@ -23,12 +23,13 @@ import org.eclipse.osee.ats.workflow.review.role.AtsXUserRoleValidator;
  */
 public class AtsXWidgetValidateProviderClient implements IAtsXWidgetValidatorProvider {
 
-   private static List<IAtsXWidgetValidator> atsValidators;
+   private static List<IAtsXWidgetValidator> atsValidators = new ArrayList<>();
+   private boolean loaded = false;
 
    @Override
    public Collection<IAtsXWidgetValidator> getValidators() {
-      if (atsValidators == null) {
-         atsValidators = new ArrayList<>();
+      if (!loaded) {
+         loaded = true;
          atsValidators.add(new AtsXHyperlinkMemberSelValidator());
          atsValidators.add(new AtsXDefectValidator());
          atsValidators.add(new AtsXUserRoleValidator());

@@ -62,6 +62,6 @@ public class ListAndBulletRule extends AbstractValidationRule {
 
    @Override
    public String getRuleTitle() {
-      return String.format("Formatting Check for :", workType);
+      return String.format("Formatting Check for %s", workType);
    }
 }

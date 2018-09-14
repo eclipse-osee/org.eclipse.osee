@@ -57,7 +57,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -83,7 +82,6 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, IArtifactEventListener {
 
    private UserRoleXViewer xViewer;
-   private IDirtiableEditor editor;
    private PeerToPeerReviewArtifact reviewArt;
    public final static String normalColor = "#EEEEEE";
    private ToolItem newUserRoleItem, deleteUserRoleItem;
@@ -451,10 +449,6 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
    @Override
    public Object getData() {
       return xViewer.getInput();
-   }
-
-   public IDirtiableEditor getEditor() {
-      return editor;
    }
 
    public PeerToPeerReviewArtifact getReviewArt() {

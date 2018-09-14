@@ -105,7 +105,7 @@ public class WorkflowManager {
          artifactsToReturn.addAll(awas);
       } else {
          for (Artifact awa : awas) {
-            if (awa instanceof IAtsWorkItem && ((IAtsWorkItem) awa).getStateMgr().getCurrentState().equals(
+            if (awa instanceof IAtsWorkItem && ((IAtsWorkItem) awa).getStateMgr().getCurrentStateName().equals(
                selectedState)) {
                artifactsToReturn.add(awa);
             }

@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.operation;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -84,7 +83,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class DetailedTestStatusBlam extends AbstractBlam {
    private static final Pattern taskNamePattern = Pattern.compile("(?:\"([^\"]+)\")? for \"([^\"]+)\"");
-   private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy");
    private final Matcher taskNameMatcher = taskNamePattern.matcher("");
    private CharBackedInputStream charBak;
    private ISheetWriter excelWriter;
@@ -329,7 +327,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
          if (testRunArtifact != null) {
             ArtifactTestRunOperator runOperator = new ArtifactTestRunOperator(testRunArtifact);
             try {
-               runDate = dateFormatter.format(runOperator.getEndDate());
+               runDate = DetailedTestStatusOld.getDateFormatter().format(runOperator.getEndDate());
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -453,7 +451,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
                ArtifactTestRunOperator runOperator = new ArtifactTestRunOperator(testRunArtifact);
 
                try {
-                  statusLine[Index.RUN_DATE.ordinal()] = dateFormatter.format(runOperator.getEndDate());
+                  statusLine[Index.RUN_DATE.ordinal()] =
+                     DetailedTestStatusOld.getDateFormatter().format(runOperator.getEndDate());
                } catch (Exception ex) {
                   log(ex);
                }

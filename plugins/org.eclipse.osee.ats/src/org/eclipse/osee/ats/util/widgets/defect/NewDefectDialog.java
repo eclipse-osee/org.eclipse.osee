@@ -153,4 +153,8 @@ public class NewDefectDialog extends EntryDialog {
       return control;
    }
 
+   public void setOkListener(Listener okListener) {
+      this.okListener = okListener;
+   }
+
 }

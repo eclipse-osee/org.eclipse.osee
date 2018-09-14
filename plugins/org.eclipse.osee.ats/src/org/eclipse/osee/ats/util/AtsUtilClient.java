@@ -42,7 +42,8 @@ public class AtsUtilClient {
       new ArtifactTypeEventFilter(AtsArtifactTypes.TeamWorkflow);
    private static List<IEventFilter> atsObjectEventFilter = new ArrayList<>(2);
    private static boolean emailEnabled = true;
-   private static BranchIdEventFilter commonBranchIdEventFilter;
+   private static BranchIdEventFilter commonBranchIdEventFilter =
+      new BranchIdEventFilter(AtsClientService.get().getAtsBranch());
 
    public static boolean isEmailEnabled() {
       return emailEnabled;
@@ -66,9 +67,6 @@ public class AtsUtilClient {
    }
 
    public static BranchIdEventFilter getAtsBranchFilter() {
-      if (commonBranchIdEventFilter == null) {
-         commonBranchIdEventFilter = new BranchIdEventFilter(AtsClientService.get().getAtsBranch());
-      }
       return commonBranchIdEventFilter;
    }
 

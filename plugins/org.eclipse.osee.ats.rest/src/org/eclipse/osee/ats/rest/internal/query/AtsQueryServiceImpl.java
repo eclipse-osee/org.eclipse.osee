@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
-import org.eclipse.osee.ats.api.query.IAtsOrcsScriptQuery;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -128,11 +127,6 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       } else {
          return Collections.castAll(query.fromBranch(branch).andTypeEquals(artifactType).getResults().getList());
       }
-   }
-
-   @Override
-   public IAtsOrcsScriptQuery createOrcsScriptQuery(String query, Object... data) {
-      return new AtsOrcsScriptQuery(String.format(query, data), orcsApi);
    }
 
    @Override

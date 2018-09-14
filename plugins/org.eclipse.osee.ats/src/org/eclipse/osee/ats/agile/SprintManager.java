@@ -39,8 +39,8 @@ public class SprintManager extends MembersManager<SprintArtifact> {
       if (sprints.size() == 1) {
          sprint = (SprintArtifact) sprints.iterator().next();
       } else if (sprints.size() > 1) {
-         AWorkbench.popup(
-            String.format("Error Item [%s] belongs to %d Sprints and should only belong to one.", artifact));
+         AWorkbench.popup(String.format("Error Item [%s] belongs to %d Sprints and should only belong to one.",
+            artifact.toStringWithId(), sprints.size()));
          return null;
       }
       return promptChangeMemberOrder(sprint, artifact);
