@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -143,7 +144,7 @@ public class ArtifactEditorReloadTab extends FormPage {
                @Override
                public void run() {
                   if (artifact == null) {
-                     AWorkbench.popup("Saved item not valid.  Unable to reload.");
+                     AWorkbench.popup("Saved item is not valid.  Unable to reload.");
                   } else {
                      editor.getEditorInput().setArtifact(artifact);
                      bodyComp.dispose();
@@ -170,7 +171,7 @@ public class ArtifactEditorReloadTab extends FormPage {
       protected IStatus run(IProgressMonitor monitor) {
          if (artifactId.isValid()) {
             try {
-               artifact = ArtifactQuery.getArtifactFromId(artifactId, branchId);
+               artifact = ArtifactQuery.getArtifactFromId(artifactId, branchId, DeletionFlag.INCLUDE_DELETED);
             } catch (ArtifactDoesNotExist ex) {
                // do nothing
             }

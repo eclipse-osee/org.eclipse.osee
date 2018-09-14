@@ -159,7 +159,7 @@ public class WfeReloadTab extends FormPage {
                @Override
                public void run() {
                   if (artifact == null) {
-                     AWorkbench.popup("Saved item not valid.  Unable to reload.");
+                     AWorkbench.popup("Saved item is not valid.  Unable to reload.");
                   } else {
                      ((WfeInput) editor.getEditorInput()).setArtifact(artifact);
                      bodyComp.dispose();
