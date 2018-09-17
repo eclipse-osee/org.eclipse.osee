@@ -678,6 +678,7 @@ artifactType "Abstract Spec Requirement" extends "Requirement" {
 	attribute "Subsystem"
 	attribute "Technical Performance Parameter"
 	attribute "Safety Impact"
+	attribute "Potential Security Impact"	
 }
 
 attributeType "Test Frequency" extends EnumeratedAttribute {
@@ -746,7 +747,6 @@ abstract artifactType "Abstract Software Requirement" extends "Abstract Spec Req
 	attribute "CSCI"
 	attribute "Partition"
 	attribute "Category"
-	attribute "System Security Requirement"
 }
 
 artifactType "Software Requirement" extends "MS Word Template" , "Direct Software Requirement" {
@@ -755,6 +755,7 @@ artifactType "Software Requirement" extends "MS Word Template" , "Direct Softwar
 	attribute "IDAL Rationale"
 	attribute "Software Control Category"
 	attribute "Software Control Category Rationale"
+	attribute "IA Plan"
 }
 
 artifactType "Software Requirement - HTML" extends "Abstract Software Requirement", "HTML Artifact" {
@@ -782,6 +783,7 @@ abstract artifactType "Abstract Implementation Details" extends "Artifact" {
 	attribute "Subject Matter Expert"	
 	attribute "Subsystem"	
 	attribute "Partition"
+	attribute "Potential Security Impact"
 }
 
 artifactType "Implementation Details" extends "Abstract Implementation Details", "MS Word Template" {
@@ -831,6 +833,7 @@ abstract artifactType "Abstract System Requirement" extends "Abstract Spec Requi
 	attribute "Effectivity"
 	attribute "Verification Acceptance Criteria"
 	attribute "Verification Event"
+	attribute "IA Plan"
 }
 
 artifactType "System Requirement - MS Word" extends "Abstract System Requirement" , "MS Word Template" {
@@ -928,6 +931,8 @@ artifactType "Design" extends "MS Word Template" {
 	attribute "Data Rights Classification"
 	attribute "Data Rights Basis"
 	attribute "Subject Matter Expert"
+	attribute "Potential Security Impact"
+	attribute "IA Plan"
 }
 
 artifactType "Subsystem Design" extends "Design" {
@@ -999,11 +1004,22 @@ attributeType "Effectivity" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "System Security Requirement" extends BooleanAttribute {
+attributeType "Potential Security Impact" extends BooleanAttribute {
 	id 1152921504606847109
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	taggerId DefaultAttributeTaggerProvider
+	defaultValue "false"
+	mediaType "text/plain"
+}
+
+attributeType "IA Plan" extends BooleanAttribute {
+	id 1253931514616857210
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 	defaultValue "false"
 	mediaType "text/plain"
 }
