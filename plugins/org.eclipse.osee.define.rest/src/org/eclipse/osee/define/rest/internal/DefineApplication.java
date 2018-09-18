@@ -21,6 +21,8 @@ import org.eclipse.osee.define.rest.DataRightsEndpointImpl;
 import org.eclipse.osee.define.rest.MSWordEndpointImpl;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -28,11 +30,12 @@ import org.eclipse.osee.orcs.OrcsApi;
  * @author Ryan D. Brooks
  */
 @ApplicationPath("define")
-public final class OseeReportApplication extends Application {
+public final class DefineApplication extends Application {
    private final Set<Object> singletons = new HashSet<>();
    private OrcsApi orcsApi;
    private DefineApi defineApi;
    private Log logger;
+   private JdbcService jdbcService;
 
    public void setDefineApi(DefineApi defineApi) {
       this.defineApi = defineApi;
@@ -46,20 +49,20 @@ public final class OseeReportApplication extends Application {
       this.logger = logger;
    }
 
+   public void setJdbcService(JdbcService jdbcService) {
+      this.jdbcService = jdbcService;
+   }
+
    public void start(Map<String, Object> properties) {
       IResourceRegistry resourceRegistry = new ResourceRegistry();
       OseeAppResourceTokens.register(resourceRegistry);
-      logger.debug(">>>>> registered Requirement resource");
+      JdbcClient jdbcClient = jdbcService.getClient();
       singletons.add(new SystemSafetyResource(logger, resourceRegistry, orcsApi));
-      logger.debug(">>>>> registered Safety resource");
       singletons.add(new TraceabilityResource(logger, resourceRegistry, orcsApi, defineApi));
-      logger.debug(">>>>> registered Low/High Trace resource");
       singletons.add(new DataRightsSwReqAndCodeResource(logger, resourceRegistry, orcsApi));
-      logger.debug(">>>>> registered DataRightsSwReqAndCodeResource");
       singletons.add(new DataRightsEndpointImpl(defineApi));
-      logger.debug(">>>>> registered DataRightsEndpoint");
       singletons.add(new MSWordEndpointImpl(defineApi));
-      logger.debug(">>>>> registered WordUpdateEndpoint");
+      singletons.add(new DefineBranchEndpointImpl(jdbcClient, orcsApi));
    }
 
    @Override
