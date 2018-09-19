@@ -13,11 +13,9 @@ package org.eclipse.osee.ats.rest.internal.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -59,6 +57,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    private final IAtsLogFactory logFactory;
    private final IAtsNotifier notifier;
    private final AtsApi atsApi;
+
    private final JdbcService jdbcService;
 
    public AtsStoreServiceImpl(IAttributeResolver attributeResolver, AtsApi atsApi, OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, IAtsNotifier notifier, JdbcService jdbcService) {
@@ -69,6 +68,11 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
       this.stateFactory = stateFactory;
       this.notifier = notifier;
       this.jdbcService = jdbcService;
+   }
+
+   @Override
+   public JdbcService getJdbcService() {
+      return jdbcService;
    }
 
    @Override
@@ -124,7 +128,10 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public IArtifactType getArtifactType(ArtifactId artifact) {
-      return ((ArtifactReadable) artifact).getArtifactType();
+      if (artifact instanceof ArtifactReadable) {
+         return ((ArtifactReadable) artifact).getArtifactType();
+      }
+      return getQuery().andId(artifact).loadArtifactToken().getArtifactTypeId();
    }
 
    @Override
@@ -154,15 +161,6 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    @Override
    public IArtifactType getArtifactType(Long artTypeId) {
       return orcsApi.getOrcsTypes().getArtifactTypes().get(artTypeId);
-   }
-
-   @Override
-   public Map<Long, IArtifactType> getArtifactTypes(Collection<Long> artIds) {
-      Map<Long, IArtifactType> artIdToType = new HashMap<>();
-      jdbcService.getClient().runQuery(
-         stmt -> artIdToType.put(stmt.getLong("art_id"), getArtifactType(stmt.getLong("art_type_id"))), String.format(
-            ART_TYPE_FROM_ID_QUERY, org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", artIds)));
-      return artIdToType;
    }
 
    @Override

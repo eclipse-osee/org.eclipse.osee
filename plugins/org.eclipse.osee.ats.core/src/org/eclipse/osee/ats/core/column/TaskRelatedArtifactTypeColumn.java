@@ -13,6 +13,8 @@ package org.eclipse.osee.ats.core.column;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -23,83 +25,68 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 
 /**
  * @author Donald G. Dunne
  */
 public class TaskRelatedArtifactTypeColumn extends AbstractServicesColumn {
 
-   private static AtsApi atsApi;
-   private static final IArtifactType nullArtifactType = TokenFactory.createArtifactType(3824729235692L, "");
-
    public TaskRelatedArtifactTypeColumn(AtsApi atsApi) {
       super(atsApi);
-      TaskRelatedArtifactTypeColumn.atsApi = atsApi;
    }
 
    @Override
    String getText(IAtsObject atsObject) throws Exception {
       if (atsObject instanceof IAtsWorkItem) {
-         Object obj = artIdToRelatedArtTypeCache.get((IAtsWorkItem) atsObject);
-         if (obj != null) {
-            return obj.toString();
+         IArtifactType artifactType = artIdToRelatedArtTypeCache.get((IAtsWorkItem) atsObject);
+         if (artifactType.isValid()) {
+            return artifactType.toString();
          }
       }
       return "";
    }
 
-   private static final LoadingCache<IAtsWorkItem, IArtifactType> artIdToRelatedArtTypeCache =
+   private final LoadingCache<IAtsWorkItem, IArtifactType> artIdToRelatedArtTypeCache =
       CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).build(
          new CacheLoader<IAtsWorkItem, IArtifactType>() {
             @Override
             public IArtifactType load(IAtsWorkItem workItem) throws Exception {
-               Long relatedArtId = getRelatedArtId(workItem);
-               if (relatedArtId != null) {
-                  Map<Long, IArtifactType> results =
-                     atsApi.getStoreService().getArtifactTypes(java.util.Collections.singleton(relatedArtId));
-                  if (results.isEmpty()) {
-                     return nullArtifactType;
-                  }
+               ArtifactId relatedArtId = TaskRelatedArtifactTypeColumn.this.getRelatedArtId(workItem);
+               if (relatedArtId.isValid()) {
+                  Map<ArtifactId, IArtifactType> results =
+                     atsApi.getStoreService().getArtifactTypes(Collections.singleton(relatedArtId));
                   return results.values().iterator().next();
                }
-               return nullArtifactType;
+               return IArtifactType.SENTINEL;
             }
          });
 
    public void populateCache(List<IAtsWorkItem> workItems) {
-      List<Long> relatedArtIds = new LinkedList<>();
+      Map<ArtifactId, IAtsWorkItem> workItemMap = new HashMap<>();
+      List<ArtifactId> relatedArtIds = new LinkedList<>();
+
       for (IAtsWorkItem workItem : workItems) {
-         try {
-            if (artIdToRelatedArtTypeCache.get(workItem) == null) {
-               Long relatedArtId = getRelatedArtId(workItem);
-               if (relatedArtId != null) {
-                  relatedArtIds.add(relatedArtId);
-               }
+         if (artIdToRelatedArtTypeCache.getIfPresent(workItem) == null) {
+            ArtifactId relatedArtId = getRelatedArtId(workItem);
+            if (relatedArtId.isValid()) {
+               relatedArtIds.add(relatedArtId);
+               workItemMap.put(relatedArtId, workItem);
             }
-         } catch (Exception ex) {
-            // do nothing
          }
       }
       if (!relatedArtIds.isEmpty()) {
-         Map<Long, IArtifactType> results = atsApi.getStoreService().getArtifactTypes(relatedArtIds);
-         for (IAtsWorkItem workItem : workItems) {
-            Long relatedArtId = getRelatedArtId(workItem);
-            if (relatedArtId != null) {
+         Map<ArtifactId, IArtifactType> results = atsApi.getStoreService().getArtifactTypes(relatedArtIds);
+         for (ArtifactId relatedArtId : relatedArtIds) {
+            if (relatedArtId.isValid()) {
                IArtifactType artifactType = results.get(relatedArtId);
-               artIdToRelatedArtTypeCache.put(workItem, artifactType);
+               artIdToRelatedArtTypeCache.put(workItemMap.get(relatedArtId), artifactType);
             }
          }
       }
    }
 
-   private static Long getRelatedArtId(IAtsWorkItem workItem) {
-      ArtifactId artifact = atsApi.getAttributeResolver().getSoleAttributeValue(workItem,
+   private ArtifactId getRelatedArtId(IAtsWorkItem workItem) {
+      return atsApi.getAttributeResolver().getSoleAttributeValue(workItem,
          AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
-      if (artifact.isValid()) {
-         return artifact.getId();
-      }
-      return null;
    }
-
 }

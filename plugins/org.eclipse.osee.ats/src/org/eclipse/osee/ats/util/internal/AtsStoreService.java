@@ -13,11 +13,9 @@ package org.eclipse.osee.ats.util.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -63,6 +61,11 @@ public class AtsStoreService implements IAtsStoreService {
       this.atsApi = atsApi;
       this.userService = userService;
       this.jdbcService = jdbcService;
+   }
+
+   @Override
+   public JdbcService getJdbcService() {
+      return jdbcService;
    }
 
    @Override
@@ -133,7 +136,10 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public IArtifactType getArtifactType(ArtifactId artifact) {
-      return ((Artifact) artifact).getArtifactType();
+      if (artifact instanceof Artifact) {
+         return ((Artifact) artifact).getArtifactType();
+      }
+      return ArtifactQuery.getArtifactTokenFromId(atsApi.getAtsBranch(), artifact).getArtifactTypeId();
    }
 
    @Override
@@ -163,15 +169,6 @@ public class AtsStoreService implements IAtsStoreService {
    @Override
    public IArtifactType getArtifactType(Long artTypeId) {
       return ArtifactTypeManager.getType(artTypeId);
-   }
-
-   @Override
-   public Map<Long, IArtifactType> getArtifactTypes(Collection<Long> artIds) {
-      Map<Long, IArtifactType> artIdToType = new HashMap<>();
-      jdbcService.getClient().runQuery(
-         stmt -> artIdToType.put(stmt.getLong("art_id"), getArtifactType(stmt.getLong("art_type_id"))), String.format(
-            ART_TYPE_FROM_ID_QUERY, org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", artIds)));
-      return artIdToType;
    }
 
    @Override
