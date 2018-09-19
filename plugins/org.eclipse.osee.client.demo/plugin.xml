@@ -48,10 +48,7 @@
          id="OseeTypes_ClientDemo"
          name="OseeTypes_ClientDemo"
          point="org.eclipse.osee.framework.skynet.core.OseeTypes">
-      <OseeTypes
-            guid="AQjoNnwNdyjicTck2UwA"
-            id="466104557"
-            resource="OSEE-INF/orcsTypes/OseeTypes_ClientDemo.osee">
+      <OseeTypes resource="OSEE-INF/orcsTypes/OseeTypes_ClientDemo.osee">
       </OseeTypes>
    </extension>
 </plugin>

@@ -69,7 +69,6 @@ public abstract class BaseTransactionData {
 
       internalAddInsertToBatch(collector, Integer.MAX_VALUE, INSERT_INTO_TRANSACTION_TABLE, collector.getTransaction(),
          getGammaId(), modTypeToStore, TxChange.getCurrent(modTypeToStore), collector.getBranch(), getApplicId());
-      //TODO: remove hack defaulting to 1
    }
 
    //Replaces the replace_with_version modtype with modification for storage.
