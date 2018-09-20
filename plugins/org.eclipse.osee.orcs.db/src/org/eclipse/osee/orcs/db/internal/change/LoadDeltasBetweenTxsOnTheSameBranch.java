@@ -217,16 +217,16 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
 
       String archiveTable = isArchived ? "osee_txs_archived" : "osee_txs";
       String query = String.format(
-         "select txs.gamma_id, txs.mod_type, txs.app_id, item.art_id as item_id, 2 as table_type from osee_join_export_import idj," + //
-         " osee_artifact item, %s txs where idj.query_id = ? and idj.id2 = item.art_id and idj.id1 = 2" + //
-         " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?" + //
-         " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.attr_id as item_id, 1 as table_type from osee_join_export_import idj," + //
-         " osee_attribute item, %s txs where idj.query_id = ? and idj.id2 = item.attr_id and idj.id1 = 1" + //
-         " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?" + //
-         " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.rel_link_id as item_id, 3 as table_type  from osee_join_export_import idj," + //
-         " osee_relation_link item, %s txs where idj.query_id = ? and idj.id2 = item.rel_link_id and idj.id1 = 3" + //
-         " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?", archiveTable,
-         archiveTable, archiveTable);
+         "select txs.gamma_id, txs.mod_type, txs.app_id, item.art_id as item_id, 2 as table_type, transaction_id from osee_join_export_import idj," + //
+            " osee_artifact item, %s txs where idj.query_id = ? and idj.id2 = item.art_id and idj.id1 = 2" + //
+            " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?" + //
+            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.attr_id as item_id, 1 as table_type, transaction_id from osee_join_export_import idj," + //
+            " osee_attribute item, %s txs where idj.query_id = ? and idj.id2 = item.attr_id and idj.id1 = 1" + //
+            " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?" + //
+            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.rel_link_id as item_id, 3 as table_type, transaction_id from osee_join_export_import idj," + //
+            " osee_relation_link item, %s txs where idj.query_id = ? and idj.id2 = item.rel_link_id and idj.id1 = 3" + //
+            " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ? ORDER BY transaction_id",
+         archiveTable, archiveTable, archiveTable);
 
       getJdbcClient().runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query, queryId,
          transactionLimit.getBranch(), transactionLimit, queryId, transactionLimit.getBranch(), transactionLimit,
