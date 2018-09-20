@@ -56,7 +56,6 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
-import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 
@@ -411,7 +410,7 @@ public class ChangeDataLoader extends AbstractOperation {
          return changes;
 
       } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
+         throw OseeCoreException.wrap(ex);
       }
    }
 
