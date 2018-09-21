@@ -420,7 +420,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       ArtifactId featureDefinition =
          createArtifact(folder, CoreArtifactTypes.FeatureDefinition, "Feature Definition_SAW_Bld_1");
 
-      keyValueOps.putByKey(BASE.getId(), BASE.getName());
+      keyValueOps.putByKey(BASE, BASE.getName());
 
       addTuple2(CoreTupleTypes.ViewApplicability, config1, "Base");
       addTuple2(CoreTupleTypes.ViewApplicability, config2, "Base");

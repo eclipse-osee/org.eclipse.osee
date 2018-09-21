@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs;
 
+import org.eclipse.osee.framework.jdk.core.type.Id;
+
 /**
  * @author Angel Avila
  */
@@ -19,8 +21,11 @@ public interface KeyValueOps {
 
    String getByKey(Long key);
 
+   String getByKey(Id key);
+
    Long getByValue(String value);
 
    boolean putByKey(Long key, String value);
 
+   boolean putByKey(Id key, String value);
 }

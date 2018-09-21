@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.core.ds.KeyValueStore;
 
@@ -35,6 +36,11 @@ public class KeyValueOpsImpl implements KeyValueOps {
    }
 
    @Override
+   public String getByKey(Id key) {
+      return keyValueStore.getByKey(key.getId());
+   }
+
+   @Override
    public String getByKey(Long key) {
       return keyValueStore.getByKey(key);
    }
@@ -42,5 +48,10 @@ public class KeyValueOpsImpl implements KeyValueOps {
    @Override
    public boolean putByKey(Long key, String value) {
       return keyValueStore.putByKey(key, value);
+   }
+
+   @Override
+   public boolean putByKey(Id key, String value) {
+      return keyValueStore.putByKey(key.getId(), value);
    }
 }
