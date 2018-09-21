@@ -86,6 +86,7 @@ public final class CoreAttributeTypes {
    public static final AttributeTypeToken StaticId = AttributeTypeToken.valueOf(1152921504606847095L, "Static Id");
    public static final AttributeTypeToken Street = AttributeTypeToken.valueOf(1152921504606847069L, "Street");
    public static final AttributeTypeToken Subsystem = AttributeTypeToken.valueOf(1152921504606847112L, "Subsystem");
+   public static final AttributeTypeToken TechnicalPerformanceParameter =AttributeTypeToken.valueOf(1152921504606847123L, "Techinical Performance Parameter");
    public static final AttributeTypeToken TemplateMatchCriteria = AttributeTypeToken.valueOf(1152921504606847087L, "Template Match Criteria");
    public static final AttributeTypeToken TestProcedureStatus = AttributeTypeToken.valueOf(1152921504606847075L, "Test Procedure Status");
    public static final AttributeTypeToken TestScriptGuid = AttributeTypeToken.valueOf(1152921504606847301L, "Test Script GUID");
