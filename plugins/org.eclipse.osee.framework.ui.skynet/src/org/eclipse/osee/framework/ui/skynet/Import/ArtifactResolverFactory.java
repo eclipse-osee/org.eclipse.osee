@@ -14,8 +14,10 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.AttributeBasedArtifactResolver;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.DoorsBestFitArtifactResolver;
+import org.eclipse.osee.framework.skynet.core.importing.resolvers.DropTargetAttributeBasedResolver;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.GuidBasedArtifactResolver;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IRoughArtifactTranslator;
@@ -74,5 +76,13 @@ public final class ArtifactResolverFactory {
             break;
       }
       return toReturn;
+   }
+
+   public static IArtifactImportResolver createResolver(ArtifactCreationStrategy strategy, IArtifactType primaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts, Artifact dropTarget) {
+
+      return new DropTargetAttributeBasedResolver(new RoughArtifactTranslatorImpl(), primaryArtifactType,
+         CoreArtifactTypes.HeadingMSWord, nonChangingAttributes, createNewIfNotExist, deleteUnmatchedArtifacts,
+         dropTarget);
+
    }
 }

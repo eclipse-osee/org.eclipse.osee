@@ -31,8 +31,8 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
 
-   private final Collection<AttributeTypeToken> nonChangingAttributes;
-   private final boolean createNewIfNotExist;
+   protected final Collection<AttributeTypeToken> nonChangingAttributes;
+   protected final boolean createNewIfNotExist;
 
    public AttributeBasedArtifactResolver(IRoughArtifactTranslator translator, IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
       super(translator, primaryArtifactType, secondaryArtifactType);
@@ -40,7 +40,7 @@ public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
       this.createNewIfNotExist = createNewIfNotExist;
    }
 
-   private boolean attributeValuesMatch(RoughArtifact roughArtifact, Artifact artifact) throws OseeCoreException {
+   protected boolean attributeValuesMatch(RoughArtifact roughArtifact, Artifact artifact) throws OseeCoreException {
       RoughAttributeSet roughAttributeSet = roughArtifact.getAttributes();
 
       for (AttributeTypeToken attributeType : nonChangingAttributes) {
@@ -66,7 +66,7 @@ public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
       return false;
    }
 
-   private String normalizeAttributeValue(String value) {
+   protected String normalizeAttributeValue(String value) {
       return value.trim().replaceAll("\\.$", "").toLowerCase();
    }
 

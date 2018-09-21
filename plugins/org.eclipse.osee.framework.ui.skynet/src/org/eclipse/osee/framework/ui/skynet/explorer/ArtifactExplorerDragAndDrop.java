@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
 import org.apache.commons.io.FilenameUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
@@ -42,6 +43,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.NativeDocumentExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WholeWordDocumentExtractor;
+import org.eclipse.osee.framework.skynet.core.importing.resolvers.DropTargetAttributeBasedResolver;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -229,39 +231,87 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
          File importFile = new File(items[0]);
 
          ArtifactImportWizard wizard = new ArtifactImportWizard();
+         Matcher fileMatcher = DropTargetAttributeBasedResolver.oseeFileMatcher;
          wizard.setImportFile(importFile);
          wizard.setDestinationArtifact(parentArtifact);
 
          String fileName = importFile.getName();
-         if (isSameName(parentArtifact, fileName)) {
-            String promptMsg = String.format(
-               "Artifact [%s] has same base file name as [%s]. \n\nDo you want to update the exisiting file? \nIf 'NO' selected, you'll be taken to the Artifact Import Wizard",
-               parentArtifact.getName(), FilenameUtils.getName(fileName));
+         boolean importWizardUserSelection = true;
+         if (items.length > 1) {
+            importWizardUserSelection = importWithMoreThanOneFile(fileName);
+         }
 
-            if (MessageDialog.openQuestion(viewPart.getViewSite().getShell(), "Confirm Import", promptMsg)) {
-
-               IArtifactImportResolver resolver =
-                  ArtifactResolverFactory.createResolver(ArtifactCreationStrategy.CREATE_ON_DIFFERENT_ATTRIBUTES,
-                     parentArtifact.getArtifactType(), Arrays.asList(CoreAttributeTypes.Name), true, false);
-               try {
-                  ArtifactImportOperationParameter parameter = new ArtifactImportOperationParameter();
-                  parameter.setSourceFile(importFile);
-                  parameter.setDestinationArtifact(parentArtifact.getParent());
-                  parameter.setExtractor(getArtifactExtractor(parentArtifact.getArtifactType()));
-                  parameter.setResolver(resolver);
-                  parameter.setStopOnError(true);
-
-                  IOperation operation = ArtifactImportOperationFactory.completeOperation(parameter);
-                  Operations.executeWorkAndCheckStatus(operation);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
-               }
-
-            } else {
-               Wizards.initAndOpen(wizard, viewPart, new ArtifactStructuredSelection(parentArtifact));
+         if (importWizardUserSelection == true) {
+            fileMatcher.reset(fileName);
+            if (fileMatcher.find()) {
+               fileName = fileMatcher.group(1);
             }
+
+            if (isSameName(parentArtifact, fileName)) {
+               importSimilarArtifact(parentArtifact, importFile, wizard, fileName);
+            } else {
+               importOverChild(parentArtifact, importFile, wizard, fileName);
+            }
+         }
+      }
+   }
+
+   private void importOverChild(Artifact parentArt, File importFile, ArtifactImportWizard wizard, String fileName) {
+      boolean imported = false;
+      for (Artifact child : parentArt.getChildren()) {
+         if (child.getName().equals(FilenameUtils.getBaseName(fileName))) {
+            importSimilarArtifact(child, importFile, wizard, fileName);
+            imported = true;
+            break;
+         }
+      }
+      if (!imported) {
+         Wizards.initAndOpen(wizard, viewPart, new ArtifactStructuredSelection(parentArt));
+      }
+   }
+
+   private void importSimilarArtifact(Artifact parentArtifact, File importFile, ArtifactImportWizard wizard, String fileName) {
+      {
+         String promptMsg = String.format(
+            "Artifact [%s] has same base file name as [%s]. \n\nDo you want to update the exisiting file? \nIf 'NO' selected, you'll be taken to the Artifact Import Wizard",
+            parentArtifact.getName(), FilenameUtils.getName(fileName));
+
+         if (MessageDialog.openQuestion(viewPart.getViewSite().getShell(), "Confirm Import", promptMsg)) {
+
+            IArtifactImportResolver resolver = ArtifactResolverFactory.createResolver(
+               ArtifactCreationStrategy.CREATE_ON_DIFFERENT_ATTRIBUTES, parentArtifact.getArtifactType(),
+               Arrays.asList(CoreAttributeTypes.Name), true, false, parentArtifact);
+            try {
+               ArtifactImportOperationParameter parameter = new ArtifactImportOperationParameter();
+               parameter.setSourceFile(importFile);
+               parameter.setDestinationArtifact(parentArtifact.getParent());
+               parameter.setExtractor(getArtifactExtractor(parentArtifact.getArtifactType()));
+               parameter.setResolver(resolver);
+               parameter.setStopOnError(true);
+
+               IOperation operation = ArtifactImportOperationFactory.completeOperation(parameter);
+               Operations.executeWorkAndCheckStatus(operation);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
+            }
+
          } else {
             Wizards.initAndOpen(wizard, viewPart, new ArtifactStructuredSelection(parentArtifact));
+         }
+      }
+   }
+
+   private boolean importWithMoreThanOneFile(String fileName) {
+      {
+         String promptMsg = String.format(
+            "It appears you are trying to import more than 1 file, only the first file, [%s] will be choosen.\n\nIs that okay? \nIf no selected, the process will cease.",
+            FilenameUtils.getName(fileName));
+
+         if (MessageDialog.openQuestion(viewPart.getViewSite().getShell(), "Confirm First File Import", promptMsg)) {
+            return true;
+
+         } else {
+            return false;
          }
       }
    }
