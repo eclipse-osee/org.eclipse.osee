@@ -710,7 +710,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
          } else if (soleAttributes.size() > 1) {
             throw new MultipleAttributesExist(
                "Attribute [%s] must have exactly one instance.  It currently has %d for artifact [%s] on branch [%s]",
-               attributeType, soleAttributes.size(), getGuid(), getBranch());
+               attributeType, soleAttributes.size(), toStringWithId(), getBranch());
          } else {
             return defaultReturnValue;
          }
@@ -765,7 +765,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       } else if (soleAttributes.size() > 1) {
          throw new MultipleAttributesExist(
             "Attribute [%s] must have exactly one instance.  It currently has %d for artifact [%s] on branch [%s]",
-            attributeType, soleAttributes.size(), getGuid(), getBranch());
+            attributeType, soleAttributes.size(), toStringWithId(), getBranch());
       } else {
          return defaultReturnValue;
       }
