@@ -60,6 +60,8 @@ public class SetAsFavoriteAction extends Action {
          }
          if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Toggle Branch Favorites",
             "Toggle Branch Favorites for " + branches.size() + " branch(s)")) {
+            // Make sure we have latest artifact
+            user.reloadAttributesAndRelations();
             for (BranchId branch : branches) {
                user.toggleFavoriteBranch(branch);
             }

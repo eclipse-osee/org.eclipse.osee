@@ -62,6 +62,8 @@ public class OseeUiEarlyStartup implements IStartup {
             public boolean preShutdown(IWorkbench workbench, boolean forced) {
                if (!DbUtil.isDbInit()) {
                   try {
+                     // Make sure we have latest artifact
+                     UserManager.getUser().reloadAttributesAndRelations();
                      UserManager.getUser().saveSettings();
                   } catch (Throwable th) {
                      th.printStackTrace();
@@ -77,44 +79,44 @@ public class OseeUiEarlyStartup implements IStartup {
                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().addPartListener(
                   new IPartListener() {
 
-                  @Override
-                  public void partActivated(IWorkbenchPart part) {
-                     //                           WorkspaceContributionItem.addToAllViews();
-                     if (part instanceof ViewPart) {
-                        WorkspaceContributionItem.addToViewpart((ViewPart) part);
+                     @Override
+                     public void partActivated(IWorkbenchPart part) {
+                        //                           WorkspaceContributionItem.addToAllViews();
+                        if (part instanceof ViewPart) {
+                           WorkspaceContributionItem.addToViewpart((ViewPart) part);
+                        }
+
                      }
 
-                  }
+                     @Override
+                     public void partBroughtToTop(IWorkbenchPart part) {
+                        //                           WorkspaceContributionItem.addToAllViews();
+                        if (part instanceof ViewPart) {
+                           WorkspaceContributionItem.addToViewpart((ViewPart) part);
+                        }
 
-                  @Override
-                  public void partBroughtToTop(IWorkbenchPart part) {
-                     //                           WorkspaceContributionItem.addToAllViews();
-                     if (part instanceof ViewPart) {
-                        WorkspaceContributionItem.addToViewpart((ViewPart) part);
                      }
 
-                  }
-
-                  @Override
-                  public void partClosed(IWorkbenchPart part) {
-                     // do nothing
-                  }
-
-                  @Override
-                  public void partDeactivated(IWorkbenchPart part) {
-                     // do nothing
-                  }
-
-                  @Override
-                  public void partOpened(IWorkbenchPart part) {
-                     //                           WorkspaceContributionItem.addToAllViews();
-                     if (part instanceof ViewPart) {
-                        WorkspaceContributionItem.addToViewpart((ViewPart) part);
+                     @Override
+                     public void partClosed(IWorkbenchPart part) {
+                        // do nothing
                      }
 
-                  }
+                     @Override
+                     public void partDeactivated(IWorkbenchPart part) {
+                        // do nothing
+                     }
 
-               });
+                     @Override
+                     public void partOpened(IWorkbenchPart part) {
+                        //                           WorkspaceContributionItem.addToAllViews();
+                        if (part instanceof ViewPart) {
+                           WorkspaceContributionItem.addToViewpart((ViewPart) part);
+                        }
+
+                     }
+
+                  });
 
                PlatformUI.getWorkbench().getActiveWorkbenchWindow().addPerspectiveListener(new IPerspectiveListener() {
 
