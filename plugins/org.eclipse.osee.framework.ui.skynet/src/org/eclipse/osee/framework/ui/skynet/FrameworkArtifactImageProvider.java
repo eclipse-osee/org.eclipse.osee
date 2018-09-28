@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.util.DynamicImage;
 import org.eclipse.osee.framework.ui.skynet.util.DynamicImages;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ProgramImage;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.swt.graphics.Image;
 
@@ -87,6 +88,9 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
          FrameworkImage.subsystem_requirement, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SystemRequirementMSWord,
          FrameworkImage.system_requirement, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.PlainText, new ProgramImage("txt"), this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.Url, new ProgramImage("html"), this);
+
       for (IArtifactType artifactType : laserArtifactTypes) {
          ArtifactImageManager.registerBaseImage(artifactType, FrameworkImage.LASER, this);
       }

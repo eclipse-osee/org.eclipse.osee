@@ -59,6 +59,7 @@ public final class CoreArtifactTypes {
    // Added to support OSEE types versioning between 23.1 and 24.  Remove after 24.0 release.
    public static final IArtifactType OseeTypeDefinitionTemp = TokenFactory.createArtifactType(1870068013413878868L, "Osee Type Definition Temp");
    public static final IArtifactType OseeTypesEnum = TokenFactory.createArtifactType(5447805027409642344L, "Osee Type Enum");
+   public static final IArtifactType PlainText = TokenFactory.createArtifactType(784L, "Plain Text");
    public static final IArtifactType RendererTemplate = TokenFactory.createArtifactType(9, "Renderer Template");
    public static final IArtifactType Requirement = TokenFactory.createArtifactType(21, "Requirement");
    public static final IArtifactType RootArtifact = TokenFactory.createArtifactType(10, "Root Artifact");
