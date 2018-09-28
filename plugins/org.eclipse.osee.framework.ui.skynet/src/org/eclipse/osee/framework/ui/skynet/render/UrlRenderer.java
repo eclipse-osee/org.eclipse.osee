@@ -49,6 +49,8 @@ public class UrlRenderer extends DefaultArtifactRenderer {
          GENERAL_REQUESTED) && artifact.getAttributeCount(ContentUrl) > 0) {
          if (presentationType.equals(WEB_PREVIEW)) {
             return SPECIALIZED_MATCH;
+         } else if (presentationType.equals(PresentationType.PREVIEW)) {
+            return PRESENTATION_SUBTYPE_MATCH;
          } else if (presentationType.equals(DEFAULT_OPEN)) {
             return PRESENTATION_TYPE;
          }
