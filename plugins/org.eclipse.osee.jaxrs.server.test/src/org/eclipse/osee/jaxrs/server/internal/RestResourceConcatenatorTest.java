@@ -208,7 +208,7 @@ public class RestResourceConcatenatorTest {
       StringBuilder toReturn = new StringBuilder();
       toReturn.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
       toReturn.append("<resourceDoc>\n");
-      for (int i = 0; i < count; ++i) {
+      for (int i = 0; i < count; i++) {
          toReturn.append(
             "<classDocs><classDoc><className>org.eclipse.osee.something</className><commentText><![CDATA[]]></commentText>\n");
          toReturn.append(

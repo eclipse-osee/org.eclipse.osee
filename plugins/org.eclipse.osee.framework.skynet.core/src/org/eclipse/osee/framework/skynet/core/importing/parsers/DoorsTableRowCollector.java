@@ -149,7 +149,7 @@ public class DoorsTableRowCollector {
          throw new OseeStateException("Not enough rows to analyze", rawRows);
       }
       rawRows.get(0).setRowType(RowType.FIRST_ROW);
-      for (int i = 1; i < rawRows.size(); ++i) {
+      for (int i = 1; i < rawRows.size(); i++) {
          DoorsTableRow current = rawRows.get(i);
          DoorsDataType dte = getDataTypeValue(current);
          current.setDataType(dte);

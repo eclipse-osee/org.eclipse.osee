@@ -64,7 +64,7 @@ public class TraceMatch {
          match = matcher.group(1);
       } else {
          StringBuilder strB = new StringBuilder();
-         for (int i = 1; i <= groupCount; ++i) {
+         for (int i = 1; i <= groupCount; i++) {
             String subMatch = matcher.group(i);
             if (subMatch != null) {
                strB.append(subMatch);

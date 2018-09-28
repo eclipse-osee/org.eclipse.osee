@@ -556,7 +556,7 @@ public class ExcelOutputHandler extends OrcsScriptOutputHandler {
       public int getColumnIndex(int index, String key) {
          int position = 0;
          try {
-            for (int i = 0; i < index; ++i) {
+            for (int i = 0; i < index; i++) {
                position += columnGroups.get(i).size();
             }
             List<String> columns = columnGroups.get(index);

@@ -158,7 +158,7 @@ public class ValidatingSafetyReportGenerator {
    }
 
    private void clearRowValues(String[] toClear) {
-      for (int i = 0; i < toClear.length; ++i) {
+      for (int i = 0; i < toClear.length; i++) {
          toClear[i] = "";
       }
    }

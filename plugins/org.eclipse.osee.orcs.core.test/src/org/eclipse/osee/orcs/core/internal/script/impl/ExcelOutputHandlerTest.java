@@ -100,7 +100,7 @@ public class ExcelOutputHandlerTest {
       String result = resultBuffer.toString();
       // add one for the heading row
       assertTrue(countRows(result) == groups.length + 1);
-      for (int i = 0; i < values.length; ++i) {
+      for (int i = 0; i < values.length; i++) {
          assertTrue(result.contains(">" + values[i] + "<"));
       }
       assertTrue(result.contains("debug"));
@@ -113,7 +113,7 @@ public class ExcelOutputHandlerTest {
       String result = resultBuffer.toString();
       assertTrue(countCells(result) == headings.length);
       assertTrue(result.contains(innerName[1]));
-      for (int i = 0; i < values.length; ++i) {
+      for (int i = 0; i < values.length; i++) {
          assertTrue(result.contains(values[i]));
       }
    }
@@ -143,7 +143,7 @@ public class ExcelOutputHandlerTest {
       handler.onLoadStart();
       Map<String, Object> data = (Map<String, Object>) top.get("top");
       try {
-         for (int i = 0; i < groups.length; ++i) {
+         for (int i = 0; i < groups.length; i++) {
             handler.onDynamicData((Map<String, Object>) data.get(groups[i]));
          }
          handler.onLoadEnd();
@@ -172,7 +172,7 @@ public class ExcelOutputHandlerTest {
 
    private Object[] buildSetData() {
       Object[] data = new Object[values.length];
-      for (int i = 0; i < values.length; ++i) {
+      for (int i = 0; i < values.length; i++) {
          Map<String, Object> element = new LinkedHashMap<>();
          element.put("data", values[i]);
          element.put(innerName[0], innerName[1]);
@@ -185,7 +185,7 @@ public class ExcelOutputHandlerTest {
 
    private Object[] buildBadSetData() {
       Object[] data = new Object[values.length];
-      for (int i = 0; i < values.length; ++i) {
+      for (int i = 0; i < values.length; i++) {
          Set<String> dataset = new LinkedHashSet<>();
          dataset.add(values[i]);
          data[i] = dataset;
@@ -195,7 +195,7 @@ public class ExcelOutputHandlerTest {
 
    private Object[] buildCharData() {
       Object[] data = new Object[values.length];
-      for (int i = 0; i < values.length; ++i) {
+      for (int i = 0; i < values.length; i++) {
          CharacterDataProxy mockedDataProxy = Mockito.mock(CharacterDataProxy.class);
          when(mockedDataProxy.getValueAsString()).thenReturn(values[i]);
          when(mockedDataProxy.toString()).thenReturn(values[i]);
@@ -228,7 +228,7 @@ public class ExcelOutputHandlerTest {
       handler.onEvalStart();
       handler.onLoadStart();
       Map<String, Object> data = (Map<String, Object>) top.get("top");
-      for (int i = 0; i < groups.length; ++i) {
+      for (int i = 0; i < groups.length; i++) {
          handler.onDynamicData((Map<String, Object>) data.get(groups[i]));
       }
       handler.onLoadEnd();

@@ -62,7 +62,7 @@ public class StringGuidsToArtifactListOperationTest {
       testBranch = BranchManager.createWorkingBranch(SAW_Bld_1,
          StringGuidsToArtifactListOperationTest.class.getSimpleName() + " Branch");
 
-      for (int i = 0; i < capacity; ++i) {
+      for (int i = 0; i < capacity; i++) {
          Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, testBranch, "Test" + i);
          guids[i] = artifact.getGuid();
          artifact.persist("Save");

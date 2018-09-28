@@ -213,7 +213,7 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
 
    @Override
    public void writeEndRow() throws IOException {
-      for (int i = 0; i < numColumns; ++i) {
+      for (int i = 0; i < numColumns; i++) {
          if (rowBuffer[i] != null && rowBuffer[i].length() > 0) {
             out.write(rowBuffer[i]);
          }

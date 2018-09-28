@@ -312,7 +312,7 @@ public class PropertyStoreWriter {
 
       private static String getEscaped(String s) {
          StringBuffer result = new StringBuffer(s.length() + 10);
-         for (int i = 0; i < s.length(); ++i) {
+         for (int i = 0; i < s.length(); i++) {
             appendEscapedChar(result, s.charAt(i));
          }
          return result.toString();

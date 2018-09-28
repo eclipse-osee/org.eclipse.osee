@@ -34,8 +34,8 @@ public class SafetyCriticalityLookupTest {
       String[] controlCats = {"1(AT)", "2(SAT)", "3(RFT)", "4(IN)", "5(NSI)"};
       String[] sevCats = {"I", "II", "III", "IV", "NH"};
 
-      for (int i = 0; i < 5; ++i) {
-         for (int j = 0; j < 5; ++j) {
+      for (int i = 0; i < 5; i++) {
+         for (int j = 0; j < 5; j++) {
             Assert.assertEquals(getDALFromMap(controlCats[i], sevCats[j]),
                SafetyCriticalityLookup.getDALFromControlCategoryAndSeverity(controlCats[i], sevCats[j]));
          }
@@ -68,7 +68,7 @@ public class SafetyCriticalityLookupTest {
    public void testGetDALLevelFromSeverityCategory() {
       String[] sevCats = {"I", "II", "III", "IV", "NH"};
       String[] expected = {"A", "B", "C", "D", "E"};
-      for (int i = 0; i < 5; ++i) {
+      for (int i = 0; i < 5; i++) {
          Assert.assertEquals(expected[i], SafetyCriticalityLookup.getDALLevelFromSeverityCategory(sevCats[i]));
       }
    }
@@ -76,7 +76,7 @@ public class SafetyCriticalityLookupTest {
    @Test
    public void testGetDALLevel() {
       String[] expected = {"A", "B", "C", "D", "E"};
-      for (Integer i = 0; i < 5; ++i) {
+      for (Integer i = 0; i < 5; i++) {
          Assert.assertEquals(expected[i], SafetyCriticalityLookup.getDALLevelFromInt(i));
       }
    }
@@ -86,7 +86,7 @@ public class SafetyCriticalityLookupTest {
       String[] givenControlCats = {"1(AT)", "2(SAT)", "3(RFT)", "4(IN)", "5(NSI)"};
       String[] givenSevCats = {"I", "II", "III", "IV", "NH"};
       String[] givenDALs = {"A", "B", "C", "D", "E"};
-      for (Integer i = 0; i < 5; ++i) {
+      for (Integer i = 0; i < 5; i++) {
          Assert.assertEquals(i, SafetyCriticalityLookup.getControlLevel(givenControlCats[i]));
          Assert.assertEquals(i, SafetyCriticalityLookup.getSeverityLevel(givenSevCats[i]));
          Assert.assertEquals(i, SafetyCriticalityLookup.getDALLevel(givenDALs[i]));
