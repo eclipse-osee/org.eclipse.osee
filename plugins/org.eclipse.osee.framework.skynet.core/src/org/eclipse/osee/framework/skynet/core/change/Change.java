@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 
@@ -38,6 +39,7 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
    private final boolean isHistorical;
    private final Artifact changeArtifact;
    private ChangeItem changeItem;
+   public static Boolean showTokenForChangeName;
 
    public Change(BranchId branch, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
       this.branch = branch;
@@ -120,7 +122,10 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
    }
 
    public String getArtifactName() {
-      return getChangeArtifact().toStringWithId();
+      if (UserManager.isShowTokenForChangeName()) {
+         return getChangeArtifact().toStringWithId();
+      }
+      return getChangeArtifact().getName();
    }
 
    public GammaId getGamma() {

@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import org.eclipse.osee.cache.admin.CacheAdmin;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -22,6 +23,7 @@ import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
@@ -35,6 +37,7 @@ public final class UserManager {
 
    public static String DOUBLE_CLICK_SETTING_KEY_ART_EDIT = "onDoubleClickOpenUsingArtifactEditor";
    public static String DOUBLE_CLICK_SETTING_KEY_EDIT = "onDoubleClickOpenUsingEditMode";
+   private static AtomicBoolean showTokenForChangeName;
 
    private static final LazyObject<UserAdmin> provider = new LazyObject<UserAdmin>() {
 
@@ -196,6 +199,19 @@ public final class UserManager {
 
    public static void setSetting(String key, Long value) throws OseeCoreException {
       getUser().setSetting(key, String.valueOf(value));
+   }
+
+   public static void setShowTokenForChangeName(boolean showTokenForChangeName) {
+      UserManager.showTokenForChangeName.set(showTokenForChangeName);
+      getUser().setBooleanSetting(OseeProperties.OSEE_SHOW_TOKEN_FOR_CHANGE_NAME, showTokenForChangeName);
+   }
+
+   public synchronized static boolean isShowTokenForChangeName() {
+      if (showTokenForChangeName == null) {
+         showTokenForChangeName = new AtomicBoolean(false);
+         showTokenForChangeName.set(getUser().getBooleanSetting(OseeProperties.OSEE_SHOW_TOKEN_FOR_CHANGE_NAME));
+      }
+      return showTokenForChangeName.get();
    }
 
 }

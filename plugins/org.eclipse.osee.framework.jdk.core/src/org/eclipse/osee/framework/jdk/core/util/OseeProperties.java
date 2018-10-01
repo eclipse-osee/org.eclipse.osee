@@ -35,6 +35,7 @@ public class OseeProperties {
    private static final String OSEE_PROXY_BYPASS_ENABLED = "osee.proxy.bypass.enabled";
    private static final String OSEE_DB_CONNECTION_POOL_SIZE = "osee.db.connection.pool.size";
    private static final String OSEE_DB_CONNECTION_POOL_CONFIG_URI = "osee.db.connection.pool.config.uri";
+   public static final String OSEE_SHOW_TOKEN_FOR_CHANGE_NAME = "osee.show.token.for.change.name";
 
    protected OseeProperties() {
       // Utility Class
@@ -76,7 +77,7 @@ public class OseeProperties {
 
    /**
     * Get the default OSEE logging level. The default level is WARNING.
-    * 
+    *
     * @return default logging level
     */
    public static Level getOseeLogDefault() {
@@ -92,7 +93,7 @@ public class OseeProperties {
 
    /**
     * OSEE database information id to use for default database connections.
-    * 
+    *
     * @return the default database information id to use for database connections.
     */
    public static String getOseeDbConnectionId() {
@@ -101,7 +102,7 @@ public class OseeProperties {
 
    /**
     * Retrieve the connection info file location
-    * 
+    *
     * @return connection info file URI
     */
    public static String getOseeConnectionInfoUri() {
@@ -110,7 +111,7 @@ public class OseeProperties {
 
    /**
     * Retrieve the number of max active connections
-    * 
+    *
     * @return number of max active connections
     */
    public static int getOseeDbConnectionCount() {
@@ -126,7 +127,7 @@ public class OseeProperties {
 
    /**
     * Retrieve the connection pool configuration file location
-    * 
+    *
     * @return connection pool configuration file URI
     */
    public static String getOseeDbConnectionPoolConfigUri() {
@@ -135,7 +136,7 @@ public class OseeProperties {
 
    /**
     * Retrieves the JINI Groups this system is a part of.
-    * 
+    *
     * @return JINI service groups
     */
    public static String getOseeJiniServiceGroups() {
@@ -144,7 +145,7 @@ public class OseeProperties {
 
    /**
     * Sets the JINI Groups this system is a part of.
-    * 
+    *
     * @param JINI service groups
     */
    public static void setOseeJiniServiceGroups(String toStore) {

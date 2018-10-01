@@ -53,6 +53,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
    private Button editButton;
    private Button useCompareEditorForTextCompares;
    private Button includeAttributeTabOnArtifactEditor;
+   private Button showTokenForChangeName;
    private Text compareEditorTextBox;
 
    public static boolean isCloseChangeReportEditorsOnShutdown() throws OseeCoreException {
@@ -100,6 +101,20 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+
+      try {
+         showTokenForChangeName = new Button(composite, SWT.CHECK);
+         showTokenForChangeName.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
+         showTokenForChangeName.setText("Show Tokens for Change Names");
+         try {
+            boolean value = UserManager.isShowTokenForChangeName();
+            showTokenForChangeName.setSelection(value);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -256,6 +271,10 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
          boolean result = useCompareEditorForTextCompares.getSelection();
          UserManager.setSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN, String.valueOf(result));
 
+         if (showTokenForChangeName != null) {
+            boolean set = showTokenForChangeName.getSelection();
+            UserManager.setShowTokenForChangeName(set);
+         }
          if (includeAttributeTabOnArtifactEditor != null) {
             result = includeAttributeTabOnArtifactEditor.getSelection();
             UserManager.setSetting(ADMIN_INCLUDE_ATTRIBUTE_TAB_ON_ARTIFACT_EDITOR, String.valueOf(result));
