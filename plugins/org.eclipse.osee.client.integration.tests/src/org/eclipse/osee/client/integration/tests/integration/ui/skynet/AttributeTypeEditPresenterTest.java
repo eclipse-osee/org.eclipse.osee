@@ -53,7 +53,8 @@ public class AttributeTypeEditPresenterTest {
       CoreAttributeTypes.RelationOrder,
       CoreAttributeTypes.ContentUrl,
       CoreAttributeTypes.Annotation,
-      CoreAttributeTypes.StaticId};
+      CoreAttributeTypes.StaticId,
+      CoreAttributeTypes.Description};
 
    private AttributeTypeEditPresenter controller;
    private MockDisplay display;

@@ -5,6 +5,7 @@ artifactType "Artifact" {
 	attribute "Content URL"
 	attribute "Static Id"
 	attribute "Relation Order"
+	attribute "Description"
 }
 
 artifactType "Access Control Model" extends "General Data" {
@@ -342,7 +343,6 @@ artifactType "Subscription Group" extends "User Group" {
 
 artifactType "Universal Group" extends "Group Artifact" {
 	id 8
-	attribute "Description"
 }
 
 artifactType "Renderer Template" extends "MS Word Whole Document" {
@@ -408,7 +408,6 @@ artifactType "General Document" extends "Native Artifact" {
 
 artifactType "Url" extends "Artifact" {
 	id 15
-	attribute "Description"
 }
 
 attributeType "Name" extends StringAttribute {
@@ -621,7 +620,6 @@ artifactType "MS Word Template" extends "MS Word" {
 abstract artifactType "Native Artifact" extends "Artifact" {
 	id 20
 	attribute "Extension"
-	attribute "Description"
 	attribute "Native Content"
 }
 
@@ -1854,7 +1852,6 @@ artifactType "Osee Type Definition" extends "Artifact" {
 
 artifactType "Feature" extends "Artifact" {
 	id 87
-	attribute "Description"
 }
 
 relationType "Related Feature" {
@@ -1870,7 +1867,6 @@ relationType "Related Feature" {
 artifactType "OSEE App" extends "Artifact" {
 	id 89
 	attribute "Osee App Definition"
-	attribute "Description"
 }
 
 attributeType "Osee App Definition" extends StringAttribute {
@@ -1885,7 +1881,6 @@ attributeType "Osee App Definition" extends StringAttribute {
 artifactType "Breaker" extends "Artifact" {
    id 188458869981236
    attribute "Display Text"
-   attribute "Description"
    attribute "Circuit Breaker ID"
    attribute "Require Confirmation"
 }

@@ -8,7 +8,7 @@ When database schema, types or dbinit change, the files in the /data directory m
 To do so:
 
 1) Delete C:/Users/<account>/hsql and C:/Users/<account>/attr
-2) Do a normal AtsClient_Integration_TestSuite, stop before ClientResourceTest
+2) Do a normal AtsClient_Integration_TestSuite, stop at AtsTest_AllAts_Suite.setup
 3) Zip up hsql dir to hsql.zip and copy to this directory
 4) Zip up attr to binary_data.zip and copy to this directory
 5) Re-run the local Test Suite and fix any errors

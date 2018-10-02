@@ -2,7 +2,6 @@ import "platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeType
 
 artifactType "OAuth Client" extends "Artifact" {
 	id 756912961500447526
-	attribute "Description"
 	attribute "Website URI"
 	attribute "Logo URI"
 	attribute "Is Confidential"
