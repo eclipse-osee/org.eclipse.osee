@@ -26,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.FeatureDefinition;
@@ -137,10 +138,10 @@ public interface ApplicabilityEndpoint {
    ArtifactId getVersionConfig(@PathParam("version") ArtifactId version);
 
    @POST
-   @Path("view/{view-name}")
+   @Path("view")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   TransactionToken createView(@PathParam("view-name") String viewName);
+   ArtifactToken createView(String viewName);
 
    @POST
    @Path("view/{viewId}/applic")

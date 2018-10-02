@@ -29,6 +29,9 @@ public final class CoreArtifactTokens {
    public static ArtifactToken DataRightsFooters = ArtifactToken.valueOf(5443258, null, "DataRightsFooters",  COMMON,CoreArtifactTypes.GeneralData);
    public static ArtifactToken DocumentTemplates = ArtifactToken.valueOf(64970, null, "Document Templates", COMMON, CoreArtifactTypes.Folder);
    public static ArtifactToken FrameworkAccessModel = ArtifactToken.valueOf(35975422L, null, "Framework Access Model", COMMON, CoreArtifactTypes.AccessControlModel);
+   public static ArtifactToken ProductLineFolder = ArtifactToken.valueOf(8255179, "Product Line", CoreArtifactTypes.Folder);
+   public static ArtifactToken ProductsFolder = ArtifactToken.valueOf(10039752, "Products", CoreArtifactTypes.Folder);
+
    // @formatter:on
 
    private CoreArtifactTokens() {

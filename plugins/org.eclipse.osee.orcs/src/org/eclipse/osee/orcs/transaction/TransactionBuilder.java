@@ -157,7 +157,7 @@ public interface TransactionBuilder {
 
    void setApplicability(ApplicabilityId applicId, List<? extends ArtifactId> artifacts);
 
-   ArtifactId createView(BranchId branch, String viewName);
+   ArtifactToken createView(BranchId branch, String viewName);
 
    void createApplicabilityForView(ArtifactId viewId, String applicability);
 

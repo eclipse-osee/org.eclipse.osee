@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
@@ -394,15 +393,10 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactId createView(BranchId branch, String viewName) {
-      ArtifactId folder = query.createQueryFactory(txData.getSession()).fromBranch(branch).andTypeEquals(
-         CoreArtifactTypes.Folder).andNameEquals("Product Line").getResults().getOneOrNull();
-      if (folder == null || folder.isInvalid()) {
-         folder = createArtifact(CoreArtifactTokens.DefaultHierarchyRoot, CoreArtifactTypes.Folder, "Product Line");
-      }
-      ArtifactId art = createArtifact(folder, CoreArtifactTypes.BranchView, viewName);
-      addTuple2(CoreTupleTypes.BranchView, CoreBranches.COMMON.getId(), art.getId());
-      return art;
+   public ArtifactToken createView(BranchId branch, String viewName) {
+      ArtifactReadable folder = query.createQueryFactory(null).fromBranch(branch).andId(
+         CoreArtifactTokens.ProductsFolder).getResults().getExactlyOne();
+      return createArtifact(folder, CoreArtifactTypes.BranchView, viewName);
    }
 
    @Override

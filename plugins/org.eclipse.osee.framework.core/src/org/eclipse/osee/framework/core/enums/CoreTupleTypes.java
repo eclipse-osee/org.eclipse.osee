@@ -15,6 +15,7 @@ import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.Product
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.TupleFamilyId;
@@ -30,7 +31,7 @@ public final class CoreTupleTypes {
    public static final Tuple2Type<Long, AttributeId> OseeTypeDef = Tuple2Type.valueOf(DefaultFamily, 4L);
    public static final Tuple2Type<ArtifactId, ApplicabilityId> ArtifactReferenceApplicabilityType =
       Tuple2Type.valueOf(CoreTupleFamilyTypes.ProductLineFamily, 13L);
-   public static final Tuple2Type<Long, Long> BranchView = Tuple2Type.valueOf(ProductLineFamily, 11L);
+   public static final Tuple2Type<BranchId, ArtifactId> BranchView = Tuple2Type.valueOf(ProductLineFamily, 11L);
    public static final Tuple2Type<ArtifactId, ArtifactId> VersionConfig = Tuple2Type.valueOf(ProductLineFamily, 12L);
 
    // Data Maintenance
