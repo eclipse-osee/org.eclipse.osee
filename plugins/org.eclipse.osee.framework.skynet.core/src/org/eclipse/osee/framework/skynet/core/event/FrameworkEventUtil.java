@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
@@ -183,7 +184,7 @@ public final class FrameworkEventUtil {
 
    public static RemoteBasicGuidRelation1 getRemoteBasicGuidRelation1(EventBasicGuidRelation guidRel) {
       RemoteBasicGuidRelation1 remEvent = new RemoteBasicGuidRelation1();
-      remEvent.setGammaId(guidRel.getGammaId());
+      remEvent.setGammaId(guidRel.getGammaId().getIdIntValue());
       remEvent.setBranchGuid(guidRel.getBranch());
       remEvent.setRelTypeGuid(guidRel.getRelTypeGuid());
       remEvent.setRelationId(guidRel.getRelationId());
@@ -220,7 +221,7 @@ public final class FrameworkEventUtil {
             "Can't determine RelationEventType from guid " + guidRel.getModTypeGuid());
       }
       EventBasicGuidRelation event = new EventBasicGuidRelation(eventType, guidRel.getBranch(),
-         guidRel.getRelTypeGuid(), guidRel.getRelationId(), guidRel.getGammaId(), guidRel.getArtAId(),
+         guidRel.getRelTypeGuid(), guidRel.getRelationId(), GammaId.valueOf(guidRel.getGammaId()), guidRel.getArtAId(),
          getBasicGuidArtifact(guidRel.getArtA()), guidRel.getArtBId(), getBasicGuidArtifact(guidRel.getArtB()));
       if (eventType == RelationEventType.ModifiedRationale || eventType == RelationEventType.Added) {
          event.setRationale(guidRel.getRationale());
@@ -269,7 +270,7 @@ public final class FrameworkEventUtil {
    public static AttributeChange getAttributeChange(RemoteAttributeChange1 remAttrChg) {
       AttributeChange attrChg = new AttributeChange();
       attrChg.setAttributeId(remAttrChg.getAttributeId());
-      attrChg.setGammaId(remAttrChg.getGammaId());
+      attrChg.setGammaId(GammaId.valueOf(remAttrChg.getGammaId()));
       attrChg.setAttrTypeGuid(remAttrChg.getAttrTypeGuid());
       attrChg.setModTypeGuid(remAttrChg.getModTypeGuid());
       for (Object data : remAttrChg.getData()) {
@@ -281,7 +282,7 @@ public final class FrameworkEventUtil {
    public static RemoteAttributeChange1 getRemoteAttributeChange(AttributeChange attrChg) {
       RemoteAttributeChange1 remAttrChg = new RemoteAttributeChange1();
       remAttrChg.setAttributeId(attrChg.getAttributeId());
-      remAttrChg.setGammaId(attrChg.getGammaId());
+      remAttrChg.setGammaId(attrChg.getGammaId().getIdIntValue());
       remAttrChg.setAttrTypeGuid(attrChg.getAttrTypeGuid());
       remAttrChg.setModTypeGuid(attrChg.getModTypeGuid());
       for (Object data : attrChg.getData()) {

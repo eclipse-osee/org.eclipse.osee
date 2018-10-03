@@ -14,7 +14,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 
 /**
@@ -47,7 +46,7 @@ public class RemoteAttributeChange1 extends RemoteEvent {
    @XmlElement(required = true)
    protected String modTypeGuid;
    protected int attributeId;
-   protected GammaId gammaId;
+   protected int gammaId;
    @XmlElement(required = true)
    protected List<String> data;
 
@@ -104,14 +103,14 @@ public class RemoteAttributeChange1 extends RemoteEvent {
    /**
     * Gets the value of the gammaId property.
     */
-   public GammaId getGammaId() {
+   public int getGammaId() {
       return gammaId;
    }
 
    /**
     * Sets the value of the gammaId property.
     */
-   public void setGammaId(GammaId gammaId) {
+   public void setGammaId(int gammaId) {
       this.gammaId = gammaId;
    }
 

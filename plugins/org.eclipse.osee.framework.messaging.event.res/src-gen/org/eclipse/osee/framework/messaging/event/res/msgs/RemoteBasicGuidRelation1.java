@@ -12,7 +12,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 
 /**
@@ -62,7 +61,7 @@ public class RemoteBasicGuidRelation1 extends RemoteEvent {
    protected String branchGuid;
    protected long relTypeGuid;
    protected int relationId;
-   protected GammaId gammaId;
+   protected int gammaId;
    protected int artAId;
    @XmlElement(required = true)
    protected RemoteBasicGuidArtifact1 artA;
@@ -143,14 +142,14 @@ public class RemoteBasicGuidRelation1 extends RemoteEvent {
    /**
     * Gets the value of the gammaId property.
     */
-   public GammaId getGammaId() {
+   public int getGammaId() {
       return gammaId;
    }
 
    /**
     * Sets the value of the gammaId property.
     */
-   public void setGammaId(GammaId gammaId) {
+   public void setGammaId(int gammaId) {
       this.gammaId = gammaId;
    }
 
