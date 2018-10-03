@@ -52,6 +52,7 @@ public class AtsColumnToken {
    public static AtsColumnIdValueColumn TeamColumn = new AtsColumnIdValueColumn(AtsColumnId.Team, "Team", 50, ColumnAlign.Left.name(), true, ColumnType.String, false, "Team that has been assigned to work this Action.", true, true);
    public static AtsColumnIdValueColumn TypeColumn = new AtsColumnIdValueColumn(AtsColumnId.Type, "Type", 150, ColumnAlign.Left.name(), true, ColumnType.String, false, null, false, false);
    public static AtsColumnIdValueColumn WorkDefinitionColumn = new AtsColumnIdValueColumn(AtsColumnId.WorkDefinition, "Work Definition", 150, ColumnAlign.Left.name(), false, ColumnType.String, false, null, false, false);
+   public static AtsColumnIdValueColumn ParentTitleColumn = new AtsColumnIdValueColumn(AtsColumnId.ParentTitle, "Parent Title", 150, ColumnAlign.Left.name(), false, ColumnType.String, false, null, false, false);
    // @formatter:on
 
    /**

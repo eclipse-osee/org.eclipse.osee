@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.core.column.IdColumn;
 import org.eclipse.osee.ats.core.column.ImplementerColumn;
 import org.eclipse.osee.ats.core.column.InsertionActivityColumn;
 import org.eclipse.osee.ats.core.column.InsertionColumn;
+import org.eclipse.osee.ats.core.column.ParentTitleColumn;
 import org.eclipse.osee.ats.core.column.PercentCompleteTasksColumn;
 import org.eclipse.osee.ats.core.column.SprintOrderColumn;
 import org.eclipse.osee.ats.core.column.StateColumn;
@@ -164,6 +165,8 @@ public class AtsColumnService implements IAtsColumnService {
             column = new AgileFeatureGroupColumn(atsApi);
          } else if (id.equals(AtsColumnId.TaskToRelatedArtifactType.getId())) {
             column = new TaskRelatedArtifactTypeColumn(atsApi);
+         } else if (id.equals(AtsColumnId.ParentTitle.getId())) {
+            column = new ParentTitleColumn(atsApi);
          }
       }
       // Add columns provided through OSGI services

@@ -36,6 +36,7 @@ public enum AtsColumnId implements IAtsColumnId {
    LegacyPcrId("ats.column.legacyPcr"),
    Name("framework.artifact.name"),
    Notes("ats.column.notes"),
+   ParentTitle("ats.column.parentTitle"),
    PercentCompleteWorkflow("ats.column.workflowPercentComplete"),
    PercentCompleteTasks("ats.column.taskPercentComplete"),
    Points("ats.column.points"),

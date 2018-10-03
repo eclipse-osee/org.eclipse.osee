@@ -283,6 +283,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          RelatedArtifactLastModifiedByColumn.getInstance(),
          RelatedArtifactLastModifiedDateColumn.getInstance(),
          TaskRelatedArtifactTypeColumnUI.getInstance(),
+         getColumnServiceColumn(AtsColumnToken.ParentTitleColumn),
          new IdColumn(false),};
    }
 
