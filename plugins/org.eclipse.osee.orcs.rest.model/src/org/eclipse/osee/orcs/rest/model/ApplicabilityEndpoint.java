@@ -144,6 +144,12 @@ public interface ApplicabilityEndpoint {
    ArtifactToken createView(String viewName);
 
    @POST
+   @Path("view/{sourceView}/copy")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   TransactionToken copyView(@PathParam("sourceView") ArtifactId sourceView, String viewName);
+
+   @POST
    @Path("view/{viewId}/applic")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)

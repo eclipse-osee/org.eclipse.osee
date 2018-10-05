@@ -158,6 +158,24 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
+   public TransactionToken copyView(ArtifactId sourceView, String viewName) {
+      ArtifactToken view = createView(viewName);
+
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account, "Copy Branch View");
+      List<ApplicabilityToken> viewApplicabilityTokens =
+         applicabilityQuery.getViewApplicabilityTokens(sourceView, branch);
+      for (ApplicabilityToken applicToken : viewApplicabilityTokens) {
+         String name = applicToken.getName();
+         if (name.contains("Config = ")) {
+            tx.addTuple2(CoreTupleTypes.ViewApplicability, view, "Config = " + viewName);
+         } else {
+            tx.addTuple2(CoreTupleTypes.ViewApplicability, view, name);
+         }
+      }
+      return tx.commit();
+   }
+
+   @Override
    public TransactionToken createApplicabilityForView(ArtifactId viewId, String applicability) {
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(branch, account, "Create new applicability");
