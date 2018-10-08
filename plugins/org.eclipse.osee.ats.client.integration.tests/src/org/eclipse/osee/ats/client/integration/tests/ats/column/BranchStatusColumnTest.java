@@ -38,7 +38,7 @@ public class BranchStatusColumnTest {
 
       TeamWorkFlowArtifact reqArt2 =
          (TeamWorkFlowArtifact) DemoTestUtil.getCommittedActionWorkflow(DemoWorkType.Requirements);
-      Assert.assertEquals("Committed", BranchStatusColumn.getInstance().getBranchStatus(reqArt2));
+      Assert.assertEquals("Needs Commit", BranchStatusColumn.getInstance().getBranchStatus(reqArt2));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

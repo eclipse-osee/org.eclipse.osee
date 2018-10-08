@@ -66,7 +66,9 @@ public class Versions {
    public static void getParallelVersions(IAtsVersion version, Set<ICommitConfigItem> configArts, IAtsServices services) {
       configArts.add(version);
       for (IAtsVersion childArt : getParallelVersions(version, services)) {
-         getParallelVersions(childArt, configArts, services);
+         if (!configArts.contains(childArt)) {
+            getParallelVersions(childArt, configArts, services);
+         }
       }
    }
 

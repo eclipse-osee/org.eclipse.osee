@@ -143,6 +143,8 @@ teamDefinition "Teams" GetOrCreate {
 				guid "A8msa8LrcxhyrUTsbuwA"
 				uuid 577781
 				staticId "saw.teamDefHoldingVersions"
+				next True allowCreateBranch True allowCommitBranch True
+				baselineBranchUuid "6"
 			}
 			children {
 

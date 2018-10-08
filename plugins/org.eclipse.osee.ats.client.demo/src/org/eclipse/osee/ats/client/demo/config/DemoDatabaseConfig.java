@@ -24,6 +24,8 @@ import org.eclipse.osee.ats.api.insertion.JaxInsertion;
 import org.eclipse.osee.ats.api.insertion.JaxInsertionActivity;
 import org.eclipse.osee.ats.api.program.JaxProgram;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.config.AtsDatabaseConfig;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
@@ -79,6 +81,8 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
          OsgiUtil.getService(getClass(), OseeClient.class).getApplicabilityEndpoint(SAW_Bld_1);
       applEndpoint.createDemoApplicability();
 
+      configureForParallelCommit();
+
       // Create build one branch for CIS
       BranchManager.createTopLevelBranch(CIS_Bld_1);
       populateProgramBranch(CIS_Bld_1);
@@ -100,6 +104,25 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
       createAndSetWorkPackages();
 
       addSawWorkTypes();
+   }
+
+   /**
+    * Configure SAW_Bld_1 and SAW_Bld_2 for parallel commit, including recursive setup where SAW_Bld_1 needs to be
+    * committed to SAW_Bld_1 and SAW_Bld_2 and SAW_Bld_2 needs to be committed to SAW_Bld_2 and SAW_Bld_1
+    */
+   private void configureForParallelCommit() {
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("configureForParallelCommit");
+
+      IAtsVersion sawBld1Ver = AtsClientService.get().getVersionService().getById(DemoArtifactToken.SAW_Bld_1);
+      IAtsVersion sawBld2Ver = AtsClientService.get().getVersionService().getById(DemoArtifactToken.SAW_Bld_2);
+      IAtsVersion sawBld3Ver = AtsClientService.get().getVersionService().getById(DemoArtifactToken.SAW_Bld_3);
+
+      changes.relate(sawBld1Ver, AtsRelationTypes.ParallelVersion_Child, sawBld2Ver);
+
+      changes.relate(sawBld2Ver, AtsRelationTypes.ParallelVersion_Child, sawBld1Ver);
+      changes.relate(sawBld2Ver, AtsRelationTypes.ParallelVersion_Child, sawBld3Ver);
+
+      changes.execute();
    }
 
    private void addSawWorkTypes() {
