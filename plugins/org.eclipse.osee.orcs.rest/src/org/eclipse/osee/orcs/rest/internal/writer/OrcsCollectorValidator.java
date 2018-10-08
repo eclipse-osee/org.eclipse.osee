@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -22,7 +23,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifact;
-import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactToken;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactType;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwAttribute;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwAttributeType;
@@ -36,11 +36,11 @@ import org.eclipse.osee.orcs.rest.model.writer.reader.OwRelationType;
 public class OrcsCollectorValidator {
 
    private final OwCollector collector;
-   private Map<Long, OwArtifact> idToArtifact;
+   private final Map<Long, OwArtifact> idToArtifact;
    private final Set<Long> artifactsExist;
    private final IOrcsValidationHelper helper;
    private AttributeTypes attributeTypeCache;
-   private Set<OwAttributeType> owAttributeTypesSet;
+   private final Set<OwAttributeType> owAttributeTypesSet;
 
    public OrcsCollectorValidator(OwCollector collector, IOrcsValidationHelper helper) {
       this.collector = collector;
@@ -141,7 +141,7 @@ public class OrcsCollectorValidator {
             if (relType == null || relType.getId() <= 0L || !helper.isRelationTypeExist(relType.getId())) {
                results.errorf("Invalid Relation Type [%s] for artifact [%s].\n", relType, artifact);
             } else {
-               OwArtifactToken artToken = relation.getArtToken();
+               ArtifactToken artToken = relation.getArtToken();
                BranchId branchUuid = collector.getBranchId();
                if (artToken == null) {
                   results.errorf("Invalid artifact token [%s] for artifact [%s] and relation [%s].\n", artToken,

@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifact;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactToken;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactType;
@@ -91,7 +92,7 @@ public class OrcsWriterFactory {
    }
 
    public OwRelation createRelationType(OwRelationType relType, String value) {
-      OwArtifactToken token = getOrCreateToken(value);
+      ArtifactToken token = getOrCreateToken(value);
       OwRelation relation = new OwRelation();
       relation.setData(value);
       relation.setArtToken(token);

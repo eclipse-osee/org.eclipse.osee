@@ -35,6 +35,12 @@ public class OrcsWriterUtil {
       return data;
    }
 
+   public static String getData(String sheetName, int rowCount, int colCount) {
+
+      return getRowColumnStr(rowCount, colCount, sheetName);
+
+   }
+
    public static String getRowColumnStr(int rowCount, int colCount, String sheetName) {
       return " sheet=" + sheetName + " row=" + rowCount + ", column=" + (colCount + 1);
    }

@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.rest.internal.writer;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -19,7 +20,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifact;
-import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactToken;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactType;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwAttribute;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwAttributeType;
@@ -87,12 +87,12 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
                nameColumn = colCount;
             } else if (value.toLowerCase().equals("attribute")) {
                OwAttributeType attrType = new OwAttributeType();
-               attrType.setData(OrcsWriterUtil.getData(getSheetName(), rowCount, colCount, ""));
+               attrType.setData(OrcsWriterUtil.getData(getSheetName(), rowCount, colCount));
                columnToAttributeType.put(colCount, attrType);
                collector.getAttrTypes().add(attrType);
             } else if (value.toLowerCase().equals("relation")) {
                OwRelationType relType = new OwRelationType(0L, "");
-               relType.setData(OrcsWriterUtil.getData(getSheetName(), rowCount, colCount, ""));
+               relType.setData(OrcsWriterUtil.getData(getSheetName(), rowCount, colCount));
                columnToRelationType.put(colCount, relType);
                collector.getRelTypes().add(relType);
             } else if (value.toLowerCase().startsWith("new art token")) {
@@ -127,7 +127,7 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
    public void processRow(String[] row) {
       rowCount++;
       OwArtifact artifact = new OwArtifact();
-      artifact.setData(OrcsWriterUtil.getData(getSheetName(), rowCount, 0, ""));
+      artifact.setData(OrcsWriterUtil.getData(getSheetName(), rowCount, 0));
       if (rowCount == 2) {
          for (int colCount = 0; colCount < row.length; colCount++) {
             if (isAttributeColumn(colCount)) {
@@ -170,7 +170,7 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
                      throw new OseeArgumentException(
                         "First column must contain artifact token.  row number %d on UPDATE sheet", rowCount);
                   } else {
-                     OwArtifactToken artifactToken = factory.getOrCreateToken(value);
+                     ArtifactToken artifactToken = factory.getOrCreateToken(value);
                      if (artifactToken == null) {
                         throw new OseeArgumentException(
                            "Invalid Artifact Token row %d value [%s]; expected [name]-[id] on UPDATE sheet", rowCount,
@@ -183,7 +183,7 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
             if (isCreateSheet() && artTokenColumn == colCount) {
                String value = row[colCount];
                if (Strings.isValid(value)) {
-                  OwArtifactToken token = factory.getOrCreateToken(value);
+                  ArtifactToken token = factory.getOrCreateToken(value);
                   if (token.getId() > 0L) {
                      artifact.setId(token.getId());
                   } else {

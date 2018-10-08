@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.orcs.rest.model.OrcsWriterEndpoint;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifact;
-import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactToken;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwCollector;
 import org.junit.Before;
 import org.junit.Test;
@@ -121,12 +120,7 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
       OwCollector collector = getDefaultOwCollector();
       collector.getCreate().clear();
       collector.getUpdate().clear();
-      OwArtifactToken owToken = new OwArtifactToken();
-      owToken.setId(artifact.getId());
-      owToken.setName(artifact.getName());
-      String tokenStr = String.format("[%s]-[%d]", artifact.getName(), artifact.getId());
-      owToken.setData(tokenStr);
-      collector.getDelete().add(owToken);
+      collector.getDelete().add(artifact);
 
       collector.setAsUserId(DemoUsers.Joe_Smith.getUserId());
       collector.setPersistComment(getClass().getSimpleName() + " - testValidate");

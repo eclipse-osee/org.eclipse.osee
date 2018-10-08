@@ -12,11 +12,12 @@ package org.eclipse.osee.orcs.rest.model.writer.reader;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
  * Data Transfer object for Orcs Writer
- * 
+ *
  * @author Donald G. Dunne
  */
 public class OwCollector {
@@ -28,7 +29,7 @@ public class OwCollector {
    private String asUserId;
    private List<OwArtifact> create;
    private List<OwArtifact> update;
-   private List<OwArtifactToken> delete;
+   private List<ArtifactToken> delete;
    private List<OwArtifactType> artTypes;
    private List<OwAttributeType> attrTypes;
    private List<OwRelationType> relTypes;
@@ -107,14 +108,14 @@ public class OwCollector {
       this.update = update;
    }
 
-   public List<OwArtifactToken> getDelete() {
+   public List<ArtifactToken> getDelete() {
       if (delete == null) {
          delete = new LinkedList<>();
       }
       return delete;
    }
 
-   public void setDelete(List<OwArtifactToken> delete) {
+   public void setDelete(List<ArtifactToken> delete) {
       this.delete = delete;
    }
 

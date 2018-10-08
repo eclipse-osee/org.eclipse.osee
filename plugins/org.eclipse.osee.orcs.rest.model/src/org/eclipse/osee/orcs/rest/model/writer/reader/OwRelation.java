@@ -10,15 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model.writer.reader;
 
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+
 /**
  * Data Transfer object for Orcs Writer
- * 
+ *
  * @author Donald G. Dunne
  */
 public class OwRelation {
 
    public OwRelationType type;
-   public OwArtifactToken artToken;
+   public ArtifactToken artToken;
    public String data;
 
    public OwRelationType getType() {
@@ -29,11 +31,11 @@ public class OwRelation {
       this.type = type;
    }
 
-   public OwArtifactToken getArtToken() {
+   public ArtifactToken getArtToken() {
       return artToken;
    }
 
-   public void setArtToken(OwArtifactToken artToken) {
+   public void setArtToken(ArtifactToken artToken) {
       this.artToken = artToken;
    }
 

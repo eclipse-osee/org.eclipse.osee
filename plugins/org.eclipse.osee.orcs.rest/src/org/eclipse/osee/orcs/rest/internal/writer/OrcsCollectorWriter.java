@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -35,7 +36,6 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifact;
-import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactToken;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactType;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwAttribute;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwAttributeType;
@@ -75,7 +75,7 @@ public class OrcsCollectorWriter {
    }
 
    private void processDelete(XResultData results) {
-      for (OwArtifactToken owArtifact : collector.getDelete()) {
+      for (ArtifactToken owArtifact : collector.getDelete()) {
          ArtifactReadable artifact =
             orcsApi.getQueryFactory().fromBranch(branch).andUuid(owArtifact.getId()).getResults().getAtMostOneOrNull();
          if (artifact == null) {
@@ -287,7 +287,7 @@ public class OrcsCollectorWriter {
          OwRelationType owRelType = relation.getType();
          RelationTypeToken relType = orcsApi.getOrcsTypes().getRelationTypes().get(owRelType.getId());
 
-         OwArtifactToken artToken = relation.getArtToken();
+         ArtifactToken artToken = relation.getArtToken();
 
          ArtifactReadable otherArtifact = null;
 

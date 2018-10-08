@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -95,12 +96,12 @@ public class OrcsWriterCollectorGenerator {
    }
 
    private void createCreateSheet() {
-      OwArtifactToken folder = createFolder();
+      ArtifactToken folder = createFolder();
       createSoftwareRequirement(folder, "1");
       createSoftwareRequirement(folder, "2");
    }
 
-   private void createSoftwareRequirement(OwArtifactToken folderToken, String number) {
+   private void createSoftwareRequirement(ArtifactToken folderToken, String number) {
       Long reqId = Lib.generateArtifactIdAsInt();
       String name = "Software Requirement " + number;
       OwArtifact softwareReq = OwFactory.createArtifact(CoreArtifactTypes.SoftwareRequirement, name, reqId);
@@ -114,7 +115,7 @@ public class OrcsWriterCollectorGenerator {
       softwareReq.getRelations().add(relation);
    }
 
-   private OwArtifactToken createFolder() {
+   private ArtifactToken createFolder() {
       Long folderId = Lib.generateArtifactIdAsInt();
       String folderName = "Orcs Writer Import Folder";
       OwArtifact folder = OwFactory.createArtifact(CoreArtifactTypes.Folder, folderName, folderId);

@@ -11,13 +11,15 @@
 package org.eclipse.osee.orcs.rest.model.writer.reader;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
  * Data Transfer object for Orcs Writer
  *
  * @author Donald G. Dunne
  */
-public class OwArtifactToken extends OwBase {
+public class OwArtifactToken extends OwBase implements ArtifactToken {
 
    public OwArtifactToken() {
       // for jax-rs instantiation
@@ -31,6 +33,11 @@ public class OwArtifactToken extends OwBase {
    @Override
    public String toString() {
       return "OwArtifactToken [id=" + getId() + ", data=" + data + "]";
+   }
+
+   @Override
+   public BranchId getBranch() {
+      return null;
    }
 
 }
