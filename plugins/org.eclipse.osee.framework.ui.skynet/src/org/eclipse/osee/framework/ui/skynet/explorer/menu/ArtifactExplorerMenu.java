@@ -749,7 +749,7 @@ public class ArtifactExplorerMenu {
 
    private void expandAll(Object object) {
       if (!(object instanceof ArtifactExplorerLinkNode)) {
-         treeViewer.expandToLevel(object, 0);
+         treeViewer.expandToLevel(object, 1);
          for (Object child : ((ArtifactContentProvider) treeViewer.getContentProvider()).getChildren(object)) {
             expandAll(child);
          }
