@@ -21,8 +21,10 @@ import org.eclipse.osee.ats.api.workdef.ITransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
@@ -115,6 +117,24 @@ public class AtsUtilClient {
             }
          }
       }
+   }
+
+   /**
+    * Return client side artifact efficiently without blind cast
+    *
+    * @return Artifact by casting, if appropriate, else by query
+    */
+   public static Artifact getRealArtifact(ArtifactId artifact) {
+      Artifact result = null;
+      if (artifact instanceof Artifact) {
+         result = (Artifact) artifact;
+      } else {
+         ArtifactId dbArt = AtsClientService.get().getQueryService().getArtifact(artifact);
+         if (dbArt instanceof Artifact) {
+            result = (Artifact) dbArt;
+         }
+      }
+      return result;
    }
 
 }
