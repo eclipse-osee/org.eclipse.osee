@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
@@ -51,7 +52,7 @@ public class AtsObjectLabelProvider extends LabelProvider {
    @Override
    public Image getImage(Object element) {
       if (element instanceof Artifact) {
-         return ArtifactImageManager.getImage((Artifact) element);
+         return ArtifactImageManager.getImage(AtsClientService.get().getQueryServiceClient().getArtifact(element));
       } else if (element instanceof IAtsActionableItem) {
          return ArtifactImageManager.getImage(AtsArtifactTypes.ActionableItem);
       } else if (element instanceof IAtsTeamDefinition) {
@@ -59,7 +60,8 @@ public class AtsObjectLabelProvider extends LabelProvider {
       } else if (element instanceof IAtsVersion) {
          return ArtifactImageManager.getImage(AtsArtifactTypes.Version);
       } else if (element instanceof Match && ((Match) element).getElement() instanceof Artifact) {
-         return ArtifactImageManager.getImage((Artifact) ((Match) element).getElement());
+         return ArtifactImageManager.getImage(
+            AtsClientService.get().getQueryServiceClient().getArtifact(((Match) element).getElement()));
       }
       return ImageManager.getImage(ImageManager.MISSING);
    }

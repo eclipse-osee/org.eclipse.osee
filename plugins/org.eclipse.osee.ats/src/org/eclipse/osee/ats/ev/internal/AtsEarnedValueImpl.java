@@ -42,7 +42,7 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
    @Override
    public ArtifactId getWorkPackageId(IAtsWorkItem workItem) {
       ArtifactId id = ArtifactId.SENTINEL;
-      Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(workItem);
+      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(workItem);
       Conditions.checkNotNull(artifact, "workItem", "Can't Find Work Package matching %s", workItem.toStringWithId());
       if (artifact instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;

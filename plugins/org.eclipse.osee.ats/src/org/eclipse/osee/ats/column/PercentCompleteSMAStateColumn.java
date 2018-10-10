@@ -14,6 +14,7 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.workflow.internal.PercentCompleteSMAStateUtil;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -53,7 +54,8 @@ public class PercentCompleteSMAStateColumn extends XViewerAtsColumn implements I
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof Artifact) {
-            return String.valueOf(PercentCompleteSMAStateUtil.getPercentCompleteSMAState((Artifact) element));
+            return String.valueOf(PercentCompleteSMAStateUtil.getPercentCompleteSMAState(
+               AtsClientService.get().getQueryServiceClient().getArtifact(element)));
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);

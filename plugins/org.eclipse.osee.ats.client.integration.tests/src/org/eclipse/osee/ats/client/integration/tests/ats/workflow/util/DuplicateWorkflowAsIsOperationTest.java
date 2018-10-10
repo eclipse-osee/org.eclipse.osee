@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.util.result.XResultData;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
@@ -85,7 +84,7 @@ public class DuplicateWorkflowAsIsOperationTest {
       // Description attribute SHOULD be copied
       Assert.assertEquals("new description", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
          foundTeamWf, AtsAttributeTypes.Description, ""));
-      Assert.assertFalse(((Artifact) foundTeamWf.getStoreObject()).isDirty());
+      Assert.assertFalse(AtsClientService.get().getQueryServiceClient().getArtifact(foundTeamWf).isDirty());
       // Ensure task was duplicated
       Collection<IAtsTask> newTasks = AtsClientService.get().getTaskService().getTasks(foundTeamWf);
       Assert.assertEquals(1, newTasks.size());
@@ -102,7 +101,7 @@ public class DuplicateWorkflowAsIsOperationTest {
       Assert.assertNotNull("New Team Workflow \"second\" NOT Found", foundTeamWf);
       Assert.assertEquals("description", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
          foundTeamWf, AtsAttributeTypes.Description, "description"));
-      Assert.assertFalse(((Artifact) foundTeamWf.getStoreObject()).isDirty());
+      Assert.assertFalse(AtsClientService.get().getQueryServiceClient().getArtifact(foundTeamWf).isDirty());
 
    }
 

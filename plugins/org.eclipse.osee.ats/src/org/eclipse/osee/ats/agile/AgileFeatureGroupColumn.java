@@ -211,13 +211,13 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
       // Change NamedId to ArtifactToken when merge to 25.0
       for (ArtifactId workItemId : workItemArts) {
          try {
-            Artifact workItem = (Artifact) workItemId;
+            Artifact workItem = AtsClientService.get().getQueryServiceClient().getArtifact(workItemId);
             List<Artifact> featureArts = workItem.getRelatedArtifacts(AtsRelationTypes.AgileFeatureToItem_FeatureGroup);
             if (Artifacts.isOfType(workItem, AtsArtifactTypes.Action)) {
                Set<String> strs = new HashSet<>();
                for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams(workItem)) {
-                  for (ArtifactToken featureArt : ((Artifact) teamWf.getStoreObject()).getRelatedArtifacts(
-                     AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
+                  for (ArtifactToken featureArt : AtsClientService.get().getQueryServiceClient().getArtifact(
+                     teamWf).getRelatedArtifacts(AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
                      strs.add(featureArt.getName());
                   }
                }
@@ -241,8 +241,8 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
          Set<AbstractWorkflowArtifact> awas = new HashSet<>();
          List<Artifact> arts = new ArrayList<>();
          for (TreeItem item : treeItems) {
-            Artifact art = (Artifact) item.getData();
-            if (art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
+            Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
+            if (art != null && art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
                awas.add((AbstractWorkflowArtifact) art);
                arts.add(art);
             }

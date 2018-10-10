@@ -74,10 +74,11 @@ public class TargetedVersionColumnUI extends XViewerAtsColumnIdColumn implements
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
          if (treeItem.getData() instanceof Artifact) {
-            Artifact useArt = (Artifact) treeItem.getData();
+            Artifact useArt = AtsClientService.get().getQueryServiceClient().getArtifact(treeItem);
             if (useArt.isOfType(AtsArtifactTypes.Action)) {
                if (AtsClientService.get().getWorkItemService().getTeams(useArt).size() == 1) {
-                  useArt = (Artifact) AtsClientService.get().getWorkItemService().getFirstTeam(useArt).getStoreObject();
+                  useArt = AtsClientService.get().getQueryServiceClient().getArtifact(
+                     AtsClientService.get().getWorkItemService().getFirstTeam(useArt));
                } else {
                   return false;
                }
@@ -186,7 +187,7 @@ public class TargetedVersionColumnUI extends XViewerAtsColumnIdColumn implements
          Set<TeamWorkFlowArtifact> awas = new HashSet<>();
          List<Artifact> arts = new ArrayList<>();
          for (TreeItem item : treeItems) {
-            Artifact art = (Artifact) item.getData();
+            Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
             if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                awas.add((TeamWorkFlowArtifact) art);
                arts.add(art);

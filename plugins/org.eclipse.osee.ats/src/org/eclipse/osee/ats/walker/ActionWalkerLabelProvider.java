@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.walker;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
@@ -30,7 +31,7 @@ public class ActionWalkerLabelProvider implements ILabelProvider {
    @Override
    public Image getImage(Object obj) {
       if (obj instanceof Artifact) {
-         return ArtifactImageManager.getImage((Artifact) obj);
+         return ArtifactImageManager.getImage(AtsClientService.get().getQueryServiceClient().getArtifact(obj));
       } else if (obj instanceof IActionWalkerItem) {
          return ((IActionWalkerItem) obj).getImage();
       }
@@ -52,9 +53,10 @@ public class ActionWalkerLabelProvider implements ILabelProvider {
          } catch (OseeCoreException ex) {
             str = "Exception - " + ex.getLocalizedMessage();
          }
-      } else if (obj instanceof Artifact && ((Artifact) obj).isOfType(AtsArtifactTypes.AgileSprint)) {
+      } else if (obj instanceof Artifact && AtsClientService.get().getQueryServiceClient().getArtifact(obj).isOfType(
+         AtsArtifactTypes.AgileSprint)) {
          try {
-            str = "Agile Sprint : " + ((Artifact) obj).getName();
+            str = "Agile Sprint : " + AtsClientService.get().getQueryServiceClient().getArtifact(obj).getName();
          } catch (OseeCoreException ex) {
             str = "Exception - " + ex.getLocalizedMessage();
          }

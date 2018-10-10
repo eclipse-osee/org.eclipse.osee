@@ -81,9 +81,11 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
             } else {
                objs.addAll(goal.getMembers());
             }
-         } else if (entity instanceof Artifact && ((Artifact) entity).isOfType(AtsArtifactTypes.AgileSprint)) {
+         } else if (entity instanceof Artifact && AtsClientService.get().getQueryServiceClient().getArtifact(
+            entity).isOfType(AtsArtifactTypes.AgileSprint)) {
             objs.add(entity);
-            IAgileSprint sprint = AtsClientService.get().getWorkItemService().getAgileSprint((Artifact) entity);
+            IAgileSprint sprint = AtsClientService.get().getWorkItemService().getAgileSprint(
+               AtsClientService.get().getQueryServiceClient().getArtifact(entity));
             if (!view.isShowAll() && AtsClientService.get().getAgileService().getItems(sprint).size() > 10) {
                objs.add(new SprintMemberWrapper(sprint));
             } else {
@@ -134,10 +136,11 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
                objs.addAll(goal.getMembers());
             }
             return objs.toArray();
-         } else if (inputElement instanceof Artifact && ((Artifact) inputElement).isOfType(
-            AtsArtifactTypes.AgileSprint)) {
+         } else if (inputElement instanceof Artifact && AtsClientService.get().getQueryServiceClient().getArtifact(
+            inputElement).isOfType(AtsArtifactTypes.AgileSprint)) {
             List<Object> objs = new ArrayList<>(5);
-            IAgileSprint sprint = AtsClientService.get().getWorkItemService().getAgileSprint((Artifact) inputElement);
+            IAgileSprint sprint = AtsClientService.get().getWorkItemService().getAgileSprint(
+               AtsClientService.get().getQueryServiceClient().getArtifact(inputElement));
             if (!view.isShowAll() && AtsClientService.get().getAgileService().getItems(sprint).size() > 10) {
                objs.add(new SprintMemberWrapper(sprint));
             } else {

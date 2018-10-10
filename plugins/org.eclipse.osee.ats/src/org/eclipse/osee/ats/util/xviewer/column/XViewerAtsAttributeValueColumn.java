@@ -99,7 +99,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
          if (element instanceof AbstractWorkflowArtifact) {
             useArt = ((AbstractWorkflowArtifact) element).getParentTeamWorkflow();
          } else {
-            useArt = (Artifact) element;
+            useArt = AtsClientService.get().getQueryServiceClient().getArtifact(element);
          }
       }
       return useArt;
@@ -108,7 +108,8 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (element instanceof Artifact && ((Artifact) element).isDeleted()) {
+         if (element instanceof Artifact && AtsClientService.get().getQueryServiceClient().getArtifact(
+            element).isDeleted()) {
             return "<deleted>";
          }
          if (isBooleanShow() && column.getSortDataType() == SortDataType.Boolean) {
@@ -186,7 +187,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       Set<AbstractWorkflowArtifact> awas = new LinkedHashSet<>();
       for (TreeItem item : treeItems) {
-         Artifact art = (Artifact) item.getData();
+         Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
          try {
             if (art instanceof AbstractWorkflowArtifact && art.isAttributeTypeValid(getAttributeType())) {
                awas.add((AbstractWorkflowArtifact) art);

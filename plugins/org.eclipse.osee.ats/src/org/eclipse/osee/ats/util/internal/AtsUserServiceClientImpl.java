@@ -136,7 +136,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    @Override
    public List<IAtsUser> getSubscribed(IAtsWorkItem workItem) {
       ArrayList<IAtsUser> arts = new ArrayList<>();
-      for (Artifact art : ((Artifact) workItem.getStoreObject()).getRelatedArtifacts(
+      for (Artifact art : AtsClientService.get().getQueryServiceClient().getArtifact(workItem).getRelatedArtifacts(
          AtsRelationTypes.SubscribedUser_User)) {
          arts.add(getUserById((String) art.getSoleAttributeValue(CoreAttributeTypes.UserId)));
       }
@@ -161,7 +161,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    @Override
    public boolean isAtsAdmin(boolean useCache) {
       if (!useCache) {
-         Artifact atsAdmin = (Artifact) AtsClientService.get().getQueryService().getArtifact(AtsArtifactToken.AtsAdmin);
+         Artifact atsAdmin = AtsClientService.get().getQueryServiceClient().getArtifact(AtsArtifactToken.AtsAdmin);
          return atsAdmin.isRelated(CoreRelationTypes.Users_User, getCurrentOseeUser());
       }
       return isAtsAdmin();
@@ -220,7 +220,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
       IAtsUser user = null;
       ArtifactId userArt = ArtifactQuery.getArtifactFromId(accountId, AtsClientService.get().getAtsBranch());
       if (userArt != null) {
-         user = createFromArtifact((Artifact) userArt);
+         user = createFromArtifact(AtsClientService.get().getQueryServiceClient().getArtifact(userArt));
       }
       return user;
    }
@@ -229,7 +229,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    public List<IAtsUser> getUsersFromDb() {
       List<IAtsUser> users = new ArrayList<>();
       for (ArtifactId userArt : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON)) {
-         AtsUser atsUser = createFromArtifact((Artifact) userArt);
+         AtsUser atsUser = createFromArtifact(AtsClientService.get().getQueryServiceClient().getArtifact(userArt));
          users.add(atsUser);
       }
       return users;

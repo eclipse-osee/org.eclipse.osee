@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -57,7 +58,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
       while (i.hasNext()) {
          Object object = i.next();
          if (object instanceof Artifact) {
-            artifacts.add((Artifact) object);
+            artifacts.add(AtsClientService.get().getQueryServiceClient().getArtifact(object));
          }
       }
       return artifacts.toArray(new Artifact[artifacts.size()]);

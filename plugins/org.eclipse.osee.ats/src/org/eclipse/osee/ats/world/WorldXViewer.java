@@ -251,7 +251,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       }
       final Set<Artifact> useArts = new HashSet<>();
       for (TreeItem item : treeItems) {
-         Artifact art = (Artifact) item.getData();
+         Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
          try {
             if (art.isAttributeTypeValid(attributeType)) {
                useArts.add(art);
@@ -305,7 +305,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             return false;
          }
          try {
-            Artifact artifact = (Artifact) item.getData();
+            Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(item);
             if (!artifact.isAttributeTypeValid(attributeType)) {
                return false;
             }
@@ -417,7 +417,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       if (getRoot() != null) {
          for (Object artifact : (Collection<?>) getRoot()) {
             if (artifact instanceof Artifact) {
-               arts.add((Artifact) artifact);
+               arts.add(AtsClientService.get().getQueryServiceClient().getArtifact(artifact));
             }
          }
       }
@@ -449,7 +449,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
-            arts.add((Artifact) item.getData());
+            arts.add(AtsClientService.get().getQueryServiceClient().getArtifact(item));
          }
       }
       return arts;
@@ -537,7 +537,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
-            arts.add((Artifact) item.getData());
+            arts.add(AtsClientService.get().getQueryServiceClient().getArtifact(item));
          }
       }
       return arts;

@@ -63,7 +63,7 @@ public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColum
       boolean modified = false;
       try {
          if (treeItem.getData() instanceof Artifact) {
-            Artifact selectedArt = (Artifact) treeItem.getData();
+            Artifact selectedArt = AtsClientService.get().getQueryServiceClient().getArtifact(treeItem);
             AbstractWorkflowArtifact useAwa = null;
             if (selectedArt instanceof IAtsAction && AtsClientService.get().getWorkItemService().getTeams(
                selectedArt).size() == 1) {
@@ -87,9 +87,9 @@ public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColum
       try {
          Set<AbstractWorkflowArtifact> awas = new HashSet<>();
          for (TreeItem item : treeItems) {
-            Artifact art = (Artifact) item.getData();
-            if (art instanceof AbstractWorkflowArtifact) {
-               awas.add((AbstractWorkflowArtifact) art);
+            if (item.getData() instanceof AbstractWorkflowArtifact) {
+               AbstractWorkflowArtifact art = (AbstractWorkflowArtifact) item.getData();
+               awas.add(art);
             }
          }
          if (awas.isEmpty()) {

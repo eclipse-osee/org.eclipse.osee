@@ -113,7 +113,7 @@ public class WorldXViewerEventManager {
             if (art instanceof IAtsWorkItem) {
                IAtsTeamWorkflow teamWf = ((IAtsWorkItem) art).getParentTeamWorkflow();
                if (teamWf != null) {
-                  allModAndParents.add((Artifact) teamWf.getStoreObject());
+                  allModAndParents.add(AtsClientService.get().getQueryServiceClient().getArtifact(teamWf));
                }
             }
          }
@@ -122,7 +122,7 @@ public class WorldXViewerEventManager {
             if (art instanceof IAtsWorkItem) {
                IAtsTeamWorkflow teamWf = ((IAtsWorkItem) art).getParentTeamWorkflow();
                if (teamWf != null) {
-                  allModAndParents.add((Artifact) teamWf.getStoreObject());
+                  allModAndParents.add(AtsClientService.get().getQueryServiceClient().getArtifact(teamWf));
                }
             }
          }

@@ -79,8 +79,8 @@ public class AtsDeleteManagerTest {
       verifyExists(TestNames.TeamArtDeleteOneWorkflow, 1, 1, 0, 2, 1);
 
       // Delete
-      AtsDeleteManager.handleDeletePurgeAtsObject(Arrays.asList((Artifact) teamWf.getStoreObject()), true,
-         DeleteOption.Delete);
+      AtsDeleteManager.handleDeletePurgeAtsObject(
+         Arrays.asList(AtsClientService.get().getQueryServiceClient().getArtifact(teamWf)), true, DeleteOption.Delete);
 
       // Verify doesn't exist
       verifyExists(TestNames.TeamArtDeleteOneWorkflow, 0, 0, 0, 0, 0);
@@ -102,8 +102,8 @@ public class AtsDeleteManagerTest {
       verifyExists(TestNames.TeamArtDeleteWithTwoWorkflows, 1, 1, 1, 2, 1);
 
       // Delete
-      AtsDeleteManager.handleDeletePurgeAtsObject(Arrays.asList((Artifact) teamWf.getStoreObject()), true,
-         DeleteOption.Delete);
+      AtsDeleteManager.handleDeletePurgeAtsObject(
+         Arrays.asList(AtsClientService.get().getQueryServiceClient().getArtifact(teamWf)), true, DeleteOption.Delete);
 
       // Verify Action and Req Workflow still exist
       verifyExists(TestNames.TeamArtDeleteWithTwoWorkflows, 1, 0, 1, 0, 0);
@@ -119,8 +119,8 @@ public class AtsDeleteManagerTest {
       verifyExists(TestNames.TeamArtPurge, 1, 1, 0, 2, 1);
 
       // Delete
-      AtsDeleteManager.handleDeletePurgeAtsObject(Arrays.asList((Artifact) teamWf.getStoreObject()), true,
-         DeleteOption.Purge);
+      AtsDeleteManager.handleDeletePurgeAtsObject(
+         Arrays.asList(AtsClientService.get().getQueryServiceClient().getArtifact(teamWf)), true, DeleteOption.Purge);
 
       // Verify doesn't exist
       verifyExists(TestNames.TeamArtPurge, 0, 0, 0, 0, 0);
@@ -136,8 +136,8 @@ public class AtsDeleteManagerTest {
       verifyExists(TestNames.ActionDelete, 1, 1, 0, 2, 1);
 
       // Delete
-      AtsDeleteManager.handleDeletePurgeAtsObject(Arrays.asList((Artifact) teamWf.getStoreObject()), true,
-         DeleteOption.Delete);
+      AtsDeleteManager.handleDeletePurgeAtsObject(
+         Arrays.asList(AtsClientService.get().getQueryServiceClient().getArtifact(teamWf)), true, DeleteOption.Delete);
 
       // Verify doesn't exist
       verifyExists(TestNames.ActionDelete, 0, 0, 0, 0, 0);
@@ -153,8 +153,8 @@ public class AtsDeleteManagerTest {
       verifyExists(TestNames.ActionPurge, 1, 1, 0, 2, 1);
 
       // Delete
-      AtsDeleteManager.handleDeletePurgeAtsObject(Arrays.asList((Artifact) teamWf.getStoreObject()), true,
-         DeleteOption.Purge);
+      AtsDeleteManager.handleDeletePurgeAtsObject(
+         Arrays.asList(AtsClientService.get().getQueryServiceClient().getArtifact(teamWf)), true, DeleteOption.Purge);
 
       // Verify doesn't exist
       verifyExists(TestNames.ActionPurge, 0, 0, 0, 0, 0);

@@ -55,10 +55,11 @@ public class RelatedArtifactLastModifiedByColumn extends XViewerAtsColumn implem
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof Artifact) {
-            ArtifactId refArtId = ((Artifact) element).getSoleAttributeValue(
-               AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
+            ArtifactId refArtId =
+               AtsClientService.get().getQueryServiceClient().getArtifact(element).getSoleAttributeValue(
+                  AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
             if (refArtId.isValid()) {
-               Artifact refArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(refArtId);
+               Artifact refArt = AtsClientService.get().getQueryServiceClient().getArtifact(refArtId);
                if (refArt != null) {
                   return refArt.getLastModifiedBy().toString();
                }

@@ -51,7 +51,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -433,10 +432,9 @@ public class TransitionManagerTest {
       Assert.assertTrue(results.isEmpty());
 
       // validate that can't transition without targeted version when team def rule is set
-      ((Artifact) AtsClientService.get().getQueryService().getArtifact(
-         teamArt.getTeamDefinition())).addAttributeFromString(AtsAttributeTypes.RuleDefinition,
-            RuleDefinitionOption.RequireTargetedVersion.name());
-      ((Artifact) AtsClientService.get().getQueryService().getArtifact(teamArt.getTeamDefinition())).persist(
+      AtsClientService.get().getQueryServiceClient().getArtifact(teamArt.getTeamDefinition()).addAttributeFromString(
+         AtsAttributeTypes.RuleDefinition, RuleDefinitionOption.RequireTargetedVersion.name());
+      AtsClientService.get().getQueryServiceClient().getArtifact(teamArt.getTeamDefinition()).persist(
          getClass().getSimpleName());
       results.clear();
       transMgr.handleTransitionValidation(results);

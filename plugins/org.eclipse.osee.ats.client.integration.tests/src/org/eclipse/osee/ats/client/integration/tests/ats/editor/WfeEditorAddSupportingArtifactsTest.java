@@ -56,10 +56,9 @@ public class WfeEditorAddSupportingArtifactsTest {
       job.validate();
       job.run(null);
 
-      Assert.assertTrue(((Artifact) teamWf.getStoreObject()).getRelatedArtifacts(
-         CoreRelationTypes.SupportingInfo_SupportingInfo).contains(firstArt));
-      Assert.assertTrue(((Artifact) teamWf.getStoreObject()).getRelatedArtifacts(
-         CoreRelationTypes.SupportingInfo_SupportingInfo).contains(secondArt));
+      Assert.assertTrue(teamWf.getRelatedArtifacts(CoreRelationTypes.SupportingInfo_SupportingInfo).contains(firstArt));
+      Assert.assertTrue(
+         teamWf.getRelatedArtifacts(CoreRelationTypes.SupportingInfo_SupportingInfo).contains(secondArt));
    }
 
 }

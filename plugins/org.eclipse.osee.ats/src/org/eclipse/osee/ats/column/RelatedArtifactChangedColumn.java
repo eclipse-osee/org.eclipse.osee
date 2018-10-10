@@ -59,10 +59,11 @@ public class RelatedArtifactChangedColumn extends XViewerAtsColumn implements IA
          String value = "";
          try {
             if (object instanceof Artifact) {
-               ArtifactId refArtId = ((Artifact) object).getSoleAttributeValue(
-                  AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
+               ArtifactId refArtId =
+                  AtsClientService.get().getQueryServiceClient().getArtifact(object).getSoleAttributeValue(
+                     AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
                if (refArtId.isValid()) {
-                  Artifact refArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(refArtId);
+                  Artifact refArt = AtsClientService.get().getQueryServiceClient().getArtifact(refArtId);
                   if (refArt != null) {
                      BranchId refBranch = refArt.getBranch();
                      if (refArt.isDeleted()) {
@@ -70,7 +71,8 @@ public class RelatedArtifactChangedColumn extends XViewerAtsColumn implements IA
                      } else if (BranchManager.getState(refBranch).isCommitted() || BranchManager.getType(
                         refBranch).isBaselineBranch()) {
                         value = "Commited";
-                     } else if (refArt.getLastModified().after(((Artifact) object).getLastModified())) {
+                     } else if (refArt.getLastModified().after(
+                        AtsClientService.get().getQueryServiceClient().getArtifact(object).getLastModified())) {
                         value = refArt.getLastModified().toString();
                      } else {
                         value = "Unmodified";

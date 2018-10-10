@@ -20,11 +20,11 @@ import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.workdef.StateColorToSwtColor;
 import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -55,7 +55,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
             }
          }
          if (xCol.getId().equals(AtsColumnToken.TypeColumn.getId())) {
-            return ArtifactImageManager.getImage((Artifact) element);
+            return ArtifactImageManager.getImage(AtsClientService.get().getQueryServiceClient().getArtifact(element));
          }
       } catch (Exception ex) {
          // do nothing

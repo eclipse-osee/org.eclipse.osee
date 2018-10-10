@@ -29,7 +29,7 @@ public class WorldCompletedFilter extends ViewerFilter {
    @Override
    public boolean select(Viewer viewer, Object parentElement, Object element) {
       try {
-         Artifact art = (Artifact) element;
+         Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(element);
          if (art instanceof AbstractWorkflowArtifact) {
             return ((AbstractWorkflowArtifact) art).isInWork();
          } else if (art.isOfType(AtsArtifactTypes.Action)) {

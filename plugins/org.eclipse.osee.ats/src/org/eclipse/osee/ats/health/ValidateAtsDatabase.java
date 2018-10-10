@@ -957,7 +957,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                         "Error: Team workflow " + XResultDataUI.getHyperlink(
                            teamArt) + " has version" + XResultDataUI.getHyperlink(
                               artifact) + " that does not belong to teamDefHoldingVersions" + XResultDataUI.getHyperlink(
-                                 (Artifact) AtsClientService.get().getQueryService().getArtifact(
+                                 AtsClientService.get().getQueryServiceClient().getArtifact(
                                     teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions())));
                   }
                }

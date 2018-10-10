@@ -24,6 +24,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workflow.review.ReviewDefectItem;
 import org.eclipse.osee.ats.workflow.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.workflow.review.defect.ReviewDefectValidator;
@@ -31,7 +32,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.events.DisposeEvent;
@@ -58,7 +58,7 @@ public class DefectXViewer extends XViewer {
    }
 
    public ReviewDefectManager getDefectManager() {
-      return new ReviewDefectManager((Artifact) review.getStoreObject());
+      return new ReviewDefectManager(AtsClientService.get().getQueryServiceClient().getArtifact(review));
    }
 
    public void loadTable(DefectData data) {
@@ -104,7 +104,7 @@ public class DefectXViewer extends XViewer {
     */
    private void loadDefectData(final DefectData data) {
       data.defectItems = getDefectManager().getDefectItems();
-      data.error = ReviewDefectValidator.isValid((Artifact) review.getStoreObject());
+      data.error = ReviewDefectValidator.isValid(AtsClientService.get().getQueryServiceClient().getArtifact(review));
    }
 
    @Override

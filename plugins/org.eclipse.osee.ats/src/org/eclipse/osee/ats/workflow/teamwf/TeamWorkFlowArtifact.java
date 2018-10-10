@@ -69,7 +69,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
       try {
          artifacts.addAll(ReviewManager.getReviews(this));
          for (IAtsTask task : AtsClientService.get().getTaskService().getTask(this)) {
-            artifacts.add((Artifact) task.getStoreObject());
+            artifacts.add(AtsClientService.get().getQueryServiceClient().getArtifact(task));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -194,7 +194,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    private double getHoursPerWorkDayFromItemAndChildren(IAtsTeamDefinition teamDef) {
       try {
          double manDayHours = 0;
-         Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(getTeamDefinition());
+         Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(getTeamDefinition());
          if (artifact != null) {
             manDayHours = artifact.getSoleAttributeValue(AtsAttributeTypes.HoursPerWorkDay, 0.0);
          }

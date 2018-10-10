@@ -50,8 +50,7 @@ public class SprintItems {
          if (artifact instanceof AbstractWorkflowArtifact) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
             try {
-               Artifact relatedBacklogArt =
-                  (Artifact) AtsClientService.get().getAgileService().getRelatedBacklogArt(awa);
+               Artifact relatedBacklogArt = AtsClientService.get().getQueryServiceClient().getArtifact(awa);
                if (relatedBacklogArt == null) {
                   noBacklogDetected = true;
                } else if (commonBacklog == null) {

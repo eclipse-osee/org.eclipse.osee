@@ -108,7 +108,7 @@ public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCm
 
    @Override
    public Artifact getArtifact() {
-      return (Artifact) workItem.getStoreObject();
+      return AtsClientService.get().getQueryServiceClient().getArtifact(workItem);
    }
 
    @Override

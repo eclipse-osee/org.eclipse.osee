@@ -87,7 +87,7 @@ public class WfeEditorAddSupportingFiles extends Job {
          SourceToRoughArtifactOperation sourceToRoughArtifactOperation =
             new SourceToRoughArtifactOperation(null, extractor, file, collector);
          sourceToRoughArtifactOperation.run(null);
-         Artifact workItemArt = (Artifact) workItem.getStoreObject();
+         Artifact workItemArt = AtsClientService.get().getQueryServiceClient().getArtifact(workItem);
          RoughToRealArtifactOperation roughToRealArtifactOperation =
             new RoughToRealArtifactOperation(transaction, workItemArt, collector, resolver, false, extractor);
          roughToRealArtifactOperation.setAddRelation(false);

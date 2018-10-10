@@ -62,7 +62,7 @@ public class XGoalCombo extends XComboViewer {
 
             @Override
             public void widgetModified(XWidget widget) {
-               selectedGoal = (Artifact) getSelected();
+               selectedGoal = AtsClientService.get().getQueryServiceClient().getArtifact(getSelected());
             }
          });
       } catch (OseeCoreException ex) {

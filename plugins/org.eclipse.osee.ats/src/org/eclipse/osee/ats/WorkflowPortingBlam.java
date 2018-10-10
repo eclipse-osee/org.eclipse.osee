@@ -84,7 +84,7 @@ public class WorkflowPortingBlam extends AbstractBlam {
             log("Reusing destination workflow " + destinationWorkflow);
          }
 
-         destinationWorkflows.add((Artifact) destinationWorkflow.getStoreObject());
+         destinationWorkflows.add(AtsClientService.get().getQueryServiceClient().getArtifact(destinationWorkflow));
       }
 
       return destinationWorkflows;

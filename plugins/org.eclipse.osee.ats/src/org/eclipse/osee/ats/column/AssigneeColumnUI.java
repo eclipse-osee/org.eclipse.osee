@@ -178,7 +178,8 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       try {
          if (element instanceof Artifact) {
-            return AssigneeColumnUI.getAssigneeImage((Artifact) element);
+            return AssigneeColumnUI.getAssigneeImage(
+               AtsClientService.get().getQueryServiceClient().getArtifact(element));
          }
       } catch (Exception ex) {
          // do nothing
@@ -196,7 +197,8 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
       }
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
          for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(artifact)) {
-            Image image = AssigneeColumnUI.getAssigneeImage((Artifact) team.getStoreObject());
+            Image image =
+               AssigneeColumnUI.getAssigneeImage(AtsClientService.get().getQueryServiceClient().getArtifact(team));
             if (image != null) {
                return image;
             }

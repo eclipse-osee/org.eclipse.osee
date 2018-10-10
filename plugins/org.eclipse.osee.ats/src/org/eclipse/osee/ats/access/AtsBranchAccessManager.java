@@ -143,11 +143,11 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
    public Collection<IAccessContextId> internalGetFromWorkflow(IAtsTeamWorkflow teamWf) {
       Set<IAccessContextId> contextIds = new HashSet<>();
       try {
-         contextIds.addAll(getFromArtifact((Artifact) teamWf.getStoreObject()));
+         contextIds.addAll(getFromArtifact(AtsClientService.get().getQueryServiceClient().getArtifact(teamWf)));
          if (contextIds.isEmpty()) {
             for (IAtsActionableItem aia : AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(
                teamWf)) {
-               Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(aia);
+               Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(aia);
                if (artifact != null) {
                   contextIds.addAll(getFromArtifact(artifact));
                }
@@ -157,7 +157,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
             }
             if (contextIds.isEmpty()) {
                Artifact artifact =
-                  (Artifact) AtsClientService.get().getQueryService().getArtifact(teamWf.getTeamDefinition());
+                  AtsClientService.get().getQueryServiceClient().getArtifact(teamWf.getTeamDefinition());
                if (artifact != null) {
                   contextIds.addAll(getFromArtifact(artifact));
                }

@@ -39,7 +39,7 @@ public class AtsAttributeColumnUtility {
                return false;
             }
             if (item instanceof Artifact) {
-               Artifact useArt = (Artifact) item;
+               Artifact useArt = AtsClientService.get().getQueryServiceClient().getArtifact(item);
                if (useArt.isOfType(AtsArtifactTypes.Action)) {
                   if (AtsClientService.get().getWorkItemService().getTeams(useArt).size() == 1) {
                      useArt = (AbstractWorkflowArtifact) AtsClientService.get().getWorkItemService().getFirstTeam(

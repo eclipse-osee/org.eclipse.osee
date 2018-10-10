@@ -54,7 +54,6 @@ import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.junit.Assert;
@@ -529,7 +528,8 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       Assert.assertEquals("desc", teamWf.getDescription());
       Assert.assertEquals(createDate, teamWf.getCreatedDate());
       Assert.assertEquals(DemoUsers.Alex_Kay, teamWf.getCreatedBy().getStoreObject());
-      Assert.assertEquals(DemoUsers.Joe_Smith, ((Artifact) teamWf.getStoreObject()).getLastModifiedBy());
+      Assert.assertEquals(DemoUsers.Joe_Smith,
+         AtsClientService.get().getQueryServiceClient().getArtifact(teamWf).getLastModifiedBy());
       Assert.assertEquals(ChangeType.Improvement.name(),
          AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.ChangeType, ""));
       Assert.assertEquals("3", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf,
@@ -542,8 +542,8 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       Assert.assertEquals("My IPT",
          AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.IPT, ""));
 
-      AtsDeleteManager.handleDeletePurgeAtsObject(Arrays.asList((Artifact) teamWf.getStoreObject()), true,
-         DeleteOption.Delete);
+      AtsDeleteManager.handleDeletePurgeAtsObject(
+         Arrays.asList(AtsClientService.get().getQueryServiceClient().getArtifact(teamWf)), true, DeleteOption.Delete);
    }
 
    @Test
@@ -599,7 +599,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       Assert.assertNotNull(teamArt);
 
       // Cleanup test
-      ((Artifact) teamArt.getParentAction().getStoreObject()).deleteAndPersist();
+      AtsClientService.get().getQueryServiceClient().getArtifact(teamArt).deleteAndPersist();
       teamArt.deleteAndPersist();
    }
 
@@ -620,7 +620,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       Assert.assertNotNull(teamArt);
 
       // Cleanup test
-      ((Artifact) teamArt.getParentAction().getStoreObject()).deleteAndPersist();
+      AtsClientService.get().getQueryServiceClient().getArtifact(teamArt.getParentAction()).deleteAndPersist();
       teamArt.deleteAndPersist();
    }
 

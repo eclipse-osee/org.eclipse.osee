@@ -103,7 +103,7 @@ public class CopyActionDetails {
 
    private String getFormatStr(IAtsTeamDefinition teamDef) {
       if (teamDef != null) {
-         Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(teamDef);
+         Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(teamDef);
          if (artifact != null) {
             String formatStr = artifact.getSoleAttributeValue(AtsAttributeTypes.ActionDetailsFormat, "");
             if (Strings.isValid(formatStr)) {

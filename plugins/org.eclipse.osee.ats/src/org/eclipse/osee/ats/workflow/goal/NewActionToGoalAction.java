@@ -97,7 +97,7 @@ public class NewActionToGoalAction extends Action {
                }
                if (dropTarget != null) {
                   collectorArt.setRelationOrder(memberProvider.getMemberRelationTypeSide(), dropTarget, false,
-                     (Artifact) teamWf.getStoreObject());
+                     AtsClientService.get().getQueryServiceClient().getArtifact(teamWf));
                   if (collectorArt.isOfType(AtsArtifactTypes.Goal)) {
                      AtsClientService.get().getGoalMembersCache().decache((GoalArtifact) collectorArt);
                   } else if (memberProvider.isSprint()) {

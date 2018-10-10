@@ -63,7 +63,8 @@ public class PercentCompleteReviewsColumn extends XViewerAtsColumn implements IX
          if (IAtsAction.isOfType(element) || IAtsTeamWorkflow.isOfType(element)) {
             IAtsWorkItem workItem = (IAtsWorkItem) element;
             if (workItem.isTeamWorkflow()) {
-               return String.valueOf(getPercentCompleteReview((Artifact) element));
+               return String.valueOf(
+                  getPercentCompleteReview(AtsClientService.get().getQueryServiceClient().getArtifact(element)));
             }
          }
       } catch (OseeCoreException ex) {
@@ -80,7 +81,7 @@ public class PercentCompleteReviewsColumn extends XViewerAtsColumn implements IX
          double percent = 0;
          for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(artifact)) {
             if (!team.isCancelled()) {
-               percent += getPercentCompleteReview((Artifact) team.getStoreObject());
+               percent += getPercentCompleteReview(AtsClientService.get().getQueryServiceClient().getArtifact(team));
             }
          }
          if (percent == 0) {

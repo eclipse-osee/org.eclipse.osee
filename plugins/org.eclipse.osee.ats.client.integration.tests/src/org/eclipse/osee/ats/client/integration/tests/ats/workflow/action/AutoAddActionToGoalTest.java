@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.workflow.action;
 
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -84,8 +83,7 @@ public class AutoAddActionToGoalTest {
       }
       changes.execute();
 
-      Artifact testAI2 =
-         (Artifact) AtsClientService.get().getQueryService().getArtifact((IAtsObject) AtsTestUtil.getTestAi2());
+      Artifact testAI2 = AtsClientService.get().getQueryServiceClient().getArtifact(AtsTestUtil.getTestAi2());
 
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, testAI2);
 
@@ -116,7 +114,7 @@ public class AutoAddActionToGoalTest {
       changes.execute();
 
       Artifact teamDefArtifact =
-         (Artifact) AtsClientService.get().getQueryService().getArtifact(AtsTestUtil.getTestTeamDef());
+         AtsClientService.get().getQueryServiceClient().getArtifact(AtsTestUtil.getTestTeamDef());
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, teamDefArtifact);
       goalArt.persist(getClass().getSimpleName() + " - testAutoAddActionToGoal_TeamWF");
 
@@ -142,9 +140,9 @@ public class AutoAddActionToGoalTest {
          changes.deleteArtifact(AtsClientService.get().getQueryService().getArtifact(version));
       }
 
-      Artifact testAI2Art = (Artifact) AtsClientService.get().getQueryService().getArtifact(AtsTestUtil.getTestAi2());
+      Artifact testAI2Art = AtsClientService.get().getQueryServiceClient().getArtifact(AtsTestUtil.getTestAi2());
       Artifact teamDefArtifact =
-         (Artifact) AtsClientService.get().getQueryService().getArtifact(AtsTestUtil.getTestTeamDef());
+         AtsClientService.get().getQueryServiceClient().getArtifact(AtsTestUtil.getTestTeamDef());
 
       GoalArtifact goalArt =
          GoalManager.createGoal("AutoAddActionToGoalTest - AddActionToGoalFromAIorTeamDef", changes);
@@ -184,8 +182,8 @@ public class AutoAddActionToGoalTest {
       }
       changes.execute();
 
-      Artifact testAI2 = (Artifact) AtsClientService.get().getQueryService().getArtifact(AtsTestUtil.getTestAi2());
-      Artifact testAI3 = (Artifact) AtsClientService.get().getQueryService().getArtifact(AtsTestUtil.getTestAi3());
+      Artifact testAI2 = AtsClientService.get().getQueryServiceClient().getArtifact(AtsTestUtil.getTestAi2());
+      Artifact testAI3 = AtsClientService.get().getQueryServiceClient().getArtifact(AtsTestUtil.getTestAi3());
 
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, testAI2);
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, testAI3);

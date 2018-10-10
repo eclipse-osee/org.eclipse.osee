@@ -78,7 +78,7 @@ public class TaskRelatedToChangedArtifactTest {
       changes.setSoleAttributeValue(codeTask, AtsAttributeTypes.TaskToChangedArtifactReference, robotReq);
       changes.execute();
 
-      assertFalse(((Artifact) codeTask.getStoreObject()).isDirty());
+      assertFalse(AtsClientService.get().getQueryServiceClient().getArtifact(codeTask).isDirty());
 
       ArtifactId refArt = ((Artifact) codeTask.getStoreObject()).getSoleAttributeValue(
          AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);

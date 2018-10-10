@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
@@ -108,7 +107,8 @@ public abstract class AbstractImageManagerTest {
       ArtifactId folder = ArtifactQuery.checkArtifactFromTypeAndName(CoreArtifactTypes.Folder, "User Groups",
          AtsClientService.get().getAtsBranch());
       assertTrue("Image returned not a folder image.",
-         ArtifactImageManager.getImage((Artifact) folder).equals(ImageManager.getImage(PluginUiImage.FOLDER)));
+         ArtifactImageManager.getImage(AtsClientService.get().getQueryServiceClient().getArtifact(folder)).equals(
+            ImageManager.getImage(PluginUiImage.FOLDER)));
    }
 
    public ByteArrayInputStream getByteArrayInputStream(String imageFilename) throws Exception {

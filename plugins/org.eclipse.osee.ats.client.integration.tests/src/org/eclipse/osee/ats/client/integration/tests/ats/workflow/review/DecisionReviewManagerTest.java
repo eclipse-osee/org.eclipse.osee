@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.workflow.review.DecisionReviewState;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -77,8 +76,8 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       Assert.assertNotNull(decRev);
       Assert.assertFalse(
          String.format("Decision Review artifact should not be dirty [%s]",
-            Artifacts.getDirtyReport(((Artifact) decRev.getStoreObject()))),
-         ((Artifact) decRev.getStoreObject()).isDirty());
+            Artifacts.getDirtyReport((AtsClientService.get().getQueryServiceClient().getArtifact(decRev)))),
+         AtsClientService.get().getQueryServiceClient().getArtifact(decRev).isDirty());
       Assert.assertEquals(DecisionReviewState.Decision.getName(), decRev.getStateMgr().getCurrentStateName());
       Assert.assertEquals("Joe Smith", decRev.getStateMgr().getAssigneesStr());
 
@@ -108,8 +107,8 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       Assert.assertEquals(reviewTitle, decRev.getName());
       Assert.assertFalse(
          String.format("Decision Review artifact should not be dirty [%s]",
-            Artifacts.getDirtyReport(((Artifact) decRev.getStoreObject()))),
-         ((Artifact) decRev.getStoreObject()).isDirty());
+            Artifacts.getDirtyReport((AtsClientService.get().getQueryServiceClient().getArtifact(decRev)))),
+         AtsClientService.get().getQueryServiceClient().getArtifact(decRev).isDirty());
       Assert.assertEquals(DecisionReviewState.Decision.getName(), decRev.getStateMgr().getCurrentStateName());
       Assert.assertEquals("UnAssigned", decRev.getStateMgr().getAssigneesStr());
 

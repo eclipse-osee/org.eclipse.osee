@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.util;
 
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -36,7 +37,7 @@ public class AtsUserLabelProvider extends ArtifactLabelProvider {
    @Override
    public Image getImage(Object element) {
       if (element instanceof IAtsUser) {
-         Artifact art = (Artifact) ((IAtsUser) element).getStoreObject();
+         Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact((IAtsUser) element);
          if (art != null) {
             return super.getImage(art);
          }
@@ -47,7 +48,7 @@ public class AtsUserLabelProvider extends ArtifactLabelProvider {
    @Override
    public String getText(Object element) {
       if (element instanceof IAtsUser) {
-         Artifact art = (Artifact) ((IAtsUser) element).getStoreObject();
+         Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact((IAtsUser) element);
          if (art != null) {
             String name = super.getText(art);
             if (includeInActive && Strings.isValid(

@@ -73,10 +73,11 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
          if (treeItem.getData() instanceof Artifact) {
-            Artifact useArt = (Artifact) treeItem.getData();
+            Artifact useArt = AtsClientService.get().getQueryServiceClient().getArtifact(treeItem);
             if (useArt.isOfType(AtsArtifactTypes.Action)) {
                if (AtsClientService.get().getWorkItemService().getTeams(useArt).size() == 1) {
-                  useArt = (Artifact) AtsClientService.get().getWorkItemService().getFirstTeam(useArt).getStoreObject();
+                  useArt = AtsClientService.get().getQueryServiceClient().getArtifact(
+                     AtsClientService.get().getWorkItemService().getFirstTeam(useArt));
                } else {
                   return false;
                }
@@ -126,7 +127,7 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
       try {
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<Artifact> groups = new HashSet<>();
-            Artifact actionArt = (Artifact) element;
+            Artifact actionArt = AtsClientService.get().getQueryServiceClient().getArtifact(element);
             groups.addAll(actionArt.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
             // Roll up if same for all children
             for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(actionArt)) {
@@ -137,7 +138,8 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
          }
          if (element instanceof Artifact) {
             return Artifacts.toString("; ",
-               ((Artifact) element).getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
+               AtsClientService.get().getQueryServiceClient().getArtifact(element).getRelatedArtifacts(
+                  CoreRelationTypes.Universal_Grouping__Group));
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);
@@ -150,9 +152,11 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
       try {
          Set<AbstractWorkflowArtifact> awas = new HashSet<>();
          for (TreeItem item : treeItems) {
-            Artifact art = (Artifact) item.getData();
-            if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-               awas.add((AbstractWorkflowArtifact) art);
+            if (item.getData() instanceof Artifact) {
+               Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
+               if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+                  awas.add((AbstractWorkflowArtifact) art);
+               }
             }
          }
          promptChangeGroups(awas, true);

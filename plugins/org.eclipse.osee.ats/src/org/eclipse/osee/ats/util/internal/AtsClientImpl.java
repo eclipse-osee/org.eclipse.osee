@@ -58,6 +58,7 @@ import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionServiceImpl;
 import org.eclipse.osee.ats.ev.internal.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.query.AtsQueryServiceClient;
 import org.eclipse.osee.ats.search.internal.query.AtsQueryServiceImpl;
 import org.eclipse.osee.ats.util.AtsClientUtilImpl;
 import org.eclipse.osee.ats.util.AtsUtilClient;
@@ -103,6 +104,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    private IAtsEventService eventService;
    private IAgileService agileService;
    private IAtsClientUtil clientUtils;
+   private AtsQueryServiceClient queryServiceClient;
 
    public AtsClientImpl() {
       super();
@@ -137,6 +139,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
       storeService = new AtsStoreService(this, getUserServiceClient(), jdbcService);
 
       queryService = new AtsQueryServiceImpl(this, jdbcService);
+      queryServiceClient = new AtsQueryServiceClient(this);
       actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, storeService, this);
 
       actionFactory = new ActionFactory(attributeResolverService, this);
@@ -165,9 +168,9 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
       List<Artifact> results = new LinkedList<>();
       for (ArtifactId artId : AtsObjects.getArtifacts(atsObjects)) {
          if (artId instanceof Artifact) {
-            results.add((Artifact) artId);
+            results.add(AtsClientService.get().getQueryServiceClient().getArtifact(artId));
          } else {
-            Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(artId);
+            Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(artId);
             if (artifact != null) {
                results.add(artifact);
             }
@@ -458,6 +461,11 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
          taskRelatedService = new AtsTaskRelatedService(this);
       }
       return taskRelatedService;
+   }
+
+   @Override
+   public AtsQueryServiceClient getQueryServiceClient() {
+      return queryServiceClient;
    }
 
 }

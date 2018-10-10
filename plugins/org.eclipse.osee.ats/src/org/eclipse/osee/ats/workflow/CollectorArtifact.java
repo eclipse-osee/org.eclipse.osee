@@ -11,12 +11,12 @@
 package org.eclipse.osee.ats.workflow;
 
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workflow.goal.HasMembers;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
@@ -33,7 +33,8 @@ public abstract class CollectorArtifact extends AbstractWorkflowArtifact impleme
    @Override
    public void addMember(ArtifactId artifact) {
       if (!getMembers().contains(artifact)) {
-         addRelation(USER_DEFINED, membersRelationType, (Artifact) artifact);
+         addRelation(USER_DEFINED, membersRelationType,
+            AtsClientService.get().getQueryServiceClient().getArtifact(artifact));
       }
    }
 

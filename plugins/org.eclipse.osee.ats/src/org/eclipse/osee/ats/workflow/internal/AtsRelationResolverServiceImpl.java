@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.core.util.AbstractRelationResolverServiceImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.IAtsClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -76,16 +77,16 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    public Artifact getArtifact(Object object) {
       Artifact useArt = null;
       if (object instanceof Artifact) {
-         useArt = (Artifact) object;
+         useArt = AtsClientService.get().getQueryServiceClient().getArtifact(object);
       } else if (object instanceof IAtsObject) {
          IAtsObject atsObject = (IAtsObject) object;
          if (atsObject.getStoreObject() instanceof Artifact) {
-            useArt = (Artifact) atsObject.getStoreObject();
+            useArt = AtsClientService.get().getQueryServiceClient().getArtifact(atsObject);
          } else {
-            useArt = (Artifact) atsClient.getQueryService().getArtifact(atsObject.getId());
+            useArt = atsClient.getQueryServiceClient().getArtifact(atsObject.getId());
          }
       } else if (object instanceof ArtifactId) {
-         useArt = (Artifact) atsClient.getQueryService().getArtifact(((ArtifactId) object).getId());
+         useArt = atsClient.getQueryServiceClient().getArtifact(((ArtifactId) object).getId());
       }
       return useArt;
    }
@@ -177,7 +178,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
       List<ArtifactToken> results = new LinkedList<>();
       Artifact art = getArtifact(artifact);
       for (ArtifactToken related : art.getRelatedArtifacts(relationType)) {
-         if (((Artifact) related).isOfType(artifactType)) {
+         if (AtsClientService.get().getQueryServiceClient().getArtifact(related).isOfType(artifactType)) {
             results.add(related);
          }
       }

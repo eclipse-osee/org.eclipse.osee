@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -116,7 +115,8 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
             if (jaxSprint != null) {
                long id = jaxSprint.getId();
                IAgileSprint sprint = (SprintArtifact) client.getQueryService().getArtifact(id);
-               ((Artifact) sprint.getStoreObject()).getParent().reloadAttributesAndRelations();
+               AtsClientService.get().getQueryServiceClient().getArtifact(
+                  sprint).getParent().reloadAttributesAndRelations();
 
                IAtsChangeSet changes =
                   client.getStoreService().createAtsChangeSet(getName(), client.getUserService().getCurrentUser());

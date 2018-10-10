@@ -232,7 +232,7 @@ public class ExcelAtsActionArtifactExtractor {
                }
 
                actionNameToAction.put(aData.title, result);
-               actionArts.add((Artifact) result.getActionArt());
+               actionArts.add(AtsClientService.get().getQueryServiceClient().getArtifact(result.getActionArt()));
             } else {
                Set<IAtsActionableItem> aias = new HashSet<>();
                for (String actionableItemName : aData.actionableItems) {

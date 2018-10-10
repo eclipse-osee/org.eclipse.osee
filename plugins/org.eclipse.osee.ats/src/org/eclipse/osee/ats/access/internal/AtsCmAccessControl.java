@@ -38,8 +38,10 @@ public class AtsCmAccessControl implements CmAccessControl {
    public boolean isApplicable(ArtifactToken user, Object object) {
       boolean result = false;
       if (object != null) {
-         if (object instanceof Artifact && !((Artifact) object).isOnBranch(AtsClientService.get().getAtsBranch())) {
-            result = atsBranchAccessManager.isApplicable(((Artifact) object).getBranch());
+         if (object instanceof Artifact && !AtsClientService.get().getQueryServiceClient().getArtifact(
+            object).isOnBranch(AtsClientService.get().getAtsBranch())) {
+            result = atsBranchAccessManager.isApplicable(
+               AtsClientService.get().getQueryServiceClient().getArtifact(object).getBranch());
          }
          if (object instanceof BranchId) {
             result = atsBranchAccessManager.isApplicable((BranchId) object);
@@ -51,8 +53,10 @@ public class AtsCmAccessControl implements CmAccessControl {
    @Override
    public Collection<? extends IAccessContextId> getContextId(ArtifactToken user, Object object) {
       if (object != null) {
-         if (object instanceof Artifact && !((Artifact) object).isOnBranch(AtsClientService.get().getAtsBranch())) {
-            return atsBranchAccessManager.getContextId(((Artifact) object).getBranch());
+         if (object instanceof Artifact && !AtsClientService.get().getQueryServiceClient().getArtifact(
+            object).isOnBranch(AtsClientService.get().getAtsBranch())) {
+            return atsBranchAccessManager.getContextId(
+               AtsClientService.get().getQueryServiceClient().getArtifact(object).getBranch());
          }
          if (object instanceof BranchId) {
             return atsBranchAccessManager.getContextId((BranchId) object);

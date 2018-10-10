@@ -39,7 +39,7 @@ public class ArtifactResolverImpl implements IArtifactResolver {
    @Override
    public ArtifactId get(IAtsObject atsObject) {
       if (atsObject instanceof Artifact) {
-         return (Artifact) atsObject;
+         return AtsClientService.get().getQueryServiceClient().getArtifact(atsObject);
       }
       Artifact artifact = AtsArtifactQuery.getArtifactFromId(atsObject.getId());
       return artifact;
@@ -72,14 +72,14 @@ public class ArtifactResolverImpl implements IArtifactResolver {
    @Override
    public IArtifactType getArtifactType(IAtsWorkItem workItem) {
       Assert.isNotNull(workItem, "Work Item can not be null");
-      return ((Artifact) workItem.getStoreObject()).getArtifactType();
+      return AtsClientService.get().getQueryServiceClient().getArtifact(workItem).getArtifactType();
    }
 
    @Override
    public boolean isOfType(ArtifactId artifact, IArtifactType artifactType) {
       Assert.isNotNull(artifact, "Artifact can not be null");
       Assert.isNotNull(artifactType, "Artifact Type can not be null");
-      return ((Artifact) atsApi.getQueryService().getArtifact(artifact)).isOfType(artifactType);
+      return AtsClientService.get().getQueryServiceClient().getArtifact(artifact).isOfType(artifactType);
    }
 
    @Override

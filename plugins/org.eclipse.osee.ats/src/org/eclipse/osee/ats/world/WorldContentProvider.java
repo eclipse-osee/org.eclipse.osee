@@ -79,7 +79,7 @@ public class WorldContentProvider implements ITreeContentProvider {
       }
       if (parentElement instanceof Artifact) {
          try {
-            Artifact artifact = (Artifact) parentElement;
+            Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(parentElement);
             if (artifact.isDeleted()) {
                return new Object[] {};
             }
@@ -124,7 +124,7 @@ public class WorldContentProvider implements ITreeContentProvider {
    public Object getParent(Object element) {
       if (element instanceof Artifact) {
          try {
-            Artifact artifact = (Artifact) element;
+            Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(element);
             if (artifact.isDeleted()) {
                return null;
             }
@@ -158,7 +158,7 @@ public class WorldContentProvider implements ITreeContentProvider {
       if (element instanceof String) {
          return false;
       }
-      if (((Artifact) element).isDeleted()) {
+      if (AtsClientService.get().getQueryServiceClient().getArtifact(element).isDeleted()) {
          return false;
       }
       if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {

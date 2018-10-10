@@ -133,7 +133,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
       while (itemsIter.hasNext()) {
          Object obj = itemsIter.next();
          if (obj instanceof Artifact) {
-            Artifact art = (Artifact) obj;
+            Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(obj);
             if (art.isDeleted()) {
                AWorkbench.popup("ERROR", "Artifact has been deleted");
                return;

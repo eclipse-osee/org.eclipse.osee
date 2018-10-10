@@ -99,7 +99,7 @@ public class AtsWorkDefinitionImporter {
          throw new OseeArgumentException("Sheet Id [%s] and Artifact Token id [%s] must match.", idStr,
             artToken.getIdString());
       }
-      Artifact resultArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(artId);
+      Artifact resultArt = AtsClientService.get().getQueryServiceClient().getArtifact(artId);
       if (resultArt != null) {
          String importStr = String.format("WorkDefinition [%s] already loaded into database", workDefName);
          if (!MessageDialog.openConfirm(AWorkbench.getActiveShell(), "Overwrite Work Definition",

@@ -17,6 +17,7 @@ import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.workflow.CollectorArtifact;
 import org.eclipse.osee.ats.workflow.goal.MembersManager;
@@ -56,7 +57,8 @@ public abstract class AbstractMembersOrderColumn extends XViewerAtsColumn implem
                   result = cachedValue;
                }
             } else {
-               String cachedObjectValue = multiMembersValueMap.get(((Artifact) obj).getId());
+               String cachedObjectValue =
+                  multiMembersValueMap.get(AtsClientService.get().getQueryServiceClient().getArtifact(obj).getId());
                if (Strings.isValid(cachedObjectValue)) {
                   result = cachedObjectValue;
                }
@@ -75,11 +77,12 @@ public abstract class AbstractMembersOrderColumn extends XViewerAtsColumn implem
             if (element instanceof Artifact && getXViewer() instanceof WorldXViewer) {
                WorldXViewer worldXViewer = (WorldXViewer) getXViewer();
                CollectorArtifact parentMembersArtifact = (CollectorArtifact) getParentMembersArtifact(worldXViewer);
+               Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(element);
                if (parentMembersArtifact != null) {
-                  String value = manager.getMemberOrder(parentMembersArtifact, (Artifact) element);
+                  String value = manager.getMemberOrder(parentMembersArtifact, artifact);
                   preComputedValueMap.put(getKey(element), value);
                } else {
-                  String value = manager.getMemberOrder((Artifact) element);
+                  String value = manager.getMemberOrder(artifact);
                   multiMembersValueMap.put(getKey(element), value);
                }
             }

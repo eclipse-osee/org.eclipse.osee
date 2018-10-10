@@ -94,7 +94,8 @@ public class TaskMetrics extends AbstractBlam {
 
             for (IAtsTeamWorkflow team : teamWorkflows) {
                monitor.worked(1 / teamWorkflows.size());
-               if (((Artifact) team.getStoreObject()).isOfType(AtsArtifactTypes.TeamWorkflow)) {
+               if (AtsClientService.get().getQueryServiceClient().getArtifact(team).isOfType(
+                  AtsArtifactTypes.TeamWorkflow)) {
 
                   TeamWorkFlowArtifact workflow = (TeamWorkFlowArtifact) team;
 

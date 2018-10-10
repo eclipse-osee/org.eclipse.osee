@@ -16,6 +16,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.workflow.goal.GoalManager;
 import org.eclipse.osee.ats.workflow.goal.GoalXViewerFactory;
@@ -85,20 +86,24 @@ public class GoalOrderColumn extends AbstractMembersOrderColumn {
             parentGoalArtifact = getParentGoalArtifact(treeItem);
          }
          GoalArtifact changedGoal = null;
-         if (parentGoalArtifact != null) {
-            changedGoal = new GoalManager().promptChangeMemberOrder(parentGoalArtifact, (Artifact) treeItem.getData());
-         } else {
-            changedGoal = new GoalManager().promptChangeGoalOrder((Artifact) treeItem.getData());
+         if (treeItem.getData() instanceof Artifact) {
+            if (parentGoalArtifact != null) {
+               changedGoal = new GoalManager().promptChangeMemberOrder(parentGoalArtifact,
+                  AtsClientService.get().getQueryServiceClient().getArtifact(treeItem));
+            } else {
+               changedGoal = new GoalManager().promptChangeGoalOrder(
+                  AtsClientService.get().getQueryServiceClient().getArtifact(treeItem));
+            }
+            if (changedGoal != null) {
+               xViewer.refresh(changedGoal);
+               xViewer.update(treeItem.getData(), null);
+            }
+            return true;
          }
-         if (changedGoal != null) {
-            xViewer.refresh(changedGoal);
-            xViewer.update(treeItem.getData(), null);
-         }
-         return true;
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         return false;
       }
+      return false;
    }
 
    public IArtifactType getArtifactType() {

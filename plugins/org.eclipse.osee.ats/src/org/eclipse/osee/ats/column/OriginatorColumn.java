@@ -81,10 +81,11 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
          if (treeItem.getData() instanceof Artifact) {
-            Artifact useArt = (Artifact) treeItem.getData();
+            Artifact useArt = AtsClientService.get().getQueryServiceClient().getArtifact(treeItem);
             if (useArt.isOfType(AtsArtifactTypes.Action)) {
                if (AtsClientService.get().getWorkItemService().getTeams(useArt).size() == 1) {
-                  useArt = (Artifact) AtsClientService.get().getWorkItemService().getFirstTeam(useArt).getStoreObject();
+                  useArt = AtsClientService.get().getQueryServiceClient().getArtifact(
+                     AtsClientService.get().getWorkItemService().getFirstTeam(useArt));
                } else {
                   return false;
                }
@@ -187,9 +188,11 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
       try {
          Set<AbstractWorkflowArtifact> awas = new HashSet<>();
          for (TreeItem item : treeItems) {
-            Artifact art = (Artifact) item.getData();
-            if (art instanceof AbstractWorkflowArtifact) {
-               awas.add((AbstractWorkflowArtifact) art);
+            if (item.getData() instanceof Artifact) {
+               Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
+               if (art instanceof AbstractWorkflowArtifact) {
+                  awas.add((AbstractWorkflowArtifact) art);
+               }
             }
          }
          promptChangeOriginator(awas, true);

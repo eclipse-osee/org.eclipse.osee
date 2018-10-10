@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryService;
 import org.eclipse.osee.ats.core.query.AtsWorkItemFilter;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.IAtsClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -294,7 +295,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       Artifact result = null;
       try {
          if (atsObject.getStoreObject() instanceof Artifact) {
-            result = (Artifact) atsObject.getStoreObject();
+            result = AtsClientService.get().getQueryServiceClient().getArtifact(atsObject);
          } else {
             result = getArtifact(atsObject.getId());
             if (result != null) {
@@ -312,11 +313,11 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       Artifact result = null;
       try {
          if (artifact instanceof Artifact) {
-            result = (Artifact) artifact;
+            result = AtsClientService.get().getQueryServiceClient().getArtifact(artifact);
          } else if (artifact instanceof IAtsObject) {
             IAtsObject atsObject = (IAtsObject) artifact;
             if (atsObject.getStoreObject() instanceof Artifact) {
-               result = (Artifact) atsObject.getStoreObject();
+               result = AtsClientService.get().getQueryServiceClient().getArtifact(atsObject);
             } else {
                result = getArtifact(atsObject.getId());
             }

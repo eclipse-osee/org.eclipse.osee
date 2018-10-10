@@ -93,11 +93,11 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
                      AtsClientService.get().getAttributeResolver(), this);
                }
             }
-            transaction.addArtifact((Artifact) AtsClientService.get().getQueryService().getArtifact(atsObject));
+            transaction.addArtifact(AtsClientService.get().getQueryServiceClient().getArtifact(atsObject));
          }
          for (ArtifactId artifact : artifacts) {
             if (artifact instanceof Artifact) {
-               transaction.addArtifact((Artifact) artifact);
+               transaction.addArtifact(AtsClientService.get().getQueryServiceClient().getArtifact(artifact));
             }
          }
          // Second, add or delete any relations; this has to be done separate so all artifacts are created
@@ -107,11 +107,11 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          // Third, delete any desired objects
          for (ArtifactId artifact : deleteArtifacts) {
             if (artifact instanceof Artifact) {
-               ((Artifact) artifact).deleteAndPersist(transaction);
+               AtsClientService.get().getQueryServiceClient().getArtifact(artifact).deleteAndPersist(transaction);
             }
          }
          for (IAtsObject atsObject : deleteAtsObjects) {
-            ((Artifact) AtsClientService.get().getQueryService().getArtifact(atsObject)).deleteAndPersist(transaction);
+            AtsClientService.get().getQueryServiceClient().getArtifact(atsObject).deleteAndPersist(transaction);
          }
          transactionRecord = transaction.execute();
       } catch (Exception ex) {
@@ -183,7 +183,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    private Artifact getArtifact(Object obj) {
       Artifact art = null;
       if (obj instanceof Artifact) {
-         art = (Artifact) obj;
+         art = AtsClientService.get().getQueryServiceClient().getArtifact(obj);
       } else if (obj instanceof IAtsObject) {
          IAtsObject atsObject = (IAtsObject) obj;
          Object storeObject = atsObject.getStoreObject();
@@ -208,42 +208,42 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType) {
-      Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(workItem);
+      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(workItem);
       artifact.deleteSoleAttribute(attributeType);
       add(artifact);
    }
 
    @Override
    public void setSoleAttributeValue(IAtsWorkItem workItem, AttributeTypeToken attributeType, String value) {
-      Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(workItem);
+      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(workItem);
       artifact.setSoleAttributeValue(attributeType, value);
       add(artifact);
    }
 
    @Override
    public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeToken attributeType, Object value) {
-      Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(atsObject);
+      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(atsObject);
       artifact.setSoleAttributeValue(attributeType, value);
       add(artifact);
    }
 
    @Override
    public void addAttribute(IAtsObject atsObject, AttributeTypeToken attributeType, Object value) {
-      Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(atsObject);
+      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(atsObject);
       artifact.addAttribute(attributeType, value);
       add(artifact);
    }
 
    @Override
    public void deleteAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) {
-      Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(atsObject);
+      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(atsObject);
       artifact.deleteAttribute(attributeType, value);
       add(artifact);
    }
 
    @Override
    public <T> void setValue(IAtsWorkItem workItem, IAttribute<T> attr, AttributeTypeId attributeType, T value) {
-      Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(workItem);
+      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(workItem);
       Attribute<T> attribute = (Attribute<T>) attr;
       attribute.setValue(value);
       add(artifact);
@@ -251,7 +251,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) {
-      Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(workItem);
+      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(workItem);
       Attribute<?> attribute = (Attribute<?>) attr;
       attribute.delete();
       add(artifact);
@@ -259,13 +259,13 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType) {
-      Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(workItem);
+      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(workItem);
       return artifact.getAttributeTypes().contains(attributeType);
    }
 
    @Override
    public void deleteAttributes(IAtsObject atsObject, AttributeTypeId attributeType) {
-      Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(atsObject);
+      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(atsObject);
       artifact.deleteAttributes(attributeType);
       add(artifact);
    }
@@ -369,7 +369,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void setAttributeValues(ArtifactId artifact, AttributeTypeToken attrType, List<Object> values) {
-      ((Artifact) artifact).setAttributeFromValues(attrType, values);
+      AtsClientService.get().getQueryServiceClient().getArtifact(artifact).setAttributeFromValues(attrType, values);
       add(artifact);
    }
 

@@ -114,7 +114,7 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
 
    private void relateInsertionActivity(Artifact workPackageArt, DemoInsertionActivity insertionActivity) {
       Artifact insertionActivityArt =
-         (Artifact) AtsClientService.get().getQueryService().getArtifact(insertionActivity.getId());
+         AtsClientService.get().getQueryServiceClient().getArtifact(insertionActivity.getId());
       insertionActivityArt.addRelation(AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage, workPackageArt);
    }
 

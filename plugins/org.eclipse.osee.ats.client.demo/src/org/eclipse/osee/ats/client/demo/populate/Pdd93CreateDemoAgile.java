@@ -161,7 +161,7 @@ public class Pdd93CreateDemoAgile {
       AtsClientService.get().getAgileService().setAgileStory(reqWf2, story2, changes);
       changes.execute();
 
-      Artifact progArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(aProgram.getId());
+      Artifact progArt = AtsClientService.get().getQueryServiceClient().getArtifact(aProgram);
       RelationManager.setRelationOrder(progArt, CoreRelationTypes.Default_Hierarchical__Child, RelationSide.SIDE_B,
          RelationSorter.UNORDERED, progArt.getChildren());
 
@@ -199,7 +199,7 @@ public class Pdd93CreateDemoAgile {
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Config Agile Team with points attr type");
       Artifact sawAgileTeam =
-         (Artifact) AtsClientService.get().getQueryService().getArtifact(DemoArtifactToken.CIS_Agile_Team);
+         AtsClientService.get().getQueryServiceClient().getArtifact(DemoArtifactToken.CIS_Agile_Team);
       changes.setSoleAttributeValue(sawAgileTeam, AtsAttributeTypes.PointsAttributeType,
          AtsAttributeTypes.Points.getName());
       changes.execute();
@@ -232,22 +232,22 @@ public class Pdd93CreateDemoAgile {
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Config Agile Team with points attr type");
       Artifact sawAgileTeam =
-         (Artifact) AtsClientService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Agile_Team);
+         AtsClientService.get().getQueryServiceClient().getArtifact(DemoArtifactToken.SAW_Agile_Team);
       changes.setSoleAttributeValue(sawAgileTeam, AtsAttributeTypes.PointsAttributeType,
          AtsAttributeTypes.Points.getName());
       changes.execute();
 
       // Assigne ATS Team to Agile Team
-      Artifact sawCodeArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Code);
+      Artifact sawCodeArt = AtsClientService.get().getQueryServiceClient().getArtifact(DemoArtifactToken.SAW_Code);
       Conditions.assertNotNull(sawCodeArt, "sawCodeArt");
-      Artifact agileTeam = (Artifact) AtsClientService.get().getQueryService().getArtifact(newTeam.getId());
+      Artifact agileTeam = AtsClientService.get().getQueryServiceClient().getArtifact(newTeam.getId());
       agileTeam.addRelation(AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam, sawCodeArt);
       agileTeam.persist("Assigne ATS Team to Agile Team");
 
       // Add team members to agile team
-      Artifact joeUser = (Artifact) AtsClientService.get().getQueryService().getArtifact(DemoUsers.Joe_Smith);
+      Artifact joeUser = AtsClientService.get().getQueryServiceClient().getArtifact(DemoUsers.Joe_Smith);
       agileTeam.addRelation(CoreRelationTypes.Users_User, joeUser);
-      Artifact kayUser = (Artifact) AtsClientService.get().getQueryService().getArtifact(DemoUsers.Kay_Jones);
+      Artifact kayUser = AtsClientService.get().getQueryServiceClient().getArtifact(DemoUsers.Kay_Jones);
       agileTeam.addRelation(CoreRelationTypes.Users_User, kayUser);
       agileTeam.persist("Add Team Members to Agile Team");
 
@@ -273,7 +273,7 @@ public class Pdd93CreateDemoAgile {
       Conditions.assertFalse(result.getResults().isErrors(), result.getResults().toString());
 
       // Set backlog as user_defined member order
-      Artifact backlogArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(backlog.getId());
+      Artifact backlogArt = AtsClientService.get().getQueryServiceClient().getArtifact(backlog.getId());
       RelationManager.setRelationOrder(backlogArt, AtsRelationTypes.Goal_Member, RelationSide.SIDE_B,
          RelationSorter.USER_DEFINED, backlogArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member));
 
@@ -307,12 +307,12 @@ public class Pdd93CreateDemoAgile {
       result = agile.updateItems(completedItems);
       Conditions.assertFalse(result.getResults().isErrors(), result.getResults().toString());
 
-      Artifact sprint1Art = (Artifact) AtsClientService.get().getQueryService().getArtifact(sprint1.getId());
+      Artifact sprint1Art = AtsClientService.get().getQueryServiceClient().getArtifact(sprint1.getId());
       RelationManager.setRelationOrder(sprint1Art, AtsRelationTypes.AgileSprintToItem_AtsItem, RelationSide.SIDE_B,
          RelationSorter.USER_DEFINED, sprint1Art.getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_AtsItem));
       sprint1Art.persist("Set sort order for Sprint 1");
 
-      Artifact sprint2Art = (Artifact) AtsClientService.get().getQueryService().getArtifact(sprint2.getId());
+      Artifact sprint2Art = AtsClientService.get().getQueryServiceClient().getArtifact(sprint2.getId());
       RelationManager.setRelationOrder(sprint2Art, AtsRelationTypes.AgileSprintToItem_AtsItem, RelationSide.SIDE_B,
          RelationSorter.USER_DEFINED, sprint2Art.getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_AtsItem));
       sprint2Art.persist("Set sort order for Sprint 2");
@@ -385,8 +385,8 @@ public class Pdd93CreateDemoAgile {
       changes.addAttribute(sprint, AtsAttributeTypes.Holiday, holiday1);
       changes.addAttribute(sprint, AtsAttributeTypes.Holiday, holiday2);
       // set sprint data on sprint items
-      Artifact agileTeamArt =
-         ((Artifact) sprint.getStoreObject()).getRelatedArtifact(AtsRelationTypes.AgileTeamToSprint_AgileTeam);
+      Artifact agileTeamArt = AtsClientService.get().getQueryServiceClient().getArtifact(sprint).getRelatedArtifact(
+         AtsRelationTypes.AgileTeamToSprint_AgileTeam);
       changes.execute();
 
       setSprintItemData(agileTeamArt.getId(), (IAgileSprint) sprint);

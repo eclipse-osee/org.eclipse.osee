@@ -17,6 +17,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.column.AbstractMembersOrderColumn;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workflow.goal.MembersManager;
 import org.eclipse.osee.ats.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.world.WorldXViewer;
@@ -68,15 +69,19 @@ public class SprintOrderColumn extends AbstractMembersOrderColumn {
             parentSprintArtifact = getParentSprintArtifact(treeItem);
          }
          SprintArtifact changedSprint = null;
-         if (parentSprintArtifact != null) {
-            changedSprint =
-               new SprintManager().promptChangeMemberOrder(parentSprintArtifact, (Artifact) treeItem.getData());
-         } else {
-            changedSprint = new SprintManager().promptChangeSprintOrder((Artifact) treeItem.getData());
-         }
-         if (changedSprint != null) {
-            xViewer.refresh(changedSprint);
-            xViewer.update(treeItem.getData(), null);
+         if (treeItem.getData() instanceof Artifact) {
+            if (parentSprintArtifact != null) {
+               changedSprint = new SprintManager().promptChangeMemberOrder(parentSprintArtifact,
+                  AtsClientService.get().getQueryServiceClient().getArtifact(treeItem));
+            } else {
+               changedSprint = new SprintManager().promptChangeSprintOrder(
+                  AtsClientService.get().getQueryServiceClient().getArtifact(treeItem));
+            }
+
+            if (changedSprint != null) {
+               xViewer.refresh(changedSprint);
+               xViewer.update(treeItem.getData(), null);
+            }
          }
          return true;
       } catch (OseeCoreException ex) {

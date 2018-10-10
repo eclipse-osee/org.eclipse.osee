@@ -72,7 +72,7 @@ public class AtsChangeSetTest {
    }
 
    private Artifact getGenDocArt(int x) {
-      return (Artifact) genDocArts.toArray()[x];
+      return AtsClientService.get().getQueryServiceClient().getArtifact(genDocArts.toArray()[x]);
    }
 
    @Test

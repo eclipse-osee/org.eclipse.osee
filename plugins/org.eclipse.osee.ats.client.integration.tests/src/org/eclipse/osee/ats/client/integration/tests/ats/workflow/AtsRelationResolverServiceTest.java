@@ -46,7 +46,7 @@ public class AtsRelationResolverServiceTest {
       atsApi = AtsClientService.get();
       sawCodeCommittedWf = DemoUtil.getSawCodeCommittedWf();
       sawCodeUnCommittedWf = DemoUtil.getSawCodeUnCommittedWf();
-      topAi = (Artifact) atsApi.getQueryService().getArtifact(AtsArtifactToken.TopActionableItem);
+      topAi = AtsClientService.get().getQueryServiceClient().getArtifact(AtsArtifactToken.TopActionableItem);
       relationResolver = atsApi.getRelationResolver();
    }
 
@@ -63,11 +63,11 @@ public class AtsRelationResolverServiceTest {
 
    @Test
    public void testAreRelatedArtifactIdRelationTypeSideArtifactId() {
-      Artifact sawCsciAi = (Artifact) atsApi.getQueryService().getArtifact(DemoArtifactToken.SAW_CSCI_AI);
+      Artifact sawCsciAi = AtsClientService.get().getQueryServiceClient().getArtifact(DemoArtifactToken.SAW_CSCI_AI);
       Assert.assertTrue(relationResolver.areRelated(topAi, CoreRelationTypes.Default_Hierarchical__Child, sawCsciAi));
       Assert.assertTrue(relationResolver.areRelated(sawCsciAi, CoreRelationTypes.Default_Hierarchical__Parent, topAi));
 
-      Artifact sawTestAi = (Artifact) atsApi.getQueryService().getArtifact(DemoArtifactToken.SAW_Test_AI);
+      Artifact sawTestAi = AtsClientService.get().getQueryServiceClient().getArtifact(DemoArtifactToken.SAW_Test_AI);
       Assert.assertFalse(relationResolver.areRelated(topAi, CoreRelationTypes.Default_Hierarchical__Child, sawTestAi));
       Assert.assertFalse(relationResolver.areRelated(sawTestAi, CoreRelationTypes.Default_Hierarchical__Parent, topAi));
    }
@@ -100,7 +100,8 @@ public class AtsRelationResolverServiceTest {
          relationResolver.getRelatedOrNull(sawTestAi, CoreRelationTypes.Default_Hierarchical__Parent);
       Assert.assertNotNull(relatedOrNull);
 
-      ArtifactId nullParentId = relationResolver.getRelatedOrNull((Artifact) sawCodeCommittedWf,
+      ArtifactId nullParentId = relationResolver.getRelatedOrNull(
+         AtsClientService.get().getQueryServiceClient().getArtifact(sawCodeCommittedWf),
          CoreRelationTypes.Default_Hierarchical__Parent);
       Assert.assertNull(nullParentId);
    }

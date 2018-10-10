@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.editor;
 
 import java.io.File;
 import java.util.Arrays;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.editor.WfeEditorAddSupportingFiles;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
@@ -68,7 +69,7 @@ public class WfeEditorAddSupportingFilesTest {
       job.run(null);
 
       int found = 0;
-      for (Artifact art : ((Artifact) teamWf.getStoreObject()).getRelatedArtifacts(
+      for (Artifact art : AtsClientService.get().getQueryServiceClient().getArtifact(teamWf).getRelatedArtifacts(
          CoreRelationTypes.SupportingInfo_SupportingInfo)) {
          if (art.getName().contains(getClass().getSimpleName() + "_1")) {
             found++;

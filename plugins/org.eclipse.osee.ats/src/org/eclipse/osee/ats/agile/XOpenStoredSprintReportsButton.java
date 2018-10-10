@@ -63,7 +63,7 @@ public class XOpenStoredSprintReportsButton extends XButton implements IArtifact
 
    @Override
    public Artifact getArtifact() {
-      return (Artifact) sprint.getStoreObject();
+      return AtsClientService.get().getQueryServiceClient().getArtifact(sprint);
    }
 
    @Override
@@ -100,7 +100,8 @@ public class XOpenStoredSprintReportsButton extends XButton implements IArtifact
          ArtifactToken rptArt = AtsClientService.get().getRelationResolver().getChildNamedOrNull(sprint, rpt.name());
          if (rptArt != null) {
             found = true;
-            RendererManager.open((Artifact) rptArt, PresentationType.PREVIEW);
+            RendererManager.open(AtsClientService.get().getQueryServiceClient().getArtifact(rptArt),
+               PresentationType.PREVIEW);
          }
       }
       if (!found) {

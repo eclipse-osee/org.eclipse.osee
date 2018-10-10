@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -83,7 +84,7 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
 
       // De-cache any object so they will be reloaded during search
       for (TreeItem item : worldEditor.getWorldComposite().getXViewer().getVisibleItems()) {
-         ArtifactCache.deCache((Artifact) item.getData());
+         ArtifactCache.deCache(AtsClientService.get().getQueryServiceClient().getArtifact(item));
       }
 
       LoadTableJob job = null;

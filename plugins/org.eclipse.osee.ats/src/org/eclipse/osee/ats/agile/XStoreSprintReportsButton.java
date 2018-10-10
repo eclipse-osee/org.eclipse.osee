@@ -50,7 +50,7 @@ public class XStoreSprintReportsButton extends XButton implements IArtifactWidge
 
    @Override
    public Artifact getArtifact() {
-      return (Artifact) sprint.getStoreObject();
+      return AtsClientService.get().getQueryServiceClient().getArtifact(sprint);
    }
 
    XModifiedListener listener = new XModifiedListener() {
@@ -80,13 +80,13 @@ public class XStoreSprintReportsButton extends XButton implements IArtifactWidge
                return;
             }
 
-            ((Artifact) sprint.getStoreObject()).reloadAttributesAndRelations();
+            AtsClientService.get().getQueryServiceClient().getArtifact(sprint).reloadAttributesAndRelations();
 
             XOpenStoredSprintReportsButton stored = new XOpenStoredSprintReportsButton();
-            stored.setArtifact((Artifact) sprint.getStoreObject());
+            stored.setArtifact(AtsClientService.get().getQueryServiceClient().getArtifact(sprint));
             stored.openExternally();
 
-            ArtifactExplorerUtil.revealArtifact((Artifact) sprint.getStoreObject());
+            ArtifactExplorerUtil.revealArtifact(AtsClientService.get().getQueryServiceClient().getArtifact(sprint));
 
             AWorkbench.popup("Reports opened in browser");
 

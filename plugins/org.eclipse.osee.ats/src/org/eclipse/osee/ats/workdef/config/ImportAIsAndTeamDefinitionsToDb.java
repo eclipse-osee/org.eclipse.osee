@@ -78,11 +78,10 @@ public class ImportAIsAndTeamDefinitionsToDb {
 
    public void execute() {
       importUserDefinitions(atsDsl.getUserDef());
-      importTeamDefinitions(atsDsl.getTeamDef(), (Artifact) AtsClientService.get().getQueryService().getArtifact(
+      importTeamDefinitions(atsDsl.getTeamDef(), AtsClientService.get().getQueryServiceClient().getArtifact(
          TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService())));
-      importActionableItems(atsDsl.getActionableItemDef(),
-         (Artifact) AtsClientService.get().getQueryService().getArtifact(
-            ActionableItems.getTopActionableItem(AtsClientService.get())));
+      importActionableItems(atsDsl.getActionableItemDef(), AtsClientService.get().getQueryServiceClient().getArtifact(
+         ActionableItems.getTopActionableItem(AtsClientService.get())));
       importProgram(atsDsl.getProgram());
    }
 
@@ -153,7 +152,8 @@ public class ImportAIsAndTeamDefinitionsToDb {
          }
          if (Strings.isValid(dslTeamDef.getWorkDefinition())) {
             ArtifactToken workDefArt = sheetNameToArtifactIdMap.get(dslTeamDef.getWorkDefinition());
-            IAtsTeamDefinition newTeamDef = AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(newTeam);
+            IAtsTeamDefinition newTeamDef =
+               AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(newTeam);
             AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(newTeamDef, workDefArt, changes);
          }
          if (Strings.isValid(dslTeamDef.getTeamWorkflowArtifactType())) {
@@ -355,10 +355,11 @@ public class ImportAIsAndTeamDefinitionsToDb {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       if (parent == null) {
          if (isTeamDef) {
-            parent = (Artifact) AtsClientService.get().getQueryService().getArtifact(
+            parent = AtsClientService.get().getQueryServiceClient().getArtifact(
                TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()));
          } else {
-            parent = (Artifact) ActionableItems.getTopActionableItem(AtsClientService.get());
+            parent = AtsClientService.get().getQueryServiceClient().getArtifact(
+               ActionableItems.getTopActionableItem(AtsClientService.get()));
          }
          changes.execute();
       }

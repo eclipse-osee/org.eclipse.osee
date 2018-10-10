@@ -62,7 +62,7 @@ public class OperationalImpactColumn extends XViewerValueColumn {
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       if (AtsObjects.isAtsWorkItemOrAction(element)) {
          try {
-            return getOperationalImpact((Artifact) element);
+            return getOperationalImpact(AtsClientService.get().getQueryServiceClient().getArtifact(element));
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             return LogUtil.getCellExceptionString(ex);
@@ -78,7 +78,7 @@ public class OperationalImpactColumn extends XViewerValueColumn {
       if (art.isOfType(AtsArtifactTypes.Action)) {
          Set<String> strs = new HashSet<>();
          for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(art)) {
-            strs.add(getOperationalImpact((Artifact) team.getStoreObject()));
+            strs.add(getOperationalImpact(AtsClientService.get().getQueryServiceClient().getArtifact(team)));
          }
          return Collections.toString(", ", strs);
       }

@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.column;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
@@ -48,7 +48,8 @@ public class RemainingPointsNumericWorkflowColumn extends AbstractNumericTotalCo
 
    @Override
    protected int getPercentComplete(IAtsWorkItem workItem) {
-      return ((Artifact) workItem.getStoreObject()).getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0);
+      return AtsClientService.get().getQueryServiceClient().getArtifact(workItem).getSoleAttributeValue(
+         AtsAttributeTypes.PercentComplete, 0);
    }
 
 }

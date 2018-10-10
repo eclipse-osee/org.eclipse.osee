@@ -89,7 +89,8 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    @Override
    public Collection<String> getAttributesToStringList(ArtifactId artifact, AttributeTypeId attributeType) {
-      return ((Artifact) artifact).getAttributesToStringList(attributeType);
+      return AtsClientService.get().getQueryServiceClient().getArtifact(artifact).getAttributesToStringList(
+         attributeType);
    }
 
    @Override
@@ -110,7 +111,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    @Override
    public String getSoleAttributeValueAsString(ArtifactId artifact, AttributeTypeId attributeType, String defaultValue) {
       String result = defaultValue;
-      Artifact art = (Artifact) AtsClientService.get().getQueryService().getArtifact(artifact);
+      Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(artifact);
       if (art != null) {
          result = art.getSoleAttributeValueAsString(attributeType, defaultValue);
       }
@@ -118,16 +119,23 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    private Artifact getArtifact(IAtsObject atsObject) {
-      return getArtifact(atsObject.getStoreObject());
+      Artifact art = null;
+      if (atsObject instanceof ArtifactId) {
+         art = getArtifact((ArtifactId) atsObject);
+      }
+      if (art == null) {
+         art = getArtifact(atsObject.getStoreObject());
+      }
+      return art;
    }
 
    private Artifact getArtifact(ArtifactId artifact) {
       if (artifact instanceof Artifact) {
-         return (Artifact) artifact;
+         return AtsClientService.get().getQueryServiceClient().getArtifact(artifact);
       }
       ArtifactId art = AtsClientService.get().getQueryService().getArtifact(artifact);
       if (art instanceof Artifact) {
-         return (Artifact) art;
+         return AtsClientService.get().getQueryServiceClient().getArtifact(art);
       }
       return null;
    }

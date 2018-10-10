@@ -27,13 +27,12 @@ public class Pdd97CreateDemoSawWorkTypes {
    public void run() {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Add SAW Work Types");
-      Artifact sawProgram =
-         (Artifact) AtsClientService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Program);
+      Artifact sawProgram = AtsClientService.get().getQueryServiceClient().getArtifact(DemoArtifactToken.SAW_Program);
       for (DemoCsci csci : DemoCsci.values()) {
          sawProgram.addAttribute(AtsAttributeTypes.CSCI, csci.name());
       }
       sawProgram.persist(transaction);
-      Artifact sawTeamDef = (Artifact) AtsClientService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_SW);
+      Artifact sawTeamDef = AtsClientService.get().getQueryServiceClient().getArtifact(DemoArtifactToken.SAW_SW);
       for (Artifact child : sawTeamDef.getChildren()) {
          child.setSoleAttributeValue(AtsAttributeTypes.ProgramId, sawProgram);
          if (child.getName().contains("Code")) {
@@ -56,15 +55,13 @@ public class Pdd97CreateDemoSawWorkTypes {
          child.persist(transaction);
       }
 
-      Artifact sawTestAi =
-         (Artifact) AtsClientService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Test_AI);
+      Artifact sawTestAi = AtsClientService.get().getQueryServiceClient().getArtifact(DemoArtifactToken.SAW_Test_AI);
       sawTestAi.setSoleAttributeValue(AtsAttributeTypes.ProgramId, sawProgram);
       sawTestAi.setSoleAttributeValue(AtsAttributeTypes.WorkType, WorkType.Test.name());
       sawTestAi.addAttribute(AtsAttributeTypes.CSCI, DemoCsci.DP.name());
       sawTestAi.persist(transaction);
 
-      Artifact sawCodeAi =
-         (Artifact) AtsClientService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Code_AI);
+      Artifact sawCodeAi = AtsClientService.get().getQueryServiceClient().getArtifact(DemoArtifactToken.SAW_Code_AI);
       sawCodeAi.setSoleAttributeValue(AtsAttributeTypes.ProgramId, sawProgram);
       sawCodeAi.setSoleAttributeValue(AtsAttributeTypes.WorkType, WorkType.Code.name());
       sawCodeAi.addAttribute(AtsAttributeTypes.CSCI, DemoCsci.SP.name());

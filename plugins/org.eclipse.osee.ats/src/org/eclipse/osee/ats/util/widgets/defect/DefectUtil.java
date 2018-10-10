@@ -77,7 +77,7 @@ public class DefectUtil {
    }
 
    private Artifact getArtifact() {
-      return (Artifact) review.getStoreObject();
+      return AtsClientService.get().getQueryServiceClient().getArtifact(review);
    }
 
    public void handleDeleteDefect(boolean persist) {

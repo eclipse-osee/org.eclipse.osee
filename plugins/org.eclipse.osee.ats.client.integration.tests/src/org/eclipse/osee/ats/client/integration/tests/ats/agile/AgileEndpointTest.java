@@ -50,7 +50,7 @@ public class AgileEndpointTest {
 
    @After
    public void cleanup() {
-      Artifact agileTeam = (Artifact) AtsClientService.get().getQueryService().getArtifact(teamId);
+      Artifact agileTeam = AtsClientService.get().getQueryServiceClient().getArtifact(teamId);
       if (agileTeam != null) {
          agile.deleteTeam(teamId);
       }
@@ -231,8 +231,8 @@ public class AgileEndpointTest {
       XResultData results =
          agile.storeSprintReports(DemoArtifactToken.SAW_Agile_Team.getId(), DemoArtifactToken.SAW_Sprint_2.getId());
       Assert.assertFalse(results.toString(), results.isErrors());
-      ((Artifact) AtsClientService.get().getQueryService().getArtifact(
-         DemoArtifactToken.SAW_Sprint_2)).reloadAttributesAndRelations();
+      AtsClientService.get().getQueryServiceClient().getArtifact(
+         DemoArtifactToken.SAW_Sprint_2).reloadAttributesAndRelations();
       Assert.assertEquals(4,
          AtsClientService.get().getRelationResolver().getChildren(DemoArtifactToken.SAW_Sprint_2).size());
    }

@@ -58,7 +58,8 @@ public class PercentCompleteStateReviewColumn extends XViewerAtsColumn implement
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof Artifact) {
-            return String.valueOf(getPercentCompleteStateReview((Artifact) element));
+            return String.valueOf(
+               getPercentCompleteStateReview(AtsClientService.get().getQueryServiceClient().getArtifact(element)));
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);
@@ -74,7 +75,8 @@ public class PercentCompleteStateReviewColumn extends XViewerAtsColumn implement
          double percent = 0;
          for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(artifact)) {
             if (!team.isCancelled()) {
-               percent += getPercentCompleteStateReview((Artifact) team.getStoreObject());
+               percent +=
+                  getPercentCompleteStateReview(AtsClientService.get().getQueryServiceClient().getArtifact(team));
             }
          }
          if (percent == 0) {

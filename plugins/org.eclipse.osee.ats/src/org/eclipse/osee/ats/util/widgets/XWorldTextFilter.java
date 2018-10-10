@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util.widgets;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -29,9 +30,9 @@ public class XWorldTextFilter extends XViewerTextFilter {
    @Override
    public boolean select(Viewer viewer, Object parentElement, Object element) {
       if (parentElement instanceof Artifact) {
-         Artifact parent = (Artifact) parentElement;
+         Artifact parent = AtsClientService.get().getQueryServiceClient().getArtifact(parentElement);
          if (element instanceof Artifact) {
-            Artifact elem = (Artifact) element;
+            Artifact elem = AtsClientService.get().getQueryServiceClient().getArtifact(element);
             for (RelationLink relation : parent.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
                // BArtifact of parentElement
                if (relation.getArtifactIdB().equals(elem)) {

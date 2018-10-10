@@ -82,7 +82,8 @@ public class WfeRelationsHyperlinkComposite extends Composite {
       if (sma.isTeamWorkflow()) {
          for (IAtsTeamWorkflow teamWf : sma.getParentAction().getTeamWorkflows()) {
             if (!teamWf.equals(sma)) {
-               createLink("This", (Artifact) teamWf.getStoreObject(), " has sibling ", sma);
+               createLink("This", AtsClientService.get().getQueryServiceClient().getArtifact(teamWf), " has sibling ",
+                  sma);
             }
          }
       }

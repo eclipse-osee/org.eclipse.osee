@@ -213,7 +213,7 @@ public class AtsConfigOperation extends AbstractOperation {
             workDefArt = AtsWorkDefinitionImporter.get().importWorkDefinitionToDb(workDefXml, workDef.getName(), name,
                resultData, null, null, changes);
             Artifact folder =
-               (Artifact) AtsClientService.get().getQueryService().getArtifact(AtsArtifactToken.WorkDefinitionsFolder);
+               AtsClientService.get().getQueryServiceClient().getArtifact(AtsArtifactToken.WorkDefinitionsFolder);
             folder.addChild(workDefArt);
             changes.add(folder);
          } catch (Exception ex) {
@@ -247,7 +247,7 @@ public class AtsConfigOperation extends AbstractOperation {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                try {
-                  Artifact teamDefArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(teamDef);
+                  Artifact teamDefArt = AtsClientService.get().getQueryServiceClient().getArtifact(teamDef);
                   AtsEditors.openATSAction(teamDefArt, AtsOpenOption.OpenAll);
                   for (IAtsActionableItem aia : aias) {
                      AtsEditors.openATSAction(AtsClientService.get().getQueryService().getArtifact(aia),

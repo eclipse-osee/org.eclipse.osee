@@ -88,7 +88,7 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
          assertNotNull(typeById);
          if (typeById.equals(CoreArtifactTypes.Folder)) {
             long artId = art.getId();
-            Artifact folderArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(artId);
+            Artifact folderArt = AtsClientService.get().getQueryServiceClient().getArtifact(artId);
             assertNotNull(folderArt);
             assertEquals(2, folderArt.getChildren().size());
             for (Artifact child : folderArt.getChildren()) {
@@ -99,7 +99,7 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
       }
 
       OwArtifact userGroupOwArt = collector.getUpdate().iterator().next();
-      Artifact userGroupArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(userGroupOwArt.getId());
+      Artifact userGroupArt = AtsClientService.get().getQueryServiceClient().getArtifact(userGroupOwArt.getId());
       assertNotNull(userGroupArt);
       userGroupArt.reloadAttributesAndRelations();
       assertEquals("test static id", userGroupArt.getSoleAttributeValue(CoreAttributeTypes.StaticId, null));

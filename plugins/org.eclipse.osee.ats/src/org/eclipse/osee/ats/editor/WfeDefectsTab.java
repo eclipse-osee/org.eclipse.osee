@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.workflow.review.defect.ReviewDefectValidator;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
@@ -136,7 +135,8 @@ public class WfeDefectsTab extends FormPage implements IRefreshActionHandler, De
          protected IStatus run(IProgressMonitor monitor) {
             try {
                DefectData data = new DefectData();
-               data.setError(ReviewDefectValidator.isValid((Artifact) review.getStoreObject()));
+               data.setError(
+                  ReviewDefectValidator.isValid(AtsClientService.get().getQueryServiceClient().getArtifact(review)));
                refreshMessageLabel(data);
             } catch (Exception ex) {
                // do nothing
@@ -176,7 +176,7 @@ public class WfeDefectsTab extends FormPage implements IRefreshActionHandler, De
 
    @Override
    public void refreshActionHandler() {
-      ((Artifact) review.getStoreObject()).reloadAttributesAndRelations();
+      AtsClientService.get().getQueryServiceClient().getArtifact(review).reloadAttributesAndRelations();
       xViewer.loadTable(this);
    }
 
@@ -193,7 +193,8 @@ public class WfeDefectsTab extends FormPage implements IRefreshActionHandler, De
 
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-      if (artifactEvent.isModified((Artifact) review.getStoreObject())) {
+      if (artifactEvent.isModified(
+         AtsClientService.get().getQueryServiceClient().getArtifact(review.getStoreObject()))) {
          refreshMessageLabel();
       }
    }

@@ -89,7 +89,7 @@ public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColum
       boolean modified = false;
       try {
          if (treeItem.getData() instanceof Artifact) {
-            Artifact selectedArt = (Artifact) treeItem.getData();
+            Artifact selectedArt = AtsClientService.get().getQueryServiceClient().getArtifact(treeItem);
             AbstractWorkflowArtifact useAwa = null;
             if (selectedArt instanceof IAtsAction && AtsClientService.get().getWorkItemService().getTeams(
                selectedArt).size() == 1) {
@@ -184,9 +184,11 @@ public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColum
       try {
          Set<AbstractWorkflowArtifact> awas = new HashSet<>();
          for (TreeItem item : treeItems) {
-            Artifact art = (Artifact) item.getData();
-            if (art instanceof AbstractWorkflowArtifact) {
-               awas.add((AbstractWorkflowArtifact) art);
+            if (item.getData() instanceof Artifact) {
+               Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
+               if (art instanceof AbstractWorkflowArtifact) {
+                  awas.add((AbstractWorkflowArtifact) art);
+               }
             }
          }
          if (awas.isEmpty()) {

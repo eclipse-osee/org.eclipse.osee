@@ -179,7 +179,7 @@ public final class AtsEditors {
    public static void openInAtsWorldEditor(String name, Collection<? extends ArtifactId> artifacts) {
       Set<Artifact> otherArts = new HashSet<>();
       for (ArtifactId artId : artifacts) {
-         Artifact art = (Artifact) artId;
+         Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(artId);
          if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {
             WorldEditor.open(
                new WorldEditorUISearchItemProvider(new GroupWorldSearchItem(art), null, TableLoadOption.None));

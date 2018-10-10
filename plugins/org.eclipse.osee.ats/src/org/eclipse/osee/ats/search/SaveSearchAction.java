@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.navigate.NavigateViewItems;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -67,7 +66,7 @@ public final class SaveSearchAction extends Action {
          Conditions.checkExpressionFailOnTrue(data.getId() <= 0, "searchId must be > 0, not %d", data.getId());
          Conditions.checkNotNullOrEmpty(data.getSearchName(), "Search Name");
          AtsClientService.get().getQueryService().saveSearch(asUser, data);
-         ((Artifact) asUser.getStoreObject()).reloadAttributesAndRelations();
+         AtsClientService.get().getQueryServiceClient().getArtifact(asUser).reloadAttributesAndRelations();
          if (NavigateView.getNavigateView() != null) {
             NavigateViewItems.refreshTopAtsSearchItem();
          }

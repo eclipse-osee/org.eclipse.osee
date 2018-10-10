@@ -54,7 +54,7 @@ public class CreateWorkingBranchFromTxBlam extends AbstractBlam {
             String idNumber = pairs[0];
             TransactionToken parentTransactionId = TransactionManager.getTransaction(Long.valueOf(pairs[1]));
             try {
-               Artifact art = (Artifact) AtsClientService.get().getQueryService().getArtifactByIdOrAtsId(idNumber);
+               Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(Long.valueOf(idNumber));
                if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                   TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
                   if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {

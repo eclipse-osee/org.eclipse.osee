@@ -123,7 +123,8 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
       if (worldArts.size() > 0) {
          Artifact artifact = worldArts.iterator().next();
          if (artifact.isOfType(AtsArtifactTypes.Action)) {
-            artifact = (Artifact) AtsClientService.get().getWorkItemService().getFirstTeam(artifact).getStoreObject();
+            artifact = AtsClientService.get().getQueryServiceClient().getArtifact(
+               AtsClientService.get().getWorkItemService().getFirstTeam(artifact));
          }
          return ((AbstractWorkflowArtifact) artifact).getManHrsPerDayPreference();
       }

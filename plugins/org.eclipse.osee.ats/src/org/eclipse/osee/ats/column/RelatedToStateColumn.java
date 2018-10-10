@@ -164,9 +164,11 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       Set<TaskArtifact> tasks = new HashSet<>();
       for (TreeItem item : treeItems) {
-         Artifact art = (Artifact) item.getData();
-         if (art.isOfType(AtsArtifactTypes.Task)) {
-            tasks.add((TaskArtifact) art);
+         if (item.getData() instanceof Artifact) {
+            Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
+            if (art.isOfType(AtsArtifactTypes.Task)) {
+               tasks.add((TaskArtifact) art);
+            }
          }
       }
       if (tasks.isEmpty()) {

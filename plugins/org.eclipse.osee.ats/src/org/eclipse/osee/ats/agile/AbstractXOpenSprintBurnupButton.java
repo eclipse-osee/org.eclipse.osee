@@ -56,12 +56,13 @@ public abstract class AbstractXOpenSprintBurnupButton extends XButton implements
 
    @Override
    public Artifact getArtifact() {
-      return (Artifact) sprint.getStoreObject();
+      return AtsClientService.get().getQueryServiceClient().getArtifact(sprint);
    }
 
    protected Artifact getAgileTeam() {
-      return (Artifact) AtsClientService.get().getRelationResolver().getRelatedOrNull(sprint,
-         AtsRelationTypes.AgileTeamToSprint_AgileTeam);
+      return AtsClientService.get().getQueryServiceClient().getArtifact(
+         AtsClientService.get().getRelationResolver().getRelatedOrNull(sprint,
+            AtsRelationTypes.AgileTeamToSprint_AgileTeam));
    };
 
    @Override

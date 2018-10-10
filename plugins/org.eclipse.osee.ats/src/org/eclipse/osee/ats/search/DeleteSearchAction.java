@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.navigate.NavigateViewItems;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
@@ -55,7 +54,8 @@ public final class DeleteSearchAction extends Action {
          AtsSearchData selected = (AtsSearchData) dialog.getSelectedFirst();
          AtsClientService.get().getQueryService().removeSearch(AtsClientService.get().getUserService().getCurrentUser(),
             selected);
-         ((Artifact) AtsClientService.get().getUserService().getCurrentUser().getStoreObject()).reloadAttributesAndRelations();
+         AtsClientService.get().getQueryServiceClient().getArtifact(
+            AtsClientService.get().getUserService().getCurrentUser()).reloadAttributesAndRelations();
          if (NavigateView.getNavigateView() != null) {
             NavigateViewItems.refreshTopAtsSearchItem();
          }

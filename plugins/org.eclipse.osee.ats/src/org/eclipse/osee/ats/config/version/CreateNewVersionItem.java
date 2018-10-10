@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -94,7 +93,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
          changes.execute();
          if (newVersions.size() == 1) {
             RendererManager.open(
-               (Artifact) AtsClientService.get().getQueryService().getArtifact(newVersions.iterator().next()),
+               AtsClientService.get().getQueryServiceClient().getArtifact(newVersions.iterator().next()),
                PresentationType.DEFAULT_OPEN);
          } else {
             MassArtifactEditor.editArtifacts(String.format("New Versions for [%s]", teamDefHoldingVersions),

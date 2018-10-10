@@ -77,7 +77,7 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
          if (treeItem.getData() instanceof Artifact) {
-            Artifact useArt = (Artifact) treeItem.getData();
+            Artifact useArt = AtsClientService.get().getQueryServiceClient().getArtifact(treeItem);
             if (!useArt.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
                return false;
             }
@@ -117,7 +117,7 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
          return false;
       }
 
-      Artifact backlogArt = (Artifact) items.getCommonBacklog().getStoreObject();
+      Artifact backlogArt = AtsClientService.get().getQueryServiceClient().getArtifact(items.getCommonBacklog());
       Artifact agileTeamArt = null;
       try {
          agileTeamArt = backlogArt.getRelatedArtifact(AtsRelationTypes.AgileTeamToBacklog_AgileTeam);
@@ -154,7 +154,7 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
             IAgileSprint selectedSprint = dialog.getSelectedFirst();
             Artifact newSprintArt = null;
             if (selectedSprint != null) {
-               newSprintArt = (Artifact) selectedSprint.getStoreObject();
+               newSprintArt = AtsClientService.get().getQueryServiceClient().getArtifact(selectedSprint);
             }
 
             IAtsChangeSet changes = AtsClientService.get().createChangeSet("Set Sprint");
@@ -200,7 +200,8 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
       try {
          if (element instanceof Artifact) {
             return Artifacts.toString("; ",
-               ((Artifact) element).getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_Sprint));
+               AtsClientService.get().getQueryServiceClient().getArtifact(element).getRelatedArtifacts(
+                  AtsRelationTypes.AgileSprintToItem_Sprint));
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);
@@ -213,9 +214,11 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
       try {
          Set<AbstractWorkflowArtifact> awas = new HashSet<>();
          for (TreeItem item : treeItems) {
-            Artifact art = (Artifact) item.getData();
-            if (art instanceof AbstractWorkflowArtifact) {
-               awas.add((AbstractWorkflowArtifact) art);
+            if (item.getData() instanceof Artifact) {
+               Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
+               if (art instanceof AbstractWorkflowArtifact) {
+                  awas.add((AbstractWorkflowArtifact) art);
+               }
             }
          }
          promptChangeSprint(awas, true);

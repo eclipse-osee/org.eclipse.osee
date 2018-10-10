@@ -324,10 +324,11 @@ public class DefectXViewerMenu {
    }
 
    public boolean executeTransaction(Collection<ReviewDefectItem> defectItems) {
-      Artifact revewArt = (Artifact) review.getStoreObject();
+      Artifact revewArt = AtsClientService.get().getQueryServiceClient().getArtifact(review);
       SkynetTransaction transaction =
          TransactionManager.createTransaction(revewArt.getBranch(), "Modify Review Defects");
-      ReviewDefectManager defectManager = new ReviewDefectManager((Artifact) review.getStoreObject());
+      ReviewDefectManager defectManager =
+         new ReviewDefectManager(AtsClientService.get().getQueryServiceClient().getArtifact(review));
       for (ReviewDefectItem defectItem : defectItems) {
          defectManager.addOrUpdateDefectItem(defectItem);
          defectXViewer.update(defectItem, null);

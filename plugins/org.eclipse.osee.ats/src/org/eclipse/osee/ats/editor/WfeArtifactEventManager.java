@@ -181,8 +181,9 @@ public class WfeArtifactEventManager implements IArtifactEventListener {
                awa.getParentAction())) {
                IAtsAction parentAction = teamWf.getParentAction();
                if (awa.notEqual(teamWf) && artifactEvent.isHasEvent(
-                  (Artifact) teamWf.getStoreObject()) && parentAction != null && artifactEvent.isRelAddedChangedDeleted(
-                     (Artifact) parentAction.getStoreObject())) {
+                  AtsClientService.get().getQueryServiceClient().getArtifact(
+                     teamWf)) && parentAction != null && artifactEvent.isRelAddedChangedDeleted(
+                        AtsClientService.get().getQueryServiceClient().getArtifact(parentAction.getStoreObject()))) {
                   refreshed = true;
                   Displays.ensureInDisplayThread(new Runnable() {
                      @Override

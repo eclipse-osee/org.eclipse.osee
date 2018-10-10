@@ -120,7 +120,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
             for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(artifact)) {
                if (AtsClientService.get().getBranchService().isCommittedBranchExists(
                   team) || AtsClientService.get().getBranchService().isWorkingBranchInWork(team)) {
-                  addedArts.add((Artifact) team.getStoreObject());
+                  addedArts.add(AtsClientService.get().getQueryServiceClient().getArtifact(team));
                }
             }
          }
@@ -192,7 +192,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
                ld.setMessage("Select Workflow");
                ld.setInput(resultAtsArts);
                if (ld.open() == 0) {
-                  artifact = (Artifact) ld.getResult()[0];
+                  artifact = AtsClientService.get().getQueryServiceClient().getArtifact(ld.getResult()[0]);
                } else {
                   return;
                }

@@ -118,7 +118,7 @@ public class ChangeTypeColumnUI extends XViewerAtsAttributeValueColumn {
             return false;
          }
          if (treeItem.getData() instanceof Artifact) {
-            Artifact useArt = (Artifact) treeItem.getData();
+            Artifact useArt = AtsClientService.get().getQueryServiceClient().getArtifact(treeItem);
             if (useArt.isOfType(AtsArtifactTypes.Action)) {
                if (AtsClientService.get().getWorkItemService().getTeams(useArt).size() == 1) {
                   useArt = (AbstractWorkflowArtifact) AtsClientService.get().getWorkItemService().getFirstTeam(
@@ -170,9 +170,11 @@ public class ChangeTypeColumnUI extends XViewerAtsAttributeValueColumn {
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       Set<TeamWorkFlowArtifact> awas = new HashSet<>();
       for (TreeItem item : treeItems) {
-         Artifact art = (Artifact) item.getData();
-         if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-            awas.add((TeamWorkFlowArtifact) art);
+         if (item.getData() instanceof Artifact) {
+            Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
+            if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+               awas.add((TeamWorkFlowArtifact) art);
+            }
          }
       }
       promptChangeType(awas, true);

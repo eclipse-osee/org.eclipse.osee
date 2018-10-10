@@ -29,14 +29,15 @@ public class PercentCompleteSMAStateUtil {
    public static int getPercentCompleteSMAState(Artifact artifact) {
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
          if (AtsClientService.get().getWorkItemService().getTeams(artifact).size() == 1) {
-            return getPercentCompleteSMAState(
-               (Artifact) AtsClientService.get().getWorkItemService().getFirstTeam(artifact).getStoreObject());
+            return getPercentCompleteSMAState(AtsClientService.get().getQueryServiceClient().getArtifact(
+               AtsClientService.get().getWorkItemService().getFirstTeam(artifact)));
          } else {
             double percent = 0;
             int items = 0;
             for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(artifact)) {
                if (!team.isCancelled()) {
-                  percent += getPercentCompleteSMAState((Artifact) team.getStoreObject());
+                  percent +=
+                     getPercentCompleteSMAState(AtsClientService.get().getQueryServiceClient().getArtifact(team));
                   items++;
                }
             }

@@ -29,7 +29,7 @@ public class OpenNewAtsWorldEditorSelectedActionTest extends AbstractAtsActionRu
 
          @Override
          public List<Artifact> getSelectedArtifacts() {
-            return Arrays.asList((Artifact) AtsTestUtil.getTeamWf());
+            return Arrays.asList(AtsTestUtil.getTeamWf());
          }
 
          @Override

@@ -46,7 +46,8 @@ public class Pdd91CreateDemoGroups {
          // Add All Team Workflows to Universal Group
          for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams(
             codeArt.getParentActionArtifact())) {
-            groupArt.addRelation(CoreRelationTypes.Universal_Grouping__Members, (Artifact) teamWf.getStoreObject());
+            groupArt.addRelation(CoreRelationTypes.Universal_Grouping__Members,
+               AtsClientService.get().getQueryServiceClient().getArtifact(teamWf));
          }
 
          codeArt.persist(transaction);
