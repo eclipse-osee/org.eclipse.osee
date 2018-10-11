@@ -332,7 +332,7 @@ public class TypesEndpointImpl implements TypesEndpoint {
    public Response getConfigSheets() {
       List<OrcsTypesSheet> sheets = new LinkedList<>();
       for (ArtifactReadable art : orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
-         CoreArtifactTypes.OseeTypeDefinition, CoreArtifactTypes.OseeTypeDefinitionTemp).getResults()) {
+         CoreArtifactTypes.OseeTypeDefinition).getResults()) {
          OrcsTypesSheet sheet = new OrcsTypesSheet();
          sheet.setArtifactId(art.getId());
          sheet.setName(art.getName());
