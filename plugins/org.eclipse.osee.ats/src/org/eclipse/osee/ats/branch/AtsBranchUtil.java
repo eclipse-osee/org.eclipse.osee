@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workflow.review.DecisionReviewArtifact;
@@ -53,27 +54,29 @@ public class AtsBranchUtil {
    /**
     * @return true if one or more reviews were created
     */
-   public static boolean createNecessaryBranchEventReviews(StateEventType stateEventType, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
-      Conditions.checkNotNull(teamArt, "Team Workflow");
+   public static boolean createNecessaryBranchEventReviews(StateEventType stateEventType, IAtsTeamWorkflow teamWf, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
+      Conditions.checkNotNull(teamWf, "Team Workflow");
       boolean created = false;
       if (stateEventType != StateEventType.CommitBranch && stateEventType != StateEventType.CreateBranch) {
          throw new OseeStateException("Invalid stateEventType [%s]", stateEventType);
       }
+      TeamWorkFlowArtifact teamWfArt =
+         (TeamWorkFlowArtifact) AtsClientService.get().getQueryServiceClient().getArtifact(teamWf);
       // Create any decision and peerToPeer reviews for createBranch and commitBranch
-      for (IAtsDecisionReviewDefinition decRevDef : teamArt.getStateDefinition().getDecisionReviews()) {
+      for (IAtsDecisionReviewDefinition decRevDef : teamWf.getStateDefinition().getDecisionReviews()) {
          if (decRevDef.getStateEventType() != null && decRevDef.getStateEventType().equals(stateEventType)) {
             DecisionReviewArtifact decArt = DecisionReviewDefinitionManager.createNewDecisionReview(decRevDef, changes,
-               teamArt, createdDate, createdBy);
+               teamWfArt, createdDate, createdBy);
             if (decArt != null) {
                created = true;
                changes.add(decArt);
             }
          }
       }
-      for (IAtsPeerReviewDefinition peerRevDef : teamArt.getStateDefinition().getPeerReviews()) {
+      for (IAtsPeerReviewDefinition peerRevDef : teamWf.getStateDefinition().getPeerReviews()) {
          if (peerRevDef.getStateEventType() != null && peerRevDef.getStateEventType().equals(stateEventType)) {
             PeerToPeerReviewArtifact peerArt = PeerReviewDefinitionManager.createNewPeerToPeerReview(peerRevDef,
-               changes, teamArt, createdDate, createdBy);
+               changes, teamWfArt, createdDate, createdBy);
             if (peerArt != null) {
                created = true;
                changes.add(peerArt);
@@ -89,18 +92,18 @@ public class AtsBranchUtil {
     * @param popup if true, errors are popped up to user; otherwise sent silently in Results
     * @return Result return of status
     */
-   public static Result createWorkingBranch_Validate(TeamWorkFlowArtifact teamArt) {
+   public static Result createWorkingBranch_Validate(IAtsTeamWorkflow teamWf) {
       try {
-         if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {
+         if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamWf)) {
             return new Result(
                "Committed branch already exists. Can not create another working branch once changes have been committed.");
          }
-         BranchId parentBranch = AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamArt);
+         BranchId parentBranch = AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamWf);
          if (parentBranch == null || parentBranch.isInvalid()) {
             return new Result(
                "Parent Branch can not be determined.\n\nPlease specify " + "parent branch through Version Artifact or Team Definition Artifact.\n\n" + "Contact your team lead to configure this.");
          }
-         Result result = AtsClientService.get().getBranchService().isCreateBranchAllowed(teamArt);
+         Result result = AtsClientService.get().getBranchService().isCreateBranchAllowed(teamWf);
          if (result.isFalse()) {
             return result;
          }
@@ -123,36 +126,37 @@ public class AtsBranchUtil {
     * Create a working branch associated with this state machine artifact. This should NOT be called by applications
     * except in test cases or automated tools. Use createWorkingBranchWithPopups
     */
-   public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, boolean pend) {
-      final BranchId parentBranch = AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamArt);
-      return createWorkingBranch_Create(teamArt, parentBranch, pend);
+   public static Job createWorkingBranch_Create(final IAtsTeamWorkflow teamWf, boolean pend) {
+      final BranchId parentBranch = AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamWf);
+      return createWorkingBranch_Create(teamWf, parentBranch, pend);
    }
 
    public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, final BranchId parentBranch) {
       return createWorkingBranch_Create(teamArt, parentBranch, false);
    }
 
-   public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, final BranchId parentBranch, boolean pend) {
-      Conditions.checkNotNull(teamArt, "Parent Team Workflow");
+   public static Job createWorkingBranch_Create(final IAtsTeamWorkflow teamWf, final BranchId parentBranch, boolean pend) {
+      Conditions.checkNotNull(teamWf, "Parent Team Workflow");
       Conditions.checkNotNull(parentBranch, "Parent Branch");
       TransactionToken parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
-      return createWorkingBranch(teamArt, parentTransactionId, pend);
+      return createWorkingBranch(teamWf, parentTransactionId, pend);
    }
 
-   public static Job createWorkingBranch(final TeamWorkFlowArtifact teamArt, final TransactionToken parentTransactionId, boolean pend) {
-      final String branchName = AtsClientService.get().getBranchService().getBranchName(teamArt);
-      Conditions.checkNotNull(teamArt, "Parent Team Workflow");
+   public static Job createWorkingBranch(final IAtsTeamWorkflow teamWf, final TransactionToken parentTransactionId, boolean pend) {
+      final String branchName = AtsClientService.get().getBranchService().getBranchName(teamWf);
+      Conditions.checkNotNull(teamWf, "Parent Team Workflow");
       Conditions.checkNotNull(parentTransactionId, "Parent Branch");
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
 
          @Override
          public IStatus run(IProgressMonitor monitor) {
-            teamArt.setWorkingBranchCreationInProgress(true);
-            IOseeBranch branch = BranchManager.createWorkingBranch(parentTransactionId, branchName, teamArt);
-            teamArt.setWorkingBranchCreationInProgress(false);
+            AtsClientService.get().getBranchService().setWorkingBranchCreationInProgress(teamWf, true);
+            IOseeBranch branch = BranchManager.createWorkingBranch(parentTransactionId, branchName,
+               AtsClientService.get().getQueryServiceClient().getArtifact(teamWf));
+            AtsClientService.get().getBranchService().setWorkingBranchCreationInProgress(teamWf, false);
             Conditions.assertTrue(branch.isValid(), "Working Branch creation failed.");
-            performPostBranchCreationTasks(teamArt);
+            performPostBranchCreationTasks(teamWf);
             return Status.OK_STATUS;
          }
 
@@ -171,10 +175,10 @@ public class AtsBranchUtil {
       return job;
    }
 
-   private static void performPostBranchCreationTasks(final TeamWorkFlowArtifact teamArt) {
+   private static void performPostBranchCreationTasks(final IAtsTeamWorkflow teamWf) {
       // Create reviews as necessary
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Create Reviews upon Transition");
-      boolean created = createNecessaryBranchEventReviews(StateEventType.CreateBranch, teamArt, new Date(),
+      boolean created = createNecessaryBranchEventReviews(StateEventType.CreateBranch, teamWf, new Date(),
          AtsCoreUsers.SYSTEM_USER, changes);
       if (created) {
          changes.execute();
@@ -182,7 +186,7 @@ public class AtsBranchUtil {
 
       // Notify extensions of branch creation
       for (IAtsStateItemCore item : AtsStateItemCoreManager.getStateItems()) {
-         item.workingBranchCreated(teamArt);
+         item.workingBranchCreated(teamWf);
       }
    }
 

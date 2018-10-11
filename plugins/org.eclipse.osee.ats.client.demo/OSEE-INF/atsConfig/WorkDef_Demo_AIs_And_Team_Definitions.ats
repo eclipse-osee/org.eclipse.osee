@@ -205,6 +205,14 @@ teamDefinition "Teams" GetOrCreate {
 				}
 			}
 		}
+		
+		teamDefinition "System Safety Team" {
+			id 7244546
+			lead named "Joe Smith"
+			member named "Jeffery Kay"
+			workDefinition "WorkDef_Team_Default"
+		}
+		
 	}
 }
 actionableItem "Actionable Items" GetOrCreate {
@@ -319,6 +327,10 @@ actionableItem "Actionable Items" GetOrCreate {
 					team "Web Team"
 				}
 			}
+		}
+		actionableItem "System Safety" {
+			id 7241589
+			team "System Safety Team"
 		}
 	}
 }

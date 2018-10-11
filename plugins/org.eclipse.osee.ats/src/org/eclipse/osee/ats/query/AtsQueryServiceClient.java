@@ -17,7 +17,11 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.workflow.action.ActionArtifact;
+import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
@@ -193,6 +197,24 @@ public class AtsQueryServiceClient {
 
    public Artifact getArtifact(TreeItem item) {
       return getArtifact(item.getData());
+   }
+
+   public TeamWorkFlowArtifact getTeamWfArt(IAtsTeamWorkflow teamWf) {
+      TeamWorkFlowArtifact result = null;
+      if (teamWf instanceof TeamWorkFlowArtifact) {
+         result = (TeamWorkFlowArtifact) teamWf;
+      }
+      return result;
+   }
+
+   public Artifact getParentAction(ArtifactId artifact) {
+      Artifact actionArt = null;
+      if (artifact instanceof ActionArtifact) {
+         actionArt = (ActionArtifact) artifact;
+      } else if (artifact instanceof AbstractWorkflowArtifact) {
+         actionArt = ((AbstractWorkflowArtifact) artifact).getParentActionArtifact();
+      }
+      return actionArt;
    }
 
 }

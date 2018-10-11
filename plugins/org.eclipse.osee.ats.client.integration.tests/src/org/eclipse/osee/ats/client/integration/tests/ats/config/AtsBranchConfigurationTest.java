@@ -402,7 +402,7 @@ public class AtsBranchConfigurationTest {
          AWorkbench.popup(result);
          return BranchId.SENTINEL;
       }
-      AtsBranchUtil.createWorkingBranch_Create(((TeamWorkFlowArtifact) teamWf), true);
+      AtsBranchUtil.createWorkingBranch_Create(teamWf, true);
 
       BranchId workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamWf, true);
       Assert.assertTrue("No working branch created", workingBranch.isValid());

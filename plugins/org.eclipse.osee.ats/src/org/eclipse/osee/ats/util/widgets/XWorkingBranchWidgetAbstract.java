@@ -134,7 +134,8 @@ public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implem
 
    private void updateBranchState() {
       workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt, true);
-      workingBranchCreationInProgress = teamArt.isWorkingBranchCreationInProgress();
+      workingBranchCreationInProgress =
+         AtsClientService.get().getBranchService().isWorkingBranchCreationInProgress(teamArt);
       workingBranchInWork = AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt);
 
       if (workingBranch.isInvalid()) {
@@ -142,7 +143,8 @@ public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implem
       } else {
          BranchState state = BranchManager.getState(workingBranch);
          workingBranchCreationInProgress |= state.isCreationInProgress();
-         workingBranchCommitInProgress = teamArt.isWorkingBranchCommitInProgress() || state.isCommitInProgress();
+         workingBranchCommitInProgress = AtsClientService.get().getBranchService().isWorkingBranchCommitInProgress(
+            teamArt) || state.isCommitInProgress();
          workingBranchCommitWithMergeInProgress =
             BranchManager.hasMergeBranches(workingBranch) && !state.isRebaselineInProgress();
       }

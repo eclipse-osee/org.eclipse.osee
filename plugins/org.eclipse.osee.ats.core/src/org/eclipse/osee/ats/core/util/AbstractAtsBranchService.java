@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.core.commit.operations.CommitOverrideOperationsImpl;
 import org.eclipse.osee.ats.core.config.Versions;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -52,6 +53,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
    protected static Map<String, IOseeBranch> idToWorkingBranchCache = new HashMap<>();
    protected static Map<String, Long> idToWorkingBranchCacheUpdated = new HashMap<>(50);
+   private final Map<ArtifactId, Boolean> workingBranchCreatingInProgress = new HashMap<>();
+   private final Map<ArtifactId, Boolean> workingBranchCommitInProgress = new HashMap<>();
    protected AtsApi atsApi;
    private static final int SHORT_NAME_LIMIT = 35;
    private static Set<BranchId> branchesInCommit = new HashSet<>();
@@ -638,6 +641,32 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
          commitOverrideOps = new CommitOverrideOperationsImpl(atsApi);
       }
       return commitOverrideOps;
+   }
+
+   @Override
+   public void setWorkingBranchCreationInProgress(IAtsTeamWorkflow teamWf, boolean inProgress) {
+      synchronized (workingBranchCreatingInProgress) {
+         workingBranchCreatingInProgress.put(ArtifactId.valueOf(teamWf.getId()), inProgress);
+      }
+   }
+
+   @Override
+   public boolean isWorkingBranchCreationInProgress(IAtsTeamWorkflow teamWf) {
+      Boolean inProgress = workingBranchCreatingInProgress.get(teamWf);
+      return inProgress == null ? false : inProgress;
+   }
+
+   @Override
+   public void setWorkingBranchCommitInProgress(IAtsTeamWorkflow teamWf, boolean inProgress) {
+      synchronized (workingBranchCommitInProgress) {
+         workingBranchCommitInProgress.put(ArtifactId.valueOf(teamWf.getId()), inProgress);
+      }
+   }
+
+   @Override
+   public boolean isWorkingBranchCommitInProgress(IAtsTeamWorkflow teamWf) {
+      Boolean inProgress = workingBranchCommitInProgress.get(teamWf);
+      return inProgress == null ? false : inProgress;
    }
 
 }

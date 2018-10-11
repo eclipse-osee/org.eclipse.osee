@@ -155,4 +155,12 @@ public interface IAtsBranchService {
 
    boolean isBaselinBranchConfigured(ICommitConfigItem commitConfigArt);
 
+   void setWorkingBranchCreationInProgress(IAtsTeamWorkflow teamWf, boolean inProgress);
+
+   boolean isWorkingBranchCreationInProgress(IAtsTeamWorkflow teamWf);
+
+   void setWorkingBranchCommitInProgress(IAtsTeamWorkflow teamWf, boolean inProgress);
+
+   boolean isWorkingBranchCommitInProgress(IAtsTeamWorkflow teamWf);
+
 }

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.stateitem;
 
-import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.util.Result;
 
 /**
@@ -18,6 +18,6 @@ import org.eclipse.osee.framework.core.util.Result;
  */
 public interface IAtsStateItemCore {
 
-   public Result workingBranchCreated(AbstractWorkflowArtifact awa);
+   public Result workingBranchCreated(IAtsTeamWorkflow teamWf);
 
 }

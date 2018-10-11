@@ -258,4 +258,9 @@ public class AtsStoreService implements IAtsStoreService {
       ((WorkItem) workItem).clearCaches();
       ((AbstractWorkflowArtifact) workItem.getStoreObject()).clearCaches();
    }
+
+   @Override
+   public boolean isOfType(IAtsObject atsObject, IArtifactType... artifactType) {
+      return AtsClientService.get().getQueryServiceClient().getArtifact(atsObject).isOfType(artifactType);
+   }
 }

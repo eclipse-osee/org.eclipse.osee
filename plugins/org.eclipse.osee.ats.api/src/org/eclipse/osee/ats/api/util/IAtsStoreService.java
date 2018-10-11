@@ -104,4 +104,6 @@ public interface IAtsStoreService {
          getArtifactType(stmt.getLong("art_type_id"))), query);
       return artIdToType;
    }
+
+   boolean isOfType(IAtsObject atsObject, IArtifactType... artifactType);
 }

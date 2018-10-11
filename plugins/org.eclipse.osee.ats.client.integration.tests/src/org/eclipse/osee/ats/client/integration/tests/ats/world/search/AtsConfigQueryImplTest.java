@@ -69,7 +69,7 @@ public class AtsConfigQueryImplTest {
       query = queryService.createQuery(AtsArtifactTypes.ActionableItem);
       ResultSet<IAtsActionableItem> ais = query.getConfigObjectResultSet();
 
-      assertEquals(46, ais.size());
+      assertEquals(45, ais.size());
    }
 
    @Test

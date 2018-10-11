@@ -145,6 +145,11 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
+   public boolean isOfType(IAtsObject atsObject, IArtifactType... artifactType) {
+      return ((ArtifactReadable) atsApi.getQueryService().getArtifact(atsObject)).isOfType(artifactType);
+   }
+
+   @Override
    public void executeChangeSet(String comment, IAtsObject atsObject) {
       executeChangeSet(comment, Collections.singleton(atsObject));
    }
@@ -248,4 +253,5 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    public boolean isHistorical(IAtsObject atsObject) {
       return ((ArtifactReadable) atsApi.getQueryService().getArtifact(atsObject)).isHistorical();
    }
+
 }

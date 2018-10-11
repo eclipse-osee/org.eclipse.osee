@@ -25,9 +25,9 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.ExportChangeReportUtil;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -57,7 +57,7 @@ import org.eclipse.osee.framework.ui.skynet.render.compare.CompareDataCollector;
  * @author Ryan D. Brooks
  */
 public final class ExportChangeReportOperation extends AbstractOperation {
-   private final List<TeamWorkFlowArtifact> workflows;
+   private final List<IAtsTeamWorkflow> workflows;
    private final Appendable resultFolder;
    private final boolean reverse;
    private final boolean writeChangeReports;
@@ -65,7 +65,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
    private final String overrideDataRightsClassification;
    boolean debug = false;
 
-   public ExportChangeReportOperation(List<TeamWorkFlowArtifact> workflows, boolean reverse, boolean writeChangeReports, String overrideDataRightsClassification, Appendable resultFolder, OperationLogger logger) {
+   public ExportChangeReportOperation(List<IAtsTeamWorkflow> workflows, boolean reverse, boolean writeChangeReports, String overrideDataRightsClassification, Appendable resultFolder, OperationLogger logger) {
       super("Exporting Change Report(s)", Activator.PLUGIN_ID, logger);
       this.workflows = workflows;
       this.reverse = reverse;
@@ -97,12 +97,13 @@ public final class ExportChangeReportOperation extends AbstractOperation {
          }
       };
 
-      for (TeamWorkFlowArtifact workflow : workflows) {
+      for (IAtsTeamWorkflow workflow : workflows) {
          Set<ArtifactId> artIds = new HashSet<>();
          Collection<Change> changes = computeChanges(workflow, monitor, artIds);
          if (!changes.isEmpty() && changes.size() < 4000) {
             logf("Exporting: %s -- %s", workflow.toString(), workflow.getAtsId());
-            String id = workflow.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, workflow.getAtsId());
+            String id = AtsClientService.get().getAttributeResolver().getSoleAttributeValueAsString(workflow,
+               AtsAttributeTypes.LegacyPcrId, workflow.getAtsId());
             String prefix = "/" + id;
             if (writeChangeReports) {
 
@@ -159,12 +160,14 @@ public final class ExportChangeReportOperation extends AbstractOperation {
    }
 
    private void sortWorkflows() {
-      Collections.sort(workflows, new Comparator<TeamWorkFlowArtifact>() {
+      Collections.sort(workflows, new Comparator<IAtsTeamWorkflow>() {
          @Override
-         public int compare(TeamWorkFlowArtifact workflow1, TeamWorkFlowArtifact workflow2) {
+         public int compare(IAtsTeamWorkflow workflow1, IAtsTeamWorkflow workflow2) {
             try {
-               String legacyId1 = workflow1.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
-               String legacyId2 = workflow2.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
+               String legacyId1 = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workflow1,
+                  AtsAttributeTypes.LegacyPcrId, "");
+               String legacyId2 = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workflow2,
+                  AtsAttributeTypes.LegacyPcrId, "");
 
                int compare = legacyId1.compareTo(legacyId2);
                return reverse ? -1 * compare : compare;
@@ -175,15 +178,14 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       });
    }
 
-   private Collection<Change> computeChanges(Artifact workflow, IProgressMonitor monitor, Set<ArtifactId> artIds) {
-      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) workflow;
+   private Collection<Change> computeChanges(IAtsTeamWorkflow teamWf, IProgressMonitor monitor, Set<ArtifactId> artIds) {
 
       List<Change> changes = new ArrayList<>();
       IOperation operation = null;
-      if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {
-         operation = ChangeManager.comparedToPreviousTx(pickTransaction(workflow), changes);
+      if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamWf)) {
+         operation = ChangeManager.comparedToPreviousTx(pickTransaction(teamWf), changes);
       } else {
-         BranchId workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
+         BranchId workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamWf);
          if (workingBranch != null && !BranchManager.getType(workingBranch).isBaselineBranch()) {
             operation = ChangeManager.comparedToParent(workingBranch, changes);
          }
@@ -206,9 +208,10 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       return changes;
    }
 
-   private TransactionToken pickTransaction(ArtifactId workflow) {
+   private TransactionToken pickTransaction(IAtsTeamWorkflow workflow) {
       TransactionToken minTransactionId = TransactionToken.SENTINEL;
-      for (TransactionToken transaction : TransactionManager.getCommittedArtifactTransactionIds(workflow)) {
+      for (TransactionToken transaction : TransactionManager.getCommittedArtifactTransactionIds(
+         AtsClientService.get().getQueryServiceClient().getArtifact(workflow))) {
          if (minTransactionId.isOlderThan(transaction) && !BranchManager.isArchived(transaction.getBranch())) {
             minTransactionId = transaction;
          }

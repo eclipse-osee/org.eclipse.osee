@@ -52,8 +52,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IAtsTeamWorkflow, IATSStateMachineArtifact {
 
    private static final Set<Integer> teamArtsWithNoAction = new HashSet<>();
-   private boolean creatingWorkingBranch = false;
-   private boolean committingWorkingBranch = false;
 
    public TeamWorkFlowArtifact(Long id, String guid, BranchId branch, IArtifactType artifactType) {
       super(id, guid, branch, artifactType);
@@ -214,22 +212,6 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
 
    public IOseeBranch getWorkingBranch() {
       return AtsClientService.get().getBranchService().getWorkingBranch(this);
-   }
-
-   public boolean isWorkingBranchCreationInProgress() {
-      return creatingWorkingBranch;
-   }
-
-   public void setWorkingBranchCreationInProgress(boolean inProgress) {
-      this.creatingWorkingBranch = inProgress;
-   }
-
-   public boolean isWorkingBranchCommitInProgress() {
-      return committingWorkingBranch;
-   }
-
-   public void setWorkingBranchCommitInProgress(boolean inProgress) {
-      this.committingWorkingBranch = inProgress;
    }
 
    @Override

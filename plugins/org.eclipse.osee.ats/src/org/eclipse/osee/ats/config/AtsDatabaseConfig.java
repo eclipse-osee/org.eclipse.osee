@@ -12,9 +12,7 @@ package org.eclipse.osee.ats.config;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
@@ -30,7 +28,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
-import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -80,21 +77,11 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
 
       createUserCreationDisabledConfig();
 
-      createSafetyConfig();
-
    }
 
    private void createUserCreationDisabledConfig() {
       AtsClientService.get().setConfigValue(AtsUtil.USER_CREATION_DISABLED,
          AtsArtifactTypes.Action.toStringWithId() + ";" + AtsArtifactTypes.TeamWorkflow.toStringWithId());
-   }
-
-   private void createSafetyConfig() {
-      List<String> versions = new ArrayList<>();
-      AtsConfigOperation operation = new AtsConfigOperation("Configure Safety For ATS",
-         AtsArtifactToken.SafetyTeamDefinition, versions, AtsArtifactToken.SafetyActionableItem);
-      operation.setWorkDefName("WorkDef_Team_Default");
-      Operations.executeWorkAndCheckStatus(operation);
    }
 
    public static void createAtsFolders() {

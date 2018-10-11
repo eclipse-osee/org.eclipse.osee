@@ -121,7 +121,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
       }
 
       try {
-         if (teamArt.isWorkingBranchCreationInProgress()) {
+         if (AtsClientService.get().getBranchService().isWorkingBranchCreationInProgress(teamArt)) {
             labelWidget.setText(getLabel() + ": Branch Creation in Progress");
          } else if (!AtsClientService.get().getBranchService().isWorkingBranchInWork(
             teamArt) && !AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {

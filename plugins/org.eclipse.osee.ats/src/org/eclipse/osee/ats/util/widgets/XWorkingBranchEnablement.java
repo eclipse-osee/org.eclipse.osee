@@ -186,13 +186,13 @@ public class XWorkingBranchEnablement {
       }
 
       public boolean isWorkingBranchCreationInProgress() {
-         return teamArt.isWorkingBranchCreationInProgress() || (workingBranch.isValid() && BranchManager.getState(
-            workingBranch).isCreationInProgress());
+         return AtsClientService.get().getBranchService().isWorkingBranchCreationInProgress(
+            teamArt) || (workingBranch.isValid() && BranchManager.getState(workingBranch).isCreationInProgress());
       }
 
       public boolean isWorkingBranchCommitInProgress() {
-         return teamArt.isWorkingBranchCommitInProgress() || workingBranch.isValid() && BranchManager.getState(
-            workingBranch).isCommitInProgress();
+         return AtsClientService.get().getBranchService().isWorkingBranchCommitInProgress(
+            teamArt) || workingBranch.isValid() && BranchManager.getState(workingBranch).isCommitInProgress();
       }
 
       public boolean isWorkingBranchInWork() {
