@@ -25,9 +25,7 @@ public class JaxTeamDefinition extends JaxAtsConfigObject {
    List<Long> ais = new ArrayList<>();
    List<Long> versions = new ArrayList<>();
    List<Long> children = new ArrayList<>();
-
-   public JaxTeamDefinition() {
-   }
+   String workType;
 
    public Long getParentId() {
       return parentId;
@@ -71,6 +69,14 @@ public class JaxTeamDefinition extends JaxAtsConfigObject {
 
    public void addAi(Long aiId) {
       ais.add(aiId);
+   }
+
+   public String getWorkType() {
+      return workType;
+   }
+
+   public void setWorkType(String workType) {
+      this.workType = workType;
    }
 
 }

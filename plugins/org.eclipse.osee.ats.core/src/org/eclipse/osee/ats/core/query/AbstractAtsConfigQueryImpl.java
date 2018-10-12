@@ -166,6 +166,12 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    }
 
    @Override
+   public IAtsConfigQuery isActive() {
+      andAttr.add(new AtsAttributeQuery(AtsAttributeTypes.Active, "true"));
+      return this;
+   }
+
+   @Override
    public IAtsConfigQuery andId(ArtifactId artifactId) {
       this.artifactId = artifactId;
       return this;

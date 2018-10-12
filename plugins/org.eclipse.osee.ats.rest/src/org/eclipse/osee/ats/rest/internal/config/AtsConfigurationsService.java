@@ -217,6 +217,7 @@ public class AtsConfigurationsService implements IAtsConfigurationsService {
       jaxTeamDef.setId(teamDefArt.getId());
       jaxTeamDef.setGuid(teamDefArt.getGuid());
       jaxTeamDef.setActive(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.Active, true));
+      jaxTeamDef.setWorkType(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.WorkType, ""));
       for (ArtifactToken ai : atsApi.getRelationResolver().getRelated(teamDefArt, TeamActionableItem_ActionableItem)) {
          jaxTeamDef.getAis().add(ai.getId());
       }

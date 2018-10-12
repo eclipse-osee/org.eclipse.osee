@@ -64,4 +64,6 @@ public interface IAtsConfigQuery {
 
    <T extends ArtifactToken> Collection<T> getArtifacts();
 
+   IAtsConfigQuery isActive();
+
 }
