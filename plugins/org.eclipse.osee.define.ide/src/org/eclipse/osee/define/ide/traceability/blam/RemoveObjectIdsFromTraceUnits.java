@@ -124,7 +124,7 @@ public class RemoveObjectIdsFromTraceUnits extends AbstractBlam {
 
          @Override
          public ResourceIdentifier getIdentifier(IFileStore fileStore, CharBuffer fileBuffer) throws Exception {
-            return new ResourceIdentifier(fileStore.getName(), null);
+            return new ResourceIdentifier(fileStore.getName());
          }
       }, new TraceRemover());
 

@@ -27,10 +27,8 @@ import org.eclipse.osee.define.ide.traceability.ResourceIdentifier;
 import org.eclipse.osee.define.ide.traceability.TraceUnitExtensionManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -103,16 +101,10 @@ public final class FindTraceUnitFromResource {
             if (items != null) {
                for (ResourceIdentifier resource : items) {
                   try {
-                     if (GUID.isValid(resource.getGuid())) {
-                        Artifact checkArtifactFromId =
-                           ArtifactQuery.checkArtifactFromId(resource.getGuid(), branch, DeletionFlag.EXCLUDE_DELETED);
-                        if (checkArtifactFromId != null) {
-                           artifacts.add(checkArtifactFromId);
-                        }
-                     } else {
-                        artifacts.addAll(
-                           ArtifactQuery.getArtifactListFromTypeAndName(artifactType, resource.getName(), branch));
-                     }
+
+                     artifacts.addAll(
+                        ArtifactQuery.getArtifactListFromTypeAndName(artifactType, resource.getName(), branch));
+
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }

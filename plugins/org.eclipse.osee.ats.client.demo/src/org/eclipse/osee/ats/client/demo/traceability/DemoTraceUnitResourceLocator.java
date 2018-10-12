@@ -50,7 +50,7 @@ public class DemoTraceUnitResourceLocator implements ITraceUnitResourceLocator {
 
    @Override
    public ResourceIdentifier getIdentifier(IFileStore fileStore, CharBuffer fileBuffer) throws Exception {
-      return new ResourceIdentifier(fileStore.getName(), null);
+      return new ResourceIdentifier(fileStore.getName());
    }
 
    @Override

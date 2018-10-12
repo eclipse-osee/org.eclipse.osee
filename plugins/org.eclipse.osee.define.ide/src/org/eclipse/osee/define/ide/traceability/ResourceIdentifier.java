@@ -16,19 +16,14 @@ package org.eclipse.osee.define.ide.traceability;
 public class ResourceIdentifier {
 
    private final String name;
-   private final String guid;
 
-   public ResourceIdentifier(String name, String guid) {
+   public ResourceIdentifier(String name) {
       this.name = name;
-      this.guid = guid;
+
    }
 
    public String getName() {
       return name;
-   }
-
-   public String getGuid() {
-      return guid;
    }
 
 }
