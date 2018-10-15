@@ -90,15 +90,17 @@ public class DispoConnector {
    }
 
    private void parseThroughAnnotations(Collection<DispoAnnotationData> annotations, Collection<DispoAnnotationData> defaultAnnotations, Collection<DispoAnnotationData> invalidAnnotations, Collection<DispoAnnotationData> analyzeAnnotations) {
-      for (DispoAnnotationData annotation : annotations) {
-         if (annotation.getIsDefault()) {
-            defaultAnnotations.add(annotation);
-         }
-         if (!annotation.isValid()) {
-            invalidAnnotations.add(annotation);
-         }
-         if (annotation.getIsAnalyze()) {
-            analyzeAnnotations.add(annotation);
+      if (annotations != null) {
+         for (DispoAnnotationData annotation : annotations) {
+            if (annotation.getIsDefault()) {
+               defaultAnnotations.add(annotation);
+            }
+            if (!annotation.isValid()) {
+               invalidAnnotations.add(annotation);
+            }
+            if (annotation.getIsAnalyze()) {
+               analyzeAnnotations.add(annotation);
+            }
          }
       }
    }
