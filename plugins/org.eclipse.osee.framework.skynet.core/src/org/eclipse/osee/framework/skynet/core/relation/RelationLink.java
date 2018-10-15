@@ -277,8 +277,9 @@ public class RelationLink implements HasBranch {
 
    @Override
    public String toString() {
-      return String.format("type[%s] id[%d] modType[%s] [%s]: aId[%d] <--> bId[%s]", relationType.getName(), relationId,
-         getModificationType(), isDirty() ? "dirty" : "not dirty", aArtifactId, bArtifactId);
+      return String.format("type[%s] id[%d] modType[%s] [%s]: a%s <--> b%s", relationType.getName(), relationId,
+         getModificationType(), isDirty() ? "dirty" : "not dirty", artifactA.toStringWithId(),
+         artifactB.toStringWithId());
    }
 
    public void setNotDirty() {

@@ -78,6 +78,12 @@ public class RelationTypeSideSorter extends RelationTypeSide {
       order.sort(listToOrder, relativeOrder);
    }
 
+   public void sortRelations(List<? extends RelationLink> listToOrder) throws OseeCoreException {
+      IRelationSorter order = sorterProvider.getRelationOrder(getSorterId());
+      List<String> relativeOrder = orderData.getOrderList(getRelationType(), getSide());
+      order.sortRelations(listToOrder, relativeOrder);
+   }
+
    public RelationLink getRelation(Artifact artifact) {
       return artToRelation.get(artifact);
    }

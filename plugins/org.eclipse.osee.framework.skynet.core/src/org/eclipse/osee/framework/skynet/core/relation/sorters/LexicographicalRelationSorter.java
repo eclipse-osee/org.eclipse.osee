@@ -17,6 +17,8 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactNameComparator;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactNameRelationLinkComparator;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
 
 /**
@@ -29,12 +31,11 @@ public class LexicographicalRelationSorter implements IRelationSorter {
       ASCENDING,
       DESCENDING;
    }
-   private final ArtifactNameComparator comparator;
    private final RelationSorter id;
+   private final boolean isDescending;
 
    public LexicographicalRelationSorter(SortMode sortMode) {
-      boolean isDescending = SortMode.DESCENDING == sortMode;
-      this.comparator = new ArtifactNameComparator(isDescending);
+      isDescending = SortMode.DESCENDING == sortMode;
       this.id = isDescending ? LEXICOGRAPHICAL_DESC : LEXICOGRAPHICAL_ASC;
    }
 
@@ -45,6 +46,13 @@ public class LexicographicalRelationSorter implements IRelationSorter {
 
    @Override
    public void sort(List<? extends ArtifactToken> relatives, List<String> relativeSequence) {
+      ArtifactNameComparator comparator = new ArtifactNameComparator(isDescending);
+      Collections.sort(relatives, comparator);
+   }
+
+   @Override
+   public void sortRelations(List<? extends RelationLink> relatives, List<String> relativeSequence) {
+      ArtifactNameRelationLinkComparator comparator = new ArtifactNameRelationLinkComparator(isDescending);
       Collections.sort(relatives, comparator);
    }
 }

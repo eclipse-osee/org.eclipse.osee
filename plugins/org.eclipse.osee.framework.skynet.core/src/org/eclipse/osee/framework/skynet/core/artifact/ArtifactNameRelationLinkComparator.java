@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2018 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,18 +11,21 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.Comparator;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 
-public class ArtifactNameComparator extends AbstractArtifactNameComparator implements Comparator<ArtifactToken> {
+/**
+ * @author Donald G. Dunne
+ */
+public class ArtifactNameRelationLinkComparator extends AbstractArtifactNameComparator implements Comparator<RelationLink> {
 
-   public ArtifactNameComparator(boolean descending) {
+   public ArtifactNameRelationLinkComparator(boolean descending) {
       super(descending);
    }
 
    @Override
-   public int compare(ArtifactToken artifact1, ArtifactToken artifact2) {
-      String name1 = artifact1.getName();
-      String name2 = artifact2.getName();
+   public int compare(RelationLink link1, RelationLink link2) {
+      String name1 = link1.getArtifactB().getName();
+      String name2 = link2.getArtifactB().getName();
 
       return compareNames(name1, name2);
    }

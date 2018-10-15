@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
 
 /**
@@ -31,6 +32,13 @@ public class UserDefinedRelationSorter implements IRelationSorter {
    public void sort(List<? extends ArtifactToken> relatives, List<String> relativeSequence) {
       if (relatives.size() > 1) {
          Collections.sort(relatives, new UserDefinedOrderComparator(relativeSequence));
+      }
+   }
+
+   @Override
+   public void sortRelations(List<? extends RelationLink> relatives, List<String> relativeSequence) {
+      if (relatives.size() > 1) {
+         Collections.sort(relatives, new UserDefinedRelationOrderComparator(relativeSequence));
       }
    }
 }
