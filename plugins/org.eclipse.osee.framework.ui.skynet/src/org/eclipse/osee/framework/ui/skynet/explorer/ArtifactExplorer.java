@@ -92,7 +92,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    private Artifact explorerRoot;
    private TreeEditor myTreeEditor;
    private XBranchSelectWidget branchSelect;
-   private BranchId branch;
+   private BranchId branch = BranchId.SENTINEL;
    private IGlobalMenuHelper globalMenuHelper;
 
    private ArtifactExplorerDragAndDrop dragAndDropWorker;
@@ -120,7 +120,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
 
    public static void explore(Collection<Artifact> artifacts, IWorkbenchPage page) {
       Artifact sampleArtifact = null;
-      BranchId inputBranch = null;
+      BranchId inputBranch = BranchId.SENTINEL;
       if (artifacts != null && !artifacts.isEmpty()) {
          sampleArtifact = artifacts.iterator().next();
          inputBranch = sampleArtifact.getBranch();
@@ -279,7 +279,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       }
 
       setPartName("Artifact Explorer: " + artifact.getBranchToken().getShortName());
-      if (branch != null && !artifact.isOnBranch(branch)) {
+      if (branch.isValid() && !artifact.isOnBranch(branch)) {
          explore(Arrays.asList(artifact));
          return;
       }
@@ -411,7 +411,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    }
 
    public void initializeSelectionBox() {
-      if (branch != null && branchSelect != null && branch.notEqual(branchSelect.getData())) {
+      if (branch.notEqual(branchSelect.getData())) {
          branchSelect.setSelection(branch);
          refreshBranchWarning();
          refreshView();

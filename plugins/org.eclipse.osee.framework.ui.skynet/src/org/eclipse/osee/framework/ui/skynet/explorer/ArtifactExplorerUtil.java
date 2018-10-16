@@ -83,7 +83,7 @@ public class ArtifactExplorerUtil {
                }
 
                Control control = treeViewer.getTree();
-               if (branch != null) {
+               if (branch.isValid()) {
                   String warningStr = null;
                   if (!new GlobalMenuPermissions(globalMenuHelper).isBranchReadable(branch)) {
                      warningStr = "Branch Read Access Denied.\nContact your administrator.";

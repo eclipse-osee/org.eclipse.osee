@@ -16,6 +16,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
@@ -60,7 +61,7 @@ public class ViewBranchViewFilterTreeDialog extends FilteredTreeDialog {
                      }
                   }
                   if (selection == null) {
-                     selection = -1L;
+                     selection = Id.SENTINEL;
                   }
                }
                updateStatusLabel();

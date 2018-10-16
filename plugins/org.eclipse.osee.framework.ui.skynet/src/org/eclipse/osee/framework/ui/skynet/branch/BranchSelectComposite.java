@@ -134,7 +134,7 @@ public class BranchSelectComposite extends Composite {
 
    public void setSelected(BranchId branch) {
       selectedBranch = branch;
-      if (branch == null) {
+      if (branch.isInvalid()) {
          branchSelectTextWidget.setText(" -- Select A Branch -- ");
       } else {
          branchSelectTextWidget.setText(BranchManager.getBranchName(selectedBranch));

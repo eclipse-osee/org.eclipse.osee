@@ -90,7 +90,7 @@ public class ArtifactExplorerViewApplicability {
       String viewName = "Not Set";
       if (explorer != null) {
          BranchId branch = explorer.getBranch();
-         if (branch != null) {
+         if (branch.isValid()) {
             if (!ViewApplicabilityUtil.isBranchOfProductLine(branch)) {
                button.setEnabled(false);
             } else {
