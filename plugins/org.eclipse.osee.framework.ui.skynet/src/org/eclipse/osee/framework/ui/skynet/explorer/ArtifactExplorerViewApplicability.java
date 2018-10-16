@@ -16,7 +16,6 @@ import java.util.Map;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ViewBranchViewFilterTreeDialog;
@@ -88,29 +87,22 @@ public class ArtifactExplorerViewApplicability {
    }
 
    private String getArtifactViewApplicabiltyText() {
-      String result = null;
-      try {
-         if (explorer != null) {
-            BranchId branch = explorer.getBranch();
-            if (branch != null) {
-               if (!ViewApplicabilityUtil.isBranchOfProductLine(branch)) {
-                  button.setEnabled(false);
-               } else {
-                  ArtifactId viewId = branch.getViewId();
-                  if (viewId != null && viewId.isValid()) {
-                     button.setEnabled(false);
-                  } else {
-                     button.setEnabled(true);
-                     viewId = explorer.getViewId();
-                  }
-                  result = ArtifactQuery.getArtifactTokenFromId(explorer.getBranch(), viewId).getName();
+      String viewName = "Not Set";
+      if (explorer != null) {
+         BranchId branch = explorer.getBranch();
+         if (branch != null) {
+            if (!ViewApplicabilityUtil.isBranchOfProductLine(branch)) {
+               button.setEnabled(false);
+            } else {
+               button.setEnabled(true);
+               ArtifactId viewId = explorer.getViewId();
+               if (viewId.isValid()) {
+                  viewName = ArtifactQuery.getArtifactTokenFromId(explorer.getBranch(), viewId).getName();
                }
             }
          }
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
       }
-      return String.format("<form><p>%s</p></form>", result == null ? "Not Set" : result);
+      return String.format("<form><p>%s</p></form>", viewName);
    }
 
    private boolean changeView() {

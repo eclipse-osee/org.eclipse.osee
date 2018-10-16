@@ -105,7 +105,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    private ArtifactExplorerToolbar artifactExplorerToolbar;
 
    private ArtifactExplorerViewApplicability view;
-   private ArtifactId viewId;
+   private ArtifactId viewId = ArtifactId.SENTINEL;
 
    public static void explore(Collection<Artifact> artifacts) {
       explore(artifacts, AWorkbench.getActivePage());
