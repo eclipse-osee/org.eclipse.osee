@@ -1046,7 +1046,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Override
    public Response getSprintItemsUI(long teamId, long sprintId) {
       ArtifactToken sprintArt = atsApi.getQueryService().getArtifact(sprintId);
-      Conditions.assertNotNull(sprintArt, "Sprint not found with id %s", sprintId);
+      sprintArt = Conditions.getNotNull(sprintArt, "Sprint not found with id %s", sprintId);
       Collection<IAtsWorkItem> myWorldItems = getSprintWorkItems(teamId, sprintId);
       CustomizeData custData = getDefaultAgileCustData();
       Conditions.assertNotNull(custData, "Can't retrieve default customization");
@@ -1071,7 +1071,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Override
    public Response getSprintItemsUICustomized(long teamId, long sprintId, String customizeGuid) {
       ArtifactToken sprintArt = atsApi.getQueryService().getArtifact(sprintId);
-      Conditions.assertNotNull(sprintArt, "Sprint not found with id %s", sprintId);
+      sprintArt = Conditions.getNotNull(sprintArt, "Sprint not found with id %s", sprintId);
       Collection<IAtsWorkItem> myWorldItems = getSprintWorkItems(teamId, sprintId);
       CustomizeData custData = atsApi.getStoreService().getCustomizationByGuid(customizeGuid);
       Conditions.assertNotNull(custData, "Can't retrieve customization with id %s", customizeGuid);

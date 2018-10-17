@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.jdk.core.util;
 
 import java.util.Arrays;
 import java.util.Collection;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
@@ -189,6 +190,13 @@ public final class Conditions {
       if (obj == null) {
          throw new OseeArgumentException(message, data);
       }
+   }
+
+   public static <T> @NonNull T getNotNull(T obj, String message, Object... data) {
+      if (obj == null) {
+         throw new OseeArgumentException(message, data);
+      }
+      return obj;
    }
 
    public static void assertNotNullOrEmpty(Collection<? extends Object> values, String message, Object... data) {
