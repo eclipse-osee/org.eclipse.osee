@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -123,12 +124,11 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
 
    @Override
    public IAtsWorkItem getWorkItem(String id) {
-      IAtsWorkItem workItem = null;
       ArtifactToken workItemArt = getArtifactById(id);
-      if (workItemArt != null) {
-         workItem = atsApi.getWorkItemService().getWorkItem(workItemArt);
+      if (workItemArt == null) {
+         throw new OseeArgumentException("workItem can not be found for id " + id);
       }
-      return workItem;
+      return atsApi.getWorkItemService().getWorkItem(workItemArt);
    }
 
    @Override

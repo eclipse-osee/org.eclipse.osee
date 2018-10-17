@@ -249,7 +249,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Produces({MediaType.APPLICATION_JSON})
    public Attribute getActionAttributeByType(@PathParam("id") String id, @PathParam("attrTypeId") String attrTypeId) {
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
-      Conditions.assertNotNull(workItem, "workItem can not be found");
       ActionOperations ops = new ActionOperations(null, workItem, atsApi, orcsApi);
       Attribute attribute = ops.getActionAttributeValues(attrTypeId, workItem);
       return attribute;
@@ -263,7 +262,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public Attribute setActionAttributeByType(@PathParam("id") String id, @PathParam("attrTypeIdOrKey") String attrTypeIdOrKey, List<String> values) {
       Conditions.assertNotNull(values, "values can not be null");
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
-      Conditions.assertNotNull(workItem, "workItem can not be found");
       IAtsUser asUser = atsApi.getUserService().getUserByAccountId(httpHeaders);
       if (asUser == null) {
          asUser = AtsCoreUsers.SYSTEM_USER;
@@ -302,7 +300,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Consumes({MediaType.APPLICATION_JSON})
    public Collection<ArtifactToken> setByArtifactToken(@PathParam("workItemId") String workItemId, @PathParam("changeType") String changeType, Collection<ArtifactToken> artifacts) {
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(workItemId);
-      Conditions.assertNotNull(workItem, "workItem can not be found");
       IAtsUser asUser = atsApi.getUserService().getUserByAccountId(httpHeaders);
       if (asUser == null) {
          asUser = AtsCoreUsers.SYSTEM_USER;

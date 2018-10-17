@@ -80,7 +80,6 @@ public interface IAtsQueryService {
    /**
     * @param id artifact id or ATS Id
     */
-   @Nullable
    IAtsWorkItem getWorkItem(String id);
 
    /**
