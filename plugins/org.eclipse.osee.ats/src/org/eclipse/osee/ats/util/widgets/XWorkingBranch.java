@@ -13,11 +13,14 @@ package org.eclipse.osee.ats.util.widgets;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -37,6 +40,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
@@ -51,6 +56,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
+import org.eclipse.osee.framework.ui.skynet.util.RebaselineInProgressHandler;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -66,6 +72,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
@@ -82,6 +89,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
    private Button createBranchButton;
    private Button showArtifactExplorer;
    private Button showChangeReport;
+   private Button updateWorkingBranch;
    private Button deleteBranchButton;
    private Button favoriteBranchButton;
    private Button lockBranchButton;
@@ -123,6 +131,17 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
    @Override
    public TeamWorkFlowArtifact getArtifact() {
       return teamArt;
+   }
+   private static final class UserConflictResolver extends ConflictResolverOperation {
+
+      public UserConflictResolver() {
+         super("Launch Merge Manager", Activator.PLUGIN_ID);
+      }
+
+      @Override
+      protected void doWork(IProgressMonitor monitor) throws Exception {
+
+      }
    }
 
    @Override
@@ -183,6 +202,54 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                enablement.refresh();
                refreshEnablement();
+            }
+         }
+      });
+
+      updateWorkingBranch = createNewButton(buttonComp);
+      updateWorkingBranch.setToolTipText("Update Working Branch from targeted version or team configured branch");
+      updateWorkingBranch.setImage(ImageManager.getImage(FrameworkImage.BRANCH_SYNCH));
+
+      updateWorkingBranch.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event e) {
+            try {
+               IOseeBranch branchToUpdate = teamArt.getWorkingBranch();
+               if (branchToUpdate != null) {
+                  Artifact associatedArtifact = BranchManager.getAssociatedArtifact(branchToUpdate);
+                  IAtsWorkItem workItem = AtsClientService.get().getWorkItemFactory().getWorkItem(associatedArtifact);
+                  if (workItem == null || !workItem.isTeamWorkflow()) {
+                     AWorkbench.popup("Working Branch must have associated Team Workflow");
+                     return;
+                  }
+                  IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
+                  BranchId targetedBranch =
+                     AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamWf);
+                  if (BranchManager.isUpdatable(branchToUpdate)) {
+                     if (BranchManager.getState(branchToUpdate).isRebaselineInProgress()) {
+                        RebaselineInProgressHandler.handleRebaselineInProgress(branchToUpdate);
+                     } else {
+
+                        boolean isUserSure = MessageDialog.openQuestion(
+                           PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Update Branch",
+                           String.format(
+                              "Are you sure you want to update [%s]\n branch from Targeted Version or Team Configured branch [%s]?",
+                              branchToUpdate.getName(), BranchManager.getBranch(targetedBranch).getName()));
+                        if (isUserSure) {
+                           BranchManager.updateBranch(branchToUpdate, targetedBranch, new UserConflictResolver());
+                        }
+                     }
+                  } else {
+                     MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        "Can't Update Branch",
+                        String.format(
+                           "Couldn't update [%s] because it currently has merge branches from commits.  " //
+                              + "To perform an update please delete all the merge branches for this branch.",
+                           branchToUpdate.getName()));
+                  }
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       });

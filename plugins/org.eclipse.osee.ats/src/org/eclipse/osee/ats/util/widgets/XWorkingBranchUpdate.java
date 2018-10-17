@@ -77,9 +77,8 @@ public class XWorkingBranchUpdate extends XWorkingBranchButtonAbstract {
                         boolean isUserSure = MessageDialog.openQuestion(
                            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Update Branch",
                            String.format(
-                              "Are you sure you want to update [%s] branch from Targeted Version or Team Configured branch [%s]",
-                              branchToUpdate.getName(),
-                              AtsClientService.get().getBranchService().getBranchName(teamWf)));
+                              "Are you sure you want to update [%s]\n branch from Targeted Version or Team Configured branch [%s]?",
+                              branchToUpdate.getName(), BranchManager.getBranch(targetedBranch).getName()));
                         if (isUserSure) {
                            BranchManager.updateBranch(branchToUpdate, targetedBranch, new UserConflictResolver());
                         }
