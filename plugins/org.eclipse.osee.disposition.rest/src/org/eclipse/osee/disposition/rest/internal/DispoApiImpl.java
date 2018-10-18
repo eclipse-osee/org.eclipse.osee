@@ -733,6 +733,46 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
+   public void createDispoDiscrepancies(BranchId branch, String itemId, List<Discrepancy> discrepancies, String userName) {
+      DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
+      if (dispoItem != null) {
+         Map<String, Discrepancy> discrepancyList = dispoItem.getDiscrepanciesList();
+         Collection<DispoItem> dispoItems = new ArrayList<>();
+
+         for (Discrepancy discrepancy : discrepancies) {
+            String idOfNewDiscrepancy = "";
+            idOfNewDiscrepancy = dataFactory.getNewId();
+            discrepancy.setId(idOfNewDiscrepancy);
+
+            if (discrepancy.getLocation() == null) {
+               discrepancy.setLocation("");
+            }
+            if (discrepancy.getText() == null) {
+               discrepancy.setText("");
+            }
+            discrepancyList.put(idOfNewDiscrepancy, discrepancy);
+
+            DispoItemData newItem = new DispoItemData();
+            newItem.setDiscrepanciesList(discrepancyList);
+            newItem.setStatus(dispoConnector.getItemStatus(newItem));
+
+            dispoItems.add(newItem);
+         }
+
+         ArtifactReadable author = getQuery().findUser();
+         DispoStorageMetadata metadata = new DispoStorageMetadata();
+
+         String operation = String.format("Create Dispo Discrepancies in Program [%s], Item [%s]", branch, itemId);
+
+         getWriter().updateDispoItems(author, branch, dispoItems, false, operation, metadata);
+         if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
+            updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(dispoItem),
+               getDispoItemParentSet(branch, itemId));
+         }
+      }
+   }
+
+   @Override
    public boolean editDispoDiscrepancy(BranchId branch, String itemId, String discrepancyId, Discrepancy newDiscrepancy, String userName) {
       boolean wasUpdated = false;
       DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
@@ -761,6 +801,38 @@ public class DispoApiImpl implements DispoApi {
          wasUpdated = true;
       }
       return wasUpdated;
+   }
+
+   @Override
+   public void editDispoDiscrepancies(BranchId branch, String itemId, List<Discrepancy> discrepancies, String userName) {
+      DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
+      if (dispoItem != null) {
+         Map<String, Discrepancy> discrepanciesList = dispoItem.getDiscrepanciesList();
+
+         for (Discrepancy discrepancy : discrepancies) {
+            discrepanciesList.put(discrepancy.getId(), discrepancy);
+         }
+
+         DispoItemData modifiedDispoItem = DispoUtil.itemArtToItemData(getDispoItemById(branch, itemId), true);
+         modifiedDispoItem.setDiscrepanciesList(discrepanciesList);
+         modifiedDispoItem.setStatus(dispoConnector.getItemStatus(modifiedDispoItem));
+
+         try {
+            Date date = DispoUtil.getTimestampOfFile(getFullFilePathFromDispoItemId(branch, itemId, dispoItem));
+            modifiedDispoItem.setLastUpdate(date);
+         } catch (Throwable ex) {
+            throw new OseeCoreException(ex);
+         }
+
+         DispoStorageMetadata metadata = new DispoStorageMetadata();
+
+         ArtifactReadable author = getQuery().findUser();
+         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), modifiedDispoItem, metadata);
+         if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
+            updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(modifiedDispoItem),
+               getDispoItemParentSet(branch, itemId));
+         }
+      }
    }
 
    @Override

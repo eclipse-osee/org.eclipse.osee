@@ -61,7 +61,11 @@ public interface DispoApi {
 
    String createDispoDiscrepancy(BranchId branch, String itemId, Discrepancy discrepancy, String userName);
 
+   void createDispoDiscrepancies(BranchId branch, String itemId, List<Discrepancy> discrepancies, String userName);
+
    boolean editDispoDiscrepancy(BranchId branch, String itemId, String discrepancyId, Discrepancy newDiscrepancy, String userName);
+
+   void editDispoDiscrepancies(BranchId branch, String itemId, List<Discrepancy> discrepancies, String userName);
 
    void editDispoSet(BranchId branch, String dispoSetId, DispoSetData newDispoSet);
 

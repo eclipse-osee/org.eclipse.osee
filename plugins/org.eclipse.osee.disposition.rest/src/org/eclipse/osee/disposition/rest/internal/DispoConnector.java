@@ -85,7 +85,6 @@ public class DispoConnector {
             toReturn = DispoStrings.Item_InComplete;
          }
       }
-
       return toReturn;
    }
 

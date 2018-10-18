@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.resources;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.ws.rs.Consumes;
@@ -119,12 +120,14 @@ public class ContinuousIntegrationResource {
    private void addFailing(BranchId branch, String itemId, String userName, CiTestPoint testPoints, DispoItem item) {
       List<Integer> ranges = DispoUtil.splitDiscrepancyLocations(testPoints.getFail());
       List<String> discrepToAdd = DispoUtil.findMissingDiscrepancyLocs(ranges, item);
+      List<Discrepancy> discrepancies = new ArrayList<>();
       for (String toAdd : discrepToAdd) {
          Discrepancy discrepancy = new Discrepancy();
          discrepancy.setLocation(toAdd);
-         String discrepancyId = dispoApi.createDispoDiscrepancy(branch, itemId, discrepancy, userName);
-         dispoApi.editDispoDiscrepancy(branch, itemId, discrepancyId, discrepancy, userName);
+         discrepancies.add(discrepancy);
       }
+      dispoApi.createDispoDiscrepancies(branch, itemId, discrepancies, userName);
+      dispoApi.editDispoDiscrepancies(branch, itemId, discrepancies, userName);
    }
 
    private void removePassing(BranchId branch, String itemId, String userName, CiTestPoint testPoints, DispoItem item) {
