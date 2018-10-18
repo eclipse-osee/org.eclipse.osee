@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  */
 public class SprintMemberProvider extends AbstractMemberProvider {
 
-   private final IAgileSprint sprint;
+   private IAgileSprint sprint;
 
    public SprintMemberProvider(IAgileSprint sprint) {
       this.sprint = sprint;
@@ -113,11 +113,6 @@ public class SprintMemberProvider extends AbstractMemberProvider {
    }
 
    @Override
-   public void deCacheArtifact() {
-      AtsClientService.get().getSprintItemsCache().decache(getArtifact());
-   }
-
-   @Override
    public boolean isBacklog() {
       return false;
    }
@@ -125,6 +120,11 @@ public class SprintMemberProvider extends AbstractMemberProvider {
    @Override
    public boolean isSprint() {
       return true;
+   }
+
+   @Override
+   public void setArtifact(Artifact artifact) {
+      sprint = AtsClientService.get().getAgileService().getAgileSprint(artifact);
    }
 
 }

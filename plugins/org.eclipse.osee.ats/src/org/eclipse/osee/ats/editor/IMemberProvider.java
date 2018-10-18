@@ -31,6 +31,8 @@ public interface IMemberProvider {
 
    Artifact getArtifact();
 
+   void setArtifact(Artifact artifact);
+
    String getGuid();
 
    void addMember(Artifact artifact);
@@ -46,8 +48,6 @@ public interface IMemberProvider {
    Result isAddValid(List<Artifact> artifacts);
 
    String getMembersName();
-
-   void deCacheArtifact();
 
    void deCacheAndReload(boolean pend, IJobChangeListener listener);
 

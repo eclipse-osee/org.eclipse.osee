@@ -386,6 +386,20 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
             }
          });
 
+         ToolItem refresh = new ToolItem(toolBar, SWT.PUSH);
+         refresh.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
+         refresh.setToolTipText("Reload Table");
+         refresh.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               try {
+                  awa.reloadAttributesAndRelations();
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+         });
+
          Label label = new Label(composite, SWT.NONE);
          label.setText("  NOTE: Changes made on this page MUST be saved through save icon on this page");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));

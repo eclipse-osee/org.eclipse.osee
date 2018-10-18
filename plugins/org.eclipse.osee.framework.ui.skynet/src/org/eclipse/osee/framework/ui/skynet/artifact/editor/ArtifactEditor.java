@@ -58,6 +58,8 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
    private ArtifactFormPage formPage;
    private ArtifactEditorOutlinePage outlinePage;
 
+   private AttributesComposite attributesComposite;
+
    public IActionContributor getActionBarContributor() {
       if (actionBarContributor == null) {
          actionBarContributor = new ArtifactEditorActionBarContributor(this);
@@ -231,11 +233,25 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
             }
          });
 
+         ToolItem refresh = new ToolItem(toolBar, SWT.PUSH);
+         refresh.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
+         refresh.setToolTipText("Reload Table");
+         refresh.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               try {
+                  attributesComposite.refreshArtifact(getArtifactFromEditorInput());
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+         });
+
          Label label = new Label(composite, SWT.NONE);
          label.setText("  NOTE: Changes made on this page MUST be saved through save icon on this page");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
 
-         new AttributesComposite(this, composite, SWT.NONE, getEditorInput().getArtifact());
+         attributesComposite = new AttributesComposite(this, composite, SWT.NONE, getEditorInput().getArtifact());
          int attributesPageIndex = addPage(composite);
          setPageText(attributesPageIndex, "Attributes");
       } catch (Exception ex) {

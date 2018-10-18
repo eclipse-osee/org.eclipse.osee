@@ -16,8 +16,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.editor.IMemberProvider;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 
 /**
@@ -49,11 +47,6 @@ public abstract class AbstractMemberProvider implements IMemberProvider, IOseeTr
    }
 
    private void deCacheAndReload() {
-      ArtifactCache.deCache(getArtifact());
-      for (Artifact art : getMembers()) {
-         ArtifactCache.deCache(art);
-      }
-      deCacheArtifact();
       getArtifact().reloadAttributesAndRelations();
    }
 

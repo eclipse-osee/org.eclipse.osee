@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
@@ -22,14 +24,20 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.UniversalCellEditor;
@@ -55,7 +63,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 
-public class AttributesComposite extends Composite {
+public class AttributesComposite extends Composite implements IArtifactEventListener {
    private TableViewer tableViewer;
    private Table table;
    private Text helpText;
@@ -86,6 +94,8 @@ public class AttributesComposite extends Composite {
       createDeleteMenuItem(popupMenu);
       popupMenu.addMenuListener(new AttributeMenuListener());
       tableViewer.getTable().setMenu(popupMenu);
+
+      OseeEventManager.addListener(this);
 
       this.toolBar = toolBar;
    }
@@ -185,8 +195,13 @@ public class AttributesComposite extends Composite {
       tableViewer.setContentProvider(new AttributeContentProvider());
       tableViewer.setLabelProvider(new AttributeLabelProvider());
       tableViewer.setComparator(new AttributeNameSorter());
+      load();
+   }
+
+   public void load() {
       tableViewer.setInput(artifact);
    }
+
    public class AttributeNameSorter extends ViewerComparator {
 
       public AttributeNameSorter() {
@@ -353,10 +368,17 @@ public class AttributesComposite extends Composite {
       }
    }
 
-   /**
-    * @return the toolBar
-    */
    public ToolBar getToolBar() {
       return toolBar;
+   }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return Collections.singletonList(new ArtifactEventFilter(artifact));
+   }
+
+   @Override
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      load();
    }
 }

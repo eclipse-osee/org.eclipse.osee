@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  */
 public class GoalMemberProvider extends AbstractMemberProvider {
 
-   private final IAtsGoal goal;
+   private IAtsGoal goal;
 
    public GoalMemberProvider(IAtsGoal goal) {
       this.goal = goal;
@@ -121,8 +121,8 @@ public class GoalMemberProvider extends AbstractMemberProvider {
    }
 
    @Override
-   public void deCacheArtifact() {
-      AtsClientService.get().getGoalMembersCache().decache(getArtifact());
+   public void setArtifact(Artifact artifact) {
+      goal = (GoalArtifact) artifact;
    }
 
 }
