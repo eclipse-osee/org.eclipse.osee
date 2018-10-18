@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.change.CompareResults;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -34,6 +35,10 @@ public interface TransactionFactory {
    Callable<Void> setTransactionComment(TransactionId transaction, String comment);
 
    CompareResults compareTxs(TransactionId txId1, TransactionId txId2);
+
+   CompareResults comparedToParent(BranchId branch);
+
+   CompareResults comparedToPreviousTx(TransactionToken txId);
 
    ResultSet<TransactionReadable> getAllTxs();
 

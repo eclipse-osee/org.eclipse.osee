@@ -23,7 +23,6 @@ public class CriteriaTxGetPrior extends Criteria implements TxCriteria {
    private final TransactionToken txId;
 
    public CriteriaTxGetPrior(TransactionToken txId) {
-      super();
       this.txId = txId;
    }
 

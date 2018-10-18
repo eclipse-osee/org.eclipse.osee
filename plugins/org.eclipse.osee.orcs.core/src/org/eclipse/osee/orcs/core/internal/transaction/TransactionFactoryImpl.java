@@ -38,6 +38,7 @@ import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.search.TransactionQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
@@ -54,6 +55,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
    private final OrcsBranch orcsBranch;
    private final KeyValueOps keyValueOps;
    private final TxDataStore txDataStore;
+   private final TransactionQuery transactionQuery;
 
    public TransactionFactoryImpl(OrcsSession session, TxDataManager txDataManager, TxCallableFactory txCallableFactory, QueryModule query, QueryFactory queryFactory, OrcsBranch orcsBranch, KeyValueOps keyValueOps, TxDataStore txDataStore) {
       super();
@@ -65,6 +67,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
       this.orcsBranch = orcsBranch;
       this.keyValueOps = keyValueOps;
       this.txDataStore = txDataStore;
+      this.transactionQuery = queryFactory.transactionQuery();
    }
 
    @Override
@@ -107,6 +110,20 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
+   public CompareResults comparedToParent(BranchId branch) {
+      BranchId parentBranch = queryFactory.branchQuery().andId(branch).getResults().getExactlyOne().getParentBranch();
+      TransactionId sourceTx = transactionQuery.andIsHead(branch).getResultsAsIds().getExactlyOne();
+      TransactionId destionationTx = transactionQuery.andIsHead(parentBranch).getResultsAsIds().getExactlyOne();
+      return compareTxs(sourceTx, destionationTx);
+   }
+
+   @Override
+   public CompareResults comparedToPreviousTx(TransactionToken txId) {
+      TransactionId startTx = transactionQuery.andIsPriorTx(txId).getResultsAsIds().getExactlyOne();
+      return compareTxs(startTx, txId);
+   }
+
+   @Override
    public boolean replaceWithBaselineTxVersion(String userId, BranchId branchId, TransactionId txId, int artId, String comment) {
       boolean introduced = false;
       ArtifactReadable userReadable =
@@ -134,8 +151,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
       List<TransactionId> txsToDelete = Collections.fromString(txIds, TransactionId::valueOf);
 
       if (!txsToDelete.isEmpty()) {
-         ResultSet<? extends TransactionId> results =
-            queryFactory.transactionQuery().andTxIds(txsToDelete).getResults();
+         ResultSet<? extends TransactionId> results = transactionQuery.andTxIds(txsToDelete).getResults();
          if (!results.isEmpty()) {
             checkAllTxsFound("Purge Transaction", txsToDelete, results);
             List<TransactionId> list = Lists.newArrayList(results);
@@ -163,7 +179,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
 
    @Override
    public ResultSet<TransactionReadable> getAllTxs() {
-      return queryFactory.transactionQuery().getResults();
+      return transactionQuery.getResults();
    }
 
    @Override
@@ -171,7 +187,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
       if (tx instanceof TransactionReadable) {
          return (TransactionReadable) tx;
       }
-      return queryFactory.transactionQuery().andTxId(tx).getResults().getExactlyOne();
+      return transactionQuery.andTxId(tx).getResults().getExactlyOne();
    }
 
    private void checkAllTxsFound(String opName, List<TransactionId> txIds, ResultSet<? extends TransactionId> result) {
