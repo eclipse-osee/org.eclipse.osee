@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
@@ -128,9 +127,7 @@ public class ViewApplicabilityUtil {
    }
 
    public static boolean isBranchOfProductLine(BranchId branch) {
-      int count = ArtifactQuery.createQueryBuilder(branch).andIsOfType(CoreArtifactTypes.FeatureDefinition).getCount();
-      return count > 0;
-
+      return !getBranchViews(branch).isEmpty();
    }
 
    public static BranchId getParentBranch(BranchId branch) {
