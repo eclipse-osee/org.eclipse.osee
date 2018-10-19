@@ -73,6 +73,51 @@ public class DispoDataFactory {
       if (itemToInit.getAnnotationsList() == null) {
          itemToInit.setAnnotationsList(new ArrayList<DispoAnnotationData>());
       }
+      if (itemToInit.getAborted() == null) {
+         itemToInit.setAborted(false);
+      }
+      if (itemToInit.getAssignee() == null) {
+         itemToInit.setAssignee("UnAssigned");
+      }
+      if (itemToInit.getCategory() == null) {
+         itemToInit.setCategory("none");
+      }
+      if (itemToInit.getCreationDate() == null) {
+         itemToInit.setCreationDate(new Date());
+      }
+      if (itemToInit.getDiscrepanciesAsRanges() == null) {
+         itemToInit.setDiscrepanciesAsRanges("none");
+      }
+      if (itemToInit.getAborted() == null) {
+         itemToInit.setAborted(false);
+      }
+      if (itemToInit.getElapsedTime() == null) {
+         itemToInit.setElapsedTime("none");
+      }
+      if (itemToInit.getItemNotes() == null) {
+         itemToInit.setItemNotes("none");
+      }
+      if (itemToInit.getMachine() == null) {
+         itemToInit.setMachine("none");
+      }
+      if (itemToInit.getStatus() == null) {
+         itemToInit.setStatus("none");
+      }
+      if (itemToInit.getTeam() == null) {
+         itemToInit.setTeam("none");
+      }
+      if (itemToInit.getVersion() == null) {
+         itemToInit.setVersion("none");
+      }
+      if (itemToInit.getTotalPoints() == null) {
+         itemToInit.setTotalPoints("none");
+      }
+
+      if (itemToInit.getIsIncludeDetails()) {
+         if (itemToInit.getAnnotationsList() == null) {
+            itemToInit.setAnnotationsList(new ArrayList<DispoAnnotationData>());
+         }
+      }
       if (itemToInit.getDiscrepanciesList() == null) {
          itemToInit.setDiscrepanciesList(new HashMap<String, Discrepancy>());
       }

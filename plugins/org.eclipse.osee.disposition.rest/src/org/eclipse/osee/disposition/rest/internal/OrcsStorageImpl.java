@@ -221,9 +221,16 @@ public class OrcsStorageImpl implements Storage {
       tx.setSoleAttributeValue(creatdArtId, DispoConstants.ImportState, descriptor.getImportState());
       tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoType, descriptor.getDispoType());
       tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoNotesJson, JsonUtil.toJson(descriptor.getNotesList()));
-      tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoCiSet, descriptor.getCiSet());
-      tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoRerunList, descriptor.getRerunList());
-      tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoTime, descriptor.getTime());
+      if (descriptor.getCiSet() == null) {
+         tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoCiSet, "NOCI");
+         tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoRerunList, "NOCI");
+         tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoTime, new Date());
+      } else {
+         tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoCiSet, descriptor.getCiSet());
+         tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoRerunList, descriptor.getRerunList());
+         tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoTime, descriptor.getTime());
+      }
+
       tx.commit();
       return creatdArtId.getUuid();
    }
@@ -298,7 +305,11 @@ public class OrcsStorageImpl implements Storage {
       for (DispoItem item : data) {
          ArtifactId createdItem = tx.createArtifact(DispoConstants.DispoItem, item.getName());
 
-         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoDateCreated, item.getCreationDate());
+         if (item.getCreationDate() == null) {
+            tx.setSoleAttributeValue(createdItem, DispoConstants.DispoDateCreated, new Date());
+         } else {
+            tx.setSoleAttributeValue(createdItem, DispoConstants.DispoDateCreated, item.getCreationDate());
+         }
          tx.setSoleAttributeValue(createdItem, DispoConstants.DispoLastUpdated, item.getLastUpdate());
          tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemStatus, item.getStatus());
          tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemTotalPoints, item.getTotalPoints());
