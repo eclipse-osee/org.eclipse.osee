@@ -41,7 +41,7 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
-import org.eclipse.osee.orcs.search.ApplicabilityQuery;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author Ryan D. Brooks
@@ -83,15 +83,20 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
    private final SqlJoinFactory joinFactory;
    private final HashMap<Long, ApplicabilityToken> applicTokens;
 
-   public LoadDeltasBetweenBranches(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, BranchId sourceBranch, BranchId destinationBranch, TransactionId destinationHeadTxId, BranchId mergeBranch, TransactionId mergeTxId, ApplicabilityQuery applicQuery) {
+   public LoadDeltasBetweenBranches(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, BranchId sourceBranch, BranchId destinationBranch, TransactionId destinationHeadTxId, BranchId mergeBranch, QueryFactory queryFactory) {
       super(logger, session, jdbcClient);
       this.joinFactory = joinFactory;
       this.sourceBranch = sourceBranch;
       this.destinationBranch = destinationBranch;
       this.destinationHeadTxId = destinationHeadTxId;
       this.mergeBranch = mergeBranch;
-      this.mergeTxId = mergeTxId;
-      this.applicTokens = applicQuery.getApplicabilityTokens(sourceBranch, destinationBranch);
+      this.applicTokens = queryFactory.applicabilityQuery().getApplicabilityTokens(sourceBranch, destinationBranch);
+
+      if (mergeBranch.isValid()) {
+         mergeTxId = queryFactory.transactionQuery().andIsHead(mergeBranch).getResults().getExactlyOne();
+      } else {
+         mergeTxId = TransactionId.SENTINEL;
+      }
    }
 
    private ApplicabilityToken getApplicabilityToken(ApplicabilityId appId) {

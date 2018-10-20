@@ -18,19 +18,19 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
-import org.eclipse.osee.orcs.search.ApplicabilityQuery;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
 public class CompareBranchCallable extends AbstractBranchCallable<List<ChangeItem>> {
 
    private final TransactionToken sourceTx;
    private final TransactionToken destinationTx;
-   private final ApplicabilityQuery applicQuery;
+   private final QueryFactory queryFactory;
 
-   public CompareBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, TransactionToken sourceTx, TransactionToken destinationTx, ApplicabilityQuery applicQuery) {
+   public CompareBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, TransactionToken sourceTx, TransactionToken destinationTx, QueryFactory queryFactory) {
       super(logger, session, branchStore);
       this.sourceTx = sourceTx;
       this.destinationTx = destinationTx;
-      this.applicQuery = applicQuery;
+      this.queryFactory = queryFactory;
    }
 
    @Override
@@ -39,7 +39,7 @@ public class CompareBranchCallable extends AbstractBranchCallable<List<ChangeIte
       Conditions.checkNotNull(destinationTx, "destinationTx");
 
       Callable<List<ChangeItem>> callable =
-         getBranchStore().compareBranch(getSession(), sourceTx, destinationTx, applicQuery);
+         getBranchStore().compareBranch(getSession(), sourceTx, destinationTx, queryFactory);
       return callAndCheckForCancel(callable);
 
    }

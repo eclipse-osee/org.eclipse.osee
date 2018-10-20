@@ -14,9 +14,9 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -52,7 +52,8 @@ import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactory;
 import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportItemFactory;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
-import org.eclipse.osee.orcs.search.ApplicabilityQuery;
+import org.eclipse.osee.orcs.search.BranchQuery;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -108,9 +109,10 @@ public class BranchModule {
          }
 
          @Override
-         public Callable<TransactionId> commitBranch(OrcsSession session, ArtifactId committer, Branch source, TransactionToken sourceHead, Branch destination, TransactionToken destinationHead, ApplicabilityQuery applicQuery) {
+         public Callable<TransactionId> commitBranch(OrcsSession session, ArtifactId committer, Branch source, TransactionToken sourceHead, Branch destination, TransactionToken destinationHead, QueryFactory queryFactory) {
+            BranchId mergeBranch = getMergeBranchId(queryFactory.branchQuery(), source, destination);
             return new CommitBranchDatabaseCallable(logger, session, jdbcClient, joinFactory, idManager, committer,
-               source, sourceHead, destination, destinationHead, missingChangeItemFactory, applicQuery);
+               source, sourceHead, destination, destinationHead, mergeBranch, missingChangeItemFactory, queryFactory);
          }
 
          @Override
@@ -119,9 +121,20 @@ public class BranchModule {
          }
 
          @Override
-         public Callable<List<ChangeItem>> compareBranch(OrcsSession session, TransactionToken sourceTx, TransactionToken destinationTx, ApplicabilityQuery applicQuery) {
+         public Callable<List<ChangeItem>> compareBranch(OrcsSession session, TransactionToken sourceTx, TransactionToken destinationTx, QueryFactory queryFactory) {
+            BranchId mergeBranch =
+               getMergeBranchId(queryFactory.branchQuery(), sourceTx.getBranch(), destinationTx.getBranch());
             return new CompareDatabaseCallable(logger, session, jdbcClient, joinFactory, sourceTx, destinationTx,
-               missingChangeItemFactory, applicQuery);
+               mergeBranch, missingChangeItemFactory, queryFactory);
+         }
+
+         private BranchId getMergeBranchId(BranchQuery branchQuery, BranchId source, BranchId destination) {
+            BranchId mergeBranch = branchQuery.andIsMergeFor(source, destination).getResults().getAtMostOneOrNull();
+
+            if (mergeBranch == null) {
+               mergeBranch = BranchId.SENTINEL;
+            }
+            return mergeBranch;
          }
 
          @Override

@@ -27,7 +27,7 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.CreateBranchData;
-import org.eclipse.osee.orcs.search.ApplicabilityQuery;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -42,9 +42,9 @@ public interface BranchDataStore {
 
    Callable<Void> purgeBranch(OrcsSession session, Branch branch);
 
-   Callable<TransactionId> commitBranch(OrcsSession session, ArtifactId committer, Branch source, TransactionToken sourceHead, Branch destination, TransactionToken destinationHead, ApplicabilityQuery applicQuery);
+   Callable<TransactionId> commitBranch(OrcsSession session, ArtifactId committer, Branch source, TransactionToken sourceHead, Branch destination, TransactionToken destinationHead, QueryFactory queryFactory);
 
-   Callable<List<ChangeItem>> compareBranch(OrcsSession session, TransactionToken sourceTx, TransactionToken destinationTx, ApplicabilityQuery applicQuery);
+   Callable<List<ChangeItem>> compareBranch(OrcsSession session, TransactionToken sourceTx, TransactionToken destinationTx, QueryFactory queryFactory);
 
    Callable<URI> exportBranch(OrcsSession session, OrcsTypes orcsTypes, List<? extends BranchId> branches, PropertyStore options, String exportName);
 

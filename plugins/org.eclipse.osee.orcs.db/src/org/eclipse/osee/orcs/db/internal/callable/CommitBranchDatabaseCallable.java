@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
@@ -30,7 +30,7 @@ import org.eclipse.osee.orcs.db.internal.change.ComputeNetChangeCallable;
 import org.eclipse.osee.orcs.db.internal.change.LoadDeltasBetweenBranches;
 import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactory;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
-import org.eclipse.osee.orcs.search.ApplicabilityQuery;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -45,14 +45,10 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Tran
    private final TransactionToken destinationHead;
    private final Branch destination;
    private final MissingChangeItemFactory missingChangeItemFactory;
-   private final ApplicabilityQuery applicQuery;
+   private final QueryFactory queryFactory;
+   private final BranchId mergeBranch;
 
-   private static final String SELECT_MERGE_BRANCH_UUID =
-      "select merge_branch_id from osee_merge where source_branch_id = ? and dest_branch_id = ?";
-   private static final String SELECT_MERGE_BRANCH_HEAD_TX =
-      "select max(transaction_id) from osee_tx_details where branch_id = ?";
-
-   public CommitBranchDatabaseCallable(Log logger, OrcsSession session, JdbcClient service, SqlJoinFactory joinFactory, IdentityManager idManager, ArtifactId committer, Branch source, TransactionToken sourceHead, Branch destination, TransactionToken destinationHead, MissingChangeItemFactory missingChangeItemFactory, ApplicabilityQuery applicQuery) {
+   public CommitBranchDatabaseCallable(Log logger, OrcsSession session, JdbcClient service, SqlJoinFactory joinFactory, IdentityManager idManager, ArtifactId committer, Branch source, TransactionToken sourceHead, Branch destination, TransactionToken destinationHead, BranchId mergeBranch, MissingChangeItemFactory missingChangeItemFactory, QueryFactory queryFactory) {
       super(logger, session, service);
       this.joinFactory = joinFactory;
       this.idManager = idManager;
@@ -61,20 +57,19 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Tran
       this.sourceHead = sourceHead;
       this.destination = destination;
       this.destinationHead = destinationHead;
+      this.mergeBranch = mergeBranch;
       this.missingChangeItemFactory = missingChangeItemFactory;
-      this.applicQuery = applicQuery;
+      this.queryFactory = queryFactory;
    }
 
-   private List<ChangeItem> callComputeChanges(BranchId mergeBranch) throws Exception {
-      TransactionId mergeTxId = getJdbcClient().fetch(TransactionId.SENTINEL, SELECT_MERGE_BRANCH_HEAD_TX, mergeBranch);
+   private List<ChangeItem> callComputeChanges() throws Exception {
 
-      Callable<List<ChangeItem>> loadChanges =
-         new LoadDeltasBetweenBranches(getLogger(), getSession(), getJdbcClient(), joinFactory, sourceHead.getBranch(),
-            destinationHead.getBranch(), destinationHead, mergeBranch, mergeTxId, applicQuery);
+      Callable<List<ChangeItem>> loadChanges = new LoadDeltasBetweenBranches(getLogger(), getSession(), getJdbcClient(),
+         joinFactory, sourceHead.getBranch(), destinationHead.getBranch(), destinationHead, mergeBranch, queryFactory);
       List<ChangeItem> changes = callAndCheckForCancel(loadChanges);
 
       changes.addAll(missingChangeItemFactory.createMissingChanges(this, getSession(), changes, sourceHead,
-         destinationHead, applicQuery));
+         destinationHead, queryFactory.applicabilityQuery()));
 
       Callable<List<ChangeItem>> computeChanges = new ComputeNetChangeCallable(changes);
 
@@ -93,8 +88,7 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Tran
 
    @Override
    public TransactionId call() throws Exception {
-      BranchId mergeBranch = getJdbcClient().fetch(BranchId.SENTINEL, SELECT_MERGE_BRANCH_UUID, source, destination);
-      List<ChangeItem> changes = callComputeChanges(mergeBranch);
+      List<ChangeItem> changes = callComputeChanges();
 
       CancellableCallable<TransactionId> commitCallable =
          new CommitBranchDatabaseTxCallable(getLogger(), getSession(), getJdbcClient(), idManager, committer, source,
