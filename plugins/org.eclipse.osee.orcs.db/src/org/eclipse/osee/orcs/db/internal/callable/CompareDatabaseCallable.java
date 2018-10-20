@@ -67,8 +67,7 @@ public class CompareDatabaseCallable extends AbstractDatastoreCallable<List<Chan
       }
       List<ChangeItem> changes = callAndCheckForCancel(callable);
 
-      changes.addAll(missingChangeItemFactory.createMissingChanges(this, getSession(), changes, sourceTx, destinationTx,
-         applicQuery));
+      changes.addAll(missingChangeItemFactory.createMissingChanges(changes, sourceTx, destinationTx, applicQuery));
       Callable<List<ChangeItem>> computeChanges = new ComputeNetChangeCallable(changes);
       changes = callAndCheckForCancel(computeChanges);
 

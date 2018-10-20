@@ -168,8 +168,7 @@ public class MissingChangeItemFactoryTest {
          }
       }).when(destDataLoader).load(any(HasCancellation.class), any(LoadDataHandler.class));
 
-      Collection<ChangeItem> results =
-         changeItemFactory.createMissingChanges(null, null, changes, sourceTx, destTx, applicQuery);
+      Collection<ChangeItem> results = changeItemFactory.createMissingChanges(changes, sourceTx, destTx, applicQuery);
       if (expectedMissingChanges == null) {
          Assert.assertTrue(results.isEmpty());
       } else {

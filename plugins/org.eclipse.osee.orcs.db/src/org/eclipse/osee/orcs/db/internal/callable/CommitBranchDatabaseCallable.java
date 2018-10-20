@@ -68,8 +68,8 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Tran
          joinFactory, sourceHead.getBranch(), destinationHead.getBranch(), destinationHead, mergeBranch, queryFactory);
       List<ChangeItem> changes = callAndCheckForCancel(loadChanges);
 
-      changes.addAll(missingChangeItemFactory.createMissingChanges(this, getSession(), changes, sourceHead,
-         destinationHead, queryFactory.applicabilityQuery()));
+      changes.addAll(missingChangeItemFactory.createMissingChanges(changes, sourceHead, destinationHead,
+         queryFactory.applicabilityQuery()));
 
       Callable<List<ChangeItem>> computeChanges = new ComputeNetChangeCallable(changes);
 
