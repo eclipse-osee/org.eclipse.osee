@@ -15,12 +15,12 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.TransactionTokenDelta;
 import org.eclipse.osee.orcs.db.internal.change.AddSyntheticArtifactChangeData;
-import org.eclipse.osee.orcs.db.internal.change.ComputeNetChangeCallable;
 import org.eclipse.osee.orcs.db.internal.change.LoadDeltasBetweenBranches;
 import org.eclipse.osee.orcs.db.internal.change.LoadDeltasBetweenTxsOnTheSameBranch;
 import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactory;
@@ -68,8 +68,7 @@ public class CompareDatabaseCallable extends AbstractDatastoreCallable<List<Chan
       List<ChangeItem> changes = callAndCheckForCancel(callable);
 
       changes.addAll(missingChangeItemFactory.createMissingChanges(changes, sourceTx, destinationTx, applicQuery));
-      Callable<List<ChangeItem>> computeChanges = new ComputeNetChangeCallable(changes);
-      changes = callAndCheckForCancel(computeChanges);
+      ChangeItemUtil.computeNetChanges(changes);
 
       AddSyntheticArtifactChangeData addArtifactData =
          new AddSyntheticArtifactChangeData(changes, getJdbcClient(), branch);

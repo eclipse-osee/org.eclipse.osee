@@ -22,11 +22,11 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
-import org.eclipse.osee.orcs.db.internal.change.ComputeNetChangeCallable;
 import org.eclipse.osee.orcs.db.internal.change.LoadDeltasBetweenBranches;
 import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactory;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
@@ -71,10 +71,9 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Tran
       changes.addAll(missingChangeItemFactory.createMissingChanges(changes, sourceHead, destinationHead,
          queryFactory.applicabilityQuery()));
 
-      Callable<List<ChangeItem>> computeChanges = new ComputeNetChangeCallable(changes);
-
+      ChangeItemUtil.computeNetChanges(changes);
       List<ChangeItem> computedChanges = new ArrayList<>();
-      for (ChangeItem item : callAndCheckForCancel(computeChanges)) {
+      for (ChangeItem item : changes) {
          if (isAllowableChange(item.getIgnoreType())) {
             computedChanges.add(item);
          }

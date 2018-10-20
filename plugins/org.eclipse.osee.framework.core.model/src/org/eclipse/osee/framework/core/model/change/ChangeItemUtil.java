@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.change;
 
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
@@ -337,5 +338,42 @@ public final class ChangeItemUtil {
          }
       }
       return false;
+   }
+
+   public static void computeNetChanges(List<ChangeItem> changes) {
+      for (ChangeItem change : changes) {
+         checkAndSetIgnoreCase(change);
+         if (change.getNetChange().getModType().equals(ModificationType.MERGED)) {
+            if (isDeleted(change.getCurrentVersion())) {
+               change.getNetChange().copy(change.getCurrentVersion());
+            }
+         } else {
+            ModificationType netModType = calculateNetWithDestinationBranch(change);
+            if (netModType == null) {
+               throw new OseeStateException("Net Mod Type was null");
+            }
+            change.getNetChange().copy(change.getCurrentVersion());
+            change.getNetChange().setModType(netModType);
+         }
+      }
+   }
+
+   private static ModificationType calculateNetWithDestinationBranch(ChangeItem change) {
+      ModificationType netModType = change.getCurrentVersion().getModType();
+      if (change.getDestinationVersion().isValid() && (change.getBaselineVersion().isValid() || change.getFirstNonCurrentChange().isValid())) {
+         netModType = change.getCurrentVersion().getModType();
+      } else if (ChangeItemUtil.wasNewOnSource(change)) {
+         netModType = ModificationType.NEW;
+      } else if (ChangeItemUtil.wasIntroducedOnSource(change)) {
+         netModType = ModificationType.INTRODUCED;
+      } else if (!change.getDestinationVersion().isValid()) {
+         if (change.getBaselineVersion().isValid()) {
+            // Case when committing into non-parent
+            netModType = ModificationType.INTRODUCED;
+         } else {
+            netModType = ModificationType.NEW;
+         }
+      }
+      return netModType;
    }
 }

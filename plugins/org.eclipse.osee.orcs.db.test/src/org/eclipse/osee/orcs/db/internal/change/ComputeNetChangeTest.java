@@ -18,10 +18,10 @@ import static org.eclipse.osee.framework.core.enums.ModificationType.MODIFIED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.junit.Assert;
@@ -102,10 +102,7 @@ public class ComputeNetChangeTest {
          items.add(testData.getItem());
       }
 
-      Callable<List<ChangeItem>> callable = new ComputeNetChangeCallable(items);
-      List<ChangeItem> resultingItems = callable.call();
-
-      Assert.assertEquals(items, resultingItems);
+      ChangeItemUtil.computeNetChanges(items);
 
       for (int index = 0; index < data.size(); index++) {
          TestData testData = data.get(index);
@@ -129,8 +126,7 @@ public class ComputeNetChangeTest {
       // Source to Non-Parent commit
       items.add(ChangeTestUtility.createItem(3L, entry(10L, MODIFIED), null, entry(11L, MODIFIED), null, null));
 
-      Callable<List<ChangeItem>> callable = new ComputeNetChangeCallable(items);
-      callable.call();
+      ChangeItemUtil.computeNetChanges(items);
    }
 
    private static TestData createTest(Long itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion expected, boolean isRemoved) {
