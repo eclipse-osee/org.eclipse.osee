@@ -416,7 +416,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    /**
     * @return set of the direct children of this artifact
     */
-   public final List<Artifact> getChildren() {
+   public final @NonNull List<Artifact> getChildren() {
       return getRelatedArtifacts(Default_Hierarchical__Child);
    }
 

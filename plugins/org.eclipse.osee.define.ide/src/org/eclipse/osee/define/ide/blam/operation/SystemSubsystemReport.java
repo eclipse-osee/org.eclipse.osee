@@ -182,7 +182,7 @@ public class SystemSubsystemReport extends AbstractBlam {
       CountingMap<Artifact> allocatedSysReqCounter = new CountingMap<>(sysReqs.size());
 
       List<Artifact> children = subsysTopFolder.getChildren();
-      if (children != null && !children.isEmpty()) {
+      if (!children.isEmpty()) {
          ViewIdUtility.removeExcludedArtifacts(children.iterator(), findExcludedArtifactsByView);
       }
       for (Artifact subsysFolder : children) {
@@ -368,7 +368,7 @@ public class SystemSubsystemReport extends AbstractBlam {
 
    private void countDescendants(String subSysName, Set<Artifact> subsysReqs, Artifact artifact, Set<String> missingAllocationGuids) {
       List<Artifact> children = artifact.getChildren();
-      if (children != null && !children.isEmpty()) {
+      if (!children.isEmpty()) {
          ViewIdUtility.removeExcludedArtifacts(children.iterator(), findExcludedArtifactsByView);
       }
       for (Artifact child : children) {

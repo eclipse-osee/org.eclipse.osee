@@ -89,9 +89,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
                Collection<Artifact> children = parentItem.getChildren();
                List<RelationLink> relationsAll = parentItem.getRelationsAll(DeletionFlag.EXCLUDE_DELETED);
                List<Object> allChildren = new ArrayList<>();
-               if (children != null) {
-                  allChildren.addAll(children);
-               }
+               allChildren.addAll(children);
 
                if (isShowRelations()) {
                   addRelations(parentItem, relationsAll, allChildren);
