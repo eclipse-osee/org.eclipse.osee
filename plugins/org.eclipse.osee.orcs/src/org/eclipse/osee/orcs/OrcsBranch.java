@@ -83,9 +83,9 @@ public interface OrcsBranch {
 
    Callable<TransactionToken> commitBranch(ArtifactId committer, BranchId source, BranchId destination);
 
-   Callable<List<ChangeItem>> compareBranch(TransactionToken sourceTx, TransactionToken destinationTx);
+   List<ChangeItem> compareBranch(TransactionToken sourceTx, TransactionToken destinationTx);
 
-   Callable<List<ChangeItem>> compareBranch(BranchId branch);
+   List<ChangeItem> compareBranch(BranchId branch);
 
    Callable<URI> exportBranch(List<? extends BranchId> branches, PropertyStore options, String exportName);
 

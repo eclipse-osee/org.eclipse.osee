@@ -127,8 +127,7 @@ public class OrcsBranchTest {
       // get the list of changes from the original branch
       TransactionToken priorTx = query.transactionQuery().andTxId(PRIOR_TX_ID).getResults().getExactlyOne();
       TransactionToken sourceTx = query.transactionQuery().andTxId(SOURCE_TX_ID).getResults().getExactlyOne();
-      Callable<List<ChangeItem>> callable = branchOps.compareBranch(priorTx, sourceTx);
-      List<ChangeItem> priorItems = callable.call();
+      List<ChangeItem> priorItems = branchOps.compareBranch(priorTx, sourceTx);
 
       // create the branch with the copied transaction
       IOseeBranch branch = IOseeBranch.create("CopiedBranch");
@@ -139,8 +138,7 @@ public class OrcsBranchTest {
       // the new branch will contain two transactions - these should have the same change report as the original branch
       Branch postBranch = callableBranch.call();
 
-      callable = branchOps.compareBranch(postBranch);
-      List<ChangeItem> newItems = callable.call();
+      List<ChangeItem> newItems = branchOps.compareBranch(postBranch);
       compareBranchChanges(priorItems, newItems);
    }
 
@@ -174,7 +172,7 @@ public class OrcsBranchTest {
       tx2.createArtifact(CoreArtifactTypes.Folder, "childBranch folder");
       tx2.commit();
 
-      List<ChangeItem> expectedChanges = branchOps.compareBranch(childBranch).call();
+      List<ChangeItem> expectedChanges = branchOps.compareBranch(childBranch);
 
       // create a disjoint working branch from common
 
@@ -185,7 +183,7 @@ public class OrcsBranchTest {
 
       branchOps.commitBranch(author, childBranch, commonChildBranch).call();
 
-      List<ChangeItem> actualChanges = branchOps.compareBranch(commonChildBranch).call();
+      List<ChangeItem> actualChanges = branchOps.compareBranch(commonChildBranch);
       ensureExpectedAreInActual(expectedChanges, actualChanges);
    }
 

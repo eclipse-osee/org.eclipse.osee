@@ -97,7 +97,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
       TransactionToken destinationTx = getTx(txId2);
 
       try {
-         List<ChangeItem> changes = orcsBranch.compareBranch(sourceTx, destinationTx).call();
+         List<ChangeItem> changes = orcsBranch.compareBranch(sourceTx, destinationTx);
          CompareResults data = new CompareResults();
          data.setChanges(changes);
          return data;

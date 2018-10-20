@@ -218,9 +218,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    public CompareResults compareBranches(BranchId branch, BranchId branch2) {
       TransactionToken sourceTx = newTxQuery().andIsHead(branch).getResults().getExactlyOne();
       TransactionToken destinationTx = newTxQuery().andIsHead(branch2).getResults().getExactlyOne();
-
-      Callable<List<ChangeItem>> op = getBranchOps().compareBranch(sourceTx, destinationTx);
-      List<ChangeItem> changes = executeCallable(op);
+      List<ChangeItem> changes = getBranchOps().compareBranch(sourceTx, destinationTx);
 
       CompareResults data = new CompareResults();
       data.setChanges(changes);

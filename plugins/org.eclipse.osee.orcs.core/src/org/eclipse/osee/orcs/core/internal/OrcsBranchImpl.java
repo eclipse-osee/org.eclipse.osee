@@ -35,7 +35,6 @@ import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.internal.branch.BranchDataFactory;
 import org.eclipse.osee.orcs.core.internal.branch.CommitBranchCallable;
-import org.eclipse.osee.orcs.core.internal.branch.CompareBranchCallable;
 import org.eclipse.osee.orcs.core.internal.branch.CreateBranchCallable;
 import org.eclipse.osee.orcs.core.internal.branch.PurgeBranchCallable;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
@@ -120,12 +119,12 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<List<ChangeItem>> compareBranch(TransactionToken sourceTx, TransactionToken destinationTx) {
-      return new CompareBranchCallable(logger, session, branchStore, sourceTx, destinationTx, queryFactory);
+   public List<ChangeItem> compareBranch(TransactionToken sourceTx, TransactionToken destinationTx) {
+      return branchStore.compareBranch(session, sourceTx, destinationTx, queryFactory);
    }
 
    @Override
-   public Callable<List<ChangeItem>> compareBranch(BranchId branch) {
+   public List<ChangeItem> compareBranch(BranchId branch) {
       TransactionId baseTransaction =
          queryFactory.branchQuery().andId(branch).getResults().getExactlyOne().getBaselineTx();
       TransactionToken fromTx = queryFactory.transactionQuery().andTxId(baseTransaction).getResults().getExactlyOne();

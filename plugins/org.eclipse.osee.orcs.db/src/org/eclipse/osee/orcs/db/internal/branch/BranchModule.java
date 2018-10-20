@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -121,11 +122,15 @@ public class BranchModule {
          }
 
          @Override
-         public Callable<List<ChangeItem>> compareBranch(OrcsSession session, TransactionToken sourceTx, TransactionToken destinationTx, QueryFactory queryFactory) {
+         public List<ChangeItem> compareBranch(OrcsSession session, TransactionToken sourceTx, TransactionToken destinationTx, QueryFactory queryFactory) {
             BranchId mergeBranch =
                getMergeBranchId(queryFactory.branchQuery(), sourceTx.getBranch(), destinationTx.getBranch());
-            return new CompareDatabaseCallable(logger, session, jdbcClient, joinFactory, sourceTx, destinationTx,
-               mergeBranch, missingChangeItemFactory, queryFactory);
+            try {
+               return new CompareDatabaseCallable(logger, session, jdbcClient, joinFactory, sourceTx, destinationTx,
+                  mergeBranch, missingChangeItemFactory, queryFactory).call();
+            } catch (Exception ex) {
+               throw OseeCoreException.wrap(ex);
+            }
          }
 
          private BranchId getMergeBranchId(BranchQuery branchQuery, BranchId source, BranchId destination) {
