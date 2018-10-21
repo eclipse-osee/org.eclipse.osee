@@ -17,23 +17,28 @@ import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
+import org.eclipse.osee.orcs.db.internal.change.LoadDeltasBetweenBranches;
+import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactory;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author Ryan D. Brooks
@@ -61,25 +66,35 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    private final IdentityManager idManager;
    private final ArtifactId committer;
    private final Branch sourceBranch;
-   private final Branch destinationBranch;
+   private final BranchId destinationBranch;
    private final BranchId mergeBranch;
-   private final List<ChangeItem> changes;
+   private final SqlJoinFactory joinFactory;
+   private final TransactionToken sourceTx;
+   private final TransactionToken destinationTx;
+   private final QueryFactory queryFactory;
+   private final MissingChangeItemFactory missingChangeItemFactory;
 
-   private final Long buildVersionId;
-
-   public CommitBranchDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, IdentityManager idManager, ArtifactId committer, Branch sourceBranch, Branch destinationBranch, BranchId mergeBranch, List<ChangeItem> changes, Long buildVersionId) {
-      super(logger, session, jdbcClient);
+   public CommitBranchDatabaseTxCallable(IdentityManager idManager, ArtifactId committer, JdbcClient jdbcClient, SqlJoinFactory joinFactory, Branch sourceBranch, BranchId destinationBranch, TransactionToken sourceTx, TransactionToken destinationTx, BranchId mergeBranch, QueryFactory queryFactory, MissingChangeItemFactory missingChangeItemFactory) {
+      super(null, null, jdbcClient);
+      this.joinFactory = joinFactory;
       this.idManager = idManager;
       this.committer = committer;
       this.sourceBranch = sourceBranch;
       this.destinationBranch = destinationBranch;
+      this.sourceTx = sourceTx;
+      this.destinationTx = destinationTx;
       this.mergeBranch = mergeBranch;
-      this.changes = changes;
-      this.buildVersionId = buildVersionId;
+      this.queryFactory = queryFactory;
+      this.missingChangeItemFactory = missingChangeItemFactory;
    }
 
    @Override
    protected TransactionId handleTxWork(JdbcConnection connection) {
+      List<ChangeItem> changes = new LoadDeltasBetweenBranches(getJdbcClient(), joinFactory, sourceBranch,
+         destinationBranch, sourceTx, destinationTx, mergeBranch, queryFactory, missingChangeItemFactory).call();
+
+      changes = ChangeItemUtil.computeNetChangesAndFilter(changes);
+
       BranchState storedBranchState;
       if (changes.isEmpty()) {
          throw new OseeStateException("A branch can not be committed without any changes made.");
@@ -90,8 +105,8 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       TransactionId newTx = null;
       try {
          newTx = addCommitTransactionToDatabase(committer, connection);
-         updatePreviousCurrentsOnDestinationBranch(connection);
-         insertCommitAddressing(newTx, connection);
+         updatePreviousCurrentsOnDestinationBranch(connection, changes);
+         insertCommitAddressing(newTx, connection, changes);
 
          getJdbcClient().runPreparedUpdate(connection, UPDATE_MERGE_COMMIT_TX, newTx, sourceBranch, destinationBranch);
 
@@ -118,11 +133,11 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       }
    }
 
-   public void updateBranchState(BranchState state, BranchId branchId) {
+   private void updateBranchState(BranchState state, BranchId branchId) {
       getJdbcClient().runPreparedUpdate(UPDATE_SOURCE_BRANCH_STATE, state, branchId);
    }
 
-   private void updatePreviousCurrentsOnDestinationBranch(JdbcConnection connection) {
+   private void updatePreviousCurrentsOnDestinationBranch(JdbcConnection connection, List<ChangeItem> changes) {
       UpdatePreviousTxCurrent updater = new UpdatePreviousTxCurrent(getJdbcClient(), connection, destinationBranch);
       for (ChangeItem change : changes) {
          ChangeVersion destVersion = change.getDestinationVersion();
@@ -141,11 +156,11 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
       getJdbcClient().runPreparedUpdate(connection, INSERT_COMMIT_TRANSACTION,
          TransactionDetailsType.NonBaselined.getId(), destinationBranch, newTransactionNumber, comment, timestamp,
-         committer, sourceBranch.getAssociatedArtifact(), buildVersionId);
+         committer, sourceBranch.getAssociatedArtifact(), OseeCodeVersion.getVersionId());
       return newTransactionNumber;
    }
 
-   private void insertCommitAddressing(TransactionId newTx, JdbcConnection connection) {
+   private void insertCommitAddressing(TransactionId newTx, JdbcConnection connection, List<ChangeItem> changes) {
       List<Object[]> insertData = new ArrayList<>();
       for (ChangeItem change : changes) {
          ModificationType modType = change.getNetChange().getModType();

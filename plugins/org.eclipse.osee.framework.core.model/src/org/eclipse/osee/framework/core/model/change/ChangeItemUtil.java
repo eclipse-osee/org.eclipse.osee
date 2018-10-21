@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.change;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -352,6 +353,21 @@ public final class ChangeItemUtil {
             change.getNetChange().setModType(netModType);
          }
       }
+   }
+
+   public static List<ChangeItem> computeNetChangesAndFilter(List<ChangeItem> changes) {
+      ChangeItemUtil.computeNetChanges(changes);
+      List<ChangeItem> allowedChanges = new ArrayList<>();
+      for (ChangeItem item : changes) {
+         if (isAllowableChange(item.getIgnoreType())) {
+            allowedChanges.add(item);
+         }
+      }
+      return allowedChanges;
+   }
+
+   private static boolean isAllowableChange(ChangeIgnoreType type) {
+      return type.isNone() || type.isResurrected();
    }
 
    private static ModificationType calculateNetWithDestinationBranch(ChangeItem change) {

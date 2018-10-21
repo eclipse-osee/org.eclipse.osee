@@ -38,13 +38,12 @@ public class AddSyntheticArtifactChangeData {
          + "and art.GAMMA_ID = txs.GAMMA_ID and txs.tx_current = 1 and art_id in (%s)";
 
    public AddSyntheticArtifactChangeData(List<ChangeItem> changeItems, JdbcClient jdbcClient, BranchId branch) {
-      super();
       this.changeItems = changeItems;
       this.jdbcClient = jdbcClient;
       this.branch = branch;
    }
 
-   public List<ChangeItem> doWork() throws Exception {
+   public List<ChangeItem> doWork() {
       Map<ArtifactId, ChangeItem> artifactChanges = new HashMap<>();
       for (ChangeItem item : changeItems) {
          if (item.getChangeType().isArtifactChange()) {

@@ -42,13 +42,13 @@ import org.eclipse.osee.orcs.db.internal.callable.ArchiveUnarchiveBranchCallable
 import org.eclipse.osee.orcs.db.internal.callable.BranchCopyTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ChangeBranchFieldCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CheckBranchExchangeIntegrityCallable;
-import org.eclipse.osee.orcs.db.internal.callable.CommitBranchDatabaseCallable;
-import org.eclipse.osee.orcs.db.internal.callable.CompareDatabaseCallable;
+import org.eclipse.osee.orcs.db.internal.callable.CommitBranchDatabaseTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CompositeDatastoreTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CreateBranchDatabaseTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ExportBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ImportBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeBranchDatabaseCallable;
+import org.eclipse.osee.orcs.db.internal.change.LoadDeltasBetweenTxsOnTheSameBranch;
 import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactory;
 import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportItemFactory;
@@ -110,10 +110,15 @@ public class BranchModule {
          }
 
          @Override
-         public Callable<TransactionId> commitBranch(OrcsSession session, ArtifactId committer, Branch source, TransactionToken sourceHead, Branch destination, TransactionToken destinationHead, QueryFactory queryFactory) {
+         public TransactionId commitBranch(OrcsSession session, ArtifactId committer, Branch source, TransactionToken sourceTx, Branch destination, TransactionToken destinationTx, QueryFactory queryFactory) {
             BranchId mergeBranch = getMergeBranchId(queryFactory.branchQuery(), source, destination);
-            return new CommitBranchDatabaseCallable(logger, session, jdbcClient, joinFactory, idManager, committer,
-               source, sourceHead, destination, destinationHead, mergeBranch, missingChangeItemFactory, queryFactory);
+
+            try {
+               return new CommitBranchDatabaseTxCallable(idManager, committer, jdbcClient, joinFactory, source,
+                  destination, sourceTx, destinationTx, mergeBranch, queryFactory, missingChangeItemFactory).call();
+            } catch (Exception ex) {
+               throw OseeCoreException.wrap(ex);
+            }
          }
 
          @Override
@@ -125,12 +130,8 @@ public class BranchModule {
          public List<ChangeItem> compareBranch(OrcsSession session, TransactionToken sourceTx, TransactionToken destinationTx, QueryFactory queryFactory) {
             BranchId mergeBranch =
                getMergeBranchId(queryFactory.branchQuery(), sourceTx.getBranch(), destinationTx.getBranch());
-            try {
-               return new CompareDatabaseCallable(logger, session, jdbcClient, joinFactory, sourceTx, destinationTx,
-                  mergeBranch, missingChangeItemFactory, queryFactory).call();
-            } catch (Exception ex) {
-               throw OseeCoreException.wrap(ex);
-            }
+            return new LoadDeltasBetweenTxsOnTheSameBranch(jdbcClient, joinFactory, sourceTx, destinationTx,
+               mergeBranch, queryFactory, missingChangeItemFactory).compareTransactions();
          }
 
          private BranchId getMergeBranchId(BranchQuery branchQuery, BranchId source, BranchId destination) {

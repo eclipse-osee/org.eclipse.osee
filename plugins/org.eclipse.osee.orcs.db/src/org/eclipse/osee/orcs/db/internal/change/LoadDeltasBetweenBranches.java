@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -36,11 +37,9 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
-import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
+import org.eclipse.osee.orcs.search.ApplicabilityQuery;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
@@ -49,7 +48,7 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  * @author Ryan Schmitt
  * @author Jeff C. Phillips
  */
-public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<ChangeItem>> {
+public class LoadDeltasBetweenBranches {
    // @formatter:off
    private static final String SELECT_ALL_SOURCE_ADDRESSING =
       "with\n" + "txsOuter as (select transaction_id, gamma_id, mod_type, app_id from osee_txs txs where \n" +
@@ -76,21 +75,29 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
 
    // @formatter:on
    private static final String SELECT_BASE_TX = "select baseline_transaction_id from osee_branch where branch_id = ?";
+
+   private final JdbcClient jdbcClient;
    private final BranchId sourceBranch, destinationBranch;
    private final BranchId mergeBranch;
    private final TransactionId mergeTxId;
-   private final TransactionId destinationHeadTxId;
+   private final TransactionToken sourceTx;
+   private final TransactionToken destinationTx;
    private final SqlJoinFactory joinFactory;
    private final HashMap<Long, ApplicabilityToken> applicTokens;
+   private final ApplicabilityQuery applicabilityQuery;
+   private final MissingChangeItemFactory missingChangeItemFactory;
 
-   public LoadDeltasBetweenBranches(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, BranchId sourceBranch, BranchId destinationBranch, TransactionId destinationHeadTxId, BranchId mergeBranch, QueryFactory queryFactory) {
-      super(logger, session, jdbcClient);
+   public LoadDeltasBetweenBranches(JdbcClient jdbcClient, SqlJoinFactory joinFactory, BranchId sourceBranch, BranchId destinationBranch, TransactionToken sourceTx, TransactionToken destinationTx, BranchId mergeBranch, QueryFactory queryFactory, MissingChangeItemFactory missingChangeItemFactory) {
+      this.jdbcClient = jdbcClient;
       this.joinFactory = joinFactory;
       this.sourceBranch = sourceBranch;
       this.destinationBranch = destinationBranch;
-      this.destinationHeadTxId = destinationHeadTxId;
+      this.sourceTx = sourceTx;
+      this.destinationTx = destinationTx;
       this.mergeBranch = mergeBranch;
-      this.applicTokens = queryFactory.applicabilityQuery().getApplicabilityTokens(sourceBranch, destinationBranch);
+      this.applicabilityQuery = queryFactory.applicabilityQuery();
+      this.missingChangeItemFactory = missingChangeItemFactory;
+      this.applicTokens = applicabilityQuery.getApplicabilityTokens(sourceBranch, destinationBranch);
 
       if (mergeBranch.isValid()) {
          mergeTxId = queryFactory.transactionQuery().andIsHead(mergeBranch).getResults().getExactlyOne();
@@ -111,14 +118,17 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
       return mergeBranch.isValid();
    }
 
-   @Override
-   public List<ChangeItem> call() throws Exception {
+   public List<ChangeItem> call() {
       Conditions.checkExpressionFailOnTrue(sourceBranch.equals(destinationBranch),
          "Unable to compute deltas between transactions on the same branch [%s]", sourceBranch);
 
-      TransactionId sourceBaselineTxId = getJdbcClient().fetch(TransactionId.SENTINEL, SELECT_BASE_TX, sourceBranch);
+      TransactionId sourceBaselineTxId = jdbcClient.fetch(TransactionId.SENTINEL, SELECT_BASE_TX, sourceBranch);
       DoubleKeyHashMap<Integer, Long, ChangeItem> newChangeData = this.loadSourceBranchChanges(sourceBaselineTxId);
-      return loadItemsbyId(newChangeData, sourceBaselineTxId);
+      List<ChangeItem> changes = loadItemsbyId(newChangeData, sourceBaselineTxId);
+
+      changes.addAll(
+         missingChangeItemFactory.createMissingChanges(changes, sourceTx, destinationTx, applicabilityQuery));
+      return changes;
    }
 
    private List<ChangeItem> loadItemsbyId(DoubleKeyHashMap<Integer, Long, ChangeItem> changeData, TransactionId sourceBaselineTxId) {
@@ -133,7 +143,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
          if (hasMergeBranch()) {
             loadCurrentVersionData(idJoin, changeData, mergeBranch, mergeTxId, true);
          }
-         loadCurrentVersionData(idJoin, changeData, destinationBranch, destinationHeadTxId, false);
+         loadCurrentVersionData(idJoin, changeData, destinationBranch, destinationTx, false);
 
          loadNonCurrentSourceVersionData(idJoin, changeData, sourceBaselineTxId);
       }
@@ -145,7 +155,6 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
       DoubleKeyHashMap<Integer, Long, ChangeItem> hashChangeData = new DoubleKeyHashMap<>();
 
       Consumer<JdbcStatement> consumer = stmt -> {
-         checkForCancelled();
          GammaId gammaId = GammaId.valueOf(stmt.getLong("gamma_id"));
          ModificationType modType = ModificationType.valueOf(stmt.getInt("mod_type"));
          ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
@@ -201,7 +210,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
 
          }
       };
-      getJdbcClient().runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_ALL_SOURCE_ADDRESSING, sourceBranch,
+      jdbcClient.runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_ALL_SOURCE_ADDRESSING, sourceBranch,
          TxChange.NOT_CURRENT, sourceBaselineTxId, sourceBranch, sourceBaselineTxId);
 
       return hashChangeData;
@@ -209,8 +218,6 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
 
    private void loadCurrentVersionData(ExportImportJoinQuery idJoin, DoubleKeyHashMap<Integer, Long, ChangeItem> changesByItemId, BranchId txBranchId, TransactionId txId, boolean isMergeBranch) {
       Consumer<JdbcStatement> consumer = stmt -> {
-         checkForCancelled();
-
          Long itemId = stmt.getLong("item_id");
          Integer tableType = stmt.getInt("table_type");
          ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
@@ -239,14 +246,14 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
             " osee_relation_link item, osee_txs txs where idj.query_id = ? and idj.id2 = item.rel_link_id and idj.id1 = 3" + //
             " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
 
-      getJdbcClient().runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query, idJoin.getQueryId(),
+      jdbcClient.runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query, idJoin.getQueryId(),
          TxChange.NOT_CURRENT, txBranchId, txId, idJoin.getQueryId(), TxChange.NOT_CURRENT, txBranchId, txId,
          idJoin.getQueryId(), TxChange.NOT_CURRENT, txBranchId, txId);
 
    }
 
    private void loadNonCurrentSourceVersionData(ExportImportJoinQuery idJoin, DoubleKeyHashMap<Integer, Long, ChangeItem> changesByItemId, TransactionId sourceBaselineTxId) {
-      try (JdbcStatement chStmt = getJdbcClient().getStatement()) {
+      try (JdbcStatement chStmt = jdbcClient.getStatement()) {
          String query =
             "select * from (select null as value, item.art_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 2 as table_type from osee_join_export_import idj, " + //
                "osee_artifact item, osee_txs txs where idj.query_id = ? and idj.id2 = item.art_id and idj.id1 = 2 " + //
@@ -265,7 +272,6 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
          Long previousItemId = -1L;
          boolean isFirstSet = false;
          while (chStmt.next()) {
-            checkForCancelled();
             Long itemId = chStmt.getLong("item_id");
             Integer tableType = chStmt.getInt("table_type");
             Long transactionId = chStmt.getLong("transaction_id");

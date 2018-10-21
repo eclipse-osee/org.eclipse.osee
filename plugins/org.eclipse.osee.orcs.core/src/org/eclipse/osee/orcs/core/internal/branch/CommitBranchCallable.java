@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.branch;
 
-import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -51,9 +50,8 @@ public class CommitBranchCallable extends AbstractBranchCallable<TransactionToke
       Conditions.checkNotNull(sourceBranch, "sourceBranch");
       Conditions.checkNotNull(destinationBranch, "destinationBranch");
 
-      Callable<TransactionId> commitBranchCallable = getBranchStore().commitBranch(getSession(), committer,
-         sourceBranch, sourceHead, destinationBranch, destinationHead, queryFactory);
-      TransactionId newTx = callAndCheckForCancel(commitBranchCallable);
+      TransactionId newTx = getBranchStore().commitBranch(getSession(), committer, sourceBranch, sourceHead,
+         destinationBranch, destinationHead, queryFactory);
       return queryFactory.transactionQuery().andTxId(newTx).getResults().getExactlyOne();
    }
 }
