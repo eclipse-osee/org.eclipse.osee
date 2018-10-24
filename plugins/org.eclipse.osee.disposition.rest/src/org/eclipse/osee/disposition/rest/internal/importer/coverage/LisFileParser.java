@@ -217,7 +217,6 @@ public class LisFileParser implements DispoImporterApi {
          matcher.find();
          String itemDatId = matcher.group();
          DispoItemData item = datIdToItem.get(itemDatId);
-
          String line = datId.replaceAll("\\d*:\\d*:", "");
          line = line.replaceAll(":", "");
          String text = "";
@@ -548,6 +547,7 @@ public class LisFileParser implements DispoImporterApi {
             discrepancyText = matchingDiscrepancy.getText();
             Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
             discrepancies.remove(matchingDiscrepancy.getId());
+            datIdsCoveredByException.remove(generateDatId(m.group(1), m.group(2), m.group(3)));
             item.setDiscrepanciesList(discrepancies);
             addAnnotationForCoveredLine(item, location, Test_Unit_Resolution, resultPath, discrepancyText);
          }
@@ -565,6 +565,7 @@ public class LisFileParser implements DispoImporterApi {
             String text = matchingDiscrepancy.getText();
             Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
             discrepancies.remove(matchingDiscrepancy.getId());
+            datIdsCoveredByException.remove(generateDatId(m.group(1), m.group(2), m.group(3), m.group(4)));
             item.setDiscrepanciesList(discrepancies);
             addAnnotationForCoveredLine(item, location, Test_Unit_Resolution, resultPath, text);
          }
@@ -590,6 +591,8 @@ public class LisFileParser implements DispoImporterApi {
                String text = matchingDiscrepancy.getText();
                Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
                discrepancies.remove(matchingDiscrepancy.getId());
+               datIdsCoveredByException.remove(
+                  generateDatId(m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)));
                item.setDiscrepanciesList(discrepancies);
                addAnnotationForCoveredLine(item, location, Test_Unit_Resolution, resultPath, text);
             }
