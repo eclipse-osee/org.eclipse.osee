@@ -135,7 +135,7 @@ public final class ChangeItemUtil {
    }
 
    public static boolean isModType(ChangeVersion changeVersion, ModificationType matchModType) {
-      return changeVersion != null && changeVersion.getModType() == matchModType;
+      return changeVersion != null && changeVersion.getModType().equals(matchModType);
    }
 
    public static boolean isNew(ChangeVersion changeVersion) {
@@ -147,7 +147,7 @@ public final class ChangeItemUtil {
    }
 
    public static boolean isDeleted(ChangeVersion changeVersion) {
-      return changeVersion != null && changeVersion.getModType() != null && changeVersion.getModType().isDeleted();
+      return changeVersion != null && changeVersion.getModType().isDeleted();
    }
 
    public static boolean wasNewOnSource(ChangeItem changeItem) {
@@ -175,11 +175,7 @@ public final class ChangeItemUtil {
       if (object1 == null && object2 == null) {
          result = true;
       } else if (object1 != null && object2 != null) {
-         if (object1.getModType() == object2.getModType()) {
-            result = true;
-         } else if (object1.getModType() != null) {
-            result = object1.getModType().equals(object2.getModType());
-         }
+         result = object1.getModType().equals(object2.getModType());
       }
       return result;
    }

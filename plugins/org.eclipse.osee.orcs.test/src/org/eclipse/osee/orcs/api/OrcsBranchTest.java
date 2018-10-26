@@ -245,7 +245,7 @@ public class OrcsBranchTest {
          if (!contains) {
             for (ChangeItem act : actual) {
                if (act.getItemId().equals(expect.getItemId()) && act.getArtId().equals(
-                  expect.getArtId()) && act.getCurrentVersion().getModType().matches(ModificationType.INTRODUCED)) {
+                  expect.getArtId()) && act.getCurrentVersion().getModType().equals(ModificationType.INTRODUCED)) {
                   contains = true;
                   break;
                }

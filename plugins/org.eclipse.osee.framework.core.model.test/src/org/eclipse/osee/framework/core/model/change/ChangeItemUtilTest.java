@@ -107,7 +107,7 @@ public class ChangeItemUtilTest {
       item = ChangeTestUtility.createItem(200L, null, null, current, dest, null);
       assertFalse(ChangeItemUtil.isDeletedAndDoesNotExistInDestination(item));
 
-      dest = ChangeTestUtility.createChange(3333L, null);
+      dest = ChangeTestUtility.createChange(3333L, ModificationType.SENTINEL);
       item = ChangeTestUtility.createItem(200L, null, null, current, dest, null);
       assertTrue(ChangeItemUtil.isDeletedAndDoesNotExistInDestination(item));
    }
@@ -229,10 +229,9 @@ public class ChangeItemUtilTest {
 
    @Test
    public void testIsNewIntroducedDeleted() {
-      ChangeVersion object1 = ChangeTestUtility.createChange(200L, null);
+      ChangeVersion object1 = ChangeTestUtility.createChange(200L, ModificationType.SENTINEL);
       for (ModificationType modType : Arrays.asList(ARTIFACT_DELETED, DELETED, NEW, INTRODUCED)) {
-         object1.setModType(null);
-         Assert.assertNull(object1.getModType());
+         object1.setModType(ModificationType.SENTINEL);
 
          Assert.assertEquals(false, ChangeItemUtil.isNew(object1));
          Assert.assertEquals(false, ChangeItemUtil.isIntroduced(object1));
@@ -253,9 +252,8 @@ public class ChangeItemUtilTest {
 
    @Test
    public void testIsModType() {
-      ChangeVersion object1 = ChangeTestUtility.createChange(200L, null);
-      Assert.assertNull(object1.getModType());
-      Assert.assertEquals(true, ChangeItemUtil.isModType(object1, null));
+      ChangeVersion object1 = ChangeTestUtility.createChange(200L, ModificationType.SENTINEL);
+      Assert.assertTrue(ChangeItemUtil.isModType(object1, ModificationType.SENTINEL));
 
       for (ModificationType modType : Arrays.asList(ARTIFACT_DELETED, DELETED, NEW)) {
          object1.setModType(null);
@@ -294,7 +292,7 @@ public class ChangeItemUtilTest {
       ChangeVersion ver1 = ChangeTestUtility.createChange(111L, ModificationType.NEW);
       ChangeVersion ver2 = ChangeTestUtility.createChange(222L, ModificationType.MODIFIED);
       ChangeVersion ver3 = ChangeTestUtility.createChange(333L, ModificationType.DELETED);
-      ChangeVersion invalid = ChangeTestUtility.createChange(999L, null);
+      ChangeVersion invalid = ChangeTestUtility.createChange(999L, ModificationType.SENTINEL);
 
       try {
          ChangeItemUtil.getStartingVersion(null);
@@ -349,8 +347,8 @@ public class ChangeItemUtilTest {
 
    @Test
    public void testIsRessurectedOnNewItem() {
-      ChangeVersion base = ChangeTestUtility.createChange(0L, null);
-      ChangeVersion first = ChangeTestUtility.createChange(0L, null);
+      ChangeVersion base = ChangeTestUtility.createChange(0L, ModificationType.SENTINEL);
+      ChangeVersion first = ChangeTestUtility.createChange(0L, ModificationType.SENTINEL);
       ChangeVersion current = ChangeTestUtility.createChange(3333L, ModificationType.NEW);
       ChangeVersion destination = ChangeTestUtility.createChange(3333L, ModificationType.DELETED);
       ChangeVersion net = ChangeTestUtility.createChange(0L, null);

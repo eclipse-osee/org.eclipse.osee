@@ -25,7 +25,7 @@ public final class ChangeVersion {
    private String value;
 
    public ChangeVersion() {
-      this(null, null, null, null);
+      this(null, null, ModificationType.SENTINEL, null);
    }
 
    public ChangeVersion(GammaId gammaId, ModificationType modType, ApplicabilityToken appId) {
@@ -72,7 +72,7 @@ public final class ChangeVersion {
    }
 
    public boolean isValid() {
-      return getModType() != null && getGammaId() != null;// && getTransactionNumber() != null;
+      return getModType().isValid() && getGammaId() != null;// && getTransactionNumber() != null;
    }
 
    public void copy(ChangeVersion item) {

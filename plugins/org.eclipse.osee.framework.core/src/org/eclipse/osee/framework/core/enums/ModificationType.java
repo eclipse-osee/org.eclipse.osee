@@ -63,6 +63,19 @@ public interface ModificationType extends NamedId {
    // This should never appear in the database, it is only used by the gui to show applicability changes
    public static final ModificationType APPLICABILITY = internalCreate(10L, "Applicability");
 
+   public static final ModificationType[] values = new ModificationType[] {
+      SENTINEL,
+      NEW,
+      MODIFIED,
+      DELETED,
+      MERGED,
+      ARTIFACT_DELETED,
+      INTRODUCED,
+      UNDELETED,
+      REPLACED_WITH_VERSION,
+      DELETED_ON_DESTINATION,
+      APPLICABILITY};
+
    /**
     * This method is only public because all methods in an interface are and it should never be called outside of this
     * interface
@@ -85,30 +98,13 @@ public interface ModificationType extends NamedId {
     * @return The ModificationType that has the value passed.
     */
    public static ModificationType valueOf(long id) {
-      switch ((int) id) {
-         case 1:
-            return NEW;
-         case 2:
-            return MODIFIED;
-         case 3:
-            return DELETED;
-         case 4:
-            return MERGED;
-         case 5:
-            return ARTIFACT_DELETED;
-         case 6:
-            return INTRODUCED;
-         case 7:
-            return UNDELETED;
-         case 8:
-            return REPLACED_WITH_VERSION;
-         case 9:
-            return DELETED_ON_DESTINATION;
-         case 10:
-            return APPLICABILITY;
-         default:
-            throw new OseeArgumentException("[%s] is not a valid ModificationType value", id);
+      if (id == -1) {
+         return SENTINEL;
       }
+      if (id > values.length) {
+         throw new OseeArgumentException("[%s] is not a valid ModificationType value", id);
+      }
+      return values[(int) id];
    }
 
    default boolean isEdited() {
