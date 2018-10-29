@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.indexer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -60,6 +62,20 @@ public class QueryIndexerImpl implements QueryIndexer {
    @Override
    public void indexAttrTypeIds(Iterable<Long> attrTypeIds) {
       engineIndexer.indexAttrTypeIds(session, attributeTypes, attrTypeIds);
+   }
+
+   @Override
+   public void indexMissingByAttrTypeIds(Iterable<Long> attrTypeIds) {
+      engineIndexer.indexAttrTypeMissingOnly(attributeTypes, attrTypeIds);
+   }
+
+   @Override
+   public void indexMissing() {
+      List<Long> attrTypeIds = new ArrayList<>(1000);
+      for (AttributeTypeId attType : attributeTypes.getAllTaggable()) {
+         attrTypeIds.add(attType.getId());
+      }
+      indexMissingByAttrTypeIds(attrTypeIds);
    }
 
    @Override

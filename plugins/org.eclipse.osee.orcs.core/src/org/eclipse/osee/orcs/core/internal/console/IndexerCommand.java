@@ -17,9 +17,9 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryIndexer;
@@ -37,6 +37,7 @@ public class IndexerCommand implements ConsoleCommand {
       MISSING_ITEMS_ONLY,
       ITEM_IDS,
       ATTR_TYPE_IDS,
+      MISSING_BY_ATT_TYPE,
       CANCEL
    }
 
@@ -132,7 +133,8 @@ public class IndexerCommand implements ConsoleCommand {
                }
                break;
             case MISSING_ITEMS_ONLY:
-               indexOnlyMissingitems = true;
+               indexer.indexMissing();
+               break;
             case ALL:
                IndexStatusDisplayCollector collector = new IndexStatusDisplayCollector(console, startTime, false);
                Callable<?> callable = indexer.indexBranches(branches, indexOnlyMissingitems, collector);
@@ -141,10 +143,7 @@ public class IndexerCommand implements ConsoleCommand {
             case ITEM_IDS:
             case ATTR_TYPE_IDS:
                boolean printTags = params.getBoolean("debug");
-               Set<Long> ids = new LinkedHashSet<>();
-               for (String value : params.getArray("ids")) {
-                  ids.add(Long.parseLong(value));
-               }
+               Set<Long> ids = getIds();
                if (opType == OpType.ATTR_TYPE_IDS) {
                   indexer.indexAttrTypeIds(ids);
                } else {
@@ -153,6 +152,9 @@ public class IndexerCommand implements ConsoleCommand {
                   Callable<?> callable2 = indexer.indexResources(ids, collector2);
                   callable2.call();
                }
+               break;
+            case MISSING_BY_ATT_TYPE:
+               indexer.indexMissingByAttrTypeIds(getIds());
                break;
             case STATS:
             default:
@@ -163,5 +165,12 @@ public class IndexerCommand implements ConsoleCommand {
          return Boolean.TRUE;
       }
 
+      private Set<Long> getIds() {
+         Set<Long> ids = new LinkedHashSet<>();
+         for (String value : params.getArray("ids")) {
+            ids.add(Long.parseLong(value));
+         }
+         return ids;
+      }
    }
 }

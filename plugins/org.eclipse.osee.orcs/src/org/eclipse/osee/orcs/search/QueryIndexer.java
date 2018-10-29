@@ -30,6 +30,10 @@ public interface QueryIndexer {
 
    void indexAttrTypeIds(Iterable<Long> gammaIds);
 
+   void indexMissingByAttrTypeIds(Iterable<Long> attrTypeIds);
+
+   void indexMissing();
+
    CancellableCallable<Integer> deleteIndexByQueryId(int queueId);
 
    CancellableCallable<Integer> purgeAllIndexes();

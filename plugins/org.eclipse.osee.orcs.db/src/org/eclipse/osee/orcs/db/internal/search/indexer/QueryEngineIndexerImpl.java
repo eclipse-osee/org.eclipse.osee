@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -107,6 +108,28 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
          }
          System.out.println(String.format("Processed %d gammas for type %d", gammaIds.size(), attributeType));
          gammaIds.clear();
+      }
+   }
+
+   @Override
+   public void indexAttrTypeMissingOnly(AttributeTypes types, Iterable<Long> attrTypeIds) {
+      String MISSING_GAMMAS_BY_TYPE =
+         "SELECT DISTINCT att.gamma_id FROM OSEE_ATTRIBUTE att, osee_txs txs WHERE attr_type_id IN (" + Collections.toString(
+            ",",
+            attrTypeIds) + ") AND att.GAMMA_ID = txs.gamma_id AND txs.tx_current = 1 AND NOT EXISTS (SELECT 1 FROM osee_search_tags tag WHERE tag.gamma_id = att.gamma_id) AND length(value) > 1";
+      List<Long> gammaIds = new LinkedList<>();
+      try (JdbcStatement chStmt = jdbcClient.getStatement()) {
+         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, MISSING_GAMMAS_BY_TYPE);
+         while (chStmt.next()) {
+            gammaIds.add(chStmt.getLong("gamma_id"));
+         }
+      }
+      System.out.println("Found gammas to tag: " + gammaIds.size());
+      try {
+         new IndexerDatabaseCallable(logger, null, jdbcClient, joinFactory, types, consumer, null,
+            IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, gammaIds).call();
+      } catch (Exception ex) {
+         OseeCoreException.wrapAndThrow(ex);
       }
    }
 
