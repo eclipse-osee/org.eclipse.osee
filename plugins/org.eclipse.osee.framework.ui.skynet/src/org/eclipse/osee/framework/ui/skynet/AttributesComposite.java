@@ -199,7 +199,13 @@ public class AttributesComposite extends Composite implements IArtifactEventList
    }
 
    public void load() {
-      tableViewer.setInput(artifact);
+      Displays.ensureInDisplayThread(new Runnable() {
+
+         @Override
+         public void run() {
+            tableViewer.setInput(artifact);
+         }
+      });
    }
 
    public class AttributeNameSorter extends ViewerComparator {
