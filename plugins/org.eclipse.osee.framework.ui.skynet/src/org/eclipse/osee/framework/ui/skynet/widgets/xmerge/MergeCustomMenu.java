@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
-import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -24,9 +23,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
-import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -470,38 +467,24 @@ public class MergeCustomMenu extends XViewerCustomMenu {
 
       @Override
       public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
-         artifacts = new LinkedList<>();
+
          List<Conflict> conflicts = Handlers.getConflictsFromStructuredSelection(structuredSelection);
          for (Conflict conflict : conflicts) {
 
             try {
-               switch (partToPreview) {
-                  case 1:
-                     if (conflict.getSourceArtifact() != null) {
-                        artifacts.add(conflict.getSourceArtifact());
-                     }
-                     break;
-                  case 2:
-                     if (conflict.getDestArtifact() != null) {
-                        artifacts.add(conflict.getDestArtifact());
-                     }
-                     break;
-                  case 3:
-                     ConflictStatus status = conflict.getStatus();
-                     if (status.isInformational()) {
-                        return false;
-                     }
-                     if (conflict.getArtifact() != null) {
-                        artifacts.add(conflict.getArtifact());
-                     }
-                     break;
+               if (partToPreview == 3) {
+                  ConflictStatus status = conflict.getStatus();
+                  if (status.isInformational()) {
+                     return false;
+                  }
+
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
 
-         return AccessControlManager.hasPermission(artifacts, PermissionEnum.READ);
+         return true;
       }
    }
 

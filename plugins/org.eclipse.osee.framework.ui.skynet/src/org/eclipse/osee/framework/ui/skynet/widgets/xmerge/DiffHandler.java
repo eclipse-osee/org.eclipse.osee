@@ -11,13 +11,10 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
-import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -88,98 +85,88 @@ class DiffHandler extends AbstractSelectionEnabledHandler {
 
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
-      artifacts = new LinkedList<>();
+
       List<Conflict> conflicts = Handlers.getConflictsFromStructuredSelection(structuredSelection);
       if (conflicts.size() != 1) {
          return false;
       }
+
       if (conflicts.get(0) instanceof AttributeConflict) {
          attributeConflict = (AttributeConflict) conflicts.get(0);
          artifactConflict = null;
-         try {
-            switch (diffToShow) {
-               case 1:
-                  if (attributeConflict.getSourceArtifact() != null && MergeUtility.getStartArtifact(
-                     attributeConflict) != null) {
-                     artifacts.add(attributeConflict.getSourceArtifact());
-                     artifacts.add(MergeUtility.getStartArtifact(attributeConflict));
-                  } else {
-                     return false;
-                  }
-                  break;
-               case 2:
-                  if (attributeConflict.getDestArtifact() != null && MergeUtility.getStartArtifact(
-                     attributeConflict) != null) {
-                     artifacts.add(attributeConflict.getDestArtifact());
-                     artifacts.add(MergeUtility.getStartArtifact(attributeConflict));
-                  } else {
-                     return false;
-                  }
-                  break;
-               case 3:
-                  if (attributeConflict.getDestArtifact() != null && attributeConflict.getSourceArtifact() != null) {
-                     artifacts.add(attributeConflict.getSourceArtifact());
-                     artifacts.add(attributeConflict.getDestArtifact());
-                  } else {
-                     return false;
-                  }
-                  break;
-               case 4:
-                  if (attributeConflict.getSourceArtifact() != null && attributeConflict.getArtifact() != null) {
-                     artifacts.add(attributeConflict.getSourceArtifact());
-                     artifacts.add(attributeConflict.getArtifact());
-                  } else {
-                     return false;
-                  }
-                  break;
-               case 5:
-                  if (attributeConflict.getDestArtifact() != null && attributeConflict.getArtifact() != null) {
-                     artifacts.add(attributeConflict.getDestArtifact());
-                     artifacts.add(attributeConflict.getArtifact());
-                  } else {
-                     return false;
-                  }
-                  break;
-            }
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         boolean diffToShowChecker = diffToShowNullChecker();
+         if (diffToShowChecker == false) {
+            return diffToShowChecker;
          }
-
       } else if (conflicts.get(0) instanceof ArtifactConflict) {
          attributeConflict = null;
          artifactConflict = (ArtifactConflict) conflicts.get(0);
-         try {
-            switch (diffToShow) {
-               case 1:
-                  if (artifactConflict.getSourceArtifact() != null && MergeUtility.getStartArtifact(
-                     artifactConflict) != null) {
-                     artifacts.add(artifactConflict.getSourceArtifact());
-                     artifacts.add(MergeUtility.getStartArtifact(artifactConflict));
-                  } else {
-                     return false;
-                  }
-                  break;
-               case 2:
-                  if (artifactConflict.getDestArtifact() != null && conflicts.get(
-                     0).getStatus().isInformational() && MergeUtility.getStartArtifact(artifactConflict) != null) {
-                     artifacts.add(artifactConflict.getDestArtifact());
-                     artifacts.add(MergeUtility.getStartArtifact(artifactConflict));
-                  } else {
-                     return false;
-                  }
-                  break;
-               case 3:
+
+         boolean oneAndTwoChecker = diffToShowOneAndTwoChecker(conflicts);
+         if (oneAndTwoChecker == false) {
+            return oneAndTwoChecker;
+         }
+      }
+      return true;
+   }
+
+   private boolean diffToShowOneAndTwoChecker(List<Conflict> conflicts) {
+      try {
+
+         if (diffToShow <= 5 && diffToShow >= 1) {
+            if (diffToShow == 1) {
+               if (artifactConflict.getSourceArtifact() == null || MergeUtility.getStartArtifact(
+                  artifactConflict) == null) {
                   return false;
-               case 4:
+               }
+            } else if (diffToShow == 2) {
+               if (artifactConflict.getDestArtifact() == null || !conflicts.get(
+                  0).getStatus().isInformational() || MergeUtility.getStartArtifact(artifactConflict) == null) {
                   return false;
-               case 5:
-                  return false;
+               }
+            } else {
+               return false;
             }
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
 
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      return AccessControlManager.hasPermission(artifacts, PermissionEnum.READ);
+      return true;
+   }
+
+   private boolean diffToShowNullChecker() {
+      try {
+
+         if (diffToShow <= 5 && diffToShow >= 1) {
+            if (diffToShow == 1) {
+               if (attributeConflict.getSourceArtifact() == null || MergeUtility.getStartArtifact(
+                  attributeConflict) == null) {
+                  return false;
+               }
+            } else if (diffToShow == 2) {
+               if (attributeConflict.getDestArtifact() == null || MergeUtility.getStartArtifact(
+                  attributeConflict) == null) {
+                  return false;
+               }
+            } else if (diffToShow == 3) {
+               if (attributeConflict.getDestArtifact() == null || attributeConflict.getSourceArtifact() == null) {
+                  return false;
+               }
+            } else if (diffToShow == 4) {
+               if (attributeConflict.getSourceArtifact() == null || attributeConflict.getArtifact() == null) {
+                  return false;
+               }
+            } else {
+               if (attributeConflict.getDestArtifact() == null || attributeConflict.getArtifact() == null) {
+                  return false;
+               }
+            }
+         }
+
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return true;
    }
 }
