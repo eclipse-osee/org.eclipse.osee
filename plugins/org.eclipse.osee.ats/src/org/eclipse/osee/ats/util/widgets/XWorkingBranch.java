@@ -433,7 +433,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
          try {
             IOseeBranch workBranch = enablement.getWorkingBranch();
             String labelStr =
-               getLabel() + ": " + enablement.getStatus().getDisplayName() + (workBranch != null ? " - " + workBranch.getShortName() : "");
+               getLabel() + ": " + enablement.getStatus().getDisplayName() + (workBranch != null && workBranch.isValid() ? " - " + workBranch.getShortName() : "");
             labelWidget.setText(labelStr);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
