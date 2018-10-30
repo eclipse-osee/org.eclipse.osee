@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.util.IsEnabled;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -37,7 +38,7 @@ import org.eclipse.swt.widgets.Text;
 /**
  * @author Donald G. Dunne
  */
-public class NewPeerReviewDialog extends EntryDialog {
+public class NewPeerReviewDialog extends EntryDialog implements IsEnabled {
 
    private String relatedToState = "", reviewFormalType = "", blockingType = "";
    private final Collection<String> relatedToStates;
@@ -83,6 +84,7 @@ public class NewPeerReviewDialog extends EntryDialog {
       Pair<CheckBoxStateFilteredTreeViewer<IAtsActionableItem>, Text> results =
          NewActionPage1.createActionableItemTreeViewer(parent, null);
       treeViewer = results.getFirst();
+      treeViewer.setEnabledChecker(this);
    }
 
    public Set<IAtsActionableItem> getSelectedActionableItems() {
@@ -207,6 +209,14 @@ public class NewPeerReviewDialog extends EntryDialog {
       Control control = super.createButtonBar(parent);
       handleModified();
       return control;
+   }
+
+   @Override
+   public boolean isEnabled(Object obj) {
+      if (obj instanceof IAtsActionableItem) {
+         return ((IAtsActionableItem) obj).isActive() && ((IAtsActionableItem) obj).isActionable();
+      }
+      return false;
    }
 
 }

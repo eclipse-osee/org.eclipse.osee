@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
+import org.eclipse.osee.framework.ui.skynet.util.IsEnabled;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -67,7 +68,7 @@ import org.eclipse.swt.widgets.Text;
 /**
  * @author Donald G. Dunne
  */
-public class NewActionPage1 extends WizardPage {
+public class NewActionPage1 extends WizardPage implements IsEnabled {
    private final NewActionWizard wizard;
    private XWidgetPage page;
    protected CheckBoxStateFilteredTreeViewer<IAtsActionableItem> treeViewer;
@@ -119,6 +120,7 @@ public class NewActionPage1 extends WizardPage {
          Pair<CheckBoxStateFilteredTreeViewer<IAtsActionableItem>, Text> results =
             createActionableItemTreeViewer(comp, wizard.getSelectableAis());
          treeViewer = results.getFirst();
+         treeViewer.setEnabledChecker(this);
          descriptionLabel = results.getSecond();
          treeViewer.addCheckListener(new ICheckBoxStateTreeListener() {
             @Override
@@ -313,6 +315,14 @@ public class NewActionPage1 extends WizardPage {
 
    public CheckBoxStateFilteredTreeViewer<IAtsActionableItem> getTreeViewer() {
       return treeViewer;
+   }
+
+   @Override
+   public boolean isEnabled(Object obj) {
+      if (obj instanceof IAtsActionableItem) {
+         return ((IAtsActionableItem) obj).isActive() && ((IAtsActionableItem) obj).isActionable();
+      }
+      return false;
    }
 
 }

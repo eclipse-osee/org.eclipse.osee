@@ -18,6 +18,7 @@ import java.util.Set;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osee.framework.ui.skynet.util.IsEnabled;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.FilteredTree;
@@ -34,6 +35,7 @@ public class CheckBoxStateFilteredTreeViewer<T> extends FilteredTree implements 
    private final List<ICheckBoxStateTreeListener> listeners = new ArrayList<>();
    private final Set<T> checked = new HashSet<T>();
    private final Set<T> disabled = new HashSet<T>();
+   private IsEnabled enabledChecker = null;
 
    public CheckBoxStateFilteredTreeViewer(Composite parent, int style) {
       super(parent, style, new PatternFilter(), true);
@@ -58,6 +60,9 @@ public class CheckBoxStateFilteredTreeViewer<T> extends FilteredTree implements 
 
    @Override
    public boolean isEnabled(Object obj) {
+      if (enabledChecker != null) {
+         return enabledChecker.isEnabled(obj);
+      }
       return !this.disabled.contains(obj);
    }
 
@@ -135,5 +140,13 @@ public class CheckBoxStateFilteredTreeViewer<T> extends FilteredTree implements 
          }
          expandParents(parent);
       }
+   }
+
+   public IsEnabled getEnabledChecker() {
+      return enabledChecker;
+   }
+
+   public void setEnabledChecker(IsEnabled enabledChecker) {
+      this.enabledChecker = enabledChecker;
    }
 }
