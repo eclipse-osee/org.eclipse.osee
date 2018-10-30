@@ -27,11 +27,14 @@ public final class DirtyReportAction extends Action {
       setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DIRTY));
       setToolTipText("&Dirty Report");
       setText("&Dirty Report");
+      setToolTipText("Show what attribute or relation making artifact dirty.");
    }
 
    @Override
    public void run() {
       String rString = Artifacts.getDirtyReport(artifact);
-      AWorkbench.popup("Dirty Report", !Strings.isValid(rString) ? "Not Dirty" : "Dirty -> " + rString);
+      AWorkbench.popup("Dirty Report",
+         "NOTE: This only shows if the artifact is dirty and may not report if editor is dirty.\n\n" + (!Strings.isValid(
+            rString) ? "Not Dirty" : "Dirty -> " + rString));
    }
 }

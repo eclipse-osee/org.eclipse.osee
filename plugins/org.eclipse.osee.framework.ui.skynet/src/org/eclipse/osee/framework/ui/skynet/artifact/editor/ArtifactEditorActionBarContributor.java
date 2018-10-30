@@ -20,13 +20,10 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
@@ -70,7 +67,9 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
       }
       manager.add(new OpenArtifactInBrowserAction(artifact));
       manager.add(new Separator());
-      manager.add(new DirtyReportAction(artifact));
+      if (AccessControlManager.isOseeAdmin()) {
+         manager.add(new DirtyReportAction(artifact));
+      }
    }
 
    private Artifact getSelectedArtifact() {
@@ -168,34 +167,6 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
          } catch (Exception ex) {
             OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
          }
-      }
-   }
-
-   public static final class DirtyReportAction extends Action {
-      private final Artifact artifact;
-
-      public DirtyReportAction(Artifact artifact) {
-         super();
-         this.artifact = artifact;
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DIRTY));
-         setToolTipText("&Dirty Report");
-         setText("&Dirty Report");
-      }
-
-      @Override
-      public void run() {
-         String rString = null;
-         for (Attribute<?> attribute : artifact.internalGetAttributes()) {
-            if (attribute.isDirty()) {
-               rString = "Attribute: " + attribute.getNameValueDescription();
-               break;
-            }
-         }
-
-         if (rString == null) {
-            rString = RelationManager.reportHasDirtyLinks(artifact);
-         }
-         AWorkbench.popup("Dirty Report", !Strings.isValid(rString) ? "Not Dirty" : "Dirty -> " + rString);
       }
    }
 
