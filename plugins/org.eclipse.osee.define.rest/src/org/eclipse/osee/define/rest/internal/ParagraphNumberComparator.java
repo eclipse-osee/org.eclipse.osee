@@ -13,9 +13,10 @@ package org.eclipse.osee.define.rest.internal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -24,10 +25,10 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public final class ParagraphNumberComparator implements Comparator<ArtifactReadable> {
 
-   private final Log logger;
+   private final ActivityLog activityLog;
 
-   public ParagraphNumberComparator(Log logger) {
-      this.logger = logger;
+   public ParagraphNumberComparator(ActivityLog activityLog) {
+      this.activityLog = activityLog;
    }
 
    @Override
@@ -54,7 +55,7 @@ public final class ParagraphNumberComparator implements Comparator<ArtifactReada
          }
          return toReturn;
       } catch (Exception ex) {
-         logger.error(ex, "Error in paragraph number comparator");
+         activityLog.createThrowableEntry(CoreActivityTypes.OSEE_ERROR, ex);
       }
       return 1;
    }

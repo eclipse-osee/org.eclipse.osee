@@ -15,8 +15,8 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -27,11 +27,11 @@ public final class SafetyStreamingOutput implements StreamingOutput {
    private final OrcsApi orcsApi;
    private final BranchId branchId;
    private final String codeRoot;
-   private final Log logger;
+   private final ActivityLog activityLog;
    private final boolean validate;
 
-   public SafetyStreamingOutput(Log logger, OrcsApi orcsApi, BranchId branchId, String codeRoot, String isOn) {
-      this.logger = logger;
+   public SafetyStreamingOutput(ActivityLog activityLog, OrcsApi orcsApi, BranchId branchId, String codeRoot, String isOn) {
+      this.activityLog = activityLog;
       this.orcsApi = orcsApi;
       this.branchId = branchId;
       this.codeRoot = codeRoot;
@@ -43,10 +43,10 @@ public final class SafetyStreamingOutput implements StreamingOutput {
       try {
          Writer writer = new OutputStreamWriter(output);
          if (validate) {
-            ValidatingSafetyReportGenerator teamSafetyReport = new ValidatingSafetyReportGenerator(logger);
+            ValidatingSafetyReportGenerator teamSafetyReport = new ValidatingSafetyReportGenerator(activityLog);
             teamSafetyReport.runOperation(orcsApi, branchId, codeRoot, writer);
          } else {
-            SafetyReportGenerator safetyReport = new SafetyReportGenerator(logger);
+            SafetyReportGenerator safetyReport = new SafetyReportGenerator(activityLog);
             safetyReport.runOperation(orcsApi, branchId, codeRoot, writer);
          }
       } catch (Exception ex) {

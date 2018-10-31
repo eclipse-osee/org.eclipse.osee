@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -33,7 +34,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -50,7 +50,7 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
    private final QueryFactory queryApi;
    private final OrcsTypes types;
    private final IOseeBranch branch;
-   private final Log logger;
+   private final ActivityLog activityLog;
    private final Map<String, Integer> summarySubsystemCounter = new HashMap<>();
    private final Map<String, Integer> summaryTraceCounter = new HashMap<>();
    private final Map<String, Integer> summaryAllocationCounter = new HashMap<>();
@@ -60,8 +60,8 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
    private final String ALLOCATION_TRACE_TYPE = "Allocation Trace";
    private final Map<String, IArtifactType> allTypesMap = new HashMap<>();
 
-   public PublishLowHighReqStreamingOutput(Log logger, OrcsApi orcsApi, BranchId branch, String selectedTypes) {
-      this.logger = logger;
+   public PublishLowHighReqStreamingOutput(ActivityLog activityLog, OrcsApi orcsApi, BranchId branch, String selectedTypes) {
+      this.activityLog = activityLog;
       this.queryApi = orcsApi.getQueryFactory();
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       this.branch = query.andId(branch).getResultsAsId().getExactlyOne();
@@ -114,7 +114,7 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
          builtRows[i] = new StringBuilder();
       }
 
-      for (ArtifactReadable req : query.getResults().sort(new ParagraphNumberComparator(logger))) {
+      for (ArtifactReadable req : query.getResults().sort(new ParagraphNumberComparator(activityLog))) {
          boolean foundType = false;
          for (IArtifactType type : includeOnlyArtifactTypes) {
             if (req.isTypeEqual(type)) {
@@ -194,7 +194,7 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
       for (int i = 0; i < 9; i++) {
          builtRows[i] = new StringBuilder();
       }
-      for (ArtifactReadable req : query.getResults().sort(new ParagraphNumberComparator(logger))) {
+      for (ArtifactReadable req : query.getResults().sort(new ParagraphNumberComparator(activityLog))) {
          row[0] = row[1] = row[2] = row[3] = row[4] = row[5] = row[6] = row[7] = row[8] = "";
          for (int i = 0; i < 9; i++) {
             builtRows[i].setLength(0);

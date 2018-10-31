@@ -19,10 +19,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.app.OseeAppletPage;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -33,10 +33,10 @@ import org.eclipse.osee.orcs.OrcsApi;
 public final class SystemSafetyResource {
    private final OrcsApi orcsApi;
    private final IResourceRegistry resourceRegistry;
-   private final Log logger;
+   private final ActivityLog activityLog;
 
-   public SystemSafetyResource(Log logger, IResourceRegistry resourceRegistry, OrcsApi orcsApi) {
-      this.logger = logger;
+   public SystemSafetyResource(ActivityLog activityLog, IResourceRegistry resourceRegistry, OrcsApi orcsApi) {
+      this.activityLog = activityLog;
       this.resourceRegistry = resourceRegistry;
       this.orcsApi = orcsApi;
    }
@@ -52,7 +52,7 @@ public final class SystemSafetyResource {
    @GET
    @Produces(MediaType.APPLICATION_XML)
    public Response getSystemSafetyReport(@QueryParam("branch") BranchId branchId, @QueryParam("code_root") String codeRoot, @DefaultValue("on") @QueryParam("style") String validate) {
-      StreamingOutput streamingOutput = new SafetyStreamingOutput(logger, orcsApi, branchId, codeRoot, validate);
+      StreamingOutput streamingOutput = new SafetyStreamingOutput(activityLog, orcsApi, branchId, codeRoot, validate);
       ResponseBuilder builder = Response.ok(streamingOutput);
       builder.header("Content-Disposition", "attachment; filename=" + "Safety_Report.xml");
       return builder.build();

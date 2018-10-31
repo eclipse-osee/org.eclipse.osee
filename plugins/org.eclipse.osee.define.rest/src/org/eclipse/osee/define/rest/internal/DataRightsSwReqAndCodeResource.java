@@ -20,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.app.OseeAppletPage;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -31,7 +32,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -45,14 +45,15 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
 public final class DataRightsSwReqAndCodeResource {
    private final OrcsApi orcsApi;
    private final IResourceRegistry resourceRegistry;
-   private final Log logger;
+   private final ActivityLog activityLog;
+
    private final QueryFactory queryFactory;
 
-   public DataRightsSwReqAndCodeResource(Log logger, IResourceRegistry resourceRegistry, OrcsApi orcsApi) {
+   public DataRightsSwReqAndCodeResource(ActivityLog activityLog, IResourceRegistry resourceRegistry, OrcsApi orcsApi) {
       this.resourceRegistry = resourceRegistry;
       this.orcsApi = orcsApi;
       queryFactory = orcsApi.getQueryFactory();
-      this.logger = logger;
+      this.activityLog = activityLog;
    }
 
    /**
@@ -66,7 +67,7 @@ public final class DataRightsSwReqAndCodeResource {
       TraceMatch match = new TraceMatch("\\^SRS\\s*([^;]+);?", null);
       TraceAccumulator traceAccumulator = new TraceAccumulator(".*\\.(java|ada|ads|adb|c|h)", match);
       StreamingOutput streamingOutput =
-         new DataRightsStreamingOutput(orcsApi, branch, codeRoot, traceAccumulator, logger);
+         new DataRightsStreamingOutput(orcsApi, branch, codeRoot, traceAccumulator, activityLog);
 
       ResponseBuilder builder = Response.ok(streamingOutput);
       String fileName = "Req_Code_Data_Rights_Trace_Report.xml";

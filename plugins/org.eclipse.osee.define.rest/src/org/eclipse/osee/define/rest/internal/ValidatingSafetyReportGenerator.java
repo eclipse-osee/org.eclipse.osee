@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.define.rest.internal;
 
+import static org.eclipse.osee.framework.core.data.CoreActivityTypes.OSEE_ERROR;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.define.rest.internal.util.ComponentUtil;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -23,7 +25,6 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -34,7 +35,7 @@ public class ValidatingSafetyReportGenerator {
    private ComponentUtil componentUtil;
    private final TraceMatch match = new TraceMatch("\\^SRS\\s*([^;]+);?", "\\[?(\\{[^\\}]+\\})(.*)");
    private final TraceAccumulator traces = new TraceAccumulator(".*\\.(java|ada|ads|adb|c|h)", match);
-   private final Log logger;
+   private final ActivityLog activityLog;
 
    public static int SYSTEM_REQUIREMENT_INDEX = 8;
    public static int SUBSYSTEM_FUNCTION_INDEX = 9;
@@ -72,8 +73,8 @@ public class ValidatingSafetyReportGenerator {
       "SW CSU",
       "SW Code Unit"};
 
-   public ValidatingSafetyReportGenerator(Log logger) {
-      this.logger = logger;
+   public ValidatingSafetyReportGenerator(ActivityLog activityLog) {
+      this.activityLog = activityLog;
    }
 
    private void init(OrcsApi orcsApi, BranchId branchId, ISheetWriter writer) {
@@ -117,7 +118,7 @@ public class ValidatingSafetyReportGenerator {
             accumulator.buildSubsystemsRequirementsMap(systemFunction);
             String sevCat;
             if (systemFunction.getAttributes(CoreAttributeTypes.SeverityCategory).size() != 1) {
-               logger.debug("found too many attributes on %s", systemFunction.toString());
+               activityLog.createEntry(OSEE_ERROR, "found too many attributes on " + systemFunction.toString());
                sevCat = systemFunction.getAttributes(
                   CoreAttributeTypes.SeverityCategory).iterator().next().getDisplayableString();
             } else {

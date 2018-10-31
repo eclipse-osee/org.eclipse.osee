@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -33,7 +34,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.BranchQuery;
@@ -52,16 +52,17 @@ public final class DataRightsStreamingOutput implements StreamingOutput {
       new LinkedHashMap<CaseInsensitiveString, ArtifactReadable>();
    private final List<ArtifactReadable> noTraceReqs = new ArrayList<ArtifactReadable>();
    private ExcelXmlWriter writer;
-   private final Log logger;
+   private final ActivityLog activityLog;
    private static final IArtifactType WCAFE = TokenFactory.createArtifactType(204509162766367L, "WCAFE");
 
-   public DataRightsStreamingOutput(OrcsApi orcsApi, BranchId branch, String codeRoot, TraceAccumulator traceAccumulator, Log logger) {
+   public DataRightsStreamingOutput(OrcsApi orcsApi, BranchId branch, String codeRoot, TraceAccumulator traceAccumulator, ActivityLog activityLog) {
+
       this.queryFactory = orcsApi.getQueryFactory();
       BranchQuery branchQuery = orcsApi.getQueryFactory().branchQuery();
       this.branch = branchQuery.andId(branch).getResults().getExactlyOne();
       this.codeRoot = codeRoot.trim();
       this.traceAccumulator = traceAccumulator;
-      this.logger = logger;
+      this.activityLog = activityLog;
    }
 
    @Override
@@ -100,7 +101,7 @@ public final class DataRightsStreamingOutput implements StreamingOutput {
 
       QueryBuilder query = queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.AbstractSoftwareRequirement);
 
-      for (ArtifactReadable req : query.getResults().sort(new ParagraphNumberComparator(logger))) {
+      for (ArtifactReadable req : query.getResults().sort(new ParagraphNumberComparator(activityLog))) {
          if (req.isOfType(WCAFE)) {
             continue;
          }

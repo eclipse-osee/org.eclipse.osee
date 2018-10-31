@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.app.OseeAppletPage;
 import org.eclipse.osee.define.api.DefineApi;
 import org.eclipse.osee.define.api.TraceData;
@@ -30,7 +31,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
@@ -45,13 +45,13 @@ public final class TraceabilityResource {
    private final OrcsApi orcsApi;
    private final DefineApi defineApi;
    private final IResourceRegistry resourceRegistry;
-   private final Log logger;
+   private final ActivityLog activityLog;
 
-   public TraceabilityResource(Log logger, IResourceRegistry resourceRegistry, OrcsApi orcsApi, DefineApi defineApi) {
+   public TraceabilityResource(ActivityLog activityLog, IResourceRegistry resourceRegistry, OrcsApi orcsApi, DefineApi defineApi) {
       this.orcsApi = orcsApi;
       this.defineApi = defineApi;
       this.resourceRegistry = resourceRegistry;
-      this.logger = logger;
+      this.activityLog = activityLog;
    }
 
    /**
@@ -66,7 +66,8 @@ public final class TraceabilityResource {
       Conditions.checkNotNull(branch, "branch query param");
       Conditions.checkNotNull(selectedTypes, "selected_types query param");
 
-      StreamingOutput streamingOutput = new PublishLowHighReqStreamingOutput(logger, orcsApi, branch, selectedTypes);
+      StreamingOutput streamingOutput =
+         new PublishLowHighReqStreamingOutput(activityLog, orcsApi, branch, selectedTypes);
       String fileName = "Requirement_Trace_Report.xml";
 
       ResponseBuilder builder = Response.ok(streamingOutput);

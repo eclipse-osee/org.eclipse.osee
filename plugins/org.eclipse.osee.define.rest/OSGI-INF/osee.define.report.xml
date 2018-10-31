@@ -5,7 +5,7 @@
       <provide interface="javax.ws.rs.core.Application"/>
    </service>
    <reference bind="setOrcsApi" cardinality="1..1" interface="org.eclipse.osee.orcs.OrcsApi" name="OrcsApi" policy="static"/>
-   <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
+   <reference bind="setActivityLog" cardinality="1..1" interface="org.eclipse.osee.activity.api.ActivityLog" name="ActivityLog" policy="static"/>
 	<reference bind="setDefineApi" cardinality="1..1" interface="org.eclipse.osee.define.api.DefineApi" name="DefineApi" policy="static"/>
    <property name="osee.trace.myII.C_Test_Scripts.primary.regexs" type="String">[^_&quot;]CSID\s*\{\d+\s+(.+)\}
 [^_&quot;]CSID\s*(\{[^\{\}]+\})

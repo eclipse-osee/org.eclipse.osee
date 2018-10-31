@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.app.OseeAppResourceTokens;
 import org.eclipse.osee.define.api.DefineApi;
 import org.eclipse.osee.define.rest.DataRightsEndpointImpl;
@@ -23,7 +24,6 @@ import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -34,19 +34,19 @@ public final class DefineApplication extends Application {
    private final Set<Object> singletons = new HashSet<>();
    private OrcsApi orcsApi;
    private DefineApi defineApi;
-   private Log logger;
+   private ActivityLog activityLog;
    private JdbcService jdbcService;
 
    public void setDefineApi(DefineApi defineApi) {
       this.defineApi = defineApi;
    }
 
-   public void setOrcsApi(OrcsApi orcsApi) {
-      this.orcsApi = orcsApi;
+   public void setActivityLog(ActivityLog activityLog) {
+      this.activityLog = activityLog;
    }
 
-   public void setLogger(Log logger) {
-      this.logger = logger;
+   public void setOrcsApi(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
    }
 
    public void setJdbcService(JdbcService jdbcService) {
@@ -57,9 +57,9 @@ public final class DefineApplication extends Application {
       IResourceRegistry resourceRegistry = new ResourceRegistry();
       OseeAppResourceTokens.register(resourceRegistry);
       JdbcClient jdbcClient = jdbcService.getClient();
-      singletons.add(new SystemSafetyResource(logger, resourceRegistry, orcsApi));
-      singletons.add(new TraceabilityResource(logger, resourceRegistry, orcsApi, defineApi));
-      singletons.add(new DataRightsSwReqAndCodeResource(logger, resourceRegistry, orcsApi));
+      singletons.add(new SystemSafetyResource(activityLog, resourceRegistry, orcsApi));
+      singletons.add(new TraceabilityResource(activityLog, resourceRegistry, orcsApi, defineApi));
+      singletons.add(new DataRightsSwReqAndCodeResource(activityLog, resourceRegistry, orcsApi));
       singletons.add(new DataRightsEndpointImpl(defineApi));
       singletons.add(new MSWordEndpointImpl(defineApi));
       singletons.add(new DefineBranchEndpointImpl(jdbcClient, orcsApi));
