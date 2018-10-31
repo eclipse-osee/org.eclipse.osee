@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -39,7 +40,7 @@ public class Pdd85CreateProblemWithTheGraphViewActionTest implements IPopulateDe
       Assert.assertNotNull(teamWf);
 
       testTeamContents(teamWf, DemoArtifactToken.ProblemWithTheGraphView_TeamWf.getName(), "1", "",
-         TeamState.Implement.getName(), DemoArtifactToken.Adapter_AI.getName(), "Jason Michael",
+         TeamState.Implement.getName(), DemoArtifactToken.Adapter_AI.getName(), DemoUsers.Jason_Michael.getName(),
          DemoArtifactTypes.DemoReqTeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_HW));
 
       DemoUtil.setPopulateDbSuccessful(true);

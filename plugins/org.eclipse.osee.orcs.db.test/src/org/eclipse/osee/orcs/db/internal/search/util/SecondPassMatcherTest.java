@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.orcs.db.internal.search.SearchAsserts;
@@ -191,9 +192,9 @@ public class SecondPassMatcherTest {
       addTest(data, matcher, "Robot API", "Robot", QueryOption.CASE__MATCH, QueryOption.TOKEN_DELIMITER__ANY,
          QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_COUNT__IGNORE, true, getLocs(1, 5));
 
-      addTest(data, matcher, "Joe Smith", "joe", QueryOption.CASE__IGNORE, QueryOption.TOKEN_DELIMITER__ANY,
+      addTest(data, matcher, DemoUsers.Joe_Smith.getName(), "joe", QueryOption.CASE__IGNORE, QueryOption.TOKEN_DELIMITER__ANY,
          QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.TOKEN_COUNT__IGNORE, true, getLocs(1, 3));
-      addTest(data, matcher, "Joe Smith", "smith", QueryOption.CASE__IGNORE, QueryOption.TOKEN_DELIMITER__ANY,
+      addTest(data, matcher, DemoUsers.Joe_Smith.getName(), "smith", QueryOption.CASE__IGNORE, QueryOption.TOKEN_DELIMITER__ANY,
          QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.TOKEN_COUNT__IGNORE, true, getLocs(5, 9));
       return data;
    }

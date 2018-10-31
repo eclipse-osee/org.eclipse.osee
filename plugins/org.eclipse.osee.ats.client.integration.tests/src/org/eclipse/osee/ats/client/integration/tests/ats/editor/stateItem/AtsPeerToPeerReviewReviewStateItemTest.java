@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.client.integration.tests.ats.workflow.AtsTestUtil.At
 import org.eclipse.osee.ats.editor.stateItem.AtsPeerToPeerReviewReviewStateItem;
 import org.eclipse.osee.ats.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.workflow.review.PeerToPeerReviewState;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -69,7 +70,7 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
          peerRevArt.getStateMgr().getAssignees().iterator().next());
 
       // set roles
-      UserRole userRole = new UserRole(Role.Author, AtsClientService.get().getUserService().getUserByName("Joe Smith"));
+      UserRole userRole = new UserRole(Role.Author, AtsClientService.get().getUserService().getUserByName(DemoUsers.Joe_Smith.getName()));
       IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) peerRevArt).getRoleManager();
       roleMgr.addOrUpdateUserRole(userRole);
       userRole = new UserRole(Role.Reviewer, AtsClientService.get().getUserService().getUserByName("Alex Kay"));
@@ -102,7 +103,7 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
       Assert.assertEquals(2, peerRevArt.getStateMgr().getAssignees().size());
       boolean joeFound = false, alexFound = false;
       for (IAtsUser user : peerRevArt.getStateMgr().getAssignees()) {
-         if (user.getName().equals("Joe Smith")) {
+         if (user.getName().equals(DemoUsers.Joe_Smith.getName())) {
             joeFound = true;
          }
          if (user.getName().equals("Alex Kay")) {

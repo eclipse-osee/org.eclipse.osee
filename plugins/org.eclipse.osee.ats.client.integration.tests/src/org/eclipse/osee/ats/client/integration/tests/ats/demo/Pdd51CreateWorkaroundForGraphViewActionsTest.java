@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -50,7 +51,7 @@ public class Pdd51CreateWorkaroundForGraphViewActionsTest implements IPopulateDe
    }
 
    private String getAssignees(ArtifactToken version) {
-      return version.equals(DemoArtifactToken.SAW_Bld_1) ? "" : "Jason Michael";
+      return version.equals(DemoArtifactToken.SAW_Bld_1) ? "" : DemoUsers.Jason_Michael.getName();
    }
 
    private TeamState getState(ArtifactToken version) {

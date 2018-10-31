@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.demo.api.DemoWorkType;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -33,11 +34,11 @@ public class AssigneeColumnUITest {
 
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
-      Assert.assertEquals("Joe Smith",
+      Assert.assertEquals(DemoUsers.Joe_Smith.getName(),
          AssigneeColumnUI.getInstance().getColumnText(codeArt, AssigneeColumnUI.getInstance(), 0));
 
       Artifact actionArt = codeArt.getParentActionArtifact();
-      List<String> results = Arrays.asList("Kay Jones; Joe Smith", "Joe Smith; Kay Jones");
+      List<String> results = Arrays.asList(DemoUsers.Joe_Smith_And_Kay_Jones, DemoUsers.Kay_Jones_And_Joe_Smith);
       Assert.assertTrue(
          results.contains(AssigneeColumnUI.getInstance().getColumnText(actionArt, AssigneeColumnUI.getInstance(), 0)));
 

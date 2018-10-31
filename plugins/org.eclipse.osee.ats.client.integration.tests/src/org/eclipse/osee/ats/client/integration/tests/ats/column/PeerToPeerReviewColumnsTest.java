@@ -128,8 +128,7 @@ public class PeerToPeerReviewColumnsTest {
          ReviewAuthorColumn.getInstance().getColumnText(peerArt, null, 0));
       Assert.assertEquals(DemoUsers.Jason_Michael.getName(),
          ReviewModeratorColumn.getInstance().getColumnText(peerArt, null, 0));
-      List<String> results = Arrays.asList(DemoUsers.Kay_Jones.getName() + "; " + DemoUsers.Joe_Smith.getName(),
-         DemoUsers.Joe_Smith.getName() + "; " + DemoUsers.Kay_Jones.getName());
+      List<String> results = Arrays.asList(DemoUsers.Kay_Jones_And_Joe_Smith, DemoUsers.Joe_Smith_And_Kay_Jones);
       Assert.assertTrue(results.contains(ReviewReviewerColumn.getInstance().getColumnText(peerArt, null, 0)));
 
       TestUtil.severeLoggingEnd(loggingMonitor);

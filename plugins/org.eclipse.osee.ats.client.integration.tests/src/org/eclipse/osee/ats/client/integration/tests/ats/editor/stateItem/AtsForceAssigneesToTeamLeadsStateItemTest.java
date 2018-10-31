@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.editor.stateItem.AtsForceAssigneesToTeamLeadsStateItem;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -35,7 +36,7 @@ import org.junit.Test;
  */
 public class AtsForceAssigneesToTeamLeadsStateItemTest {
 
-   private static final String JOE_SMITH = "Joe Smith";
+   private static final String JOE_SMITH = DemoUsers.Joe_Smith.getName();
    private static final String ALEX_KAY = "Alex Kay";
 
    private static TeamWorkFlowArtifact teamArt;

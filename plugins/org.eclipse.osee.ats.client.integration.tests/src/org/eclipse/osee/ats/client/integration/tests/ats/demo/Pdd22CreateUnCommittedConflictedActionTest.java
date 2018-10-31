@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.ats.demo.api.DemoWorkflowTitles;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -42,7 +43,7 @@ public class Pdd22CreateUnCommittedConflictedActionTest implements IPopulateDemo
       Assert.assertNotNull(teamWf);
 
       testTeamContents(teamWf, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Requirements",
-         "Joe Smith", DemoArtifactTypes.DemoReqTeamWorkflow,
+         DemoUsers.Joe_Smith.getName(), DemoArtifactTypes.DemoReqTeamWorkflow,
          DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_Requirements));
 
       DemoUtil.setPopulateDbSuccessful(true);

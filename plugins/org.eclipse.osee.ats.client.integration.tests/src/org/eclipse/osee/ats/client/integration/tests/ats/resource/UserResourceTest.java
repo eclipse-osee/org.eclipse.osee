@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.resource;
 
 import org.codehaus.jackson.JsonNode;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,6 +28,6 @@ public class UserResourceTest extends AbstractRestTest {
       String json = getJson("/ats/user");
       JsonNode users = JsonUtil.readTree(json);
       Assert.assertTrue(users.size() >= 9);
-      Assert.assertEquals(3333, JsonUtil.getArrayElement(users, "name", "Joe Smith").get("id").asInt());
+      Assert.assertEquals(3333, JsonUtil.getArrayElement(users, "name", DemoUsers.Joe_Smith.getName()).get("id").asInt());
    }
 }

@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.workflow.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.workflow.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -72,8 +73,8 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
          String.format("PeerToPeer Review artifact should not be dirty [%s]", Artifacts.getDirtyReport(peerArt)),
          peerArt.isDirty());
       Assert.assertEquals(PeerToPeerReviewState.Prepare.getName(), peerArt.getCurrentStateName());
-      Assert.assertEquals("Joe Smith", peerArt.getStateMgr().getAssigneesStr());
-      Assert.assertEquals("Joe Smith", peerArt.getCreatedBy().getName());
+      Assert.assertEquals(DemoUsers.Joe_Smith.getName(), peerArt.getStateMgr().getAssigneesStr());
+      Assert.assertEquals(DemoUsers.Joe_Smith.getName(), peerArt.getCreatedBy().getName());
       Assert.assertEquals(AtsTestUtil.getAnalyzeStateDef().getName(),
          peerArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState));
 
@@ -97,7 +98,7 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
          String.format("PeerToPeer Review artifact should not be dirty [%s]", Artifacts.getDirtyReport(peerArt)),
          peerArt.isDirty());
       Assert.assertEquals(PeerToPeerReviewState.Prepare.getName(), peerArt.getCurrentStateName());
-      Assert.assertEquals("Joe Smith", peerArt.getStateMgr().getAssigneesStr());
+      Assert.assertEquals(DemoUsers.Joe_Smith.getName(), peerArt.getStateMgr().getAssigneesStr());
       Assert.assertEquals(AtsTestUtil.getAnalyzeStateDef().getName(),
          peerArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState));
 
@@ -121,7 +122,7 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
          String.format("PeerToPeer Review artifact should not be dirty [%s]", Artifacts.getDirtyReport(peerArt)),
          peerArt.isDirty());
       Assert.assertEquals(PeerToPeerReviewState.Prepare.getName(), peerArt.getCurrentStateName());
-      Assert.assertEquals("Joe Smith", peerArt.getStateMgr().getAssigneesStr());
+      Assert.assertEquals(DemoUsers.Joe_Smith.getName(), peerArt.getStateMgr().getAssigneesStr());
       Assert.assertEquals(AtsTestUtil.getTestAi(),
          peerArt.getSoleAttributeValue(AtsAttributeTypes.ActionableItemReference));
    }

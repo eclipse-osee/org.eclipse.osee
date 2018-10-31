@@ -266,7 +266,7 @@ public class OrcsQueryTest {
 
       for (String name : Arrays.asList("Alex Kay", "Anonymous", "Boot Strap", "Default Hierarchy Root",
          "Document Templates", "Everyone", "Framework Access Model", "Global Preferences", "Inactive Steve",
-         DemoUsers.Jason_Michael.getName(), "Joe Smith", "Kay Jones", "OSEE System", "OseeAdmin", "PREVIEW_ALL",
+         DemoUsers.Jason_Michael.getName(), DemoUsers.Joe_Smith.getName(), DemoUsers.Kay_Jones.getName(), "OSEE System", "OseeAdmin", "PREVIEW_ALL",
          "PREVIEW_ALL_RECURSE", "Root Artifact", "UnAssigned", "User Groups", "Word Edit Template",
          "Word Edit Template", "XViewer Global Customization", "org.eclipse.osee.client.demo.OseeTypes_ClientDemo",
          "org.eclipse.osee.framework.skynet.core.OseeTypes_Framework", "org.eclipse.osee.ote.define.OseeTypesOTE")) {

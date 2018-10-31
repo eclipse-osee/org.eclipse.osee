@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.account.rest.model.Link;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -64,7 +65,7 @@ public class EditLinksNavigateItem extends XNavigateItem implements FileChangedL
          "OSEE " + (global ? "Global" : "Personal") + " Links " + UserManager.getUser().toStringWithId() + "\n\n");
       sb.append("// Move items up and down to change order.\n// Change names, urls and tags without changing id.\n// " //
          + "Delete line to remove.\n// Copy existing link and clear id for new link.\n// Save to Update\n" //
-         + "// Example: {\"name\":\"Google\",\"url\":\"http://www.google.com\",\"id\":\"AOd9poc8Kz02K3K7xfwA\",\"team\":\"Joe Smith\",\"tags\":[]}\n\n");
+         + "// Example: {\"name\":\"Google\",\"url\":\"http://www.google.com\",\"id\":\"AOd9poc8Kz02K3K7xfwA\",\"team\":\"" + DemoUsers.Joe_Smith.getName() + "\",\"tags\":[]}\n\n");
       for (Link link : webPrefs.getLinks().values()) {
          sb.append(JsonUtil.getMapper().writeValueAsString(link) + "\n");
       }

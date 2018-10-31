@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.ats.demo.api.DemoWorkflowTitles;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -48,14 +49,14 @@ public class Pdd23CreateNoBranchActionTest implements IPopulateDemoDatabaseTest 
       Assert.assertNotNull(designTeamArt);
 
       testTeamContents(codeTeamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Code",
-         "Joe Smith", DemoArtifactTypes.DemoCodeTeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_Code));
+         DemoUsers.Joe_Smith.getName(), DemoArtifactTypes.DemoCodeTeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_Code));
       testTeamContents(testTeamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Test",
-         "Kay Jones", DemoArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_Test));
+         DemoUsers.Kay_Jones.getName(), DemoArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_Test));
       testTeamContents(reqTeamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Requirements",
-         "Joe Smith", DemoArtifactTypes.DemoReqTeamWorkflow,
+         DemoUsers.Joe_Smith.getName(), DemoArtifactTypes.DemoReqTeamWorkflow,
          DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_Requirements));
       testTeamContents(designTeamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW SW Design",
-         "Kay Jones", AtsArtifactTypes.TeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_SW_Design));
+         DemoUsers.Kay_Jones.getName(), AtsArtifactTypes.TeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_SW_Design));
 
       // test sw_design 1 peer and 1 decision review
       testSwDesign1PeerAnd1DecisionReview(designTeamArt);

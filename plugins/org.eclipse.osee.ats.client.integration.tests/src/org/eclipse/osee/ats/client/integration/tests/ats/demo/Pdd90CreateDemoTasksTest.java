@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.workflow.task.TaskStates;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -42,7 +43,7 @@ public class Pdd90CreateDemoTasksTest implements IPopulateDemoDatabaseTest {
       for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(teamWf)) {
          testTaskContents((TaskArtifact) task, TaskStates.InWork.getName(), TeamState.Implement.getName());
          taskNames.remove(task.getName());
-         Assert.assertEquals("Joe Smith; Kay Jones", task.getStateMgr().getAssigneesStr());
+         Assert.assertEquals(DemoUsers.Joe_Smith_And_Kay_Jones, task.getStateMgr().getAssigneesStr());
       }
       if (!taskNames.isEmpty()) {
          Assert.assertEquals(String.format("Not all tasks exist.  [%s] remain", taskNames), taskNames.size(),
@@ -55,7 +56,7 @@ public class Pdd90CreateDemoTasksTest implements IPopulateDemoDatabaseTest {
       for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(teamWf)) {
          testTaskContents((TaskArtifact) task, TaskStates.InWork.getName(), TeamState.Implement.getName());
          taskNames.remove(task.getName());
-         Assert.assertEquals("Joe Smith", task.getStateMgr().getAssigneesStr());
+         Assert.assertEquals(DemoUsers.Joe_Smith.getName(), task.getStateMgr().getAssigneesStr());
       }
       if (!taskNames.isEmpty()) {
          Assert.assertEquals(String.format("Not all tasks exist.  [%s] remain", taskNames), taskNames.size(),

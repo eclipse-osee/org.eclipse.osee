@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.ats.demo.api.DemoWorkflowTitles;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -50,16 +51,16 @@ public class Pdd21CreateUnCommittedActionTest implements IPopulateDemoDatabaseTe
       Assert.assertNotNull(designTeamArt);
 
       testTeamContents(codeTeamArt, DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "3",
-         SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Code", "Joe Smith",
+         SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Code", DemoUsers.Joe_Smith.getName(),
          DemoArtifactTypes.DemoCodeTeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_Code));
       testTeamContents(testTeamArt, DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "3",
-         SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Test", "Kay Jones",
+         SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Test", DemoUsers.Kay_Jones.getName(),
          DemoArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_Test));
       testTeamContents(reqTeamArt, DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "3",
-         SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Requirements", "Joe Smith",
+         SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Requirements", DemoUsers.Joe_Smith.getName(),
          DemoArtifactTypes.DemoReqTeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_Requirements));
       testTeamContents(designTeamArt, DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "3",
-         SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW SW Design", "Kay Jones",
+         SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW SW Design", DemoUsers.Kay_Jones.getName(),
          AtsArtifactTypes.TeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_SW_Design));
 
       DemoUtil.setPopulateDbSuccessful(true);

@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.client.demo.populate.Pdd92CreateDemoReviews;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.workflow.review.DecisionReviewState;
 import org.eclipse.osee.ats.workflow.review.PeerToPeerReviewState;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -40,7 +41,7 @@ public class Pdd92CreateDemoReviewsTest implements IPopulateDemoDatabaseTest {
       Assert.assertEquals("Should only 1 review", 1, reviews.size());
       IAtsAbstractReview review = reviews.iterator().next();
       testReviewContents(review, "Is the resolution of this Action valid?", DecisionReviewState.Followup.getName(),
-         "Joe Smith");
+         DemoUsers.Joe_Smith.getName());
 
       // test decision review2
       IAtsTeamWorkflow teamWf1 = DemoUtil.getProblemInDiagramTree_TeamWfWf();
@@ -65,9 +66,9 @@ public class Pdd92CreateDemoReviewsTest implements IPopulateDemoDatabaseTest {
       Assert.assertNotNull(rev1);
       Assert.assertNotNull(rev2);
       testReviewContents(rev1, "Peer Review algorithm used in code", PeerToPeerReviewState.Review.getName(),
-         new String[] {"Joe Smith", "Kay Jones"});
+         new String[] {DemoUsers.Joe_Smith.getName(), DemoUsers.Kay_Jones.getName()});
       testReviewContents(rev2, "Peer Review first set of code changes", PeerToPeerReviewState.Prepare.getName(),
-         "Joe Smith");
+         DemoUsers.Joe_Smith.getName());
 
       DemoUtil.setPopulateDbSuccessful(true);
    }

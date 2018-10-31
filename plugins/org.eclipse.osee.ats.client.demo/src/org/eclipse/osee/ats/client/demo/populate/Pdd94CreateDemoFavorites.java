@@ -25,13 +25,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class Pdd94CreateDemoFavorites {
 
    public void run() throws Exception {
-      // Mark all CIS Code "Team Workflows" as Favorites for "Joe Smith"
+      // Mark all CIS Code "Team Workflows" as Favorites for Joe Smith
       for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(DemoArtifactTypes.DemoCodeTeamWorkflow,
          "Diagram View", AtsClientService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)) {
          new FavoritesManager((AbstractWorkflowArtifact) art).toggleFavorite(false);
       }
 
-      // Mark all Tools Team "Team Workflows" as Subscribed for "Joe Smith"
+      // Mark all Tools Team "Team Workflows" as Subscribed for Joe Smith
       for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(DemoArtifactTypes.DemoCodeTeamWorkflow, "Even",
          AtsClientService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)) {
          new SubscribeManagerUI((AbstractWorkflowArtifact) art).toggleSubscribe(false);

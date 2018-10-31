@@ -79,7 +79,7 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
             Artifacts.getDirtyReport((AtsClientService.get().getQueryServiceClient().getArtifact(decRev)))),
          AtsClientService.get().getQueryServiceClient().getArtifact(decRev).isDirty());
       Assert.assertEquals(DecisionReviewState.Decision.getName(), decRev.getStateMgr().getCurrentStateName());
-      Assert.assertEquals("Joe Smith", decRev.getStateMgr().getAssigneesStr());
+      Assert.assertEquals(DemoUsers.Joe_Smith.getName(), decRev.getStateMgr().getAssigneesStr());
 
    }
 
@@ -172,7 +172,7 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       Assert.assertNotNull(decRev);
       Assert.assertEquals("Should we do this?  Yes will require followup, No will not", decRev.getName());
       Assert.assertEquals(DecisionReviewState.Prepare.getName(), decRev.getStateMgr().getCurrentStateName());
-      Assert.assertEquals("Joe Smith", decRev.getStateMgr().getAssigneesStr());
+      Assert.assertEquals(DemoUsers.Joe_Smith.getName(), decRev.getStateMgr().getAssigneesStr());
       Assert.assertEquals(TeamState.Analyze.getName(),
          AtsClientService.get().getAttributeResolver().getSoleAttributeValue(decRev, AtsAttributeTypes.RelatedToState,
             ""));

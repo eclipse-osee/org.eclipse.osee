@@ -26,6 +26,9 @@ public final class DemoUsers {
    public static final UserToken Alex_Kay = UserToken.create(8006939, "Alex Kay", "", "6666", true, false, false);
    public static final UserToken Inactive_Steve = UserToken.create(5808093, "Inactive Steve", "insactiveSteve@boeing.com", "7777", false, false, false);
    public static List<UserToken> values = Arrays.asList(Joe_Smith, Kay_Jones, Jason_Michael, Alex_Kay, Inactive_Steve);
+
+   public static final String Joe_Smith_And_Kay_Jones = DemoUsers.Joe_Smith.getName() + "; " + DemoUsers.Kay_Jones.getName();
+   public static final String Kay_Jones_And_Joe_Smith = DemoUsers.Kay_Jones.getName() + "; " + DemoUsers.Joe_Smith.getName();
    // @formatter:on
 
    private DemoUsers() {

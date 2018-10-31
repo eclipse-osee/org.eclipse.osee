@@ -29,6 +29,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
@@ -69,7 +70,7 @@ public class OseeClientQueryTest {
    public void searchForArtifactByName() {
       final int EXPECTED_RESULTS = 1;
       SearchResult results =
-         oseeClient.createQueryBuilder(COMMON).andNameEquals("Joe Smith").getSearchResult(RequestType.IDS);
+         oseeClient.createQueryBuilder(COMMON).andNameEquals(DemoUsers.Joe_Smith.getName()).getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 

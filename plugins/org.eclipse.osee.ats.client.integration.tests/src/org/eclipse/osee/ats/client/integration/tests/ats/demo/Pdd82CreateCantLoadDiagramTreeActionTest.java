@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -39,7 +40,7 @@ public class Pdd82CreateCantLoadDiagramTreeActionTest implements IPopulateDemoDa
       Assert.assertNotNull(teamWf);
 
       testTeamContents(teamWf, DemoArtifactToken.CantLoadDiagramTree_TeamWf.getName(), "3", "",
-         TeamState.Endorse.getName(), DemoArtifactToken.CIS_Test_AI.getName(), "Kay Jones",
+         TeamState.Endorse.getName(), DemoArtifactToken.CIS_Test_AI.getName(), DemoUsers.Kay_Jones.getName(),
          DemoArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.CIS_Test));
 
       DemoUtil.setPopulateDbSuccessful(true);

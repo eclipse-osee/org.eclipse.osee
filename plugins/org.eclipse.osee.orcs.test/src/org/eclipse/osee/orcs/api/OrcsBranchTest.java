@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -51,7 +52,7 @@ import org.junit.rules.TestRule;
  */
 public class OrcsBranchTest {
 
-   private static final String ARTIFACT_NAME = "Joe Smith";
+   private static final String ARTIFACT_NAME = DemoUsers.Joe_Smith.getName();
 
    @Rule
    public TestRule osgi = integrationRule(this);

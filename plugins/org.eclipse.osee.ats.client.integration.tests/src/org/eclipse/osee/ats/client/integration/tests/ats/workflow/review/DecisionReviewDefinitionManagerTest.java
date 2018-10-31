@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.workflow.review.DecisionReviewState;
 import org.eclipse.osee.ats.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -126,7 +127,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
 
       Assert.assertEquals(DecisionReviewState.Prepare.getName(), decArt.getCurrentStateName());
       // Current user assigned if non specified
-      Assert.assertEquals("Joe Smith", decArt.getStateMgr().getAssigneesStr());
+      Assert.assertEquals(DemoUsers.Joe_Smith.getName(), decArt.getStateMgr().getAssigneesStr());
       Assert.assertEquals(ReviewBlockType.Commit.name(), decArt.getSoleAttributeValue(AtsAttributeTypes.ReviewBlocks));
       Assert.assertEquals("This is the title", decArt.getName());
       Assert.assertEquals("the description", decArt.getSoleAttributeValue(AtsAttributeTypes.Description));
