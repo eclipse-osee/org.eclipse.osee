@@ -52,8 +52,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -608,33 +606,6 @@ public final class Lib {
    }
 
    /**
-    * Use Processes.handleProcess(Process process, Writer output) instead
-    */
-   @Deprecated
-   public static int handleProcess(Process proc, Writer output) {
-      try {
-         return Processes.handleProcess(proc, output);
-      } catch (InterruptedException ex) {
-         ex.printStackTrace();
-         return -1;
-      } catch (ExecutionException ex) {
-         ex.printStackTrace();
-         return -1;
-      } catch (TimeoutException ex) {
-         ex.printStackTrace();
-         return -1;
-      }
-   }
-
-   /**
-    * Use Processes.handleProcess(Process process) instead
-    */
-   @Deprecated
-   public static int handleProcess(Process process) {
-      return Processes.handleProcess(process);
-   }
-
-   /**
     * Sets up an error, input, and output stream for the given process. The error stream gives all information coming
     * FROM the process through it's err stream. The "outThread" will be what come from the FROM the process through it's
     * normal output stream. The "inThread" is the stream for issuing commands TO the process.
@@ -749,10 +720,6 @@ public final class Lib {
          // part of the loop
       }
       return new String(chars);
-   }
-
-   public static int printAndExec(String[] callAndArgs) {
-      return Processes.executeCommandToStdOut(callAndArgs);
    }
 
    public static ArrayList<String> readListFromDir(File directory, FilenameFilter filter, boolean keepExtension) {
@@ -1609,24 +1576,6 @@ public final class Lib {
          Lib.close(out);
       }
       return out.toByteArray();
-   }
-
-   public static void chmod777(File file) {
-      if (file != null && file.exists()) {
-         Process process = null;
-         try {
-            ProcessBuilder builder = new ProcessBuilder("chmod", "777", file.getAbsolutePath());
-            process = builder.start();
-
-            Lib.handleProcess(process);
-         } catch (IOException ioe) {
-            ioe.printStackTrace();
-         } finally {
-            if (process != null) {
-               process.destroy();
-            }
-         }
-      }
    }
 
    public static String getSortedJavaArrayInitializer(String[] strings) {

@@ -105,7 +105,6 @@ public class BaseBrokerTesting {
          Process process = builder.start();
          Thread th = new Thread(new OutputReader(System.out, process.getInputStream()));
          th.start();
-         //         threads = Lib.handleProcessNoWait(process, new PrintWriter(System.out));
          Thread.sleep(30000);
       } catch (MalformedURLException ex) {
          OseeLog.log(BaseBrokerTesting.class, Level.SEVERE, ex);
