@@ -340,15 +340,8 @@ public class OrcsStorageImpl implements Storage {
    private void updateSingleItem(ArtifactReadable author, BranchId branch, ArtifactReadable currentItemArt, DispoItem newItemData, TransactionBuilder tx, boolean resetRerunFlag, DispoStorageMetadata metadata) {
       Date lastUpdate = newItemData.getLastUpdate();
       String name = newItemData.getName();
-      Map<String, Discrepancy> newDiscrepancies = new HashMap<>();
-      if (newItemData.getDiscrepanciesList() != null) {
-         newDiscrepancies = newItemData.getDiscrepanciesList();
-      }
-      List<DispoAnnotationData> newAnnotations = new LinkedList<>();
-      if (newItemData.getAnnotationsList() != null) {
-         newAnnotations = newItemData.getAnnotationsList();
-      }
-
+      Map<String, Discrepancy> newDiscrepancies = newItemData.getDiscrepanciesList();
+      List<DispoAnnotationData> newAnnotations = newItemData.getAnnotationsList();
       String status = newItemData.getStatus();
       String assignee = newItemData.getAssignee();
       String totalPoints = newItemData.getTotalPoints();

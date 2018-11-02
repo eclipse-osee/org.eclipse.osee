@@ -35,7 +35,6 @@ app.controller('userController', [
                 cursor: 'row-resize'
             });
         }
-        console.log(window.value);
         // if this is a search result view, populate program, set and items from parent scope
         if (window.opener != undefined && window.opener != null && window.parentScope != undefined) {
             if(!$scope.isFirstSplit) {
@@ -550,12 +549,18 @@ app.controller('userController', [
                     $scope.createAnnotation(annotation);
                 }
             } else {
-            	// Create a copy of the new object but remove the parent ref because JSON Stringify cannot handle circular references
-            	// Stringify gets called because the payload needs to be parsed on transmit
-            	// Might not need to do a clone but since this is a PUT and not a PATCH we send the entire object as is not just the single field that was updated
+            	// We do a clone for two reasons 
+            	// 1. this is a PUT and not a PATCH we send the entire object as is not just the single field that was updated
+            	// 2. we need to strip fields before sending so we don't want to change the annotation being rendered
             	var newAnnotation = $scope.cloneObj(annotation);
             	newAnnotation.parentRef = null;
-            	
+            	// remove any field used strictly for UI Tree rendering purposes - server side parser will throw unknown field exception 
+            	// since those fields are not present in the java object DispoAnnotationData
+            	delete newAnnotation['children'];
+            	delete newAnnotation['isLeaf'];
+            	// Removing the parent ref is extra important because JSON Stringify cannot handle circular references
+            	// Stringify gets called because the payload needs to be parsed on transmit
+            	delete newAnnotation['parentRef'];
             	
                 Annotation.update({
                     programId: $scope.programSelection,
