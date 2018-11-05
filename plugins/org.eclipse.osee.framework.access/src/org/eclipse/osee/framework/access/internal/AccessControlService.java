@@ -439,10 +439,11 @@ public class AccessControlService implements IAccessControlService {
             }
          }
       }
+      // user does not have entry in the branch access control table for this branch
       if (userPermission == null) {
-         if (!CoreBranches.COMMON.equals(accessObject.getBranch()) && BranchManager.getType(
-            accessObject.getBranch()).isBaselineBranch()) {
-            userPermission = PermissionEnum.READ;
+         // If there are any other access on this branch, it's locked for this user
+         if (objectToSubjectCache.containsKey(accessObject)) {
+            userPermission = PermissionEnum.DENY;
          } else {
             userPermission = PermissionEnum.FULLACCESS;
          }

@@ -19,6 +19,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 public interface IAccessControlService {
 
+   /**
+    * @param object Artifact, Branch or collection of either
+    */
    boolean hasPermission(Object object, PermissionEnum permission) throws OseeCoreException;
 
    void removePermissions(BranchId branch) throws OseeCoreException;

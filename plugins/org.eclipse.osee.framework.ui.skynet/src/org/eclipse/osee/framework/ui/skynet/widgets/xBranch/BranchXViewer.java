@@ -15,10 +15,13 @@ import java.util.Collection;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.MergeBranch;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -27,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.util.PromptChangeUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget.IBranchWidgetMenuListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
@@ -48,23 +52,32 @@ public class BranchXViewer extends XViewer {
 
    @Override
    public void handleDoubleClick() {
+      XResultData rd = new XResultData();
       ArrayList<BranchId> branches = xBranchViewer.getSelectedBranches();
       if (branches != null && !branches.isEmpty()) {
          for (BranchId branch : branches) {
-            if (!branch.equals(CoreBranches.SYSTEM_ROOT)) {
-               if (!BranchManager.getType(branch).isMergeBranch()) {
-                  ArtifactExplorer.exploreBranch(branch);
-                  BranchManager.setLastBranch(branch);
-               } else {
-                  if (branch instanceof MergeBranch) {
-                     MergeBranch mergeBranch = (MergeBranch) branch;
-                     IOseeBranch source = mergeBranch.getSourceBranch();
-                     IOseeBranch destination = mergeBranch.getDestinationBranch();
-                     MergeView.openView(source, destination, BranchManager.getBaseTransaction(source));
+            boolean hasPermission = AccessControlManager.hasPermission(branch, PermissionEnum.READ);
+            if (hasPermission) {
+               if (!branch.equals(CoreBranches.SYSTEM_ROOT)) {
+                  if (!BranchManager.getType(branch).isMergeBranch()) {
+                     ArtifactExplorer.exploreBranch(branch);
+                     BranchManager.setLastBranch(branch);
+                  } else {
+                     if (branch instanceof MergeBranch) {
+                        MergeBranch mergeBranch = (MergeBranch) branch;
+                        IOseeBranch source = mergeBranch.getSourceBranch();
+                        IOseeBranch destination = mergeBranch.getDestinationBranch();
+                        MergeView.openView(source, destination, BranchManager.getBaseTransaction(source));
+                     }
                   }
                }
+            } else {
+               rd.errorf("Access Restricted on branch %s\n", BranchManager.toStringWithId(branch));
             }
          }
+      }
+      if (rd.isErrors()) {
+         XResultDataUI.report(rd, "Branch Access Denied");
       }
    }
 

@@ -731,4 +731,8 @@ public final class BranchManager {
    public static String getBranchShortName(TransactionToken tx) {
       return getBranch(tx.getBranch()).getShortName();
    }
+
+   public static String toStringWithId(BranchId branch) {
+      return getBranch(branch).toStringWithId();
+   }
 }
