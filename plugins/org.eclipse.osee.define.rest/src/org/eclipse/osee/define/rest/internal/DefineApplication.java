@@ -20,6 +20,7 @@ import org.eclipse.osee.app.OseeAppResourceTokens;
 import org.eclipse.osee.define.api.DefineApi;
 import org.eclipse.osee.define.rest.DataRightsEndpointImpl;
 import org.eclipse.osee.define.rest.MSWordEndpointImpl;
+import org.eclipse.osee.define.rest.TraceabilityEndpointImpl;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -58,7 +59,7 @@ public final class DefineApplication extends Application {
       OseeAppResourceTokens.register(resourceRegistry);
       JdbcClient jdbcClient = jdbcService.getClient();
       singletons.add(new SystemSafetyResource(activityLog, resourceRegistry, orcsApi));
-      singletons.add(new TraceabilityResource(activityLog, resourceRegistry, orcsApi, defineApi));
+      singletons.add(new TraceabilityEndpointImpl(activityLog, resourceRegistry, orcsApi, defineApi));
       singletons.add(new DataRightsSwReqAndCodeResource(activityLog, resourceRegistry, orcsApi));
       singletons.add(new DataRightsEndpointImpl(defineApi));
       singletons.add(new MSWordEndpointImpl(defineApi));
