@@ -24,6 +24,8 @@ public final class CoreAttributeTypes {
    public static final AttributeTypeToken Annotation = AttributeTypeToken.valueOf(1152921504606847094L, "Annotation");
    public static final AttributeTypeToken ArtifactReference = AttributeTypeToken.valueOf(1153126013769613560L, "Artifact Reference");
    public static final AttributeTypeToken PlainTextContent = AttributeTypeToken.valueOf(1152921504606847866L, "Plain Text Content");
+   public static final AttributeTypeToken BaselinedBy = AttributeTypeToken.valueOf(1152921504606847247L, "Baselined By");
+   public static final AttributeTypeToken BaselinedTimestamp = AttributeTypeToken.valueOf(1152921504606847244L, "Baselined Timestamp");
    public static final AttributeTypeToken BranchReference = AttributeTypeToken.valueOf(1153126013769613563L, "Branch Reference");
    public static final AttributeTypeToken Category = AttributeTypeToken.valueOf(1152921504606847121L, "Category");
    public static final AttributeTypeToken CircuitBreakerId = AttributeTypeToken.valueOf(188458869981238L, "Circuit Breaker ID");
@@ -89,6 +91,8 @@ public final class CoreAttributeTypes {
    public static final AttributeTypeToken RelationOrder = AttributeTypeToken.valueOf(1152921504606847089L, "Relation Order");
    public static final AttributeTypeToken RendererOptions = AttributeTypeToken.valueOf(904, "Renderer Options");
    public static final AttributeTypeToken RepositoryUrl = AttributeTypeToken.valueOf(1152921504606847700L, "Repository URL");
+   public static final AttributeTypeToken ReviewId = AttributeTypeToken.valueOf(1152921504606847245L, "Review Id");
+   public static final AttributeTypeToken ReviewStoryId = AttributeTypeToken.valueOf(1152921504606847246L, "Review Story Id");
    public static final AttributeTypeToken RequireConfirmation = AttributeTypeToken.valueOf(188458869981239L, "Require Confirmation");
    public static final AttributeTypeToken Sfha = AttributeTypeToken.valueOf(1152921504606847140L, "SFHA");
    public static final AttributeTypeToken SafetySeverity = AttributeTypeToken.valueOf(846763346271224762L, "Safety Severity");

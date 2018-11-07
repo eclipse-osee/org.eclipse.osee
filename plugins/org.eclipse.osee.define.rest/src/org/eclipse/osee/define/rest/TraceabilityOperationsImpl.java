@@ -10,35 +10,70 @@
  *******************************************************************************/
 package org.eclipse.osee.define.rest;
 
+import static org.eclipse.osee.define.api.DefineTupleTypes.GitLatest;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractSoftwareRequirement;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.CertificationBaselineEvent;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.CodeUnit;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GitCommit;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.BaselinedBy;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.BaselinedTimestamp;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChangeId;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitCommitAuthorDate;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitCommitSHA;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ReviewId;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ReviewStoryId;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.UserId;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.SupportingInfo_SupportingInfo;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.ws.rs.WebApplicationException;
+import org.eclipse.osee.define.api.CertBaselineData;
+import org.eclipse.osee.define.api.CertFileData;
+import org.eclipse.osee.define.api.GitOperations;
 import org.eclipse.osee.define.api.TraceData;
 import org.eclipse.osee.define.api.TraceabilityOperations;
 import org.eclipse.osee.define.rest.internal.TraceReportGenerator;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.TriConsumer;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.search.TupleQuery;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Ryan D. Brooks
  */
-public class TraceabilityOperationsImpl implements TraceabilityOperations {
+public final class TraceabilityOperationsImpl implements TraceabilityOperations {
 
    private final OrcsApi orcsApi;
+   private final QueryFactory queryFactory;
+   private final TupleQuery tupleQuery;
+   private final GitOperations gitOps;
 
-   public TraceabilityOperationsImpl(OrcsApi orcsApi) {
+   public TraceabilityOperationsImpl(OrcsApi orcsApi, GitOperations gitOperations) {
       this.orcsApi = orcsApi;
+      this.queryFactory = orcsApi.getQueryFactory();
+      this.tupleQuery = queryFactory.tupleQuery();
+      this.gitOps = gitOperations;
    }
 
    @Override
@@ -53,15 +88,15 @@ public class TraceabilityOperationsImpl implements TraceabilityOperations {
 
    @Override
    public TraceData getSrsToImpd(BranchId branch, ArtifactTypeId excludeType) {
-      ResultSet<ArtifactReadable> allSwReqs = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(
-         CoreArtifactTypes.AbstractSoftwareRequirement).getResults();
+      ResultSet<ArtifactReadable> allSwReqs =
+         queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.AbstractSoftwareRequirement).getResults();
 
       List<String> swReqs =
          allSwReqs.getList().stream().filter(req -> excludeType.isInvalid() || !req.isOfType(excludeType)).map(
             req -> req.getName()).collect(Collectors.toList());
 
       ResultSet<ArtifactReadable> impds =
-         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.ImplementationDetails).getResults();
+         queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.ImplementationDetails).getResults();
 
       Map<String, String[]> impdMap = new HashMap<>();
       for (ArtifactReadable impd : impds) {
@@ -95,5 +130,158 @@ public class TraceabilityOperationsImpl implements TraceabilityOperations {
          cursor = cursor.getParent();
       }
       return null;
+   }
+
+   @Override
+   public ArtifactId baselineFiles(BranchId branch, ArtifactReadable repoArtifact, CertBaselineData baselineData, UserId account, TransactionBuilder tx, String password) {
+      ArtifactId baselineEvent = tx.createArtifact(repoArtifact, CertificationBaselineEvent, baselineData.eventName);
+
+      ArtifactId baselinedByUser =
+         queryFactory.fromBranch(COMMON).and(UserId, baselineData.baselinedByUserId).loadArtifactId();
+
+      ArtifactId baselineCommit = gitOps.getCommitArtifactId(branch, baselineData.changeId);
+      if (baselineCommit.isInvalid()) {
+         gitOps.updateGitTrackingBranch(branch, repoArtifact, account, null, true, password, false);
+         baselineCommit = gitOps.getCommitArtifactId(branch, baselineData.changeId);
+         if (baselineCommit.isInvalid()) {
+            throw new OseeArgumentException("No commit with change id [%s] can be found", baselineData.changeId);
+         }
+      }
+
+      tx.setSoleAttributeValue(baselineEvent, GitChangeId, baselineData.changeId);
+      tx.setSoleAttributeValue(baselineEvent, BaselinedBy, baselinedByUser);
+      Date baselinedTimestamp = baselineData.baselinedTimestamp == null ? new Date() : baselineData.baselinedTimestamp;
+      tx.setSoleAttributeValue(baselineEvent, BaselinedTimestamp, baselinedTimestamp);
+      if (baselineData.reviewId != null) {
+         tx.setSoleAttributeValue(baselineEvent, ReviewId, baselineData.reviewId);
+      }
+      if (baselineData.reviewStoryId != null) {
+         tx.setSoleAttributeValue(baselineEvent, ReviewStoryId, baselineData.reviewStoryId);
+      }
+
+      for (String path : baselineData.files) {
+         ArtifactId codeUnit = loadCodeUnit(repoArtifact, branch, path);
+         if (codeUnit.isInvalid()) {
+            throw new OseeArgumentException("No code unit found for path [%s]", path);
+         }
+         tx.relate(baselineEvent, CoreRelationTypes.SupportingInfo_SupportedBy, codeUnit);
+         updateLGitLatestTuple(repoArtifact, branch, tx, codeUnit, baselineCommit);
+      }
+
+      return baselineEvent;
+   }
+
+   @Override
+   public ArtifactId baselineFiles(BranchId branch, ArtifactReadable repoArtifact, CertBaselineData baselineData, UserId account, String password) {
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory().createTransaction(branch, account, "rest - baseline  files");
+      ArtifactId baselineEvent = baselineFiles(branch, repoArtifact, baselineData, account, tx, password);
+      tx.commit();
+
+      return baselineEvent;
+   }
+
+   private ArtifactId loadCodeUnit(ArtifactId repository, BranchId branch, String path) {
+      List<ArtifactId> codeUnits =
+         queryFactory.fromBranch(branch).andNameEquals(path).andTypeEquals(CodeUnit).loadArtifactIds();
+      for (ArtifactId codeUnit : codeUnits) {
+         //TODO: if CoreTupleTypes.GitCommitFile for this repository and path matches then return this codeUnit
+         //tupleQuery.doesTuple3E3Exist(tupleType, e3);
+         return codeUnit;
+      }
+
+      return ArtifactId.SENTINEL;
+   }
+
+   private void updateLGitLatestTuple(ArtifactId repository, BranchId branch, TransactionBuilder tx, ArtifactId codeUnit, ArtifactId baselineCommit) {
+      ArtifactId[] commitWraper = new ArtifactId[1];
+      tupleQuery.getTuple4E3E4FromE1E2(GitLatest, branch, repository, codeUnit,
+         (changeCommit, ignore) -> commitWraper[0] = changeCommit);
+
+      tx.deleteTuple4ByE1E2(GitLatest, repository, codeUnit);
+
+      tx.addTuple4(GitLatest, repository, codeUnit, commitWraper[0], baselineCommit);
+   }
+
+   @Override
+   public List<CertBaselineData> getBaselineData(BranchId branch, ArtifactReadable repoArtifact) {
+      List<CertBaselineData> certEvents =
+         Collections.transform(repoArtifact.getChildren().getList(), this::getBaselineData);
+      java.util.Collections.sort(certEvents);
+      return certEvents;
+   }
+
+   @Override
+   public TransactionToken copyCertBaselineData(UserId account, BranchId destinationBranch, String repositoryName, BranchId sourceBranch) {
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(destinationBranch, account,
+         "rest - copy cert baseline data");
+      ArtifactReadable sourceRepo = gitOps.getRepoArtifact(sourceBranch, repositoryName);
+      ArtifactReadable destinationRepo = gitOps.getRepoArtifact(destinationBranch, repositoryName);
+
+      for (CertBaselineData certEvent : getBaselineData(sourceBranch, sourceRepo)) {
+         baselineFiles(destinationBranch, destinationRepo, certEvent, account, tx, null);
+      }
+      return tx.commit();
+   }
+
+   @Override
+   public List<CertFileData> getCertFileData(BranchId branch, ArtifactReadable repoArtifact) {
+      List<CertFileData> files = new ArrayList<>();
+
+      Map<ArtifactId, ArtifactToken> codeUnits =
+         queryFactory.fromBranch(branch).andIsOfType(CodeUnit).loadArtifactTokenMap();
+      Map<ArtifactId, ArtifactReadable> commits =
+         queryFactory.fromBranch(branch).andIsOfType(GitCommit).loadArtifactMap(); //TODO: improve performance with selective, one pass loading
+
+      TriConsumer<ArtifactId, ArtifactId, ArtifactId> consumer = (codeUnit, lastestCommitId, baselinedCommitId) -> {
+         CertFileData file = new CertFileData();
+
+         ArtifactToken codeUnitToken = codeUnits.get(codeUnit);
+         file.path = codeUnitToken.isValid() ? codeUnitToken.getName() : "code unit artifact missing";
+
+         ArtifactReadable latestCommit = commits.get(lastestCommitId);
+         String latestSha;
+         if (latestCommit == null) {
+            latestSha = "commit artifact missing: " + latestCommit;
+            file.latestChangeId = "commit artifact missing: " + latestCommit;
+            file.latestTimestamp = null;
+         } else {
+            latestSha = latestCommit.getSoleAttributeValue(GitCommitSHA);
+            file.latestChangeId = latestCommit.getSoleAttributeValue(GitChangeId, latestSha);
+            file.latestTimestamp = latestCommit.getSoleAttributeValue(GitCommitAuthorDate);
+         }
+
+         if (baselinedCommitId.isValid()) {
+            ArtifactReadable baselinedCommit = commits.get(baselinedCommitId);
+            file.baselinedChangeId = baselinedCommit.getSoleAttributeValue(GitChangeId);
+            file.baselinedTimestamp = baselinedCommit.getSoleAttributeValue(GitCommitAuthorDate);
+         }
+
+         files.add(file);
+      };
+
+      tupleQuery.getTuple4E2E3E4FromE1(GitLatest, branch, repoArtifact, consumer);
+
+      return files;
+   }
+
+   @Override
+   public CertBaselineData getBaselineData(ArtifactReadable baselineArtifact) {
+      CertBaselineData baselineData = new CertBaselineData();
+      baselineData.eventName = baselineArtifact.getName();
+      baselineData.changeId = baselineArtifact.getSoleAttributeValue(GitChangeId);
+
+      ArtifactId baselinedByUser = baselineArtifact.getSoleAttributeValue(BaselinedBy);
+      String userId =
+         queryFactory.fromBranch(COMMON).andId(baselinedByUser).loadArtifactTokens(UserId).iterator().next().getName();
+
+      baselineData.baselinedByUserId = userId;
+      baselineData.baselinedTimestamp = baselineArtifact.getSoleAttributeValue(BaselinedTimestamp);
+      baselineData.reviewId = baselineArtifact.getSoleAttributeValue(ReviewId, null);
+      baselineData.reviewStoryId = baselineArtifact.getSoleAttributeValue(ReviewStoryId, null);
+
+      baselineData.files = Collections.transform(baselineArtifact.getRelated(SupportingInfo_SupportingInfo).getList(),
+         ArtifactReadable::getName);
+      return baselineData;
    }
 }

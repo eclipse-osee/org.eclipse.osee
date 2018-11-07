@@ -26,6 +26,7 @@ public final class CoreArtifactTypes {
    public static final ArtifactTypeToken Artifact = ArtifactTypeToken.valueOf(1, "Artifact");
    public static final ArtifactTypeToken Breaker = ArtifactTypeToken.valueOf(188458869981236L, "Breaker");
    public static final ArtifactTypeToken BranchView = ArtifactTypeToken.valueOf(5849078277209560034L, "Branch View");
+   public static final ArtifactTypeToken CertificationBaselineEvent = ArtifactTypeToken.valueOf(99, "Certification Baseline Event");
    public static final ArtifactTypeToken CodeUnit = ArtifactTypeToken.valueOf(58, "Code Unit");
    public static final ArtifactTypeToken Component = ArtifactTypeToken.valueOf(57, "Component");
    public static final ArtifactTypeToken Design = ArtifactTypeToken.valueOf(346, "Design");

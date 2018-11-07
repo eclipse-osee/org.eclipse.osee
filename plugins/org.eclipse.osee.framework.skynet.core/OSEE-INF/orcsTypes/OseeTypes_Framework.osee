@@ -2122,6 +2122,48 @@ relationType "Git Repository Commit" {
 	multiplicity ONE_TO_MANY
 }
 
+artifactType "Certification Baseline Event" extends "Artifact" {
+	id 99
+	attribute "Git Change-Id"
+	attribute "Baselined By"
+	attribute "Baselined Timestamp"
+	attribute "Review Id"
+	attribute "Review Story Id"
+}
+
+attributeType "Baselined By" extends ArtifactReferenceAttribute {
+	id 1152921504606847247
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	mediaType "text/plain"
+}
+
+attributeType "Baselined Timestamp" extends DateAttribute {
+	id 1152921504606847244
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	mediaType "text/calendar"
+}
+
+attributeType "Review Id" extends IntegerAttribute {
+	id 1152921504606847245
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	mediaType "text/plain"
+}
+
+attributeType "Review Story Id" extends StringAttribute {
+	id 1152921504606847246
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
 artifactType "Model Diagram" extends "Artifact" {
    id 98
    attribute "Graphiti Diagram"

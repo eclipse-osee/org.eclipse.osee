@@ -63,7 +63,7 @@ public class DefineApiImpl implements DefineApi {
       wordOperations = new MSWordOperationsImpl(orcsApi, logger, eventAdmin);
       dataRightsOperations = new DataRightsOperationsImpl(orcsApi);
       gitOperations = new GitOperationsImpl(orcsApi, systemPrefs);
-      traceabilityOperations = new TraceabilityOperationsImpl(orcsApi);
+      traceabilityOperations = new TraceabilityOperationsImpl(orcsApi, gitOperations);
       importOperations = new ImportOperationsImpl(orcsApi, activityLog);
    }
 
