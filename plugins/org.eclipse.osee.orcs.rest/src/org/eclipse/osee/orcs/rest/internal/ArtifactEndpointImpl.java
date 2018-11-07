@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -21,12 +20,9 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -186,22 +182,9 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
 
    @Override
    public List<ArtifactToken> createArtifacts(BranchId branch, ArtifactTypeId artifactType, ArtifactId parent, List<String> names) {
-      ResultSet<ArtifactReadable> results =
-         query.andTypeEquals(artifactType).and(CoreAttributeTypes.Name, names).getResults();
-      if (!results.isEmpty()) {
-         List<ArtifactReadable> duplicates = results.getList();
-         throw new OseeCoreException("Found %s artifacts of type %s with duplicate names: %s", results.size(),
-            artifactType, duplicates);
-      }
-
-      List<ArtifactToken> tokens = new ArrayList<>(names.size());
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(branch, account, "rest - create artifacts");
-
-      IArtifactType artifactTypeToken = orcsApi.getOrcsTypes().getArtifactTypes().get(artifactType);
-      for (String name : names) {
-         tokens.add(tx.createArtifact(parent, artifactTypeToken, name));
-      }
+      List<ArtifactToken> tokens = tx.createArtifacts(artifactType, parent, names);
       tx.commit();
       return tokens;
    }

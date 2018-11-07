@@ -20,10 +20,10 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.KeyValueOps;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.TxDataStore;
-import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.junit.Before;
@@ -47,14 +47,13 @@ public class TransactionFactoryImplTest {
    @Mock private OrcsSession session;
    @Mock private TxDataManager txDataManager;
    @Mock private TxCallableFactory txCallableFactory;
-   @Mock private QueryModule query;
-   @Mock private QueryFactory queryFactory;
+   @Mock private OrcsApi orcsApi;
    @Mock private OrcsBranch orcsBranch;
    @Mock private TxDataStore txDataStore;
    @Mock private KeyValueOps keyValueOps;
-
    @Mock private UserId expectedAuthor;
    @Mock private TxData txData;
+   @Mock private QueryFactory queryFactory;
    // @formatter:on
 
    private final BranchId expectedBranch = CoreBranches.COMMON;
@@ -63,8 +62,9 @@ public class TransactionFactoryImplTest {
    @Before
    public void init() {
       initMocks(this);
-      factory = new TransactionFactoryImpl(session, txDataManager, txCallableFactory, query, queryFactory, orcsBranch,
-         keyValueOps, txDataStore);
+      when(orcsApi.getQueryFactory()).thenReturn(queryFactory);
+      factory = new TransactionFactoryImpl(session, txDataManager, txCallableFactory, orcsApi, orcsBranch, keyValueOps,
+         txDataStore);
 
    }
 

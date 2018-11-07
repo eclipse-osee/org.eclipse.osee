@@ -31,10 +31,10 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.KeyValueOps;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.TxDataStore;
-import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -50,20 +50,20 @@ public class TransactionFactoryImpl implements TransactionFactory {
    private final OrcsSession session;
    private final TxDataManager txDataManager;
    private final TxCallableFactory txCallableFactory;
-   private final QueryModule query;
+   private final OrcsApi orcsApi;
    private final QueryFactory queryFactory;
    private final OrcsBranch orcsBranch;
    private final KeyValueOps keyValueOps;
    private final TxDataStore txDataStore;
    private final TransactionQuery transactionQuery;
 
-   public TransactionFactoryImpl(OrcsSession session, TxDataManager txDataManager, TxCallableFactory txCallableFactory, QueryModule query, QueryFactory queryFactory, OrcsBranch orcsBranch, KeyValueOps keyValueOps, TxDataStore txDataStore) {
+   public TransactionFactoryImpl(OrcsSession session, TxDataManager txDataManager, TxCallableFactory txCallableFactory, OrcsApi orcsApi, OrcsBranch orcsBranch, KeyValueOps keyValueOps, TxDataStore txDataStore) {
       super();
       this.session = session;
       this.txDataManager = txDataManager;
       this.txCallableFactory = txCallableFactory;
-      this.query = query;
-      this.queryFactory = queryFactory;
+      this.orcsApi = orcsApi;
+      this.queryFactory = orcsApi.getQueryFactory();
       this.orcsBranch = orcsBranch;
       this.keyValueOps = keyValueOps;
       this.txDataStore = txDataStore;
@@ -83,7 +83,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
 
       TxData txData = txDataManager.createTxData(session, branch);
       TransactionBuilderImpl orcsTxn =
-         new TransactionBuilderImpl(txCallableFactory, txDataManager, txData, query, keyValueOps);
+         new TransactionBuilderImpl(txCallableFactory, txDataManager, txData, orcsApi, keyValueOps);
       orcsTxn.setComment(comment);
       orcsTxn.setAuthor(UserId.valueOf(author.getId()));
       return orcsTxn;

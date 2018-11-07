@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.KeyValueOps;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
@@ -84,6 +85,7 @@ public class TransactionBuilderImplTest {
    @Mock private QueryFactory queryFactory;
    @Mock private QueryBuilder builder;
    @Mock private QueryModule query;
+   @Mock private OrcsApi orcsApi;
    @Mock private KeyValueOps keyValueOps;
 
    @Mock private ArtifactReadable expectedAuthor;
@@ -106,12 +108,12 @@ public class TransactionBuilderImplTest {
    @Before
    public void init() {
       initMocks(this);
-      factory = new TransactionBuilderImpl(txCallableFactory, txDataManager, txData, query, keyValueOps);
+      when(orcsApi.getQueryFactory()).thenReturn(queryFactory);
+      factory = new TransactionBuilderImpl(txCallableFactory, txDataManager, txData, orcsApi, keyValueOps);
 
       when(attrId.getId()).thenReturn(12345L);
       when(txDataManager.getForWrite(txData, expectedAuthor)).thenReturn(artifact);
       when(artifact.getAttributeById(attrId)).thenReturn(attribute);
-      when(query.createQueryFactory(session)).thenReturn(queryFactory);
       when(expectedAuthor.getBranch()).thenReturn(COMMON);
       when(txData.getBranch()).thenReturn(COMMON);
    }
@@ -162,7 +164,6 @@ public class TransactionBuilderImplTest {
 
    @Test
    public void testIntroduceArtifact() {
-      when(query.createQueryFactory(any())).thenReturn(queryFactory);
       when(queryFactory.fromBranch(COMMON)).thenReturn(builder);
       when(builder.includeDeletedArtifacts()).thenReturn(builder);
       when(builder.andId(any())).thenReturn(builder);

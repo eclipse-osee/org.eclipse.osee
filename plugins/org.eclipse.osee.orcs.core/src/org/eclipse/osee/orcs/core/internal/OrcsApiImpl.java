@@ -239,8 +239,8 @@ public class OrcsApiImpl implements OrcsApi {
    @Override
    public TransactionFactory getTransactionFactory() {
       OrcsSession session = getSession();
-      return new TransactionFactoryImpl(session, txDataManager, txCallableFactory, queryModule, getQueryFactory(),
-         getBranchOps(), getKeyValueOps(), module.getTxDataStore());
+      return new TransactionFactoryImpl(session, txDataManager, txCallableFactory, this, getBranchOps(),
+         getKeyValueOps(), module.getTxDataStore());
    }
 
    @Override

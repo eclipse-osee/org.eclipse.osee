@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.transaction;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -39,14 +41,16 @@ import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.KeyValueOps;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
-import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.TransactionReadable;
+import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -59,15 +63,16 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    private final TxCallableFactory txFactory;
    private final TxDataManager txManager;
    private final TxData txData;
-   private final QueryModule query;
+   private final QueryFactory queryFactory;
+   private final OrcsApi orcsApi;
    private final KeyValueOps keyValueOps;
 
-   public TransactionBuilderImpl(TxCallableFactory txFactory, TxDataManager dataManager, TxData txData, QueryModule query, KeyValueOps keyValueOps) {
-      super();
+   public TransactionBuilderImpl(TxCallableFactory txFactory, TxDataManager dataManager, TxData txData, OrcsApi orcsApi, KeyValueOps keyValueOps) {
       this.txFactory = txFactory;
       this.txManager = dataManager;
       this.txData = txData;
-      this.query = query;
+      this.orcsApi = orcsApi;
+      this.queryFactory = orcsApi.getQueryFactory();
       this.keyValueOps = keyValueOps;
    }
 
@@ -138,6 +143,25 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
+   public List<ArtifactToken> createArtifacts(ArtifactTypeId artifactType, ArtifactId parent, List<String> names) {
+      ResultSet<ArtifactReadable> results =
+         queryFactory.fromBranch(getBranch()).andTypeEquals(artifactType).and(CoreAttributeTypes.Name,
+            names).getResults();
+      if (!results.isEmpty()) {
+         throw new OseeCoreException("Found %s artifacts of type %s with duplicate names: %s", results.size(),
+            artifactType, results.getList());
+      }
+
+      List<ArtifactToken> tokens = new ArrayList<>(names.size());
+
+      IArtifactType artifactTypeToken = orcsApi.getOrcsTypes().getArtifactTypes().get(artifactType);
+      for (String name : names) {
+         tokens.add(createArtifact(parent, artifactTypeToken, name));
+      }
+      return tokens;
+   }
+
+   @Override
    public ArtifactToken copyArtifact(ArtifactReadable sourceArtifact) {
       return copyArtifact(sourceArtifact.getBranch(), sourceArtifact);
    }
@@ -160,10 +184,10 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    @Override
    public ArtifactToken introduceArtifact(BranchId fromBranch, ArtifactId sourceArtifact) {
       checkAreOnDifferentBranches(txData, fromBranch);
-      ArtifactReadable source = getArtifactReadable(txData.getSession(), query, fromBranch, sourceArtifact);
+      ArtifactReadable source = getArtifactReadable(txData.getSession(), queryFactory, fromBranch, sourceArtifact);
       Conditions.checkNotNull(source, "Source Artifact");
       ArtifactReadable destination =
-         getArtifactReadable(txData.getSession(), query, txData.getBranch(), sourceArtifact);
+         getArtifactReadable(txData.getSession(), queryFactory, txData.getBranch(), sourceArtifact);
       return txManager.introduceArtifact(txData, fromBranch, source, destination);
    }
 
@@ -361,9 +385,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
          txData.getBranch());
    }
 
-   protected ArtifactReadable getArtifactReadable(OrcsSession session, QueryModule query, BranchId branch, ArtifactId id) {
-      return query.createQueryFactory(session).fromBranch(branch).includeDeletedArtifacts().andId(
-         id).getResults().getOneOrNull();
+   protected ArtifactReadable getArtifactReadable(OrcsSession session, QueryFactory queryFactory, BranchId branch, ArtifactId id) {
+      return queryFactory.fromBranch(branch).includeDeletedArtifacts().andId(id).getResults().getOneOrNull();
    }
 
    @Override
@@ -373,7 +396,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void setApplicabilityReference(HashMap<ArtifactId, List<ApplicabilityId>> artifacts) {
-      TupleQuery tupleQuery = query.createQueryFactory(txData.getSession()).tupleQuery();
+      TupleQuery tupleQuery = queryFactory.tupleQuery();
 
       for (Entry<? extends ArtifactId, List<ApplicabilityId>> entry : artifacts.entrySet()) {
          for (ApplicabilityId appId : entry.getValue()) {
@@ -393,8 +416,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public ArtifactToken createView(BranchId branch, String viewName) {
-      ArtifactReadable folder = query.createQueryFactory(null).fromBranch(branch).andId(
-         CoreArtifactTokens.ProductsFolder).getResults().getExactlyOne();
+      ArtifactReadable folder =
+         queryFactory.fromBranch(branch).andId(CoreArtifactTokens.ProductsFolder).getResults().getExactlyOne();
       return createArtifact(folder, CoreArtifactTypes.BranchView, viewName);
    }
 
