@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -114,8 +115,9 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       }
    }
 
-   private Artifact getArtifactFromCache(IProgressMonitor monitor, IArtifactType artifactType, String name) {
-      if (artifactType.equals(CoreArtifactTypes.TestUnit)) {
+   private Artifact getArtifactFromCache(IProgressMonitor monitor, ArtifactType artifactType, String name) {
+
+      if (artifactType.inheritsFrom(CoreArtifactTypes.TestUnit)) {
          if (testUnitData == null) {
             testUnitData = new TestUnitData(importIntoBranch);
             if (!monitor.isCanceled()) {
@@ -123,7 +125,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
             }
          }
          return testUnitData.getTestUnitByName(name);
-      } else if (artifactType.equals(CoreArtifactTypes.CodeUnit)) {
+      } else if (artifactType.inheritsFrom(CoreArtifactTypes.CodeUnit)) {
          if (codeUnitData == null) {
             codeUnitData = new CodeUnitData(importIntoBranch);
             if (!monitor.isCanceled()) {

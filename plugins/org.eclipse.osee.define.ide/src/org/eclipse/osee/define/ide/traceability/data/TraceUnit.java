@@ -14,19 +14,19 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * @author Roberto E. Escobar
  */
 public class TraceUnit {
-   private final IArtifactType traceUnitType;
+   private final ArtifactType traceUnitType;
    private final String name;
    private final Collection<TraceMark> traceMarks;
    private URI uriPath;
 
-   public TraceUnit(IArtifactType traceUnitType, String name) {
+   public TraceUnit(ArtifactType traceUnitType, String name) {
       this.name = name;
       this.traceUnitType = traceUnitType;
       this.traceMarks = new HashSet<>();
@@ -40,7 +40,7 @@ public class TraceUnit {
       this.uriPath = uriPath;
    }
 
-   public IArtifactType getTraceUnitType() {
+   public ArtifactType getTraceUnitType() {
       return traceUnitType;
    }
 
