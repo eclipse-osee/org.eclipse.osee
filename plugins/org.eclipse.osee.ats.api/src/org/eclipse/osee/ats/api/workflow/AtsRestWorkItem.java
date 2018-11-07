@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workflow;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsRestWorkItem {
 
    private final String name;

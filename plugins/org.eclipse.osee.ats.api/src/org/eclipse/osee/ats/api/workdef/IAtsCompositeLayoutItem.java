@@ -17,15 +17,15 @@ import java.util.List;
  */
 public interface IAtsCompositeLayoutItem extends IAtsLayoutItem {
 
-   public abstract void setName(String string);
+   void setName(String string);
 
-   public abstract int getNumColumns();
+   int getNumColumns();
 
-   public abstract void setNumColumns(int numColumns);
+   void setNumColumns(int numColumns);
 
-   public abstract List<IAtsLayoutItem> getaLayoutItems();
+   List<IAtsLayoutItem> getaLayoutItems();
 
    @Override
-   public abstract String toString();
+   String toString();
 
 }

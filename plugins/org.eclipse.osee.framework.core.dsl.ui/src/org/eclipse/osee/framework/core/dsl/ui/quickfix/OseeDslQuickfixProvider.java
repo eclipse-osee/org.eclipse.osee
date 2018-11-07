@@ -12,6 +12,9 @@ package org.eclipse.osee.framework.core.dsl.ui.quickfix;
 
 import org.eclipse.xtext.ui.editor.quickfix.DefaultQuickfixProvider;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class OseeDslQuickfixProvider extends DefaultQuickfixProvider {
 
    //	@Fix(MyJavaValidator.INVALID_NAME)

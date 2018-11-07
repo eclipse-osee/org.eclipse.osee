@@ -15,6 +15,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.lifecycle.LifecycleOpHandler;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class NonRunHandler implements LifecycleOpHandler {
    private boolean hasRun;
    IStatus status;

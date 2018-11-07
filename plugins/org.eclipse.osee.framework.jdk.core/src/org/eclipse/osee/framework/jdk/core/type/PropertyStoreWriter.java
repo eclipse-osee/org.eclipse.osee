@@ -33,6 +33,9 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class PropertyStoreWriter {
    private static final String TAG_SECTION = "store";
    private static final String TAG_NAME = "id";

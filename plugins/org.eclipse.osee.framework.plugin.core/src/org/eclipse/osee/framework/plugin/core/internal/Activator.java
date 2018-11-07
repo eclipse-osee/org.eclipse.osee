@@ -17,6 +17,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 
+/**
+ * @author Roberto E. Escobar
+ */
 @SuppressWarnings("deprecation")
 public class Activator extends OseeActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.plugin.core";

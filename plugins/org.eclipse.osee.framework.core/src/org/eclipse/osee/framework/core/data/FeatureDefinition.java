@@ -12,6 +12,9 @@ package org.eclipse.osee.framework.core.data;
 
 import java.util.List;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class FeatureDefinition {
 
    private String name;

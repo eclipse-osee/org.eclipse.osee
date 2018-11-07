@@ -13,7 +13,7 @@ package org.eclipse.osee.disposition.rest;
 import java.util.Map;
 
 /**
- * @author Dominic Guss
+ * @author Dominic A. Guss
  */
 public class DispoApiConfiguration {
 

@@ -60,8 +60,6 @@ public final class SystemSafetyResource {
 
    /**
     * Provides the user interface for the System Safety Report
-    *
-    * @return Returns the html page for the System Safety Report
     */
    @Path("ui/safety")
    @GET

@@ -22,7 +22,7 @@ import org.xml.sax.SAXException;
  * @author David W. Miller
  */
 public interface IElementExtractor {
-   public abstract Element getOleDataElement();
+   Element getOleDataElement();
 
-   public abstract Collection<WordExtractorData> extractElements() throws DOMException, ParserConfigurationException, SAXException, IOException;
+   Collection<WordExtractorData> extractElements() throws DOMException, ParserConfigurationException, SAXException, IOException;
 }

@@ -21,51 +21,51 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
  */
 public interface IAtsTransitionManager {
 
-   public abstract TransitionResults handleAll();
+   TransitionResults handleAll();
 
    /**
     * Validate AbstractWorkflowArtifact for transition including checking widget validation, rules, assignment, etc.
     * 
     * @return Result.isFalse if failure
     */
-   public abstract void handleTransitionValidation(TransitionResults results);
+   void handleTransitionValidation(TransitionResults results);
 
-   public abstract void isTransitionValidForExtensions(TransitionResults results, IAtsWorkItem workItem, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef);
+   void isTransitionValidForExtensions(TransitionResults results, IAtsWorkItem workItem, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef);
 
    /**
     * Request extra information if transition requires hours spent prompt, cancellation reason, etc.
     * 
     * @return Result.isFalse if failure or Result.isCancelled if canceled
     */
-   public abstract void handleTransitionUi(TransitionResults results);
+   void handleTransitionUi(TransitionResults results);
 
    /**
     * Process transition and persist changes to given skynet transaction
     * 
     * @return Result.isFalse if failure
     */
-   public abstract void handleTransition(TransitionResults results);
+   void handleTransition(TransitionResults results);
 
    /**
     * Allow transition date to be used in log to be overridden for importing Actions from other systems and other
     * programatic transitions.
     */
-   public abstract IAtsUser getTransitionAsUser();
+   IAtsUser getTransitionAsUser();
 
    /**
     * Allow transition date to be used in log to be overridden for importing Actions from other systems and other
     * programatic transitions.
     */
-   public abstract Date getTransitionOnDate();
+   Date getTransitionOnDate();
 
-   public abstract void setTransitionOnDate(Date transitionOnDate);
+   void setTransitionOnDate(Date transitionOnDate);
 
    /**
     * Get transition to assignees. Verify that UnAssigned is not selected with another assignee. Ensure an assignee is
     * entered, else use current user or UnAssigneed if current user is SystemUser.
     */
-   public abstract List<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem, IAtsStateDefinition toState);
+   List<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem, IAtsStateDefinition toState);
 
-   public abstract TransitionResults handleAllAndPersist();
+   TransitionResults handleAllAndPersist();
 
 }

@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class TransactionEvent implements FrameworkEvent, HasNetworkSender {
 
    private TransactionEventType eventType;

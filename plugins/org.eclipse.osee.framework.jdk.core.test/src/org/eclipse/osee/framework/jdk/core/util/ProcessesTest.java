@@ -62,10 +62,6 @@ public class ProcessesTest {
 
    /**
     * this method is invoked from testProcessCancel in a separate process
-    * 
-    * @param args
-    * @throws IOException
-    * @throws InterruptedException
     */
    public static final void main(String[] args) throws IOException, InterruptedException {
       System.out.print(args[0]);

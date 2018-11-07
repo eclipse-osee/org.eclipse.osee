@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.api.agile;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 
 /**
- * Donald G. Dunne
+ * @author Donald G. Dunne
  */
 public class AgileItem extends JaxAtsObject {
 

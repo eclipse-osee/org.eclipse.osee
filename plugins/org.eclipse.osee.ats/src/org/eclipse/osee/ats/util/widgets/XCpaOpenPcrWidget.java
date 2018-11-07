@@ -20,6 +20,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabel;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class XCpaOpenPcrWidget extends XHyperlinkLabel implements IArtifactWidget {
 
    public static final String WIDGET_ID = XCpaOpenPcrWidget.class.getSimpleName();

@@ -12,6 +12,9 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 
 import org.eclipse.osee.framework.core.data.BranchId;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class BranchEvent implements FrameworkEvent, HasNetworkSender {
 
    private final BranchId sourceBranch;

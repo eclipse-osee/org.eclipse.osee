@@ -25,6 +25,9 @@ import org.eclipse.osee.ats.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.workflow.task.TaskStates;
 import org.eclipse.osee.framework.core.util.Result;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class TaskTestUtil {
 
    private TaskTestUtil() {

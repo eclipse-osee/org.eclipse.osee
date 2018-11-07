@@ -15,6 +15,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import javax.activation.DataSource;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class StringDataSource implements DataSource {
 
    private final String data;

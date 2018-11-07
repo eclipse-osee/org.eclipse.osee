@@ -12,6 +12,9 @@ package org.eclipse.osee.ats.dsl;
 
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AttributeResolverService {
 
    public static AttributeResolverService instance = null;

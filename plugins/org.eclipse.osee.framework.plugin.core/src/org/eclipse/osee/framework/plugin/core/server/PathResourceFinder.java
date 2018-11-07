@@ -30,6 +30,9 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.internal.Activator;
 
+/**
+ * @author Ken J. Aguilar
+ */
 public class PathResourceFinder extends ResourceFinder {
 
    private final HashSet<JarFile> jars = new HashSet<>(128);

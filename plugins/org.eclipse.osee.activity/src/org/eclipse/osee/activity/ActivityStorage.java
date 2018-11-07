@@ -33,9 +33,6 @@ public interface ActivityStorage {
    /**
     * Stores the activity type if not already in the data store. If the type token has an invalid id, a new id is
     * generated and included in the returned token
-    *
-    * @param type
-    * @return
     */
    ActivityTypeToken createIfAbsent(ActivityTypeToken type);
 

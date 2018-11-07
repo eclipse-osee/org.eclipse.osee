@@ -24,9 +24,12 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class UriWatcher {
 
-   public interface UriWatcherListener {
+public interface UriWatcherListener {
       void modificationDateChanged(Collection<URI> uris);
 
       void handleException(Exception ex);
@@ -41,9 +44,6 @@ public class UriWatcher {
       interval = unit.toMillis(time);
    }
 
-   /**
-    * Starts the file watcher monitoring of the file system
-    */
    public void start() {
       timer.schedule(new UriWatcherTimerTask(), interval, interval);
    }
@@ -66,7 +66,7 @@ public class UriWatcher {
     * removes a {@link File} from the set of files to be monitored. This method can be called before or after the
     * {@link #start()} method is called.
     * 
-    * @return returns the last know timestamp of the file before it was removed or null if it was never being monitored
+    * @return the last know timestamp of the file before it was removed or null if it was never being monitored
     * in the first place
     */
    public Long removeFile(URI uri) {

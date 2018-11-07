@@ -213,9 +213,7 @@ public class DateUtil {
    }
 
    /**
-    * @param date The date to add weeks to.
-    * @param manyWeeks How many weeks to add to the date.
-    * @return Return = [date] + [manyWeeks]
+    * @return [date] + [manyWeeks]
     */
    public static Date addWeeks(Date date, int manyWeeks) {
       Calendar cal = Calendar.getInstance();
@@ -227,7 +225,7 @@ public class DateUtil {
    /**
     * @param a One date. Sequential order with other date parameter does not matter.
     * @param b Another date. Sequential order with other date parameter does not matter.
-    * @return Returns the number of weeks difference between Date a and Date b.
+    * @return the number of weeks difference between Date a and Date b.
     */
    public static int getManyWeeksDifference(Date a, Date b) {
       int weeks = 0;
@@ -254,7 +252,6 @@ public class DateUtil {
    }
 
    /**
-    * @param date Any date
     * @return The date that is the Monday before the date. If the provided date is Monday then it will be returned
     * as-is.
     */
@@ -268,7 +265,6 @@ public class DateUtil {
    }
 
    /**
-    * @param date Any date
     * @return The date that is the Monday after the date. If the provided date is Monday then it will be returned as-is.
     */
    public static Date getMondayAfter(Date date) {
@@ -281,7 +277,6 @@ public class DateUtil {
    }
 
    /**
-    * @param date Any date
     * @return The same date but with time equal to 00:00:00
     */
    public static Date convertToStartOfDay(Date date) {
@@ -294,7 +289,6 @@ public class DateUtil {
    }
 
    /**
-    * @param date Any date
     * @return The same date but with time equal to 23:59:59
     */
    public static Date convertToEndOfDay(Date date) {

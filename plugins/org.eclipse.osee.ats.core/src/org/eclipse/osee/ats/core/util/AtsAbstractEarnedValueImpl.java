@@ -266,7 +266,6 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
     * Return Total Percent Complete / # Tasks for "Related to State" stateName
     *
     * @param relatedToState state name of parent workflow's state
-    * @return Returns the Percent Complete.
     */
    @Override
    public int getPercentCompleteFromTasks(IAtsWorkItem workItem, IStateToken relatedToState) {

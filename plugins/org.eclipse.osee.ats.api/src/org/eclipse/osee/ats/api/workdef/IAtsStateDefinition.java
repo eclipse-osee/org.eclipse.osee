@@ -17,51 +17,33 @@ import java.util.List;
  */
 public interface IAtsStateDefinition extends IStateToken {
 
-   /**
-    * Identification
-    */
    @Override
-   public abstract String getName();
+   String getName();
 
-   /**
-    * Returns fully qualified name of <work definition name>.<this state name>
-    */
-   public abstract String getFullName();
+   String getFullName();
 
-   public abstract int getOrdinal();
-
-   /**
-    * State Type
-    */
-   @Override
-   public abstract StateType getStateType();
-
-   /**
-    * Layout
-    */
-   public abstract List<IAtsLayoutItem> getLayoutItems();
-
-   /**
-    * States
-    */
-   public abstract List<IAtsStateDefinition> getToStates();
-
-   public abstract IAtsStateDefinition getDefaultToState();
-
-   /**
-    * Parent Work Definition
-    */
-   public abstract IAtsWorkDefinition getWorkDefinition();
-
-   public abstract void setWorkDefinition(IAtsWorkDefinition workDefinition);
-
-   public abstract List<IAtsStateDefinition> getOverrideAttributeValidationStates();
+   int getOrdinal();
 
    @Override
-   public abstract int hashCode();
+   StateType getStateType();
+
+   List<IAtsLayoutItem> getLayoutItems();
+
+   List<IAtsStateDefinition> getToStates();
+
+   IAtsStateDefinition getDefaultToState();
+
+   IAtsWorkDefinition getWorkDefinition();
+
+   void setWorkDefinition(IAtsWorkDefinition workDefinition);
+
+   List<IAtsStateDefinition> getOverrideAttributeValidationStates();
 
    @Override
-   public abstract boolean equals(Object obj);
+   int hashCode();
+
+   @Override
+   boolean equals(Object obj);
 
    /**
     * Set how much (of 100%) this state's percent complete will contribute to the full percent complete of work
@@ -69,30 +51,21 @@ public interface IAtsStateDefinition extends IStateToken {
     *
     * @param percentWeight int value where all stateWeights in workdefinition == 100
     */
-   public abstract int getStateWeight();
+   int getStateWeight();
 
-   public abstract Integer getRecommendedPercentComplete();
+   Integer getRecommendedPercentComplete();
 
-   public abstract StateColor getColor();
+   StateColor getColor();
 
-   /**
-    * Reviews
-    */
-   public abstract List<IAtsDecisionReviewDefinition> getDecisionReviews();
+   List<IAtsDecisionReviewDefinition> getDecisionReviews();
 
-   public abstract List<IAtsPeerReviewDefinition> getPeerReviews();
+   List<IAtsPeerReviewDefinition> getPeerReviews();
 
-   /**
-    * Rules
-    */
-   public abstract List<String> getRules();
+   List<String> getRules();
 
-   public abstract boolean hasRule(String name);
+   boolean hasRule(String name);
 
-   /**
-    * Misc
-    */
    @Override
-   public abstract String toString();
+   String toString();
 
 }

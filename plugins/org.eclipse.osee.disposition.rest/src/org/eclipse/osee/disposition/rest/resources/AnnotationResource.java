@@ -78,8 +78,6 @@ public class AnnotationResource {
     * Get all Annotations for the DisposionableItem
     *
     * @return The Annotation found for the DisposionableItem
-    * @throws JSONException
-    * @throws IOException
     * @response.representation.200.doc OK, Found Annotations
     * @response.representation.404.doc Not Found, Could not find any Annotations
     */

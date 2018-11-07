@@ -26,6 +26,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class ArtifactURL {
 
    public static URL getOpenInOseeLink(final ArtifactReadable artifact, String cmd, PresentationType presentationType, String sessionId, OrcsApi orcsApi) {

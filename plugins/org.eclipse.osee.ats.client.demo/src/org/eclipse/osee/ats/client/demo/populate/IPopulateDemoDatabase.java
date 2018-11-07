@@ -22,6 +22,9 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IPopulateDemoDatabase {
 
    boolean debug = false;

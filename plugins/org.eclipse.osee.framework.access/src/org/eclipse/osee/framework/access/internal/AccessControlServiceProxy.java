@@ -33,6 +33,9 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public final class AccessControlServiceProxy implements IAccessControlService {
 
    private final List<ServiceReference<IAccessProvider>> registered =

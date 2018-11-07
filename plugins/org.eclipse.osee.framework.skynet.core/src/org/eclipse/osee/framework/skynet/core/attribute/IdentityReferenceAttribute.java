@@ -12,6 +12,9 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.jdk.core.type.Id;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public abstract class IdentityReferenceAttribute extends CharacterBackedAttribute<Id> {
    @Override
    public Id getValue() {

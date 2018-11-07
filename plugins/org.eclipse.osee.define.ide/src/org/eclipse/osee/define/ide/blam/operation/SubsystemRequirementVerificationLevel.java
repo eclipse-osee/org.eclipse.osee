@@ -30,6 +30,9 @@ import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
+/**
+ * @author Ryan Schmitt
+ */
 public class SubsystemRequirementVerificationLevel extends AbstractBlam {
 
    @Override

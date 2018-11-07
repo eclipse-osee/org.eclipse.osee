@@ -26,6 +26,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class TraceabilityContentProvider implements ITreeContentProvider {
 
    protected Collection<IResultsXViewerRow> rootSet = new HashSet<>();

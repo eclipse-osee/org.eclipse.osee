@@ -33,6 +33,9 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.PlatformUI;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class DeleteTasksAction extends AbstractAtsAction {
 
    public static interface TaskArtifactProvider {

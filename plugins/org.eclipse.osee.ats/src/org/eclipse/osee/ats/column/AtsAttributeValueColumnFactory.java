@@ -15,6 +15,9 @@ import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsAttributeValueColumnFactory {
 
    public static AtsAttributeValueColumn get(String namespace, XViewerAtsAttributeValueColumn inCol) {

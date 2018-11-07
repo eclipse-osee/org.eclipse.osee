@@ -83,7 +83,7 @@ public class WordUtilities {
    }
 
    /**
-    * @return Returns the content with the bin data ID being reassigned. Note: The bin data Id needs to be reassigned to
+    * @return the content with the bin data ID being reassigned. Note: The bin data Id needs to be reassigned to
     * allow multi edits of artifacts with images. Else if 2 images have the same ID the first image will be printed
     * duplicate times.
     */
@@ -112,7 +112,7 @@ public class WordUtilities {
    }
 
    /**
-    * @return - Returns the content with the ending bookmark IDs being reassigned to a unique number. This is done to
+    * @return the content with the ending bookmark IDs being reassigned to a unique number. This is done to
     * ensure all versions of MS Word will function correctly.
     */
 

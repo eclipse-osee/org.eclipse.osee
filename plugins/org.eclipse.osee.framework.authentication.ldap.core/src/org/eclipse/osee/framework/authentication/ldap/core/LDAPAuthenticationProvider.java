@@ -24,26 +24,15 @@ import org.osgi.framework.Bundle;
  */
 public class LDAPAuthenticationProvider extends AbstractAuthenticationProvider {
 
-   /**
-    * String to to store extension point ID.
-    */
    private final String extensionPointId = Messages.LDAPServiceExtensionPointID;
-
-   /**
-    * LDAP server URL prefix
-    */
    private final String LDAP_SERVER_PREFIX = "ldap://";
-
-   /**
-    * To hold the instance of the LDAPConnector
-    */
    private LDAPConnector connector;
 
    /**
     * This function runs only if the user is authenticated and returns a user token from the user data store.
     * 
     * @param credential sent my the OSee sesion manager which has the OSEE client user details
-    * @return Returns IUserToken created for the given OSeeCrendtial.
+    * @return IUserToken created for the given OSeeCrendtial.
     */
    @Override
    public UserToken asOseeUserId(final OseeCredential credential) {
@@ -56,7 +45,7 @@ public class LDAPAuthenticationProvider extends AbstractAuthenticationProvider {
     * The authentication of the user is decided by the return value of this function.
     * 
     * @param credential sent my the OSee sesion manager which has the OSEE client user details
-    * @return Returns true if user is authenticated using LDAP authentication mechanism otherwise false.
+    * @return true if user is authenticated using LDAP authentication mechanism otherwise false.
     */
    @Override
    public boolean authenticate(final OseeCredential credential) {
@@ -71,8 +60,6 @@ public class LDAPAuthenticationProvider extends AbstractAuthenticationProvider {
 
    /**
     * This function decides the string which has to be used for authentication choice.
-    * 
-    * @return Protocal name
     */
    @Override
    public String getProtocol() {
@@ -114,9 +101,6 @@ public class LDAPAuthenticationProvider extends AbstractAuthenticationProvider {
 
    /**
     * This method creates the environment properties required for LDAPContext
-    * 
-    * @param ldapService
-    * @return
     */
    private Hashtable<String, String> createLDAPContextProperies(final ILDAPService ldapService) {
 

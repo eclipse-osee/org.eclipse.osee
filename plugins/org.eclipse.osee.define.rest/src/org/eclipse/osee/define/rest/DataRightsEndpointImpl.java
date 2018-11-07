@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 /**
  * @author Angel Avila
  */
-
 public class DataRightsEndpointImpl implements DataRightsEndpoint {
 
    private final DefineApi defineApi;
@@ -44,7 +43,6 @@ public class DataRightsEndpointImpl implements DataRightsEndpoint {
     *
     * @param data Collection of DataRightArtifacts to find data rights for
     * @return mapping Mapping of DataRightArtifacts to Footers
-    * @throws JSONException
     */
 
 }

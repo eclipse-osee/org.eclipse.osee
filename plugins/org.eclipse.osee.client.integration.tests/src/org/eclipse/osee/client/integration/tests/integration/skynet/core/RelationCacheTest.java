@@ -118,8 +118,6 @@ public class RelationCacheTest {
     * When RelationCache.cache() is changed to throw an exception for a duplicate relation, <br/>
     * then this test should fail and severeLoggingMonitor should not be paused.
     * </p>
-    *
-    * @throws Exception
     */
    @Test
    public void testCanAddCacheSameRelTwice() throws Exception {

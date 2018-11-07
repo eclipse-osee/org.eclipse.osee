@@ -13,6 +13,9 @@ package org.eclipse.osee.define.api;
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
+/**
+ * @author Morgan E. Cook
+ */
 public interface MSWordOperations {
 
    public WordUpdateChange updateWordArtifacts(WordUpdateData data);

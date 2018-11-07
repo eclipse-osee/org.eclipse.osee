@@ -21,6 +21,6 @@ import org.eclipse.osee.disposition.model.OperationReport;
  */
 public interface DispoImporterApi {
 
-   public abstract List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File filesDir, OperationReport report);
+   List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File filesDir, OperationReport report);
 
 }

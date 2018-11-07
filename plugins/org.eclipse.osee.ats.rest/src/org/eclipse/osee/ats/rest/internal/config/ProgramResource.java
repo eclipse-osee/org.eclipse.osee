@@ -48,7 +48,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
- * Donald G. Dunne
+ * @author Donald G. Dunne
  */
 @Path("program")
 public class ProgramResource extends AbstractConfigResource {

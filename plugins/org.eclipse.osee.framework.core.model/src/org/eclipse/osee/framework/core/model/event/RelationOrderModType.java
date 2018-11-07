@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.event;
 
+/**
+ * @author Donald G. Dunne
+ */
 public enum RelationOrderModType {
    Default("AFRkIhe6hTMJL8pL4IAA"),
    Absolute("AFRkIhftz3PrR0yVYqwA");

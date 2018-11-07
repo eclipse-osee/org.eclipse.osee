@@ -17,26 +17,26 @@ import java.util.Date;
  */
 public interface IAtsLogItem {
 
-   public abstract Date getDate();
+   Date getDate();
 
-   public abstract String getDate(String pattern);
+   String getDate(String pattern);
 
-   public abstract void setDate(Date date);
+   void setDate(Date date);
 
-   public abstract String getUserId();
+   String getUserId();
 
-   public abstract String setUserId(String userId);
+   String setUserId(String userId);
 
-   public abstract String getMsg();
+   String getMsg();
 
-   public abstract void setMsg(String msg);
+   void setMsg(String msg);
 
-   public abstract LogType getType();
+   LogType getType();
 
-   public abstract void setType(LogType type);
+   void setType(LogType type);
 
-   public abstract String getState();
+   String getState();
 
-   public abstract void setState(String state);
+   void setState(String state);
 
 }

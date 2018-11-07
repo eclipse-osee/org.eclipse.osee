@@ -13,8 +13,12 @@ package org.eclipse.osee.framework.core.grammar;
 
 import java.util.ArrayList;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class ApplicabilityBlock {
-   public enum ApplicabilityType {
+
+public enum ApplicabilityType {
       Configuration,
       NotConfiguration,
       Feature

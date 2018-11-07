@@ -18,6 +18,9 @@ import org.junit.runners.Suite;
    LifecycleServiceTest.class, //
    LifecycleOperationTest.class, //
 })
+/**
+ * @author Roberto E. Escobar
+ */
 public class InternalLifecycleTestSuite {
    // Test Suite
 }

@@ -1,8 +1,13 @@
-/*
- * Created on Mar 30, 2016
+/*******************************************************************************
+ * Copyright (c) 2018 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.ats.workflow.task;
 
 import java.util.Collection;
@@ -38,6 +43,9 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class TaskComposite extends WorldComposite {
 
    private final IXTaskViewer iXTaskViewer;
@@ -127,8 +135,7 @@ public class TaskComposite extends WorldComposite {
                AWorkbench.popup("No Tasks To Drop");
                return;
             }
-            TaskMover mover =
-               new TaskMover(iXTaskViewer.getTeamWf(), taskArts);
+            TaskMover mover = new TaskMover(iXTaskViewer.getTeamWf(), taskArts);
             mover.moveTasks();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

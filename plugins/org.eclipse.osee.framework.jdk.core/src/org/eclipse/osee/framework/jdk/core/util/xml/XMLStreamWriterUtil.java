@@ -13,6 +13,9 @@ package org.eclipse.osee.framework.jdk.core.util.xml;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class XMLStreamWriterUtil {
 
    public static void writeElement(XMLStreamWriter writer, String elementName, String characterData) throws XMLStreamException {

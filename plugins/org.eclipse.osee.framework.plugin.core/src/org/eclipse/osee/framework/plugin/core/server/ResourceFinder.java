@@ -14,6 +14,9 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public abstract class ResourceFinder {
 
    public abstract byte[] find(String path) throws IOException;

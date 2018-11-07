@@ -13,6 +13,9 @@ package org.eclipse.osee.ats.rest.util;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAtsNotifierServer {
 
    /**

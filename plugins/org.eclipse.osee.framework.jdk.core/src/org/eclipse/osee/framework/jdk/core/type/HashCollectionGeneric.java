@@ -55,8 +55,6 @@ abstract class HashCollectionGeneric<K, V, C extends Collection<V>> implements I
     * Adds the value to the collection specified by the key. If there is not a collection for the given key, a new
     * collection is created and added to the hash.
     *
-    * @param key The key whose collection we will add value to.
-    * @param value The value to be added.
     * @return the collection containing value and all other items associated with the key.
     */
 
@@ -78,7 +76,6 @@ abstract class HashCollectionGeneric<K, V, C extends Collection<V>> implements I
    /**
     * Adds all of the items in the Collection values to the collection for the specified key.
     *
-    * @param key The key to add the values to
     * @param values The values to be added. Null or empty values will insert empty list in map
     * @return The collection for the key, containing all values.
     */
@@ -100,11 +97,6 @@ abstract class HashCollectionGeneric<K, V, C extends Collection<V>> implements I
       return items;
    }
 
-   /**
-    * @param key The key whose collection we will remove value from.
-    * @param value The value to be removed
-    * @return true iff the value was removed from the collection for key.
-    */
    public boolean removeValue(K key, V value) {
       C collection = map.get(key);
       if (collection != null) {
@@ -139,10 +131,6 @@ abstract class HashCollectionGeneric<K, V, C extends Collection<V>> implements I
       return values;
    }
 
-   /**
-    * @param key
-    * @param consumer
-    */
    public void forEachValue(K key, Consumer<V> consumer) {
       C collection = map.get(key);
       if (collection == null) {
@@ -157,11 +145,6 @@ abstract class HashCollectionGeneric<K, V, C extends Collection<V>> implements I
       }
    }
 
-   /**
-    * Returns the List of all items
-    *
-    * @return Return value collection reference
-    */
    public List<V> getValues() {
       List<V> values = new ArrayList<>();
       for (C objectPair : map.values()) {

@@ -18,6 +18,9 @@ import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewe
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewerLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class TraceabilityLabelProvider extends ResultsXViewerLabelProvider {
 
    public TraceabilityLabelProvider(ResultsXViewer resultsXViewer) {

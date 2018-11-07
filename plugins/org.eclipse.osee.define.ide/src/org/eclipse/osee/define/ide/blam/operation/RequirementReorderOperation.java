@@ -27,6 +27,9 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
+/**
+ * @author Ryan Schmitt
+ */
 public class RequirementReorderOperation extends AbstractBlam {
    private SkynetTransaction transaction;
 

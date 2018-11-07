@@ -14,6 +14,9 @@ import org.eclipse.osee.define.ide.traceability.TraceabilityTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+/**
+ * @author Ryan D. Brooks
+ */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({TraceabilityTestSuite.class})
 public class AllDefineJunitTestSuite {

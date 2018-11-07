@@ -18,24 +18,24 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
  */
 public interface WorkState {
 
-   public abstract void setHoursSpent(double hoursSpent);
+   void setHoursSpent(double hoursSpent);
 
-   public abstract void setPercentComplete(int percentComplete);
+   void setPercentComplete(int percentComplete);
 
-   public abstract String getName();
+   String getName();
 
-   public abstract List<IAtsUser> getAssignees();
+   List<IAtsUser> getAssignees();
 
-   public abstract double getHoursSpent();
+   double getHoursSpent();
 
-   public abstract int getPercentComplete();
+   int getPercentComplete();
 
-   public abstract void addAssignee(IAtsUser steve);
+   void addAssignee(IAtsUser steve);
 
-   public abstract void setAssignees(List<? extends IAtsUser> users);
+   void setAssignees(List<? extends IAtsUser> users);
 
-   public abstract void setName(String name);
+   void setName(String name);
 
-   public abstract void removeAssignee(IAtsUser assignee);
+   void removeAssignee(IAtsUser assignee);
 
 }

@@ -20,6 +20,9 @@ import org.eclipse.xtext.conversion.impl.AbstractValueConverter;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.util.Strings;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class OseeStringValueConverter extends DefaultTerminalConverters {
 
    @Inject

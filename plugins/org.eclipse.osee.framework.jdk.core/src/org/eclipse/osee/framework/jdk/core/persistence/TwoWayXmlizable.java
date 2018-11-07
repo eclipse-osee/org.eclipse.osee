@@ -12,8 +12,11 @@ package org.eclipse.osee.framework.jdk.core.persistence;
 
 import org.w3c.dom.Element;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public interface TwoWayXmlizable extends Xmlizable {
-   public abstract void initializeFromXml(Element root);
+   void initializeFromXml(Element root);
 
-   public abstract boolean isInitialized();
+   boolean isInitialized();
 }

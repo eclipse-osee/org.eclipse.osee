@@ -13,7 +13,7 @@ package org.eclipse.osee.disposition.rest.internal.importer;
 import java.util.List;
 
 /**
- * @author Dominic Guss
+ * @author Dominic A. Guss
  */
 public class TmzTestPoint {
 

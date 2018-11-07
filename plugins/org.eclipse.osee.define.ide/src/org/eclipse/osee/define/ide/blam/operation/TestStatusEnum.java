@@ -13,6 +13,9 @@ package org.eclipse.osee.define.ide.blam.operation;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public enum TestStatusEnum {
    DEFAULT_CODE(""),
    NOT_PERFORMED_CODE("Not Performed"),

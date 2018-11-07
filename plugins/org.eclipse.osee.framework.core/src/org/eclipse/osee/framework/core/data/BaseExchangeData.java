@@ -18,6 +18,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStoreWriter;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class BaseExchangeData implements Serializable {
    private static final long serialVersionUID = -3844333805269321833L;
    protected final PropertyStore backingData;
@@ -33,8 +36,6 @@ public class BaseExchangeData implements Serializable {
 
    /**
     * Set data from XML input stream
-    * 
-    * @param xml inputStream
     */
    protected void loadfromXml(InputStream inputStream) {
       try {
@@ -45,9 +46,6 @@ public class BaseExchangeData implements Serializable {
       }
    }
 
-   /**
-    * Write to output stream
-    */
    public void write(OutputStream outputStream) {
       try {
          PropertyStoreWriter writer = new PropertyStoreWriter();

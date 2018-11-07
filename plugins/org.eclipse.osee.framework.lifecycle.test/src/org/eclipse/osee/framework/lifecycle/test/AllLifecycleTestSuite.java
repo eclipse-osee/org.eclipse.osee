@@ -18,6 +18,9 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({ //
    InternalLifecycleTestSuite.class, //
 })
+/**
+ * @author Roberto E. Escobar
+ */
 public class AllLifecycleTestSuite {
    // Test Suite
 }

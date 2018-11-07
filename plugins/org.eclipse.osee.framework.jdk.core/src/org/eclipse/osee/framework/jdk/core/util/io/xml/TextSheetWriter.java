@@ -17,6 +17,9 @@ import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public final class TextSheetWriter extends AbstractSheetWriter {
 
    private final Map<String, CharBackedInputStream> sheetMap;

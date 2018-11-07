@@ -54,9 +54,6 @@ public abstract class AbstractTestRule implements MethodRule {
 
    /**
     * Run one time for an entire test set classes and methods
-    * 
-    * @param method
-    * @throws InitializationError
     */
    public void onFirstTest(FrameworkMethod method) throws Throwable {
       //
@@ -64,9 +61,6 @@ public abstract class AbstractTestRule implements MethodRule {
 
    /**
     * Invoked when a test method is about to start
-    * 
-    * @param method
-    * @throws Throwable
     */
    public void onTestStarting(FrameworkMethod method) throws Throwable {
       //
@@ -74,8 +68,6 @@ public abstract class AbstractTestRule implements MethodRule {
 
    /**
     * Invoked when a test method succeeds
-    * 
-    * @param method
     */
    public void onTestSuccess(FrameworkMethod method) {
       //
@@ -83,9 +75,6 @@ public abstract class AbstractTestRule implements MethodRule {
 
    /**
     * Invoked when a test method fails
-    * 
-    * @param e
-    * @param method
     */
    public void onTestFailed(Throwable e, FrameworkMethod method) {
       //
@@ -93,8 +82,6 @@ public abstract class AbstractTestRule implements MethodRule {
 
    /**
     * Invoked when a test method finishes (whether passing or failing)
-    * 
-    * @param method
     */
    public void onTestFinished(FrameworkMethod method) {
       //

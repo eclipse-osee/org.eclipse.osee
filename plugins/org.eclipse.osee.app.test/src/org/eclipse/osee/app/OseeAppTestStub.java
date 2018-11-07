@@ -12,6 +12,9 @@ package org.eclipse.osee.app;
 
 import org.junit.Test;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class OseeAppTestStub {
    @Test
    public void testStub() {

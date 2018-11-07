@@ -34,9 +34,6 @@ public class DateIterator implements Iterator<Calendar>, Cloneable {
 
    /**
     * Use this constructor for the very simple case of iterating from startCal to endCal once each day
-    * 
-    * @param startCal
-    * @param endCal
     */
    public DateIterator(Calendar startCal, Calendar endCal) {
       this(startCal.getTime(), endCal.getTime(), Calendar.DATE, 1);
@@ -44,17 +41,12 @@ public class DateIterator implements Iterator<Calendar>, Cloneable {
 
    /**
     * Use this constructor for the very simple case of iterating from startCal to endCal once each day
-    * 
-    * @param startDate
-    * @param startDate
     */
    public DateIterator(Date startDate, Date endDate) {
       this(startDate, endDate, Calendar.DATE, 1);
    }
 
    /**
-    * @param startCal
-    * @param endCal
     * @param incrementInterval See date/time categories in Calendar class. i.e.: Calendar.WEEK_OF_YEAR
     */
    public DateIterator(Calendar startCal, Calendar endCal, int intervalField, int intervalQty) {
@@ -75,11 +67,6 @@ public class DateIterator implements Iterator<Calendar>, Cloneable {
     * Monday you would use this constructor like this:DateIterator(startDate, endDate, Calendar.WEEK_OF_YEAR, 1, true,
     * Calendar.DAY_OF_WEEK, Calendar.MONDAY)
     * 
-    * @param startDate
-    * @param endDate
-    * @param intervalField
-    * @param intervalQty
-    * @param normalize
     * @param calendarFieldToNormalize If normalize==false then this will be ignored
     * @param calendarFieldValueToNormalizeOn If normalize==false then this will be ignored
     */
@@ -189,9 +176,6 @@ public class DateIterator implements Iterator<Calendar>, Cloneable {
 
    /**
     * Given the unNormalDate return a date that will be the first iteration date at or after the unNormalDate.
-    * 
-    * @param unNormalDate
-    * @return
     */
    public Date getNormalizedDate(Date unNormalDate) {
       Date normalDate;

@@ -113,9 +113,6 @@ public class DoorsOSLCUIHandler extends AbstractHandler {
       return null;
    }
 
-   /**
-    * @param doorsArtifact
-    */
    private ServiceProvider getServiceProvider(final DoorsArtifact doorsArtifact) {
       if (doorsArtifact != null) {
          List<DoorsArtifact> children = doorsArtifact.getChildren();

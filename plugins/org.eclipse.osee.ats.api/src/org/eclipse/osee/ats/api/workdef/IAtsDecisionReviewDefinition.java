@@ -18,31 +18,25 @@ import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
  */
 public interface IAtsDecisionReviewDefinition {
 
-   /**
-    * Identification
-    */
-   public abstract String getName();
+   String getName();
 
-   public abstract String getDescription();
+   String getDescription();
 
-   /**
-    * Created Review Options
-    */
-   public abstract String getReviewTitle();
+   String getReviewTitle();
 
-   public abstract String getRelatedToState();
+   String getRelatedToState();
 
-   public abstract ReviewBlockType getBlockingType();
+   ReviewBlockType getBlockingType();
 
-   public abstract StateEventType getStateEventType();
+   StateEventType getStateEventType();
 
-   public abstract boolean isAutoTransitionToDecision();
+   boolean isAutoTransitionToDecision();
 
-   public abstract List<String> getAssignees();
+   List<String> getAssignees();
 
-   public abstract List<IAtsDecisionReviewOption> getOptions();
+   List<IAtsDecisionReviewOption> getOptions();
 
    @Override
-   public abstract String toString();
+   String toString();
 
 }

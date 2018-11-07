@@ -28,7 +28,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.template.engine.PageCreator;
 
 /**
- * David.W.Miller
+ * @author David.W.Miller
  */
 public class SprintPageBuilder {
    private final ArtifactReadable sprint;

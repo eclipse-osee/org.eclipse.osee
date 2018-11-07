@@ -26,6 +26,9 @@ import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.CorePreferences;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class HttpServer {
    protected static final String DEFAULT_SERVICE_NAME = "osee.http.server";
    private static final String LOCALHOST = "localhost";

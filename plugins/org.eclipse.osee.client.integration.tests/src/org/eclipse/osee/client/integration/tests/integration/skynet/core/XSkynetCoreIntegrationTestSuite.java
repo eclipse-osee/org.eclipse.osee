@@ -64,6 +64,9 @@ import org.junit.runners.Suite;
    WordMlLinkHandlerTest.class,
    WordOutlineTest.class,
    ChangeDataTest.class})
+/**
+ * @author Roberto E. Escobar
+ */
 public final class XSkynetCoreIntegrationTestSuite {
    // Test Suite
 }

@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public abstract class AbstractOseeIdType extends AbstractOseeType {
 
    protected AbstractOseeIdType(Long guid, String key) {

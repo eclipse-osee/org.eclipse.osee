@@ -68,6 +68,9 @@ import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ConvertAtsDslToWorkDefinition {
 
    private final String name;

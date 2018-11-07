@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public enum OperationBehavior {
    TerminateOnError,
    ContinueOnError

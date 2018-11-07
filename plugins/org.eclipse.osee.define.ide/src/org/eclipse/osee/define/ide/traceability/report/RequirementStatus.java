@@ -16,6 +16,9 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class RequirementStatus implements Comparable<RequirementStatus> {
    private final String requirementName;
    private final String legacyId;

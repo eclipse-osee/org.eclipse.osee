@@ -16,6 +16,9 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class PlatformRunnableAvailableInitTasks implements IApplication {
 
    private void printExtensionPoints(String pointId) {

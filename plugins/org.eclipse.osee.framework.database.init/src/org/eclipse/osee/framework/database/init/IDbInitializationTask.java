@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.init;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public interface IDbInitializationTask {
 
    void run();

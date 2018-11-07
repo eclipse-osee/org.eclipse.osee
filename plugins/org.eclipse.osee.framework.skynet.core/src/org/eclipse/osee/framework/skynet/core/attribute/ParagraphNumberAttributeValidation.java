@@ -18,6 +18,9 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class ParagraphNumberAttributeValidation implements IOseeValidator {
 
    @Override

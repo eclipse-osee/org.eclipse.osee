@@ -13,6 +13,9 @@ package org.eclipse.osee.framework.core.internal;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class Activator implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.core";
    private static BundleContext bundleContext;

@@ -13,14 +13,14 @@ package org.eclipse.osee.define.ide.errorhandler;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class ErrorHandler {
 
    private final Set<Resolver> set;
    private final StateValue value;
 
-   /**
-    * Error handler.
-    */
    public ErrorHandler() {
       super();
       this.set = new HashSet<>();

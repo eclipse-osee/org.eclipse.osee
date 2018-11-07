@@ -92,9 +92,6 @@ public class ArtifactTypeManager {
       return types;
    }
 
-   /**
-    * @return Returns all of the descriptors.
-    */
    public static Collection<ArtifactType> getAllTypes() {
       return getCache().getAll();
    }
@@ -115,7 +112,7 @@ public class ArtifactTypeManager {
    }
 
    /**
-    * @return Returns the artifact type matching the name
+    * @return the artifact type matching the name
     * @param name artifact type name to match
     */
    public static ArtifactType getType(String name) {
@@ -221,9 +218,6 @@ public class ArtifactTypeManager {
       }
    }
 
-   /**
-    * @return Returns the ArtifactType factory.
-    */
    public static ArtifactFactory getFactory(ArtifactTypeId artifactType) {
       if (artifactType == null) {
          throw new OseeArgumentException("Artifact Type cannot be null");

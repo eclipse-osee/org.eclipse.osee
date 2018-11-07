@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
- * Donald G. Dunne
+ * @author Donald G. Dunne
  */
 @Path("team")
 public class TeamResource extends AbstractConfigResource {

@@ -14,6 +14,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public final class TokenFactory {
 
    public static final Pattern nameIdPattern = Pattern.compile("\\[(.*)\\]-\\[(.*)\\]");

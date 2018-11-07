@@ -12,6 +12,9 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.core.data.BranchId;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class BranchReferenceAttribute extends IdentityReferenceAttribute {
    @Override
    public BranchId convertStringToValue(String value) {

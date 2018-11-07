@@ -51,7 +51,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IdColu
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
- * Donald G. Dunne
+ * @author Donald G. Dunne
  */
 public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
@@ -100,7 +100,10 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
       }
 
    }
-   private class ParticipationReportJob extends Job {
+   /**
+ * @author Donald G. Dunne
+ */
+private class ParticipationReportJob extends Job {
 
       private final IAtsUser user;
       private final boolean forcePend;

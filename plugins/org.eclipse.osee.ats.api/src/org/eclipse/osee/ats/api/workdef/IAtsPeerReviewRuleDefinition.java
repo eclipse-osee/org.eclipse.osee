@@ -17,8 +17,8 @@ import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
  */
 public interface IAtsPeerReviewRuleDefinition extends IAtsRuleDefinition, IExecutableRule {
 
-   public abstract String getRelatedToState();
+   String getRelatedToState();
 
-   public abstract ReviewBlockType getBlockingType();
+   ReviewBlockType getBlockingType();
 
 }

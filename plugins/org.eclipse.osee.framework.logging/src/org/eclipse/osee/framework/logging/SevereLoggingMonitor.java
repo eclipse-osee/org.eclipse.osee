@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class SevereLoggingMonitor implements ILoggerListener {
 
    private boolean ignore;

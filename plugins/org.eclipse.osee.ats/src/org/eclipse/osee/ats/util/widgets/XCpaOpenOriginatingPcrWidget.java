@@ -12,6 +12,9 @@ package org.eclipse.osee.ats.util.widgets;
 
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class XCpaOpenOriginatingPcrWidget extends XCpaOpenPcrWidget {
 
    public static final String WIDGET_ID = XCpaOpenOriginatingPcrWidget.class.getSimpleName();

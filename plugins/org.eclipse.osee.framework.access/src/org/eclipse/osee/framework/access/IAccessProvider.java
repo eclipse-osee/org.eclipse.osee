@@ -15,6 +15,9 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.lifecycle.LifecycleHandler;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public interface IAccessProvider extends LifecycleHandler {
 
    void computeAccess(ArtifactToken userArtifact, Collection<?> objToCheck, AccessData accessData);

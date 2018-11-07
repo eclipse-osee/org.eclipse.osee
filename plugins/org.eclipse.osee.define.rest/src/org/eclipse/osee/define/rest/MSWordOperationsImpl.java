@@ -22,6 +22,9 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.osgi.service.event.EventAdmin;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class MSWordOperationsImpl implements MSWordOperations {
 
    private final OrcsApi orcsApi;

@@ -16,6 +16,9 @@ import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.util.IColumn;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class EarnedValueReportResult {
 
    private final Map<IColumn, String> values = new HashMap<>(9);

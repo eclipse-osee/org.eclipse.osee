@@ -14,6 +14,9 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osee.framework.database.init.DatabaseInitOpFactory;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class ConfigDatabaseApplication implements IApplication {
 
    private IApplicationContext context;

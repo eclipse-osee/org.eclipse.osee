@@ -14,17 +14,17 @@ package org.eclipse.osee.framework.jdk.core.util.io.xml;
  * @author Ryan D. Brooks
  */
 public interface RowProcessor {
-   public abstract void processRow(String[] row) throws Exception;
+   void processRow(String[] row) throws Exception;
 
-   public abstract void processHeaderRow(String[] row);
+   void processHeaderRow(String[] row);
 
-   public abstract void processEmptyRow();
+   void processEmptyRow();
 
-   public abstract void processCommentRow(String[] row);
+   void processCommentRow(String[] row);
 
-   public abstract void reachedEndOfWorksheet();
+   void reachedEndOfWorksheet();
 
-   public abstract void foundStartOfWorksheet(String sheetName) throws Exception;
+   void foundStartOfWorksheet(String sheetName) throws Exception;
 
-   public abstract void detectedRowAndColumnCounts(int rowCount, int columnCount);
+   void detectedRowAndColumnCounts(int rowCount, int columnCount);
 }

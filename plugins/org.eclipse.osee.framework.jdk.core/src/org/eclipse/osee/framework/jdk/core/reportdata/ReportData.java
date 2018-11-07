@@ -14,6 +14,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class ReportData implements Serializable {
 
    private static final long serialVersionUID = 6645261625619889708L;
@@ -24,8 +27,6 @@ public class ReportData implements Serializable {
    /**
     * Creates the ReportData class with the given headers. The number of headers should match the values passed into
     * <code>addItem</code>.
-    * 
-    * @param headers The headers for the data to be added.
     */
    public ReportData(List<String> headers) {
       this.headers = headers;
@@ -47,23 +48,14 @@ public class ReportData implements Serializable {
       items.clear();
    }
 
-   /**
-    * @param headers The headers to set.
-    */
    public void setHeaders(List<String> headers) {
       this.headers = headers;
    }
 
-   /**
-    * @return Returns the headers.
-    */
    public List<String> getHeaders() {
       return headers;
    }
 
-   /**
-    * @return Returns the items.
-    */
    public List<ReportDataItem> getItems() {
       return items;
    }

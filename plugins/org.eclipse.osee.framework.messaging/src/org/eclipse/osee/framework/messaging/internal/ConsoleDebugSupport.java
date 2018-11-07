@@ -18,6 +18,9 @@ import javax.jms.Message;
 import org.eclipse.osee.framework.messaging.MessageID;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class ConsoleDebugSupport {
 
    private boolean printSends;
@@ -72,7 +75,10 @@ public class ConsoleDebugSupport {
       }
    }
 
-   private class Stats {
+   /**
+ * @author Roberto E. Escobar
+ */
+private class Stats {
       private int count = 0;
       private Date lastReceipt;
 

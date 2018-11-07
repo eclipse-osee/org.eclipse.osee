@@ -17,16 +17,16 @@ import org.eclipse.swt.widgets.Menu;
  */
 public interface IWorldEditor {
 
-   public abstract void reflow();
+   void reflow();
 
-   public void setTableTitle(final String title, final boolean warning);
+   void setTableTitle(final String title, final boolean warning);
 
-   public void reSearch();
+   void reSearch();
 
-   public IWorldEditorProvider getWorldEditorProvider();
+   IWorldEditorProvider getWorldEditorProvider();
 
-   public void createToolBarPulldown(Menu menu);
+   void createToolBarPulldown(Menu menu);
 
-   public String getCurrentTitleLabel();
+   String getCurrentTitleLabel();
 
 }

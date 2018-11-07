@@ -20,6 +20,9 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({ //
    InternalAccessTestSuite.class, //
 })
+/**
+ * @author Roberto E. Escobar
+ */
 public class AllAccessTestSuite {
    @BeforeClass
    public static void setUp() throws Exception {

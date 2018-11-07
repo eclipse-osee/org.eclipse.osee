@@ -12,6 +12,9 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.Collection;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface ISelectedArtifacts {
 
    public Collection<Artifact> getSelectedArtifacts();

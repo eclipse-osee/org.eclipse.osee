@@ -35,6 +35,8 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 
 /**
  * This class provides for a Date where the value is either stored in Workflow or Version or both.
+ *
+ * @author Donald G. Dunne
  */
 public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttributeValueColumn {
 

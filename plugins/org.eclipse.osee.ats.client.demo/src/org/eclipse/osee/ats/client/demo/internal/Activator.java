@@ -12,6 +12,9 @@ package org.eclipse.osee.ats.client.demo.internal;
 
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 
+/**
+ * @author Andrew M. Finkbeiner
+ */
 public class Activator extends OseeUiActivator {
 
    public static final String PLUGIN_ID = "org.eclipse.osee.ats.client.demo";

@@ -201,9 +201,6 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
       return attributeDataProvider;
    }
 
-   /**
-    * @return <b>true</b> if this attribute is dirty
-    */
    public boolean isDirty() {
       return dirty;
    }
@@ -305,9 +302,6 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
       return getGammaId().isValid();
    }
 
-   /**
-    * @return Returns the attrId.
-    */
    @Override
    public Long getId() {
       return attrId.getId();
@@ -329,9 +323,6 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
       this.attrId = attrId;
    }
 
-   /**
-    * @return the deleted
-    */
    public boolean isDeleted() {
       try {
          return modificationType.isDeleted();

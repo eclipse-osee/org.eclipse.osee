@@ -17,6 +17,6 @@ import java.rmi.RemoteException;
  */
 public interface IFrameworkEventListener {
 
-   public abstract void onEvent(RemoteEvent remoteEvent) throws RemoteException;
+   void onEvent(RemoteEvent remoteEvent) throws RemoteException;
 
 }

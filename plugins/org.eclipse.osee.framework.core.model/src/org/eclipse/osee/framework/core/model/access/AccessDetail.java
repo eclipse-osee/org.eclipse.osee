@@ -13,6 +13,9 @@ package org.eclipse.osee.framework.core.model.access;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class AccessDetail<T> { //implements Comparable<AccessDetail<?>> {
 
    private final T accessObject;

@@ -100,16 +100,10 @@ public class DecisionOption {
       }
    }
 
-   /**
-    * @return Returns the name.
-    */
    public String getName() {
       return name;
    }
 
-   /**
-    * @param name The name to set.
-    */
    public void setName(String name) {
       this.name = name;
    }
@@ -160,16 +154,10 @@ public class DecisionOption {
       return Result.TrueResult;
    }
 
-   /**
-    * @return the followupRequired
-    */
    public boolean isFollowupRequired() {
       return followupRequired;
    }
 
-   /**
-    * @param followupRequired the followupRequired to set
-    */
    public void setFollowupRequired(boolean followupRequired) {
       this.followupRequired = followupRequired;
    }

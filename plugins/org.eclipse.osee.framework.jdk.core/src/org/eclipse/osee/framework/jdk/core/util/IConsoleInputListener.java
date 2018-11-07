@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.util;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public interface IConsoleInputListener {
    void lineRead(String line);
 }

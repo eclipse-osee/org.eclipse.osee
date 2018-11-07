@@ -18,8 +18,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public interface IWfeOperationsSection {
 
-   public abstract void createAdvancedSection(WorkflowEditor editor, Composite parent, FormToolkit toolkit);
+   void createAdvancedSection(WorkflowEditor editor, Composite parent, FormToolkit toolkit);
 
-   public abstract void createAdminSection(WorkflowEditor editor, Composite parent, FormToolkit toolkit);
+   void createAdminSection(WorkflowEditor editor, Composite parent, FormToolkit toolkit);
 
 }

@@ -13,6 +13,9 @@ package org.eclipse.osee.ats.api.util;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAtsDatabaseConversion {
 
    public String getName();

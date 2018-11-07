@@ -17,7 +17,7 @@ import org.codehaus.jackson.map.deser.std.StdDeserializer;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 
 /**
- * @author Dominic Guss
+ * @author Dominic A. Guss
  */
 public class DispoSummarySeverityDeserializer extends StdDeserializer<DispoSummarySeverity> {
 

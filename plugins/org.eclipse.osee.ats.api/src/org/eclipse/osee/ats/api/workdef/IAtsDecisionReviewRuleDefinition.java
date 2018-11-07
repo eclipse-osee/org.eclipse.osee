@@ -18,12 +18,12 @@ import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
  */
 public interface IAtsDecisionReviewRuleDefinition extends IAtsRuleDefinition, IExecutableRule {
 
-   public abstract String getRelatedToState();
+   String getRelatedToState();
 
-   public abstract ReviewBlockType getBlockingType();
+   ReviewBlockType getBlockingType();
 
-   public abstract boolean isAutoTransitionToDecision();
+   boolean isAutoTransitionToDecision();
 
-   public abstract List<IAtsDecisionReviewOption> getOptions();
+   List<IAtsDecisionReviewOption> getOptions();
 
 }

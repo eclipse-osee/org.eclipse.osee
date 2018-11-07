@@ -15,12 +15,12 @@ package org.eclipse.osee.ats.api.util;
  */
 public interface IColumn {
 
-   public abstract String getId();
+   String getId();
 
-   public abstract String getName();
+   String getName();
 
-   public abstract ColumnType getDataType();
+   ColumnType getDataType();
 
-   public abstract String getDescription();
+   String getDescription();
 
 }

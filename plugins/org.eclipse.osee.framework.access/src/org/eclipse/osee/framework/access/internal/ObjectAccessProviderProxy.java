@@ -27,6 +27,9 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public final class ObjectAccessProviderProxy implements IAccessProvider {
 
    private BundleContext bundleContext;

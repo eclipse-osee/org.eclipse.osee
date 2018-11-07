@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+/**
+ * @author Donald G. Dunne
+ */
 public enum KindType {
    Artifact,
    Relation,

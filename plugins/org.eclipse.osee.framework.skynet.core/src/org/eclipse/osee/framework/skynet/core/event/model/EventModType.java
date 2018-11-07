@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event.model;
 
+/**
+ * @author Donald G. Dunne
+ */
 public enum EventModType {
    Modified("AISIbRtFzxuuH0pissgA"),
    Deleted("AISIbRvYChyA1qUTqXAA"),

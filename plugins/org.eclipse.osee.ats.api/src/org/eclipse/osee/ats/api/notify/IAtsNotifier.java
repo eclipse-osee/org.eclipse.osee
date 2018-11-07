@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.api.notify;
  */
 public interface IAtsNotifier {
 
-   public abstract void sendNotifications(AtsNotificationCollector notifications);
+   void sendNotifications(AtsNotificationCollector notifications);
 
    boolean isNotificationsEnabled();
 

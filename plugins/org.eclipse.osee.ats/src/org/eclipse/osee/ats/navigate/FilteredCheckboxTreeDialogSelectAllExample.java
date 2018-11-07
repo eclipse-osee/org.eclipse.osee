@@ -19,6 +19,9 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class FilteredCheckboxTreeDialogSelectAllExample extends XNavigateItemAction {
 
    public FilteredCheckboxTreeDialogSelectAllExample(XNavigateItem parent) {

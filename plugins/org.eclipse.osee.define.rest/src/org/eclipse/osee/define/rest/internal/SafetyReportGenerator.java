@@ -28,6 +28,9 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
+/**
+ * @author David W. Miller
+ */
 public class SafetyReportGenerator {
    private SafetyInformationAccumulator accumulator;
    private QueryFactory queryFactory;

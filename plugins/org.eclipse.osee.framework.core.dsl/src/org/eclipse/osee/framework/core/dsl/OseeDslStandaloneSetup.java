@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.core.dsl;
 
 /**
  * Initialization support for running Xtext languages without equinox extension registry
+ * 
+ * @author Roberto E. Escobar
  */
 public class OseeDslStandaloneSetup extends OseeDslStandaloneSetupGenerated {
 

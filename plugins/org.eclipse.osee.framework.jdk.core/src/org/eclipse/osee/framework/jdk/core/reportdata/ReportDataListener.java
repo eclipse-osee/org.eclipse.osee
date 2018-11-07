@@ -13,6 +13,9 @@ package org.eclipse.osee.framework.jdk.core.reportdata;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public interface ReportDataListener extends Remote {
    public void updateData(ReportData data) throws RemoteException;
 }

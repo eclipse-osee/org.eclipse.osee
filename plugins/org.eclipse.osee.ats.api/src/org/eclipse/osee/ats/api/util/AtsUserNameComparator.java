@@ -13,6 +13,9 @@ package org.eclipse.osee.ats.api.util;
 import java.util.Comparator;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsUserNameComparator implements Comparator<IAtsUser> {
    private boolean descending = false;
 

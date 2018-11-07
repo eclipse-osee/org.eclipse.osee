@@ -32,28 +32,19 @@ import org.scribe.utils.StreamUtils;
  */
 public class DWAOAuthService {
 
-   private String consumer_key;
-   private String consumer_secret;
+   private final String consumer_key;
+   private final String consumer_secret;
 
    private static final String VERSION = "1.0";
 
-   private IDWAOSLCProviderInfo config;
+   private final IDWAOSLCProviderInfo config;
 
    private HttpClient httpClient;
-
-   /**
-    * Default Constructor
-    */
-   public DWAOAuthService() {
-      //
-   }
 
    /**
     * Constructor to set the consumer key and secret
     *
     * @param config : OSLCDWAProvider object
-    * @param consumer_key :
-    * @param consumer_secret :
     */
    public DWAOAuthService(final IDWAOSLCProviderInfo config, final String consumer_key, final String consumer_secret) {
       this.consumer_key = consumer_key;
@@ -62,20 +53,12 @@ public class DWAOAuthService {
 
    }
 
-   /**
-    * Method to create the session
-    */
    public void createSession() {
       if (this.httpClient == null) {
          this.httpClient = new HttpClient();
       }
    }
 
-   /**
-    * Method to get the request token
-    *
-    * @return request token
-    */
    public Token getRequestToken() {
       createSession();
       PostMethod requestPostMethod = new PostMethod(this.config.getRequestTokenURL());
@@ -110,7 +93,6 @@ public class DWAOAuthService {
    /**
     * Method to return the authorizationURL
     *
-    * @param requestToken :
     * @return the authorizationURL
     */
    public String getAuthorizeURL(final Token requestToken) {
@@ -147,9 +129,6 @@ public class DWAOAuthService {
 
    }
 
-   /**
-    * @return version
-    */
    public String getVersion() {
       return VERSION;
    }
@@ -158,7 +137,6 @@ public class DWAOAuthService {
     * Method to get access token from the request token
     *
     * @param requestToken : token to generate access token
-    * @return access token
     */
    public Token getAccessToken(final Token requestToken) {
 
@@ -303,7 +281,6 @@ public class DWAOAuthService {
     * @param accessToken to sign the request
     * @param path to get response
     * @param queryString to get the query response
-    * @return the response
     */
    public String getResponse(final Token accessToken, final String path, final String queryString) {
       GetMethod authorizeGetMethod = new GetMethod(path);
@@ -333,17 +310,11 @@ public class DWAOAuthService {
       return responseBodyAsString;
    }
 
-   /**
-    * @return :
-    */
    public String getResourceUrl() {
       return this.config.ResourceUrl();
 
    }
 
-   /**
-    * @return
-    */
    public HttpClient getHttpClient() {
       return this.httpClient;
    }

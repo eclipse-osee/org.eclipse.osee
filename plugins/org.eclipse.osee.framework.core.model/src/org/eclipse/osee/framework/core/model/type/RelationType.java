@@ -84,16 +84,10 @@ public final class RelationType extends AbstractOseeIdType implements RelationTy
       return artifactType.inheritsFrom(allowedType);
    }
 
-   /**
-    * @return Returns the sideAName.
-    */
    public String getSideAName() {
       return getFieldValueLogException("", RELATION_SIDE_A_NAME_FIELD_KEY);
    }
 
-   /**
-    * @return Returns the sideBName.
-    */
    public String getSideBName() {
       return getFieldValueLogException("", RELATION_SIDE_B_NAME_FIELD_KEY);
    }

@@ -51,9 +51,6 @@ public abstract class Rule {
 
    /**
     * Implement this to receive the content of the entire file in {@code seq}
-    *
-    * @param seq
-    * @return
     */
    public abstract ChangeSet computeChanges(CharSequence seq);
 
@@ -177,16 +174,10 @@ public abstract class Rule {
       return ruleWasApplicable;
    }
 
-   /**
-    * @return Returns the currentFileName.
-    */
    public final String getCurrentOutfileName() {
       return currentOutfileName;
    }
 
-   /**
-    * @param ruleWasApplicable The ruleWasApplicable to set.
-    */
    public final void setRuleWasApplicable(boolean ruleWasApplicable) {
       this.ruleWasApplicable = ruleWasApplicable;
    }

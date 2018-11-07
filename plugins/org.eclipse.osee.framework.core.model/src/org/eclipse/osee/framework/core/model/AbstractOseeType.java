@@ -21,6 +21,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public abstract class AbstractOseeType extends NamedIdBase implements IOseeStorable {
 
    public static final String NAME_FIELD_KEY = "osee.name.field";

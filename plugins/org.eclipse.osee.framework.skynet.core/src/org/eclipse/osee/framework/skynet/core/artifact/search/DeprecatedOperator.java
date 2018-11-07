@@ -11,6 +11,9 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 @Deprecated
+/**
+ * @author Andrew M. Finkbeiner
+ */
 public enum DeprecatedOperator {
    EQUAL("="),
    NOT_EQUAL("<>"),

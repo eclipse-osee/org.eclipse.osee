@@ -26,6 +26,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
+/**
+ * @author Morgan E. Cook
+ */
 public class RendererUtil {
 
    private static IFolder workingFolder;

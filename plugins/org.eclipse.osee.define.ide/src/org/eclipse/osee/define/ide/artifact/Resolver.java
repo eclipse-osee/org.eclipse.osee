@@ -22,6 +22,9 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.PluginUtil;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class Resolver implements URIResolver {
    private static final PluginUtil plugin = new PluginUtil(Activator.PLUGIN_ID);
    private static final CharBuffer xslAuxiliary = getResource("support/xslt/auxiliary.xsl");

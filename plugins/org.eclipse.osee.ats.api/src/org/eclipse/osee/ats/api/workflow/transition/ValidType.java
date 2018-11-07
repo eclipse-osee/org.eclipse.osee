@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workflow.transition;
 
+/**
+ * @author Donald G. Dunne
+ */
 public enum ValidType {
    Valid,
    RequiredForCompletion,

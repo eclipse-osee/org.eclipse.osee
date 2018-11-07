@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
- * Donald G. Dunne
+ * @author Donald G. Dunne
  */
 public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> implements ProgramEndpointApi {
 

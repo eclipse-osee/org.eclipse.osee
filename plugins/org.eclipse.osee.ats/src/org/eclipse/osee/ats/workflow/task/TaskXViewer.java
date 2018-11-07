@@ -47,6 +47,9 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class TaskXViewer extends WorldXViewer {
 
    Action editAssigneeAction;

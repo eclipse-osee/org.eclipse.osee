@@ -11,6 +11,9 @@
 
 package org.eclipse.osee.framework.core.util;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class Result {
 
    public static Result TrueResult = new Result(true);

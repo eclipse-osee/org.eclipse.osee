@@ -58,8 +58,6 @@ public class AtsWorkDefinitionImporter {
 
    /**
     * If sheet has WorkDef defined, create artifact and import string. Return artifact, else return null.
-    *
-    * @param sheetnametoartifactidmap
     */
    public Artifact importWorkDefinitionSheetToDb(WorkDefinitionSheet sheet, XResultData resultData, Set<String> stateNames, Map<String, ArtifactToken> sheetNameToArtifactIdMap, ArtifactToken artToken, IAtsChangeSet changes) {
       // Prove that can convert to atsDsl

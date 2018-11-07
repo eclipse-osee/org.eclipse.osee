@@ -13,6 +13,9 @@ package org.eclipse.osee.framework.jdk.core.reportdata;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class ReportDataItem implements Serializable {
 
    private static final long serialVersionUID = 7072248922173369711L;
@@ -25,16 +28,10 @@ public class ReportDataItem implements Serializable {
       this.cells = items;
    }
 
-   /**
-    * @return Returns the guid.
-    */
    public String getGuid() {
       return guid;
    }
 
-   /**
-    * @return Returns the cells.
-    */
    public ArrayList<String> getCells() {
       return cells;
    }

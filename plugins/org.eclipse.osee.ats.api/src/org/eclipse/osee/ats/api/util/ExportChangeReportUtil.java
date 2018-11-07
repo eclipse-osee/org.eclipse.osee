@@ -14,7 +14,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 
 /**
- * @author Dominic Guss
+ * @author Dominic A. Guss
  */
 public class ExportChangeReportUtil {
 

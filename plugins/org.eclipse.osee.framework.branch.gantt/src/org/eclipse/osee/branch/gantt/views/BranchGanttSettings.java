@@ -13,6 +13,9 @@ package org.eclipse.osee.branch.gantt.views;
 import org.eclipse.nebula.widgets.ganttchart.DefaultSettings;
 import org.eclipse.nebula.widgets.ganttchart.ISettings;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class BranchGanttSettings extends DefaultSettings {
 
    @Override

@@ -71,8 +71,6 @@ public final class OseeClientIntegrationRule extends AbstractTestRule {
 
    /**
     * Invoked when a test method is about to start
-    *
-    * @param method
     */
    @Override
    public void onTestStarting(FrameworkMethod method) throws Throwable {
@@ -92,8 +90,6 @@ public final class OseeClientIntegrationRule extends AbstractTestRule {
 
    /**
     * Invoked when a test method finishes (whether passing or failing)
-    *
-    * @param method
     */
    @Override
    public void onTestFinished(FrameworkMethod method) {

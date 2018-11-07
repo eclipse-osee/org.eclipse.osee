@@ -16,6 +16,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class DoubleKeyHashMap<KeyOne, KeyTwo, Value> {
 
    private final HashMap<KeyOne, HashMap<KeyTwo, Value>> k1ToHashMap;

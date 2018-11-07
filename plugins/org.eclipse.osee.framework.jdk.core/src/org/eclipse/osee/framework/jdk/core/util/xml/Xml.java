@@ -60,7 +60,7 @@ public class Xml {
    /**
     * TODO Optimize algorithm
     * 
-    * @return Returns a string with entity reference characters unescaped.
+    * @return string with entity reference characters unescaped.
     */
    public static StringBuilder unescape(String text) {
       StringBuilder strB = new StringBuilder();
@@ -102,7 +102,7 @@ public class Xml {
    /**
     * TODO Optimize algorithm
     * 
-    * @return Returns a string with entity reference characters escaped.
+    * @return a string with entity reference characters escaped.
     */
    public static CharSequence escape(CharSequence text) {
       String textString = text.toString();

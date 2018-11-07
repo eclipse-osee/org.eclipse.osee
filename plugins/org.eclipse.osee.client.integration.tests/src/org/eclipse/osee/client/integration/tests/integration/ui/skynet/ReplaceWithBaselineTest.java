@@ -92,6 +92,8 @@ import org.junit.runners.Parameterized.Parameters;
  *
  *    Case 10 is a collection of 1-9, all cases.
  * </pre>
+ * 
+ * @author Ryan D. Brooks
  */
 @RunWith(Parameterized.class)
 public final class ReplaceWithBaselineTest {

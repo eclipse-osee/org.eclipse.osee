@@ -24,16 +24,10 @@ public class ArtifactData {
       this.source = source;
    }
 
-   /**
-    * @return Returns the artifacts.
-    */
    public Artifact[] getArtifacts() {
       return artifacts;
    }
 
-   /**
-    * @return Returns the url.
-    */
    public String getUrl() {
       return url;
    }

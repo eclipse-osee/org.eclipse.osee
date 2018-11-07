@@ -30,9 +30,6 @@ public class CharBackedInputStream extends InputStream implements Appendable {
    private final CharsetEncoder encoder;
    private Writer writer;
 
-   /**
-    * @author Ryan D. Brooks
-    */
    public class InputStreamWriter extends Writer {
 
       public InputStreamWriter() {
@@ -135,9 +132,6 @@ public class CharBackedInputStream extends InputStream implements Appendable {
       }
    }
 
-   /**
-    * @return Returns the writer.
-    */
    public Writer getWriter() {
       if (writer == null) {
          writer = new InputStreamWriter();

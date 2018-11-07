@@ -47,6 +47,9 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class WordMLApplicabilityHandler {
 
    private static String SCRIPT_ENGINE_NAME = "JavaScript";

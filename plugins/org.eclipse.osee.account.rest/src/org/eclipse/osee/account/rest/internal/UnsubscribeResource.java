@@ -40,8 +40,6 @@ public class UnsubscribeResource {
 
    /**
     * Gets an Unsubscribe page to allow the user to select to unsubscribe
-    *
-    * @param subscriptionUuid
     */
    @Path("/ui/{subscription-uuid}")
    @GET
@@ -61,8 +59,6 @@ public class UnsubscribeResource {
 
    /**
     * Gets an Unsubscribe page to allow the user to select to unsubscribe
-    *
-    * @param subscriptionUuid
     */
    @Path("/ui/{subscription-uuid}/confirm")
    @POST

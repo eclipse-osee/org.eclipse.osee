@@ -40,6 +40,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.render.AttributeModifier;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class OseeTypeModifier implements AttributeModifier {
 
    @Override

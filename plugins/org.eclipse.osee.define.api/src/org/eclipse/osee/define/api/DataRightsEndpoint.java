@@ -22,6 +22,9 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 
+/**
+ * @author Ryan D. Brooks
+ */
 @Path("datarights")
 public interface DataRightsEndpoint {
 

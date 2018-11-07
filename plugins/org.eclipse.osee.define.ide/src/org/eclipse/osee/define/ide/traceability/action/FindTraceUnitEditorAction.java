@@ -25,6 +25,9 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PlatformUI;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class FindTraceUnitEditorAction implements IEditorActionDelegate {
 
    @Override

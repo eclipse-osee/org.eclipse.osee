@@ -15,6 +15,9 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({SevereLogMonitorTest.class})
+/**
+ * @author Roberto E. Escobar
+ */
 public class AllLoggingTestSuite {
    // test suite
 }

@@ -14,6 +14,9 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
+/**
+ * @author Angel Avila
+ */
 @XmlRootElement(name = "CiItemData")
 public class CiItemData implements Identifiable<String> {
 

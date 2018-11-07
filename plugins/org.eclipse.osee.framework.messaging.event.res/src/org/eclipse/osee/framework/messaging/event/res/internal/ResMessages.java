@@ -18,6 +18,9 @@ import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBroadcastEvent1
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
 
+/**
+ * @author Donald G. Dunne
+ */
 public enum ResMessages implements MessageID {
    RemoteBranchEvent1(true, "Aylfa1wlKXIbX2gOrVgA", "topic:org.eclipse.osee.coverage.msgs.RemoteBranchEvent1", RemoteBranchEvent1.class, false),
    RemoteBroadcastEvent1(true, "Aylfa1y3ZBSIGbVU3JgA", "topic:org.eclipse.osee.coverage.msgs.RemoteBroadcastEvent1", RemoteBroadcastEvent1.class, false),

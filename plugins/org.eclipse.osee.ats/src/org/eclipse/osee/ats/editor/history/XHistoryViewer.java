@@ -131,9 +131,6 @@ public class XHistoryViewer extends GenericXWidget {
 
    }
 
-   /**
-    * @return Returns the xViewer.
-    */
    public HistoryXViewer getXViewer() {
       return xViewer;
    }

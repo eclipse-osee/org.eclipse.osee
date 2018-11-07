@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.util.io;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public interface IZipEntryCompleteCallback {
 
    void setValue(int i);

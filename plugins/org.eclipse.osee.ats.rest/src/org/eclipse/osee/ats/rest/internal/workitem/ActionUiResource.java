@@ -149,7 +149,7 @@ public final class ActionUiResource {
    }
 
    /**
-    * @param id
+    * @param id (id, atsId) of action to display
     * @return html representation w/ transition ui
     */
    @Path("{id}/Transition")

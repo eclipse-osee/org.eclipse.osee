@@ -32,17 +32,17 @@ public interface AtsWorkPackageEndpointApi {
    @GET
    @Path("colorteam")
    @Produces({MediaType.APPLICATION_JSON})
-   public ColorTeams getColorTeams();
+   ColorTeams getColorTeams();
 
    @GET
    @Path("{workPackageId}/workitem")
    @Produces({MediaType.APPLICATION_JSON})
-   public Collection<IAtsWorkItem> getWorkItems(@PathParam("workPackageId") long workPackageId);
+   Collection<IAtsWorkItem> getWorkItems(@PathParam("workPackageId") long workPackageId);
 
    @PUT
    @Path("{workPackageId}")
    @Consumes({MediaType.APPLICATION_JSON})
-   public abstract Response setWorkPackage(@PathParam("workPackageId") long workPackageId, JaxWorkPackageData workPackageData);
+   abstract Response setWorkPackage(@PathParam("workPackageId") long workPackageId, JaxWorkPackageData workPackageData);
 
    @DELETE
    @Path("{workPackageId}/workitem")

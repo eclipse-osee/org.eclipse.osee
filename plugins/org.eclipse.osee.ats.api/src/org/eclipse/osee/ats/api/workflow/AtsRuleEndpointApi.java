@@ -30,17 +30,17 @@ public interface AtsRuleEndpointApi {
    @GET
    @Path("rule")
    @Produces({MediaType.APPLICATION_JSON})
-   public abstract JaxRuleDefinitions get() throws Exception;
+   JaxRuleDefinitions get() throws Exception;
 
    @POST
    @Path("rule")
    @Consumes({MediaType.APPLICATION_JSON})
-   public abstract Response addRuleToConfig(AddRuleData setRuleData);
+   Response addRuleToConfig(AddRuleData setRuleData);
 
    @POST
    @Path("rulerun")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   public abstract RunRuleResults runWorkflowRules(RunRuleData runRuleData);
+   RunRuleResults runWorkflowRules(RunRuleData runRuleData);
 
 }

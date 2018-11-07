@@ -315,7 +315,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    /**
-    * @return Returns a list of parents starting with this Artifact and ending with the same Artifact that is returned
+    * @return a list of parents starting with this Artifact and ending with the same Artifact that is returned
     * from getArtifactRoot().
     */
    public final List<Artifact> getAncestors() {
@@ -1440,9 +1440,6 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return linksLoaded;
    }
 
-   /**
-    * @return Returns the descriptor.
-    */
    public final ArtifactType getArtifactType() {
       return ArtifactTypeManager.getType(getArtifactTypeId());
    }

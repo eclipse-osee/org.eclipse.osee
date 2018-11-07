@@ -26,6 +26,8 @@ import org.junit.runners.model.Statement;
  * artifacts in the cache. <br/>
  * <br/>
  * In the future the behavior of this class could be modified to clean up after a test, regardless of test context.
+ * 
+ * @author Roberto E. Escobar
  */
 public final class OseeHousekeepingRule implements MethodRule {
 

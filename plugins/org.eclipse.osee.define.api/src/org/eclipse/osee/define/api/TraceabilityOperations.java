@@ -16,6 +16,9 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 
+/**
+ * @author Morgan E. Cook
+ */
 public interface TraceabilityOperations {
 
    public void generateTraceReport(BranchId branchId, String codeRoot, String traceRoot, Writer providedWriter, IArtifactType artifactType, AttributeTypeToken attributeType);

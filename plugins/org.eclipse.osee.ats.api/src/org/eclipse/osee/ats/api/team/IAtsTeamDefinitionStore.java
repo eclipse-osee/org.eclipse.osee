@@ -12,6 +12,9 @@ package org.eclipse.osee.ats.api.team;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAtsTeamDefinitionStore {
 
    IAtsTeamDefinition getTeamDefinition(IAtsWorkItem workItem);

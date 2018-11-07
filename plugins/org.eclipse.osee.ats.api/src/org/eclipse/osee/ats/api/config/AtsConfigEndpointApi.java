@@ -55,25 +55,19 @@ public interface AtsConfigEndpointApi {
 
    /**
     * Requests that the server reload the ATS configuration cache and returns without waiting for the reload to occur
-    *
-    * @return
     */
    @GET
    @Path("clearcache")
    @Produces(MediaType.APPLICATION_JSON)
    public String requestCacheReload();
 
-   /**
-    * @return html5 action entry page
-    */
    @GET
    @Path("ui/NewAtsBranchConfig")
    @Produces(MediaType.TEXT_HTML)
    public ViewModel getNewSource();
 
    /**
-    * @return json representation of all Attribute Types as AtsAttributeValueColumn for use as a starting point in the
-    * views configuration of AtsConfig
+    * @return json representation of all Attribute Types as AtsAttributeValueColumn for use as a starting point in the views configuration of AtsConfig
     */
    @GET
    @Path("genAttrTypeViews")
@@ -87,7 +81,6 @@ public interface AtsConfigEndpointApi {
     * @param form.fromBranchId of branch to get config artifacts from
     * @param form.newBranchName of new branch
     * @param form.userId - userId of user performing transition
-    * @param uriInfo
     * @return json object with new branchId
     */
    @POST

@@ -13,6 +13,9 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public interface IArtifactTypeProvider {
 
    IArtifactType getTypeByGuid(Long artTypeGuid);

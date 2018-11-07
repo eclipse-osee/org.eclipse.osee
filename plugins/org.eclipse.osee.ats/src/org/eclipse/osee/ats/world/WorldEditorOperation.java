@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public interface WorldEditorOperation {
 
-   public abstract Collection<Artifact> performSearch();
+   abstract Collection<Artifact> performSearch();
 
-   public String getName();
+   String getName();
 }

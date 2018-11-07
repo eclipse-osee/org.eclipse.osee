@@ -13,6 +13,9 @@ package org.eclipse.osee.framework.core.enums;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public final class CoreArtifactTokens {
 
    // @formatter:off

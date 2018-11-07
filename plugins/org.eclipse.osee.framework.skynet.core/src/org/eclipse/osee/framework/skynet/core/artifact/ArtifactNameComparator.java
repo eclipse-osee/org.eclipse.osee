@@ -13,6 +13,9 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.util.Comparator;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ArtifactNameComparator extends AbstractArtifactNameComparator implements Comparator<ArtifactToken> {
 
    public ArtifactNameComparator(boolean descending) {

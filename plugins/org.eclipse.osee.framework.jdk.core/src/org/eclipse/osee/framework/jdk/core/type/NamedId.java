@@ -11,6 +11,9 @@
 
 package org.eclipse.osee.framework.jdk.core.type;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public interface NamedId extends Named, Id {
 
    default String toStringWithId() {

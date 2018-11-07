@@ -17,6 +17,9 @@ import org.eclipse.osee.ats.api.workdef.WidgetOptionHandler;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class WidgetOptionHandlerTest {
 
    @Test

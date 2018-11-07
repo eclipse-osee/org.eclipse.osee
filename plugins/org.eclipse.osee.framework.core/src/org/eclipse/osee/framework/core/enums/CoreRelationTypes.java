@@ -14,6 +14,9 @@ import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public final class CoreRelationTypes {
 
    //@formatter:off

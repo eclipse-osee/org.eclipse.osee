@@ -105,7 +105,6 @@ public class DispoSetResource {
     * Get all Disposition Sets on the given branch
     *
     * @return The Disposition Sets found on the branch
-    * @throws JSONException
     * @response.representation.200.doc OK, Found Disposition Sets
     * @response.representation.404.doc Not Found, Could not find any Disposition Sets
     */

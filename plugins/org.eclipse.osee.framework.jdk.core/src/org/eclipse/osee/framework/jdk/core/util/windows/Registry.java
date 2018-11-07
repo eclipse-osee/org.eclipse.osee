@@ -15,6 +15,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.Processes;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class Registry {
 
    public static final String HKEY_LOCAL_MACHINE = "HKLM";

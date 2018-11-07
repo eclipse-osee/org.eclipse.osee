@@ -27,6 +27,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class DemoUtil {
 
    private static String atsIds;

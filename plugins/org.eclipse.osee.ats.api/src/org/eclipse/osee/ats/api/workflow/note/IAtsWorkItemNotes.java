@@ -14,6 +14,9 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAtsWorkItemNotes {
 
    void addNote(NoteType type, String state, String msg, IAtsUser user);

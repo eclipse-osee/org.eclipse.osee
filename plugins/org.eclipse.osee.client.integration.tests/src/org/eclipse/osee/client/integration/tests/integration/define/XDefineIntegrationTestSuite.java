@@ -18,6 +18,9 @@ import org.junit.runners.Suite;
    FixAttributeOperationTest.class,
    ImportTraceUnitsOperationTest.class,
    TestPlanComplianceReportTest.class})
+/**
+ * @author Ryan D. Brooks
+ */
 public class XDefineIntegrationTestSuite {
    // Test Suite
 }

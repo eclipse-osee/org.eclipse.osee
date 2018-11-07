@@ -16,10 +16,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.logging.ILoggerListener;
 import org.eclipse.osee.framework.plugin.core.internal.Activator;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class EclipseErrorLogLogger implements ILoggerListener {
-
-   public EclipseErrorLogLogger() {
-   }
 
    @Override
    public void log(String loggerName, Level level, String message, Throwable th) {

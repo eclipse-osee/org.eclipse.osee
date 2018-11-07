@@ -57,6 +57,8 @@ import org.xml.sax.SAXException;
 
 /**
  * {@link JAXPTest}
+ * 
+ * @author Roberto E. Escobar
  */
 public class Jaxp {
    private static final DocumentBuilderFactory namespceUnawareFactory = DocumentBuilderFactory.newInstance();
@@ -358,7 +360,6 @@ public class Jaxp {
     * Searches the Document for the Element found at the '/' delimited path provided. The path should begin with the
     * root node of the document.
     *
-    * @param d The document to search
     * @param elementPath The path to follow. For example "script/configuration/element_i_want"
     * @return The first element that matches the provided path, or null if no such element exists.
     */
@@ -469,10 +470,6 @@ public class Jaxp {
 
    /**
     * Writes the XML document 'document' to the 'file'.
-    *
-    * @param document The XML document to output
-    * @param file Where to put the output
-    * @throws TransformerException
     */
    public static void writeXmlDocument(Document document, File file) throws IOException, TransformerException {
       writeXmlDocument(document, file, getCompactFormat());
@@ -481,11 +478,8 @@ public class Jaxp {
    /**
     * Writes the XML document 'document' to the 'file'.
     *
-    * @param document The XML document to output
-    * @param file Where to put the output
     * @param prettyOutput If true, turns on indentation so the output is more easily readable, if False turns
     * indentation off to save space.
-    * @throws TransformerException
     */
    public static void writeXmlDocument(Document document, File file, Properties format) throws TransformerException, IOException {
       BufferedWriter out = new BufferedWriter(new FileWriter(file));
@@ -496,11 +490,8 @@ public class Jaxp {
    /**
     * Gets the XML document 'document' as a string
     *
-    * @param document The XML document to output
-    * @param file Where to put the output
     * @param prettyOutput If true, turns on indentation so the output is more easily readable, if False turns
     * indentation off and is assumed to provide the XML as compactly as possible.
-    * @throws TransformerException
     */
    public static String xmlToString(Document document, boolean prettyOutput) throws TransformerException {
       StringWriter stringWriter = new StringWriter();
@@ -511,11 +502,6 @@ public class Jaxp {
 
    /**
     * Sends the XML to the output
-    *
-    * @param node The source XML
-    * @param output Where the XML is 'printed' to
-    * @param format The format style to use
-    * @throws TransformerException
     */
    public static void outputXmlDocument(Node node, Writer output, Properties outputProperties) throws TransformerException {
       Transformer transformer = TransformerFactory.newInstance().newTransformer();
@@ -646,10 +632,7 @@ public class Jaxp {
    }
 
    /**
-    * @param writer
-    * @param node
     * @param useAttrLocalName calls <code>getLocalName()</code> vs <code>getName()</code> on node.
-    * @throws XMLStreamException
     */
    public static void writeAttrNode(XMLStreamWriter writer, Node node, boolean isEmptyValueValid) throws XMLStreamException {
       if (node.getNodeType() == Node.ATTRIBUTE_NODE) {

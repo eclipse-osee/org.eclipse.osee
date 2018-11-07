@@ -20,6 +20,9 @@ import org.eclipse.osee.ats.rest.util.IAtsNotifierServer;
 import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsNotificationEventProcessor {
 
    private final String noReplyEmail;

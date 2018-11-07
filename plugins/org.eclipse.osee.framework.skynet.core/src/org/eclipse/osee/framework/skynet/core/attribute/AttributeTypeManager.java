@@ -89,10 +89,6 @@ public class AttributeTypeManager {
       return getCache().existsByName(name);
    }
 
-   /**
-    * @return Returns the attribute type matching the guid
-    * @param guid attribute type guid to match
-    */
    public static AttributeType getTypeById(Long guid) {
       if (guid == null) {
          throw new OseeArgumentException("[%s] is not a valid guid", guid);
@@ -113,7 +109,7 @@ public class AttributeTypeManager {
    }
 
    /**
-    * @return the attribute type with the given name or throws an OseeTypeDoesNotExist if it does not exist.
+    * @throws OseeTypeDoesNotExist if it does not exist.
     */
    public static AttributeType getType(String name) {
       return getCache().getByName(name);

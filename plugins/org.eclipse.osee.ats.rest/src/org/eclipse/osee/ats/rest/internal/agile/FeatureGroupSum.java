@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.rest.internal.agile;
 
 /**
- * David.W.Miller
+ * @author David.W.Miller
  */
 public class FeatureGroupSum {
    private double sum = 0;

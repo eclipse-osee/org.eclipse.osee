@@ -16,6 +16,9 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class ChecksumUtil {
 
    public static final String MD5 = "MD5";

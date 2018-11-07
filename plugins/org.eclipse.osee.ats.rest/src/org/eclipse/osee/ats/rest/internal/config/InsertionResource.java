@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
- * Donald G. Dunne
+ * @author Donald G. Dunne
  */
 @Path("insertion")
 public class InsertionResource extends AbstractConfigResource {

@@ -12,6 +12,9 @@ package org.eclipse.osee.framework.core.data;
 
 import java.util.List;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class BranchViewData {
 
    private BranchId branch;

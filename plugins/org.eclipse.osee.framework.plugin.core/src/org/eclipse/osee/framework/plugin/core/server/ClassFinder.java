@@ -14,6 +14,9 @@ import java.io.IOException;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.osgi.framework.Bundle;
 
+/**
+ * @author Ken J. Aguilar
+ */
 public class ClassFinder extends ResourceFinder {
 
    private final ExportClassLoader loader = new ExportClassLoader();

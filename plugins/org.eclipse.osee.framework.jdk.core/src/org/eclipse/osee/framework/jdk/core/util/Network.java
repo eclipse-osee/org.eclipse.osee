@@ -13,6 +13,9 @@ package org.eclipse.osee.framework.jdk.core.util;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class Network {
 
    public static InetAddress getValidIP() throws UnknownHostException {

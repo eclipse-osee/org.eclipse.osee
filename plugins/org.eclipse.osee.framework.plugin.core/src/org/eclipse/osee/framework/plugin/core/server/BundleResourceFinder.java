@@ -19,6 +19,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.internal.Activator;
 import org.osgi.framework.Bundle;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class BundleResourceFinder extends ResourceFinder {
    private final ArrayList<Bundle> bundles;
 

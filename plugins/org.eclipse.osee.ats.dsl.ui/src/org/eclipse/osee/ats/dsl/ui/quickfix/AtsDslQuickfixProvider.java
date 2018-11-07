@@ -12,6 +12,9 @@ package org.eclipse.osee.ats.dsl.ui.quickfix;
 
 import org.eclipse.xtext.ui.editor.quickfix.DefaultQuickfixProvider;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsDslQuickfixProvider extends DefaultQuickfixProvider {
 
    //	@Fix(MyJavaValidator.INVALID_NAME)

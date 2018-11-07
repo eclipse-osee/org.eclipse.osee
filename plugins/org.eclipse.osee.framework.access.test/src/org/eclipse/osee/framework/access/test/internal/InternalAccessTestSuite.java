@@ -20,6 +20,9 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({ //
    CmAccessTestSuite.class, //
 })
+/**
+ * @author Roberto E. Escobar
+ */
 public class InternalAccessTestSuite {
    @BeforeClass
    public static void setUp() throws Exception {

@@ -20,7 +20,7 @@ import org.eclipse.swt.program.Program;
  * the given parameter extension, then associates the legacy Windows Photo Viewer application, which is still included
  * with Windows 10 installations. See submitted bug at this link: https://bugs.eclipse.org/bugs/show_bug.cgi?id=534441
  *
- * @author Dominic Guss
+ * @author Dominic A. Guss
  */
 public class ProgramFinder {
 

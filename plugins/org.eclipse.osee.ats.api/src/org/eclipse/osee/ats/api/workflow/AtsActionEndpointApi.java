@@ -145,7 +145,6 @@ public interface AtsActionEndpointApi {
     * Will cancel action if configured to do so and tasks and reviews are completed.
     *
     * @param id (atsId, artId) of action to cancel
-    * @throws URISyntaxException
     */
    @Path("{id}/cancel")
    @GET

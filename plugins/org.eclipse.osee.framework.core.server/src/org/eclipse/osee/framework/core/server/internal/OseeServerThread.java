@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal;
 
+/**
+ * @author Roberto E. Escobar
+ */
 class OseeServerThread extends Thread {
 
    protected OseeServerThread(String name) {

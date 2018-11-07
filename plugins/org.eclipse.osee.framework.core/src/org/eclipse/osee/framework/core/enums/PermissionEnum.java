@@ -13,6 +13,9 @@ package org.eclipse.osee.framework.core.enums;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public enum PermissionEnum {
 
    NONE(5, "None", "Open Access for all Users"),

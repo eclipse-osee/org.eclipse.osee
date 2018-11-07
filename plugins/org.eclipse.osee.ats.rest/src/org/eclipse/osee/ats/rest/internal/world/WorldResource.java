@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
- * Donald G. Dunne
+ * @author Donald G. Dunne
  */
 @Path("world")
 public class WorldResource {

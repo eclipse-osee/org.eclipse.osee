@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.util.io;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public enum DriveType {
    Unknown((short) 0),
    NoRootDirectory((short) 1),
@@ -25,9 +28,6 @@ public enum DriveType {
       this.value = value;
    }
 
-   /**
-    * @return Returns the value.
-    */
    public short getValue() {
       return value;
    }

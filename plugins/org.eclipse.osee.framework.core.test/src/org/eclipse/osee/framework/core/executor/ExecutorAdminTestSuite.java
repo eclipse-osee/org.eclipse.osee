@@ -16,6 +16,9 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ExecutorAdminIternalTestSuite.class})
+/**
+ * @author Roberto E. Escobar
+ */
 public class ExecutorAdminTestSuite {
    //
 }

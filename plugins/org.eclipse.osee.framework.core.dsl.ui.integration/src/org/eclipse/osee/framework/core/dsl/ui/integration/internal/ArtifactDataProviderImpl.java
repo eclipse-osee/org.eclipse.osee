@@ -27,6 +27,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public final class ArtifactDataProviderImpl implements ArtifactDataProvider {
 
    @Override

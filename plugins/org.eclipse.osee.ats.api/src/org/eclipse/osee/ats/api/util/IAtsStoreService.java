@@ -29,6 +29,9 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.jdbc.JdbcService;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAtsStoreService {
 
    public static final String ART_TYPE_FROM_ID_QUERY =

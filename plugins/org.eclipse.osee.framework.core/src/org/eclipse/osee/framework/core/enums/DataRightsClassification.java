@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
+/**
+ * @author David W. Miller
+ */
 public enum DataRightsClassification {
 
    governmentPurposeRights("Government Purpose Rights"),

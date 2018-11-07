@@ -39,6 +39,9 @@ import org.junit.runners.Suite;
    HtmlRendererTest.class,
    ArtifactRendererTest.class,
    WordApplicabilityTest.class})
+/**
+ * @author Ryan D. Brooks
+ */
 public class XUiSkynetCoreIntegrationTestSuite {
    // Test Suite
 }

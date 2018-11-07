@@ -12,6 +12,9 @@ package org.eclipse.osee.framework.messaging.internal;
 
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class ServiceUtility {
 
    public static ConsoleDebugSupport getConsoleDebugSupport() {

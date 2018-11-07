@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Boeing.
+ * Copyright (c) 2018 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,9 @@ import org.apache.activemq.broker.BrokerService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class RunActiveMq implements IApplication {
    private static String BROKER_URI;
    private BrokerService broker;
@@ -87,6 +90,9 @@ public class RunActiveMq implements IApplication {
       new Thread(new StopIt()).start();
    }
 
+   /**
+    * @author Roberto E. Escobar
+    */
    private class StopIt implements Runnable {
       @Override
       public void run() {

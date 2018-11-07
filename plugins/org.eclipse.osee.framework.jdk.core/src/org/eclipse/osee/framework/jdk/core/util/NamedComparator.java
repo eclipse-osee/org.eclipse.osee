@@ -15,6 +15,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class NamedComparator implements Comparator<Named> {
    private static final int NUMBER_STRING_LIMIT = 19;
    private static final Pattern numberPattern = Pattern.compile("[+-]?\\d+");

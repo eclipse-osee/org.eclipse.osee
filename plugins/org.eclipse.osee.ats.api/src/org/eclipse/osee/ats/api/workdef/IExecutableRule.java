@@ -19,6 +19,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
  */
 public interface IExecutableRule {
 
-   public abstract void execute(IAtsWorkItem workItem, AtsApi atsServices, IAtsChangeSet changes, RunRuleResults ruleResults);
+   void execute(IAtsWorkItem workItem, AtsApi atsServices, IAtsChangeSet changes, RunRuleResults ruleResults);
 
 }

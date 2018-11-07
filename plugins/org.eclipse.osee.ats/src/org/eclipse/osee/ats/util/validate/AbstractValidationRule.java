@@ -13,6 +13,9 @@ package org.eclipse.osee.ats.util.validate;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
+/**
+ * @author Donald G. Dunne
+ */
 public abstract class AbstractValidationRule {
    /**
     * @param artToValidate The Artifact to evaluate and validate against the criteria provided separately.

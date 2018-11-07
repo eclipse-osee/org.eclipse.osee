@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2018 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.ats.core.util;
 
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -17,7 +27,7 @@ import org.eclipse.osee.ats.core.workflow.state.SimpleTeamState;
 public class HoursSpentUtil {
 
    /**
-    * Return hours spent working states, reviews and tasks (not children SMAs)
+    * @return hours spent working states, reviews and tasks (not children SMAs)
     */
    public static double getHoursSpentTotal(IAtsObject atsObject, AtsApi atsApi) {
       double hours = 0.0;
@@ -35,7 +45,7 @@ public class HoursSpentUtil {
    }
 
    /**
-    * Return hours spent working all states, reviews and tasks (not children SMAs)
+    * @return hours spent working all states, reviews and tasks (not children SMAs)
     */
    public static double getHoursSpentTotal(IAtsObject atsObject, IStateToken state, AtsApi atsApi) {
       double hours = 0.0;
@@ -48,7 +58,7 @@ public class HoursSpentUtil {
    }
 
    /**
-    * Returns hours for all states (not children SMAs)
+    * @return hours for all states (not children SMAs)
     */
    public static double getHoursSpentTotalSMAState(double hours, IAtsWorkItem workItem) {
       for (String stateName : workItem.getStateMgr().getVisitedStateNames()) {
@@ -59,7 +69,7 @@ public class HoursSpentUtil {
    }
 
    /**
-    * Return hours spent working SMA state, state tasks and state reviews (not children SMAs)
+    * @return hours spent working SMA state, state tasks and state reviews (not children SMAs)
     */
    public static double getHoursSpentStateTotal(IAtsObject atsObject, AtsApi atsApi) {
       double hours = 0.0;
@@ -77,7 +87,7 @@ public class HoursSpentUtil {
    }
 
    /**
-    * Return hours spent working SMA state, state tasks and state reviews (not children SMAs)
+    * @return hours spent working SMA state, state tasks and state reviews (not children SMAs)
     */
    public static double getHoursSpentStateTotal(IAtsObject atsObject, IStateToken state, AtsApi atsApi) {
       double hours = 0.0;
@@ -90,7 +100,7 @@ public class HoursSpentUtil {
    }
 
    /**
-    * Return hours spent working ONLY the SMA stateName (not children SMAs)
+    * @return hours spent working ONLY the SMA stateName (not children SMAs)
     */
    public static double getHoursSpentStateReview(IAtsObject atsObject, AtsApi atsApi) {
       double hours = 0.0;
@@ -108,7 +118,7 @@ public class HoursSpentUtil {
    }
 
    /**
-    * Return hours spent working ONLY the SMA stateName (not children SMAs)
+    * @return hours spent working ONLY the SMA stateName (not children SMAs)
     */
    public static double getHoursSpentStateReview(IAtsObject atsObject, IStateToken state, AtsApi atsApi) {
       double hours = 0.0;
@@ -122,7 +132,7 @@ public class HoursSpentUtil {
    }
 
    /**
-    * Return hours spent for all reviews
+    * @return hours spent for all reviews
     */
    public static double getHoursSpentReview(IAtsObject atsObject, AtsApi atsApi) {
       double hours = 0.0;
@@ -135,7 +145,7 @@ public class HoursSpentUtil {
    }
 
    /**
-    * Return hours spent working ONLY the SMA stateName (not children SMAs)
+    * @return hours spent working ONLY the SMA stateName (not children SMAs)
     */
    public static double getHoursSpentSMAState(IAtsObject atsObject, AtsApi atsApi) {
       double hours = 0.0;
@@ -153,7 +163,7 @@ public class HoursSpentUtil {
    }
 
    /**
-    * Return hours spent working ONLY the SMA stateName (not children SMAs)
+    * @return hours spent working ONLY the SMA stateName (not children SMAs)
     */
    public static double getHoursSpentSMAState(IAtsObject atsObject, IStateToken state) {
       double hours = 0.0;
@@ -165,7 +175,7 @@ public class HoursSpentUtil {
    }
 
    /**
-    * Return hours spent working ONLY on tasks related to stateName
+    * @return hours spent working ONLY on tasks related to stateName
     */
    public static double getHoursSpentFromStateTasks(IAtsObject atsObject, AtsApi atsApi) {
       double hours = 0.0;
@@ -184,10 +194,8 @@ public class HoursSpentUtil {
    }
 
    /**
-    * Return Hours Spent for Tasks of "Related to State" stateName
-    *
+    * @return Hours Spent for Tasks of "Related to State" stateName
     * @param relatedToState state name of parent workflow's state
-    * @return Returns the Hours Spent
     */
    public static double getHoursSpentFromStateTasks(IAtsObject atsObject, IStateToken relatedToState, AtsApi atsApi) {
       double hours = 0.0;
@@ -200,9 +208,7 @@ public class HoursSpentUtil {
    }
 
    /**
-    * Returns Hours Spent for all Tasks
-    *
-    * @return Returns the Hours Spent
+    * @return Hours Spent for all Tasks
     */
    public static double getHoursSpentFromTasks(IAtsObject atsObject, AtsApi atsApi) {
       double hours = 0.0;

@@ -24,23 +24,23 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
  */
 public interface IAtsWorkItemFilter {
 
-   public abstract IAtsWorkItemFilter isOfType(IArtifactType... artifactType);
+   IAtsWorkItemFilter isOfType(IArtifactType... artifactType);
 
-   public abstract IAtsWorkItemFilter union(IAtsWorkItemFilter... atsQuery);
+   IAtsWorkItemFilter union(IAtsWorkItemFilter... atsQuery);
 
-   public abstract IAtsWorkItemFilter fromTeam(IAtsTeamDefinition teamDef);
+   IAtsWorkItemFilter fromTeam(IAtsTeamDefinition teamDef);
 
-   public abstract IAtsWorkItemFilter isStateType(StateType... stateType);
+   IAtsWorkItemFilter isStateType(StateType... stateType);
 
-   public <T extends IAtsWorkItem> Collection<T> getItems();
+   <T extends IAtsWorkItem> Collection<T> getItems();
 
-   public abstract IAtsWorkItemFilter withOrValue(AttributeTypeId attributeType, Collection<? extends Object> values);
+   IAtsWorkItemFilter withOrValue(AttributeTypeId attributeType, Collection<? extends Object> values);
 
-   public abstract Collection<IAtsAction> getActions();
+   Collection<IAtsAction> getActions();
 
    /**
     * @return Team Workflows or parent Team Workflows if workItem is Review or Task
     */
-   public abstract Collection<IAtsTeamWorkflow> getTeamWorkflows();
+   Collection<IAtsTeamWorkflow> getTeamWorkflows();
 
 }

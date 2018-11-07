@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.util;
 
+/**
+ * @author Morgan E. Cook
+ */
 public enum RendererOption {
    // Boolean
    PUBLISH_DIFF("Publish Diff", OptionType.Boolean),

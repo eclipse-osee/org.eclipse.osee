@@ -30,6 +30,9 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IPopulateDemoDatabaseTest {
 
    @Test

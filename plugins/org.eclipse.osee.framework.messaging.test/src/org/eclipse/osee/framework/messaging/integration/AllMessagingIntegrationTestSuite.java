@@ -13,6 +13,9 @@ package org.eclipse.osee.framework.messaging.integration;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+/**
+ * @author Donald G. Dunne
+ */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({TestEmbeddedBrokerSendReceive.class, TestVmBrokerSendReceive.class})
 public class AllMessagingIntegrationTestSuite {

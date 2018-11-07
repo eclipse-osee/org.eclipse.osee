@@ -18,6 +18,9 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.osgi.framework.Bundle;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class OperationApplication implements IApplication {
 
    @Override

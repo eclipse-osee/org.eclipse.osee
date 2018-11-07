@@ -21,6 +21,9 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public interface AccessPolicy {
 
    boolean isReadOnly(Artifact artifact);

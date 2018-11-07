@@ -15,6 +15,9 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({OseeDslRoleContextProviderTest.class})
+/**
+ * @author Ryan D. Brooks
+ */
 public class XDslUiIntegrationTestSuite {
    // Test Suite
 }

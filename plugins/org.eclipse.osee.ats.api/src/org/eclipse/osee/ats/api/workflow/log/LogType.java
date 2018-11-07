@@ -12,6 +12,9 @@ package org.eclipse.osee.ats.api.workflow.log;
 
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
+/**
+ * @author Donald G. Dunne
+ */
 public enum LogType {
    None,
    Assign,

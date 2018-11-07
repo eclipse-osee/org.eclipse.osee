@@ -12,6 +12,9 @@ package org.eclipse.osee.branch.gantt;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class Activator extends AbstractUIPlugin {
 
    // The plug-in ID

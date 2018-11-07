@@ -14,6 +14,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class OutlookCalendarEvent {
 
    private final String location;

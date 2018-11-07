@@ -246,9 +246,6 @@ public final class ArtifactLoader {
 
    /**
     * loads or reloads artifacts based on artifact ids and branch uuids
-    *
-    * @param artifacts
-    * @param locks
     */
    private static void loadArtifacts(List<ArtifactToken> toLoad, LoadLevel loadLevel, TransactionId transactionId, LoadType reload, DeletionFlag allowDeleted, Set<Artifact> artifacts, boolean isArchived) {
       if (toLoad != null && !toLoad.isEmpty()) {

@@ -30,6 +30,9 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class TraceabilityOperationsImpl implements TraceabilityOperations {
 
    private final OrcsApi orcsApi;

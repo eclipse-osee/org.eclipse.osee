@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
- * Donald G. Dunne
+ * @author Donald G. Dunne
  */
 public class InsertionEndpointImpl extends BaseConfigEndpointImpl<JaxInsertion> implements InsertionEndpointApi {
 

@@ -12,6 +12,9 @@ package org.eclipse.osee.framework.core.util;
 
 import org.apache.commons.httpclient.methods.PostMethod;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class DeleteMethod extends PostMethod {
 
    public DeleteMethod(String uri) {

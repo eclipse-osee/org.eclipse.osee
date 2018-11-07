@@ -13,7 +13,7 @@ package org.eclipse.osee.disposition.rest.internal.importer;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 /**
- * @author Dominic Guss
+ * @author Dominic A. Guss
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)

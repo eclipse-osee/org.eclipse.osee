@@ -29,6 +29,9 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.internal.Activator;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class ClassServer extends Thread {
    private ServerSocket server;
    private URL hostName;
@@ -37,9 +40,6 @@ public class ClassServer extends Thread {
    private ExecutorService socketThreads;
 
    /**
-    * Construct a server
-    *
-    * @param port the port to use
     * @throws IOException if the server socket cannot be created
     */
    public ClassServer(int port, InetAddress address) throws IOException {
@@ -168,6 +168,9 @@ public class ClassServer extends Thread {
       return hostName;
    }
 
+   /**
+    * @author Ryan D. Brooks
+    */
    private class Task implements Runnable {// Thread {
 
       private final Socket sock;

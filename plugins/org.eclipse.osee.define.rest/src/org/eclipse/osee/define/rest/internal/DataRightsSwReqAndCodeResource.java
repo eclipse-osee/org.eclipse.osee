@@ -57,9 +57,7 @@ public final class DataRightsSwReqAndCodeResource {
    }
 
    /**
-    * Provides the Data Rights Report
-    *
-    * @return Returns an excel spreadsheet containing the Data Rights Report
+    * @return an excel spreadsheet containing the Data Rights Report
     */
    @GET
    @Produces(MediaType.APPLICATION_XML)
@@ -76,9 +74,7 @@ public final class DataRightsSwReqAndCodeResource {
    }
 
    /**
-    * Provides the user interface for the Data Rights Report
-    *
-    * @return Returns the html page for the Data Rights Report
+    * Provides the html user interface for the Data Rights Report
     */
    @Path("ui")
    @GET
@@ -95,7 +91,7 @@ public final class DataRightsSwReqAndCodeResource {
     * Management, Data Management and Unmanned Systems Management to see if each of the requirements has a
     * classification and a subject matter expert.
     *
-    * @return Returns a list of all of the requirements that don't have the correct settings
+    * @return a list of all of the requirements that don't have the correct settings
     */
    @Path("validate")
    @GET
@@ -133,8 +129,7 @@ public final class DataRightsSwReqAndCodeResource {
     * Copies the data rights settings for artifacts of type Abstract Software Requirement on a given branch to the same
     * artifacts on the destination branch. The destination branch should be appropriate to edit data rights on.
     *
-    * @return Returns a list of the artifacts that do not have a source or destination or data rights
-    * @throws Exception
+    * @return a list of the artifacts that do not have a source or destination or data rights
     */
    @Path("software/{sourceBranch}/{destinationBranch}")
    @POST
@@ -147,8 +142,7 @@ public final class DataRightsSwReqAndCodeResource {
     * Copies the data rights settings for artifacts of type Abstract Software Requirement on a given branch to the same
     * artifacts on the destination branch. The destination branch should be appropriate to edit data rights on.
     *
-    * @return Returns a list of the artifacts that do not have a source or destination or data rights
-    * @throws Exception
+    * @return a list of the artifacts that do not have a source or destination or data rights
     */
    @Path("ssd/{sourceBranch}/{destinationBranch}")
    @POST

@@ -17,6 +17,9 @@ import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAtsTeamDefinitionService {
 
    IAtsTeamDefinition getTeamDefinition(IAtsWorkItem workItem);

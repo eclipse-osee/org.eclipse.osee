@@ -85,9 +85,7 @@ public class Strings {
     * <b>NOTE</b> isValid() check is only applied to <code>inputStr</code>.
     *
     * @param inputStr string to be evaluated
-    * @param target
-    * @param replacement
-    * @return returns modified, new version of <code>inputStr</code> or <code>inputStr</code> if it is not valid.
+    * @return modified, new version of <code>inputStr</code> or <code>inputStr</code> if it is not valid.
     */
    public static String saferReplace(String inputStr, String target, String replacement) {
       return isValid(inputStr) ? inputStr.replaceAll(target, replacement) : inputStr;

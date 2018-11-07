@@ -25,6 +25,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class TransitionStatusDataTest {
 
    // @formatter:off

@@ -21,6 +21,9 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public final class JavaObjectAttribute extends BinaryAttribute<Object> {
    @Override
    public Object getValue() {

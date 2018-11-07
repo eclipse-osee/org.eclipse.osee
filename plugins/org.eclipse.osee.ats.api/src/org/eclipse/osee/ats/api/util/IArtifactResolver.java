@@ -22,18 +22,18 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
  */
 public interface IArtifactResolver {
 
-   public abstract ArtifactId get(IAtsObject atsObject);
+   ArtifactId get(IAtsObject atsObject);
 
-   public abstract <A extends ArtifactId> A get(IAtsWorkItem workItem, Class<?> clazz);
+   <A extends ArtifactId> A get(IAtsWorkItem workItem, Class<?> clazz);
 
-   public abstract <A extends ArtifactId> List<A> get(Collection<? extends IAtsWorkItem> workItems, Class<?> clazz);
+   <A extends ArtifactId> List<A> get(Collection<? extends IAtsWorkItem> workItems, Class<?> clazz);
 
-   public abstract IArtifactType getArtifactType(IAtsWorkItem workItem);
+   IArtifactType getArtifactType(IAtsWorkItem workItem);
 
-   public abstract boolean isOfType(ArtifactId artifact, IArtifactType artifactType);
+   boolean isOfType(ArtifactId artifact, IArtifactType artifactType);
 
-   public abstract boolean isOfType(IAtsObject atsObject, IArtifactType artifactType);
+   boolean isOfType(IAtsObject atsObject, IArtifactType artifactType);
 
-   public boolean inheritsFrom(IArtifactType artType, IArtifactType parentArtType);
+   boolean inheritsFrom(IArtifactType artType, IArtifactType parentArtType);
 
 }

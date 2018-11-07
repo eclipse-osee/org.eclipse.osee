@@ -16,6 +16,9 @@ import java.nio.ByteBuffer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public final class CompressedContentAttribute extends BinaryAttribute<InputStream> {
 
    @Override

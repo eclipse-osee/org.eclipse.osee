@@ -19,10 +19,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public interface IClientLoopbackCmd {
 
-   public abstract void execute(final Map<String, String> parameters, final HttpResponse httpResponse);
+   void execute(final Map<String, String> parameters, final HttpResponse httpResponse);
 
-   public abstract boolean isApplicable(String cmd);
+   boolean isApplicable(String cmd);
 
-   public abstract void process(final Artifact artifact, final Map<String, String> parameters, final HttpResponse httpResponse);
+   void process(final Artifact artifact, final Map<String, String> parameters, final HttpResponse httpResponse);
 
 }

@@ -15,6 +15,9 @@ import java.net.URL;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
+/**
+ * @author Andrew M. Finkbeiner
+ */
 public class FrameworkResourceFinder extends ResourceFinder {
 
    @Override

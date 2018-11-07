@@ -12,6 +12,9 @@ package org.eclipse.osee.disposition.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * @author Angel Avila
+ */
 @XmlRootElement(name = "CiSetData")
 public class CiSetData {
 

@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.notify;
 
+/**
+ * @author Donald G. Dunne
+ */
 public enum AtsNotifyType {
    Subscribed, // Workflow transitioned, notify subscribers
    Cancelled, // Workflow completed, notify Originator

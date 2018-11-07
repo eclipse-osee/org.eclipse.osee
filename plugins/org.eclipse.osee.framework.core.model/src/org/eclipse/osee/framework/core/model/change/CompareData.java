@@ -17,6 +17,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class CompareData {
 
    private final Map<String, String> dataToCompare = new LinkedHashMap<>();

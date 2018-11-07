@@ -16,6 +16,9 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class TransactionChange implements FrameworkEvent {
 
    private BranchId branch;

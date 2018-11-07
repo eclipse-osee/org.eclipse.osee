@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.IEnumValueBuilder.EnumRecord;
 
 /**
  * Allows java files to be built dynamically and written out to disk.
- * 
+ *
  * @author Robert A. Fisher
  */
 public class JavaFileBuilder {
@@ -37,18 +37,10 @@ public class JavaFileBuilder {
    private final List<String> methods;
    private final List<EnumRecord> enumFields;
 
-   /**
-    * Create a JavaFileBuilder for a class.
-    * 
-    * @param className The class of the file.
-    */
    public JavaFileBuilder(String className) {
       this(null, className, null, null);
    }
 
-   /**
-    * Constructor
-    */
    public JavaFileBuilder(String packageName, String className, String classJavaDoc, String extendsClass) {
       this.packageName = packageName;
       this.className = className;
@@ -81,30 +73,18 @@ public class JavaFileBuilder {
       methods.add(method);
    }
 
-   /**
-    * @param classJavaDoc The classJavaDoc to set.
-    */
    public void setClassJavaDoc(String classJavaDoc) {
       this.classJavaDoc = classJavaDoc;
    }
 
-   /**
-    * @param className The className to set.
-    */
    public void setClassName(String className) {
       this.className = className;
    }
 
-   /**
-    * @param extendsClass The extendsClass to set.
-    */
    public void setExtendsClass(String extendsClass) {
       this.extendsClass = extendsClass;
    }
 
-   /**
-    * @param packageName The packageName to set.
-    */
    public void setPackageName(String packageName) {
       this.packageName = packageName;
    }
@@ -123,86 +103,6 @@ public class JavaFileBuilder {
       out.write(this.toString());
 
       out.close();
-   }
-
-   public static class Field {
-      private final boolean isPublic;
-      private final boolean isFinal;
-      private final boolean isStatic;
-      private final String type;
-      private final String name;
-      private final String initialValue;
-
-      public Field(String type, String name, boolean isFinal) {
-         this(type, name, false, false, isFinal);
-      }
-
-      public Field(String type, String name, boolean isPublic, boolean isStatic, boolean isFinal) {
-         this(type, name, isPublic, isStatic, isFinal, null);
-      }
-
-      /**
-       * @param type The type of the field
-       * @param name The name of the field
-       * @param isPublic Whether the field should be declared as public
-       * @param isStatic Whether the field should be declared as static
-       * @param isFinal Whether the field should be declared as final
-       * @param initialValue An initial value to set the field to.
-       */
-      public Field(String type, String name, boolean isPublic, boolean isStatic, boolean isFinal, String initialValue) {
-         this.type = type;
-         this.name = name;
-         this.isPublic = isPublic;
-         this.isStatic = isStatic;
-         this.isFinal = isFinal;
-         this.initialValue = initialValue;
-      }
-
-      @Override
-      public String toString() {
-         String declaration =
-            "\t" + (isPublic ? "public " : "private ") + (isStatic ? "static " : "") + (isFinal ? "final " : "") + type + " " + name;
-
-         if (initialValue != null) {
-            declaration += " = " + initialValue;
-         }
-         return declaration + ";";
-      }
-
-      /**
-       * @return Returns the isPublic.
-       */
-      public boolean isPublic() {
-         return isPublic;
-      }
-
-      /**
-       * @return Returns the isStatic.
-       */
-      public boolean isStatic() {
-         return isStatic;
-      }
-
-      /**
-       * @return Returns the isFinal.
-       */
-      public boolean isFinal() {
-         return isFinal;
-      }
-
-      /**
-       * @return Returns the name.
-       */
-      public String getName() {
-         return name;
-      }
-
-      /**
-       * @return Returns the type.
-       */
-      public String getType() {
-         return type;
-      }
    }
 
    @Override

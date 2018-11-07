@@ -17,23 +17,23 @@ import java.util.List;
  */
 public interface IAtsDecisionReviewOption {
 
-   public abstract String getName();
+   String getName();
 
-   public abstract void setName(String name);
+   void setName(String name);
 
-   public abstract List<String> getUserIds();
+   List<String> getUserIds();
 
-   public abstract void setUserIds(List<String> userIds);
+   void setUserIds(List<String> userIds);
 
-   public abstract boolean isFollowupRequired();
+   boolean isFollowupRequired();
 
-   public abstract void setFollowupRequired(boolean followupRequired);
+   void setFollowupRequired(boolean followupRequired);
 
-   public abstract List<String> getUserNames();
+   List<String> getUserNames();
 
-   public abstract void setUserNames(List<String> userNames);
+   void setUserNames(List<String> userNames);
 
    @Override
-   public abstract String toString();
+   String toString();
 
 }

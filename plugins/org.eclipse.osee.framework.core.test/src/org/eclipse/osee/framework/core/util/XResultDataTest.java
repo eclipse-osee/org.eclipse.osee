@@ -15,6 +15,9 @@ import org.eclipse.osee.framework.core.util.result.XResultData.Type;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class XResultDataTest {
 
    @Test

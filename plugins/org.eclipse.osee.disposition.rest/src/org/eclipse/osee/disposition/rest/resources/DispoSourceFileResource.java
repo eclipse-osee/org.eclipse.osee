@@ -51,7 +51,6 @@ public class DispoSourceFileResource {
     *
     * @param fileName The name of the Source File to search for
     * @return The found Source File if successful. Error Code otherwise
-    * @throws FileNotFoundException
     * @response.representation.200.doc OK, Found Source File
     * @response.representation.404.doc Not Found, Could not the Source File
     */

@@ -74,16 +74,10 @@ public class IEnumValueBuilder extends JavaFileBuilder {
          this.name = name;
       }
 
-      /**
-       * @return Returns the name.
-       */
       public String getName() {
          return name;
       }
 
-      /**
-       * @return Returns the number.
-       */
       public int getNumber() {
          return number;
       }

@@ -266,8 +266,6 @@ public class Collections {
    };
 
    /**
-    * Cast objects to clazz
-    *
     * @param castOption if ALL, cast all and throw exception if cast fails; if MATCHING, only cast those of type clazz
     */
    @SuppressWarnings("unchecked")
@@ -344,9 +342,6 @@ public class Collections {
     * Collection<String> input = [[A], B, C, [D , E, [F]]]; <br/>
     * List<String> output = [A, B, C, D, E, F];
     * </p>
-    *
-    * @param collectionInput
-    * @param modList
     */
    @SuppressWarnings("unchecked")
    public static <T> void flatten(Collection<T> input, List<T> flattenedOutput) {

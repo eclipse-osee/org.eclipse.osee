@@ -14,6 +14,9 @@ import java.util.List;
 import org.eclipse.osee.ats.workflow.CollectorArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IArtifactMembersCache<T extends CollectorArtifact> {
 
    List<Artifact> getMembers(T artifact);

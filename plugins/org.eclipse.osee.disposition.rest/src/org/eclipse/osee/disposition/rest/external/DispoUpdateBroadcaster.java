@@ -23,7 +23,7 @@ import org.eclipse.osee.logger.Log;
 /**
  * @author Angel Avila
  * @author Megumi Telles
- * @author Dominic Guss
+ * @author Dominic A. Guss
  */
 public class DispoUpdateBroadcaster {
 

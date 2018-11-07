@@ -21,6 +21,9 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class Action extends AtsObject implements IAtsAction {
 
    private final AtsApi atsApi;

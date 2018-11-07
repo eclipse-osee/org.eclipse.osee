@@ -35,6 +35,8 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link CreateBranchOperation}
+ *
+ * @author Ryan D. Brooks
  */
 public class CreateBranchOperationTest {
 

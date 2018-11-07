@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class OutlineNumberAttribute extends StringAttribute {
    // do nothing
 }

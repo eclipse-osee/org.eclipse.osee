@@ -11,7 +11,7 @@
 package org.eclipse.osee.disposition.model;
 
 /**
- * @author Dominic Guss
+ * @author Dominic A. Guss
  */
 public class UpdateSummaryData {
    private DispoSummarySeverity severity;

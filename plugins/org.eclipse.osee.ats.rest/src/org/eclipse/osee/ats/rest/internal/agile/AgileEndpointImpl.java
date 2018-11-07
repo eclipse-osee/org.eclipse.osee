@@ -125,6 +125,9 @@ import org.eclipse.osee.template.engine.PageFactory;
 /**
  * Donald G. Dunne
  */
+/**
+ * @author Donald G. Dunne
+ */
 public class AgileEndpointImpl implements AgileEndpointApi {
 
    @Context

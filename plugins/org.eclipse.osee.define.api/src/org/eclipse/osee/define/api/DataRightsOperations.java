@@ -15,6 +15,9 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public interface DataRightsOperations {
 
    DataRightResult getDataRights(List<ArtifactId> artifacts, BranchId branch);

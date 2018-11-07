@@ -31,6 +31,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ArtifactEvent implements FrameworkEvent, HasNetworkSender, HasBranch {
 
    public static enum ArtifactEventType {

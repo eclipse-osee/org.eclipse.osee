@@ -17,88 +17,31 @@ import org.scribe.services.TimestampService;
  */
 public interface IDWAOSLCProviderInfo {
 
-   /**
-    * Returns the Request token URL
-    * 
-    * @return Request token URL
-    */
-   public abstract String getRequestTokenURL();
+   String getRequestTokenURL();
 
-   /**
-    * Returns the Access token URL
-    * 
-    * @return Access token URL
-    */
-   public abstract String getAccessTokenURL();
+   String getAccessTokenURL();
 
-   /**
-    * Returns the AuthorizeToken token URL
-    * 
-    * @return AuthorizeToken token URL
-    */
-   public abstract String getAuthorizeTokenURL();
+   String getAuthorizeTokenURL();
 
-   /**
-    * Returns the Authentication URL
-    * 
-    * @return Authentication URL
-    */
-   public abstract String getOSLCProviderAuthenticationURL();
+   String getOSLCProviderAuthenticationURL();
 
    /**
     * Returns the DWAHostName Note: This is used to replace the DWAHost name from the response URl
-    * 
-    * @return DWAHostName
     */
-   public abstract String DWAHostName();
+   String DWAHostName();
 
-   /**
-    * Returns the resource Url
-    * 
-    * @return DWAHostName
-    */
-   public abstract String ResourceUrl();
+   String ResourceUrl();
 
-   /**
-    * Returns the access token extractor.
-    * 
-    * @return access token extractor
-    */
-   public abstract AccessTokenExtractor getAccessTokenExtractor();
+   AccessTokenExtractor getAccessTokenExtractor();
 
-   /**
-    * Returns the base string extractor.
-    * 
-    * @return base string extractor
-    */
-   public abstract RequestBaseStringExtractor getBaseStringExtractor();
+   RequestBaseStringExtractor getBaseStringExtractor();
 
-   /**
-    * Returns the header extractor.
-    * 
-    * @return header extractor
-    */
-   public abstract RequestHeaderExtractor getHeaderExtractor();
+   RequestHeaderExtractor getHeaderExtractor();
 
-   /**
-    * Returns the request token extractor.
-    * 
-    * @return request token extractor
-    */
-   public abstract RequestTokenExtractor getRequestTokenExtractor();
+   RequestTokenExtractor getRequestTokenExtractor();
 
-   /**
-    * Returns the signature service.
-    * 
-    * @return signature service
-    */
-   public abstract SignatureService getSignatureService();
+   SignatureService getSignatureService();
 
-   /**
-    * Returns the timestamp service.
-    * 
-    * @return timestamp service
-    */
-   public abstract TimestampService getTimestampService();
+   TimestampService getTimestampService();
 
 }

@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public interface ISearchPrimitive {
 
    /**

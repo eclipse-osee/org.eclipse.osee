@@ -13,6 +13,9 @@ package org.eclipse.osee.console.admin.internal;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+/**
+ * @author Roberto E. Escobar
+ */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ConsoleAdminUtilsTest.class})
 public class InternalConsoleAdminTestSuite {

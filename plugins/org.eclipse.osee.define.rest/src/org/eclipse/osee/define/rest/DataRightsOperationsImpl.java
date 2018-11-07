@@ -38,6 +38,9 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class DataRightsOperationsImpl implements DataRightsOperations {
 
    private static final ArtifactToken MAPPING_ARTIFACT =

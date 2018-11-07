@@ -37,6 +37,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class TreeViewerTest {
 
    class TreeViewerTestLabelProvider implements ITableLabelProvider, ITableColorProvider, ITableFontProvider {

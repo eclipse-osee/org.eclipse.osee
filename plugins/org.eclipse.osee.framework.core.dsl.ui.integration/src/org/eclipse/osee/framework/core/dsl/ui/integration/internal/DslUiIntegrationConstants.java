@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.ui.integration.internal;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public final class DslUiIntegrationConstants {
 
    private DslUiIntegrationConstants() {

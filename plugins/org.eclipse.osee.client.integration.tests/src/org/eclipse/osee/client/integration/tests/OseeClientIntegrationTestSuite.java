@@ -19,6 +19,9 @@ import org.eclipse.osee.client.integration.tests.integration.ui.skynet.XUiSkynet
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+/**
+ * @author Roberto E. Escobar
+ */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    XDslUiIntegrationTestSuite.class,

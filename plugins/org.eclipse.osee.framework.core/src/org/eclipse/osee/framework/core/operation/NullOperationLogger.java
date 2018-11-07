@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.operation;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class NullOperationLogger extends OperationLogger {
    private final static OperationLogger singleton = new NullOperationLogger();
 

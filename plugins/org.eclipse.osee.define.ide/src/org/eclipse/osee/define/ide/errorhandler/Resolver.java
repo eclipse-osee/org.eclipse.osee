@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.define.ide.errorhandler;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public interface Resolver {
 
    public boolean resolve(Exception ex, StateValue value);
