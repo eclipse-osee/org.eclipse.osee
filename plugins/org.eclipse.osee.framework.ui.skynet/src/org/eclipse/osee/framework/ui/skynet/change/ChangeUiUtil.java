@@ -15,9 +15,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -38,6 +42,10 @@ public final class ChangeUiUtil {
 
    public static void open(BranchId branch, boolean showTransactionTab) throws OseeCoreException {
       Conditions.checkNotNull(branch, "Branch");
+      if (permissionsDeniedWithDialog(branch)) {
+         return;
+      }
+
       if (BranchManager.getType(branch).isBaselineBranch()) {
          if (!MessageDialog.openConfirm(AWorkbench.getActiveShell(), "Show Change Report",
             "You have chosen to show a " + (showTransactionTab ? "transaction report" : "change report") + " for a BASLINE branch.\n\n" + //
@@ -50,9 +58,28 @@ public final class ChangeUiUtil {
       open(editorInput);
    }
 
-   public static void open(TransactionToken transactionId) throws OseeCoreException {
-      Conditions.checkNotNull(transactionId, "TransactionId");
-      open(createInput(transactionId, true));
+   /**
+    * Check if have at least read-only for given branch. Open dialog if denied.
+    *
+    * @return true if permissions denied
+    */
+   public static boolean permissionsDeniedWithDialog(BranchId branch) {
+      boolean hasPermission = AccessControlManager.hasPermission(branch, PermissionEnum.READ);
+      if (!hasPermission) {
+         AWorkbench.popup("Access Denied",
+            String.format("Access denied to branch:\n\n%s", BranchManager.toStringWithId(branch)));
+         return true;
+      }
+      return false;
+   }
+
+   public static void open(TransactionToken transaction) throws OseeCoreException {
+      Conditions.checkNotNull(transaction, "TransactionId");
+      Branch branch = BranchManager.getBranch(transaction);
+      if (branch.isInvalid() || permissionsDeniedWithDialog(transaction.getBranch())) {
+         return;
+      }
+      open(createInput(transaction, true));
    }
 
    public static void open(TransactionToken startTx, TransactionToken endTx) throws OseeCoreException {
@@ -60,19 +87,23 @@ public final class ChangeUiUtil {
       Conditions.checkNotNull(endTx, "Second TransactionId");
       TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
       if (!txDelta.areOnTheSameBranch()) {
-         throw new OseeArgumentException("invalid selection - transactions not on the same branch", txDelta);
+         throw new OseeArgumentException("Invalid selection - transactions art not on the same branch.", txDelta);
+      }
+      Branch branch = BranchManager.getBranch(startTx);
+      if (branch.isInvalid() || permissionsDeniedWithDialog(startTx.getBranch())) {
+         return;
       }
       open(createInput(CompareType.COMPARE_SPECIFIC_TRANSACTIONS, txDelta, true));
    }
 
-   public static ChangeReportEditorInput createInput(TransactionToken transactionId, boolean loadOnOpen) throws OseeCoreException {
+   private static ChangeReportEditorInput createInput(TransactionToken transactionId, boolean loadOnOpen) throws OseeCoreException {
       TransactionToken startTx = TransactionManager.getPriorTransaction(transactionId);
       TransactionToken endTx = transactionId;
       TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
       return createInput(CompareType.COMPARE_SPECIFIC_TRANSACTIONS, txDelta, loadOnOpen);
    }
 
-   public static ChangeReportEditorInput createInput(BranchId branch, boolean loadOnOpen) throws OseeCoreException {
+   private static ChangeReportEditorInput createInput(BranchId branch, boolean loadOnOpen) throws OseeCoreException {
       if (BranchManager.isArchived(branch) || BranchManager.getState(branch).equals(BranchState.COMMITTED)) {
          TransactionToken startTx = BranchManager.getBaseTransaction(branch);
          TransactionToken endTx = TransactionManager.getHeadTransaction(branch);
@@ -86,7 +117,7 @@ public final class ChangeUiUtil {
       }
    }
 
-   public static ChangeReportEditorInput createInput(BranchId branch, BranchId parentBranch, boolean loadOnOpen) throws OseeCoreException {
+   private static ChangeReportEditorInput createInput(BranchId branch, BranchId parentBranch, boolean loadOnOpen) throws OseeCoreException {
       TransactionToken startTx = TransactionManager.getHeadTransaction(branch);
       TransactionToken endTx = TransactionManager.getHeadTransaction(parentBranch);
       TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
@@ -116,5 +147,18 @@ public final class ChangeUiUtil {
          }
       };
       Jobs.startJob(job, true);
+   }
+
+   public static void open(IOseeBranch workingBranch, BranchId parentBranch, boolean b) {
+      Branch branch = BranchManager.getBranch(workingBranch);
+      if (branch.isInvalid() || permissionsDeniedWithDialog(workingBranch)) {
+         return;
+      }
+      branch = BranchManager.getBranch(parentBranch);
+      if (branch.isInvalid() || permissionsDeniedWithDialog(parentBranch)) {
+         return;
+      }
+      ChangeReportEditorInput input = createInput(workingBranch, parentBranch, true);
+      open(input);
    }
 }

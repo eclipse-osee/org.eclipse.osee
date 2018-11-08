@@ -735,4 +735,8 @@ public final class BranchManager {
    public static String toStringWithId(BranchId branch) {
       return getBranch(branch).toStringWithId();
    }
+
+   public static Branch getBranch(TransactionToken transaction) {
+      return getBranch(transaction.getBranchId());
+   }
 }

@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
-import org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInput;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.util.NameLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeBranchDialog;
@@ -235,8 +234,7 @@ public final class AtsBranchManager {
             Conditions.assertNotNull(parentBranch,
                "Parent Branch can not be null. Set Targeted Version or configure Team for Parent Branch");
             IOseeBranch workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
-            ChangeReportEditorInput input = ChangeUiUtil.createInput(workingBranch, parentBranch, true);
-            ChangeUiUtil.open(input);
+            ChangeUiUtil.open(workingBranch, parentBranch, true);
          } else if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {
             TransactionToken transactionId = getTransactionIdOrPopupChoose(teamArt, "Show Change Report", false);
             if (TransactionToken.SENTINEL.equals(transactionId)) {
