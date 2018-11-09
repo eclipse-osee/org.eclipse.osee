@@ -30,34 +30,25 @@ public class ResultSetIterable<T> implements ResultSet<T> {
    }
 
    @Override
-   public T getOneOrNull() {
-      T result = null;
+   public T getOneOrDefault(T defaultVal) {
+
       int size = size();
       if (size > 0) {
-         result = iterator().next();
+         defaultVal = iterator().next();
       }
-      return result;
+      return defaultVal;
    }
 
    @Override
-   public T getAtMostOneOrNull() {
-      T result = null;
+   public T getAtMostOneOrDefault(T defaultVal) {
+
       int size = size();
       if (size > 1) {
          throw createManyExistException(size);
       } else if (size == 1) {
-         result = iterator().next();
+         defaultVal = iterator().next();
       }
-      return result;
-   }
-
-   @Override
-   public T getExactlyOne() {
-      T result = getAtMostOneOrNull();
-      if (result == null) {
-         throw createDoesNotExistException();
-      }
-      return result;
+      return defaultVal;
    }
 
    private Iterable<T> getData() {
@@ -115,5 +106,36 @@ public class ResultSetIterable<T> implements ResultSet<T> {
          items.add(obj);
       }
       return items;
+   }
+
+   @Override
+   public T getOneOrNull() {
+      T result = null;
+      int size = size();
+      if (size > 0) {
+         result = iterator().next();
+      }
+      return result;
+   }
+
+   @Override
+   public T getExactlyOne() {
+      T result = getAtMostOneOrNull();
+      if (result == null) {
+         throw createDoesNotExistException();
+      }
+      return result;
+   }
+
+   @Override
+   public T getAtMostOneOrNull() {
+      T result = null;
+      int size = size();
+      if (size > 1) {
+         throw createManyExistException(size);
+      } else if (size == 1) {
+         result = iterator().next();
+      }
+      return result;
    }
 }

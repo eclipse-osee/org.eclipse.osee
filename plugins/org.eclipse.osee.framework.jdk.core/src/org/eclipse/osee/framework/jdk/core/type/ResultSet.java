@@ -19,6 +19,10 @@ import java.util.List;
  */
 public interface ResultSet<T> extends Iterable<T> {
 
+   T getOneOrDefault(T defaultValue);
+
+   T getAtMostOneOrDefault(T defaultValue);
+
    T getOneOrNull();
 
    T getExactlyOne();

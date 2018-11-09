@@ -26,6 +26,19 @@ public class ResultSetList<T> implements ResultSet<T> {
    }
 
    @Override
+   public T getOneOrDefault(T defaultVal) {
+      return data.isEmpty() ? defaultVal : data.iterator().next();
+   }
+
+   @Override
+   public T getAtMostOneOrDefault(T defaultVal) {
+      if (data.size() > 1) {
+         throw createManyExistException(data.size());
+      }
+      return getOneOrDefault(defaultVal);
+   }
+
+   @Override
    public T getOneOrNull() {
       return data.isEmpty() ? null : data.iterator().next();
    }
@@ -35,7 +48,7 @@ public class ResultSetList<T> implements ResultSet<T> {
       if (data.size() > 1) {
          throw createManyExistException(data.size());
       }
-      return data.isEmpty() ? null : iterator().next();
+      return getOneOrNull();
    }
 
    @Override
@@ -80,4 +93,5 @@ public class ResultSetList<T> implements ResultSet<T> {
       Collections.sort(data, comparator);
       return this;
    }
+
 }
