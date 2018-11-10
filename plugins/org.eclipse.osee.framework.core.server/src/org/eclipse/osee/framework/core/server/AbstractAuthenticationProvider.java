@@ -53,8 +53,8 @@ public abstract class AbstractAuthenticationProvider implements IAuthenticationP
          QueryBuilder query = queryFactory.fromBranch(CoreBranches.COMMON).andTypeEquals(CoreArtifactTypes.User).and(
             CoreAttributeTypes.UserId, userId);
 
-         ArtifactReadable artifact = query.getResults().getOneOrNull();
-         if (artifact != null) {
+         ArtifactReadable artifact = query.getResults().getOneOrDefault(ArtifactReadable.SENTINEL);
+         if (!artifact.getId().equals(ArtifactReadable.SENTINEL.getId())) {
             toReturn = UserToken.create(artifact.getUuid(), artifact.getName(),
                artifact.getSoleAttributeAsString(CoreAttributeTypes.Email, ""), userId, true, false, false);
          } else {

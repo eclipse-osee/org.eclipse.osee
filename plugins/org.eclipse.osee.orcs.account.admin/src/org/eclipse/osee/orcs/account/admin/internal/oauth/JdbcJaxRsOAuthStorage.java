@@ -162,8 +162,8 @@ public class JdbcJaxRsOAuthStorage implements JaxRsOAuthStorage {
    public OAuthClient getClientByClientGuid(String guid) {
       OAuthClient client = null;
       ClientStorage clientStorage = getClientStorage();
-      ArtifactReadable artifact = clientStorage.getClientByClientGuid(guid).getOneOrNull();
-      if (artifact != null) {
+      ArtifactReadable artifact = clientStorage.getClientByClientGuid(guid).getOneOrDefault(ArtifactReadable.SENTINEL);
+      if (!artifact.getId().equals(ArtifactReadable.SENTINEL.getId())) {
          OAuthClientCredential credential = credentialStorage.getByApplicationId(artifact.getId());
          client = clientStorage.newClient(artifact, credential);
       }
@@ -174,8 +174,8 @@ public class JdbcJaxRsOAuthStorage implements JaxRsOAuthStorage {
    public OAuthClient getClientByClientId(ArtifactId id) {
       OAuthClient client = null;
       ClientStorage clientStorage = getClientStorage();
-      ArtifactReadable artifact = clientStorage.getClientByClientId(id).getOneOrNull();
-      if (artifact != null) {
+      ArtifactReadable artifact = clientStorage.getClientByClientId(id).getOneOrDefault(ArtifactReadable.SENTINEL);
+      if (!artifact.getId().equals(ArtifactReadable.SENTINEL.getId())) {
          OAuthClientCredential credential = credentialStorage.getByApplicationId(artifact.getId());
          client = clientStorage.newClient(artifact, credential);
       }
@@ -190,8 +190,9 @@ public class JdbcJaxRsOAuthStorage implements JaxRsOAuthStorage {
          ArtifactId applicationId = ArtifactId.valueOf(credential.getApplicationId());
 
          ClientStorage clientStorage = getClientStorage();
-         ArtifactReadable artifact = clientStorage.getClientByApplicationId(applicationId).getOneOrNull();
-         if (artifact != null) {
+         ArtifactReadable artifact =
+            clientStorage.getClientByApplicationId(applicationId).getOneOrDefault(ArtifactReadable.SENTINEL);
+         if (!artifact.getId().equals(ArtifactReadable.SENTINEL.getId())) {
             client = clientStorage.newClient(artifact, credential);
          }
       }

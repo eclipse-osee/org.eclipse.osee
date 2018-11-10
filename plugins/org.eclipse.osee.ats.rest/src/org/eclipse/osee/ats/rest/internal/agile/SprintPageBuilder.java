@@ -91,8 +91,9 @@ public class SprintPageBuilder {
 
    private double getPointsFromAction(ArtifactReadable item) {
       double points = 0;
-      ArtifactReadable agileTeam = sprint.getRelated(AtsRelationTypes.AgileTeamToSprint_AgileTeam).getOneOrNull();
-      if (agileTeam != null) {
+      ArtifactReadable agileTeam =
+         sprint.getRelated(AtsRelationTypes.AgileTeamToSprint_AgileTeam).getOneOrDefault(ArtifactReadable.SENTINEL);
+      if (!agileTeam.getId().equals(ArtifactReadable.SENTINEL.getId())) {
          String pointsAttrType = agileTeam.getSoleAttributeAsString(AtsAttributeTypes.PointsAttributeType, "");
          if (Strings.isValid(pointsAttrType) && pointsAttrType.equals(AtsAttributeTypes.PointsNumeric.getName())) {
             points = item.getSoleAttributeValue(AtsAttributeTypes.PointsNumeric, 0.0);
@@ -107,14 +108,16 @@ public class SprintPageBuilder {
    }
 
    private ArtifactReadable calculateActionsCreated() {
-      ArtifactReadable agileTeam = sprint.getRelated(AtsRelationTypes.AgileTeamToSprint_AgileTeam).getOneOrNull();
-      if (agileTeam != null) {
+      ArtifactReadable agileTeam =
+         sprint.getRelated(AtsRelationTypes.AgileTeamToSprint_AgileTeam).getOneOrDefault(ArtifactReadable.SENTINEL);
+      if (!agileTeam.getId().equals(ArtifactReadable.SENTINEL.getId())) {
          // get items created and closed during sprint
          ResultSet<ArtifactReadable> agileItems = sprint.getRelated(AtsRelationTypes.AgileSprintToItem_AtsItem);
          numActionsStarted += countIfInTimeFrame(agileItems);
          // get items created and still open (in backlog) during the sprint time frame
-         ArtifactReadable backlog = agileTeam.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getOneOrNull();
-         if (backlog != null) {
+         ArtifactReadable backlog = agileTeam.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getOneOrDefault(
+            ArtifactReadable.SENTINEL);
+         if (!backlog.getId().equals(ArtifactReadable.SENTINEL.getId())) {
             ResultSet<ArtifactReadable> backlogItems = backlog.getRelated(AtsRelationTypes.Goal_Member);
             numActionsStarted += countIfInTimeFrame(backlogItems);
          }
@@ -136,8 +139,9 @@ public class SprintPageBuilder {
    private void updateFeatureGroupSum(ArtifactReadable item, TreeMap<String, FeatureGroupSum> featureSums, double points) {
       String featureGroupName = null;
       ArtifactReadable featureGroup =
-         item.getRelated(AtsRelationTypes.AgileFeatureToItem_FeatureGroup).getAtMostOneOrNull();
-      if (featureGroup == null) {
+         item.getRelated(AtsRelationTypes.AgileFeatureToItem_FeatureGroup).getAtMostOneOrDefault(
+            ArtifactReadable.SENTINEL);
+      if (featureGroup.getId().equals(ArtifactReadable.SENTINEL.getId())) {
          featureGroupName = "UnSet";
       } else {
          featureGroupName = featureGroup.getName();
@@ -160,10 +164,12 @@ public class SprintPageBuilder {
    }
 
    private void calculateBacklogCount() {
-      ArtifactReadable team = sprint.getRelated(AtsRelationTypes.AgileTeamToSprint_AgileTeam).getOneOrNull();
-      if (team != null) {
-         ArtifactReadable goal = team.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getOneOrNull();
-         if (goal != null) {
+      ArtifactReadable team =
+         sprint.getRelated(AtsRelationTypes.AgileTeamToSprint_AgileTeam).getOneOrDefault(ArtifactReadable.SENTINEL);
+      if (!team.getId().equals(ArtifactReadable.SENTINEL.getId())) {
+         ArtifactReadable goal =
+            team.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getOneOrDefault(ArtifactReadable.SENTINEL);
+         if (!goal.getId().equals(ArtifactReadable.SENTINEL.getId())) {
             ResultSet<ArtifactReadable> members = goal.getRelated(AtsRelationTypes.Goal_Member);
             numActionsBacklog = members.size();
          }

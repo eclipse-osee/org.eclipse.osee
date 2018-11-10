@@ -168,8 +168,9 @@ public final class DataRightsSwReqAndCodeResource {
             continue;
          }
 
-         ArtifactReadable source = queryFactory.fromBranch(sourceBranch).andId(dest).getResults().getAtMostOneOrNull();
-         if (source == null) {
+         ArtifactReadable source = queryFactory.fromBranch(sourceBranch).andId(dest).getResults().getAtMostOneOrDefault(
+            ArtifactReadable.SENTINEL);
+         if (source.getId().equals(ArtifactReadable.SENTINEL.getId())) {
             String classification = dest.getSoleAttributeValue(CoreAttributeTypes.DataRightsClassification, "");
             String subsystem = dest.getSoleAttributeValue(CoreAttributeTypes.Subsystem, "");
             appendDetails("missing source", strb, dest, subsystem, classification);

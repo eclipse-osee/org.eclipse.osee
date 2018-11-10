@@ -77,8 +77,9 @@ public class OrcsCollectorWriter {
    private void processDelete(XResultData results) {
       for (ArtifactToken owArtifact : collector.getDelete()) {
          ArtifactReadable artifact =
-            orcsApi.getQueryFactory().fromBranch(branch).andUuid(owArtifact.getId()).getResults().getAtMostOneOrNull();
-         if (artifact == null) {
+            orcsApi.getQueryFactory().fromBranch(branch).andUuid(owArtifact.getId()).getResults().getAtMostOneOrDefault(
+               ArtifactReadable.SENTINEL);
+         if (artifact.getId().equals(ArtifactReadable.SENTINEL.getId())) {
             results.warningf("Delete Artifact Token %s does not exist in database.  Skipping", owArtifact);
          } else {
             getTransaction().deleteArtifact(artifact);
@@ -90,9 +91,10 @@ public class OrcsCollectorWriter {
    private void processUpdate(XResultData results) {
       for (OwArtifact owArtifact : collector.getUpdate()) {
          ArtifactReadable artifact =
-            orcsApi.getQueryFactory().fromBranch(branch).andUuid(owArtifact.getId()).getResults().getAtMostOneOrNull();
+            orcsApi.getQueryFactory().fromBranch(branch).andUuid(owArtifact.getId()).getResults().getAtMostOneOrDefault(
+               ArtifactReadable.SENTINEL);
 
-         if (artifact == null) {
+         if (artifact.getId().equals(ArtifactReadable.SENTINEL.getId())) {
             throw new OseeArgumentException("Artifact not found for OwArtifact %s", owArtifact);
          }
 

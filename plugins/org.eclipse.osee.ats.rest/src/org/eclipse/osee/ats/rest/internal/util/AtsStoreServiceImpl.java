@@ -231,8 +231,8 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    public CustomizeData getCustomizationByGuid(String customize_guid) {
       CustomizeData cust = null;
       ArtifactReadable customizeStoreArt = getQuery().and(CoreAttributeTypes.XViewerCustomization, customize_guid,
-         QueryOption.CONTAINS_MATCH_OPTIONS).getResults().getAtMostOneOrNull();
-      if (customizeStoreArt != null) {
+         QueryOption.CONTAINS_MATCH_OPTIONS).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+      if (!customizeStoreArt.getId().equals(ArtifactReadable.SENTINEL.getId())) {
          for (String custXml : atsApi.getAttributeResolver().getAttributesToStringList(customizeStoreArt,
             CoreAttributeTypes.XViewerCustomization)) {
             if (custXml.contains(customize_guid)) {

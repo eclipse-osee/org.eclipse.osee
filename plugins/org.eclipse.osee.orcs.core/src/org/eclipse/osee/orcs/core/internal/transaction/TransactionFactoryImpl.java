@@ -127,14 +127,18 @@ public class TransactionFactoryImpl implements TransactionFactory {
    public boolean replaceWithBaselineTxVersion(String userId, BranchId branchId, TransactionId txId, int artId, String comment) {
       boolean introduced = false;
       ArtifactReadable userReadable =
-         queryFactory.fromBranch(CoreBranches.COMMON).andGuid(userId).getResults().getOneOrNull();
+         queryFactory.fromBranch(CoreBranches.COMMON).andGuid(userId).getResults().getOneOrDefault(
+            ArtifactReadable.SENTINEL);
       ArtifactReadable baselineArtifact =
-         queryFactory.fromBranch(branchId).fromTransaction(txId).andUuid(artId).getResults().getOneOrNull();
+         queryFactory.fromBranch(branchId).fromTransaction(txId).andUuid(artId).getResults().getOneOrDefault(
+            ArtifactReadable.SENTINEL);
 
-      if (userReadable != null && baselineArtifact != null) {
+      if ((!userReadable.getId().equals(ArtifactReadable.SENTINEL.getId())) && (!baselineArtifact.getId().equals(
+         ArtifactReadable.SENTINEL.getId()))) {
          TransactionBuilder tx = createTransaction(branchId, userReadable, comment);
          ArtifactReadable destination =
-            queryFactory.fromBranch(branchId).includeDeletedArtifacts().andUuid(artId).getResults().getOneOrNull();
+            queryFactory.fromBranch(branchId).includeDeletedArtifacts().andUuid(artId).getResults().getOneOrDefault(
+               ArtifactReadable.SENTINEL);
          tx.replaceWithVersion(baselineArtifact, destination);
          tx.commit();
          introduced = true;

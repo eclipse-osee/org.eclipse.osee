@@ -18,11 +18,15 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 /**
@@ -37,6 +41,7 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    boolean isOfType(ArtifactTypeId... otherTypes);
 
+   ArtifactReadable SENTINEL = createSentinel();
    ////////////////////
 
    int getAttributeCount(AttributeTypeId type);
@@ -117,4 +122,236 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
    boolean isHistorical();
 
    ApplicabilityId getApplicability();
+
+   public static ArtifactReadable createSentinel() {
+      final class ArtifactReadableSentinel extends NamedIdBase implements ArtifactReadable {
+
+         public ArtifactReadableSentinel() {
+            super(Id.SENTINEL, "SENTINEL");
+
+         }
+
+         @Override
+         public BranchId getBranch() {
+            return null;
+         }
+
+         @Override
+         public TransactionId getTransaction() {
+            return null;
+         }
+
+         @Override
+         public ModificationType getModificationType() {
+            return null;
+         }
+
+         @Override
+         public IArtifactType getArtifactType() {
+            return null;
+         }
+
+         @Override
+         public TransactionId getLastModifiedTransaction() {
+            return null;
+         }
+
+         @Override
+         public boolean isOfType(ArtifactTypeId... otherTypes) {
+            return false;
+         }
+
+         @Override
+         public int getAttributeCount(AttributeTypeId type) {
+            return 0;
+         }
+
+         @Override
+         public int getAttributeCount(AttributeTypeId type, DeletionFlag deletionFlag) {
+            return 0;
+         }
+
+         @Override
+         public boolean isAttributeTypeValid(AttributeTypeId attributeType) {
+            return false;
+         }
+
+         @Override
+         public Collection<AttributeTypeToken> getValidAttributeTypes() {
+            return null;
+         }
+
+         @Override
+         public Collection<AttributeTypeToken> getExistingAttributeTypes() {
+            return null;
+         }
+
+         @Override
+         public <T> T getSoleAttributeValue(AttributeTypeId attributeType) {
+            return null;
+         }
+
+         @Override
+         public <T> T getSoleAttributeValue(AttributeTypeId attributeType, DeletionFlag flag, T defaultValue) {
+            return null;
+         }
+
+         @Override
+         public <T> T getSoleAttributeValue(AttributeTypeId attributeType, T defaultValue) {
+            return null;
+         }
+
+         @Override
+         public String getSoleAttributeAsString(AttributeTypeId attributeType) {
+            return null;
+         }
+
+         @Override
+         public String getSoleAttributeAsString(AttributeTypeId attributeType, String defaultValue) {
+            return null;
+         }
+
+         @Override
+         public Long getSoleAttributeId(AttributeTypeId attributeType) {
+            return null;
+         }
+
+         @Override
+         public <T> List<T> getAttributeValues(AttributeTypeId attributeType) {
+            return null;
+         }
+
+         @Override
+         public Iterable<Collection<? extends AttributeReadable<Object>>> getAttributeIterable() {
+            return null;
+         }
+
+         @Override
+         public AttributeReadable<Object> getAttributeById(AttributeId attributeId) {
+            return null;
+         }
+
+         @Override
+         public ResultSet<? extends AttributeReadable<Object>> getAttributes() {
+            return null;
+         }
+
+         @Override
+         public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeId attributeType) {
+            return null;
+         }
+
+         @Override
+         public ResultSet<? extends AttributeReadable<Object>> getAttributes(DeletionFlag deletionFlag) {
+            return null;
+         }
+
+         @Override
+         public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeId attributeType, DeletionFlag deletionFlag) {
+            return null;
+         }
+
+         @Override
+         public String getAttributeValuesAsString(AttributeTypeId attributeType) {
+            return null;
+         }
+
+         @Override
+         public int getMaximumRelationAllowed(RelationTypeSide relationTypeSide) {
+            return 0;
+         }
+
+         @Override
+         public Collection<RelationTypeId> getValidRelationTypes() {
+            return null;
+         }
+
+         @Override
+         public Collection<RelationTypeId> getExistingRelationTypes() {
+            return null;
+         }
+
+         @Override
+         public ArtifactReadable getParent() {
+            return null;
+         }
+
+         @Override
+         public List<ArtifactReadable> getDescendants() {
+            return null;
+         }
+
+         @Override
+         public void getDescendants(List<ArtifactReadable> descendants) {
+         }
+
+         @Override
+         public List<ArtifactReadable> getAncestors() {
+            return null;
+         }
+
+         @Override
+         public ResultSet<ArtifactReadable> getChildren() {
+            return null;
+         }
+
+         @Override
+         public ResultSet<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide) {
+            return null;
+         }
+
+         @Override
+         public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeId artifactType) {
+            return null;
+         }
+
+         @Override
+         public ResultSet<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, DeletionFlag deletionFlag) {
+            return null;
+         }
+
+         @Override
+         public boolean areRelated(RelationTypeSide typeAndSide, ArtifactReadable readable) {
+            return false;
+         }
+
+         @Override
+         public int getRelatedCount(RelationTypeSide typeAndSide) {
+            return 0;
+         }
+
+         @Override
+         public String getRationale(RelationTypeSide typeAndSide, ArtifactReadable readable) {
+            return null;
+         }
+
+         @Override
+         public ResultSet<RelationReadable> getRelations(RelationTypeSide relationTypeSide) {
+            return null;
+         }
+
+         @Override
+         public Collection<Long> getChildrentIds() {
+            return null;
+         }
+
+         @Override
+         public Collection<Long> getRelatedIds(RelationTypeSide relationTypeSide) {
+            return null;
+         }
+
+         @Override
+         public boolean isHistorical() {
+            return false;
+         }
+
+         @Override
+         public ApplicabilityId getApplicability() {
+            return null;
+         }
+
+      }
+      return new ArtifactReadableSentinel();
+   }
+
 }

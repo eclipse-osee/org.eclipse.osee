@@ -78,13 +78,14 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
 
       for (ArtifactId artifact : artifacts) {
          ArtifactReadable art =
-            orcsApi.getQueryFactory().fromBranch(branch).andId(artifact).getResults().getOneOrNull();
+            orcsApi.getQueryFactory().fromBranch(branch).andId(artifact).getResults().getOneOrDefault(
+               ArtifactReadable.SENTINEL);
 
          String classification = null;
          String orientation = "Portrait";
          if (DataRightsClassification.isValid(overrideClassification)) {
             classification = overrideClassification;
-         } else if (art != null) {
+         } else if (!art.getId().equals(ArtifactReadable.SENTINEL.getId())) {
             classification = art.getSoleAttributeAsString(CoreAttributeTypes.DataRightsClassification, "");
             orientation = art.getSoleAttributeValue(CoreAttributeTypes.PageType, "Portrait");
          }
@@ -162,9 +163,10 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
    private Map<String, DataRight> getClassificationToDataRights(QueryBuilder query) {
       Map<String, DataRight> toReturn = new HashMap<>();
 
-      ArtifactReadable footerMappingArt = query.andId(MAPPING_ARTIFACT).getResults().getOneOrNull();
+      ArtifactReadable footerMappingArt =
+         query.andId(MAPPING_ARTIFACT).getResults().getOneOrDefault(ArtifactReadable.SENTINEL);
 
-      if (footerMappingArt != null) {
+      if (!footerMappingArt.getId().equals(ArtifactReadable.SENTINEL.getId())) {
          List<String> footers = new ArrayList<>();
          footers = footerMappingArt.getAttributeValues(CoreAttributeTypes.GeneralStringData);
          for (String footer : footers) {
