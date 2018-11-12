@@ -11,7 +11,9 @@
 package org.eclipse.osee.account.admin;
 
 import org.eclipse.osee.account.rest.model.AccountWebPreferences;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Roberto E. Escobar
@@ -20,6 +22,8 @@ public interface Account extends NamedId {
 
    boolean isActive();
 
+   Account SENTINEL = createSentinel();
+
    String getEmail();
 
    String getUserName();
@@ -27,4 +31,40 @@ public interface Account extends NamedId {
    AccountPreferences getPreferences();
 
    AccountWebPreferences getWebPreferences();
+
+   public static Account createSentinel() {
+      final class AccountSentinel extends NamedIdBase implements Account {
+
+         public AccountSentinel() {
+            super(Id.SENTINEL, "SENTINEL");
+
+         }
+
+         @Override
+         public boolean isActive() {
+            return false;
+         }
+
+         @Override
+         public String getEmail() {
+            return null;
+         }
+
+         @Override
+         public String getUserName() {
+            return null;
+         }
+
+         @Override
+         public AccountPreferences getPreferences() {
+            return null;
+         }
+
+         @Override
+         public AccountWebPreferences getWebPreferences() {
+            return null;
+         }
+      }
+      return new AccountSentinel();
+   }
 }

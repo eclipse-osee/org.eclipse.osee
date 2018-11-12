@@ -11,6 +11,8 @@
 package org.eclipse.osee.account.admin;
 
 import java.util.Date;
+import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Roberto E. Escobar
@@ -28,5 +30,49 @@ public interface AccountSession {
    String getAccessedFrom();
 
    String getAccessDetails();
+
+   AccountSession SENTINEL = createSentinel();
+
+   public static AccountSession createSentinel() {
+      final class AccountSessionSentinel extends NamedIdBase implements AccountSession {
+
+         public AccountSessionSentinel() {
+            super(Id.SENTINEL, "SENTINEL");
+
+         }
+
+         @Override
+         public Long getAccountId() {
+            return null;
+         }
+
+         @Override
+         public String getSessionToken() {
+            return null;
+         }
+
+         @Override
+         public Date getCreatedOn() {
+            return null;
+         }
+
+         @Override
+         public Date getLastAccessedOn() {
+            return null;
+         }
+
+         @Override
+         public String getAccessedFrom() {
+            return null;
+         }
+
+         @Override
+         public String getAccessDetails() {
+            return null;
+         }
+
+      }
+      return new AccountSessionSentinel();
+   }
 
 }

@@ -126,8 +126,8 @@ public class AccountAdminImpl implements AccountAdmin {
    @Override
    public boolean setActive(ArtifactId accountId, boolean active) {
       boolean modified = false;
-      Account account = getAccountById(accountId).getOneOrNull();
-      if (account.isActive() != active) {
+      Account account = getAccountById(accountId).getOneOrDefault(Account.SENTINEL);
+      if (account.getId() != Account.SENTINEL.getId() && account.isActive() != active) {
          getStorage().setActive(accountId, active);
          modified = true;
       }
@@ -207,8 +207,8 @@ public class AccountAdminImpl implements AccountAdmin {
    public AccountSession login(AccountLoginRequest request) {
       String email = authenticate(request);
       ResultSet<Account> result = getAccountByEmail(email);
-      Account account = result.getAtMostOneOrNull();
-      if (account == null) {
+      Account account = result.getAtMostOneOrDefault(Account.SENTINEL);
+      if (account.getId() == Account.SENTINEL.getId()) {
          throw new AccountLoginException(
             "Login Error - Unable to find account for username[%s] using authentication scheme[%s]",
             request.getUserName(), request.getScheme());
@@ -242,8 +242,8 @@ public class AccountAdminImpl implements AccountAdmin {
    public boolean logout(String sessionToken) {
       boolean modified = false;
       ResultSet<AccountSession> result = getAccountSessionBySessionToken(sessionToken);
-      AccountSession account = result.getOneOrNull();
-      if (account != null) {
+      AccountSession account = result.getOneOrDefault(AccountSession.SENTINEL);
+      if (!account.equals(AccountSession.SENTINEL)) {
          storage.deleteAccountSessionBySessionToken(sessionToken);
          modified = true;
       }

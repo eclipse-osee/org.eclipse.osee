@@ -108,8 +108,8 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
 
    private Account resolveAccount(String login, AuthenticatedUser subject, boolean accountCreationAllowed) {
       ResultSet<Account> result = accountAdmin.getAccountByEmail(subject.getEmailAddress());
-      Account account = result.getOneOrNull();
-      if (account == null) {
+      Account account = result.getOneOrDefault(Account.SENTINEL);
+      if (account.getId() == Account.SENTINEL.getId()) {
          if (subject.isAuthenticated() && accountCreationAllowed) {
             CreateAccountRequest request =
                CreateAccountRequestBuilder.newBuilder().active(subject.isActive()).displayName(
