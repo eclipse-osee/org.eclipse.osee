@@ -67,8 +67,8 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
    public JaxAtsTask get(@PathParam("taskId") long taskId) {
       IAtsWorkItem task =
          atsApi.getQueryService().createQuery(WorkItemType.WorkItem).isOfType(WorkItemType.Task).andIds(
-            taskId).getResults().getOneOrNull();
-      if (task == null) {
+            taskId).getResults().getOneOrDefault(IAtsWorkItem.SENTINEL);
+      if (task.getId().equals(IAtsWorkItem.SENTINEL.getId())) {
          throw new OseeArgumentException("No Task found with id %d", taskId);
       }
       JaxAtsTask jaxAtsTask = CreateTasksOperation.createNewJaxTask(task.getId(), atsApi);
@@ -81,8 +81,8 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
    public void delete(@PathParam("taskId") long taskId) {
       IAtsWorkItem task =
          atsApi.getQueryService().createQuery(WorkItemType.WorkItem).isOfType(WorkItemType.Task).andIds(
-            taskId).getResults().getOneOrNull();
-      if (task != null) {
+            taskId).getResults().getOneOrDefault(IAtsWorkItem.SENTINEL);
+      if (!task.getId().equals(IAtsWorkItem.SENTINEL.getId())) {
          IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Delete Task", AtsCoreUsers.SYSTEM_USER);
          changes.deleteArtifact(task);
          changes.execute();

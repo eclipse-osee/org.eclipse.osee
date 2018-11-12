@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api;
 
 import java.util.Date;
+import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -22,6 +23,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Donald G. Dunne
@@ -61,6 +64,8 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
    String getCancelledReason();
 
    IAtsAction getParentAction();
+
+   IAtsWorkItem SENTINEL = createSentinel();
 
    default boolean isTeamWorkflow() {
       return isOfType(AtsArtifactTypes.TeamWorkflow);
@@ -111,5 +116,132 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
    @Override
    default String toStringWithId() {
       return String.format("[%s]-[%s]-[%s]", getName(), getAtsId(), getId());
+
    }
+
+   public static IAtsWorkItem createSentinel() {
+      final class IAtsWorkItemSentinel extends NamedIdBase implements IAtsWorkItem {
+
+         public IAtsWorkItemSentinel() {
+            super(Id.SENTINEL, "SENTINEL");
+
+         }
+
+         @Override
+         public ArtifactTypeId getArtifactType() {
+            return null;
+         }
+
+         @Override
+         public List<IAtsUser> getAssignees() {
+            return null;
+         }
+
+         @Override
+         public List<IAtsUser> getImplementers() {
+            return null;
+         }
+
+         @Override
+         public String getAtsId() {
+            return null;
+         }
+
+         @Override
+         public IAtsTeamWorkflow getParentTeamWorkflow() {
+            return null;
+         }
+
+         @Override
+         public IAtsStateManager getStateMgr() {
+            return null;
+         }
+
+         @Override
+         public IAtsLog getLog() {
+            return null;
+         }
+
+         @Override
+         public IAtsWorkDefinition getWorkDefinition() {
+            return null;
+         }
+
+         @Override
+         public IAtsStateDefinition getStateDefinition() {
+            return null;
+         }
+
+         @Override
+         public IAtsUser getCreatedBy() {
+            return null;
+         }
+
+         @Override
+         public Date getCreatedDate() {
+            return null;
+         }
+
+         @Override
+         public IAtsUser getCompletedBy() {
+            return null;
+         }
+
+         @Override
+         public IAtsUser getCancelledBy() {
+            return null;
+         }
+
+         @Override
+         public String getCompletedFromState() {
+            return null;
+         }
+
+         @Override
+         public String getCancelledFromState() {
+            return null;
+         }
+
+         @Override
+         public String getArtifactTypeName() {
+            return null;
+         }
+
+         @Override
+         public Date getCompletedDate() {
+            return null;
+         }
+
+         @Override
+         public Date getCancelledDate() {
+            return null;
+         }
+
+         @Override
+         public String getCancelledReason() {
+            return null;
+         }
+
+         @Override
+         public IAtsAction getParentAction() {
+            return null;
+         }
+
+         @Override
+         public boolean isOfType(ArtifactTypeId... artifactType) {
+            return false;
+         }
+
+         @Override
+         public void setStateMgr(IAtsStateManager stateMgr) {
+         }
+
+         @Override
+         public void clearCaches() {
+         }
+
+      }
+      return new IAtsWorkItemSentinel();
+   }
+
 }

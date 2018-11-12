@@ -341,7 +341,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    @Override
    public IAtsWorkItem getWorkItemByAtsId(String atsId) {
       return atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andAttr(AtsAttributeTypes.AtsId,
-         atsId).getResults().getOneOrNull();
+         atsId).getResults().getOneOrDefault(IAtsWorkItem.SENTINEL);
    }
 
    @Override
