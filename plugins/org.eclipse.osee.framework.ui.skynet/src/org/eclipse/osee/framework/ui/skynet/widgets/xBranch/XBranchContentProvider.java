@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 
 /**
  * @author Jeff C. Phillips
@@ -63,7 +64,9 @@ public class XBranchContentProvider implements ITreeContentProvider {
    @Override
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof BranchId) {
-         return getBranchChildren((BranchId) parentElement);
+         if (!ChangeUiUtil.permissionsDeniedWithDialog((BranchId) parentElement)) {
+            return getBranchChildren((BranchId) parentElement);
+         }
       } else if (parentElement instanceof Collection<?>) {
          return ((Collection<?>) parentElement).toArray();
       } else if (parentElement instanceof Object[]) {
