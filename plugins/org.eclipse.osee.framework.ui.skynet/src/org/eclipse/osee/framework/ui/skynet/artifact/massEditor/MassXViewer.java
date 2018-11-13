@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
+import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxAttributeTypeDialog;
@@ -315,6 +316,11 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
       try {
          if (e.data instanceof ArtifactData) {
             Artifact[] artsToAdd = ((ArtifactData) e.data).getArtifacts();
+            for (int x = 0; x < artsToAdd.length; x++) {
+               if (ChangeUiUtil.permissionsDeniedWithDialog(artsToAdd[x].getBranch())) {
+                  return;
+               }
+            }
             add(Arrays.asList(artsToAdd));
          }
          refresh();
@@ -330,6 +336,10 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
          return;
       }
       Artifact artifact = artifacts.iterator().next();
+      if (ChangeUiUtil.permissionsDeniedWithDialog(artifact.getBranch())) {
+         return;
+      }
+
       PresentationType type = ArtifactDoubleClick.getPresentationType(artifact);
       PermissionEnum perEnum = ArtifactDoubleClick.getPermissionEnum(artifact);
       if (AccessControlManager.hasPermission(artifacts, perEnum)) {
