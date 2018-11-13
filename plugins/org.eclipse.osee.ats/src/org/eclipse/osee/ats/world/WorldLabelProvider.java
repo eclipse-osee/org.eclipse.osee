@@ -15,6 +15,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
@@ -75,8 +76,13 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          }
          if (element instanceof IAtsWorkItem) {
             if (xCol.getId().equals(AtsColumnId.State.getId())) {
-               return Displays.getSystemColor(
-                  StateColorToSwtColor.convert(((AbstractWorkflowArtifact) element).getStateDefinition().getColor()));
+               IAtsStateDefinition state = ((AbstractWorkflowArtifact) element).getStateDefinition();
+               if (state == null) {
+                  OseeLog.logf(Activator.class, Level.SEVERE, "State null for %s",
+                     ((IAtsWorkItem) element).toStringWithId());
+               } else {
+                  return Displays.getSystemColor(StateColorToSwtColor.convert(state.getColor()));
+               }
             }
          }
 
