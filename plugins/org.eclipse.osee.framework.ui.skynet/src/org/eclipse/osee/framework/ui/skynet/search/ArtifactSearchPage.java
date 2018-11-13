@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.ToStringViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.access.AccessControlService;
+import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModel;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
@@ -474,6 +475,12 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
    @Override
    public boolean performAction() {
+
+      BranchId searchBranch = getSelectedBranch();
+      if (ChangeUiUtil.permissionsDeniedWithDialog(searchBranch)) {
+         return false;
+      }
+
       NewSearchUI.activateSearchResultView();
       filterviewer.getFilterList().setAllSelected(true);
       AbstractArtifactSearchQuery searchQuery =
@@ -485,6 +492,11 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
    @Override
    public boolean performReplace() {
+      BranchId searchBranch = getSelectedBranch();
+      if (ChangeUiUtil.permissionsDeniedWithDialog(searchBranch)) {
+         return false;
+      }
+
       filterviewer.getFilterList().setAllSelected(true);
       AbstractArtifactSearchQuery searchQuery =
          new FilterArtifactSearchQuery(filterviewer.getFilterList(), getSelectedBranch());
