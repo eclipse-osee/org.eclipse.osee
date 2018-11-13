@@ -117,7 +117,11 @@ public class ChangeReportTable implements EditorSection.IWidget, IOseeTreeReport
    public void onUpdate() {
       Collection<?> input;
       if (changeData.isLoaded()) {
-         input = changeData.getChanges();
+         if (changeData.getChanges().isEmpty()) {
+            input = Arrays.asList("No changes were found");
+         } else {
+            input = changeData.getChanges();
+         }
       } else {
          input = Arrays.asList("Not Loaded");
       }
