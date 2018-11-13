@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.UniversalCellEdit
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxAttributeTypeDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.MenuEvent;
@@ -203,7 +204,9 @@ public class AttributesComposite extends Composite implements IArtifactEventList
 
          @Override
          public void run() {
-            tableViewer.setInput(artifact);
+            if (tableViewer != null && Widgets.isAccessible(tableViewer.getTable())) {
+               tableViewer.setInput(artifact);
+            }
          }
       });
    }
