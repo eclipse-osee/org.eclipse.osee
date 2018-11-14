@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"></meta>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+
+<link rel="stylesheet" type="text/css"
+	href="/ajax/libs/bootstrap/3.3.2/css/bootstrap.min.css"></link>
+
+<title>ATS Actions</title>
+
+<link rel="stylesheet" type="text/css"
+	href="/ajax/libs/ng-grid/2.0.11/ng-grid.min.css"></link>
+<link rel="stylesheet" type="text/css" href="example.css"></link>
+
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+      <script src="/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="/ajax/libs/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body ng-app="ExampleApp" ng-controller="ExampleCtrl">
+
+	<div class="container">
+		<div>
+			<h2>ATS Actions</h2>
+			<div>
+				<div ng-show="items" style="height: 600px" class="gridStyle"
+					ng-grid="gridOptions"></div>
+			</div>
+
+			<script src="/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+			<script src="/ajax/libs/angularjs/1.2.28/angular.min.js"></script>
+			<script src="/ajax/libs/ng-grid/2.0.11/ng-grid.min.js"></script>
+			<script src="/ajax/libs/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+			<script src="example.js"></script>
+</body>
+</html>
