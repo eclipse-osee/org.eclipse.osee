@@ -21,6 +21,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
@@ -31,6 +32,7 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
@@ -114,17 +116,29 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
             return false;
          }
       }
-      UserCheckTreeDialog uld = new UserCheckTreeDialog("Select Assigness", "Select to assign.\nDeSelect to un-assign.",
-         AtsClientService.get().getUserServiceClient().getOseeUsers(
-            AtsClientService.get().getUserService().getUsers(Active.Active)));
-      if (awas.iterator().next().getParentTeamWorkflow() != null) {
-         uld.setTeamMembers(AtsClientService.get().getUserServiceClient().getOseeUsers(
-            awas.iterator().next().getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads()));
-      }
+      User unassigned = AtsClientService.get().getUserServiceClient().getOseeUser(AtsCoreUsers.UNASSIGNED_USER);
+      Collection<User> oseeUsers = AtsClientService.get().getUserServiceClient().getOseeUsers(
+         AtsClientService.get().getUserService().getUsers(Active.Active));
+      AbstractWorkflowArtifact awaI = awas.iterator().next();
+      TeamWorkFlowArtifact twa = awaI != null ? awaI.getParentTeamWorkflow() : null;
+      Collection<User> teamMembers = twa != null ? AtsClientService.get().getUserServiceClient().getOseeUsers(
+         twa.getTeamDefinition().getMembersAndLeads()) : null;
+      Collection<User> selected =
+         awas.size() == 1 && awaI != null ? AtsClientService.get().getUserServiceClient().getOseeUsers(
+            awaI.getStateMgr().getAssignees()) : null;
 
-      if (awas.size() == 1) {
-         uld.setInitialSelections(AtsClientService.get().getUserServiceClient().getOseeUsers(
-            awas.iterator().next().getStateMgr().getAssignees()));
+      // unassigned is not useful in the selection choice dialog
+      oseeUsers.remove(unassigned);
+      if (teamMembers != null) {
+         teamMembers.remove(unassigned);
+      }
+      UserCheckTreeDialog uld =
+         new UserCheckTreeDialog("Select Assignees", "Select to assign.\nDeSelect to un-assign.", oseeUsers);
+      if (teamMembers != null) {
+         uld.setTeamMembers(teamMembers);
+      }
+      if (selected != null) {
+         uld.setInitialSelections(selected);
       }
       if (uld.open() != 0) {
          return false;
@@ -135,7 +149,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
       }
       // As a convenience, remove the UnAssigned user if another user is selected
       if (users.size() > 1) {
-         users.remove(AtsCoreUsers.SYSTEM_USER);
+         users.remove(AtsCoreUsers.UNASSIGNED_USER);
       }
       for (AbstractWorkflowArtifact awa : awas) {
          awa.getStateMgr().setAssignees(users);
