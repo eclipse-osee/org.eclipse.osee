@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -64,7 +65,10 @@ public class GraphLoader {
          List<BranchId> branches = new ArrayList<>(BranchManager.getChildBranches(current.getBranch(), recurse));
          branches.add(current.getBranch());
          for (BranchId branch : branches) {
-            joinQuery.add(BranchManager.getSourceTransaction(branch).getId());
+            TransactionRecord tr = BranchManager.getSourceTransaction(branch);
+            if (tr != null) {
+               joinQuery.add(tr.getId());
+            }
          }
          joinQuery.store();
 
@@ -95,7 +99,10 @@ public class GraphLoader {
          } else {
             long parentTxId = 0;
             try {
-               parentTxId = BranchManager.getSourceTransaction(branchModel.getBranch()).getId();
+               TransactionRecord tr = BranchManager.getSourceTransaction(branchModel.getBranch());
+               if (tr != null) {
+                  parentTxId = tr.getId();
+               }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
