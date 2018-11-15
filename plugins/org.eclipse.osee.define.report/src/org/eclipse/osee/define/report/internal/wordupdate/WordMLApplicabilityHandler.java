@@ -242,7 +242,7 @@ public class WordMLApplicabilityHandler {
       String[] featureValueStrings = text.split("\\||&");
       for (String featureValueString : featureValueStrings) {
          String[] split = featureValueString.split("=");
-         String featName = split[0].trim();
+         String featName = split[0].trim().toUpperCase();
          String featVal = split.length > 1 ? split[1].trim() : null;
 
          if (viewApplicabilitiesMap.containsKey(featName)) {

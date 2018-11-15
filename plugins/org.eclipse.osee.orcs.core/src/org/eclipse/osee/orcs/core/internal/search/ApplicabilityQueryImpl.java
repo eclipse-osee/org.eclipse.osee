@@ -118,7 +118,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
             String[] split = app.getName().split("=");
 
             if (split.length == 2) {
-               String name = split[0].trim();
+               String name = split[0].trim().toUpperCase();
                String value = split[1].trim();
 
                if (toReturn.containsKey(name)) {
