@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.jdk.core.util;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
@@ -22,6 +23,25 @@ public final class Conditions {
 
    private Conditions() {
       // Utility Class
+   }
+
+   public static void assertNotSentinel(Id id) {
+      if (Id.SENTINEL.equals(id)) {
+         throw new AssertionError("Id cannot be negative");
+      }
+   }
+
+   public static void assertNotSentinel(Id id, String message) {
+      if (Id.SENTINEL.equals(id)) {
+         throw new AssertionError(message);
+      }
+   }
+
+   public static void assertSentinel(Id id) {
+      if (Id.SENTINEL.equals(id)) {
+         return;
+      }
+      throw new AssertionError("Object is not sentinel when it should be");
    }
 
    /**

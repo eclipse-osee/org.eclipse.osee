@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
@@ -298,8 +299,10 @@ public class OrcsTransactionTest {
       tx.deleteArtifact(toDelete);
       tx.commit();
 
-      toDelete = query.fromBranch(COMMON).andId(artifact).includeDeletedArtifacts().getResults().getOneOrNull();
-      assertNotNull(toDelete);
+      toDelete = query.fromBranch(COMMON).andId(artifact).includeDeletedArtifacts().getResults().getOneOrDefault(
+         ArtifactReadable.SENTINEL);
+      Conditions.assertNotSentinel(toDelete);
+
       assertTrue(toDelete.isDeleted());
    }
 
@@ -339,8 +342,10 @@ public class OrcsTransactionTest {
       tx.deleteArtifact(toDelete);
       tx.commit();
 
-      toDelete = query.fromBranch(COMMON).andId(artifact).includeDeletedArtifacts().getResults().getOneOrNull();
-      assertNotNull(toDelete);
+      toDelete = query.fromBranch(COMMON).andId(artifact).includeDeletedArtifacts().getResults().getOneOrDefault(
+         ArtifactReadable.SENTINEL);
+      Conditions.assertNotSentinel(toDelete);
+
       assertTrue(toDelete.isDeleted());
 
    }
@@ -373,8 +378,10 @@ public class OrcsTransactionTest {
       tx.deleteArtifact(toDelete);
       TransactionId tx4 = tx.commit();
 
-      toDelete = query.fromBranch(COMMON).andId(artifact1).includeDeletedArtifacts().getResults().getOneOrNull();
-      assertNotNull(toDelete);
+      toDelete = query.fromBranch(COMMON).andId(artifact1).includeDeletedArtifacts().getResults().getOneOrDefault(
+         ArtifactReadable.SENTINEL);
+      Conditions.assertNotSentinel(toDelete);
+
       assertTrue(toDelete.isDeleted());
       transactions = new TransactionId[] {tx1, tx2, tx3, tx4};
    }
@@ -894,14 +901,18 @@ public class OrcsTransactionTest {
       assertNotNull(rec2);
 
       artifact1 =
-         query.fromBranch(COMMON).andUuid(art1.getUuid()).includeDeletedArtifacts().getResults().getAtMostOneOrNull();
-      assertNotNull(artifact1);
-      artifact2 = query.fromBranch(COMMON).andUuid(art2.getUuid()).getResults().getAtMostOneOrNull();
-      assertNotNull(artifact2);
-      artifact3 = query.fromBranch(COMMON).andUuid(art3.getUuid()).getResults().getAtMostOneOrNull();
-      assertNotNull(artifact3);
-      artifact4 = query.fromBranch(COMMON).andUuid(art4.getUuid()).getResults().getAtMostOneOrNull();
-      assertNotNull(artifact4);
+         query.fromBranch(COMMON).andUuid(art1.getUuid()).includeDeletedArtifacts().getResults().getAtMostOneOrDefault(
+            ArtifactReadable.SENTINEL);
+      Conditions.assertNotSentinel(artifact1);
+      artifact2 =
+         query.fromBranch(COMMON).andUuid(art2.getUuid()).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+      Conditions.assertNotSentinel(artifact2);
+      artifact3 =
+         query.fromBranch(COMMON).andUuid(art3.getUuid()).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+      Conditions.assertNotSentinel(artifact3);
+      artifact4 =
+         query.fromBranch(COMMON).andUuid(art4.getUuid()).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+      Conditions.assertNotSentinel(artifact4);
 
       assertEquals(true, artifact1.getChildren().isEmpty());
       assertEquals(true, artifact1.getRelated(Dependency__Dependency).isEmpty());

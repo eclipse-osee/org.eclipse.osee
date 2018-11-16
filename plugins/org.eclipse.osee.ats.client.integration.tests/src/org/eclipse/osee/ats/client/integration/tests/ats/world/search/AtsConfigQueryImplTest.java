@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.world.search;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -28,6 +27,7 @@ import org.eclipse.osee.ats.util.IAtsClient;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -61,9 +61,10 @@ public class AtsConfigQueryImplTest {
       assertEquals(24, resultArtifacts.size());
 
       query.andAttr(CoreAttributeTypes.Name, DemoArtifactToken.SAW_Code.getName());
-      IAtsTeamDefinition teamDef = (IAtsTeamDefinition) query.getConfigObjectResultSet().getOneOrNull();
+      IAtsTeamDefinition teamDef =
+         (IAtsTeamDefinition) query.getConfigObjectResultSet().getOneOrDefault(IAtsTeamDefinition.SENTINEL);
 
-      assertNotNull(teamDef);
+      Conditions.assertNotSentinel(teamDef);
       assertEquals(DemoArtifactToken.SAW_Code.getName(), teamDef.getName());
 
       query = queryService.createQuery(AtsArtifactTypes.ActionableItem);

@@ -18,7 +18,6 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import com.google.common.collect.Ordering;
 import java.util.Arrays;
@@ -44,6 +43,7 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
@@ -159,9 +159,9 @@ public class OrcsQueryTest {
 
       assertEquals(0, builder.getCount());
 
-      ArtifactReadable artifact = builder.getResults().getOneOrNull();
-      assertNull(artifact);
+      ArtifactReadable artifact = builder.getResults().getOneOrDefault(ArtifactReadable.SENTINEL);
 
+      Conditions.assertSentinel(artifact);
       builder = factory.fromBranch(SAW_Bld_1).andIsOfType(CoreArtifactTypes.AbstractSoftwareRequirement);
 
       assertEquals(24, builder.getCount());
@@ -266,9 +266,10 @@ public class OrcsQueryTest {
 
       for (String name : Arrays.asList("Alex Kay", "Anonymous", "Boot Strap", "Default Hierarchy Root",
          "Document Templates", "Everyone", "Framework Access Model", "Global Preferences", "Inactive Steve",
-         DemoUsers.Jason_Michael.getName(), DemoUsers.Joe_Smith.getName(), DemoUsers.Kay_Jones.getName(), "OSEE System", "OseeAdmin", "PREVIEW_ALL",
-         "PREVIEW_ALL_RECURSE", "Root Artifact", "UnAssigned", "User Groups", "Word Edit Template",
-         "Word Edit Template", "XViewer Global Customization", "org.eclipse.osee.client.demo.OseeTypes_ClientDemo",
+         DemoUsers.Jason_Michael.getName(), DemoUsers.Joe_Smith.getName(), DemoUsers.Kay_Jones.getName(), "OSEE System",
+         "OseeAdmin", "PREVIEW_ALL", "PREVIEW_ALL_RECURSE", "Root Artifact", "UnAssigned", "User Groups",
+         "Word Edit Template", "Word Edit Template", "XViewer Global Customization",
+         "org.eclipse.osee.client.demo.OseeTypes_ClientDemo",
          "org.eclipse.osee.framework.skynet.core.OseeTypes_Framework", "org.eclipse.osee.ote.define.OseeTypesOTE")) {
          assertTrue("Missing expected artifact named [" + name + "]", names.contains(name));
       }

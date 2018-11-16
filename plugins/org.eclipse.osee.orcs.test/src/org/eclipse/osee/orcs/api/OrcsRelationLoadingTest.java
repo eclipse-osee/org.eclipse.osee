@@ -13,13 +13,13 @@ package org.eclipse.osee.orcs.api;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
@@ -53,14 +53,15 @@ public class OrcsRelationLoadingTest {
 
       ArtifactReadable art6 =
          queryFactory.fromBranch(CoreBranches.COMMON).andTypeEquals(CoreArtifactTypes.OseeTypeDefinition).andNameEquals(
-            "org.eclipse.osee.ats.client.demo.OseeTypes_Demo").getResults().getAtMostOneOrNull();
-      assertNotNull(art6);
+            "org.eclipse.osee.ats.client.demo.OseeTypes_Demo").getResults().getAtMostOneOrDefault(
+               ArtifactReadable.SENTINEL);
+      Conditions.assertNotSentinel(art6);
       ArtifactReadable art7 = queryFactory.fromBranch(CoreBranches.COMMON).andId(
-         CoreArtifactTokens.UserGroups).getResults().getAtMostOneOrNull();
-      assertNotNull(art7);
+         CoreArtifactTokens.UserGroups).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+      Conditions.assertNotSentinel(art7);
       ArtifactReadable art8 = queryFactory.fromBranch(CoreBranches.COMMON).andId(
-         CoreArtifactTokens.Everyone).getResults().getAtMostOneOrNull();
-      assertNotNull(art8);
+         CoreArtifactTokens.Everyone).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+      Conditions.assertNotSentinel(art8);
 
       //art 6 has no relations
       assertEquals(0, art6.getExistingRelationTypes().size());
@@ -93,8 +94,8 @@ public class OrcsRelationLoadingTest {
 
       assertEquals(1, resultSet.size());
 
-      ArtifactReadable artifact = resultSet.getAtMostOneOrNull();
-      assertNotNull(artifact);
+      ArtifactReadable artifact = resultSet.getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+      Conditions.assertNotSentinel(artifact);
 
       //art 7 has no relations
 

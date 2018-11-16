@@ -39,7 +39,6 @@ import org.eclipse.osee.ats.util.IAtsClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -195,7 +194,7 @@ public class AtsQueryImplTest {
 
       IAtsWorkPackage workPackage =
          (IAtsWorkPackage) client.getQueryService().createQuery(AtsArtifactTypes.WorkPackage).andName(
-            "Work Pkg 0A").getConfigObjectResultSet().getAtMostOneOrNull();
-      Assert.assertNotNull(workPackage);
+            "Work Pkg 0A").getConfigObjectResultSet().getAtMostOneOrDefault(IAtsWorkPackage.SENTINEL);
+      Conditions.assertNotSentinel(workPackage);
    }
 }

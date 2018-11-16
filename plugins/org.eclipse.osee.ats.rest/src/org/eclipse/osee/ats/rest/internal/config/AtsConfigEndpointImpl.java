@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.core.util.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -158,20 +159,25 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    private ArtifactId introduceAndRelateTo(TransactionBuilder tx, BranchId fromBranch, ArtifactToken introToken, BranchId newBranch, ArtifactToken relateToToken, ArtifactId relateToArt) {
       ArtifactReadable introArt =
-         orcsApi.getQueryFactory().fromBranch(fromBranch).andId(introToken).getResults().getAtMostOneOrNull();
-      if (introArt == null) {
+         orcsApi.getQueryFactory().fromBranch(fromBranch).andId(introToken).getResults().getAtMostOneOrDefault(
+            ArtifactReadable.SENTINEL);
+
+      if (introArt.getId().equals(ArtifactReadable.SENTINEL.getId())) {
          introArt = orcsApi.getQueryFactory().fromBranch(fromBranch).andTypeEquals(
-            introToken.getArtifactTypeId()).andNameEquals(introToken.getName()).getResults().getAtMostOneOrNull();
+            introToken.getArtifactTypeId()).andNameEquals(introToken.getName()).getResults().getAtMostOneOrDefault(
+               ArtifactReadable.SENTINEL);
       }
-      Conditions.checkNotNull(introArt, "No artifact found for token " + introToken);
+      Conditions.assertNotSentinel(introArt);
+
       ArtifactId artifact = tx.introduceArtifact(fromBranch, introArt);
-      if (relateToToken != null) {
+      if (relateToToken != null && (!relateToToken.getId().equals(Id.SENTINEL))) {
          relateToArt =
-            orcsApi.getQueryFactory().fromBranch(newBranch).andId(relateToToken).getResults().getAtMostOneOrNull();
-         if (relateToArt == null) {
+            orcsApi.getQueryFactory().fromBranch(newBranch).andId(relateToToken).getResults().getAtMostOneOrDefault(
+               ArtifactReadable.SENTINEL);
+         if (relateToArt.getId().equals(ArtifactReadable.SENTINEL.getId())) {
             relateToArt = orcsApi.getQueryFactory().fromBranch(newBranch).andTypeEquals(
                relateToToken.getArtifactTypeId()).andNameEquals(
-                  relateToToken.getName()).getResults().getAtMostOneOrNull();
+                  relateToToken.getName()).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
          }
       }
       tx.addChild(relateToArt, artifact);
