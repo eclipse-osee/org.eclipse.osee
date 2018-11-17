@@ -54,7 +54,7 @@ public abstract class AbstractAuthenticationProvider implements IAuthenticationP
             CoreAttributeTypes.UserId, userId);
 
          ArtifactReadable artifact = query.getResults().getOneOrDefault(ArtifactReadable.SENTINEL);
-         if (!artifact.getId().equals(ArtifactReadable.SENTINEL.getId())) {
+         if (artifact.isValid()) {
             toReturn = UserToken.create(artifact.getUuid(), artifact.getName(),
                artifact.getSoleAttributeAsString(CoreAttributeTypes.Email, ""), userId, true, false, false);
          } else {

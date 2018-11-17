@@ -163,7 +163,7 @@ public class JdbcJaxRsOAuthStorage implements JaxRsOAuthStorage {
       OAuthClient client = null;
       ClientStorage clientStorage = getClientStorage();
       ArtifactReadable artifact = clientStorage.getClientByClientGuid(guid).getOneOrDefault(ArtifactReadable.SENTINEL);
-      if (!artifact.getId().equals(ArtifactReadable.SENTINEL.getId())) {
+      if (artifact.isValid()) {
          OAuthClientCredential credential = credentialStorage.getByApplicationId(artifact.getId());
          client = clientStorage.newClient(artifact, credential);
       }
@@ -175,7 +175,7 @@ public class JdbcJaxRsOAuthStorage implements JaxRsOAuthStorage {
       OAuthClient client = null;
       ClientStorage clientStorage = getClientStorage();
       ArtifactReadable artifact = clientStorage.getClientByClientId(id).getOneOrDefault(ArtifactReadable.SENTINEL);
-      if (!artifact.getId().equals(ArtifactReadable.SENTINEL.getId())) {
+      if (artifact.isValid()) {
          OAuthClientCredential credential = credentialStorage.getByApplicationId(artifact.getId());
          client = clientStorage.newClient(artifact, credential);
       }
@@ -192,11 +192,10 @@ public class JdbcJaxRsOAuthStorage implements JaxRsOAuthStorage {
          ClientStorage clientStorage = getClientStorage();
          ArtifactReadable artifact =
             clientStorage.getClientByApplicationId(applicationId).getOneOrDefault(ArtifactReadable.SENTINEL);
-         if (!artifact.getId().equals(ArtifactReadable.SENTINEL.getId())) {
+         if (artifact.isValid()) {
             client = clientStorage.newClient(artifact, credential);
          }
       }
       return client;
    }
-
 }

@@ -93,7 +93,7 @@ public class SprintPageBuilder {
       double points = 0;
       ArtifactReadable agileTeam =
          sprint.getRelated(AtsRelationTypes.AgileTeamToSprint_AgileTeam).getOneOrDefault(ArtifactReadable.SENTINEL);
-      if (!agileTeam.getId().equals(ArtifactReadable.SENTINEL.getId())) {
+      if (agileTeam.isValid()) {
          String pointsAttrType = agileTeam.getSoleAttributeAsString(AtsAttributeTypes.PointsAttributeType, "");
          if (Strings.isValid(pointsAttrType) && pointsAttrType.equals(AtsAttributeTypes.PointsNumeric.getName())) {
             points = item.getSoleAttributeValue(AtsAttributeTypes.PointsNumeric, 0.0);
@@ -110,14 +110,14 @@ public class SprintPageBuilder {
    private ArtifactReadable calculateActionsCreated() {
       ArtifactReadable agileTeam =
          sprint.getRelated(AtsRelationTypes.AgileTeamToSprint_AgileTeam).getOneOrDefault(ArtifactReadable.SENTINEL);
-      if (!agileTeam.getId().equals(ArtifactReadable.SENTINEL.getId())) {
+      if (agileTeam.isValid()) {
          // get items created and closed during sprint
          ResultSet<ArtifactReadable> agileItems = sprint.getRelated(AtsRelationTypes.AgileSprintToItem_AtsItem);
          numActionsStarted += countIfInTimeFrame(agileItems);
          // get items created and still open (in backlog) during the sprint time frame
          ArtifactReadable backlog = agileTeam.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getOneOrDefault(
             ArtifactReadable.SENTINEL);
-         if (!backlog.getId().equals(ArtifactReadable.SENTINEL.getId())) {
+         if (backlog.isValid()) {
             ResultSet<ArtifactReadable> backlogItems = backlog.getRelated(AtsRelationTypes.Goal_Member);
             numActionsStarted += countIfInTimeFrame(backlogItems);
          }
@@ -141,7 +141,7 @@ public class SprintPageBuilder {
       ArtifactReadable featureGroup =
          item.getRelated(AtsRelationTypes.AgileFeatureToItem_FeatureGroup).getAtMostOneOrDefault(
             ArtifactReadable.SENTINEL);
-      if (featureGroup.getId().equals(ArtifactReadable.SENTINEL.getId())) {
+      if (featureGroup.isInvalid()) {
          featureGroupName = "UnSet";
       } else {
          featureGroupName = featureGroup.getName();
@@ -166,10 +166,10 @@ public class SprintPageBuilder {
    private void calculateBacklogCount() {
       ArtifactReadable team =
          sprint.getRelated(AtsRelationTypes.AgileTeamToSprint_AgileTeam).getOneOrDefault(ArtifactReadable.SENTINEL);
-      if (!team.getId().equals(ArtifactReadable.SENTINEL.getId())) {
+      if (team.isValid()) {
          ArtifactReadable goal =
             team.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getOneOrDefault(ArtifactReadable.SENTINEL);
-         if (!goal.getId().equals(ArtifactReadable.SENTINEL.getId())) {
+         if (goal.isValid()) {
             ResultSet<ArtifactReadable> members = goal.getRelated(AtsRelationTypes.Goal_Member);
             numActionsBacklog = members.size();
          }

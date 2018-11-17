@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model.writer.reader;
 
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * Data Transfer object for Orcs Writer
@@ -21,7 +21,7 @@ public class OwArtifactType extends OwBase {
 
    public OwArtifactType() {
       // for jax-rs instantiation
-      super(ArtifactTypeId.SENTINEL.getId(), "");
+      super(Id.SENTINEL, "");
    }
 
    public OwArtifactType(Long id, String name) {

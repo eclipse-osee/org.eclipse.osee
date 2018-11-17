@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.rest.model.writer.reader;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * Data Transfer object for Orcs Writer
@@ -23,7 +23,7 @@ public class OwArtifact extends OwBase {
 
    public OwArtifact() {
       // for jax-rs instantiation
-      super(ArtifactId.SENTINEL.getId(), "");
+      super(Id.SENTINEL, "");
    }
 
    public OwArtifact(Long id, String name) {

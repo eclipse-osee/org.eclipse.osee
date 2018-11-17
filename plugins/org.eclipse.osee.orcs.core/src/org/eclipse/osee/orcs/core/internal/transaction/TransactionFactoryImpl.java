@@ -133,8 +133,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
          queryFactory.fromBranch(branchId).fromTransaction(txId).andUuid(artId).getResults().getOneOrDefault(
             ArtifactReadable.SENTINEL);
 
-      if ((!userReadable.getId().equals(ArtifactReadable.SENTINEL.getId())) && (!baselineArtifact.getId().equals(
-         ArtifactReadable.SENTINEL.getId()))) {
+      if (userReadable.isValid() && baselineArtifact.isValid()) {
          TransactionBuilder tx = createTransaction(branchId, userReadable, comment);
          ArtifactReadable destination =
             queryFactory.fromBranch(branchId).includeDeletedArtifacts().andUuid(artId).getResults().getOneOrDefault(
@@ -143,7 +142,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
          tx.commit();
          introduced = true;
       } else {
-         throw new OseeCoreException("%s Error - The user and baseline artifact were not found.", comment);
+         throw new OseeCoreException("%s Error - The user and/or baseline artifact were not found.", comment);
       }
 
       return introduced;

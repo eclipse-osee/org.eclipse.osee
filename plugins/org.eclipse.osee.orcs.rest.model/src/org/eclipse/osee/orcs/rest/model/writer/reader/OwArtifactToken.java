@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model.writer.reader;
 
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * Data Transfer object for Orcs Writer
@@ -23,7 +23,7 @@ public class OwArtifactToken extends OwBase implements ArtifactToken {
 
    public OwArtifactToken() {
       // for jax-rs instantiation
-      super(ArtifactId.SENTINEL.getId(), "");
+      super(Id.SENTINEL, "");
    }
 
    public OwArtifactToken(Long id, String name) {

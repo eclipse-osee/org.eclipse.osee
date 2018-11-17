@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.config;
 
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -27,7 +27,7 @@ public class JaxAtsObject extends NamedIdBase {
    private String description;
 
    public JaxAtsObject() {
-      this(ArtifactId.SENTINEL.getId(), "");
+      this(Id.SENTINEL, "");
    }
 
    public JaxAtsObject(Long id, String name) {

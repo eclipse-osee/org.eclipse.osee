@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model.writer.reader;
 
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * Data Transfer object for Orcs Writer
@@ -21,7 +21,7 @@ public class OwBranch extends OwBase {
 
    public OwBranch() {
       // For jax-rs instantiation
-      super(BranchId.SENTINEL.getId(), "");
+      super(Id.SENTINEL, "");
    }
 
    public OwBranch(Long id, String name) {

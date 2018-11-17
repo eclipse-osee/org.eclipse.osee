@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -339,7 +340,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       }
       if (branch.isInvalid()) {
          branch = BranchId.valueOf(atsApi.getAttributeResolver().getSoleAttributeValue(configObject,
-            AtsAttributeTypes.BaselineBranchId, BranchId.SENTINEL.getId()));
+            AtsAttributeTypes.BaselineBranchId, Id.SENTINEL));
       }
       return branch;
    }

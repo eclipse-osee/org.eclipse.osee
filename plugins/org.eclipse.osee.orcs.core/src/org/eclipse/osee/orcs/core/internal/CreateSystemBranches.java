@@ -143,7 +143,7 @@ public class CreateSystemBranches {
       TransactionBuilder tx = txFactory.createTransaction(COMMON, SystemUser.OseeSystem, "Add Types to Common Branch");
       ArtifactId typesFolder = orcsApi.getQueryFactory().fromBranch(COMMON).andId(
          CoreArtifactTokens.OseeTypesFolder).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
-      if (typesFolder.getId().equals(ArtifactReadable.SENTINEL.getId())) {
+      if (typesFolder.isInvalid()) {
          ArtifactId rootArt = orcsApi.getQueryFactory().fromBranch(COMMON).andId(
             CoreArtifactTokens.DefaultHierarchyRoot).getResults().getExactlyOne();
          typesFolder = tx.createArtifact(rootArt, CoreArtifactTokens.OseeTypesFolder);

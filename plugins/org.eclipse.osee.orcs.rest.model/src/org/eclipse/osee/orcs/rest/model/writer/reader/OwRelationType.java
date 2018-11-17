@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model.writer.reader;
 
-import org.eclipse.osee.framework.core.data.RelationId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * Data Transfer object for Orcs Writer
- * 
+ *
  * @author Donald G. Dunne
  */
 
@@ -23,7 +23,7 @@ public class OwRelationType extends OwBase {
 
    public OwRelationType() {
       // for jax-rs instantiation
-      super(RelationId.SENTINEL.getId(), "");
+      super(Id.SENTINEL, "");
    }
 
    public OwRelationType(Long id, String name) {
@@ -53,5 +53,4 @@ public class OwRelationType extends OwBase {
    public String toString() {
       return "OwRelationType [sideA=" + sideA + ", sideName=" + sideName + ", id=" + getId() + ", data=" + data + "]";
    }
-
 }

@@ -85,7 +85,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
          String orientation = "Portrait";
          if (DataRightsClassification.isValid(overrideClassification)) {
             classification = overrideClassification;
-         } else if (!art.getId().equals(ArtifactReadable.SENTINEL.getId())) {
+         } else if (art.isValid()) {
             classification = art.getSoleAttributeAsString(CoreAttributeTypes.DataRightsClassification, "");
             orientation = art.getSoleAttributeValue(CoreAttributeTypes.PageType, "Portrait");
          }
@@ -166,7 +166,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
       ArtifactReadable footerMappingArt =
          query.andId(MAPPING_ARTIFACT).getResults().getOneOrDefault(ArtifactReadable.SENTINEL);
 
-      if (!footerMappingArt.getId().equals(ArtifactReadable.SENTINEL.getId())) {
+      if (footerMappingArt.isValid()) {
          List<String> footers = new ArrayList<>();
          footers = footerMappingArt.getAttributeValues(CoreAttributeTypes.GeneralStringData);
          for (String footer : footers) {

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author David W. Miller
@@ -20,7 +20,7 @@ public class JsonAttributeRepresentation {
    private String value;
 
    public JsonAttributeRepresentation() {
-      attributeTypeId = AttributeTypeId.SENTINEL.getId();
+      attributeTypeId = Id.SENTINEL;
       value = null;
    }
 

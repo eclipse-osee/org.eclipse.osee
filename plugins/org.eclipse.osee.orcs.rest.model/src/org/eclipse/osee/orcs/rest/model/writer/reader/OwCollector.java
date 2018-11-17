@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * Data Transfer object for Orcs Writer
@@ -38,7 +39,7 @@ public class OwCollector {
 
    public OwCollector() {
       create = new LinkedList<>();
-      branch = new OwBranch(BranchId.SENTINEL.getId(), "");
+      branch = new OwBranch(Id.SENTINEL, "");
       branchId = BranchId.SENTINEL;
    }
 
@@ -174,5 +175,4 @@ public class OwCollector {
    public void setAsUserId(String asUserId) {
       this.asUserId = asUserId;
    }
-
 }

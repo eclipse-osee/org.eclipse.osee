@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model.writer.reader;
 
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Donald G. Dunne
@@ -20,7 +20,7 @@ public class OwAttributeType extends OwBase {
 
    public OwAttributeType() {
       // for jax-rs instantiation
-      super(AttributeTypeToken.SENTINEL.getId(), "");
+      super(Id.SENTINEL, "");
    }
 
    public OwAttributeType(Long id, String name) {

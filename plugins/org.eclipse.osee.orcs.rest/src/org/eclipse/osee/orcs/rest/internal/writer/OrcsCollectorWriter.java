@@ -79,7 +79,7 @@ public class OrcsCollectorWriter {
          ArtifactReadable artifact =
             orcsApi.getQueryFactory().fromBranch(branch).andUuid(owArtifact.getId()).getResults().getAtMostOneOrDefault(
                ArtifactReadable.SENTINEL);
-         if (artifact.getId().equals(ArtifactReadable.SENTINEL.getId())) {
+         if (artifact.isInvalid()) {
             results.warningf("Delete Artifact Token %s does not exist in database.  Skipping", owArtifact);
          } else {
             getTransaction().deleteArtifact(artifact);
@@ -94,7 +94,7 @@ public class OrcsCollectorWriter {
             orcsApi.getQueryFactory().fromBranch(branch).andUuid(owArtifact.getId()).getResults().getAtMostOneOrDefault(
                ArtifactReadable.SENTINEL);
 
-         if (artifact.getId().equals(ArtifactReadable.SENTINEL.getId())) {
+         if (artifact.isInvalid()) {
             throw new OseeArgumentException("Artifact not found for OwArtifact %s", owArtifact);
          }
 
