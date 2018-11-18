@@ -986,8 +986,10 @@ public final class Lib {
       return Lib.getBasePath(Lib.class);
    }
 
+   private static final SimpleDateFormat filenameDateFormat = new SimpleDateFormat("yyyy-MM-dd_hh-mm");
+
    public static String getDateTimeString() {
-      return new SimpleDateFormat("yyyy-MM-dd_hh-mm").format(new Date());
+      return filenameDateFormat.format(new Date());
    }
 
    public static String getJarPath(Class<Lib> base) {
