@@ -38,8 +38,8 @@ public class WordTemplateContentRendererHandler {
    public static final String EMPTY_PARAGRAPHS = "<w:r wsp:rsidRPr=\"\\d+\"><w:t></w:t></w:r>";
    public static final String EXTRA_SPACES = "<w:r><w:t> </w:t></w:r>";
 
-   private OrcsApi orcsApi;
-   private Log logger;
+   private final OrcsApi orcsApi;
+   private final Log logger;
 
    private WordMLApplicabilityHandler applicHandler;
 
@@ -50,20 +50,22 @@ public class WordTemplateContentRendererHandler {
 
    public Pair<String, Set<String>> renderWordML(WordTemplateContentData wtcData) {
       TransactionId txId = wtcData.getTxId();
-      if (txId == null) {
+      if (txId == null || txId.isInvalid()) {
          txId = TransactionId.SENTINEL;
       }
       ArtifactReadable artifact = null;
       if (txId.equals(TransactionId.SENTINEL)) {
          artifact = orcsApi.getQueryFactory().fromBranch(wtcData.getBranch()).andId(ArtifactId.valueOf(
-            wtcData.getArtId())).includeDeletedArtifacts().includeDeletedAttributes().getResults().getAtMostOneOrNull();
+            wtcData.getArtId())).includeDeletedArtifacts().includeDeletedAttributes().getResults().getAtMostOneOrDefault(
+               ArtifactReadable.SENTINEL);
       } else {
          artifact =
             orcsApi.getQueryFactory().fromBranch(wtcData.getBranch()).fromTransaction(txId).andId(ArtifactId.valueOf(
-               wtcData.getArtId())).includeDeletedArtifacts().includeDeletedAttributes().getResults().getAtMostOneOrNull();
+               wtcData.getArtId())).includeDeletedArtifacts().includeDeletedAttributes().getResults().getAtMostOneOrDefault(
+                  ArtifactReadable.SENTINEL);
       }
 
-      if (artifact != null) {
+      if (artifact.isValid()) {
          Set<String> unknownGuids = new HashSet<>();
 
          String data =

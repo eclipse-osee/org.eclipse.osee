@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -58,7 +57,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    @Override
    public <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, RelationTypeSide relationType, DeletionFlag flag, Class<T> clazz) {
       List<T> results = new ArrayList<>();
-      if (atsObject.getId().equals(Id.SENTINEL)) {
+      if (atsObject.isInvalid()) {
          return results;
       }
       ArtifactReadable useArt = getArtifact(atsObject);

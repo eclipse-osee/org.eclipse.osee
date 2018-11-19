@@ -69,6 +69,10 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       return getQuery().andId(artifactId).getResults().getAtMostOneOrNull();
    }
 
+   private ArtifactReadable getArtifactOrSentinel(ArtifactId artifactId) {
+      return getQuery().andId(artifactId).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+   }
+
    private QueryBuilder getQuery() {
       return orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
    }
@@ -137,8 +141,8 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    @Override
    protected IAtsUser loadUserFromDbByUserId(String userId) {
       ArtifactReadable userArt = getQuery().andTypeEquals(CoreArtifactTypes.User).and(CoreAttributeTypes.UserId,
-         userId).getResults().getAtMostOneOrNull();
-      if (userArt != null) {
+         userId).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+      if (userArt.isValid()) {
          return createFromArtifact(userArt);
       }
       return null;
@@ -147,8 +151,8 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    @Override
    protected IAtsUser loadUserFromDbByUserName(String name) {
       ArtifactReadable userArt = getQuery().andTypeEquals(CoreArtifactTypes.User).and(CoreAttributeTypes.Name,
-         name).getResults().getAtMostOneOrNull();
-      if (userArt != null) {
+         name).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+      if (userArt.isValid()) {
          return createFromArtifact(userArt);
       }
       return null;
@@ -157,8 +161,8 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    @Override
    protected IAtsUser loadUserByAccountId(Long accountId) {
       IAtsUser user = null;
-      ArtifactId userArt = getArtifact(ArtifactId.valueOf(accountId));
-      if (userArt != null) {
+      ArtifactId userArt = getArtifactOrSentinel(ArtifactId.valueOf(accountId));
+      if (userArt.isValid()) {
          user = createFromArtifact((ArtifactReadable) userArt);
       }
       return user;

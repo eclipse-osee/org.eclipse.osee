@@ -79,6 +79,7 @@ public class OrcsCollectorWriter {
          ArtifactReadable artifact =
             orcsApi.getQueryFactory().fromBranch(branch).andUuid(owArtifact.getId()).getResults().getAtMostOneOrDefault(
                ArtifactReadable.SENTINEL);
+         
          if (artifact.isInvalid()) {
             results.warningf("Delete Artifact Token %s does not exist in database.  Skipping", owArtifact);
          } else {

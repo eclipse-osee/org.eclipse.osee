@@ -55,7 +55,7 @@ public abstract class AbstractBranchColumn extends XViewerAtsColumn implements I
                   if (workingBranch == null) {
                      workingBranch = AtsClientService.get().getBranchService().getCommittedWorkingBranch(teamArt);
                   }
-                  if (workingBranch != null) {
+                  if (workingBranch.isValid()) {
                      result = getColumnText(workingBranch);
                   }
                } catch (Exception ex) {

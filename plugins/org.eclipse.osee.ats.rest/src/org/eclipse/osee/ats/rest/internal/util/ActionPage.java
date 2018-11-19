@@ -134,7 +134,7 @@ public class ActionPage {
          results = atsApi.getQueryService().getArtifact(artId).getName();
       } else {
          ArtifactReadable teamWf = getParentTeamWf(action);
-         if (teamWf != null && teamWf.notEqual(action)) {
+         if (teamWf.isValid() && teamWf.notEqual(action)) {
             results = getTeamStr(atsApi, teamWf);
          }
       }
@@ -146,9 +146,10 @@ public class ActionPage {
       if (action.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          teamWf = action;
       } else if (action.isOfType(AtsArtifactTypes.ReviewArtifact)) {
-         teamWf = action.getRelated(AtsRelationTypes.TeamWorkflowToReview_Team).getOneOrNull();
+         teamWf =
+            action.getRelated(AtsRelationTypes.TeamWorkflowToReview_Team).getOneOrDefault(ArtifactReadable.SENTINEL);
       } else if (action.isOfType(AtsArtifactTypes.Task)) {
-         teamWf = action.getRelated(AtsRelationTypes.TeamWfToTask_TeamWf).getOneOrNull();
+         teamWf = action.getRelated(AtsRelationTypes.TeamWfToTask_TeamWf).getOneOrDefault(ArtifactReadable.SENTINEL);
       }
       return teamWf;
    }
@@ -156,7 +157,7 @@ public class ActionPage {
    private String getAIStr(ArtifactReadable action) {
       StringBuilder sb = new StringBuilder();
       ArtifactReadable teamWf = getParentTeamWf(action);
-      if (teamWf != null) {
+      if (teamWf.isValid()) {
          Collection<ArtifactId> artifactIds = teamWf.getAttributeValues(AtsAttributeTypes.ActionableItemReference);
          for (ArtifactId artifactId : artifactIds) {
             sb.append(atsApi.getQueryService().getArtifact(artifactId));

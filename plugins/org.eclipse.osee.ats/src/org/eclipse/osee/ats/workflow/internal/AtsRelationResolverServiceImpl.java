@@ -61,7 +61,11 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    @Override
    public <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, RelationTypeSide relationType, DeletionFlag flag, Class<T> clazz) {
       List<T> results = new ArrayList<>();
+      if (atsObject == null || atsObject.isInvalid()) {
+         return results;
+      }
       Artifact useArt = getArtifact(atsObject);
+
       if (useArt != null) {
          for (Artifact art : useArt.getRelatedArtifacts(relationType, flag)) {
             IAtsObject object = AtsObjects.getAtsObject(art, atsClient);
