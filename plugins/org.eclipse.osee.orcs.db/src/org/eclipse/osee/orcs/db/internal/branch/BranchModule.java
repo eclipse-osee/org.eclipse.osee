@@ -135,9 +135,10 @@ public class BranchModule {
          }
 
          private BranchId getMergeBranchId(BranchQuery branchQuery, BranchId source, BranchId destination) {
-            BranchId mergeBranch = branchQuery.andIsMergeFor(source, destination).getResults().getAtMostOneOrNull();
+            BranchId mergeBranch =
+               branchQuery.andIsMergeFor(source, destination).getResults().getAtMostOneOrDefault(Branch.getSentinel());
 
-            if (mergeBranch == null) {
+            if (mergeBranch.isInvalid()) {
                mergeBranch = BranchId.SENTINEL;
             }
             return mergeBranch;
