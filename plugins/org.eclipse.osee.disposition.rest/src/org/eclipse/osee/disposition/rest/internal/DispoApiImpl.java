@@ -197,11 +197,47 @@ public class DispoApiImpl implements DispoApi {
 
       if (dispSetToEdit != null) {
          if (newSet.getOperation() != null) {
-            runOperation(branch, dispSetToEdit, newSet, userName);
+            runOperation(branch, dispSetToEdit, newSet, userName, false);
+         } else {
+            ArtifactReadable author = getQuery().findUserByName(userName);
+            getWriter().updateDispoSet(author, branch, dispSetToEdit.getGuid(), newSet);
          }
+      }
+   }
 
-         ArtifactReadable author = getQuery().findUserByName(userName);
-         getWriter().updateDispoSet(author, branch, dispSetToEdit.getGuid(), newSet);
+   @Override
+   public void importAllDispoSets(IOseeBranch branch, String filterState, String userName) {
+      List<DispoSet> dispoSets = new ArrayList<>();
+      DispoSetData newSet;
+
+      dispoSets = getDispoSets(branch, DispoStrings.CODE_COVERAGE);
+
+      if (filterState.isEmpty()) {
+         filterState = DispoStrings.STATE_NONE;
+      }
+
+      for (DispoSet set : dispoSets) {
+         newSet = new DispoSetData();
+         newSet.setOperation(DispoStrings.Operation_Import);
+         if (filterState.equalsIgnoreCase(DispoStrings.STATE_ALL) || set.getImportState().equalsIgnoreCase(
+            filterState)) {
+            runOperation(branch, set, newSet, userName, true);
+         } else {
+            ArtifactReadable author = getQuery().findUserByName(userName);
+            getWriter().updateDispoSet(author, branch, set.getGuid(), newSet);
+         }
+      }
+
+   }
+
+   @Override
+   public void importAllDispoPrograms(String filterState, String userName) {
+      List<IOseeBranch> dispoBranches = new ArrayList<>();
+
+      dispoBranches = getDispoPrograms();
+
+      for (IOseeBranch branch : dispoBranches) {
+         importAllDispoSets(branch, filterState, userName);
       }
    }
 
@@ -500,7 +536,7 @@ public class DispoApiImpl implements DispoApi {
       return getQuery().isUniqueSetName(branch, name);
    }
 
-   private void runOperation(BranchId branch, DispoSet setToEdit, DispoSetData newSet, String userName) {
+   private void runOperation(BranchId branch, DispoSet setToEdit, DispoSetData newSet, String userName, boolean isIterative) {
       OperationReport report = new OperationReport();
       String operation = newSet.getOperation();
       ArtifactReadable author = getQuery().findUserByName(userName);
@@ -510,7 +546,7 @@ public class DispoApiImpl implements DispoApi {
 
             DispoImporterApi importer;
 
-            if (setToEdit.getDispoType().equalsIgnoreCase("codeCoverage")) {
+            if (setToEdit.getDispoType().equalsIgnoreCase(DispoStrings.CODE_COVERAGE)) {
                importer = importerFactory.createImporter(ImportFormat.LIS, dispoConnector);
             } else {
                importer = importerFactory.createImporter(ImportFormat.TMO, dispoConnector);
@@ -542,6 +578,9 @@ public class DispoApiImpl implements DispoApi {
             }
 
          } catch (Exception ex) {
+            if (isIterative) {
+               return;
+            }
             throw new OseeCoreException(ex);
          }
       } else if (operation.equals(DispoStrings.Operation_MassSendStatus)) {
@@ -559,6 +598,9 @@ public class DispoApiImpl implements DispoApi {
 
       // Generate report
       getWriter().updateOperationSummary(author, branch, setToEdit.getGuid(), report);
+
+      //Update Disposition Set
+      getWriter().updateDispoSet(author, branch, setToEdit.getGuid(), newSet);
    }
 
    private List<DispoItem> massDisposition(BranchId branch, String setId, List<String> itemIds, String resolutionType, String resolution) {

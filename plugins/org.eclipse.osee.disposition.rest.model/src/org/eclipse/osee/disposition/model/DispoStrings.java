@@ -74,4 +74,13 @@ public class DispoStrings {
    public static final String ANALYZE_TEST = "Modify_Test";
    public static final String ANALYZE_REQT = "Modify_Reqt";
 
+   public static final String CODE_COVERAGE = "codeCoverage";
+
+   public static final String STATE_ALL = "All";
+   public static final String STATE_NONE = "None";
+   public static final String STATE_NO_CHANGE = "No Change";
+   public static final String STATE_OK = "OK";
+   public static final String STATE_WARNING = "Warnings";
+   public static final String STATE_FAIL = "Failed";
+
 }

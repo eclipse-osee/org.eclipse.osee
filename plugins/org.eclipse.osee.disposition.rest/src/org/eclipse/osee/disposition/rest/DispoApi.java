@@ -69,6 +69,10 @@ public interface DispoApi {
 
    void editDispoSet(BranchId branch, String dispoSetId, DispoSetData newDispoSet, String userName);
 
+   void importAllDispoSets(IOseeBranch branch, String filterState, String userName);
+
+   void importAllDispoPrograms(String filterState, String userName);
+
    boolean editDispoItem(BranchId branch, String itemId, DispoItemData newDispoItem, String userName);
 
    boolean editMassDispositions(BranchId branch, String itemId, List<String> ids, String resolutionType, String resolution, String userName);
@@ -112,4 +116,5 @@ public interface DispoApi {
    List<CiSetData> getAllCiSets();
 
    String createDispoItem(BranchId branch, CiItemData data, String userName);
+
 }

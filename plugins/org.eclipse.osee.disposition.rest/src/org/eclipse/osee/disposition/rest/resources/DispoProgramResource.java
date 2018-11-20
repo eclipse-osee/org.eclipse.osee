@@ -20,6 +20,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -117,6 +118,28 @@ public class DispoProgramResource {
 
       String branchListJson = JsonUtil.toJson(branchList);
       return Response.status(status).entity(branchListJson).build();
+   }
+
+   /**
+    * Import All Disposition Sets that are in a given State. Default state is "NONE".
+    *
+    * @param filterState Data used to specify what the user wants to import by its state
+    * @param userName Data for current users
+    * @return Error code if failing.
+    * @response.representation.200.doc OK, looking through all Disposition Sets.
+    * @response.representation.404.doc Not Found, can't connect to server.
+    * @response.representation.405.doc Method Not Allowed, invalid permission.
+    * @response.representation.415.doc Unsupported Media Type.
+    */
+   @Path("importAll")
+   @PUT
+   @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
+   @Consumes(MediaType.APPLICATION_JSON)
+   public Response putDispoSet(String filterState, @QueryParam("userName") String userName) {
+      Response.Status status;
+      dispoApi.importAllDispoPrograms(filterState, userName);
+      status = Status.OK;
+      return Response.status(status).build();
    }
 
    @Path("{branchId}/set")

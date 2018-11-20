@@ -17,10 +17,12 @@ import org.codehaus.jackson.annotate.JsonValue;
  * @author Angel Avila
  */
 public enum DispoSetStatus {
-   NO_CHANGE(0, "No Change"),
-   OK(1, "OK"),
-   WARNINGS(2, "Warnings"),
-   FAILED(3, "Failed");
+   ALL(0, "All"),
+   NONE(1, "None"),
+   NO_CHANGE(2, "No Change"),
+   OK(3, "OK"),
+   WARNINGS(4, "Warnings"),
+   FAILED(5, "Failed");
 
    private Integer value;
    private String name;

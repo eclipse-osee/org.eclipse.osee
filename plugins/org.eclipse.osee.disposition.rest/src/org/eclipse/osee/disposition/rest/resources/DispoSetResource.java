@@ -33,7 +33,6 @@ import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.DispoRoles;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.json.JSONException;
 
 /**
  * @author Angel Avila

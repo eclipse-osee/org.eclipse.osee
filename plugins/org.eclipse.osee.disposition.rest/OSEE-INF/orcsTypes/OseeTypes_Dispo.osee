@@ -123,6 +123,7 @@ attributeType "dispo.Import State" extends EnumeratedAttribute {
 
 oseeEnumType "enum.dispo.imported state" {
 	id 3458764513820541335
+	entry "All"
 	entry "None"
 	entry "No Change"
 	entry "OK"
