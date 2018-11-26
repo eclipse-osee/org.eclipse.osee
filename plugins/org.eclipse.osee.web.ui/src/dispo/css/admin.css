@@ -71,7 +71,3 @@ button#mergetAnnotationsBtn {
 .ngHeaderScroller {
     max-width: 0px;
 }
-
-.state-btn {
-	'btn btn-default';
-}
