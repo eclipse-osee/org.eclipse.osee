@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.validate;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.rule.validation.AbstractValidationRule;
+import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.ApplicabilityUtility;
@@ -28,37 +30,39 @@ public class MatchingApplicabilityTagsRule extends AbstractValidationRule {
    private HashCollection<String, String> validFeatureValues;
    private HashSet<String> validConfigurations;
 
+   public MatchingApplicabilityTagsRule(AtsApi atsApi) {
+      super(atsApi);
+   }
+
    @Override
-   protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) {
-      Collection<String> errorMessages = new ArrayList<>();
-      String wordml = artToValidate.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, "");
+   public void validate(ArtifactToken artToken, XResultData results) {
+      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(artToken);
+      String wordml = artifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, "");
 
       if (validFeatureValues == null) {
-         validFeatureValues = ApplicabilityUtility.getValidFeatureValuesForBranch(artToValidate.getBranch());
+         validFeatureValues = ApplicabilityUtility.getValidFeatureValuesForBranch(artifact.getBranch());
       }
 
       if (validConfigurations == null) {
-         validConfigurations = ApplicabilityUtility.getBranchViewNamesUpperCase(artToValidate.getBranch());
+         validConfigurations = ApplicabilityUtility.getBranchViewNamesUpperCase(artifact.getBranch());
       }
 
       boolean validationPassed = true;
       if (!validFeatureValues.isEmpty()) {
-         validationPassed = !WordCoreUtil.areApplicabilityTagsInvalid(wordml, artToValidate.getBranch(),
-            validFeatureValues, validConfigurations);
+         validationPassed = !WordCoreUtil.areApplicabilityTagsInvalid(wordml, artifact.getBranch(), validFeatureValues,
+            validConfigurations);
          if (!validationPassed) {
-            errorMessages.add(String.format(
+            results.errorf(
                "Validation Failed. The following artifact has invalid feature values and/or mismatching start and end applicability tags: " //
                   + "Artifact Id: [%s], Artifact Name: [%s]",
-               artToValidate.getId(), artToValidate.getSafeName()));
+               artifact.getId(), artifact.getSafeName());
          }
       }
-
-      return new ValidationResult(errorMessages, validationPassed);
    }
 
    @Override
    public String getRuleDescription() {
-      return "<b>Applicability Check: </b>" + "Ensure applicability tags are valid in the artifact(s)";
+      return "Ensure applicability tags are valid in the artifact(s)";
    }
 
    @Override

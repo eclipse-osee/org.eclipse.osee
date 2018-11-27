@@ -262,6 +262,13 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       addToSearchTypeList(new NotInRelationFilter(relationControls, relationTypeList, relationSideList));
    }
 
+   private void createOrphanSearchControls(Composite optionsComposite) {
+      Composite comp = new Composite(optionsComposite, SWT.NONE);
+      comp.setLayout(new GridLayout(2, true));
+
+      addToSearchTypeList(new OrphanSearchFilter(comp));
+   }
+
    @SuppressWarnings("deprecation")
    private void createAttributeSearchControls(Composite optionsComposite) {
       attributeTypeControls = new Composite(optionsComposite, SWT.MULTI);
@@ -369,6 +376,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       createAttributeExistsControls(optionsComposite);
       createArtifactTypeSearchControls(optionsComposite);
       createRelationSearchControls(optionsComposite);
+      createOrphanSearchControls(optionsComposite);
 
       searchTypeList.getCombo().setVisibleItemCount(7);
       searchTypeList.getCombo().select(lastSearchTypeListSelected);

@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.util.IResultDataListener;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -46,6 +47,7 @@ public class XResultData {
    public List<IResultDataListener> listeners;
    public String title;
    private List<String> results = new LinkedList<>();
+   private List<Id> ids = new LinkedList<>();
    // Use primitives for serialization
    private int errorCount;
    private int warningCount;
@@ -287,6 +289,14 @@ public class XResultData {
       if (value == null) {
          errorf(message, data);
       }
+   }
+
+   public List<Id> getIds() {
+      return ids;
+   }
+
+   public void setIds(List<Id> ids) {
+      this.ids = ids;
    }
 
 }

@@ -233,4 +233,10 @@
           className="org.eclipse.osee.define.ide.blam.operation.FindMissingOrUnspecifiedAttributes">
     </Operation>
  </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.ide.blam.operation.DuplicateParentBlam">
+    </Operation>
+ </extension>
 </plugin>

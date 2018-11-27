@@ -8,16 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.util.validate;
+package org.eclipse.osee.ats.core.rule.validate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.rule.validation.AbstractValidationRule;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -28,7 +29,8 @@ public final class RelationSetRule extends AbstractValidationRule {
    private final RelationTypeSide relationEnum;
    private final Collection<IArtifactType> ignoreArtifactTypes;
 
-   public RelationSetRule(IArtifactType artifactType, RelationTypeSide relationEnum, Integer minimumRelations, IArtifactType... ignoreArtifactTypes) {
+   public RelationSetRule(IArtifactType artifactType, RelationTypeSide relationEnum, Integer minimumRelations, AtsApi atsApi, IArtifactType... ignoreArtifactTypes) {
+      super(atsApi);
       this.artifactType = artifactType;
       this.relationEnum = relationEnum;
       this.minimumRelations = minimumRelations;
@@ -36,30 +38,27 @@ public final class RelationSetRule extends AbstractValidationRule {
          ignoreArtifactTypes.length == 0 ? new ArrayList<IArtifactType>() : Arrays.asList(ignoreArtifactTypes);
    }
 
-   public boolean hasArtifactType(ArtifactType artType) {
-      return artType.inheritsFrom(artifactType);
+   public boolean hasArtifactType(IArtifactType artType) {
+      return atsApi.getStoreService().inheritsFrom(artType, artifactType);
    }
 
    @Override
-   protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) {
-      Collection<String> errorMessages = new ArrayList<>();
-      boolean validationPassed = true;
-      ArtifactType type = artToValidate.getArtifactType();
+   public void validate(ArtifactToken artifact, XResultData results) {
+      IArtifactType type = atsApi.getStoreService().getArtifactType(artifact);
 
       if (!isIgnoreType(type) && hasArtifactType(type)) {
-         Collection<Artifact> arts = artToValidate.getRelatedArtifacts(relationEnum);
+         Collection<ArtifactToken> arts = atsApi.getRelationResolver().getRelatedArtifacts(artifact, relationEnum);
          if (arts.size() < minimumRelations) {
-            errorMessages.add(ValidationReportOperation.getRequirementHyperlink(
-               artToValidate) + " (" + artToValidate.getGammaId() + ") has less than minimum " + minimumRelations + " relation for type \"" + relationEnum.getName() + "\"");
-            validationPassed = false;
+            results.errorf(
+               "%s has less than minimum " + minimumRelations + " relation for type \"" + relationEnum.getName() + "\"",
+               artifact);
          }
       }
-      return new ValidationResult(errorMessages, validationPassed);
    }
 
    @Override
    public String getRuleDescription() {
-      return "<b>Relations Check: </b>" + "For \"" + artifactType + "\", ensure at least " + minimumRelations + " relations(s) of type \"" + relationEnum + "\" exists";
+      return "For \"" + artifactType + "\", ensure at least " + minimumRelations + " relations(s) of type \"" + relationEnum + "\" exists";
    }
 
    @Override

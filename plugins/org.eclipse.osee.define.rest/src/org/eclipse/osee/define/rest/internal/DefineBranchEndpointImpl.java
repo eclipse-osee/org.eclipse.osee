@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.rest.internal;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -40,26 +41,29 @@ public final class DefineBranchEndpointImpl implements DefineBranchEndpointApi {
    @GET
    @Path("{branch}/validate/arttype/{artType}/all")
    @Produces(MediaType.APPLICATION_JSON)
-   public XResultData validateAll(@PathParam("branch") BranchId branch, @PathParam("artType") String artType) {
+   @Consumes(MediaType.APPLICATION_JSON)
+   public XResultData validateAll(@PathParam("branch") BranchId branch, @PathParam("artType") ArtifactTypeId artType) {
       ValidateBranchOperation op = new ValidateBranchOperation(jdbcClient, branch, orcsApi);
-      return op.runAll(ArtifactTypeId.valueOf(artType));
+      return op.runAll(artType);
    }
 
    @Override
    @GET
    @Path("{branch}/validate/arttype/{artType}/dupparent")
    @Produces(MediaType.APPLICATION_JSON)
-   public XResultData getChildrenWithMultipleParents(@PathParam("branch") BranchId branch, @PathParam("artType") String artType) {
+   @Consumes(MediaType.APPLICATION_JSON)
+   public XResultData getChildrenWithMultipleParents(@PathParam("branch") BranchId branch, @PathParam("artType") ArtifactTypeId artType) {
       ValidateBranchOperation op = new ValidateBranchOperation(jdbcClient, branch, orcsApi);
-      return op.getChildrenWithMultipleParents(ArtifactTypeId.valueOf(artType));
+      return op.getChildrenWithMultipleParents(artType);
    }
 
    @Override
    @GET
    @Path("{branch}/validate/arttype/{artType}/orphan")
    @Produces(MediaType.APPLICATION_JSON)
-   public XResultData getOrphans(@PathParam("branch") BranchId branch, @PathParam("artType") String artType) {
+   @Consumes(MediaType.APPLICATION_JSON)
+   public XResultData getOrphans(@PathParam("branch") BranchId branch, @PathParam("artType") ArtifactTypeId artType) {
       ValidateBranchOperation op = new ValidateBranchOperation(jdbcClient, branch, orcsApi);
-      return op.getOrphans(ArtifactTypeId.valueOf(artType));
+      return op.getOrphans(artType);
    }
 }

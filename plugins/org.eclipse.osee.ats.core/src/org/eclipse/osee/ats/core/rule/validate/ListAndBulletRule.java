@@ -8,20 +8,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.util.validate;
+package org.eclipse.osee.ats.core.rule.validate;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.WorkType;
+import org.eclipse.osee.ats.api.rule.validation.AbstractValidationRule;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
+import org.eclipse.osee.framework.core.util.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 
 /**
  * @author Megumi Telles
+ * @author Donald G. Dunne
  */
 public class ListAndBulletRule extends AbstractValidationRule {
 
@@ -31,33 +32,30 @@ public class ListAndBulletRule extends AbstractValidationRule {
 
    private final WorkType workType;
 
-   public ListAndBulletRule(WorkType workType) {
+   public ListAndBulletRule(WorkType workType, AtsApi atsApi) {
+      super(atsApi);
       this.workType = workType;
    }
 
    @Override
-   protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) {
-      Collection<String> errorMessages = new ArrayList<>();
-      boolean validationPassed = true;
-      String wtc = artToValidate.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, "");
+   public void validate(ArtifactToken artifact, XResultData results) {
+      String wtc =
+         atsApi.getAttributeResolver().getSoleAttributeValue(artifact, CoreAttributeTypes.WordTemplateContent, "");
 
       Matcher match = NORMAL_LIST_BULLET_STYLE.matcher(wtc);
       if (match.find()) {
-         errorMessages.add(ValidationReportOperation.getRequirementHyperlink(
-            artToValidate) + " (" + artToValidate.getGammaId() + ")" + " is not using lists or bullets associated with an expected style." + " See " + getHyperLink());
-         validationPassed = false;
+         results.errorf("%s is not using lists or bullets associated with an expected style.",
+            artifact.toStringWithId());
       }
-
-      return new ValidationResult(errorMessages, validationPassed);
    }
 
    @Override
    public String getRuleDescription() {
-      return "<b>Formatting Check: </b>" + "Ensure lists and bullets use an expected style (" + getHyperLink() + ")" + " in the artifact(s)";
+      return "Ensure lists and bullets use an expected style (" + getHyperLink() + ")" + " in the artifact(s)";
    }
 
    private String getHyperLink() {
-      return XResultDataUI.getHyperlinkUrlInternal("More on Formatting/Editing", MORE_ON_FORMATTING);
+      return AHTML.getHyperlink("More on Formatting/Editing", MORE_ON_FORMATTING);
    }
 
    @Override

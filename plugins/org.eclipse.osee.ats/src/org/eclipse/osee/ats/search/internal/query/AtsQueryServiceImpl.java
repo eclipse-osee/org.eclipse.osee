@@ -359,4 +359,10 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       return ArtifactQuery.getArtifactFromId(guid, atsClient.getAtsBranch());
    }
 
+   @Override
+   public List<ArtifactToken> getArtifactListFromTypeWithInheritence(IArtifactType artifactType, BranchId branch, DeletionFlag deletionFlag) {
+      return Collections.castAll(
+         ArtifactQuery.getArtifactListFromTypeWithInheritence(artifactType, branch, deletionFlag));
+   }
+
 }

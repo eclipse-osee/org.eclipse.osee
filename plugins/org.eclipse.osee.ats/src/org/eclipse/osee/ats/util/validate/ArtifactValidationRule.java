@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.validate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.rule.validation.AbstractValidationRule;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.util.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
@@ -25,6 +27,10 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
  */
 public class ArtifactValidationRule extends AbstractValidationRule {
 
+   public ArtifactValidationRule(AtsApi atsApi) {
+      super(atsApi);
+   }
+
    private String getStatusMessage(Artifact itemChecked, IStatus status) {
       String link =
          XResultDataUI.getHyperlink(String.format("%s:[%s]", itemChecked.getArtifactTypeName(), itemChecked.getName()),
@@ -33,21 +39,19 @@ public class ArtifactValidationRule extends AbstractValidationRule {
    }
 
    @Override
-   protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) {
-      Collection<String> errorMessages = new ArrayList<>();
-      boolean validationPassed = true;
-      IStatus status = OseeValidator.getInstance().validate(IOseeValidator.LONG, artToValidate);
+   public void validate(ArtifactToken artToken, XResultData results) {
+      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(artToken);
+      Conditions.assertNotNull(artifact, "artifact not found for %s", artToken.toStringWithId());
+      IStatus status = OseeValidator.getInstance().validate(IOseeValidator.LONG, artifact);
 
       if (!status.isOK()) {
-         errorMessages.add(getStatusMessage(artToValidate, status));
-         validationPassed = false;
+         results.error(getStatusMessage(artifact, status));
       }
-      return new ValidationResult(errorMessages, validationPassed);
    }
 
    @Override
    public String getRuleDescription() {
-      return "<b>Artifact Validation Checks: </b>All Errors reported must be fixed.";
+      return "All Errors reported must be fixed.";
    }
 
    @Override

@@ -263,4 +263,9 @@ public class AtsStoreService implements IAtsStoreService {
    public boolean isOfType(IAtsObject atsObject, IArtifactType... artifactType) {
       return AtsClientService.get().getQueryServiceClient().getArtifact(atsObject).isOfType(artifactType);
    }
+
+   @Override
+   public boolean inheritsFrom(IArtifactType artType, IArtifactType... artifactType) {
+      return ArtifactTypeManager.inheritsFrom(artType, artifactType);
+   }
 }

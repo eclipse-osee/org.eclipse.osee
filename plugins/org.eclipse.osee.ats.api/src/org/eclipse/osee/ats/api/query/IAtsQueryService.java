@@ -155,4 +155,6 @@ public interface IAtsQueryService {
     */
    Collection<ArtifactToken> getArtifactsByIdsOrAtsIds(String searchStr);
 
+   List<ArtifactToken> getArtifactListFromTypeWithInheritence(IArtifactType artifactType, BranchId branch, DeletionFlag deletionFlag);
+
 }

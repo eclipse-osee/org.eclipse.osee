@@ -15,6 +15,7 @@ import java.util.Properties;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.define.api.DataRightsEndpoint;
+import org.eclipse.osee.define.api.DefineBranchEndpointApi;
 import org.eclipse.osee.define.api.MSWordEndpoint;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
@@ -71,4 +72,6 @@ public interface OseeClient {
    ArtifactEndpoint getArtifactEndpoint(BranchId branch);
 
    ApplicabilityUiEndpoint getApplicabilityUiEndpoint();
+
+   DefineBranchEndpointApi getDefineBranchEndpoint();
 }

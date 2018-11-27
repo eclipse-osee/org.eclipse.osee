@@ -254,4 +254,9 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
       return ((ArtifactReadable) atsApi.getQueryService().getArtifact(atsObject)).isHistorical();
    }
 
+   @Override
+   public boolean inheritsFrom(IArtifactType artType, IArtifactType... artifactType) {
+      return orcsApi.getOrcsTypes().getArtifactTypes().inheritsFrom(artType, artifactType);
+   }
+
 }

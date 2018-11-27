@@ -225,4 +225,11 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       return orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andGuid(
          guid).getResults().getAtMostOneOrNull();
    }
+
+   @Override
+   public List<ArtifactToken> getArtifactListFromTypeWithInheritence(IArtifactType artifactType, BranchId branch, DeletionFlag deletionFlag) {
+      return Collections.castAll(
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(artifactType).includeDeletedArtifacts(
+            deletionFlag == DeletionFlag.INCLUDE_DELETED).getResults().getList());
+   }
 }

@@ -8,21 +8,35 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.util.validate;
+package org.eclipse.osee.ats.api.rule.validation;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import java.util.Collection;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 
 /**
  * @author Donald G. Dunne
  */
 public abstract class AbstractValidationRule {
+
+   protected final AtsApi atsApi;
+
+   public AbstractValidationRule(AtsApi atsApi) {
+      this.atsApi = atsApi;
+   }
+
    /**
-    * @param artToValidate The Artifact to evaluate and validate against the criteria provided separately.
-    * @param operation An AbstractOperation to be used simply to update the operation monitor during validation.
-    * @param rd The XResultData object to write (or render) validation results to.
+    * @param artifact to validate as a collection
     */
-   protected abstract ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor);
+   public void validateAll(Collection<ArtifactToken> artifacts, XResultData results) {
+      // do nothing
+   }
+
+   /**
+    * @param artifact to validate individually
+    */
+   public abstract void validate(ArtifactToken artifact, XResultData results);
 
    public abstract String getRuleDescription();
 

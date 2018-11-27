@@ -8,92 +8,88 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.util.validate;
+package org.eclipse.osee.ats.core.rule.validate;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.rule.validation.AbstractValidationRule;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Shawn F. Cook
+ * @author Donald G. Dunne
  */
 public class UniqueNameRule extends AbstractValidationRule {
 
    private final IArtifactType artifactType;
    private final Collection<IdPair> idPairs = new LinkedList<>();
-   private final Map<IArtifactType, List<Artifact>> artTypeToArtifacts = new HashMap<IArtifactType, List<Artifact>>();
+   private final Map<IArtifactType, List<ArtifactToken>> artTypeToArtifacts =
+      new HashMap<IArtifactType, List<ArtifactToken>>();
 
-   public UniqueNameRule(IArtifactType artifactType) {
+   public UniqueNameRule(IArtifactType artifactType, AtsApi atsApi) {
+      super(atsApi);
       this.artifactType = artifactType;
    }
 
-   public boolean hasArtifactType(ArtifactType artType) {
-      return artType.inheritsFrom(artifactType);
+   public boolean hasArtifactType(IArtifactType artType) {
+      return atsApi.getStoreService().inheritsFrom(artType, artifactType);
    }
 
    @Override
-   protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) {
-      Collection<String> errorMessages = new ArrayList<>();
-      boolean validationPassed = true;
-      if (hasArtifactType(artToValidate.getArtifactType())) {
+   public void validate(ArtifactToken artifact, XResultData results) {
+      if (hasArtifactType(atsApi.getStoreService().getArtifactType(artifact))) {
          // validate that no other artifact of the given Artifact Type has the same name.
-         List<Artifact> arts = getArtifactsOfType(artToValidate.getBranchToken(), artToValidate.getArtifactType());
-         for (Artifact art : arts) {
-            if (art.getName().equalsIgnoreCase(artToValidate.getName()) && art.notEqual(
-               artToValidate) && !hasIdPairAlreadyBeenEvaluated(art.getId(), artToValidate.getId())) {
+         List<ArtifactToken> arts = getArtifactsOfType(artifact.getBranch(), artifact.getArtifactTypeId());
+         for (ArtifactToken art : arts) {
+            if (art.getName().equalsIgnoreCase(artifact.getName()) && art.notEqual(
+               artifact) && !hasIdPairAlreadyBeenEvaluated(art.getId(), artifact.getId())) {
                /**************************************************************************
                 * Special case: Allow duplicate names of artifacts if<br/>
                 * 1) Artifact name is numeric <br/>
                 * 2) Artifact type is different<br/>
                 */
-               if (Strings.isNumeric(artToValidate.getName()) && !artToValidate.isTypeEqual(art.getArtifactType())) {
+               if (Strings.isNumeric(artifact.getName()) && !artifact.isTypeEqual(art.getArtifactTypeId())) {
                   continue;
                }
                /**************************************************************************
                 * Allow for a Software Requirement parent to have an Implementation Details <br/>
                 * child of the same name.
                 */
-               if (isImplementationDetailsChild(artToValidate, art) || isImplementationDetailsChild(art,
-                  artToValidate)) {
+               if (isImplementationDetailsChild(artifact, art) || isImplementationDetailsChild(art, artifact)) {
                   continue;
                }
-               errorMessages.add(ValidationReportOperation.getRequirementHyperlink(
-                  artToValidate) + " and " + ValidationReportOperation.getRequirementHyperlink(
-                     art) + " have same name value:\"" + artToValidate.getName() + " \"");
-               validationPassed = false;
-               addIdPair(art.getId(), artToValidate.getId());
+               results.errorf("Artifacts have same name value [%s]", art.getName());
+               addIdPair(art.getId(), artifact.getId());
             }
          }
       }
-      return new ValidationResult(errorMessages, validationPassed);
    }
 
-   protected List<Artifact> getArtifactsOfType(IOseeBranch branch, IArtifactType artToValidate) {
-      List<Artifact> arts = artTypeToArtifacts.get(artToValidate);
+   protected List<ArtifactToken> getArtifactsOfType(BranchId branch, IArtifactType artifact) {
+      List<ArtifactToken> arts = artTypeToArtifacts.get(artifact);
       if (arts == null) {
-         arts =
-            ArtifactQuery.getArtifactListFromTypeWithInheritence(artifactType, branch, DeletionFlag.EXCLUDE_DELETED);
-         artTypeToArtifacts.put(artToValidate, arts);
+         arts = atsApi.getQueryService().getArtifactListFromTypeWithInheritence(artifactType, branch,
+            DeletionFlag.EXCLUDE_DELETED);
+         artTypeToArtifacts.put(artifact, arts);
       }
       return arts;
    }
 
-   private boolean isImplementationDetailsChild(Artifact childArtifact, Artifact parentArtifact) {
-      return parentArtifact.isTypeEqual(CoreArtifactTypes.SoftwareRequirement) && //
-         (childArtifact.isOfType(CoreArtifactTypes.AbstractImplementationDetails) && //
-            childArtifact.getParent().equals(parentArtifact));
+   private boolean isImplementationDetailsChild(ArtifactId childArtifact, ArtifactId parentArtifact) {
+      return atsApi.getStoreService().isOfType(parentArtifact, CoreArtifactTypes.SoftwareRequirement) && //
+         (atsApi.getStoreService().isOfType(childArtifact, CoreArtifactTypes.AbstractImplementationDetails) && //
+            atsApi.getRelationResolver().getParent(childArtifact).equals(parentArtifact));
    }
 
    private void addIdPair(Long idA, Long idB) {
@@ -129,7 +125,7 @@ public class UniqueNameRule extends AbstractValidationRule {
 
    @Override
    public String getRuleDescription() {
-      return "<b>Unique Names Check: </b>Ensure no two artifacts have the same name value";
+      return "Ensure no two artifacts have the same name value";
    }
 
    @Override

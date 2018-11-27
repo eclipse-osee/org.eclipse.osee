@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.api.rule.validation.AbstractValidationRule;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.branch.AtsBranchManager;
 import org.eclipse.osee.ats.internal.Activator;
@@ -25,13 +26,11 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.IAtsClient;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.KindType;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
-import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
@@ -44,55 +43,53 @@ public class ValidationReportOperation extends AbstractOperation {
 
    private final TeamWorkFlowArtifact teamArt;
    private final Set<AbstractValidationRule> rules;
+   private final XResultData results;
 
-   public ValidationReportOperation(OperationLogger logger, TeamWorkFlowArtifact teamArt, Set<AbstractValidationRule> rules) {
-      super("Validate Requirement Changes - " + teamArt.getName(), Activator.PLUGIN_ID, logger);
+   public ValidationReportOperation(XResultData results, TeamWorkFlowArtifact teamArt, Set<AbstractValidationRule> rules) {
+      super("Validate Requirement Changes - " + teamArt.getName(), Activator.PLUGIN_ID, null);
+      this.results = results;
       this.teamArt = teamArt;
       this.rules = rules;
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      logf("<b>Validating Requirement Changes for %s</b>\n", teamArt.getName());
+      results.logf("<b>Validating Requirement Changes for %s</b>\n", teamArt.getName());
 
       List<AbstractValidationRule> rulesSorted = new ArrayList<>(rules);
       Collections.sort(rulesSorted, new ValidationRuleComparator());
 
-      for (AbstractValidationRule rule : rulesSorted) {
-         log(rule.getRuleDescription());
-      }
-      log(
-         "<br><br><b>NOTE: </b>All errors are shown for artifact state on branch or at time of commit.  Select hyperlink to open most recent version of artifact.");
+      results.log(
+         "<b>NOTE: </b>All errors are shown for artifact state on branch or at time of commit.  Select hyperlink to open most recent version of artifact.");
 
       try {
          ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(teamArt);
          Collection<Artifact> changedArtifacts =
-            changeData.getArtifacts(KindType.ArtifactOrRelation, ModificationType.NEW, ModificationType.MODIFIED);
+            changeData.getArtifacts(KindType.ArtifactOrRelation, ModificationType.APPLICABILITY,
+               ModificationType.INTRODUCED, ModificationType.MERGED, ModificationType.REPLACED_WITH_VERSION,
+               ModificationType.UNDELETED, ModificationType.NEW, ModificationType.MODIFIED, ModificationType.DELETED);
          checkForCancelledStatus(monitor);
 
          double total = changedArtifacts.size() * rules.size();
          if (total > 0) {
-            Collection<String> warnings = new ArrayList<>();
-
             int workAmount = calculateWork(1 / total);
 
             String lastTitle = "";
             int ruleIndex = 1;
             for (AbstractValidationRule rule : rulesSorted) {
-               ElapsedTime time = new ElapsedTime("Time Spent");
                checkForCancelledStatus(monitor);
 
                //check to see if we should print a header for sorted (and grouped) rule types
                String currentTitle = rule.getRuleTitle();
                if (!lastTitle.equals(currentTitle)) {
-                  logf("\n%s", currentTitle);
-                  lastTitle = currentTitle;
+                  processNewTitle(rule, rulesSorted, results);
+                  lastTitle = rule.getRuleTitle();
                }
 
                if (isSkipRelationCheck(rule.getRuleTitle())) {
-                  logf("INFO: Relations Check skipped:  detected committed branches.");
+                  results.logf("INFO: Relations Check skipped:  detected committed branches.");
                } else if (isSkipOrphanCheck(rule.getRuleTitle())) {
-                  logf("INFO: Orphan Check skipped");
+                  results.logf("INFO: Orphan Check skipped");
                } else {
                   int artIndex = 1;
                   for (Artifact art : changedArtifacts) {
@@ -101,40 +98,35 @@ public class ValidationReportOperation extends AbstractOperation {
                            rules.size(), artIndex, changedArtifacts.size()));
                         checkForCancelledStatus(monitor);
 
-                        ValidationResult result = rule.validate(art, monitor);
-                        if (!result.didValidationPass()) {
-                           for (String errorMsg : result.getErrorMessages()) {
-                              if (art.isOfType(CoreArtifactTypes.DirectSoftwareRequirement)) {
-                                 logf("Error: %s", errorMsg);
-                              } else {
-                                 warnings.add(String.format("Warning: %s", errorMsg));
-                              }
-                           }
-                        }
+                        rule.validate(art, results);
                      } catch (Exception ex) {
-                        logf("Exception processing artifact %s Exception ex: %s", art.toStringWithId(),
+                        results.logf("Exception processing artifact %s Exception ex: %s\n", art.toStringWithId(),
                            ex.getMessage());
                      }
                      monitor.worked(workAmount);
                      artIndex++;
                   }
                }
-               log("\n");
-               log(time.end(Units.MIN, false));
                ruleIndex++;
-            }
-
-            // print warnings at the end of the report
-            for (String warning : warnings) {
-               log(warning);
             }
          }
 
-         log("\nValidation Complete");
+         results.log("\n<b>Validation Complete</b>");
+         XResultDataUI.report(results, getName());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
-         logf("Error: %s", ex.getLocalizedMessage());
+         results.error(Lib.exceptionToString(ex));
       }
+   }
+
+   private void processNewTitle(AbstractValidationRule newRule, List<AbstractValidationRule> rulesSorted, XResultData results) {
+      results.logf("\n<b>%s</b>\n", newRule.getRuleTitle());
+      for (AbstractValidationRule rule : rulesSorted) {
+         if (rule.getRuleTitle().equals(newRule.getRuleTitle())) {
+            results.logf("%s\n", rule.getRuleDescription());
+         }
+      }
+      results.logf("========================================\n");
    }
 
    private boolean isSkipOrphanCheck(String ruleTitle) {
@@ -165,9 +157,4 @@ public class ValidationReportOperation extends AbstractOperation {
       }
    }
 
-   public static String getRequirementHyperlink(Artifact art) {
-      String atsId = AtsClientService.get().getAtsId(art);
-      String linkName = String.format("%s(%s)", art.getName(), atsId);
-      return XResultDataUI.getHyperlink(linkName, atsId, art.getBranch());
-   }
 }

@@ -8,27 +8,31 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.util.validate;
+package org.eclipse.osee.ats.api.rule.validation;
 
-import java.util.Collection;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 
 /**
  * @author Shawn F. Cook
  */
 public class ValidationResult {
-   private final Collection<String> errorMessages;
-   private final boolean validationPassed;
 
-   public ValidationResult(Collection<String> errorMessages, boolean validationPassed) {
-      this.errorMessages = errorMessages;
-      this.validationPassed = validationPassed;
-   }
+   private XResultData results;
 
-   public Collection<String> getErrorMessages() {
-      return errorMessages;
+   public ValidationResult() {
+      this.results = new XResultData();
    }
 
    public boolean didValidationPass() {
-      return validationPassed;
+      return !results.isErrors();
    }
+
+   public XResultData getResults() {
+      return results;
+   }
+
+   public void setResults(XResultData results) {
+      this.results = results;
+   }
+
 }

@@ -47,13 +47,21 @@ public class ValidateBranchOperation {
    }
 
    public XResultData getChildrenWithMultipleParents(ArtifactTypeId artType) {
-      final List<Long> artIds = new LinkedList<>();
+      List<Long> artIds = new LinkedList<>();
       jdbcClient.runQuery(stmt -> artIds.add(stmt.getLong("b_art_id")), FIND_CHILDREN_WITH_DUPLICATE_DEF_HIER_PARENTS,
          branch);
-      artIds.clear();
-      artIds.addAll(filterByArtifactTypeInherited(artIds, artType));
+      List<Long> returnArtIds = new LinkedList<>();
+      if (artType.isValid()) {
+         returnArtIds.addAll(filterByArtifactTypeInherited(artIds, artType));
+      } else {
+         returnArtIds.addAll(artIds);
+      }
       if (!artIds.isEmpty()) {
-         results.errorf("Children have duplicate default hierarchy parents %s", Collections.toString(",", artIds));
+         results.errorf("Children have duplicate default hierarchy parents [%s].",
+            Collections.toString(",", returnArtIds));
+         for (Long id : returnArtIds) {
+            results.getIds().add(ArtifactId.valueOf(id));
+         }
       }
       return results;
    }

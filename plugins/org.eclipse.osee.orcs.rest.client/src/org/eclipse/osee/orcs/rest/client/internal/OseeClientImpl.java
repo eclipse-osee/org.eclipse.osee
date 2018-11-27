@@ -23,6 +23,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.define.api.DataRightsEndpoint;
+import org.eclipse.osee.define.api.DefineBranchEndpointApi;
 import org.eclipse.osee.define.api.MSWordEndpoint;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -244,5 +245,11 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    @Override
    public String getBaseUri() {
       return orcsUri.toString();
+   }
+
+   @Override
+   public DefineBranchEndpointApi getDefineBranchEndpoint() {
+      URI uri = UriBuilder.fromUri(defineUri).build();
+      return client.targetProxy(uri, DefineBranchEndpointApi.class);
    }
 }
