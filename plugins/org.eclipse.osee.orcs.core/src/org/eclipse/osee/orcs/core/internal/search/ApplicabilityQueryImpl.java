@@ -269,10 +269,8 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       List<BranchViewData> branchViews = getViews();
 
       HashMap<Long, Branch> childBaselineBranchIds = new HashMap<>();
-      for (Branch childBranch : branchQuery.andIsChildOf(branch).getResults()) {
-         if (childBranch.getBranchType().equals(BranchType.BASELINE)) {
-            childBaselineBranchIds.put(childBranch.getId(), childBranch);
-         }
+      for (Branch childBranch : branchQuery.andIsOfType(BranchType.BASELINE).andIsChildOf(branch).getResults()) {
+         childBaselineBranchIds.put(childBranch.getId(), childBranch);
       }
 
       HashMap<Long, ApplicabilityId> applicabilityIdsMap = new HashMap<>();
