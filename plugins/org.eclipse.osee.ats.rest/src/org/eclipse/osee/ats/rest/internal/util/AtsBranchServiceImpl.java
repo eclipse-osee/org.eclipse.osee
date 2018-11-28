@@ -60,7 +60,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       ArtifactId artId = ArtifactId.valueOf(teamWf.getId());
       return query.andIsOfType(BranchType.WORKING).andStateIs(
-         BranchState.COMMITTED).excludeArchived().andAssociatedArtId(artId).getResults().getOneOrNull();
+         BranchState.COMMITTED).excludeArchived().andAssociatedArtId(artId).getResults().getExactlyOne();
    }
 
    @Override
@@ -74,7 +74,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       branchQuery.andIsOfType(BranchType.WORKING);
       ArtifactId artId = ArtifactId.valueOf(teamWf.getId());
       branchQuery.andAssociatedArtId(artId);
-      return branchQuery.getResultsAsId().getOneOrNull();
+      return branchQuery.getResultsAsId().getExactlyOne();
    }
 
    @Override

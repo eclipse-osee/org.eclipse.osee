@@ -182,7 +182,7 @@ public class OrcsStorageImpl implements Storage {
       return getQuery()//
          .fromBranch(branch)//
          .andUuid(Long.valueOf(artId))//
-         .getResults().getOneOrNull();
+         .getResults().getExactlyOne();
    }
 
    private ArtifactReadable findDispoArtifactOrSentinel(BranchId branch, String artId, IArtifactType type) {
@@ -548,7 +548,7 @@ public class OrcsStorageImpl implements Storage {
    @Override
    public Map<String, ArtifactReadable> getCoverageUnits(BranchId branchId, Long artifactUuid) {
       ArtifactReadable coveragePackage =
-         getQuery().fromBranch(branchId).andUuid(artifactUuid).getResults().getOneOrNull();
+         getQuery().fromBranch(branchId).andUuid(artifactUuid).getResults().getExactlyOne();
 
       List<ArtifactReadable> descendants = coveragePackage.getDescendants();
       return getChildrenRecurse(descendants);

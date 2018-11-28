@@ -288,7 +288,8 @@ public class AtsProgramService implements IAtsProgramService {
       }
       if (program == null) {
          program = (IAtsProgram) atsApi.getQueryService().createQuery(AtsArtifactTypes.Program).andAttr(
-            AtsAttributeTypes.TeamDefinitionReference, teamDef.getIdString()).getConfigObjectResultSet().getOneOrNull();
+            AtsAttributeTypes.TeamDefinitionReference,
+            teamDef.getIdString()).getConfigObjectResultSet().getExactlyOne();
       }
       return program;
    }
