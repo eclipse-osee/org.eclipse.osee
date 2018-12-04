@@ -70,6 +70,7 @@ public class LisFileParser implements DispoImporterApi {
    private static final String WHEN_FOR = "\\s*\\( \\)\\s*(WHEN|FOR).*";
    private static final String WHEN_CASE = "(.*\\bWHEN\\b\\s*[^:]*$)";
    private static final String CASE_STATEMENT = "(.*(\\bCASE|case|default|\\s+.+[:].*))";
+   private static final String WHILE_ONE = "(.*\\bWHILE|while\\s*\\(1\\).*)";
 
    private final DispoDataFactory dataFactory;
 
@@ -376,12 +377,13 @@ public class LisFileParser implements DispoImporterApi {
             location = String.format("%s.%s.%s", lineNumber, statementCoverageItem.getAbbrevCondition(), "T");
             String location2 = String.format("%s.%s.%s", lineNumber, statementCoverageItem.getAbbrevCondition(), "F");
 
-            if (!lineData.getFirst().matches(WHEN_FOR) && !lineData.getFirst().matches(CASE_STATEMENT)) {
-               // Only add corresponding 'F' discrepancy if it's not a WHEN condition statement
+            if (!lineData.getFirst().matches(WHEN_FOR) && !lineData.getFirst().matches(
+               CASE_STATEMENT) && !lineData.getFirst().matches(WHILE_ONE)) {
+               // Only add corresponding 'F' discrepancy if it's not a WHEN or WHILE (1) condition statement
                text = statementCoverageItem.getFullCondition();
                addDiscrepancy(discrepancies, location, text);
                addDiscrepancy(discrepancies, location2, text);
-            } else { // May be a case statement, which should only test for True
+            } else { // May be a case or WHILE (1) statement, which should only test for True
                text = lineData.getFirst().trim();
                addDiscrepancy(discrepancies, location, text);
             }
