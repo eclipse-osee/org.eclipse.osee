@@ -13,8 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,12 +24,10 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 
 /**
@@ -43,12 +39,10 @@ public class XBranchContentProvider implements ITreeContentProvider {
    private boolean showChildBranchesAtMainLevel;
    private boolean showMergeBranches;
    private boolean showArchivedBranches;
-   private boolean showTransactions;
    private boolean showChildBranchesUnderParents;
    private boolean showOnlyWorkingBranches;
 
    private static Object[] EMPTY_ARRAY = new Object[0];
-   private int maxPerList = 100;
 
    public XBranchContentProvider(BranchXViewer commitXViewer) {
       super();
@@ -56,7 +50,6 @@ public class XBranchContentProvider implements ITreeContentProvider {
       changeXViewer = commitXViewer;
       showChildBranchesAtMainLevel = false;
       showMergeBranches = false;
-      showTransactions = false;
       showChildBranchesUnderParents = false;
       showArchivedBranches = false;
    }
@@ -86,11 +79,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
             List<Object> items = new LinkedList<>();
             Collection<? extends BranchId> childBrances = BranchManager.getChildBranches(branch, showArchivedBranches);
             items.addAll(childBrances);
-            items.addAll(getTransactions(branch));
-
             return items.toArray();
-         } else {
-            return getTransactions(branch).toArray();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(this.getClass(), Level.WARNING, ex);
@@ -153,25 +142,6 @@ public class XBranchContentProvider implements ITreeContentProvider {
       return null;
    }
 
-   private Collection<Object> getTransactions(BranchId branch) {
-      if (!showTransactions) {
-         return Collections.emptyList();
-      }
-      List<TransactionRecord> transactions = TransactionManager.getTransactionsForBranch(branch);
-      Collections.sort(transactions, new Comparator<TransactionRecord>() {
-         @Override
-         public int compare(TransactionRecord o1, TransactionRecord o2) {
-            return (int) (o1.getId().longValue() - o2.getId().longValue());
-         }
-      });
-      if (transactions != null) {
-         return org.eclipse.osee.framework.jdk.core.util.Collections.getAggregateTree(
-            new ArrayList<Object>(transactions), maxPerList);
-      } else {
-         return Collections.emptyList();
-      }
-   }
-
    @Override
    public boolean hasChildren(Object element) {
       if (element instanceof BranchManager) {
@@ -180,12 +150,10 @@ public class XBranchContentProvider implements ITreeContentProvider {
       if (element instanceof BranchId) {
          boolean hasChildren = true;
          try {
-            if (!showTransactions) {
-               if (!showChildBranchesAtMainLevel) {
-                  hasChildren = BranchManager.hasChildren((BranchId) element);
-               } else {
-                  hasChildren = false;
-               }
+            if (!showChildBranchesAtMainLevel) {
+               hasChildren = BranchManager.hasChildren((BranchId) element);
+            } else {
+               hasChildren = false;
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(this.getClass(), Level.WARNING, ex);
@@ -258,18 +226,6 @@ public class XBranchContentProvider implements ITreeContentProvider {
 
    public void setShowArchivedBranches(boolean showArchivedBranches) {
       this.showArchivedBranches = showArchivedBranches;
-   }
-
-   public void setShowTransactions(boolean showTransactions) {
-      this.showTransactions = showTransactions;
-   }
-
-   public boolean isShowTransactions() {
-      return showTransactions;
-   }
-
-   public void setMaxPerList(int maxPerList) {
-      this.maxPerList = maxPerList;
    }
 
 }

@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.HierarchicalP
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowArchivedBranchHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowFavoriteBranchesFirstHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowMergeBranchPresentationHandler;
-import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowTransactionPresentationHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
@@ -43,7 +42,6 @@ public class BranchViewPresentationPreferences {
    private static final String[] listOfCommandIds = {
       HierarchicalPresentationHandler.COMMAND_ID,
       FlatPresentationHandler.COMMAND_ID,
-      ShowTransactionPresentationHandler.COMMAND_ID,
       ShowMergeBranchPresentationHandler.COMMAND_ID,
       ShowArchivedBranchHandler.COMMAND_ID,
       ShowFavoriteBranchesFirstHandler.COMMAND_ID};
@@ -124,9 +122,6 @@ public class BranchViewPresentationPreferences {
          XBranchWidget branchWidget = branchView.getXBranchWidget();
          switch (keyEnum) {
             case FLAT_KEY:
-            case SHOW_TRANSACTIONS:
-               branchWidget.setBranchOptions(pref.getBoolean(keyEnum.origKeyName, true), keyEnum);
-               break;
             case SHOW_MERGE_BRANCHES:
             case SHOW_ARCHIVED_BRANCHES:
             case FAVORITE_KEY:

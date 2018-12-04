@@ -112,10 +112,6 @@ public class BranchTransactionPage extends FormPage implements IBranchWidgetMenu
          xBranchWidget.adaptControls(toolkit);
          xBranchWidget.getXViewer().setColumnMultiEditEnabled(false);
 
-         XBranchContentProvider contentProvider =
-            (XBranchContentProvider) xBranchWidget.getXViewer().getContentProvider();
-         contentProvider.setShowTransactions(true);
-         contentProvider.setMaxPerList(500);
          getSite().setSelectionProvider(xBranchWidget.getXViewer());
          OseeEventManager.addListener(this);
       }

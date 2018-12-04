@@ -107,9 +107,6 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
                case SHOW_MERGE_BRANCHES:
                   branchContentProvider.setShowMergeBranches(state);
                   break;
-               case SHOW_TRANSACTIONS:
-                  branchContentProvider.setShowTransactions(state);
-                  break;
                case SHOW_ARCHIVED_BRANCHES:
                   branchContentProvider.setShowArchivedBranches(state);
                   break;

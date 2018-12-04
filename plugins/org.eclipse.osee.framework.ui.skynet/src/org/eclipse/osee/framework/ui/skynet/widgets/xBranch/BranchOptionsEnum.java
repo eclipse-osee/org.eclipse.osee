@@ -17,7 +17,6 @@ public enum BranchOptionsEnum {
    HIERARCHY_KEY("hierarchy"),
    FAVORITE_KEY("favorites_first"),
    SHOW_MERGE_BRANCHES("show_merge_branches"),
-   SHOW_TRANSACTIONS("show_transactions"),
    SHOW_ARCHIVED_BRANCHES("show_archived_branches"),
    BRANCH_ID("branchUuid"),
    SHOW_WORKING_BRANCHES_ONLY("show_working_branches");
