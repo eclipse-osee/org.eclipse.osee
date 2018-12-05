@@ -841,10 +841,6 @@
           commandId="org.eclipse.osee.framework.ui.skynet.branch.branchView.hierarchicalPresentation.command">
     </handler>
     <handler
-          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowTransactionPresentationHandler"
-          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showTransactions">
-    </handler>
-    <handler
           class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowMergeBranchPresentationHandler"
           commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showMergeBranches">
     </handler>
