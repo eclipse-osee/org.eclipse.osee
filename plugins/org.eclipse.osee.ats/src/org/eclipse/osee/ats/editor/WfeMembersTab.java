@@ -61,6 +61,7 @@ import org.eclipse.osee.ats.world.WorldComposite;
 import org.eclipse.osee.ats.world.WorldViewDragAndDrop;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerEventManager;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
@@ -540,6 +541,26 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
       }
 
       @Override
+      protected boolean isValidForArtifactDrop(DropTargetEvent event) {
+         boolean validForDrop = false;
+         if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
+            ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
+
+            if (artData != null) {
+               Artifact[] artifacts = artData.getArtifacts();
+               for (Artifact art : artifacts) {
+                  if (art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact) || art.isOfType(
+                     CoreArtifactTypes.UniversalGroup)) {
+                     validForDrop = true;
+                     break;
+                  }
+               }
+            }
+         }
+         return validForDrop;
+      }
+
+      @Override
       public void performDragOver(DropTargetEvent event) {
          if (isValidForArtifactDrop(event)) {
             event.detail = DND.DROP_COPY;
@@ -551,6 +572,8 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
                   event.feedback = DND.FEEDBACK_INSERT_BEFORE | DND.FEEDBACK_SCROLL;
                }
             }
+         } else {
+            event.feedback = DND.ERROR_INVALID_DATA;
          }
       }
 
@@ -577,6 +600,9 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
                   }
                }
                for (Artifact dropped : droppedArtifacts) {
+                  if (!dropped.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
+                     continue;
+                  }
                   if (!members.contains(dropped)) {
                      provider.addMember(dropped);
                   }
