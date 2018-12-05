@@ -1638,4 +1638,12 @@
            className="org.eclipse.osee.framework.ui.skynet.commit.CatchValidationChecks">
      </commitActions>
   </extension>
+     <extension id="org.eclipse.osee.framework.ui.skynet.blam.BlamEditorInputFactory"
+         name="Blam Editor Input Factory"
+         point="org.eclipse.ui.elementFactories">
+      <factory
+            class="org.eclipse.osee.framework.ui.skynet.blam.BlamEditorInputFactory"
+            id="org.eclipse.osee.framework.ui.skynet.blam.BlamEditorInputFactory">
+      </factory>
+   </extension>
 </plugin>

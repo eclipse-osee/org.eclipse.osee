@@ -14,12 +14,13 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableElement;
 
 /**
  * @author Donald G. Dunne
  */
-public class BlamEditorInput implements IEditorInput, Adaptable {
+public class BlamEditorInput implements IEditorInput, IPersistableElement, Adaptable {
 
    private final AbstractBlam blamOperation;
 
@@ -60,7 +61,7 @@ public class BlamEditorInput implements IEditorInput, Adaptable {
 
    @Override
    public IPersistableElement getPersistable() {
-      return null;
+      return this;
    }
 
    @Override
@@ -71,6 +72,16 @@ public class BlamEditorInput implements IEditorInput, Adaptable {
    @Override
    public int hashCode() {
       return super.hashCode();
+   }
+
+   @Override
+   public void saveState(IMemento memento) {
+      BlamEditorInputFactory.saveState(memento, this);
+   }
+
+   @Override
+   public String getFactoryId() {
+      return BlamEditorInputFactory.ID;
    }
 
 }
