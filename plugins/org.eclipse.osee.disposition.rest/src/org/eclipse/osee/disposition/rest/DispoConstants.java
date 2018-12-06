@@ -52,6 +52,8 @@ public final class DispoConstants {
    public static final AttributeTypeToken DispoCiSet = AttributeTypeToken.valueOf(5225296359986133054L, "dispo.Ci Set");
    public static final AttributeTypeToken DispoRerunList = AttributeTypeToken.valueOf(3587660131087940587L, "dispo.Rerun List");
    public static final AttributeTypeToken DispoTime = AttributeTypeToken.valueOf(7240092025387115138L, "dispo.Time");
+   public static final AttributeTypeToken DispoMultiEnvSettings = AttributeTypeToken.valueOf(3587660131047940387L, "dispo.multiEnvSettings");
+   public static final AttributeTypeToken DispoIsMultiEnv = AttributeTypeToken.valueOf(3587620131443940337L, "dispo.isMultiEnv");
 
 
    public static final ArtifactToken DISPO_ARTIFACT = ArtifactToken.valueOf(4757831, "DispositionTypes", COMMON, CoreArtifactTypes.OseeTypeDefinition);
