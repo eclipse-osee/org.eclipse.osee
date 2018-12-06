@@ -195,8 +195,8 @@ public class WordTemplateRenderer extends WordRenderer {
          Pair<String, Set<String>> content = null;
          try {
             content = HttpWordUpdateRequest.renderWordTemplateContent(wtcData);
-         } catch (Exception e) {
-            WordUiUtil.displayErrorMessage(e.toString());
+         } catch (Exception ex) {
+            WordUiUtil.displayErrorMessage(ex.toString());
          }
 
          if (content != null) {

@@ -75,8 +75,14 @@ public final class WordUiUtil {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            int startIndex = errorMessage.indexOf("errorMessage=") + 13; // add 13 so 'errorMessage=' is not part of the text display
-            String err = errorMessage.substring(startIndex, errorMessage.indexOf(",", startIndex));
+            int startIndex = errorMessage.indexOf("errorMessage=");
+            String err = "";
+            if (startIndex > 0) {
+               startIndex = startIndex + 13; // add 13 so 'errorMessage=' is not part of the text display
+               err = errorMessage.substring(startIndex, errorMessage.indexOf(",", startIndex));
+            } else {
+               err = errorMessage;
+            }
             if (err == null || err.isEmpty()) {
                err = errorMessage;
             }
