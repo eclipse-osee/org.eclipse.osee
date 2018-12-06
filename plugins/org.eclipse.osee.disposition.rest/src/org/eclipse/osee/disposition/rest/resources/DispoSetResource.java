@@ -15,6 +15,7 @@ import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -30,6 +31,7 @@ import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
+import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.DispoRoles;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -112,6 +114,25 @@ public class DispoSetResource {
    public Iterable<DispoSet> getAllDispoSets(@QueryParam("type") String type) {
       List<DispoSet> allDispoSets = dispoApi.getDispoSets(branch, type);
       return allDispoSets;
+   }
+
+   /**
+    * @return The updated Disposition Set if successful. Error Code otherwise
+    * @response.representation.200.doc OK, Found Disposition Set
+    * @response.representation.404.doc Not Found, Could not find any Disposition Sets
+    * @response.representation.415.doc Unsupported Media Type.
+    */
+   @Path("importDispoSet")
+   @PUT
+   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+   public Response putDispoSetByName(@FormParam("name") String setName, @QueryParam("userName") String userName) {
+      DispoSetData newDispositionSet = new DispoSetData();
+      newDispositionSet.setOperation(DispoStrings.Operation_Import);
+      String setId = dispoApi.getDispoSetIdByName(branch, setName);
+      Response.Status status;
+      dispoApi.editDispoSet(branch, setId, newDispositionSet, userName);
+      status = Status.OK;
+      return Response.status(status).build();
    }
 
    /**

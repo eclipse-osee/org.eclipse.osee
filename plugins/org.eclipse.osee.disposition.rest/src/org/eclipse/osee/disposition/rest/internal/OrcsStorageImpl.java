@@ -30,6 +30,7 @@ import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoStorageMetadata;
+import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.Note;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.DispoConstants;
@@ -153,6 +154,38 @@ public class OrcsStorageImpl implements Storage {
          .getResults();
 
       return results.isEmpty();
+   }
+
+   @Override
+   public IOseeBranch findDispoProgramIdByName(String branchName) {
+      List<IOseeBranch> dispoPrograms = getDispoBranches();
+      IOseeBranch branchId = null;
+      int count = 0;
+      for (IOseeBranch branch : dispoPrograms) {
+         if (branch.getName().equals(branchName)) {
+            count++;
+            branchId = branch;
+         }
+      }
+
+      if (count > 1) {
+         throw new OseeCoreException("Multiple items found - total [%s]", count);
+      } else if (count < 1) {
+         throw new OseeCoreException("No item found");
+      }
+
+      return branchId;
+   }
+
+   @Override
+   public String findDispoSetIdByName(BranchId branchId, String setName) {
+      List<DispoSet> dispoSets = findDispoSets(branchId, DispoStrings.CODE_COVERAGE);
+      for (DispoSet set : dispoSets) {
+         if (set.getName().equals(setName)) {
+            return set.getGuid();
+         }
+      }
+      return null;
    }
 
    @Override

@@ -206,7 +206,7 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public void importAllDispoSets(IOseeBranch branch, String filterState, String userName) {
+   public void importAllDispoSets(BranchId branch, String filterState, String userName) {
       List<DispoSet> dispoSets = new ArrayList<>();
       DispoSetData newSet;
 
@@ -480,6 +480,11 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
+   public IOseeBranch getDispoProgramIdByName(String branchName) {
+      return getQuery().findDispoProgramIdByName(branchName);
+   }
+
+   @Override
    public List<DispoSet> getDispoSets(BranchId branch, String type) {
       return getQuery().findDispoSets(branch, type);
    }
@@ -487,6 +492,11 @@ public class DispoApiImpl implements DispoApi {
    @Override
    public DispoSet getDispoSetById(BranchId branch, String setId) {
       return getQuery().findDispoSetsById(branch, setId);
+   }
+
+   @Override
+   public String getDispoSetIdByName(BranchId branchId, String setName) {
+      return getQuery().findDispoSetIdByName(branchId, setName);
    }
 
    @Override

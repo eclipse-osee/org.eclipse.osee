@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -121,10 +122,22 @@ public class DispoProgramResource {
    }
 
    /**
+    * @return The found branchId if successful. Error Code otherwise
+    * @response.representation.200.doc OK, Found branchId
+    * @response.representation.404.doc Not Found, Could not find any branchId
+    */
+   @Path("getDispoBranchId")
+   @GET
+   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+   @Produces(MediaType.APPLICATION_JSON)
+   public String getDispoBranchId(@FormParam("name") String branchName) {
+      return dispoApi.getDispoProgramIdByName(branchName).getIdString();
+   }
+
+   /**
     * Import All Disposition Sets that are in a given State. Default state is "NONE".
     *
     * @param filterState Data used to specify what the user wants to import by its state
-    * @param userName Data for current users
     * @return Error code if failing.
     * @response.representation.200.doc OK, looking through all Disposition Sets.
     * @response.representation.404.doc Not Found, can't connect to server.
@@ -135,9 +148,29 @@ public class DispoProgramResource {
    @PUT
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response putDispoSet(String filterState, @QueryParam("userName") String userName) {
+   public Response importAllDispoSets(String filterState, @QueryParam("userName") String userName) {
       Response.Status status;
       dispoApi.importAllDispoPrograms(filterState, userName);
+      status = Status.OK;
+      return Response.status(status).build();
+   }
+
+   /**
+    * Import All Disposition Sets that are in a given Branch and State. Default state is "NONE".
+    *
+    * @param filterState Data used to specify what the user wants to import by its state
+    * @return Error code if failing.
+    * @response.representation.200.doc OK, looking through Disposition Sets.
+    * @response.representation.404.doc Not Found, can't connect to server.
+    * @response.representation.415.doc Unsupported Media Type.
+    */
+   @Path("importDispoBranch")
+   @PUT
+   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+   public Response importDispoBranchByName(@FormParam("filterState") String filterState, @FormParam("name") String branchName, @QueryParam("userName") String userName) {
+      IOseeBranch branch = dispoApi.getDispoProgramIdByName(branchName);
+      Response.Status status;
+      dispoApi.importAllDispoSets(branch, filterState, userName);
       status = Status.OK;
       return Response.status(status).build();
    }

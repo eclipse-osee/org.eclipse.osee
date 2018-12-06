@@ -41,6 +41,10 @@ public interface DispoQuery {
 
    boolean isUniqueItemName(BranchId branch, String setId, String name);
 
+   IOseeBranch findDispoProgramIdByName(String branchName);
+
+   String findDispoSetIdByName(BranchId branch, String setName);
+
    List<DispoSet> findDispoSets(BranchId branch, String type);
 
    DispoSet findDispoSetsById(BranchId branch, String id);

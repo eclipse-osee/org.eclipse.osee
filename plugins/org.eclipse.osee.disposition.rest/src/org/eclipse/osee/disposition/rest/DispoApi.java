@@ -36,9 +36,13 @@ public interface DispoApi {
    // Queries
    List<IOseeBranch> getDispoPrograms();
 
+   IOseeBranch getDispoProgramIdByName(String branchName);
+
    List<DispoSet> getDispoSets(BranchId branch, String type);
 
    DispoSet getDispoSetById(BranchId branch, String dispoSetId);
+
+   String getDispoSetIdByName(BranchId branchId, String setName);
 
    List<DispoItem> getDispoItems(BranchId branch, String dispoSetId, boolean isDetailed);
 
@@ -69,7 +73,7 @@ public interface DispoApi {
 
    void editDispoSet(BranchId branch, String dispoSetId, DispoSetData newDispoSet, String userName);
 
-   void importAllDispoSets(IOseeBranch branch, String filterState, String userName);
+   void importAllDispoSets(BranchId branch, String filterState, String userName);
 
    void importAllDispoPrograms(String filterState, String userName);
 
