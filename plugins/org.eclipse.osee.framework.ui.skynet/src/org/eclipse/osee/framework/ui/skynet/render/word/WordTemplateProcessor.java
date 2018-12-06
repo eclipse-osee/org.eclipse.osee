@@ -731,8 +731,15 @@ public class WordTemplateProcessor {
       String label = element.getLabel();
       String value = "";
       if (name.equals(APPLICABILITY)) {
-         ApplicabilityToken applicabilityToken = applicabilityTokens.get(artifact.getApplicablityId());
-         value = applicabilityToken.getName();
+         value = "unknown";
+         if (artifact.getApplicablityId().isValid()) {
+            ApplicabilityToken applicabilityToken = applicabilityTokens.get(artifact.getApplicablityId());
+            if (applicabilityToken != null && applicabilityToken.isValid()) {
+               value = applicabilityToken.getName();
+            } else {
+               value = artifact.getApplicablityId().getIdString();
+            }
+         }
       } else if (name.equals(ARTIFACT_TYPE)) {
          value = artifact.getArtifactTypeName();
       } else if (name.equals(ARTIFACT_ID)) {
