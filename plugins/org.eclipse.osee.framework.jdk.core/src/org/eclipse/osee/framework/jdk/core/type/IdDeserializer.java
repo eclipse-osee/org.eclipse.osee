@@ -17,6 +17,7 @@ import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.DeserializationContext;
 import org.codehaus.jackson.map.deser.std.StdDeserializer;
+import org.codehaus.jackson.node.IntNode;
 import org.codehaus.jackson.node.TextNode;
 
 /**
@@ -38,7 +39,7 @@ public class IdDeserializer<T extends Id> extends StdDeserializer<T> {
    public T deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
       JsonNode readTree = jp.getCodec().readTree(jp);
       Long id;
-      if (readTree instanceof TextNode) {
+      if (readTree instanceof TextNode || readTree instanceof IntNode) {
          String value = readTree.asText();
          id = value.equals("") ? -1L : Long.valueOf(value);
       } else {

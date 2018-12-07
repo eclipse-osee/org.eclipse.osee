@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import java.util.List;
+import java.util.function.Supplier;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -46,11 +47,7 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
 
    @Override
    public ArtifactToken loadArtifactToken() {
-      List<ArtifactToken> tokens = loadArtifactTokens();
-      if (tokens.size() != 1) {
-         throw new OseeCoreException("Expected exactly 1 artifact token not %s", tokens.size());
-      }
-      return tokens.get(0);
+      return loadArtifact(this::loadArtifactTokens);
    }
 
    @Override
@@ -62,6 +59,19 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
    public List<ArtifactToken> loadArtifactTokens(AttributeTypeId attributeType) {
       getQueryData().addCriteria(new CriteriaTokenQuery(attributeType));
       return queryEngine.loadArtifactTokens(getQueryData());
+   }
+
+   @Override
+   public ArtifactId loadArtifactId() {
+      return loadArtifact(this::loadArtifactIds);
+   }
+
+   private <T> T loadArtifact(Supplier<List<T>> supplier) {
+      List<T> artifacts = supplier.get();
+      if (artifacts.size() != 1) {
+         throw new OseeCoreException("Expected exactly 1 artifact not %s", artifacts.size());
+      }
+      return artifacts.get(0);
    }
 
    @Override

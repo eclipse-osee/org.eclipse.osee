@@ -31,6 +31,8 @@ public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query 
 
    List<ArtifactId> loadArtifactIds();
 
+   ArtifactId loadArtifactId();
+
    /**
     * @param attributeType is used in place of the natural Name attribute to populate the name fields in the returned
     * artifact tokens
@@ -76,5 +78,4 @@ public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query 
    CancellableCallable<ResultSet<? extends ArtifactId>> createSearchResultsAsIds();
 
    ArtifactToken getArtifactOrNull();
-
 }
