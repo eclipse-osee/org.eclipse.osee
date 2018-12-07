@@ -57,6 +57,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -766,28 +767,28 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       results.logTestTimeSpent(date, "testAtsBranchManager");
    }
 
-   public static void validateBranchId(IAtsConfigObject name, BranchId parentBranchId, ValidateResults results) {
+   public static void validateBranchId(IAtsConfigObject configObj, BranchId parentBranchId, ValidateResults results) {
       Date date = new Date();
       try {
          BranchId branch = parentBranchId;
          if (BranchManager.isArchived(branch)) {
+            Branch brch = BranchManager.getBranch(branch);
             results.log("validateBranchId",
-               String.format(
-                  "Error: [%s][%d][%s] has Parent Branch Id attribute set to Archived Branch [%s] named [%s]",
-                  name.getName(), name.getId(), name, parentBranchId, branch));
+               String.format("Error: Config Object %s has Parent Branch Id attribute [%s] set to Archived Branch %s.",
+                  configObj.toStringWithId(), parentBranchId, brch.toStringWithId()));
          } else if (!BranchManager.getType(branch).isBaselineBranch()) {
             results.log("validateBranchId",
                String.format(
-                  "Error: [%s][%d][%s] has Parent Branch Id attribute [%s][%s] that is a [%s] branch; should be a BASELINE branch",
-                  name.getName(), name.getId(), name, BranchManager.getType(branch).getName(), parentBranchId, branch));
+                  "Error: Config Object %s has Parent Branch Id attribute [%s] that is a [%s] branch; should be a BASELINE branch.",
+                  configObj.toStringWithId(), parentBranchId, BranchManager.getType(branch).getName()));
          }
       } catch (BranchDoesNotExist ex) {
          results.log("validateBranchId",
-            String.format("Error: [%s][%d][%s] has Parent Branch Id attribute [%s] that references a non-existant",
-               name.getName(), name.getId(), name, parentBranchId));
+            String.format("Error: Config Object %s has Parent Branch Id attribute [%s] that does not exist.",
+               configObj.toStringWithId(), parentBranchId));
       } catch (Exception ex) {
          results.log("validateBranchId",
-            "Error: " + name.getName() + " [" + name.toStringWithId() + "] exception: " + ex.getLocalizedMessage());
+            "Error: " + configObj.getName() + " [" + configObj.toStringWithId() + "] exception: " + ex.getLocalizedMessage());
       }
       results.logTestTimeSpent(date, "validateBranchId");
    }
