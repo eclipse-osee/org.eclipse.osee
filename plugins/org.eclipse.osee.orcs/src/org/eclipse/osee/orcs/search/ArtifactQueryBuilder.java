@@ -168,7 +168,7 @@ public interface ArtifactQueryBuilder<T> {
    T andNotExists(IRelationType relationType);
 
    /**
-    * Artifact name equals value
+    * Artifact name exactly equals value
     */
    T andNameEquals(String artifactName);
 

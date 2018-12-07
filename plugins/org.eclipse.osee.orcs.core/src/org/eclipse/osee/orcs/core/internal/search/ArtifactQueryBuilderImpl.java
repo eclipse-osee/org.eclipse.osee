@@ -294,7 +294,7 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
 
    @Override
    public T andNameEquals(String artifactName) {
-      return and(CoreAttributeTypes.Name, artifactName);
+      return and(CoreAttributeTypes.Name, artifactName, QueryOption.EXACT_MATCH_OPTIONS);
    }
 
    @Override
