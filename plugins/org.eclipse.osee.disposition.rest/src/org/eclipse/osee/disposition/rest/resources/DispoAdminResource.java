@@ -96,7 +96,7 @@ public class DispoAdminResource {
          public void write(OutputStream outputStream) throws WebApplicationException, IOException {
             String dispoType = dispoSet.getDispoType();
             if (dispoType.equals("testScript")) {
-               writer.runReport(branch, dispoSet, options, outputStream);
+               writer.runDispoReport(branch, dispoSet, options, outputStream);
             } else {
                writer.runCoverageReport(branch, dispoSet, options, outputStream);
             }
