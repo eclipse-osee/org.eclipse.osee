@@ -14,9 +14,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.OrcsTypeChangeListener;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.SetWorkbenchOverrideIconBlam;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IPerspectiveListener;
@@ -65,6 +68,11 @@ public class OseeUiEarlyStartup implements IStartup {
                      // Make sure we have latest artifact
                      UserManager.getUser().reloadAttributesAndRelations();
                      UserManager.getUser().saveSettings();
+                     for (IEditorReference editor : AWorkbench.getEditors()) {
+                        if (editor instanceof ResultsEditor) {
+                           AWorkbench.getActivePage().closeEditor(editor.getEditor(false), false);
+                        }
+                     }
                   } catch (Throwable th) {
                      th.printStackTrace();
                   }
