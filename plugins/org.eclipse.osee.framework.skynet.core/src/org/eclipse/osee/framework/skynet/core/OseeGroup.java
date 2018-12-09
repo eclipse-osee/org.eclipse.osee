@@ -126,4 +126,8 @@ public class OseeGroup {
    public boolean isCurrentUserTemporaryOverride() {
       return isTemporaryOverride(UserManager.getUser());
    }
+
+   public void removeMember(User user) {
+      getGroupArtifact().deleteRelation(CoreRelationTypes.Users_User, user);
+   }
 }

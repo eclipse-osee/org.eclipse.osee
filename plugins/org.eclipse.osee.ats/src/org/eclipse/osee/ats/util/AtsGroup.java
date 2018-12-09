@@ -76,4 +76,8 @@ public enum AtsGroup {
    public boolean isCurrentUserTemporaryOverride() {
       return group.isCurrentUserTemporaryOverride();
    }
+
+   public void removeMember(User user) {
+      group.removeMember(user);
+   }
 }

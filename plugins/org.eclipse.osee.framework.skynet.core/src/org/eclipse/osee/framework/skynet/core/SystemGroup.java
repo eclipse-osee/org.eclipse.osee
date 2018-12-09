@@ -64,4 +64,8 @@ public enum SystemGroup {
    public boolean isCurrentUserTemporaryOverride() {
       return group.isCurrentUserTemporaryOverride();
    }
+
+   public void removeMember(User user) {
+      group.removeMember(user);
+   }
 }
