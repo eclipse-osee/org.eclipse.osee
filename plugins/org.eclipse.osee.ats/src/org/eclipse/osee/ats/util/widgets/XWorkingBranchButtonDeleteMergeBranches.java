@@ -35,14 +35,14 @@ import org.eclipse.swt.widgets.Listener;
 /**
  * @author Angel Avila
  */
-public class XWorkingBranchDeleteMerge extends XWorkingBranchButtonAbstract {
+public class XWorkingBranchButtonDeleteMergeBranches extends XWorkingBranchButtonAbstract {
 
-   public final static String WIDGET_NAME = "XWorkingBranchDeleteMerge";
+   public final static String WIDGET_NAME = "XWorkingBranchButtonDeleteMergeBranches";
 
    @Override
    protected void initButton(final Button button) {
       button.setToolTipText("Delete Merge Branch(es)");
-      button.setImage(ImageManager.getImage(FrameworkImage.DELETE));
+      button.setImage(ImageManager.getImage(FrameworkImage.DELETE_MERGE_BRANCHES));
       button.addListener(SWT.Selection, new Listener() {
          @Override
          public void handleEvent(Event e) {

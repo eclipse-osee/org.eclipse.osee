@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -93,6 +94,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
    private Button deleteBranchButton;
    private Button favoriteBranchButton;
    private Button lockBranchButton;
+   private Button abandonMergeButton;
    private XWorkingBranchEnablement enablement;
    public static String NAME = "Working Branch";
    public static String WIDGET_NAME = "XWorkingBranch";
@@ -144,6 +146,20 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
       }
    }
 
+   private boolean mergeInProgress() {
+      if (BranchManager.hasMergeBranches(teamArt.getWorkingBranch())) {
+         return true;
+      } else {
+         return false;
+      }
+   }
+
+   public void resetAbandon() {
+      abandonMergeButton.setText("");
+      abandonMergeButton.getParent().layout();
+      enablement.refresh();
+   }
+
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       if (horizontalSpan < 2) {
@@ -161,7 +177,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
       }
 
       buttonComp = new Composite(mainComp, SWT.NONE);
-      buttonComp.setLayout(new GridLayout(6, false));
+      buttonComp.setLayout(new GridLayout(7, false));
       buttonComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       if (toolkit != null) {
          toolkit.adapt(buttonComp);
@@ -276,6 +292,38 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
          }
       });
 
+      abandonMergeButton = createNewButton(buttonComp);
+      abandonMergeButton.setToolTipText("Delete Merge Branch(es)");
+      abandonMergeButton.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event e) {
+            try {
+               enablement.disableAll();
+
+               refreshEnablement();
+               abandonMergeButton.setText("Delete Merge Branch(es)...");
+               abandonMergeButton.getParent().layout();
+
+               boolean hasMergeBranch = BranchManager.hasMergeBranches(teamArt.getWorkingBranch());
+               if (hasMergeBranch) {
+                  List<MergeBranch> br = BranchManager.getMergeBranches(teamArt.getWorkingBranch());
+                  if (br.size() > 1) {
+                     AWorkbench.popup(
+                        "The Working Branch: " + teamArt.getWorkingBranch() + " has more than 1 merge branch. Manually open the merge manager to cancel merge");
+                  } else {
+                     BranchManager.deleteBranch(br.get(0));
+                     AWorkbench.popup("Merge Branch(es) Deleted");
+                  }
+                  resetAbandon();
+               }
+
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+               resetAbandon();
+            }
+         }
+      });
+
       deleteBranchButton = createNewButton(buttonComp);
       deleteBranchButton.setToolTipText("Delete Working Branch");
       deleteBranchButton.addListener(SWT.Selection, new Listener() {
@@ -319,6 +367,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
 
       createBranchButton.setImage(ImageManager.getImage(FrameworkImage.BRANCH));
       deleteBranchButton.setImage(ImageManager.getImage(FrameworkImage.TRASH));
+      abandonMergeButton.setImage(ImageManager.getImage(FrameworkImage.DELETE_MERGE_BRANCHES));
       favoriteBranchButton.setImage(ImageManager.getImage(AtsImage.FAVORITE));
       showArtifactExplorer.setImage(ImageManager.getImage(FrameworkImage.ARTIFACT_EXPLORER));
       showChangeReport.setImage(ImageManager.getImage(FrameworkImage.BRANCH_CHANGE));
@@ -451,6 +500,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
    public void refreshEnablement() {
       createBranchButton.setEnabled(enablement.isCreateBranchButtonEnabled());
       showArtifactExplorer.setEnabled(enablement.isShowArtifactExplorerButtonEnabled());
+      abandonMergeButton.setEnabled(mergeInProgress());
       showChangeReport.setEnabled(enablement.isShowChangeReportButtonEnabled());
       if (Strings.isValid(deleteBranchButton.getText())) {
          deleteBranchButton.setText("");

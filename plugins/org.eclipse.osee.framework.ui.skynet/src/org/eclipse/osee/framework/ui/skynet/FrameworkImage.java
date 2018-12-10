@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  * @author Ryan D. Brooks
  */
 public enum FrameworkImage implements KeyedImage {
+   DELETE_MERGE_BRANCHES("abort_merge.gif"),
    ACCEPT("accept.gif"),
    ADD_GREEN("add.png"),
    ARCHIVE("archive.gif"),
