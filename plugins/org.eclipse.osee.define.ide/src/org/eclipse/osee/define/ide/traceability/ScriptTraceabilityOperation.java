@@ -306,6 +306,9 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
          String inspection = getInspectionQual(reqArtifact);
          if (Strings.isValid(inspection)) {
             requirementToCodeUnitsMap.put(reqArtifact, inspection);
+            if (reqArtifact.getAttributeValues(CoreAttributeTypes.QualificationMethod).contains("Test")) {
+               requirementToCodeUnitsMap.put(reqArtifact, path);
+            }
          } else {
             requirementToCodeUnitsMap.put(reqArtifact, path);
          }
