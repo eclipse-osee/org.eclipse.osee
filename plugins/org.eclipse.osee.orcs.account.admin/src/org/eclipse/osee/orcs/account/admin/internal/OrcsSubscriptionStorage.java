@@ -152,13 +152,13 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
    public ResultSet<Account> getMembersOfSubscriptionGroupById(SubscriptionGroupId subscriptionId) {
       ResultSet<ArtifactReadable> results =
          newQuery().andTypeEquals(CoreArtifactTypes.SubscriptionGroup).andUuid(subscriptionId.getId()).getResults();
-      ArtifactReadable group = results.getOneOrNull();
+      ArtifactReadable group = results.getOneOrDefault(ArtifactReadable.SENTINEL);
       return getMembers(group);
    }
 
    private ResultSet<Account> getMembers(ArtifactReadable group) {
       ResultSet<Account> toReturn;
-      if (group != null) {
+      if (group.isValid()) {
          toReturn = getFactory().newAccountResultSet(group.getRelated(CoreRelationTypes.Users_User));
       } else {
          toReturn = ResultSets.emptyResultSet();

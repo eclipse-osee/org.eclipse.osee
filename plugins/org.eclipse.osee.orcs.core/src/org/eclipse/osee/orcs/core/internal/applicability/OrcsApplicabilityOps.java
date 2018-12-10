@@ -63,7 +63,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    @Override
    public ApplicabilityBranchConfig getConfig(BranchId branchId, boolean showAll) {
       ApplicabilityBranchConfig config = new ApplicabilityBranchConfig();
-      Branch branch = orcsApi.getQueryFactory().branchQuery().andId(branchId).getResults().getAtMostOneOrNull();
+      Branch branch = orcsApi.getQueryFactory().branchQuery().andId(branchId).getResults().getExactlyOne();
       config.setBranch(branch);
 
       // Load all variants (stored as branch views)

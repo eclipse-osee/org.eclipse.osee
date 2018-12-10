@@ -305,8 +305,9 @@ public class AgileService implements IAgileService {
    @Override
    public IAgileTeam getAgileTeamByName(String agileTeamName) {
       IAgileTeam aTeam = null;
-      ArtifactId aTeamArt = atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.AgileTeam, agileTeamName);
-      if (aTeamArt != null) {
+      ArtifactId aTeamArt =
+         atsApi.getQueryService().getArtifactByNameOrSentinel(AtsArtifactTypes.AgileTeam, agileTeamName);
+      if (aTeamArt.isValid()) {
          aTeam = atsApi.getAgileService().getAgileTeam(aTeamArt);
       }
       return aTeam;

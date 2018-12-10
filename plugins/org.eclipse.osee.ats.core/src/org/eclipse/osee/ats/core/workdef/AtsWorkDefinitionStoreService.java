@@ -58,8 +58,9 @@ public class AtsWorkDefinitionStoreService implements IAtsWorkDefinitionStringPr
     * @return WorkDefData or null if not found
     */
    private WorkDefData loadWorkDefinitionFromArtifact(String name) {
-      ArtifactToken artifact = atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.WorkDefinition, name);
-      if (artifact != null) {
+      ArtifactToken artifact =
+         atsApi.getQueryService().getArtifactByNameOrSentinel(AtsArtifactTypes.WorkDefinition, name);
+      if (artifact.isValid()) {
          return new WorkDefData(artifact.getId(), artifact.getName(), loadWorkDefinitionFromArtifact(artifact),
             artifact);
       }

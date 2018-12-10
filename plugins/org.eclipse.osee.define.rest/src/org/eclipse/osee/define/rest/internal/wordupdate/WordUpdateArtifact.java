@@ -75,7 +75,7 @@ public class WordUpdateArtifact {
          Document document = extractJaxpDocument(data);
          if (data.isThreeWayMerge()) {
             String guid = orcsApi.getQueryFactory().fromBranch(data.getBranch()).andUuid(
-               data.getArtifacts().iterator().next()).getResults().getAtMostOneOrNull().getGuid();
+               data.getArtifacts().iterator().next()).getResults().getExactlyOne().getGuid();
             elementExtractor = new MergeEditArtifactElementExtractor(guid, document);
          } else {
             elementExtractor = new WordImageArtifactElementExtractor(document);

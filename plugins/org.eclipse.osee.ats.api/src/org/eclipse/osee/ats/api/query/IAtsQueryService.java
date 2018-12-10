@@ -141,6 +141,8 @@ public interface IAtsQueryService {
 
    ArtifactToken getArtifactByName(ArtifactTypeId artifactType, String name);
 
+   ArtifactToken getArtifactByNameOrSentinel(ArtifactTypeId artifactType, String name);
+
    ArtifactToken getArtifact(ArtifactId artifact, BranchId branch, DeletionFlag deletionFlag);
 
    ArtifactToken getHistoricalArtifactOrNull(ArtifactId artifact, TransactionToken transaction, DeletionFlag deletionFlag);
@@ -149,6 +151,8 @@ public interface IAtsQueryService {
     * This method should be used sparingly. Use long ids instead.
     */
    ArtifactToken getArtifactByGuid(String guid);
+
+   ArtifactToken getArtifactByGuidOrSentinel(String guid);
 
    /**
     * Search using comma deliminated long ids and/or ATS Ids

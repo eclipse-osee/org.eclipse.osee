@@ -799,7 +799,9 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    private void setWorkDefinitionAttrs(IAtsObject atsObject, ArtifactToken workDefArt, IAtsChangeSet changes) {
+      //Can be null or SENTINEL at this point.
       Conditions.assertNotNull(workDefArt, "workDefArt");
+      Conditions.assertNotSentinel(workDefArt, "workDefArt");
       changes.setSoleAttributeValue(atsObject, ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition,
          workDefArt.getName());
       changes.setSoleAttributeValue(atsObject, AtsAttributeTypes.WorkflowDefinitionReference, workDefArt);

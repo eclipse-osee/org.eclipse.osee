@@ -188,7 +188,8 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public List<ChangeItem> getChangeData(TransactionToken transaction) {
       TransactionQuery transQuery = orcsApi.getQueryFactory().transactionQuery();
-      TransactionReadable startTx = transQuery.andIsPriorTx(transaction).getResults().getAtMostOneOrNull();
+      TransactionReadable startTx =
+         transQuery.andIsPriorTx(transaction).getResults().getAtMostOneOrDefault(TransactionReadable.SENTINEL);
       List<ChangeItem> results = orcsApi.getTransactionFactory().compareTxs(startTx, transaction);
       return results;
    }

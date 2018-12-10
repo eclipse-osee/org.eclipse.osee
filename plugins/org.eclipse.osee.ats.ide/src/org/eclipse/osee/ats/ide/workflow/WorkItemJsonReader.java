@@ -44,7 +44,7 @@ public class WorkItemJsonReader implements MessageBodyReader<IAtsWorkItem> {
          List<Long> workItems = WorkItemsJsonReader.getWorkItemIdsFromJson(jsonStr);
 
          return AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andIds(
-            workItems.iterator().next()).getResults().getAtMostOneOrNull();
+            workItems.iterator().next()).getResults().getExactlyOne();
       } catch (Exception ex) {
          throw new IOException("Error deserializing a TraxRpcr Item.", ex);
       }

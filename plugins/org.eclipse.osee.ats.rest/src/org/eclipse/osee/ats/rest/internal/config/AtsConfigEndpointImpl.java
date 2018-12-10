@@ -235,9 +235,9 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          atsApi.getQueryService().getArtifact((IAtsObject) AtsCoreUsers.SYSTEM_USER),
          "Store Work Definition " + jaxWorkDef.getName());
       ArtifactReadable workDefArt =
-         (ArtifactReadable) atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.WorkDefinition,
+         (ArtifactReadable) atsApi.getQueryService().getArtifactByNameOrSentinel(AtsArtifactTypes.WorkDefinition,
             jaxWorkDef.getName());
-      if (workDefArt == null) {
+      if (workDefArt.isInvalid()) {
          workDefArt = (ArtifactReadable) tx.createArtifact(AtsArtifactTypes.WorkDefinition, jaxWorkDef.getName());
       }
       tx.setSoleAttributeValue(workDefArt, AtsAttributeTypes.DslSheet, jaxWorkDef.getWorkDefDsl());

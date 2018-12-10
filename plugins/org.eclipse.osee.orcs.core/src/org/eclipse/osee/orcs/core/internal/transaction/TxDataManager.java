@@ -303,7 +303,7 @@ public class TxDataManager {
       checkChangesAllowed(txData);
       Artifact src = getSourceArtifact(txData, fromBranch, source);
       Artifact dest = null;
-      if (destination == null) {
+      if ((destination == null) || destination.isInvalid()) {
          dest = artifactFactory.createArtifact(txData.getSession(), txData.getBranch(), src.getArtifactTypeId(),
             src.getGuid());
          dest.setGraph(loader.createGraph(txData.getSession(), txData.getBranch()));

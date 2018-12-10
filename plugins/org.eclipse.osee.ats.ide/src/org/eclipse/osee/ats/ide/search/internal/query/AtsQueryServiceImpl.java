@@ -54,6 +54,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
@@ -352,6 +353,16 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
+   public ArtifactToken getArtifactByNameOrSentinel(ArtifactTypeId artType, String name) {
+
+      if (ArtifactQuery.checkArtifactFromTypeAndName(artType, name, atsClient.getAtsBranch()) != null) {
+         return ArtifactQuery.checkArtifactFromTypeAndName(artType, name, atsClient.getAtsBranch());
+      }
+      return ArtifactReadable.SENTINEL;
+
+   }
+
+   @Override
    public ArtifactToken getHistoricalArtifactOrNull(ArtifactId artifact, TransactionToken transaction, DeletionFlag deletionFlag) {
       return ArtifactQuery.getHistoricalArtifactOrNull(artifact, transaction, deletionFlag);
    }
@@ -359,6 +370,14 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    @Override
    public ArtifactToken getArtifactByGuid(String guid) {
       return ArtifactQuery.getArtifactFromId(guid, atsClient.getAtsBranch());
+   }
+
+   @Override
+   public ArtifactToken getArtifactByGuidOrSentinel(String guid) {
+      if (ArtifactQuery.getArtifactFromId(guid, atsClient.getAtsBranch()) != null) {
+         return ArtifactQuery.getArtifactFromId(guid, atsClient.getAtsBranch());
+      }
+      return ArtifactReadable.SENTINEL;
    }
 
    @Override

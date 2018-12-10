@@ -304,7 +304,7 @@ public class OrcsTxQueryTest {
    public void testGetDateOperator() throws Exception {
       TransactionQuery query = factory.transactionQuery();
       query.andTxId(tx65);
-      Timestamp date = new Timestamp(query.getResults().getAtMostOneOrNull().getDate().getTime());
+      Timestamp date = new Timestamp(query.getResults().getExactlyOne().getDate().getTime());
 
       query = factory.transactionQuery();
       query.andDate(Operator.GREATER_THAN, date);
@@ -322,11 +322,11 @@ public class OrcsTxQueryTest {
    public void testGetDateRange() throws Exception {
       TransactionQuery query = factory.transactionQuery();
       query.andTxId(TransactionId.valueOf(1));
-      Timestamp date1 = new Timestamp(query.getResults().getAtMostOneOrNull().getDate().getTime());
+      Timestamp date1 = new Timestamp(query.getResults().getExactlyOne().getDate().getTime());
 
       query = factory.transactionQuery();
       query.andTxId(tx65);
-      Timestamp date2 = new Timestamp(query.getResults().getAtMostOneOrNull().getDate().getTime());
+      Timestamp date2 = new Timestamp(query.getResults().getExactlyOne().getDate().getTime());
 
       query = factory.transactionQuery();
       query.andDate(date1, date2);

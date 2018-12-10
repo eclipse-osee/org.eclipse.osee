@@ -92,7 +92,7 @@ public class AtsTaskEndpointImplTest {
       Assert.assertEquals(1, tasks.getTasks().size());
 
       IAtsTask task = (IAtsTask) client.getQueryService().createQuery(WorkItemType.Task).andIds(
-         newTask.getId()).getResults().getAtMostOneOrNull();
+         newTask.getId()).getResults().getExactlyOne();
       Collection<IAtsWorkItem> workItems = client.getRelationResolver().getRelated(task,
          CoreRelationTypes.SupportingInfo_SupportedBy, IAtsWorkItem.class);
       Assert.assertEquals(1, workItems.size());
@@ -119,7 +119,7 @@ public class AtsTaskEndpointImplTest {
       Assert.assertEquals(1, tasks.getTasks().size());
 
       task = (IAtsTask) client.getQueryService().createQuery(WorkItemType.Task).andIds(
-         newTask.getId()).getResults().getAtMostOneOrNull();
+         newTask.getId()).getResults().getExactlyOne();
       workItems = client.getRelationResolver().getRelated(task, CoreRelationTypes.SupportingInfo_SupportingInfo,
          IAtsWorkItem.class);
       Assert.assertEquals(1, workItems.size());

@@ -122,7 +122,7 @@ public class AtsProgramServiceTest {
    public void testGetWorkPackage() {
       IAtsWorkPackage workPackage =
          (IAtsWorkPackage) AtsClientService.get().getQueryService().createQuery(AtsArtifactTypes.WorkPackage).andAttr(
-            CoreAttributeTypes.Name, "Work Pkg 0B").getConfigObjectResultSet().getAtMostOneOrNull();
+            CoreAttributeTypes.Name, "Work Pkg 0B").getConfigObjectResultSet().getExactlyOne();
 
       assertEquals("COMM Page", programService.getInsertionActivity(workPackage).getName());
    }

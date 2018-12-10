@@ -66,7 +66,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    }
 
    private ArtifactReadable getArtifact(ArtifactId artifactId) {
-      return getQuery().andId(artifactId).getResults().getAtMostOneOrNull();
+      return getQuery().andId(artifactId).getResults().getExactlyOne();
    }
 
    private ArtifactReadable getArtifactOrSentinel(ArtifactId artifactId) {

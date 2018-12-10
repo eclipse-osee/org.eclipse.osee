@@ -185,7 +185,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    public ArtifactToken introduceArtifact(BranchId fromBranch, ArtifactId sourceArtifact) {
       checkAreOnDifferentBranches(txData, fromBranch);
       ArtifactReadable source = getArtifactReadable(txData.getSession(), queryFactory, fromBranch, sourceArtifact);
-      Conditions.checkNotNull(source, "Source Artifact");
+      Conditions.assertNotSentinel(source, "Source Artifact");
       ArtifactReadable destination =
          getArtifactReadable(txData.getSession(), queryFactory, txData.getBranch(), sourceArtifact);
       return txManager.introduceArtifact(txData, fromBranch, source, destination);
@@ -393,7 +393,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    protected ArtifactReadable getArtifactReadable(OrcsSession session, QueryFactory queryFactory, BranchId branch, ArtifactId id) {
-      return queryFactory.fromBranch(branch).includeDeletedArtifacts().andId(id).getResults().getOneOrNull();
+      return queryFactory.fromBranch(branch).includeDeletedArtifacts().andId(id).getResults().getOneOrDefault(
+         ArtifactReadable.SENTINEL);
    }
 
    @Override

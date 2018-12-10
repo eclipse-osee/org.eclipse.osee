@@ -51,8 +51,8 @@ public class ConvertAtsConfigGuidAttributesOperations {
       List<ArtifactId> neededAiRefIds = new LinkedList<>();
       for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(art, ActionableItem)) {
          String aiArtGuid = (String) attr.getValue();
-         ArtifactToken ai = atsApi.getQueryService().getArtifactByGuid(aiArtGuid);
-         if (ai == null) {
+         ArtifactToken ai = atsApi.getQueryService().getArtifactByGuidOrSentinel(aiArtGuid);
+         if (ai.isInvalid()) {
             atsApi.getLogger().error("AI not found for aiArtGuid " + aiArtGuid + " for art " + art.toStringWithId());
          } else if (!currentAiRefIds.contains(ai.getId())) {
             neededAiRefIds.add(ai);
@@ -94,7 +94,7 @@ public class ConvertAtsConfigGuidAttributesOperations {
       if (teamDefId.isInvalid()) {
          String teamDefGuid = atsApi.getAttributeResolver().getSoleAttributeValue(art, TeamDefinition, "");
          if (Strings.isValid(teamDefGuid)) {
-            ArtifactToken artifact = atsApi.getQueryService().getArtifactByGuid(teamDefGuid);
+            ArtifactToken artifact = atsApi.getQueryService().getArtifactByGuidOrSentinel(teamDefGuid);
             IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(artifact);
             changes.setSoleAttributeValue(art, AtsAttributeTypes.TeamDefinitionReference, teamDef.getStoreObject());
          }
