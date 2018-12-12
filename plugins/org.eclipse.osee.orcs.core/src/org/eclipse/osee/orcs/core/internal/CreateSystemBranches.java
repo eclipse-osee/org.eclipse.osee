@@ -15,16 +15,13 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
-import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.OseeInf;
@@ -83,7 +80,7 @@ public class CreateSystemBranches {
       tx.createArtifact(CoreArtifactTokens.OseeAdmin);
       tx.createArtifact(CoreArtifactTokens.OseeAccessAdmin);
 
-      createUsers(tx, SystemUser.values(), query);
+      orcsApi.getAdminOps().createUsers(tx, SystemUser.values(), query);
 
       ArtifactId globalPreferences = tx.createArtifact(CoreArtifactTokens.GlobalPreferences);
       tx.setSoleAttributeValue(globalPreferences, CoreAttributeTypes.GeneralStringData, JSON_ATTR_VALUE);
@@ -115,27 +112,6 @@ public class CreateSystemBranches {
          tx.setSoleAttributeFromStream(accessModel, CoreAttributeTypes.GeneralStringData, stream);
       } catch (IOException ex) {
          throw OseeCoreException.wrap(ex);
-      }
-   }
-
-   public static void createUsers(TransactionBuilder tx, Iterable<UserToken> users, QueryBuilder query) {
-      List<? extends ArtifactId> defaultGroups =
-         query.and(CoreAttributeTypes.DefaultGroup, "true").getResultsIds().getList();
-
-      for (UserToken userToken : users) {
-         ArtifactId user = tx.createArtifact(userToken);
-         tx.setSoleAttributeValue(user, CoreAttributeTypes.Active, userToken.isActive());
-         tx.setSoleAttributeValue(user, CoreAttributeTypes.UserId, userToken.getUserId());
-         tx.setSoleAttributeValue(user, CoreAttributeTypes.Email, userToken.getEmail());
-
-         if (userToken.isAdmin()) {
-            tx.relate(CoreArtifactTokens.OseeAdmin, CoreRelationTypes.Users_User, user);
-            tx.relate(CoreArtifactTokens.OseeAccessAdmin, CoreRelationTypes.Users_User, user);
-         }
-
-         for (ArtifactId userGroup : defaultGroups) {
-            tx.relate(userGroup, CoreRelationTypes.Users_User, user);
-         }
       }
    }
 

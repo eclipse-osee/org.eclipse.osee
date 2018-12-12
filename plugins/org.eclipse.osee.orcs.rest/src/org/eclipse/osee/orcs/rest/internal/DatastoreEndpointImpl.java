@@ -10,18 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
 import java.net.URI;
+import java.util.List;
 import java.util.concurrent.Callable;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsMetaData;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreInfo;
+import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
+import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -31,10 +40,14 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    private UriInfo uriInfo;
    private final ActivityLog activityLog;
    private final OrcsAdmin adminOps;
+   private final TransactionFactory txFactory;
+   private final QueryBuilder query;
 
    public DatastoreEndpointImpl(OrcsApi orcsApi, ActivityLog activityLog) {
       this.activityLog = activityLog;
       this.adminOps = orcsApi.getAdminOps();
+      this.txFactory = orcsApi.getTransactionFactory();
+      query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
    }
 
    protected void setUriInfo(UriInfo uriInfo) {
@@ -79,5 +92,12 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    @Override
    public void createDemoBranches() {
       adminOps.createDemoBranches();
+   }
+
+   @Override
+   public TransactionId createUsers(List<UserToken> users, UserId account) {
+      TransactionBuilder tx = txFactory.createTransaction(COMMON, account, "DatastoreEndpointImpl.createUsers()");
+      adminOps.createUsers(tx, users, query);
+      return tx.commit();
    }
 }
