@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.DefaultHierarchyRoot;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -19,10 +21,12 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.enums.Requirements;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -39,6 +43,7 @@ import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TransactionQuery;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Roberto E. Escobar
@@ -227,5 +232,29 @@ public class OrcsBranchImpl implements OrcsBranch {
    @Override
    public void addMissingApplicabilityFromParentBranch(BranchId branch) {
       branchStore.addMissingApplicabilityFromParentBranch(branch);
+   }
+
+   @Override
+   public IOseeBranch createProgramBranch(IOseeBranch branch, UserId account) {
+      IOseeBranch newBranch = createTopLevelBranch(branch, account);
+      setBranchPermission(account, branch, PermissionEnum.FULLACCESS);
+
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory().createTransaction(branch, account, "Create Program Hierarchy");
+
+      for (String name : new String[] {
+         Requirements.SYSTEM_REQUIREMENTS,
+         Requirements.SUBSYSTEM_REQUIREMENTS,
+         Requirements.SOFTWARE_REQUIREMENTS,
+         Requirements.HARDWARE_REQUIREMENTS,
+         "Verification Tests",
+         "Validation Tests",
+         "Integration Tests",
+         "Applicability Tests"}) {
+         tx.createArtifact(DefaultHierarchyRoot, Folder, name);
+      }
+
+      tx.commit();
+      return newBranch;
    }
 }

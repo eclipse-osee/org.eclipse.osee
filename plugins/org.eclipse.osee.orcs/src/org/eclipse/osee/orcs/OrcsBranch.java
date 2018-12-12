@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -94,5 +95,7 @@ public interface OrcsBranch {
    Callable<URI> checkBranchExchangeIntegrity(URI fileToCheck);
 
    void addMissingApplicabilityFromParentBranch(BranchId branch);
+
+   IOseeBranch createProgramBranch(IOseeBranch branch, UserId account);
 
 }

@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -81,6 +82,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    private final OrcsApi orcsApi;
    private final IResourceManager resourceManager;
    private final ActivityLog activityLog;
+   private final OrcsBranch branchOps;
 
    @Context
    private UriInfo uriInfo;
@@ -92,6 +94,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       this.orcsApi = orcsApi;
       this.resourceManager = resourceManager;
       this.activityLog = activityLog;
+      this.branchOps = orcsApi.getBranchOps();
    }
 
    public HttpHeaders getHeaders() {
@@ -120,10 +123,6 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    private TransactionQuery newTxQuery() {
       return newQuery().transactionQuery();
-   }
-
-   private OrcsBranch getBranchOps() {
-      return orcsApi.getBranchOps();
    }
 
    private TransactionReadable getTxByBranchAndId(BranchId branch, TransactionId txId) {
@@ -218,7 +217,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    public CompareResults compareBranches(BranchId branch, BranchId branch2) {
       TransactionToken sourceTx = newTxQuery().andIsHead(branch).getResults().getExactlyOne();
       TransactionToken destinationTx = newTxQuery().andIsHead(branch2).getResults().getExactlyOne();
-      List<ChangeItem> changes = getBranchOps().compareBranch(sourceTx, destinationTx);
+      List<ChangeItem> changes = branchOps.compareBranch(sourceTx, destinationTx);
 
       CompareResults data = new CompareResults();
       data.setChanges(changes);
@@ -263,7 +262,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
       createData.setTxCopyBranchType(data.isTxCopyBranchType());
 
-      Branch result = getBranchOps().createBranch(createData);
+      Branch result = branchOps.createBranch(createData);
 
       try {
          activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
@@ -281,11 +280,11 @@ public class BranchEndpointImpl implements BranchEndpoint {
       Branch srcBranch = getBranchById(branch);
       Branch destBranch = getBranchById(destinationBranch);
 
-      Callable<TransactionToken> op = getBranchOps().commitBranch(options.getCommitter(), srcBranch, destBranch);
+      Callable<TransactionToken> op = branchOps.commitBranch(options.getCommitter(), srcBranch, destBranch);
       TransactionToken tx = executeCallable(op);
 
       if (options.isArchive()) {
-         Callable<?> op2 = getBranchOps().archiveUnarchiveBranch(srcBranch, ArchiveOperation.ARCHIVE);
+         Callable<?> op2 = branchOps.archiveUnarchiveBranch(srcBranch, ArchiveOperation.ARCHIVE);
          executeCallable(op2);
       }
 
@@ -305,7 +304,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
       boolean modified = false;
       if (!branch.isArchived()) {
-         Callable<?> op = getBranchOps().archiveUnarchiveBranch(branch, ArchiveOperation.ARCHIVE);
+         Callable<?> op = branchOps.archiveUnarchiveBranch(branch, ArchiveOperation.ARCHIVE);
          executeCallable(op);
          modified = true;
          try {
@@ -340,7 +339,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    public Response validateExchange(String path) {
       String exchangePath = asExchangeLocator(path);
       IResourceLocator locator = resourceManager.getResourceLocator(exchangePath);
-      Callable<URI> op = getBranchOps().checkBranchExchangeIntegrity(locator.getLocation());
+      Callable<URI> op = branchOps.checkBranchExchangeIntegrity(locator.getLocation());
       URI verifyUri = executeCallable(op);
 
       UriInfo uriInfo = getUriInfo();
@@ -387,7 +386,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       addOption(exportOptions, ExportOptions.MAX_TXS, options.getMaxTx());
       addOption(exportOptions, ExportOptions.COMPRESS, options.isCompress());
 
-      Callable<URI> op = getBranchOps().exportBranch(branches, exportOptions, options.getFileName());
+      Callable<URI> op = branchOps.exportBranch(branches, exportOptions, options.getFileName());
       URI exportURI = executeCallable(op);
 
       UriInfo uriInfo = getUriInfo();
@@ -422,7 +421,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       addOption(importOptions, ImportOptions.ALL_AS_ROOT_BRANCHES, options.isAllAsRootBranches());
       addOption(importOptions, ImportOptions.CLEAN_BEFORE_IMPORT, options.isCleanBeforeImport());
 
-      Callable<URI> op = getBranchOps().importBranch(locator.getLocation(), branches, importOptions);
+      Callable<URI> op = branchOps.importBranch(locator.getLocation(), branches, importOptions);
       URI importURI = executeCallable(op);
 
       Response response;
@@ -496,7 +495,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       Branch branch = getBranchById(branchId);
       boolean modified = false;
       if (isDifferent(branch.getName(), newName)) {
-         Callable<?> op = getBranchOps().changeBranchName(branch, newName);
+         Callable<?> op = branchOps.changeBranchName(branch, newName);
          executeCallable(op);
          modified = true;
          try {
@@ -522,7 +521,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          } catch (OseeCoreException ex) {
             OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
          }
-         Callable<?> op = getBranchOps().changeBranchType(branch, newType);
+         Callable<?> op = branchOps.changeBranchType(branch, newType);
          executeCallable(op);
          modified = true;
       }
@@ -534,7 +533,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       Branch branch = getBranchById(branchId);
       boolean modified = false;
       if (isDifferent(branch.getBranchState(), newState)) {
-         Callable<?> op = getBranchOps().changeBranchState(branch, newState);
+         Callable<?> op = branchOps.changeBranchState(branch, newState);
          executeCallable(op);
          modified = true;
 
@@ -551,7 +550,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public void setBranchPermission(ArtifactId subject, BranchId branch, PermissionEnum permission) {
-      orcsApi.getBranchOps().setBranchPermission(subject, branch, permission);
+      branchOps.setBranchPermission(subject, branch, permission);
    }
 
    @Override
@@ -566,7 +565,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          } catch (OseeCoreException ex) {
             OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
          }
-         Callable<?> op = getBranchOps().associateBranchToArtifact(branch, artifact);
+         Callable<?> op = branchOps.associateBranchToArtifact(branch, artifact);
          executeCallable(op);
          modified = true;
       }
@@ -597,7 +596,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       boolean modified = false;
       Branch branch = getBranchById(branchId);
       if (branch != null) {
-         Callable<?> op = getBranchOps().purgeBranch(branch, recurse);
+         Callable<?> op = branchOps.purgeBranch(branch, recurse);
          executeCallable(op);
          modified = true;
       }
@@ -617,7 +616,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
       boolean modified = false;
       if (branch.isArchived()) {
-         Callable<?> op = getBranchOps().archiveUnarchiveBranch(branch, ArchiveOperation.UNARCHIVE);
+         Callable<?> op = branchOps.archiveUnarchiveBranch(branch, ArchiveOperation.UNARCHIVE);
          executeCallable(op);
          modified = true;
          try {
@@ -640,7 +639,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       Branch branch = getBranchById(branchId);
       boolean modified = false;
       if (branch.getAssociatedArtifact().isValid()) {
-         Callable<?> op = getBranchOps().unassociateBranch(branch);
+         Callable<?> op = branchOps.unassociateBranch(branch);
          executeCallable(op);
          modified = true;
          try {
@@ -747,5 +746,10 @@ public class BranchEndpointImpl implements BranchEndpoint {
       }
 
       return Response.ok().build();
+   }
+
+   @Override
+   public IOseeBranch createProgramBranch(UserId account, String branchName) {
+      return branchOps.createProgramBranch(IOseeBranch.create(branchName), account);
    }
 }

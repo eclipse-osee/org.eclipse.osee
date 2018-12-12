@@ -33,8 +33,6 @@ import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoSubsystems;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
-import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.enums.Requirements;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
@@ -137,7 +135,7 @@ public class CreateDemoBranches {
    }
 
    /**
-    * Can be removed after 26.0 release which converted feature definitions from a single json string
+    * TODO: Remove after 26.0 release which converted feature definitions from a single json string
     */
    private void createLegacyFeatureConfig(ArtifactId folder, TransactionBuilder tx) {
 
@@ -173,11 +171,10 @@ public class CreateDemoBranches {
       tx.createAttribute(featureDefinition, CoreAttributeTypes.GeneralStringData, featureDefJson);
    }
 
-   public void createDemoProgramBranch(IOseeBranch branch, UserId account) {
-      branchOps.createTopLevelBranch(branch, account);
-      branchOps.setBranchPermission(DemoUsers.Joe_Smith, branch, PermissionEnum.FULLACCESS);
+   private void createDemoProgramBranch(IOseeBranch branch, UserId account) {
+      branchOps.createProgramBranch(branch, account);
 
-      TransactionBuilder tx = txFactory.createTransaction(branch, account, "Create Demo Program data");
+      TransactionBuilder tx = txFactory.createTransaction(branch, account, "Create SAW Product Decomposition");
 
       ArtifactId sawProduct =
          tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTypes.Component, "SAW Product Decomposition");
@@ -185,19 +182,6 @@ public class CreateDemoBranches {
       for (String subsystem : DemoSubsystems.getSubsystems()) {
          tx.createArtifact(sawProduct, CoreArtifactTypes.Component, subsystem);
       }
-
-      for (String name : new String[] {
-         Requirements.SYSTEM_REQUIREMENTS,
-         Requirements.SUBSYSTEM_REQUIREMENTS,
-         Requirements.SOFTWARE_REQUIREMENTS,
-         Requirements.HARDWARE_REQUIREMENTS,
-         "Verification Tests",
-         "Validation Tests",
-         "Integration Tests",
-         "Applicability Tests"}) {
-         tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTypes.Folder, name);
-      }
-
       tx.commit();
    }
 }
