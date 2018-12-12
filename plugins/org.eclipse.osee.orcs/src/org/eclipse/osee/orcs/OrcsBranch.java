@@ -49,15 +49,15 @@ public interface OrcsBranch {
 
    IOseeBranch createTopLevelBranch(IOseeBranch branch, ArtifactId account);
 
-   Callable<Branch> createBaselineBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact);
+   Branch createBaselineBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact);
 
-   Callable<Branch> createWorkingBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact);
+   Branch createWorkingBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact);
 
-   Callable<Branch> createCopyTxBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact);
+   Branch createCopyTxBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact);
 
-   Callable<Branch> createPortBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact);
+   Branch createPortBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact);
 
-   Callable<Branch> createBranch(CreateBranchData branchData);
+   Branch createBranch(CreateBranchData branchData);
 
    /////////////////////////////////////////////////////////////////////////
 

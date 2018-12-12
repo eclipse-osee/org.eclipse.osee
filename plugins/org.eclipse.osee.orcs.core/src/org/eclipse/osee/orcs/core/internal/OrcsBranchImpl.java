@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
@@ -35,11 +34,11 @@ import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.internal.branch.BranchDataFactory;
 import org.eclipse.osee.orcs.core.internal.branch.CommitBranchCallable;
-import org.eclipse.osee.orcs.core.internal.branch.CreateBranchCallable;
 import org.eclipse.osee.orcs.core.internal.branch.PurgeBranchCallable;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.search.TransactionQuery;
 
 /**
  * @author Roberto E. Escobar
@@ -64,8 +63,29 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<Branch> createBranch(CreateBranchData branchData) {
-      return new CreateBranchCallable(logger, session, branchStore, branchData, queryFactory);
+   public Branch createBranch(CreateBranchData branchData) {
+      Conditions.checkNotNull(branchData, "branchData");
+
+      Conditions.checkNotNull(branchData.getBranch(), "branchUuid");
+      Conditions.checkNotNull(branchData.getName(), "branchName");
+      Conditions.checkNotNull(branchData.getBranchType(), "branchType");
+
+      TransactionId txData = branchData.getFromTransaction();
+      Conditions.checkNotNull(txData, "sourceTransaction");
+
+      if (branchData.isTxCopyBranchType()) {
+         TransactionQuery txQuery = queryFactory.transactionQuery();
+         TransactionToken givenTx = branchData.getFromTransaction();
+         Conditions.checkNotNull(givenTx, "Transaction used for copy");
+         branchData.setSavedTransaction(givenTx);
+         TransactionToken priorTx = txQuery.andIsPriorTx(givenTx).getResults().getExactlyOne();
+         branchData.setFromTransaction(priorTx);
+         branchStore.createBranchCopyTx(branchData);
+      } else {
+         branchStore.createBranch(branchData);
+      }
+
+      return queryFactory.branchQuery().andId(branchData.getBranch()).getResults().getExactlyOne();
    }
 
    @Override
@@ -91,11 +111,7 @@ public class OrcsBranchImpl implements OrcsBranch {
 
       createData.setTxCopyBranchType(false);
 
-      try {
-         return createBranch(createData).call();
-      } catch (Exception ex) {
-         throw OseeCoreException.wrap(ex);
-      }
+      return createBranch(createData);
    }
 
    @Override
@@ -179,28 +195,30 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<Branch> createBaselineBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact) {
+   public Branch createBaselineBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact) {
       CreateBranchData branchData =
          branchDataFactory.createBaselineBranchData(branch, author, parent, associatedArtifact);
-      return createBranch(branchData);
+      Branch newBranch = createBranch(branchData);
+      setBranchPermission(author, newBranch, PermissionEnum.FULLACCESS);
+      return newBranch;
    }
 
    @Override
-   public Callable<Branch> createWorkingBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact) {
+   public Branch createWorkingBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact) {
       CreateBranchData branchData =
          branchDataFactory.createWorkingBranchData(branch, author, parent, associatedArtifact);
       return createBranch(branchData);
    }
 
    @Override
-   public Callable<Branch> createCopyTxBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact) {
+   public Branch createCopyTxBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact) {
       CreateBranchData branchData =
          branchDataFactory.createCopyTxBranchData(branch, author, fromTransaction, associatedArtifact);
       return createBranch(branchData);
    }
 
    @Override
-   public Callable<Branch> createPortBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact) {
+   public Branch createPortBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact) {
       CreateBranchData branchData =
          branchDataFactory.createPortBranchData(branch, author, fromTransaction, associatedArtifact);
       return createBranch(branchData);

@@ -211,11 +211,7 @@ public class OrcsStorageImpl implements Storage {
       String normalizedName = "(DISPO)" + name;
       IOseeBranch branch = IOseeBranch.create(normalizedName);
 
-      try {
-         getBranchFactory().createWorkingBranch(branch, author, dispoParent, ArtifactId.SENTINEL).call();
-      } catch (Exception ex) {
-         throw OseeCoreException.wrap(ex);
-      }
+      getBranchFactory().createWorkingBranch(branch, author, dispoParent, ArtifactId.SENTINEL);
 
       return branch.getId();
    }

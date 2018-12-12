@@ -152,7 +152,7 @@ public class OrcsPortingTest {
       // set up the child branch to copy to
 
       IOseeBranch childBranch = IOseeBranch.create("childBranch");
-      branchApi.createWorkingBranch(childBranch, author, parentBranch, ArtifactId.SENTINEL).call();
+      branchApi.createWorkingBranch(childBranch, author, parentBranch, ArtifactId.SENTINEL);
 
       TransactionBuilder tx3 = txFactory.createTransaction(childBranch, author, "update second requirement");
       ArtifactReadable readableReq2 =
@@ -193,7 +193,7 @@ public class OrcsPortingTest {
 
       assertNotNull(readableReq);
       // the new branch will contain two transactions -
-      return branchApi.createPortBranch(branch, author, transactionToCopy, readableReq).call();
+      return branchApi.createPortBranch(branch, author, transactionToCopy, readableReq);
    }
 
    private TransactionToken commitToDestinationBranch(BranchId copyTxBranch) throws Exception {

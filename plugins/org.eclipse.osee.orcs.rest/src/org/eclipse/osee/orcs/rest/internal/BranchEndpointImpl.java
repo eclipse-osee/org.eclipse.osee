@@ -263,8 +263,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
       createData.setTxCopyBranchType(data.isTxCopyBranchType());
 
-      Callable<Branch> op = getBranchOps().createBranch(createData);
-      Branch result = executeCallable(op);
+      Branch result = getBranchOps().createBranch(createData);
 
       try {
          activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,

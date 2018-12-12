@@ -41,7 +41,7 @@ public class DispositionInitializer {
    public void initialize() throws Exception {
 
       orcsApi.getBranchOps().createWorkingBranch(SAW_Bld_1_FOR_DISPO, SystemUser.OseeSystem, SAW_Bld_1,
-         ArtifactId.SENTINEL).call();
+         ArtifactId.SENTINEL);
 
       // create Dispo Config Art
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,

@@ -16,6 +16,8 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.ProductLi
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.CIS_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_PL;
+import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
 import java.util.Arrays;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -33,8 +35,6 @@ import org.eclipse.osee.framework.core.enums.DemoSubsystems;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.Requirements;
-import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
@@ -53,12 +53,14 @@ public class CreateDemoBranches {
    private final TransactionFactory txFactory;
    private final QueryBuilder query;
    private final OrcsApplicability ops;
+   private final OrcsBranch branchOps;
 
    public CreateDemoBranches(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
       txFactory = orcsApi.getTransactionFactory();
       query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
       ops = orcsApi.getApplicabilityOps();
+      branchOps = orcsApi.getBranchOps();
    }
 
    public void populate() {
@@ -71,7 +73,9 @@ public class CreateDemoBranches {
 
       createDemoProgramBranch(CIS_Bld_1, account);
 
-      createProductLineBranch();
+      branchOps.createBaselineBranch(DemoBranches.SAW_PL, DemoUsers.Joe_Smith, SAW_Bld_1, OseeSystem);
+      branchOps.createBaselineBranch(DemoBranches.SAW_PL_Hardening_Branch, DemoUsers.Joe_Smith, SAW_PL, OseeSystem);
+
       createProductLineConfig(DemoBranches.SAW_PL, account);
    }
 
@@ -82,23 +86,9 @@ public class CreateDemoBranches {
       }
    }
 
-   public void createProductLineBranch() {
-      OrcsBranch branchOps = orcsApi.getBranchOps();
-      BranchId plBranch;
-      try {
-         plBranch = branchOps.createBaselineBranch(DemoBranches.SAW_PL, DemoUsers.Joe_Smith, DemoBranches.SAW_Bld_1,
-            SystemUser.OseeSystem).call();
-         branchOps.createBaselineBranch(DemoBranches.SAW_PL_Hardening_Branch, DemoUsers.Joe_Smith, DemoBranches.SAW_PL,
-            SystemUser.OseeSystem).call();
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
-      }
-      branchOps.setBranchPermission(DemoUsers.Joe_Smith, plBranch, PermissionEnum.FULLACCESS);
-   }
-
    private void createProductLineConfig(BranchId branch, UserId account) {
 
-      TransactionBuilder tx = txFactory.createTransaction(branch, SystemUser.OseeSystem, "Create Product Line folders");
+      TransactionBuilder tx = txFactory.createTransaction(branch, OseeSystem, "Create Product Line folders");
 
       ArtifactToken plFolder = Artifacts.getOrCreate(ProductLineFolder, DefaultHierarchyRoot, tx, orcsApi);
       Artifacts.getOrCreate(CoreArtifactTokens.ProductsFolder, plFolder, tx, orcsApi);
@@ -184,8 +174,6 @@ public class CreateDemoBranches {
    }
 
    public void createDemoProgramBranch(IOseeBranch branch, UserId account) {
-      OrcsBranch branchOps = orcsApi.getBranchOps();
-
       branchOps.createTopLevelBranch(branch, account);
       branchOps.setBranchPermission(DemoUsers.Joe_Smith, branch, PermissionEnum.FULLACCESS);
 

@@ -277,7 +277,7 @@ public class OrcsBranchQueryTest {
    }
 
    @Test
-   public void zTestGetWithMultipleConditions1() throws Exception {
+   public void zTestGetWithMultipleConditions1() {
       IOseeBranch child = IOseeBranch.create(testName.getMethodName());
 
       BranchId actual = createBranch(SAW_Bld_2, child);
@@ -291,8 +291,8 @@ public class OrcsBranchQueryTest {
 
    }
 
-   private IOseeBranch createBranch(IOseeBranch parent, IOseeBranch uuid) throws Exception {
-      return getBranchOps().createWorkingBranch(uuid, OseeSystem, parent, ArtifactId.SENTINEL).call();
+   private IOseeBranch createBranch(IOseeBranch parent, IOseeBranch uuid) {
+      return getBranchOps().createWorkingBranch(uuid, OseeSystem, parent, ArtifactId.SENTINEL);
    }
 
    private OrcsBranch getBranchOps() {

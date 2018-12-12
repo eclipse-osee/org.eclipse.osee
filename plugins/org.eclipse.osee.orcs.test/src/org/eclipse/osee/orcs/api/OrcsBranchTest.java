@@ -14,11 +14,9 @@ import static org.eclipse.osee.framework.core.data.ArtifactId.SENTINEL;
 import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
 import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -85,10 +83,7 @@ public class OrcsBranchTest {
       UserId author = OseeSystem;
 
       TransactionId tx = TransactionId.valueOf(SOURCE_TX_ID);
-      Callable<Branch> callable = branchOps.createCopyTxBranch(branch, author, tx, ArtifactId.SENTINEL);
-
-      assertNotNull(callable);
-      Branch priorBranch = callable.call();
+      Branch priorBranch = branchOps.createCopyTxBranch(branch, author, tx, ArtifactId.SENTINEL);
 
       // in the database, on the common branch, the users are all created in transaction 9
       // the common branch will have one user named Joe Smith
@@ -109,10 +104,7 @@ public class OrcsBranchTest {
       IOseeBranch postbranch = IOseeBranch.create("PostBranch");
 
       TransactionId tx1 = TransactionId.valueOf(CHANGED_TX_ID);
-      Callable<Branch> postCallable = branchOps.createCopyTxBranch(postbranch, author, tx1, ArtifactId.SENTINEL);
-
-      assertNotNull(postCallable);
-      Branch postBranch = postCallable.call();
+      Branch postBranch = branchOps.createCopyTxBranch(postbranch, author, tx1, ArtifactId.SENTINEL);
 
       int postResult = query.fromBranch(postBranch).andNameEquals(ARTIFACT_NAME).getResults().size();
       assertEquals(1, postResult);
@@ -133,11 +125,8 @@ public class OrcsBranchTest {
       // create the branch with the copied transaction
       IOseeBranch branch = IOseeBranch.create("CopiedBranch");
 
-      Callable<Branch> callableBranch =
-         branchOps.createCopyTxBranch(branch, OseeSystem, SOURCE_TX_ID, ArtifactId.SENTINEL);
-
       // the new branch will contain two transactions - these should have the same change report as the original branch
-      Branch postBranch = callableBranch.call();
+      Branch postBranch = branchOps.createCopyTxBranch(branch, OseeSystem, SOURCE_TX_ID, ArtifactId.SENTINEL);
 
       List<ChangeItem> newItems = branchOps.compareBranch(postBranch);
       compareBranchChanges(priorItems, newItems);
@@ -158,10 +147,7 @@ public class OrcsBranchTest {
       // create working branch off of base to make some changes
       // set up the child branch
       IOseeBranch branchName = IOseeBranch.create("ChildBranch");
-      Callable<Branch> callableChildBranch =
-         branchOps.createWorkingBranch(branchName, author, base, ArtifactId.SENTINEL);
-
-      Branch childBranch = callableChildBranch.call();
+      Branch childBranch = branchOps.createWorkingBranch(branchName, author, base, ArtifactId.SENTINEL);
 
       TransactionBuilder tx2 = txFactory.createTransaction(childBranch, author, "modify and make new arts");
       ArtifactReadable readableFolder = query.fromBranch(childBranch).andId(folder).getResults().getExactlyOne();
@@ -178,9 +164,8 @@ public class OrcsBranchTest {
       // create a disjoint working branch from common
 
       IOseeBranch commonName = IOseeBranch.create("ChildFromCommonBranch");
-      Callable<Branch> callableBranchFromCommon =
+      Branch commonChildBranch =
          branchOps.createWorkingBranch(commonName, author, CoreBranches.COMMON, ArtifactId.SENTINEL);
-      Branch commonChildBranch = callableBranchFromCommon.call();
 
       branchOps.commitBranch(author, childBranch, commonChildBranch).call();
 
@@ -194,7 +179,7 @@ public class OrcsBranchTest {
 
       IOseeBranch branch = IOseeBranch.create(branchName);
 
-      branchOps.createBaselineBranch(branch, OseeSystem, CoreBranches.SYSTEM_ROOT, SENTINEL).call();
+      branchOps.createBaselineBranch(branch, OseeSystem, CoreBranches.SYSTEM_ROOT, SENTINEL);
 
       Branch actual = getBranch(branch);
       assertBranch(actual, branchName, BranchState.CREATED, BranchType.BASELINE, SENTINEL);
