@@ -129,7 +129,7 @@ public class ChangeReportInfoPresenter implements EditorSection.IWidget {
       try {
          User user = UserManager.getUserByArtId(transaction.getAuthor());
          author = user.toString();
-      } catch (OseeCoreException ex) {
+      } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          author = "Unknown";
       }
