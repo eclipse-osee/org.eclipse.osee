@@ -12,8 +12,12 @@ package org.eclipse.osee.ats.api.rule.validation;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.util.result.XResultBrowserHyperCmd;
 import org.eclipse.osee.framework.core.util.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 
 /**
  * @author Donald G. Dunne
@@ -41,4 +45,28 @@ public abstract class AbstractValidationRule {
    public abstract String getRuleDescription();
 
    public abstract String getRuleTitle();
+
+   public void logError(ArtifactToken artifact, String message, XResultData results) {
+      String errStr = getHyperlink(artifact, message);
+      results.errorf(errStr);
+   }
+
+   /**
+    * @return message with Artifact Editor hyperlink in form "<artifact type name> [art name][art id] <message> open"
+    */
+   public String getHyperlink(ArtifactToken artifact, String message) {
+      String artTypeName = atsApi.getStoreService().getArtifactTypeName(artifact.getArtifactTypeId());
+      String link = getHyperlink("open", artifact.getIdString(), artifact.getBranch());
+      return String.format("%s %s %s %s", artTypeName, artifact.toStringWithId(), message, link);
+   }
+
+   public String getHyperlink(String name, ArtifactId artifact, BranchId branch) {
+      return getHyperlink(name, artifact.getIdString(), branch);
+   }
+
+   public String getHyperlink(String name, String id, BranchId branch) {
+      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactBranch,
+         id + "(" + branch.getId() + ")"), name);
+   }
+
 }

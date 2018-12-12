@@ -44,8 +44,8 @@ public class ListAndBulletRule extends AbstractValidationRule {
 
       Matcher match = NORMAL_LIST_BULLET_STYLE.matcher(wtc);
       if (match.find()) {
-         results.errorf("%s is not using lists or bullets associated with an expected style.",
-            artifact.toStringWithId());
+         String errStr = "is not using lists or bullets associated with an expected style.";
+         logError(artifact, errStr, results);
       }
    }
 

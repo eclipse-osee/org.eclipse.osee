@@ -111,4 +111,6 @@ public interface IAtsStoreService {
    boolean isOfType(IAtsObject atsObject, IArtifactType... artifactType);
 
    boolean inheritsFrom(IArtifactType artType, IArtifactType... artifactType);
+
+   String getArtifactTypeName(IArtifactType artifactTypeId);
 }

@@ -268,4 +268,9 @@ public class AtsStoreService implements IAtsStoreService {
    public boolean inheritsFrom(IArtifactType artType, IArtifactType... artifactType) {
       return ArtifactTypeManager.inheritsFrom(artType, artifactType);
    }
+
+   @Override
+   public String getArtifactTypeName(IArtifactType artifactTypeId) {
+      return ArtifactTypeManager.getType(artifactTypeId).getName();
+   }
 }

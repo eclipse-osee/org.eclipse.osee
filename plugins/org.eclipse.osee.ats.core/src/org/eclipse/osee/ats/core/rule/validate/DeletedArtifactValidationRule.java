@@ -32,8 +32,8 @@ public class DeletedArtifactValidationRule extends AbstractValidationRule {
          ArtifactToken relatedArtifact =
             atsApi.getRelationResolver().getRelatedOrNull(artifact, CoreRelationTypes.Default_Hierarchical__Parent);
          if (relatedArtifact != null) {
-            results.errorf("%s is deleted but still has a parent relation.  Please delete the relation.",
-               artifact.toStringWithId());
+            String errStr = "is deleted but still has a parent relation.  Please delete the relation.";
+            logError(artifact, errStr, results);
          }
       }
    }

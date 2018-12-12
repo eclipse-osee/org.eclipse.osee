@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
-import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
  * @author Donald G. Dunne
@@ -112,7 +111,6 @@ public class ValidationReportOperation extends AbstractOperation {
          }
 
          results.log("\n<b>Validation Complete</b>");
-         XResultDataUI.report(results, getName());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          results.error(Lib.exceptionToString(ex));

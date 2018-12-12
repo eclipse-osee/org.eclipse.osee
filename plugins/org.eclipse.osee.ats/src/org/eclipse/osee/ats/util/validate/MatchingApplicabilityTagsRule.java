@@ -52,10 +52,8 @@ public class MatchingApplicabilityTagsRule extends AbstractValidationRule {
          validationPassed = !WordCoreUtil.areApplicabilityTagsInvalid(wordml, artifact.getBranch(), validFeatureValues,
             validConfigurations);
          if (!validationPassed) {
-            results.errorf(
-               "Validation Failed. The following artifact has invalid feature values and/or mismatching start and end applicability tags: " //
-                  + "Artifact Id: [%s], Artifact Name: [%s]",
-               artifact.getId(), artifact.getSafeName());
+            String errStr = "has invalid feature values and/or mismatching start and end applicability tags";
+            logError(artifact, errStr, results);
          }
       }
    }

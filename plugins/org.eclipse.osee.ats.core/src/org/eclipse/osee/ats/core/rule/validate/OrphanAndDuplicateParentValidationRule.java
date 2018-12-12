@@ -33,14 +33,15 @@ public class OrphanAndDuplicateParentValidationRule extends AbstractValidationRu
          int count =
             atsApi.getRelationResolver().getRelatedCount(artifact, CoreRelationTypes.Default_Hierarchical__Parent);
          if (count == 0) {
-            results.errorf("%s is orphaned (no parent on Default Hierarchy).", artifact.toStringWithId());
+            logError(artifact, "is orphaned (no parent on Default Hierarchy).", results);
          } else if (count > 1) {
-            results.errorf("%s has %s parents (duplicate parents on Default Hierarchy).", artifact.toStringWithId(),
-               count);
+            logError(artifact, String.format("has %s parents (duplicate parents on Default Hierarchy).", count),
+               results);
          }
       } catch (Exception ex) {
-         results.errorf("Exception on orphaned and duplicate parent check on %s.  Exception %s",
-            artifact.toStringWithId(), Lib.exceptionToString(ex));
+         String errStr =
+            String.format("had exception on orphaned and duplicate parent check: %s", Lib.exceptionToString(ex));
+         logError(artifact, errStr, results);
       }
    }
 

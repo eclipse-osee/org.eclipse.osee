@@ -69,7 +69,9 @@ public class UniqueNameRule extends AbstractValidationRule {
                if (isImplementationDetailsChild(artifact, art) || isImplementationDetailsChild(art, artifact)) {
                   continue;
                }
-               results.errorf("Artifacts have same name value [%s]", art.getName());
+               String errStr = "Artifacts have same name";
+               logError(artifact, errStr, results);
+
                addIdPair(art.getId(), artifact.getId());
             }
          }

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.results.html;
+package org.eclipse.osee.framework.core.util.result;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

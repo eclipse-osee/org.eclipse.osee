@@ -48,15 +48,16 @@ public final class AttributeSetRule extends AbstractValidationRule {
          int validValueFound = 0;
          for (String attributeValue : attributeValues) {
             if (attributeValue.equals(invalidValue)) {
-               results.errorf("%s has invalid " + invalidValue + " \"" + attributeType + "\" attribute", artifact);
+               String errStr = "has invalid " + invalidValue + " \"" + attributeType + "\" attribute";
+               logError(artifact, errStr, results);
             } else {
                validValueFound++;
             }
          }
          if (validValueFound < minimumValues) {
-            results.errorf(
-               "%s has less than minimum " + minimumValues + " values set for attribute \"" + attributeType + "\"",
-               artifact);
+            String errStr =
+               "has less than minimum " + minimumValues + " values set for attribute \"" + attributeType + "\"";
+            logError(artifact, errStr, results);
          }
       }
    }

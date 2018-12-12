@@ -49,9 +49,9 @@ public final class RelationSetRule extends AbstractValidationRule {
       if (!isIgnoreType(type) && hasArtifactType(type)) {
          Collection<ArtifactToken> arts = atsApi.getRelationResolver().getRelatedArtifacts(artifact, relationEnum);
          if (arts.size() < minimumRelations) {
-            results.errorf(
-               "%s has less than minimum " + minimumRelations + " relation for type \"" + relationEnum.getName() + "\"",
-               artifact);
+            String errStr =
+               "has less than minimum " + minimumRelations + " relation for type \"" + relationEnum.getName() + "\"";
+            logError(artifact, errStr, results);
          }
       }
    }

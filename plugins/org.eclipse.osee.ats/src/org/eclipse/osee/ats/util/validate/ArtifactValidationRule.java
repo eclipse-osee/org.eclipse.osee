@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
-import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
  * @author Shawn F. Cook
@@ -31,13 +30,6 @@ public class ArtifactValidationRule extends AbstractValidationRule {
       super(atsApi);
    }
 
-   private String getStatusMessage(Artifact itemChecked, IStatus status) {
-      String link =
-         XResultDataUI.getHyperlink(String.format("%s:[%s]", itemChecked.getArtifactTypeName(), itemChecked.getName()),
-            AtsClientService.get().getAtsId(itemChecked), itemChecked.getBranch());
-      return String.format("%s: %s", link, status.getMessage());
-   }
-
    @Override
    public void validate(ArtifactToken artToken, XResultData results) {
       Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(artToken);
@@ -45,7 +37,7 @@ public class ArtifactValidationRule extends AbstractValidationRule {
       IStatus status = OseeValidator.getInstance().validate(IOseeValidator.LONG, artifact);
 
       if (!status.isOK()) {
-         results.error(getStatusMessage(artifact, status));
+         logError(artifact, status.getMessage(), results);
       }
    }
 
