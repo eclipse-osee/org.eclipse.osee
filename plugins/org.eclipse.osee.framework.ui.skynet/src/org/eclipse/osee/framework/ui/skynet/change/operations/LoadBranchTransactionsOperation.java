@@ -46,7 +46,7 @@ public class LoadBranchTransactionsOperation extends AbstractOperation {
       List<Object> items = null;
       if (transactions != null) {
          items = org.eclipse.osee.framework.jdk.core.util.Collections.getAggregateTree(
-            new ArrayList<Object>(transactions), 100);
+            new ArrayList<Object>(transactions), 500);
       } else {
          items = Collections.emptyList();
       }
