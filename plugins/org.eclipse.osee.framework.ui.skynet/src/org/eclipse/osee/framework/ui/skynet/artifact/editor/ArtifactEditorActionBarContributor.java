@@ -75,7 +75,10 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
    private Artifact getSelectedArtifact() {
       Artifact toReturn = null;
 
-      ISelectionProvider provider = editor.getSite().getSelectionProvider();
+      ISelectionProvider provider = editor.getDefaultSelectionProvider();
+      if (provider == null) {
+         provider = editor.getSite().getSelectionProvider();
+      }
       ISelection selection = provider.getSelection();
       if (!selection.isEmpty()) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selection;
