@@ -10,8 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.change.operations;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.change.BranchTransactionUiData;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
@@ -28,8 +34,23 @@ public class LoadBranchTransactionsOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      branchTransactionData.setTransactions(
-         branchTransactionData.getBranchContentProvider().getBranchChildren(branchTransactionData.getBranch()));
+      List<TransactionRecord> transactions =
+         TransactionManager.getTransactionsForBranch(branchTransactionData.getBranch());
+      Collections.sort(transactions, new Comparator<TransactionRecord>() {
+         @Override
+         public int compare(TransactionRecord o1, TransactionRecord o2) {
+            return (int) (o1.getId().longValue() - o2.getId().longValue());
+         }
+      });
+
+      List<Object> items = null;
+      if (transactions != null) {
+         items = org.eclipse.osee.framework.jdk.core.util.Collections.getAggregateTree(
+            new ArrayList<Object>(transactions), 100);
+      } else {
+         items = Collections.emptyList();
+      }
+      branchTransactionData.setTransactions(items.toArray());
    }
 
 }
