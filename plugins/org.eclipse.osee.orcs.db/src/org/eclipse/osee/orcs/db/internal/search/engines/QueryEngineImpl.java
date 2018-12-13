@@ -22,6 +22,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
+import org.eclipse.osee.orcs.core.ds.KeyValueStore;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
@@ -49,8 +50,9 @@ public class QueryEngineImpl implements QueryEngine {
    private final QuerySqlContextFactory artifactSqlContextFactory;
    private final SqlObjectLoader sqlObjectLoader;
    private final ArtifactTypes artifactTypes;
+   private final KeyValueStore keyValue;
 
-   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QuerySqlContextFactory branchSqlContextFactory, QuerySqlContextFactory txSqlContextFactory, QueryCallableFactory allQueryEngineFactory, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, QuerySqlContextFactory artifactSqlContextFactory, SqlObjectLoader sqlObjectLoader, ArtifactTypes artifactTypes) {
+   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QuerySqlContextFactory branchSqlContextFactory, QuerySqlContextFactory txSqlContextFactory, QueryCallableFactory allQueryEngineFactory, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, QuerySqlContextFactory artifactSqlContextFactory, SqlObjectLoader sqlObjectLoader, ArtifactTypes artifactTypes, KeyValueStore keyValue) {
       this.artifactQueryEngineFactory = artifactQueryEngineFactory;
       this.branchSqlContextFactory = branchSqlContextFactory;
       this.txSqlContextFactory = txSqlContextFactory;
@@ -60,6 +62,7 @@ public class QueryEngineImpl implements QueryEngine {
       this.artifactSqlContextFactory = artifactSqlContextFactory;
       this.sqlObjectLoader = sqlObjectLoader;
       this.artifactTypes = artifactTypes;
+      this.keyValue = keyValue;
    }
 
    @Override
@@ -118,7 +121,7 @@ public class QueryEngineImpl implements QueryEngine {
 
    @Override
    public TupleQuery createTupleQuery() {
-      return new TupleQueryImpl(jdbcClient, sqlJoinFactory);
+      return new TupleQueryImpl(jdbcClient, sqlJoinFactory, keyValue);
    }
 
    @Override

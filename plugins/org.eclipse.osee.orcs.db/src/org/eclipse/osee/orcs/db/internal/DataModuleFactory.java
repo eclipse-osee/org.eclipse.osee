@@ -73,10 +73,10 @@ public class DataModuleFactory {
       SqlObjectLoader sqlObjectLoader =
          loaderModule.createSqlObjectLoader(objectFactory, loadProcessor, attributeTypes);
       final DataLoaderFactory dataLoaderFactory = loaderModule.createDataLoaderFactory(sqlObjectLoader);
-      final QueryEngine queryEngine =
-         queryModule.createQueryEngine(dataLoaderFactory, attributeTypes, artifactTypes, sqlObjectLoader);
-      final BranchDataStore branchDataStore = branchModule.createBranchDataStore(dataLoaderFactory);
       final KeyValueStore keyValueStore = keyValueModule.createKeyValueStore();
+      final QueryEngine queryEngine = queryModule.createQueryEngine(dataLoaderFactory, attributeTypes, artifactTypes,
+         sqlObjectLoader, keyValueStore);
+      final BranchDataStore branchDataStore = branchModule.createBranchDataStore(dataLoaderFactory);
       final TxDataStore txDataStore = txModule.createTransactionStore(dataLoaderFactory, indexer, attributeTypes);
       final DataStoreAdmin dataStoreAdmin = adminModule.createDataStoreAdmin();
       return new DataModule() {

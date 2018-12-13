@@ -18,7 +18,10 @@ import java.util.function.BiConsumer;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
+import org.eclipse.osee.framework.core.data.Tuple4Type;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.orcs.core.ds.KeyValueStore;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.search.TupleQuery;
 
@@ -26,10 +29,6 @@ import org.eclipse.osee.orcs.search.TupleQuery;
  * @author Angel Avila
  */
 public class TupleQueryImpl implements TupleQuery {
-
-   private final JdbcClient jdbcClient;
-   private final SqlJoinFactory sqlJoinFactory;
-
    private static final String SELECT_E2_FROM_E1 =
       "select e2, value from osee_txs txs, osee_tuple2 app, osee_key_value where app.tuple_type = ? and e1 = ? and app.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1 and e2 = key";
 
@@ -58,7 +57,10 @@ public class TupleQueryImpl implements TupleQuery {
       "select distinct e2 from osee_txs txs, osee_tuple3 app, osee_key_value where app.tuple_type = ? and e3 = ? and app.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1";
 
    private static final String SELECT_TUPLE3_COUNT_FROM_E3 =
-      "select count(1) from osee_tuple3 where tuple_type=? and e3 = ?";
+      "select count(1) from osee_tuple3 where tuple_type = ? and e3 = ?";
+
+   private static final String SELECT_TUPLE4_COUNT_FROM_E3 =
+      "select count(1) from osee_tuple4 where tuple_type = ? and e3 = ?";
 
    private static final String SELECT_TUPLE2_COUNT_FROM_E1_E2 =
       "select count(1) from osee_tuple2 where tuple_type=? and e1 = ? and e2 = ?";
@@ -66,9 +68,14 @@ public class TupleQueryImpl implements TupleQuery {
    private static final String SELECT_TUPLE2_BY_TUPLE_TYPE =
       "select distinct e1, e2 from osee_txs txs, osee_tuple2 app where tuple_type = ? and txs.gamma_id = app.gamma_id and branch_id = ? and tx_current = 1";
 
-   TupleQueryImpl(JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory) {
+   private final JdbcClient jdbcClient;
+   private final SqlJoinFactory sqlJoinFactory;
+   private final KeyValueStore keyValue;
+
+   TupleQueryImpl(JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, KeyValueStore keyValue) {
       this.jdbcClient = jdbcClient;
       this.sqlJoinFactory = sqlJoinFactory;
+      this.keyValue = keyValue;
    }
 
    @SuppressWarnings("unchecked")
@@ -103,7 +110,7 @@ public class TupleQueryImpl implements TupleQuery {
 
    @Override
    public <E1, E2> boolean doesTuple2Exist(Tuple2Type<E1, E2> tupleType, E1 e1, E2 e2) {
-      return jdbcClient.fetch(0, SELECT_TUPLE2_COUNT_FROM_E1_E2, tupleType, e1, e2) > 0;
+      return jdbcClient.fetch(0, SELECT_TUPLE2_COUNT_FROM_E1_E2, tupleType, toLong(e1), toLong(e2)) > 0;
    }
 
    //////  Tuple3 //////
@@ -138,8 +145,22 @@ public class TupleQueryImpl implements TupleQuery {
    }
 
    @Override
-   public <E1, E2, E3> boolean doesTuple3E3Exist(Tuple3Type<E1, E2, E3> tupleType, Long e3) {
-      return jdbcClient.fetch(0, SELECT_TUPLE3_COUNT_FROM_E3, tupleType, e3) > 0;
+   public <E1, E2, E3> boolean doesTuple3E3Exist(Tuple3Type<E1, E2, E3> tupleType, E3 e3) {
+      return jdbcClient.fetch(0, SELECT_TUPLE3_COUNT_FROM_E3, tupleType, toLong(e3)) > 0;
+   }
+
+   @Override
+   public <E1, E2, E3, E4> boolean doesTuple4E3Exist(Tuple4Type<E1, E2, E3, E4> tupleType, E3 e3) {
+      return jdbcClient.fetch(0, SELECT_TUPLE4_COUNT_FROM_E3, tupleType, toLong(e3)) > 0;
+   }
+
+   private Long toLong(Object element) {
+      if (element instanceof String) {
+         return keyValue.getByValue((String) element);
+      } else if (element instanceof Id) {
+         return ((Id) element).getId();
+      }
+      return (Long) element;
    }
 
    private void runQuery(BiConsumer<Long, String> consumer, String query, String column, Object... data) {

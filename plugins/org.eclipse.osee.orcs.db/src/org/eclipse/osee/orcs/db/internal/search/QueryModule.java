@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
+import org.eclipse.osee.orcs.core.ds.KeyValueStore;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
@@ -70,7 +71,7 @@ public class QueryModule {
       return queryIndexer;
    }
 
-   public QueryEngine createQueryEngine(DataLoaderFactory loaderFactory, AttributeTypes attrTypes, ArtifactTypes artifactTypes, SqlObjectLoader sqlObjectLoader) {
+   public QueryEngine createQueryEngine(DataLoaderFactory loaderFactory, AttributeTypes attrTypes, ArtifactTypes artifactTypes, SqlObjectLoader sqlObjectLoader, KeyValueStore keyValue) {
       QuerySqlContextFactory artifactSqlContextFactory =
          Engines.createArtifactSqlContext(logger, sqlJoinFactory, idService, jdbcClient, taggingEngine);
       QueryCallableFactory factory1 = newArtifactQueryEngine(artifactSqlContextFactory, logger, taggingEngine,
@@ -83,6 +84,6 @@ public class QueryModule {
       QueryCallableFactory factory4 = newQueryEngine(logger, sqlJoinFactory, idService, jdbcClient, taggingEngine,
          executorAdmin, loaderFactory, attrTypes);
       return new QueryEngineImpl(factory1, branchSqlContextFactory, txSqlContextFactory, factory4, jdbcClient,
-         sqlJoinFactory, artifactSqlContextFactory, sqlObjectLoader, artifactTypes);
+         sqlJoinFactory, artifactSqlContextFactory, sqlObjectLoader, artifactTypes, keyValue);
    }
 }
