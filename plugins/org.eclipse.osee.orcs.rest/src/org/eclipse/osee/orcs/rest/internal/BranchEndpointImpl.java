@@ -326,7 +326,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
       //TODO: Integrate data with TxBuilder
 
-      TransactionReadable tx = txBuilder.commit();
+      TransactionToken txId = txBuilder.commit();
+      TransactionReadable tx = orcsApi.getQueryFactory().transactionQuery().andTxId(txId).getResults().getExactlyOne();
+
       if (tx.isValid()) {
          URI location = uriInfo.getRequestUriBuilder().path("{tx-id}").build(tx);
          return Response.created(location).entity(asTransaction(tx)).build();

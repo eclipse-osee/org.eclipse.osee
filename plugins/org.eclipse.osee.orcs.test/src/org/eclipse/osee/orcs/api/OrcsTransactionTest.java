@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -156,7 +157,7 @@ public class OrcsTransactionTest {
       tx.setAttributesFromStrings(artifact, CoreAttributeTypes.Annotation, expectedAnnotation);
       assertEquals(expectedName, artifact.getName());
 
-      TransactionReadable newTx = tx.commit();
+      TransactionToken newTx = tx.commit();
       assertFalse(tx.isCommitInProgress());
 
       TransactionReadable newHeadTx = transactionQuery.andIsHead(COMMON).getResults().getExactlyOne();
@@ -1036,15 +1037,13 @@ public class OrcsTransactionTest {
       ArtifactId art1 = tx.createArtifact(CoreArtifactTypes.Component, "A component");
       ArtifactId art2 = tx.createArtifact(CoreArtifactTypes.User, "User Artifact");
       tx.relate(art1, CoreRelationTypes.Users_User, art2, "rationale1");
-      TransactionReadable transaction = tx.commit();
-
-      assertEquals(testName.getMethodName(), transaction.getComment());
+      TransactionToken txId = tx.commit();
 
       String expectedComment = "My new Comment";
-      txFactory.setTransactionComment(transaction, expectedComment).call();
+      txFactory.setTransactionComment(txId, expectedComment).call();
 
-      TransactionReadable actual = query.transactionQuery().andTxId(transaction).getResults().getExactlyOne();
-      assertEquals(transaction, actual);
+      TransactionReadable actual = query.transactionQuery().andTxId(txId).getResults().getExactlyOne();
+      assertEquals(txId, actual);
       assertEquals(expectedComment, actual.getComment());
    }
 

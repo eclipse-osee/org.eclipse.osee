@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.type.LinkType;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
@@ -40,7 +41,6 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
@@ -193,8 +193,8 @@ public class WordUpdateArtifact {
                }
             }
          }
-         TransactionReadable tx = txBuilder.commit();
-         if (tx != null) {
+         TransactionToken tx = txBuilder.commit();
+         if (tx.isValid()) {
             postProcessChange(tx, updateChange, account);
          }
 
@@ -209,7 +209,7 @@ public class WordUpdateArtifact {
       return updateChange;
    }
 
-   private void postProcessChange(TransactionReadable tx, WordUpdateChange updateChange, ArtifactId account) {
+   private void postProcessChange(TransactionToken tx, WordUpdateChange updateChange, ArtifactId account) {
       updateChange.setTx(tx);
       updateChange.setBranch(tx.getBranch());
       if (updateChange.hasSafetyRelatedArtifactChange()) {

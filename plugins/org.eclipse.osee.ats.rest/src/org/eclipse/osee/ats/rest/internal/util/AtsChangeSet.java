@@ -35,13 +35,13 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -96,7 +96,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
             }
          }
       }
-      TransactionReadable transactionReadable = getTransaction().commit();
+      TransactionToken tx = getTransaction().commit();
       for (IExecuteListener listener : listeners) {
          listener.changesStored(this);
       }
@@ -107,8 +107,8 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          }
       }
 
-      /**
-       * Commented out on 0.25.0 due to performance issues; No users are using this feature. Will be re-enabled on
+      /*
+       * TODO: Commented out on 0.25.0 due to performance issues; No users are using this feature. Will be re-enabled on
        * 0.26.0 where analysis can be done and all action creation can be moved to the server. Same change in both
        * AtsChangeSets. See action TW1864.
        */
@@ -116,7 +116,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       //         WorkflowRuleRunner runner = new WorkflowRuleRunner(RuleEventType.CreateWorkflow, workItemsCreated, atsApi);
       //         runner.run();
       //      }
-      return transactionReadable;
+      return tx;
    }
 
    @Override

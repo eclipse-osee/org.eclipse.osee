@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -57,7 +58,6 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
@@ -525,8 +525,8 @@ public class OrcsStorageImpl implements Storage {
       }
 
       tx.setSoleAttributeFromString(reportArt, CoreAttributeTypes.GeneralStringData, contents);
-      TransactionReadable commit = tx.commit();
-      if (commit != null) {
+      TransactionToken commit = tx.commit();
+      if (commit.isValid()) {
 
          ArtifactReadable newRerpotArt =
             getQuery().fromBranch(branch).fromTransaction(commit).andId(reportArt).getResults().getExactlyOne();

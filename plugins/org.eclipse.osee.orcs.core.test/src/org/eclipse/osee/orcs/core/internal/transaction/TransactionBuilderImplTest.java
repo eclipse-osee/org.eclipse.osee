@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
@@ -56,7 +57,6 @@ import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.junit.Before;
@@ -329,11 +329,10 @@ public class TransactionBuilderImplTest {
    @SuppressWarnings("unchecked")
    @Test
    public void testCommit() throws Exception {
-      CancellableCallable<TransactionReadable> callable = mock(CancellableCallable.class);
-      TransactionReadable tx = mock(TransactionReadable.class);
+      CancellableCallable<TransactionToken> callable = mock(CancellableCallable.class);
 
       when(txCallableFactory.createTx(txData)).thenReturn(callable);
-      when(callable.call()).thenReturn(tx);
+      when(callable.call()).thenReturn(TransactionToken.SENTINEL);
 
       factory.commit();
       verify(txCallableFactory).createTx(txData);

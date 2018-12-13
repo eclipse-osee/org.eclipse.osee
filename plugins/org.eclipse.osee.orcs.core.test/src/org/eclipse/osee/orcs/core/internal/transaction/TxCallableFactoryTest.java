@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
@@ -119,7 +120,7 @@ public class TxCallableFactoryTest {
 
       Assert.assertFalse(data.isCommitInProgress());
 
-      TransactionReadable actual = txFactory.createTx(data).call();
+      TransactionToken actual = txFactory.createTx(data).call();
 
       assertEquals(newTx, actual);
       assertFalse(data.isCommitInProgress());

@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
@@ -38,7 +39,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -49,7 +49,6 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -66,6 +65,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    private final QueryFactory queryFactory;
    private final OrcsApi orcsApi;
    private final KeyValueOps keyValueOps;
+   private boolean abandon = false;
 
    public TransactionBuilderImpl(TxCallableFactory txFactory, TxDataManager dataManager, TxData txData, OrcsApi orcsApi, KeyValueOps keyValueOps) {
       this.txFactory = txFactory;
@@ -370,13 +370,20 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public TransactionReadable commit() {
+   public TransactionToken commit() {
+      if (abandon) {
+         return TransactionToken.SENTINEL;
+      }
       try {
-         CancellableCallable<TransactionReadable> callable = txFactory.createTx(txData);
-         return callable.call();
+         return txFactory.createTx(txData).call();
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
       }
+   }
+
+   @Override
+   public void abandon() {
+      abandon = true;
    }
 
    private void checkAreOnDifferentBranches(TxData txData, BranchId sourceBranch) {

@@ -27,12 +27,12 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.TransactionReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -48,7 +48,12 @@ public interface TransactionBuilder {
    /**
     * @return TransactionRecord or null of no changes made
     */
-   TransactionReadable commit();
+   TransactionToken commit();
+
+   /**
+    * If commit() is called after calling abandon, the commit will do nothing and return TransactionToken.SENTINEL
+    */
+   void abandon();
 
    boolean isCommitInProgress();
 

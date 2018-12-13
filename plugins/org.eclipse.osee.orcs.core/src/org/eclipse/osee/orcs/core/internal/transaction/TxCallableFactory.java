@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -22,7 +23,6 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.core.ds.TxDataStore;
-import org.eclipse.osee.orcs.data.TransactionReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -58,12 +58,12 @@ public class TxCallableFactory {
       };
    }
 
-   public CancellableCallable<TransactionReadable> createTx(final TxData txData) {
-      return new AbstractTxCallable<TransactionReadable>("CommitTransaction", txData.getSession()) {
+   public CancellableCallable<TransactionToken> createTx(final TxData txData) {
+      return new AbstractTxCallable<TransactionToken>("CommitTransaction", txData.getSession()) {
 
          @Override
-         protected TransactionReadable innerCall() throws Exception {
-            TransactionReadable transaction = null;
+         protected TransactionToken innerCall() throws Exception {
+            TransactionToken transaction = TransactionToken.SENTINEL;
             try {
                txManager.startTx(txData);
                TransactionResult result = doCommit();
