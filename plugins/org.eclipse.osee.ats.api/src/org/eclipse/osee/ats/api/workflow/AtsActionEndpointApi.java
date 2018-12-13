@@ -90,7 +90,17 @@ public interface AtsActionEndpointApi {
     */
    @Path("query")
    @GET
+   @Produces({MediaType.APPLICATION_JSON})
    Set<IAtsWorkItem> query(UriInfo uriInfo);
+
+   /**
+    * @param ids - comma delimited legacy id attribute values
+    * @return json representation of the matching workItem(s)
+    */
+   @Path("query/legacyId")
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   List<IAtsWorkItem> query(@QueryParam("ids") String ids);
 
    @POST
    @Consumes(MediaType.APPLICATION_JSON)

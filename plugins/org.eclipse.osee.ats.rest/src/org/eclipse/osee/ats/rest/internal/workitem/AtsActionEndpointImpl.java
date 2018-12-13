@@ -690,4 +690,25 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       return RestUtil.redirect(action.getTeamWfs(), ATS_UI_ACTION_PREFIX, atsApi);
    }
 
+   @Path("query/legacyId")
+   @GET
+   @Override
+   @Produces({MediaType.APPLICATION_JSON})
+   public List<IAtsWorkItem> query(@QueryParam("ids") String idsStr) {
+      List<IAtsWorkItem> results = new LinkedList<>();
+      List<String> ids = new LinkedList<>();
+      for (String id : idsStr.split(",")) {
+         id = id.replaceAll("^ ", "");
+         id = id.replaceAll(" $", "");
+         if (Strings.isValid(id)) {
+            ids.add(id);
+         }
+      }
+      Collection<IAtsTeamWorkflow> items =
+         atsApi.getQueryService().createQuery(WorkItemType.TeamWorkflow).andLegacyIds(ids).getItems(
+            IAtsTeamWorkflow.class);
+      results.addAll(items);
+      return results;
+   }
+
 }

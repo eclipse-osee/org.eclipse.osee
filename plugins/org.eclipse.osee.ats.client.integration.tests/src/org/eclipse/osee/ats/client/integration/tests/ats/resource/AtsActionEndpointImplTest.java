@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import org.codehaus.jackson.JsonNode;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
@@ -406,6 +407,31 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       teamWf = testAttributeTypeMatchesRestAttributes(AtsAttributeTypes.ValidationRequired);
       Assert.assertEquals(false, AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
          (IAtsObject) teamWf, AtsAttributeTypes.ValidationRequired, true));
+   }
+
+   @Test
+   public void testQueryByLegacyIds() {
+      AtsActionEndpointApi actionEp = AtsClientService.getActionEndpoint();
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getName());
+      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
+      changes.setSoleAttributeValue((IAtsTeamWorkflow) teamWf, AtsAttributeTypes.LegacyPcrId, "PCR 2344");
+      TeamWorkFlowArtifact teamWf2 = DemoUtil.getSawTestCommittedWf();
+      changes.setSoleAttributeValue((IAtsTeamWorkflow) teamWf2, AtsAttributeTypes.LegacyPcrId, "PCR2345");
+      changes.execute();
+
+      List<IAtsWorkItem> workItems = actionEp.query("PCR 2344, PCR2345");
+
+      boolean found1 = false, found2 = false;
+      for (IAtsWorkItem workItem : workItems) {
+         if (workItem.getAtsId().equals(teamWf.getAtsId())) {
+            found1 = true;
+         }
+         if (workItem.getAtsId().equals(teamWf2.getAtsId())) {
+            found2 = true;
+         }
+      }
+      Assert.assertTrue(found1);
+      Assert.assertTrue(found2);
    }
 
    @Test
