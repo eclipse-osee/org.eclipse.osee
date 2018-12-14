@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.api;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -34,6 +35,7 @@ public interface TraceabilityEndpoint {
     */
    @GET
    @Path("highlowtrace")
+   @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_XML)
    Response getLowHighReqReport(@QueryParam("branch") BranchId branch, @QueryParam("selected_types") String selectedTypes);
 

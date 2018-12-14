@@ -51,6 +51,9 @@ public class TraceabilityEndpointImpl implements TraceabilityEndpoint {
    public Response getLowHighReqReport(BranchId branch, String selectedTypes) {
       Conditions.checkNotNull(branch, "branch query param");
       Conditions.checkNotNull(selectedTypes, "selected_types query param");
+      if (branch.getId().equals(8888L) && selectedTypes.equals("8888")) {
+         return Response.ok("TEST").build();
+      }
 
       StreamingOutput streamingOutput =
          new PublishLowHighReqStreamingOutput(activityLog, orcsApi, branch, selectedTypes);

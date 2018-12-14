@@ -62,6 +62,10 @@ public abstract class AbstractRestTest {
       return getAndCheckResponseCode(url, MediaType.TEXT_HTML_TYPE);
    }
 
+   protected String getXml(String url) {
+      return getAndCheckResponseCode(url, MediaType.APPLICATION_XML_TYPE);
+   }
+
    protected String getJson(String url) {
       return getAndCheckResponseCode(url, MediaType.APPLICATION_JSON_TYPE);
    }
