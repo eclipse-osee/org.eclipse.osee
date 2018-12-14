@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.workitem;
 
+import java.util.Collections;
+import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -21,7 +23,7 @@ import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.model.change.CompareResults;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
 
 /**
  * @author Donald G. Dunne
@@ -39,7 +41,7 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
    @GET
    @Path("{id}/changedata")
    @Produces({MediaType.APPLICATION_JSON})
-   public CompareResults getChangeData(@PathParam("id") String id) {
+   public List<ChangeItem> getChangeData(@PathParam("id") String id) {
       IAtsWorkItem workItem = services.getWorkItemService().getWorkItemByAnyId(id);
       if (!workItem.isTeamWorkflow()) {
          throw new UnsupportedOperationException();
@@ -53,7 +55,7 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
       if (branch.isValid()) {
          return services.getBranchService().getChangeData(branch);
       }
-      return new CompareResults();
+      return Collections.<ChangeItem> emptyList();
    }
 
 }

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.branch.internal;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -27,7 +28,7 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
-import org.eclipse.osee.framework.core.model.change.CompareResults;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -170,12 +171,12 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public CompareResults getChangeData(BranchId branch) {
+   public List<ChangeItem> getChangeData(BranchId branch) {
       throw new UnsupportedOperationException("Not supported on client");
    }
 
    @Override
-   public CompareResults getChangeData(TransactionToken transaction) {
+   public List<ChangeItem> getChangeData(TransactionToken transaction) {
       throw new UnsupportedOperationException("Not supported on client");
    }
 

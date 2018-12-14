@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -18,7 +17,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.actions.AccessControlAction;
 import org.eclipse.osee.ats.client.integration.tests.ats.workflow.AtsTestUtil;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -37,11 +35,7 @@ public class AccessControlActionTest extends AbstractAtsActionTest {
 
          @Override
          protected IStatus run(IProgressMonitor monitor) {
-            try {
-               Thread.sleep(2000);
-            } catch (InterruptedException ex) {
-               OseeLog.log(AccessControlActionTest.class, Level.SEVERE, ex);
-            }
+
             Displays.ensureInDisplayThread(new Runnable() {
 
                @Override

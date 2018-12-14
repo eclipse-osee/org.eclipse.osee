@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
-import org.eclipse.osee.framework.core.model.change.CompareResults;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -95,22 +94,19 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public CompareResults compareTxs(TransactionId txId1, TransactionId txId2) {
+   public List<ChangeItem> compareTxs(TransactionId txId1, TransactionId txId2) {
       TransactionToken sourceTx = getTx(txId1);
       TransactionToken destinationTx = getTx(txId2);
 
       try {
-         List<ChangeItem> changes = orcsBranch.compareBranch(sourceTx, destinationTx);
-         CompareResults data = new CompareResults();
-         data.setChanges(changes);
-         return data;
+         return orcsBranch.compareBranch(sourceTx, destinationTx);
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
       }
    }
 
    @Override
-   public CompareResults comparedToParent(BranchId branch) {
+   public List<ChangeItem> comparedToParent(BranchId branch) {
       BranchId parentBranch = queryFactory.branchQuery().andId(branch).getResults().getExactlyOne().getParentBranch();
       TransactionId sourceTx = transactionQuery.andIsHead(branch).getResultsAsIds().getExactlyOne();
       TransactionId destionationTx = transactionQuery.andIsHead(parentBranch).getResultsAsIds().getExactlyOne();
@@ -118,7 +114,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public CompareResults comparedToPreviousTx(TransactionToken txId) {
+   public List<ChangeItem> comparedToPreviousTx(TransactionToken txId) {
       TransactionId startTx = transactionQuery.andIsPriorTx(txId).getResultsAsIds().getExactlyOne();
       return compareTxs(startTx, txId);
    }

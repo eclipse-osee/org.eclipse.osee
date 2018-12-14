@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workflow;
 
+import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.eclipse.osee.framework.core.model.change.CompareResults;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
 
 /**
  * @author Donald G. Dunne
@@ -26,6 +27,6 @@ public interface AtsTeamWfEndpointApi {
    @GET
    @Path("{id}/changedata")
    @Produces({MediaType.APPLICATION_JSON})
-   public CompareResults getChangeData(@PathParam("id") String id);
+   public List<ChangeItem> getChangeData(@PathParam("id") String id);
 
 }

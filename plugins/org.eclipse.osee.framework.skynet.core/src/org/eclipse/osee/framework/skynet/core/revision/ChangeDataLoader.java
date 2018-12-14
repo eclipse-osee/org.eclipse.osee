@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
-import org.eclipse.osee.framework.core.model.change.CompareResults;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -400,9 +399,9 @@ public class ChangeDataLoader extends AbstractOperation {
       TransactionEndpoint proxy = client.getTransactionEndpoint();
 
       try {
-         CompareResults results = proxy.compareTxs(txDelta.getStartTx(), txDelta.getEndTx());
+         List<ChangeItem> results = proxy.compareTxs(txDelta.getStartTx(), txDelta.getEndTx());
          List<ChangeItem> changes = new ArrayList<>();
-         for (ChangeItem item : results.getChanges()) {
+         for (ChangeItem item : results) {
             if (isAllowableChange(item.getIgnoreType())) {
                changes.add(item);
             }

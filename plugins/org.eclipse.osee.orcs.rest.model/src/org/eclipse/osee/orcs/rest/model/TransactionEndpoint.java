@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.model.change.CompareResults;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
 
 /**
  * @author Roberto E. Escobar
@@ -41,7 +41,7 @@ public interface TransactionEndpoint {
    @GET
    @Path("{tx-id1}/diff/{tx-id2}")
    @Produces({MediaType.APPLICATION_JSON})
-   CompareResults compareTxs(@PathParam("tx-id1") TransactionId txId1, @PathParam("tx-id2") TransactionId txId2);
+   List<ChangeItem> compareTxs(@PathParam("tx-id1") TransactionId txId1, @PathParam("tx-id2") TransactionId txId2);
 
    @PUT
    @Path("{tx-id}/comment")

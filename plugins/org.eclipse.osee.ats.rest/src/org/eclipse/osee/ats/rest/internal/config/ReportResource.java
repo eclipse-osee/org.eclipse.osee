@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
-import org.eclipse.osee.framework.core.model.change.CompareResults;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
@@ -147,9 +146,9 @@ public class ReportResource {
    }
 
    private List<ChangeItem> getChanges(BranchId branch) {
-      CompareResults results = atsApi.getBranchService().getChangeData(branch);
+      List<ChangeItem> results = atsApi.getBranchService().getChangeData(branch);
       if (results != null) {
-         return results.getChanges();
+         return results;
       }
       return Collections.emptyList();
    }

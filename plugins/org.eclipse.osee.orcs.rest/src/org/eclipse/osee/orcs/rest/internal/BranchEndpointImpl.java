@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
-import org.eclipse.osee.framework.core.model.change.CompareResults;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -214,13 +213,11 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public CompareResults compareBranches(BranchId branch, BranchId branch2) {
+   public List<ChangeItem> compareBranches(BranchId branch, BranchId branch2) {
       TransactionToken sourceTx = newTxQuery().andIsHead(branch).getResults().getExactlyOne();
       TransactionToken destinationTx = newTxQuery().andIsHead(branch2).getResults().getExactlyOne();
-      List<ChangeItem> changes = branchOps.compareBranch(sourceTx, destinationTx);
+      List<ChangeItem> data = branchOps.compareBranch(sourceTx, destinationTx);
 
-      CompareResults data = new CompareResults();
-      data.setChanges(changes);
       try {
          activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
             String.format("Branch Operation Compare Branches {sourceTx: %s, destTx: %s}", sourceTx.toString(),

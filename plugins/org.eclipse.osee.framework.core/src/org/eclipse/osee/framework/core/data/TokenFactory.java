@@ -50,6 +50,10 @@ public final class TokenFactory {
       return RelationTypeToken.create(id, name);
    }
 
+   public static ArtifactToken createArtifactToken(long id, String guid, String name, BranchId branch, IArtifactType artifactType) {
+      return ArtifactToken.valueOf(id, guid, name, branch, artifactType);
+   }
+
    private final static class ArtifactTypeToken extends NamedIdBase implements IArtifactType {
 
       public ArtifactTypeToken() {

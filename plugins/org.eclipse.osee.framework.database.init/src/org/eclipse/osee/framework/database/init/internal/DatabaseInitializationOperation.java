@@ -25,7 +25,11 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeCredential;
+import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.database.init.DefaultDbInitTasks;
@@ -49,10 +53,14 @@ public class DatabaseInitializationOperation extends AbstractOperation {
    private final String preSelectedChoice;
    private final boolean isPromptEnabled;
 
+   public static ArtifactToken MAPPING_ARTIFACT;
+
    public DatabaseInitializationOperation(String preSelectedChoice, boolean isPromptEnabled) {
       super("Database Initialization", Activator.PLUGIN_ID);
       this.preSelectedChoice = preSelectedChoice;
       this.isPromptEnabled = isPromptEnabled;
+      MAPPING_ARTIFACT = TokenFactory.createArtifactToken(5443258, "AOkJ_kFNbEXCS7UjmfwA", "DataRightsFooters",
+         BranchId.SENTINEL, CoreArtifactTypes.GeneralData);
    }
 
    private boolean isPromptingAllowed() {
@@ -135,7 +143,7 @@ public class DatabaseInitializationOperation extends AbstractOperation {
 
    /**
     * Call to get DB initialization Tasks from choice made by User
-    * 
+    *
     * @return initialization task list
     */
    private IDatabaseInitConfiguration getConfiguration() {

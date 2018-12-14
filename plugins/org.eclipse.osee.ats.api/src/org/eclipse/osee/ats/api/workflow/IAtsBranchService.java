@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.workflow;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.commit.CommitOverrideOperations;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
@@ -23,7 +24,7 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.change.CompareResults;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.util.Result;
 
 /**
@@ -145,9 +146,9 @@ public interface IAtsBranchService {
 
    BranchId getWorkingBranchInWork(IAtsTeamWorkflow teamWf);
 
-   CompareResults getChangeData(BranchId branch);
+   List<ChangeItem> getChangeData(BranchId branch);
 
-   CompareResults getChangeData(TransactionToken transaction);
+   List<ChangeItem> getChangeData(TransactionToken transaction);
 
    void setAssociatedArtId(BranchId branch, ArtifactId artifact);
 

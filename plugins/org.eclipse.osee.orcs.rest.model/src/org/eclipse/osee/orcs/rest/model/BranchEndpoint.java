@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.change.CompareResults;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
 
 /**
  * @author Roberto E. Escobar
@@ -93,7 +93,7 @@ public interface BranchEndpoint {
    @GET
    @Path("{branch1}/diff/{branch2}")
    @Produces({MediaType.APPLICATION_JSON})
-   CompareResults compareBranches(@PathParam("branch1") BranchId branch1, @PathParam("branch2") BranchId branch2);
+   List<ChangeItem> compareBranches(@PathParam("branch1") BranchId branch1, @PathParam("branch2") BranchId branch2);
 
    @GET
    @Path("{branch}/txs")

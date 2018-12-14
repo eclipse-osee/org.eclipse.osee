@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.change.CompareResults;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -186,21 +186,21 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public CompareResults getChangeData(TransactionToken transaction) {
+   public List<ChangeItem> getChangeData(TransactionToken transaction) {
       TransactionQuery transQuery = orcsApi.getQueryFactory().transactionQuery();
       TransactionReadable startTx = transQuery.andIsPriorTx(transaction).getResults().getAtMostOneOrNull();
-      CompareResults results = orcsApi.getTransactionFactory().compareTxs(startTx, transaction);
+      List<ChangeItem> results = orcsApi.getTransactionFactory().compareTxs(startTx, transaction);
       return results;
    }
 
    @Override
-   public CompareResults getChangeData(BranchId branch) {
+   public List<ChangeItem> getChangeData(BranchId branch) {
       TransactionQuery transactionQuery2 = orcsApi.getQueryFactory().transactionQuery();
       TransactionQuery transactionQuery3 = orcsApi.getQueryFactory().transactionQuery();
       BranchId parentBranch = atsApi.getBranchService().getParentBranch(branch);
       TransactionReadable startTx = transactionQuery2.andIsHead(branch).getResults().getExactlyOne();
       TransactionReadable endTx = transactionQuery3.andIsHead(parentBranch).getResults().getExactlyOne();
-      CompareResults results = orcsApi.getTransactionFactory().compareTxs(startTx, endTx);
+      List<ChangeItem> results = orcsApi.getTransactionFactory().compareTxs(startTx, endTx);
       return results;
    }
 

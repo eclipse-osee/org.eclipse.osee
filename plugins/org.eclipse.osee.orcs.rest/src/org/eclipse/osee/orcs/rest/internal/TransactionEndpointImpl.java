@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.model.change.CompareResults;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.Transaction;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
@@ -51,7 +51,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    }
 
    @Override
-   public CompareResults compareTxs(TransactionId txId1, TransactionId txId2) {
+   public List<ChangeItem> compareTxs(TransactionId txId1, TransactionId txId2) {
       return orcsApi.getTransactionFactory().compareTxs(txId1, txId2);
    }
 
