@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -38,7 +39,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public abstract class AbstractAtsTaskService implements IAtsTaskService {
 
-   private static final String UNASSIGNED_USERID = "99999997";
    private final AtsApi atsApi;
 
    public AbstractAtsTaskService(AtsApi atsApi) {
@@ -75,10 +75,10 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
          task.setName(title);
          if (assignees != null) {
             for (IAtsUser assignee : assignees) {
-               task.getAssigneeUserIds().add(assignee.getUserId());
+               task.addAssigneeUserIds(assignee.getUserId());
             }
          } else {
-            task.getAssigneeUserIds().add(UNASSIGNED_USERID);
+            task.addAssigneeUserIds(AtsCoreUsers.UNASSIGNED_USER.getUserId());
          }
          if (Strings.isValid(relatedToState)) {
             task.setRelatedToState(relatedToState);

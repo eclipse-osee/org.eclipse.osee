@@ -109,8 +109,7 @@ public class TeamWorkFlowManager {
       }
 
       if (teamWf.getStateMgr().isInState(TeamState.Implement)) {
-         Result result =
-            transitionToState(popup, teamWf, TeamState.Completed, transitionToAssignees, changes, atsApi);
+         Result result = transitionToState(popup, teamWf, TeamState.Completed, transitionToAssignees, changes, atsApi);
          if (result.isFalse()) {
             return result;
          }
@@ -155,7 +154,7 @@ public class TeamWorkFlowManager {
       return Result.TrueResult;
    }
 
-   private Result transitionToState(boolean popup, IAtsTeamWorkflow teamWf, IStateToken toState, Collection<IAtsUser> transitionToAssignees, IAtsChangeSet changes, AtsApi atsApi) {
+   public Result transitionToState(boolean popup, IAtsTeamWorkflow teamWf, IStateToken toState, Collection<IAtsUser> transitionToAssignees, IAtsChangeSet changes, AtsApi atsApi) {
       TransitionHelper helper = new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(teamWf),
          toState.getName(), transitionToAssignees, null, changes, atsApi, transitionOptions);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);

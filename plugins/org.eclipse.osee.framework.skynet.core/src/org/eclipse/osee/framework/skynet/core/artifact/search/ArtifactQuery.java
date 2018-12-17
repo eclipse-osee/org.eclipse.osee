@@ -88,7 +88,8 @@ public class ArtifactQuery {
     * @return artifact unless it's been deleted
     */
    public static <T extends ArtifactId & HasBranch> Artifact getArtifactFromToken(T artifactToken) {
-      Conditions.assertTrue(artifactToken.isValid(), "Branch must be specified.");
+      Conditions.assertTrue(artifactToken.isValid(), "Valid artifact token must be specified.");
+      Conditions.assertTrue(artifactToken.getBranch().isValid(), "Branch must be specified.");
       return getOrCheckArtifactFromId(artifactToken, artifactToken.getBranch(), EXCLUDE_DELETED, QueryType.GET);
    }
 

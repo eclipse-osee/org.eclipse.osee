@@ -15,8 +15,10 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * @author Donald G. Dunne
@@ -69,7 +71,14 @@ public class JaxAtsTask extends JaxAtsObject {
    }
 
    public void setAssigneeUserIds(List<String> assigneeUserIds) {
+      Conditions.assertFalse(assigneeUserIds.contains(AtsCoreUsers.SYSTEM_USER.getUserId()),
+         "Can't assign task to System User");
       this.assigneeUserIds = assigneeUserIds;
+   }
+
+   public void addAssigneeUserIds(String idString) {
+      Conditions.assertFalse(idString.equals(AtsCoreUsers.SYSTEM_USER.getUserId()), "Can't assign task to System User");
+      this.assigneeUserIds.add(idString);
    }
 
    public String getTaskWorkDef() {

@@ -322,7 +322,7 @@ public class CreateTasksOperation {
          newJaxTask.setRelatedToState(taskArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, ""));
          IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(taskArt);
          for (IAtsUser user : workItem.getAssignees()) {
-            newJaxTask.getAssigneeUserIds().add(user.getUserId());
+            newJaxTask.addAssigneeUserIds(user.getUserId());
          }
 
          for (AttributeTypeToken type : taskArt.getExistingAttributeTypes()) {

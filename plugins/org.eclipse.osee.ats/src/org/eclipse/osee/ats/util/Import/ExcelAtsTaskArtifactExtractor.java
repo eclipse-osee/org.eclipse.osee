@@ -331,7 +331,7 @@ public class ExcelAtsTaskArtifactExtractor {
                   userName, rowNum);
                user = AtsClientService.get().getUserService().getCurrentUser();
             }
-            taskArt.getAssigneeUserIds().add(user.getUserId());
+            taskArt.addAssigneeUserIds(user.getUserId());
          }
       }
 
