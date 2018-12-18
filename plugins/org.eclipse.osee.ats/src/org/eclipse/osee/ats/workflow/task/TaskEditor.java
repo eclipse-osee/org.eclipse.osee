@@ -34,11 +34,6 @@ public class TaskEditor extends WorldEditor implements IXTaskViewer {
    boolean loading = false;
 
    @Override
-   public String getTabName() {
-      return "Tasks";
-   }
-
-   @Override
    public IAtsTeamWorkflow getTeamWf() {
       return null;
    }

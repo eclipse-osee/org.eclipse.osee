@@ -52,6 +52,7 @@ import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.export.AtsExportAction;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.util.AtsUtilClient;
 import org.eclipse.osee.ats.util.IAtsClient;
 import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.workflow.task.IXTaskViewer;
@@ -77,6 +78,11 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
@@ -107,7 +113,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class WfeTasksTab extends FormPage implements IWorldEditor, ISelectedAtsArtifacts, IWorldViewerEventHandler, IMenuActionProvider, IXTaskViewer, IOseeTreeReportProvider {
+public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWorldEditor, ISelectedAtsArtifacts, IWorldViewerEventHandler, IMenuActionProvider, IXTaskViewer, IOseeTreeReportProvider {
    private IManagedForm managedForm;
    private Composite bodyComp;
    private ScrolledForm scrolledForm;
@@ -131,7 +137,6 @@ public class WfeTasksTab extends FormPage implements IWorldEditor, ISelectedAtsA
       this.client = client;
       reloadAdapter = new ReloadJobChangeAdapter(editor);
       teamArt = (TeamWorkFlowArtifact) teamWf.getStoreObject();
-      setPartName(getTabName());
    }
 
    @Override
@@ -140,11 +145,13 @@ public class WfeTasksTab extends FormPage implements IWorldEditor, ISelectedAtsA
 
       this.managedForm = managedForm;
       scrolledForm = managedForm.getForm();
+      final WfeTasksTab listener = this;
       try {
          scrolledForm.addDisposeListener(new DisposeListener() {
             @Override
             public void widgetDisposed(DisposeEvent e) {
                storeScrollLocation();
+               OseeEventManager.removeListener(listener);
             }
          });
          bodyComp = scrolledForm.getBody();
@@ -164,6 +171,7 @@ public class WfeTasksTab extends FormPage implements IWorldEditor, ISelectedAtsA
       } catch (Exception ex) {
          handleException(ex);
       }
+      OseeEventManager.addListener(this);
    }
 
    @Override
@@ -207,6 +215,7 @@ public class WfeTasksTab extends FormPage implements IWorldEditor, ISelectedAtsA
                         if (!createdAndLoaded) {
                            reload();
                         }
+                        refreshTabName();
                         jumptoScrollLocation();
                         FormsUtil.addHeadingGradient(editor.getToolkit(), scrolledForm, true);
                         refreshToolbar();
@@ -296,6 +305,7 @@ public class WfeTasksTab extends FormPage implements IWorldEditor, ISelectedAtsA
                         return;
                      }
                      taskComposite.load("Tasks", taskArts, (CustomizeData) null, TableLoadOption.None);
+                     refreshTabName();
                   }
 
                });
@@ -677,14 +687,27 @@ public class WfeTasksTab extends FormPage implements IWorldEditor, ISelectedAtsA
          AtsObjects.getArtifacts(client.getTaskService().getTasks(teamWf)));
    }
 
-   @Override
-   public String getTabName() {
-      try {
-         return String.format("Tasks (%d)", getTasks().size());
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      return "Tasks";
+   public void refreshTabName() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            String tabName = "Tasks";
+            try {
+               tabName = String.format("Tasks (%d)", getTasks().size());
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+            // Because of reload page, tasks tab moves around; find real page/index
+            int index = 0;
+            for (Object obj : editor.getPages()) {
+               if (obj instanceof WfeTasksTab) {
+                  break;
+               }
+               index++;
+            }
+            editor.setTabName(index, tabName);
+         }
+      });
    }
 
    public TaskComposite getTaskComposite() {
@@ -714,6 +737,16 @@ public class WfeTasksTab extends FormPage implements IWorldEditor, ISelectedAtsA
    @Override
    public String getReportTitle() {
       return getEditorTitle();
+   }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return AtsUtilClient.getAtsObjectEventFilters();
+   }
+
+   @Override
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      refreshTabName();
    }
 
 }

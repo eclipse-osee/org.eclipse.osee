@@ -214,6 +214,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       if (isTaskable()) {
          taskTab = new WfeTasksTab(this, (IAtsTeamWorkflow) awa, AtsClientService.get());
          addPage(taskTab);
+         taskTab.refreshTabName();
       }
    }
 
@@ -687,6 +688,10 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       return image;
    }
 
+   public List<Object> getPages() {
+      return pages;
+   }
+
    @Override
    protected void pageChange(int newPageIndex) {
       super.pageChange(newPageIndex);
@@ -771,6 +776,10 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
          toolkit.adapt(toolBar);
       }
       return toolBar;
+   }
+
+   public void setTabName(int index, String tabName) {
+      setPageText(index, tabName);
    }
 
 }
