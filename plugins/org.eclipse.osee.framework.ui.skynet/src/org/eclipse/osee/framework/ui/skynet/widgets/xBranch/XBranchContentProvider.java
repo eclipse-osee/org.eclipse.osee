@@ -96,7 +96,6 @@ public class XBranchContentProvider implements ITreeContentProvider {
          if (isAdmin) {
             branchTypes.add(BranchType.SYSTEM_ROOT);
          }
-
          if (isAdmin && showMergeBranches) {
             branchTypes.add(BranchType.MERGE);
          }
@@ -115,15 +114,14 @@ public class XBranchContentProvider implements ITreeContentProvider {
          if (!showChildBranchesAtMainLevel) {
             if (AccessControlManager.isOseeAdmin()) {
                branchesToReturn.add(SYSTEM_ROOT);
-            } else {
-               branchTypes.add(BranchType.BASELINE);
-               BranchFilter filter =
-                  new BranchFilter(branchState, branchTypes.toArray(new BranchType[branchTypes.size()]));
+            }
+            branchTypes.add(BranchType.BASELINE);
+            BranchFilter filter =
+               new BranchFilter(branchState, branchTypes.toArray(new BranchType[branchTypes.size()]));
 
-               for (BranchId branch : BranchManager.getBranches(filter)) {
-                  if (BranchManager.isParentSystemRoot(branch)) {
-                     branchesToReturn.add(branch);
-                  }
+            for (BranchId branch : BranchManager.getBranches(filter)) {
+               if (BranchManager.isParentSystemRoot(branch)) {
+                  branchesToReturn.add(branch);
                }
             }
          } else {
