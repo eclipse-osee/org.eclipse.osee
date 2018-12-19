@@ -113,6 +113,10 @@ public class DispoDataFactory {
          itemToInit.setTotalPoints("none");
       }
 
+      if (itemToInit.getIsIncludeDetails() == null) {
+         itemToInit.setIsIncludeDetails(false);
+      }
+
       if (itemToInit.getIsIncludeDetails()) {
          if (itemToInit.getAnnotationsList() == null) {
             itemToInit.setAnnotationsList(new ArrayList<DispoAnnotationData>());
