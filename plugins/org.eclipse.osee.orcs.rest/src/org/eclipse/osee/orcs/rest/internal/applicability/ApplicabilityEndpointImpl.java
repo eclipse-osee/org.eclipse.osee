@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -98,22 +97,19 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public List<BranchViewData> getViews() {
-      return applicabilityQuery.getViews();
+   public List<ArtifactToken> getViewForBranch() {
+      return applicabilityQuery.getViewForBranch(branch);
    }
 
    @Override
    public HashMap<String, ArtifactId> getViewMap() {
       HashMap<String, ArtifactId> viewMap = new HashMap<>();
-      List<BranchViewData> views = applicabilityQuery.getViews();
-      for (BranchViewData view : views) {
-         if (branch.equals(view.getBranch())) {
-            for (ArtifactId id : view.getBranchViews()) {
-               ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(branch).andId(id).getArtifact();
-               viewMap.put(artifact.getName(), id);
-            }
-         }
+
+      for (ArtifactId id : applicabilityQuery.getViewForBranch(branch)) {
+         ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(branch).andId(id).getArtifact();
+         viewMap.put(artifact.getName(), id);
       }
+
       return viewMap;
    }
 
@@ -222,8 +218,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public String getViewTable() {
-      return applicabilityQuery.getViewTable(branch);
+   public String getViewTable(String filter) {
+      return applicabilityQuery.getViewTable(branch, filter);
    }
 
    @Override

@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
@@ -46,9 +46,9 @@ public interface ApplicabilityQuery {
 
    Map<String, List<String>> getNamedViewApplicabilityMap(BranchId branch, ArtifactId viewId);
 
-   List<BranchViewData> getViews();
+   List<ArtifactToken> getViewForBranch(BranchId branch);
 
-   String getViewTable(BranchId branch);
+   String getViewTable(BranchId branch, String filter);
 
    ArtifactId getVersionConfig(ArtifactId art, BranchId branch);
 

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import static org.eclipse.osee.framework.core.enums.CoreTupleTypes.BranchView;
 import static org.eclipse.osee.framework.core.enums.CoreTupleTypes.ViewApplicability;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,17 +27,17 @@ import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.util.JsonUtil;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
@@ -176,76 +174,68 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
-   public List<BranchViewData> getViews() {
-      HashCollection<BranchId, ArtifactId> branchAndViewIds = new HashCollection<>();
-      BiConsumer<Long, Long> consumer =
-         (branchId, artifactId) -> branchAndViewIds.put(BranchId.valueOf(branchId), ArtifactId.valueOf(artifactId));
-      tupleQuery.getTuple2E1E2Pair(BranchView, COMMON, consumer);
-
-      List<BranchViewData> branchViews = new ArrayList<>();
-      for (BranchId branchId : branchAndViewIds.keySet()) {
-         List<ArtifactId> values = branchAndViewIds.getValues(branchId);
-         branchViews.add(new BranchViewData(branchId, values));
-      }
-      return branchViews;
+   public List<ArtifactToken> getViewForBranch(BranchId branch) {
+      return queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).loadArtifactTokens();
    }
 
+   /*
+    * The filter is a regex - if it matches the branch view name, then that branch view will not be included in the
+    * table
+    */
    @Override
-   public String getViewTable(BranchId branch) {
+   public String getViewTable(BranchId branch, String filter) {
       StringBuilder html = new StringBuilder(
          "<!DOCTYPE html><html><head><style> table { border-spacing: 0px } th,td { padding: 3px; } </style></head><body>");
-      List<BranchViewData> views = this.getViews();
-      for (BranchViewData branchView : views) {
-         if (branchView.getBranch().equals(branch)) {
-            html.append(String.format("<h1>Features for branch [%s]</h1>",
-               branchQuery.andId(branch).getResults().getExactlyOne().getName()));
-            html.append("<table border=\"1\">");
-            List<ArtifactId> branchViews = branchView.getBranchViews();
 
-            List<FeatureDefinition> featureDefinitionData = getFeatureDefinitionData(branch);
+      html.append(String.format("<h1>Features for branch [%s]</h1>",
+         branchQuery.andId(branch).getResults().getExactlyOne().getName()));
+      html.append("<table border=\"1\">");
+      List<ArtifactToken> branchViews = this.getViewForBranch(branch);
 
-            Collections.sort(featureDefinitionData, new Comparator<FeatureDefinition>() {
-               @Override
-               public int compare(FeatureDefinition obj1, FeatureDefinition obj2) {
-                  return obj1.getName().compareTo(obj2.getName());
-               }
-            });
+      if (Strings.isValid(filter)) {
+         branchViews.removeIf(art -> art.getName().matches(filter));
+      }
 
-            printColumnHeadings(html, branchViews, branch);
-            Map<ArtifactId, Map<String, List<String>>> branchViewsMap = new HashMap<>();
+      List<FeatureDefinition> featureDefinitionData = getFeatureDefinitionData(branch);
 
-            for (ArtifactId artId : branchViews) {
-               branchViewsMap.put(artId, getNamedViewApplicabilityMap(branch, artId));
-            }
-            for (FeatureDefinition featureDefinition : featureDefinitionData) {
-               html.append("<tr>");
-               html.append(String.format("<td>%s</td>", featureDefinition.getName()));
-               html.append(String.format("<td>%s</td>", featureDefinition.getDescription()));
-               for (ArtifactId view : branchViews) {
-                  List<String> list = branchViewsMap.get(view).get(featureDefinition.getName());
-                  // every view should have a value for each feature, if incorrectly configured returns null
-                  if (list != null) {
-                     html.append(
-                        "<td>" + org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", list) + "</td>");
-                  } else {
-                     html.append("<td> </td>");
-                  }
-               }
-               html.append("</tr>");
+      Collections.sort(featureDefinitionData, new Comparator<FeatureDefinition>() {
+         @Override
+         public int compare(FeatureDefinition obj1, FeatureDefinition obj2) {
+            return obj1.getName().compareTo(obj2.getName());
+         }
+      });
+
+      printColumnHeadings(html, branchViews, branch);
+      Map<ArtifactId, Map<String, List<String>>> branchViewsMap = new HashMap<>();
+
+      for (ArtifactId artId : branchViews) {
+         branchViewsMap.put(artId, getNamedViewApplicabilityMap(branch, artId));
+      }
+      for (FeatureDefinition featureDefinition : featureDefinitionData) {
+         html.append("<tr>");
+         html.append(String.format("<td>%s</td>", featureDefinition.getName()));
+         html.append(String.format("<td>%s</td>", featureDefinition.getDescription()));
+         for (ArtifactId view : branchViews) {
+            List<String> list = branchViewsMap.get(view).get(featureDefinition.getName());
+            // every view should have a value for each feature, if incorrectly configured returns null
+            if (list != null) {
+               html.append("<td>" + org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", list) + "</td>");
+            } else {
+               html.append("<td> </td>");
             }
          }
+         html.append("</tr>");
       }
       html.append("</table></body></html>");
       return html.toString();
    }
 
-   private void printColumnHeadings(StringBuilder html, List<ArtifactId> branchViews, BranchId branch) {
+   private void printColumnHeadings(StringBuilder html, List<ArtifactToken> branchViews, BranchId branch) {
       html.append("<tr>");
       html.append("<th>Feature Name</th>");
       html.append("<th>Feature Description</th>");
-      for (ArtifactId artId : branchViews) {
-         html.append(String.format("<th>%s</th>",
-            queryFactory.fromBranch(branch).andId(artId).getResults().getExactlyOne().getName()));
+      for (ArtifactToken artId : branchViews) {
+         html.append(String.format("<th>%s</th>", artId.getName()));
       }
       html.append("</tr>");
    }
@@ -264,44 +254,33 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       ArrayList<BranchId> toReturn = new ArrayList<>();
       Date injection = new Date(injectDateMs);
       Date removal = new Date(removalDateMs);
-
-      // Get all Branch Views
-      List<BranchViewData> branchViews = getViews();
-
-      HashMap<Long, Branch> childBaselineBranchIds = new HashMap<>();
-      for (Branch childBranch : branchQuery.andIsOfType(BranchType.BASELINE).andIsChildOf(branch).getResults()) {
-         childBaselineBranchIds.put(childBranch.getId(), childBranch);
-      }
+      List<Branch> branchList =
+         branchQuery.andIsOfType(BranchType.BASELINE).andIsChildOf(branch).getResults().getList();
 
       HashMap<Long, ApplicabilityId> applicabilityIdsMap = new HashMap<>();
       for (ApplicabilityId applicId : applicabilityIds) {
          applicabilityIdsMap.put(applicId.getId(), applicId);
       }
 
-      for (BranchViewData branchView : branchViews) {
-         Branch baseBranch = childBaselineBranchIds.get(branchView.getBranch().getId());
-         if (baseBranch != null) {
-            // Check Dates on baseBranch
-            Date baseDate = transactionQuery.andTxId(baseBranch.getBaselineTx()).getResults().getExactlyOne().getDate();
-            if (baseDate.after(injection) && (removalDateMs == -1 || baseDate.before(removal))) {
-               // now determine what views of this branch are applicable
-               for (ArtifactId view : branchView.getBranchViews()) {
-                  // Get all applicability tokens for the view of this branch
-                  List<ApplicabilityToken> viewApplicabilityTokens =
-                     getViewApplicabilityTokens(view, branchView.getBranch());
-                  // Cross check applicabilityTokens with valid ApplicabilityIds sent in
-                  for (ApplicabilityToken applicToken : viewApplicabilityTokens) {
-                     // If applictoken is found, add toReturn list
-                     if (applicabilityIdsMap.containsKey(applicToken.getId())) {
-                        toReturn.add(BranchId.create(branchView.getBranch().getId(), view));
-                        break;
-                     }
+      for (Branch baseBranch : branchList) {
+         Date baseDate = transactionQuery.andTxId(baseBranch.getBaselineTx()).getResults().getExactlyOne().getDate();
+         if (baseDate.after(injection) && (removalDateMs == -1 || baseDate.before(removal))) {
+            // now determine what views of this branch are applicable
+
+            for (ArtifactId view : getViewForBranch(baseBranch)) {
+               // Get all applicability tokens for the view of this branch
+               List<ApplicabilityToken> viewApplicabilityTokens = getViewApplicabilityTokens(view, baseBranch);
+               // Cross check applicabilityTokens with valid ApplicabilityIds sent in
+               for (ApplicabilityToken applicToken : viewApplicabilityTokens) {
+                  // If applictoken is found, add toReturn list
+                  if (applicabilityIdsMap.containsKey(applicToken.getId())) {
+                     toReturn.add(BranchId.create(baseBranch.getId(), view));
+                     break;
                   }
                }
             }
          }
       }
-
       return toReturn;
    }
 

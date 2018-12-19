@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.VariantDefinition;
@@ -74,7 +73,7 @@ public interface ApplicabilityEndpoint {
    @GET
    @Path("views")
    @Produces(MediaType.APPLICATION_JSON)
-   List<BranchViewData> getViews();
+   List<ArtifactToken> getViewForBranch();
 
    @GET
    @Path("view")
@@ -155,7 +154,7 @@ public interface ApplicabilityEndpoint {
    @GET
    @Path("table")
    @Produces(MediaType.TEXT_HTML)
-   String getViewTable();
+   String getViewTable(@QueryParam("filter") String filter);
 
    /**
     * Set the applicability in osee_txs for the given artifacts. This affects whether the artifact is included in a
