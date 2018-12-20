@@ -44,7 +44,7 @@ public class DispoItemData implements DispoItem {
    private int failureCount;
    private String fileNumber;
    private String methodNumber;
-   private boolean isIncludeDetails;
+   private Boolean isIncludeDetails;
    private String team;
 
    public DispoItemData() {
@@ -127,6 +127,11 @@ public class DispoItemData implements DispoItem {
    }
 
    @Override
+   public Boolean getNeedsReview() {
+      return needsReview;
+   }
+
+   @Override
    public String getItemNotes() {
       return itemNotes;
    }
@@ -150,13 +155,8 @@ public class DispoItemData implements DispoItem {
    }
 
    @Override
-   public boolean getIsIncludeDetails() {
+   public Boolean getIsIncludeDetails() {
       return isIncludeDetails;
-   }
-
-   @Override
-   public Boolean getNeedsReview() {
-      return needsReview;
    }
 
    @Override
@@ -244,11 +244,11 @@ public class DispoItemData implements DispoItem {
       this.discrepanciesAsRanges = discrepanciesAsRanges;
    }
 
-   public void setIsIncludeDetails(boolean isIncludeDetails) {
+   public void setIsIncludeDetails(Boolean isIncludeDetails) {
       this.isIncludeDetails = isIncludeDetails;
    }
 
-   public void setNeedsReview(boolean needsReview) {
+   public void setNeedsReview(Boolean needsReview) {
       this.needsReview = needsReview;
    }
 

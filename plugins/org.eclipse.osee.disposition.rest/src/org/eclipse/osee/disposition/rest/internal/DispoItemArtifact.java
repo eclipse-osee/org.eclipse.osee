@@ -27,7 +27,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem {
 
    private final ArtifactReadable artifact;
-   private boolean isIncludeDetails;
+   private Boolean isIncludeDetails;
 
    public DispoItemArtifact(ArtifactReadable artifact) {
       super(artifact.getIdString());
@@ -39,12 +39,12 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
       return artifact.getName();
    }
 
-   public void setIsIncludeDetails(boolean isIncludeDetails) {
+   public void setIsIncludeDetails(Boolean isIncludeDetails) {
       this.isIncludeDetails = isIncludeDetails;
    }
 
    @Override
-   public boolean getIsIncludeDetails() {
+   public Boolean getIsIncludeDetails() {
       return isIncludeDetails;
    }
 

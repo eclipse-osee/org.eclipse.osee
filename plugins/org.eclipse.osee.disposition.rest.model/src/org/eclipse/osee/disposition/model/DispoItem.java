@@ -56,7 +56,7 @@ public interface DispoItem extends Identifiable<String> {
 
    Boolean getNeedsReview();
 
-   boolean getIsIncludeDetails();
-
    String getTeam();
+
+   Boolean getIsIncludeDetails();
 }
