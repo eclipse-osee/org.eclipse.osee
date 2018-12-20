@@ -113,7 +113,7 @@ public class DispoDataFactory {
          itemToInit.setTotalPoints("none");
       }
 
-      if (itemToInit.getIsIncludeDetails() == null) {
+      if (!itemToInit.getIsIncludeDetails()) {
          itemToInit.setIsIncludeDetails(false);
       }
 
