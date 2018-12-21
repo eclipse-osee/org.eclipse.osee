@@ -62,6 +62,12 @@ public interface IAtsConfigQuery {
 
    <T extends IAtsConfigObject> T getOneOrNull(Class<T> clazz);
 
+   <T extends IAtsConfigObject> T getAtMostOneOrNull(Class<T> clazz);
+
+   <T extends IAtsConfigObject> T getExactlyOne(Class<T> clazz);
+
+   <T extends IAtsConfigObject> T getOneOrDefault(Class<T> clazz, T defaultValue);
+
    <T extends ArtifactToken> Collection<T> getArtifacts();
 
    IAtsConfigQuery isActive();

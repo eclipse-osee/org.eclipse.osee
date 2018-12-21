@@ -33,7 +33,10 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
+import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 
@@ -265,6 +268,14 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
       return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(getConfigObjects());
    }
 
+   protected OseeCoreException createManyExistException(int count) {
+      return new MultipleItemsExist("Multiple items found - total [%s]", count);
+   }
+
+   protected OseeCoreException createDoesNotExistException() {
+      return new ItemDoesNotExist("No item found");
+   }
+
    @Override
    public <T extends IAtsConfigObject> T getOneOrNull(Class<T> clazz) {
       Collection<T> items = getItems(clazz);
@@ -272,6 +283,43 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
          return items.iterator().next();
       }
       return null;
+   }
+
+   @Override
+   public <T extends IAtsConfigObject> T getAtMostOneOrNull(Class<T> clazz) {
+      T result = null;
+      Collection<T> items = getItems(clazz);
+      if (items != null) {
+         int size = items.size();
+         if (size > 1) {
+            throw createManyExistException(size);
+         } else if (size == 1) {
+            result = items.iterator().next();
+         }
+      }
+      return result;
+   }
+
+   @Override
+   public <T extends IAtsConfigObject> T getExactlyOne(Class<T> clazz) {
+
+      T result = getAtMostOneOrNull(clazz);
+      if (result == null) {
+         throw createDoesNotExistException();
+      }
+      return result;
+   }
+
+   @Override
+   public <T extends IAtsConfigObject> T getOneOrDefault(Class<T> clazz, T defaultValue) {
+      Collection<T> items = getItems(clazz);
+      if (items != null) {
+         int size = items.size();
+         if (size > 0) {
+            defaultValue = items.iterator().next();
+         }
+      }
+      return defaultValue;
    }
 
 }

@@ -642,9 +642,9 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       }
       List<IAtsActionableItem> aias = new ArrayList<>();
       IAtsActionableItem aia =
-         atsApi.getQueryService().createQuery(AtsArtifactTypes.ActionableItem).andName(actionableItems).getOneOrNull(
-            IAtsActionableItem.class);
-      if (aia == null) {
+         atsApi.getQueryService().createQuery(AtsArtifactTypes.ActionableItem).andName(actionableItems).getOneOrDefault(
+            IAtsActionableItem.class, IAtsActionableItem.SENTINEL);
+      if (aia.isInvalid()) {
          return RestUtil.returnBadRequest(String.format("actionableItems [%s] is not valid", actionableItems));
       }
       aias.add(aia);

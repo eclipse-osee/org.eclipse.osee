@@ -37,8 +37,8 @@ public class TeamDefinitions {
    }
 
    public static List<IAtsTeamDefinition> getTopLevelTeamDefinitions(Active active, IAtsQueryService queryService) {
-      IAtsTeamDefinition topTeamDef = getTopTeamDefinition(queryService);
-      if (topTeamDef == null) {
+      IAtsTeamDefinition topTeamDef = getTopTeamDefinitionOrSentinel(queryService);
+      if (topTeamDef.isInvalid()) {
          return java.util.Collections.emptyList();
       }
       return Collections.castAll(getActive(getChildren(topTeamDef, false), active));
@@ -79,8 +79,8 @@ public class TeamDefinitions {
    }
 
    public static List<IAtsTeamDefinition> getTeamTopLevelDefinitions(Active active, IAtsQueryService queryService) {
-      IAtsTeamDefinition topTeamDef = getTopTeamDefinition(queryService);
-      if (topTeamDef == null) {
+      IAtsTeamDefinition topTeamDef = getTopTeamDefinitionOrSentinel(queryService);
+      if (topTeamDef.isInvalid()) {
          return java.util.Collections.emptyList();
       }
       return Collections.castAll(getActive(getChildren(topTeamDef, false), active));
@@ -88,7 +88,12 @@ public class TeamDefinitions {
 
    public static IAtsTeamDefinition getTopTeamDefinition(IAtsQueryService queryService) {
       return queryService.createQuery(AtsArtifactTypes.TeamDefinition).andId(
-         AtsArtifactToken.TopTeamDefinition).getOneOrNull(IAtsTeamDefinition.class);
+         AtsArtifactToken.TopTeamDefinition).getExactlyOne(IAtsTeamDefinition.class);
+   }
+
+   public static IAtsTeamDefinition getTopTeamDefinitionOrSentinel(IAtsQueryService queryService) {
+      return queryService.createQuery(AtsArtifactTypes.TeamDefinition).andId(
+         AtsArtifactToken.TopTeamDefinition).getOneOrDefault(IAtsTeamDefinition.class, IAtsTeamDefinition.SENTINEL);
    }
 
    public static Set<IAtsTeamDefinition> getTeamReleaseableDefinitions(Active active, IAtsQueryService queryService) {

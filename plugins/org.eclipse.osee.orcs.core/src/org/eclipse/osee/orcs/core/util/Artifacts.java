@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -31,8 +32,9 @@ public class Artifacts {
 
    public static ArtifactToken getOrCreate(ArtifactToken artifactToken, TransactionBuilder tx, OrcsApi orcsApi) {
       ArtifactToken art =
-         orcsApi.getQueryFactory().fromBranch(tx.getBranch()).andId(artifactToken).getResults().getAtMostOneOrNull();
-      if (art == null) {
+         orcsApi.getQueryFactory().fromBranch(tx.getBranch()).andId(artifactToken).getResults().getAtMostOneOrDefault(
+            ArtifactReadable.SENTINEL);
+      if (art.isInvalid()) {
          art = tx.createArtifact(artifactToken);
       }
       return art;

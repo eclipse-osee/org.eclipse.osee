@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
@@ -38,8 +39,8 @@ public class OrcsValidationHelperAdapter implements IOrcsValidationHelper {
 
    @Override
    public boolean isUserExists(String userId) {
-      return queryFactory.fromBranch(COMMON).and(CoreAttributeTypes.UserId,
-         userId).getResults().getAtMostOneOrNull() != null;
+      return queryFactory.fromBranch(COMMON).and(CoreAttributeTypes.UserId, userId).getResults().getAtMostOneOrDefault(
+         ArtifactReadable.SENTINEL).isValid();
    }
 
    @Override

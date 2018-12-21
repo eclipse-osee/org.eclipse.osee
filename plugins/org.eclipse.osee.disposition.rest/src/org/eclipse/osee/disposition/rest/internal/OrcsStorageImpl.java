@@ -95,7 +95,8 @@ public class OrcsStorageImpl implements Storage {
    @Override
    public boolean typesExist() {
       try {
-         return getQuery().fromBranch(COMMON).andId(DISPO_ARTIFACT).getResults().getAtMostOneOrNull() != null;
+         return getQuery().fromBranch(COMMON).andId(DISPO_ARTIFACT).getResults().getAtMostOneOrDefault(
+            ArtifactReadable.SENTINEL).isValid();
       } catch (OseeCoreException ex) {
          logger.warn(ex, "Error checking for Dispo Types");
          return false;
