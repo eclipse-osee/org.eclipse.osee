@@ -12,6 +12,6 @@
 
 	<artifactId>org.eclipse.osee.server.application</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>OSEE X Server Application - (Incubation)</name>
+	<name>OSEE Server Application - (Incubation)</name>
 
 </project>

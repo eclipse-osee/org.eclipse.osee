@@ -13,7 +13,7 @@
 	<groupId>org.eclipse.osee</groupId>
 	<artifactId>org.eclipse.osee.server.parent</artifactId>
 	<packaging>pom</packaging>
-	<name>OSEE X Server - Parent (Incubation)</name>
+	<name>OSEE Server - Parent (Incubation)</name>
 	<version>0.26.0-SNAPSHOT</version>
 
 	<profiles>

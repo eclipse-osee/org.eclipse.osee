@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: OSEE X Server Application
+Bundle-Name: OSEE Server Application
 Bundle-SymbolicName: org.eclipse.osee.server.application
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment

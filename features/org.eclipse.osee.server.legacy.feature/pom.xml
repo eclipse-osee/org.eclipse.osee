@@ -9,5 +9,5 @@
 	</parent>
 	<artifactId>org.eclipse.osee.server.legacy.feature</artifactId>
 	<packaging>eclipse-feature</packaging>
-	<name>OSEE X Server Legacy Feature - (Incubation)</name>
+	<name>OSEE Server Legacy Feature - (Incubation)</name>
 </project>
