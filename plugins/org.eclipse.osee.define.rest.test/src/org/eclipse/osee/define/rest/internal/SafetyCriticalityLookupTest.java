@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.define.rest.internal;
 
-import org.eclipse.osee.define.rest.internal.SafetyCriticalityLookup;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.junit.Assert;

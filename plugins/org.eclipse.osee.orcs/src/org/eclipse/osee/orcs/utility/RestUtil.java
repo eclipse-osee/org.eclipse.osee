@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.utility;
 
-import java.util.Collection;
 import javax.ws.rs.core.HttpHeaders;
 
 public class RestUtil {

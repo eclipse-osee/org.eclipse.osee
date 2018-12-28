@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.resources;
 
-import java.io.IOException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -27,7 +26,6 @@ import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.json.JSONException;
 
 /**
  * @author Angel Avila

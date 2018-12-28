@@ -11,8 +11,8 @@
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
 import org.eclipse.osee.framework.core.data.TupleTypeId;
-import org.eclipse.osee.orcs.core.ds.OrcsVersionedObjectImpl;
 import org.eclipse.osee.framework.core.data.TupleTypeToken;
+import org.eclipse.osee.orcs.core.ds.OrcsVersionedObjectImpl;
 import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.internal.tuple.TupleVisitor;

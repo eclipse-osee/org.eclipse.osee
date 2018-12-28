@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.utility;
 import com.google.common.collect.Iterables;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;

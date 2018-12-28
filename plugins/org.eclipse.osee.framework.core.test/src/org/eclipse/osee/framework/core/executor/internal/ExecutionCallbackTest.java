@@ -21,7 +21,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.core.executor.ExecutionCallback;
-import org.eclipse.osee.framework.core.executor.internal.ExecutorAdminImpl;
 import org.eclipse.osee.logger.Log;
 import org.junit.After;
 import org.junit.Before;

@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.CheckAccessDetailCollectorNotCalled;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockAccessDetailCollector;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockArtifactDataProvider;

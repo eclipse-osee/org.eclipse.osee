@@ -11,8 +11,6 @@
 package org.eclipse.osee.define.rest.internal;
 
 import java.util.Set;
-import org.eclipse.osee.define.rest.internal.TraceAccumulator;
-import org.eclipse.osee.define.rest.internal.TraceMatch;
 import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.junit.Assert;

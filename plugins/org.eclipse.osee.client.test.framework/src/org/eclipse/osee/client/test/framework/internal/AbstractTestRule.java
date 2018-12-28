@@ -12,7 +12,6 @@ package org.eclipse.osee.client.test.framework.internal;
 
 import org.junit.rules.MethodRule;
 import org.junit.runners.model.FrameworkMethod;
-import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
 /**

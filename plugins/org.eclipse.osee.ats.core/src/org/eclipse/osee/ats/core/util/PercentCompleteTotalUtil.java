@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.core.util;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;

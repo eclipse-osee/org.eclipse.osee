@@ -26,7 +26,6 @@ import static org.eclipse.osee.activity.internal.ActivityLogImpl.LogEntry.START_
 import static org.eclipse.osee.activity.internal.ActivityUtil.captureStackTrace;
 import static org.eclipse.osee.framework.core.data.CoreActivityTypes.DEFAULT_ROOT;
 import static org.eclipse.osee.framework.core.data.CoreActivityTypes.THREAD_ACTIVITY;
-import java.net.UnknownHostException;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;

@@ -11,7 +11,6 @@
 package org.eclipse.osee.define.ide.traceability;
 
 import java.nio.CharBuffer;
-import org.eclipse.osee.define.ide.traceability.TestUnitTagger;
 import org.junit.Assert;
 import org.junit.Test;
 

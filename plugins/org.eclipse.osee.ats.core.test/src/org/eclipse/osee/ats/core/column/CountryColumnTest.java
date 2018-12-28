@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.core.column;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.country.IAtsCountry;
 import org.eclipse.osee.ats.core.config.WorkPackageUtility;
