@@ -9,23 +9,18 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.core.util.result;
+package org.eclipse.osee.framework.jdk.core.result;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.util.IResultDataListener;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.IHealthStatus;
-import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 
 /**
  * Used to log Info, Warning and Errors to multiple locations (logger, stderr/out and XResultView). Upon completion, a
@@ -83,22 +78,6 @@ public class XResultData {
 
    public void addRaw(String str) {
       results.add(str);
-   }
-
-   public void reportSevereLoggingMonitor(SevereLoggingMonitor monitorLog) {
-      List<IHealthStatus> stats = monitorLog.getAllLogs();
-      for (IHealthStatus stat : new ArrayList<IHealthStatus>(stats)) {
-         if (stat.getException() != null) {
-            error("Exception: " + Lib.exceptionToString(stat.getException()));
-         }
-      }
-   }
-
-   public void log(IProgressMonitor monitor, String str) {
-      log(str);
-      if (monitor != null) {
-         monitor.setTaskName(str);
-      }
    }
 
    /**

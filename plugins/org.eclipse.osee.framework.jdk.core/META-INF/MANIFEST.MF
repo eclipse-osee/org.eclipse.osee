@@ -6,6 +6,7 @@ Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.framework.jdk.core.persistence,
  org.eclipse.osee.framework.jdk.core.reportdata,
+ org.eclipse.osee.framework.jdk.core.result,
  org.eclipse.osee.framework.jdk.core.text,
  org.eclipse.osee.framework.jdk.core.text.change,
  org.eclipse.osee.framework.jdk.core.text.rules,

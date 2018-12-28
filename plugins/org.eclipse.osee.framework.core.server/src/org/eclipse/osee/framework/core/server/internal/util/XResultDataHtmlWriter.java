@@ -21,9 +21,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-import org.eclipse.osee.framework.core.util.result.Manipulations;
-import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.core.util.result.XResultPageBase;
+import org.eclipse.osee.framework.jdk.core.result.Manipulations;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne

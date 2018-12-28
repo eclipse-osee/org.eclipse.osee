@@ -13,7 +13,7 @@ package org.eclipse.osee.define.ide.traceability.operations;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.ide.traceability.data.TraceMark;
 import org.eclipse.osee.define.ide.traceability.data.TraceUnit;
-import org.eclipse.osee.framework.core.util.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;

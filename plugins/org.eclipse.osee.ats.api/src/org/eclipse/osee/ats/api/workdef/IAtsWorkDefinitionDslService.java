@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.api.workdef;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.util.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne

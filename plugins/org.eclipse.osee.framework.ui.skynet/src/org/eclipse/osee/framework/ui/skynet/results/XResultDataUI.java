@@ -11,16 +11,21 @@
 package org.eclipse.osee.framework.ui.skynet.results;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.util.result.Manipulations;
-import org.eclipse.osee.framework.core.util.result.XResultBrowserHyperCmd;
-import org.eclipse.osee.framework.core.util.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.result.Manipulations;
+import org.eclipse.osee.framework.jdk.core.result.XResultBrowserHyperCmd;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -160,6 +165,15 @@ public class XResultDataUI {
          report(rd, "This is my report title");
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
+   public static void reportSevereLoggingMonitor(SevereLoggingMonitor monitorLog, XResultData rd) {
+      List<IHealthStatus> stats = monitorLog.getAllLogs();
+      for (IHealthStatus stat : new ArrayList<IHealthStatus>(stats)) {
+         if (stat.getException() != null) {
+            rd.error("Exception: " + Lib.exceptionToString(stat.getException()));
+         }
       }
    }
 

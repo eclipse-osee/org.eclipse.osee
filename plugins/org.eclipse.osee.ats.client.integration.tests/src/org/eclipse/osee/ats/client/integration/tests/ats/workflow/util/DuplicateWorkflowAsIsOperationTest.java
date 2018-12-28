@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.core.workflow.util.DuplicateWorkflowAsIsOperation;
 import org.eclipse.osee.ats.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.util.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;

@@ -39,7 +39,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.StateDef;
 import org.eclipse.osee.ats.dsl.atsDsl.WidgetDef;
 import org.eclipse.osee.ats.dsl.atsDsl.WorkflowEventType;
 import org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslFactoryImpl;
-import org.eclipse.osee.framework.core.util.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.junit.Assert;
 import org.junit.Test;
 

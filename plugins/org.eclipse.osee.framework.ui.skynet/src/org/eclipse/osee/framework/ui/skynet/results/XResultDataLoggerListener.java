@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.results;
 
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.util.IResultDataListener;
-import org.eclipse.osee.framework.core.util.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.result.IResultDataListener;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
