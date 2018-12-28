@@ -409,7 +409,7 @@ public class RelationManager {
       ensureSideWillSupport(artifactB, relType, RelationSide.SIDE_B, 1);
    }
 
-   private static void ensureSameBranch(Artifact a, Artifact b) throws OseeArgumentException {
+   private static void ensureSameBranch(Artifact a, Artifact b) {
       if (!a.isOnSameBranch(b)) {
          throw new OseeArgumentException("Cross branch linking is not yet supported.");
       }
