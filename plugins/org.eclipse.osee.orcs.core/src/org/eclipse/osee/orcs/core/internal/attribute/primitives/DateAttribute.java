@@ -28,7 +28,6 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
       super(id);
    }
 
-
    @Override
    public String convertToStorageString(Date rawValue) {
       return String.valueOf(rawValue.getTime());

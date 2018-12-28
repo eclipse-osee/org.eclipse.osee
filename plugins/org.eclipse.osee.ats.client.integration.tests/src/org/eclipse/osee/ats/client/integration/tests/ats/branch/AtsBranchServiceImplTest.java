@@ -87,8 +87,8 @@ public class AtsBranchServiceImplTest {
       IAtsVersion version1 = AtsTestUtil.getVerArt1();
       IAtsVersion version2 = AtsTestUtil.getVerArt2();
 
-      changes.setRelation(AtsClientService.get().getQueryService().getArtifact(version1), AtsRelationTypes.ParallelVersion_Child,
-         AtsClientService.get().getQueryService().getArtifact(version2));
+      changes.setRelation(AtsClientService.get().getQueryService().getArtifact(version1),
+         AtsRelationTypes.ParallelVersion_Child, AtsClientService.get().getQueryService().getArtifact(version2));
       AtsClientService.get().getVersionService().setTargetedVersion(teamArt, version1, changes);
       changes.execute();
 

@@ -64,8 +64,7 @@ public class ArtifactLoaderTest {
    @After
    public void tearDown() throws Exception {
       SkynetTransaction transaction = TransactionManager.createTransaction(branch, testInfo.getQualifiedTestName());
-      List<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromName(testInfo.getQualifiedTestName(), branch);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(testInfo.getQualifiedTestName(), branch);
       ArtifactPersistenceManager.deleteArtifactCollection(transaction, false, artifacts);
       transaction.execute();
    }
@@ -186,8 +185,7 @@ public class ArtifactLoaderTest {
 
       @Override
       public List<Artifact> call() throws Exception {
-         List<Artifact> artifacts =
-            ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", COMMON);
+         List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", COMMON);
          if (artifacts.size() != NUM_ARTIFACTS) {
             throw new OseeStateException("Should have loaded %d not %d", NUM_ARTIFACTS, artifacts.size());
          }

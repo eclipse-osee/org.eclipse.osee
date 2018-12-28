@@ -44,6 +44,7 @@ public class Branch extends BranchViewToken implements IOseeBranch {
    public ArtifactId getAssociatedArtifact() {
       return associatedArtifact;
    }
+
    private Branch() {
       super(Id.SENTINEL, "SENTINEL", null);
       this.associatedArtifact = null;
@@ -56,7 +57,7 @@ public class Branch extends BranchViewToken implements IOseeBranch {
       this.inheritAccessControl = false;
       this.viewId = null;
    }
-     
+
    public static Branch getSentinel() {
       return new Branch();
    }

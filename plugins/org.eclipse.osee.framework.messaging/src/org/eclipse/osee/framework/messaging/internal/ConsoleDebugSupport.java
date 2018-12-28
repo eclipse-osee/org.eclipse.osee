@@ -76,9 +76,9 @@ public class ConsoleDebugSupport {
    }
 
    /**
- * @author Roberto E. Escobar
- */
-private class Stats {
+    * @author Roberto E. Escobar
+    */
+   private class Stats {
       private int count = 0;
       private Date lastReceipt;
 

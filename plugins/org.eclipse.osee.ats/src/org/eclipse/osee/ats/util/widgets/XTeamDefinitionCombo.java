@@ -64,7 +64,7 @@ public class XTeamDefinitionCombo extends XComboViewer {
 
             @Override
             public void widgetModified(XWidget widget) {
-            selectedTeamDef = AtsClientService.get().getQueryServiceClient().getArtifact(getSelected());
+               selectedTeamDef = AtsClientService.get().getQueryServiceClient().getArtifact(getSelected());
             }
          });
       }

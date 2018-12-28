@@ -154,16 +154,14 @@ public final class BranchPurgeCommand implements ConsoleCommand {
             if (uuid <= 0) {
                console.writeln("UUID listed %s is not a valid UUID", uuid);
             } else {
-               Branch cached =
-                  queryFactory.branchQuery().andId(BranchId.valueOf(uuid)).getResults().getExactlyOne();
+               Branch cached = queryFactory.branchQuery().andId(BranchId.valueOf(uuid)).getResults().getExactlyOne();
                if (cached != null) {
                   specifiedBranches.add(cached);
                }
             }
          }
 
-         Collection<Branch> branchesToPurge =
-            recurse ? getChildBranchesToPurge(specifiedBranches) : specifiedBranches;
+         Collection<Branch> branchesToPurge = recurse ? getChildBranchesToPurge(specifiedBranches) : specifiedBranches;
 
          Iterator<Branch> iter = branchesToPurge.iterator();
          while (iter.hasNext()) {

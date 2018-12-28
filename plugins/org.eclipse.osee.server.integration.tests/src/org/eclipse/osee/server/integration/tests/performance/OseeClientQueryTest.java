@@ -70,7 +70,8 @@ public class OseeClientQueryTest {
    public void searchForArtifactByName() {
       final int EXPECTED_RESULTS = 1;
       SearchResult results =
-         oseeClient.createQueryBuilder(COMMON).andNameEquals(DemoUsers.Joe_Smith.getName()).getSearchResult(RequestType.IDS);
+         oseeClient.createQueryBuilder(COMMON).andNameEquals(DemoUsers.Joe_Smith.getName()).getSearchResult(
+            RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 

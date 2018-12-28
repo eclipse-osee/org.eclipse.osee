@@ -26,7 +26,7 @@ public class RuleResultData {
    }
 
    public void setId(Long id) {
-      this.id= id;
+      this.id = id;
    }
 
    public List<RuleResultsEnum> getResultList() {

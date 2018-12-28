@@ -72,8 +72,7 @@ public class FindDuplicateArtifactNames extends AbstractBlam {
       for (Artifact artifact : artifacts) {
          List<Artifact> children = artifact.getChildren();
          for (Artifact child : children) {
-            List<Artifact> artifactListFromName =
-               ArtifactQuery.getArtifactListFromName(child.getName(), branch);
+            List<Artifact> artifactListFromName = ArtifactQuery.getArtifactListFromName(child.getName(), branch);
             if (artifactListFromName != null) {
                ViewIdUtility.removeExcludedArtifacts(artifactListFromName.iterator(), findExcludedArtifactsByView);
             }

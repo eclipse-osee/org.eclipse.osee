@@ -67,7 +67,8 @@ public interface AtsConfigEndpointApi {
    public ViewModel getNewSource();
 
    /**
-    * @return json representation of all Attribute Types as AtsAttributeValueColumn for use as a starting point in the views configuration of AtsConfig
+    * @return json representation of all Attribute Types as AtsAttributeValueColumn for use as a starting point in the
+    * views configuration of AtsConfig
     */
    @GET
    @Path("genAttrTypeViews")

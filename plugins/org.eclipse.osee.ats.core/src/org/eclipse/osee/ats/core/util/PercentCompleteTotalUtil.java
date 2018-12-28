@@ -93,8 +93,7 @@ public class PercentCompleteTotalUtil {
       if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
          int numObjects = 1;
-         percent =
-            atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.PercentComplete, 0);
+         percent = atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.PercentComplete, 0);
          if (workItem instanceof IAtsTeamWorkflow) {
             for (IAtsAbstractReview revArt : atsApi.getWorkItemService().getReviews((IAtsTeamWorkflow) workItem)) {
                percent += getPercentCompleteTotal(revArt, atsApi);

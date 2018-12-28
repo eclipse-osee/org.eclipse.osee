@@ -28,7 +28,6 @@ public class StringAttribute extends CharacterBackedAttribute<String> {
       super(id);
    }
 
-
    @Override
    public String convertStringToValue(String value) {
       return value;

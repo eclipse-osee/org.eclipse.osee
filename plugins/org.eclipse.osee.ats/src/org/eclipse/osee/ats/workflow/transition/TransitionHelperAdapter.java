@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.internal.AtsClientService;
 
-
 /**
  * @author Donald G. Dunne
  */

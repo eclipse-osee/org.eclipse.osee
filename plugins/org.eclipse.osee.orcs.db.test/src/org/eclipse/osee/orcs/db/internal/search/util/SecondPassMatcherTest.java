@@ -192,10 +192,12 @@ public class SecondPassMatcherTest {
       addTest(data, matcher, "Robot API", "Robot", QueryOption.CASE__MATCH, QueryOption.TOKEN_DELIMITER__ANY,
          QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_COUNT__IGNORE, true, getLocs(1, 5));
 
-      addTest(data, matcher, DemoUsers.Joe_Smith.getName(), "joe", QueryOption.CASE__IGNORE, QueryOption.TOKEN_DELIMITER__ANY,
-         QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.TOKEN_COUNT__IGNORE, true, getLocs(1, 3));
-      addTest(data, matcher, DemoUsers.Joe_Smith.getName(), "smith", QueryOption.CASE__IGNORE, QueryOption.TOKEN_DELIMITER__ANY,
-         QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.TOKEN_COUNT__IGNORE, true, getLocs(5, 9));
+      addTest(data, matcher, DemoUsers.Joe_Smith.getName(), "joe", QueryOption.CASE__IGNORE,
+         QueryOption.TOKEN_DELIMITER__ANY, QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.TOKEN_COUNT__IGNORE, true,
+         getLocs(1, 3));
+      addTest(data, matcher, DemoUsers.Joe_Smith.getName(), "smith", QueryOption.CASE__IGNORE,
+         QueryOption.TOKEN_DELIMITER__ANY, QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.TOKEN_COUNT__IGNORE, true,
+         getLocs(5, 9));
       return data;
    }
 

@@ -47,7 +47,8 @@ public class AtsConfig2DataExample extends AbstractAtsConfig2Data {
    @Override
    public void performPostConfig(IAtsChangeSet changes, AbstractAtsConfig2Data data) {
       Artifact dtsSoftwareArt = ArtifactQuery.getArtifactFromToken(Software_Team);
-      IAtsTeamDefinition dtsSoftwareTeam = AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(dtsSoftwareArt);
+      IAtsTeamDefinition dtsSoftwareTeam =
+         AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(dtsSoftwareArt);
 
       changes.setSoleAttributeValue(dtsSoftwareTeam, ConvertAtsConfigGuidAttributesOperations.RelatedTaskWorkDefinition,
          AtsArtifactToken.WorkDef_Task_AtsConfig2Example.getName());

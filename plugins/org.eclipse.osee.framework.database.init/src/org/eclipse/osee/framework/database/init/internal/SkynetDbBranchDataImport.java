@@ -70,8 +70,7 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
                //TODO not yet supported               importData.getSelectedBranches();
                HttpBranchExchange.importBranches(importFile.toURI().toASCIIString(), true, true);
             } catch (OseeDataStoreException ex) {
-               OseeLog.logf(Activator.class, Level.SEVERE, ex, "Exception while importing branch: [%s]",
-                  importData);
+               OseeLog.logf(Activator.class, Level.SEVERE, ex, "Exception while importing branch: [%s]", importData);
                throw ex;
             }
          }

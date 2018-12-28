@@ -51,7 +51,6 @@ public class BacklogColumn {
       if (atsApi.getStoreService().isOfType(workItem.getStoreObject(), AtsArtifactTypes.AgileBacklog)) {
          return true;
       }
-      return atsApi.getRelationResolver().getRelatedCount(workItem,
-         AtsRelationTypes.AgileTeamToBacklog_AgileTeam) == 1;
+      return atsApi.getRelationResolver().getRelatedCount(workItem, AtsRelationTypes.AgileTeamToBacklog_AgileTeam) == 1;
    }
 }

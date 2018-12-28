@@ -77,9 +77,9 @@ public class DispoConnector {
          if (invalidAnotations.isEmpty() && allUncoveredDiscprepancies.isEmpty()) {
             if (analyzeAnnotations.isEmpty()) {
                toReturn = DispoStrings.Item_Complete;
-         if (anyAnnotationsModifyType(annotations)) {
-            toReturn = DispoStrings.Item_Complete_Analyzed;
-         }
+               if (anyAnnotationsModifyType(annotations)) {
+                  toReturn = DispoStrings.Item_Complete_Analyzed;
+               }
             } else {
                toReturn = DispoStrings.Item_Analyzed;
             }

@@ -53,8 +53,8 @@ public final class FileWatcher {
     * removes a {@link File} from the set of files to be monitored. This method can be called before or after the
     * {@link #start()} method is called.
     * 
-    * @return the last know timestamp of the file before it was removed or null if it was never being monitored
-    * in the first place
+    * @return the last know timestamp of the file before it was removed or null if it was never being monitored in the
+    * first place
     */
    public Long removeFile(File file) {
       return filesToWatch.remove(file);

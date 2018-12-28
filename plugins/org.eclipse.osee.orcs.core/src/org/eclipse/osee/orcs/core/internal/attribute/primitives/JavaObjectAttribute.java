@@ -23,7 +23,6 @@ import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
 public final class JavaObjectAttribute extends BinaryAttribute<Object> {
    public static final String NAME = JavaObjectAttribute.class.getSimpleName();
 
-
    public JavaObjectAttribute(Long id) {
       super(id);
    }

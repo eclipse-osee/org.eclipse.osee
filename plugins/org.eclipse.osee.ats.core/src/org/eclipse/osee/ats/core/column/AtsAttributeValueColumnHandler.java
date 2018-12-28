@@ -63,8 +63,7 @@ public class AtsAttributeValueColumnHandler implements IAtsColumn {
          if (atsObject instanceof IAtsWorkItem) {
             IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
             AttributeTypeId attributeType = AttributeTypeId.valueOf(attrTypeId);
-            String result =
-               atsApi.getAttributeResolver().getAttributesToStringUniqueList(workItem, attributeType, ";");
+            String result = atsApi.getAttributeResolver().getAttributesToStringUniqueList(workItem, attributeType, ";");
             if (Strings.isValid(result)) {
                return result;
             } else if (isInheritParent && !workItem.isTeamWorkflow() && workItem.getParentTeamWorkflow() != null) {

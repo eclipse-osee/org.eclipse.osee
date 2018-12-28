@@ -101,9 +101,9 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
    }
    /**
- * @author Donald G. Dunne
- */
-private class ParticipationReportJob extends Job {
+    * @author Donald G. Dunne
+    */
+   private class ParticipationReportJob extends Job {
 
       private final IAtsUser user;
       private final boolean forcePend;

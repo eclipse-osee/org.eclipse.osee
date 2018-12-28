@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.column;
 
-
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.column.ParentAtsIdColumn;

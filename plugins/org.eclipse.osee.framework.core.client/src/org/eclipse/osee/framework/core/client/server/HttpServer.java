@@ -82,8 +82,7 @@ public class HttpServer {
             thread.setName(String.format("%s:%s", DEFAULT_SERVICE_NAME, portToUse));
             thread.start();
          } else {
-            OseeLog.log(Activator.class, Level.SEVERE,
-               "Unable to get a valid port for osee http local server.");
+            OseeLog.log(Activator.class, Level.SEVERE, "Unable to get a valid port for osee http local server.");
          }
       }
    }

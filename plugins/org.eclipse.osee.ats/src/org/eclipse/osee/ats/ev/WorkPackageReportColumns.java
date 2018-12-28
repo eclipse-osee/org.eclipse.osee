@@ -39,8 +39,8 @@ public class WorkPackageReportColumns {
       "Work Package Activity Id", 80, XViewerAlign.Left, true, SortDataType.String, false, "");
    protected static XViewerColumn wpTeamAiNames = new XViewerColumn("Work Package Teams/AIs", "Work Package Teams/AIs",
       200, XViewerAlign.Left, true, SortDataType.String, false, "");
-   protected static XViewerColumn wpId = new XViewerColumn("Work Package Id", "Work Package Id", 60,
-      XViewerAlign.Left, true, SortDataType.Long, false, "");
+   protected static XViewerColumn wpId = new XViewerColumn("Work Package Id", "Work Package Id", 60, XViewerAlign.Left,
+      true, SortDataType.Long, false, "");
    public static XViewerColumn wpActiveColumn = new XViewerColumn("Work Package Active", "Work Package Active", 40,
       XViewerAlign.Left, true, SortDataType.Boolean, false, "");
    public static XViewerColumn wpPercentComplete = new XViewerColumn("Work Package Percent Complete",

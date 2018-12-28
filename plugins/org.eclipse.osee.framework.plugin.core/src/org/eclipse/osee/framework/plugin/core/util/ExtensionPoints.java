@@ -72,8 +72,7 @@ public class ExtensionPoints {
       for (String entensionPointUniqueId : extensionPointUniqueIds) {
          IExtension extension = Platform.getExtensionRegistry().getExtension(entensionPointUniqueId);
          if (extension == null) {
-            OseeLog.log(Activator.class, Level.SEVERE,
-               "Unable to locate extension [" + entensionPointUniqueId + "]");
+            OseeLog.log(Activator.class, Level.SEVERE, "Unable to locate extension [" + entensionPointUniqueId + "]");
          } else {
             String thisPointId = extension.getExtensionPointUniqueIdentifier();
             if (extensionPointId.equals(thisPointId)) {
