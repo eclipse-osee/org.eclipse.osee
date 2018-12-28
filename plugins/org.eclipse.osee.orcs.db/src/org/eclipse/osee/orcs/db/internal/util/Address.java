@@ -14,7 +14,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 
 /**
  * @author Ryan D. Brooks
@@ -26,12 +26,12 @@ public final class Address implements Comparable<Address> {
    private final GammaId gammaId;
    private ModificationType modType;
    private ApplicabilityId appId;
-   private final TxChange txCurrent;
+   private final TxCurrent txCurrent;
    private final boolean isBaseline;
-   private TxChange correctedTxCurrent;
+   private TxCurrent correctedTxCurrent;
    private boolean purge;
 
-   public Address(boolean isBaseline, Long branchId, int itemId, long transactionId, GammaId gammaId, ModificationType modType, ApplicabilityId appId, TxChange txCurrent) {
+   public Address(boolean isBaseline, Long branchId, int itemId, long transactionId, GammaId gammaId, ModificationType modType, ApplicabilityId appId, TxCurrent txCurrent) {
       super();
       this.branch = BranchId.valueOf(branchId);
       this.itemId = itemId;
@@ -68,15 +68,15 @@ public final class Address implements Comparable<Address> {
    }
 
    public void ensureCorrectCurrent() {
-      TxChange correctCurrent = TxChange.getCurrent(modType);
+      TxCurrent correctCurrent = TxCurrent.getCurrent(modType);
       if (txCurrent != correctCurrent) {
          correctedTxCurrent = correctCurrent;
       }
    }
 
    public void ensureNotCurrent() {
-      if (txCurrent != TxChange.NOT_CURRENT) {
-         correctedTxCurrent = TxChange.NOT_CURRENT;
+      if (txCurrent != TxCurrent.NOT_CURRENT) {
+         correctedTxCurrent = TxCurrent.NOT_CURRENT;
       }
    }
 
@@ -84,11 +84,11 @@ public final class Address implements Comparable<Address> {
       return purge || correctedTxCurrent != null;
    }
 
-   public TxChange getCorrectedTxCurrent() {
+   public TxCurrent getCorrectedTxCurrent() {
       return correctedTxCurrent;
    }
 
-   public void setCorrectedTxCurrent(TxChange correctedTxCurrent) {
+   public void setCorrectedTxCurrent(TxCurrent correctedTxCurrent) {
       this.correctedTxCurrent = correctedTxCurrent;
    }
 
@@ -132,7 +132,7 @@ public final class Address implements Comparable<Address> {
       this.appId = appId;
    }
 
-   public TxChange getTxCurrent() {
+   public TxCurrent getTxCurrent() {
       return txCurrent;
    }
 

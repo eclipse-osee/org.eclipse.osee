@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
@@ -105,7 +105,7 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
             if (!gammas.contains(gamma)) {
                ModificationType modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
                Long app_id = chStmt.getLong("app_id");
-               TxChange txCurrent = TxChange.getCurrent(modType);
+               TxCurrent txCurrent = TxCurrent.getCurrent(modType);
                data.add(new Object[] {baseTxId, gamma, modType, txCurrent, branchData.getBranch(), app_id});
                gammas.add(gamma);
             }

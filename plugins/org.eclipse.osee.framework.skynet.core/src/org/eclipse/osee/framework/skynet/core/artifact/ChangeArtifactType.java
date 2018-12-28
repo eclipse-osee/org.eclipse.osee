@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -136,7 +136,7 @@ public class ChangeArtifactType {
       try (JdbcStatement chStmt = ConnectionHandler.getStatement()) {
          chStmt.runPreparedQuery(
             "select branch_id, gamma_id from osee_join_id jid1, osee_join_id jid2, osee_txs txs where jid1.query_id = ? and jid2.query_id = ? and jid1.id = txs.gamma_id and jid2.id = txs.branch_id and txs.tx_current = ?",
-            gammaJoin.getQueryId(), branchJoin.getQueryId(), TxChange.CURRENT);
+            gammaJoin.getQueryId(), branchJoin.getQueryId(), TxCurrent.CURRENT);
 
          while (chStmt.next()) {
             GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));

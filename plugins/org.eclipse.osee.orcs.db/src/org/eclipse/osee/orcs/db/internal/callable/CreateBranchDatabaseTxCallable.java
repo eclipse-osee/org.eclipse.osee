@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -226,9 +226,9 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
          OseePreparedStatement addressing = jdbcClient.getBatchStatement(connection, INSERT_ADDRESSING);
          if (newBranchData.getBranchType().isMergeBranch()) {
             populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ATTRIBUTE_ADDRESSING_FROM_JOIN,
-               parentBranch, TxChange.NOT_CURRENT, newBranchData.getMergeAddressingQueryId());
+               parentBranch, TxCurrent.NOT_CURRENT, newBranchData.getMergeAddressingQueryId());
             populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ARTIFACT_ADDRESSING_FROM_JOIN,
-               parentBranch, TxChange.NOT_CURRENT, newBranchData.getMergeAddressingQueryId());
+               parentBranch, TxCurrent.NOT_CURRENT, newBranchData.getMergeAddressingQueryId());
          } else {
             populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ADDRESSING, parentBranch,
                sourceTxId);
@@ -248,7 +248,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
             if (!gammas.contains(gamma)) {
                ModificationType modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
                Long appId = chStmt.getLong("app_id");
-               TxChange txCurrent = TxChange.getCurrent(modType);
+               TxCurrent txCurrent = TxCurrent.getCurrent(modType);
                addressing.addToBatch(baseTxId, gamma, modType, txCurrent, branchId, appId);
                gammas.add(gamma);
             }

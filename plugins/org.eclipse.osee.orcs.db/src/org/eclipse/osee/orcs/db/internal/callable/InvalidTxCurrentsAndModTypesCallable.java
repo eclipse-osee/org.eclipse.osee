@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcConstants;
@@ -166,7 +166,7 @@ public class InvalidTxCurrentsAndModTypesCallable extends AbstractDatastoreTxCal
       Consumer<JdbcStatement> consumer = stmt -> {
          checkForCancelled();
          ModificationType modType = ModificationType.valueOf(stmt.getInt("mod_type"));
-         TxChange txCurrent = TxChange.valueOf(stmt.getInt("tx_current"));
+         TxCurrent txCurrent = TxCurrent.valueOf(stmt.getInt("tx_current"));
          TransactionDetailsType type = TransactionDetailsType.valueOf(stmt.getInt("tx_type"));
          ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
          Address address = new Address(type.isBaseline(), stmt.getLong("branch_id"), stmt.getInt(columnName),

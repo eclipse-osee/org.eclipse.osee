@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsTypes;
@@ -188,7 +188,7 @@ public class DynamicLoadProcessor extends AbstractLoadProcessor<DynamicDataHandl
       return ModificationType.valueOf(chStmt.getInt(columnName));
    }
 
-   private TxChange getTxCurrent(JdbcStatement chStmt, String columnName) {
-      return TxChange.valueOf(chStmt.getInt(columnName));
+   private TxCurrent getTxCurrent(JdbcStatement chStmt, String columnName) {
+      return TxCurrent.valueOf(chStmt.getInt(columnName));
    }
 }

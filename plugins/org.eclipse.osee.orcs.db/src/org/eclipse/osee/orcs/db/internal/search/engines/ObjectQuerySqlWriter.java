@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.core.ds.DynamicData;
@@ -251,15 +251,15 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
          sb.append(".tx_current");
          if (allowDeleted) {
             sb.append(" IN (");
-            sb.append(String.valueOf(TxChange.CURRENT));
+            sb.append(String.valueOf(TxCurrent.CURRENT));
             sb.append(", ");
-            sb.append(String.valueOf(TxChange.DELETED));
+            sb.append(String.valueOf(TxCurrent.DELETED));
             sb.append(", ");
-            sb.append(String.valueOf(TxChange.ARTIFACT_DELETED));
+            sb.append(String.valueOf(TxCurrent.ARTIFACT_DELETED));
             sb.append(")");
          } else {
             sb.append(" = ");
-            sb.append(String.valueOf(TxChange.CURRENT));
+            sb.append(String.valueOf(TxCurrent.CURRENT));
          }
       }
    }

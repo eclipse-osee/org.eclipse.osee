@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -107,10 +107,10 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
          sb.append(".tx_current");
          if (allowDeleted) {
             sb.append(" <> ");
-            sb.append(String.valueOf(TxChange.NOT_CURRENT));
+            sb.append(String.valueOf(TxCurrent.NOT_CURRENT));
          } else {
             sb.append(" = ");
-            sb.append(String.valueOf(TxChange.CURRENT));
+            sb.append(String.valueOf(TxCurrent.CURRENT));
          }
       }
    }

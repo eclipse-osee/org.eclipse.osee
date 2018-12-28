@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.db.internal.accessor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcConstants;
@@ -24,9 +24,9 @@ import org.eclipse.osee.jdbc.OseePreparedStatement;
  */
 public class UpdatePreviousTxCurrent {
    private static final String UPDATE_TXS_NOT_CURRENT =
-      "update osee_txs SET tx_current = " + TxChange.NOT_CURRENT + " where branch_id = ? AND gamma_id = ? and transaction_id = ?";
+      "update osee_txs SET tx_current = " + TxCurrent.NOT_CURRENT + " where branch_id = ? AND gamma_id = ? and transaction_id = ?";
    private static final String UPDATE_TXS_NOT_CURRENT_NO_TX =
-      "update osee_txs SET tx_current = " + TxChange.NOT_CURRENT + " where branch_id = ? AND gamma_id = ?";
+      "update osee_txs SET tx_current = " + TxCurrent.NOT_CURRENT + " where branch_id = ? AND gamma_id = ?";
 // @formatter:off
    private static final String SELECT_TXS_AND_GAMMAS_FROM_TXS ="with\n"+
       "txs as (select gamma_id from osee_txs where branch_id = ? and transaction_id = ?),\n"+
@@ -36,7 +36,7 @@ public class UpdatePreviousTxCurrent {
       "   SELECT item2.gamma_id FROM osee_artifact item1, txs, osee_artifact item2 where txs.gamma_id = item1.gamma_id and item1.art_id = item2.art_id\n"+
       "UNION ALL\n"+
       "   SELECT item2.gamma_id FROM osee_relation_link item1, txs, osee_relation_link item2 where txs.gamma_id = item1.gamma_id and item1.rel_link_id = item2.rel_link_id)\n"+
-      "select txsb.transaction_id, txsb.gamma_id FROM item, osee_txs txsb where item.gamma_id = txsb.gamma_id AND txsb.branch_id = ? AND transaction_id <> ? AND txsb.tx_current <> " + TxChange.NOT_CURRENT;
+      "select txsb.transaction_id, txsb.gamma_id FROM item, osee_txs txsb where item.gamma_id = txsb.gamma_id AND txsb.branch_id = ? AND transaction_id <> ? AND txsb.tx_current <> " + TxCurrent.NOT_CURRENT;
 // @formatter:on
 
    private final JdbcClient jdbcClient;

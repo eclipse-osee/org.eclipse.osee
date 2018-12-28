@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -69,7 +69,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
    long previousTransactionId;
    long previousBranchId;
    ModificationType netModType;
-   TxChange netTxCurrent;
+   TxCurrent netTxCurrent;
 
    public ConsolidateRelationsDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, Console console) {
       super(logger, session, jdbcClient);
@@ -162,7 +162,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       long transactionId = stmt.getLong("transaction_id");
       long netGammaId = stmt.getLong("net_gamma_id");
       int modType = stmt.getInt("mod_type");
-      TxChange txCurrent = TxChange.valueOf(stmt.getInt("tx_current"));
+      TxCurrent txCurrent = TxCurrent.valueOf(stmt.getInt("tx_current"));
       long branchId = stmt.getLong("branch_id");
 
       if (isNextAddressing(netGammaId, transactionId)) {
@@ -189,7 +189,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       return previousNetGammaId != netGammaId || previousTransactionId != transactionId;
    }
 
-   private void computeNetAddressing(ModificationType modificationType, TxChange txCurrent) {
+   private void computeNetAddressing(ModificationType modificationType, TxCurrent txCurrent) {
       if (netTxCurrentNeedsUpdate(txCurrent)) {
          netTxCurrent = txCurrent;
          updatedAddressing = true;
@@ -203,13 +203,13 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       }
    }
 
-   private boolean netTxCurrentNeedsUpdate(TxChange txCurrent) {
+   private boolean netTxCurrentNeedsUpdate(TxCurrent txCurrent) {
       if (txCurrent == netTxCurrent) {
          return false;
       }
-      boolean needsUpdate = txCurrent == TxChange.NOT_CURRENT;
-      needsUpdate |= txCurrent == TxChange.CURRENT && netTxCurrent.isDeleted();
-      return needsUpdate || netTxCurrent == TxChange.DELETED && txCurrent == TxChange.ARTIFACT_DELETED;
+      boolean needsUpdate = txCurrent == TxCurrent.NOT_CURRENT;
+      needsUpdate |= txCurrent == TxCurrent.CURRENT && netTxCurrent.isDeleted();
+      return needsUpdate || netTxCurrent == TxCurrent.DELETED && txCurrent == TxCurrent.ARTIFACT_DELETED;
    }
 
    private boolean netModTypeNeedsUpdate(ModificationType modificationType) {
@@ -232,7 +232,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       console.writeln("Number of txs rows updated: [%s]", updateAddressing.execute());
    }
 
-   private void writeAddressingBackup(long obsoleteGammaId, long transactionId, long netGammaId, int modType, TxChange txCurrent) {
+   private void writeAddressingBackup(long obsoleteGammaId, long transactionId, long netGammaId, int modType, TxCurrent txCurrent) {
       StringBuilder strB = new StringBuilder(30);
 
       strB.append(obsoleteGammaId);

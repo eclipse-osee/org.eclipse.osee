@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -150,7 +150,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
 
                if (previousItem != currentItem) {
                   ModificationType modType = ModificationType.valueOf(stmt.getInt("mod_type"));
-                  TxChange txCurrent = TxChange.getCurrent(modType);
+                  TxCurrent txCurrent = TxCurrent.getCurrent(modType);
                   updateData.add(
                      new Object[] {txCurrent, branch, stmt.getLong("transaction_id"), stmt.getLong("gamma_id")});
                   previousItem = currentItem;

@@ -15,7 +15,7 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -101,7 +101,7 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
       private void selectDuplicates(ExportImportJoinQuery gammaJoin, JdbcConnection connection) {
          JdbcStatement chStmt = getJdbcClient().getStatement(connection);
          try {
-            chStmt.runPreparedQuery(SELECT_DUPLICATES, gammaJoin.getQueryId(), TxChange.CURRENT, TxChange.CURRENT);
+            chStmt.runPreparedQuery(SELECT_DUPLICATES, gammaJoin.getQueryId(), TxCurrent.CURRENT, TxCurrent.CURRENT);
             while (chStmt.next()) {
                console.writeln("branch: " + chStmt.getLong("branch_id"), "gamma1: " + chStmt.getLong("gamma1"),
                   "gamma2: " + chStmt.getLong("gamma2"));

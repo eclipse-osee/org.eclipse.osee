@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -40,9 +40,9 @@ import org.eclipse.osee.jdbc.JdbcConnection;
 public class UpdateMergeBranch extends AbstractDbTxOperation {
 
    private static final String TX_CURRENT_SETTINGS = "CASE" + //
-      " WHEN txs1.mod_type = " + ModificationType.DELETED.getIdString() + " THEN " + TxChange.DELETED + //
-      " WHEN txs1.mod_type = " + ModificationType.ARTIFACT_DELETED.getIdString() + " THEN " + TxChange.ARTIFACT_DELETED + //
-      " ELSE " + TxChange.CURRENT + //
+      " WHEN txs1.mod_type = " + ModificationType.DELETED.getIdString() + " THEN " + TxCurrent.DELETED + //
+      " WHEN txs1.mod_type = " + ModificationType.ARTIFACT_DELETED.getIdString() + " THEN " + TxCurrent.ARTIFACT_DELETED + //
+      " ELSE " + TxCurrent.CURRENT + //
       " END";
 
    private static final String UPDATE_ARTIFACTS =
@@ -117,7 +117,7 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
       TransactionId baselineTransaction = BranchManager.getBaseTransaction(mergeBranch);
       for (Artifact artifact : goodMergeBranchArtifacts) {
          numberAttrUpdated += getJdbcClient().runPreparedUpdate(connection, UPDATE_ARTIFACTS, baselineTransaction,
-            mergeBranch, artifact, sourceBranch, TxChange.NOT_CURRENT, mergeBranch, baselineTransaction);
+            mergeBranch, artifact, sourceBranch, TxCurrent.NOT_CURRENT, mergeBranch, baselineTransaction);
       }
       if (DEBUG) {
          System.out.println(String.format("          Adding %d Attributes to Existing Artifacts took %s",
@@ -165,7 +165,7 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
    }
 
    private void insertGammas(JdbcConnection connection, String sql, TransactionId baseTx, int queryId, BranchId sourceBranch, BranchId mergeBranch) {
-      getJdbcClient().runPreparedUpdate(connection, sql, baseTx, TxChange.CURRENT, mergeBranch, sourceBranch, queryId);
+      getJdbcClient().runPreparedUpdate(connection, sql, baseTx, TxCurrent.CURRENT, mergeBranch, sourceBranch, queryId);
    }
 
    private Collection<ArtifactId> getAllMergeArtifacts(BranchId branch) {

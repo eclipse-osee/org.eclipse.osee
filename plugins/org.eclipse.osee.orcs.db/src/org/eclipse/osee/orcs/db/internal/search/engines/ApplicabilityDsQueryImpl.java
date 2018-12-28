@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
-import static org.eclipse.osee.framework.core.enums.TxChange.NOT_CURRENT;
+import static org.eclipse.osee.framework.core.enums.TxCurrent.NOT_CURRENT;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

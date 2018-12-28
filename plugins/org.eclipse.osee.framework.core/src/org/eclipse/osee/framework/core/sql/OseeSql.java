@@ -13,16 +13,16 @@ package org.eclipse.osee.framework.core.sql;
 import java.util.Properties;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 
 /**
  * @author Ryan D. Brooks
  */
 public enum OseeSql {
 
-   TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS("SELECT txs.transaction_id, txs.gamma_id, txs.app_id FROM osee_artifact art, osee_txs txs WHERE art.art_id = ? AND art.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxChange.NOT_CURRENT),
-   TX_GET_PREVIOUS_TX_NOT_CURRENT_ATTRIBUTES("SELECT txs.transaction_id, txs.gamma_id, txs.app_id FROM osee_attribute atr, osee_txs txs WHERE atr.attr_id = ? AND atr.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxChange.NOT_CURRENT),
-   TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS("SELECT txs.transaction_id, txs.gamma_id, txs.app_id FROM osee_relation_link rel, osee_txs txs WHERE rel.rel_link_id = ? AND rel.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxChange.NOT_CURRENT),
+   TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS("SELECT txs.transaction_id, txs.gamma_id, txs.app_id FROM osee_artifact art, osee_txs txs WHERE art.art_id = ? AND art.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT),
+   TX_GET_PREVIOUS_TX_NOT_CURRENT_ATTRIBUTES("SELECT txs.transaction_id, txs.gamma_id, txs.app_id FROM osee_attribute atr, osee_txs txs WHERE atr.attr_id = ? AND atr.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT),
+   TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS("SELECT txs.transaction_id, txs.gamma_id, txs.app_id FROM osee_relation_link rel, osee_txs txs WHERE rel.rel_link_id = ? AND rel.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT),
 
    MERGE_GET_ARTIFACTS_FOR_BRANCH("SELECT art.art_id FROM osee_txs txs, osee_artifact art WHERE txs.branch_id = ? and txs.gamma_id = art.gamma_id"),
    MERGE_GET_ATTRIBUTES_FOR_BRANCH("SELECT atr.art_id, atr.attr_id FROM osee_txs txs, osee_attribute atr WHERE txs.branch_id = ? and txs.gamma_id = atr.gamma_id"),
@@ -46,7 +46,7 @@ public enum OseeSql {
    LOAD_CURRENT_ARCHIVED_ATTRIBUTES_WITH_DELETED(Strings.SELECT_CURRENT_ARCHIVED_ATTRIBUTES_PREFIX + "IN (1, 3) order by al1.id2, al1.id1, att1.attr_id, txs.transaction_id desc", Strings.HintsOrdered),
    LOAD_ALL_CURRENT_ARCHIVED_ATTRIBUTES(Strings.SELECT_CURRENT_ARCHIVED_ATTRIBUTES_PREFIX + "IN (1, 2, 3) order by al1.id2, al1.id1, att1.attr_id, txs.transaction_id desc", Strings.HintsOrdered),
 
-   LOAD_RELATIONS("SELECT%s txs.mod_type, rel_link_id, a_art_id, b_art_id, rel_link_type_id, rel.gamma_id, rationale, txs.branch_id, aj.id4, txs.app_id FROM osee_join_id4 aj, osee_relation_link rel, osee_txs txs WHERE aj.query_id = ? AND (aj.id2 = rel.a_art_id OR aj.id2 = rel.b_art_id) AND rel.gamma_id = txs.gamma_id AND txs.tx_current = " + TxChange.CURRENT + " AND aj.id1 = txs.branch_id", Strings.HintsOrdered),
+   LOAD_RELATIONS("SELECT%s txs.mod_type, rel_link_id, a_art_id, b_art_id, rel_link_type_id, rel.gamma_id, rationale, txs.branch_id, aj.id4, txs.app_id FROM osee_join_id4 aj, osee_relation_link rel, osee_txs txs WHERE aj.query_id = ? AND (aj.id2 = rel.a_art_id OR aj.id2 = rel.b_art_id) AND rel.gamma_id = txs.gamma_id AND txs.tx_current = " + TxCurrent.CURRENT + " AND aj.id1 = txs.branch_id", Strings.HintsOrdered),
    LOAD_CURRENT_ARTIFACTS(Strings.SELECT_CURRENT_ARTIFACTS_PREFIX + "= 1", Strings.HintsOrdered),
    LOAD_CURRENT_ARTIFACTS_WITH_DELETED(Strings.SELECT_CURRENT_ARTIFACTS_PREFIX + "in (1, 2)", Strings.HintsOrdered),
    LOAD_CURRENT_ARCHIVED_ARTIFACTS(Strings.SELECT_CURRENT_ARCHIVED_ARTIFACTS_PREFIX + "= 1", Strings.HintsOrdered),
@@ -59,10 +59,10 @@ public enum OseeSql {
 
    CHANGE_BRANCH_ATTRIBUTE_WAS("SELECT%s attxs1.attr_id, attxs1.value as was_value, txs1.mod_type FROM osee_join_id4 ja1, osee_attribute attxs1, osee_txs txs1, WHERE txs1.branch_id = ? AND txs1.tx_type = 1 AND attxs1.gamma_id = txs1.gamma_id AND attxs1.art_id = ja1.id2 AND txs1.branch_id = ja1.id1 AND ja1.query_id = ?", Strings.HintsOrdered),
    CHANGE_TX_ATTRIBUTE_WAS("SELECT%s att1.attr_id, att1.value as was_value, txs1.mod_type FROM osee_join_id4 al1, osee_attribute att1, osee_txs txs1 WHERE  al1.id2 = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.transaction_id < ? AND al1.query_id = ? AND txs1.branch_id = al1.id1 order by txs1.branch_id, att1.art_id, att1.attr_id, txs1.transaction_id desc", Strings.HintsOrdered),
-   CHANGE_BRANCH_ATTRIBUTE_IS("SELECT%s art1.art_type_id, attr1.art_id, attr1.attr_id, attr1.gamma_id, attr1.attr_type_id, attr1.value as is_value, txs1.mod_type FROM osee_txs txs1, osee_attribute attr1, osee_artifact art1 WHERE txs1.branch_id = ? AND txs1.transaction_id <> = ? AND txs1.tx_current in (" + TxChange.DELETED + ", " + TxChange.CURRENT + ", " + TxChange.ARTIFACT_DELETED + ") AND art1.art_id = attr1.art_id AND attr1.gamma_id = txs1.gamma_id", Strings.HintsOrdered),
+   CHANGE_BRANCH_ATTRIBUTE_IS("SELECT%s art1.art_type_id, attr1.art_id, attr1.attr_id, attr1.gamma_id, attr1.attr_type_id, attr1.value as is_value, txs1.mod_type FROM osee_txs txs1, osee_attribute attr1, osee_artifact art1 WHERE txs1.branch_id = ? AND txs1.transaction_id <> = ? AND txs1.tx_current in (" + TxCurrent.DELETED + ", " + TxCurrent.CURRENT + ", " + TxCurrent.ARTIFACT_DELETED + ") AND art1.art_id = attr1.art_id AND attr1.gamma_id = txs1.gamma_id", Strings.HintsOrdered),
    CHANGE_TX_ATTRIBUTE_IS("SELECT art.art_type_id, att.art_id, att.attr_id, att.gamma_id, att.attr_type_id, att.value as is_value, txs.mod_type FROM osee_txs txs, osee_attribute att, osee_artifact art WHERE txs.branch_id = ? and txs.transaction_id = ? AND txs.gamma_id = att.gamma_id AND att.art_id = art.art_id"),
    CHANGE_TX_ATTRIBUTE_IS_FOR_SPECIFIC_ARTIFACT(CHANGE_TX_ATTRIBUTE_IS.sql + " and att.art_id =?"),
-   CHANGE_BRANCH_RELATION("SELECT%s txs1.mod_type, rel1.gamma_id, rel1.b_art_id, rel1.a_art_id, rel1.rationale, rel1.rel_link_id, rel1.rel_link_type_id, art.art_type_id from osee_txs txs1, osee_relation_link rel1, osee_artifact art where txs1.branch_id = ? AND txs1.transaction_id <> ? AND txs1.tx_current in (" + TxChange.DELETED + ", " + TxChange.CURRENT + ", " + TxChange.ARTIFACT_DELETED + ") AND txs1.gamma_id = rel1.gamma_id AND rel1.a_art_id = art.art_id", Strings.HintsOrdered),
+   CHANGE_BRANCH_RELATION("SELECT%s txs1.mod_type, rel1.gamma_id, rel1.b_art_id, rel1.a_art_id, rel1.rationale, rel1.rel_link_id, rel1.rel_link_type_id, art.art_type_id from osee_txs txs1, osee_relation_link rel1, osee_artifact art where txs1.branch_id = ? AND txs1.transaction_id <> ? AND txs1.tx_current in (" + TxCurrent.DELETED + ", " + TxCurrent.CURRENT + ", " + TxCurrent.ARTIFACT_DELETED + ") AND txs1.gamma_id = rel1.gamma_id AND rel1.a_art_id = art.art_id", Strings.HintsOrdered),
    CHANGE_TX_RELATION("SELECT txs.mod_type, rel.gamma_id, rel.b_art_id, rel.a_art_id, rel.rationale, rel.rel_link_id, rel.rel_link_type_id, art.art_type_id from osee_txs txs, osee_relation_link rel, osee_artifact art where txs.branch_id = ? AND txs.transaction_id = ? AND txs.gamma_id = rel.gamma_id AND rel.a_art_id = art.art_id"),
    CHANGE_TX_RELATION_FOR_SPECIFIC_ARTIFACT(CHANGE_TX_RELATION.sql + " and (rel.a_art_id = ? or rel.b_art_id = ?)"),
    CHANGE_BRANCH_ARTIFACT("select%s art1.art_id, art1.art_type_id, art1.gamma_id, txs1.mod_type FROM osee_txs txs1, osee_artifact art1 WHERE txs1.branch_id = ? AND txs1.transaction_id <> ? AND txs1.gamma_id = art1.gamma_id AND txs1.mod_type in (" + ModificationType.DELETED.getIdString() + ", " + ModificationType.NEW.getIdString() + ", " + ModificationType.INTRODUCED.getIdString() + ") ", Strings.HintsOrdered),

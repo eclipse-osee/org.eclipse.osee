@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -164,8 +164,8 @@ public class TypesEndpointImpl implements TypesEndpoint {
             sheet.setAttrId(stmt2.getInt("attr_id"));
             attrIds.add(new Long(sheet.getAttrId()).intValue());
             typeVersion.getSheets().add(sheet);
-         }, OrcsTypes.LOAD_OSEE_TYPE_DEF_URIS, CoreTupleTypes.OseeTypeDef, CoreBranches.COMMON, TxChange.CURRENT,
-            typeVersion.getVersionNum(), TxChange.CURRENT);
+         }, OrcsTypes.LOAD_OSEE_TYPE_DEF_URIS, CoreTupleTypes.OseeTypeDef, CoreBranches.COMMON, TxCurrent.CURRENT,
+            typeVersion.getVersionNum(), TxCurrent.CURRENT);
 
       }, OrcsTypes.LOAD_OSEE_TYPE_VERSIONS, CoreTupleTypes.OseeTypeDef.getId());
 

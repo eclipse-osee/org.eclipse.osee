@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -156,7 +156,7 @@ public class ConflictDeletionTest {
             if (DEBUG) {
                dumpAttribute(attribute);
             } else {
-               checkAttribute(artifact, attribute, TxChange.ARTIFACT_DELETED);
+               checkAttribute(artifact, attribute, TxCurrent.ARTIFACT_DELETED);
             }
          }
          //Check that relations are deleted.
@@ -164,7 +164,7 @@ public class ConflictDeletionTest {
             if (DEBUG) {
                dumpRelation(relation, artifact);
             } else {
-               checkRelation(artifact, relation, TxChange.ARTIFACT_DELETED);
+               checkRelation(artifact, relation, TxCurrent.ARTIFACT_DELETED);
             }
          }
       }
@@ -283,8 +283,8 @@ public class ConflictDeletionTest {
                assertTrue("Attribute " + attribute.getId() + " should be deleted but isn't", attribute.isDeleted());
                assertTrue("Relation " + relation.getId() + " should be deleted but isn't", relation.isDeleted());
 
-               checkAttribute(artifactForDeletionCheck, attribute, TxChange.DELETED);
-               checkRelation(artifactForDeletionCheck, relation, TxChange.DELETED);
+               checkAttribute(artifactForDeletionCheck, attribute, TxCurrent.DELETED);
+               checkRelation(artifactForDeletionCheck, relation, TxCurrent.DELETED);
             }
 
          }
@@ -304,7 +304,7 @@ public class ConflictDeletionTest {
       }
    }
 
-   private void checkAttribute(Artifact artifact, Attribute<?> attribute, TxChange value) {
+   private void checkAttribute(Artifact artifact, Attribute<?> attribute, TxCurrent value) {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT_ATTRIBUTE, artifact.getBranch(), artifact.getTransaction(),
@@ -333,7 +333,7 @@ public class ConflictDeletionTest {
       }
    }
 
-   public void checkRelation(Artifact artifact, RelationLink relation, TxChange value) {
+   public void checkRelation(Artifact artifact, RelationLink relation, TxCurrent value) {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       assertTrue(
          "Relation should be deleted between Parent: " + relation.getArtifactIdA() + " and child " + relation.getArtifactIdB(),

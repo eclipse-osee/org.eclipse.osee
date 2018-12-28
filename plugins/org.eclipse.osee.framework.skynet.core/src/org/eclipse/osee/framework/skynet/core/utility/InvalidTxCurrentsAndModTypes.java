@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -182,7 +182,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
       Consumer<JdbcStatement> consumer = stmt -> {
          checkForCancelledStatus(monitor);
          ModificationType modType = ModificationType.valueOf(stmt.getInt("mod_type"));
-         TxChange txCurrent = TxChange.valueOf(stmt.getInt("tx_current"));
+         TxCurrent txCurrent = TxCurrent.valueOf(stmt.getInt("tx_current"));
          TransactionDetailsType type = TransactionDetailsType.valueOf(stmt.getInt("tx_type"));
          ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
          Address address =

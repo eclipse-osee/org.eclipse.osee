@@ -20,15 +20,15 @@ import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
  * @author Ryan D. Brooks
  */
 @JsonSerialize(using = IdSerializer.class)
-public interface TxChange extends Id {
+public interface TxCurrent extends Id {
 
-   public static final TxChange SENTINEL = internalCreate(Id.SENTINEL);
-   public static final TxChange NOT_CURRENT = internalCreate(0L);
-   public static final TxChange CURRENT = internalCreate(1L);
-   public static final TxChange DELETED = internalCreate(2L);
-   public static final TxChange ARTIFACT_DELETED = internalCreate(3L);
+   public static final TxCurrent SENTINEL = internalCreate(Id.SENTINEL);
+   public static final TxCurrent NOT_CURRENT = internalCreate(0L);
+   public static final TxCurrent CURRENT = internalCreate(1L);
+   public static final TxCurrent DELETED = internalCreate(2L);
+   public static final TxCurrent ARTIFACT_DELETED = internalCreate(3L);
 
-   public static TxChange valueOf(int id) {
+   public static TxCurrent valueOf(int id) {
       switch (id) {
          case 0:
             return NOT_CURRENT;
@@ -47,29 +47,29 @@ public interface TxChange extends Id {
     * This method is only public because all methods in an interface are and it should never be called outside of this
     * interface
     */
-   public static TxChange internalCreate(Long id) {
-      final class TxChangeImpl extends BaseId implements TxChange, Comparable<TxChange> {
+   public static TxCurrent internalCreate(Long id) {
+      final class TxChangeImpl extends BaseId implements TxCurrent, Comparable<TxCurrent> {
          public TxChangeImpl(Long id) {
             super(id);
          }
 
          @Override
-         public int compareTo(TxChange o) {
+         public int compareTo(TxCurrent o) {
             return getId().compareTo(o.getId());
          }
       }
       return new TxChangeImpl(id);
    }
 
-   public static TxChange getCurrent(ModificationType type) {
-      TxChange txChange;
+   public static TxCurrent getCurrent(ModificationType type) {
+      TxCurrent txChange;
 
       if (type == ModificationType.DELETED) {
-         txChange = TxChange.DELETED;
+         txChange = TxCurrent.DELETED;
       } else if (type == ModificationType.ARTIFACT_DELETED) {
-         txChange = TxChange.ARTIFACT_DELETED;
+         txChange = TxCurrent.ARTIFACT_DELETED;
       } else {
-         txChange = TxChange.CURRENT;
+         txChange = TxCurrent.CURRENT;
       }
       return txChange;
    }
@@ -79,6 +79,6 @@ public interface TxChange extends Id {
    }
 
    default boolean isCurrent() {
-      return this != TxChange.NOT_CURRENT;
+      return this != TxCurrent.NOT_CURRENT;
    }
 }

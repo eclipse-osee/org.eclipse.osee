@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -194,7 +194,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
       VersionData data = orcsData.getVersion();
       ModificationType modType = orcsData.getModType();
 
-      addRow(SqlOrderEnum.TXS, data.getTransactionId(), data.getGammaId(), modType, TxChange.getCurrent(modType),
+      addRow(SqlOrderEnum.TXS, data.getTransactionId(), data.getGammaId(), modType, TxCurrent.getCurrent(modType),
          data.getBranch(), orcsData.getApplicabilityId());
 
       if (key.hasTxNotCurrentQuery()) {

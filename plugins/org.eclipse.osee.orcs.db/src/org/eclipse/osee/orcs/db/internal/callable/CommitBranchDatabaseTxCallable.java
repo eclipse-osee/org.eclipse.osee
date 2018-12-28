@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
@@ -170,7 +170,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
             destinationBranch,
             change.getNetChange().getGammaId(),
             modType,
-            TxChange.getCurrent(modType),
+            TxCurrent.getCurrent(modType),
             appToken});
       }
       getJdbcClient().runBatchUpdate(connection, INSERT_COMMIT_ADDRESSING, insertData);

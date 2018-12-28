@@ -22,7 +22,7 @@ import java.util.TreeSet;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.text.rules.ReplaceAll;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
@@ -166,7 +166,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
       }
 
       while (iterator.hasNext()) {
-         previousAddress.setCorrectedTxCurrent(TxChange.NOT_CURRENT);
+         previousAddress.setCorrectedTxCurrent(TxCurrent.NOT_CURRENT);
          Address address = iterator.next();
          ModificationType[] nextValidStates = getNextPossibleStates(previousAddress.getModType());
          if (!address.getModType().matches(nextValidStates)) {
@@ -174,7 +174,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
          }
          previousAddress = address;
       }
-      previousAddress.setCorrectedTxCurrent(TxChange.getCurrent(previousAddress.getModType()));
+      previousAddress.setCorrectedTxCurrent(TxCurrent.getCurrent(previousAddress.getModType()));
    }
 
    private ModificationType[] getNextPossibleStates(ModificationType state) {

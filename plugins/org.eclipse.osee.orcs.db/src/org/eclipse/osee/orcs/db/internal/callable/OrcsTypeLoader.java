@@ -20,7 +20,7 @@ import java.util.LinkedHashSet;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -53,8 +53,8 @@ public class OrcsTypeLoader {
          Collection<String> uriPaths = new LinkedHashSet<>();
 
          jdbcClient.runQuery(stmt -> uriPaths.add(stmt.getString("uri")), OrcsTypes.LOAD_OSEE_TYPE_DEF_URIS,
-            CoreTupleTypes.OseeTypeDef, CoreBranches.COMMON, TxChange.CURRENT, OrcsTypesData.OSEE_TYPE_VERSION,
-            TxChange.CURRENT);
+            CoreTupleTypes.OseeTypeDef, CoreBranches.COMMON, TxCurrent.CURRENT, OrcsTypesData.OSEE_TYPE_VERSION,
+            TxCurrent.CURRENT);
 
          Conditions.checkExpressionFailOnTrue(uriPaths.isEmpty(), "No orcs types found");
          return new OrcsTypesResource(uri, uriPaths);

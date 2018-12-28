@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -68,7 +68,7 @@ public abstract class BaseTransactionData {
       ModificationType modTypeToStore = getAdjustedModificationType();
 
       internalAddInsertToBatch(collector, Integer.MAX_VALUE, INSERT_INTO_TRANSACTION_TABLE, collector.getTransaction(),
-         getGammaId(), modTypeToStore, TxChange.getCurrent(modTypeToStore), collector.getBranch(), getApplicId());
+         getGammaId(), modTypeToStore, TxCurrent.getCurrent(modTypeToStore), collector.getBranch(), getApplicId());
    }
 
    //Replaces the replace_with_version modtype with modification for storage.

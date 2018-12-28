@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.core.util.result.Manipulations;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -68,7 +68,7 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
       super("Items marked as deleted or artifact deleted without other entries in txs");
    }
 
-   private void loadData(String sql, TxChange txChange, ModificationType modificationType) {
+   private void loadData(String sql, TxCurrent txChange, ModificationType modificationType) {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(sql, txChange, modificationType, modificationType);
@@ -82,7 +82,7 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
       }
    }
 
-   private void detectAndCollectErrors(IProgressMonitor monitor, TxChange txChange, ModificationType modificationType) {
+   private void detectAndCollectErrors(IProgressMonitor monitor, TxCurrent txChange, ModificationType modificationType) {
       monitor.setTaskName("Loading Artifacts that were Introduced as Deleted");
       loadData(COMMITTED_NEW_AND_DELETED_ARTIFACTS, txChange, modificationType);
       checkForCancelledStatus(monitor);
@@ -103,8 +103,8 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
 
       if (verify || addressing == null) {
          addressing = new HashSet<>();
-         detectAndCollectErrors(monitor, TxChange.DELETED, ModificationType.DELETED);
-         detectAndCollectErrors(monitor, TxChange.ARTIFACT_DELETED, ModificationType.ARTIFACT_DELETED);
+         detectAndCollectErrors(monitor, TxCurrent.DELETED, ModificationType.DELETED);
+         detectAndCollectErrors(monitor, TxCurrent.ARTIFACT_DELETED, ModificationType.ARTIFACT_DELETED);
       } else {
          monitor.worked(calculateWork(0.40));
       }
