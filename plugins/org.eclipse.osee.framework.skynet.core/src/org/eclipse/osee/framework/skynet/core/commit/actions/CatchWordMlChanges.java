@@ -48,8 +48,8 @@ public class CatchWordMlChanges implements CommitAction {
       IOperation operation = ChangeManager.compareTwoBranchesHead(sourceBranch, destinationBranch, changes);
       Operations.executeWorkAndCheckStatus(operation);
 
-      Map<Integer, String> trackedChanges = new HashMap<Integer, String>();
-      Map<Integer, String> applicabilityTags = new HashMap<Integer, String>();
+      Map<Integer, String> trackedChanges = new HashMap<>();
+      Map<Integer, String> applicabilityTags = new HashMap<>();
       for (Change change : changes) {
          if (!change.getModificationType().isDeleted()) {
             if (change.getChangeType() == LoadChangeType.attribute) {
@@ -63,9 +63,9 @@ public class CatchWordMlChanges implements CommitAction {
                   Boolean useInvalidTagsCheck =
                      Boolean.valueOf(OseeInfo.getCachedValue("osee.are.applicability.tags.invalid"));
                   Boolean isInvalidTags =
-                     useInvalidTagsCheck ? (((WordAttribute) attribute).areApplicabilityTagsInvalid(destinationBranch,
+                     useInvalidTagsCheck ? ((WordAttribute) attribute).areApplicabilityTagsInvalid(destinationBranch,
                         ApplicabilityUtility.getValidFeatureValuesForBranch(destinationBranch),
-                        ApplicabilityUtility.getBranchViewNamesUpperCase(destinationBranch))) : useInvalidTagsCheck;
+                        ApplicabilityUtility.getBranchViewNamesUpperCase(destinationBranch)) : useInvalidTagsCheck;
                   if (isInvalidTags) {
                      applicabilityTags.put(attribute.getArtifact().getArtId(), attribute.getArtifact().getSafeName());
                   }
@@ -94,16 +94,12 @@ public class CatchWordMlChanges implements CommitAction {
                + "Please fix the tags, then recommit: [%s]",
             applicabilityTags.toString());
 
-         err = (err == null) ? temp : err + temp;
+         err = err == null ? temp : err + temp;
       }
 
       if (err != null) {
          throw new OseeCoreException(err);
       }
 
-   }
-
-   private String getArtifactErrorMessage(Artifact artifact) {
-      return String.format("Error validating [%s] on branch [%s]", artifact.toStringWithId(), artifact.getBranch());
    }
 }

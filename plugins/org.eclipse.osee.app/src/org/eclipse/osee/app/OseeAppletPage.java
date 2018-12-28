@@ -74,7 +74,7 @@ public class OseeAppletPage {
          if (listId.equals("baselineBranches") || listId.equals("workingAndBaselineBranches")) {
             if (!dataListsRule.ruleExists(listId)) {
                Iterable<IOseeBranch> options = getBranchOptions(query, listId);
-               dataListsRule.addRule(new IdentifiableLongOptionsRule<IOseeBranch>("", options, listId));
+               dataListsRule.addRule(new IdentifiableLongOptionsRule<>("", options, listId));
             }
          }
       }

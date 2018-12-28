@@ -258,13 +258,12 @@ public final class DispoUtil {
    public static HashMap<String, String> splitTestScriptNameAndPath(List<DispoAnnotationData> annotations) {
       HashMap<String, String> testScriptNameToPath = new HashMap<>();
       for (DispoAnnotationData data : annotations) {
-         String name = "", path = "", comment = "";
+         String name = "", path = "";
          String resolution = data.getResolution();
          if (!resolution.isEmpty()) {
             String[] split = resolution.split("___");
             if (split.length > 1) {
                path = split[0];
-               comment = split[1];
             } else {
                path = split.toString();
             }

@@ -156,7 +156,7 @@ public class DWAOAuthService {
 
       Token accessToken = null;
       try {
-         if ((accessTokenRequestResponse != 200)) {
+         if (accessTokenRequestResponse != 200) {
             return null;
          }
          OseeLog.log(DWAOAuthService.class, Level.INFO, "Response: " + accessTokenRequestResponse);
@@ -289,7 +289,7 @@ public class DWAOAuthService {
       authorizeGetMethod.addRequestHeader("OSLC-Core-Version", "2.0");
       authorizeGetMethod.addRequestHeader("Accept", "application/rdf+xml");
       authorizeGetMethod.addRequestHeader("Accept-Charset", "UTF-8");
-      if ((queryString != null) && !queryString.isEmpty()) {
+      if (queryString != null && !queryString.isEmpty()) {
          try {
             authorizeGetMethod.setQueryString(URIUtil.encodeQuery(queryString));
          } catch (URIException e) {
@@ -298,11 +298,8 @@ public class DWAOAuthService {
       }
       signRequest(accessToken, authorizeGetMethod, true);
       String responseBodyAsString = "";
-      @SuppressWarnings("unused")
-      int accessTokenRequestResponse = -1;
-
       try {
-         accessTokenRequestResponse = this.httpClient.executeMethod(authorizeGetMethod);
+         this.httpClient.executeMethod(authorizeGetMethod);
          responseBodyAsString = authorizeGetMethod.getResponseBodyAsString();
       } catch (IOException e) {
          OseeLog.log(getClass(), Level.SEVERE, e);

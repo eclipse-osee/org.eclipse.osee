@@ -90,7 +90,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
          return;
       }
       if (resultNonAtsArts.size() > 0) {
-         MassArtifactEditor.editArtifacts("Open Artifact(s)", new ArrayList<Artifact>(resultNonAtsArts));
+         MassArtifactEditor.editArtifacts("Open Artifact(s)", new ArrayList<>(resultNonAtsArts));
       }
       if (resultAtsArts.size() > 0) {
          // If requested world editor and it's already been opened there,

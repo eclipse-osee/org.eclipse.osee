@@ -603,7 +603,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
    private NewActionData getNewActionData(String userId, String actionItem, String title) {
       NewActionData newActionData = new NewActionData();
-      List<String> actionIds = new ArrayList<String>();
+      List<String> actionIds = new ArrayList<>();
       actionIds.add(actionItem);
       newActionData.setAiIds(actionIds);
       newActionData.setTitle(title);

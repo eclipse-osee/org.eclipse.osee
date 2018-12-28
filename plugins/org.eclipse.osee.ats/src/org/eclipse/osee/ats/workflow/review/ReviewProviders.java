@@ -31,7 +31,7 @@ public final class ReviewProviders {
    public synchronized static List<IReviewProvider> getAtsReviewProviders() {
       if (reviewProvider == null) {
 
-         ExtensionDefinedObjects<IReviewProvider> objects = new ExtensionDefinedObjects<IReviewProvider>(
+         ExtensionDefinedObjects<IReviewProvider> objects = new ExtensionDefinedObjects<>(
             Activator.PLUGIN_ID + ".AtsReviewProvider", "AtsReviewProvider", "classname", true);
          reviewProvider = objects.getObjects();
 

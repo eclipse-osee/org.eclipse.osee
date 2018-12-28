@@ -493,7 +493,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       @SuppressWarnings("rawtypes")
       @Override
       public List toList() {
-         return new ArrayList<Artifact>(collection);
+         return new ArrayList<>(collection);
       }
    }
 

@@ -21,15 +21,15 @@ import org.eclipse.osee.ats.api.agile.JaxAgileSprint;
  */
 public class JaxKbSprint extends JaxAgileSprint {
 
-   List<JaxKbRowIdToTaskId> rowToTaskIds = new LinkedList<JaxKbRowIdToTaskId>();
-   Map<String, String> rowIdToName = new HashMap<String, String>();
-   Map<String, String> userIdToName = new HashMap<String, String>();
-   Map<String, String> userNameToId = new HashMap<String, String>();
+   List<JaxKbRowIdToTaskId> rowToTaskIds = new LinkedList<>();
+   Map<String, String> rowIdToName = new HashMap<>();
+   Map<String, String> userIdToName = new HashMap<>();
+   Map<String, String> userNameToId = new HashMap<>();
    List<String> teamMembersOrdered = new LinkedList<>();
    List<String> otherMembersOrdered = new LinkedList<>();
-   List<JaxKbState> statesToTaskIds = new LinkedList<JaxKbState>();
-   List<JaxKbAvailableState> availableStates = new LinkedList<JaxKbAvailableState>();
-   Map<String, JaxKbTask> tasks = new HashMap<String, JaxKbTask>();
+   List<JaxKbState> statesToTaskIds = new LinkedList<>();
+   List<JaxKbAvailableState> availableStates = new LinkedList<>();
+   Map<String, JaxKbTask> tasks = new HashMap<>();
    KanbanRowType rowType;
 
    public void addRowIdToTaskId(String rowId, String taskId) {

@@ -34,7 +34,7 @@ public class NewActionData {
    String transactionComment;
    String needByDateLong;
    String needByDate;
-   Map<String, String> attrValues = new HashMap<String, String>();
+   Map<String, String> attrValues = new HashMap<>();
    String points;
    boolean unplanned;
    String sprint;

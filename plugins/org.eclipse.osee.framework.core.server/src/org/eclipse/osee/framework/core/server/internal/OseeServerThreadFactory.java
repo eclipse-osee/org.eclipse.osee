@@ -39,7 +39,7 @@ class OseeServerThreadFactory implements ThreadFactory {
    public Thread newThread(Runnable runnable) {
       OseeServerThread thread = new OseeServerThread(runnable, threadName + ":" + threads.size());
       thread.setPriority(priority);
-      this.threads.add(new WeakReference<OseeServerThread>(thread));
+      this.threads.add(new WeakReference<>(thread));
       return thread;
    }
 

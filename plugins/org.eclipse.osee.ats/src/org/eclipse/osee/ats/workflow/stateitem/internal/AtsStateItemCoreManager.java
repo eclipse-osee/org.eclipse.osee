@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 public class AtsStateItemCoreManager {
 
    private static final ExtensionDefinedObjects<IAtsStateItemCore> extensionDefinedObjects =
-      new ExtensionDefinedObjects<IAtsStateItemCore>(Activator.PLUGIN_ID + ".AtsStateItemCore", "AtsStateItemCore",
+      new ExtensionDefinedObjects<>(Activator.PLUGIN_ID + ".AtsStateItemCore", "AtsStateItemCore",
          "classname", true);
 
    public static List<IAtsStateItemCore> getStateItems() {

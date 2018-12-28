@@ -35,7 +35,7 @@ import org.osgi.framework.ServiceReference;
 public final class CmAccessProviderProxy implements IAccessProvider {
 
    private final List<ServiceReference<CmAccessControl>> pending =
-      new CopyOnWriteArrayList<ServiceReference<CmAccessControl>>();
+      new CopyOnWriteArrayList<>();
 
    private final Collection<CmAccessControl> cmServices = new CopyOnWriteArraySet<>();
 

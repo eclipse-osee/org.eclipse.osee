@@ -269,7 +269,7 @@ public class ChangeItemUtilTest {
    @Test
    public void testGammasEqual() {
       List<Triplet<ChangeVersion, ChangeVersion, Boolean>> cases =
-         new ArrayList<Triplet<ChangeVersion, ChangeVersion, Boolean>>();
+         new ArrayList<>();
 
       cases.add(createTriplet(3000L, ModificationType.MODIFIED, 3000L, ModificationType.NEW, true));
       cases.add(createTriplet(0L, ModificationType.MODIFIED, 3000L, ModificationType.NEW, false));
@@ -432,7 +432,7 @@ public class ChangeItemUtilTest {
    }
 
    private Triplet<ChangeVersion, ChangeVersion, Boolean> createTriplet(Long long1, ModificationType mod1, Long long2, ModificationType mod2, boolean expected) {
-      return new Triplet<ChangeVersion, ChangeVersion, Boolean>(//
+      return new Triplet<>(//
          ChangeTestUtility.createChange(long1, mod1), //
          ChangeTestUtility.createChange(long2, mod2), //
          expected);

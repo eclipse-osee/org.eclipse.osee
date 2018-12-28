@@ -195,7 +195,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
 
    @Override
    public List<BranchViewToken> getApplicabilityBranches() {
-      List<BranchViewToken> tokens = new ArrayList<BranchViewToken>();
+      List<BranchViewToken> tokens = new ArrayList<>();
       for (Branch branch : orcsApi.getQueryFactory().branchQuery().includeArchived(false).includeDeleted(
          false).andIsOfType(BranchType.BASELINE, BranchType.WORKING).andStateIs(BranchState.CREATED,
             BranchState.MODIFIED).getResults().getList()) {

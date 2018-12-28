@@ -46,7 +46,7 @@ public final class OseeAppResource {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public Collection<OseeAppTransfer> getOseeAppListJson(@QueryParam("filter") String filterText) {
-      List<OseeAppTransfer> results = new LinkedList<OseeAppTransfer>();
+      List<OseeAppTransfer> results = new LinkedList<>();
       BranchId branchId =
          orcsApi.getQueryFactory().branchQuery().andNameEquals("Common").getResultsAsId().getExactlyOne();
       ResultSet<ArtifactReadable> apps =

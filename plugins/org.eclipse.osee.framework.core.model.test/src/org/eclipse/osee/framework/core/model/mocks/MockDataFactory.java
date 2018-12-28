@@ -53,9 +53,9 @@ public final class MockDataFactory {
    public static <T> AccessDetail<T> createAccessDetails(T expAccessObject, PermissionEnum expPermission, String expReason, Scope scope) {
       AccessDetail<T> target;
       if (expReason != null) {
-         target = new AccessDetail<T>(expAccessObject, expPermission, scope, expReason);
+         target = new AccessDetail<>(expAccessObject, expPermission, scope, expReason);
       } else {
-         target = new AccessDetail<T>(expAccessObject, expPermission, scope);
+         target = new AccessDetail<>(expAccessObject, expPermission, scope);
       }
       return target;
    }

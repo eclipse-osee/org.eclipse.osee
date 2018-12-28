@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Control;
 public class RdfExplorerDragAndDrop {
    private DragSource dragSource;
 
-   private final List<Requirement> reqs = new ArrayList<Requirement>();
+   private final List<Requirement> reqs = new ArrayList<>();
 
    public RdfExplorerDragAndDrop(Control source) {
 
@@ -72,7 +72,7 @@ public class RdfExplorerDragAndDrop {
    }
 
    public void textTransferDragSetData(DragSourceEvent event) {
-      List<JsonArtifactRepresentation> reqsOut = new ArrayList<JsonArtifactRepresentation>();
+      List<JsonArtifactRepresentation> reqsOut = new ArrayList<>();
       for (Requirement reqt : reqs) {
          reqsOut.add(makeJsonArtifactRepresentation(reqt));
       }
@@ -88,7 +88,7 @@ public class RdfExplorerDragAndDrop {
       JsonArtifactRepresentation artRep = new JsonArtifactRepresentation();
       artRep.setArtifactTypeId(CoreArtifactTypes.Url.getId());
       artRep.setName(reqt.getShortName());
-      List<JsonAttributeRepresentation> attrs = new ArrayList<JsonAttributeRepresentation>();
+      List<JsonAttributeRepresentation> attrs = new ArrayList<>();
       attrs.add(new JsonAttributeRepresentation(CoreAttributeTypes.Description.getId(), reqt.getName()));
       attrs.add(new JsonAttributeRepresentation(CoreAttributeTypes.ContentUrl.getId(), reqt.getPath()));
       artRep.setAttrs(attrs);

@@ -45,7 +45,7 @@ public class AtsStateFactory implements IAtsStateFactory {
       IAtsStateManager stateMgr = idToStateManager.get(workItem);
       TransactionId transId = idToTransactionId.get(workItem);
       TransactionId workItemTransaction = atsApi.getStoreService().getTransactionId(workItem);
-      if (stateMgr == null || (workItemTransaction.isValid() && workItemTransaction.notEqual(transId))) {
+      if (stateMgr == null || workItemTransaction.isValid() && workItemTransaction.notEqual(transId)) {
          stateMgr = new StateManager(workItem, logFactory, atsApi);
          idToStateManager.put(workItem, stateMgr);
          idToTransactionId.put(workItem, atsApi.getStoreService().getTransactionId(workItem));

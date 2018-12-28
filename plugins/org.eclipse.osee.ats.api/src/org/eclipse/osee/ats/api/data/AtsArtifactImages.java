@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
  */
 public class AtsArtifactImages {
 
-   private final static List<ArtifactImage> images = new LinkedList<ArtifactImage>();
+   private final static List<ArtifactImage> images = new LinkedList<>();
    public static ArtifactImage AGILE_TASK =
       AtsArtifactImages.construct(AtsArtifactTypes.TeamWorkflow, "workflow.gif", "/ats/agileui/images");
    public static ArtifactImage AGILE_SPRINT =

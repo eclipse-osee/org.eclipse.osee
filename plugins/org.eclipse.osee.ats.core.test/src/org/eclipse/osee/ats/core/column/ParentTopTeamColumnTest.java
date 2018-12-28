@@ -60,7 +60,7 @@ public class ParentTopTeamColumnTest {
     */
    @org.junit.Test
    public void testGetColumnText_fromTeamWf() throws Exception {
-      Set<IAtsVersion> ver = new HashSet<IAtsVersion>();
+      Set<IAtsVersion> ver = new HashSet<>();
       ver.addAll(Arrays.asList(ver1));
       when(teamDef_top.getVersions()).thenReturn(ver);
 
@@ -74,7 +74,7 @@ public class ParentTopTeamColumnTest {
     */
    @org.junit.Test
    public void testGetColumnText_fromRelatedReview() throws Exception {
-      Set<IAtsVersion> ver = new HashSet<IAtsVersion>();
+      Set<IAtsVersion> ver = new HashSet<>();
       ver.addAll(Arrays.asList(ver1));
       when(teamDef_top.getVersions()).thenReturn(ver);
       when(rev1.getParentTeamWorkflow()).thenReturn(teamWf1);

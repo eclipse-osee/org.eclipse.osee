@@ -87,10 +87,10 @@ public class Doors extends ViewPart {
                      reqName = string2;
                   }
                }
-               if ((url != null) && (reqName != null)) {
+               if (url != null && reqName != null) {
                   BranchSelectionDialog bsd =
                      new BranchSelectionDialog("Select a branch to Import the Doors requirement(s)", true);
-                  if ((bsd.open() == Window.OK) && (bsd.getSelection() != null)) {
+                  if (bsd.open() == Window.OK && bsd.getSelection() != null) {
 
                      DoorsCreator doorTypesCreator = new DoorsCreator();
 
@@ -133,7 +133,7 @@ public class Doors extends ViewPart {
       String[] hostName = split2[1].split(":");
       Browser.setCookie("JSESSIONID=" + jSessionID + "; domain=" + hostName[0] + "; path=/", DoorsModel.getDialogUrl());
 
-      if (!this.browser.isDisposed() && (this.fileName != null)) {
+      if (!this.browser.isDisposed() && this.fileName != null) {
          File file = new File(this.fileName);
          setBrowserUrl(file);
       } else {

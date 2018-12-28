@@ -33,7 +33,7 @@ public final class JaxRsContainerProviderImpl extends LazyObject<JaxRsContainer>
 
    @Override
    protected FutureTask<JaxRsContainer> createLoaderTask() {
-      return new FutureTask<JaxRsApplicationRegistry.JaxRsContainer>(new Callable<JaxRsContainer>() {
+      return new FutureTask<>(new Callable<JaxRsContainer>() {
          @Override
          public JaxRsContainer call() throws Exception {
             container = factory.newJaxRsContainer(contextName);

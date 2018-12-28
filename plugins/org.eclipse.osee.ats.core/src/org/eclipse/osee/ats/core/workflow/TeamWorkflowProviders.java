@@ -23,7 +23,7 @@ public class TeamWorkflowProviders implements ITeamWorkflowProvidersLazy {
 
    private Log logger;
    private static final List<ITeamWorkflowProvider> teamWorkflowProviders =
-      new CopyOnWriteArrayList<ITeamWorkflowProvider>();
+      new CopyOnWriteArrayList<>();
 
    public void setLogger(Log logger) {
       this.logger = logger;

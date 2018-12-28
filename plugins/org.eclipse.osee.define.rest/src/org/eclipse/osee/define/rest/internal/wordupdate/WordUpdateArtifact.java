@@ -214,7 +214,7 @@ public class WordUpdateArtifact {
       updateChange.setBranch(tx.getBranch());
       if (updateChange.hasSafetyRelatedArtifactChange()) {
          try {
-            HashMap<String, Object> properties = new HashMap<String, Object>();
+            HashMap<String, Object> properties = new HashMap<>();
             properties.put(SafetyWorkflowEventHandler.SAFETY_EVENT_BRANCH_ID, tx.getBranch());
             properties.put(SafetyWorkflowEventHandler.SAFETY_EVENT_USER_ART, account);
             Event event = new Event(SafetyWorkflowEventHandler.SAFETY_EVENT_TOPIC, properties);

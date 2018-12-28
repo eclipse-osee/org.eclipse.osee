@@ -28,7 +28,7 @@ import org.osgi.framework.ServiceRegistration;
 public class ConsoleAdmin {
 
    private final Map<ConsoleCommand, Map<String, String>> pending =
-      new ConcurrentHashMap<ConsoleCommand, Map<String, String>>();
+      new ConcurrentHashMap<>();
 
    private Log logger;
    private EventService eventService;

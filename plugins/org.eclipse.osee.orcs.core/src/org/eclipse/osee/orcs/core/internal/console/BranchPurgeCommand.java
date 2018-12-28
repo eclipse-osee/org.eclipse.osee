@@ -203,7 +203,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
          }
 
          if (recurse) {
-            results.addAll(getChildBranchesToPurge(new ArrayList<Branch>(results)));
+            results.addAll(getChildBranchesToPurge(new ArrayList<>(results)));
          }
          return results;
       }

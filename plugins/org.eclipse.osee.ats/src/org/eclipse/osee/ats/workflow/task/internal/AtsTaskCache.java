@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class AtsTaskCache {
 
    private static Map<TeamWorkFlowArtifact, Collection<TaskArtifact>> teamTasksCache =
-      new ConcurrentHashMap<TeamWorkFlowArtifact, Collection<TaskArtifact>>();
+      new ConcurrentHashMap<>();
 
    private AtsTaskCache() {
       // Utility class

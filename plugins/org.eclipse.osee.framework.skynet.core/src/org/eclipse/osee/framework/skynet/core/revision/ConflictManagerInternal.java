@@ -169,7 +169,7 @@ public class ConflictManagerInternal {
 
       monitor.subTask("Creating and/or maintaining the Merge Branch");
       IOseeBranch mergeBranch =
-         BranchManager.getOrCreateMergeBranch(sourceBranch, destinationBranch, new ArrayList<ArtifactId>(artIdSet));
+         BranchManager.getOrCreateMergeBranch(sourceBranch, destinationBranch, new ArrayList<>(artIdSet));
 
       if (mergeBranch == null) {
          throw new BranchMergeException("Could not create the Merge Branch.");

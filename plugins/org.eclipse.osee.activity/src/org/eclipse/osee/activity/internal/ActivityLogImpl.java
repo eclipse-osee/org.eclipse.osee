@@ -219,7 +219,7 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
    @Override
    public List<String> getGarbageCollectionStats() {
       List<GarbageCollectorMXBean> garbageCollectorMXBeans = ManagementFactory.getGarbageCollectorMXBeans();
-      List<String> stats = new ArrayList<String>(garbageCollectorMXBeans.size());
+      List<String> stats = new ArrayList<>(garbageCollectorMXBeans.size());
       for (GarbageCollectorMXBean gcBean : garbageCollectorMXBeans) {
          stats.add(String.format("%s: %s (count); %s (ms)", gcBean.getName(), gcBean.getCollectionCount(),
             gcBean.getCollectionTime()));
@@ -449,14 +449,14 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
       if (enabled) {
          if (!newEntities.isEmpty()) {
             try {
-               storage.addEntries(new DrainingIterator<Object[]>(newEntities.values().iterator()));
+               storage.addEntries(new DrainingIterator<>(newEntities.values().iterator()));
             } catch (Throwable ex) {
                logger.error(ex, "Exception while storing updates to the activity log");
             }
          }
          if (!updatedEntities.isEmpty()) {
             try {
-               storage.updateEntries(new DrainingIterator<Object[]>(updatedEntities.values().iterator()));
+               storage.updateEntries(new DrainingIterator<>(updatedEntities.values().iterator()));
             } catch (Throwable ex) {
                logger.error(ex, "Exception while storing updates to the activity log");
             }

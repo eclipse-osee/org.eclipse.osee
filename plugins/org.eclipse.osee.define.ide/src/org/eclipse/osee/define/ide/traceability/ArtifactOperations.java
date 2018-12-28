@@ -131,7 +131,7 @@ public class ArtifactOperations {
       StringBuilder qualFacilityBuilder = new StringBuilder();
       try {
          List<String> methods =
-            new ArrayList<String>(artifact.getAttributesToStringList(CoreAttributeTypes.QualificationMethod));
+            new ArrayList<>(artifact.getAttributesToStringList(CoreAttributeTypes.QualificationMethod));
          Collections.sort(methods);
          for (int index = 0; index < methods.size(); index++) {
             String qualMethod = methods.get(index);

@@ -55,13 +55,13 @@ public abstract class ImageManagerTest {
    @org.junit.AfterClass
    public static void testCleanup() throws Exception {
       List<IHealthStatus> stats = monitorLog.getAllLogs();
-      for (IHealthStatus stat : new ArrayList<IHealthStatus>(stats)) {
+      for (IHealthStatus stat : new ArrayList<>(stats)) {
          if (stat.getException() != null) {
             fail("Exception: " + Lib.exceptionToString(stat.getException()));
          }
       }
       StringBuffer sb = new StringBuffer();
-      for (IHealthStatus stat : new ArrayList<IHealthStatus>(stats)) {
+      for (IHealthStatus stat : new ArrayList<>(stats)) {
          if (stat.getMessage().contains("Unable to load the image for") && !stat.getMessage().contains("nothere")) {
             sb.append(stat.getMessage() + "\n");
          }

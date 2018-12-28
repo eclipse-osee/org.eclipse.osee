@@ -149,7 +149,7 @@ public class NewActionPage1 extends WizardPage implements IsEnabled {
 
       new Label(aiComp, SWT.NONE).setText("Select Actionable Items:");
       CheckBoxStateFilteredTreeViewer<IAtsActionableItem> treeViewer =
-         new CheckBoxStateFilteredTreeViewer<IAtsActionableItem>(aiComp,
+         new CheckBoxStateFilteredTreeViewer<>(aiComp,
             SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
       treeViewer.getViewer().getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       treeViewer.getViewer().setContentProvider(new AITreeContentProvider(Active.Active));
@@ -194,7 +194,7 @@ public class NewActionPage1 extends WizardPage implements IsEnabled {
          };
       });
 
-      return new Pair<CheckBoxStateFilteredTreeViewer<IAtsActionableItem>, Text>(treeViewer, descriptionLabel);
+      return new Pair<>(treeViewer, descriptionLabel);
    }
 
    public static class AITreeLabelProvider extends CheckBoxStateTreeLabelProvider {

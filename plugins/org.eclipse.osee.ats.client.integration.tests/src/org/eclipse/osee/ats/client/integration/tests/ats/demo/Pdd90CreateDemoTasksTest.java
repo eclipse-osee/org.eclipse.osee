@@ -38,7 +38,7 @@ public class Pdd90CreateDemoTasksTest implements IPopulateDemoDatabaseTest {
       create.run();
 
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
-      List<String> taskNames = new LinkedList<String>();
+      List<String> taskNames = new LinkedList<>();
       taskNames.addAll(DemoUtil.Saw_Code_Committed_Task_Titles);
       for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(teamWf)) {
          testTaskContents((TaskArtifact) task, TaskStates.InWork.getName(), TeamState.Implement.getName());

@@ -76,7 +76,7 @@ public class ReqReader implements IDoorsArtifactParser {
       NodeList childNodes = node.getChildNodes();
       for (int j = 0; j < childNodes.getLength(); j++) {
          Node item = childNodes.item(j);
-         if ((item.getLocalName() != null) && item.getLocalName().equalsIgnoreCase("shortTitle")) {
+         if (item.getLocalName() != null && item.getLocalName().equalsIgnoreCase("shortTitle")) {
             NodeList childNodes2 = item.getChildNodes();
             Node item2 = childNodes2.item(0);
             toReturn = item2.getTextContent();

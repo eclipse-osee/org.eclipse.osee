@@ -50,7 +50,7 @@ public abstract class AbstractServiceBinder {
 
    @SuppressWarnings("rawtypes")
    public ServiceTracker createTracker(Class<?> clazz) {
-      serviceMap.put(clazz, new CopyOnWriteArraySet<Object>());
+      serviceMap.put(clazz, new CopyOnWriteArraySet<>());
       return new InternalServiceTracker(this, getBundleContext(), clazz);
    }
 

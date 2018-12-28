@@ -29,7 +29,7 @@ public class CompositeKeyTripleHashMap<KeyOne, KeyTwo, KeyThree, Value> implemen
 
          @Override
          protected Triplet<KeyOne, KeyTwo, KeyThree> initialValue() {
-            return new Triplet<KeyOne, KeyTwo, KeyThree>(null, null, null);
+            return new Triplet<>(null, null, null);
          }
 
       };
@@ -100,7 +100,7 @@ public class CompositeKeyTripleHashMap<KeyOne, KeyTwo, KeyThree, Value> implemen
    }
 
    public Value put(KeyOne a, KeyTwo b, KeyThree c, Value value) {
-      return map.put(new Triplet<KeyOne, KeyTwo, KeyThree>(a, b, c), value);
+      return map.put(new Triplet<>(a, b, c), value);
    }
 
    @Override

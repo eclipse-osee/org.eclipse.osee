@@ -67,7 +67,7 @@ public class BranchGraphEditorInput implements IEditorInput, Adaptable {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((branch == null) ? 0 : branch.hashCode());
+      result = prime * result + (branch == null ? 0 : branch.hashCode());
       return result;
    }
 

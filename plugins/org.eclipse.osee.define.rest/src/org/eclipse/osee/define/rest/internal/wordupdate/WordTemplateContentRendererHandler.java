@@ -126,7 +126,7 @@ public class WordTemplateContentRendererHandler {
                data = data.replaceAll(PGNUMTYPE_START_1, "");
             }
 
-            return new Pair<String, Set<String>>(data, unknownGuids);
+            return new Pair<>(data, unknownGuids);
          }
       }
 
@@ -134,6 +134,6 @@ public class WordTemplateContentRendererHandler {
    }
 
    private boolean isWtcViewIdValid(WordTemplateContentData wtcData) {
-      return (wtcData.getViewId() != null && wtcData.getViewId().notEqual(ArtifactId.SENTINEL));
+      return wtcData.getViewId() != null && wtcData.getViewId().notEqual(ArtifactId.SENTINEL);
    }
 }

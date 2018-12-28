@@ -177,7 +177,7 @@ public class DragDropHandler {
             artifactsToAdd.add(artifact);
          }
       }
-      addArtifactsToTable(new ArrayList<Artifact>(artifactsToAdd));
+      addArtifactsToTable(new ArrayList<>(artifactsToAdd));
    }
 
    private void handleResourceDrops(URI[] iFiles) {

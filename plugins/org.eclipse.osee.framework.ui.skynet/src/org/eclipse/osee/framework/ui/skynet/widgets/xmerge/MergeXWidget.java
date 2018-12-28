@@ -463,8 +463,8 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
             extraInfoLabel.setText(displayLabelText + CONFLICTS_RESOLVED);
          } else {
             String message = String.format("%s\nConflicts : %s <=> Resolved : %s%s", displayLabelText,
-               (storedConflicts.length - informational), resolved,
-               (informational == 0 ? " " : "\nInformational Conflicts : " + informational));
+               storedConflicts.length - informational, resolved,
+               informational == 0 ? " " : "\nInformational Conflicts : " + informational);
             extraInfoLabel.setText(message);
          }
       }
@@ -487,7 +487,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
    }
 
    private void checkForCompleteCommit() {
-      boolean isVisible = !hasMergeBranchBeenCommitted() && areAllConflictsResolved() && (getConflicts().length > 0);
+      boolean isVisible = !hasMergeBranchBeenCommitted() && areAllConflictsResolved() && getConflicts().length > 0;
       if (null != sourceBranch) {
          try {
             boolean rebase = BranchManager.getState(sourceBranch).isRebaselineInProgress();
@@ -495,7 +495,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
                rebase && BranchManager.isParent(sourceBranch, BranchManager.getParentBranch(destBranch));
             boolean isValidCommit = BranchManager.hasMergeBranches(sourceBranch) && !rebase;
 
-            isVisible &= (isValidUpdate || isValidCommit);
+            isVisible &= isValidUpdate || isValidCommit;
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             isVisible = false;
@@ -538,7 +538,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
                   ConflictManagerExternal conflictManager = new ConflictManagerExternal(destBranch, sourceBranch);
                   IOperation operation = new FinishUpdateBranchOperation(conflictManager, true, false);
                   Operations.executeAsJob(operation, true);
-               } else if ((BranchManager.hasMergeBranches(sourceBranch) && !rebase)) {
+               } else if (BranchManager.hasMergeBranches(sourceBranch) && !rebase) {
                   Artifact art = BranchManager.getAssociatedArtifact(sourceBranch);
                   IOseeCmService cm = ServiceUtil.getOseeCmService();
 

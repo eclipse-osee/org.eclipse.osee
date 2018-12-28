@@ -255,7 +255,7 @@ public class SprintDataBuilder {
          }
          // due to rounding, last day may be more than pointsPerDay
          else {
-            double goalPoints = totalPoints - ((count - 2) * pointsPerDay);
+            double goalPoints = totalPoints - (count - 2) * pointsPerDay;
             if (goalPoints < 0) {
                goalPoints = 0;
             }

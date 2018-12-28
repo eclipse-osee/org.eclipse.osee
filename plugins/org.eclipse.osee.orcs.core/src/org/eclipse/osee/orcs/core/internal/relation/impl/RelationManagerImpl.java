@@ -74,7 +74,6 @@ public class RelationManagerImpl implements RelationManager {
    private final RelationResolver resolver;
    private final RelationFactory relationFactory;
    private final OrderManagerFactory orderFactory;
-   private final QueryModuleProvider provider;
    private final RelationTypes relationTypes;
 
    public RelationManagerImpl(Log logger, RelationTypeValidity validity, RelationResolver resolver, RelationFactory relationFactory, OrderManagerFactory orderFactory, QueryModuleProvider queryProvider, RelationTypes relationTypes) {
@@ -83,7 +82,6 @@ public class RelationManagerImpl implements RelationManager {
       this.resolver = resolver;
       this.relationFactory = relationFactory;
       this.orderFactory = orderFactory;
-      this.provider = queryProvider;
       this.relationTypes = relationTypes;
    }
 

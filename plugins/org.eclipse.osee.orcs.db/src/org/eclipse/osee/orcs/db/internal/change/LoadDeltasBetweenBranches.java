@@ -147,7 +147,7 @@ public class LoadDeltasBetweenBranches {
 
          loadNonCurrentSourceVersionData(idJoin, changeData, sourceBaselineTxId);
       }
-      List<ChangeItem> list = new LinkedList<ChangeItem>(changeData.allValues());
+      List<ChangeItem> list = new LinkedList<>(changeData.allValues());
       return list;
    }
 

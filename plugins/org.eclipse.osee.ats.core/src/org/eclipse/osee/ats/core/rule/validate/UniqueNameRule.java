@@ -35,7 +35,7 @@ public class UniqueNameRule extends AbstractValidationRule {
    private final IArtifactType artifactType;
    private final Collection<IdPair> idPairs = new LinkedList<>();
    private final Map<IArtifactType, List<ArtifactToken>> artTypeToArtifacts =
-      new HashMap<IArtifactType, List<ArtifactToken>>();
+      new HashMap<>();
 
    public UniqueNameRule(IArtifactType artifactType, AtsApi atsApi) {
       super(atsApi);
@@ -90,8 +90,8 @@ public class UniqueNameRule extends AbstractValidationRule {
 
    private boolean isImplementationDetailsChild(ArtifactId childArtifact, ArtifactId parentArtifact) {
       return atsApi.getStoreService().isOfType(parentArtifact, CoreArtifactTypes.SoftwareRequirement) && //
-         (atsApi.getStoreService().isOfType(childArtifact, CoreArtifactTypes.AbstractImplementationDetails) && //
-            atsApi.getRelationResolver().getParent(childArtifact).equals(parentArtifact));
+         atsApi.getStoreService().isOfType(childArtifact, CoreArtifactTypes.AbstractImplementationDetails) && //
+            atsApi.getRelationResolver().getParent(childArtifact).equals(parentArtifact);
    }
 
    private void addIdPair(Long idA, Long idB) {

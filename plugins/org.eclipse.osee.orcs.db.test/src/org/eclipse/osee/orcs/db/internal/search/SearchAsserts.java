@@ -59,7 +59,7 @@ public final class SearchAsserts {
    public static List<Pair<String, Long>> asTags(String word, long... entries) {
       List<Pair<String, Long>> data = new ArrayList<>();
       for (int index = 0; index < entries.length; index++) {
-         data.add(new Pair<String, Long>(word, entries[index]));
+         data.add(new Pair<>(word, entries[index]));
       }
       return data;
    }

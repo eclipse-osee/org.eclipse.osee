@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
  */
 public class GoalXViewerFactory extends SkynetXViewerFactory {
 
-   private GoalArtifact soleGoalArtifact;
+   private final GoalArtifact soleGoalArtifact;
 
    private List<? extends XViewerColumn> getGoalViewerVisibleColumns() {
       List<XViewerColumn> columns = Arrays.asList(GoalOrderColumn.getInstance(), GoalOrderVoteColumn.getInstance(),

@@ -104,7 +104,7 @@ public class PoolFactory {
                return driver;
             }
          };
-         return new FutureTask<PoolingDriver>(callable);
+         return new FutureTask<>(callable);
       }
    }
 }

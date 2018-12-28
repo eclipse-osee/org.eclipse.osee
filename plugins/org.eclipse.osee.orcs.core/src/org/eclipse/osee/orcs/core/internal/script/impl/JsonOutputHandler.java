@@ -298,7 +298,7 @@ public class JsonOutputHandler extends OrcsScriptOutputHandler {
                writer.writeStringField("session", session.getGuid());
             }
             Options options = description.getOptions();
-            for (String key : new TreeSet<String>(options.getKeys())) {
+            for (String key : new TreeSet<>(options.getKeys())) {
                writer.writeStringField(key, options.get(key).replaceAll("\\s+", " "));
             }
             writeQuery(queries.get(index));

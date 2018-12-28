@@ -73,7 +73,7 @@ public class NumberOfTasksRemainingColumn extends XViewerAtsColumn implements IX
             return Collections.toString(", ", strs);
          }
          if (element instanceof TeamWorkFlowArtifact) {
-            int num = getNumTasksInWork(((TeamWorkFlowArtifact) element));
+            int num = getNumTasksInWork((TeamWorkFlowArtifact) element);
             if (num == 0) {
                return "";
             }

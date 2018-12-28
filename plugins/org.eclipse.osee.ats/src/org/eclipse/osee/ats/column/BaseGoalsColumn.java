@@ -113,7 +113,7 @@ public abstract class BaseGoalsColumn extends XViewerAtsColumn implements IXView
       }
       Collection<Artifact> allGoals = Collections.castAll(
          AtsClientService.get().getQueryService().createQuery(getWorkItemType()).getResultArtifacts().getList());
-      Collection<IAtsWorkItem> allInWork = new ArrayList<IAtsWorkItem>();
+      Collection<IAtsWorkItem> allInWork = new ArrayList<>();
       for (Artifact art : allGoals) {
          IAtsGoal goal = AtsClientService.get().getWorkItemService().getGoal(art);
          if (goal != null && goal.isInWork()) {

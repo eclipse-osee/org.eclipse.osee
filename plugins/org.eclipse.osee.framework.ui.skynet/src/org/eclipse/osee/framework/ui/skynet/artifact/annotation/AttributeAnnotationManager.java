@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 public class AttributeAnnotationManager {
    private final Artifact artifact;
    private static Map<String, AttributeAnnotationManager> guidToManager =
-      new HashMap<String, AttributeAnnotationManager>(50);
+      new HashMap<>(50);
 
    public static AttributeAnnotationManager get(Artifact artifact) {
       if (!guidToManager.containsKey(artifact.getGuid())) {
@@ -118,7 +118,7 @@ public class AttributeAnnotationManager {
 
    private static void ensureLoaded() {
       if (extensionDefinedObjects == null) {
-         extensionDefinedObjects = new ExtensionDefinedObjects<IArtifactAnnotation>(
+         extensionDefinedObjects = new ExtensionDefinedObjects<>(
             "org.eclipse.osee.framework.skynet.core.ArtifactAnnotation", "ArtifactAnnotation", "classname");
       }
    }

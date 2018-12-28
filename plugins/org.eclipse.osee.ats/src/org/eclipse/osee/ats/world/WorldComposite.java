@@ -168,8 +168,8 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
          return;
       }
 
-      List<Artifact> worldArts = new LinkedList<Artifact>();
-      List<Artifact> otherArts = new LinkedList<Artifact>();
+      List<Artifact> worldArts = new LinkedList<>();
+      List<Artifact> otherArts = new LinkedList<>();
       for (Artifact art : arts) {
          if (AtsObjects.isAtsWorkItemOrAction(art)) {
             worldArts.add(art);

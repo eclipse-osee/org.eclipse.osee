@@ -239,7 +239,7 @@ public final class TransactionManager {
    }
 
    public static Collection<TransactionRecord> getTransactions(Set<Long> ids) {
-      List<TransactionRecord> transactions = new LinkedList<TransactionRecord>();
+      List<TransactionRecord> transactions = new LinkedList<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          String query = String.format(SELECT_TRANSACTIONS_BY_IDS,
@@ -344,7 +344,7 @@ public final class TransactionManager {
    }
 
    public static List<RelationRow> getRelationsFromArtifactAndTransaction(Artifact art, TransactionId trans) {
-      List<RelationRow> relationChanges = new LinkedList<RelationRow>();
+      List<RelationRow> relationChanges = new LinkedList<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_RELATIONS_FROM_ART_IN_TRANS_ID, art.getBranch(), art, art, trans);
@@ -359,7 +359,7 @@ public final class TransactionManager {
    }
 
    public static List<AttributeRow> getAttributesFromArtifactAndTransaction(Artifact art, TransactionId trans) {
-      List<AttributeRow> attributeChanges = new LinkedList<AttributeRow>();
+      List<AttributeRow> attributeChanges = new LinkedList<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_ATTRIBUTES_FROM_ART_IN_TRANS_ID, art.getBranch(), art, trans);

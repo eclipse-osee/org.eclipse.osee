@@ -63,7 +63,7 @@ public class WfeBranchEventManager implements IBranchEventListener {
 
    @Override
    public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
-      for (IWfeEventHandler handler : new ArrayList<IWfeEventHandler>(handlers)) {
+      for (IWfeEventHandler handler : new ArrayList<>(handlers)) {
          if (handler.isDisposed()) {
             handlers.remove(handler);
          }

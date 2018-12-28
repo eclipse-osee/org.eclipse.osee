@@ -75,7 +75,7 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
       this.xViewerFactory = new ResultsXViewerFactory(columns);
       this.contentProvider = contentProvider == null ? new ResultsXViewerContentProvider() : contentProvider;
       this.labelProvider = labelProvider;
-      this.listeners = listeners == null ? new ArrayList<IResultsEditorTableListener>() : listeners;
+      this.listeners = listeners == null ? new ArrayList<>() : listeners;
    }
 
    public ResultsEditorTableTab(String tabName) {

@@ -31,10 +31,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 @Provider
 public class BranchJsonWriter implements MessageBodyWriter<Branch> {
    private JsonFactory jsonFactory;
-   private OrcsApi orcsApi;
-
    public void setOrcsApi(OrcsApi orcsApi) {
-      this.orcsApi = orcsApi;
    }
 
    public void start() {

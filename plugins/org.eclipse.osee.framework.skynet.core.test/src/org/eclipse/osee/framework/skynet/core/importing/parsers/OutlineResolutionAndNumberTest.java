@@ -74,7 +74,7 @@ public final class OutlineResolutionAndNumberTest {
    @Test
    public void testNextSetGeneration() {
       Set<String> nextPossibleSet = outlineResolution.generateNextSet(new ReqNumbering(LAST_OUTLINE_NUMBER));
-      Set<String> expected = new HashSet<String>(Arrays.asList("3.2", "3.1.2", "3.1.1.3", "3.1.1.2.2", "3.1.1.2.1.8",
+      Set<String> expected = new HashSet<>(Arrays.asList("3.2", "3.1.2", "3.1.1.3", "3.1.1.2.2", "3.1.1.2.1.8",
          "4.0", "3.1.1.2.1.7.1", "3.1.1.2.1.7.0.1"));
       addDotEndingSet(expected);
       expected.removeAll(nextPossibleSet);

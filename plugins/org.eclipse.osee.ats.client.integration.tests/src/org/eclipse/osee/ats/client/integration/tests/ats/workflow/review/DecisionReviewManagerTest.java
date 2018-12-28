@@ -76,7 +76,7 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       Assert.assertNotNull(decRev);
       Assert.assertFalse(
          String.format("Decision Review artifact should not be dirty [%s]",
-            Artifacts.getDirtyReport((AtsClientService.get().getQueryServiceClient().getArtifact(decRev)))),
+            Artifacts.getDirtyReport(AtsClientService.get().getQueryServiceClient().getArtifact(decRev))),
          AtsClientService.get().getQueryServiceClient().getArtifact(decRev).isDirty());
       Assert.assertEquals(DecisionReviewState.Decision.getName(), decRev.getStateMgr().getCurrentStateName());
       Assert.assertEquals(DemoUsers.Joe_Smith.getName(), decRev.getStateMgr().getAssigneesStr());
@@ -107,7 +107,7 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       Assert.assertEquals(reviewTitle, decRev.getName());
       Assert.assertFalse(
          String.format("Decision Review artifact should not be dirty [%s]",
-            Artifacts.getDirtyReport((AtsClientService.get().getQueryServiceClient().getArtifact(decRev)))),
+            Artifacts.getDirtyReport(AtsClientService.get().getQueryServiceClient().getArtifact(decRev))),
          AtsClientService.get().getQueryServiceClient().getArtifact(decRev).isDirty());
       Assert.assertEquals(DecisionReviewState.Decision.getName(), decRev.getStateMgr().getCurrentStateName());
       Assert.assertEquals("UnAssigned", decRev.getStateMgr().getAssigneesStr());

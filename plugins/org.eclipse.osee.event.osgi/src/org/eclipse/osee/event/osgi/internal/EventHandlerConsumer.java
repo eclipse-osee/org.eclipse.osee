@@ -25,10 +25,10 @@ import org.osgi.framework.ServiceRegistration;
 public class EventHandlerConsumer {
 
    private final Map<EventHandler, ServiceRegistration<?>> registered =
-      new ConcurrentHashMap<EventHandler, ServiceRegistration<?>>();
+      new ConcurrentHashMap<>();
 
    private final Map<EventHandler, Dictionary<String, ?>> pending =
-      new ConcurrentHashMap<EventHandler, Dictionary<String, ?>>();
+      new ConcurrentHashMap<>();
 
    private BundleContext context;
    private Thread thread;

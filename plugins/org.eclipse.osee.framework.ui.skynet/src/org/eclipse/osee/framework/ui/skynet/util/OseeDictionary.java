@@ -47,7 +47,7 @@ public final class OseeDictionary {
       private static final Pattern pattern = Pattern.compile("^[a-zA-Z]{1}[a-z]+$");
 
       private final ExtensionDefinedObjects<IOseeDictionary> contributions =
-         new ExtensionDefinedObjects<IOseeDictionary>("org.eclipse.osee.framework.ui.skynet.OseeDictionary",
+         new ExtensionDefinedObjects<>("org.eclipse.osee.framework.ui.skynet.OseeDictionary",
             "OseeDictionary", "classname");
 
       public Iterable<IOseeDictionary> getDictionaries() {

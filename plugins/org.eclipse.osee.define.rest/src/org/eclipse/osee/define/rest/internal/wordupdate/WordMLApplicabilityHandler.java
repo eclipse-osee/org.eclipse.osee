@@ -124,8 +124,8 @@ public class WordMLApplicabilityHandler {
                searchIndex = matcher.end();
             }
 
-         } else if ((endFeature != null && endFeature.contains(
-            WordCoreUtil.FEATUREAPP)) || (endConfig != null && endConfig.contains(WordCoreUtil.CONFIGAPP))) {
+         } else if (endFeature != null && endFeature.contains(
+            WordCoreUtil.FEATUREAPP) || endConfig != null && endConfig.contains(WordCoreUtil.CONFIGAPP)) {
 
             ApplicabilityBlock applicabilityBlock = getFullApplicabilityBlock(matcher, toReturn);
 
@@ -169,72 +169,6 @@ public class WordMLApplicabilityHandler {
       }
 
       return true;
-   }
-
-   // Leaving this method here for now....it is no longer being called and upon
-   // confirmation (in the release) that no major impacts, can be removed
-   @SuppressWarnings("unused")
-   private String removeExtraParagraphs(String fullWordMl, String toInsert, ApplicabilityBlock applicabilityBlock) {
-      int startInsertIndex = applicabilityBlock.getStartInsertIndex();
-
-      if (!applicabilityBlock.isInTable() && (toInsert.isEmpty() || toInsert.startsWith(
-         WordCoreUtil.WHOLE_END_PARAGRAPH))) {
-         String findParagraphStart = fullWordMl.substring(0, startInsertIndex);
-         int paragraphStartIndex = findParagraphStart.lastIndexOf(WordCoreUtil.START_PARAGRAPH);
-
-         // check this doesn't contain feature/config tags
-         String beginningText = fullWordMl.substring(paragraphStartIndex, startInsertIndex);
-
-         if (toInsert.isEmpty() && paragraphStartIndex > 0 && !beginningText.matches(
-            "(?i).*?(" + WordCoreUtil.BEGINFEATURE + "|" + WordCoreUtil.BEGINCONFIG + "|" + WordCoreUtil.ENDCONFIG + "|" + WordCoreUtil.ENDFEATURE + ").*?")) {
-            int endInsertIndex = applicabilityBlock.getEndInsertIndex();
-            String findParagraphEnd = fullWordMl.substring(endInsertIndex);
-
-            int paragraphEndIndex = findParagraphEnd.indexOf(WordCoreUtil.END_PARAGRAPH) + endInsertIndex + 6;
-            if (paragraphEndIndex >= 0) {
-               // check this doesn't contain feature/config tags
-               String endText = fullWordMl.substring(endInsertIndex, paragraphEndIndex);
-
-               if (paragraphEndIndex >= 0 && WordCoreUtil.textOnly(endText).isEmpty() && !endText.matches(
-                  "(?i).*?(" + WordCoreUtil.BEGINFEATURE + "|" + WordCoreUtil.BEGINCONFIG + "|" + WordCoreUtil.ENDCONFIG + "|" + WordCoreUtil.ENDFEATURE + ").*?")) {
-                  applicabilityBlock.setStartInsertIndex(paragraphStartIndex);
-                  applicabilityBlock.setStartTextIndex(paragraphStartIndex);
-                  applicabilityBlock.setEndInsertIndex(paragraphEndIndex);
-                  applicabilityBlock.setEndTextIndex(paragraphEndIndex);
-               }
-            }
-         } else {
-            String findParagraphEnd = fullWordMl.substring(startInsertIndex);
-            int paragraphEndIndex = findParagraphEnd.indexOf(WordCoreUtil.END_PARAGRAPH) + startInsertIndex + 6;
-
-            if (paragraphStartIndex >= 0 && paragraphEndIndex >= 0 && paragraphEndIndex > paragraphStartIndex) {
-               String fullParagraph = fullWordMl.substring(paragraphStartIndex, paragraphEndIndex);
-               fullParagraph =
-                  fullParagraph.replaceFirst("(?i)" + WordCoreUtil.BEGINFEATURE + "|" + WordCoreUtil.BEGINCONFIG, "");
-
-               if (WordCoreUtil.textOnly(fullParagraph).isEmpty()) {
-                  toInsert = toInsert.replaceFirst(WordCoreUtil.WHOLE_END_PARAGRAPH, "");
-                  applicabilityBlock.setStartInsertIndex(paragraphStartIndex);
-                  applicabilityBlock.setStartTextIndex(paragraphEndIndex);
-               }
-            }
-         }
-      }
-
-      if (!applicabilityBlock.isInTable() && toInsert.matches(
-         ".*?<w:p wsp:rsid[^>]+><w:pPr><w:spacing w:after=[^>]+></w:spacing></w:pPr><w:r><w:t>$")) {
-
-         int origLength = toInsert.length();
-         int lastParaIndex = toInsert.lastIndexOf(WordCoreUtil.START_PARAGRAPH);
-         if (lastParaIndex >= 0) {
-            toInsert = toInsert.substring(0, lastParaIndex);
-            applicabilityBlock.setEndTextIndex(applicabilityBlock.getEndTextIndex() - (origLength - lastParaIndex));
-            applicabilityBlock.setEndInsertIndex(
-               applicabilityBlock.getEndInsertIndex() + WordCoreUtil.WHOLE_END_PARAGRAPH.length());
-         }
-      }
-
-      return toInsert;
    }
 
    // End Bracket can contain multiple feature/value pairs

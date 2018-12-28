@@ -750,7 +750,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       }
       IAgileSprint sprint = atsApi.getAgileService().getAgileSprint(sprintId);
       Conditions.assertNotNull(sprint, "Invalid Sprint %s", sprintId);
-      if ((best && sprint.isCompletedOrCancelled()) || stored) {
+      if (best && sprint.isCompletedOrCancelled() || stored) {
          ArtifactToken rptArt = atsApi.getRelationResolver().getChildNamedOrNull(sprint, agileReportType.name());
          if (rptArt != null) {
             return atsApi.getAttributeResolver().getSoleAttributeValue(rptArt, CoreAttributeTypes.NativeContent, null);

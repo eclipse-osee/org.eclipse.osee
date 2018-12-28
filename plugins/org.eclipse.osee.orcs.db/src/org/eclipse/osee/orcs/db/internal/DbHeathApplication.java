@@ -26,7 +26,7 @@ public final class DbHeathApplication extends Application {
 
    private JdbcService jdbcService;
 
-   private final Set<Object> singletons = new HashSet<Object>();
+   private final Set<Object> singletons = new HashSet<>();
 
    public void setJdbcService(JdbcService jdbcService) {
       this.jdbcService = jdbcService;

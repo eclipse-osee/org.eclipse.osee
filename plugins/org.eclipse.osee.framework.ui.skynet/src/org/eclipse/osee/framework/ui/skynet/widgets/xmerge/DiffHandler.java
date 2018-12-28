@@ -18,7 +18,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
@@ -30,8 +29,6 @@ class DiffHandler extends AbstractSelectionEnabledHandler {
    private final int diffToShow;
    private AttributeConflict attributeConflict;
    private ArtifactConflict artifactConflict;
-   private List<Artifact> artifacts;
-
    public DiffHandler(MenuManager menuManager, int diffToShow, MergeXWidget mergeXWidget) {
       super(menuManager);
       this.diffToShow = diffToShow;

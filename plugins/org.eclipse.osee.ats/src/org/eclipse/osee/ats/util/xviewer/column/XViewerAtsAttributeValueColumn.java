@@ -140,7 +140,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
                }
             }
          }
-         if (Artifacts.isOfType(element, AtsArtifactTypes.Action) && (isActionRollupWithDefault())) {
+         if (Artifacts.isOfType(element, AtsArtifactTypes.Action) && isActionRollupWithDefault()) {
             Set<String> strs = new LinkedHashSet<>();
             for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(element)) {
                String str = getColumnText(team, column, columnIndex);

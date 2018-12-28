@@ -21,7 +21,7 @@ public class BranchEventModificationType {
 
    private final String guid;
    private static Map<String, BranchEventModificationType> guidToEventType =
-      new HashMap<String, BranchEventModificationType>(15);
+      new HashMap<>(15);
    public static BranchEventModificationType New = new BranchEventModificationType("AbMBZMtQ304V3L3zdlgA");
    public static BranchEventModificationType Committed = new BranchEventModificationType("AbMBZDMIWATP9NaK0bAA");
    public static BranchEventModificationType Deleted = new BranchEventModificationType("AbMBZE3UESatk0iX0RgA");

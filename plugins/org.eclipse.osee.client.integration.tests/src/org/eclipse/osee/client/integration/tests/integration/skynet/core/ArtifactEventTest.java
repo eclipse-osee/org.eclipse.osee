@@ -875,7 +875,7 @@ public class ArtifactEventTest {
       private final Set<EventBasicGuidArtifact> resultEventArtifacts = new HashSet<>();
       private final Set<EventBasicGuidRelation> resultEventRelations = new HashSet<>();
       private final Set<DefaultBasicUuidRelationReorder> resultEventReorders =
-         new HashSet<DefaultBasicUuidRelationReorder>();
+         new HashSet<>();
 
       private Sender resultSender;
 

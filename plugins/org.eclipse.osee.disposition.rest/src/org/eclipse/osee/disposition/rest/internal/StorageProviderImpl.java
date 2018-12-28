@@ -57,7 +57,7 @@ public class StorageProviderImpl extends LazyObject<Storage> implements StorageP
          }
 
       };
-      return new FutureTask<Storage>(callable);
+      return new FutureTask<>(callable);
    }
 
    private Storage createStorage() throws Exception {

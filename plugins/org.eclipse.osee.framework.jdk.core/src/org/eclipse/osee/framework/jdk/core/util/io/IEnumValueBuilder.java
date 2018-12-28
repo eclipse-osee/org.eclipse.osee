@@ -26,7 +26,7 @@ public class IEnumValueBuilder extends JavaFileBuilder {
       super(packageName, className, classJavaDoc, null);
 
       // Place the enums in a priority queue based on their number value
-      enums = new PriorityQueue<EnumRecord>(20, new Comparator<EnumRecord>() {
+      enums = new PriorityQueue<>(20, new Comparator<EnumRecord>() {
 
          @Override
          public int compare(EnumRecord i, EnumRecord j) {

@@ -65,7 +65,7 @@ public class XMembersCombo extends GenericXWidget {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((selectedUser == null) ? 0 : selectedUser.hashCode());
+      result = prime * result + (selectedUser == null ? 0 : selectedUser.hashCode());
       return result;
    }
 

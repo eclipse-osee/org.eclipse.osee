@@ -113,7 +113,7 @@ public class AttributeExtensionManager {
             String bundleName = Strings.intern(element.getContributor().getName());
 
             if (Strings.isValid(bundleName) && Strings.isValid(className)) {
-               toReturn.put(name, new Pair<String, String>(bundleName, className));
+               toReturn.put(name, new Pair<>(bundleName, className));
             }
          }
       }

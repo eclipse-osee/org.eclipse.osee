@@ -55,7 +55,7 @@ public class ExternalArtifactManagerImpl implements ExternalArtifactManager {
 
    @Override
    public <T> AttributeReadable<T> asExternalAttribute(OrcsSession session, Attribute<T> attribute) {
-      return attribute == null ? null : new AttributeReadOnlyImpl<T>(this, session, attribute);
+      return attribute == null ? null : new AttributeReadOnlyImpl<>(this, session, attribute);
    }
 
    @Override

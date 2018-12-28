@@ -178,7 +178,7 @@ public class DispoItemDataCopier {
          String normalizedText = discrepancy.getText().replaceFirst(".*?\\.", ""); // Want to exclude Point number from text we match with
 
          Pair<Discrepancy, Boolean> newPair =
-            new Pair<Discrepancy, Boolean>(discrepancy, textToDiscrepancy.containsKey(normalizedText));
+            new Pair<>(discrepancy, textToDiscrepancy.containsKey(normalizedText));
          textToDiscrepancy.put(normalizedText, newPair);
       }
 

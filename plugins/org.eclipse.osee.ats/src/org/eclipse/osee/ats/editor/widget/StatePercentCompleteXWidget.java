@@ -85,7 +85,7 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
          if (sma instanceof TeamWorkFlowArtifact && AtsClientService.get().getTaskService().hasTasks(
             (TeamWorkFlowArtifact) sma)) {
             sb.append(String.format("\n        Task  Percent: %d",
-               AtsClientService.get().getEarnedValueService().getPercentCompleteFromTasks((sma), page)));
+               AtsClientService.get().getEarnedValueService().getPercentCompleteFromTasks(sma, page)));
             breakoutNeeded = true;
          }
          if (sma.isTeamWorkflow() && AtsClientService.get().getReviewService().hasReviews((TeamWorkFlowArtifact) sma)) {

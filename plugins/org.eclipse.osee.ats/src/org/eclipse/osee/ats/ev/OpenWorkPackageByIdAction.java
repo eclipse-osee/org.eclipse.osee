@@ -55,7 +55,7 @@ public class OpenWorkPackageByIdAction extends Action {
    public void run() {
       EntryDialog dialog = new EntryDialog(getText(), "Enter Work Package id, activity id or financial id");
       if (dialog.open() == Window.OK) {
-         final List<String> ids = new LinkedList<String>();
+         final List<String> ids = new LinkedList<>();
          for (String str : dialog.getEntry().split(",")) {
             str = str.replaceAll("^\\s+", "");
             str = str.replaceAll("\\s+$", "");

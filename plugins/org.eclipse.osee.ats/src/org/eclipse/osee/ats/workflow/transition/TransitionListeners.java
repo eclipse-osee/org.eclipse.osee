@@ -53,7 +53,7 @@ public final class TransitionListeners {
          listeners.add(new DecisionReviewDefinitionManager());
          listeners.add(new PeerReviewDefinitionManager());
 
-         ExtensionDefinedObjects<ITransitionListener> objects = new ExtensionDefinedObjects<ITransitionListener>(
+         ExtensionDefinedObjects<ITransitionListener> objects = new ExtensionDefinedObjects<>(
             "org.eclipse.osee.ats.AtsTransitionListener", "AtsTransitionListener", "classname");
          listeners.addAll(objects.getObjects());
          loaded = true;

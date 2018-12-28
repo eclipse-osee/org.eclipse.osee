@@ -19,7 +19,7 @@ import java.util.Set;
 public class JaxKbRowIdToTaskId {
 
    private String rowId;
-   private Set<String> taskIds = new HashSet<String>();
+   private Set<String> taskIds = new HashSet<>();
 
    public Set<String> getTaskIds() {
       return taskIds;

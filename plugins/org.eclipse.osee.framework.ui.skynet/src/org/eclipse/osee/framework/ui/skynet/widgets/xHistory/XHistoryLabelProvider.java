@@ -38,7 +38,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
 
    private final HistoryXViewer historyXViewer;
    private static Color lightGreyColor;
-   private final Map<Object, Image> objectToImage = new HashMap<Object, Image>(500);
+   private final Map<Object, Image> objectToImage = new HashMap<>(500);
    private static Image transactionImage = null;
 
    public XHistoryLabelProvider(HistoryXViewer historyXViewer) {

@@ -82,6 +82,6 @@ public class OseeInfo {
 
    private static void cacheValue(String key, String value) {
       Long time = System.currentTimeMillis();
-      cache.put(key, new Pair<Long, String>(time, value));
+      cache.put(key, new Pair<>(time, value));
    }
 }

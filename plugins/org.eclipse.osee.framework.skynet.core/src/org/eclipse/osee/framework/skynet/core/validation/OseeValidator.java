@@ -32,7 +32,7 @@ public class OseeValidator {
 
    private OseeValidator() {
       loadedObjects =
-         new ExtensionDefinedObjects<IOseeValidator>(EXTENSION_ID, EXTENSION_ELEMENT, CLASS_NAME_ATTRIBUTE);
+         new ExtensionDefinedObjects<>(EXTENSION_ID, EXTENSION_ELEMENT, CLASS_NAME_ATTRIBUTE);
    }
 
    public static OseeValidator getInstance() {

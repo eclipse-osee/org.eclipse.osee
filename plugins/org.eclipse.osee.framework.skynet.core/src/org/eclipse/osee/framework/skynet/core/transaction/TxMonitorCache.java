@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TxMonitorImpl.Monitore
 public final class TxMonitorCache<K> {
 
    private final Map<K, Map<String, WeakReference<MonitoredTx>>> txMap =
-      new ConcurrentHashMap<K, Map<String, WeakReference<MonitoredTx>>>();
+      new ConcurrentHashMap<>();
 
    public boolean contains(K key) {
       return txMap.containsKey(key);
@@ -42,7 +42,7 @@ public final class TxMonitorCache<K> {
          data = new ConcurrentHashMap<>();
          txMap.put(key, data);
       }
-      data.put(tx.getUuid(), new WeakReference<MonitoredTx>(tx));
+      data.put(tx.getUuid(), new WeakReference<>(tx));
       manageReferences();
    }
 

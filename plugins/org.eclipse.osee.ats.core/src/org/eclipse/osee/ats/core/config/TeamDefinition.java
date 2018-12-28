@@ -287,7 +287,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    public Collection<IAtsVersion> getVersionsFromTeamDefHoldingVersions(VersionReleaseType releaseType, VersionLockedType lockedType) {
       IAtsTeamDefinition teamDef = getTeamDefinitionHoldingVersions();
       if (teamDef == null) {
-         return new ArrayList<IAtsVersion>();
+         return new ArrayList<>();
       }
       return teamDef.getVersions(releaseType, lockedType);
    }

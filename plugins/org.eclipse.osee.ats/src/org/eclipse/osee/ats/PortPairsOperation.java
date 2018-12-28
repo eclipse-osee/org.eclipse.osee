@@ -49,7 +49,7 @@ public final class PortPairsOperation extends AbstractOperation {
          if (pairLine.length != 2) {
             throw new OseeArgumentException("Invalid porting pairs");
          }
-         this.portPairs.add(new Pair<String, String>(pairLine[0], pairLine[1]));
+         this.portPairs.add(new Pair<>(pairLine[0], pairLine[1]));
       }
    }
 

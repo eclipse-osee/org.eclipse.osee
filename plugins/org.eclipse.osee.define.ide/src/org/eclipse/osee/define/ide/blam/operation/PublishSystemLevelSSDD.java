@@ -187,7 +187,7 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
       List<Artifact> relatedArtifacts = systemRequirement.getRelatedArtifacts(CoreRelationTypes.Allocation__Component);
       excludeArtifacts(relatedArtifacts.iterator());
 
-      List<Artifact> allocatedSubsystems = new ArrayList<Artifact>(relatedArtifacts);
+      List<Artifact> allocatedSubsystems = new ArrayList<>(relatedArtifacts);
       Collections.sort(allocatedSubsystems);
       for (Artifact allocatedSubsystem : allocatedSubsystems) {
          excelWriter.writeCell("X", Arrays.binarySearch(allSubsystems, allocatedSubsystem) + 2);

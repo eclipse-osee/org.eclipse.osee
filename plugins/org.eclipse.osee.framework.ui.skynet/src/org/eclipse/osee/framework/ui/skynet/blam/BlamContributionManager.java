@@ -38,7 +38,7 @@ public class BlamContributionManager implements IXNavigateCommonItem {
    public synchronized static Map<String, AbstractBlam> getBlamMap() {
       if (blams == null) {
          blams = new TreeMap<>();
-         ExtensionDefinedObjects<AbstractBlam> definedObjects = new ExtensionDefinedObjects<AbstractBlam>(
+         ExtensionDefinedObjects<AbstractBlam> definedObjects = new ExtensionDefinedObjects<>(
             "org.eclipse.osee.framework.ui.skynet.BlamOperation", "Operation", "className");
          for (AbstractBlam blam : definedObjects.getObjects()) {
             blams.put(blam.getName(), blam);

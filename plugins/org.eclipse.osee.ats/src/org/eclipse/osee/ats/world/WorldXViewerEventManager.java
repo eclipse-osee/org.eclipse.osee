@@ -63,7 +63,7 @@ public class WorldXViewerEventManager {
 
    private static final class NotificationHandler implements IArtifactEventListener {
       private final Collection<IWorldViewerEventHandler> handlers =
-         new CopyOnWriteArrayList<IWorldViewerEventHandler>();
+         new CopyOnWriteArrayList<>();
 
       public NotificationHandler() {
          OseeEventManager.addListener(this);
@@ -107,7 +107,7 @@ public class WorldXViewerEventManager {
             artifactEvent.get(EventModType.Deleted, EventModType.Purged);
 
          // create list of items to updatePreComputedColumnValues; includes arts and parent arts
-         Set<Artifact> allModAndParents = new HashSet<>((modifiedArts.size() * 2) + relModifiedArts.size());
+         Set<Artifact> allModAndParents = new HashSet<>(modifiedArts.size() * 2 + relModifiedArts.size());
          for (Artifact art : modifiedArts) {
             allModAndParents.add(art);
             if (art instanceof IAtsWorkItem) {

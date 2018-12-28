@@ -72,7 +72,7 @@ public class RelationOrderData {
 
    public List<String> getOrderList(RelationTypeToken type, RelationSide side) {
       Pair<RelationSorter, List<String>> currentOrder = getTypeSideEntry(type, side);
-      return currentOrder != null ? currentOrder.getSecond() : new ArrayList<String>();
+      return currentOrder != null ? currentOrder.getSecond() : new ArrayList<>();
    }
 
    public RelationSorter getCurrentSorterGuid(RelationType type, RelationSide side) {
@@ -85,7 +85,7 @@ public class RelationOrderData {
    }
 
    public void addOrderList(RelationTypeToken relationType, RelationSide relationSide, RelationSorter sorterId, List<String> guidList) {
-      lists.put(relationType, relationSide, new Pair<RelationSorter, List<String>>(sorterId, guidList));
+      lists.put(relationType, relationSide, new Pair<>(sorterId, guidList));
    }
 
    public void removeOrderList(RelationTypeToken type, RelationSide side) {

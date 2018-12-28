@@ -150,14 +150,14 @@ public class PageCreatorTest {
    @Test
    public void testListItemRule() {
       PageCreator page = new PageCreator(registry);
-      page.addSubstitution(new ListItemRule<Pair<CharSequence, CharSequence>>("key1",
+      page.addSubstitution(new ListItemRule<>("key1",
          new HyperLinkRule("ruleNameDoesntMatter", "http://www.eclipse.org", "Eclipse")));
       CompositeRule<Pair<CharSequence, CharSequence>> listItemsComposite =
-         new CompositeRule<Pair<CharSequence, CharSequence>>("key2");
+         new CompositeRule<>("key2");
 
-      ListItemRule<Pair<CharSequence, CharSequence>> li1 = new ListItemRule<Pair<CharSequence, CharSequence>>(
+      ListItemRule<Pair<CharSequence, CharSequence>> li1 = new ListItemRule<>(
          "keyDoesntMatter", new HyperLinkRule("keyDoesntMatter", "http://www.stackoverflow.com", "Stack Overflow"));
-      ListItemRule<Pair<CharSequence, CharSequence>> li2 = new ListItemRule<Pair<CharSequence, CharSequence>>(
+      ListItemRule<Pair<CharSequence, CharSequence>> li2 = new ListItemRule<>(
          "keyDoesntMatter", new HyperLinkRule("keyDoesntMatter", "http://www.google.com", "Google!"));
 
       listItemsComposite.addRule(li1);

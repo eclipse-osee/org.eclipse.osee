@@ -44,7 +44,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
 
    @Override
    public Collection<ArtifactId> runQuery() {
-      List<ArtifactId> results = new ArrayList<ArtifactId>();
+      List<ArtifactId> results = new ArrayList<>();
       Iterator<ArtifactReadable> iterator = query.getResults().iterator();
       while (iterator.hasNext()) {
          results.add(iterator.next());
@@ -139,10 +139,10 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
       AtsQueryImpl search = new AtsQueryImpl(atsApi, orcsApi);
       search.isOfType(AtsArtifactTypes.TeamWorkflow);
       if (teamDefIds != null && !teamDefIds.isEmpty()) {
-         search.andTeam(new ArrayList<Long>(teamDefIds));
+         search.andTeam(new ArrayList<>(teamDefIds));
       }
       if (aiIds != null && !aiIds.isEmpty()) {
-         search.andActionableItem(new ArrayList<Long>(aiIds));
+         search.andActionableItem(new ArrayList<>(aiIds));
       }
       if (versionId != null && versionId > 0) {
          search.andVersion(versionId);

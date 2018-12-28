@@ -100,7 +100,7 @@ public class StpTestToCsciTable implements ISimpleTable {
       Collection<Artifact> directRequirements = source.getDirectSwRequirements();
       HashCollectionSet<String, Artifact> partitionMap = ArtifactOperations.sortByPartition(directRequirements);
 
-      for (String partition : new TreeSet<String>(partitionMap.keySet())) {
+      for (String partition : new TreeSet<>(partitionMap.keySet())) {
          Collection<Artifact> artifacts = partitionMap.getValues(partition);
          artifacts = ArtifactOperations.sortByParagraphNumbers(artifacts);
          for (Artifact artifact : artifacts) {

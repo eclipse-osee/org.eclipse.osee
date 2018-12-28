@@ -49,7 +49,7 @@ public final class PageCreator {
 
    private final IResourceRegistry registry;
    private final ConcurrentHashMap<String, AppendableRule<?>> substitutions =
-      new ConcurrentHashMap<String, AppendableRule<?>>();
+      new ConcurrentHashMap<>();
 
    public PageCreator(IResourceRegistry registry) {
       this.registry = registry;

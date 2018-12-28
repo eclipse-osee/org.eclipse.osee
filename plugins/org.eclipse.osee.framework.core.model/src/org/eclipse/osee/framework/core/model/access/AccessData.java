@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 public final class AccessData {
 
    private final CompositeKeyHashMap<Object, Object, AccessDetail<?>> accessMap =
-      new CompositeKeyHashMap<Object, Object, AccessDetail<?>>();
+      new CompositeKeyHashMap<>();
 
    public AccessData() {
       super();

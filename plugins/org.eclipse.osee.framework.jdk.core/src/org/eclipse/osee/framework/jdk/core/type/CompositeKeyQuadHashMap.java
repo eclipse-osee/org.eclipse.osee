@@ -29,7 +29,7 @@ public class CompositeKeyQuadHashMap<KeyOne, KeyTwo, KeyThree, KeyFour, Value> i
 
          @Override
          protected Quad<KeyOne, KeyTwo, KeyThree, KeyFour> initialValue() {
-            return new Quad<KeyOne, KeyTwo, KeyThree, KeyFour>(null, null, null, null);
+            return new Quad<>(null, null, null, null);
          }
 
       };
@@ -100,7 +100,7 @@ public class CompositeKeyQuadHashMap<KeyOne, KeyTwo, KeyThree, KeyFour, Value> i
    }
 
    public Value put(KeyOne a, KeyTwo b, KeyThree c, KeyFour d, Value value) {
-      return map.put(new Quad<KeyOne, KeyTwo, KeyThree, KeyFour>(a, b, c, d), value);
+      return map.put(new Quad<>(a, b, c, d), value);
    }
 
    @Override

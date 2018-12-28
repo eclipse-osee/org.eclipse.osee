@@ -71,7 +71,7 @@ public class DatabaseHealthOpsExtensionManager {
    private static void checkExtensionsLoaded() {
       if (verifyOps.isEmpty() || fixOps.isEmpty()) {
          ExtensionDefinedObjects<DatabaseHealthOperation> extensionDefinedObjects =
-            new ExtensionDefinedObjects<DatabaseHealthOperation>(EXTENSION_POINT, EXTENSION_ELEMENT,
+            new ExtensionDefinedObjects<>(EXTENSION_POINT, EXTENSION_ELEMENT,
                CLASS_ATTRIBUTE_NAME);
          for (DatabaseHealthOperation operation : extensionDefinedObjects.getObjects()) {
             if (Strings.isValid(operation.getVerifyTaskName())) {

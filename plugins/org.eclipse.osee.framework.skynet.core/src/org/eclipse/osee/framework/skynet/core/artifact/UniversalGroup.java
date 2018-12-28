@@ -60,7 +60,7 @@ public class UniversalGroup {
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      return new ArrayList<Artifact>();
+      return new ArrayList<>();
    }
 
    public static Artifact getGroupOrNull(ArtifactToken groupToken, BranchId branch) {

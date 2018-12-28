@@ -124,9 +124,9 @@ public class DoubleKeyCountingMap<KeyOne, KeyTwo> {
    public Collection<MutableInteger> allValues(KeyOne key) {
       HashMap<KeyTwo, MutableInteger> map = k1ToHashMap.get(key);
       if (map != null) {
-         return new HashSet<MutableInteger>(map.values());
+         return new HashSet<>(map.values());
       }
-      return new HashSet<MutableInteger>();
+      return new HashSet<>();
    }
 
    public Map<KeyTwo, MutableInteger> getSubHash(KeyOne k1) {

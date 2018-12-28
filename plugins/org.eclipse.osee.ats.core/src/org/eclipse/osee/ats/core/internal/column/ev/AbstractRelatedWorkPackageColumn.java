@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public abstract class AbstractRelatedWorkPackageColumn implements IAtsColumn, IWorkPackageColumn {
 
    private final IAtsEarnedValueServiceProvider earnedValueServiceProvider;
-   private Map<ArtifactId, ArtifactToken> idToWorkPackage = new HashMap<ArtifactId, ArtifactToken>();
+   private Map<ArtifactId, ArtifactToken> idToWorkPackage = new HashMap<>();
    protected final AtsApi atsApi;
 
    public AbstractRelatedWorkPackageColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider, AtsApi atsApi) {

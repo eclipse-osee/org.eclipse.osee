@@ -37,7 +37,7 @@ public class FrameworkAccessModel extends OseeDslAccessModel {
    public void computeAccess(IAccessContextId contextId, Collection<Object> objectsToCheck, AccessData accessData) {
       if (contextId.equals(DefaultFrameworkAccessConstants.INVALID_ASSOC_ART_ID)) {
          for (Object obj : objectsToCheck) {
-            AccessDetail<Object> data = new AccessDetail<Object>(obj, PermissionEnum.READ, Scope.createLegacyScope(),
+            AccessDetail<Object> data = new AccessDetail<>(obj, PermissionEnum.READ, Scope.createLegacyScope(),
                "Invalid artifact Id associated with branch");
             accessData.add(obj, data);
             addRelationAccess(obj, accessData);
@@ -51,7 +51,7 @@ public class FrameworkAccessModel extends OseeDslAccessModel {
       if (object instanceof Artifact) {
          for (RelationType relationType : ((Artifact) object).getValidRelationTypes()) {
             for (RelationSide relationSide : RelationSide.values()) {
-               accessData.add(object, new AccessDetail<RelationTypeSide>(
+               accessData.add(object, new AccessDetail<>(
                   new RelationTypeSide(relationType, relationSide), PermissionEnum.READ, Scope.createLegacyScope()));
             }
          }

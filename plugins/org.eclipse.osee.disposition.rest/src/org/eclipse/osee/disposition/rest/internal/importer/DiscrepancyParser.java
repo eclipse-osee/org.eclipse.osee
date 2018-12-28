@@ -69,7 +69,7 @@ public class DiscrepancyParser {
       location.setValue("0");
       final StringBuilder textAppendable = new StringBuilder();
       final MutableBoolean isFailure = new MutableBoolean(false);
-      final Map<String, Discrepancy> discrepancies = new HashMap<String, Discrepancy>();
+      final Map<String, Discrepancy> discrepancies = new HashMap<>();
       final MutableDate scriptRunDate = new MutableDate();
       final MutableDate firstTestPointDate = new MutableDate();
       final MutableString version = new MutableString();

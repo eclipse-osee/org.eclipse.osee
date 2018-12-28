@@ -21,7 +21,7 @@ public class JaxKbAvailableState {
    private String name;
    private int ordinal;
    private String stateType;
-   private List<String> toStates = new ArrayList<String>();
+   private List<String> toStates = new ArrayList<>();
 
    public String getName() {
       return name;

@@ -280,7 +280,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
 
    @Override
    public ResultSet<RelationReadable> getRelations(RelationTypeSide typeAndSide) {
-      return new ResultSetList<RelationReadable>(Collections.castAll(
+      return new ResultSetList<>(Collections.castAll(
          getRelationManager().getRelations(getSession(), getProxiedObject(), DeletionFlag.EXCLUDE_DELETED)));
    }
 
@@ -327,7 +327,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
          aNode = thisArtifact;
          bNode = otherArtifact;
       }
-      return new Pair<Artifact, Artifact>(aNode, bNode);
+      return new Pair<>(aNode, bNode);
    }
 
    private RelationSide whichSideAmIOn(RelationTypeSide typeAndSide) {
@@ -367,7 +367,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
          DeletionFlag.EXCLUDE_DELETED)) {
          boolean relIsSideA = relationTypeSide.getSide().isSideA();
          boolean thisOnCorrectSide =
-            (relIsSideA && relation.getArtIdB() == getId().intValue()) || (!relIsSideA && relation.getArtIdA() == getId().intValue());
+            relIsSideA && relation.getArtIdB() == getId().intValue() || !relIsSideA && relation.getArtIdA() == getId().intValue();
          if (thisOnCorrectSide && relation.getRelationType().matches(relationTypeSide)) {
             childIds.add(Long.valueOf(relation.getArtIdB()));
          }

@@ -120,7 +120,7 @@ public class AtsImplementersService implements IAtsImplementerService {
          implementers.addAll(getImplementersByState(workItem, PeerToPeerReviewState.Review));
          IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) workItem).getRoleManager();
          List<UserRole> userRoles = roleMgr.getUserRoles();
-         for (IAtsUser user : (roleMgr.getRoleUsers(userRoles))) {
+         for (IAtsUser user : roleMgr.getRoleUsers(userRoles)) {
             implementers.add(user);
          }
       }

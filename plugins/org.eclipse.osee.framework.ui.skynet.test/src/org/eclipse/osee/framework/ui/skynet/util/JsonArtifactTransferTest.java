@@ -86,11 +86,11 @@ public class JsonArtifactTransferTest {
 
    private String generateJsonOutput() {
       String output = null;
-      List<JsonArtRep> outputItems = new ArrayList<JsonArtRep>();
+      List<JsonArtRep> outputItems = new ArrayList<>();
       for (int i = 0; i < 5; i++) {
          JsonArtRep rep = new JsonArtRep();
          rep.setArtType(CoreArtifactTypes.SoftwareDesign);
-         List<JsonAttrRep> attrs = new ArrayList<JsonAttrRep>();
+         List<JsonAttrRep> attrs = new ArrayList<>();
          for (int j = 0; j < 5; j++) {
             JsonAttrRep attr = new JsonAttrRep();
             attr.setType(CoreAttributeTypes.Active);

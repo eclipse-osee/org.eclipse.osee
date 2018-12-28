@@ -21,8 +21,8 @@ import org.eclipse.swt.graphics.Image;
  */
 public class CheckBoxStateImageCache {
 
-   static Map<String, Image> imageCache = new HashMap<String, Image>();
-   static Map<String, ImageDescriptor> imageDescriptorCache = new HashMap<String, ImageDescriptor>();
+   static Map<String, Image> imageCache = new HashMap<>();
+   static Map<String, ImageDescriptor> imageDescriptorCache = new HashMap<>();
 
    public static Image getImage(String imageName) {
       if (!imageCache.containsKey(imageName)) {

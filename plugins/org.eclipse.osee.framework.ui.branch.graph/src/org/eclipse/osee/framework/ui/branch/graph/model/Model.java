@@ -39,7 +39,7 @@ public class Model {
    }
 
    protected List<IModelListener> getListeners() {
-      return new ArrayList<IModelListener>(listeners);
+      return new ArrayList<>(listeners);
    }
 
    protected void fireModelEvent() {

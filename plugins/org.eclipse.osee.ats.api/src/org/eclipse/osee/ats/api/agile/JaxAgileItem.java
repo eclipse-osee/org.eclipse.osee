@@ -27,7 +27,7 @@ public class JaxAgileItem extends JaxAgileObject {
    private boolean setSprint = false;
    private boolean setBacklog = false;
    private String toState = null;
-   private List<String> toStateUsers = new ArrayList<String>();
+   private List<String> toStateUsers = new ArrayList<>();
 
    private boolean setAssignees = false;
    private List<String> assigneesAccountIds = new ArrayList<>();

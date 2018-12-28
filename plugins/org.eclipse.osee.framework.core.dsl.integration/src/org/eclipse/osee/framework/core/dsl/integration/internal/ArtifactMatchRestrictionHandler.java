@@ -48,7 +48,7 @@ public class ArtifactMatchRestrictionHandler implements RestrictionHandler<Artif
          XArtifactMatcher artifactMatcher = restriction.getArtifactMatcherRef();
          if (matcherInterpreter.matches(artifactMatcher, artifactProxy)) {
             PermissionEnum permission = OseeUtil.getPermission(restriction);
-            collector.collect(new AccessDetail<ArtifactToken>(artifactProxy.getObject(), permission, scope));
+            collector.collect(new AccessDetail<>(artifactProxy.getObject(), permission, scope));
          }
       }
    }

@@ -45,7 +45,7 @@ public class ModifyActionableItems {
    private final List<IAtsActionableItem> addAis = new ArrayList<>();
    private final List<IAtsActionableItem> removeAis = new ArrayList<>();
    private final Map<IAtsTeamDefinition, CreateTeamData> teamDefToTeamDataMap =
-      new HashMap<IAtsTeamDefinition, CreateTeamData>();
+      new HashMap<>();
    private final ITeamDefinitionUtility teamDefUtil;
 
    public ModifyActionableItems(XResultData results, IAtsTeamWorkflow teamWf, Collection<IAtsActionableItem> currAIsForAllWfs, Collection<IAtsActionableItem> currWorkflowDesiredAIs, Collection<IAtsActionableItem> newAIs, IAtsUser modifiedBy, ITeamDefinitionUtility teamDefUtil) {
@@ -93,7 +93,7 @@ public class ModifyActionableItems {
             createTeamData.getActionableItems().add(ai);
          } else {
             CreateTeamData createTeamData =
-               new CreateTeamData(teamDef, Arrays.asList(ai), new LinkedList<IAtsUser>(teamDef.getLeads()), createdDate,
+               new CreateTeamData(teamDef, Arrays.asList(ai), new LinkedList<>(teamDef.getLeads()), createdDate,
                   modifiedBy, CreateTeamOption.Duplicate_If_Exists);
             teamDatas.add(createTeamData);
             teamDefToTeamDataMap.put(teamDef, createTeamData);

@@ -415,7 +415,7 @@ public final class BranchManager {
    }
 
    private static void runCommitExtPointActions(ConflictManagerExternal conflictManager) {
-      ExtensionDefinedObjects<CommitAction> extensions = new ExtensionDefinedObjects<CommitAction>(
+      ExtensionDefinedObjects<CommitAction> extensions = new ExtensionDefinedObjects<>(
          "org.eclipse.osee.framework.skynet.core.CommitActions", "CommitActions", "className");
       for (CommitAction commitAction : extensions.getObjects()) {
          commitAction.runCommitAction(conflictManager.getSourceBranch(), conflictManager.getDestinationBranch());
@@ -545,7 +545,7 @@ public final class BranchManager {
 
    private static BranchId getDefaultInitialBranch() {
       ExtensionDefinedObjects<IDefaultInitialBranchesProvider> extensions =
-         new ExtensionDefinedObjects<IDefaultInitialBranchesProvider>(
+         new ExtensionDefinedObjects<>(
             "org.eclipse.osee.framework.skynet.core.DefaultInitialBranchProvider", "DefaultInitialBranchProvider",
             "class", true);
       for (IDefaultInitialBranchesProvider provider : extensions.getObjects()) {

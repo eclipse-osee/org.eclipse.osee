@@ -151,7 +151,7 @@ public class FindErroneousEmbeddedLinksBlam extends AbstractBlam {
       } catch (Exception e) {
          String subsystem = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.Subsystem, "");
          excelWriter.writeRow("Invalid", artifact.getName(), artifact.getArtifactType().getName(), artifact.getGuid(),
-            subsystem, (linkGuid == null ? "NULL" : linkGuid));
+            subsystem, linkGuid == null ? "NULL" : linkGuid);
       }
    }
 

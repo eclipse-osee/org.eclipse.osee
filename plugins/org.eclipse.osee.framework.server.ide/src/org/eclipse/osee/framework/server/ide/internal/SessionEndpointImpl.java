@@ -84,7 +84,7 @@ public class SessionEndpointImpl implements SessionEndpoint {
    @Path("session/protocols")
    @Produces({MediaType.APPLICATION_JSON})
    public Response getIdeClientProtocols() {
-      List<String> protocols = new LinkedList<String>();
+      List<String> protocols = new LinkedList<>();
       for (String protocol : authenticationManager.getProtocols()) {
          protocols.add(protocol);
       }

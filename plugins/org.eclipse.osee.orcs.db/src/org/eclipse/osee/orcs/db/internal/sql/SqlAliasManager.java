@@ -116,7 +116,7 @@ public class SqlAliasManager {
    private static final class AliasSet {
 
       private final Map<String, ListMultimap<ObjectType, String>> used =
-         new HashMap<String, ListMultimap<ObjectType, String>>();
+         new HashMap<>();
 
       public List<String> getAliases(String key, ObjectType type) {
          ListMultimap<ObjectType, String> data = used.get(key);

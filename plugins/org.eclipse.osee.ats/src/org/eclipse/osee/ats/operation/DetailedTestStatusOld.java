@@ -97,7 +97,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
    private ISheetWriter excelWriter;
 
    private final CompositeKeyHashMap<String, String, RequirementStatus> reqTaskMap =
-      new CompositeKeyHashMap<String, String, RequirementStatus>();
+      new CompositeKeyHashMap<>();
    private final StringBuilder sumFormula = new StringBuilder(500);
    private HashCollectionSet<Artifact, String> requirementToCodeUnitsMap;
    private final HashMap<String, String> testProcedureInfo = new HashMap<>();

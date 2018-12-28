@@ -50,7 +50,7 @@ public class UserCacheProvider extends LazyObject<Cache<String, User>> {
             return userCache;
          }
       };
-      return new FutureTask<Cache<String, User>>(callable);
+      return new FutureTask<>(callable);
    }
 
 }

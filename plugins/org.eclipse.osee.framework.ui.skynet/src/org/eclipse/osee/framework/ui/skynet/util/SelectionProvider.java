@@ -21,7 +21,7 @@ public class SelectionProvider implements ISelectionProvider {
    private ISelection selection;
 
    public SelectionProvider() {
-      this.listenerList = new ListenerList<ISelectionChangedListener>();
+      this.listenerList = new ListenerList<>();
    }
 
    @Override

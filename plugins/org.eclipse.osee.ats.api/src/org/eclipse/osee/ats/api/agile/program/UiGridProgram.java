@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.config.JaxAtsObject;
  */
 public class UiGridProgram extends JaxAtsObject {
 
-   List<UiGridProgItem> items = new ArrayList<UiGridProgItem>();
+   List<UiGridProgItem> items = new ArrayList<>();
 
    public UiGridProgram() {
       // for jax-rs

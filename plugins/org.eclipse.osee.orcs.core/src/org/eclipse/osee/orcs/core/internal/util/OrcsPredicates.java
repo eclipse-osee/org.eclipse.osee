@@ -61,7 +61,7 @@ public final class OrcsPredicates {
    }
 
    public static <T extends HasDeleteState> Predicate<T> deletionFlagEquals(DeletionFlag includeDeleted) {
-      return new DeletedMatcher<T>(includeDeleted);
+      return new DeletedMatcher<>(includeDeleted);
    }
 
    public static Predicate<Attribute<String>> attributeStringEquals(String target) {

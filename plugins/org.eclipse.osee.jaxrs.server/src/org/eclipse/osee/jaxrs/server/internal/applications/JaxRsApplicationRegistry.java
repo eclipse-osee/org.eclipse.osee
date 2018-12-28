@@ -60,7 +60,7 @@ public class JaxRsApplicationRegistry implements JaxRsVisitable {
    }
 
    private final ConcurrentHashMap<String, JaxRsContainerProvider> servlets =
-      new ConcurrentHashMap<String, JaxRsContainerProvider>();
+      new ConcurrentHashMap<>();
 
    private Log logger;
    private JaxRsFactory factory;

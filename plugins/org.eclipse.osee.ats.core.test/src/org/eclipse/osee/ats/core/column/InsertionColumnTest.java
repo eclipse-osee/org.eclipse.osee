@@ -53,12 +53,12 @@ public class InsertionColumnTest {
       str = InsertionColumn.getInsertionStr(workItem, atsApi, util);
       assertEquals(str, "");
 
-      when(util.getInsertion(atsApi, workItem)).thenReturn(new Pair<IAtsInsertion, Boolean>(program, false));
+      when(util.getInsertion(atsApi, workItem)).thenReturn(new Pair<>(program, false));
       when(program.getName()).thenReturn("Country");
       str = InsertionColumn.getInsertionStr(workItem, atsApi, util);
       assertEquals(str, "Country");
 
-      when(util.getInsertion(atsApi, workItem)).thenReturn(new Pair<IAtsInsertion, Boolean>(program, true));
+      when(util.getInsertion(atsApi, workItem)).thenReturn(new Pair<>(program, true));
       str = InsertionColumn.getInsertionStr(workItem, atsApi, util);
       assertEquals(str, "Country (I)");
 

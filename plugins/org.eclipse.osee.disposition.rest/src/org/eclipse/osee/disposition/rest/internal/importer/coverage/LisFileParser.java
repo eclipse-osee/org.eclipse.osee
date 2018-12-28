@@ -454,7 +454,7 @@ public class LisFileParser implements DispoImporterApi {
    }
 
    private boolean findAndProcessResultFile(File resultsFile, String resultPath, OperationReport report) {
-      List<File> resultsDirs = new ArrayList<File>();
+      List<File> resultsDirs = new ArrayList<>();
       resultsDirs.add(new File(vCastDir + File.separator + RESULTS));
       resultsDirs.add(new File(vCastDir + File.separator + RESULTS + File.separator + IMPORTED_RESULTS));
 
@@ -618,7 +618,7 @@ public class LisFileParser implements DispoImporterApi {
       int sizeDelta = bitsUsedArray.length - bitsTrueArray.length;
       int highestChar = 63 + bitsUsedArray.length;
       for (int i = 1; i <= sizeDelta; i++) {
-         char c = (char) (highestChar--);
+         char c = (char) highestChar--;
          String key = Character.toString(c);
          toReturn.put(key, false);
       }
@@ -626,7 +626,7 @@ public class LisFileParser implements DispoImporterApi {
       for (int i = 0; i < bitsTrueArray.length; i++) {
          char valueC = bitsTrueArray[i];
          if (i != totalResultIndex) {
-            char c = (char) (highestChar--);
+            char c = (char) highestChar--;
             String key = Character.toString(c);
             toReturn.put(key, valueC == '1');
          } else {

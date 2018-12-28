@@ -515,7 +515,7 @@ public final class JdbcClientImpl implements JdbcClient {
             connect = getConnection();
             autoClose = true;
          } else {
-            connect = ((JdbcConnectionImpl) connection);
+            connect = (JdbcConnectionImpl) connection;
          }
 
          PreparedStatement preparedStatement = connect.prepareStatement(query);

@@ -51,7 +51,7 @@ public class OseeEnumEntry implements FullyNamed, HasDescription {
    }
 
    public Pair<String, Integer> asPair() {
-      return new Pair<String, Integer>(getName(), ordinal());
+      return new Pair<>(getName(), ordinal());
    }
 
    @Override

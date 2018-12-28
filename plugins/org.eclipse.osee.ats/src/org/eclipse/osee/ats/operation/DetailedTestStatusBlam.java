@@ -537,7 +537,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
             progress = 0;
          }
          Set<Artifact> foundProcedures =
-            new HashSet<Artifact>(tpRequirement.getRelatedArtifacts(CoreRelationTypes.Validation__Validator));
+            new HashSet<>(tpRequirement.getRelatedArtifacts(CoreRelationTypes.Validation__Validator));
          Set<Artifact> toAdd = new HashSet<>();
          toAdd = foundProcedures;
          requirementNameToTestProcedures.put(tpRequirement.getName(), toAdd);

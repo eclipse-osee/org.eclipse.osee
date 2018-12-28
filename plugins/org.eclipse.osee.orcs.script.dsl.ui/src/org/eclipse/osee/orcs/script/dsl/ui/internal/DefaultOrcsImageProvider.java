@@ -26,7 +26,7 @@ public class DefaultOrcsImageProvider implements IOrcsImageProvider {
    private static final String CLASSNAME = "classname";
 
    private final ExtensionDefinedObjects<IOrcsImageProvider> extensions =
-      new ExtensionDefinedObjects<IOrcsImageProvider>(EXTENSION_POINT_ID, EXTENSION_ELEMENT, CLASSNAME, true);
+      new ExtensionDefinedObjects<>(EXTENSION_POINT_ID, EXTENSION_ELEMENT, CLASSNAME, true);
 
    private List<IOrcsImageProvider> getProviders() {
       return extensions.getObjects();

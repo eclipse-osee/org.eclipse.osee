@@ -26,7 +26,7 @@ public class EmailWizardTest {
 
    @Test
    public void test() {
-      EmailWizard wizard = new EmailWizard("html", "subject", new ArrayList<EmailGroup>(), new ArrayList<Object>());
+      EmailWizard wizard = new EmailWizard("html", "subject", new ArrayList<EmailGroup>(), new ArrayList<>());
       WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
       try {
          dialog.setBlockOnOpen(false);

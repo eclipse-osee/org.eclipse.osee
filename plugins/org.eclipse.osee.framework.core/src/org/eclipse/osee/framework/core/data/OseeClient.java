@@ -30,6 +30,6 @@ public class OseeClient {
 
    public static int getPort() {
       String[] splitForPort = getOseeApplicationServer().split(":");
-      return (splitForPort.length == 3) ? Integer.valueOf(splitForPort[2]) : PORT;
+      return splitForPort.length == 3 ? Integer.valueOf(splitForPort[2]) : PORT;
    }
 }

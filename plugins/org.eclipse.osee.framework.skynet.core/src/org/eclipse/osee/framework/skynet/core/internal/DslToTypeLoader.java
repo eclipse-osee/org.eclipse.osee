@@ -163,7 +163,7 @@ public class DslToTypeLoader implements TypesLoader {
    }
 
    private Map<BranchId, Collection<AttributeType>> getOseeAttributes(TypeBuffer buffer, BranchCache branchCache, XArtifactType xArtifactType) {
-      Map<BranchId, Collection<AttributeType>> validAttributes = new HashMap<BranchId, Collection<AttributeType>>();
+      Map<BranchId, Collection<AttributeType>> validAttributes = new HashMap<>();
       for (XAttributeTypeRef xAttributeTypeRef : xArtifactType.getValidAttributeTypes()) {
          XAttributeType xAttributeType = xAttributeTypeRef.getValidAttributeType();
          BranchId branch = getAttributeBranch(branchCache, xAttributeTypeRef);

@@ -17,12 +17,14 @@ import java.util.List;
  */
 public interface IAgileProgramBacklog extends IAgileObject {
 
+   @Override
    String getName();
 
    Long getProgramId();
 
    List<Long> getBacklogItemIds();
 
+   @Override
    Long getId();
 
 }

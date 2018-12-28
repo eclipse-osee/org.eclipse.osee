@@ -143,7 +143,7 @@ public class StdTestToCsciTable implements ISimpleTable {
          }
       }
 
-      for (String partition : new TreeSet<String>(partitionToQualificationMethod.keySet())) {
+      for (String partition : new TreeSet<>(partitionToQualificationMethod.keySet())) {
          List<String> units = new ArrayList<>(partitionToQualificationMethod.getValues(partition));
          Collections.sort(units);
          for (String codeUnit : units) {
@@ -165,7 +165,7 @@ public class StdTestToCsciTable implements ISimpleTable {
 
       // Combine Test Scripts and Test Procedures
       for (Artifact requirement : source.getAllSwRequirements()) {
-         List<String> testScripts = new ArrayList<String>();
+         List<String> testScripts = new ArrayList<>();
          requirementsToCodeUnits.forEachValue(requirement, testScripts::add);
          toReturn.put(requirement, testScripts);
       }

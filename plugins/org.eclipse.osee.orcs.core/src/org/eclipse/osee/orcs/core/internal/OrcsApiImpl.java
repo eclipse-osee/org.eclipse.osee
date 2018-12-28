@@ -117,7 +117,7 @@ public class OrcsApiImpl implements OrcsApi {
       BranchHierarchyProvider hierarchyProvider = new BranchHierarchyProvider() {
 
          private final ThreadLocal<Iterable<? extends BranchId>> cache =
-            new ThreadLocal<Iterable<? extends BranchId>>();
+            new ThreadLocal<>();
 
          @Override
          public Iterable<? extends BranchId> getParentHierarchy(BranchId branch) {

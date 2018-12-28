@@ -52,7 +52,7 @@ public class ServiceProviderReader implements IDoorsArtifactParser {
             NodeList childNodes = node.getChildNodes();
             for (int j = 0; j < childNodes.getLength(); j++) {
                Node item = childNodes.item(j);
-               if ((item.getLocalName() != null) && item.getLocalName().equalsIgnoreCase("label")) {
+               if (item.getLocalName() != null && item.getLocalName().equalsIgnoreCase("label")) {
                   provider.setName(item.getTextContent());
                }
             }

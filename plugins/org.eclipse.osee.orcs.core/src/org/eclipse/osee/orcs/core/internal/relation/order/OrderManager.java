@@ -62,7 +62,7 @@ public class OrderManager implements HasOrderData {
    @Override
    public Iterator<Entry<RelationTypeSide, OrderData>> iterator() {
       List<Entry<RelationTypeSide, OrderData>> entries =
-         new ArrayList<Entry<RelationTypeSide, OrderData>>(orderDataMap.entrySet());
+         new ArrayList<>(orderDataMap.entrySet());
       Collections.sort(entries, ENTRY_COMPARATOR);
       return entries.iterator();
    }

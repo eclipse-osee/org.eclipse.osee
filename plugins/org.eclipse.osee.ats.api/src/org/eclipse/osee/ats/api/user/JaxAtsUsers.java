@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class JaxAtsUsers {
 
-   private List<AtsUser> users = new LinkedList<AtsUser>();
+   private List<AtsUser> users = new LinkedList<>();
 
    public JaxAtsUsers() {
       // for jax-rs

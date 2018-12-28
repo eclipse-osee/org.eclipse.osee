@@ -50,7 +50,7 @@ public class UserKeysProvider extends LazyObject<Iterable<? extends String>> imp
          }
 
       };
-      return new FutureTask<Iterable<? extends String>>(callable);
+      return new FutureTask<>(callable);
    }
 
 }

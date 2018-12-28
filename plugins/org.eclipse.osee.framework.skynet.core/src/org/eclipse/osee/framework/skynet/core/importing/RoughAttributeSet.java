@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.importing.RoughAttributeSet.RoughA
 public final class RoughAttributeSet implements Iterable<Entry<CaseInsensitiveString, Collection<RoughAttribute>>> {
 
    private final Map<CaseInsensitiveString, Collection<RoughAttribute>> attributes =
-      new LinkedHashMap<CaseInsensitiveString, Collection<RoughAttribute>>();
+      new LinkedHashMap<>();
 
    public void clear() {
       attributes.clear();

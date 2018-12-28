@@ -228,7 +228,7 @@ public class Collections {
       if (items.size() > maxPerList) {
          return recursiveAggregateTree(items, maxPerList);
       } else {
-         return new ArrayList<Object>(items);
+         return new ArrayList<>(items);
       }
    }
 

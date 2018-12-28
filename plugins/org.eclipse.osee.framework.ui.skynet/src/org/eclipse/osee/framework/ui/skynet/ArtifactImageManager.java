@@ -47,10 +47,10 @@ public final class ArtifactImageManager {
    private static final String EXTENSION_ID = Activator.PLUGIN_ID + "." + EXTENSION_ELEMENT;
 
    private static final Map<IArtifactType, ArtifactImageProvider> providersOverrideImageMap =
-      new ConcurrentHashMap<IArtifactType, ArtifactImageProvider>();
+      new ConcurrentHashMap<>();
    private static final Map<IArtifactType, KeyedImage> artifactTypeImageMap = new ConcurrentHashMap<>();
    private static final Map<IArtifactType, String> artifactTypeImageProviderMap =
-      new ConcurrentHashMap<IArtifactType, String>();
+      new ConcurrentHashMap<>();
 
    private static final String OSEE_DATABASE_PROVIDER = "OSEE Database Provider";
 

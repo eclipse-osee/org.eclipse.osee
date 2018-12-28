@@ -30,7 +30,7 @@ public class AtsColumnProviderCollector {
 
    public static List<IAtsColumnProvider> getColumnProviders() {
       if (columnProviders == null) {
-         columnProviders = new CopyOnWriteArrayList<IAtsColumnProvider>();
+         columnProviders = new CopyOnWriteArrayList<>();
       }
       return columnProviders;
    }

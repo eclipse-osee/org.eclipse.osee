@@ -115,7 +115,7 @@ public class TransitionHelper extends TransitionHelperAdapter {
    }
 
    public void addTransitionOption(TransitionOption transitionOption) {
-      List<TransitionOption> options = new ArrayList<TransitionOption>(Arrays.asList(this.transitionOption));
+      List<TransitionOption> options = new ArrayList<>(Arrays.asList(this.transitionOption));
       if (!options.contains(transitionOption)) {
          options.add(transitionOption);
       }
@@ -123,7 +123,7 @@ public class TransitionHelper extends TransitionHelperAdapter {
    }
 
    public void removeTransitionOption(TransitionOption transitionOption) {
-      List<TransitionOption> options = new ArrayList<TransitionOption>(Arrays.asList(this.transitionOption));
+      List<TransitionOption> options = new ArrayList<>(Arrays.asList(this.transitionOption));
       if (options.contains(transitionOption)) {
          options.remove(transitionOption);
       }

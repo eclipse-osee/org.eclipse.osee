@@ -12,9 +12,7 @@ package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,7 +22,6 @@ import java.util.Stack;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.DoorsTableRow.RowType;
 import org.jsoup.nodes.Element;
@@ -264,20 +261,6 @@ public class DoorsTableRowCollector {
          throw new OseeStateException("Doors Table Row Collector is empty", this);
       }
       return columns;
-   }
-
-   // currently used only for debugging purposes
-   // this makes it simple to check the contents of the import using a diff
-   @SuppressWarnings("unused")
-   private void outputHTML(String file) throws FileNotFoundException, UnsupportedEncodingException {
-      String outputfile = String.format("%s%s.html", file, Lib.getDateTimeString());
-      PrintWriter writer = new PrintWriter(outputfile, "UTF-8");
-      try {
-         outputHTML(writer);
-      } finally {
-         writer.close();
-      }
-
    }
 
    public void outputHTML(PrintWriter writer) {

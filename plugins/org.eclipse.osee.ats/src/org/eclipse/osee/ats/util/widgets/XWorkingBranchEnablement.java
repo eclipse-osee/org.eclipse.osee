@@ -153,7 +153,7 @@ public class XWorkingBranchEnablement {
                return enablementData;
             }
          };
-         return new FutureTask<BranchEnablementData>(callable);
+         return new FutureTask<>(callable);
       }
    };
 
@@ -187,7 +187,7 @@ public class XWorkingBranchEnablement {
 
       public boolean isWorkingBranchCreationInProgress() {
          return AtsClientService.get().getBranchService().isWorkingBranchCreationInProgress(
-            teamArt) || (workingBranch.isValid() && BranchManager.getState(workingBranch).isCreationInProgress());
+            teamArt) || workingBranch.isValid() && BranchManager.getState(workingBranch).isCreationInProgress();
       }
 
       public boolean isWorkingBranchCommitInProgress() {

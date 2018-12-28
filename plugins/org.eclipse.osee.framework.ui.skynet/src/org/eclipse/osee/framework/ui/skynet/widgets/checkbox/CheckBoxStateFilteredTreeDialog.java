@@ -127,7 +127,7 @@ public class CheckBoxStateFilteredTreeDialog<T> extends MessageDialog {
       comp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
       treeViewer =
-         new CheckBoxStateFilteredTreeViewer<T>(comp, SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+         new CheckBoxStateFilteredTreeViewer<>(comp, SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
       GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
       gd.heightHint = 500;
       treeViewer.getViewer().getTree().setLayoutData(gd);

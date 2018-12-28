@@ -157,7 +157,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
       if (!(workItem instanceof IAtsTeamWorkflow)) {
          return 0;
       }
-      return getEstimatedHoursFromTasks((workItem), relatedToState);
+      return getEstimatedHoursFromTasks(workItem, relatedToState);
    }
 
    /**

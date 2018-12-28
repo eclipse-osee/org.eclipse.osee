@@ -317,7 +317,7 @@ public class WfeWorkflowSection extends SectionPart {
          GridLayout layout = new GridLayout(6, false);
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         allXWidgets.add(new TaskInfoXWidget(getManagedForm(), ((TeamWorkFlowArtifact) sma), state, comp, 2));
+         allXWidgets.add(new TaskInfoXWidget(getManagedForm(), (TeamWorkFlowArtifact) sma, state, comp, 2));
       }
    }
 

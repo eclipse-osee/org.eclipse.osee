@@ -10,13 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.define.rest.internal.wordupdate;
 
-import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 import javax.xml.xpath.XPath;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -139,21 +135,5 @@ public class UpdateBookmarkIds {
          bookMarkId = 0;
       }
       return bookMarkId;
-   }
-
-   @SuppressWarnings("unused")
-   private static String xmlSectionToString(Node root) throws XMLStreamException {
-      StringWriter writer = new StringWriter();
-      XMLOutputFactory factory = XMLOutputFactory.newInstance();
-      XMLStreamWriter xmlWriter = null;
-      try {
-         xmlWriter = factory.createXMLStreamWriter(writer);
-         Jaxp.writeNode(xmlWriter, root, false);
-      } finally {
-         if (xmlWriter != null) {
-            xmlWriter.close();
-         }
-      }
-      return writer.toString();
    }
 }

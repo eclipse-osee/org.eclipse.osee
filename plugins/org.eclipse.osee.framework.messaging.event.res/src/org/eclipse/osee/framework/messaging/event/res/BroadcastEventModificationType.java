@@ -21,7 +21,7 @@ public class BroadcastEventModificationType {
 
    private final String guid;
    private static Map<String, BroadcastEventModificationType> guidToEventType =
-      new HashMap<String, BroadcastEventModificationType>(15);
+      new HashMap<>(15);
    public static BroadcastEventModificationType Message = new BroadcastEventModificationType("Aylfa1sC4iArrIaXxugA");
    public static BroadcastEventModificationType Shutdown = new BroadcastEventModificationType("Aylfa1swuASdF_H2OYQA");
 

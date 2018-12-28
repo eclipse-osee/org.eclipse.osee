@@ -71,7 +71,7 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
    @Override
    public boolean handleSelection() {
       try {
-         FilteredCheckboxTreeDialog<User> uld = new FilteredCheckboxTreeDialog<User>("Select Users",
+         FilteredCheckboxTreeDialog<User> uld = new FilteredCheckboxTreeDialog<>("Select Users",
             "Select to assign.\nDeSelect to un-assign.", users, new ArrayTreeContentProvider(),
             new ArtifactLabelProvider(), new UserIdSorter(selectedUsers, teamMembers));
          uld.setInitialSelections(selectedUsers);

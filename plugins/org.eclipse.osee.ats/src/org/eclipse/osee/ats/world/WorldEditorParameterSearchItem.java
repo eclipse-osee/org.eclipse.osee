@@ -65,9 +65,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public abstract class WorldEditorParameterSearchItem extends WorldSearchItem implements IWorldEditorParameterProvider, IDynamicWidgetLayoutListener, IXWidgetOptionResolver {
 
-   private CustomizeData customizeData;
    private TableLoadOption[] tableLoadOptions;
-   protected final Map<String, XWidget> xWidgets = new HashMap<String, XWidget>();
+   protected final Map<String, XWidget> xWidgets = new HashMap<>();
    protected StringBuilder xmlSb;
    private final Pattern displayName = Pattern.compile("displayName=\"(.*?)\"");
    private String shortName = "";
@@ -115,7 +114,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
          if (workItemType != null && workItemType.get().isEmpty()) {
             return new Result("You must select a workflow type.");
          }
-         if ((teamDef != null && teamDef.get() != null && teamDef.get().isEmpty()) && (ai != null && ai.get().isEmpty()) && isTeamDefWorkItemTypesSelected()) {
+         if (teamDef != null && teamDef.get() != null && teamDef.get().isEmpty() && ai != null && ai.get().isEmpty() && isTeamDefWorkItemTypesSelected()) {
             return new Result("You must select either Actionable Item(s) or Team Definition(s).");
          }
          return Result.TrueResult;
@@ -158,7 +157,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
 
    @Override
    public void setCustomizeData(CustomizeData customizeData) {
-      this.customizeData = customizeData;
    }
 
    @Override

@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
  */
 public class AtsArtifactImageProvider extends ArtifactImageProvider {
 
-   private static Map<ArtifactImage, KeyedImage> keyedImageMap = new HashMap<ArtifactImage, KeyedImage>();
+   private static Map<ArtifactImage, KeyedImage> keyedImageMap = new HashMap<>();
 
    @Override
    public void init() {

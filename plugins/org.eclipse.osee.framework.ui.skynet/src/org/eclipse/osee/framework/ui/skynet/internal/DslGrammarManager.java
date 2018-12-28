@@ -138,7 +138,7 @@ public final class DslGrammarManager {
             @Override
             public DslGrammarRegistry call() throws Exception {
                ExtensionDefinedObjects<DslGrammar> extensions =
-                  new ExtensionDefinedObjects<DslGrammar>(EXTENSION_POINT_ID, EXTENSION_ELEMENT_NAME, EXTENSION_CLASS);
+                  new ExtensionDefinedObjects<>(EXTENSION_POINT_ID, EXTENSION_ELEMENT_NAME, EXTENSION_CLASS);
 
                List<DslGrammar> grammars = extensions.getObjects();
                ImmutableMap<String, DslGrammar> idToGrammar =
@@ -159,7 +159,7 @@ public final class DslGrammarManager {
             }
 
          };
-         return new FutureTask<DslGrammarRegistry>(callable);
+         return new FutureTask<>(callable);
       }
 
    }

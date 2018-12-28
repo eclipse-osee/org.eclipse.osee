@@ -35,7 +35,7 @@ public final class ArtifactTypeAttributesField extends AbstractOseeField<Map<Bra
 
    @Override
    public Map<BranchId, Collection<AttributeType>> get() {
-      return new HashMap<BranchId, Collection<AttributeType>>(validityMap);
+      return new HashMap<>(validityMap);
    }
 
    public void put(BranchId branch, Collection<AttributeType> attributes) {

@@ -99,7 +99,7 @@ public class DoorsArtifactExtractorTest {
    private Artifact theArtifact;
 
    private final List<String> content = Arrays.asList("<img src=\"Image Content_0>\"");
-   private final Collection<InputStream> imageList = new LinkedList<InputStream>();
+   private final Collection<InputStream> imageList = new LinkedList<>();
 
    @ClassRule
    public static TemporaryFolder folder = new TemporaryFolder();

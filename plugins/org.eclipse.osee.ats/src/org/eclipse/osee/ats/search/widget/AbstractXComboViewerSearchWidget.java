@@ -62,7 +62,7 @@ public abstract class AbstractXComboViewerSearchWidget<ObjectType extends Object
    public void setup(XWidget widget) {
       if (widget != null) {
          XComboViewer combo = (XComboViewer) widget;
-         List<Object> input = new ArrayList<Object>();
+         List<Object> input = new ArrayList<>();
          input.addAll(Collections.castAll(getInput()));
          if (!input.contains(CLEAR)) {
             input.add(CLEAR);

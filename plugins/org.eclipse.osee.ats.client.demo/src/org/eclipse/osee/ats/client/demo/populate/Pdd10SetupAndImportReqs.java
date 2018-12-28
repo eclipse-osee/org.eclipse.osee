@@ -94,8 +94,8 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
       demoDbTraceabilityTx(demoDbTraceability, SAW_Bld_1);
       demoDbTraceability.execute();
 
-      BranchId sawBld2Branch = createNewBaselineBranch(SAW_Bld_1, SAW_Bld_2);
-      BranchId sawBld3Branch = createNewBaselineBranch(SAW_Bld_2, SAW_Bld_3);
+      createNewBaselineBranch(SAW_Bld_1, SAW_Bld_2);
+      createNewBaselineBranch(SAW_Bld_2, SAW_Bld_3);
    }
 
    private static void validateArtifactCache() {

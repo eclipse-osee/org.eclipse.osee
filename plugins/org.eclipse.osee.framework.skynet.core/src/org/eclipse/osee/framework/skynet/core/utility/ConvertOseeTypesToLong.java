@@ -108,7 +108,7 @@ public class ConvertOseeTypesToLong {
    }
 
    private static Map<String, Long> getHextToLong(Matcher matcher) {
-      Map<String, Long> hexToLong = new HashMap<String, Long>();
+      Map<String, Long> hexToLong = new HashMap<>();
       // can't change text while searching, so find them all first
       while (matcher.find()) {
          String hex = matcher.group(1);

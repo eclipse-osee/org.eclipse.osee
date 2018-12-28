@@ -102,7 +102,7 @@ public class OpenAgileSprint extends XNavigateItemAction {
       public String getText(Object element) {
          if (element instanceof IAtsWorkItem) {
             return String.format("%s %s", super.getText(element),
-               (((IAtsWorkItem) element).isInWork() ? "" : " - (" + ((IAtsWorkItem) element).getStateMgr().getCurrentStateName() + ")"));
+               ((IAtsWorkItem) element).isInWork() ? "" : " - (" + ((IAtsWorkItem) element).getStateMgr().getCurrentStateName() + ")");
          }
          return super.getText(element);
       }

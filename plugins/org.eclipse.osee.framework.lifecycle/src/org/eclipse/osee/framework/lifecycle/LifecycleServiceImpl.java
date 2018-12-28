@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 public class LifecycleServiceImpl implements ILifecycleService {
 
    private final HashCollection<AbstractLifecycleVisitor.Type<?>, LifecycleHandler> handlersByType =
-      new HashCollection<AbstractLifecycleVisitor.Type<?>, LifecycleHandler>();
+      new HashCollection<>();
 
    @Override
    public Collection<AbstractLifecycleVisitor.Type<?>> getHandlerTypes() {

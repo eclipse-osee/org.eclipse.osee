@@ -43,7 +43,7 @@ import org.osgi.framework.ServiceReference;
 public class ViewModelWriter implements MessageBodyWriter<ViewModel> {
 
    private final ConcurrentHashMap<String, ViewResolver<?>> resolvers =
-      new ConcurrentHashMap<String, ViewResolver<?>>();
+      new ConcurrentHashMap<>();
 
    @Context
    private ResourceInfo resourceInfo;

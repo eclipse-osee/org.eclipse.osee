@@ -25,7 +25,7 @@ public abstract class JaxRsDynamicServiceManager<T> {
 
    private final List<ServiceReference<T>> pendingReg = new ArrayList<>();
    private final AtomicReference<JaxRsApplicationRegistry> registryRef =
-      new AtomicReference<JaxRsApplicationRegistry>();
+      new AtomicReference<>();
 
    public void setJaxRsApplicationRegistry(JaxRsApplicationRegistry registry) {
       registryRef.set(registry);

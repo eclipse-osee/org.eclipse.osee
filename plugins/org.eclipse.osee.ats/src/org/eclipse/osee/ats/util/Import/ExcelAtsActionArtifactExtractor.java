@@ -391,7 +391,7 @@ public class ExcelAtsActionArtifactExtractor {
 
    public Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> getTeamDefToAias(Collection<IAtsActionableItem> aias) {
       Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> teamDefToAias =
-         new HashMap<IAtsTeamDefinition, Collection<IAtsActionableItem>>();
+         new HashMap<>();
       for (IAtsActionableItem aia : aias) {
          IAtsTeamDefinition teamDef = TeamDefinitions.getImpactedTeamDefs(Arrays.asList(aia)).iterator().next();
          if (teamDefToAias.containsKey(teamDef)) {

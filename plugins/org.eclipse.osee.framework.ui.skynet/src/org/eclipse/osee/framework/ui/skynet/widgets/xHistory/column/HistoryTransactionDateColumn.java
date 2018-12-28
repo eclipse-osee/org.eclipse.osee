@@ -28,8 +28,8 @@ public class HistoryTransactionDateColumn extends AbstractTransactionColumn {
 
    public static final String ID = "framework.history.timeStamp";
    // Cache to quickly get author so don't need to load from UserManager
-   private final Map<Long, String> transIdToDateStr = new HashMap<Long, String>();
-   private final Map<Long, Date> transIdToDate = new HashMap<Long, Date>();
+   private final Map<Long, String> transIdToDateStr = new HashMap<>();
+   private final Map<Long, Date> transIdToDate = new HashMap<>();
 
    public HistoryTransactionDateColumn(IHistoryTransactionProvider txCache) {
       super(txCache, ID, "Time Stamp", 110, XViewerAlign.Left, true, SortDataType.Date, false, null);

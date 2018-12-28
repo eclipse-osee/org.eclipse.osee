@@ -54,8 +54,8 @@ public class BuildServerStatusOperation {
       stat.set(StatusKey.StartTime, DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(
          applicationServerManager.getDateStarted()));
       int seconds = (int) (runtimeMxBean.getUptime() / 1000) % 60;
-      int minutes = (int) ((runtimeMxBean.getUptime() / (1000 * 60)) % 60);
-      int hours = (int) ((runtimeMxBean.getUptime() / (1000 * 60 * 60)) % 24);
+      int minutes = (int) (runtimeMxBean.getUptime() / (1000 * 60) % 60);
+      int hours = (int) (runtimeMxBean.getUptime() / (1000 * 60 * 60) % 24);
 
       stat.set(StatusKey.UpTime, String.format("%s hr %s min %s sec", hours, minutes, seconds));
       stat.set(StatusKey.SystemLoad, String.valueOf(osMxBean.getSystemLoadAverage()));

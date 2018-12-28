@@ -440,28 +440,28 @@ public final class SkyWalkerOptions {
 
    public Set<IArtifactType> getAllArtTypes() {
       if (artTypes == null) {
-         return new HashSet<IArtifactType>();
+         return new HashSet<>();
       }
       return artTypes.keySet();
    }
 
    public Set<Object> getAllRelTypes() {
       if (relTypes == null) {
-         return new HashSet<Object>();
+         return new HashSet<>();
       }
       return relTypes.keySet();
    }
 
    public Set<AttributeTypeToken> getAllShowAttributes() {
       if (showAttributes == null) {
-         return new HashSet<AttributeTypeToken>();
+         return new HashSet<>();
       }
       return showAttributes.keySet();
    }
 
    public Set<RelationType> getAllRelationLinkDescriptorTypes() {
       if (relTypes == null) {
-         return new HashSet<RelationType>();
+         return new HashSet<>();
       }
       Set<RelationType> descs = new HashSet<>();
       for (Object obj : relTypes.keySet()) {

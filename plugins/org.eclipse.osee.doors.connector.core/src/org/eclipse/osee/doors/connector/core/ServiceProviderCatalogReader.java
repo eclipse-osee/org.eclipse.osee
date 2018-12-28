@@ -65,7 +65,7 @@ public class ServiceProviderCatalogReader implements IDoorsArtifactParser {
             }
             for (int j = 0; j < childNodes.getLength(); j++) {
                Node item = childNodes.item(j);
-               if (item != null && (item.getLocalName() != null) && item.getLocalName().equalsIgnoreCase("title")) {
+               if (item != null && item.getLocalName() != null && item.getLocalName().equalsIgnoreCase("title")) {
                   ServiceProviderCatalog child = new ServiceProviderCatalog();
                   child.setName(item.getTextContent());
                   child.setPath(cleanedPath);
@@ -96,7 +96,7 @@ public class ServiceProviderCatalogReader implements IDoorsArtifactParser {
             }
             for (int j = 0; j < childNodes.getLength(); j++) {
                Node item = childNodes.item(j);
-               if (item != null && (item.getLocalName() != null) && item.getLocalName().equalsIgnoreCase("title")) {
+               if (item != null && item.getLocalName() != null && item.getLocalName().equalsIgnoreCase("title")) {
                   ServiceProvider child = new ServiceProvider();
                   child.setName(item.getTextContent());
                   child.setPath(cleanedPath);

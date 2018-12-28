@@ -79,7 +79,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       logf("Starting %s, processing %d workflows.", getClass().getSimpleName(), workflows.size());
 
       sortWorkflows();
-      Set<String> skippedTypes = new HashSet<String>();
+      Set<String> skippedTypes = new HashSet<>();
 
       CompareDataCollector collector = new CompareDataCollector() {
 

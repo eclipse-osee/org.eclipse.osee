@@ -97,7 +97,7 @@ public class ArtifactIdCache {
       } else if (artifact.isDirty()) {
          return artifact;
       } else {
-         return new WeakReference<Artifact>(artifact);
+         return new WeakReference<>(artifact);
       }
    }
 

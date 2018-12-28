@@ -361,7 +361,7 @@ public class FilteredCheckboxTree extends FilteredTree {
       @Override
       public void setCheckedElements(Object[] elements) {
          Set<Object> s = new HashSet<>(itemCache.keySet());
-         s.removeAll(new HashSet<Object>(Arrays.asList(elements)));
+         s.removeAll(new HashSet<>(Arrays.asList(elements)));
          for (int i = 0; i < elements.length; i++) {
             Object element = elements[i];
             FilteredCheckboxTreeItem item = itemCache.get(element);

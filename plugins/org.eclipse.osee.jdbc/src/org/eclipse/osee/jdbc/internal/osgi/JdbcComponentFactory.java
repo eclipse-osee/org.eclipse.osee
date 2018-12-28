@@ -26,7 +26,7 @@ import org.osgi.service.component.ComponentInstance;
 public class JdbcComponentFactory {
 
    private final ConcurrentHashMap<String, JdbcServiceComponent> services =
-      new ConcurrentHashMap<String, JdbcServiceComponent>();
+      new ConcurrentHashMap<>();
 
    private JdbcServiceConfigParser parser;
 

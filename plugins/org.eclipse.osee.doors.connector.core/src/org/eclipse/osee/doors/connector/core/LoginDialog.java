@@ -100,7 +100,7 @@ public class LoginDialog extends TitleAreaDialog {
    *
    */
    protected void validate() {
-      if ((this.userName.getText() != null) && !this.userName.getText().isEmpty() && (this.pwd.getText() != null) && !this.pwd.getText().isEmpty()) {
+      if (this.userName.getText() != null && !this.userName.getText().isEmpty() && this.pwd.getText() != null && !this.pwd.getText().isEmpty()) {
          getButton(IDialogConstants.OK_ID).setEnabled(true);
       } else {
          getButton(IDialogConstants.OK_ID).setEnabled(false);

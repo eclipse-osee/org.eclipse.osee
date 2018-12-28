@@ -110,7 +110,7 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
    @Override
    public Collection<T> getAll() {
       ensurePopulated();
-      return new ArrayList<T>(idToTypeMap.values());
+      return new ArrayList<>(idToTypeMap.values());
    }
 
    @Override

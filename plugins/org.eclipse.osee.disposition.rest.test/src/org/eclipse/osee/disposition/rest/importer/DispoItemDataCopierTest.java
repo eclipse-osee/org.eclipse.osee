@@ -74,7 +74,7 @@ public class DispoItemDataCopierTest {
       Map<String, Discrepancy> discrepanciesList = oldItemTemp.getDiscrepanciesList();
 
       // We know the item has discrepancies at points 9-14
-      List<DispoAnnotationData> annotationsList = new ArrayList<DispoAnnotationData>();
+      List<DispoAnnotationData> annotationsList = new ArrayList<>();
       addAnnotation("9", annotationsList, discrepanciesList);
       addAnnotation("10", annotationsList, discrepanciesList);
       addAnnotation("11", annotationsList, discrepanciesList);

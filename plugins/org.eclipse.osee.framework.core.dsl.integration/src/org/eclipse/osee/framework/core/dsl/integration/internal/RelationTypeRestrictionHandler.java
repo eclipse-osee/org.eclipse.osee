@@ -92,7 +92,7 @@ public class RelationTypeRestrictionHandler implements RestrictionHandler<Relati
          for (RelationType relationType : relationTypes) {
             for (RelationSide relationSide : RelationSide.values()) {
                if (OseeUtil.isRestrictedSide(restrictedSide, relationSide)) {
-                  collector.collect(new AccessDetail<RelationTypeSide>(new RelationTypeSide(relationType, relationSide),
+                  collector.collect(new AccessDetail<>(new RelationTypeSide(relationType, relationSide),
                      permission, toUse));
                }
             }

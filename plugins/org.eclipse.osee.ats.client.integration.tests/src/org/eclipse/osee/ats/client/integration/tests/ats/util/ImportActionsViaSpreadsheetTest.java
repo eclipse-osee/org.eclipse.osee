@@ -171,12 +171,12 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertTrue("members should be in order",
          ((IAtsObject) members.toArray()[17]).getDescription().startsWith("Phase 1"));
       Assert.assertEquals("2", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
-         ((IAtsObject) members.toArray()[17]), AtsAttributeTypes.Points, ""));
+         (IAtsObject) members.toArray()[17], AtsAttributeTypes.Points, ""));
 
       Assert.assertTrue("members should be in order",
          ((IAtsObject) members.toArray()[18]).getDescription().startsWith("Phase 2"));
       Assert.assertEquals("3", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
-         ((IAtsObject) members.toArray()[18]), AtsAttributeTypes.Points, ""));
+         (IAtsObject) members.toArray()[18], AtsAttributeTypes.Points, ""));
 
    }
 

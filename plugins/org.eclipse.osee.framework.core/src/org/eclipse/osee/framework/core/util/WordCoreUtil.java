@@ -126,7 +126,7 @@ public class WordCoreUtil {
                applicBlockCount += 1;
                applicabilityBlocks.add(createApplicabilityBlock(ApplicabilityType.Configuration, beginConfiguration));
             }
-         } else if ((endFeature != null && endFeature.toLowerCase().contains(FEATUREAPP))) {
+         } else if (endFeature != null && endFeature.toLowerCase().contains(FEATUREAPP)) {
             applicBlockCount -= 1;
 
             if (applicabilityBlocks.isEmpty()) {
@@ -137,7 +137,7 @@ public class WordCoreUtil {
                return true;
             }
 
-         } else if ((endConfiguration != null && endConfiguration.toLowerCase().contains(CONFIGAPP))) {
+         } else if (endConfiguration != null && endConfiguration.toLowerCase().contains(CONFIGAPP)) {
             applicBlockCount -= 1;
             if (applicabilityBlocks.isEmpty()) {
                return true;

@@ -377,7 +377,7 @@ public class AccessControlService implements IAccessControlService {
       PermissionEnum userPermission = null;
       AccessObject accessObject = BranchAccessObject.getBranchAccessObjectFromCache(branch);
 
-      if (accessObject == null && (branch.notEqual(COMMON) && BranchManager.getType(branch).isBaselineBranch())) {
+      if (accessObject == null && branch.notEqual(COMMON) && BranchManager.getType(branch).isBaselineBranch()) {
          userPermission = PermissionEnum.READ;
       } else if (accessObject == null) {
          userPermission = PermissionEnum.FULLACCESS;
@@ -626,7 +626,7 @@ public class AccessControlService implements IAccessControlService {
       AccessTopicEventPayload event = new AccessTopicEventPayload();
       event.setBranch(accessControlledObject.getBranch());
       if (isArtifact) {
-         event.addArtifact(((ArtifactAccessObject) accessControlledObject));
+         event.addArtifact((ArtifactAccessObject) accessControlledObject);
       }
 
       OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEvent.ACCESS_ARTIFACT_MODIFIED);

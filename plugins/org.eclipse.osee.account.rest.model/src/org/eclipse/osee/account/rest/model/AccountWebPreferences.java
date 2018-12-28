@@ -22,7 +22,7 @@ import org.json.JSONObject;
  */
 public class AccountWebPreferences {
 
-   Map<String, Link> linksMap = new HashMap<String, Link>();
+   Map<String, Link> linksMap = new HashMap<>();
 
    public AccountWebPreferences() {
 

@@ -68,7 +68,7 @@ public class AtsColumnService implements IAtsColumnService {
    @Override
    public IAtsColumn getColumn(String id) {
       if (columnIdToAtsColumn == null) {
-         columnIdToAtsColumn = new HashMap<String, IAtsColumn>();
+         columnIdToAtsColumn = new HashMap<>();
       }
 
       // Get from cache

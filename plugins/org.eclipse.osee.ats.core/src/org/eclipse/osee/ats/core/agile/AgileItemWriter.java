@@ -188,7 +188,7 @@ public class AgileItemWriter {
 
    private List<IAtsWorkItem> getWorkItems() {
       if (workItems == null) {
-         workItems = new LinkedList<IAtsWorkItem>();
+         workItems = new LinkedList<>();
          for (long id : newItem.getIds()) {
             IAtsWorkItem workItem = atsApi.getQueryService().getTeamWf(id);
             workItems.add(workItem);
@@ -198,7 +198,7 @@ public class AgileItemWriter {
    }
 
    private Collection<IAtsUser> getAssignees(List<String> usersAccountIds) {
-      List<IAtsUser> users = new ArrayList<IAtsUser>();
+      List<IAtsUser> users = new ArrayList<>();
       for (String userId : usersAccountIds) {
          users.add(atsApi.getUserService().getUserByAccountId(Long.valueOf(userId)));
       }

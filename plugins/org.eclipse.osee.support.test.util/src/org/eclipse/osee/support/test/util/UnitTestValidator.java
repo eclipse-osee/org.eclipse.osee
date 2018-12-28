@@ -34,7 +34,7 @@ public class UnitTestValidator {
    private static List<File> testClassFiles = new ArrayList<>();
    private static List<File> notForSuiteFiles = new ArrayList<>();
    private static final Map<String, Collection<String>> testClassToSuites =
-      new HashMap<String, Collection<String>>(100);
+      new HashMap<>(100);
    private static final List<File> suites = new ArrayList<>();
    private static final String NOT_FOR_SUITE = "NOT_FOR_SUITE";
 

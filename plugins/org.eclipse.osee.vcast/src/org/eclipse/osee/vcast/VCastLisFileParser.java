@@ -45,7 +45,7 @@ public class VCastLisFileParser {
             } else {
                lineCode = "Error parsing *.LIS file";
             }
-            return new Pair<String, Boolean>(lineCode, exceptionLine);
+            return new Pair<>(lineCode, exceptionLine);
          }
          Matcher m = exceptionPattern.matcher(line);
          if (m.find()) {

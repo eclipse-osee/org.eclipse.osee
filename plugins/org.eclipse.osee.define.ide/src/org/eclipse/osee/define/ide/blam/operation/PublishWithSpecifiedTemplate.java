@@ -201,7 +201,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
          @Override
          public void run() {
             double secPerArt = 2;
-            double minutes = (totalSize * secPerArt) / 60;
+            double minutes = totalSize * secPerArt / 60;
 
             if (isDiff && totalSize > maxArtsForQuickDiff && !MessageDialog.openConfirm(
                Display.getDefault().getActiveShell(), "Continue with Word Diff",
@@ -231,7 +231,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       parseQueryForBranchName(orcsQuery);
 
       //Parse JSON returned from query
-      ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
+      ArrayList<Artifact> artifacts = new ArrayList<>();
       try {
          JSONObject jsonObject = new JSONObject(result);
          JSONArray results = jsonObject.getJSONArray("results");

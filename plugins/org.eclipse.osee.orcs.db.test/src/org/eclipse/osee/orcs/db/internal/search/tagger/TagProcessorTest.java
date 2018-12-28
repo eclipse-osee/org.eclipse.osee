@@ -109,7 +109,7 @@ public class TagProcessorTest {
       String[] entries = rawData.split("\r?\n");
       for (String entry : entries) {
          String[] args = entry.split("\\s");
-         data.add(new Pair<String, Long>(args[0], Long.valueOf(args[1])));
+         data.add(new Pair<>(args[0], Long.valueOf(args[1])));
       }
       return data;
    }

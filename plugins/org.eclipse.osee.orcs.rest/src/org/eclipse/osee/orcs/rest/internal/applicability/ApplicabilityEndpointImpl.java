@@ -82,7 +82,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokensForArts(Collection<? extends ArtifactId> artIds) {
       List<Pair<ArtifactId, ApplicabilityToken>> artToApplicToken = new ArrayList<>();
       for (ArtifactId artId : artIds) {
-         artToApplicToken.add(new Pair<ArtifactId, ApplicabilityToken>(artId, getApplicabilityToken(artId)));
+         artToApplicToken.add(new Pair<>(artId, getApplicabilityToken(artId)));
       }
       return artToApplicToken;
    }

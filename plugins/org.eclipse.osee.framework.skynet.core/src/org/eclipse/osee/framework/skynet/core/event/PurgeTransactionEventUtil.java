@@ -75,7 +75,7 @@ public final class PurgeTransactionEventUtil {
             }
          }
       }
-      return new Pair<TransactionEvent, Map<String, Long>>(transactionEvent, guidToId);
+      return new Pair<>(transactionEvent, guidToId);
    }
 
    public static void handleRemotePurgeTransactionEvent(TransactionEvent transEvent) {

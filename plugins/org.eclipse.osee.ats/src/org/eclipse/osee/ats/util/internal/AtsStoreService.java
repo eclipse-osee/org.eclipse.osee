@@ -77,7 +77,7 @@ public class AtsStoreService implements IAtsStoreService {
    public List<IAtsWorkItem> reload(Collection<IAtsWorkItem> workItems) {
       List<IAtsWorkItem> results = new ArrayList<>();
       try {
-         List<Artifact> artifacts = new LinkedList<Artifact>();
+         List<Artifact> artifacts = new LinkedList<>();
          for (IAtsWorkItem workItem : workItems) {
             if (workItem.getStoreObject() != null && workItem.getStoreObject() instanceof Artifact) {
                artifacts.add(AtsClientService.get().getQueryServiceClient().getArtifact(workItem));

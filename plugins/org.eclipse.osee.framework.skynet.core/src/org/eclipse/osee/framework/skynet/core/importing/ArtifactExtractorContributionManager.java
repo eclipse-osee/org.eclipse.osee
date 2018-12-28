@@ -33,7 +33,7 @@ public class ArtifactExtractorContributionManager {
 
    public List<IArtifactExtractor> getExtractors() {
       ExtensionDefinedObjects<IArtifactExtractor> definedObjects =
-         new ExtensionDefinedObjects<IArtifactExtractor>(PARSER_EXTENSION, PARSER_ELEMENT, CLASS_NAME_ATTRIBUTE, true);
+         new ExtensionDefinedObjects<>(PARSER_EXTENSION, PARSER_ELEMENT, CLASS_NAME_ATTRIBUTE, true);
       List<IArtifactExtractor> items = definedObjects.getObjects();
       Collections.sort(items, new ParserComparator());
       return items;
@@ -42,7 +42,7 @@ public class ArtifactExtractorContributionManager {
    public List<IArtifactExtractorDelegate> getAllDelegates() {
       List<IArtifactExtractorDelegate> contentHandlers = new ArrayList<>();
       ExtensionDefinedObjects<IArtifactExtractorDelegate> contributions =
-         new ExtensionDefinedObjects<IArtifactExtractorDelegate>(PARSER_DELEGATE_EXTENSION, PARSER_DELEGATE_ELEMENT,
+         new ExtensionDefinedObjects<>(PARSER_DELEGATE_EXTENSION, PARSER_DELEGATE_ELEMENT,
             CLASS_NAME_ATTRIBUTE, true);
       for (IArtifactExtractorDelegate delegate : contributions.getObjects()) {
          contentHandlers.add(delegate);

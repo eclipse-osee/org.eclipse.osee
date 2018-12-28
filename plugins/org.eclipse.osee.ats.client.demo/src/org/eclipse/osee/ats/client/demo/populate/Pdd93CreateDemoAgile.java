@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.api.agile.JaxAgileProgramFeature;
 import org.eclipse.osee.ats.api.agile.JaxAgileStory;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileBacklog;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileFeatureGroup;
-import org.eclipse.osee.ats.api.agile.JaxNewAgileProgramFeature;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
@@ -498,14 +497,6 @@ public class Pdd93CreateDemoAgile {
       backlog.setId(DemoArtifactToken.SAW_Backlog.getId());
       backlog.setTeamId(DemoArtifactToken.SAW_Agile_Team.getId());
       return backlog;
-   }
-
-   private JaxNewAgileProgramFeature newProgramFeature(String name) {
-      JaxNewAgileProgramFeature programFeature = new JaxNewAgileProgramFeature();
-      programFeature.setName(name);
-      programFeature.setProgramBacklogItemId(DemoArtifactToken.SAW_Agile_Team.getId());
-      programFeature.setId(Lib.generateArtifactIdAsInt());
-      return programFeature;
    }
 
    private JaxNewAgileFeatureGroup newFeatureGroup(String name) {

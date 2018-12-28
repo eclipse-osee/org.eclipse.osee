@@ -71,7 +71,7 @@ public class QueryReader implements IDoorsArtifactParser {
             for (int j = 0; j < childNodes.getLength(); j++) {
                Node item = childNodes.item(j);
 
-               if ((item.getLocalName() != null) && item.getLocalName().equalsIgnoreCase("title")) {
+               if (item.getLocalName() != null && item.getLocalName().equalsIgnoreCase("title")) {
                   NodeList childNodes2 = item.getChildNodes();
                   for (int k = 0; k < childNodes2.getLength(); k++) {
                      Node item2 = childNodes2.item(k);

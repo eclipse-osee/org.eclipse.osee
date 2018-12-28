@@ -29,7 +29,7 @@ import org.eclipse.osee.server.application.internal.ServerHealthEndpointImpl;
 @ApplicationPath("server")
 public class ServerApplication extends Application {
 
-   private final Set<Object> singletons = new HashSet<Object>();
+   private final Set<Object> singletons = new HashSet<>();
    private IApplicationServerManager applicationServerManager;
    private final Map<String, JdbcService> jdbcServices = new ConcurrentHashMap<>();
    private IAuthenticationManager authManager;

@@ -81,7 +81,7 @@ public class UserNavigateViewItems implements XNavigateViewItems, IXNavigateComm
             items.add(new XNavigateItemBlam(parentItem, new PopulateUserGroupBlam(), FrameworkImage.GROUP));
          }
 
-         ExtensionDefinedObjects<IUserNavigateItem> objects = new ExtensionDefinedObjects<IUserNavigateItem>(
+         ExtensionDefinedObjects<IUserNavigateItem> objects = new ExtensionDefinedObjects<>(
             "org.eclipse.osee.framework.ui.skynet.UserNavigateItem", "UserNavigateItem", "classname");
          for (IUserNavigateItem newItem : objects.getObjects()) {
             for (XNavigateItem item : newItem.getNavigateItems(parentItem)) {

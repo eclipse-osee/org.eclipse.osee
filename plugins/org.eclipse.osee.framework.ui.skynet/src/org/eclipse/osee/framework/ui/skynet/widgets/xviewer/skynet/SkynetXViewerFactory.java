@@ -96,7 +96,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
 
    public static List<XViewerColumn> getAllAttributeColumns() {
       if (attrColumns == null) {
-         attrColumns = new LinkedList<XViewerColumn>();
+         attrColumns = new LinkedList<>();
          for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
             attrColumns.add(getAttributeColumn(attributeType));
          }

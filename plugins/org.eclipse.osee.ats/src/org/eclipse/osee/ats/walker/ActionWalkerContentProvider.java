@@ -62,7 +62,7 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
                   view.setActiveGraphItem(taskWrapper);
                }
             } else {
-               objs.addAll(AtsClientService.get().getTaskService().getTasks(((TeamWorkFlowArtifact) entity)));
+               objs.addAll(AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) entity));
             }
             if (!view.isShowAll() && ReviewManager.getReviews(teamArt).size() > 4) {
                ReviewWrapper reviewWrapper = new ReviewWrapper(teamArt);

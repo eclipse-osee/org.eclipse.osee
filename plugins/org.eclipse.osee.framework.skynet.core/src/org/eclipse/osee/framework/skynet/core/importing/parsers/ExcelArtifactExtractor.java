@@ -81,7 +81,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
    private static final class ExcelRowProcessor implements RowProcessor {
 
       private final DoubleKeyHashMap<String, Integer, RoughArtifact> relationHelper =
-         new DoubleKeyHashMap<String, Integer, RoughArtifact>();
+         new DoubleKeyHashMap<>();
 
       private static enum RowTypeEnum {
          PARAGRAPH_NO(CoreAttributeTypes.ParagraphNumber.getName()),

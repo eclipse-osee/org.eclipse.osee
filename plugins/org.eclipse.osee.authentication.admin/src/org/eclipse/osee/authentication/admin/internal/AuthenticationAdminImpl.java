@@ -30,7 +30,7 @@ import org.eclipse.osee.logger.Log;
 public class AuthenticationAdminImpl implements AuthenticationAdmin {
 
    private final Map<String, AuthenticationProvider> authenticationProviders =
-      new ConcurrentHashMap<String, AuthenticationProvider>();
+      new ConcurrentHashMap<>();
 
    private Log logger;
    private AuthenticationConfiguration config;

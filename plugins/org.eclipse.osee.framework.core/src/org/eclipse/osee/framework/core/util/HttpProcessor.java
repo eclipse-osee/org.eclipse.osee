@@ -66,7 +66,7 @@ public class HttpProcessor {
    private static int requests = 0;
 
    private static final Map<String, Pair<Integer, Long>> isAliveMap =
-      new ConcurrentHashMap<String, Pair<Integer, Long>>();
+      new ConcurrentHashMap<>();
 
    private HttpProcessor() {
       // Static class
@@ -128,7 +128,7 @@ public class HttpProcessor {
 
    private static void cacheAlive(URL url, int code) {
       String key = toIsAliveKey(url);
-      isAliveMap.put(key, new Pair<Integer, Long>(code, System.currentTimeMillis()));
+      isAliveMap.put(key, new Pair<>(code, System.currentTimeMillis()));
    }
 
    private static int executeMethod(URL url, HttpMethodBase method) throws HttpException, IOException, URISyntaxException {

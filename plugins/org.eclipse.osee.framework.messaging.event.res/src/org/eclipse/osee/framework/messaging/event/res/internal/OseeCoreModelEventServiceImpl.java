@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallback, IOseeCoreModelEventService {
 
    private final Map<IFrameworkEventListener, HashCollectionSet<ResMessages, OseeMessagingListener>> subscriptions =
-      new ConcurrentHashMap<IFrameworkEventListener, HashCollectionSet<ResMessages, OseeMessagingListener>>();
+      new ConcurrentHashMap<>();
 
    private final Map<ResMessages, Boolean> messages;
    private final MessageService messageService;

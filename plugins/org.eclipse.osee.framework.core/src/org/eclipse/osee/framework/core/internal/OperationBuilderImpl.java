@@ -110,11 +110,11 @@ public class OperationBuilderImpl implements OperationBuilder {
    }
 
    private Pair<Double, IOperation> createEntry(Double weight, IOperation op) {
-      return new Pair<Double, IOperation>(weight, op);
+      return new Pair<>(weight, op);
    }
 
    private Pair<Double, IOperation> createEntryWithNoHint(IOperation op) {
-      return new Pair<Double, IOperation>(WeightedCompositeOperation.EMPTY_WEIGHT_HINT, op);
+      return new Pair<>(WeightedCompositeOperation.EMPTY_WEIGHT_HINT, op);
    }
 
 }

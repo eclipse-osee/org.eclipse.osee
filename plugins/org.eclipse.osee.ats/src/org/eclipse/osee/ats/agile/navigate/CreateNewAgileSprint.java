@@ -74,7 +74,7 @@ public class CreateNewAgileSprint extends XNavigateItemAction {
                   if (firstArtifact == null) {
                      throw new OseeCoreException("Must make a selection");
                   }
-                  int teamId = (firstArtifact).getArtId();
+                  int teamId = firstArtifact.getArtId();
 
                   for (String name : ed.getEntry().split(",")) {
                      newSprint.setName(name);

@@ -33,7 +33,7 @@ public class Activator implements BundleActivator {
       Activator.instance = this;
 
       serviceTracker2 =
-         new ServiceTracker<IOseeCachingService, IOseeCachingService>(context, IOseeCachingService.class, null);
+         new ServiceTracker<>(context, IOseeCachingService.class, null);
       serviceTracker2.open(true);
 
       serviceTracker3 = new ServiceTracker<>(context, JdbcService.class, null);

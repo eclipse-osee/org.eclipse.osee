@@ -244,7 +244,7 @@ public class JdbcComponentFactoryTest {
    }
 
    private Set<String> set(String... vals) {
-      return new TreeSet<String>(Arrays.asList(vals));
+      return new TreeSet<>(Arrays.asList(vals));
    }
 
    private Map<String, Object> asConfig(String... configs) {

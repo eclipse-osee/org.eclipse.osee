@@ -38,13 +38,13 @@ public class UniqueIdFieldTest extends BaseOseeFieldTest {
    @Parameters
    public static Collection<Object[]> data() {
       Collection<Object[]> data = new ArrayList<>();
-      data.add(new Object[] {new OseeFieldTestData<Long>(new UniqueIdField(), //
+      data.add(new Object[] {new OseeFieldTestData<>(new UniqueIdField(), //
          Id.SENTINEL, true, //
-         new FieldGetSetTestData<Long>(false, Id.SENTINEL, Id.SENTINEL, true), //
-         new FieldGetSetTestData<Long>(true, Id.SENTINEL, Id.SENTINEL, false), //
-         new FieldGetSetTestData<Long>(false, 100L, 100L, true), //
-         new FieldGetSetTestData<Long>(false, 200L, 100L, true, OseeStateException.class), //
-         new FieldGetSetTestData<Long>(true, 300L, 100L, false, OseeStateException.class)//
+         new FieldGetSetTestData<>(false, Id.SENTINEL, Id.SENTINEL, true), //
+         new FieldGetSetTestData<>(true, Id.SENTINEL, Id.SENTINEL, false), //
+         new FieldGetSetTestData<>(false, 100L, 100L, true), //
+         new FieldGetSetTestData<>(false, 200L, 100L, true, OseeStateException.class), //
+         new FieldGetSetTestData<>(true, 300L, 100L, false, OseeStateException.class)//
          )});
       return data;
    }

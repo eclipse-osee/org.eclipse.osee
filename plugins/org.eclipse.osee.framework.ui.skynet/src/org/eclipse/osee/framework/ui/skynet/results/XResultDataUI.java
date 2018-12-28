@@ -170,7 +170,7 @@ public class XResultDataUI {
 
    public static void reportSevereLoggingMonitor(SevereLoggingMonitor monitorLog, XResultData rd) {
       List<IHealthStatus> stats = monitorLog.getAllLogs();
-      for (IHealthStatus stat : new ArrayList<IHealthStatus>(stats)) {
+      for (IHealthStatus stat : new ArrayList<>(stats)) {
          if (stat.getException() != null) {
             rd.error("Exception: " + Lib.exceptionToString(stat.getException()));
          }

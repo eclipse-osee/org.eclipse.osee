@@ -149,8 +149,8 @@ public class LinkUtil {
       useArtifact.persist("Add web preferences links to " + useArtifact.toStringWithId());
 
       TopicEvent event =
-         new TopicEvent((global ? FrameworkEvents.GLOBAL_WEB_PREFERENCES : FrameworkEvents.PERSONAL_WEB_PREFERENCES),
-            "links", webPrefs.getLinks().toString(), (global ? EventType.LocalAndRemote : EventType.LocalOnly));
+         new TopicEvent(global ? FrameworkEvents.GLOBAL_WEB_PREFERENCES : FrameworkEvents.PERSONAL_WEB_PREFERENCES,
+            "links", webPrefs.getLinks().toString(), global ? EventType.LocalAndRemote : EventType.LocalOnly);
       OseeEventManager.kickTopicEvent(LinkUtil.class, event);
    }
 

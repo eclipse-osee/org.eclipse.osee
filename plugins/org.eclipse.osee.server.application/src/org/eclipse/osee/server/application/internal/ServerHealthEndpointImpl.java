@@ -70,7 +70,7 @@ public final class ServerHealthEndpointImpl {
          InputStream is = p.getInputStream();
          int value = -1;
          while ((value = is.read()) != -1) {
-            sb.append(((char) value));
+            sb.append((char) value);
          }
          int exitCode = p.waitFor();
          sb.append("Top exited with " + exitCode);
@@ -109,7 +109,7 @@ public final class ServerHealthEndpointImpl {
       }
       String serversStr = ((String) serverObj).replaceAll("[\\[\\]]", "");
       serversStr = serversStr.replaceAll(" ", "");
-      List<String> servers = new ArrayList<String>();
+      List<String> servers = new ArrayList<>();
       for (String server : serversStr.split(",")) {
          servers.add(server);
       }
@@ -136,7 +136,7 @@ public final class ServerHealthEndpointImpl {
          }
       }
       sb.append(AHTML.addHeaderRowMultiColumnTable(headers));
-      for (String server : (servers)) {
+      for (String server : servers) {
          addServer(sb, server, details);
       }
       sb.append(AHTML.endMultiColumnTable());

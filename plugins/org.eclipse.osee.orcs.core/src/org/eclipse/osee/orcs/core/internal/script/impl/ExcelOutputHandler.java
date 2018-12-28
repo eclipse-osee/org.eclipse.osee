@@ -382,7 +382,7 @@ public class ExcelOutputHandler extends OrcsScriptOutputHandler {
                writer.endRow();
             }
             Options options = description.getOptions();
-            for (String key : new TreeSet<String>(options.getKeys())) {
+            for (String key : new TreeSet<>(options.getKeys())) {
                writer.writeCell(key);
                writer.writeCell(options.get(key).replaceAll("\\s+", " "));
                writer.endRow();

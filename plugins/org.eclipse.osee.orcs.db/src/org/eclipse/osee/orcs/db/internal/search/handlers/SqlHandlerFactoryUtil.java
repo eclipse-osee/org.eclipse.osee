@@ -69,28 +69,28 @@ public final class SqlHandlerFactoryUtil {
 
    public static SqlHandlerFactory createArtifactSqlHandlerFactory(Log logger, IdentityLocator identityService, TagProcessor tagProcessor) {
       Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
-         new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler<?>>>();
+         new HashMap<>();
       addArtifactHandlers(handleMap);
       return new SqlHandlerFactoryImpl(logger, identityService, tagProcessor, handleMap);
    }
 
    public static SqlHandlerFactory createBranchSqlHandlerFactory(Log logger, IdentityLocator identityService) {
       Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
-         new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler<?>>>();
+         new HashMap<>();
       addBranchHandlers(handleMap);
       return new SqlHandlerFactoryImpl(logger, identityService, null, handleMap);
    }
 
    public static SqlHandlerFactory createTxSqlHandlerFactory(Log logger, IdentityLocator identityService) {
       Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
-         new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler<?>>>();
+         new HashMap<>();
       addTxHandlers(handleMap);
       return new SqlHandlerFactoryImpl(logger, identityService, null, handleMap);
    }
 
    public static SqlHandlerFactory createObjectSqlHandlerFactory(Log logger, IdentityLocator identityService, TagProcessor tagProcessor) {
       Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
-         new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler<?>>>();
+         new HashMap<>();
       addBranchHandlers(handleMap);
       addTxHandlers(handleMap);
       addArtifactHandlers(handleMap);

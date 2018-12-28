@@ -40,7 +40,7 @@ public class ArtifactType extends AbstractOseeIdType implements IArtifactType {
    private final Set<ArtifactType> superTypes = new HashSet<>();
    private final Set<ArtifactType> childTypes = new HashSet<>();
    private final Map<BranchId, Collection<AttributeType>> attributes =
-      new HashMap<BranchId, Collection<AttributeType>>();
+      new HashMap<>();
 
    public ArtifactType(Long guid, String name, boolean isAbstract) {
       super(guid, name);

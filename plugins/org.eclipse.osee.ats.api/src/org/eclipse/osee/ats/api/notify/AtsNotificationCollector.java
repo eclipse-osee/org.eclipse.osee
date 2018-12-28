@@ -27,7 +27,7 @@ public class AtsNotificationCollector {
    private String subject, body;
    private final List<AtsNotificationEvent> notificationEvents = new ArrayList<>();
    private final List<AtsWorkItemNotificationEvent> workItemNotificationEvents =
-      new ArrayList<AtsWorkItemNotificationEvent>();
+      new ArrayList<>();
    private boolean includeCancelHyperlink = false;
 
    public void addNotificationEvent(AtsNotificationEvent notificationEvent) {

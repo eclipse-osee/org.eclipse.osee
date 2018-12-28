@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class AuthenticationManager implements IAuthenticationManager {
 
    private final Map<String, IAuthenticationProvider> authenticationProviders =
-      new ConcurrentHashMap<String, IAuthenticationProvider>();
+      new ConcurrentHashMap<>();
 
    public void addAuthenticationProvider(IAuthenticationProvider authenticationProvider) {
       final String providerId = authenticationProvider.getProtocol();

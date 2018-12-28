@@ -53,7 +53,7 @@ public class CurrentUserProvider extends LazyObject<User> {
    protected FutureTask<User> createLoaderTask() {
       duringCreateUser.set(false);
       Callable<User> callable = new CurrentUserCreationCallable();
-      return new FutureTask<User>(callable);
+      return new FutureTask<>(callable);
    }
 
    private final class CurrentUserCreationCallable implements Callable<User> {

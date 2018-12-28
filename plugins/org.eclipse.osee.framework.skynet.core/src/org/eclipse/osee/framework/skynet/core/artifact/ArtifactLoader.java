@@ -66,7 +66,7 @@ public final class ArtifactLoader {
       if (confirmer != null) {
          confirmer.canProceed(artifacts.size());
       }
-      return new LinkedList<Artifact>(artifacts);
+      return new LinkedList<>(artifacts);
    }
 
    public static List<Artifact> loadArtifacts(Collection<? extends ArtifactId> artIds, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted) {
@@ -94,7 +94,7 @@ public final class ArtifactLoader {
       } else {
          loadActiveArtifacts(toLoad, artifacts, loadLevel, reload, allowDeleted, isArchived);
       }
-      return new LinkedList<Artifact>(artifacts);
+      return new LinkedList<>(artifacts);
    }
 
    private static void loadActiveArtifacts(List<ArtifactToken> toLoad, Set<Artifact> artifacts, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, boolean isArchived) {

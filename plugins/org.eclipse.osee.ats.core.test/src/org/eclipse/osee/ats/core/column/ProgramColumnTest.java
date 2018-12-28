@@ -53,12 +53,12 @@ public class ProgramColumnTest extends ProgramColumn {
       str = ProgramColumn.getProgramStr(workItem, atsApi, util);
       assertEquals(str, "");
 
-      when(util.getProgram(atsApi, workItem)).thenReturn(new Pair<IAtsProgram, Boolean>(program, false));
+      when(util.getProgram(atsApi, workItem)).thenReturn(new Pair<>(program, false));
       when(program.getName()).thenReturn("Country");
       str = ProgramColumn.getProgramStr(workItem, atsApi, util);
       assertEquals(str, "Country");
 
-      when(util.getProgram(atsApi, workItem)).thenReturn(new Pair<IAtsProgram, Boolean>(program, true));
+      when(util.getProgram(atsApi, workItem)).thenReturn(new Pair<>(program, true));
       str = ProgramColumn.getProgramStr(workItem, atsApi, util);
       assertEquals(str, "Country (I)");
 

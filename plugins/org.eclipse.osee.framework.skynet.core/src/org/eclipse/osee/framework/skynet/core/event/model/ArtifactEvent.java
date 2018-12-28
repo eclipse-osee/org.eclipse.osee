@@ -47,7 +47,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender, HasBranc
    private final List<EventBasicGuidArtifact> artifacts = new ArrayList<>();
    private final List<EventBasicGuidRelation> relations = new ArrayList<>();
    private final Set<DefaultBasicUuidRelationReorder> relationReorderRecords =
-      new HashSet<DefaultBasicUuidRelationReorder>();
+      new HashSet<>();
    private final ArtifactEventType reloadEvent;
 
    public ArtifactEvent(BranchId branch) {

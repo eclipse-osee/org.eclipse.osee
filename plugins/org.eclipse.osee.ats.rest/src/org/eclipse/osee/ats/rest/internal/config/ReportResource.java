@@ -61,7 +61,7 @@ public class ReportResource {
       Set<Long> deletedArts = new HashSet<>();
 
       Map<Integer, Pair<ChangeItem, Set<ChangeItem>>> artToChanges =
-         new HashMap<Integer, Pair<ChangeItem, Set<ChangeItem>>>();
+         new HashMap<>();
 
       buildArtIdToChangeMap(changes, artToChanges);
       buildLists(artToChanges, newArts, modArts, deletedArts);

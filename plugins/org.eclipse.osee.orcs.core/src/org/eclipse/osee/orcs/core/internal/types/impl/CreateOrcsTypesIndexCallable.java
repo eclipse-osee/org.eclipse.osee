@@ -20,13 +20,11 @@ import org.eclipse.osee.orcs.core.internal.types.OrcsTypesResourceProvider;
  */
 public class CreateOrcsTypesIndexCallable extends CancellableCallable<OrcsTypesIndex> {
 
-   private final Log logger;
    private final OrcsTypesIndexer indexer;
    private final OrcsTypesResourceProvider provider;
 
    public CreateOrcsTypesIndexCallable(Log logger, OrcsTypesIndexer indexer, OrcsTypesResourceProvider provider) {
       super();
-      this.logger = logger;
       this.indexer = indexer;
       this.provider = provider;
    }

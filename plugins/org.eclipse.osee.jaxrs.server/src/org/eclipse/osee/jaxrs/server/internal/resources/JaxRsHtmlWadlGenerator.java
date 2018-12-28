@@ -47,8 +47,6 @@ public class JaxRsHtmlWadlGenerator extends WadlGenerator {
    private static final String WADL_TRANSFORMED_FLAG = "was.wadl.transformed";
 
    private Log logger;
-   private BundleContext bundleContext;
-
    //@formatter:off
    private @Context HttpHeaders headers;
    //@formatter:on
@@ -58,11 +56,9 @@ public class JaxRsHtmlWadlGenerator extends WadlGenerator {
    }
 
    public void start(BundleContext bundleContext, Map<String, Object> props) {
-      this.bundleContext = bundleContext;
    }
 
    public void stop() {
-      this.bundleContext = null;
    }
 
    @Override

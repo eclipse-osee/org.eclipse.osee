@@ -94,8 +94,8 @@ public class AttributeFactoryTest {
       when(attributeData.getVersion()).thenReturn(attrVersionData);
       when(artifactData.getVersion()).thenReturn(artVersionData);
 
-      ArgumentCaptor<ResourceNameResolver> resolverCapture = ArgumentCaptor.forClass(ResourceNameResolver.class);
-      ArgumentCaptor<WeakReference> refCapture = ArgumentCaptor.forClass(WeakReference.class);
+      ArgumentCaptor.forClass(ResourceNameResolver.class);
+      ArgumentCaptor.forClass(WeakReference.class);
 
       Attribute<Object> actual = factory.createAttributeWithDefaults(container, artifactData, attributeType);
 

@@ -56,7 +56,7 @@ import org.eclipse.ui.progress.UIJob;
 public class ArtifactDecorator implements IArtifactDecoratorPreferences {
 
    private static final Collection<WeakReference<ArtifactDecorator>> DECORATOR_INSTANCES =
-      new CopyOnWriteArrayList<WeakReference<ArtifactDecorator>>();
+      new CopyOnWriteArrayList<>();
 
    private DecoratorAction showArtIds;
    private DecoratorAction showArtType;
@@ -416,7 +416,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
    }
 
    private static void addDecoratorInstance(ArtifactDecorator source) {
-      DECORATOR_INSTANCES.add(new WeakReference<ArtifactDecorator>(source));
+      DECORATOR_INSTANCES.add(new WeakReference<>(source));
    }
 
    private static void notifySettingsChanged(ArtifactDecorator source) {

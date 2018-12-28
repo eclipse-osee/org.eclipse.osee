@@ -24,7 +24,7 @@ public class AtwNode {
    String name;
    String image = null;
    String id;
-   List<AtwNode> children = new LinkedList<AtwNode>();
+   List<AtwNode> children = new LinkedList<>();
    boolean expanded = false;
 
    public String getName() {

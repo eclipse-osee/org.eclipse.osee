@@ -58,7 +58,7 @@ public final class UserManager {
             }
 
          };
-         return new FutureTask<UserAdmin>(callable);
+         return new FutureTask<>(callable);
       }
 
    };

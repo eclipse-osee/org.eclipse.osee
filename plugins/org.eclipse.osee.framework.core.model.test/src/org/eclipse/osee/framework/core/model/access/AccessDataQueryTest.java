@@ -87,8 +87,8 @@ public class AccessDataQueryTest {
       AttributeTypeId attributeType = CoreAttributeTypes.ParagraphNumber;
       AttributeTypeId wordAttributeType = CoreAttributeTypes.WordTemplateContent;
 
-      data.add(artifactToCheck, new AccessDetail<AttributeTypeId>(attributeType, PermissionEnum.WRITE, new Scope()));
-      data.add(artifactToCheck, new AccessDetail<AttributeTypeId>(wordAttributeType, PermissionEnum.READ, new Scope()));
+      data.add(artifactToCheck, new AccessDetail<>(attributeType, PermissionEnum.WRITE, new Scope()));
+      data.add(artifactToCheck, new AccessDetail<>(wordAttributeType, PermissionEnum.READ, new Scope()));
 
       AccessDataQuery query = new AccessDataQuery(data);
       PermissionStatus status = new PermissionStatus();
@@ -133,8 +133,8 @@ public class AccessDataQueryTest {
       BranchId common = CoreBranches.COMMON;
       BranchId branch = CoreBranches.SYSTEM_ROOT;
 
-      data.add(common, new AccessDetail<BranchId>(common, PermissionEnum.READ, new Scope()));
-      data.add(branch, new AccessDetail<BranchId>(branch, PermissionEnum.WRITE, new Scope()));
+      data.add(common, new AccessDetail<>(common, PermissionEnum.READ, new Scope()));
+      data.add(branch, new AccessDetail<>(branch, PermissionEnum.WRITE, new Scope()));
 
       AccessDataQuery query = new AccessDataQuery(data);
 
@@ -185,7 +185,7 @@ public class AccessDataQueryTest {
 
       data.add(branchToCheck, new AccessDetail<BranchId>(branchToCheck, PermissionEnum.WRITE, new Scope()));
       data.add(artifactToCheck, new AccessDetail<>(artifactToCheck, PermissionEnum.WRITE, new Scope()));
-      data.add(artifactToCheck, new AccessDetail<IArtifactType>(artifactType, PermissionEnum.WRITE, new Scope()));
+      data.add(artifactToCheck, new AccessDetail<>(artifactType, PermissionEnum.WRITE, new Scope()));
 
       return new TestObject(artifactToCheck, data);
    }

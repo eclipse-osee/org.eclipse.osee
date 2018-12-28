@@ -217,7 +217,7 @@ public class SearchComposite extends Composite implements Listener {
    private boolean isAttributeComposite() {
       Composite parent = getParent();
       boolean isAttribute =
-         (parent != null && (parent instanceof Group) && ((Group) parent).getText().contains("Attribute"));
+         parent != null && parent instanceof Group && ((Group) parent).getText().contains("Attribute");
       return isAttribute;
    }
 

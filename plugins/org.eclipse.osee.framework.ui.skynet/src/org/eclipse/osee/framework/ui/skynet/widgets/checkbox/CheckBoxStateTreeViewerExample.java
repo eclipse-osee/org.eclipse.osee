@@ -60,7 +60,7 @@ public class CheckBoxStateTreeViewerExample {
       gd.horizontalSpan = 2;
       toolBarComposite.setLayoutData(gd);
 
-      treeViewer = new CheckBoxStateTreeViewer<ExampleTreeNode>(Shell_1, SWT.MULTI | SWT.BORDER);
+      treeViewer = new CheckBoxStateTreeViewer<>(Shell_1, SWT.MULTI | SWT.BORDER);
       treeViewer.getTree().setLayoutData(new GridData(GridData.FILL_VERTICAL));
       treeViewer.setContentProvider(new ExampleCheckBoxStateTreeContentProvider());
       treeViewer.setLabelProvider(new CheckBoxStateTreeLabelProvider(treeViewer));
@@ -77,7 +77,7 @@ public class CheckBoxStateTreeViewerExample {
 
       createTaskActionBar(toolBarComposite);
 
-      List<Object> tasks = new ArrayList<Object>();
+      List<Object> tasks = new ArrayList<>();
       for (int x = 0; x < 1; x++) {
          tasks.addAll(getTestTasks(treeViewer));
       }
@@ -123,7 +123,7 @@ public class CheckBoxStateTreeViewerExample {
       deSelectAll.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            List<Object> tasks = new ArrayList<Object>();
+            List<Object> tasks = new ArrayList<>();
             for (int x = 0; x < 1; x++) {
                tasks.addAll(getTestTasks(treeViewer));
             }
@@ -137,7 +137,7 @@ public class CheckBoxStateTreeViewerExample {
       refreshItem.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            List<Object> tasks = new ArrayList<Object>();
+            List<Object> tasks = new ArrayList<>();
             for (int x = 0; x < 1; x++) {
                tasks.addAll(getTestTasks(treeViewer));
             }
@@ -156,7 +156,7 @@ public class CheckBoxStateTreeViewerExample {
    }
 
    private static List<ExampleTreeNode> getTestTasks(ICheckBoxStateTreeViewer treeViewer) {
-      List<ExampleTreeNode> tasks = new ArrayList<ExampleTreeNode>();
+      List<ExampleTreeNode> tasks = new ArrayList<>();
       ExampleTreeNode task = new ExampleTreeNode("Trees", null, true, treeViewer);
       tasks.add(task);
       for (String str : Arrays.asList("Pine", "Redwood", "Oak")) {

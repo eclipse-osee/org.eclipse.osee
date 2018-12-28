@@ -93,7 +93,7 @@ public class ResServiceContributionItem extends OseeStatusContributionItem imple
 
    private static final class UpdateStatusTimerTask extends TimerTask {
       private final Set<OseeStatusContributionItem> itemsToUpdate =
-         new CopyOnWriteArraySet<OseeStatusContributionItem>();
+         new CopyOnWriteArraySet<>();
 
       public void addItem(OseeStatusContributionItem item) {
          itemsToUpdate.add(item);

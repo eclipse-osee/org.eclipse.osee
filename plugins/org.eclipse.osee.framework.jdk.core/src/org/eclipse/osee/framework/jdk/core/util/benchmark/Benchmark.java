@@ -278,7 +278,7 @@ public class Benchmark {
 
    public static List<Benchmark> getAllBenchamrks() {
       synchronized (list) {
-         return new ArrayList<Benchmark>(list);
+         return new ArrayList<>(list);
       }
    }
 

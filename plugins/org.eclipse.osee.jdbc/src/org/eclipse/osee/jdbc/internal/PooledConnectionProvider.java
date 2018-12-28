@@ -25,7 +25,7 @@ import org.eclipse.osee.jdbc.JdbcException;
 public class PooledConnectionProvider implements JdbcConnectionProvider {
 
    private final ConcurrentHashMap<String, LazyObject<DataSource>> dataSourceCache =
-      new ConcurrentHashMap<String, LazyObject<DataSource>>();
+      new ConcurrentHashMap<>();
 
    private final PoolFactory poolFactory;
 
@@ -50,7 +50,7 @@ public class PooledConnectionProvider implements JdbcConnectionProvider {
             @Override
             protected FutureTask<DataSource> createLoaderTask() {
                Callable<DataSource> newCallable = poolFactory.createDataSourceFetcher(dbInfo);
-               return new FutureTask<DataSource>(newCallable);
+               return new FutureTask<>(newCallable);
             }
          };
          provider = dataSourceCache.putIfAbsent(poolId, newProvider);

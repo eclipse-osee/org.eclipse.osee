@@ -122,7 +122,7 @@ public class StringGuidsToArtifactListOperationTest {
    private final IXWidgetInputAddable widgetMock_Equal = new IXWidgetInputAddable() {
       @Override
       public void addToInput(Collection<Object> objects) {
-         List<Object> uniques = Collections.setComplement(new HashSet<Object>(objects), new HashSet<Object>(artifacts));
+         List<Object> uniques = Collections.setComplement(new HashSet<>(objects), new HashSet<>(artifacts));
          Assert.assertTrue(uniques.isEmpty());
       }
    };
@@ -130,7 +130,7 @@ public class StringGuidsToArtifactListOperationTest {
    private final IXWidgetInputAddable widgetMock_2Uniques = new IXWidgetInputAddable() {
       @Override
       public void addToInput(Collection<Object> objects) {
-         List<Object> uniques = Collections.setComplement(new HashSet<Object>(artifacts), new HashSet<Object>(objects));
+         List<Object> uniques = Collections.setComplement(new HashSet<>(artifacts), new HashSet<>(objects));
          Assert.assertTrue(uniques.size() == 2); //generateGarbageClipboardContent() takes out 1 and 5
       }
    };

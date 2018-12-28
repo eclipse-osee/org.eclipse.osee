@@ -167,9 +167,9 @@ public class KanbanOperations {
             }
          }
       }
-      String assigneesIdStr = (assigneeIds == null ? "" : Collections.toString("; ", assigneeIds));
+      String assigneesIdStr = assigneeIds == null ? "" : Collections.toString("; ", assigneeIds);
       task.getAttributeMap().put("AssigneesIds", assigneesIdStr);
-      String assigneesStr = (assigneeNames == null ? "" : Collections.toString("; ", assigneeNames));
+      String assigneesStr = assigneeNames == null ? "" : Collections.toString("; ", assigneeNames);
       task.getAttributeMap().put("AssigneesStr", assigneesStr);
       task.getAttributeMap().put("AssigneesStrShort", Strings.truncate(assigneesStr, 30, true));
    }
@@ -183,8 +183,8 @@ public class KanbanOperations {
       //   "4345" : "As a user I will move the user right and left",
       //   "6433" : "As a user I will move the user forward and backward"
       //  },
-      Set<String> rowNames = new HashSet<String>(sprintStories.size());
-      Set<String> rowIds = new HashSet<String>(sprintStories.size());
+      Set<String> rowNames = new HashSet<>(sprintStories.size());
+      Set<String> rowIds = new HashSet<>(sprintStories.size());
       for (ArtifactToken sprintStory : sprintStories) {
          String name = sprintStory.getName();
          rowNames.add(name);
@@ -213,8 +213,8 @@ public class KanbanOperations {
       //  },
       Set<IAtsUser> assigneeImplementers = Collections.setUnion(workItem.getStateMgr().getAssignees(),
          atsApi.getImplementerService().getImplementers(workItem));
-      Set<String> assigneeNames = new HashSet<String>(assigneeImplementers.size());
-      Set<String> assigneeIds = new HashSet<String>(assigneeImplementers.size());
+      Set<String> assigneeNames = new HashSet<>(assigneeImplementers.size());
+      Set<String> assigneeIds = new HashSet<>(assigneeImplementers.size());
       for (IAtsUser user : assigneeImplementers) {
          if (!AtsCoreUsers.isSystemUser(user)) {
             teamMembers.add(user.getStoreObject());
@@ -333,7 +333,7 @@ public class KanbanOperations {
       task.setArtifactType(wItem.getArtifactTypeName());
       task.getAttributeMap().put("Shortname", wItem.getAtsId());
       IAtsVersion version = atsApi.getVersionService().getTargetedVersion(wItem);
-      task.getAttributeMap().put("versionName", (version != null ? version.getName() : ""));
+      task.getAttributeMap().put("versionName", version != null ? version.getName() : "");
       Collection<IAgileFeatureGroup> featureGroups = atsApi.getAgileService().getFeatureGroups(aItem);
       if (!featureGroups.isEmpty()) {
          String grps = Collections.toString(",", featureGroups);
@@ -343,7 +343,7 @@ public class KanbanOperations {
       task.setBranchGuid(artifact.getBranchIdString());
       Collection<IAttribute<Object>> attributes = atsApi.getAttributeResolver().getAttributes(artifact);
       Collection<? extends AttributeTypeToken> attrTypes = atsApi.getStoreService().getAttributeTypes();
-      Set<String> ais = new HashSet<String>();
+      Set<String> ais = new HashSet<>();
       if (!attributes.isEmpty()) {
          for (AttributeTypeToken attrType : attrTypes) {
             if (!attrType.getName().equals("ats.Log") && atsApi.getStoreService().isAttributeTypeValid(artifact,

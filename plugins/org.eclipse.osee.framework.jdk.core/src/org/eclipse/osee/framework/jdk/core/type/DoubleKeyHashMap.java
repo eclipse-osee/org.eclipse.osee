@@ -105,9 +105,9 @@ public class DoubleKeyHashMap<KeyOne, KeyTwo, Value> {
    public Collection<Value> allValues(KeyOne key) {
       HashMap<KeyTwo, Value> map = k1ToHashMap.get(key);
       if (map != null) {
-         return new HashSet<Value>(map.values());
+         return new HashSet<>(map.values());
       }
-      return new HashSet<Value>();
+      return new HashSet<>();
    }
 
    public Map<KeyTwo, Value> getSubHash(KeyOne k1) {

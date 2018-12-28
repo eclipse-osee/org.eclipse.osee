@@ -38,7 +38,7 @@ public abstract class DynamicWizard implements IWizard {
     */
 
    static {
-      JFaceResources.getImageRegistry().put(DEFAULT_IMAGE, ImageManager.getImage(FrameworkUiImage.PAGE));//$NON-NLS-1$
+      JFaceResources.getImageRegistry().put(DEFAULT_IMAGE, ImageManager.getImage(FrameworkUiImage.PAGE));
    }
 
    /**

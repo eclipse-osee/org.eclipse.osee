@@ -289,7 +289,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       boolean datesAsLong = options.contains(WorkItemWriterOptions.DatesAsLong);
 
       if (!attributes.isEmpty()) {
-         List<Long> writtenTypes = new LinkedList<Long>();
+         List<Long> writtenTypes = new LinkedList<>();
          HashCollection<String, AttributeReadable<Object>> attrIdToAttrsMap = getAttributeMap(attributes);
          for (String attrId : attrIdToAttrsMap.keySet()) {
             List<AttributeReadable<Object>> attributeValues = attrIdToAttrsMap.getValues(attrId);

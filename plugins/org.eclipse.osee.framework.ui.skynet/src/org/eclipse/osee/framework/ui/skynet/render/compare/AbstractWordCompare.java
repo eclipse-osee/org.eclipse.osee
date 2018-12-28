@@ -68,7 +68,7 @@ public abstract class AbstractWordCompare implements IComparator {
       boolean show = !((boolean) renderer.getRendererOptionValue(RendererOption.NO_DISPLAY));
       boolean executeVbScript = System.getProperty("os.name").contains("Windows");
       boolean skipErrors = !((boolean) renderer.getRendererOptionValue(RendererOption.SKIP_ERRORS));
-      skipDialogs = ((boolean) renderer.getRendererOptionValue(RendererOption.SKIP_DIALOGS));
+      skipDialogs = (boolean) renderer.getRendererOptionValue(RendererOption.SKIP_DIALOGS);
 
       boolean diffFieldCodes = !UserManager.getBooleanSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES);
 

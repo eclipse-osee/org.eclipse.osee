@@ -41,7 +41,7 @@ public class DecisionOption {
    }
 
    public DecisionOption(String name, IAtsUser assignee, boolean followup, AtsApi atsApi) {
-      this(name, (assignee == null ? Collections.emptyList() : Collections.singleton(assignee)), followup, atsApi);
+      this(name, assignee == null ? Collections.emptyList() : Collections.singleton(assignee), followup, atsApi);
    }
 
    public DecisionOption(String name, Collection<IAtsUser> assignees, boolean followup, AtsApi atsApi) {
@@ -49,7 +49,7 @@ public class DecisionOption {
       this.followupRequired = followup;
       this.atsApi = atsApi;
       if (assignees != null) {
-         this.assignees = new HashSet<IAtsUser>(assignees);
+         this.assignees = new HashSet<>(assignees);
       }
    }
 

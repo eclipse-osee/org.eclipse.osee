@@ -46,7 +46,7 @@ public final class ArtifactGuis {
       Conditions.checkExpressionFailOnTrue(artifacts.isEmpty(), "Must have at least one artifact for checking");
 
       StringBuilder message = new StringBuilder();
-      Set<String> otherBranches = new HashSet<String>();
+      Set<String> otherBranches = new HashSet<>();
       int modifiedCount = artifactsDeleted(artifacts, otherBranches);
       if (modifiedCount > 0) {
          message.append(String.format(DELETE_EDIT_MESSAGE, modifiedCount, artifacts.size()));

@@ -21,7 +21,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  */
 public class ServerStatus {
 
-   private final Map<String, String> data = new HashMap<String, String>();
+   private final Map<String, String> data = new HashMap<>();
    private final List<String> threadStats = new LinkedList<>();
    public final List<String> garbageCollectorStats = new LinkedList<>();
 

@@ -92,7 +92,7 @@ public class TripletTest {
    @org.junit.Test
    public void testHashCorrectness() {
       HashMap<Triplet<Integer, Integer, Integer>, Double> hash =
-         new HashMap<Triplet<Integer, Integer, Integer>, Double>();
+         new HashMap<>();
       hash.put(mapToPi, Math.PI);
       hash.put(mapToE, Math.E);
       Assert.assertTrue(hash.get(mapToPi).equals(Math.PI));

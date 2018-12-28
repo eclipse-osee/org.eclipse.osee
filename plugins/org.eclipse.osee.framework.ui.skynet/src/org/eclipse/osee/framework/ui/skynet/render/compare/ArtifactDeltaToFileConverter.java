@@ -46,7 +46,7 @@ public class ArtifactDeltaToFileConverter {
 
       IFile baseFile = renderer.renderToFile(baseArtifact, branch, presentationType);
       IFile newerFile = renderer.renderToFile(newerArtifact, branch, presentationType);
-      return new Pair<IFile, IFile>(baseFile, newerFile);
+      return new Pair<>(baseFile, newerFile);
    }
 
    public void convertToFileForMerge(final Collection<IFile> outputFiles, Artifact baseVersion, Artifact newerVersion) {

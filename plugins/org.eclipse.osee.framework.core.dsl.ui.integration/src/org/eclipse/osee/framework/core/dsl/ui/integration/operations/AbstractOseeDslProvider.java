@@ -80,7 +80,7 @@ public abstract class AbstractOseeDslProvider implements OseeDslProvider {
    @Override
    public Map<String, Long> getContextGuidToIdMap() {
       if (accessGuidToId == null) {
-         accessGuidToId = new ConcurrentHashMap<String, Long>();
+         accessGuidToId = new ConcurrentHashMap<>();
          Artifact mapArt = ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.AccessIdMap);
          if (mapArt.isValid()) {
             String mapStr = mapArt.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData);

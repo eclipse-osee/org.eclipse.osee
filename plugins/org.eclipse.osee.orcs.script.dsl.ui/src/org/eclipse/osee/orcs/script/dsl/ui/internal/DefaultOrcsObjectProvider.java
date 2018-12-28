@@ -27,7 +27,7 @@ public class DefaultOrcsObjectProvider implements IOrcsObjectProvider {
    private static final String CLASSNAME = "classname";
 
    private final ExtensionDefinedObjects<IOrcsObjectProvider> extensions =
-      new ExtensionDefinedObjects<IOrcsObjectProvider>(EXTENSION_POINT_ID, EXTENSION_ELEMENT, CLASSNAME, true);
+      new ExtensionDefinedObjects<>(EXTENSION_POINT_ID, EXTENSION_ELEMENT, CLASSNAME, true);
 
    @Override
    public Iterable<? extends NamedIdBase> getBranches() {

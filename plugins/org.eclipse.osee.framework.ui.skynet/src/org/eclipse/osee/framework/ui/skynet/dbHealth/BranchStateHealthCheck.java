@@ -167,7 +167,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
    }
 
    private Collection<BranchData> getAllBranchData() {
-      Map<Long, BranchData> data = new HashMap<Long, BranchData>();
+      Map<Long, BranchData> data = new HashMap<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery("select * from osee_branch");

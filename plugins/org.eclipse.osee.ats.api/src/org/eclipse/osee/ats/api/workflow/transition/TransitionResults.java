@@ -29,7 +29,7 @@ public class TransitionResults {
    private final List<ITransitionResult> results = new ArrayList<>();
 
    private final Map<IAtsWorkItem, List<ITransitionResult>> workItemToResults =
-      new HashMap<IAtsWorkItem, List<ITransitionResult>>();
+      new HashMap<>();
 
    public void addResult(IAtsWorkItem workItem, ITransitionResult result) {
       List<ITransitionResult> results = workItemToResults.get(workItem);

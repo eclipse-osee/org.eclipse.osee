@@ -141,7 +141,7 @@ public abstract class XSelectFromDialog<T> extends XText {
    }
 
    public List<T> getSelectableItems() {
-      return new ArrayList<T>(input);
+      return new ArrayList<>(input);
    }
 
    public void setSelected(Collection<T> input) {
@@ -151,7 +151,7 @@ public abstract class XSelectFromDialog<T> extends XText {
    }
 
    public List<T> getSelected() {
-      return new ArrayList<T>(selected);
+      return new ArrayList<>(selected);
    }
 
    public abstract FilteredCheckboxTreeDialog createDialog();

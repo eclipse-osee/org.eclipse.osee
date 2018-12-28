@@ -189,14 +189,14 @@ public abstract class Shape extends ModelElement {
     * Return a List of outgoing Connections.
     */
    public List<Connection> getSourceConnections() {
-      return new ArrayList<Connection>(sourceConnections);
+      return new ArrayList<>(sourceConnections);
    }
 
    /**
     * Return a List of incoming Connections.
     */
    public List<Connection> getTargetConnections() {
-      return new ArrayList<Connection>(targetConnections);
+      return new ArrayList<>(targetConnections);
    }
 
    /**

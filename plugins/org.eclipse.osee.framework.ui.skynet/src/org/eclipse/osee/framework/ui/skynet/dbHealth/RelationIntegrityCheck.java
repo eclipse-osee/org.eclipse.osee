@@ -334,13 +334,6 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
       monitor.worked(calculateWork(0.10));
    }
 
-   @SuppressWarnings("unused")
-   private void displayUnexpectedRelLinks(LocalRelationLink relationLink) {
-      log(
-         "gam_id \t transaction_id \t rel_link_id \t branch_d \t a_art_id \t b_art_id \t deleted_tran \t commit trans \t commit trans mod type");
-      log(relationLink.toString());
-   }
-
    private boolean isLoadingBrokenRelationsNecessary() {
       return verify || isFirstRun();
    }

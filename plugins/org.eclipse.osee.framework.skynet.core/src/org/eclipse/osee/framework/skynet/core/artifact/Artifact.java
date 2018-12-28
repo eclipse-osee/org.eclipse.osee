@@ -106,7 +106,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    public static final String AFTER_GUID_STRING = "/AfterGUID";
    private final HashCollection<AttributeTypeId, Attribute<?>> attributes = new HashCollection<>(true);
    private final Set<DefaultBasicUuidRelationReorder> relationOrderRecords =
-      new HashSet<DefaultBasicUuidRelationReorder>();
+      new HashSet<>();
    private final BranchId branch;
    private TransactionToken transaction = TransactionToken.SENTINEL;
    private GammaId gammaId;
@@ -220,7 +220,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       boolean sideA = relationSide.getSide().isSideA();
       Artifact artifactA = sideA ? artifact : this;
       Artifact artifactB = sideA ? this : artifact;
-      return new Pair<Artifact, Artifact>(artifactA, artifactB);
+      return new Pair<>(artifactA, artifactB);
    }
 
    /**

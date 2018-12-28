@@ -39,10 +39,10 @@ import org.osgi.framework.ServiceReference;
 public final class AccessControlServiceProxy implements IAccessControlService {
 
    private final List<ServiceReference<IAccessProvider>> registered =
-      new CopyOnWriteArrayList<ServiceReference<IAccessProvider>>();
+      new CopyOnWriteArrayList<>();
 
    private final List<ServiceReference<IAccessProvider>> pendingProviders =
-      new CopyOnWriteArrayList<ServiceReference<IAccessProvider>>();
+      new CopyOnWriteArrayList<>();
 
    private JdbcService jdbcService;
    private IOseeCachingService cachingService;

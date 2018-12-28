@@ -47,7 +47,7 @@ public class OseeDslAccessModelTest {
    @Test(expected = OseeArgumentException.class)
    public void testComputeAccessNullAgumentCheck1() {
       AccessModel accessModel = new OseeDslAccessModel(null, null);
-      accessModel.computeAccess(null, new ArrayList<Object>(), new AccessData());
+      accessModel.computeAccess(null, new ArrayList<>(), new AccessData());
    }
 
    @Test(expected = OseeArgumentException.class)
@@ -85,9 +85,9 @@ public class OseeDslAccessModelTest {
       Scope detail1Scope = new Scope().add("fail");
       Scope detail2Scope = new Scope().add("fail");
       final AccessDetail<?> detail1 =
-         new AccessDetail<Object>(checkedObject, PermissionEnum.READ, detail1Scope, "detail 1");
+         new AccessDetail<>(checkedObject, PermissionEnum.READ, detail1Scope, "detail 1");
       final AccessDetail<?> detail2 =
-         new AccessDetail<Object>(checkedObject, PermissionEnum.WRITE, detail2Scope, "detail 2");
+         new AccessDetail<>(checkedObject, PermissionEnum.WRITE, detail2Scope, "detail 2");
 
       final AccessData accessData = new AccessData();
 

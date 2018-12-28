@@ -55,13 +55,13 @@ public class InsertionActivityColumnTest {
       assertEquals(str, "");
 
       when(util.getInsertionActivity(atsApi, workItem)).thenReturn(
-         new Pair<IAtsInsertionActivity, Boolean>(program, false));
+         new Pair<>(program, false));
       when(program.getName()).thenReturn("Country");
       str = InsertionActivityColumn.getInsertionActivityStr(workItem, atsApi, util);
       assertEquals(str, "Country");
 
       when(util.getInsertionActivity(atsApi, workItem)).thenReturn(
-         new Pair<IAtsInsertionActivity, Boolean>(program, true));
+         new Pair<>(program, true));
       str = InsertionActivityColumn.getInsertionActivityStr(workItem, atsApi, util);
       assertEquals(str, "Country (I)");
 

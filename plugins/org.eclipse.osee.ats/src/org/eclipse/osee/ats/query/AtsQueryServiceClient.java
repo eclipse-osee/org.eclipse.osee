@@ -186,7 +186,7 @@ public class AtsQueryServiceClient {
       } else if (obj instanceof IAtsObject) {
          result = getArtifact(((IAtsObject) obj).getStoreObject(), atsApi.getAtsBranch());
       } else if (obj instanceof ArtifactId) {
-         result = getArtifact(((ArtifactId) obj), atsApi.getAtsBranch());
+         result = getArtifact((ArtifactId) obj, atsApi.getAtsBranch());
       } else if (obj instanceof Id) {
          result = getArtifact(((Id) obj).getId());
       } else if (obj instanceof Long) {

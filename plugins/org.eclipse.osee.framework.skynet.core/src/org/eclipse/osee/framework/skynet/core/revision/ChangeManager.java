@@ -151,7 +151,7 @@ public final class ChangeManager {
       HashCollection<Artifact, BranchId> branchMap = new HashCollection<>();
       try (Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery()) {
          CompositeKeyHashMap<Integer, BranchId, Artifact> artifactMap =
-            new CompositeKeyHashMap<Integer, BranchId, Artifact>();
+            new CompositeKeyHashMap<>();
          for (Artifact artifact : artifacts) {
             artifactMap.put(artifact.getArtId(), artifact.getBranch(), artifact);
             // for each combination of artifact and all working branches in its hierarchy

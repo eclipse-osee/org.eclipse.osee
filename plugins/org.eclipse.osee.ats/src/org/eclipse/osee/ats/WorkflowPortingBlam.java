@@ -93,7 +93,7 @@ public class WorkflowPortingBlam extends AbstractBlam {
    private List<IAtsActionableItem> getActionableItems(IAtsActionableItem actionableItem) {
       List<IAtsActionableItem> actionableItems;
       if (actionableItem == null) {
-         actionableItems = new ArrayList<IAtsActionableItem>(
+         actionableItems = new ArrayList<>(
             AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(
                sourceWorkflows.get(0)));
       } else {

@@ -309,7 +309,7 @@ public class BranchEventTest {
          while (events[sequence] == null) {
             wait();
          }
-         return new Pair<Sender, BranchEvent>(senders[sequence], events[sequence]);
+         return new Pair<>(senders[sequence], events[sequence]);
       }
    };
 }

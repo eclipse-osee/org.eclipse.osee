@@ -19,7 +19,7 @@ import java.util.List;
 public class JaxKbState {
 
    private String name;
-   private List<String> taskIds = new ArrayList<String>();
+   private List<String> taskIds = new ArrayList<>();
 
    public String getName() {
       return name;

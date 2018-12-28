@@ -36,7 +36,7 @@ public class OverrideInvalidScriptRevisions implements IOverrideHandler {
       Set<Object> toReturn = new HashSet<>();
       for (Object object : unselectable) {
          if (object instanceof Artifact) {
-            ArtifactTestRunOperator operator = new ArtifactTestRunOperator(((Artifact) object));
+            ArtifactTestRunOperator operator = new ArtifactTestRunOperator((Artifact) object);
             if (operator.hasNotBeenCommitted() != false) {
                toReturn.add(object);
             }

@@ -19,8 +19,10 @@ public interface IAgileStory extends IAgileObject {
 
    List<Long> getTaskIds();
 
+   @Override
    String getName();
 
+   @Override
    Long getId();
 
    Long getFeatureId();

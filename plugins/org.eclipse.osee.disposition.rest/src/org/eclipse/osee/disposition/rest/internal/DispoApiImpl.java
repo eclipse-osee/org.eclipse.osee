@@ -686,7 +686,7 @@ public class DispoApiImpl implements DispoApi {
    }
 
    private List<DispoAnnotationData> removeAnnotationFromList(List<DispoAnnotationData> oldList, int indexRemoved) {
-      List<DispoAnnotationData> newList = new ArrayList<DispoAnnotationData>();
+      List<DispoAnnotationData> newList = new ArrayList<>();
       oldList.remove(indexRemoved);
 
       // Re assign index to Annotations still left in list

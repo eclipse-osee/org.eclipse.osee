@@ -35,7 +35,7 @@ public final class SafetyStreamingOutput implements StreamingOutput {
       this.orcsApi = orcsApi;
       this.branchId = branchId;
       this.codeRoot = codeRoot;
-      this.validate = (isOn != null && isOn.equals("on")) ? true : false;
+      this.validate = isOn != null && isOn.equals("on") ? true : false;
    }
 
    @Override

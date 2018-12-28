@@ -26,7 +26,7 @@ public class ArtifactChecks {
    private static List<IArtifactCheck> checks = null;
 
    private static final ExtensionDefinedObjects<IArtifactCheck> artifactCheckObjects =
-      new ExtensionDefinedObjects<IArtifactCheck>(EXTENSION_ID, ELEMENT_ID, CLASS_NAME_ATTRIBUTE, true);
+      new ExtensionDefinedObjects<>(EXTENSION_ID, ELEMENT_ID, CLASS_NAME_ATTRIBUTE, true);
 
    public static List<IArtifactCheck> getArtifactChecks() {
       if (checks == null) {

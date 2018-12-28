@@ -427,7 +427,7 @@ public class WordTemplateProcessor {
    }
 
    private List<Artifact> parseOrcsQueryResult(String result, BranchId branch) {
-      ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
+      ArrayList<Artifact> artifacts = new ArrayList<>();
       try {
          JSONObject jsonObject = new JSONObject(result);
          JSONArray results = jsonObject.getJSONArray("results");
@@ -565,16 +565,16 @@ public class WordTemplateProcessor {
          parseMetadataOptions(templateOptions);
       }
 
-      if (((boolean) renderer.getRendererOptionValue(RendererOption.PUBLISH_DIFF))) {
+      if ((boolean) renderer.getRendererOptionValue(RendererOption.PUBLISH_DIFF)) {
          WordTemplateFileDiffer templateFileDiffer = new WordTemplateFileDiffer(renderer);
          templateFileDiffer.generateFileDifferences(artifacts, "/results/", outlineNumber, outlineType,
             recurseChildren);
       } else {
 
          List<ArtifactId> allArtifacts = new ArrayList<>();
-         if (recurseChildren || (((boolean) renderer.getRendererOptionValue(
-            RendererOption.RECURSE_ON_LOAD)) && !((boolean) renderer.getRendererOptionValue(
-               RendererOption.ORIG_PUBLISH_AS_DIFF)))) {
+         if (recurseChildren || (boolean) renderer.getRendererOptionValue(
+            RendererOption.RECURSE_ON_LOAD) && !((boolean) renderer.getRendererOptionValue(
+               RendererOption.ORIG_PUBLISH_AS_DIFF))) {
             for (Artifact art : artifacts) {
                allArtifacts.add(art);
                if (!art.isHistorical()) {
@@ -621,7 +621,7 @@ public class WordTemplateProcessor {
          if (!processedArtifacts.contains(artifact)) {
 
             boolean ignoreArtifact =
-               (excludeFolders && artifact.isOfType(CoreArtifactTypes.Folder)) || artifactsToExclude.containsKey(
+               excludeFolders && artifact.isOfType(CoreArtifactTypes.Folder) || artifactsToExclude.containsKey(
                   ArtifactId.valueOf(artifact.getId()));
 
             boolean ignoreArtType = excludeArtifactTypes != null && artifact.isOfType(excludeArtifactTypes);
@@ -654,8 +654,8 @@ public class WordTemplateProcessor {
                      startedSection = true;
                   }
 
-                  if (((boolean) renderer.getRendererOptionValue(
-                     RendererOption.UPDATE_PARAGRAPH_NUMBERS)) && !publishInline) {
+                  if ((boolean) renderer.getRendererOptionValue(
+                     RendererOption.UPDATE_PARAGRAPH_NUMBERS) && !publishInline) {
                      if (artifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber)) {
                         artifact.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, paragraphNumber.toString());
 
@@ -678,10 +678,10 @@ public class WordTemplateProcessor {
             }
 
             // Check for option that may have been set from Publish with Diff BLAM to recurse
-            boolean recurse = ((boolean) renderer.getRendererOptionValue(RendererOption.RECURSE_ON_LOAD));
-            boolean origDiff = ((boolean) renderer.getRendererOptionValue(RendererOption.ORIG_PUBLISH_AS_DIFF));
+            boolean recurse = (boolean) renderer.getRendererOptionValue(RendererOption.RECURSE_ON_LOAD);
+            boolean origDiff = (boolean) renderer.getRendererOptionValue(RendererOption.ORIG_PUBLISH_AS_DIFF);
 
-            if (recurseChildren && !recurse || (recurse && !origDiff)) {
+            if (recurseChildren && !recurse || recurse && !origDiff) {
                for (Artifact childArtifact : artifact.getChildren()) {
                   processObjectArtifact(childArtifact, wordMl, outlineType, presentationType, data);
                }
@@ -707,7 +707,7 @@ public class WordTemplateProcessor {
       for (AttributeElement attributeElement : attributeElements) {
          String attributeName = attributeElement.getAttributeName();
 
-         if (((boolean) renderer.getRendererOptionValue(RendererOption.ALL_ATTRIBUTES)) || attributeName.equals("*")) {
+         if ((boolean) renderer.getRendererOptionValue(RendererOption.ALL_ATTRIBUTES) || attributeName.equals("*")) {
             for (AttributeTypeToken attributeType : RendererManager.getAttributeTypeOrderList(artifact)) {
                if (!outlining || attributeType.notEqual(headingAttributeType)) {
                   processAttribute(artifact, wordMl, attributeElement, attributeType, true, presentationType,
@@ -789,8 +789,8 @@ public class WordTemplateProcessor {
          }
 
          // Do not publish relation order during publishing
-         if (((boolean) renderer.getRendererOptionValue(
-            RendererOption.IN_PUBLISH_MODE)) && CoreAttributeTypes.RelationOrder.equals(attributeType)) {
+         if ((boolean) renderer.getRendererOptionValue(
+            RendererOption.IN_PUBLISH_MODE) && CoreAttributeTypes.RelationOrder.equals(attributeType)) {
             return;
          }
 

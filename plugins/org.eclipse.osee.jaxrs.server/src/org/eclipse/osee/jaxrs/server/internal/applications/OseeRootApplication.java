@@ -22,7 +22,7 @@ import org.eclipse.osee.logger.Log;
 @ApplicationPath("/")
 public class OseeRootApplication extends Application {
 
-   private final Set<Object> singletons = new HashSet<Object>();
+   private final Set<Object> singletons = new HashSet<>();
 
    private Log logger;
 

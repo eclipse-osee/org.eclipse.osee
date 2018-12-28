@@ -36,8 +36,6 @@ public class OrcsApplication extends Application {
    private IResourceManager resourceManager;
    private ActivityLog activityLog;
    private JdbcService jdbcService;
-   private EventAdmin eventAdmin;
-
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
    }
@@ -51,7 +49,6 @@ public class OrcsApplication extends Application {
    }
 
    public void setEventAdmin(EventAdmin eventAdmin) {
-      this.eventAdmin = eventAdmin;
    }
 
    public void setResourceManager(IResourceManager resourceManager) {

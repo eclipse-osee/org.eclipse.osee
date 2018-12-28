@@ -27,7 +27,7 @@ public class ParentTitleColumn extends AbstractServicesColumn {
    @Override
    String getText(IAtsObject atsObject) throws Exception {
       String result = null;
-      if (atsObject instanceof IAtsWorkItem && (!(atsObject instanceof IAtsTeamWorkflow))) {
+      if (atsObject instanceof IAtsWorkItem && !(atsObject instanceof IAtsTeamWorkflow)) {
          IAtsTeamWorkflow parentTeam = ((IAtsWorkItem) atsObject).getParentTeamWorkflow();
          if (parentTeam != null) {
             result = parentTeam.getName();

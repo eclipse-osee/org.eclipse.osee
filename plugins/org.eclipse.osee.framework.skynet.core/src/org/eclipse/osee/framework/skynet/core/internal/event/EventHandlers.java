@@ -22,10 +22,10 @@ import org.eclipse.osee.framework.skynet.core.event.model.FrameworkEvent;
 public class EventHandlers {
 
    private final Map<Class<? extends FrameworkEvent>, EventHandlerLocal<? extends IEventListener, ? extends FrameworkEvent>> handlers =
-      new HashMap<Class<? extends FrameworkEvent>, EventHandlerLocal<? extends IEventListener, ? extends FrameworkEvent>>();
+      new HashMap<>();
 
    private final Map<Class<? extends RemoteEvent>, EventHandlerRemote<? extends RemoteEvent>> remoteHandlers =
-      new HashMap<Class<? extends RemoteEvent>, EventHandlerRemote<? extends RemoteEvent>>();
+      new HashMap<>();
 
    public void addLocalHandler(Class<? extends FrameworkEvent> clazz, EventHandlerLocal<? extends IEventListener, ? extends FrameworkEvent> handler) {
       handlers.put(clazz, handler);

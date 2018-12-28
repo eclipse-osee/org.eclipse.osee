@@ -57,7 +57,7 @@ public class AttributeTypeRestrictionHandler implements RestrictionHandler<Attri
 
          if (isApplicable) {
             PermissionEnum permission = OseeUtil.getPermission(restriction);
-            collector.collect(new AccessDetail<AttributeTypeId>(attributeTypeToMatch, permission, scopeLevel));
+            collector.collect(new AccessDetail<>(attributeTypeToMatch, permission, scopeLevel));
          }
       }
    }

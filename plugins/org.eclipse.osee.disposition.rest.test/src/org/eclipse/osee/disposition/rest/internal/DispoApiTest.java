@@ -322,7 +322,7 @@ public class DispoApiTest {
       boolean actual = dispoApi.editDispoItem(branch, itemId.getGuid(), newItem, author.getIdString());
       assertTrue(actual);
 
-      Map<String, Discrepancy> discrepanciesList = new HashMap<String, Discrepancy>();
+      Map<String, Discrepancy> discrepanciesList = new HashMap<>();
       newItem.setDiscrepanciesList(discrepanciesList);
       actual = dispoApi.editDispoItem(branch, itemId.getGuid(), newItem, author.getIdString());
       assertFalse(actual);

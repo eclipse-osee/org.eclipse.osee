@@ -287,7 +287,7 @@ public class MultiServiceBinderTest {
 
       // Add another dependency to check that onActivate is
       // not called when dependencies that might be managed by other binders are missing
-      serviceMap.put(Boolean.class, new HashSet<Object>());
+      serviceMap.put(Boolean.class, new HashSet<>());
 
       stringTracker.addingService(serviceReference1);
       Assert.assertFalse(handler.wasOnActivateCalled());

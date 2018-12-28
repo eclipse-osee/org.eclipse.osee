@@ -70,7 +70,7 @@ public class MessageServiceImpl implements MessageService {
 
    @Override
    public Collection<NodeInfo> getAvailableConnections() {
-      return new ArrayList<NodeInfo>(connectionNodes.keySet());
+      return new ArrayList<>(connectionNodes.keySet());
    }
 
    @Override

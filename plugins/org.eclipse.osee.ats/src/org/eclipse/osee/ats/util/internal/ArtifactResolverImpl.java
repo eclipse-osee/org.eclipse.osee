@@ -30,10 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
  */
 public class ArtifactResolverImpl implements IArtifactResolver {
 
-   private final AtsApi atsApi;
-
    public ArtifactResolverImpl(AtsApi atsApi) {
-      this.atsApi = atsApi;
    }
 
    @Override

@@ -14,18 +14,8 @@ package org.eclipse.osee.framework.ui.skynet.blam;
  * @author Ryan D. Brooks
  */
 public class BlamParameter {
-   @SuppressWarnings("unused")
-   private final String name;
-   @SuppressWarnings("unused")
-   private final Class<?> clazz;
-   @SuppressWarnings("unused")
-   private final String binding;
-
    public BlamParameter(String name, Class<?> clazz, String binding) {
       super();
-      this.name = name;
-      this.clazz = clazz;
-      this.binding = binding;
    }
 
 }

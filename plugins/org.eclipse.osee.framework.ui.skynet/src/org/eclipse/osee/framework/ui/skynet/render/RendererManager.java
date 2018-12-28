@@ -93,7 +93,7 @@ public final class RendererManager {
 
    private static void registerRendersFromExtensionPoints() {
       ExtensionDefinedObjects<IRenderer> contributions =
-         new ExtensionDefinedObjects<IRenderer>(Activator.PLUGIN_ID + ".ArtifactRenderer", "Renderer", "classname");
+         new ExtensionDefinedObjects<>(Activator.PLUGIN_ID + ".ArtifactRenderer", "Renderer", "classname");
       for (IRenderer renderer : contributions.getObjects()) {
          renderers.add(renderer);
       }
@@ -164,14 +164,14 @@ public final class RendererManager {
    }
 
    public static HashCollection<IRenderer, Artifact> createRenderMap(PresentationType presentationType, Collection<Artifact> artifacts, Map<RendererOption, Object> rendererOptions) {
-      HashCollection<IRenderer, Artifact> prototypeRendererArtifactMap = new HashCollection<IRenderer, Artifact>();
+      HashCollection<IRenderer, Artifact> prototypeRendererArtifactMap = new HashCollection<>();
       for (Artifact artifact : artifacts) {
          IRenderer renderer = getBestRendererPrototype(presentationType, artifact, rendererOptions);
          prototypeRendererArtifactMap.put(renderer, artifact);
       }
 
       // now that the artifacts are grouped based on best renderer type, create instances of those renderer with the supplied options
-      HashCollection<IRenderer, Artifact> rendererArtifactMap = new HashCollection<IRenderer, Artifact>();
+      HashCollection<IRenderer, Artifact> rendererArtifactMap = new HashCollection<>();
       for (IRenderer prototypeRenderer : prototypeRendererArtifactMap.keySet()) {
          IRenderer renderer = prototypeRenderer.newInstance(rendererOptions);
          rendererArtifactMap.put(renderer, prototypeRendererArtifactMap.getValues(prototypeRenderer));

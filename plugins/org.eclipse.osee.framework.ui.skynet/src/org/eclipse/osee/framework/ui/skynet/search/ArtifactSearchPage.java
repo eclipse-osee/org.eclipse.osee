@@ -458,7 +458,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       clearAllLabel.addListener(SWT.MouseUp, new Listener() {
          @Override
          public void handleEvent(Event event) {
-            for (FilterModel filterModel : new CopyOnWriteArrayList<FilterModel>(
+            for (FilterModel filterModel : new CopyOnWriteArrayList<>(
                filterviewer.getFilterList().getFilters())) {
                filterviewer.removeFilter(filterModel);
             }

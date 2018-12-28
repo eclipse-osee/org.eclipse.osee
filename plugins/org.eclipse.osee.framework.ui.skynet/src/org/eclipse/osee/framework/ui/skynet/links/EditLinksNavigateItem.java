@@ -86,7 +86,7 @@ public class EditLinksNavigateItem extends XNavigateItem implements FileChangedL
    }
 
    private String getFilename(boolean global) {
-      return String.format(LINKS_FILENAME, (global ? "Global" : "Personal"));
+      return String.format(LINKS_FILENAME, global ? "Global" : "Personal");
    }
 
    private static final AtomicBoolean startedWatcher = new AtomicBoolean(false);

@@ -137,7 +137,7 @@ public class SprintUtil {
       item.setVersion(ver == null ? "" : ver.getName());
       Boolean unplanned =
          atsApi.getAttributeResolver().getSoleAttributeValue(aItem, AtsAttributeTypes.UnPlannedWork, false);
-      item.setUnPlannedWork((unplanned ? "U" : ""));
+      item.setUnPlannedWork(unplanned ? "U" : "");
       item.setNotes(atsApi.getAttributeResolver().getSoleAttributeValue(aItem, AtsAttributeTypes.SmaNote, ""));
       item.setCreateDate(CreatedDateColumn.getDateStr(workItem));
       item.setCompCancelDate(CompletedCancelledDateColumn.getCompletedCancelledDateStr(workItem));

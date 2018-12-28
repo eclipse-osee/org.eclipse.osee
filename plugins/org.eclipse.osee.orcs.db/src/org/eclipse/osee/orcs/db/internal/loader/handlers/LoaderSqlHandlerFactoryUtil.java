@@ -33,7 +33,7 @@ public final class LoaderSqlHandlerFactoryUtil {
 
    public static SqlHandlerFactory createHandlerFactory(Log logger, IdentityLocator identityService) {
       Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
-         new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler<?>>>();
+         new HashMap<>();
 
       // Query
       handleMap.put(CriteriaArtifact.class, ArtifactSqlHandler.class);

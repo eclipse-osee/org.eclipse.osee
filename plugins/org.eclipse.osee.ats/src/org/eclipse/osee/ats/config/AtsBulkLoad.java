@@ -66,7 +66,7 @@ public class AtsBulkLoad {
             tasks.add(art);
          }
       }
-      Set<Artifact> arts = new HashSet<Artifact>();
+      Set<Artifact> arts = new HashSet<>();
       if (!actions.isEmpty()) {
          arts.addAll(RelationManager.getRelatedArtifacts(actions, 3, AtsRelationTypes.TeamWfToTask_Task,
             AtsRelationTypes.TeamWorkflowToReview_Review, AtsRelationTypes.ActionToWorkflow_Action));

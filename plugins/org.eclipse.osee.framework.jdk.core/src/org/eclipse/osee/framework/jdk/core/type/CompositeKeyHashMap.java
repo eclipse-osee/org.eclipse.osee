@@ -34,7 +34,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
 
       @Override
       protected Pair<KeyOne, KeyTwo> initialValue() {
-         return new Pair<KeyOne, KeyTwo>(null, null);
+         return new Pair<>(null, null);
       }
 
    };
@@ -130,7 +130,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
    public List<Pair<KeyOne, KeyTwo>> getEnumeratedKeys() {
       List<Pair<KeyOne, KeyTwo>> toReturn = new ArrayList<>();
       for (KeyOne firstKey : singleKeyMap.keySet()) {
-         singleKeyMap.forEachValue(firstKey, secondKey -> toReturn.add(new Pair<KeyOne, KeyTwo>(firstKey, secondKey)));
+         singleKeyMap.forEachValue(firstKey, secondKey -> toReturn.add(new Pair<>(firstKey, secondKey)));
       }
       return toReturn;
    }
@@ -153,7 +153,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
 
    public Value put(KeyOne key1, KeyTwo key2, Value value) {
       put(key1, key2);
-      return map.put(new Pair<KeyOne, KeyTwo>(key1, key2), value);
+      return map.put(new Pair<>(key1, key2), value);
    }
 
    @Override

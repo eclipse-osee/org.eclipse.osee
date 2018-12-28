@@ -21,12 +21,8 @@ import org.eclipse.osee.orcs.OrcsSession;
  * @author Roberto E. Escobar
  */
 public final class PurgeArtifactTypeDatabaseTxCallable extends AbstractDatastoreTxCallable<Void> {
-   @SuppressWarnings("unused")
-   private final Collection<? extends IArtifactType> typesToPurge;
-
    public PurgeArtifactTypeDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, Collection<? extends IArtifactType> typesToPurge) {
       super(logger, session, jdbcClient);
-      this.typesToPurge = typesToPurge;
    }
 
    @Override

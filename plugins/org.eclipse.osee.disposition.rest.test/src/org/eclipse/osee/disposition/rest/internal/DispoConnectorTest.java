@@ -49,7 +49,7 @@ public class DispoConnectorTest {
       dispoItem = new DispoItemData();
       dispoConnector = new DispoConnector();
 
-      Map<String, Discrepancy> discrepancies = new HashMap<String, Discrepancy>();
+      Map<String, Discrepancy> discrepancies = new HashMap<>();
 
       for (int i = 1; i <= 5; i++) {
          Discrepancy discrepancy = new Discrepancy();
@@ -86,11 +86,11 @@ public class DispoConnectorTest {
       annotationOne.setIsResolutionValid(true);
       annotationOne.setResolutionType("Code");
       annotationOne.setId(annotIdOne);
-      List<String> idsOfCoveredDisc = new ArrayList<String>();
+      List<String> idsOfCoveredDisc = new ArrayList<>();
       annotationOne.setIdsOfCoveredDiscrepancies(idsOfCoveredDisc);
 
       dispoConnector.connectAnnotation(annotationOne, dispoItem.getDiscrepanciesList());
-      List<DispoAnnotationData> annotationsList = new ArrayList<DispoAnnotationData>();
+      List<DispoAnnotationData> annotationsList = new ArrayList<>();
       annotationsList.add(annotationOne);
       dispoItem.setAnnotationsList(annotationsList);
 
@@ -128,11 +128,11 @@ public class DispoConnectorTest {
       annotationOne.setResolutionType("Modify_Code");
       annotationOne.setIsAnalyze(true);
       annotationOne.setId(annotIdOne);
-      List<String> idsOfCoveredDisc = new ArrayList<String>();
+      List<String> idsOfCoveredDisc = new ArrayList<>();
       annotationOne.setIdsOfCoveredDiscrepancies(idsOfCoveredDisc);
 
       dispoConnector.connectAnnotation(annotationOne, dispoItem.getDiscrepanciesList());
-      List<DispoAnnotationData> annotationsList = new ArrayList<DispoAnnotationData>();
+      List<DispoAnnotationData> annotationsList = new ArrayList<>();
       annotationsList.add(annotationOne);
       dispoItem.setAnnotationsList(annotationsList);
 
@@ -168,11 +168,11 @@ public class DispoConnectorTest {
       annotationOne.setIsResolutionValid(true);
       annotationOne.setResolutionType("Code");
       annotationOne.setId(annotIdOne);
-      List<String> idsOfCoveredDisc = new ArrayList<String>();
+      List<String> idsOfCoveredDisc = new ArrayList<>();
       annotationOne.setIdsOfCoveredDiscrepancies(idsOfCoveredDisc);
 
       dispoConnector.connectAnnotation(annotationOne, dispoItem.getDiscrepanciesList());
-      List<DispoAnnotationData> annotationsList = new ArrayList<DispoAnnotationData>();
+      List<DispoAnnotationData> annotationsList = new ArrayList<>();
       annotationsList.add(annotationOne);
       dispoItem.setAnnotationsList(annotationsList);
 
@@ -202,11 +202,11 @@ public class DispoConnectorTest {
       annotationOne.setIsResolutionValid(true);
       annotationOne.setResolutionType("Code");
       annotationOne.setId(annotIdOne);
-      List<String> idsOfCoveredDisc = new ArrayList<String>();
+      List<String> idsOfCoveredDisc = new ArrayList<>();
       annotationOne.setIdsOfCoveredDiscrepancies(idsOfCoveredDisc);
 
       dispoConnector.connectAnnotation(annotationOne, dispoItem.getDiscrepanciesList());
-      List<DispoAnnotationData> annotationsList = new ArrayList<DispoAnnotationData>();
+      List<DispoAnnotationData> annotationsList = new ArrayList<>();
       annotationsList.add(annotationOne);
       dispoItem.setAnnotationsList(annotationsList);
 
@@ -236,11 +236,11 @@ public class DispoConnectorTest {
       annotationOne.setIsResolutionValid(true);
       annotationOne.setResolutionType("Code");
       annotationOne.setId(annotIdOne);
-      List<String> idsOfCoveredDisc = new ArrayList<String>();
+      List<String> idsOfCoveredDisc = new ArrayList<>();
       annotationOne.setIdsOfCoveredDiscrepancies(idsOfCoveredDisc);
 
       dispoConnector.connectAnnotation(annotationOne, dispoItem.getDiscrepanciesList());
-      List<DispoAnnotationData> annotationsList = new ArrayList<DispoAnnotationData>();
+      List<DispoAnnotationData> annotationsList = new ArrayList<>();
       annotationsList.add(annotationOne);
       dispoItem.setAnnotationsList(annotationsList);
 
@@ -264,25 +264,25 @@ public class DispoConnectorTest {
       DispoAnnotationData annotationOne = new DispoAnnotationData();
       annotationOne.setLocationRefs("1-5");
       annotationOne.setId(annotIdOne);
-      List<String> idsOfCoveredDiscOne = new ArrayList<String>();
+      List<String> idsOfCoveredDiscOne = new ArrayList<>();
       annotationOne.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscOne);
 
       DispoAnnotationData annotationTwo = new DispoAnnotationData();
       annotationTwo.setLocationRefs("12-14");
       annotationTwo.setId(annotIdTwo);
-      List<String> idsOfCoveredDiscTwo = new ArrayList<String>();
+      List<String> idsOfCoveredDiscTwo = new ArrayList<>();
       annotationTwo.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscTwo);
 
       DispoAnnotationData annotationThree = new DispoAnnotationData();
       annotationThree.setLocationRefs("16, 20, 18");
       annotationThree.setId(annotIdThree);
-      List<String> idsOfCoveredDiscThree = new ArrayList<String>();
+      List<String> idsOfCoveredDiscThree = new ArrayList<>();
       annotationThree.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscThree);
 
       DispoAnnotationData annotationFour = new DispoAnnotationData();
       annotationFour.setLocationRefs("15, 17");
       annotationFour.setId(annotIdFive);
-      List<String> idsOfCoveredDiscFive = new ArrayList<String>();
+      List<String> idsOfCoveredDiscFive = new ArrayList<>();
       annotationFour.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscFive);
 
       Map<String, Discrepancy> discrepanciesArray = dispoItem.getDiscrepanciesList();
@@ -323,11 +323,11 @@ public class DispoConnectorTest {
 
    @Test
    public void testAllDiscrepanciesAnnotatedOneComplete() {
-      List<DispoAnnotationData> annotationsAsList = new ArrayList<DispoAnnotationData>();
+      List<DispoAnnotationData> annotationsAsList = new ArrayList<>();
       // Create one annotation with every discrepancy covered
       DispoAnnotationData annotationOne = new DispoAnnotationData();
       annotationOne.setLocationRefs("1-5, 12-18, 20");
-      List<String> idsOfCoveredDisc = new ArrayList<String>();
+      List<String> idsOfCoveredDisc = new ArrayList<>();
       annotationOne.setIdsOfCoveredDiscrepancies(idsOfCoveredDisc);
       annotationOne.setIsResolutionValid(true);
       annotationOne.setResolutionType("OTHER");
@@ -349,7 +349,7 @@ public class DispoConnectorTest {
       annotationOne.setId(annotIdOne);
       annotationOne.setIsResolutionValid(true);
       annotationOne.setResolutionType("test");
-      List<String> idsOfCoveredDiscOne = new ArrayList<String>();
+      List<String> idsOfCoveredDiscOne = new ArrayList<>();
       annotationOne.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscOne);
       annotationsAsList.add(annotationOne);
 
@@ -358,7 +358,7 @@ public class DispoConnectorTest {
       annotationTwo.setId(annotIdTwo);
       annotationTwo.setIsResolutionValid(true);
       annotationTwo.setResolutionType("Req");
-      List<String> idsOfCoveredDiscTwo = new ArrayList<String>();
+      List<String> idsOfCoveredDiscTwo = new ArrayList<>();
       annotationTwo.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscTwo);
       annotationsAsList.add(annotationTwo);
 
@@ -367,11 +367,11 @@ public class DispoConnectorTest {
       annotationThree.setId(annotIdThree);
       annotationThree.setIsResolutionValid(true);
       annotationThree.setResolutionType("Undetermined");
-      List<String> idsOfCoveredDiscThree = new ArrayList<String>();
+      List<String> idsOfCoveredDiscThree = new ArrayList<>();
       annotationThree.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscThree);
       annotationsAsList.add(annotationThree);
 
-      List<DispoAnnotationData> annotationsList = new ArrayList<DispoAnnotationData>();
+      List<DispoAnnotationData> annotationsList = new ArrayList<>();
       dispoItem.setAnnotationsList(annotationsList);
 
       Map<String, Discrepancy> discrepanciesList = dispoItem.getDiscrepanciesList();
@@ -403,13 +403,13 @@ public class DispoConnectorTest {
 
    @Test
    public void testZComplexCase() {
-      List<DispoAnnotationData> annotationsList = new ArrayList<DispoAnnotationData>();
+      List<DispoAnnotationData> annotationsList = new ArrayList<>();
       DispoAnnotationData annotationOne = new DispoAnnotationData();
       annotationOne.setLocationRefs("5, 1-3");
       annotationOne.setId(annotIdOne);
       annotationOne.setIsResolutionValid(true);
       annotationOne.setResolutionType("CODE");
-      List<String> idsOfCoveredDiscOne = new ArrayList<String>();
+      List<String> idsOfCoveredDiscOne = new ArrayList<>();
       annotationOne.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscOne);
 
       DispoAnnotationData annotationTwo = new DispoAnnotationData();
@@ -417,13 +417,13 @@ public class DispoConnectorTest {
       annotationTwo.setId(annotIdTwo);
       annotationTwo.setIsResolutionValid(true);
       annotationTwo.setResolutionType("CODE");
-      List<String> idsOfCoveredDiscTwo = new ArrayList<String>();
+      List<String> idsOfCoveredDiscTwo = new ArrayList<>();
       annotationTwo.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscTwo);
 
       DispoAnnotationData annotationThree = new DispoAnnotationData();
       annotationThree.setLocationRefs("16, 20");
       annotationThree.setId(annotIdThree);
-      List<String> idsOfCoveredDiscThree = new ArrayList<String>();
+      List<String> idsOfCoveredDiscThree = new ArrayList<>();
       annotationThree.setIsResolutionValid(true);
       annotationThree.setResolutionType("CODE");
       annotationThree.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscThree);
@@ -431,7 +431,7 @@ public class DispoConnectorTest {
       DispoAnnotationData annotationFour = new DispoAnnotationData();
       annotationFour.setLocationRefs("4, 20");
       annotationFour.setId(annotIdFour);
-      List<String> idsOfCoveredDiscFour = new ArrayList<String>();
+      List<String> idsOfCoveredDiscFour = new ArrayList<>();
       annotationFour.setIsResolutionValid(true);
       annotationFour.setResolutionType("CODE");
       annotationFour.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscFour);
@@ -439,7 +439,7 @@ public class DispoConnectorTest {
       DispoAnnotationData annotationFive = new DispoAnnotationData();
       annotationFive.setLocationRefs("18, 16, 17, 4");
       annotationFive.setId(annotIdFive);
-      List<String> idsOfCoveredDiscFive = new ArrayList<String>();
+      List<String> idsOfCoveredDiscFive = new ArrayList<>();
       annotationFive.setIsResolutionValid(true);
       annotationFive.setResolutionType("CODE");
       annotationFive.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscFive);

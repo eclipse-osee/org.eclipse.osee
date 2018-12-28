@@ -72,7 +72,7 @@ public class WordImageChecker {
             }
          }
          if (modified) {
-            return new Pair<String, Boolean>(originalValue, attrDirty);
+            return new Pair<>(originalValue, attrDirty);
          }
       }
       return null;

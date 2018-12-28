@@ -35,7 +35,7 @@ public class OsExpressionResolver implements IExpressionResolver {
    @Override
    public <T> List<T> resolve(Class<T> clazz, OsExpression expression) {
       ExpressionValueResolver<T> resolver =
-         new ExpressionValueResolver<T>(tsConverter, numberConverter, clazz, isCycleProtected());
+         new ExpressionValueResolver<>(tsConverter, numberConverter, clazz, isCycleProtected());
       List<T> resolved = resolver.resolve(expression);
       return resolved != null ? resolved : Collections.<T> emptyList();
    }

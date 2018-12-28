@@ -35,7 +35,7 @@ public final class RelationSetRule extends AbstractValidationRule {
       this.relationEnum = relationEnum;
       this.minimumRelations = minimumRelations;
       this.ignoreArtifactTypes =
-         ignoreArtifactTypes.length == 0 ? new ArrayList<IArtifactType>() : Arrays.asList(ignoreArtifactTypes);
+         ignoreArtifactTypes.length == 0 ? new ArrayList<>() : Arrays.asList(ignoreArtifactTypes);
    }
 
    public boolean hasArtifactType(IArtifactType artType) {

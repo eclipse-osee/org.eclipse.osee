@@ -29,10 +29,10 @@ public class CompositeKeyHashMapTest {
       testMap.put("blue", "green", "value5");
       List<Pair<String, String>> keyPairs = testMap.getEnumeratedKeys();
       Assert.assertEquals(5, keyPairs.size());
-      Assert.assertTrue(keyPairs.contains(new Pair<String, String>("red", "red")));
-      Assert.assertTrue(keyPairs.contains(new Pair<String, String>("red", "green")));
-      Assert.assertTrue(keyPairs.contains(new Pair<String, String>("red", "blue")));
-      Assert.assertTrue(keyPairs.contains(new Pair<String, String>("green", "green")));
-      Assert.assertTrue(keyPairs.contains(new Pair<String, String>("blue", "green")));
+      Assert.assertTrue(keyPairs.contains(new Pair<>("red", "red")));
+      Assert.assertTrue(keyPairs.contains(new Pair<>("red", "green")));
+      Assert.assertTrue(keyPairs.contains(new Pair<>("red", "blue")));
+      Assert.assertTrue(keyPairs.contains(new Pair<>("green", "green")));
+      Assert.assertTrue(keyPairs.contains(new Pair<>("blue", "green")));
    }
 }

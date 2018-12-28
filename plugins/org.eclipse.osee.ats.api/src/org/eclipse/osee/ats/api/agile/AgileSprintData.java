@@ -33,7 +33,7 @@ public class AgileSprintData {
    private String pointsAttrTypeName;
    private Integer plannedPoints = 0;
    private Integer unPlannedPoints = null;
-   private List<AgileSprintDateData> dates = new ArrayList<AgileSprintDateData>();
+   private List<AgileSprintDateData> dates = new ArrayList<>();
    private XResultData results = new XResultData();
 
    public XResultData validate() {

@@ -62,7 +62,7 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
          client.getQueryService().createQuery(AtsArtifactTypes.AgileTeam).andActive(true).getConfigObjects());
 
       AtsConfigCheckTreeDialog<IAgileTeam> teamDialog =
-         new AtsConfigCheckTreeDialog<IAgileTeam>(getName(), "Select Agile Team", activeAgileTeams, true);
+         new AtsConfigCheckTreeDialog<>(getName(), "Select Agile Team", activeAgileTeams, true);
       IAgileTeam agileTeam = null;
       if (teamDialog.open() != 0) {
          return;
@@ -79,7 +79,7 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
       Collection<IAtsVersion> versions = client.getVersionService().getVersions(teamDefHoldingVersions);
 
       AtsConfigCheckTreeDialog<IAtsVersion> versionDialog =
-         new AtsConfigCheckTreeDialog<IAtsVersion>(getName(), "Select Version(s)", versions, true);
+         new AtsConfigCheckTreeDialog<>(getName(), "Select Version(s)", versions, true);
       Collection<IAtsVersion> selectedVersions = null;
       if (versionDialog.open() != 0) {
          return;

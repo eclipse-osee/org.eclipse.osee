@@ -61,7 +61,7 @@ public class OrcsTypesIndexProviderImpl extends LazyObject<OrcsTypesIndex> imple
 
    @Override
    protected FutureTask<OrcsTypesIndex> createLoaderTask() {
-      return new FutureTask<OrcsTypesIndex>(loader.createLoader());
+      return new FutureTask<>(loader.createLoader());
    }
 
    @Override

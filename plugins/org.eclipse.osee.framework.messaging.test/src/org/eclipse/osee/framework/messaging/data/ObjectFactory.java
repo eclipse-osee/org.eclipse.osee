@@ -50,7 +50,7 @@ public class ObjectFactory {
     */
    @XmlElementDecl(namespace = "", name = "TestMessage")
    public JAXBElement<TestMessage> createTestMessage(TestMessage value) {
-      return new JAXBElement<TestMessage>(_TestMessage_QNAME, TestMessage.class, null, value);
+      return new JAXBElement<>(_TestMessage_QNAME, TestMessage.class, null, value);
    }
 
 }

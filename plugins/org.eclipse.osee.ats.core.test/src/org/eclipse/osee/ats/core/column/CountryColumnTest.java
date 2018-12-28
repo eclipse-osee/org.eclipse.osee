@@ -53,12 +53,12 @@ public class CountryColumnTest extends CountryColumn {
       str = CountryColumn.getCountryStr(workItem, atsApi, util);
       assertEquals(str, "");
 
-      when(util.getCountry(atsApi, workItem)).thenReturn(new Pair<IAtsCountry, Boolean>(country, false));
+      when(util.getCountry(atsApi, workItem)).thenReturn(new Pair<>(country, false));
       when(country.getName()).thenReturn("Country");
       str = CountryColumn.getCountryStr(workItem, atsApi, util);
       assertEquals(str, "Country");
 
-      when(util.getCountry(atsApi, workItem)).thenReturn(new Pair<IAtsCountry, Boolean>(country, true));
+      when(util.getCountry(atsApi, workItem)).thenReturn(new Pair<>(country, true));
       str = CountryColumn.getCountryStr(workItem, atsApi, util);
       assertEquals(str, "Country (I)");
 

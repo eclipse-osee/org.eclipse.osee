@@ -73,7 +73,7 @@ public class OseeEventServiceImpl implements OseeEventService {
    private ExecutorService executor;
 
    private final List<ServiceReference<IEventListener>> pendingServices =
-      new CopyOnWriteArrayList<ServiceReference<IEventListener>>();
+      new CopyOnWriteArrayList<>();
 
    private Thread thread;
 

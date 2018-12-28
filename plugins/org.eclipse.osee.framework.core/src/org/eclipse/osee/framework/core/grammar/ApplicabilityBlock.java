@@ -25,8 +25,8 @@ public class ApplicabilityBlock {
    };
 
    private ApplicabilityType applicabilityType;
-   private ArrayList<ApplicabilityBlock> embeddedApplicabilityBlocks;
-   private ArrayList<String> outerExpressionOperators;
+   private final ArrayList<ApplicabilityBlock> embeddedApplicabilityBlocks;
+   private final ArrayList<String> outerExpressionOperators;
    private String applicabilityExpression;
    private String optionalEndExpression;
    private boolean isInTable;

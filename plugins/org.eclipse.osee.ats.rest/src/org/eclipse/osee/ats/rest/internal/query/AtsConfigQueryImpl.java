@@ -42,7 +42,7 @@ public class AtsConfigQueryImpl extends AbstractAtsConfigQueryImpl {
 
    @Override
    public Collection<ArtifactId> runQuery() {
-      List<ArtifactId> results = new ArrayList<ArtifactId>();
+      List<ArtifactId> results = new ArrayList<>();
       Iterator<ArtifactReadable> iterator = query.getResults().iterator();
       while (iterator.hasNext()) {
          results.add(iterator.next());

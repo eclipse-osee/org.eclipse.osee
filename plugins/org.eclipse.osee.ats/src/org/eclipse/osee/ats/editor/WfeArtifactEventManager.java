@@ -153,7 +153,7 @@ public class WfeArtifactEventManager implements IArtifactEventListener {
          }
       }
       if (!refreshed && awa.isTeamWorkflow() && AtsClientService.get().getTaskService().hasTasks(
-         ((TeamWorkFlowArtifact) awa))) {
+         (TeamWorkFlowArtifact) awa)) {
          try {
             // If related review has made a change, redraw
             for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(awa, awa.getStateDefinition())) {

@@ -26,7 +26,7 @@ import org.osgi.framework.Bundle;
 public abstract class AbstractJaxRsApplicationContainer implements JaxRsVisitable {
 
    private final Map<String, JaxRsApplicationEntry> applications =
-      new ConcurrentHashMap<String, JaxRsApplicationEntry>();
+      new ConcurrentHashMap<>();
 
    private final String applicationContext;
 

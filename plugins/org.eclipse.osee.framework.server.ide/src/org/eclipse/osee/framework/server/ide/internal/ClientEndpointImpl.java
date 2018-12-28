@@ -270,7 +270,7 @@ public class ClientEndpointImpl implements ClientEndpoint {
          Process p1 =
             java.lang.Runtime.getRuntime().exec(String.format("ping %s 1 %s", option, session.getClientAddress()));
          int returnVal = p1.waitFor();
-         reachable = (returnVal == 0);
+         reachable = returnVal == 0;
       } catch (Exception ex1) {
          // do nothing
       }

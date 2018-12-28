@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.IHistoryTransaction
 public class HistoryTransactionAuthorColumn extends AbstractTransactionColumn {
 
    // Cache to quickly get author so don't need to load from UserManager
-   private final Map<Long, String> transIdToAuthor = new HashMap<Long, String>();
+   private final Map<Long, String> transIdToAuthor = new HashMap<>();
 
    public HistoryTransactionAuthorColumn(IHistoryTransactionProvider txCache) {
       super(txCache, "framework.history.author", "Author", 100, XViewerAlign.Left, true, SortDataType.String, false,

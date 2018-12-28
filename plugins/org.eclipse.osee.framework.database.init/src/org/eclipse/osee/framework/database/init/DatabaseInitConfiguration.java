@@ -59,7 +59,7 @@ public class DatabaseInitConfiguration implements IDatabaseInitConfiguration {
    public List<String> getOseeTypeExtensionIds() {
       Set<String> oseeTypes = new LinkedHashSet<>();
       oseeTypes.addAll(oseeTypeIds);
-      return new ArrayList<String>(oseeTypes);
+      return new ArrayList<>(oseeTypes);
    }
 
    private void addDefaultTask(Collection<String> initTasks, DefaultDbInitTasks task) {

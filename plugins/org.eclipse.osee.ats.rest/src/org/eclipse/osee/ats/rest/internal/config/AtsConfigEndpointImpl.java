@@ -180,7 +180,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       Conditions.assertNotSentinel(introArt);
 
       ArtifactId artifact = tx.introduceArtifact(fromBranch, introArt);
-      if (relateToToken != null && (!relateToToken.getId().equals(Id.SENTINEL))) {
+      if (relateToToken != null && !relateToToken.getId().equals(Id.SENTINEL)) {
          relateToArt =
             orcsApi.getQueryFactory().fromBranch(newBranch).andId(relateToToken).getResults().getAtMostOneOrDefault(
                ArtifactReadable.SENTINEL);

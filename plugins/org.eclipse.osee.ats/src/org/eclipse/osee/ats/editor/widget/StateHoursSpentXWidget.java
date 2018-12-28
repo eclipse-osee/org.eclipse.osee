@@ -86,7 +86,7 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
          setEditable(isCurrentState && !sma.isReadOnly());
          boolean breakoutNeeded = false;
          if (sma instanceof TeamWorkFlowArtifact && AtsClientService.get().getTaskService().hasTasks(
-            ((TeamWorkFlowArtifact) sma))) {
+            (TeamWorkFlowArtifact) sma)) {
             sb.append(String.format("\n        Task  Hours: %5.2f",
                HoursSpentUtil.getHoursSpentFromStateTasks(sma, page, AtsClientService.get().getServices())));
             breakoutNeeded = true;

@@ -255,7 +255,7 @@ public class AttributeTypeEditPresenterTest {
 
       @Override
       public Collection<AttributeTypeToken> getSelections(OperationType operationType, String title, String message, List<AttributeTypeToken> input) {
-         setSelectionInfo(new Pair<String, String>(title, message));
+         setSelectionInfo(new Pair<>(title, message));
          setInput(input);
          setOperationType(operationType);
          setShowInfo(null);

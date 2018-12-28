@@ -331,7 +331,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    }
 
    private void wizardCompletedUnPlanned(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
-      XCheckBox unPlanedCheckBox = ((XCheckBox) teamDefFieldToWidget.get(teamDef, WizardFields.UnPlannedWork));
+      XCheckBox unPlanedCheckBox = (XCheckBox) teamDefFieldToWidget.get(teamDef, WizardFields.UnPlannedWork);
       if (unPlanedCheckBox != null) {
          boolean unplanned = unPlanedCheckBox.isChecked();
          changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.UnPlannedWork, unplanned);
@@ -339,7 +339,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    }
 
    private void wizardCompletedFeatureGroup(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
-      XComboViewer featureCombo = ((XComboViewer) teamDefFieldToWidget.get(teamDef, WizardFields.FeatureGroup));
+      XComboViewer featureCombo = (XComboViewer) teamDefFieldToWidget.get(teamDef, WizardFields.FeatureGroup);
       if (featureCombo != null) {
          IAgileFeatureGroup featureGroup = (IAgileFeatureGroup) featureCombo.getSelected();
          if (featureGroup != null) {
@@ -349,7 +349,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    }
 
    private void wizardCompletedTargetedVersion(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
-      XComboViewer versionCombo = ((XComboViewer) teamDefFieldToWidget.get(teamDef, WizardFields.TargetedVersion));
+      XComboViewer versionCombo = (XComboViewer) teamDefFieldToWidget.get(teamDef, WizardFields.TargetedVersion);
       if (versionCombo != null) {
          IAtsVersion version = (IAtsVersion) versionCombo.getSelected();
          if (version != null) {
@@ -359,7 +359,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    }
 
    private void wizardCompletedSprint(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
-      XComboViewer sprintCombo = ((XComboViewer) teamDefFieldToWidget.get(teamDef, WizardFields.Sprint));
+      XComboViewer sprintCombo = (XComboViewer) teamDefFieldToWidget.get(teamDef, WizardFields.Sprint);
       if (sprintCombo != null) {
          IAgileSprint sprint = (IAgileSprint) sprintCombo.getSelected();
          if (sprint != null) {
@@ -419,7 +419,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
 
    private void wizardCompletedAssignees(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef) {
       XAssigneesHyperlinkWidget assigneesWidget =
-         ((XAssigneesHyperlinkWidget) teamDefFieldToWidget.get(teamDef, WizardFields.Assignees));
+         (XAssigneesHyperlinkWidget) teamDefFieldToWidget.get(teamDef, WizardFields.Assignees);
       if (assigneesWidget != null && !assigneesWidget.getSelected().isEmpty()) {
          teamWf.getStateMgr().setAssignees(assigneesWidget.getSelected());
       }
@@ -427,7 +427,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
 
    private void wizardCompletedOriginator(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
       XOriginatorHyperlinkWidget originatorWidget =
-         ((XOriginatorHyperlinkWidget) teamDefFieldToWidget.get(teamDef, WizardFields.Originator));
+         (XOriginatorHyperlinkWidget) teamDefFieldToWidget.get(teamDef, WizardFields.Originator);
       if (originatorWidget != null && originatorWidget.getSelected() != null) {
          teamWf.getStateMgr().setCreatedBy(originatorWidget.getSelected(), true, new Date(), changes);
       }

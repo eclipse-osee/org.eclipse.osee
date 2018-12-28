@@ -248,7 +248,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
       String textContent = null;
       boolean traceMatch = false;
 
-      subSystem = (isGitBased) ? getSubsystem(sourceFile.getPath(),
+      subSystem = isGitBased ? getSubsystem(sourceFile.getPath(),
          gitSubsystemMatcher) : getSubsystem(sourceFile.getPath(), subsystemMatcher);
 
       if (traceMark.getTraceType().equals("Uses")) {

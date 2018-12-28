@@ -58,7 +58,7 @@ public class ExtensionDefinedReports {
          Set<String> ids = reportMap.keySet();
          for (String id : ids) {
             ReportData data = reportMap.get(id);
-            this.idsAndNameMap.put(id, new Pair<String, String>(id, data.getName()));
+            this.idsAndNameMap.put(id, new Pair<>(id, data.getName()));
          }
       }
       return idsAndNameMap.values().toArray(new Pair[idsAndNameMap.size()]);

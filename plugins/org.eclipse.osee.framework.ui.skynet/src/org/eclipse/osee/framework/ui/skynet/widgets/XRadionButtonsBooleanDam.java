@@ -95,8 +95,8 @@ public class XRadionButtonsBooleanDam extends XRadionButtonsDam {
    public Result isDirty() {
       Boolean stored = getStored();
       Boolean selected = getSelected();
-      if ((stored != null && !stored.equals(selected)) || //
-         (selected != null && !selected.equals(stored))) {
+      if (stored != null && !stored.equals(selected) || //
+         selected != null && !selected.equals(stored)) {
          return new Result(true, String.format("Attribute Type [%s] dirty", getAttributeType()));
       }
       return Result.FalseResult;

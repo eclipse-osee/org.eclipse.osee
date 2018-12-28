@@ -37,7 +37,7 @@ public final class OseeEventThreadFactory implements ThreadFactory {
    public Thread newThread(Runnable runnable) {
       Thread thread = new Thread(runnable, threadName + ":" + threads.size());
       thread.setPriority(priority);
-      this.threads.add(new WeakReference<Thread>(thread));
+      this.threads.add(new WeakReference<>(thread));
       return thread;
    }
 }

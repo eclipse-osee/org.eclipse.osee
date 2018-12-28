@@ -163,7 +163,7 @@ public class ArtifactExplorerMenu {
          boolean accessToRemoveLock = permiss.isAccessToRemoveLock();
          lockMenuItem.setEnabled(isArtifact && writePermission && (!locked || accessToRemoveLock));
 
-         createMenuItem.setEnabled((obj == null || isBranchEditable) || (isArtifact && writePermission || canModifyDH));
+         createMenuItem.setEnabled(obj == null || isBranchEditable || isArtifact && writePermission || canModifyDH);
          if (obj == null) {
             createMenuItem.setText("New Parent");
          } else if (isArtifact) {
@@ -174,7 +174,7 @@ public class ArtifactExplorerMenu {
          copyMenuItem.setEnabled(isArtifact && permiss.isReadPermission());
 
          boolean clipboardEmpty = artifactClipboard.isEmpty();
-         boolean pasteEnabled = !clipboardEmpty && ((isArtifact && canModifyDH) || (obj == null && isBranchEditable));
+         boolean pasteEnabled = !clipboardEmpty && (isArtifact && canModifyDH || obj == null && isBranchEditable);
          pasteMenuItem.setEnabled(pasteEnabled);
          pasteSpecialMenuItem.setEnabled(pasteEnabled);
          renameArtifactMenuItem.setEnabled(isArtifact && writePermission);

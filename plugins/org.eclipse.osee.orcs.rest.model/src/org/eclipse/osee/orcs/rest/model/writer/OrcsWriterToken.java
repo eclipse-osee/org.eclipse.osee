@@ -23,6 +23,7 @@ public class OrcsWriterToken extends NamedIdBase {
       super(id, name);
    }
 
+   @Override
    public void setId(Long id) {
       this.id = id;
    }

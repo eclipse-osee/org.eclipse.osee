@@ -21,7 +21,7 @@ public class Link {
    String url;
    String id;
    String team;
-   List<String> tags = new ArrayList<String>();
+   List<String> tags = new ArrayList<>();
 
    public void setId(String id) {
       this.id = id;

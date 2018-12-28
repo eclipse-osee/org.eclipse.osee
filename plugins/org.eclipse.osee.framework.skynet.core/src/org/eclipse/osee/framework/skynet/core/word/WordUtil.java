@@ -126,7 +126,7 @@ public class WordUtil {
                } else {
                   content = new String(Streams.getByteArray(stream), "UTF-8");
                }
-               values.add(new Pair<String, GammaId>(content, GammaId.valueOf(chStmt.getLong("gamma_id"))));
+               values.add(new Pair<>(content, GammaId.valueOf(chStmt.getLong("gamma_id"))));
             } catch (UnsupportedEncodingException ex) {
                // should never ever ever occur
                throw new IllegalStateException("Must support UTF-8 format");

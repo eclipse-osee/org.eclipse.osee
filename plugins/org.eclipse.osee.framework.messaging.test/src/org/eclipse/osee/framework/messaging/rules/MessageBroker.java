@@ -67,7 +67,7 @@ public class MessageBroker implements MethodRule {
 
    private AnnotationProcessor createProcessor(HasMessageService hasMessageService) {
       Map<Class<? extends Annotation>, FieldAnnotationHandler<?>> annotationHandlers =
-         new HashMap<Class<? extends Annotation>, FieldAnnotationHandler<?>>();
+         new HashMap<>();
       annotationHandlers.put(InjectMessageService.class, new MessageServiceFieldAnnotationHandler(hasMessageService));
       annotationHandlers.put(MessageConnection.class, new MessageConnectionFieldAnnotationHandler(hasMessageService));
       return new AnnotationProcessor(annotationHandlers);

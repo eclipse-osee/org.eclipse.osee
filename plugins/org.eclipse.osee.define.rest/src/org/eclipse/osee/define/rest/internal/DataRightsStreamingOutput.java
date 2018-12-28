@@ -49,8 +49,8 @@ public final class DataRightsStreamingOutput implements StreamingOutput {
    private final String codeRoot;
    private final TraceAccumulator traceAccumulator;
    private final Map<CaseInsensitiveString, ArtifactReadable> nameToReqMap =
-      new LinkedHashMap<CaseInsensitiveString, ArtifactReadable>();
-   private final List<ArtifactReadable> noTraceReqs = new ArrayList<ArtifactReadable>();
+      new LinkedHashMap<>();
+   private final List<ArtifactReadable> noTraceReqs = new ArrayList<>();
    private ExcelXmlWriter writer;
    private final ActivityLog activityLog;
    private static final IArtifactType WCAFE = TokenFactory.createArtifactType(204509162766367L, "WCAFE");
@@ -109,7 +109,7 @@ public final class DataRightsStreamingOutput implements StreamingOutput {
          String reqName = req.getName();
 
          nameToReqMap.put(new CaseInsensitiveString(reqName), req);
-         ArrayList<String> codeUnits = new ArrayList<String>(traceAccumulator.getFiles(reqName));
+         ArrayList<String> codeUnits = new ArrayList<>(traceAccumulator.getFiles(reqName));
 
          if (codeUnits.isEmpty()) {
             writeReq(req, reqName);

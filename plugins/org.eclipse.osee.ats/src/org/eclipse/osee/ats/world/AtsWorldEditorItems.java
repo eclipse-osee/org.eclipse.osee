@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 public class AtsWorldEditorItems {
 
    private static final ExtensionDefinedObjects<IAtsWorldEditorItem> items =
-      new ExtensionDefinedObjects<IAtsWorldEditorItem>("org.eclipse.osee.ats.AtsWorldEditorItem", "AtsWorldEditorItem",
+      new ExtensionDefinedObjects<>("org.eclipse.osee.ats.AtsWorldEditorItem", "AtsWorldEditorItem",
          "classname");
 
    public static List<IAtsWorldEditorItem> getItems() {

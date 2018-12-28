@@ -43,7 +43,7 @@ public class OsgiRule extends TestWatcher {
 
    private static AnnotationProcessor createProcessor() {
       Map<Class<? extends Annotation>, FieldAnnotationHandler<?>> annotationHandlers =
-         new HashMap<Class<? extends Annotation>, FieldAnnotationHandler<?>>();
+         new HashMap<>();
 
       annotationHandlers.put(OsgiService.class, new OsgiServiceFieldAnnotationHandler());
       return new AnnotationProcessor(annotationHandlers);

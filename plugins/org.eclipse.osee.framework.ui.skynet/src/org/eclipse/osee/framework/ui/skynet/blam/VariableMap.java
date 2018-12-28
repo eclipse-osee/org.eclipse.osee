@@ -73,9 +73,9 @@ public class VariableMap {
    public List<IArtifactType> getArtifactTypes(String parameterName) {
       Collection<IArtifactType> artTypes = getCollection(IArtifactType.class, parameterName);
       if (artTypes == null) {
-         return new ArrayList<IArtifactType>();
+         return new ArrayList<>();
       }
-      return new ArrayList<IArtifactType>(artTypes);
+      return new ArrayList<>(artTypes);
    }
 
    public Artifact getArtifact(String parameterName) {
@@ -93,9 +93,9 @@ public class VariableMap {
    public List<AttributeType> getAttributeTypes(String parameterName) {
       Collection<AttributeType> attrTypes = getCollection(AttributeType.class, parameterName);
       if (attrTypes == null) {
-         return new ArrayList<AttributeType>();
+         return new ArrayList<>();
       }
-      return new ArrayList<AttributeType>(attrTypes);
+      return new ArrayList<>(attrTypes);
    }
 
    public String getString(String parameterName) {
@@ -133,9 +133,9 @@ public class VariableMap {
    public List<Artifact> getArtifacts(String parameterName) {
       Collection<Artifact> artiafcts = getCollection(Artifact.class, parameterName);
       if (artiafcts == null) {
-         return new ArrayList<Artifact>();
+         return new ArrayList<>();
       }
-      return new ArrayList<Artifact>(artiafcts);
+      return new ArrayList<>(artiafcts);
    }
 
    private <T> T getSingleCollectionValue(Class<T> clazz, String parameterName) {

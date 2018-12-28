@@ -182,7 +182,7 @@ public class PropertyStoreWriter {
                   tagListKey = reader.getAttributeValue(uri, TAG_KEY);
                } else if (TAG_INNER.equals(name)) {
                   String key = reader.getAttributeValue(uri, TAG_KEY);
-                  innerStoreStack.add(new Pair<String, PropertyStore>(key, new PropertyStore()));
+                  innerStoreStack.add(new Pair<>(key, new PropertyStore()));
                }
                break;
             case XMLStreamConstants.END_ELEMENT:

@@ -41,12 +41,9 @@ public class TmoImporter implements DispoImporterApi {
 
    private final DispoDataFactory dataFactory;
    private final ExecutorAdmin executor;
-   private final Log logger;
-
    TmoImporter(DispoDataFactory dataFactory, ExecutorAdmin executor, Log logger) {
       this.dataFactory = dataFactory;
       this.executor = executor;
-      this.logger = logger;
    }
 
    @Override

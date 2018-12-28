@@ -97,7 +97,7 @@ public final class ObjectAccessProviderProxy implements IAccessProvider {
    private void setBranchAccessData(ArtifactToken userArtifact, BranchId branch, AccessData accessData) {
       String reason = "Legacy Branch Permission";
       PermissionEnum userPermission = getAccessService().getBranchPermission(userArtifact, branch);
-      accessData.add(branch, new AccessDetail<BranchId>(branch, userPermission, Scope.createLegacyScope(), reason));
+      accessData.add(branch, new AccessDetail<>(branch, userPermission, Scope.createLegacyScope(), reason));
    }
 
 }

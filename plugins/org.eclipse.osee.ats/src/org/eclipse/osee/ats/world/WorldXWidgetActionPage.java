@@ -116,7 +116,7 @@ public class WorldXWidgetActionPage extends FormPage {
    private WorkflowMetricsUI workflowMetricsUi;
 
    public WorldXWidgetActionPage(WorldEditor worldEditor) {
-      super(worldEditor, ID, (worldEditor.isTaskEditor() ? "Tasks" : "Actions"));
+      super(worldEditor, ID, worldEditor.isTaskEditor() ? "Tasks" : "Actions");
       this.toolkit = new XFormToolkit();
       this.worldEditor = worldEditor;
    }

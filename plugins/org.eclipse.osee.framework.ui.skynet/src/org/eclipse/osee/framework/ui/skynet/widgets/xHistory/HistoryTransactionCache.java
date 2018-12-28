@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
  */
 public class HistoryTransactionCache implements IHistoryTransactionProvider {
 
-   private final Map<Long, TransactionRecord> txIdToTransRecord = new HashMap<Long, TransactionRecord>(500);
+   private final Map<Long, TransactionRecord> txIdToTransRecord = new HashMap<>(500);
 
    public Map<Long, TransactionRecord> getTxIdToTransRecord() {
       return txIdToTransRecord;

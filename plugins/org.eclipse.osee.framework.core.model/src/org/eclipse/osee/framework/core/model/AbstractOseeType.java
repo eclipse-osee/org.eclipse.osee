@@ -35,7 +35,7 @@ public abstract class AbstractOseeType extends NamedIdBase implements IOseeStora
    protected AbstractOseeType(Long id, String name) {
       super(id, name);
       addField(UNIQUE_ID_FIELD_KEY, new UniqueIdField());
-      addField(NAME_FIELD_KEY, new OseeField<String>(name));
+      addField(NAME_FIELD_KEY, new OseeField<>(name));
    }
 
    protected synchronized void addField(String key, AbstractOseeField<?> toAdd) {

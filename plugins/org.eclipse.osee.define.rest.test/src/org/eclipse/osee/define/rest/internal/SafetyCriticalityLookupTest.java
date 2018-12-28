@@ -22,7 +22,7 @@ import org.junit.rules.ExpectedException;
  */
 public class SafetyCriticalityLookupTest {
    private final DoubleKeyHashMap<String, String, String> criticalityTable =
-      new DoubleKeyHashMap<String, String, String>();
+      new DoubleKeyHashMap<>();
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();

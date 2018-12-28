@@ -190,14 +190,14 @@ public class AtsBranchConfigurationTest {
       blk3MainArt.persist(getClass().getSimpleName());
 
       // commit branch
-      commitBranch(((TeamWorkFlowArtifact) teamWf.getStoreObject()));
+      commitBranch((TeamWorkFlowArtifact) teamWf.getStoreObject());
 
       // test change report
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Test change report results");
       }
       ChangeData changeData =
-         AtsBranchManager.getChangeDataFromEarliestTransactionId(((TeamWorkFlowArtifact) teamWf.getStoreObject()));
+         AtsBranchManager.getChangeDataFromEarliestTransactionId((TeamWorkFlowArtifact) teamWf.getStoreObject());
       assertFalse("No changes detected", changeData.isEmpty());
 
       Collection<Artifact> newArts = changeData.getArtifacts(KindType.Artifact, ModificationType.NEW);
@@ -292,14 +292,14 @@ public class AtsBranchConfigurationTest {
       blk3MainArt.persist(getClass().getSimpleName());
 
       // commit branch
-      commitBranch(((TeamWorkFlowArtifact) teamWf.getStoreObject()));
+      commitBranch((TeamWorkFlowArtifact) teamWf.getStoreObject());
 
       // test change report
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Test change report results");
       }
       ChangeData changeData =
-         AtsBranchManager.getChangeDataFromEarliestTransactionId(((TeamWorkFlowArtifact) teamWf.getStoreObject()));
+         AtsBranchManager.getChangeDataFromEarliestTransactionId((TeamWorkFlowArtifact) teamWf.getStoreObject());
       assertTrue("No changes detected", !changeData.isEmpty());
 
       Collection<Artifact> newArts = changeData.getArtifacts(KindType.Artifact, ModificationType.NEW);

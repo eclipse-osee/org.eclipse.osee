@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 public final class AJavaProject {
 
    private static final Map<IJavaProject, IClasspathEntry[]> cachedPath =
-      new HashMap<IJavaProject, IClasspathEntry[]>();
+      new HashMap<>();
 
    private static final Pattern JAVA_PACKAGE_PATTERN = Pattern.compile(".*?package\\s*(.*?);.*", Pattern.DOTALL);
    private static final Matcher JAVA_PACKAGE_MATCHER = JAVA_PACKAGE_PATTERN.matcher("");

@@ -172,6 +172,6 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
             searchQuery = FIND_TAGGABLE_ATTRIBUTES_BY_BRANCH;
          }
       }
-      return new Triplet<String, String, Object[]>(countQuery, searchQuery, params);
+      return new Triplet<>(countQuery, searchQuery, params);
    }
 }

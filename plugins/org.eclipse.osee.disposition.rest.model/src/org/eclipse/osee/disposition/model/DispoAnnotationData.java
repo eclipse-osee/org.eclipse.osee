@@ -170,7 +170,7 @@ public class DispoAnnotationData {
 
    public void disconnect() {
       this.isConnected = false;
-      this.idsOfCoveredDiscrepancies = new ArrayList<String>();
+      this.idsOfCoveredDiscrepancies = new ArrayList<>();
    }
 
    public void setResolutionTypeValid(boolean resolutionTypeValid) {

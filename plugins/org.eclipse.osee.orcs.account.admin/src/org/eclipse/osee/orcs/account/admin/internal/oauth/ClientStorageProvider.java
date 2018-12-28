@@ -74,7 +74,7 @@ public class ClientStorageProvider extends LazyObject<ClientStorage> {
          }
 
       };
-      return new FutureTask<ClientStorage>(callable);
+      return new FutureTask<>(callable);
    }
 
    private InputSupplier<InputStream> newTypesSupplier() {

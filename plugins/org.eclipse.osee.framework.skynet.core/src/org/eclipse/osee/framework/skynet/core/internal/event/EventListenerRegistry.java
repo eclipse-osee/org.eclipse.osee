@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.FrameworkEvent;
 public class EventListenerRegistry {
 
    private final Map<EventQosType, EventListeners> qosToListeners =
-      new ConcurrentHashMap<EventQosType, EventListeners>();
+      new ConcurrentHashMap<>();
    private final Set<IEventListener> listenerSet = new HashSet<>();
 
    public void addListener(EventQosType qos, IEventListener listener) {
@@ -115,7 +115,7 @@ public class EventListenerRegistry {
    }
    private final static class EventListeners {
       private final Map<Class<? extends FrameworkEvent>, Set<IEventListener>> eventClassToListeners =
-         new ConcurrentHashMap<Class<? extends FrameworkEvent>, Set<IEventListener>>();
+         new ConcurrentHashMap<>();
       private int size = 0;
 
       public void addListener(IEventListener listener) {

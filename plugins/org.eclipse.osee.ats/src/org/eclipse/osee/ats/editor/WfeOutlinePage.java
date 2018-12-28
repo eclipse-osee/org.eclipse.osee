@@ -398,11 +398,11 @@ public class WfeOutlinePage extends ContentOutlinePage {
       private void getChildrenFromWorkDefinitionMatch(Object element, List<Object> items) {
          try {
             items.addAll(AtsClientService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
-               ((IAtsWorkDefinition) element)));
+               (IAtsWorkDefinition) element));
          } catch (OseeStateException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
-         items.add(new WrappedPercentWeight(((IAtsWorkDefinition) element)));
+         items.add(new WrappedPercentWeight((IAtsWorkDefinition) element));
       }
 
       private void getUsersFromDecisionReviewOpt(IAtsDecisionReviewOption revOpt, List<Object> items) {

@@ -71,7 +71,7 @@ public class ExchangeUtil {
          wasZipExtractionRequired = false;
          importSource = source;
       }
-      return new Pair<Boolean, File>(wasZipExtractionRequired, importSource);
+      return new Pair<>(wasZipExtractionRequired, importSource);
    }
 
    public static void cleanUpTempExchangeFile(String exchangePath, Log logger, File exchangeSource, boolean wasZipExtractionRequired) {

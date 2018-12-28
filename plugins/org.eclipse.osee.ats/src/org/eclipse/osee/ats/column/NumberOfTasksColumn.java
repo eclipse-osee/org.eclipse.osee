@@ -69,7 +69,7 @@ public class NumberOfTasksColumn extends XViewerAtsColumn implements IXViewerVal
             return Collections.toString(", ", strs);
          }
          if (element instanceof TeamWorkFlowArtifact) {
-            int num = AtsClientService.get().getTaskService().getTasks(((TeamWorkFlowArtifact) element)).size();
+            int num = AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) element).size();
             if (num == 0) {
                return "";
             }

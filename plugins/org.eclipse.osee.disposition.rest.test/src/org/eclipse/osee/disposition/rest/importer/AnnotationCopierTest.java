@@ -61,8 +61,8 @@ public class AnnotationCopierTest {
    public void setup() {
       sourceItem = new DispoItemData();
       sourceItem.setGuid(mockId4);
-      List<DispoAnnotationData> sourceAnnotations = new ArrayList<DispoAnnotationData>();
-      Map<String, Discrepancy> sourceDescrepancies = new HashMap<String, Discrepancy>();
+      List<DispoAnnotationData> sourceAnnotations = new ArrayList<>();
+      Map<String, Discrepancy> sourceDescrepancies = new HashMap<>();
 
       discrepancy1 = new Discrepancy();
       discrepancy1.setId(mockId1);
@@ -148,7 +148,7 @@ public class AnnotationCopierTest {
       destItem.setDiscrepanciesList(new HashMap<String, Discrepancy>());
 
       // First set the Destination Item's discrepancies the same as the source
-      Map<String, Discrepancy> destDiscrepancies = new HashMap<String, Discrepancy>();
+      Map<String, Discrepancy> destDiscrepancies = new HashMap<>();
       destDiscrepancies.put(discrepancy1.getId(), discrepancy1);
       destDiscrepancies.put(discrepancy2.getId(), discrepancy2);
       destDiscrepancies.put(discrepancy3.getId(), discrepancy3);
@@ -187,7 +187,7 @@ public class AnnotationCopierTest {
       destItem.setDiscrepanciesList(new HashMap<String, Discrepancy>());
 
       // First set the Destination Item's discrepancies the same as the source
-      Map<String, Discrepancy> destDiscrepancies = new HashMap<String, Discrepancy>();
+      Map<String, Discrepancy> destDiscrepancies = new HashMap<>();
       destDiscrepancies.put(discrepancy1.getId(), discrepancy1);
       destDiscrepancies.put(discrepancy2.getId(), discrepancy2);
       destDiscrepancies.put(discrepancy3.getId(), discrepancy3);
@@ -204,7 +204,7 @@ public class AnnotationCopierTest {
       annotationD1.setResolutionType(DispoStrings.Test_Unit_Resolution);
       annotationD1.setResolution("file444.dat");
       annotationD1.setIndex(0);
-      List<DispoAnnotationData> destAnnotations = new ArrayList<DispoAnnotationData>();
+      List<DispoAnnotationData> destAnnotations = new ArrayList<>();
       destAnnotations.add(annotationD1.getIndex(), annotationD1);
 
       destItem.setAnnotationsList(destAnnotations);

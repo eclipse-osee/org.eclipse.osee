@@ -33,8 +33,8 @@ import org.eclipse.ui.dialogs.PatternFilter;
 public class CheckBoxStateFilteredTreeViewer<T> extends FilteredTree implements ICheckBoxStateTreeViewer {
 
    private final List<ICheckBoxStateTreeListener> listeners = new ArrayList<>();
-   private final Set<T> checked = new HashSet<T>();
-   private final Set<T> disabled = new HashSet<T>();
+   private final Set<T> checked = new HashSet<>();
+   private final Set<T> disabled = new HashSet<>();
    private IsEnabled enabledChecker = null;
 
    public CheckBoxStateFilteredTreeViewer(Composite parent, int style) {

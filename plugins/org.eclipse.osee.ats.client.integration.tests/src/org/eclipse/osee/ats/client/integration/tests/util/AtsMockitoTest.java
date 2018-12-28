@@ -141,7 +141,7 @@ public class AtsMockitoTest {
       inializeVersion(ver3, "ver 3.0");
       inializeVersion(ver4, "ver 4.0");
 
-      Set<IAtsVersion> vers = new HashSet<IAtsVersion>();
+      Set<IAtsVersion> vers = new HashSet<>();
       vers.addAll(Arrays.asList(ver1, ver2, ver3, ver4));
       when(teamDef.getVersions()).thenReturn(vers);
 

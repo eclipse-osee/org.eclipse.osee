@@ -15,10 +15,12 @@ package org.eclipse.osee.ats.api.agile;
  */
 public interface IAgileProgramBacklogItem extends IAgileObject {
 
+   @Override
    String getName();
 
    Long getBacklogId();
 
+   @Override
    Long getId();
 
 }

@@ -28,9 +28,9 @@ public class AttributeEventModificationType {
    private final ModificationType modificationType;
    private final String guid;
    private static Map<ModificationType, AttributeEventModificationType> modTypeToEventType =
-      new HashMap<ModificationType, AttributeEventModificationType>(15);
+      new HashMap<>(15);
    private static Map<String, AttributeEventModificationType> guidToEventType =
-      new HashMap<String, AttributeEventModificationType>(15);
+      new HashMap<>(15);
    public static AttributeEventModificationType Modified =
       new AttributeEventModificationType(ModificationType.MODIFIED, "AYsmVz6VujxZxW3ByjgA");
    public static AttributeEventModificationType Artifact_Deleted =

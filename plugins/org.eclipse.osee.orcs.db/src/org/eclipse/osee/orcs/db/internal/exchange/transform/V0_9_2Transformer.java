@@ -45,7 +45,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
    private static final Version MAX_VERSION = new Version("0.9.2");
 
    private final Map<ModificationType, ModificationType[]> allowedStates =
-      new HashMap<ModificationType, ModificationType[]>();
+      new HashMap<>();
 
    public V0_9_2Transformer() {
       ModificationType[] FROM_NEW_OR_INTRODUCED =
@@ -95,7 +95,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
       Map<Long, Integer> branchToBaseTx = new HashMap<>(10000);
       processor.parse(ExportItem.OSEE_TX_DETAILS_DATA, new V0_9_2TxDetailsHandler(branchToBaseTx));
       processor.transform(ExportItem.OSEE_BRANCH_DATA, new V0_9_2BranchTransformer(branchToBaseTx));
-      return new ArrayList<Long>(branchToBaseTx.keySet());
+      return new ArrayList<>(branchToBaseTx.keySet());
    }
 
    private Map<Long, Long> convertArtifactAndConflicts(ExchangeDataProcessor processor) {

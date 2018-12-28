@@ -76,7 +76,7 @@ public class PredicateFactoryImpl implements PredicateFactory {
    @Override
    public Predicate createAttributeTypeSearch(Collection<? extends AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options) {
       List<String> typeIds = getLongIds(attributeTypes);
-      return new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeIds, new LinkedList<String>(values), options);
+      return new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeIds, new LinkedList<>(values), options);
    }
 
    @Override

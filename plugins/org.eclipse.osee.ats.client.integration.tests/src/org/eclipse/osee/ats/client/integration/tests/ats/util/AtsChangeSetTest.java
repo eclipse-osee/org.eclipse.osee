@@ -37,7 +37,7 @@ import org.junit.Test;
 public class AtsChangeSetTest {
 
    Artifact folderArt = null;
-   List<Artifact> genDocArts = new ArrayList<Artifact>();
+   List<Artifact> genDocArts = new ArrayList<>();
 
    @Before
    public void setup() {

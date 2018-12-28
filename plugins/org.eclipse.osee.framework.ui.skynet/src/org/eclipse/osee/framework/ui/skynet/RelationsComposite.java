@@ -287,7 +287,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact, 
          public void widgetSelected(SelectionEvent e) {
             TreeViewerReport report =
                new TreeViewerReport("Relation View Report for " + artifact.getName(), treeViewer);
-            ArrayList<Integer> ignoreCols = new ArrayList<>();
+            new ArrayList<>();
             report.open();
          }
       });

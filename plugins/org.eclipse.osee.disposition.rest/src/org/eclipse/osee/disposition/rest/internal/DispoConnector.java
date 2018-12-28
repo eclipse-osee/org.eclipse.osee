@@ -179,7 +179,7 @@ public class DispoConnector {
 
       if (isAllLocRefValid) {
          annotation.setIsConnected(true);
-         annotation.setIdsOfCoveredDiscrepancies(new ArrayList<String>(workingIdsOfCovered));
+         annotation.setIdsOfCoveredDiscrepancies(new ArrayList<>(workingIdsOfCovered));
       } else {
          annotation.setIsConnected(false);
       }
@@ -210,7 +210,7 @@ public class DispoConnector {
 
       if (isAllLocRefValid) {
          annotation.setIsConnected(true);
-         annotation.setIdsOfCoveredDiscrepancies(new ArrayList<String>(workingIdsOfCovered));
+         annotation.setIdsOfCoveredDiscrepancies(new ArrayList<>(workingIdsOfCovered));
       } else {
          annotation.setIsConnected(false);
       }

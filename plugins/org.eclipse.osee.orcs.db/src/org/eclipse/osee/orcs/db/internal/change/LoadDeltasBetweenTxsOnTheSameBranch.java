@@ -186,7 +186,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
          idJoin.store();
          loadCurrentVersionData(idJoin.getQueryId(), changeData, sourceTx, isArchived);
       }
-      List<ChangeItem> list = new LinkedList<ChangeItem>(changeData.allValues());
+      List<ChangeItem> list = new LinkedList<>(changeData.allValues());
       return list;
    }
 

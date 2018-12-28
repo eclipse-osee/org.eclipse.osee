@@ -36,8 +36,8 @@ public class CatchArtifactChanges implements CommitAction {
       IOperation operation = ChangeManager.compareTwoBranchesHead(sourceBranch, destinationBranch, changes);
       Operations.executeWorkAndCheckStatus(operation);
 
-      Set<Integer> orphanedArts = new HashSet<Integer>();
-      Set<Integer> shouldBeDeletedArts = new HashSet<Integer>();
+      Set<Integer> orphanedArts = new HashSet<>();
+      Set<Integer> shouldBeDeletedArts = new HashSet<>();
       for (Change change : changes) {
          Artifact artifactChanged = change.getChangeArtifact();
          if (artifactChanged.isOfType(CoreArtifactTypes.AbstractImplementationDetails,
@@ -59,7 +59,7 @@ public class CatchArtifactChanges implements CommitAction {
          String temp =
             String.format("Commit Branch Failed. The following artifacts are deleted but still have relations. " //
                + " Please remove the relations, then recommit : [%s]\n\n", shouldBeDeletedArts.toString());
-         err = (err == null) ? temp : err + temp;
+         err = err == null ? temp : err + temp;
       }
 
       if (err != null) {

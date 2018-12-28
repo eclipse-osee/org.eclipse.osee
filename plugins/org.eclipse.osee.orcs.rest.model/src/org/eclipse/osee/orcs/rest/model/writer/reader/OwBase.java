@@ -42,6 +42,7 @@ public class OwBase extends NamedIdBase {
       this.data = data;
    }
 
+   @Override
    public void setId(Long id) {
       this.id = id;
    }

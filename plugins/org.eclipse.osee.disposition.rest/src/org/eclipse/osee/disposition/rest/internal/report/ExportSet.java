@@ -168,7 +168,7 @@ public class ExportSet {
             int total = coveredOverTotal.getSecond();
             row2[1] = String.valueOf(covered);
             row2[2] = String.valueOf(total);
-            Double percent = (((double) covered / total) * 100);
+            Double percent = (double) covered / total * 100;
             row2[3] = String.format("%2.2f%%", percent);
             sheetWriter.writeRow(row2);
          }
@@ -285,12 +285,12 @@ public class ExportSet {
          coveredCount = 0;
       }
       if (coveredOverTotal == null) {
-         Pair<Integer, Integer> newCount = new Pair<Integer, Integer>(coveredCount, 1);
+         Pair<Integer, Integer> newCount = new Pair<>(coveredCount, 1);
          unitToCovered.put(unit, newCount);
       } else {
          Integer currentCovered = coveredOverTotal.getFirst();
          Integer currentTotal = coveredOverTotal.getSecond();
-         Pair<Integer, Integer> newCount = new Pair<Integer, Integer>(currentCovered + coveredCount, ++currentTotal);
+         Pair<Integer, Integer> newCount = new Pair<>(currentCovered + coveredCount, ++currentTotal);
          unitToCovered.put(unit, newCount);
       }
    }

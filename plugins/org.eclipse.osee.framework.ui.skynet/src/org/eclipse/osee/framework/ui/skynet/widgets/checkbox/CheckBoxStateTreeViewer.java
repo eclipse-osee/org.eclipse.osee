@@ -31,8 +31,8 @@ import org.eclipse.swt.widgets.Composite;
 public class CheckBoxStateTreeViewer<T> extends TreeViewer implements ICheckBoxStateTreeViewer {
 
    private final List<ICheckBoxStateTreeListener> listeners = new ArrayList<>();
-   private final Map<T, Boolean> checked = new HashMap<T, Boolean>();
-   private final Map<T, Boolean> enabled = new HashMap<T, Boolean>();
+   private final Map<T, Boolean> checked = new HashMap<>();
+   private final Map<T, Boolean> enabled = new HashMap<>();
 
    public CheckBoxStateTreeViewer(Composite parent, int style) {
       super(parent, style);

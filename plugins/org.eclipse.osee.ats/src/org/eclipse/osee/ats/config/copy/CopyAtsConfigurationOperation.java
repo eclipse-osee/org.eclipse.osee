@@ -45,7 +45,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
    Set<Artifact> processedFromAis;
 
    private final Map<IAtsTeamDefinition, IAtsTeamDefinition> fromTeamDefToNewTeamDefMap =
-      new HashMap<IAtsTeamDefinition, IAtsTeamDefinition>();
+      new HashMap<>();
 
    public CopyAtsConfigurationOperation(ConfigData data, XResultData resultData) {
       super("Copy ATS Configuration", Activator.PLUGIN_ID);

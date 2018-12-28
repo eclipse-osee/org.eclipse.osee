@@ -57,7 +57,7 @@ public class AtsDeleteManager {
    };
 
    public static void handleDeletePurgeAtsObject(Collection<Artifact> selectedArts, boolean forcePend, DeleteOption... deleteOption) {
-      final Collection<DeleteOption> deleteOptions = new ArrayList<DeleteOption>(Arrays.asList(deleteOption));
+      final Collection<DeleteOption> deleteOptions = new ArrayList<>(Arrays.asList(deleteOption));
       boolean purgeOption = deleteOptions.contains(DeleteOption.Purge);
       List<Artifact> delArts = new ArrayList<>();
       StringBuilder artBuilder = new StringBuilder();
@@ -147,11 +147,11 @@ public class AtsDeleteManager {
             AtsClientService.get().getAtsId(deleteArt), deleteArt.getName()) + "\n");
          if (deleteArt.isOfType(AtsArtifactTypes.Action)) {
             for (IAtsTeamWorkflow art : AtsClientService.get().getWorkItemService().getTeams(deleteArt)) {
-               atsDelete(((AbstractWorkflowArtifact) art), relatedArts, ignoredArts);
+               atsDelete((AbstractWorkflowArtifact) art, relatedArts, ignoredArts);
             }
          } else if (deleteArt.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
             WorkflowEditor.close(java.util.Collections.singleton((AbstractWorkflowArtifact) deleteArt), true);
-            atsDelete(((AbstractWorkflowArtifact) deleteArt), relatedArts, ignoredArts);
+            atsDelete((AbstractWorkflowArtifact) deleteArt, relatedArts, ignoredArts);
             for (Artifact loopArt : relatedArts) {
                if (loopArt.notEqual(deleteArt)) {
                   delBuilder.append(
@@ -192,7 +192,7 @@ public class AtsDeleteManager {
             atsDelete(reviewArt, deleteArts, allRelated);
          }
          for (IAtsTask task : AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) awa)) {
-            atsDelete(((AbstractWorkflowArtifact) task.getStoreObject()), deleteArts, allRelated);
+            atsDelete((AbstractWorkflowArtifact) task.getStoreObject(), deleteArts, allRelated);
          }
       }
    }

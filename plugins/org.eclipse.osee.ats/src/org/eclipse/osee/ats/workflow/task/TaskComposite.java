@@ -50,14 +50,12 @@ public class TaskComposite extends WorldComposite {
 
    private final IXTaskViewer iXTaskViewer;
    private TaskXViewer taskXViewer;
-   private final IDirtiableEditor dirtiableEditor;
    boolean tasksEditable;
    private final IAtsTeamWorkflow teamWf;
 
    public TaskComposite(IXTaskViewer iXTaskViewer, IWorldEditor worldEditor, IXViewerFactory xViewerFactory, Composite parent, int style, IDirtiableEditor dirtiableEditor, boolean tasksEditable, IAtsTeamWorkflow teamWf) {
       super(worldEditor, xViewerFactory, parent, style, false);
       this.iXTaskViewer = iXTaskViewer;
-      this.dirtiableEditor = dirtiableEditor;
       this.tasksEditable = tasksEditable;
       this.teamWf = teamWf;
       taskXViewer.setTasksEditable(tasksEditable);

@@ -69,12 +69,10 @@ public class TupleQueryImpl implements TupleQuery {
       "select distinct e1, e2 from osee_txs txs, osee_tuple2 app where tuple_type = ? and txs.gamma_id = app.gamma_id and branch_id = ? and tx_current = 1";
 
    private final JdbcClient jdbcClient;
-   private final SqlJoinFactory sqlJoinFactory;
    private final KeyValueStore keyValue;
 
    TupleQueryImpl(JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, KeyValueStore keyValue) {
       this.jdbcClient = jdbcClient;
-      this.sqlJoinFactory = sqlJoinFactory;
       this.keyValue = keyValue;
    }
 
@@ -88,7 +86,7 @@ public class TupleQueryImpl implements TupleQuery {
 
    @Override
    public <E1, E2> Iterable<Long> getTuple2Raw(Tuple2Type<E1, E2> tupleType, BranchId branchId, E1 e1) {
-      List<Long> consumer = new ArrayList<Long>();
+      List<Long> consumer = new ArrayList<>();
       runQuery("e2", consumer, SELECT_E2_BY_TUPLE_TYPE_RAW, tupleType, branchId, e1);
       return consumer;
    }

@@ -21,5 +21,6 @@ public interface CharacterDataProxy<T> extends DataProxy<T> {
 
    public boolean setValue(T value);
 
+   @Override
    public String getStorageString();
 }

@@ -21,8 +21,10 @@ public interface IAgileProgramFeature extends IAgileObject {
 
    List<Long> getStoryIds();
 
+   @Override
    String getName();
 
+   @Override
    Long getId();
 
 }
