@@ -74,7 +74,7 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener, Eve
    private boolean isArtifactExplorerValidForEvents(ArtifactExplorer artifactExplorer, BranchId brancFromEvent) {
       if (artifactExplorer != null) {
          BranchId branch = artifactExplorer.getBranch();
-         if (branch != null) {
+         if (branch.isValid()) {
             BranchState state = BranchManager.getState(branch);
             return brancFromEvent.equals(branch) && !state.isDeleted() && !state.isPurged();
          }
