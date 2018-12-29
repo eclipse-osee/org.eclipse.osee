@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -50,7 +51,9 @@ public class SprintItems {
          if (artifact instanceof AbstractWorkflowArtifact) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
             try {
-               Artifact relatedBacklogArt = AtsClientService.get().getQueryServiceClient().getArtifact(awa);
+               ArtifactId relatedBacklogArtId = AtsClientService.get().getAgileService().getRelatedBacklogArt(awa);
+               Artifact relatedBacklogArt =
+                  AtsClientService.get().getQueryServiceClient().getArtifact(relatedBacklogArtId);
                if (relatedBacklogArt == null) {
                   noBacklogDetected = true;
                } else if (commonBacklog == null) {

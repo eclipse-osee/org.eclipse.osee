@@ -157,4 +157,8 @@ public final class AWorkbench {
       IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
       return workbenchWindow != null ? workbenchWindow.getActivePage() : null;
    }
+
+   public static void popupf(String string, Object... data) {
+      popup(String.format(string, data));
+   }
 }

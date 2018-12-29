@@ -125,14 +125,14 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
          // do nothing
       }
       if (agileTeamArt == null) {
-         AWorkbench.popup("No Agile Team for Agile Backlog [%s]", backlogArt.toStringWithId());
+         AWorkbench.popupf("No Agile Team for Agile Backlog [%s]", backlogArt.toStringWithId());
          return false;
       }
 
       Set<IAgileSprint> activeSprints = getActiveSprints(agileTeamArt);
 
       if (activeSprints.isEmpty()) {
-         AWorkbench.popup("No Active Sprints available for the Agile Team [%s]", agileTeamArt.toStringWithId());
+         AWorkbench.popupf("No Active Sprints available for the Agile Team [%s]", agileTeamArt.toStringWithId());
          return false;
       }
 
