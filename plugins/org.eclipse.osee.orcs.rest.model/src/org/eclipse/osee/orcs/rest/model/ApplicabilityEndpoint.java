@@ -208,4 +208,14 @@ public interface ApplicabilityEndpoint {
    @Path("update-from-parent")
    void addMissingApplicabilityFromParentBranch();
 
+   /**
+    * Server doesn't support checking for branch access. For now, only return true if isInTest or working branch. This
+    * should be replaced with the appropriate branch access checks when available.
+    */
+   @GET
+   @Path("access")
+   @Produces(MediaType.APPLICATION_JSON)
+   @Consumes(MediaType.APPLICATION_JSON)
+   XResultData isAccess();
+
 }

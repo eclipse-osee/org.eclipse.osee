@@ -20,16 +20,19 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.VariantDefinition;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -131,6 +134,10 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    @Override
    public TransactionToken setApplicability(ApplicabilityId applicId, List<? extends ArtifactId> artifacts) {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return TransactionToken.SENTINEL;
+      }
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(branch, account, "Set Applicability Ids for Artifacts");
       tx.setApplicability(applicId, artifacts);
@@ -142,6 +149,10 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
     */
    @Override
    public TransactionToken setApplicabilityReference(HashMap<ArtifactId, List<ApplicabilityId>> artToApplMap) {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return TransactionToken.SENTINEL;
+      }
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account,
          "Set Reference Applicability Ids for Artifacts");
       tx.setApplicabilityReference(artToApplMap);
@@ -150,6 +161,10 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    @Override
    public ArtifactToken createView(String viewName) {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return ArtifactToken.getSentinal();
+      }
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account, "Create Branch View");
       ArtifactToken view = tx.createView(branch, viewName);
       tx.commit();
@@ -164,6 +179,10 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    @Override
    public TransactionToken copyView(ArtifactId sourceView, String viewName) {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return TransactionToken.SENTINEL;
+      }
       ArtifactToken view = createView(viewName);
 
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account, "Copy Branch View");
@@ -182,6 +201,10 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    @Override
    public TransactionToken createApplicabilityForView(ArtifactId viewId, String applicability) {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return TransactionToken.SENTINEL;
+      }
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(branch, account, "Create new applicability");
       tx.createApplicabilityForView(viewId, applicability);
@@ -210,21 +233,37 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    @Override
    public XResultData createUpdateFeature(FeatureDefinition feature) {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return access;
+      }
       return ops.createUpdateFeature(feature, branch, account);
    }
 
    @Override
    public XResultData deleteFeature(@PathParam("feature") String feature) {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return access;
+      }
       return ops.deleteFeature(feature, branch, account);
    }
 
    @Override
    public XResultData createUpdateVariant(VariantDefinition variant) {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return access;
+      }
       return ops.createUpdateVariant(variant, branch, account);
    }
 
    @Override
    public XResultData deleteVariant(@PathParam("variant") String variant) {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return access;
+      }
       return ops.deleteVariant(variant, branch, account);
    }
 
@@ -235,7 +274,26 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    @Override
    public XResultData setApplicability(ArtifactId variant, ArtifactId feature, String applicability) {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return access;
+      }
       return ops.setApplicability(branch, variant, feature, applicability, account);
+   }
+
+   @Override
+   public XResultData isAccess() {
+      XResultData rd = new XResultData();
+      if (OseeProperties.isInTest()) {
+         rd.logf("Access granted to branch cause isInTest");
+      }
+      Branch brch = orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getAtMostOneOrNull();
+      if (brch.getBranchType() == BranchType.WORKING) {
+         rd.log("Access granted to working branch");
+      } else {
+         rd.error("Access denied to non-working branch");
+      }
+      return rd;
    }
 
 }

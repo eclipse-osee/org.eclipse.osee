@@ -99,6 +99,26 @@ app
                            window.location.replace(url);
                         }
                      }
+
+                     // //////////////////////////////////////
+                     // Determine branch access and refresh label
+                     // //////////////////////////////////////
+                     $scope.refreshAccess = function() {
+                           $http.get(
+                                   '/orcs/branch/'
+                              + $scope.selectedBranch.id
+                              + '/applic/access')
+                             .then(
+                                   function(response) {
+                                       if (response.data.errors) {
+                                           $scope.accessLevel = "(Read-Only)";
+                                           $scope.isReadOnly = true;
+                                        } else {
+                                           $scope.accessLevel = "";
+                                           $scope.isReadOnly = false;
+                                        }
+                                   });
+                     }
                      
                      // /////////////////////////////////////////////////////////////////////
                      // VARIANT METHODS
@@ -183,12 +203,16 @@ app
                                     + $scope.selectedBranch.id)
                         .then(
                               function(response) {
-                                 var config = response.data;
-                                 $scope.htmlVariantPane = true;
-                                 $scope.htmlVariantSelect = true;
-                                 $scope.htmlVariantDelete = true;
-                                 $scope.variants = config.variants;
-                              });
+                               if (response.data.errors) {
+                                  $scope.error(response.data.results);
+                               } else {
+                                     var config = response.data;
+                                     $scope.htmlVariantPane = true;
+                                     $scope.htmlVariantSelect = true;
+                                     $scope.htmlVariantDelete = true;
+                                     $scope.variants = config.variants;
+                               }
+                         });
                      }
 
                      // //////////////////////////////////////
@@ -308,7 +332,7 @@ app
                      }
 
                      // //////////////////////////////////////
-                     // Cancel Delete Feature
+                     // Cancel Feature
                      // //////////////////////////////////////
                      $scope.cancelFeatureEdit = function() {
                         $scope.resetHtmlVarsAndFlags();
@@ -324,12 +348,16 @@ app
                                     + $scope.selectedBranch.id)
                         .then(
                               function(response) {
-                                 var config = response.data;
-                                 $scope.htmlFeaturePane = true;
-                                 $scope.htmlFeatureSelect = true;
-                                 $scope.htmlFeatureDelete = true;
-                                 $scope.deleting = true;
-                                 $scope.features = config.features;
+                                   if (response.errors > 0) {
+                                      $scope.error(response.results.results);
+                                   } else {
+                                         var config = response.data;
+                                         $scope.htmlFeaturePane = true;
+                                         $scope.htmlFeatureSelect = true;
+                                         $scope.htmlFeatureDelete = true;
+                                         $scope.deleting = true;
+                                         $scope.features = config.features;
+                                   }
                               });
                      }
 
@@ -382,6 +410,7 @@ app
 
                                           $scope.createDescriptionColumn();
                                           $scope.createVariantColumns();
+                                          $scope.refreshAccess();
                                           
                                           $scope.itemsGridOptions.columnDefs = $scope.columns;
                                           $scope.gridApi.grid
@@ -434,8 +463,9 @@ app
                 	 var variantId = colDef.id;
                          var url = '/orcs/branch/' + $scope.selectedBranch.id  + '/applic/variant/' + variantId + '/feature/' + featureId + '/applic/' + newValue;
                          $http.put(url).then(function(response) {
-                            if (response.errors > 0) {
-                               $scope.error(response.results.results);
+                   			var result = response.data;
+                            if (result.errors > 0) {
+                               $scope.error(result.results);
                             } else {
                                $scope.loadTable();
                             }
@@ -454,7 +484,7 @@ app
                      
                      // //////////////////////////////////////
                      // Dynamically create columns based on variants from
-			// configs
+					 // configs
                      // //////////////////////////////////////
                      $scope.createVariantColumns = function() {
                         for (i = 0; i < $scope.config.variants.length; i++) {

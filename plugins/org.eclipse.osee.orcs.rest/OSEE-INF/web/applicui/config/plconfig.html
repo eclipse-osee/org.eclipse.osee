@@ -156,6 +156,7 @@
 								ng-options="branch.name for branch in branches | orderBy : 'name'"
 								ng-change="handleBranchSelection()">
 							</select>
+							<b>{{accessLevel}}</b>
 						</div>
 						<div class="container">
 							<button type="submit" class="btn btn-default btn-xs"
