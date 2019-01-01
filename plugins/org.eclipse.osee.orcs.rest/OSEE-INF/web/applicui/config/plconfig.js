@@ -16,40 +16,41 @@ app
                      $scope.selectedBranch.id = getQueryParameterByName('branch');
                      $scope.itemsGridOptions = [];
                      $scope.itemsGridOptions.data = [];
-                     
+                     $scope.showAll = getQueryParameterByName("showAll"); 
+
                      // HTML boolean to show/hide elements
                      $scope.resetHtmlVarsAndFlags = function() {
-						 $scope.edit = {};
+                         $scope.edit = {};
 
-						 // ///// VARIANT flags and
-						    // vars
-						 $scope.variant = {};
-						 // Main Edit Container
-						 $scope.htmlVariantPane = false;
-						 // For Add and Edit
-						 $scope.htmlVariantEdit = false;
-						 // For Delete
-						 $scope.htmlVariantDelete = false;
-						 // Widgets
-						 $scope.htmlVariantSelect = false;
-						 $scope.htmlVariantCopyFrom = false;
-						 $scope.htmlVariantTitle = false;
-						 $scope.htmlVariantSave = false;
-						 $scope.htmlVariantDelete = false;
-						 
-						 // ///// FEATURE flags and
-						    // vars
-						 $scope.feature = {};
-						 $scope.deleting = false;
-						 // Main Edit Container
-						 $scope.htmlFeaturePane = false;
-						 // For Add and Edit
-						 $scope.htmlFeatureEdit = false;
-						 // Widgets
-						 $scope.htmlFeatureSelect = false;
-						 $scope.htmlFeatureSave = false;
-						 $scope.htmlFeatureDelete = false;
-						 $scope.htmlFeatureEditTitle = false;
+                         // ///// VARIANT flags and
+                            // vars
+                         $scope.variant = {};
+                         // Main Edit Container
+                         $scope.htmlVariantPane = false;
+                         // For Add and Edit
+                         $scope.htmlVariantEdit = false;
+                         // For Delete
+                         $scope.htmlVariantDelete = false;
+                         // Widgets
+                         $scope.htmlVariantSelect = false;
+                         $scope.htmlVariantCopyFrom = false;
+                         $scope.htmlVariantTitle = false;
+                         $scope.htmlVariantSave = false;
+                         $scope.htmlVariantDelete = false;
+                         
+                         // ///// FEATURE flags and
+                            // vars
+                         $scope.feature = {};
+                         $scope.deleting = false;
+                         // Main Edit Container
+                         $scope.htmlFeaturePane = false;
+                         // For Add and Edit
+                         $scope.htmlFeatureEdit = false;
+                         // Widgets
+                         $scope.htmlFeatureSelect = false;
+                         $scope.htmlFeatureSave = false;
+                         $scope.htmlFeatureDelete = false;
+                         $scope.htmlFeatureEditTitle = false;
                      }
                      $scope.resetHtmlVarsAndFlags();
 
@@ -104,20 +105,19 @@ app
                      // Determine branch access and refresh label
                      // //////////////////////////////////////
                      $scope.refreshAccess = function() {
-                           $http.get(
-                                   '/orcs/branch/'
+                	 var url = '/orcs/branch/'
                               + $scope.selectedBranch.id
-                              + '/applic/access')
-                             .then(
-                                   function(response) {
-                                       if (response.data.errors) {
-                                           $scope.accessLevel = "(Read-Only)";
-                                           $scope.isReadOnly = true;
-                                        } else {
-                                           $scope.accessLevel = "";
-                                           $scope.isReadOnly = false;
-                                        }
-                                   });
+                              + '/applic/access';
+                           $http.get(url) .then(
+                               function(response) {
+                                   if (response.data.errors) {
+                                       $scope.accessLevel = "(Read-Only)";
+                                       $scope.isReadOnly = true;
+                                    } else {
+                                       $scope.accessLevel = "";
+                                       $scope.isReadOnly = false;
+                                    }
+                               });
                      }
                      
                      // /////////////////////////////////////////////////////////////////////
@@ -385,6 +385,32 @@ app
                        }
                         $scope.resetHtmlVarsAndFlags();
                      }
+                     
+                     // //////////////////////////////////////
+                     // Handle Show All Feature Columns
+                     // //////////////////////////////////////
+                     $scope.handleShowAllFeatureColumns = function() {
+                	 if ($scope.showAll) {
+                	     $scope.showAll = false;
+                	 } else {
+                	     $scope.showAll = true;
+                	 }
+                	 var url = window.location.href;
+                	 if ($scope.showAll) {
+                            url = window.location.href+"&showAll=true"
+                	 } else {
+                	    url = url.replace("&showAll=true",""); 
+                	 }
+                         window.location.replace(url);
+                     }
+
+                     $scope.refreshShowAllLabel = function() {
+                	 if ($scope.showAll) {
+                	     $scope.showAllLabel = "Hide Extra Feature Columns";
+                	 } else {
+                	     $scope.showAllLabel = "Show All Feature Columns";
+                	 }
+                     }
 
                      // //////////////////////////////////////
                      // Load Table if selectedBranch.id
@@ -392,31 +418,38 @@ app
                      if ($scope.selectedBranch.id) {
 
                         $scope.loadTable = function() {
-                           $http
-                                 .get(
-                                       '/orcs/applicui/branch/'
-                                             + $scope.selectedBranch.id)
-                                 .then(
-                                       function(response) {
-                                          $scope.config = response.data;
-                                          $scope.message = '';
-                                          
-                                          $scope.columns = [ {
-                                             field : 'feature',
-                                             displayName : 'Feature',
-                                             enableSorting : true,
-                                             width : 125
-                                          } ];
+                           var url = null;
+                           if ($scope.showAll) {
+                              url = '/orcs/applicui/branch/'
+                                  + $scope.selectedBranch.id  
+                                  + '?showAll=true';
+                           } else {
+                              url = '/orcs/applicui/branch/'
+                                  + $scope.selectedBranch.id;
+                           }
+                           $http.get(url)
+                             .then(
+                                   function(response) {
+                                      $scope.config = response.data;
+                                      $scope.message = '';
+                                      
+                                      $scope.columns = [ {
+                                         field : 'feature',
+                                         displayName : 'Feature',
+                                         enableSorting : true,
+                                         width : 125
+                                      } ];
 
-                                          $scope.createDescriptionColumn();
-                                          $scope.createVariantColumns();
-                                          $scope.refreshAccess();
-                                          
-                                          $scope.itemsGridOptions.columnDefs = $scope.columns;
-                                          $scope.gridApi.grid
-                                                .refresh();
-                                          $scope.data = $scope.config.featureToValueMaps;
-                                       });
+                                      $scope.createFeatureColumns();
+                                      $scope.createVariantColumns();
+                                      $scope.refreshAccess();
+                                      $scope.refreshShowAllLabel();
+                                      
+                                      $scope.itemsGridOptions.columnDefs = $scope.columns;
+                                      $scope.gridApi.grid
+                                            .refresh();
+                                      $scope.data = $scope.config.featureToValueMaps;
+                                   });
                         }
 
                         $scope.itemsGridOptions = {
@@ -472,7 +505,7 @@ app
                          });
                      }
 
-                     $scope.createDescriptionColumn = function() {
+                     $scope.createFeatureColumns = function() {
                         $scope.columns
                         .push({
                            field : "description",
@@ -480,6 +513,36 @@ app
                            enableSorting : false,
                            width : 125
                         });
+                        if ($scope.showAll) {
+                            $scope.columns
+                            .push({
+                               field : "valueType",
+                               displayName : "Value Type",
+                               enableSorting : true,
+                               width : 125
+                            });
+                            $scope.columns
+                            .push({
+                               field : "values",
+                               displayName : "Values",
+                               enableSorting : true,
+                               width : 125
+                            });
+                            $scope.columns
+                            .push({
+                               field : "defaultValue",
+                               displayName : "Default Value",
+                               enableSorting : true,
+                               width : 125
+                            });
+                            $scope.columns
+                            .push({
+                               field : "multiValued",
+                               displayName : "Multi Valued",
+                               enableSorting : true,
+                               width : 60
+                            });
+                        }
                      }
                      
                      // //////////////////////////////////////

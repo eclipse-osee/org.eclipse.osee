@@ -14,10 +14,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
@@ -67,8 +69,8 @@ public class ApplicabilityUiEndpointImpl implements ApplicabilityUiEndpoint {
    @Path("branch/{branch}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   public ApplicabilityBranchConfig getConfig(@PathParam("branch") BranchId branch) {
-      return ops.getConfig(branch);
+   public ApplicabilityBranchConfig getConfig(@PathParam("branch") BranchId branch, @QueryParam("showAll") @DefaultValue("false") Boolean showAll) {
+      return ops.getConfig(branch, showAll);
    }
 
    @Override

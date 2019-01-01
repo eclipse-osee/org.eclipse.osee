@@ -61,7 +61,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
     * @return config as defined in Feature artifacts
     */
    @Override
-   public ApplicabilityBranchConfig getConfig(BranchId branchId) {
+   public ApplicabilityBranchConfig getConfig(BranchId branchId, boolean showAll) {
       ApplicabilityBranchConfig config = new ApplicabilityBranchConfig();
       Branch branch = orcsApi.getQueryFactory().branchQuery().andId(branchId).getResults().getAtMostOneOrNull();
       config.setBranch(branch);
@@ -95,6 +95,13 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          variantToValue.put("feature", fDef.getName());
          variantToValue.put("id", fDef.getIdString());
          variantToValue.put("description", fDef.getDescription());
+         if (showAll) {
+            variantToValue.put("valueType", fDef.getValueType());
+            variantToValue.put("values",
+               org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", fDef.getValues()));
+            variantToValue.put("defaultValue", fDef.getDefaultValue());
+            variantToValue.put("multiValued", String.valueOf(fDef.isMultiValued()));
+         }
          config.addFeatureToValueMap(variantToValue);
 
       }

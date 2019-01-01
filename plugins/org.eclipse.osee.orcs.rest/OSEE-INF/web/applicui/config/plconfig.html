@@ -187,6 +187,10 @@
 								<span class="glyphicon glyphicon-triangle-top"></span> Delete
 								Feature
 							</button>
+							<button type="submit" class="btn btn-default btn-xs"
+								ng-click="handleShowAllFeatureColumns()">
+								<span class="glyphicon glyphicon-triangle-top"></span> {{showAllLabel}}
+							</button>
 						</div>
 						<div class="container">
 							<div ui-grid="itemsGridOptions" class="myGrid" ui-grid-selection
@@ -200,7 +204,6 @@
 			&nbsp;&nbsp;&nbsp;<label ng-show="showErrorLabel"><font
 				color="red">Error: {{errorMsg}}</font></label>
 		</div>
-
 	</div>
 </body>
 </html>
