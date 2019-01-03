@@ -248,8 +248,8 @@ public class AtsProgramService implements IAtsProgramService {
       ArtifactId artifact = atsProgram.getStoreObject();
       if (artifact != null) {
          ArtifactId countryArt =
-            atsApi.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.CountryToProgram_Country);
-         if (countryArt != null) {
+            atsApi.getRelationResolver().getRelatedOrSentinel(artifact, AtsRelationTypes.CountryToProgram_Country);
+         if (countryArt.isValid()) {
             country = atsApi.getProgramService().getCountryById(countryArt);
          }
       }
@@ -407,8 +407,8 @@ public class AtsProgramService implements IAtsProgramService {
    public long getCountryId(IAtsProgram program) {
       long countryId = 0L;
       ArtifactId countryArt =
-         atsApi.getRelationResolver().getRelatedOrNull(program, AtsRelationTypes.CountryToProgram_Country);
-      if (countryArt != null) {
+         atsApi.getRelationResolver().getRelatedOrSentinel(program, AtsRelationTypes.CountryToProgram_Country);
+      if (countryArt.isValid()) {
          countryId = countryArt.getId();
       }
       return countryId;

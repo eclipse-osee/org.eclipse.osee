@@ -157,8 +157,8 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
       if (relatedArt.isValid()) {
          IAtsTeamWorkflow parentTeamWf = task.getParentTeamWorkflow();
          ArtifactToken derivedArt =
-            atsApi.getRelationResolver().getRelatedOrNull(parentTeamWf, AtsRelationTypes.Derive_From);
-         if (derivedArt != null && derivedArt instanceof IAtsTeamWorkflow) {
+            atsApi.getRelationResolver().getRelatedOrSentinel(parentTeamWf, AtsRelationTypes.Derive_From);
+         if (derivedArt.isValid() && derivedArt instanceof IAtsTeamWorkflow) {
             IAtsTeamWorkflow derivedTeamWf = (IAtsTeamWorkflow) derivedArt;
             // First, attempt to get from Working Branch if still exists
             if (atsApi.getBranchService().isWorkingBranchInWork(derivedTeamWf)) {

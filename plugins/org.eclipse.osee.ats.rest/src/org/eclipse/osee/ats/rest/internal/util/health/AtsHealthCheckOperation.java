@@ -173,7 +173,8 @@ public class AtsHealthCheckOperation {
       @Override
       public void check(ArtifactId artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi) {
          if (workItem.isTask()) {
-            if (atsApi.getRelationResolver().getRelatedOrNull(workItem, AtsRelationTypes.TeamWfToTask_TeamWf) == null) {
+            if (atsApi.getRelationResolver().getRelatedOrSentinel(workItem,
+               AtsRelationTypes.TeamWfToTask_TeamWf).isInvalid()) {
                error(results, workItem, "Task has no parent");
             }
          }

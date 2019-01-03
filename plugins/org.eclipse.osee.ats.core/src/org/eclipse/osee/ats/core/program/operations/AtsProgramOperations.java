@@ -57,9 +57,9 @@ public class AtsProgramOperations {
    }
 
    public ArtifactToken getProgramFromVersion(ArtifactId version) {
-      ArtifactId teamDef = atsApi.getRelationResolver().getRelatedOrNull(version,
+      ArtifactId teamDef = atsApi.getRelationResolver().getRelatedOrSentinel(version,
          AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition);
-      if (teamDef != null) {
+      if (teamDef.isValid()) {
          ArtifactId program = atsApi.getAttributeResolver().getSoleAttributeValue(teamDef, AtsAttributeTypes.ProgramId,
             ArtifactId.SENTINEL);
          String name = atsApi.getAttributeResolver().getSoleAttributeValue(program, CoreAttributeTypes.Name, "");

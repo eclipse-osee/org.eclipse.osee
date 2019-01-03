@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
@@ -131,6 +132,20 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
       return related;
    }
 
+   @Override
+   public ArtifactToken getRelatedOrSentinel(ArtifactId artifact, RelationTypeSide relationType) {
+      ArtifactToken related = ArtifactReadable.SENTINEL;
+      Artifact art = getArtifact(artifact);
+      if (art != null) {
+         try {
+            related = art.getRelatedArtifact(relationType);
+         } catch (ArtifactDoesNotExist ex) {
+            // do nothing
+         }
+      }
+      return related;
+   }
+
    @SuppressWarnings("unchecked")
    @Override
    public <T> T getRelatedOrNull(IAtsObject atsObject, RelationTypeSide relationType, Class<T> clazz) {
@@ -169,6 +184,17 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
          return art.getRelatedArtifactOrNull(relationSide);
       }
       return null;
+   }
+
+   @Override
+   public ArtifactToken getRelatedOrSentinel(IAtsObject atsObject, RelationTypeSide relationSide) {
+      ArtifactToken related = ArtifactReadable.SENTINEL;
+      Artifact art = getArtifact(atsObject);
+      if (art != null) {
+         related = art.getRelatedArtifactOrNull(relationSide);
+         return related == null ? ArtifactReadable.SENTINEL : related;
+      }
+      return ArtifactReadable.SENTINEL;
    }
 
    @Override

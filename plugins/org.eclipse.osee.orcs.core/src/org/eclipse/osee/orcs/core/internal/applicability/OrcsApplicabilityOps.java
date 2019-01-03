@@ -163,8 +163,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       }
 
       fDefArt = orcsApi.getQueryFactory().fromBranch(tx.getBranch()).andId(
-         ArtifactId.valueOf(featureDef.getId())).getResults().getAtMostOneOrNull();
-      if (fDefArt == null) {
+         ArtifactId.valueOf(featureDef.getId())).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+      if (fDefArt.isInvalid()) {
          ArtifactToken featuresFolder = tx.getWriteable(CoreArtifactTokens.FeaturesFolder);
          // Check current transaction first
          if (featuresFolder.isInvalid()) {

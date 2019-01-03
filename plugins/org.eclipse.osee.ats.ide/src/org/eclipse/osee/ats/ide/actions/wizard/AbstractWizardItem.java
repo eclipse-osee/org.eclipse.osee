@@ -242,8 +242,8 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
 
    private void createSprintWidget(Composite parent, IAtsTeamDefinition teamDef) {
       ArtifactToken agileTeam =
-         atsApi.getRelationResolver().getRelatedOrNull(teamDef, AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
-      if (agileTeam != null) {
+         atsApi.getRelationResolver().getRelatedOrSentinel(teamDef, AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
+      if (agileTeam.isValid()) {
          List<IAgileSprint> sprints = new LinkedList<>();
          for (ArtifactToken sprintArt : atsApi.getRelationResolver().getRelated(agileTeam,
             AtsRelationTypes.AgileTeamToSprint_Sprint)) {
@@ -278,8 +278,8 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
 
    private void createFeatureGroupWidget(Composite parent, IAtsTeamDefinition teamDef) {
       ArtifactToken agileTeam =
-         atsApi.getRelationResolver().getRelatedOrNull(teamDef, AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
-      if (agileTeam != null) {
+         atsApi.getRelationResolver().getRelatedOrSentinel(teamDef, AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
+      if (agileTeam.isValid()) {
          List<IAgileFeatureGroup> featureGroups = new LinkedList<>();
          for (ArtifactToken featureGroupArt : atsApi.getRelationResolver().getRelated(agileTeam,
             AtsRelationTypes.AgileTeamToFeatureGroup_FeatureGroup)) {
@@ -390,9 +390,9 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    }
 
    private void wizardCompletedPoints(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
-      ArtifactToken agileTeamArt = AtsClientService.get().getRelationResolver().getRelatedOrNull(teamDef,
+      ArtifactToken agileTeamArt = AtsClientService.get().getRelationResolver().getRelatedOrSentinel(teamDef,
          AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
-      if (agileTeamArt != null) {
+      if (agileTeamArt.isValid()) {
          IAgileTeam agileTeam = AtsClientService.get().getAgileService().getAgileTeam(agileTeamArt);
          AttributeTypeToken agileTeamPointsAttributeType =
             AtsClientService.get().getAgileService().getAgileTeamPointsAttributeType(agileTeam);

@@ -58,9 +58,9 @@ public class SprintArtifact extends CollectorArtifact implements IAgileSprint {
    public long getTeamId() {
       long result = 0;
       try {
-         ArtifactId agileTeam = AtsClientService.get().getRelationResolver().getRelatedOrNull((ArtifactId) this,
+         ArtifactId agileTeam = AtsClientService.get().getRelationResolver().getRelatedOrSentinel((ArtifactId) this,
             AtsRelationTypes.AgileTeamToSprint_AgileTeam);
-         if (agileTeam != null) {
+         if (agileTeam.isValid()) {
             result = agileTeam.getId();
          }
       } catch (ArtifactDoesNotExist ex) {

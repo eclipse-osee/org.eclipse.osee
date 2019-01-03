@@ -33,9 +33,9 @@ public class AgileFeatureGroup extends AtsConfigObject implements IAgileFeatureG
    public long getTeamId() {
       long result = 0;
       try {
-         ArtifactId agileTeam =
-            atsApi.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.AgileTeamToFeatureGroup_AgileTeam);
-         if (agileTeam != null) {
+         ArtifactId agileTeam = atsApi.getRelationResolver().getRelatedOrSentinel(artifact,
+            AtsRelationTypes.AgileTeamToFeatureGroup_AgileTeam);
+         if (agileTeam.isValid()) {
             result = agileTeam.getId();
          }
       } catch (ArtifactDoesNotExist ex) {

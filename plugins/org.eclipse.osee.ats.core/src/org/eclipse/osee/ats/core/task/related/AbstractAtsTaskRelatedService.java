@@ -69,8 +69,8 @@ public abstract class AbstractAtsTaskRelatedService implements IAtsTaskRelatedSe
    public IAtsTeamWorkflow getDefivedFromTeamWf(IAtsTask task) {
       IAtsTeamWorkflow teamWf = task.getParentTeamWorkflow();
       ArtifactToken derivedFromArt =
-         atsApi.getRelationResolver().getRelatedOrNull(teamWf, AtsRelationTypes.Derive_From);
-      if (derivedFromArt == null) {
+         atsApi.getRelationResolver().getRelatedOrSentinel(teamWf, AtsRelationTypes.Derive_From);
+      if (derivedFromArt.isInvalid()) {
          // For OSEE CPCRs, the Code Workflow can own the branch where changes were made
          if (isCodeWorkflow(teamWf)) {
             return teamWf;

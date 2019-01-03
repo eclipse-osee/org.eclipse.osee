@@ -284,8 +284,8 @@ public class AgileService implements IAgileService {
    public IAgileTeam getAgileTeam(IAtsTeamDefinition teamDef) {
       IAgileTeam aTeam = null;
       ArtifactId aTeamArt =
-         atsApi.getRelationResolver().getRelatedOrNull(teamDef, AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
-      if (aTeamArt != null) {
+         atsApi.getRelationResolver().getRelatedOrSentinel(teamDef, AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
+      if (aTeamArt.isValid()) {
          aTeam = atsApi.getAgileService().getAgileTeam(aTeamArt);
       }
       return aTeam;
@@ -295,8 +295,8 @@ public class AgileService implements IAgileService {
    public IAgileTeam getAgileTeam(IAgileSprint sprint) {
       IAgileTeam aTeam = null;
       ArtifactId aTeamArt =
-         atsApi.getRelationResolver().getRelatedOrNull(sprint, AtsRelationTypes.AgileTeamToSprint_AgileTeam);
-      if (aTeamArt != null) {
+         atsApi.getRelationResolver().getRelatedOrSentinel(sprint, AtsRelationTypes.AgileTeamToSprint_AgileTeam);
+      if (aTeamArt.isValid()) {
          aTeam = atsApi.getAgileService().getAgileTeam(aTeamArt);
       }
       return aTeam;
@@ -385,8 +385,8 @@ public class AgileService implements IAgileService {
       IAgileBacklog backlog = null;
       ArtifactId teamArt = atsApi.getQueryService().getArtifact(teamId);
       ArtifactId backlogArt =
-         atsApi.getRelationResolver().getRelatedOrNull(teamArt, AtsRelationTypes.AgileTeamToBacklog_Backlog);
-      if (backlogArt != null) {
+         atsApi.getRelationResolver().getRelatedOrSentinel(teamArt, AtsRelationTypes.AgileTeamToBacklog_Backlog);
+      if (backlogArt.isValid()) {
          backlog = getAgileBacklog(backlogArt);
       }
       return backlog;
@@ -447,8 +447,8 @@ public class AgileService implements IAgileService {
          return null;
       }
       ArtifactToken backlogArt =
-         atsApi.getRelationResolver().getRelatedOrNull(teamFolder, AtsRelationTypes.AgileTeamToBacklog_Backlog);
-      if (backlogArt == null) {
+         atsApi.getRelationResolver().getRelatedOrSentinel(teamFolder, AtsRelationTypes.AgileTeamToBacklog_Backlog);
+      if (backlogArt.isInvalid()) {
          return null;
       }
       return new AgileBacklog(logger, atsApi, backlogArt);
@@ -530,8 +530,8 @@ public class AgileService implements IAgileService {
       IAgileSprint sprint = null;
       ArtifactToken itemArt = atsApi.getQueryService().getArtifact(item);
       ArtifactToken sprintArt =
-         atsApi.getRelationResolver().getRelatedOrNull(itemArt, AtsRelationTypes.AgileSprintToItem_Sprint);
-      if (sprintArt != null) {
+         atsApi.getRelationResolver().getRelatedOrSentinel(itemArt, AtsRelationTypes.AgileSprintToItem_Sprint);
+      if (sprintArt.isValid()) {
          sprint = atsApi.getWorkItemService().getAgileSprint(sprintArt);
       }
       return sprint;
@@ -550,20 +550,20 @@ public class AgileService implements IAgileService {
    @Override
    public IAgileTeam getAgileTeam(IAgileItem item) {
       ArtifactId itemArt = atsApi.getQueryService().getArtifact(item);
-      ArtifactId backlogArt = atsApi.getRelationResolver().getRelatedOrNull(itemArt, AtsRelationTypes.Goal_Member);
-      if (backlogArt != null) {
-         ArtifactId teamArt =
-            atsApi.getRelationResolver().getRelatedOrNull(backlogArt, AtsRelationTypes.AgileTeamToBacklog_AgileTeam);
-         if (teamArt != null) {
+      ArtifactId backlogArt = atsApi.getRelationResolver().getRelatedOrSentinel(itemArt, AtsRelationTypes.Goal_Member);
+      if (backlogArt.isValid()) {
+         ArtifactId teamArt = atsApi.getRelationResolver().getRelatedOrSentinel(backlogArt,
+            AtsRelationTypes.AgileTeamToBacklog_AgileTeam);
+         if (teamArt.isValid()) {
             return atsApi.getAgileService().getAgileTeam(teamArt);
          }
       }
       ArtifactId sprintArt =
-         atsApi.getRelationResolver().getRelatedOrNull(itemArt, AtsRelationTypes.AgileSprintToItem_Sprint);
-      if (sprintArt != null) {
+         atsApi.getRelationResolver().getRelatedOrSentinel(itemArt, AtsRelationTypes.AgileSprintToItem_Sprint);
+      if (sprintArt.isValid()) {
          ArtifactId teamArt =
-            atsApi.getRelationResolver().getRelatedOrNull(sprintArt, AtsRelationTypes.AgileTeamToSprint_AgileTeam);
-         if (teamArt != null) {
+            atsApi.getRelationResolver().getRelatedOrSentinel(sprintArt, AtsRelationTypes.AgileTeamToSprint_AgileTeam);
+         if (teamArt.isValid()) {
             return atsApi.getAgileService().getAgileTeam(teamArt);
          }
       }
@@ -633,17 +633,17 @@ public class AgileService implements IAgileService {
          // attempt to get from team definitions relation to agile team
          IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
          if (teamDef != null) {
-            ArtifactId agileTeamArt =
-               atsApi.getRelationResolver().getRelatedOrNull(teamDef, AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
-            if (agileTeamArt != null) {
+            ArtifactId agileTeamArt = atsApi.getRelationResolver().getRelatedOrSentinel(teamDef,
+               AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
+            if (agileTeamArt.isValid()) {
                agileTeam = atsApi.getAgileService().getAgileTeam(agileTeamArt);
             }
          }
          // attempt to get from workitem relation to sprint
          if (agileTeam == null) {
             ArtifactId sprintArt =
-               atsApi.getRelationResolver().getRelatedOrNull(workItem, AtsRelationTypes.AgileSprintToItem_Sprint);
-            if (sprintArt != null) {
+               atsApi.getRelationResolver().getRelatedOrSentinel(workItem, AtsRelationTypes.AgileSprintToItem_Sprint);
+            if (sprintArt.isValid()) {
                IAgileSprint sprint = getAgileSprint(sprintArt);
                if (sprint != null) {
                   agileTeam = atsApi.getAgileService().getAgileTeamFromSprint(sprint);
@@ -652,8 +652,9 @@ public class AgileService implements IAgileService {
          }
          // attemp to get from workitem relation to backlog
          if (agileTeam == null) {
-            ArtifactId backlogArt = atsApi.getRelationResolver().getRelatedOrNull(workItem, AtsRelationTypes.Goal_Goal);
-            if (backlogArt != null) {
+            ArtifactId backlogArt =
+               atsApi.getRelationResolver().getRelatedOrSentinel(workItem, AtsRelationTypes.Goal_Goal);
+            if (backlogArt.isValid()) {
                IAgileBacklog backlog = getAgileBacklog(backlogArt);
                if (backlog != null) {
                   agileTeam = atsApi.getAgileService().getAgileTeamFromBacklog(backlog);
@@ -668,8 +669,8 @@ public class AgileService implements IAgileService {
    public IAgileTeam getAgileTeamFromSprint(IAgileSprint sprint) {
       IAgileTeam agileTeam = null;
       ArtifactId agileTeamArt =
-         atsApi.getRelationResolver().getRelatedOrNull(sprint, AtsRelationTypes.AgileTeamToSprint_AgileTeam);
-      if (agileTeamArt != null) {
+         atsApi.getRelationResolver().getRelatedOrSentinel(sprint, AtsRelationTypes.AgileTeamToSprint_AgileTeam);
+      if (agileTeamArt.isValid()) {
          agileTeam = atsApi.getAgileService().getAgileTeam(agileTeamArt);
       }
       return agileTeam;
@@ -679,8 +680,8 @@ public class AgileService implements IAgileService {
    public IAgileTeam getAgileTeamFromBacklog(IAgileBacklog backlog) {
       IAgileTeam agileTeam = null;
       ArtifactId agileBacklogArt =
-         atsApi.getRelationResolver().getRelatedOrNull(backlog, AtsRelationTypes.AgileTeamToBacklog_AgileTeam);
-      if (agileBacklogArt != null) {
+         atsApi.getRelationResolver().getRelatedOrSentinel(backlog, AtsRelationTypes.AgileTeamToBacklog_AgileTeam);
+      if (agileBacklogArt.isValid()) {
          agileTeam = atsApi.getAgileService().getAgileTeam(agileBacklogArt);
       }
       return agileTeam;

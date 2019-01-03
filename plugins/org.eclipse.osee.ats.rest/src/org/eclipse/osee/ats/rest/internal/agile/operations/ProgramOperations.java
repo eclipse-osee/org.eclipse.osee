@@ -107,14 +107,14 @@ public class ProgramOperations {
 
    private void addTeamAndSprintAndTasksToStory(ArtifactToken storyArt, LinkedList<UiGridProgItem> items, int level) {
       ArtifactToken teamArt =
-         atsApi.getRelationResolver().getRelatedOrNull(storyArt, AtsRelationTypes.AgileStoryToAgileTeam_AgileTeam);
-      if (teamArt != null) {
+         atsApi.getRelationResolver().getRelatedOrSentinel(storyArt, AtsRelationTypes.AgileStoryToAgileTeam_AgileTeam);
+      if (teamArt.isValid()) {
          UiGridProgItem item = getProgItemFromArt(teamArt, level);
          items.add(item);
       }
       ArtifactToken sprintArt =
-         atsApi.getRelationResolver().getRelatedOrNull(storyArt, AtsRelationTypes.AgileStoryToSprint_Sprint);
-      if (sprintArt != null) {
+         atsApi.getRelationResolver().getRelatedOrSentinel(storyArt, AtsRelationTypes.AgileStoryToSprint_Sprint);
+      if (sprintArt.isValid()) {
          UiGridProgItem item = getProgItemFromArt(sprintArt, level);
          items.add(item);
          for (ArtifactToken taskArt : atsApi.getRelationResolver().getRelatedArtifacts(sprintArt,

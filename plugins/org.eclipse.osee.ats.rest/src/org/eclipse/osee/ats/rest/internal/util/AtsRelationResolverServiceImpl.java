@@ -93,6 +93,17 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    }
 
    @Override
+   public ArtifactToken getRelatedOrSentinel(ArtifactId artifact, RelationTypeSide relationType) {
+      ArtifactToken related = ArtifactReadable.SENTINEL;
+      try {
+         related = getArtifact(artifact).getRelated(relationType).getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      return related;
+   }
+
+   @Override
    public boolean areRelated(IAtsObject atsObject1, RelationTypeSide relationType, IAtsObject atsObject2) {
       boolean related = false;
       ArtifactReadable useArt1 = getArtifact(atsObject1);
@@ -159,6 +170,15 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
          return art.getRelated(relationSide).getAtMostOneOrNull();
       }
       return null;
+   }
+
+   @Override
+   public ArtifactToken getRelatedOrSentinel(IAtsObject atsObject, RelationTypeSide relationSide) {
+      ArtifactReadable art = getArtifact(atsObject);
+      if (art != null) {
+         return art.getRelated(relationSide).getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+      }
+      return ArtifactReadable.SENTINEL;
    }
 
    @Override

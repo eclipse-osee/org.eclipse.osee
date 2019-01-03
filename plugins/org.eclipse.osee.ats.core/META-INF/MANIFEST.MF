@@ -29,6 +29,7 @@ Import-Package: com.google.common.base,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.jdbc,
  org.eclipse.osee.logger,
+ org.eclipse.osee.orcs.data,
  org.osgi.framework;version="1.8.0",
  org.osgi.service.event
 Bundle-Vendor: Eclipse Open System Engineering Environment

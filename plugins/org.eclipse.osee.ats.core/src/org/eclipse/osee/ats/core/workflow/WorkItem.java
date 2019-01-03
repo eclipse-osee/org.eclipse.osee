@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G Dunne
@@ -85,16 +86,16 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
          return (IAtsTeamWorkflow) this;
       }
       if (parentTeamWf == null) {
-         ArtifactId teamArt = null;
+         ArtifactId teamArt = ArtifactReadable.SENTINEL;
          if (isTeamWorkflow()) {
             teamArt = artifact;
          } else if (isReview()) {
             teamArt =
-               atsApi.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.TeamWorkflowToReview_Team);
+               atsApi.getRelationResolver().getRelatedOrSentinel(artifact, AtsRelationTypes.TeamWorkflowToReview_Team);
          } else if (isTask()) {
-            teamArt = atsApi.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.TeamWfToTask_TeamWf);
+            teamArt = atsApi.getRelationResolver().getRelatedOrSentinel(artifact, AtsRelationTypes.TeamWfToTask_TeamWf);
          }
-         if (teamArt != null) {
+         if (teamArt.isValid()) {
             parentTeamWf = atsApi.getWorkItemService().getTeamWf(teamArt);
          }
       }

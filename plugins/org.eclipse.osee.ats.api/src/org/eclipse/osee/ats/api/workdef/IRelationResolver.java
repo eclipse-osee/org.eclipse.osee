@@ -39,7 +39,11 @@ public interface IRelationResolver {
 
    ArtifactToken getRelatedOrNull(ArtifactId artifact, RelationTypeSide relationType);
 
+   ArtifactToken getRelatedOrSentinel(ArtifactId artifact, RelationTypeSide relationType);
+
    ArtifactToken getRelatedOrNull(IAtsObject atsObject, RelationTypeSide relationType);
+
+   ArtifactToken getRelatedOrSentinel(IAtsObject atsObject, RelationTypeSide relationSide);
 
    @Nullable
    <T> T getRelatedOrNull(IAtsObject atsObject, RelationTypeSide relationType, Class<T> clazz);
