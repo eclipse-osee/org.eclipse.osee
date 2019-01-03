@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.eclipse.osee.ats.ide.feature_0.26.0.qualifier.jar" id="org.eclipse.osee.ats.ide.feature" version="0.26.0.qualifier">
+      <category name="org.eclipse.osee.ats.ide"/>
+   </feature>
+   <feature url="features/org.eclipse.osee.ats.ide.feature.source_0.26.0.qualifier.jar" id="org.eclipse.osee.ats.ide.feature.source" version="0.26.0.qualifier">
+      <category name="org.eclipse.osee.ats.ide"/>
+   </feature>
+   <feature url="features/org.eclipse.osee.ats.ide.demo.feature_0.26.0.qualifier.jar" id="org.eclipse.osee.ats.ide.demo.feature" version="0.26.0.qualifier">
+      <category name="org.eclipse.osee.ats.ide.demo"/>
+   </feature>
+   <feature url="features/org.eclipse.osee.ats.ide.demo.feature.source_0.26.0.qualifier.jar" id="org.eclipse.osee.ats.ide.demo.feature.source" version="0.26.0.qualifier">
+      <category name="org.eclipse.osee.ats.ide.demo"/>
+   </feature>
+   <category-def name="org.eclipse.osee.ats.ide" label="Eclipse OSEE ATS - (Incubation)">
+      <description>
+         Eclipse OSEE ATS - (Incubation)
+      </description>
+   </category-def>
+   <category-def name="org.eclipse.osee.ats.ide.demo" label="Eclipse OSEE ATS IDE Demo - (Incubation)">
+      <description>
+         Eclipse OSEE ATS IDE Demo - (Incubation)
+      </description>
+   </category-def>
+</site>

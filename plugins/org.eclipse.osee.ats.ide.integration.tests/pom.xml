@@ -1,0 +1,214 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.eclipse.osee</groupId>
+		<artifactId>org.eclipse.osee.ats.ide.parent</artifactId>
+		<version>0.26.0-SNAPSHOT</version>
+		<relativePath>../../plugins/org.eclipse.osee.ats.ide.parent</relativePath>
+	</parent>
+
+	<artifactId>org.eclipse.osee.ats.ide.integration.tests</artifactId>
+	<packaging>eclipse-test-plugin</packaging>
+	<name>OSEE ATS Client Integration Tests (Incubation)</name>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<testSuite>org.eclipse.osee.ats.ide.integration.tests</testSuite>
+					<testClass>org.eclipse.osee.ats.ide.integration.AtsClientIntegrationTestSuite</testClass>
+					<useUIHarness>true</useUIHarness>
+					<useUIThread>true</useUIThread>
+					<showEclipseLog>true</showEclipseLog>
+					<product>org.eclipse.osee.framework.ui.product.osee</product>
+					<application>org.eclipse.ui.ide.workbench</application>
+					<argLine>-Xmx1024M -XX:MaxPermSize=256m</argLine>
+					<appArgLine>-consoleLog</appArgLine>
+					<systemProperties combine.children="append">
+						<osee.log.default>WARNING</osee.log.default>
+						<eventDebug>log</eventDebug>
+						<eventSystem>new</eventSystem>
+						<osee.is.in.db.init>true</osee.is.in.db.init>
+						<osee.application.server>http://localhost:${ats-server-port}</osee.application.server>
+						<org.eclipse.swt.browser.DefaultType>webkit</org.eclipse.swt.browser.DefaultType>
+<!-- 						<org.eclipse.swt.browser.UseWebKitGTK>true</org.eclipse.swt.browser.UseWebKitGTK> -->
+					</systemProperties>
+					<redirectTestOutputToFile>false</redirectTestOutputToFile>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<dependency-resolution>
+						<extraRequirements>
+							<requirement>
+								<type>eclipse-feature</type>
+								<id>org.eclipse.osee.ats.ide.feature</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-feature</type>
+								<id>org.eclipse.osee.ats.ide.demo.feature</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-feature</type>
+								<id>org.eclipse.sdk</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+						</extraRequirements>
+					</dependency-resolution>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>ats-client-int-test-debug</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<ats-int-test-debug-port>9009</ats-int-test-debug-port>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.eclipse.tycho</groupId>
+						<artifactId>tycho-surefire-plugin</artifactId>
+						<version>${tycho-version}</version>
+						<configuration>
+							<debugPort>${ats-int-test-debug-port}</debugPort>
+							<!-- <systemProperties combine.children="append"> <equinox.ds.debug>true</equinox.ds.debug> 
+								</systemProperties> -->
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>ats-client-int-test-remote-server</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<ats-server-port>8089</ats-server-port>
+			</properties>
+		</profile>
+		<profile>
+			<id>ats-client-int-test-local-server</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>build-helper-maven-plugin</artifactId>
+						<version>${build-helper-maven-plugin-version}</version>
+						<executions>
+							<execution>
+								<id>ats-reserve-ports</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>reserve-network-port</goal>
+								</goals>
+								<configuration>
+									<portNames>
+										<portName>ats-server-port</portName>
+										<portName>ats-server-db-port</portName>
+										<portName>ats-server-db-web-port</portName>
+										<portName>ats-server-telnet-port</portName>
+									</portNames>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>${maven-antrun-version}</version>
+						<executions>
+							<execution>
+								<id>ats-server-start</id>
+								<phase>pre-integration-test</phase>
+								<configuration>
+									<target>
+										<property name="plugin_classpath" refid="maven.plugin.classpath" />
+										<taskdef resource="net/sf/antcontrib/antlib.xml">
+											<classpath>
+												<pathelement path="${classpath}" />
+												<pathelement path="${plugin_classpath}" />
+											</classpath>
+										</taskdef>
+
+										<property name="xserver-project"
+											value="${project.basedir}/../org.eclipse.osee.server.p2" />
+										<property name="xserver-home" value="${xserver-project}/target/server" />
+										<property name="xserver-port" value="${ats-server-port}" />
+										<property name="xserver-telnet-port" value="${ats-server-telnet-port}" />
+										<property name="xserver-authentication" value="demo" />
+										<property name="xserver-data"
+											value="${project.build.directory}/server-data" />
+										<property name="xserver-log-config" value="${project.basedir}/logback-test.xml" />
+
+										<property name="xserver-use-demo-data" value="true" />
+										<property name="xserver-db-home" value="file:${xserver-data}/osee-test-db" />
+										<property name="xserver-db-name" value="osee-test-db" />
+										<property name="xserver-db-username" value="public" />
+										<property name="xserver-db-password" value="" />
+										<property name="xserver-db-address" value="127.0.0.1" />
+										<property name="xserver-db-port" value="${ats-server-db-port}" />
+										<property name="xserver-db-web-port" value="${ats-server-db-web-port}" />
+										<property name="xserver-db-type" value="HSQL" />
+										<property name="additionalJvmArgs" value=" " />
+
+										<property name="xserver-log-output" value="${xserver-data}/server-output.log" />
+										<mkdir dir="${xserver-data}" />
+										<ant antfile="${osee-application-server-launch-ant}"
+											target="run" inheritRefs="true" output="${xserver-log-output}" />
+									</target>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>ats-server-stop</id>
+								<phase>post-integration-test</phase>
+								<configuration>
+									<target>
+										<property name="plugin_classpath" refid="maven.plugin.classpath" />
+										<taskdef resource="net/sf/antcontrib/antlib.xml">
+											<classpath>
+												<pathelement path="${classpath}" />
+												<pathelement path="${plugin_classpath}" />
+											</classpath>
+										</taskdef>
+										<property name="xserver-port" value="${ats-server-port}" />
+										<property name="xserver-telnet-port" value="${ats-server-telnet-port}" />
+
+										<ant antfile="${osee-application-server-launch-ant}"
+											target="stopServer" inheritRefs="true" />
+									</target>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>

@@ -26,11 +26,11 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.osee.ats.feature"
+         id="org.eclipse.osee.ats.ide.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.osee.ats.client.demo.feature"
+         id="org.eclipse.osee.ats.ide.demo.feature"
          version="0.0.0"/>
 
 </feature>

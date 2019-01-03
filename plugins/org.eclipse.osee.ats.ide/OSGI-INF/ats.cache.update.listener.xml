@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
+   <implementation class="org.eclipse.osee.ats.ide.util.internal.AtsCacheManagerUpdateListener"/>
+   <service>
+      <provide interface="org.eclipse.osee.framework.skynet.core.event.listener.IEventListener"/>
+   </service>
+   <property name="qos" type="String" value="priority"/>
+</scr:component>

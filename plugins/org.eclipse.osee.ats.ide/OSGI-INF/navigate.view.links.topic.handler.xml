@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true">
+<implementation class="org.eclipse.osee.ats.ide.navigate.NavigateViewLinksTopicEventHandler"/>
+<service> 
+ <provide interface="org.osgi.service.event.EventHandler"/>
+</service>
+<property name="event.topics" type="String" value="framework/web/prefs/modified/links/*"/>
+</scr:component>

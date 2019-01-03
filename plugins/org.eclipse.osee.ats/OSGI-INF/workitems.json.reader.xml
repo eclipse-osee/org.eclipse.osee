@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
-   <implementation class="org.eclipse.osee.ats.core.client.workflow.WorkItemsJsonReader"/>
-   <service>
-      <provide interface="java.lang.Object"/>
-      <provide interface="javax.ws.rs.ext.MessageBodyReader"/>
-   </service>
-</scr:component>

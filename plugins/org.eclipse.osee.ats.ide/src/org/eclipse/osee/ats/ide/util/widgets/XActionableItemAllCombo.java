@@ -1,0 +1,29 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.ats.ide.util.widgets;
+
+import org.eclipse.osee.ats.ide.util.AtsObjectLabelProvider;
+import org.eclipse.osee.framework.core.enums.Active;
+
+/**
+ * Actionable Item Combo showing all (active and inactive) AIs
+ * 
+ * @author Donald G. Dunne
+ */
+public class XActionableItemAllCombo extends XActionableItemCombo {
+   public static final String WIDGET_ID = XActionableItemAllCombo.class.getSimpleName();
+
+   public XActionableItemAllCombo() {
+      super(Active.Both);
+      setLabelProvider(new AtsObjectLabelProvider(true));
+   }
+
+}

@@ -19,7 +19,7 @@
 	<modules>
 		<module>../../plugins/org.eclipse.osee.runtime.parent</module>
 		<module>../../plugins/org.eclipse.osee.client.parent</module>
-		<module>../../plugins/org.eclipse.osee.ats.parent</module>
+		<module>../../plugins/org.eclipse.osee.ats.ide.parent</module>
 		<module>../../plugins/org.eclipse.osee.client.all.parent</module>
 	</modules>
 

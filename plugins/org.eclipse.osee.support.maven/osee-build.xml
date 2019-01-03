@@ -62,7 +62,7 @@
 			</case>
 			<case value="ats-client">
 				<property name="osee-build-stage" value="osee-ats-client" />
-				<property name="osee-build-directory" value="org.eclipse.osee.ats.parent" />
+				<property name="osee-build-directory" value="org.eclipse.osee.ats.ide.parent" />
 			</case>
 			<case value="products">
 				<property name="osee-build-stage" value="osee-client-products" />

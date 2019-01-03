@@ -17,7 +17,7 @@ public enum DefaultOseeTypeDefinitions {
 
    OSEE_BASE_TYPES("org.eclipse.osee.framework.skynet.core.OseeTypes_Framework"),
    DEFINE_TYPES("org.eclipse.osee.ote.define.OseeTypes_OTE"),
-   ATS_TYPES("org.eclipse.osee.ats.OseeTypes_ATS");
+   ATS_TYPES("org.eclipse.osee.ats.ide.OseeTypes_ATS");
 
    private String extensionId;
 

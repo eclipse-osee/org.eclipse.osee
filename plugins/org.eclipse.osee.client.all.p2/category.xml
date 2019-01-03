@@ -12,10 +12,10 @@
    <feature url="features/org.eclipse.osee.core.runtime.feature.source_0.26.0.qualifier.jar" id="org.eclipse.osee.core.runtime.feature.source" version="0.26.0.qualifier">
       <category name="org.eclipse.osee.client.all"/>
    </feature>
-   <feature url="features/org.eclipse.osee.ats.feature.source_0.26.0.qualifier.jar" id="org.eclipse.osee.ats.feature.source" version="0.26.0.qualifier">
+   <feature url="features/org.eclipse.osee.ats.ide.feature.source_0.26.0.qualifier.jar" id="org.eclipse.osee.ats.ide.feature.source" version="0.26.0.qualifier">
       <category name="org.eclipse.osee.client.all"/>
    </feature>
-   <feature url="features/org.eclipse.osee.ats.client.demo.feature.source_0.26.0.qualifier.jar" id="org.eclipse.osee.ats.client.demo.feature.source" version="0.26.0.qualifier">
+   <feature url="features/org.eclipse.osee.ats.ide.demo.feature.source_0.26.0.qualifier.jar" id="org.eclipse.osee.ats.ide.demo.feature.source" version="0.26.0.qualifier">
       <category name="org.eclipse.osee.client.all"/>
    </feature>
    <category-def name="org.eclipse.osee.client.all" label="Eclipse OSEE Client All - (Incubation)">

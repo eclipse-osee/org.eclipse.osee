@@ -53,7 +53,7 @@ public class OrcsRelationLoadingTest {
 
       ArtifactReadable art6 =
          queryFactory.fromBranch(CoreBranches.COMMON).andTypeEquals(CoreArtifactTypes.OseeTypeDefinition).andNameEquals(
-            "org.eclipse.osee.ats.client.demo.OseeTypes_Demo").getResults().getAtMostOneOrDefault(
+            "org.eclipse.osee.ats.ide.demo.OseeTypes_Demo").getResults().getAtMostOneOrDefault(
                ArtifactReadable.SENTINEL);
       Conditions.assertNotSentinel(art6);
       ArtifactReadable art7 = queryFactory.fromBranch(CoreBranches.COMMON).andId(

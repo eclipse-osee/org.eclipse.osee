@@ -1,0 +1,84 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.eclipse.osee</groupId>
+		<artifactId>org.eclipse.osee.ide.parent</artifactId>
+		<version>0.26.0-SNAPSHOT</version>
+		<relativePath>../../plugins/org.eclipse.osee.ide.parent</relativePath>
+	</parent>
+
+	<groupId>org.eclipse.osee</groupId>
+	<artifactId>org.eclipse.osee.ats.ide.parent</artifactId>
+	<packaging>pom</packaging>
+	<name>OSEE ATS - Parent (Incubation)</name>
+	<version>0.26.0-SNAPSHOT</version>
+
+	<profiles>
+
+		<profile>
+			<id>coverage-minimal</id>
+			<activation>
+				<property>
+					<name>no-int-tests</name>
+				</property>
+			</activation>
+			<modules>
+				<module>../../plugins/org.eclipse.osee.support.test.util</module>
+
+				<module>../../plugins/org.eclipse.osee.ats.ide.help.ui</module>
+				<module>../../plugins/org.eclipse.osee.ats.ide</module>
+				<module>../../plugins/org.eclipse.osee.ats.dsl.ui</module>
+
+				<module>../../plugins/org.eclipse.osee.ats.ide.demo</module>
+
+				<module>../../features/org.eclipse.osee.ats.ide.feature</module>
+
+				<module>../../features/org.eclipse.osee.ats.ide.demo.feature</module>
+
+				<module>../../plugins/org.eclipse.osee.ats.ide.integration.tests</module>
+				<module>../../plugins/org.eclipse.osee.ats.ide.p2</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>coverage-release</id>
+			<activation>
+				<property>
+					<name>!no-int-tests</name>
+				</property>
+			</activation>
+			<modules>
+				<module>../../plugins/org.eclipse.osee.support.test.util</module>
+
+				<module>../../plugins/org.eclipse.osee.ats.ide.help.ui</module>
+				<module>../../plugins/org.eclipse.osee.ats.ide</module>
+				<module>../../plugins/org.eclipse.osee.ats.dsl.ui</module>
+
+				<module>../../plugins/org.eclipse.osee.ats.ide.demo</module>
+
+				<module>../../features/org.eclipse.osee.ats.ide.feature</module>
+
+				<module>../../features/org.eclipse.osee.ats.ide.demo.feature</module>
+
+				<module>../../plugins/org.eclipse.osee.ats.ide.integration.tests</module>
+				<module>../../plugins/org.eclipse.osee.ats.ide.p2</module>
+			</modules>
+		</profile>
+	
+	
+		<profile>
+			<id>ats-ide-help-test</id>
+			<activation>
+				<property>
+					<name>!skip-help-tests</name>
+				</property>
+			</activation>
+			<modules>
+				<module>../../plugins/org.eclipse.osee.ats.help.ui.test</module>
+			</modules>
+		</profile>
+	</profiles>
+</project>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop">
+   <implementation class="org.eclipse.osee.ats.ide.util.internal.AtsClientImpl"/>
+   <service>
+      <provide interface="org.eclipse.osee.ats.ide.util.IAtsClient"/>
+      <provide interface="org.eclipse.osee.ats.api.AtsApi"/>
+   </service>
+   <reference bind="setJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static" target="(osgi.binding=skynet.jdbc.service)"/>
+	<reference bind="setEventAdmin" cardinality="1..1" interface="org.osgi.service.event.EventAdmin" name="EventAdmin" policy="static"/>
+   <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
+   <reference bind="setAtsUserService" cardinality="1..1" interface="org.eclipse.osee.ats.ide.config.IAtsUserServiceClient" name="IAtsUserServiceClient" policy="static"/>
+   <reference bind="addSearchDataProvider" cardinality="0..n" interface="org.eclipse.osee.ats.api.query.IAtsSearchDataProvider" name="IAtsSearchDataProvider" policy="dynamic" unbind="removeSearchDataProvider"/>
+   <reference bind="setWorkDefinitionDslService" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionDslService" name="IAtsWorkDefinitionDslService" policy="static"/>
+   <reference bind="setConfigurationsService" cardinality="1..1" interface="org.eclipse.osee.ats.api.config.IAtsConfigurationsService" name="IAtsConfigurationsService" policy="static"/>
+</scr:component>

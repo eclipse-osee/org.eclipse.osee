@@ -73,8 +73,8 @@
 <setEntry value="org.eclipse.jdt:default"/>
 <setEntry value="org.eclipse.nebula.widgets.ganttchart.feature:default"/>
 <setEntry value="org.eclipse.nebula.widgets.xviewer.feature:default"/>
-<setEntry value="org.eclipse.osee.ats.client.demo.feature:default"/>
-<setEntry value="org.eclipse.osee.ats.feature:default"/>
+<setEntry value="org.eclipse.osee.ats.ide.demo.feature:default"/>
+<setEntry value="org.eclipse.osee.ats.ide.feature:default"/>
 <setEntry value="org.eclipse.osee.client.all.feature:default"/>
 <setEntry value="org.eclipse.osee.client.feature:default"/>
 <setEntry value="org.eclipse.osee.core.feature:default"/>

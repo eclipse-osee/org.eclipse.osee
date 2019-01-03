@@ -575,19 +575,19 @@
                  <with
                        variable="activePartId">
                     <equals
-                          value="org.eclipse.osee.ats.world.WorldEditor">
+                          value="org.eclipse.osee.ats.ide.world.WorldEditor">
                     </equals>
                  </with>
                  <with
                        variable="activePartId">
                     <equals
-                          value="org.eclipse.osee.ats.editor.TaskEditor">
+                          value="org.eclipse.osee.ats.ide.editor.TaskEditor">
                     </equals>
                  </with>
                  <with
                        variable="activePartId">
                     <equals
-                          value="org.eclipse.osee.ats.editor.SMAEditor">
+                          value="org.eclipse.osee.ats.ide.editor.SMAEditor">
                     </equals>
                  </with>
               </or>
@@ -780,7 +780,7 @@
             <with
                   variable="activePartId">
                <equals
-                     value="org.eclipse.osee.ats.world.WorldEditor">
+                     value="org.eclipse.osee.ats.ide.world.WorldEditor">
                </equals>
             </with>
             <with
@@ -798,13 +798,13 @@
             <with
                   variable="activePartId">
                <equals
-                     value="org.eclipse.osee.ats.editor.TaskEditor">
+                     value="org.eclipse.osee.ats.ide.editor.TaskEditor">
                </equals>
             </with>
             <with
                   variable="activePartId">
                <equals
-                     value="org.eclipse.osee.ats.editor.SMAEditor">
+                     value="org.eclipse.osee.ats.ide.editor.SMAEditor">
                </equals>
             </with>
             <with
@@ -1180,33 +1180,33 @@
   </command>
 	</extension>
 	<extension name="Put commands of ATSWorldView here (for now)" point="org.eclipse.ui.commands">
-		<command id="org.eclipse.osee.ats.worldXView.editChangeType.command" name="Edit Change Type">
+		<command id="org.eclipse.osee.ats.ide.worldXView.editChangeType.command" name="Edit Change Type">
          </command>
-		<command id="org.eclipse.osee.ats.worldXView.editPriority.command" name="Edit Priority">
+		<command id="org.eclipse.osee.ats.ide.worldXView.editPriority.command" name="Edit Priority">
          </command>
-		<command id="org.eclipse.osee.ats.worldXView.editTargetedVersion.command" name="Edit Targeted Version">
+		<command id="org.eclipse.osee.ats.ide.worldXView.editTargetedVersion.command" name="Edit Targeted Version">
          </command>
-		<command id="org.eclipse.osee.ats.worldXView.editActionableItems.command" name="Edit Actionable Items">
+		<command id="org.eclipse.osee.ats.ide.worldXView.editActionableItems.command" name="Edit Actionable Items">
          </command>
-		<command id="org.eclipse.osee.ats.worldXView.convertToActionableItemTeam.command" name="Convert to Actionable Item/Team">
+		<command id="org.eclipse.osee.ats.ide.convertToActionableItemTeam.command" name="Convert to Actionable Item/Team">
          </command>
-		<command id="org.eclipse.osee.ats.worldXView.openInATSEditor.command" name="Open in ATS Editor">
+		<command id="org.eclipse.osee.ats.ide.worldXView.openInATSEditor.command" name="Open in ATS Editor">
          </command>
-		<command id="org.eclipse.osee.ats.worldXView.openInArtifactEditor.command" name="Open in Artifact Editor">
+		<command id="org.eclipse.osee.ats.ide.worldXView.openInArtifactEditor.command" name="Open in Artifact Editor">
          </command>
-		<command id="org.eclipse.osee.ats.worldXView.deletePurgeATSObject.command" name="Delete/Purge ATS Object">
+		<command id="org.eclipse.osee.ats.ide.worldXView.deletePurgeATSObject.command" name="Delete/Purge ATS Object">
          </command>
-		<command id="org.eclipse.osee.ats.worldXView.addAsFavorite.command" name="Add as Favorite">
+		<command id="org.eclipse.osee.ats.ide.worldXView.addAsFavorite.command" name="Add as Favorite">
          </command>
-		<command id="org.eclipse.osee.ats.worldXView.subscribeForNotifications.command" name="Subscribe for Notifications">
+		<command id="org.eclipse.osee.ats.ide.worldXView.subscribeForNotifications.command" name="Subscribe for Notifications">
          </command>
-		<command id="org.eclipse.osee.ats.worldXView.email.command" name="Email">
+		<command id="org.eclipse.osee.ats.ide.worldXView.email.command" name="Email">
          </command>
-		<command id="org.eclipse.osee.ats.worldXView.resetActionOffChildren.command" name="Reset Action off Children">
+		<command id="org.eclipse.osee.ats.ide.worldXView.resetActionOffChildren.command" name="Reset Action off Children">
          </command>
-		<command id="org.eclipse.osee.ats.worldXView.clearAllSorting.command" name="Clear All Sorting">
+		<command id="org.eclipse.osee.ats.ide.worldXView.clearAllSorting.command" name="Clear All Sorting">
          </command>
-		<command id="org.eclipse.osee.ats.worldXView.tableCustomization.command" name="Table Customization">
+		<command id="org.eclipse.osee.ats.ide.worldXView.tableCustomization.command" name="Table Customization">
          </command>
   <command
         id="org.eclipse.osee.framework.ui.skynet.openartifacteditor.command"
