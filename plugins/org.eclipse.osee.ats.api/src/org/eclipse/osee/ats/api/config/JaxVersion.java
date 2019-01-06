@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.api.config;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.ser.std.ToStringSerializer;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 
 /**
  * @author Donald G. Dunne
@@ -27,6 +29,11 @@ public class JaxVersion extends JaxAtsConfigObject {
 
    public void setTeamDefId(Long teamDefId) {
       this.teamDefId = teamDefId;
+   }
+
+   @Override
+   public ArtifactTypeId getArtifactType() {
+      return AtsArtifactTypes.Version;
    }
 
 }

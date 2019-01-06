@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.query.IAtsConfigCacheQuery;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
@@ -29,6 +30,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryService;
+import org.eclipse.osee.ats.core.query.AtsConfigCacheQueryImpl;
 import org.eclipse.osee.ats.core.query.AtsWorkItemFilter;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
@@ -363,6 +365,13 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    public List<ArtifactToken> getArtifactListFromTypeWithInheritence(IArtifactType artifactType, BranchId branch, DeletionFlag deletionFlag) {
       return Collections.castAll(
          ArtifactQuery.getArtifactListFromTypeWithInheritence(artifactType, branch, deletionFlag));
+   }
+
+   @Override
+   public IAtsConfigCacheQuery createConfigCacheQuery(IArtifactType... artifactType) {
+      AtsConfigCacheQueryImpl query = new AtsConfigCacheQueryImpl(atsClient);
+      query.isOfType(artifactType);
+      return query;
    }
 
 }

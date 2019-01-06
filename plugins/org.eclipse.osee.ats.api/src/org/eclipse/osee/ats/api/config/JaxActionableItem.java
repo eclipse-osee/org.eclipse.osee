@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.ser.std.ToStringSerializer;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 
 /**
  * @author Donald G. Dunne
@@ -56,6 +58,11 @@ public class JaxActionableItem extends JaxAtsConfigObject {
 
    public void addChild(JaxActionableItem child) {
       children.add(child.getId());
+   }
+
+   @Override
+   public ArtifactTypeId getArtifactType() {
+      return AtsArtifactTypes.ActionableItem;
    }
 
 }

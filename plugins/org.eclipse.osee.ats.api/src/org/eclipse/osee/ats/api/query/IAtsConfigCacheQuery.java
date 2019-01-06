@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Boeing.
+ * Copyright (c) 2018 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,25 +8,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.config;
+package org.eclipse.osee.ats.api.query;
 
+import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.config.WorkType;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 
 /**
  * @author Donald G. Dunne
  */
-public abstract class JaxAtsConfigObject extends JaxAtsObject implements IAtsConfigObject {
+public interface IAtsConfigCacheQuery {
 
-   private boolean active;
+   IAtsConfigCacheQuery andWorkType(WorkType workType, WorkType... workTypes);
 
-   @Override
-   public boolean isActive() {
-      return active;
-   }
+   <T extends IAtsConfigObject> Collection<T> get(Class<T> clazz);
 
-   @Override
-   public void setActive(boolean active) {
-      this.active = active;
-   }
+   IAtsConfigCacheQuery isOfType(IArtifactType... artifactType);
+
+   IAtsConfigCacheQuery andActive(boolean active);
 
 }

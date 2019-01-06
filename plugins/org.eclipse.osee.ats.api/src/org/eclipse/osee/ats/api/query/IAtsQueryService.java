@@ -157,4 +157,10 @@ public interface IAtsQueryService {
 
    List<ArtifactToken> getArtifactListFromTypeWithInheritence(IArtifactType artifactType, BranchId branch, DeletionFlag deletionFlag);
 
+   /**
+    * Query for the AtsConfigurations cache. Since this is pre-loaded, this is the best query for configuration
+    * information.
+    */
+   IAtsConfigCacheQuery createConfigCacheQuery(IArtifactType... artifactType);
+
 }

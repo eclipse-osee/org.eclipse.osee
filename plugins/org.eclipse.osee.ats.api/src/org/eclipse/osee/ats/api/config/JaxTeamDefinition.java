@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.ser.std.ToStringSerializer;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 
 /**
  * @author Donald G. Dunne
@@ -77,6 +79,11 @@ public class JaxTeamDefinition extends JaxAtsConfigObject {
 
    public void setWorkType(String workType) {
       this.workType = workType;
+   }
+
+   @Override
+   public ArtifactTypeId getArtifactType() {
+      return AtsArtifactTypes.TeamDefinition;
    }
 
 }
