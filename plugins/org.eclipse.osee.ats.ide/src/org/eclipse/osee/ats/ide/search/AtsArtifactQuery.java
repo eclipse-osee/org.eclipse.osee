@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -75,5 +76,10 @@ public class AtsArtifactQuery {
 
    public static Artifact getArtifactFromId(long id) {
       return ArtifactQuery.getArtifactFromId(ArtifactId.valueOf(id), AtsClientService.get().getAtsBranch());
+   }
+
+   public static Artifact getArtifactFromIdOrNull(Long id) {
+      return ArtifactQuery.getArtifactOrNull(ArtifactId.valueOf(id), AtsClientService.get().getAtsBranch(),
+         DeletionFlag.EXCLUDE_DELETED);
    }
 }

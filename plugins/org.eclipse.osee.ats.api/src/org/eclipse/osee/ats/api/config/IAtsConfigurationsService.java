@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.config;
 
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.config.tx.IAtsConfigTx;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+
 /**
  * @author Donald G. Dunne
  */
@@ -18,5 +22,9 @@ public interface IAtsConfigurationsService {
    AtsConfigurations getConfigurations();
 
    AtsConfigurations getConfigurationsWithPend();
+
+   IAtsConfigTx createConfigTx(String string, IAtsUser asUser);
+
+   void setAtsApi(AtsApi atsApi);
 
 }

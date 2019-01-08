@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.demo.api;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.config.tx.IAtsProgramArtifactToken;
 import org.eclipse.osee.ats.api.program.JaxProgram;
 
 /**
@@ -21,9 +22,9 @@ import org.eclipse.osee.ats.api.program.JaxProgram;
 public class DemoProgram extends JaxProgram {
 
    public static DemoProgram sawProgram =
-      new DemoProgram(DemoCountry.usg, "SAW Program", 19196003L, "SAW Program description");
+      new DemoProgram(DemoCountry.usg, DemoArtifactToken.SAW_Program, "SAW Program description");
    public static DemoProgram cisProgram =
-      new DemoProgram(DemoCountry.usg, "CIS Program", 8242414L, "CIS Program description");
+      new DemoProgram(DemoCountry.usg, DemoArtifactToken.CIS_Program, "CIS Program description");
 
    public static DemoProgram ver1 =
       new DemoProgram(DemoCountry.cntry, "Cntry V1", 888L, "CNTRY Ver1 Program description");
@@ -35,6 +36,10 @@ public class DemoProgram extends JaxProgram {
    List<DemoInsertion> insertions;
    private final DemoCountry country;
    private static List<DemoProgram> programs;
+
+   public DemoProgram(DemoCountry country, IAtsProgramArtifactToken program, String description) {
+      this(country, program.getName(), program.getId(), description);
+   }
 
    public DemoProgram(DemoCountry country, String name, long id, String description) {
       this.country = country;

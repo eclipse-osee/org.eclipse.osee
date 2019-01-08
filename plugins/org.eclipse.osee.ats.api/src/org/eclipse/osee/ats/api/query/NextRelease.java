@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Boeing.
+ * Copyright (c) 2015 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,7 @@ package org.eclipse.osee.ats.api.query;
 /**
  * @author Donald G. Dunne
  */
-public enum ReleasedOption {
-   Released,
-   UnReleased,
-   Both;
+public enum NextRelease {
+   Next,
+   None;
 };

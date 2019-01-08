@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
+import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.ide.workdef.IAtsWorkDefinitionSheetProvider;
 
 /**
@@ -25,11 +26,13 @@ public class DemoWorkDefinitionSheetProvider implements IAtsWorkDefinitionSheetP
    public Collection<WorkDefinitionSheet> getWorkDefinitionSheets() {
       List<WorkDefinitionSheet> sheets = new ArrayList<>();
       sheets.add(
-         new WorkDefinitionSheet("WorkDef_Demo_AIs_And_Team_Definitions", DemoWorkDefinitionSheetProvider.class));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_Demo_Code", DemoWorkDefinitionSheetProvider.class));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_Demo_Req", DemoWorkDefinitionSheetProvider.class));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_Demo_Test", DemoWorkDefinitionSheetProvider.class));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_Demo_SwDesign", DemoWorkDefinitionSheetProvider.class));
+         new WorkDefinitionSheet(DemoArtifactToken.WorkDef_Team_Demo_Code, DemoWorkDefinitionSheetProvider.class));
+      sheets.add(
+         new WorkDefinitionSheet(DemoArtifactToken.WorkDef_Team_Demo_Req, DemoWorkDefinitionSheetProvider.class));
+      sheets.add(
+         new WorkDefinitionSheet(DemoArtifactToken.WorkDef_Team_Demo_Test, DemoWorkDefinitionSheetProvider.class));
+      sheets.add(
+         new WorkDefinitionSheet(DemoArtifactToken.WorkDef_Team_Demo_SwDesign, DemoWorkDefinitionSheetProvider.class));
       return sheets;
    }
 }

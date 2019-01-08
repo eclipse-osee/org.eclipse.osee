@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -191,7 +192,22 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
             art = getArtifact(storeObject);
          }
          if (art == null) {
-            art = AtsArtifactQuery.getArtifactFromId(atsObject.getId());
+            art = AtsArtifactQuery.getArtifactFromIdOrNull(atsObject.getId());
+         }
+      } else if (obj instanceof ArtifactId) {
+         art = AtsArtifactQuery.getArtifactFromIdOrNull(((ArtifactId) obj).getId());
+      }
+      // If artifact can't be loaded, check that is't not a new artifact in this change set
+      if (art == null && obj instanceof Id) {
+         ArtifactId storedArt = getStoredArtifact((Id) obj);
+         if (storedArt != null && storedArt instanceof Artifact) {
+            art = (Artifact) storedArt;
+         }
+         if (art == null) {
+            IAtsObject atsObject = getStoredAtsObject((Id) obj);
+            if (atsObject != null && atsObject.getStoreObject() instanceof Artifact) {
+               art = (Artifact) atsObject.getStoreObject();
+            }
          }
       }
       return art;

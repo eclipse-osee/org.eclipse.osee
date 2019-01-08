@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.api.program.ProjectType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.junit.Assert;
@@ -56,17 +55,16 @@ public class AtsProgramServiceTest {
    @Test
    public void testGetProgram() {
       Collection<IAtsProgram> programs = programService.getPrograms();
-      assertEquals(5, programs.size());
-
-      IAtsProgram program = programService.getProgramById(ArtifactId.valueOf(programs.iterator().next().getId()));
+      assertEquals(6, programs.size());
 
       Collection<IAtsProgram> programs2 = programService.getPrograms(AtsArtifactTypes.Program);
-      assertEquals(5, programs2.size());
+      assertEquals(6, programs2.size());
 
       IAtsCountry usgCountry = programService.getCountry(sawProgram);
       List<IAtsProgram> programs3 = programService.getPrograms(usgCountry);
       assertEquals(2, programs3.size());
 
+      IAtsProgram program = programService.getProgramById(DemoArtifactToken.SAW_Program);
       Collection<IAtsInsertion> insertions = programService.getInsertions(program);
       IAtsProgram program4 = programService.getProgram(insertions.iterator().next());
       assertEquals(program.getId(), program4.getId());
@@ -136,7 +134,7 @@ public class AtsProgramServiceTest {
    public void testGetTeamDefinition() {
       assertEquals("SAW SW", programService.getTeamDefinition(sawProgram).getName());
 
-      assertEquals(5, programService.getTeamDefs(sawProgram).size());
+      assertEquals(6, programService.getTeamDefs(sawProgram).size());
 
       assertEquals(1, programService.getTeamDefs(sawProgram, WorkType.Code).size());
 

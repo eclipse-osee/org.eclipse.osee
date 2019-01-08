@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.TupleFamilyId;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 
@@ -101,6 +102,10 @@ public final class AtsRelationTypes {
 
    public static final RelationTypeSide TeamActionableItem_Team = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694316L, "TeamActionableItem");
    public static final RelationTypeSide TeamActionableItem_ActionableItem = TeamActionableItem_Team.getOpposite();
+
+   // Program uses supporting info to relate to team.  Use different name for readability and understandability
+   public static final RelationTypeSide TeamDefinitionToProgram_TeamDefinition = CoreRelationTypes.SupportingInfo_SupportedBy;
+   public static final RelationTypeSide TeamDefinitionToProgram_Program = TeamDefinitionToProgram_TeamDefinition.getOpposite();
 
    public static final RelationTypeSide TeamDefinitionToVersion_TeamDefinition = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694320L, "TeamDefinitionToVersion");
    public static final RelationTypeSide TeamDefinitionToVersion_Version = TeamDefinitionToVersion_TeamDefinition.getOpposite();

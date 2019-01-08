@@ -1,0 +1,45 @@
+/*******************************************************************************
+ * Copyright (c) 2019 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.ats.api.config.tx;
+
+import java.util.List;
+import org.eclipse.osee.ats.api.query.NextRelease;
+import org.eclipse.osee.ats.api.query.ReleasedOption;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserToken;
+
+/**
+ * @author Donald G. Dunne
+ */
+public interface IAtsConfigTx {
+
+   IAtsConfigTx createUsers(List<UserToken> users);
+
+   IAtsConfigTxTeamDef createTeamDef(IAtsTeamDefinitionArtifactToken teamDef);
+
+   IAtsConfigTxActionableItem createActionableItem(IAtsActionableItemArtifactToken actionableItem);
+
+   TransactionId execute();
+
+   IAtsConfigTxVersion createVersion(String name, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IAtsTeamDefinition teamDef);
+
+   IAtsConfigTxVersion createVersion(IAtsVersionArtifactToken versionTok, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IAtsTeamDefinition teamDef);
+
+   IAtsTeamDefinition getTeamDef(ArtifactId teamDef);
+
+   IAtsTeamDefinition getTeamDef(String name);
+
+   IAtsConfigTxProgram createProgram(IAtsProgramArtifactToken program);
+
+}

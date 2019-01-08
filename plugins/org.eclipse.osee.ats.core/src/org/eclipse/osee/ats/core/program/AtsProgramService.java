@@ -220,6 +220,8 @@ public class AtsProgramService implements IAtsProgramService {
       IAtsProgram program = null;
       if (programId instanceof IAtsProgram) {
          program = (IAtsProgram) programId;
+      } else if (programId instanceof ArtifactToken) {
+         program = new Program(atsApi.getLogger(), atsApi, (ArtifactToken) programId);
       } else {
          ArtifactToken art = atsApi.getQueryService().getArtifact(programId);
          if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.Program)) {

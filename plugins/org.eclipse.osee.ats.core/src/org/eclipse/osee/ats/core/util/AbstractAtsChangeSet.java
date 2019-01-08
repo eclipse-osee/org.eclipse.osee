@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
@@ -144,7 +145,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    }
 
    @Override
-   public ArtifactId createArtifact(ArtifactToken token) {
+   public ArtifactToken createArtifact(ArtifactToken token) {
       return createArtifact(token.getArtifactTypeId(), token.getName(), token.getId());
    }
 
@@ -228,6 +229,30 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    public void addChild(IAtsObject parent, IAtsObject child) {
       add(new AtsRelationChange(parent, CoreRelationTypes.Default_Hierarchical__Child, Collections.singleton(child),
          RelationOperation.Add));
+   }
+
+   /**
+    * @return ArtifactId that is part of this change set
+    */
+   public ArtifactId getStoredArtifact(Id id) {
+      for (ArtifactId art : artifacts) {
+         if (art.getId().equals(id.getId())) {
+            return art;
+         }
+      }
+      return null;
+   }
+
+   /**
+    * @return ATS Object that is part of this change set
+    */
+   public IAtsObject getStoredAtsObject(Id id) {
+      for (IAtsObject obj : atsObjects) {
+         if (obj.equals(id)) {
+            return obj;
+         }
+      }
+      return null;
    }
 
 }

@@ -112,6 +112,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
 
    public void setConfigurationsService(IAtsConfigurationsService configurationsService) {
       this.configurationsService = configurationsService;
+      this.configurationsService.setAtsApi(this);
    }
 
    @Override

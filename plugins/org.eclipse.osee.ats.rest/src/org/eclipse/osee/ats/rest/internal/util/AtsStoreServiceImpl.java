@@ -269,4 +269,9 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
       return orcsApi.getOrcsTypes().getArtifactTypes().get(artifactTypeId).getName();
    }
 
+   @Override
+   public String getArtifactTypeName(ArtifactTypeId artifactType) {
+      return orcsApi.getOrcsTypes().getArtifactTypes().get(artifactType).getName();
+   }
+
 }

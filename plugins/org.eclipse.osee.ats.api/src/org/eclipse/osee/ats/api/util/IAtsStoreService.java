@@ -115,4 +115,6 @@ public interface IAtsStoreService {
    String getArtifactTypeName(IArtifactType artifactTypeId);
 
    boolean isHistorical(ArtifactId artifact);
+
+   String getArtifactTypeName(ArtifactTypeId artifactType);
 }

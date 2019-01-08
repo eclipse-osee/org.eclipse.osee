@@ -102,7 +102,7 @@ public interface IAtsChangeSet {
 
    <T> void setAttribute(IAtsWorkItem workItem, AttributeId attributeId, T value);
 
-   ArtifactId createArtifact(ArtifactToken token);
+   ArtifactToken createArtifact(ArtifactToken token);
 
    void deleteArtifact(ArtifactId artifact);
 

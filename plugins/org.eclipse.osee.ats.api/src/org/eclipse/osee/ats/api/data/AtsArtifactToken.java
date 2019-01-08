@@ -11,6 +11,12 @@
 package org.eclipse.osee.ats.api.data;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import org.eclipse.osee.ats.api.config.tx.AtsActionableItemArtifactToken;
+import org.eclipse.osee.ats.api.config.tx.AtsTeamDefinitionArtifactToken;
+import org.eclipse.osee.ats.api.config.tx.AtsWorkDefinitionArtifactToken;
+import org.eclipse.osee.ats.api.config.tx.IAtsActionableItemArtifactToken;
+import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
+import org.eclipse.osee.ats.api.config.tx.IAtsWorkDefinitionArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 
@@ -30,8 +36,8 @@ public final class AtsArtifactToken {
    public static final ArtifactToken RuleDefinitions = ArtifactToken.valueOf(7880473, "Rule Definitions", COMMON, AtsArtifactTypes.RuleDefinition);
    public static final ArtifactToken Users = ArtifactToken.valueOf(95459, "Users", COMMON, CoreArtifactTypes.Folder);
    public static ArtifactToken HeadingFolder = ArtifactToken.valueOf(114713, "Action Tracking System", COMMON, CoreArtifactTypes.Folder);
-   public static ArtifactToken TopTeamDefinition = ArtifactToken.valueOf(56004, "Teams", COMMON, AtsArtifactTypes.TeamDefinition);
-   public static ArtifactToken TopActionableItem = ArtifactToken.valueOf(122894, "Actionable Items", COMMON, AtsArtifactTypes.ActionableItem);
+   public static IAtsTeamDefinitionArtifactToken TopTeamDefinition = AtsTeamDefinitionArtifactToken.valueOf(56004L, "Teams");
+   public static IAtsActionableItemArtifactToken TopActionableItem = AtsActionableItemArtifactToken.valueOf(122894L, "Actionable Items");
    public static ArtifactToken CountryFolder = ArtifactToken.valueOf(7968155, "Countries", COMMON, CoreArtifactTypes.Folder);
    public static ArtifactToken ProgramFolder = ArtifactToken.valueOf(90442279, "Programs", COMMON, CoreArtifactTypes.Folder);
    public static ArtifactToken ConfigFolder = ArtifactToken.valueOf(113036, "Config", COMMON, CoreArtifactTypes.Folder);
@@ -48,8 +54,8 @@ public final class AtsArtifactToken {
    public static ArtifactToken WorkDef_Review_Decision = ArtifactToken.valueOf(25335, "WorkDef_Review_Decision", COMMON, AtsArtifactTypes.WorkDefinition);
    public static ArtifactToken WorkDef_Review_PeerToPeer = ArtifactToken.valueOf(25334, "WorkDef_Review_PeerToPeer", COMMON, AtsArtifactTypes.WorkDefinition);
    public static ArtifactToken WorkDef_Task_Default = ArtifactToken.valueOf(105373, "WorkDef_Task_Default", COMMON, AtsArtifactTypes.WorkDefinition);
-   public static ArtifactToken WorkDef_Team_Default = ArtifactToken.valueOf(72301, "WorkDef_Team_Default", COMMON, AtsArtifactTypes.WorkDefinition);
-   public static ArtifactToken WorkDef_Team_Simple = ArtifactToken.valueOf(72302, "WorkDef_Team_Simple", COMMON, AtsArtifactTypes.WorkDefinition);
+   public static IAtsWorkDefinitionArtifactToken WorkDef_Team_Default = AtsWorkDefinitionArtifactToken.valueOf(72301L, "WorkDef_Team_Default");
+   public static IAtsWorkDefinitionArtifactToken WorkDef_Team_Simple = AtsWorkDefinitionArtifactToken.valueOf(72302L, "WorkDef_Team_Simple");
 
    public static ArtifactToken WorkDef_Team_AtsConfig2Example = ArtifactToken.valueOf(282846363, "WorkDef_Team_AtsConfig2Example", COMMON, AtsArtifactTypes.WorkDefinition);
    public static ArtifactToken WorkDef_Task_AtsConfig2Example = ArtifactToken.valueOf(824992064, "WorkDef_Task_AtsConfig2Example", COMMON, AtsArtifactTypes.WorkDefinition);

@@ -279,4 +279,8 @@ public class AtsStoreService implements IAtsStoreService {
       return ArtifactTypeManager.getType(artifactTypeId).getName();
    }
 
+   @Override
+   public String getArtifactTypeName(ArtifactTypeId artifactTypeId) {
+      return ArtifactTypeManager.getType(artifactTypeId).getName();
+   }
 }

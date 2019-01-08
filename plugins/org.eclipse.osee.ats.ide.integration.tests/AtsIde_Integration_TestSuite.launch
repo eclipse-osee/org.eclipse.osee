@@ -22,7 +22,7 @@
 <booleanAttribute key="includeOptional" value="false"/>
 <stringAttribute key="location" value="${workspace_loc}/../junit-workspace-atsTest"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/org.eclipse.osee.ats.ide.integration.tests/src/org/eclipse/osee/ats/client/integration/AtsClientIntegrationTestSuite.java"/>
+<listEntry value="/org.eclipse.osee.ats.ide.integration.tests/src/org/eclipse/osee/ats/ide/integration/AtsClientIntegrationTestSuite.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
@@ -65,13 +65,11 @@
 <setEntry value="org.eclipse.nebula.widgets.xviewer.feature:default"/>
 <setEntry value="org.eclipse.osee.ats.ide.demo.feature:default"/>
 <setEntry value="org.eclipse.osee.ats.ide.feature:default"/>
-<setEntry value="org.eclipse.osee.ide.demo.feature:default"/>
 <setEntry value="org.eclipse.osee.client.feature:default"/>
 <setEntry value="org.eclipse.osee.core.feature:default"/>
 <setEntry value="org.eclipse.osee.core.plugin.feature:default"/>
 <setEntry value="org.eclipse.osee.core.runtime.feature:default"/>
 <setEntry value="org.eclipse.osee.core.ui.feature:default"/>
-<setEntry value="org.eclipse.osee.define.ide.feature:default"/>
 <setEntry value="org.eclipse.osee.external.feature:default"/>
 <setEntry value="org.eclipse.osee.framework.feature:default"/>
 <setEntry value="org.eclipse.osee.framework.ui.feature:default"/>

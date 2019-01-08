@@ -8,13 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.query;
+package org.eclipse.osee.ats.api.config.tx;
+
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
  * @author Donald G. Dunne
  */
-public enum ReleasedOption {
-   Released,
-   UnReleased,
-   Both;
-};
+public interface IAtsConfigTxProgram {
+
+   IAtsConfigTxProgram andActive(boolean active);
+
+   IAtsConfigTxProgram and(AttributeTypeToken attrType, Object value);
+
+   IAtsConfigTxProgram andTeamDef(IAtsTeamDefinitionArtifactToken teamDef);
+
+}

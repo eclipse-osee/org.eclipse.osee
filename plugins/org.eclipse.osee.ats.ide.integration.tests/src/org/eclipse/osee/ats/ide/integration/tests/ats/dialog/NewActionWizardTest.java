@@ -33,7 +33,7 @@ public class NewActionWizardTest {
 
          NewActionPage1 page1 = (NewActionPage1) wizard.getPages()[0];
          int count = page1.getTreeViewer().getViewer().getTree().getItemCount();
-         Assert.assertTrue(count >= 5);
+         Assert.assertTrue("Could should be >=5 but was " + count, count >= 5);
       } finally {
          dialog.close();
       }

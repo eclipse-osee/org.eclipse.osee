@@ -56,6 +56,7 @@ import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.junit.Assert;
@@ -602,58 +603,66 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    @Test
    public void testCreateAction() throws Exception {
 
-      Form form = new Form();
-      postAndValidateResponse("title is not valid", form);
+      TeamWorkFlowArtifact teamArt = null;
+      try {
+         Form form = new Form();
+         postAndValidateResponse("title is not valid", form);
 
-      form.param("ats_title", getClass().getSimpleName());
-      postAndValidateResponse("actionableItems is not valid", form);
+         form.param("ats_title", getClass().getSimpleName() + " - here");
+         postAndValidateResponse("actionableItems is not valid", form);
 
-      form.param("desc", "this is the description");
-      postAndValidateResponse("actionableItems is not valid", form);
+         form.param("desc", "this is the description");
+         postAndValidateResponse("actionableItems is not valid", form);
 
-      form.param("actionableItems", "not valid ai name");
-      postAndValidateResponse("actionableItems [not valid ai name] is not valid", form);
+         form.param("actionableItems", "not valid ai name");
+         postAndValidateResponse("actionableItems [not valid ai name] is not valid", form);
 
-      form.asMap().remove("actionableItems");
-      form.param("actionableItems", "SAW Code");
-      postAndValidateResponse("userId is not valid", form);
+         form.asMap().remove("actionableItems");
+         form.param("actionableItems", "SAW Code");
+         postAndValidateResponse("userId is not valid", form);
 
-      form.param("userId", "asdf");
-      postAndValidateResponse("userId [asdf] is not valid", form);
+         form.param("userId", "asdf");
+         postAndValidateResponse("userId [asdf] is not valid", form);
 
-      form.asMap().remove("userId");
-      form.param("userId", "3333");
-      postAndValidateResponse("changeType is not valid", form);
+         form.asMap().remove("userId");
+         form.param("userId", "3333");
+         postAndValidateResponse("changeType is not valid", form);
 
-      form.param("changeType", "invalid change type");
-      postAndValidateResponse("changeType [invalid change type] is not valid", form);
+         form.param("changeType", "invalid change type");
+         postAndValidateResponse("changeType [invalid change type] is not valid", form);
 
-      form.asMap().remove("changeType");
-      form.param("changeType", "Improvement");
-      postAndValidateResponse("priority is not valid", form);
+         form.asMap().remove("changeType");
+         form.param("changeType", "Improvement");
+         postAndValidateResponse("priority is not valid", form);
 
-      form.param("priority", "invalid priority");
-      postAndValidateResponse("priority [invalid priority] is not valid", form);
+         form.param("priority", "invalid priority");
+         postAndValidateResponse("priority [invalid priority] is not valid", form);
 
-      form.asMap().remove("priority");
-      form.param("priority", "3");
-      Response response = post(form);
+         form.asMap().remove("priority");
+         form.param("priority", "3");
+         Response response = post(form);
 
-      Assert.assertEquals(Status.SEE_OTHER.getStatusCode(), response.getStatus());
-      String urlStr = response.getLocation().toString();
-      URL url = new URL(urlStr);
-      String path = url.getPath();
-      Assert.assertTrue(String.format("Invalid url [%s]", url), path.contains("/ats/ui/action/ATS"));
-      String atsId = path.replaceFirst("^.*/", "");
+         Assert.assertEquals(Status.SEE_OTHER.getStatusCode(), response.getStatus());
+         String urlStr = response.getLocation().toString();
+         URL url = new URL(urlStr);
+         String path = url.getPath();
+         Assert.assertTrue(String.format("Invalid url [%s]", url), path.contains("/ats/ui/action/ATS"));
+         String atsId = path.replaceFirst("^.*/", "");
 
-      TeamWorkFlowArtifact teamArt =
-         (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromAttribute(AtsAttributeTypes.AtsId, atsId,
+         teamArt = (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromAttribute(AtsAttributeTypes.AtsId, atsId,
             AtsClientService.get().getAtsBranch());
-      Assert.assertNotNull(teamArt);
+         Assert.assertNotNull(teamArt);
+      } catch (Exception ex) {
+         // do nothing
+      }
 
       // Cleanup test
-      AtsClientService.get().getQueryServiceClient().getArtifact(teamArt).deleteAndPersist();
-      teamArt.deleteAndPersist();
+      if (teamArt != null) {
+         IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getName());
+         changes.deleteArtifact(teamArt.getParentActionArtifact());
+         changes.deleteArtifact((Artifact) teamArt);
+         changes.executeIfNeeded();
+      }
    }
 
    @Test

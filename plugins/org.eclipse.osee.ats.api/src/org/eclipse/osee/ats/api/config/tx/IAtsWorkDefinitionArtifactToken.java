@@ -8,13 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.query;
+package org.eclipse.osee.ats.api.config.tx;
+
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Donald G. Dunne
  */
-public enum ReleasedOption {
-   Released,
-   UnReleased,
-   Both;
-};
+public interface IAtsWorkDefinitionArtifactToken extends ArtifactToken {
+
+   public String getFilename();
+}

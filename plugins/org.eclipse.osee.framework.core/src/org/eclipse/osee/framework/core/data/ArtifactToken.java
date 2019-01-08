@@ -85,47 +85,48 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, Identity<
    }
 
    public static ArtifactToken valueOf(long id, String guid, String name, BranchId branch, IArtifactType artifactType) {
-      final class ArtifactTokenImpl extends NamedIdBase implements ArtifactToken {
-         private final BranchId branch;
-         private final IArtifactType artifactType;
-         private final String guid;
-
-         public ArtifactTokenImpl(Long id, String guid, String name, BranchId branch, IArtifactType artifactType) {
-            super(id, name);
-            this.branch = branch;
-            this.artifactType = artifactType;
-            this.guid = guid;
-         }
-
-         @Override
-         public IArtifactType getArtifactTypeId() {
-            return artifactType;
-         }
-
-         @Override
-         public BranchId getBranch() {
-            return branch;
-         }
-
-         @Override
-         public String getGuid() {
-            return guid;
-         }
-
-         @Override
-         public Long getUuid() {
-            return getId();
-         }
-
-         @Override
-         public boolean equals(Object obj) {
-            boolean equal = super.equals(obj);
-            if (equal && obj instanceof HasBranch) {
-               return isOnSameBranch((HasBranch) obj);
-            }
-            return equal;
-         }
-      }
       return new ArtifactTokenImpl(id, guid, name, branch, artifactType);
+   }
+
+   public static class ArtifactTokenImpl extends NamedIdBase implements ArtifactToken {
+      private final BranchId branch;
+      private final IArtifactType artifactType;
+      private final String guid;
+
+      public ArtifactTokenImpl(Long id, String guid, String name, BranchId branch, IArtifactType artifactType) {
+         super(id, name);
+         this.branch = branch;
+         this.artifactType = artifactType;
+         this.guid = guid;
+      }
+
+      @Override
+      public IArtifactType getArtifactTypeId() {
+         return artifactType;
+      }
+
+      @Override
+      public BranchId getBranch() {
+         return branch;
+      }
+
+      @Override
+      public String getGuid() {
+         return guid;
+      }
+
+      @Override
+      public Long getUuid() {
+         return getId();
+      }
+
+      @Override
+      public boolean equals(Object obj) {
+         boolean equal = super.equals(obj);
+         if (equal && obj instanceof HasBranch) {
+            return isOnSameBranch((HasBranch) obj);
+         }
+         return equal;
+      }
    }
 }

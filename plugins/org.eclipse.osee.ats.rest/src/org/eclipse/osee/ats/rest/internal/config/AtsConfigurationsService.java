@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.AtsConfiguration;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.AtsViews;
-import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.config.JaxActionableItem;
 import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
 import org.eclipse.osee.ats.api.config.JaxVersion;
@@ -41,6 +40,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.WorkDefData;
+import org.eclipse.osee.ats.core.config.AbstractAtsConfigurationService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -55,14 +55,13 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
  *
  * @author Donald G Dunne
  */
-public class AtsConfigurationsService implements IAtsConfigurationsService {
-   private AtsConfigurations atsConfigurations;
+public class AtsConfigurationsService extends AbstractAtsConfigurationService {
+
    private final OrcsApi orcsApi;
-   private final AtsApi atsApi;
 
    public AtsConfigurationsService(AtsApi atsApi, OrcsApi orcsApi) {
-      this.atsApi = atsApi;
       this.orcsApi = orcsApi;
+      this.atsApi = atsApi;
    }
 
    /**

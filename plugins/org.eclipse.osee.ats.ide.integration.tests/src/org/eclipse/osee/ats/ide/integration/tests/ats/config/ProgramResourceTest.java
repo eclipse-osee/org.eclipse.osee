@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.config;
 
-import static org.eclipse.osee.ats.demo.api.DemoArtifactToken.SAW_Program;
+import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.ide.integration.tests.ats.resource.AbstractRestTest;
 import org.junit.Test;
 
@@ -22,26 +22,26 @@ import org.junit.Test;
 public class ProgramResourceTest extends AbstractRestTest {
 
    private void testProgramUrl(String url, int size, boolean hasDescription) {
-      testUrl(url, size, SAW_Program.getName(), "ats.Description", hasDescription);
+      testUrl(url, size, DemoArtifactToken.SAW_Program.getName(), "ats.Description", hasDescription);
    }
 
    @Test
    public void testAtsProgramsRestCall() {
-      testProgramUrl("/ats/program", 5, false);
+      testProgramUrl("/ats/program", 6, false);
    }
 
    @Test
    public void testAtsProgramsDetailsRestCall() {
-      testProgramUrl("/ats/program/details", 5, true);
+      testProgramUrl("/ats/program/details", 6, true);
    }
 
    @Test
    public void testAtsProgramRestCall() {
-      testUrl("/ats/program/" + SAW_Program.getIdString(), SAW_Program.getName());
+      testUrl("/ats/program/" + DemoArtifactToken.SAW_Program.getIdString(), DemoArtifactToken.SAW_Program.getName());
    }
 
    @Test
    public void testAtsProgramDetailsRestCall() {
-      testProgramUrl("/ats/program/" + SAW_Program.getIdString() + "/details", 1, true);
+      testProgramUrl("/ats/program/" + DemoArtifactToken.SAW_Program.getIdString() + "/details", 1, true);
    }
 }
