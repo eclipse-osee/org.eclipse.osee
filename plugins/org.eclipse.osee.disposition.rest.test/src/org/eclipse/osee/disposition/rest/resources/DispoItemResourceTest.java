@@ -98,12 +98,12 @@ public class DispoItemResourceTest {
       DispoItemData newItem = new DispoItemData();
       DispoItemData itemToEdt = new DispoItemData();
       itemToEdt.setGuid(id1.getGuid());
-      when(dispositionApi.editDispoItem(branch, id1.getGuid(), newItem, "")).thenReturn(true);
-      Response response = resource.putDispoItem(id1.getGuid(), newItem, "");
+      when(dispositionApi.editDispoItem(branch, id1.getGuid(), newItem, "", false)).thenReturn(true);
+      Response response = resource.putDispoItem(id1.getGuid(), newItem, "", false);
       assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-      when(dispositionApi.editDispoItem(branch, id1.getGuid(), newItem, "")).thenReturn(false);
-      response = resource.putDispoItem(id1.getGuid(), newItem, "");
+      when(dispositionApi.editDispoItem(branch, id1.getGuid(), newItem, "", false)).thenReturn(false);
+      response = resource.putDispoItem(id1.getGuid(), newItem, "", false);
       String returnedMessage = (String) response.getEntity();
       assertEquals(Response.Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
       assertEquals(DispoMessages.Item_NotFound, returnedMessage);

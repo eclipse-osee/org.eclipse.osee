@@ -68,6 +68,7 @@ public class DispoItemResource {
     *
     * @param itemId The Id of the Dispositionable Item to search for
     * @param newDispoItem The data for the new Dispositionable Item
+    * @param assignUser Whether or not a new user will be assigned to the Item
     * @return The updated Dispositionable Item if successful. Error Code otherwise
     * @response.representation.200.doc OK, Found Dispositionable Item
     * @response.representation.404.doc Not Found, Could not find any Dispositionable Items
@@ -75,9 +76,9 @@ public class DispoItemResource {
    @Path("{itemId}")
    @PUT
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response putDispoItem(@PathParam("itemId") String itemId, DispoItemData newDispoItem, @QueryParam("userName") String userName) {
+   public Response putDispoItem(@PathParam("itemId") String itemId, DispoItemData newDispoItem, @QueryParam("userName") String userName, @QueryParam("assignUser") boolean assignUser) {
       Response response;
-      boolean wasEdited = dispoApi.editDispoItem(branch, itemId, newDispoItem, userName);
+      boolean wasEdited = dispoApi.editDispoItem(branch, itemId, newDispoItem, userName, assignUser);
       if (wasEdited) {
          response = Response.status(Response.Status.OK).build();
       } else {

@@ -218,7 +218,7 @@ app.controller('userController', [
                     }
                     if (confirmed) {
                         item.assignee = $rootScope.cachedName;
-                        $scope.editItem(item);
+                        $scope.editAssignees(item);
                     }
                 }
             }
@@ -483,7 +483,8 @@ app.controller('userController', [
                 programId: $scope.programSelection,
                 setId: $scope.setSelection,
                 itemId: item.guid,
-                userName: $rootScope.cachedName
+                userName: $rootScope.cachedName,
+                assignUser: field == 'assignee' ? true : false
             }, newItem, function() {
                 if ($scope.isMulitEditRequest) {
                     $scope.gridApi.selection.clearSelectedRows();

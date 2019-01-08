@@ -260,11 +260,12 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public boolean editDispoItem(BranchId branch, String itemId, DispoItemData newDispoItem, String userName) {
+   public boolean editDispoItem(BranchId branch, String itemId, DispoItemData newDispoItem, String userName, boolean assignUser) {
       boolean wasUpdated = false;
       DispoItem dispoItemToEdit = getQuery().findDispoItemById(branch, itemId);
 
-      if (dispoItemToEdit != null && newDispoItem.getAnnotationsList() == null && newDispoItem.getDiscrepanciesList() == null) { // We will not allow the user to do mass edit of Annotations or discrepancies
+      // We will not allow the user to do mass edit of Annotations or discrepancies
+      if (assignUser || dispoItemToEdit != null && newDispoItem.getAnnotationsList() == null && newDispoItem.getDiscrepanciesList() == null) {
          ArtifactReadable author = getQuery().findUserByName(userName);
          DispoStorageMetadata metadata = new DispoStorageMetadata();
 

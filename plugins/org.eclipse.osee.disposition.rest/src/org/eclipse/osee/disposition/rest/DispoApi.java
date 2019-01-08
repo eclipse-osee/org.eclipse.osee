@@ -77,7 +77,7 @@ public interface DispoApi {
 
    void importAllDispoPrograms(String filterState, String userName);
 
-   boolean editDispoItem(BranchId branch, String itemId, DispoItemData newDispoItem, String userName);
+   boolean editDispoItem(BranchId branch, String itemId, DispoItemData newDispoItem, String userName, boolean assignUser);
 
    boolean editMassDispositions(BranchId branch, String itemId, List<String> ids, String resolutionType, String resolution, String userName);
 

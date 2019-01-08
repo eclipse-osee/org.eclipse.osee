@@ -319,16 +319,16 @@ public class DispoApiTest {
       when(storage.findDispoItemById(branch, itemId.getGuid())).thenReturn(dispoItem);
       when(dispoItem.getDiscrepanciesList()).thenReturn(mockDiscrepancies);
 
-      boolean actual = dispoApi.editDispoItem(branch, itemId.getGuid(), newItem, author.getIdString());
+      boolean actual = dispoApi.editDispoItem(branch, itemId.getGuid(), newItem, author.getIdString(), false);
       assertTrue(actual);
 
       Map<String, Discrepancy> discrepanciesList = new HashMap<>();
       newItem.setDiscrepanciesList(discrepanciesList);
-      actual = dispoApi.editDispoItem(branch, itemId.getGuid(), newItem, author.getIdString());
+      actual = dispoApi.editDispoItem(branch, itemId.getGuid(), newItem, author.getIdString(), false);
       assertFalse(actual);
 
       newItem.setAnnotationsList(mockAnnotations);
-      actual = dispoApi.editDispoItem(branch, itemId.getGuid(), newItem, author.getIdString());
+      actual = dispoApi.editDispoItem(branch, itemId.getGuid(), newItem, author.getIdString(), false);
       assertFalse(actual);
    }
 
