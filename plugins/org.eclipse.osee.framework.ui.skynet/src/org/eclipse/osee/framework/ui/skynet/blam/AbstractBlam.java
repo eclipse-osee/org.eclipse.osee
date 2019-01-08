@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -60,7 +61,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
 
    protected Set<ArtifactId> excludedArtifactIdMap = new HashSet<>();
    protected Map<Long, String> branchViews;
-   protected ArtifactId viewId = ArtifactId.SENTINEL;
+   protected ArtifactToken viewId = ArtifactToken.SENTINEL;
 
    /**
     * Where Blam XML UI comes from
@@ -232,14 +233,13 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       if (branchViews != null) {
          for (Entry<Long, String> entry : branchViews.entrySet()) {
             if (entry.getValue().equals(view)) {
-               viewId = ArtifactId.valueOf(entry.getKey());
+               viewId = ArtifactToken.valueOf(entry.getKey(), entry.getValue());
             }
          }
       }
    }
 
    public void resetViewId() {
-      viewId = ArtifactId.SENTINEL;
+      viewId = ArtifactToken.SENTINEL;
    }
-
 }

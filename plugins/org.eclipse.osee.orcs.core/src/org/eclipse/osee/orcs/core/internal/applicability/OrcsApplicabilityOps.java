@@ -49,9 +49,9 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public class OrcsApplicabilityOps implements OrcsApplicability {
 
    private final OrcsApi orcsApi;
-   private ArtifactToken plFolder = ArtifactToken.getSentinal();
-   private ArtifactToken featureFolder = ArtifactToken.getSentinal();
-   private ArtifactToken variantsFolder = ArtifactToken.getSentinal();
+   private ArtifactToken plFolder = ArtifactToken.SENTINEL;
+   private ArtifactToken featureFolder = ArtifactToken.SENTINEL;
+   private ArtifactToken variantsFolder = ArtifactToken.SENTINEL;
 
    public OrcsApplicabilityOps(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;

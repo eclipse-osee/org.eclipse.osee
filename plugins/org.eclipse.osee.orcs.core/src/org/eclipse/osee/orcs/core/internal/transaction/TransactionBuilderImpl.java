@@ -501,7 +501,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    public ArtifactToken getWriteable(ArtifactId artifact) {
       ArtifactToken art = txData.getWriteable(artifact);
       if (art == null) {
-         art = ArtifactToken.getSentinal();
+         art = ArtifactToken.SENTINEL;
       }
       return art;
    }

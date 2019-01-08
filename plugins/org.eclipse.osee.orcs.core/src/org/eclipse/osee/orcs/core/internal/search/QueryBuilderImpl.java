@@ -147,7 +147,7 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
    public ArtifactToken getArtifactOrSentinal() {
       ArtifactToken art = getArtifactOrNull();
       if (art == null) {
-         return ArtifactToken.getSentinal();
+         return ArtifactToken.SENTINEL;
       }
       return art;
    }
@@ -156,7 +156,7 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
    public ArtifactToken getAtMostOneOrSentinal() {
       ResultSet<ArtifactReadable> artifacts = getResults();
       if (artifacts.isEmpty()) {
-         return ArtifactToken.getSentinal();
+         return ArtifactToken.SENTINEL;
       } else if (artifacts.size() > 1) {
          throw new OseeStateException(String.format("Expected 0..1, found %s", artifacts.size()));
       }

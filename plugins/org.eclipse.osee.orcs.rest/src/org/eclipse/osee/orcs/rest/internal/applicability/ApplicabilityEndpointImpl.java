@@ -163,7 +163,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    public ArtifactToken createView(String viewName) {
       XResultData access = isAccess();
       if (access.isErrors()) {
-         return ArtifactToken.getSentinal();
+         return ArtifactToken.SENTINEL;
       }
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account, "Create Branch View");
       ArtifactToken view = tx.createView(branch, viewName);
