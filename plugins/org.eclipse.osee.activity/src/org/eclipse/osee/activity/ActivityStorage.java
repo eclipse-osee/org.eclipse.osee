@@ -38,4 +38,6 @@ public interface ActivityStorage {
 
    void createIfAbsent(Iterable<ActivityTypeToken> types);
 
+   boolean isAvailable();
+
 }

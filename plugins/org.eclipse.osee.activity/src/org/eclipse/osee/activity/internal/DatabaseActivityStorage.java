@@ -45,8 +45,10 @@ public class DatabaseActivityStorage implements ActivityStorage {
    private static final String DELETE_ENTRIES = "DELETE FROM osee_activity WHERE start_time <= ?";
 
    private JdbcClient jdbcClient;
+   private JdbcService jdbcService;
 
    public void setJdbcService(JdbcService jdbcService) {
+      this.jdbcService = jdbcService;
       this.jdbcClient = jdbcService.getClient();
    }
 
@@ -125,5 +127,10 @@ public class DatabaseActivityStorage implements ActivityStorage {
       for (ActivityTypeToken type : types) {
          createIfAbsent(type);
       }
+   }
+
+   @Override
+   public boolean isAvailable() {
+      return jdbcService.isServerAlive(1000);
    }
 }

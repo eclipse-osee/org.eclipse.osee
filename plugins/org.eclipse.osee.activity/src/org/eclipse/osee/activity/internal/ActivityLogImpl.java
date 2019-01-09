@@ -293,7 +293,7 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
 
    @Override
    public Long createEntry(ActivityTypeToken type, Integer status, Object... messageArgs) {
-      if (enabled) {
+      if (isEnabled()) {
          Long parentId = get(ENTRY_ID);
          return createEntry(type, parentId, status, messageArgs);
       }
@@ -302,7 +302,7 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
 
    @Override
    public Long createEntry(ActivityTypeToken typeId, Long parentId, Integer status, Object... messageArgs) {
-      if (enabled) {
+      if (isEnabled()) {
          Object[] rootEntry = activityMonitor.getThreadRootEntry(parentId);
          UserId accountId = UserId.valueOf(LogEntry.ACCOUNT_ID.from(rootEntry));
          Long serverId = LogEntry.SERVER_ID.from(rootEntry);
@@ -378,7 +378,7 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
    @Override
    public Long createThrowableEntry(ActivityTypeToken type, Throwable throwable) {
       Long entryId = -1L;
-      if (enabled) {
+      if (isEnabled()) {
          try {
             String message = captureStackTrace(throwable, exceptionLineCount);
             entryId = createEntry(type, ABNORMALLY_ENDED_STATUS, message);
@@ -392,7 +392,7 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
    @Override
    public boolean updateEntry(Long entryId, Integer status) {
       boolean modified = false;
-      if (enabled) {
+      if (isEnabled()) {
          try {
             if (!updateIfNew(entryId, status)) {
                Object[] data = updatedEntities.get(entryId);
@@ -446,7 +446,7 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
 
    @Override
    public void run() {
-      if (enabled) {
+      if (isEnabled()) {
          if (!newEntities.isEmpty()) {
             try {
                storage.addEntries(new DrainingIterator<>(newEntities.values().iterator()));
@@ -528,7 +528,7 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
 
    @Override
    public boolean isEnabled() {
-      return enabled;
+      return enabled && storage.isAvailable();
    }
 
    @Override

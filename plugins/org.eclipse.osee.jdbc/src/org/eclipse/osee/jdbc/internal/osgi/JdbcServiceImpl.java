@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.jdbc.internal.osgi;
 
-import static org.eclipse.osee.jdbc.internal.JdbcUtil.getServiceId;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcClientBuilder;
@@ -41,6 +43,7 @@ public class JdbcServiceImpl implements JdbcService {
    private final JdbcClient clientProxy = createClientProxy();
 
    private Log logger;
+   private ExecutorAdmin executorAdmin;
    private volatile Map<String, Object> config;
 
    private JdbcServer getServer() {
@@ -51,13 +54,16 @@ public class JdbcServiceImpl implements JdbcService {
       this.logger = logger;
    }
 
+   public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
+      this.executorAdmin = executorAdmin;
+   }
+
    public void start(Map<String, Object> props) {
-      logger.trace("Starting [%s - %s] ...", getClass().getSimpleName(), getServiceId(props));
-      update(props);
+      // update() eventually calls org.hsqldb.server.Server.start() which hangs under certain unknown circumstances so keep that from halting OSGi startup
+      executorAdmin.submitAndWait("Start JDBC service", () -> update(props), 3, TimeUnit.SECONDS);
    }
 
    public void stop(Map<String, Object> props) {
-      logger.trace("Stopping [%s - %s] ...", getClass().getSimpleName(), getServiceId(props));
       JdbcServer server = getServer();
       if (server != null) {
          server.stop();
@@ -116,6 +122,7 @@ public class JdbcServiceImpl implements JdbcService {
          }
          newServer = builder.build();
       }
+
       JdbcServer oldServer = serverRef.getAndSet(newServer);
       if (oldServer != null) {
          oldServer.stop();
@@ -203,8 +210,13 @@ public class JdbcServiceImpl implements JdbcService {
 
       @Override
       public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+         JdbcClient client = clientRef.get();
+         if (client == null) {
+            throw new OseeStateException(
+               "JDBC client not available.  If using an embedded database, it may have hung.");
+         }
          try {
-            JdbcClient client = clientRef.get();
+
             return method.invoke(client, args);
          } catch (Throwable ex) {
             Throwable cause = ex.getCause();
@@ -214,7 +226,5 @@ public class JdbcServiceImpl implements JdbcService {
             throw cause;
          }
       }
-
    }
-
 }

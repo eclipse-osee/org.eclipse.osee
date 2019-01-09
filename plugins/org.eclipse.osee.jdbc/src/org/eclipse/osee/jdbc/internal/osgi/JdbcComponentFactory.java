@@ -25,8 +25,7 @@ import org.osgi.service.component.ComponentInstance;
  */
 public class JdbcComponentFactory {
 
-   private final ConcurrentHashMap<String, JdbcServiceComponent> services =
-      new ConcurrentHashMap<>();
+   private final ConcurrentHashMap<String, JdbcServiceComponent> services = new ConcurrentHashMap<>();
 
    private JdbcServiceConfigParser parser;
 
@@ -42,13 +41,11 @@ public class JdbcComponentFactory {
    }
 
    public void start(Map<String, Object> props) {
-      logger.trace("Starting [%s]...", getClass().getSimpleName());
       parser = new JdbcServiceConfigParser();
       update(props);
    }
 
    public void stop() {
-      logger.trace("Stopping [%s]...", getClass().getSimpleName());
       Iterator<JdbcServiceComponent> iterator = services.values().iterator();
       while (iterator.hasNext()) {
          JdbcServiceComponent component = iterator.next();
