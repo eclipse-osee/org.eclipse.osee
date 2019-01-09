@@ -28,17 +28,6 @@
             class="org.eclipse.osee.framework.skynet.core.attribute.providers.MappedAttributeDataProvider">
       </BinaryAttributeDataProvider>
    </extension>
-  <extension
-        id="OseeTypes_Framework"
-        name="OseeTypes_Framework"
-        point="org.eclipse.osee.framework.skynet.core.OseeTypes">
-     <OseeTypes
-           guid="AQjoNk+tfwaBTmnl1IQA"
-           id="518481167"
-           resource="OSEE-INF/orcsTypes/OseeTypes_Framework.osee">
-     </OseeTypes>
-  </extension>
-
        <extension
             point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
          <ArtifactFactory

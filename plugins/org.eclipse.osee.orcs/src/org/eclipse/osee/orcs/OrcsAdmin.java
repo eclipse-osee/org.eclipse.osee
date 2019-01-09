@@ -24,13 +24,11 @@ public interface OrcsAdmin {
 
    Callable<OrcsMetaData> createFetchOrcsMetaData();
 
-   void createDatastore(String typeModel);
+   void createDatastoreAndSystemBranches(String typeModel);
 
    Callable<OrcsMetaData> migrateDatastore();
 
    boolean isDataStoreInitialized();
-
-   void createSystemBranches(String typeModel);
 
    void createDemoBranches();
 
