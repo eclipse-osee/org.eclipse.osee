@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.help.ui;
+package org.eclipse.osee.ats.ide.help.ui;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

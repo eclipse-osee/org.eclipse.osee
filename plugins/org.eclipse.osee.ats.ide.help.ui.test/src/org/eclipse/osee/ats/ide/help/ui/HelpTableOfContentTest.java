@@ -8,14 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.help.ui;
+package org.eclipse.osee.ats.ide.help.ui;
 
 import static org.junit.Assert.assertNotNull;
 import java.net.URL;
 import java.util.Set;
-import org.eclipse.osee.ats.help.ui.util.HelpTestUtil;
-import org.eclipse.osee.ats.help.ui.util.HtmlParser;
-import org.eclipse.osee.ats.help.ui.util.TocParser;
+import org.eclipse.osee.ats.ide.help.ui.util.HelpTestUtil;
+import org.eclipse.osee.ats.ide.help.ui.util.HtmlParser;
+import org.eclipse.osee.ats.ide.help.ui.util.TocParser;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

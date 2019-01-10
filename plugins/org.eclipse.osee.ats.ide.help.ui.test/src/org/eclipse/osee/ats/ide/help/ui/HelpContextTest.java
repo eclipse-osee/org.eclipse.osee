@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.help.ui;
+package org.eclipse.osee.ats.ide.help.ui;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -16,9 +16,10 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.ats.help.ui.util.ContextParser;
-import org.eclipse.osee.ats.help.ui.util.ContextParser.ContextEntry;
-import org.eclipse.osee.ats.help.ui.util.HelpTestUtil;
+import org.eclipse.osee.ats.help.ui.AtsHelpContext;
+import org.eclipse.osee.ats.ide.help.ui.util.ContextParser;
+import org.eclipse.osee.ats.ide.help.ui.util.ContextParser.ContextEntry;
+import org.eclipse.osee.ats.ide.help.ui.util.HelpTestUtil;
 import org.eclipse.osee.framework.core.data.HelpContext;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.junit.Assert;
