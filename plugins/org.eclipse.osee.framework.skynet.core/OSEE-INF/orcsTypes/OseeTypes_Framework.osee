@@ -719,13 +719,19 @@ artifactType "Requirement" extends "Artifact" {
 }
 
 artifactType "Abstract Spec Requirement" extends "Requirement" {
-	id 58551193202327573
+	id 58551193202327573	
+	attribute "Legacy Id"
 	attribute "Legacy DAL"
 	attribute "Qualification Method"
 	attribute "Subsystem"
 	attribute "Technical Performance Parameter"
 	attribute "Safety Impact"
+	attribute "Software Control Category"
+	attribute "Software Control Category Rationale"
+	attribute "Safety Severity"
 	attribute "Potential Security Impact"	
+	attribute "Doors ID"
+	attribute "Doors Hierarchy"
 }
 
 attributeType "Test Frequency" extends EnumeratedAttribute {
@@ -800,8 +806,6 @@ artifactType "Software Requirement" extends "MS Word Template" , "Direct Softwar
 	id 24
 	attribute "IDAL"
 	attribute "IDAL Rationale"
-	attribute "Software Control Category"
-	attribute "Software Control Category Rationale"
 	attribute "IA Plan"
 }
 
@@ -875,7 +879,6 @@ artifactType "Software Requirement Data Definition" extends "Indirect Software R
 
 abstract artifactType "Abstract System Requirement" extends "Abstract Spec Requirement" {
 	id 796
-	attribute "Legacy Id"
 	attribute "Verification Level"
 	attribute "Effectivity"
 	attribute "Verification Acceptance Criteria"
@@ -897,7 +900,6 @@ artifactType "System Requirement - HTML" extends "Abstract System Requirement" ,
 
 abstract artifactType "Abstract Subsystem Requirement" extends "Abstract Spec Requirement" {
 	id 797
-	attribute "Legacy Id"
 	attribute "Verification Level"
 	attribute "Verification Event"
 	attribute "Effectivity"
@@ -980,6 +982,8 @@ artifactType "Design" extends "MS Word Template" {
 	attribute "Subject Matter Expert"
 	attribute "Potential Security Impact"
 	attribute "IA Plan"
+	attribute "Doors ID"
+	attribute "Doors Hierarchy"
 }
 
 artifactType "Subsystem Design" extends "Design" {
@@ -1191,7 +1195,7 @@ oseeEnumType "enum.req.software.control.category" {
 attributeType "Software Control Category" extends EnumeratedAttribute {
 	id 1958401980089733639
 	dataProvider DefaultAttributeDataProvider
-	min 1
+	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.req.software.control.category"
@@ -1753,6 +1757,8 @@ artifactType "Heading - HTML" extends "Abstract Heading", "HTML Artifact" {
     
 abstract artifactType "Abstract Heading" extends "Artifact" {   
 	id 805
+	attribute "Doors ID"
+	attribute "Doors Hierarchy"	
 }  
    
 artifactType "Component" extends "Artifact" {
@@ -1845,6 +1851,43 @@ attributeType "Hazard Severity" extends EnumeratedAttribute {
 
 attributeType "Safety Objective" extends FloatingPointAttribute {
 	id 1152921504606847142
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "Safety Severity" extends EnumeratedAttribute {
+   id 846763346271224762
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	enumType "enum.safety.severity"
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+oseeEnumType "enum.safety.severity" {
+	id 8602198000748353178
+	entry "(1) Catastrophic"
+	entry "(2) Critical"
+	entry "(3) Marginal"
+	entry "(4) Negligible"
+}
+
+attributeType "Doors ID" extends EnumeratedAttribute {
+   id 8243262488122393232
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	description "External doors id for import support"
+	mediaType "text/plain"
+}
+
+attributeType "Doors Hierarchy" extends EnumeratedAttribute {
+   id 1873562488122323009
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1

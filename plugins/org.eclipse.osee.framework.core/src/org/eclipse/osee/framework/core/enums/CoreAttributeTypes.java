@@ -43,6 +43,8 @@ public final class CoreAttributeTypes {
    public static final AttributeTypeToken DefaultGroup = AttributeTypeToken.valueOf(1152921504606847086L, "Default Group");
    public static final AttributeTypeToken Description = AttributeTypeToken.valueOf(1152921504606847090L, "Description");
    public static final AttributeTypeToken Dictionary = AttributeTypeToken.valueOf(1152921504606847083L, "Dictionary");
+   public static final AttributeTypeToken DoorsID = AttributeTypeToken.valueOf(8243262488122393232L, "Doors ID");
+   public static final AttributeTypeToken DoorsHierarchy = AttributeTypeToken.valueOf(1873562488122323009L, "Doors Hierarchy");
    public static final AttributeTypeToken Effectivity = AttributeTypeToken.valueOf(1152921504606847108L, "Effectivity");
    public static final AttributeTypeToken Email = AttributeTypeToken.valueOf(1152921504606847082L, "Email");
    public static final AttributeTypeToken Extension = AttributeTypeToken.valueOf(1152921504606847064L, "Extension");
@@ -80,6 +82,7 @@ public final class CoreAttributeTypes {
    public static final AttributeTypeToken RelationOrder = AttributeTypeToken.valueOf(1152921504606847089L, "Relation Order");
    public static final AttributeTypeToken RequireConfirmation = AttributeTypeToken.valueOf(188458869981239L, "Require Confirmation");
    public static final AttributeTypeToken Sfha = AttributeTypeToken.valueOf(1152921504606847140L, "SFHA");
+   public static final AttributeTypeToken SafetySeverity = AttributeTypeToken.valueOf(846763346271224762L, "Safety Severity");
    public static final AttributeTypeToken SeverityCategory = AttributeTypeToken.valueOf(1152921504606847114L, "Severity Category");
    public static final AttributeTypeToken SoftwareControlCategory = AttributeTypeToken.valueOf(1958401980089733639L, "Software Control Category");
    public static final AttributeTypeToken SoftwareControlCategoryRationale = AttributeTypeToken.valueOf(750929222178534710L, "Software Control Category Rationale");
