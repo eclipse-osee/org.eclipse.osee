@@ -77,7 +77,7 @@
 				</property>
 			</activation>
 			<modules>
-				<module>../../plugins/org.eclipse.osee.ats.help.ui.test</module>
+				<module>../../plugins/org.eclipse.osee.ats.ide.help.ui.test</module>
 			</modules>
 		</profile>
 	</profiles>
