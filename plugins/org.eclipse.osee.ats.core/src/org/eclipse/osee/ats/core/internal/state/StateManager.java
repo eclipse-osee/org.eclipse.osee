@@ -41,7 +41,6 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.state.SimpleTeamState;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -683,7 +682,7 @@ public class StateManager implements IAtsStateManager {
                user.getUserId());
          }
          if (date != null && atsApi.getStoreService().isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedDate)) {
-            changes.setSoleAttributeValue((ArtifactId) this, AtsAttributeTypes.CreatedDate, date);
+            changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedDate, date);
          }
       }
 
