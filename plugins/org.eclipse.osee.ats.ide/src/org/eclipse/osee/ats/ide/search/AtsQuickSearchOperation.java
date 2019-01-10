@@ -16,14 +16,17 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.world.IWorldEditorConsumer;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorOperation;
 import org.eclipse.osee.ats.ide.world.WorldEditorOperationProvider;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 
@@ -63,6 +66,21 @@ class AtsQuickSearchOperation extends AbstractOperation implements WorldEditorOp
       allArtifacts.clear();
       allArtifacts.addAll(
          Collections.castAll(AtsClientService.get().getQueryService().getArtifactsByIdsOrAtsIds(data.getSearchStr())));
+      for (Artifact art : ArtifactQuery.getArtifactListFromAttributeKeywords(AtsClientService.get().getAtsBranch(),
+         data.getSearchStr(), false, DeletionFlag.EXCLUDE_DELETED, false)) {
+         // only ATS Artifacts
+         if (art instanceof AbstractWorkflowArtifact) {
+            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) art;
+            // default excludes canceled/completed
+            if (data.isIncludeCompleteCancelled() == false) {
+               if (!awa.isCompletedOrCancelled()) {
+                  allArtifacts.add(art);
+               }
+            } else {
+               allArtifacts.add(art);
+            }
+         }
+      }
       return allArtifacts;
    }
 
