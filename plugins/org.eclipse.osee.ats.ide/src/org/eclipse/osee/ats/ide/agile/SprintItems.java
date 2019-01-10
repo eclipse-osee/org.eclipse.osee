@@ -13,11 +13,13 @@ package org.eclipse.osee.ats.ide.agile;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -28,15 +30,15 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class SprintItems {
 
-   private final Collection<? extends Artifact> awas;
+   private final Collection<? extends Artifact> workItemArts;
    private boolean commonSelectedSprint;
    private boolean noBacklogDetected;
    private boolean multipleBacklogsDetected;
    private Artifact commonBacklog;
-   private Set<Artifact> multipleSprints;
+   private Set<ArtifactToken> multipleSprints;
 
-   public SprintItems(final Collection<? extends Artifact> awas) {
-      this.awas = awas;
+   public SprintItems(final Collection<? extends Artifact> workItemArts) {
+      this.workItemArts = workItemArts;
       validate();
    }
 
@@ -46,11 +48,13 @@ public class SprintItems {
       commonSelectedSprint = true;
       noBacklogDetected = false;
       multipleBacklogsDetected = false;
-      for (Artifact artifact : awas) {
-         if (artifact instanceof AbstractWorkflowArtifact) {
-            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
+      for (Artifact workItemArt : workItemArts) {
+         if (workItemArt instanceof IAtsWorkItem) {
+            IAtsWorkItem workItem = (IAtsWorkItem) workItemArt;
             try {
-               Artifact relatedBacklogArt = AtsClientService.get().getQueryServiceClient().getArtifact(awa);
+               ArtifactId backlogArt = AtsClientService.get().getRelationResolver().getRelatedOrNull(workItem,
+                  AtsRelationTypes.AgileBacklog_AgileBacklog);
+               Artifact relatedBacklogArt = AtsClientService.get().getQueryServiceClient().getArtifact(backlogArt);
                if (relatedBacklogArt == null) {
                   noBacklogDetected = true;
                } else if (commonBacklog == null) {
@@ -65,7 +69,9 @@ public class SprintItems {
 
             if (commonSelectedSprint) {
                try {
-                  Artifact sprintArt = awa.getRelatedArtifact(AtsRelationTypes.AgileSprintToItem_Sprint);
+                  ArtifactToken sprintArt = AtsClientService.get().getQueryServiceClient().getArtifact(
+                     AtsClientService.get().getRelationResolver().getRelated(workItem,
+                        AtsRelationTypes.AgileSprintToItem_Sprint));
                   multipleSprints.add(sprintArt);
                } catch (ArtifactDoesNotExist ex) {
                   // do nothing
@@ -107,7 +113,7 @@ public class SprintItems {
 
    public Set<IAgileSprint> getMultipleSprints() {
       Set<IAgileSprint> sprints = new HashSet<>();
-      for (Artifact art : multipleSprints) {
+      for (ArtifactToken art : multipleSprints) {
          sprints.add(AtsClientService.get().getWorkItemService().getAgileSprint(art));
       }
       return sprints;

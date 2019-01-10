@@ -71,6 +71,10 @@ public final class AtsRelationTypes {
    public static final RelationTypeSide AgileFeatureToItem_FeatureGroup = RelationTypeSide.create(RelationSide.SIDE_A, 6017077976601091441L, "AgileFeatureToItem");
    public static final RelationTypeSide AgileFeatureToItem_AtsItem = AgileFeatureToItem_FeatureGroup.getOpposite();
 
+   // NOTE: Backlogs use same relation as Goal; This is here for readability and to document this in code
+   public static final RelationTypeSide AgileBacklog_AgileBacklog = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694325L, "Backlog");
+   public static final RelationTypeSide AgileBacklog_Item = AgileBacklog_AgileBacklog.getOpposite();
+
    public static final RelationTypeSide Port_From = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694330L, "Port");
    public static final RelationTypeSide Port_To = Port_From.getOpposite();
 
