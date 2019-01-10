@@ -20,8 +20,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewToken;
@@ -36,6 +38,8 @@ import org.eclipse.osee.orcs.rest.model.ApplicabilityUiEndpoint;
 @Path("applicui")
 public class ApplicabilityUiEndpointImpl implements ApplicabilityUiEndpoint {
 
+   @Context
+   private UriInfo uriInfo;
    private final OrcsApplicability ops;
 
    public ApplicabilityUiEndpointImpl(OrcsApi orcsApi) {
@@ -46,9 +50,10 @@ public class ApplicabilityUiEndpointImpl implements ApplicabilityUiEndpoint {
    @GET
    @Produces({MediaType.TEXT_HTML})
    public Response get() {
-      URI uri;
       try {
-         uri = new URI("/applicui/config/plconfig.html");
+         String basePath = uriInfo.getAbsolutePath().toString();
+         String url = basePath + "/config/plconfig.html";
+         URI uri = new URI(url);
          return Response.seeOther(uri).build();
       } catch (URISyntaxException ex) {
          throw new OseeCoreException("Exception ", ex);
