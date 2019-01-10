@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.rest.internal.operations;
+package org.eclipse.osee.define.rest.operations;
 
 import java.util.LinkedList;
 import java.util.List;

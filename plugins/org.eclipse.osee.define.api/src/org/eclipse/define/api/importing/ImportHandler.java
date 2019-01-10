@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,24 +8,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.api;
+package org.eclipse.define.api.importing;
+
+import java.net.URI;
+import java.util.Collection;
 
 /**
- * @author Angel Avila
- * @author David W. Miller
+ * @author John R. Misinco
  */
-public interface DefineApi {
+public interface ImportHandler {
 
-   //Traceability
-   TraceabilityOperations getTraceabilityOperations();
+   //lower return value mean higher ranking
+   int getRank();
 
-   //MS Word
-   MSWordOperations getMSWordOperations();
-
-   //Data Rights
-   DataRightsOperations getDataRightsOperations();
-
-   //Import
-   ImportOperations getImportOperations();
+   //returns whether or not processing was successful
+   boolean process(Collection<URI> resources, Object destination, boolean persistChanges);
 
 }

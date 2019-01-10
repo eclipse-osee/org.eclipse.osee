@@ -14,6 +14,7 @@ Import-Package: com.google.common.base;version="15.0.0",
  org.antlr.runtime.tree,
  org.codehaus.jackson;version="1.9.13",
  org.codehaus.jackson.map;version="1.9.13",
+ org.eclipse.define.api.importing,
  org.eclipse.osee.activity.api,
  org.eclipse.osee.app,
  org.eclipse.osee.define.api,
@@ -45,7 +46,15 @@ Import-Package: com.google.common.base;version="15.0.0",
  org.eclipse.osee.orcs.transaction,
  org.eclipse.osee.template.engine,
  org.json,
+ org.jsoup,
+ org.jsoup.nodes,
+ org.jsoup.parser,
+ org.jsoup.select,
  org.osgi.service.event
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.osee.ats.api
+Export-Package: org.eclipse.osee.define.rest.importing.operations,
+ org.eclipse.osee.define.rest.importing.parsers,
+ org.eclipse.osee.define.rest.importing.resolvers,
+ org.eclipse.osee.define.rest.operations

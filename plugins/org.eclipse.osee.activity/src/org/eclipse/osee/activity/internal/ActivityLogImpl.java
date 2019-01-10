@@ -555,4 +555,9 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
    public List<String> getThreadActivityDelta(ThreadStats[] threadStats) {
       return threadActivity.getThreadActivityDelta(threadStats);
    }
+
+   @Override
+   public Log getDebugLogger() {
+      return logger;
+   }
 }

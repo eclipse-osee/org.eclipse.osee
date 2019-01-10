@@ -100,6 +100,7 @@ public final class CoreArtifactTypes {
 
    public static final IArtifactType DocumentDescriptionMSWord = TokenFactory.createArtifactType(806, "Document Description - MS Word");
    public static final IArtifactType DesignDescriptionMSWord = TokenFactory.createArtifactType(807, "Design Description - MS Word");
+   public static final IArtifactType CustomerRequirementMSWord = TokenFactory.createArtifactType(809, "Customer Requirement - MS Word");
    // @formatter:on
 
    private CoreArtifactTypes() {

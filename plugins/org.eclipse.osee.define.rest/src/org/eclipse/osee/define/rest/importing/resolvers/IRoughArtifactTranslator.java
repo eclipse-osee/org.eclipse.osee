@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Boeing.
+ * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,24 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.api;
+package org.eclipse.osee.define.rest.importing.resolvers;
+
+import org.eclipse.define.api.importing.RoughArtifact;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
- * @author Angel Avila
- * @author David W. Miller
+ * @author Roberto E. Escobar
  */
-public interface DefineApi {
+public interface IRoughArtifactTranslator {
 
-   //Traceability
-   TraceabilityOperations getTraceabilityOperations();
-
-   //MS Word
-   MSWordOperations getMSWordOperations();
-
-   //Data Rights
-   DataRightsOperations getDataRightsOperations();
-
-   //Import
-   ImportOperations getImportOperations();
+   void translate(TransactionBuilder transaction, RoughArtifact roughArtifact, ArtifactId artifact);
 
 }

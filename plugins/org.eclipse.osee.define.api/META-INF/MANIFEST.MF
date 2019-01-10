@@ -5,9 +5,11 @@ Bundle-SymbolicName: org.eclipse.osee.define.api
 Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Export-Package: org.eclipse.osee.define.api
+Export-Package: org.eclipse.define.api.importing,
+ org.eclipse.osee.define.api
 Import-Package: javax.ws.rs,
  javax.ws.rs.core,
+ org.eclipse.osee.activity.api,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.model.datarights,
@@ -20,5 +22,6 @@ Import-Package: javax.ws.rs,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data,
+ org.eclipse.osee.orcs.transaction,
  org.json
 Require-Bundle: org.eclipse.osee.framework.core

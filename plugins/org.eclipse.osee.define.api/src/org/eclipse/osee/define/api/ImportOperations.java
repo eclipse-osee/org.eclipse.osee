@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Boeing.
+ * Copyright (c) 2019 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,22 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.define.api;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
+
 /**
- * @author Angel Avila
  * @author David W. Miller
  */
-public interface DefineApi {
+public interface ImportOperations {
 
-   //Traceability
-   TraceabilityOperations getTraceabilityOperations();
-
-   //MS Word
-   MSWordOperations getMSWordOperations();
-
-   //Data Rights
-   DataRightsOperations getDataRightsOperations();
-
-   //Import
-   ImportOperations getImportOperations();
+   public TransactionToken importWord(BranchId branch, String wordURI, ArtifactId parent);
 
 }

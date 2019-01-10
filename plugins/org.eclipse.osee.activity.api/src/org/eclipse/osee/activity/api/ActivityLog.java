@@ -14,6 +14,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ActivityTypeId;
 import org.eclipse.osee.framework.core.data.ActivityTypeToken;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Ryan D. Brooks
@@ -87,4 +88,7 @@ public interface ActivityLog {
    List<String> getThreadActivityDelta(ThreadStats[] threadStats);
 
    List<String> getGarbageCollectionStats();
+
+   // when using ActivityLog for server side reports, use the ActivityLog's logger for debugging
+   Log getDebugLogger();
 }

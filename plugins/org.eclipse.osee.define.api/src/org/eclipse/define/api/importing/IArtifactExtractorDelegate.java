@@ -8,10 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.importing.parsers;
+package org.eclipse.define.api.importing;
 
-import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
+import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Robert A. Fisher
@@ -49,8 +49,10 @@ public interface IArtifactExtractorDelegate {
     * and initialize it with data from the content, or to append the content to the last, or a prior created
     * RoughArtifact.
     */
-   public void processContent(OperationLogger logger, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph);
+   public void processContent(OrcsApi orcsApi, ActivityLog activityLog, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph);
 
    public void finish();
+
+   public void finish(OrcsApi orcsApi, ActivityLog activityLog, RoughArtifactCollector collector);
 
 }

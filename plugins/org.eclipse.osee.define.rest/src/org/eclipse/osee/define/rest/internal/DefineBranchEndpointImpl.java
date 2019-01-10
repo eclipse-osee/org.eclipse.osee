@@ -17,7 +17,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.define.api.DefineBranchEndpointApi;
-import org.eclipse.osee.define.rest.internal.operations.ValidateBranchOperation;
+import org.eclipse.osee.define.rest.operations.ValidateBranchOperation;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;

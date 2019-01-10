@@ -8,5 +8,6 @@ Export-Package: org.eclipse.osee.activity.api
 Import-Package: javax.ws.rs,
  javax.ws.rs.core,
  org.eclipse.osee.framework.core.data,
- org.eclipse.osee.framework.jdk.core.type
+ org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.logger
 Bundle-Vendor: Eclipse Open System Engineering Environment

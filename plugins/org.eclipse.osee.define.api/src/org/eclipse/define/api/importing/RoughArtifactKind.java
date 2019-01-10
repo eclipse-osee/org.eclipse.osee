@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Boeing.
+ * Copyright (c) 2019 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,24 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.api;
+package org.eclipse.define.api.importing;
 
 /**
- * @author Angel Avila
+ * @author Ryan D. Brooks
  * @author David W. Miller
  */
-public interface DefineApi {
-
-   //Traceability
-   TraceabilityOperations getTraceabilityOperations();
-
-   //MS Word
-   MSWordOperations getMSWordOperations();
-
-   //Data Rights
-   DataRightsOperations getDataRightsOperations();
-
-   //Import
-   ImportOperations getImportOperations();
-
+public enum RoughArtifactKind {
+   PRIMARY,
+   SECONDARY,
+   TERTIARY,
+   QUATERNARY,
+   TYPESET,
+   CONTAINER
 }

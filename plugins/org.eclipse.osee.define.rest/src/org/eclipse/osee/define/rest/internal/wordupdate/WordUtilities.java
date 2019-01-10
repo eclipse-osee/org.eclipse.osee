@@ -32,7 +32,8 @@ import org.w3c.dom.Element;
 public class WordUtilities {
 
    public static final String LISTNUM_FIELD_HEAD = "<w:pPr><w:rPr><w:vanish/></w:rPr></w:pPr>";
-
+   public static final String BODY_START = "<w:body>";
+   public static final String BODY_END = "</w:body>";
    private static final Matcher binIdMatcher = Pattern.compile("wordml://(.+?)[.]").matcher("");
    private static final Pattern tagKiller = Pattern.compile("<.*?>", Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern paragraphPattern = Pattern.compile("<w:p( .*?)?>");
@@ -80,6 +81,15 @@ public class WordUtilities {
       }
 
       return sb.toString();
+   }
+
+   public static boolean isHeadingStyle(String paragraphStyle) {
+      if (paragraphStyle == null) {
+         return false;
+      } else {
+         String style = paragraphStyle.toLowerCase();
+         return style.startsWith("heading") || style.startsWith("toc") || style.startsWith("outline");
+      }
    }
 
    /**

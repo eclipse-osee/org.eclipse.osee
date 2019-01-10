@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.define.rest;
 
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.define.api.DataRightsOperations;
 import org.eclipse.osee.define.api.DefineApi;
+import org.eclipse.osee.define.api.ImportOperations;
 import org.eclipse.osee.define.api.MSWordOperations;
 import org.eclipse.osee.define.api.TraceabilityOperations;
 import org.eclipse.osee.logger.Log;
@@ -20,16 +22,19 @@ import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Angel Avila
+ * @author David W. Miller
  */
 public class DefineApiImpl implements DefineApi {
 
    private OrcsApi orcsApi;
    private Log logger;
+   private ActivityLog activityLog;
    private EventAdmin eventAdmin;
 
    private MSWordOperations wordOperations;
    private DataRightsOperations dataRightsOperations;
    private TraceabilityOperations traceabilityOperations;
+   private ImportOperations importOperations;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -37,6 +42,10 @@ public class DefineApiImpl implements DefineApi {
 
    public void setLogger(Log logger) {
       this.logger = logger;
+   }
+
+   public void setActivityLog(ActivityLog activityLog) {
+      this.activityLog = activityLog;
    }
 
    public void setEventAdmin(EventAdmin eventAdmin) {
@@ -47,6 +56,7 @@ public class DefineApiImpl implements DefineApi {
       wordOperations = new MSWordOperationsImpl(orcsApi, logger, eventAdmin);
       dataRightsOperations = new DataRightsOperationsImpl(orcsApi);
       traceabilityOperations = new TraceabilityOperationsImpl(orcsApi);
+      importOperations = new ImportOperationsImpl(orcsApi, activityLog);
    }
 
    @Override
@@ -62,5 +72,10 @@ public class DefineApiImpl implements DefineApi {
    @Override
    public TraceabilityOperations getTraceabilityOperations() {
       return traceabilityOperations;
+   }
+
+   @Override
+   public ImportOperations getImportOperations() {
+      return importOperations;
    }
 }
