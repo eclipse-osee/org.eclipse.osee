@@ -45,7 +45,7 @@ public class SprintItems {
    public void validate() {
       commonBacklog = null;
       multipleSprints = new HashSet<>();
-      commonSelectedSprint = true;
+      commonSelectedSprint = false;
       noBacklogDetected = false;
       multipleBacklogsDetected = false;
       for (Artifact workItemArt : workItemArts) {
@@ -67,17 +67,9 @@ public class SprintItems {
                noBacklogDetected = true;
             }
 
-            if (commonSelectedSprint) {
-               try {
-                  ArtifactToken sprintArt = AtsClientService.get().getQueryServiceClient().getArtifact(
-                     AtsClientService.get().getRelationResolver().getRelated(workItem,
-                        AtsRelationTypes.AgileSprintToItem_Sprint));
-                  multipleSprints.add(sprintArt);
-               } catch (ArtifactDoesNotExist ex) {
-                  // do nothing
-                  commonSelectedSprint = false;
-               }
-            }
+            multipleSprints.addAll(AtsClientService.get().getRelationResolver().getRelated(workItem,
+               AtsRelationTypes.AgileSprintToItem_Sprint));
+            commonSelectedSprint = multipleSprints.size() <= 1;
          }
       }
    }
