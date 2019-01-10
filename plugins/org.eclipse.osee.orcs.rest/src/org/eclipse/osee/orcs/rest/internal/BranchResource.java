@@ -12,9 +12,7 @@ package org.eclipse.osee.orcs.rest.internal;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -27,17 +25,12 @@ import org.eclipse.osee.orcs.search.BranchQuery;
  */
 public class BranchResource {
 
-   @Context
-   UriInfo uriInfo;
-   @Context
-   Request request;
+   private final UriInfo uriInfo;
+   private final BranchId branchId;
+   private final OrcsApi orcsApi;
 
-   BranchId branchId;
-   OrcsApi orcsApi;
-
-   public BranchResource(UriInfo uriInfo, Request request, BranchId branchId, OrcsApi orcsApi) {
+   public BranchResource(UriInfo uriInfo, BranchId branchId, OrcsApi orcsApi) {
       this.uriInfo = uriInfo;
-      this.request = request;
       this.branchId = branchId;
       this.orcsApi = orcsApi;
    }
@@ -54,5 +47,4 @@ public class BranchResource {
       HtmlWriter writer = new HtmlWriter(uriInfo, orcsApi);
       return writer.toHtml(results);
    }
-
 }

@@ -17,7 +17,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -40,8 +39,6 @@ public class BranchesResource {
 
    @Context
    UriInfo uriInfo;
-   @Context
-   Request request;
 
    public BranchesResource(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -49,7 +46,7 @@ public class BranchesResource {
 
    @Path("{uuid}")
    public BranchResource getBranch(@PathParam("uuid") BranchId id) {
-      return new BranchResource(uriInfo, request, id, orcsApi);
+      return new BranchResource(uriInfo, id, orcsApi);
    }
 
    @GET
