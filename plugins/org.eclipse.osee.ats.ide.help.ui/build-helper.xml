@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="org.eclipse.osee.ats.help.ui" basedir="."
+<project name="org.eclipse.osee.ats.ide.help.ui" basedir="."
 	default="all">
 	<property name="osee.base.help.plugin" value="../org.eclipse.osee.framework.help.ui" />
 	<property name="ant.file.imported" value="${osee.base.help.plugin}/scripts" />
