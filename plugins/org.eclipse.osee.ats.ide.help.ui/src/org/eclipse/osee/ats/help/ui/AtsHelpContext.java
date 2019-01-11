@@ -22,7 +22,7 @@ public final class AtsHelpContext {
       // Private Constructor
    }
 
-   private static final String PLUGIN_ID = "org.eclipse.osee.ats.ide.elp.ui";
+   private static final String PLUGIN_ID = "org.eclipse.osee.ats.ide.help.ui";
 
    public static final HelpContext ACTION_VIEW = toContext("atsActionView");
    public static final HelpContext NAVIGATOR = toContext("atsNavigator");
