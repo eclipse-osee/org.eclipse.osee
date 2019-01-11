@@ -33,6 +33,7 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken AllowCommitBranch = createType(1152921504606847162L, "Allow Commit Branch");
    public static final AttributeTypeToken AllowCreateBranch = createType(1152921504606847161L, "Allow Create Branch");
    public static final AttributeTypeToken AllowUserActionCreation = createType(1322118789779953012L, "Allow User Action Creation");
+   public static final AttributeTypeToken AllowWebExport = createType(1244831604424847172L, "Allow Web Export");
    public static final AttributeTypeToken ApplicabilityWorkflow = createType(1152922022510067882L, "Applicability Workflow");
    public static final AttributeTypeToken ApplicableToProgram = createType(1152921949227188394L, "Applicable To Program");
    public static final AttributeTypeToken AtsConfiguredBranch = createType(72063456936722683L, "ATS Configured Branch", "ATS Configured Branch");

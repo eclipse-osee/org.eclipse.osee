@@ -195,6 +195,7 @@ artifactType "Version" extends "ats.Ats Artifact" {
 	attribute "ats.Version Locked"
 	attribute "ats.TestRunToSourceLocator"
 	attribute "ats.closure.Closure State"
+	attribute "ats.Allow Web Export"
 }
 
 abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
@@ -878,6 +879,15 @@ attributeType "ats.Allow Commit Branch" extends BooleanAttribute {
 	min 0
 	max 1
 	defaultValue "true"
+	mediaType "text/plain"
+}
+
+attributeType "ats.Allow Web Export" extends BooleanAttribute {
+	id 1244831604424847172
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "false"
 	mediaType "text/plain"
 }
 
