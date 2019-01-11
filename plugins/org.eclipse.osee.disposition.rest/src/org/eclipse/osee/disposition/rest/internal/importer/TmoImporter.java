@@ -69,7 +69,7 @@ public class TmoImporter implements DispoImporterApi {
             Worker worker = new Worker(sublist, dataFactory, exisitingItems, report);
             Future<List<DispoItem>> future;
             try {
-               future = executor.schedule("Dispo tmo importer", worker);
+               future = executor.submit("Dispo tmo importer", worker);
                futures.add(future);
             } catch (Exception ex) {
                report.addEntry("FATAL", ex.getLocalizedMessage(), DispoSummarySeverity.ERROR);

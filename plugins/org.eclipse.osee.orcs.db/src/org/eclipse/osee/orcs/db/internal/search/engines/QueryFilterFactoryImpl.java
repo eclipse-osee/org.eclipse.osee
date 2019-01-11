@@ -131,7 +131,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
       private void addToQueue(AttributeData data, LoadDataHandler handler) {
          dataToProcess.offer(data);
          if (executorStarted.compareAndSet(false, true)) {
-            future = executorAdmin.scheduleOnce("AttributeData loader", createConsumer(handler));
+            future = executorAdmin.submit("AttributeData loader", createConsumer(handler));
          }
       }
 

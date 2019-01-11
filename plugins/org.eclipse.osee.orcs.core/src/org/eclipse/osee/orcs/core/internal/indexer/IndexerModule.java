@@ -52,7 +52,7 @@ public class IndexerModule implements HasStatistics<IndexerStatistics> {
       queryIndexer.addCollector(systemCollector);
       try {
          if (preferences.isBoolean(DataStoreConstants.DATASTORE_INDEX_ON_START_UP)) {
-            task = executorAdmin.schedule("Attribute Indexer",
+            task = executorAdmin.submit("Attribute Indexer",
                queryIndexer.indexAllFromQueue(systemSession, attributeTypes));
          } else {
             logger.info("Indexer was not executed on Server Startup.");

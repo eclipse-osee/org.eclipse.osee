@@ -73,7 +73,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    @Override
    public String requestCacheReload() {
-      executorAdmin.scheduleOnce("REST requested ATS configuration cache reload", getConfigService);
+      executorAdmin.submit("REST requested ATS configuration cache reload", getConfigService);
       return "ATS configuration cache reload request submitted.";
    }
 

@@ -471,7 +471,7 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
       long currentTime = System.currentTimeMillis();
       if (force || currentTime - lastFlushTime > freshnessMillis) {
          try {
-            executorAdmin.scheduleOnce("Activity Log flush to datastore", this);
+            executorAdmin.submit("Activity Log flush to datastore", this);
          } catch (Exception ex) {
             logger.error(ex, "Error scheduling activity log callable");
          } finally {

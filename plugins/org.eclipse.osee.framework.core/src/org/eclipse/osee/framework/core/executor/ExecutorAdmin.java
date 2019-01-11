@@ -24,11 +24,21 @@ public interface ExecutorAdmin {
 
    <T> Future<T> schedule(String id, Callable<T> callable, ExecutionCallback<T> callback);
 
-   <T> Future<T> schedule(String name, Callable<T> task);
+   <T> Future<T> submit(String name, Callable<T> task);
 
    void shutdown(String id);
 
-   Future<?> scheduleOnce(String name, Runnable task);
+   Future<?> submit(String name, Runnable task);
+
+   /**
+    * Execute this runnable immediately and wait for it to complete, up to the timeout, before returning
+    */
+   Future<?> submitAndWait(String name, Runnable task, long timeout, TimeUnit unit);
+
+   /**
+    * Execute this callable immediately and wait for it to complete, up to the timeout, before returning
+    */
+   <T> Future<T> submitAndWait(String name, Callable<T> task, long timeout, TimeUnit unit);
 
    ScheduledFuture<?> scheduleAtFixedRate(String name, Runnable task, long initialDelay, long executionRate, TimeUnit timeUnit);
 

@@ -83,7 +83,7 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
    }
 
    @Override
-   public <T> Future<T> schedule(String name, Callable<T> task) {
+   public <T> Future<T> submit(String name, Callable<T> task) {
       return executor.submit(asRenamingCallable(name, task));
    }
 
@@ -200,7 +200,7 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
    }
 
    @Override
-   public Future<?> scheduleOnce(String name, Runnable task) {
+   public Future<?> submit(String name, Runnable task) {
       return executor.submit(asRenamingRunnable(name, task));
    }
 
@@ -212,5 +212,27 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
    @Override
    public ScheduledFuture<?> scheduleWithFixedDelay(String name, Runnable task, long initialDelay, long delay, TimeUnit unit) {
       return executor.scheduleWithFixedDelay(asRenamingRunnable(name, task), initialDelay, delay, unit);
+   }
+
+   @Override
+   public <T> Future<T> submitAndWait(String name, Callable<T> task, long timeout, TimeUnit unit) {
+      Future<T> future = submit(name, task);
+      try {
+         future.get(timeout, unit);
+      } catch (Exception ex) {
+         logger.error("%s didn't complete in under %s %s", name, timeout, unit);
+      }
+      return future;
+   }
+
+   @Override
+   public Future<?> submitAndWait(String name, Runnable task, long timeout, TimeUnit unit) {
+      Future<?> future = submit(name, task);
+      try {
+         future.get(timeout, unit);
+      } catch (Exception ex) {
+         logger.error("%s didn't complete in under %s %s", name, timeout, unit);
+      }
+      return future;
    }
 }
