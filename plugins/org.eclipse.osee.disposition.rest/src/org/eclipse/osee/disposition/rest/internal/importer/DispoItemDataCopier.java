@@ -77,7 +77,7 @@ public class DispoItemDataCopier {
             String justTestPoint = idsToUpdate.get(id);
             testPointNumber.add(Integer.parseInt(justTestPoint)); // Made this locationRef negative to convey to User it was valid at one point but on reimport it was invalid
          } else {
-            message.append("Something when wrong with trying to rebuild the Annotations");
+            message.append("Something went wrong with trying to rebuild the Annotations");
             isGaveup = true;
             break;
          }
@@ -126,8 +126,9 @@ public class DispoItemDataCopier {
             if (!oldTestPointLocation.equals(newTestPointLocation)) {
                message.append("Test Point:");
                message.append(oldTestPointLocation);
-               message.append("is now:");
+               message.append(" is now:");
                message.append(newTestPointLocation);
+               message.append(" ");
                idsToUpdate.put(idOfOldDiscrep, newTestPointLocation);
             }
 
@@ -137,7 +138,7 @@ public class DispoItemDataCopier {
             // This discrepancy doesn't exist on the new Item
             message.append("Test Point:");
             message.append(oldTestPointLocation);
-            message.append("No longer fails");
+            message.append(" No longer fails ");
             String outdatedLocation = "-" + oldTestPointLocation;
             idsToUpdate.put(DispoStrings.DeletedDiscrepancy + outdatedLocation, outdatedLocation);
             removeDiscrepancyFromAnnotation(oldDiscrepany, annotations);
@@ -177,8 +178,7 @@ public class DispoItemDataCopier {
          Discrepancy discrepancy = discrepancies.get(key);
          String normalizedText = discrepancy.getText().replaceFirst(".*?\\.", ""); // Want to exclude Point number from text we match with
 
-         Pair<Discrepancy, Boolean> newPair =
-            new Pair<>(discrepancy, textToDiscrepancy.containsKey(normalizedText));
+         Pair<Discrepancy, Boolean> newPair = new Pair<>(discrepancy, textToDiscrepancy.containsKey(normalizedText));
          textToDiscrepancy.put(normalizedText, newPair);
       }
 
