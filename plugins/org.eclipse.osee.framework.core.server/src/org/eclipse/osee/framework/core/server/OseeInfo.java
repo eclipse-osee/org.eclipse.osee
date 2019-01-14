@@ -19,6 +19,8 @@ import org.eclipse.osee.jdbc.JdbcClient;
  */
 public class OseeInfo {
    private static final String GET_VALUE_SQL = "Select OSEE_VALUE FROM osee_info where OSEE_KEY = ?";
+   private static final String INSERT_KEY_VALUE_SQL = "INSERT INTO osee_info (OSEE_KEY, OSEE_VALUE) VALUES (?, ?)";
+   private static final String DELETE_KEY_SQL = "DELETE FROM osee_info WHERE OSEE_KEY = ?";
    public static final String DB_ID_KEY = "osee.db.guid";
    private static Map<String, String> cache = new HashMap<>();
 
@@ -39,6 +41,12 @@ public class OseeInfo {
          cache.put(key, cacheValue);
       }
       return cacheValue;
+   }
+
+   public static void setValue(JdbcClient jdbcClient, String key, String value) {
+      jdbcClient.runPreparedUpdate(DELETE_KEY_SQL, key);
+      jdbcClient.runPreparedUpdate(INSERT_KEY_VALUE_SQL, key, value);
+      cache.put(key, value);
    }
 
 }

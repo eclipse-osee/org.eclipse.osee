@@ -17,10 +17,6 @@ import java.util.Map.Entry;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.config.tx.AtsConfigTxActionableItem;
-import org.eclipse.osee.ats.api.config.tx.AtsConfigTxProgram;
-import org.eclipse.osee.ats.api.config.tx.AtsConfigTxTeamDef;
-import org.eclipse.osee.ats.api.config.tx.AtsConfigTxVersion;
 import org.eclipse.osee.ats.api.config.tx.AtsVersionArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsActionableItemArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTx;
@@ -72,7 +68,7 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
       for (UserToken user : users) {
          @Nullable
          ArtifactToken userArt = atsApi.getQueryService().getArtifact(user);
-         if (userArt == null) {
+         if (userArt == null || userArt.isInvalid()) {
             userArt = changes.createArtifact(user);
          }
          changes.setName(userArt, user.getName());
@@ -88,14 +84,31 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
    }
 
    @Override
-   public IAtsConfigTxTeamDef createTeamDef(IAtsTeamDefinitionArtifactToken teamDef) {
+   public IAtsConfigTxTeamDef createTeamDef(IAtsTeamDefinition parent, IAtsTeamDefinitionArtifactToken teamDef) {
       ArtifactToken newTeam = atsApi.getQueryService().getArtifact(teamDef);
       if (newTeam == null || newTeam.isInvalid()) {
          newTeam = changes.createArtifact(teamDef);
       }
       IAtsTeamDefinition newTeamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(newTeam);
+      if (parent != null) {
+         changes.relate(parent, CoreRelationTypes.Default_Hierarchical__Child, newTeamDef);
+      }
       newTeams.put(newTeam.getName(), newTeamDef);
       return new AtsConfigTxTeamDef(newTeamDef, atsApi, changes, this);
+   }
+
+   @Override
+   public IAtsConfigTxActionableItem createActionableItem(IAtsActionableItem parent, IAtsActionableItemArtifactToken ai) {
+      ArtifactToken newAiArt = atsApi.getQueryService().getArtifact(ai);
+      if (newAiArt == null || newAiArt.isInvalid()) {
+         newAiArt = changes.createArtifact(ai);
+      }
+      IAtsActionableItem newAi = atsApi.getActionableItemService().getActionableItemById(newAiArt);
+      if (parent != null) {
+         changes.relate(parent, CoreRelationTypes.Default_Hierarchical__Child, newAi);
+      }
+      newAis.put(newAiArt.getName(), newAi);
+      return new AtsConfigTxActionableItem(newAi, atsApi, changes, this);
    }
 
    @Override
@@ -147,12 +160,7 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
 
    @Override
    public IAtsTeamDefinition getTeamDef(String name) {
-      for (Entry<String, IAtsTeamDefinition> entry : newTeams.entrySet()) {
-         if (entry.getKey().equals(name)) {
-            return entry.getValue();
-         }
-      }
-      return null;
+      return newTeams.get(name);
    }
 
    @Override
@@ -163,6 +171,21 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
       }
       IAtsProgram program = atsApi.getProgramService().getProgramById(newProgramArt);
       return new AtsConfigTxProgram(program, atsApi, changes, this);
+   }
+
+   @Override
+   public IAtsChangeSet getChanges() {
+      return changes;
+   }
+
+   @Override
+   public IAtsActionableItem getActionableItem(ArtifactId artifact) {
+      for (Entry<String, IAtsActionableItem> entry : newAis.entrySet()) {
+         if (entry.getValue().getId().equals(artifact.getId())) {
+            return entry.getValue();
+         }
+      }
+      return null;
    }
 
 }

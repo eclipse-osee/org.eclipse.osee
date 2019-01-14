@@ -11,9 +11,9 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.demo.api.DemoWorkType;
 import org.eclipse.osee.ats.ide.column.ChangeTypeColumnUI;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.ChangeTypeUtil;

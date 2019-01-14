@@ -14,6 +14,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTx;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.config.tx.AtsConfigTxImpl;
 
@@ -33,6 +34,11 @@ public abstract class AbstractAtsConfigurationService implements IAtsConfigurati
    @Override
    public IAtsConfigTx createConfigTx(String name, IAtsUser asUser) {
       return new AtsConfigTxImpl(name, atsApi, asUser);
+   }
+
+   @Override
+   public boolean isAtsBaseCreated() {
+      return atsApi.getQueryService().getArtifact(AtsArtifactToken.HeadingFolder) != null;
    }
 
 }

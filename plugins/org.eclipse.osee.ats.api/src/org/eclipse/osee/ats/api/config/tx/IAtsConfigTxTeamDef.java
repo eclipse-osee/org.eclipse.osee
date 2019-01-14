@@ -46,11 +46,13 @@ public interface IAtsConfigTxTeamDef {
 
    IAtsConfigTxTeamDef andVersion(String name, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease);
 
-   IAtsConfigTxTeamDef createChildTeamDef(IAtsTeamDefinitionArtifactToken teamDef);
+   IAtsConfigTxTeamDef createChildTeamDef(IAtsTeamDefinition parent, IAtsTeamDefinitionArtifactToken teamDef);
 
    IAtsConfigTxTeamDef createChildTeamDef(String name);
 
    IAtsTeamDefinition getTeamDef();
 
    IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken version, ReleasedOption released, IOseeBranch branch, NextRelease none);
+
+   IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken... verToks);
 }

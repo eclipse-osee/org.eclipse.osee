@@ -91,7 +91,7 @@ public interface AtsConfigEndpointApi {
    public AtsConfiguration createConfig(MultivaluedMap<String, String> form);
 
    @POST
-   public Response createUpdateConfig();
+   public XResultData createUpdateConfig();
 
    @PUT
    @Path("workDef")
@@ -102,5 +102,15 @@ public interface AtsConfigEndpointApi {
    @Path("alive")
    @Produces(MediaType.APPLICATION_JSON)
    public XResultData alive();
+
+   @PUT
+   @Path("init/demo")
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData demoDbInit();
+
+   @PUT
+   @Path("init/ats")
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData atsDbInit();
 
 }

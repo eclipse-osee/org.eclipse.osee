@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.demo.api.DemoWorkType;
 import org.eclipse.osee.ats.ide.column.ParentAtsIdColumn;
 import org.eclipse.osee.ats.ide.column.ParentStateColumn;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;

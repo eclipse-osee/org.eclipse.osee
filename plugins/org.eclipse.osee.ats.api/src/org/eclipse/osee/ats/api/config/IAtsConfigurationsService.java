@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.api.config;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTx;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -26,5 +27,9 @@ public interface IAtsConfigurationsService {
    IAtsConfigTx createConfigTx(String string, IAtsUser asUser);
 
    void setAtsApi(AtsApi atsApi);
+
+   XResultData configAtsDatabase(AtsApi atsApi);
+
+   boolean isAtsBaseCreated();
 
 }

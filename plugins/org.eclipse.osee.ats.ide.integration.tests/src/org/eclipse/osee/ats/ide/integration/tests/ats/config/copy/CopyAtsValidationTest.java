@@ -11,9 +11,9 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.config.copy;
 
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.demo.DemoActionableItems;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.demo.api.DemoActionableItems;
-import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.ide.config.copy.ConfigData;
 import org.eclipse.osee.ats.ide.config.copy.CopyAtsValidation;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;

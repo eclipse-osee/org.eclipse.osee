@@ -399,7 +399,8 @@ public class RelationManagerImpl implements RelationManager {
       GraphData graph = node.getGraph();
       ensureRelationsInitialized(session, graph, node);
       RelationNodeAdjacencies adjacencies = graph.getAdjacencies(node);
-      return adjacencies.getList(type, includeDeleted, node, side);
+      List<Relation> relations = adjacencies.getList(type, includeDeleted, node, side);
+      return relations;
    }
 
    @Override

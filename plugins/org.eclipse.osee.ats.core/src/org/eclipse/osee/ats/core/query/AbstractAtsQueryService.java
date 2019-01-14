@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -296,6 +297,18 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
          }
       }
       return artifacts;
+   }
+
+   @Override
+   public ArtifactToken getOrCreateArtifact(ArtifactToken parent, ArtifactToken artifactTok, IAtsChangeSet changes) {
+      ArtifactToken artifact = getArtifact(artifactTok);
+      if (artifact == null || artifact.isInvalid()) {
+         artifact = changes.createArtifact(artifactTok);
+      }
+      if (atsApi.getRelationResolver().getParent(artifact) == null) {
+         changes.addChild(parent, artifact);
+      }
+      return artifact;
    }
 
 }

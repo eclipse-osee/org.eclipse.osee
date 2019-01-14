@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.demo;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
-import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.populate.Pdd93CreateDemoAgile;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;

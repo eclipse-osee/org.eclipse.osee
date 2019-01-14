@@ -49,11 +49,11 @@ public final class AtsArtifactToken {
    public static ArtifactToken AtsTempAdmin = ArtifactToken.valueOf(5367074, "AtsTempAdmin", COMMON, CoreArtifactTypes.UserGroup);
 
    // Default Work Definitions
-   public static ArtifactToken WorkDef_Sprint = ArtifactToken.valueOf(6915497, "WorkDef_Sprint", COMMON, AtsArtifactTypes.WorkDefinition);
-   public static ArtifactToken WorkDef_Goal = ArtifactToken.valueOf(142177, "WorkDef_Goal", COMMON, AtsArtifactTypes.WorkDefinition);
-   public static ArtifactToken WorkDef_Review_Decision = ArtifactToken.valueOf(25335, "WorkDef_Review_Decision", COMMON, AtsArtifactTypes.WorkDefinition);
-   public static ArtifactToken WorkDef_Review_PeerToPeer = ArtifactToken.valueOf(25334, "WorkDef_Review_PeerToPeer", COMMON, AtsArtifactTypes.WorkDefinition);
-   public static ArtifactToken WorkDef_Task_Default = ArtifactToken.valueOf(105373, "WorkDef_Task_Default", COMMON, AtsArtifactTypes.WorkDefinition);
+   public static IAtsWorkDefinitionArtifactToken WorkDef_Sprint = AtsWorkDefinitionArtifactToken.valueOf(6915497L, "WorkDef_Sprint");
+   public static IAtsWorkDefinitionArtifactToken WorkDef_Goal = AtsWorkDefinitionArtifactToken.valueOf(142177L, "WorkDef_Goal");
+   public static IAtsWorkDefinitionArtifactToken WorkDef_Review_Decision = AtsWorkDefinitionArtifactToken.valueOf(25335L, "WorkDef_Review_Decision");
+   public static IAtsWorkDefinitionArtifactToken WorkDef_Review_PeerToPeer = AtsWorkDefinitionArtifactToken.valueOf(25334L, "WorkDef_Review_PeerToPeer");
+   public static IAtsWorkDefinitionArtifactToken WorkDef_Task_Default = AtsWorkDefinitionArtifactToken.valueOf(105373L, "WorkDef_Task_Default");
    public static IAtsWorkDefinitionArtifactToken WorkDef_Team_Default = AtsWorkDefinitionArtifactToken.valueOf(72301L, "WorkDef_Team_Default");
    public static IAtsWorkDefinitionArtifactToken WorkDef_Team_Simple = AtsWorkDefinitionArtifactToken.valueOf(72302L, "WorkDef_Team_Simple");
 

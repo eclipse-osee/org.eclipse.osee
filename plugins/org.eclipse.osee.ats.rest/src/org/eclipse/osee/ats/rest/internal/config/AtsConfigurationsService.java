@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -258,6 +259,17 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
          return jaxAi;
       }
       return null;
+   }
+
+   @Override
+   public XResultData configAtsDatabase(AtsApi atsApi) {
+      if (isAtsBaseCreated()) {
+         XResultData results = new XResultData();
+         results.error("ATS base config has already been completed");
+         return results;
+      }
+      AtsDatabaseConfig config = new AtsDatabaseConfig(atsApi, orcsApi);
+      return config.run();
    }
 
 }

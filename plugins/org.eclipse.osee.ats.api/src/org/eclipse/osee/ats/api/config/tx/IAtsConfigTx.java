@@ -11,9 +11,11 @@
 package org.eclipse.osee.ats.api.config.tx;
 
 import java.util.List;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.query.NextRelease;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -26,7 +28,7 @@ public interface IAtsConfigTx {
 
    IAtsConfigTx createUsers(List<UserToken> users);
 
-   IAtsConfigTxTeamDef createTeamDef(IAtsTeamDefinitionArtifactToken teamDef);
+   IAtsConfigTxTeamDef createTeamDef(IAtsTeamDefinition parent, IAtsTeamDefinitionArtifactToken teamDef);
 
    IAtsConfigTxActionableItem createActionableItem(IAtsActionableItemArtifactToken actionableItem);
 
@@ -41,5 +43,11 @@ public interface IAtsConfigTx {
    IAtsTeamDefinition getTeamDef(String name);
 
    IAtsConfigTxProgram createProgram(IAtsProgramArtifactToken program);
+
+   IAtsConfigTxActionableItem createActionableItem(IAtsActionableItem parent, IAtsActionableItemArtifactToken actionableItem);
+
+   IAtsActionableItem getActionableItem(ArtifactId artifact);
+
+   IAtsChangeSet getChanges();
 
 }

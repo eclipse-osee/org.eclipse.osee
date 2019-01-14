@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
-import org.eclipse.osee.ats.demo.api.DemoWorkType;
+import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.ide.column.TargetedVersionColumnUI;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;

@@ -28,8 +28,8 @@ public class AddDbInitDemoChoice implements IAddDbInitChoice {
    public void addDbInitChoice(IGroupSelector groupSelection) {
       DatabaseInitConfiguration config = new DatabaseInitConfiguration();
       config.addTask("org.eclipse.osee.framework.database.init.SimpleTemplateProviderTask");
-      config.addTask("org.eclipse.osee.ats.ide.AtsDatabaseConfig");
-      config.addTask("org.eclipse.osee.ats.ide.demo.DemoDatabaseConfig");
+      config.addTask("org.eclipse.osee.ats.ide.AtsDatabaseConfigClient");
+      config.addTask("org.eclipse.osee.ats.ide.demo.DemoDatabaseConfigClient");
       config.addTask("org.eclipse.osee.ats.ide.demo.DemoWebDatabaseConfig");
 
       config.addOseeType(DefaultOseeTypeDefinitions.OSEE_BASE_TYPES);

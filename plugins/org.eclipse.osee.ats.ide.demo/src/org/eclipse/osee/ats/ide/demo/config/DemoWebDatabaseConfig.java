@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.ide.demo.config;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
-import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -43,10 +42,6 @@ public class DemoWebDatabaseConfig implements IDbInitializationTask {
       Artifact demoProgramsArt = OseeSystemArtifacts.getOrCreateArtifact(DemoArtifactToken.DemoPrograms, atsBranch);
       oseeWebArt.addRelation(CoreRelationTypes.Universal_Grouping__Members, demoProgramsArt);
       oseeWebArt.persist(transaction);
-
-      Artifact sawTeam = ArtifactQuery.getArtifactFromToken(DemoArtifactToken.SAW_Bld_1);
-      sawTeam.addRelation(CoreRelationTypes.SupportingInfo_SupportedBy, demoProgramsArt);
-      sawTeam.persist(transaction);
 
       headingArt.addChild(oseeWebArt);
       headingArt.addChild(demoProgramsArt);

@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
+import org.eclipse.osee.ats.rest.internal.demo.DemoDatabaseConfig;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -219,14 +220,14 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    }
 
    @Override
-   public Response createUpdateConfig() {
+   public XResultData createUpdateConfig() {
       XResultData resultData = new XResultData(false);
       UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsApi, orcsApi);
       update.createUpdateConfig(resultData);
       if (resultData.isEmpty()) {
          resultData.log("Nothing to update");
       }
-      return Response.ok(resultData.toString()).build();
+      return resultData;
    }
 
    @Override
@@ -331,5 +332,28 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       XResultData results = new XResultData();
       results.logf("Alive");
       return results;
+   }
+
+   @Override
+   public XResultData demoDbInit() {
+      XResultData rd = new XResultData();
+      try {
+         DemoDatabaseConfig config = new DemoDatabaseConfig(atsApi);
+         config.run();
+      } catch (Exception ex) {
+         rd.error(Lib.exceptionToString(ex));
+      }
+      return rd;
+   }
+
+   @Override
+   public XResultData atsDbInit() {
+      XResultData rd = new XResultData();
+      try {
+         rd = atsApi.getConfigService().configAtsDatabase(atsApi);
+      } catch (Exception ex) {
+         rd.error(Lib.exceptionToString(ex));
+      }
+      return rd;
    }
 }

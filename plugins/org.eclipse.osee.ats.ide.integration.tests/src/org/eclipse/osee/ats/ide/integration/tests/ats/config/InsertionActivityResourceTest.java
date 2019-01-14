@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.config;
 
-import org.eclipse.osee.ats.demo.api.DemoInsertionActivity;
+import org.eclipse.osee.ats.api.demo.DemoInsertionActivity;
 import org.eclipse.osee.ats.ide.integration.tests.ats.resource.AbstractRestTest;
 import org.junit.Test;
 

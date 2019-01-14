@@ -1,0 +1,161 @@
+workDefinition "WorkDef_Team_Default" {
+	id "72301"
+   startState "Endorse" 
+
+   widgetDefinition "Problem" { 
+      attributeName "ats.Problem" 
+      xWidgetName "XTextDam"
+      option FILL_VERTICALLY
+   }
+
+   widgetDefinition "Proposed Resolution" {
+      attributeName "ats.Proposed Resolution"
+      xWidgetName "XTextDam"
+      option FILL_VERTICALLY
+   }
+
+   widgetDefinition "Change Type" {
+      attributeName "ats.Change Type"
+      xWidgetName "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)"
+      option REQUIRED_FOR_TRANSITION
+   }
+
+   widgetDefinition "Priority" {
+      attributeName "ats.Priority"
+      xWidgetName "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)"
+      option REQUIRED_FOR_TRANSITION
+   }
+
+   widgetDefinition "Need By" {
+      attributeName "ats.Need By"
+      xWidgetName "XDateDam"
+      option HORIZONTAL_LABEL
+   }
+
+   widgetDefinition "Estimated Hours" {
+      attributeName "ats.Estimated Hours"
+      xWidgetName "XFloatDam"
+   }
+
+   widgetDefinition "Title" {
+      attributeName "Name"
+      xWidgetName "XTextDam"
+      option REQUIRED_FOR_TRANSITION
+   }
+
+   widgetDefinition "Description" {
+      attributeName "ats.Description"
+      xWidgetName "XTextDam"
+      option FILL_VERTICALLY
+      option REQUIRED_FOR_TRANSITION
+   }
+
+   widgetDefinition "Validation Required" {
+      attributeName "ats.Validation Required"
+      xWidgetName "XCheckBoxDam"
+      option HORIZONTAL_LABEL
+   }
+
+   widgetDefinition "Estimated Completion Date" {
+      attributeName "ats.Estimated Completion Date"
+      xWidgetName "XDateDam"
+      option HORIZONTAL_LABEL
+   }
+
+   widgetDefinition "Resolution" {
+      attributeName "ats.Resolution"
+      xWidgetName "XTextDam"
+      option FILL_VERTICALLY
+   }
+
+   state "Endorse" {
+      type Working
+      ordinal 1
+      to "Cancelled"
+      to "Analyze" AsDefault
+      rule AllowAssigneeToAll
+      rule AllowEditToAll
+      layout {
+         widget "Title"
+         widget "Description"
+         widget "Proposed Resolution"
+         composite {
+            numColumns 6
+            widget "Change Type"
+            widget "Priority"
+            widget "Need By"
+         }
+         widget "Validation Required"
+      }
+   }
+
+   state "Analyze" {
+      type Working
+      ordinal 2
+      to "Cancelled"
+      to "Authorize" AsDefault
+      to "Endorse" OverrideAttributeValidation 
+      rule AllowAssigneeToAll
+      rule AllowEditToAll
+      layout {
+         widget "Problem"
+         widget "Proposed Resolution"
+         composite {
+            numColumns 6
+            widget "Change Type"
+            widget "Priority"
+            widget "Need By"
+         }
+         widget "Estimated Hours"
+      }
+   }
+
+   state "Authorize" {
+      type Working
+      ordinal 3
+      to "Cancelled"
+      to "Implement" AsDefault
+      to "Analyze" OverrideAttributeValidation
+      rule AllowAssigneeToAll
+      rule AllowEditToAll
+      layout {
+         widget "Estimated Completion Date"
+      }
+   }
+
+   state "Implement" { 
+      type Working
+      ordinal 4
+      to "Cancelled"
+      to "Completed" AsDefault
+      to "Analyze" OverrideAttributeValidation
+      to "Authorize" OverrideAttributeValidation
+      rule AllowAssigneeToAll
+      rule AllowEditToAll
+      layout {
+         widget "Estimated Completion Date"
+         widget "Resolution"
+      }
+   }
+
+   state "Completed" {
+      type Completed
+      ordinal 5
+      to "Implement" OverrideAttributeValidation
+      rule AllowEditToAll
+      rule AddDecisionValidateBlockingReview
+      color DARK_GREEN
+   }
+
+   state "Cancelled" {
+      type Cancelled
+      ordinal 6
+      to "Analyze" OverrideAttributeValidation
+      to "Authorize" OverrideAttributeValidation
+      to "Implement" OverrideAttributeValidation
+      to "Endorse" OverrideAttributeValidation
+      rule AllowEditToAll
+      color DARK_GREEN
+   }
+
+}

@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
+import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.junit.Assert;
 import org.junit.Test;

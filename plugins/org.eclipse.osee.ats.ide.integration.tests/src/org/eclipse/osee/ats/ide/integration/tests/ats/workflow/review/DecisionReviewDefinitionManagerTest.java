@@ -11,7 +11,8 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.review;
 
 import java.util.Arrays;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.config.tx.AtsWorkDefinitionArtifactToken;
+import org.eclipse.osee.ats.api.config.tx.IAtsWorkDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
@@ -29,7 +30,6 @@ import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewDefinitionManager;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewState;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -42,11 +42,11 @@ import org.junit.BeforeClass;
  */
 public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitionManager {
 
-   public static ArtifactToken DecisionWorkDefToDecisionId = ArtifactToken.valueOf(913396704,
-      "WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision", AtsArtifactTypes.WorkDefinition);
+   public static IAtsWorkDefinitionArtifactToken DecisionWorkDefToDecisionId =
+      AtsWorkDefinitionArtifactToken.valueOf(913396704L, "WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision");
 
-   public static ArtifactToken DecisionWorkDefPrepareId = ArtifactToken.valueOf(916526903,
-      "WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare", AtsArtifactTypes.WorkDefinition);
+   public static IAtsWorkDefinitionArtifactToken DecisionWorkDefPrepareId =
+      AtsWorkDefinitionArtifactToken.valueOf(916526903L, "WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare");
 
    @BeforeClass
    @AfterClass

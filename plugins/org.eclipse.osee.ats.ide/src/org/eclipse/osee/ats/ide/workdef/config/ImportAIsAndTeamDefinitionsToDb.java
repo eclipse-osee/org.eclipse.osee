@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -155,6 +156,12 @@ public class ImportAIsAndTeamDefinitionsToDb {
          }
          if (Strings.isValid(dslTeamDef.getWorkDefinition())) {
             ArtifactToken workDefArt = sheetNameToArtifactIdMap.get(dslTeamDef.getWorkDefinition());
+            if (workDefArt == null) {
+               workDefArt = AtsClientService.get().getQueryService().getArtifactByName(AtsArtifactTypes.WorkDefinition,
+                  dslTeamDef.getWorkDefinition());
+               Conditions.assertNotNull(workDefArt, "workDefArt");
+               sheetNameToArtifactIdMap.put(dslTeamDef.getWorkDefinition(), workDefArt);
+            }
             IAtsTeamDefinition newTeamDef =
                AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(newTeam);
             AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(newTeamDef, workDefArt, changes);

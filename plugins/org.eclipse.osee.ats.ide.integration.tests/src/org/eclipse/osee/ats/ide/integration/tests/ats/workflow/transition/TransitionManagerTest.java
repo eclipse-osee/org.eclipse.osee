@@ -15,7 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.config.tx.AtsWorkDefinitionArtifactToken;
+import org.eclipse.osee.ats.api.config.tx.IAtsWorkDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
@@ -47,7 +48,6 @@ import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewManager;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewState;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.Result;
@@ -67,17 +67,17 @@ public class TransitionManagerTest {
 
    private static List<AbstractWorkflowArtifact> EMPTY_AWAS = new ArrayList<>();
 
-   public static ArtifactToken WorkDefTargetedVersionId = ArtifactToken.valueOf(340096461,
-      "WorkDef_Team_TransitionManagerTest_TargetedVersion", AtsArtifactTypes.WorkDefinition);
+   public static IAtsWorkDefinitionArtifactToken WorkDefTargetedVersionId =
+      AtsWorkDefinitionArtifactToken.valueOf(340096461L, "WorkDef_Team_TransitionManagerTest_TargetedVersion");
 
-   public static ArtifactToken WorkDefWidgetRequiredTransitionId = ArtifactToken.valueOf(16919464,
-      "WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition", AtsArtifactTypes.WorkDefinition);
+   public static IAtsWorkDefinitionArtifactToken WorkDefWidgetRequiredTransitionId =
+      AtsWorkDefinitionArtifactToken.valueOf(16919464L, "WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition");
 
-   public static ArtifactToken WorkDefWidgetRequiredCompletionId = ArtifactToken.valueOf(7661159,
-      "WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion", AtsArtifactTypes.WorkDefinition);
+   public static IAtsWorkDefinitionArtifactToken WorkDefWidgetRequiredCompletionId =
+      AtsWorkDefinitionArtifactToken.valueOf(7661159L, "WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion");
 
-   public static ArtifactToken WorkDefTeamAtsTestUtil =
-      ArtifactToken.valueOf(946555776, "WorkDef_Team_AtsTestUtil", AtsArtifactTypes.WorkDefinition);
+   public static IAtsWorkDefinitionArtifactToken WorkDefTeamAtsTestUtil =
+      AtsWorkDefinitionArtifactToken.valueOf(946555776L, "WorkDef_Team_AtsTestUtil");
 
    // @formatter:off
    @Mock private IAtsTask task;

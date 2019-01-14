@@ -12,10 +12,10 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.demo;
 
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
+import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
+import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
-import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
-import org.eclipse.osee.ats.demo.api.DemoWorkflowTitles;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.populate.Pdd23CreateNoBranchAction;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;

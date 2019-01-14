@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.ide.demo.populate;
 
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.ide.demo.config.DemoCsci;
 import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

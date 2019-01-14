@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.config;
 
-import static org.eclipse.osee.ats.demo.api.DemoArtifactToken.SAW_Bld_1;
+import static org.eclipse.osee.ats.api.demo.DemoArtifactToken.SAW_Bld_1;
 import org.eclipse.osee.ats.ide.integration.tests.ats.resource.AbstractRestTest;
 import org.junit.Test;
 

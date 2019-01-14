@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.ide.demo.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**

@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.ide.util.internal;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import java.util.concurrent.TimeUnit;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -21,6 +22,7 @@ import org.eclipse.osee.ats.core.config.AbstractAtsConfigurationService;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
@@ -89,6 +91,16 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
          user.setStoreObject(userArt);
          return userArt;
       }
+   }
+
+   @Override
+   public XResultData configAtsDatabase(AtsApi atsApi) {
+      if (isAtsBaseCreated()) {
+         XResultData results = new XResultData();
+         results.error("ATS base config has already been completed");
+         return results;
+      }
+      return AtsClientService.getConfigEndpoint().atsDbInit();
    }
 
 }

@@ -11,7 +11,8 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.review;
 
 import java.util.Arrays;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.config.tx.AtsWorkDefinitionArtifactToken;
+import org.eclipse.osee.ats.api.config.tx.IAtsWorkDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
@@ -28,7 +29,6 @@ import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -40,8 +40,8 @@ import org.junit.BeforeClass;
  */
 public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager {
 
-   public static ArtifactToken PeerWorkDefId = ArtifactToken.valueOf(162205335,
-      "WorkDef_Team_PeerReviewDefinitionManagerTest_Transition", AtsArtifactTypes.WorkDefinition);
+   public static IAtsWorkDefinitionArtifactToken PeerWorkDefId =
+      AtsWorkDefinitionArtifactToken.valueOf(162205335L, "WorkDef_Team_PeerReviewDefinitionManagerTest_Transition");
 
    @BeforeClass
    @AfterClass

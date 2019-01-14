@@ -220,6 +220,8 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          } else {
             artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(atsObject.getId());
          }
+      } else if (object instanceof ArtifactToken) {
+         artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(((ArtifactToken) object).getId());
       }
       return artifact;
    }

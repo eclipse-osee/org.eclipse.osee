@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 
+import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.demo.api.DemoWorkType;
 import org.eclipse.osee.ats.ide.column.BranchStatusColumn;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;

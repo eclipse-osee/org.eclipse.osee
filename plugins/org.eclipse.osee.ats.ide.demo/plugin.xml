@@ -8,11 +8,11 @@
     </DatabaseInitializationConfiguration>
  </extension>
       <extension
-      	id="DemoDatabaseConfig"
+      	id="DemoDatabaseConfigClient"
          point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
    	<DatabaseInitializationTask
    			rule="org.eclipse.osee.framework.database.init.NotOnProductionDbInitializationRule"
-      	   classname="org.eclipse.osee.ats.ide.demo.config.DemoDatabaseConfig">
+      	   classname="org.eclipse.osee.ats.ide.demo.config.DemoDatabaseConfigClient">
    	</DatabaseInitializationTask>
 	</extension>
       <extension
@@ -42,15 +42,6 @@
       <ArtifactImageProvider
             class="org.eclipse.osee.ats.ide.demo.artifact.DemoArtifactImageProvider">
       </ArtifactImageProvider>
-   </extension>
-   <extension
-         id="DemoWorkDefinitionSheetProvider"
-         name="DemoWorkDefinitionSheetProvider"
-         point="org.eclipse.osee.ats.ide.AtsWorkDefinitionSheetProvider">
-      <AtsWorkDefinitionSheetProvider
-            classname="org.eclipse.osee.ats.ide.demo.config.DemoWorkDefinitionSheetProvider"
-            db_type="demo">
-      </AtsWorkDefinitionSheetProvider>
    </extension>
    <extension
          id="DemoTraceUnitHandler"

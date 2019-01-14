@@ -26,10 +26,10 @@
 <booleanAttribute key="includeOptional" value="false"/>
 <stringAttribute key="location" value="${workspace_loc}/../junit-workspace"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/org.eclipse.osee.ats.rest.test"/>
+<listEntry value="/org.eclipse.osee.ats.rest.test/src/org/eclipse/osee/ats/rest/AtsServer_Integration_TestSuite.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
-<listEntry value="4"/>
+<listEntry value="1"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value=""/>
 <booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
@@ -45,10 +45,10 @@
 <stringAttribute key="product" value="org.eclipse.birt.report.engine.ReportEngineSDK"/>
 <booleanAttribute key="run_in_ui_thread" value="false"/>
 <setAttribute key="selected_features">
-<setEntry value="org.eclipse.osee.orcs.feature:default"/>
 <setEntry value="org.eclipse.osee.ats.server.feature:default"/>
 <setEntry value="org.eclipse.osee.core.server.external.feature:default"/>
 <setEntry value="org.eclipse.osee.core.server.feature:default"/>
+<setEntry value="org.eclipse.osee.orcs.feature:default"/>
 <setEntry value="org.eclipse.osee.server.external.feature:default"/>
 <setEntry value="org.eclipse.osee.server.feature:default"/>
 <setEntry value="org.eclipse.osee.server.legacy.feature:default"/>

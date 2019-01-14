@@ -12,10 +12,10 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 
 import java.util.Collection;
 import java.util.HashSet;
+import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
-import org.eclipse.osee.ats.demo.api.DemoWorkType;
 import org.eclipse.osee.ats.ide.column.NumberOfTasksColumn;
 import org.eclipse.osee.ats.ide.column.NumberOfTasksRemainingColumn;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;

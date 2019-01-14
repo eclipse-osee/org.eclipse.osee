@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.ats.demo.api.DemoWorkType;
+import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;

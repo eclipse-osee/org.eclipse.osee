@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.ide.integration.tests;
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.demo.AtsTest_DemoPopulateAndTest_Suite;
+import org.eclipse.osee.ats.ide.integration.tests.ats.demo.CreateTestWorkDefsTypesTest;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtilTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -25,6 +26,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
+   CreateTestWorkDefsTypesTest.class,
    AtsTestUtilTest.class,
    AtsTest_DemoPopulateAndTest_Suite.class,
    DemoDbPopulateValidateAtsDatabaseTest.class //

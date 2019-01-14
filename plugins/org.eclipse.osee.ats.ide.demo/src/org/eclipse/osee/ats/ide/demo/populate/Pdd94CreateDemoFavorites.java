@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.demo.populate;
 
-import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
+import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.FavoritesManager;
 import org.eclipse.osee.ats.ide.util.SubscribeManagerUI;
