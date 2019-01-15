@@ -294,7 +294,6 @@ public class LisFileParser implements DispoImporterApi {
          } else {
             report.addEntry("VCast", String.format("Could not find file: %s", normalizedName), ERROR);
          }
-
       }
    }
 
@@ -347,7 +346,7 @@ public class LisFileParser implements DispoImporterApi {
    }
 
    private void checkForMultiEnvRename(int fileNum, VCastInstrumentedFile instrumentedFile, DispoItemData newItem) {
-      String regexWithSeparator = String.format(".*?%svcast%s", File.separator, File.separator);
+      String regexWithSeparator = String.format(".*?%svcast%s.*?\\d+\\.2\\.lis", File.separator, File.separator);
       if (instrumentedFile.getLISFile().matches(regexWithSeparator)) {
          // Making assumption here that the only time we wanna collect these duplicate "twin" files is when vcast tags them with the name
          // syntax filename.id.2.lis
