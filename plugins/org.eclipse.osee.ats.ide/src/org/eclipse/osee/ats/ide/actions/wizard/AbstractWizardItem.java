@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.ide.util.widgets.XWorkPackageHyperlinkWidget;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -68,6 +69,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    private final WizardFields[] fields;
    private XComboViewer versionCombo;
    private XCheckBox createBranchCheck;
+   private IAtsVersion previousVersion;
 
    public AbstractWizardItem(AtsApi atsApi, WizardFields... fields) {
       this.atsApi = atsApi;
@@ -197,6 +199,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
             versionCombo.setInput(objects);
             versionCombo.setFillHorizontally(false);
             versionCombo.createWidgets(comp, 2);
+            previousVersion = (IAtsVersion) versionCombo.getSelected();
             teamDefFieldToWidget.put(teamDef, WizardFields.TargetedVersion, versionCombo);
 
             Composite comp2 = new Composite(parent, SWT.NONE);
@@ -215,12 +218,30 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
 
                @Override
                public void widgetModified(XWidget widget) {
+                  //Initialize so not to get the last state.
+                  //Both the targeted version and branch has
+                  //to be valid for auto branch to be selectable.
+                  createBranchCheck.setEditable(false);
+
                   IAtsVersion version = (IAtsVersion) versionCombo.getSelected();
+
+                  if (previousVersion != null && version != null) {
+                     //Uncheck auto branch if previously selected.
+                     if (!previousVersion.equals(version)) {
+                        createBranchCheck.set(false);
+                     }
+                  }
+
                   if (version == null) {
                      createBranchCheck.setEditable(false);
                   } else {
-                     createBranchCheck.setEditable(true);
+                     BranchId branch = AtsClientService.get().getVersionService().getBranch(version);
+                     if (branch != null && branch.isValid()) {
+                        createBranchCheck.setEditable(true);
+                     }
                   }
+
+                  previousVersion = version;
                   comp2.layout();
                }
 
