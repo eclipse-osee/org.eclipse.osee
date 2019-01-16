@@ -113,4 +113,6 @@ public interface IAtsStoreService {
    boolean inheritsFrom(IArtifactType artType, IArtifactType... artifactType);
 
    String getArtifactTypeName(IArtifactType artifactTypeId);
+
+   boolean isHistorical(ArtifactId artifact);
 }

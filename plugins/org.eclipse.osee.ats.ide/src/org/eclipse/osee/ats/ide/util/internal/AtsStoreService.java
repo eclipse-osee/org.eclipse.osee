@@ -254,6 +254,11 @@ public class AtsStoreService implements IAtsStoreService {
    }
 
    @Override
+   public boolean isHistorical(ArtifactId artifact) {
+      return AtsClientService.get().getQueryServiceClient().getArtifact(artifact).isHistorical();
+   }
+
+   @Override
    public void clearCaches(IAtsWorkItem workItem) {
       ((WorkItem) workItem).clearCaches();
       ((AbstractWorkflowArtifact) workItem.getStoreObject()).clearCaches();
@@ -273,4 +278,5 @@ public class AtsStoreService implements IAtsStoreService {
    public String getArtifactTypeName(IArtifactType artifactTypeId) {
       return ArtifactTypeManager.getType(artifactTypeId).getName();
    }
+
 }
