@@ -388,11 +388,6 @@
             style="toggle">
       </command>
       <command
-            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showTransactions"
-            icon="OSEE-INF/images/DBicon2.GIF"
-            style="toggle">
-      </command>
-      <command
             commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.ShowFavoriteBranchesFirst"
             icon="OSEE-INF/images/star_9_9.gif"
             style="toggle">
@@ -1082,10 +1077,6 @@
          </command>
 		<command description="Show the branches in a hierarchical listing" id="org.eclipse.osee.framework.ui.skynet.branch.branchView.hierarchicalPresentation.command" name="Hierarchical">
          </command>
-  <command
-        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showTransactions"
-        name="Show Transactions">
-  </command>
   <command
         id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showMergeBranches"
         name="Show Merge Branches">
