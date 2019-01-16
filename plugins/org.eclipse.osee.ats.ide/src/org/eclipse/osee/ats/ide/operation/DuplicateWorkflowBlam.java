@@ -190,7 +190,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
     * Return "Copy of"-title if all titles of workflows are the same, else ""
     */
    private String getDefaultTitle() {
-      if (defaultTeamWorkflows.size() == 1) {
+      if (defaultTeamWorkflows != null && defaultTeamWorkflows.size() == 1) {
          return AXml.textToXml("Copy of " + defaultTeamWorkflows.iterator().next().getName());
       } else {
          return "";
