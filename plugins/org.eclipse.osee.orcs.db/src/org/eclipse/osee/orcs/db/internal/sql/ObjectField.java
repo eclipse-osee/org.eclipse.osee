@@ -19,6 +19,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.enums.ObjectType;
+import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.jdbc.SQL3DataType;
 
 /**

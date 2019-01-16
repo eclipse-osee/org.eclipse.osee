@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
+import org.eclipse.osee.framework.core.enums.ObjectType;
+import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTokenQuery;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
-import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
-import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 
 /**
  * @author Ryan D. Brooks

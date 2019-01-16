@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.eclipse.osee.framework.core.enums.ObjectType;
+import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.orcs.core.ds.DynamicData;
 import org.eclipse.osee.orcs.core.ds.DynamicObject;

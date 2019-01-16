@@ -12,11 +12,11 @@ package org.eclipse.osee.orcs.db.internal.loader.handlers;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.enums.ObjectType;
+import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
-import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
-import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 
 /**

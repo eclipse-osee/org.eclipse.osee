@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
+import org.eclipse.osee.framework.core.enums.ObjectType;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsTypes;
@@ -33,7 +34,6 @@ import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.ResultObjectDescription;
 import org.eclipse.osee.orcs.db.internal.sql.ObjectField;
-import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlFieldResolver;
 
 /**

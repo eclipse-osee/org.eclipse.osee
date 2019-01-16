@@ -16,6 +16,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.ObjectType;
+import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;

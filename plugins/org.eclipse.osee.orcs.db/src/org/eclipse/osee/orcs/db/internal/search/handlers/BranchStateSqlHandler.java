@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
+import org.eclipse.osee.framework.core.enums.TableEnum;
 
 /**
  * @author Roberto E. Escobar

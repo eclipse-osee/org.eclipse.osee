@@ -16,6 +16,7 @@ import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactor
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createTxSqlHandlerFactory;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -48,7 +49,6 @@ import org.eclipse.osee.orcs.db.internal.search.tagger.XmlTagger;
 import org.eclipse.osee.orcs.db.internal.search.util.AttributeDataMatcher;
 import org.eclipse.osee.orcs.db.internal.search.util.MatcherFactory;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
-import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
