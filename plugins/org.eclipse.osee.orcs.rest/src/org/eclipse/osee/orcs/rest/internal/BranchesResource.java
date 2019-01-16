@@ -59,7 +59,7 @@ public class BranchesResource {
       return writer.toHtml(results);
    }
 
-   @Path("{branch}/tuples")
+   @Path("{branch}/tuple")
    public TupleEndpoint getTuples(@PathParam("branch") BranchId branch, @HeaderParam("osee.account.id") UserId accountId) {
       return new TupleEndpointImpl(orcsApi, branch, accountId);
    }
