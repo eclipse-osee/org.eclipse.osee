@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -75,11 +74,6 @@ public class CreateWorkingBranchFromTxBlam extends AbstractBlam {
                Arrays.toString(pairs)));
          }
       }
-   }
-
-   @Override
-   public String getXWidgetsXml() {
-      return OseeInf.getResourceContents(getClass().getSimpleName(), getClass());
    }
 
    @Override
