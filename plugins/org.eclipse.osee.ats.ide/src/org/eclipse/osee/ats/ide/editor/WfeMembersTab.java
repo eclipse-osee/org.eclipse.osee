@@ -48,8 +48,8 @@ import org.eclipse.osee.ats.ide.workflow.CollectorArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.NewActionToGoalAction;
 import org.eclipse.osee.ats.ide.workflow.goal.RemoveFromCollectorAction;
-import org.eclipse.osee.ats.ide.workflow.goal.SetCollectorOrderAction;
 import org.eclipse.osee.ats.ide.workflow.goal.RemoveFromCollectorAction.RemovedFromCollectorHandler;
+import org.eclipse.osee.ats.ide.workflow.goal.SetCollectorOrderAction;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.world.IMenuActionProvider;
@@ -301,6 +301,7 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
          createActions();
 
          AttributeFormPart.setLabelFonts(worldComposite, FontManager.getDefaultLabelFont());
+         worldComposite.setShowRemoveMenuItems(false);
 
          return true;
       }

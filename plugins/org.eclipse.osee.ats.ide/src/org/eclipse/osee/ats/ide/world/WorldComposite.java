@@ -80,6 +80,7 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
 
    private final WorldXViewer worldXViewer;
    protected IWorldEditor iWorldEditor;
+   private boolean showRemoveMenuItems;
 
    public WorldComposite(IWorldEditor worldEditor, Composite parent, int style) {
       this(worldEditor, null, parent, style, true);
@@ -420,6 +421,17 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
    @Override
    public String getReportTitle() {
       return iWorldEditor.getCurrentTitleLabel();
+   }
+
+   public boolean isShowRemoveMenuItems() {
+      return showRemoveMenuItems;
+   }
+
+   public void setShowRemoveMenuItems(boolean showRemoveMenuItems) {
+      this.showRemoveMenuItems = showRemoveMenuItems;
+      if (worldXViewer != null) {
+         worldXViewer.setShowRemoveMenuItems(showRemoveMenuItems);
+      }
    }
 
 }

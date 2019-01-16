@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.actions.AddTaskAction;
 import org.eclipse.osee.ats.ide.actions.DeletePurgeAtsArtifactsAction;
 import org.eclipse.osee.ats.ide.actions.DeleteTasksAction;
+import org.eclipse.osee.ats.ide.actions.DeleteTasksAction.TaskArtifactProvider;
 import org.eclipse.osee.ats.ide.actions.EditActionableItemsAction;
 import org.eclipse.osee.ats.ide.actions.EditAssigneeAction;
 import org.eclipse.osee.ats.ide.actions.EditStatusAction;
@@ -45,7 +46,6 @@ import org.eclipse.osee.ats.ide.actions.FavoriteAction;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.actions.ISelectedTeamWorkflowArtifacts;
 import org.eclipse.osee.ats.ide.actions.SubscribedAction;
-import org.eclipse.osee.ats.ide.actions.DeleteTasksAction.TaskArtifactProvider;
 import org.eclipse.osee.ats.ide.agile.SprintOrderColumn;
 import org.eclipse.osee.ats.ide.column.GoalOrderColumn;
 import org.eclipse.osee.ats.ide.column.IPersistAltLeftClickProvider;
@@ -157,6 +157,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    Action resetActionArtifactAction;
    DeleteTasksAction deleteTasksAction;
    AddTaskAction addTaskAction;
+   private boolean showRemoveMenuItems = true;
 
    public void createMenuActions() {
 
@@ -636,6 +637,15 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          return;
       }
       super.refreshColumnsWithPreCompute(getInput());
+   }
+
+   public void setShowRemoveMenuItems(boolean showRemoveMenuItems) {
+      this.showRemoveMenuItems = showRemoveMenuItems;
+   }
+
+   @Override
+   public boolean isRemoveItemsMenuOptionEnabled() {
+      return showRemoveMenuItems;
    }
 
 }
