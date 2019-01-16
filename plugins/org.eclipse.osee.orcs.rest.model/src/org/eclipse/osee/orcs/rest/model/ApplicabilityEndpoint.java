@@ -71,14 +71,9 @@ public interface ApplicabilityEndpoint {
    List<ApplicabilityToken> getViewApplicabilityTokens(@PathParam("viewId") ArtifactId view);
 
    @GET
-   @Path("views")
-   @Produces(MediaType.APPLICATION_JSON)
-   List<ArtifactToken> getViewForBranch();
-
-   @GET
    @Path("view")
-   @Produces({MediaType.APPLICATION_JSON})
-   HashMap<String, ArtifactId> getViewMap();
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ArtifactToken> getViews();
 
    @GET
    @Path("feature-data")

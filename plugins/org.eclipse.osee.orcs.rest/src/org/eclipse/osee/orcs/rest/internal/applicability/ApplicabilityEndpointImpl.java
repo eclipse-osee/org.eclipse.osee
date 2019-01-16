@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -97,20 +96,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public List<ArtifactToken> getViewForBranch() {
+   public List<ArtifactToken> getViews() {
       return applicabilityQuery.getViewForBranch(branch);
-   }
-
-   @Override
-   public HashMap<String, ArtifactId> getViewMap() {
-      HashMap<String, ArtifactId> viewMap = new HashMap<>();
-
-      for (ArtifactId id : applicabilityQuery.getViewForBranch(branch)) {
-         ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(branch).andId(id).getArtifact();
-         viewMap.put(artifact.getName(), id);
-      }
-
-      return viewMap;
    }
 
    @Override
