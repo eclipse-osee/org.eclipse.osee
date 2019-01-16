@@ -168,14 +168,6 @@
       </OseeTypes>
    </extension>
    <extension
-         id="TaskMetrics"
-         name="TaskMetrics"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.ide.operation.TaskMetrics">
-      </Operation>
-   </extension>
-   <extension
          id="ats"
          point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
       <Renderer classname="org.eclipse.osee.ats.ide.editor.renderer.AtsWERenderer"/>

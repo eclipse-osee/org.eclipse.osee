@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xWidgets>
-	<XWidget xwidgetType="XHyperlabelTeamDefinitionSelection"
-		displayName="Team Definition(s)" horizontalLabel="true" />
-	<XWidget xwidgetType="AtsObjectMultiChoiceSelect"
-		horizontalLabel="true" displayName="Version(s)" />
-</xWidgets>
