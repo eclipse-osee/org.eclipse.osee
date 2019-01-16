@@ -17,12 +17,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
@@ -45,16 +52,17 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
 
    private final SqlJoinFactory sqlJoinFactory;
    private final IdentityManager idManager;
+   private final JdbcClient jdbcClient;
 
    private TransactionId txId;
    private List<DataProxy<?>> binaryStores;
    private HashCollection<SqlOrderEnum, Object[]> dataItemInserts;
    private Map<SqlOrderEnum, IdJoinQuery> txNotCurrentsJoin;
 
-   public TxSqlBuilderImpl(SqlJoinFactory sqlJoinFactory, IdentityManager idManager) {
-      super();
+   public TxSqlBuilderImpl(SqlJoinFactory sqlJoinFactory, IdentityManager idManager, JdbcClient jdbcClient) {
       this.sqlJoinFactory = sqlJoinFactory;
       this.idManager = idManager;
+      this.jdbcClient = jdbcClient;
       clear();
    }
 
@@ -157,7 +165,38 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
             data.getElement4(), data.getVersion().getGammaId());
          addTxs(SqlOrderEnum.TUPLES4, data);
       }
+   }
 
+   @Override
+   public void deleteTuple(BranchId branch, TableEnum tupleTable, GammaId gammaId) {
+      SqlOrderEnum sqlEnum;
+      if (tupleTable.equals(TableEnum.TUPLE2)) {
+         sqlEnum = SqlOrderEnum.TUPLES2;
+      } else if (tupleTable.equals(TableEnum.TUPLE3)) {
+         sqlEnum = SqlOrderEnum.TUPLES3;
+      } else if (tupleTable.equals(TableEnum.TUPLE4)) {
+         sqlEnum = SqlOrderEnum.TUPLES4;
+      } else {
+         throw new OseeStateException("Unexpected table enum [%s]", tupleTable);
+      }
+      deleteTuple(branch, sqlEnum, gammaId);
+   }
+
+   private void deleteTuple(BranchId branch, SqlOrderEnum tupleTable, GammaId gammaId) {
+      ApplicabilityId applicability = jdbcClient.fetch(ApplicabilityId.SENTINEL,
+         "SELECT app_id from osee_txs where branch_id = ? and gamma_id = ?", branch, gammaId);
+      if (applicability.isInvalid()) {
+         throw new ItemDoesNotExist("Tuple not found on branch [%s] with gammaId [%s]", branch, gammaId);
+      }
+
+      addRow(SqlOrderEnum.TXS, txId, gammaId, ModificationType.DELETED, TxCurrent.DELETED, branch, applicability);
+
+      IdJoinQuery join = txNotCurrentsJoin.get(tupleTable);
+      if (join == null) {
+         join = createJoin();
+         txNotCurrentsJoin.put(tupleTable, join);
+      }
+      join.add(gammaId);
    }
 
    @Override

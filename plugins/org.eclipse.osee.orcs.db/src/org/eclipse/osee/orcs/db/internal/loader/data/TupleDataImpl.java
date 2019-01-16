@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.data.TupleTypeToken;
 import org.eclipse.osee.orcs.core.ds.OrcsVersionedObjectImpl;
 import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
-import org.eclipse.osee.orcs.core.internal.tuple.TupleVisitor;
 
 /**
  * @author Angel Avila
@@ -30,11 +29,6 @@ public class TupleDataImpl extends OrcsVersionedObjectImpl<TupleTypeToken> imple
 
    public TupleDataImpl(VersionData version) {
       super(version);
-   }
-
-   @Override
-   public void accept(TupleVisitor visitor) {
-      visitor.visit(this);
    }
 
    @Override

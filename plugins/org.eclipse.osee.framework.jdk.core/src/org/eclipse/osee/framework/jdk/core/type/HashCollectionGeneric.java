@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -142,6 +143,25 @@ abstract class HashCollectionGeneric<K, V, C extends Collection<V>> implements I
          }
       } else {
          collection.forEach(consumer);
+      }
+   }
+
+   public void forEachValue(BiConsumer<K, V> consumer) {
+      for (K key : map.keySet()) {
+         C collection = map.get(key);
+         if (collection != null) {
+            if (isSynchronized) {
+               synchronized (collection) {
+                  for (V value : collection) {
+                     consumer.accept(key, value);
+                  }
+               }
+            } else {
+               for (V value : collection) {
+                  consumer.accept(key, value);
+               }
+            }
+         }
       }
    }
 

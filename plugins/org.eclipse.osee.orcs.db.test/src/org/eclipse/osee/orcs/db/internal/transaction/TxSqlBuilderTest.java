@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataImpl;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -110,6 +111,7 @@ public class TxSqlBuilderTest {
    @Mock private IdentityManager idManager;
    @Mock private OrcsChangeSet txData;
    @Mock private DataProxy<String> dataProxy;
+   @Mock private JdbcClient jdbcClient;
    // @formatter:on
 
    private VersionData versionData;
@@ -128,7 +130,7 @@ public class TxSqlBuilderTest {
       versionData.setBranch(COMMON);
       versionData.setTransactionId(LOADED_TX_ID);
 
-      builder = new TxSqlBuilderImpl(joinFactory, idManager);
+      builder = new TxSqlBuilderImpl(joinFactory, idManager, jdbcClient);
 
       artData = new ArtifactDataImpl(versionData);
       artData.setLocalId(ITEM_ID);

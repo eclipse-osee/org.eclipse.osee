@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.transaction;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import com.google.common.collect.Iterables;
@@ -27,7 +28,7 @@ import org.mockito.Mock;
 
 /**
  * Test Case for {@link ChangeSetBuilder}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class ChangeSetBuilderTest {
@@ -36,7 +37,7 @@ public class ChangeSetBuilderTest {
    @Mock private Artifact artifact;
    @Mock private Attribute<?> attribute;
    @Mock private Relation relation;
-   
+
    @Mock private ArtifactData artifactData;
    @Mock private AttributeData attributeData;
    @Mock private RelationData relationData;
@@ -61,11 +62,13 @@ public class ChangeSetBuilderTest {
       when(attribute.isDirty()).thenReturn(false);
       when(relation.isDirty()).thenReturn(false);
 
+      handler.handleTuples(new TxData(null, null));
+
       handler.visit(artifact);
       handler.visit(attribute);
       handler.visit(relation);
 
-      assertEquals(true, handler.getChangeSet().isEmpty());
+      assertTrue(handler.getChangeSet().isEmpty());
    }
 
    @Test

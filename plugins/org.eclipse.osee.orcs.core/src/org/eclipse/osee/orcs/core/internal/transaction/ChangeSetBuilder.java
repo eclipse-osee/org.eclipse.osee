@@ -11,8 +11,6 @@
 package org.eclipse.osee.orcs.core.internal.transaction;
 
 import com.google.common.collect.Sets;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.Attribute;
@@ -26,14 +24,13 @@ import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactVisitor;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.core.internal.relation.RelationVisitor;
-import org.eclipse.osee.orcs.core.internal.tuple.TupleVisitor;
 
 /**
  * Collect all the dirty OrcsData's into a changeSet;
  *
  * @author Roberto E. Escobar
  */
-public class ChangeSetBuilder implements ArtifactVisitor, RelationVisitor, TupleVisitor, HasOrcsChangeSet {
+public class ChangeSetBuilder implements ArtifactVisitor, RelationVisitor, HasOrcsChangeSet {
 
    private final OrcsChangeSetImpl changeSet;
 
@@ -62,9 +59,8 @@ public class ChangeSetBuilder implements ArtifactVisitor, RelationVisitor, Tuple
       }
    }
 
-   @Override
-   public void visit(TupleData tuple) {
-      changeSet.tuples.add(tuple);
+   public void handleTuples(TxData txData) {
+      changeSet.txData = txData;
    }
 
    @Override
@@ -77,7 +73,7 @@ public class ChangeSetBuilder implements ArtifactVisitor, RelationVisitor, Tuple
       private final Set<ArtifactData> arts = Sets.newLinkedHashSet();
       private final Set<AttributeData> attrs = Sets.newLinkedHashSet();
       private final Set<RelationData> rels = Sets.newLinkedHashSet();
-      private final List<TupleData> tuples = new ArrayList<>();
+      private TxData txData;
 
       @Override
       public void accept(OrcsVisitor visitor) {
@@ -90,9 +86,13 @@ public class ChangeSetBuilder implements ArtifactVisitor, RelationVisitor, Tuple
          for (RelationData data : getRelationData()) {
             visitor.visit(data);
          }
-         for (TupleData data : getTupleData()) {
+
+         for (TupleData data : txData.getTuplesToAdd()) {
             visitor.visit(data);
          }
+
+         txData.getTuplesToDelete().forEachValue(
+            (key, gammaId) -> visitor.deleteTuple(txData.getBranch(), key, gammaId));
       }
 
       @Override
@@ -111,13 +111,13 @@ public class ChangeSetBuilder implements ArtifactVisitor, RelationVisitor, Tuple
       }
 
       @Override
-      public Iterable<TupleData> getTupleData() {
-         return tuples;
+      public TxData getTxData() {
+         return txData;
       }
 
       @Override
       public boolean isEmpty() {
-         return arts.isEmpty() && attrs.isEmpty() && rels.isEmpty() && tuples.isEmpty();
+         return arts.isEmpty() && attrs.isEmpty() && rels.isEmpty() && txData.getTuplesToAdd().isEmpty() && txData.getTuplesToDelete().isEmpty();
       }
 
       @Override
@@ -129,6 +129,5 @@ public class ChangeSetBuilder implements ArtifactVisitor, RelationVisitor, Tuple
       public String toString() {
          return "OrcsChangeSetImpl [arts=" + arts + ", attrs=" + attrs + ", rels=" + rels + "]";
       }
-
    }
 }

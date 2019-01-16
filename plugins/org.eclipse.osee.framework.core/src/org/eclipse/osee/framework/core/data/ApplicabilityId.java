@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
 @JsonSerialize(using = IdSerializer.class)
 public interface ApplicabilityId extends Id {
    public static final ApplicabilityId BASE = ApplicabilityId.valueOf(1L);
+   public static final ApplicabilityId SENTINEL = valueOf(Id.SENTINEL);
 
    default Long getUuid() {
       return getId();

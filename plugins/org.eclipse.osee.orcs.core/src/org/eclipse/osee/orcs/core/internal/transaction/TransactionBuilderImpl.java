@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
+import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -467,8 +468,18 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public boolean deleteTuple(GammaId gammaId) {
-      return false;
+   public void deleteTuple2(GammaId gammaId) {
+      txData.deleteTuple(TableEnum.TUPLE2, gammaId);
+   }
+
+   @Override
+   public void deleteTuple3(GammaId gammaId) {
+      txData.deleteTuple(TableEnum.TUPLE3, gammaId);
+   }
+
+   @Override
+   public void deleteTuple4(GammaId gammaId) {
+      txData.deleteTuple(TableEnum.TUPLE4, gammaId);
    }
 
    @Override

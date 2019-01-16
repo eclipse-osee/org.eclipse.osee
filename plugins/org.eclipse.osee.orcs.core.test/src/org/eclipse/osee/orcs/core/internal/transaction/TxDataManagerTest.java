@@ -533,9 +533,9 @@ public class TxDataManagerTest {
    @Test
    public void testCreateChangeData() {
       Iterable<Artifact> writeables = Arrays.asList(artifact1);
-      Iterable<TupleData> tuples = Collections.emptySet();
+      List<TupleData> tuples = Collections.emptyList();
       when(txData.getAllWriteables()).thenReturn(writeables);
-      when(txData.getAllTuples()).thenReturn(tuples);
+      when(txData.getTuplesToAdd()).thenReturn(tuples);
       when(artifact1.isDirty()).thenReturn(true);
 
       ArtifactData data = Mockito.mock(ArtifactData.class);

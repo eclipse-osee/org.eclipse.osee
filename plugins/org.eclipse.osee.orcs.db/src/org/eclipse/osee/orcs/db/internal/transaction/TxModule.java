@@ -58,7 +58,7 @@ public class TxModule {
 
          @Override
          public Callable<TransactionResult> commitTransaction(OrcsSession session, TransactionData data) {
-            TxSqlBuilderImpl builder = new TxSqlBuilderImpl(sqlJoinFactory, idManager);
+            TxSqlBuilderImpl builder = new TxSqlBuilderImpl(sqlJoinFactory, idManager, jdbcClient);
             TransactionWriter writer = new TransactionWriter(logger, jdbcClient, builder);
             return new CommitTransactionDatabaseTxCallable(logger, session, jdbcClient, idManager, processors, writer,
                data);

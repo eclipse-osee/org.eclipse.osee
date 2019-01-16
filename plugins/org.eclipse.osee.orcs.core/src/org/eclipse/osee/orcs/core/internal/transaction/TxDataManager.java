@@ -454,9 +454,7 @@ public class TxDataManager {
          artifact.accept(builder);
          relationManager.accept(session, graph, artifact, builder);
       }
-      for (TupleData tuple : txData.getAllTuples()) {
-         tuple.accept(builder);
-      }
+      builder.handleTuples(txData);
 
       OrcsChangeSet changeSet = builder.getChangeSet();
       return new TransactionDataImpl(txData.getBranch(), txData.getAuthor(), txData.getComment(), changeSet);
@@ -507,5 +505,4 @@ public class TxDataManager {
       }
 
    }
-
 }

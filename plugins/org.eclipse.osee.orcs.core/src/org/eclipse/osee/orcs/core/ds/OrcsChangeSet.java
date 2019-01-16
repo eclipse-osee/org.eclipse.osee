@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.orcs.core.internal.transaction.TxData;
+
 /**
  * @author Roberto E. Escobar
  */
@@ -21,7 +23,7 @@ public interface OrcsChangeSet extends OrcsVisitable {
 
    Iterable<RelationData> getRelationData();
 
-   Iterable<TupleData> getTupleData();
+   TxData getTxData();
 
    boolean isEmpty();
 

@@ -174,7 +174,11 @@ public interface TransactionBuilder {
 
    <E1, E2, E3, E4> GammaId addTuple4(Tuple4Type<E1, E2, E3, E4> tupleType, E1 e1, E2 e2, E3 e3, E4 e4);
 
-   boolean deleteTuple(GammaId gammaId);
+   void deleteTuple2(GammaId gammaId);
+
+   void deleteTuple3(GammaId gammaId);
+
+   void deleteTuple4(GammaId gammaId);
 
    <E1, E2> boolean deleteTuple2(Tuple2Type<E1, E2> tupleType, E1 e1, E2 e2);
 

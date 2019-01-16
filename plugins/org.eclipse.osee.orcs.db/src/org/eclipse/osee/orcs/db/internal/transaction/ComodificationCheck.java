@@ -13,6 +13,9 @@ package org.eclipse.osee.orcs.db.internal.transaction;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.framework.core.executor.HasCancellation;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -125,6 +128,10 @@ public class ComodificationCheck implements TransactionProcessor {
          AttributeData<T> modified = attributes.get(data.getLocalId());
          checkCoModified(data, modified);
       }
-   }
 
+      @Override
+      public void deleteTuple(BranchId branch, TableEnum tupleTable, GammaId gammaId) {
+         // tuples do not support modification (only create and delete)
+      }
+   }
 }
