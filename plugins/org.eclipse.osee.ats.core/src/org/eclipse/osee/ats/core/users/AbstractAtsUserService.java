@@ -178,7 +178,7 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       for (IAtsWorkItem workItem : workItems) {
          for (IAtsUser user : workItem.getAssignees()) {
             if (!user.isActive()) {
-               users.add((IAtsUser) user.getStoreObject());
+               users.add(user);
             }
          }
       }
