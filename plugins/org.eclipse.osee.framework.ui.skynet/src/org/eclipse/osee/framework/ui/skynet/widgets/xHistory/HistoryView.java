@@ -29,9 +29,11 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -95,9 +97,9 @@ import org.eclipse.ui.progress.UIJob;
 public class HistoryView extends GenericViewPart implements IBranchEventListener, ITransactionRecordSelectionProvider, IRebuildMenuListener {
 
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView";
-   private static final String INPUT = "input";
-   private static final String ART_GUID = "artifactGuid";
-   private static final String BRANCH_ID = "branchUuid";
+   private static final String ART_ID = "artifactId";
+   private static final String ART_NAME = "artifactName";
+   private static final String BRANCH_ID = "branchId";
 
    private XHistoryWidget xHistoryWidget;
    private Artifact artifact;
@@ -326,9 +328,9 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
    @Override
    public void saveState(IMemento memento) {
       super.saveState(memento);
-      memento = memento.createChild(INPUT);
       if (artifact != null) {
-         memento.putString(ART_GUID, artifact.getGuid());
+         memento.putString(ART_ID, artifact.getIdString());
+         memento.putString(ART_NAME, artifact.getName());
          memento.putString(BRANCH_ID, artifact.getBranch().getIdString());
       }
    }
@@ -338,14 +340,13 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       super.init(site, memento);
       try {
          if (memento != null) {
-            memento = memento.getChild(INPUT);
-            if (memento != null) {
-               String guid = memento.getString(ART_GUID);
-               String branchUuidStr = memento.getString(BRANCH_ID);
-               if (Strings.isValid(branchUuidStr)) {
-                  Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchId.valueOf(branchUuidStr));
-                  openViewUpon(artifact, false);
-               }
+            String id = memento.getString(ART_ID);
+            String name = memento.getString(ART_NAME);
+            String branchId = memento.getString(BRANCH_ID);
+            if (Strings.isNumeric(id) && Strings.isValid(name) && Strings.isNumeric(branchId)) {
+               ArtifactToken artTok =
+                  ArtifactToken.valueOf(Long.valueOf(id), name, BranchId.valueOf(Long.valueOf(branchId)));
+               openViewUpon(artTok, false);
             } else {
                closeView();
             }
@@ -424,18 +425,22 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       HistoryView.openViewUpon(artifact, true);
    }
 
-   private static void openViewUpon(final Artifact artifact, final boolean loadHistory) {
-      Conditions.checkNotNull(artifact, "artifact");
-      Job job = new UIJob("Open History: " + artifact.getName()) {
+   private static void openViewUpon(final ArtifactToken artifactTok, final boolean loadHistory) {
+      Conditions.checkNotNull(artifactTok, "artifact");
+      Job job = new UIJob("Open History: " + artifactTok.getName()) {
 
          @Override
          public IStatus runInUIThread(IProgressMonitor monitor) {
             try {
                IWorkbenchPage page = AWorkbench.getActivePage();
                HistoryView historyView = (HistoryView) page.showView(VIEW_ID,
-                  artifact.getGuid() + artifact.getBranch().getIdString(), IWorkbenchPage.VIEW_ACTIVATE);
-
-               historyView.explore(artifact, loadHistory);
+                  artifactTok.getIdString() + artifactTok.getBranch().getIdString(), IWorkbenchPage.VIEW_ACTIVATE);
+               try {
+                  Artifact artifact = ArtifactQuery.getArtifactFromId(artifactTok, artifactTok.getBranch());
+                  historyView.explore(artifact, loadHistory);
+               } catch (ArtifactDoesNotExist ex) {
+                  historyView.closeView();
+               }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
