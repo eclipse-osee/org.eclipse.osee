@@ -460,6 +460,9 @@ public class LisFileParser implements DispoImporterApi {
       resultsDirs.add(new File(vCastDir + File.separator + RESULTS + File.separator + IMPORTED_RESULTS));
 
       for (File resultsDir : resultsDirs) {
+         if (!resultsDir.exists()) {
+            continue;
+         }
          File[] files = resultsDir.listFiles();
          for (File file : files) {
             String inputF = file.toString();
