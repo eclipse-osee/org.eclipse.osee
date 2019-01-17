@@ -12,9 +12,9 @@ package org.eclipse.osee.ats.ide.util.widgets;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
+import org.eclipse.osee.ats.api.workflow.BranchStatus;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.util.widgets.XWorkingBranch.BranchStatus;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;

@@ -101,30 +101,6 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
 
    private Composite buttonComp;
 
-   public static enum BranchStatus {
-      Not_Started("No Working Branch", false),
-      Changes_InProgress("Changes In Progress", true),
-      Changes_NotPermitted__BranchCommitted("Branch Committed - No Changes Permitted", false),
-      Changes_NotPermitted__CreationInProgress("Branch Being Created - No Changes Permitted", false),
-      Changes_NotPermitted__CommitInProgress("Branch Being Committed - No Changes Permitted", false);
-
-      private final String displayName;
-      private final boolean changesPermitted;
-
-      private BranchStatus(String displayName, boolean changesPermitted) {
-         this.displayName = displayName;
-         this.changesPermitted = changesPermitted;
-      }
-
-      public String getDisplayName() {
-         return displayName;
-      }
-
-      public boolean isChangesPermitted() {
-         return changesPermitted;
-      }
-   }
-
    public XWorkingBranch() {
       super(NAME);
       OseeEventManager.addListener(this);
