@@ -35,7 +35,7 @@ public class AtsUsersTest {
    }
 
    @Test
-   public void testGetUserException() {
+   public void testGetUserNotInDatabase() {
       Assert.assertNull(AtsClientService.get().getUserService().getUserById("2345"));
    }
 

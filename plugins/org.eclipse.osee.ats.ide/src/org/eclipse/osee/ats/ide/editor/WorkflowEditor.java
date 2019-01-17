@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
@@ -734,8 +735,8 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       return awa;
    }
 
-   public static void edit(IAtsTeamWorkflow team) {
-      editArtifact((TeamWorkFlowArtifact) team.getStoreObject());
+   public static void edit(IAtsWorkItem workItem) {
+      editArtifact((Artifact) workItem.getStoreObject());
    }
 
    public static Composite createCommonPageComposite(Composite parent) {

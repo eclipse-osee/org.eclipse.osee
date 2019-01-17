@@ -502,7 +502,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       toolBarMgr.add(new OpenInBrowserAction(awa));
       toolBarMgr.add(new PrivilegedEditAction(awa, editor));
       toolBarMgr.add(new ResourceHistoryAction(awa));
-      toolBarMgr.add(new ReloadAction(awa));
+      toolBarMgr.add(new ReloadAction(awa, editor));
 
       managedForm.getForm().updateToolBar();
    }

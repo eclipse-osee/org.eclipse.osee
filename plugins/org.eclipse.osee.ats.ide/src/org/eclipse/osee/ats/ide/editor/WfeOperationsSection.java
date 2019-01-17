@@ -169,7 +169,7 @@ public class WfeOperationsSection extends SectionPart {
 
       if (editor.getAwa().isTeamWorkflow()) {
          new XButtonViaAction(new DirtyReportAction(editor)).createWidgets(sectionBody, 2);
-         new XButtonViaAction(new ReloadAction(editor.getAwa())).createWidgets(sectionBody, 2);
+         new XButtonViaAction(new ReloadAction(editor.getAwa(), editor)).createWidgets(sectionBody, 2);
          new XButtonViaAction(new MoveTeamWorkflowsAction()).createWidgets(sectionBody, 2);
       }
 

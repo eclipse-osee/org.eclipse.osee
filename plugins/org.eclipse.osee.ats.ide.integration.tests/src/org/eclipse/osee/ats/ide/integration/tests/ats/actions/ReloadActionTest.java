@@ -20,7 +20,7 @@ public class ReloadActionTest extends AbstractAtsActionRunTest {
 
    @Override
    public ReloadAction createAction() {
-      return new ReloadAction(AtsTestUtil.getTeamWf());
+      return new ReloadAction(AtsTestUtil.getTeamWf(), null);
    }
 
 }

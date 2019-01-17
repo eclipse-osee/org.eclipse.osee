@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.AtsUserNameComparator;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -102,7 +103,11 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
          if (atsUser == null && Strings.isValid(userId)) {
             atsUser = AtsCoreUsers.getAtsCoreUserByUserId(userId);
             if (atsUser == null) {
-               atsUser = loadUserFromDbByUserId(userId);
+               try {
+                  atsUser = loadUserFromDbByUserId(userId);
+               } catch (UserNotInDatabase ex) {
+                  // do nothing
+               }
                if (atsUser != null) {
                   userIdToAtsUser.put(userId, atsUser);
                }

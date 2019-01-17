@@ -15,10 +15,14 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
+import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -30,9 +34,11 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 public class ReloadAction extends AbstractAtsAction {
 
    private final AbstractWorkflowArtifact sma;
+   private final WorkflowEditor editor;
 
-   public ReloadAction(AbstractWorkflowArtifact sma) {
+   public ReloadAction(AbstractWorkflowArtifact sma, WorkflowEditor editor) {
       super();
+      this.editor = editor;
       String title = "Reload \"" + sma.getArtifactTypeName() + "\"";
       setText(title);
       setToolTipText(getText());
@@ -41,17 +47,36 @@ public class ReloadAction extends AbstractAtsAction {
 
    @Override
    public void runWithException() {
-      Set<Artifact> relatedArts = new HashSet<>();
-      relatedArts.add(sma);
-      if (sma.isTeamWorkflow()) {
-         relatedArts.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) sma));
+      if (editor != null) {
+         editor.close(true);
       }
-      if (sma instanceof TeamWorkFlowArtifact) {
-         Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) sma);
-         relatedArts.addAll(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(tasks));
+      try {
+         Thread reloadThread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+               Set<Artifact> relatedArts = new HashSet<>();
+               relatedArts.add(sma);
+               if (sma.isTeamWorkflow()) {
+                  relatedArts.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) sma));
+               }
+               if (sma instanceof TeamWorkFlowArtifact) {
+                  Collection<IAtsTask> tasks =
+                     AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) sma);
+                  relatedArts.addAll(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(tasks));
+               }
+               ArtifactQuery.reloadArtifacts(relatedArts);
+               if (editor != null) {
+                  WorkflowEditor.edit(sma);
+                  // Don't need to re-open editor cause event handler will do that
+               }
+            }
+         });
+         reloadThread.start();
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      ArtifactQuery.reloadArtifacts(relatedArts);
-      // Don't need to re-open editor cause event handler will do that
+
    }
 
    @Override
