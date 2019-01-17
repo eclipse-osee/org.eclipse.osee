@@ -95,6 +95,9 @@ public final class AtsWorkDefinitionSheetProviders {
          importAIsAndTeamsToDb(sheet, changes);
       }
       changes.execute();
+
+      // Reload configurations so get latest users/ats config objects just created
+      AtsClientService.getConfigEndpoint().getWithPend();
    }
 
    public static void importAIsAndTeamsToDb(WorkDefinitionSheet sheet, IAtsChangeSet changes) {

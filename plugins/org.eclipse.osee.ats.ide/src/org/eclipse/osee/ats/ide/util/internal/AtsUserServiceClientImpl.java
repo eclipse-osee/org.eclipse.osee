@@ -17,7 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.core.HttpHeaders;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -45,14 +44,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  */
 public class AtsUserServiceClientImpl extends AbstractAtsUserService implements IAtsUserServiceClient {
 
-   private IAtsConfigurationsService configurationService;
-
    public AtsUserServiceClientImpl() {
       // For OSGI Instantiation
-   }
-
-   public void setConfigurationService(IAtsConfigurationsService configurationService) {
-      this.configurationService = configurationService;
    }
 
    @Override
@@ -182,15 +175,20 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
 
    @Override
    protected IAtsUser loadUserFromDbByUserId(String userId) {
-      Artifact userArt = null;
-      try {
-         userArt = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.UserId,
-            userId, AtsClientService.get().getAtsBranch());
-         return createFromArtifact(userArt);
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
+      IAtsUser user = null;
+      Artifact userArt = UserManager.getUserByUserId(userId);
+      if (userArt == null) {
+         try {
+            userArt = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.UserId,
+               userId, AtsClientService.get().getAtsBranch());
+            user = createFromArtifact(userArt);
+         } catch (ArtifactDoesNotExist ex) {
+            // do nothing
+         }
+      } else {
+         user = createFromArtifact(userArt);
       }
-      return null;
+      return user;
    }
 
    private AtsUser createFromArtifact(Artifact userArt) {

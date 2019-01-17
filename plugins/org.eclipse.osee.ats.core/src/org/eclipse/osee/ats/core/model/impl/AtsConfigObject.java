@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -115,9 +116,10 @@ public class AtsConfigObject extends org.eclipse.osee.ats.core.model.impl.AtsObj
       Set<IAtsUser> results = new HashSet<>();
       try {
          for (Object userArt : atsApi.getRelationResolver().getRelated(artifact, relation)) {
-            IAtsUser lead = atsApi.getUserService().getUserById(
-               (String) atsApi.getAttributeResolver().getSoleAttributeValue((ArtifactId) userArt,
-                  CoreAttributeTypes.UserId, null));
+            String userId = (String) atsApi.getAttributeResolver().getSoleAttributeValue((ArtifactId) userArt,
+               CoreAttributeTypes.UserId, null);
+            IAtsUser lead = atsApi.getUserService().getUserById(userId);
+            Conditions.assertNotNull(lead, "Lead can not be null with userArt %s", userArt);
             results.add(lead);
          }
       } catch (OseeCoreException ex) {

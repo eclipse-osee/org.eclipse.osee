@@ -20,7 +20,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.AtsUserNameComparator;
@@ -37,6 +39,29 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    protected final Map<String, IAtsUser> userIdToAtsUser = new ConcurrentHashMap<>(300);
    protected final Map<String, IAtsUser> nameToAtsUser = new ConcurrentHashMap<>(300);
    protected IAtsUser currentUser = null;
+
+   protected IAtsConfigurationsService configurationService;
+
+   public void setConfigurationService(IAtsConfigurationsService configurationService) {
+      this.configurationService = configurationService;
+      Thread thread = new Thread(cacheLoader, "ATS User Loader");
+      thread.start();
+   }
+
+   /**
+    * Pre-load caches from AtsConfigurations
+    */
+   private final Runnable cacheLoader = new Runnable() {
+
+      @Override
+      public void run() {
+         for (AtsUser user : configurationService.getConfigurations().getUsers()) {
+            accountIdToAtsUser.put(user.getId(), user);
+            userIdToAtsUser.put(user.getUserId(), user);
+            nameToAtsUser.put(user.getName(), user);
+         }
+      }
+   };
 
    @Override
    public IAtsUser getCurrentUser() {
