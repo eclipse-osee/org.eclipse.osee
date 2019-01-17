@@ -559,9 +559,10 @@ app.controller('userController', [
             	// since those fields are not present in the java object DispoAnnotationData
             	delete newAnnotation['children'];
             	delete newAnnotation['isLeaf'];
+            	delete newAnnotation['$resolved'];
             	// Removing the parent ref is extra important because JSON Stringify cannot handle circular references
             	// Stringify gets called because the payload needs to be parsed on transmit
-            	delete newAnnotation['parentRef'];
+            	delete newAnnotation['parentRef'];           	
             	
                 Annotation.update({
                     programId: $scope.programSelection,
