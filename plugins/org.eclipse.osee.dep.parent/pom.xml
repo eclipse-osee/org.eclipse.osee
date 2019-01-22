@@ -35,8 +35,8 @@
 		<jaxdoclet-version>0.9.0</jaxdoclet-version>
 		<maven-clean-version>2.5</maven-clean-version>
 		<platform-version-name>neon</platform-version-name>
-<!-- 		<orbit-version>R20150124073747</orbit-version> -->
-		<orbit-version>R20160520211859</orbit-version>
+<!-- 		   <orbit-version>R20150124073747</orbit-version> -->
+		<orbit-version>R20181128170323</orbit-version>
 		<subversive-version>1.0</subversive-version>
 		<polarion-version>3.0</polarion-version>
 
