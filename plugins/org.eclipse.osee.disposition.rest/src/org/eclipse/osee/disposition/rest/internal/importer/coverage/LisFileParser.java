@@ -35,6 +35,7 @@ import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
+import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.DispoSummarySeverity;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.DispoApiConfiguration;
@@ -171,7 +172,7 @@ public class LisFileParser implements DispoImporterApi {
 
       for (DispoItem item : toReturn) {
          if (item.getStatus().equalsIgnoreCase("incomplete")) {
-            createPlaceHolderAnnotations((DispoItemData) item, report);
+            createPlaceHolderAnnotations((DispoItemData) item, exisitingItems, report);
          }
       }
       return toReturn;
@@ -201,14 +202,23 @@ public class LisFileParser implements DispoImporterApi {
       return toReturn;
    }
 
-   private void createPlaceHolderAnnotations(DispoItemData item, OperationReport report) {
+   private void createPlaceHolderAnnotations(DispoItemData item, Map<String, DispoItem> exisitingItems, OperationReport report) {
+      List<DispoItem> prevItems = new ArrayList<DispoItem>(exisitingItems.values());
       List<String> uncovered = dispoConnector.getAllUncoveredDiscprepancies(item);
       if (!uncovered.isEmpty()) {
          Map<String, Discrepancy> discrepanciesList = item.getDiscrepanciesList();
          for (String id : discrepanciesList.keySet()) {
             Discrepancy discrepancy = discrepanciesList.get(id);
             if (uncovered.contains(discrepancy.getLocation())) {
-               addBlankAnnotationForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText());
+               DispoAnnotationData uncoveredAnnotation = matchOldAnnotation(discrepancy, prevItems, item);
+               if (uncoveredAnnotation.getResolutionType().equalsIgnoreCase(DispoStrings.Test_Unit_Resolution)) {
+                  uncoveredAnnotation.setLastResolution(uncoveredAnnotation.getResolution());
+               } else if (uncoveredAnnotation.getResolutionType().equalsIgnoreCase(
+                  DispoStrings.Exception_Handling_Resolution)) {
+                  uncoveredAnnotation.setLastResolution("Exception_Handling");
+               }
+               addBlankAnnotationForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText(),
+                  uncoveredAnnotation.getLastResolution());
             }
          }
       }
@@ -655,7 +665,26 @@ public class LisFileParser implements DispoImporterApi {
       return toReturn;
    }
 
-   private void addBlankAnnotationForUncoveredLine(DispoItemData item, String location, String text) {
+   private DispoAnnotationData matchOldAnnotation(Discrepancy discrepancy, List<DispoItem> oldItems, DispoItemData item) {
+      DispoAnnotationData toReturn = null;
+      DispoItem dispoItem = null;
+      for (DispoItem oldItem : oldItems) {
+         if (String.valueOf(oldItem.getName()).equals(item.getName())) {
+            dispoItem = oldItem;
+            break;
+         }
+      }
+      for (DispoAnnotationData value : dispoItem.getAnnotationsList()) {
+         if (String.valueOf(value.getLocationRefs()).equals(discrepancy.getLocation())) {
+            toReturn = value;
+            return toReturn;
+         }
+      }
+
+      return toReturn;
+   }
+
+   private void addBlankAnnotationForUncoveredLine(DispoItemData item, String location, String text, String lastResolution) {
       DispoAnnotationData newAnnotation = new DispoAnnotationData();
       dataFactory.initAnnotation(newAnnotation);
       String idOfNewAnnotation = dataFactory.getNewId();
@@ -665,6 +694,7 @@ public class LisFileParser implements DispoImporterApi {
       newAnnotation.setLocationRefs(location);
       newAnnotation.setResolutionType("");
       newAnnotation.setResolution("");
+      newAnnotation.setLastResolution(lastResolution);
       newAnnotation.setIsResolutionValid(false);
       newAnnotation.setCustomerNotes(text);
       dispoConnector.connectAnnotation(newAnnotation, item.getDiscrepanciesList());
@@ -685,6 +715,7 @@ public class LisFileParser implements DispoImporterApi {
       newAnnotation.setLocationRefs(location);
       newAnnotation.setResolutionType(resolutionType);
       newAnnotation.setResolution(coveringFile);
+      newAnnotation.setLastResolution("N/A");
       newAnnotation.setIsResolutionValid(true);
       newAnnotation.setCustomerNotes(text);
 

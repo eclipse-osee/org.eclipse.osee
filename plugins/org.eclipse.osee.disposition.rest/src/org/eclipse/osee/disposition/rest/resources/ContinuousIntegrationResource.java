@@ -171,6 +171,7 @@ public class ContinuousIntegrationResource {
       temp.setLocationRefs(annotation.getLocationRefs());
       temp.setResolution(annotation.getResolution());
       temp.setResolutionType(annotation.getResolutionType());
+      temp.setLastResolution(annotation.getLastResolution());
       temp.setCustomerNotes(annotation.getCustomerNotes());
       temp.setDeveloperNotes(annotation.getDeveloperNotes());
    }

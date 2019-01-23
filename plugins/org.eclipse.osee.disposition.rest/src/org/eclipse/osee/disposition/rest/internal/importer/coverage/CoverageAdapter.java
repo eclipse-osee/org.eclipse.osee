@@ -121,6 +121,7 @@ public class CoverageAdapter {
                annotationToUpdate.setResolutionType(resolutionFromCoverage);
                annotationToUpdate.setIsResolutionValid(true);
                annotationToUpdate.setResolution(rationale);
+               annotationToUpdate.setLastResolution("N/A");
                annotationToUpdate.setDeveloperNotes("");
                dispoConnector.connectAnnotation(annotationToUpdate, dest.getDiscrepanciesList());
 

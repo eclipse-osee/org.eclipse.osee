@@ -147,7 +147,6 @@ public class DispoSetCopier {
                   String.format("Did not copy annotations for location(s) [%s] because they are default annotations",
                      sourceAnnotation.getLocationRefs()),
                   IGNORE);
-
             }
          } else if (destDefaultAnntationLocations.contains(sourceLocation)) {
             /**

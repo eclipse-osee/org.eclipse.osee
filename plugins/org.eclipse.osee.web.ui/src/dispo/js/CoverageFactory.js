@@ -21,6 +21,14 @@ app.factory('CoverageFactory', function() {
         }
 	}
 	
+	CoverageFactory.getLastTextResolution = function(annotation) {
+		if (annotation.isLeaf && annotation.lastResolution!=annotation.resolution) {
+			return annotation.lastResolution;
+        } else {
+        	return "";
+        }
+	}
+	
 	CoverageFactory.setTextForNonDefaultAnnotations = function(annotations, discrepancies) {
 		for(var i = 0; i < annotations.length; i++) {
 			if(!annotations[i].isDefault) { 

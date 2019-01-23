@@ -31,6 +31,7 @@ public class DispoAnnotationData {
    private boolean isConnected;
    private List<String> idsOfCoveredDiscrepancies;
    private String resolution;
+   private String lastResolution;
    private boolean isResolutionValid;
    private String resolutionType;
    private boolean isDefault;
@@ -80,6 +81,10 @@ public class DispoAnnotationData {
 
    public String getResolution() {
       return resolution;
+   }
+
+   public String getLastResolution() {
+      return lastResolution;
    }
 
    public boolean getIsResolutionValid() {
@@ -136,6 +141,10 @@ public class DispoAnnotationData {
 
    public void setResolution(String resolution) {
       this.resolution = resolution;
+   }
+
+   public void setLastResolution(String lastResolution) {
+      this.lastResolution = lastResolution;
    }
 
    public void setIsResolutionValid(boolean isResolutionValid) {

@@ -315,6 +315,14 @@ app.controller('userController', [
         	}
         }
         
+        $scope.getLastTextResolution = function(annotation) {
+        	if($scope.isCoverage) {
+        		return CoverageFactory.getLastTextResolution(annotation);
+        	} else {
+        		return annotation.lastResolution;
+        	}
+        }
+        
         $scope.getTextCoverage = function(annotation) {
         	if(annotation.isLeaf) {
         		return annotation.customerNotes;
@@ -563,7 +571,7 @@ app.controller('userController', [
             	delete newAnnotation['parentId'];
             	// Removing the parent ref is extra important because JSON Stringify cannot handle circular references
             	// Stringify gets called because the payload needs to be parsed on transmit
-            	delete newAnnotation['parentRef'];           	
+            	delete newAnnotation['parentRef'];
             	
                 Annotation.update({
                     programId: $scope.programSelection,
