@@ -417,13 +417,6 @@ public class DispoApiImpl implements DispoApi {
 
          DispoStorageMetadata metadata = new DispoStorageMetadata();
 
-         try {
-            Date date = DispoUtil.getTimestampOfFile(getFullFilePathFromDispoItemId(branch, itemId, dispoItem));
-            modifiedDispoItem.setLastUpdate(date);
-         } catch (Throwable ex) {
-            throw new OseeCoreException(ex);
-         }
-
          getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), modifiedDispoItem, metadata);
          if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
             updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(modifiedDispoItem),
