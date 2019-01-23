@@ -12,7 +12,8 @@ package org.eclipse.osee.ats.ide.util.widgets;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
-import org.eclipse.osee.ats.api.workflow.BranchStatus;
+import org.eclipse.osee.ats.api.branch.BranchEnablementData;
+import org.eclipse.osee.ats.api.branch.BranchStatus;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -22,7 +23,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * @author Donald G. Dunne
@@ -125,7 +125,7 @@ public class XWorkingBranchEnablement {
       return toReturn;
    }
 
-   private static final class BranchEnablementLazyObject extends LazyObject<XWorkingBranchEnablement.BranchEnablementData> {
+   private static final class BranchEnablementLazyObject extends LazyObject<BranchEnablementData> {
       private final TeamWorkFlowArtifact teamArt;
 
       public BranchEnablementLazyObject(TeamWorkFlowArtifact teamArt) {
@@ -138,7 +138,7 @@ public class XWorkingBranchEnablement {
 
             @Override
             public BranchEnablementData call() throws Exception {
-               BranchEnablementData enablementData = new BranchEnablementData(teamArt);
+               BranchEnablementData enablementData = new BranchEnablementData(teamArt, AtsClientService.get());
                if (teamArt != null) {
                   IOseeBranch workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt, true);
                   enablementData.setWorkingBranch(workingBranch);
@@ -157,79 +157,4 @@ public class XWorkingBranchEnablement {
       }
    };
 
-   private static final class BranchEnablementData {
-      private final TeamWorkFlowArtifact teamArt;
-      private IOseeBranch workingBranch;
-
-      private boolean workingBranchInWork;
-      private boolean committedBranchExists;
-      private boolean disableAll;
-
-      public BranchEnablementData(TeamWorkFlowArtifact teamArt) {
-         this.teamArt = teamArt;
-      }
-
-      public void setWorkingBranchInWork(boolean workingBranchInWork) {
-         this.workingBranchInWork = workingBranchInWork;
-      }
-
-      public void setCommittedBranchExists(boolean committedBranchExists) {
-         this.committedBranchExists = committedBranchExists;
-      }
-
-      public void setWorkingBranch(IOseeBranch workingBranch) {
-         this.workingBranch = workingBranch;
-      }
-
-      public void setDisableAll(boolean disableAll) {
-         this.disableAll = disableAll;
-      }
-
-      public boolean isWorkingBranchCreationInProgress() {
-         return AtsClientService.get().getBranchService().isWorkingBranchCreationInProgress(
-            teamArt) || workingBranch.isValid() && BranchManager.getState(workingBranch).isCreationInProgress();
-      }
-
-      public boolean isWorkingBranchCommitInProgress() {
-         return AtsClientService.get().getBranchService().isWorkingBranchCommitInProgress(
-            teamArt) || workingBranch.isValid() && BranchManager.getState(workingBranch).isCommitInProgress();
-      }
-
-      public boolean isWorkingBranchInWork() {
-         return workingBranchInWork;
-      }
-
-      public boolean isCommittedBranchExists() {
-         return committedBranchExists;
-      }
-
-      public boolean isDisableAll() {
-         return disableAll;
-      }
-
-      public IOseeBranch getWorkingBranch() {
-         return workingBranch;
-      }
-
-      public BranchStatus getBranchStatus() {
-         if (teamArt != null) {
-            if (isWorkingBranchCreationInProgress()) {
-               return BranchStatus.Changes_NotPermitted__CreationInProgress;
-            } else if (isWorkingBranchCommitInProgress()) {
-               return BranchStatus.Changes_NotPermitted__CommitInProgress;
-            } else if (isCommittedBranchExists()) {
-               return BranchStatus.Changes_NotPermitted__BranchCommitted;
-            } else if (isWorkingBranchInWork()) {
-               return BranchStatus.Changes_InProgress;
-            }
-         }
-         return BranchStatus.Not_Started;
-      }
-
-      @Override
-      public String toString() {
-         return "BranchEnablementData [workingBranch=" + workingBranch + ", workingBranchCreationInProgress=" + isWorkingBranchCreationInProgress() + ", workingBranchCommitInProgress=" + isWorkingBranchCommitInProgress() + ", workingBranchInWork=" + workingBranchInWork + ", committedBranchExists=" + committedBranchExists + ", disableAll=" + disableAll + "]";
-      }
-
-   }
 }

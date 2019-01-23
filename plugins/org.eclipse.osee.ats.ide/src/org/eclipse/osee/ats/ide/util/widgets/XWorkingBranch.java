@@ -118,7 +118,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
 
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
-
+         // do nothing
       }
    }
 

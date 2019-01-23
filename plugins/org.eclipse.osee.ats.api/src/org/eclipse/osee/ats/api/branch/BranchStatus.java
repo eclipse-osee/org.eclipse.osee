@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.workflow;
+package org.eclipse.osee.ats.api.branch;
 
 /**
  * @author Donald G. Dunne
