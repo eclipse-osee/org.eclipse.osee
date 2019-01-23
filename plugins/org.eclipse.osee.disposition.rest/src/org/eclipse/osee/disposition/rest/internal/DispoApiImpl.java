@@ -269,13 +269,6 @@ public class DispoApiImpl implements DispoApi {
          ArtifactReadable author = getQuery().findUserByName(userName);
          DispoStorageMetadata metadata = new DispoStorageMetadata();
 
-         try {
-            Date date = DispoUtil.getTimestampOfFile(getFullFilePathFromDispoItemId(branch, itemId, dispoItemToEdit));
-            newDispoItem.setLastUpdate(date);
-         } catch (Throwable ex) {
-            throw new OseeCoreException(ex);
-         }
-
          getWriter().updateDispoItem(author, branch, dispoItemToEdit.getGuid(), newDispoItem, metadata);
          if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
             updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(newDispoItem),
