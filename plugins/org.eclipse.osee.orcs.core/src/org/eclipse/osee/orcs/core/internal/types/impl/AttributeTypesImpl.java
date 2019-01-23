@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
+import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.AttributeTypes;
@@ -232,14 +233,13 @@ public class AttributeTypesImpl implements AttributeTypes {
 
    @Override
    public AttributeTypeToken getByName(String attrTypeName) {
-      AttributeTypeToken attrType = null;
+
       for (AttributeTypeToken type : getAll()) {
          if (type.getName().equals(attrTypeName)) {
-            attrType = type;
-            break;
+            return type;
          }
       }
-      return attrType;
+      throw new OseeTypeDoesNotExist("AttributeTypeToken does not exist");
    }
 
 }

@@ -164,10 +164,7 @@ public class CreateTasksOperation {
 
             for (JaxAttribute attribute : task.getAttributes()) {
                AttributeTypeId attrType = atsApi.getStoreService().getAttributeType(attribute.getAttrTypeName());
-               if (attrType == null) {
-                  resultData.errorf("Attribute Type [%s] not valid for Task creation in %s",
-                     attribute.getAttrTypeName(), task);
-               }
+
             }
 
             for (JaxRelation relation : task.getRelations()) {
@@ -279,10 +276,7 @@ public class CreateTasksOperation {
             for (JaxAttribute attribute : jaxTask.getAttributes()) {
                AttributeTypeToken attrType =
                   orcsApi.getOrcsTypes().getAttributeTypes().getByName(attribute.getAttrTypeName());
-               if (attrType == null) {
-                  resultData.errorf("Attribute Type [%s] not valid for Task creation in %s",
-                     attribute.getAttrTypeName(), task);
-               }
+
                changes.setAttributeValues(task, attrType, attribute.getValues());
             }
 

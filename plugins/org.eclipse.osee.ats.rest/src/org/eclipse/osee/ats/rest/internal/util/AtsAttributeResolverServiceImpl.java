@@ -98,17 +98,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    @Override
    public AttributeTypeToken getAttributeType(String attributeName) {
-      AttributeTypeToken attrType = null;
-      try {
-         for (AttributeTypeToken type : orcsApi.getOrcsTypes().getAttributeTypes().getAll()) {
-            if (type.getName().equals(attributeName)) {
-               attrType = type;
-            }
-         }
-      } catch (OseeCoreException ex) {
-         logger.error(ex, "Error getting attribute type with name [%s]", attributeName);
-      }
-      return attrType;
+      return orcsApi.getOrcsTypes().getAttributeTypes().getByName(attributeName);
    }
 
    @Override

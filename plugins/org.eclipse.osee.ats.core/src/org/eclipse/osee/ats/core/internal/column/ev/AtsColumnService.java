@@ -182,9 +182,8 @@ public class AtsColumnService implements IAtsColumnService {
       if (column == null) {
          if (id.startsWith("attribute.")) {
             AttributeTypeId attrType = atsApi.getStoreService().getAttributeType(id.replaceFirst("attribute\\.", ""));
-            if (attrType != null) {
-               column = new AttributeColumn(atsApi, attrType);
-            }
+            column = new AttributeColumn(atsApi, attrType);
+
          }
          if (id.startsWith("ats.")) {
             AttributeTypeId attrType = atsApi.getStoreService().getAttributeType(id);

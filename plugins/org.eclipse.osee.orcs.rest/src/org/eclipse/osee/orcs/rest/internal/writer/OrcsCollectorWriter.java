@@ -240,9 +240,7 @@ public class OrcsCollectorWriter {
    protected static AttributeTypeToken getAttributeType(AttributeTypes attributeTypeCache, OwAttributeType attributeType) {
       if (attributeType.isInvalid()) {
          AttributeTypeToken attributeTypeId = attributeTypeCache.getByName(attributeType.getName());
-         if (attributeTypeId == null) {
-            throw new OseeArgumentException("Invalid attribute type name [%s]", attributeType);
-         }
+
          return attributeTypeId;
       }
       return attributeTypeCache.get(attributeType.getId());

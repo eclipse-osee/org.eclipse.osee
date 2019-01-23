@@ -149,10 +149,7 @@ public class ActionFactory implements IAtsActionFactory {
                   agileTeam.toStringWithId());
             }
             AttributeTypeToken attributeType = atsApi.getAttributeResolver().getAttributeType(pointsAttrType);
-            if (attributeType == null) {
-               throw new OseeArgumentException("Invalid Points Attribute Type [%s] on Agile Team or Team Definition",
-                  pointsAttrType);
-            }
+
             changes.setSoleAttributeValue(teamWf, attributeType, data.getPoints());
          }
       }
