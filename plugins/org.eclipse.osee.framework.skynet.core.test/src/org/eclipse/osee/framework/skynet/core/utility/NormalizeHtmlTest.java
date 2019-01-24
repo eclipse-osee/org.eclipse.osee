@@ -32,12 +32,11 @@ public class NormalizeHtmlTest {
    public void test() throws Exception {
       String rawInput = getResource(TEST_DOC);
       String expected = getResource(CONVERTED_HTML);
-
       String input = NormalizeHtml.convertToNormalizedHTML(rawInput);
       input = bodyOnly(input);
       expected = bodyOnly(expected);
-      input = input.replaceAll("\r", "");
       expected = expected.replaceAll("\r", "");
+      input = input.replaceAll("\r", "");
       Assert.assertEquals("Converted HTML does not equal expected", expected, input);
 
       input = rawInput.replaceAll("BODY", "body");
