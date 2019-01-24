@@ -197,7 +197,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    }
 
    public String getRunText() {
-      return "Run BLAM in Job";
+      return "Run BLAM";
    }
 
    public Image getImage() {
