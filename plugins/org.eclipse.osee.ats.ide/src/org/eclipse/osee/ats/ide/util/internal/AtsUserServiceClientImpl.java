@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -176,7 +177,12 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    @Override
    protected IAtsUser loadUserFromDbByUserId(String userId) {
       IAtsUser user = null;
-      Artifact userArt = UserManager.getUserByUserId(userId);
+      Artifact userArt = null;
+      try {
+         userArt = UserManager.getUserByUserId(userId);
+      } catch (UserNotInDatabase ex) {
+         // do nothing
+      }
       if (userArt == null) {
          try {
             userArt = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.UserId,
