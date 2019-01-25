@@ -15,7 +15,6 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.WebApplicationException;
@@ -25,6 +24,7 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.util.JsonUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Angel Avila
@@ -53,6 +53,6 @@ public class DispoItemListMessageWriter implements MessageBodyWriter<List<DispoI
          reconstructedDispoItems.add(dispoItemData);
       }
       String jsonString = JsonUtil.toJson(reconstructedDispoItems);
-      entityStream.write(jsonString.getBytes(Charset.forName("UTF-8")));
+      entityStream.write(jsonString.getBytes(Strings.UTF_8));
    }
 }

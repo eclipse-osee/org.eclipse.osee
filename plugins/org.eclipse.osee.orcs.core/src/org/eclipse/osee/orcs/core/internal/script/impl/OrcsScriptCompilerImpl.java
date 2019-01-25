@@ -16,7 +16,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -43,9 +42,6 @@ import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OrcsScript;
  * @author Roberto E. Escobar
  */
 public class OrcsScriptCompilerImpl implements OrcsScriptCompiler {
-
-   private static Charset UTF_8_CHARSET = Charset.forName("UTF-8");
-
    private final OrcsSession session;
    private final DataModule dataModule;
    private final OrcsTypes orcsTypes;
@@ -98,7 +94,7 @@ public class OrcsScriptCompilerImpl implements OrcsScriptCompiler {
       InputStream inputStream = null;
       try {
          String uri = "orcs:/dummy.orcs";
-         inputStream = new ByteArrayInputStream(read(reader).getBytes(UTF_8_CHARSET));
+         inputStream = new ByteArrayInputStream(read(reader).getBytes(Strings.UTF_8));
          resource = OrcsScriptUtil.loadModelSafely(inputStream, uri);
       } catch (IOException ex) {
          throw newException(ex);

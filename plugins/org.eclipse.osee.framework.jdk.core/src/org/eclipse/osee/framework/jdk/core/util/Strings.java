@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.jdk.core.util;
 
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,6 +34,7 @@ public class Strings {
    private static final String STR = "%s%s%s";
    private static final String QUOTE_STR = "\"";
    public static final String EMPTY_STRING = "";
+   public static final Charset UTF_8 = Charset.forName("UTF-8");
 
    private Strings() {
       // Utility class

@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -24,6 +23,7 @@ import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.framework.core.util.result.XResultPageBase;
 import org.eclipse.osee.framework.jdk.core.result.Manipulations;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -48,7 +48,7 @@ public class XResultDataHtmlWriter implements MessageBodyWriter<XResultData> {
       XResultPageBase xResultPage = new XResultPageBase(resultData.getTitle(), resultData.toString());
       String html = xResultPage.getManipulatedHtml(
          Arrays.asList(Manipulations.HTML_MANIPULATIONS, Manipulations.ERROR_RED, Manipulations.CONVERT_NEWLINES));
-      outputStream.write(html.getBytes(Charset.forName("UTF-8")));
+      outputStream.write(html.getBytes(Strings.UTF_8));
    }
 
 }

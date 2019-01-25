@@ -16,6 +16,7 @@ import java.nio.charset.Charset;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -23,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 public abstract class AbstractViewResolver<T> implements ViewResolver<T> {
 
    protected Charset getDefaultEncoding() {
-      return Charset.forName("UTF-8");
+      return Strings.UTF_8;
    }
 
    protected Charset computeEncoding(MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, Charset defaultEncoding) {

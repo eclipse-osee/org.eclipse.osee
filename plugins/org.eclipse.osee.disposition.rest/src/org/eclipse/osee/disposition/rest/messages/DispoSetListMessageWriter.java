@@ -15,7 +15,6 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.nio.charset.Charset;
 import java.util.List;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -23,6 +22,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.framework.core.util.JsonUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Angel Avila
@@ -46,6 +46,6 @@ public class DispoSetListMessageWriter implements MessageBodyWriter<List<DispoSe
    @Override
    public void writeTo(List<DispoSet> dispoSets, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
       String jsonString = JsonUtil.toJson(dispoSets);
-      entityStream.write(jsonString.getBytes(Charset.forName("UTF-8")));
+      entityStream.write(jsonString.getBytes(Strings.UTF_8));
    }
 }
