@@ -22,6 +22,7 @@ public final class CoreTupleFamilyTypes {
    public static final TupleFamilyId AttribueFamily = TupleFamilyId.valueOf(3L);
    public static final TupleFamilyId RelationFamily = TupleFamilyId.valueOf(4L);
    public static final TupleFamilyId ProductLineFamily = TupleFamilyId.valueOf(5L);
+   public static final TupleFamilyId GitFamily = TupleFamilyId.valueOf(6L);
 
    private CoreTupleFamilyTypes() {
       // Constants

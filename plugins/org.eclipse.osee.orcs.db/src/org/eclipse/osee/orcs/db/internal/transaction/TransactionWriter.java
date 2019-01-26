@@ -73,7 +73,7 @@ public class TransactionWriter {
       "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_tuple3 tp1, osee_txs txs, osee_tuple3 tp2 WHERE jid.query_id = ? AND jid.id = tp1.gamma_id AND tp1.tuple_type = tp2.tuple_type AND tp1.e1 = tp2.e1 AND tp1.e2 = tp2.e2 AND tp1.e3 = tp2.e3 AND tp2.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
 
    private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_TUPLE4 =
-      "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_tuple3 tp1, osee_txs txs, osee_tuple3 tp2 WHERE jid.query_id = ? AND jid.id = tp1.gamma_id AND tp1.tuple_type = tp2.tuple_type AND tp1.e1 = tp2.e1 AND tp1.e2 = tp2.e2 AND tp1.e3 = tp2.e3 AND tp1.e4 = tp2.e4 AND tp2.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
+      "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_tuple4 tp1, osee_txs txs, osee_tuple4 tp2 WHERE jid.query_id = ? AND jid.id = tp1.gamma_id AND tp1.tuple_type = tp2.tuple_type AND tp1.e1 = tp2.e1 AND tp1.e2 = tp2.e2 AND tp1.e3 = tp2.e3 AND tp1.e4 = tp2.e4 AND tp2.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
 
    public static enum SqlOrderEnum {
       ARTIFACTS(INSERT_ARTIFACT, TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS),

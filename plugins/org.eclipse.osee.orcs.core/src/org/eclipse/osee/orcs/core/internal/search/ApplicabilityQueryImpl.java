@@ -208,8 +208,8 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       printColumnHeadings(html, branchViews, branch);
       Map<ArtifactId, Map<String, List<String>>> branchViewsMap = new HashMap<>();
 
-      for (ArtifactId artId : branchViews) {
-         branchViewsMap.put(artId, getNamedViewApplicabilityMap(branch, artId));
+      for (ArtifactId view : branchViews) {
+         branchViewsMap.put(view, getNamedViewApplicabilityMap(branch, view));
       }
       for (FeatureDefinition featureDefinition : featureDefinitionData) {
          html.append("<tr>");

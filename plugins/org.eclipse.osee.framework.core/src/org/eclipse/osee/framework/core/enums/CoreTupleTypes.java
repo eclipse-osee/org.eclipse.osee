@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.enums;
 
 import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.DefaultFamily;
+import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.GitFamily;
 import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.ProductLineFamily;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -18,8 +19,10 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
+import org.eclipse.osee.framework.core.data.Tuple4Type;
 import org.eclipse.osee.framework.core.data.TupleFamilyId;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
+import org.eclipse.osee.framework.core.data.TupleTypeImpl;
 
 /**
  * @author Ryan D. Brooks
@@ -41,6 +44,10 @@ public final class CoreTupleTypes {
    public static final Tuple3Type<String, Long, Long> ReversalMaintenanceData = Tuple3Type.valueOf(DefaultFamily, 8L);
    public static final Tuple3Type<String, Long, Long> LruDataTypes = Tuple3Type.valueOf(DefaultFamily, 9L);
    public static final Tuple3Type<String, Long, Long> LruFormatData = Tuple3Type.valueOf(DefaultFamily, 10L);
+
+   // repository, code unit, commitArtId, changeType
+   public static final Tuple4Type<ArtifactId, ArtifactId, ArtifactId, String> GitCommitFile = Tuple4Type.valueOf(
+      GitFamily, 11L, ArtifactId::valueOf, ArtifactId::valueOf, ArtifactId::valueOf, TupleTypeImpl.KeyedString);
 
    private CoreTupleTypes() {
       // Constants

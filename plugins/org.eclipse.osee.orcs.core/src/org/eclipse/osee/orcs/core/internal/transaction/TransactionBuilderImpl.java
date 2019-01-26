@@ -66,6 +66,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    private final QueryFactory queryFactory;
    private final OrcsApi orcsApi;
    private final KeyValueOps keyValueOps;
+   private final TupleQuery tupleQuery;
    private boolean abandon = false;
 
    public TransactionBuilderImpl(TxCallableFactory txFactory, TxDataManager dataManager, TxData txData, OrcsApi orcsApi, KeyValueOps keyValueOps) {
@@ -75,6 +76,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       this.orcsApi = orcsApi;
       this.queryFactory = orcsApi.getQueryFactory();
       this.keyValueOps = keyValueOps;
+      this.tupleQuery = orcsApi.getQueryFactory().tupleQuery();
    }
 
    private Artifact getForWrite(ArtifactId artifactId) {
@@ -488,13 +490,24 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public <E1, E2, E3> boolean deleteTupple3(Tuple3Type<E1, E2, E3> tupleType, E1 element1, E2 element2, E3 element3) {
+   public <E1, E2, E3> boolean deleteTuple3(Tuple3Type<E1, E2, E3> tupleType, E1 element1, E2 element2, E3 element3) {
       return false;
    }
 
    @Override
-   public <E1, E2, E3, E4> boolean deleteTupple4(Tuple4Type<E1, E2, E3, E4> tupleType, E1 element1, E2 element2, E3 element3, E4 element4) {
+   public <E1, E2, E3, E4> boolean deleteTuple4(Tuple4Type<E1, E2, E3, E4> tupleType, E1 element1, E2 element2, E3 element3, E4 element4) {
       return false;
+   }
+
+   @Override
+   public <E1, E2, E3, E4> boolean deleteTuple4ByE1E2(Tuple4Type<E1, E2, E3, E4> tupleType, E1 e1, E2 e2) {
+      List<GammaId> tuples = new ArrayList<>();
+      tupleQuery.getTuple4GammaFromE1E2(tupleType, getBranch(), e1, e2, tuples::add);
+      if (tuples.isEmpty()) {
+         return false;
+      }
+      tuples.forEach(this::deleteTuple4);
+      return true;
    }
 
    @Override

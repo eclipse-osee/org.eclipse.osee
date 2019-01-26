@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import java.util.function.Function;
 import org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 
 /**
  * @author Ryan D. Brooks
  */
-class TupleTypeImpl extends BaseId implements TupleTypeToken {
+public class TupleTypeImpl extends BaseId implements TupleTypeToken {
+   public static final Function<Long, String> KeyedString = l -> "";
    private final TupleFamilyId family;
 
    public TupleTypeImpl(Long tupleTypeId) {
