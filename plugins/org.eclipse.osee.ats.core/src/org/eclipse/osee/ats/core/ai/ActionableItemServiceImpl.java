@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -157,6 +158,21 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
          teamDefs.addAll(ActionableItems.getImpactedTeamDefs(getActionableItems(atsObject)));
       }
       return teamDefs;
+   }
+
+   @Override
+   public IAtsActionableItem getActionableItem(IAtsTeamDefinition teamDef) {
+      IAtsActionableItem ai = null;
+      Collection<ArtifactToken> related =
+         atsApi.getRelationResolver().getRelated(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem);
+      if (related.isEmpty()) {
+         return null;
+      } else if (related.size() > 1) {
+         throw new OseeStateException("Multiple AIs related to teamDef; Invalid method for this");
+      } else if (related.size() == 1) {
+         ai = atsApi.getActionableItemService().getActionableItemById(related.iterator().next());
+      }
+      return ai;
    }
 
 }

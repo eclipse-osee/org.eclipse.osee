@@ -47,4 +47,6 @@ public interface IAtsActionableItemService {
     */
    IAtsActionableItem getActionableItemById(ArtifactId aiId);
 
+   IAtsActionableItem getActionableItem(IAtsTeamDefinition teamDef);
+
 }
