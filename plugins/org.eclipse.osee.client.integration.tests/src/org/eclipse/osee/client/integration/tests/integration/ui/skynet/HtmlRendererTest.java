@@ -72,6 +72,7 @@ public class HtmlRendererTest {
    public static void loadTemplateInfo() throws Exception {
       INPUT_HTML = getResourceData("htmlRenderer/htmlTestInput.htm");
       EXPECTED_HTML = getResourceData("htmlRenderer/htmlExpectOutput.htm");
+
    }
 
    @Before
@@ -114,12 +115,16 @@ public class HtmlRendererTest {
    public void testHtmlRender() throws Exception {
       InputStream stream = renderer.getRenderInputStream(PresentationType.PREVIEW, theArtifacts);
       String theInput = Lib.inputStreamToString(stream);
-      Assert.assertEquals("Expect HTMl does not equal rendered HTML", theInput, EXPECTED_HTML);
+
+      Assert.assertEquals("Expected HTMl does not equal rendered HTML", EXPECTED_HTML, theInput);
 
    }
 
    private static String getResourceData(String relativePath) throws IOException {
       String value = Lib.fileToString(HtmlRendererTest.class, "support/" + relativePath);
+      value = value.replaceAll("test: \"", "test: &quot;");
+      value = value.replaceAll("test \"", "test &quot;");
+      value = value.replaceAll(":\\[\"", ":[&quot;");
       Assert.assertTrue(Strings.isValid(value));
       return value;
    }
