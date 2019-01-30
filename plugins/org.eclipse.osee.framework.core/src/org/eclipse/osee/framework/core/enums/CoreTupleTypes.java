@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.enums;
 import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.DefaultFamily;
 import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.GitFamily;
 import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.ProductLineFamily;
+import java.util.function.Function;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
@@ -38,12 +39,18 @@ public final class CoreTupleTypes {
    public static final Tuple2Type<ArtifactId, ArtifactId> VersionConfig = Tuple2Type.valueOf(ProductLineFamily, 12L);
 
    // Data Maintenance
-   public static final Tuple3Type<String, Long, Long> FixedMaintenanceData = Tuple3Type.valueOf(DefaultFamily, 5L);
-   public static final Tuple3Type<String, Long, Long> VariableMaintenanceData = Tuple3Type.valueOf(DefaultFamily, 6L);
-   public static final Tuple3Type<String, Long, Long> CrossRefMaintenanceData = Tuple3Type.valueOf(DefaultFamily, 7L);
-   public static final Tuple3Type<String, Long, Long> ReversalMaintenanceData = Tuple3Type.valueOf(DefaultFamily, 8L);
-   public static final Tuple3Type<String, Long, Long> LruDataTypes = Tuple3Type.valueOf(DefaultFamily, 9L);
-   public static final Tuple3Type<String, Long, Long> LruFormatData = Tuple3Type.valueOf(DefaultFamily, 10L);
+   public static final Tuple3Type<String, Long, Long> FixedMaintenanceData =
+      Tuple3Type.valueOf(DefaultFamily, 5L, TupleTypeImpl.KeyedString, Function.identity(), Function.identity());
+   public static final Tuple3Type<String, Long, Long> VariableMaintenanceData =
+      Tuple3Type.valueOf(DefaultFamily, 6L, TupleTypeImpl.KeyedString, Function.identity(), Function.identity());
+   public static final Tuple3Type<String, Long, Long> CrossRefMaintenanceData =
+      Tuple3Type.valueOf(DefaultFamily, 7L, TupleTypeImpl.KeyedString, Function.identity(), Function.identity());
+   public static final Tuple3Type<String, Long, Long> ReversalMaintenanceData =
+      Tuple3Type.valueOf(DefaultFamily, 8L, TupleTypeImpl.KeyedString, Function.identity(), Function.identity());
+   public static final Tuple3Type<String, Long, Long> LruDataTypes =
+      Tuple3Type.valueOf(DefaultFamily, 9L, TupleTypeImpl.KeyedString, Function.identity(), Function.identity());
+   public static final Tuple3Type<String, Long, Long> LruFormatData =
+      Tuple3Type.valueOf(DefaultFamily, 10L, TupleTypeImpl.KeyedString, Function.identity(), Function.identity());
 
    // repository, code unit, commitArtId, changeType
    public static final Tuple4Type<ArtifactId, ArtifactId, ArtifactId, String> GitCommitFile = Tuple4Type.valueOf(
