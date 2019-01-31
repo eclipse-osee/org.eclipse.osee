@@ -77,10 +77,11 @@ public class DispoResolutionValidator {
 
    private boolean isValidWorkItem(String pcr) {
       boolean isValid = false;
+      AtsApiService atsApiService = new AtsApiService();
       try {
-         Conditions.assertNotNull(AtsApiService.get(), "AtsApi can't be null.");
+         Conditions.assertNotNull(atsApiService.get(), "AtsApi can't be null.");
          Collection<IAtsWorkItem> workItemsByLegacyPcrId =
-            AtsApiService.get().getQueryService().getWorkItemsByLegacyPcrId(filterPcr(pcr));
+            atsApiService.get().getQueryService().getWorkItemsByLegacyPcrId(filterPcr(pcr));
          if (workItemsByLegacyPcrId != null && !workItemsByLegacyPcrId.isEmpty()) {
             isValid = true;
          }

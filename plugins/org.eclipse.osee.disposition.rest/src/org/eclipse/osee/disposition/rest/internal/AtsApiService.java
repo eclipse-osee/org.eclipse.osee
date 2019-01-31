@@ -17,13 +17,13 @@ import org.eclipse.osee.ats.api.AtsApi;
  */
 public class AtsApiService {
 
-   private static AtsApi atsApi;
+   private AtsApi atsApi;
 
    public void setAtsApi(AtsApi atsApi) {
-      AtsApiService.atsApi = atsApi;
+      this.atsApi = atsApi;
    }
 
-   public static AtsApi get() {
+   public AtsApi get() {
       return atsApi;
    }
 

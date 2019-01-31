@@ -12,6 +12,7 @@ package org.eclipse.osee.disposition.rest.util;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -265,7 +266,7 @@ public final class DispoUtil {
             if (split.length > 1) {
                path = split[0];
             } else {
-               path = split.toString();
+               path = Arrays.toString(split);
             }
             path = path.replaceFirst("results", "");
             Matcher matcher = removeLastDot.matcher(path);
@@ -323,9 +324,9 @@ public final class DispoUtil {
    }
 
    public static List<Integer> splitDiscrepancyLocations(String locations) {
-      String[] locationString = locations.split(",");
       List<Integer> range = new ArrayList<>();
       if (locations != null && !locations.isEmpty()) {
+         String[] locationString = locations.split(",");
          for (String location : locationString) {
             String[] loc = location.split("-");
             if (loc.length > 1) {
@@ -347,7 +348,7 @@ public final class DispoUtil {
             Discrepancy value = discrepancy.getValue();
             String location = value.getLocation();
             if (Strings.isValid(location)) {
-               if (ranges.contains(location)) {
+               if (ranges.contains(Integer.valueOf(location))) {
                   removeDiscrepancies.add(discrepancy.getKey());
                   break;
                }
@@ -364,7 +365,7 @@ public final class DispoUtil {
             Discrepancy value = discrepancy.getValue();
             String location = value.getLocation();
             if (Strings.isValid(location)) {
-               if (ranges.contains(location)) {
+               if (ranges.contains(Integer.valueOf(location))) {
                   removeDiscrepancies.add(discrepancy.getKey());
                   break;
                }

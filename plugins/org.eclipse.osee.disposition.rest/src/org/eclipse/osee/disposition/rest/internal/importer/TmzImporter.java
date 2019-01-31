@@ -43,7 +43,7 @@ import org.eclipse.osee.logger.Log;
  */
 public class TmzImporter implements DispoImporterApi {
 
-   private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM dd, yyyy H:mm:ss aa", Locale.US);
+   private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM dd, yyyy H:mm:ss aa", Locale.US);
 
    private final Log logger;
    private final DispoDataFactory dataFactory;
@@ -69,54 +69,56 @@ public class TmzImporter implements DispoImporterApi {
          }
       });
 
-      for (File file : files) {
-         String scriptName = file.getName().replaceAll("\\..*", "");
+      if (files != null) {
+         for (File file : files) {
+            String scriptName = file.getName().replaceAll("\\..*", "");
 
-         DispoItem oldItem = exisitingItems.get(scriptName);
-         Date lastUpdate = oldItem != null ? oldItem.getLastUpdate() : new Date(0);
+            DispoItem oldItem = exisitingItems.get(scriptName);
+            Date lastUpdate = oldItem != null ? oldItem.getLastUpdate() : new Date(0);
 
-         DispoItemData itemToBuild = null;
-         Map<String, Discrepancy> discrepancies = null;
-         ZipFile zf = null;
-         try {
-            zf = new ZipFile(file);
-            ZipEntry entry = zf.getEntry("Overview.json");
+            DispoItemData itemToBuild = null;
+            Map<String, Discrepancy> discrepancies = null;
+            ZipFile zf = null;
+            try {
+               zf = new ZipFile(file);
+               ZipEntry entry = zf.getEntry("Overview.json");
 
-            if (entry != null) {
-               InputStream inputStream = zf.getInputStream(entry);
-               String json = Lib.inputStreamToString(inputStream);
-               itemToBuild = new DispoItemData();
-               itemToBuild.setName(scriptName);
-               processOverview(json, itemToBuild);
+               if (entry != null) {
+                  InputStream inputStream = zf.getInputStream(entry);
+                  String json = Lib.inputStreamToString(inputStream);
+                  itemToBuild = new DispoItemData();
+                  itemToBuild.setName(scriptName);
+                  processOverview(json, itemToBuild);
 
-               if (oldItem == null || !itemToBuild.getLastUpdate().after(lastUpdate)) {
-                  discrepancies = new HashMap<>();
-                  itemToBuild.setDiscrepanciesList(discrepancies);
-                  entry = zf.getEntry("TestPointSummary.json");
-                  if (entry != null) {
-                     inputStream = zf.getInputStream(entry);
-                     json = Lib.inputStreamToString(inputStream);
-                     processTestPointSummary(json, discrepancies);
+                  if (oldItem == null || !itemToBuild.getLastUpdate().after(lastUpdate)) {
+                     discrepancies = new HashMap<>();
+                     itemToBuild.setDiscrepanciesList(discrepancies);
+                     entry = zf.getEntry("TestPointSummary.json");
+                     if (entry != null) {
+                        inputStream = zf.getInputStream(entry);
+                        json = Lib.inputStreamToString(inputStream);
+                        processTestPointSummary(json, discrepancies);
+                     }
+
+                     if (oldItem != null) {
+                        DispoItemDataCopier.copyOldItemData(oldItem, itemToBuild, report);
+                     } else {
+                        dataFactory.initDispoItem(itemToBuild);
+                     }
+                     toReturn.add(itemToBuild);
                   }
-
-                  if (oldItem != null) {
-                     DispoItemDataCopier.copyOldItemData(oldItem, itemToBuild, report);
-                  } else {
-                     dataFactory.initDispoItem(itemToBuild);
-                  }
-                  toReturn.add(itemToBuild);
                }
-            }
 
-         } catch (Exception ex) {
-            logger.info(ex, "Unable to process: [%s]", file.getAbsolutePath());
-         } finally {
-            // ZipFile doesn't implement Closeable in 1.6
-            if (zf != null) {
-               try {
-                  zf.close();
-               } catch (Exception ex) {
-                  // do nothing
+            } catch (Exception ex) {
+               logger.info(ex, "Unable to process: [%s]", file.getAbsolutePath());
+            } finally {
+               // ZipFile doesn't implement Closeable in 1.6
+               if (zf != null) {
+                  try {
+                     zf.close();
+                  } catch (Exception ex) {
+                     // do nothing
+                  }
                }
             }
          }

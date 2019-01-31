@@ -139,12 +139,14 @@ public class LisFileParser implements DispoImporterApi {
       };
 
       File[] lisFiles = vcastDir.listFiles(filter);
-      for (File file : lisFiles) {
-         String fileNameLowerCase = normalizeLisFileLame(file.getName());
-         if (fileNameToFileMap.containsKey(fileNameLowerCase)) {
-            report.addEntry("DIRECTORY", String.format("Collision with file name: %s", fileNameLowerCase), ERROR);
-         } else {
-            fileNameToFileMap.put(fileNameLowerCase, file);
+      if (lisFiles != null) {
+         for (File file : lisFiles) {
+            String fileNameLowerCase = normalizeLisFileLame(file.getName());
+            if (fileNameToFileMap.containsKey(fileNameLowerCase)) {
+               report.addEntry("DIRECTORY", String.format("Collision with file name: %s", fileNameLowerCase), ERROR);
+            } else {
+               fileNameToFileMap.put(fileNameLowerCase, file);
+            }
          }
       }
       return fileNameToFileMap;
@@ -463,12 +465,14 @@ public class LisFileParser implements DispoImporterApi {
             continue;
          }
          File[] files = resultsDir.listFiles();
-         for (File file : files) {
-            String inputF = file.toString();
-            String outputF = inputF.replaceAll(config.getResultsFileExtRegex(), "");
-            if (outputF.toString().equalsIgnoreCase(resultsFile.toString())) {
-               process(report, resultPath, file);
-               return true; // File exists
+         if (files != null) {
+            for (File file : files) {
+               String inputF = file.toString();
+               String outputF = inputF.replaceAll(config.getResultsFileExtRegex(), "");
+               if (outputF.toString().equalsIgnoreCase(resultsFile.toString())) {
+                  process(report, resultPath, file);
+                  return true; // File exists
+               }
             }
          }
       }

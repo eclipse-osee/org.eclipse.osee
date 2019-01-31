@@ -57,7 +57,7 @@ public class AnnotationResource {
       DispoAnnotationData createdAnnotation;
       if (!annotation.getLocationRefs().isEmpty()) {
          String createdAnnotationId = dispoApi.createDispoAnnotation(branch, itemId, annotation, userName, false);
-         if (createdAnnotationId != "") {
+         if (!createdAnnotationId.equals("")) {
             status = Status.CREATED;
             createdAnnotation = dispoApi.getDispoAnnotationById(branch, itemId, createdAnnotationId);
          } else {

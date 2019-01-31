@@ -138,7 +138,7 @@ public class DispoAdminResource {
    public Response multiItemEdit(MassTeamAssignParams params, @QueryParam("userName") String userName) {
       Response.Status status;
       dispoApi.massEditTeam(branch, params.getSetId(), params.getNamesList(), params.getTeam(),
-         String.format("Mult Item Edit by: $s", params.getUserName()), userName);
+         String.format("Mult Item Edit by: %s", params.getUserName()), userName);
       status = Status.OK;
       return Response.status(status).build();
    }
