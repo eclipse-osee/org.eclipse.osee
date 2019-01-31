@@ -307,7 +307,7 @@
       <command
             name="OSEE"
             categoryId="osee.product.commands.category"
-            id="org.eclipse.osee.actions.OpenOseePerspective">
+            id="org.eclipse.osee.ats.ide.actions.OpenOseePerspective">
       </command>
       <command
             name="OSEE Review"
@@ -317,7 +317,7 @@
    </extension>
    <extension point="org.eclipse.ui.handlers">
       <handler
-            commandId="org.eclipse.osee.actions.OpenOseePerspective"
+            commandId="org.eclipse.osee.ats.ide.actions.OpenOseePerspective"
             class="org.eclipse.osee.ats.ide.actions.OpenOseePerspectiveHandler"> 
       </handler>
       <handler
@@ -330,7 +330,7 @@
       </handler>
    </extension>
    <extension point="org.eclipse.ui.commandImages">
-     <image commandId="org.eclipse.osee.ide.actions.OpenOseePerspective" icon="OSEE-INF/images/osee_16.png"> </image>
+     <image commandId="org.eclipse.osee.ats.ide.actions.OpenOseePerspective" icon="OSEE-INF/images/osee_16.png"> </image>
      <image commandId="org.eclipse.osee.ats.ide.actions.OpenReviewPerspective" icon="OSEE-INF/images/review.gif"> </image>
    </extension>
    <extension
@@ -341,9 +341,9 @@
                label="OSEE"
                mnemonic="O"
                id="osee.product.oseeMenu">
-            <command commandId="org.eclipse.osee.actions.OpenOseePerspective"
+            <command commandId="org.eclipse.osee.ats.ide.actions.OpenOseePerspective"
                   mnemonic="A"
-                  id="org.eclipse.osee.actions.OpenOseePerspective">
+                  id="org.eclipse.osee.ats.ide.actions.OpenOseePerspective">
             </command>
             <command commandId="org.eclipse.osee.ats.ide.actions.OpenReviewPerspective"
                   mnemonic="R"
