@@ -78,12 +78,29 @@ public class DbConnectionUtility {
       if (supported == null) {
          String address = OseeClientProperties.getOseeApplicationServer();
          if (Strings.isValid(address)) {
-            supported = getIdeClientSupportedVersions().contains(OseeCodeVersion.getVersion());
+            String clientVersion = OseeCodeVersion.getVersion();
+            if (clientVersion.contains("Development")) {
+               supported = true;
+            } else {
+               if (clientVersion.endsWith("qualifier")) {
+                  clientVersion = clientVersion.substring(0, clientVersion.length() - "qualifier".length());
+               }
+               supported = isVersionSupported(clientVersion);
+            }
          } else {
             supported = false;
          }
       }
       return supported;
+   }
+
+   private static boolean isVersionSupported(String clientVersion) {
+      for (String serverVersion : getIdeClientSupportedVersions()) {
+         if (serverVersion.startsWith(clientVersion)) {
+            return true;
+         }
+      }
+      return false;
    }
 
    private static Collection<String> getIdeClientSupportedVersions() {

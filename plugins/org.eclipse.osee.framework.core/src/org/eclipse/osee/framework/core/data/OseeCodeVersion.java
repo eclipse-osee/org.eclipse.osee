@@ -22,8 +22,6 @@ import org.osgi.framework.FrameworkUtil;
  * @author Ryan D. Brooks
  */
 public final class OseeCodeVersion {
-
-   private static final String DEVELOPMENT = "Development";
    private static String version, bundleVersion;
    public static Pattern BuildStrPattern =
       Pattern.compile("([\\d]{1,2})\\.([\\d]{1,2})\\.([\\d]{1,2})\\.v([\\d]{12})-.*$");
@@ -44,9 +42,6 @@ public final class OseeCodeVersion {
          ver = System.getProperty("osee.version", "");
          if (!Strings.isValid(ver)) {
             ver = getBundleVersion();
-            if (isDevelopment(ver)) {
-               ver = DEVELOPMENT;
-            }
          }
       }
       return ver;
@@ -159,15 +154,6 @@ public final class OseeCodeVersion {
          }
       }
       return version;
-   }
-
-   public static boolean isDevelopment() {
-      return isDevelopment(getBundleVersion());
-   }
-
-   private static boolean isDevelopment(String version) {
-      // The version of this bundle ends with .qualifier until it is replaced by PDE build with a time stamp
-      return !Strings.isValid(version) || version.endsWith("qualifier");
    }
 
    public static void setVersion(String version) {
