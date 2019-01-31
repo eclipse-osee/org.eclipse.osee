@@ -169,7 +169,7 @@ app.factory('ColumnFactory', function() {
         cellTemplate: chkBoxTemplate,
         enableCellEdit: true
     },{
-        field: 'lastUpdated',
+        field: 'lastUpdate',
         displayName: 'Last Ran',
         enableCellEdit: false,
         filter: {
@@ -296,7 +296,7 @@ app.factory('ColumnFactory', function() {
         cellTemplate: chkBoxTemplate,
         enableCellEdit: true
     },{
-        field: 'lastUpdated',
+        field: 'lastUpdate',
         displayName: 'Last Ran',
         enableCellEdit: false,
         filter: {
