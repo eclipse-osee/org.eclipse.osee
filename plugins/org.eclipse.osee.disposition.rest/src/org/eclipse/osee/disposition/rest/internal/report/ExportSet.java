@@ -460,6 +460,7 @@ public class ExportSet {
 
       // Uptick Resolution type count
       if (coverageData.isPairCovered()) {
+         currentCoveredTotalCount.inc();
          WrapInt count = resolutionTypeToCount.get(coverageData.getCoveringResolutionType());
          if (count == null) {
             resolutionTypeToCount.put(resolutionType, new WrapInt(1));
