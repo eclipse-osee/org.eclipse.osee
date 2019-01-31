@@ -21,8 +21,6 @@
       <import plugin="org.eclipse.osgi.services"/>
       <import plugin="org.apache.log4j" version="1.2.15" match="greaterOrEqual"/>
       <import plugin="org.slf4j.api"/>
-      <import plugin="org.apache.sshd.core"/>
-      <import plugin="org.apache.mina.core"/>
       <import plugin="javax.xml"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.eclipse.core.runtime"/>
@@ -267,13 +265,6 @@
 
    <plugin
          id="org.eclipse.jdt.annotation"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.console.ssh"
          download-size="0"
          install-size="0"
          version="0.0.0"

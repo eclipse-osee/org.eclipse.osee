@@ -16,7 +16,6 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.security.PermitAll;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -49,7 +48,6 @@ public class TemplateContributions {
       this.registry = registry;
    }
 
-   @PermitAll
    @GET
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
    public Collection<JaxRsTemplateContribution> getTemplateContributions(@Context final HttpHeaders httpHeaders, @Context final UriInfo uriInfo) {

@@ -4,8 +4,7 @@ Bundle-Name: OSEE Template Engine  (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.template.engine
 Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: javax.annotation.security,
- javax.ws.rs,
+Import-Package: javax.ws.rs,
  javax.ws.rs.core,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,

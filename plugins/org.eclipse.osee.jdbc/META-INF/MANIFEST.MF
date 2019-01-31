@@ -8,6 +8,7 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: org.apache.commons.dbcp,
  org.apache.commons.pool,
  org.apache.commons.pool.impl,
+ org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.executor,
  org.eclipse.osee.framework.jdk.core.type,
@@ -29,5 +30,4 @@ Export-Package: org.eclipse.osee.jdbc
 Service-Component: OSGI-INF/*.xml
 DynamicImport-Package: *
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.equinox.registry,
- org.xerial.sqlite;resolution:=optional
+Require-Bundle: org.xerial.sqlite;resolution:=optional

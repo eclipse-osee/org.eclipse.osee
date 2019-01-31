@@ -6,31 +6,24 @@ Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
-Import-Package: com.google.common.base,
- com.google.common.cache,
+Import-Package: com.google.common.cache,
  javax.servlet,
- javax.servlet.http,
  javax.ws.rs,
  javax.ws.rs.client,
- javax.ws.rs.container,
  javax.ws.rs.core,
  javax.ws.rs.ext,
- org.apache.aries.blueprint,
  org.apache.cxf.configuration.security,
  org.apache.cxf.endpoint,
  org.apache.cxf.feature,
  org.apache.cxf.jaxrs,
  org.apache.cxf.jaxrs.client,
  org.apache.cxf.jaxrs.client.spec,
- org.apache.cxf.jaxrs.ext,
  org.apache.cxf.jaxrs.impl,
  org.apache.cxf.rs.security.oauth2.client,
  org.apache.cxf.rs.security.oauth2.common,
- org.apache.cxf.rs.security.oauth2.filters,
  org.apache.cxf.rs.security.oauth2.grants.code,
  org.apache.cxf.rs.security.oauth2.grants.refresh,
  org.apache.cxf.rs.security.oauth2.provider,
- org.apache.cxf.rs.security.oauth2.services,
  org.apache.cxf.rs.security.oauth2.utils,
  org.apache.cxf.rs.security.oauth2.utils.crypto,
  org.apache.cxf.transport.common.gzip,
@@ -41,5 +34,3 @@ Import-Package: com.google.common.base,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.jaxrs
 Export-Package: org.eclipse.osee.jaxrs.client
-Require-Bundle: org.codehaus.stax2,
- com.ctc.wstx

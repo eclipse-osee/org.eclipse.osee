@@ -12,7 +12,6 @@ package org.eclipse.osee.jaxrs.client.internal.ext;
 
 import static org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Util.getOAuthJSONProvider;
 import static org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Util.newException;
-import com.google.common.base.Charsets;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Map;
@@ -71,6 +70,6 @@ public class OAuth2Serializer {
       } catch (Exception ex) {
          throw newException(ex, "Error serializing client access token");
       }
-      return new String(os.toByteArray(), Charsets.UTF_8);
+      return new String(os.toByteArray(), Strings.UTF_8);
    }
 }

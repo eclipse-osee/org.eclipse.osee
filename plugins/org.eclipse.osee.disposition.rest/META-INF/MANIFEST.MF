@@ -42,3 +42,4 @@ Import-Package:
  org.json
 Export-Package: org.eclipse.osee.disposition.rest.external
 Require-Bundle: org.eclipse.osee.ats.api
+Bundle-ActivationPolicy: lazy

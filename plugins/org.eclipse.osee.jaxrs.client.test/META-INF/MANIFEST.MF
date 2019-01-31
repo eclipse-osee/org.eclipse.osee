@@ -10,7 +10,7 @@ Import-Package: org.junit,
  org.junit.rules,
  org.junit.runner,
  org.junit.runners,
- org.mockito;bundle-version="1.9.0",
+ org.mockito,
  org.mockito.invocation,
  org.mockito.stubbing
 Require-Bundle: org.hamcrest.core
