@@ -148,9 +148,9 @@ public class DispoProgramResource {
    @PUT
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response importAllDispoSets(String filterState, @QueryParam("userName") String userName) {
+   public Response importAllDispoSets(String filterState) {
       Response.Status status;
-      dispoApi.importAllDispoPrograms(filterState, userName);
+      dispoApi.importAllDispoPrograms(filterState, "OSEE System Auto-Import (All)");
       status = Status.OK;
       return Response.status(status).build();
    }
@@ -167,10 +167,10 @@ public class DispoProgramResource {
    @Path("importDispoBranch")
    @PUT
    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-   public Response importDispoBranchByName(@FormParam("filterState") String filterState, @FormParam("name") String branchName, @QueryParam("userName") String userName) {
+   public Response importDispoBranchByName(@FormParam("filterState") String filterState, @FormParam("name") String branchName) {
       IOseeBranch branch = dispoApi.getDispoProgramIdByName(branchName);
       Response.Status status;
-      dispoApi.importAllDispoSets(branch, filterState, userName);
+      dispoApi.importAllDispoSets(branch, filterState, "OSEE System Auto-Import (Branch)");
       status = Status.OK;
       return Response.status(status).build();
    }

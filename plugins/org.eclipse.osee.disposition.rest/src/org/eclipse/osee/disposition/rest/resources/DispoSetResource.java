@@ -125,12 +125,12 @@ public class DispoSetResource {
    @Path("importDispoSet")
    @PUT
    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-   public Response putDispoSetByName(@FormParam("name") String setName, @QueryParam("userName") String userName) {
+   public Response putDispoSetByName(@FormParam("name") String setName) {
       DispoSetData newDispositionSet = new DispoSetData();
       newDispositionSet.setOperation(DispoStrings.Operation_Import);
       String setId = dispoApi.getDispoSetIdByName(branch, setName);
       Response.Status status;
-      dispoApi.editDispoSet(branch, setId, newDispositionSet, userName);
+      dispoApi.editDispoSet(branch, setId, newDispositionSet, "OSEE System Auto-Import (Set)");
       status = Status.OK;
       return Response.status(status).build();
    }
