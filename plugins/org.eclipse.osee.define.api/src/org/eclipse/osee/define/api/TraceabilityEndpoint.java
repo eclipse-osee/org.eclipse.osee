@@ -19,6 +19,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 
@@ -48,4 +49,10 @@ public interface TraceabilityEndpoint {
    @Path("ui")
    @Produces(MediaType.TEXT_HTML)
    String getSinglePageApp();
+
+   @GET
+   @Path("pidsVerification")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_XML)
+   Response getPidsVerificationReport(@QueryParam("branch") BranchId branch, @QueryParam("rootArtifact") ArtifactId rootArtifact);
 }

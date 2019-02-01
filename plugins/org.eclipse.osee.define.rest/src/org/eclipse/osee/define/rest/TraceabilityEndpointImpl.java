@@ -21,6 +21,8 @@ import org.eclipse.osee.define.api.DefineApi;
 import org.eclipse.osee.define.api.TraceData;
 import org.eclipse.osee.define.api.TraceabilityEndpoint;
 import org.eclipse.osee.define.rest.internal.PublishLowHighReqStreamingOutput;
+import org.eclipse.osee.define.rest.internal.PublishPidsVerificationReport;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -87,5 +89,15 @@ public class TraceabilityEndpointImpl implements TraceabilityEndpoint {
          toReturn.add(type.getName());
       }
       return toReturn;
+   }
+
+   @Override
+   public Response getPidsVerificationReport(BranchId branch, ArtifactId rootArtifact) {
+      StreamingOutput streamingOutput = new PublishPidsVerificationReport(activityLog, orcsApi, branch, rootArtifact);
+      String fileName = "PidsVerificationReport.xml";
+
+      ResponseBuilder builder = Response.ok(streamingOutput);
+      builder.header("Content-Disposition", "attachment; filename=" + fileName);
+      return builder.build();
    }
 }
