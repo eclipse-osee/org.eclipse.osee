@@ -7,10 +7,12 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/*.xml
-Import-Package: org.eclipse.osee.framework.jdk.core.type,
+Import-Package: org.codehaus.jackson,
+ org.codehaus.jackson.map,
+ org.eclipse.osee.framework.core.util,
+ org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.io,
  org.eclipse.osee.logger,
- org.json,
  org.osgi.framework,
  org.osgi.service.cm

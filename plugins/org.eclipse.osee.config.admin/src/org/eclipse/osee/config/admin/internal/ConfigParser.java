@@ -11,53 +11,47 @@
 package org.eclipse.osee.config.admin.internal;
 
 import java.util.Hashtable;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import org.codehaus.jackson.JsonNode;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.osgi.framework.Constants;
 
 /**
  * Parses JSON String with the following format:
- * 
+ *
  * <pre>
  * { "config": [ { "service.pid": "service-1", "key1": "val1", "key2": "val2" }, { "service.pid": "service-2", "a":
  * "34242", "b": "hello" }, { "service.pid": "service-3" } ] };
- * 
+ *
  * <pre/>
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class ConfigParser {
 
-   private static final String CONFIG_OBJECT = "config";
-
    public void process(ConfigWriter writer, String source) {
       if (Strings.isValid(source)) {
-         try {
-            JSONObject jsonObject = new JSONObject(source);
-            JSONArray jsonArray = jsonObject.getJSONArray(CONFIG_OBJECT);
-            for (int index = 0; index < jsonArray.length(); index++) {
-               JSONObject object = jsonArray.getJSONObject(index);
-               String serviceId = null;
-               Hashtable<String, Object> properties = new Hashtable<>();
-               String[] names = JSONObject.getNames(object);
-               for (String key : names) {
-                  String value = object.getString(key);
+         JsonNode services = JsonUtil.readTree(source).get("config");
+
+         for (JsonNode serviceNode : services) {
+            Hashtable<String, Object> properties = new Hashtable<>();
+
+            for (Iterator<Entry<String, JsonNode>> kvPairs = serviceNode.getFields(); kvPairs.hasNext();) {
+               Entry<String, JsonNode> entry = kvPairs.next();
+
+               String key = entry.getKey();
+               JsonNode value = entry.getValue();
+               if (value.isValueNode()) {
+                  properties.put(key, value.asText());
                   if (key.equalsIgnoreCase(Constants.SERVICE_PID)) {
-                     serviceId = value;
-                     properties.put(Constants.SERVICE_PID, serviceId);
-                  } else {
-                     properties.put(key, value);
+                     writer.write(value.asText(), properties);
                   }
-               }
-               if (Strings.isValid(serviceId)) {
-                  writer.write(serviceId, properties);
+               } else {
+                  properties.put(key, value.toString());
                }
             }
-         } catch (JSONException ex) {
-            throw new OseeCoreException(ex);
          }
       }
    }
