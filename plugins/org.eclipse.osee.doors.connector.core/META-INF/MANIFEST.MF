@@ -14,7 +14,7 @@ Export-Package: org.eclipse.osee.doors.connector.core,
  org.scribe.model,
  org.scribe.oauth,
  org.scribe.services
-Import-Package: org.apache.commons.codec;version="1.6.0",
+Import-Package: org.apache.commons.codec,
  org.apache.commons.httpclient,
  org.apache.commons.httpclient.methods,
  org.apache.commons.httpclient.util,

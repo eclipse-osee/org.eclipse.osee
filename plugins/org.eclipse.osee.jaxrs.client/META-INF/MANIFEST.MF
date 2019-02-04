@@ -6,16 +6,16 @@ Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
-Import-Package: com.google.common.base;version="15.0.0",
- com.google.common.cache;version="15.0.0",
+Import-Package: com.google.common.base,
+ com.google.common.cache,
  javax.servlet,
  javax.servlet.http,
- javax.ws.rs;version="2.0.0",
- javax.ws.rs.client;version="2.0.0",
- javax.ws.rs.container;version="2.0.0",
- javax.ws.rs.core;version="2.0.0",
- javax.ws.rs.ext;version="2.0.0",
- org.apache.aries.blueprint;version="1.3.0",
+ javax.ws.rs,
+ javax.ws.rs.client,
+ javax.ws.rs.container,
+ javax.ws.rs.core,
+ javax.ws.rs.ext,
+ org.apache.aries.blueprint,
  org.apache.cxf.configuration.security,
  org.apache.cxf.endpoint,
  org.apache.cxf.feature,
@@ -36,10 +36,10 @@ Import-Package: com.google.common.base;version="15.0.0",
  org.apache.cxf.transport.common.gzip,
  org.apache.cxf.transport.http,
  org.apache.cxf.transports.http.configuration,
- org.codehaus.jackson.jaxrs;version="1.9.13",
+ org.codehaus.jackson.jaxrs,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.jaxrs
 Export-Package: org.eclipse.osee.jaxrs.client
-Require-Bundle: org.codehaus.stax2;bundle-version="3.1.4",
- com.ctc.wstx;bundle-version="4.3.0"
+Require-Bundle: org.codehaus.stax2,
+ com.ctc.wstx

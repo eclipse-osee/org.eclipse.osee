@@ -6,14 +6,15 @@ Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: javax.activation,
- javax.mail;version="1.4.1",
- javax.mail.event;version="1.4.1",
- javax.mail.internet;version="1.4.1",
- javax.ws.rs;version="2.0.0",
- javax.ws.rs.core;version="2.0.0",
+ javax.mail,
+ javax.mail.event,
+ javax.mail.internet,
+ javax.ws.rs,
+ javax.ws.rs.core,
  org.eclipse.osee.framework.core.executor,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.logger,
  org.eclipse.osee.mail.api
 Service-Component: OSGI-INF/*.xml 
 Export-Package: org.eclipse.osee.mail
+Bundle-ActivationPolicy: lazy

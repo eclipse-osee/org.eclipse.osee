@@ -5,15 +5,15 @@ Bundle-SymbolicName: org.eclipse.osee.define.rest
 Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*.xml
-Import-Package: com.google.common.base;version="15.0.0",
- com.google.common.collect;version="15.0.0",
+Import-Package: com.google.common.base,
+ com.google.common.collect,
  javax.ws.rs,
  javax.ws.rs.core,
  org.antlr.runtime,
  org.antlr.runtime.debug,
  org.antlr.runtime.tree,
- org.codehaus.jackson;version="1.9.13",
- org.codehaus.jackson.map;version="1.9.13",
+ org.codehaus.jackson,
+ org.codehaus.jackson.map,
  org.eclipse.define.api.importing,
  org.eclipse.osee.activity.api,
  org.eclipse.osee.app,

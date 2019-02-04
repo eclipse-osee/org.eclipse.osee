@@ -6,11 +6,10 @@ Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
-Import-Package: javax.annotation;version="1.2.0",
- javax.ws.rs;version="2.0.0",
- javax.ws.rs.container;version="2.0.0",
- javax.ws.rs.core;version="2.0.0",
- javax.ws.rs.ext;version="2.0.0",
+Import-Package: javax.ws.rs,
+ javax.ws.rs.container,
+ javax.ws.rs.core,
+ javax.ws.rs.ext,
  org.eclipse.osee.activity.api,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
@@ -23,3 +22,4 @@ Import-Package: javax.annotation;version="1.2.0",
  org.eclipse.osee.logger,
  org.eclipse.osee.orcs
 Export-Package: org.eclipse.osee.activity
+Bundle-ActivationPolicy: lazy

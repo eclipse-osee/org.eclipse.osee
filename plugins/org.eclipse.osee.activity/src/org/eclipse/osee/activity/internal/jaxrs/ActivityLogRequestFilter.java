@@ -11,8 +11,6 @@
 package org.eclipse.osee.activity.internal.jaxrs;
 
 import static org.eclipse.osee.framework.core.data.CoreActivityTypes.JAXRS_METHOD_CALL;
-import javax.annotation.Priority;
-import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
@@ -29,7 +27,6 @@ import org.eclipse.osee.logger.Log;
  * @author Ryan D. Brooks
  */
 @PreMatching
-@Priority(Priorities.HEADER_DECORATOR)
 @Provider
 public class ActivityLogRequestFilter implements ContainerRequestFilter {
 

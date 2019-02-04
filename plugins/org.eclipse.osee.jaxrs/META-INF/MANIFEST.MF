@@ -16,7 +16,7 @@ Import-Package: javax.servlet,
  org.eclipse.osee.framework.jdk.core.util
 Export-Package: org.eclipse.osee.jaxrs,
  org.eclipse.osee.jaxrs.mvc
-Require-Bundle: org.codehaus.jackson.core;bundle-version="1.9.13",
- org.codehaus.jackson.jaxrs;bundle-version="1.9.13",
- org.codehaus.jackson.mapper;bundle-version="1.9.13",
- org.codehaus.jackson.xc;bundle-version="1.9.13"
+Require-Bundle: org.codehaus.jackson.core,
+ org.codehaus.jackson.jaxrs,
+ org.codehaus.jackson.mapper,
+ org.codehaus.jackson.xc
