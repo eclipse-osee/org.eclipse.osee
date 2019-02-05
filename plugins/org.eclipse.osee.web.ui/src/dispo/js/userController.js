@@ -560,6 +560,7 @@ app.controller('userController', [
             	delete newAnnotation['children'];
             	delete newAnnotation['isLeaf'];
             	delete newAnnotation['$resolved'];
+            	delete newAnnotation['parentId'];
             	// Removing the parent ref is extra important because JSON Stringify cannot handle circular references
             	// Stringify gets called because the payload needs to be parsed on transmit
             	delete newAnnotation['parentRef'];           	
