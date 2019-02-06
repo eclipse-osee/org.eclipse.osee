@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.ide.util.widgets;
 
 import java.util.Collection;
 import java.util.HashSet;
+
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -36,7 +37,11 @@ public class XAssigneesHyperlinkWidget extends XHyperlinkLabelCmdValueSelection 
 
    @Override
    public String getCurrentValue() {
-      return Collections.toString("; ", assignees);
+	  Collection<String> assigneeNames = new HashSet<>();
+	  for(IAtsUser singleAssignee : assignees){
+		assigneeNames.add(singleAssignee.getName());
+	  }
+      return Collections.toString("; ", assigneeNames);
    }
 
    @Override
