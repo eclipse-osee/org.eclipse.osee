@@ -30,19 +30,25 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  * @author Donald G. Dunne
  */
 public class AtsConfigurationsService implements IAtsConfigurationsService {
+   private Supplier<AtsConfigurations> configurationsCache;
 
    @Override
    public AtsConfigurations getConfigurations() {
+      if (configurationsCache == null) {
+         invalidate();
+      }
       return configurationsCache.get();
    }
 
    @Override
    public AtsConfigurations getConfigurationsWithPend() {
-      return getConfigurationsSupplier().get();
+      invalidate();
+      return configurationsCache.get();
    }
 
-   private final Supplier<AtsConfigurations> configurationsCache =
-      Suppliers.memoizeWithExpiration(getConfigurationsSupplier(), 5, TimeUnit.MINUTES);
+   private void invalidate() {
+      configurationsCache = Suppliers.memoizeWithExpiration(getConfigurationsSupplier(), 5, TimeUnit.MINUTES);
+   }
 
    private Supplier<AtsConfigurations> getConfigurationsSupplier() {
       return new Supplier<AtsConfigurations>() {
