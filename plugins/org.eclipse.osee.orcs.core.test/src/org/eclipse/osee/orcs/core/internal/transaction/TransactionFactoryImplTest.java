@@ -24,6 +24,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.TxDataStore;
+import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.junit.Before;
@@ -54,6 +55,7 @@ public class TransactionFactoryImplTest {
    @Mock private UserId expectedAuthor;
    @Mock private TxData txData;
    @Mock private QueryFactory queryFactory;
+   @Mock private BranchQuery branchQuery;
    // @formatter:on
 
    private final BranchId expectedBranch = CoreBranches.COMMON;
@@ -63,9 +65,11 @@ public class TransactionFactoryImplTest {
    public void init() {
       initMocks(this);
       when(orcsApi.getQueryFactory()).thenReturn(queryFactory);
+      when(queryFactory.branchQuery()).thenReturn(branchQuery);
+      when(branchQuery.andId(expectedBranch)).thenReturn(branchQuery);
+      when(branchQuery.exists()).thenReturn(true);
       factory = new TransactionFactoryImpl(session, txDataManager, txCallableFactory, orcsApi, orcsBranch, keyValueOps,
          txDataStore);
-
    }
 
    @Test

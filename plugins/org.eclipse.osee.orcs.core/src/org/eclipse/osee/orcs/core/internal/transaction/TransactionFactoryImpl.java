@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -79,6 +80,9 @@ public class TransactionFactoryImpl implements TransactionFactory {
       Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(author, "author");
       Conditions.checkNotNullOrEmpty(comment, "comment");
+      if (!queryFactory.branchQuery().andId(branch).exists()) {
+         throw new ItemDoesNotExist("BranchId %s does not exist", branch);
+      }
 
       TxData txData = txDataManager.createTxData(session, branch);
       TransactionBuilderImpl orcsTxn =

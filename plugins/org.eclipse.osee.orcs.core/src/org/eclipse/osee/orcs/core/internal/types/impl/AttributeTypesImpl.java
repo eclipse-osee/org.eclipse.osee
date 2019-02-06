@@ -239,7 +239,7 @@ public class AttributeTypesImpl implements AttributeTypes {
             return type;
          }
       }
-      throw new OseeTypeDoesNotExist("AttributeTypeToken does not exist");
+      throw new OseeTypeDoesNotExist("AttributeTypeToken does not exist: %s", attrTypeName);
    }
 
 }
