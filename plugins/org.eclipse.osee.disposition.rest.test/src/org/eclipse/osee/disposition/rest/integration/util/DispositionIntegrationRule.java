@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.integration.util;
 
-import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -39,7 +38,6 @@ public final class DispositionIntegrationRule extends OsgiRule {
       // @formatter:off
       @OsgiService public Log log;
       @OsgiService public EventAdmin eventAdmin;
-      @OsgiService public EventService eventService;
       @OsgiService public ExecutorAdmin executorAdmin;
       @OsgiService public OrcsApi orcsApi;
       // @formatter:on

@@ -23,9 +23,6 @@
 
 		<module>../../plugins/org.eclipse.osee.activity.api</module>
 
-		<module>../../plugins/org.eclipse.osee.event</module>
-		<module>../../plugins/org.eclipse.osee.event.osgi</module>
-
 		<module>../../plugins/org.eclipse.osee.console.admin</module>
 		<module>../../plugins/org.eclipse.osee.console.admin.test</module>
 

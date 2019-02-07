@@ -72,20 +72,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.event"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.event.osgi"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osee.framework.logging"
          download-size="0"
          install-size="0"

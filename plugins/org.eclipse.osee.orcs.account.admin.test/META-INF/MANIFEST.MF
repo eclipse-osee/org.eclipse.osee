@@ -12,12 +12,10 @@ Require-Bundle: org.junit,
  org.objenesis,
  org.eclipse.equinox.event,
  org.eclipse.core.runtime,
- org.eclipse.osee.event.osgi,
  org.eclipse.osee.logger,
  org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.model,
  org.eclipse.osee.framework.resource.management
 Import-Package: org.eclipse.osee.account.admin,
- org.eclipse.osee.event,
  org.eclipse.osee.orcs.db.mock,
  org.osgi.service.event

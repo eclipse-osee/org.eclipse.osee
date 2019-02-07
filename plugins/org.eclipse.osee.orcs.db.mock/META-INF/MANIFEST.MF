@@ -5,8 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.orcs.db.mock
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.eclipse.osee.event,
- org.eclipse.osee.framework.core.data,
+Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.executor,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,

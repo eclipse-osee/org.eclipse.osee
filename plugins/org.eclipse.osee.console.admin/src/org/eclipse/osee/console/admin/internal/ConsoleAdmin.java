@@ -13,9 +13,7 @@ package org.eclipse.osee.console.admin.internal;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import org.eclipse.osee.console.admin.ConsoleAdminConstants;
 import org.eclipse.osee.console.admin.ConsoleCommand;
-import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osgi.framework.console.CommandProvider;
@@ -27,23 +25,16 @@ import org.osgi.framework.ServiceRegistration;
  */
 public class ConsoleAdmin {
 
-   private final Map<ConsoleCommand, Map<String, String>> pending =
-      new ConcurrentHashMap<>();
+   private final Map<ConsoleCommand, Map<String, String>> pending = new ConcurrentHashMap<>();
 
    private Log logger;
-   private EventService eventService;
    private ExecutorAdmin executorAdmin;
-
    private CommandDispatcher dispatcher;
    private Thread thread;
    private ServiceRegistration<?> cmdRef;
 
    public void setLogger(Log logger) {
       this.logger = logger;
-   }
-
-   public void setEventService(EventService eventService) {
-      this.eventService = eventService;
    }
 
    public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
@@ -56,10 +47,6 @@ public class ConsoleAdmin {
 
    public Log getLogger() {
       return logger;
-   }
-
-   public EventService getEventService() {
-      return eventService;
    }
 
    public void start(BundleContext context) throws Exception {
@@ -115,8 +102,6 @@ public class ConsoleAdmin {
 
       getDispatcher().unregister(componentName);
       getLogger().debug("De-registering command for [%s] with alias [%s]", componentName, contextName);
-
-      notifyDeRegistration(componentName, contextName);
    }
 
    private void register(ConsoleCommand consoleCommand, Map<String, String> props) {
@@ -124,21 +109,10 @@ public class ConsoleAdmin {
       String contextName = ConsoleAdminUtils.getContextName(props);
       try {
          getDispatcher().register(componentName, consoleCommand);
-         notifyRegistration(componentName, contextName);
          getLogger().debug("Registered command for [%s] with alias [%s]", componentName, contextName);
       } catch (Exception ex) {
          throw new RuntimeException(ex);
       }
-   }
-
-   private void notifyRegistration(String componentName, String contextName) {
-      Map<String, String> data = ConsoleAdminUtils.toMap(componentName, contextName);
-      getEventService().postEvent(ConsoleAdminConstants.REST_REGISTRATION_EVENT, data);
-   }
-
-   private void notifyDeRegistration(String componentName, String contextName) {
-      Map<String, String> data = ConsoleAdminUtils.toMap(componentName, contextName);
-      getEventService().postEvent(ConsoleAdminConstants.REST_DEREGISTRATION_EVENT, data);
    }
 
    public CommandDispatcher getDispatcher() {

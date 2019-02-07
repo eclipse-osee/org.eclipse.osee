@@ -5,13 +5,13 @@ Bundle-SymbolicName: org.eclipse.osee.console.admin
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.eclipse.osee.event,
- org.eclipse.osee.framework.core.executor,
+Import-Package: org.eclipse.osee.framework.core.executor,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.logger,
  org.eclipse.osgi.framework.console,
- org.osgi.framework
+ org.osgi.framework,
+ org.osgi.service.event
 Service-Component: OSGI-INF/*.xml
 Export-Package: org.eclipse.osee.console.admin
 Bundle-ActivationPolicy: lazy

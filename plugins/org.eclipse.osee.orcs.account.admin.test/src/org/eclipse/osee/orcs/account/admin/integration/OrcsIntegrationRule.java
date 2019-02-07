@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.account.admin.integration;
 
 import org.eclipse.osee.account.admin.AccountAdmin;
-import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
@@ -42,7 +41,6 @@ public final class OrcsIntegrationRule extends OsgiRule {
       // @formatter:off
       @OsgiService public Log log;
       @OsgiService public EventAdmin eventAdmin;
-      @OsgiService public EventService eventService;
       @OsgiService public ExecutorAdmin executorAdmin;
       @OsgiService public JdbcService dbService;
       @OsgiService public OrcsApi orcsApi;

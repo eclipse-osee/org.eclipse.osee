@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.rest.test.db;
 
 import org.eclipse.osee.ats.rest.IAtsServer;
-import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
@@ -45,7 +44,6 @@ public final class AtsIntegrationByClassRule extends OsgiRule {
       @OsgiService public JdbcService jdbcService;
       @OsgiService public Log log;
       @OsgiService public EventAdmin eventAdmin;
-      @OsgiService public EventService eventService;
       @OsgiService public ExecutorAdmin executorAdmin;
       @OsgiService public OrcsApi orcsApi;
       @OsgiService public IAtsServer atsServer;

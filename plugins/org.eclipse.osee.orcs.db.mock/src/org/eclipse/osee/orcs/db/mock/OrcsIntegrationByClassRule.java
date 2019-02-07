@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.mock;
 
-import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.logger.Log;
 import org.junit.rules.RuleChain;
@@ -38,7 +37,6 @@ public final class OrcsIntegrationByClassRule extends OsgiRule {
       // @formatter:off
       @OsgiService public Log log;
       @OsgiService public EventAdmin eventAdmin;
-      @OsgiService public EventService eventService;
       @OsgiService public ExecutorAdmin executorAdmin;
       // @formatter:on
    }
