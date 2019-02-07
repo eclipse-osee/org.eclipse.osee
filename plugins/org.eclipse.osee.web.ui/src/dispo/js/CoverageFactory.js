@@ -196,8 +196,10 @@ app.factory('CoverageFactory', function() {
     			parent.childMetadata.completeCount += possibleCountChange;
     			parent = parent.parentRef;
     		}
-    		topLevelParent.childMetadata.runningCompleteCount += possibleCountChange;
-    		populatePercentData(topLevelParent);
+    		if (topLevelParent.childMetadata) {
+    			topLevelParent.childMetadata.runningCompleteCount += possibleCountChange;
+    			populatePercentData(topLevelParent);
+    		}
     	}
     }
     
