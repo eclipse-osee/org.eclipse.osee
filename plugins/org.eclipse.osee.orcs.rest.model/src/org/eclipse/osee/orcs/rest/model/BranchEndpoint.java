@@ -110,11 +110,19 @@ public interface BranchEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    BranchId createBranch(NewBranch data);
 
+   /**
+    * If -1 is supplied for the branch path parameter, then a random valid id will be used
+    * 
+    * @param account
+    * @param branchId
+    * @param branchName
+    * @return
+    */
    @POST
-   @Path("program")
+   @Path("{branch}/program")
    @Consumes({MediaType.TEXT_PLAIN})
    @Produces({MediaType.APPLICATION_JSON})
-   IOseeBranch createProgramBranch(@HeaderParam("osee.account.id") UserId account, String branchName);
+   IOseeBranch createProgramBranch(@HeaderParam("osee.account.id") UserId account, @PathParam("branch") BranchId branchId, String branchName);
 
    @POST
    @Path("{branch}")

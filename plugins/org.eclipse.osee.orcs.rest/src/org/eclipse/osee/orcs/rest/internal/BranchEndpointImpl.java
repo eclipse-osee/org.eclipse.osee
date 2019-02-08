@@ -748,7 +748,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public IOseeBranch createProgramBranch(UserId account, String branchName) {
-      return branchOps.createProgramBranch(IOseeBranch.create(branchName), account);
+   public IOseeBranch createProgramBranch(UserId account, BranchId branch, String branchName) {
+      IOseeBranch branchToken =
+         branch.isValid() ? IOseeBranch.create(branch, branchName) : IOseeBranch.create(branchName);
+      return branchOps.createProgramBranch(branchToken, account);
    }
 }
