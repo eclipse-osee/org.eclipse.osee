@@ -12,7 +12,9 @@ package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_FETCH_SIZE;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -129,6 +131,19 @@ public class QueryEngineImpl implements QueryEngine {
       List<ArtifactToken> tokens = new ArrayList<>(100);
       loadArtifactX(queryData, QueryType.TOKEN, stmt -> tokens.add(ArtifactToken.valueOf(stmt.getLong("art_id"),
          stmt.getString("value"), queryData.getBranch(), artifactTypes.get(stmt.getLong("art_type_id")))));
+      return tokens;
+   }
+
+   @Override
+   public Map<ArtifactId, ArtifactToken> loadArtifactTokenMap(QueryData queryData) {
+      Map<ArtifactId, ArtifactToken> tokens = new HashMap<>(10000);
+      Consumer<JdbcStatement> consumer = stmt -> {
+         ArtifactToken token = ArtifactToken.valueOf(stmt.getLong("art_id"), stmt.getString("value"),
+            queryData.getBranch(), artifactTypes.get(stmt.getLong("art_type_id")));
+         tokens.put(token, token);
+      };
+
+      loadArtifactX(queryData, QueryType.TOKEN, consumer);
       return tokens;
    }
 

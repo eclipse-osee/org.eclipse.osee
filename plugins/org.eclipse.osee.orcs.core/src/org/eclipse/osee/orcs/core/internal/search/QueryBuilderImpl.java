@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -53,13 +55,26 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
 
    @Override
    public List<ArtifactToken> loadArtifactTokens() {
-      return loadArtifactTokens(CoreAttributeTypes.Name);
+      return loadArtifactTokens(Name);
+   }
+
+   @Override
+   public Map<ArtifactId, ArtifactToken> loadArtifactTokenMap() {
+      getQueryData().addCriteria(new CriteriaTokenQuery(Name));
+      return queryEngine.loadArtifactTokenMap(getQueryData());
    }
 
    @Override
    public List<ArtifactToken> loadArtifactTokens(AttributeTypeId attributeType) {
       getQueryData().addCriteria(new CriteriaTokenQuery(attributeType));
       return queryEngine.loadArtifactTokens(getQueryData());
+   }
+
+   @Override
+   public Map<ArtifactId, ArtifactReadable> loadArtifactMap() {
+      Map<ArtifactId, ArtifactReadable> artifacts = new HashMap<>(10000);
+      getResults().forEach(artifact -> artifacts.put(artifact, artifact));
+      return artifacts;
    }
 
    @Override
