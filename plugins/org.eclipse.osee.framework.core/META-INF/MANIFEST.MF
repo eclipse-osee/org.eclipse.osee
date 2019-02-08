@@ -25,6 +25,8 @@ Import-Package: com.google.common.collect,
  org.codehaus.jackson.type,
  org.eclipse.core.net.proxy,
  org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.core.runtime.jobs,
  org.eclipse.osee.framework.jdk.core.result,
  org.eclipse.osee.framework.jdk.core.text,
  org.eclipse.osee.framework.jdk.core.text.change,
@@ -35,6 +37,7 @@ Import-Package: com.google.common.collect,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.logger,
  org.eclipse.osgi.framework.console,
+ org.osgi.framework,
  org.osgi.service.event,
  org.osgi.util.tracker
 Export-Package: org.eclipse.osee.framework.core.applicability,
@@ -51,5 +54,4 @@ Export-Package: org.eclipse.osee.framework.core.applicability,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.core.util.result
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.core.runtime;visibility:=reexport
 Service-Component: OSGI-INF/*.xml
