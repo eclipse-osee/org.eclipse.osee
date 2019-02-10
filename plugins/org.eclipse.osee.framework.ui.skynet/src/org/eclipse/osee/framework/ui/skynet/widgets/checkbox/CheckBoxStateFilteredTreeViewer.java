@@ -17,7 +17,9 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.osee.framework.ui.skynet.util.IsEnabled;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
@@ -36,6 +38,7 @@ public class CheckBoxStateFilteredTreeViewer<T> extends FilteredTree implements 
    private final Set<T> checked = new HashSet<>();
    private final Set<T> disabled = new HashSet<>();
    private IsEnabled enabledChecker = null;
+   protected boolean treeExpandCollapseEvent;
 
    public CheckBoxStateFilteredTreeViewer(Composite parent, int style) {
       super(parent, style, new PatternFilter(), true);
@@ -45,6 +48,14 @@ public class CheckBoxStateFilteredTreeViewer<T> extends FilteredTree implements 
          @SuppressWarnings("unchecked")
          @Override
          public void selectionChanged(SelectionChangedEvent event) {
+            /**
+             * Expanding the tree may kick a selection change event when one didn't really happen. Ignore any tree
+             * expand/collapse events.
+             */
+            if (treeExpandCollapseEvent) {
+               treeExpandCollapseEvent = false;
+               return;
+            }
             IStructuredSelection selection = (IStructuredSelection) event.getSelection();
             Object selected = selection.getFirstElement();
             if (isEnabled(selected)) {
@@ -56,6 +67,19 @@ public class CheckBoxStateFilteredTreeViewer<T> extends FilteredTree implements 
             }
          }
       });
+      treeViewer.addTreeListener(new ITreeViewerListener() {
+
+         @Override
+         public void treeExpanded(TreeExpansionEvent event) {
+            treeExpandCollapseEvent = true;
+         }
+
+         @Override
+         public void treeCollapsed(TreeExpansionEvent event) {
+            treeExpandCollapseEvent = true;
+         }
+      });
+
    }
 
    @Override
