@@ -1453,22 +1453,12 @@
             classname="org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager">
       </XCommonNavigateItem>
       <XCommonNavigateItem
-            classname="org.eclipse.osee.framework.ui.skynet.user.perspective.UserNavigateViewItems">
+            classname="org.eclipse.osee.framework.ui.skynet.user.UserNavigateViewItems">
       </XCommonNavigateItem>
       <XCommonNavigateItem
             classname="org.eclipse.osee.framework.ui.skynet.links.LinksNavigateViewItems">
       </XCommonNavigateItem>
    </extension>
-   <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            class="org.eclipse.osee.framework.ui.skynet.user.perspective.UserPerspective"
-            icon="OSEE-INF/images/userPurple.gif"
-            id="org.eclipse.framework.ui.skynet.UserPerspective"
-            name="User Management">
-      </perspective>
-   </extension>
-
    <extension
          point="org.eclipse.ui.commands">
       <category

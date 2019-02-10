@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.user.perspective;
+package org.eclipse.osee.framework.ui.skynet.user;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
-import org.eclipse.osee.framework.ui.plugin.util.OpenPerspectiveNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateCommonItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateCommonItems;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -30,7 +29,6 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.CreateNewUser;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.PopulateUserGroupBlam;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.user.OpenUsersInMassEditor;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 
@@ -101,7 +99,6 @@ public class UserNavigateViewItems implements XNavigateViewItems, IXNavigateComm
          boolean admin = SystemGroup.OseeAdmin.isCurrentUserMember();
          if (OseeProperties.isTargetAll() || admin) {
             XNavigateItem reviewItem = new XNavigateItem(null, "User Management", FrameworkImage.USER);
-         new OpenPerspectiveNavigateItem(reviewItem, "User Management", UserPerspective.ID, FrameworkImage.USER);
             addOseePeerSectionChildren(reviewItem);
             items.add(reviewItem);
          }

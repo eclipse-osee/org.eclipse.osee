@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.user.perspective;
+package org.eclipse.osee.framework.ui.skynet.user;
 
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IExtension;
