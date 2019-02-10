@@ -338,4 +338,10 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    public String getDescriptionUsage() {
       return "The Low Level Requirement artifacts will be filtered based on the type(s) selected.  The standard is to select \"Direct Software Requirement\".";
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

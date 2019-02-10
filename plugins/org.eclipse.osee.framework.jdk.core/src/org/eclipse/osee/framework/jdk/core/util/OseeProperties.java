@@ -36,6 +36,7 @@ public class OseeProperties {
    private static final String OSEE_DB_CONNECTION_POOL_SIZE = "osee.db.connection.pool.size";
    private static final String OSEE_DB_CONNECTION_POOL_CONFIG_URI = "osee.db.connection.pool.config.uri";
    public static final String OSEE_SHOW_TOKEN_FOR_CHANGE_NAME = "osee.show.token.for.change.name";
+   public static final String OSEE_TARGET = "osee.target";
 
    protected OseeProperties() {
       // Utility Class
@@ -218,4 +219,13 @@ public class OseeProperties {
       Collections.sort(list);
       return org.eclipse.osee.framework.jdk.core.util.Collections.toString("\n", list);
    }
+
+   public static String getTarget() {
+      return System.getProperty(OSEE_TARGET);
+   }
+
+   public static boolean isTargetAll() {
+      return "all".equals(getTarget()) || Strings.isInValid(getTarget());
+   }
+
 }

@@ -74,4 +74,9 @@ public class DuplicateParentBlam extends AbstractBlam {
 
    }
 
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

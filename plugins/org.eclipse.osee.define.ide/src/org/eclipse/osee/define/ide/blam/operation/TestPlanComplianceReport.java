@@ -311,4 +311,10 @@ public final class TestPlanComplianceReport extends AbstractBlam {
    public String getName() {
       return "Test Plan Compliance Report";
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

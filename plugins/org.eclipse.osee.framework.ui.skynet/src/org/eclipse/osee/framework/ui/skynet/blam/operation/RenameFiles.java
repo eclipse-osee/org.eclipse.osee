@@ -39,4 +39,10 @@ public class RenameFiles extends AbstractBlam {
    public Collection<String> getCategories() {
       return Arrays.asList("Define");
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

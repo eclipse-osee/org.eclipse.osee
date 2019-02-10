@@ -171,4 +171,10 @@ public class RequirementsTestReport extends AbstractBlam {
    public String getName() {
       return "Requirements Test Report";
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

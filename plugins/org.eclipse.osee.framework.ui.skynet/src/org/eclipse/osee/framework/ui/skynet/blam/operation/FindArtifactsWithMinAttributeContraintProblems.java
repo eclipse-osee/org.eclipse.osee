@@ -44,4 +44,10 @@ public class FindArtifactsWithMinAttributeContraintProblems extends AbstractBlam
    public Collection<String> getCategories() {
       return Arrays.asList("Admin.Health");
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

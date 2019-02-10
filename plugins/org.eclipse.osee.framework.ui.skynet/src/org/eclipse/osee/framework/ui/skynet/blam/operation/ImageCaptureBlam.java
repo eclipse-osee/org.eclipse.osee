@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Listener;
 
 /**
  * Capture an image within the bounds of OSEE workbench.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ImageCaptureBlam extends AbstractBlam {
@@ -90,4 +90,10 @@ public class ImageCaptureBlam extends AbstractBlam {
    public Collection<String> getCategories() {
       return Arrays.asList("Util");
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

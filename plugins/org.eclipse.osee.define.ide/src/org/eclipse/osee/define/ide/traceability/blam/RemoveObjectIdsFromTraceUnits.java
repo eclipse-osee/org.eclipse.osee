@@ -147,4 +147,9 @@ public class RemoveObjectIdsFromTraceUnits extends AbstractBlam {
       }
    }
 
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

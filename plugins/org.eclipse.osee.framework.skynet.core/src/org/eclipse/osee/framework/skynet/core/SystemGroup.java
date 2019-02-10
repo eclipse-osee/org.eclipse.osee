@@ -21,7 +21,8 @@ public enum SystemGroup {
 
    Everyone(CoreArtifactTokens.Everyone),
    OseeAccessAdmin(CoreArtifactTokens.OseeAccessAdmin), // Ability to change Access Control on any object
-   OseeAdmin(CoreArtifactTokens.OseeAdmin);
+   OseeAdmin(CoreArtifactTokens.OseeAdmin),
+   OseeDeveloper(CoreArtifactTokens.OseeDeveloper);
 
    private final OseeGroup group;
 

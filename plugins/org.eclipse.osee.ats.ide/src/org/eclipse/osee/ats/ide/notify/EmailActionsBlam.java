@@ -229,7 +229,12 @@ public class EmailActionsBlam extends AbstractBlam {
 
    @Override
    public Collection<String> getCategories() {
-      return Arrays.asList("ATS/Util");
+      return Arrays.asList("ATS.Util");
+   }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
    }
 
 }

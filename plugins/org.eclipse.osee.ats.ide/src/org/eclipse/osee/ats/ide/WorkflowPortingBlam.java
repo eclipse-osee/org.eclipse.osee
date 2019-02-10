@@ -93,8 +93,8 @@ public class WorkflowPortingBlam extends AbstractBlam {
    private List<IAtsActionableItem> getActionableItems(IAtsActionableItem actionableItem) {
       List<IAtsActionableItem> actionableItems;
       if (actionableItem == null) {
-         actionableItems = new ArrayList<>(
-            AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(
+         actionableItems =
+            new ArrayList<>(AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(
                sourceWorkflows.get(0)));
       } else {
          actionableItems = java.util.Collections.singletonList(actionableItem);
@@ -114,6 +114,12 @@ public class WorkflowPortingBlam extends AbstractBlam {
 
    @Override
    public Collection<String> getCategories() {
-      return Arrays.asList("ATS");
+      return Arrays.asList("ATS.Admin");
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

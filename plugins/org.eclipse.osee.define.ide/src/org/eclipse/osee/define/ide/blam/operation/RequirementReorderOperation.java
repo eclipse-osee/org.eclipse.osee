@@ -86,4 +86,9 @@ public class RequirementReorderOperation extends AbstractBlam {
       return "Fix Requirement Ordering";
    }
 
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

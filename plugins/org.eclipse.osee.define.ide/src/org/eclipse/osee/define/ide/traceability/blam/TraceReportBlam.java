@@ -528,4 +528,10 @@ public class TraceReportBlam extends AbstractBlam {
          resultsTabs.add(new ResultsEditorTableTab(title, columns, rows));
       }
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

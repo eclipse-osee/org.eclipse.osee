@@ -166,4 +166,10 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
          return verificationLevel.equals(AttributeId.UNSPECIFIED);
       }
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

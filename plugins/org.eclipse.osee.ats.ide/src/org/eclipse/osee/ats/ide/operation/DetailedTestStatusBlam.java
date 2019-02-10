@@ -675,4 +675,10 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    public Collection<String> getCategories() {
       return Arrays.asList("OTE");
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

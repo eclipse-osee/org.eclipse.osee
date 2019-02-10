@@ -150,7 +150,12 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
 
    @Override
    public Collection<String> getCategories() {
-      return Arrays.asList("ATS.ADMIN");
+      return Arrays.asList("ATS");
+   }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
    }
 
 }

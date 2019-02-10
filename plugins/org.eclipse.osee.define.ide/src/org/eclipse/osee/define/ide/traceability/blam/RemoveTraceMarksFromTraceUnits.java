@@ -352,4 +352,10 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
          Jobs.runInJob(getName(), runnable, Activator.class, Activator.PLUGIN_ID);
       }
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

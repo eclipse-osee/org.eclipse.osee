@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
  * Changes the descriptor type of an artifact to the provided descriptor.
- * 
+ *
  * @author Jeff C. Phillips
  * @author Karol M. Wilk
  */
@@ -42,4 +42,10 @@ public class ChangeArtifactTypeBlam extends AbstractBlam {
    public Collection<String> getCategories() {
       return Arrays.asList("Util");
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

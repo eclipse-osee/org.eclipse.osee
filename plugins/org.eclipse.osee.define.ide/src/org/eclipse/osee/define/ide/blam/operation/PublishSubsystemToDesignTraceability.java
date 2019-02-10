@@ -190,4 +190,10 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
    public Collection<String> getCategories() {
       return Arrays.asList("Define.Publish");
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

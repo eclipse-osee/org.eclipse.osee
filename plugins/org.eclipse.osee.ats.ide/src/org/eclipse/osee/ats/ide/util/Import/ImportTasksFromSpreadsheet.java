@@ -172,4 +172,10 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
    public Collection<String> getCategories() {
       return Arrays.asList("ATS");
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

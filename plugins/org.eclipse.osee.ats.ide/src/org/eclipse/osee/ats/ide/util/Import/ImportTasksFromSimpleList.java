@@ -181,4 +181,10 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    public Collection<String> getCategories() {
       return Arrays.asList("ATS");
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

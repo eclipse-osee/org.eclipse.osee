@@ -168,4 +168,9 @@ public class FindErroneousEmbeddedLinksBlam extends AbstractBlam {
       return Collections.singletonList("Define.Publish.Check");
    }
 
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

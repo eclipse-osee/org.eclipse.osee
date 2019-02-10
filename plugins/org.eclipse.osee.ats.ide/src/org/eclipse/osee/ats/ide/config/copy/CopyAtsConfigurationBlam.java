@@ -111,7 +111,7 @@ public class CopyAtsConfigurationBlam extends AbstractBlam {
 
    @Override
    public Collection<String> getCategories() {
-      return Arrays.asList("ATS.ADMIN");
+      return Arrays.asList("ATS.Admin");
    }
 
    @Override
@@ -124,4 +124,10 @@ public class CopyAtsConfigurationBlam extends AbstractBlam {
          xActionableItemCombo = (XActionableItemCombo) xWidget;
       }
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

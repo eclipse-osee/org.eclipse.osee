@@ -81,4 +81,9 @@ public class CreateWorkingBranchFromTxBlam extends AbstractBlam {
       return Arrays.asList("Admin");
    }
 
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

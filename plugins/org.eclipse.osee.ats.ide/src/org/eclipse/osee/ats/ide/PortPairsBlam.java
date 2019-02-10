@@ -35,7 +35,7 @@ public class PortPairsBlam extends AbstractBlam {
 
    @Override
    public Collection<String> getCategories() {
-      return Collections.singletonList("Admin");
+      return Collections.singletonList("ATS.Admin");
    }
 
    @Override
@@ -54,6 +54,11 @@ public class PortPairsBlam extends AbstractBlam {
    @Override
    public String getDescriptionUsage() {
       return "Port a given list of workflows represented by either RPCRs or ATS IDs, formated like: <from>,<to>. Each pair should be separated by a return. The BLAM can be run multiple times, as the conflicts are resolved on the port branch merges.";
+   }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
    }
 
 }

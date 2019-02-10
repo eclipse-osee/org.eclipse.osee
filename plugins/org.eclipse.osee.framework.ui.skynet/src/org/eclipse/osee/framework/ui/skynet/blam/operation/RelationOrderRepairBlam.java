@@ -116,4 +116,10 @@ public class RelationOrderRepairBlam extends AbstractBlam {
          }
       }
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

@@ -236,4 +236,9 @@ public class PublishStdStpTraceability extends AbstractBlam {
       return Arrays.asList("Define.Publish");
    }
 
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

@@ -115,4 +115,9 @@ public class SetWorkbenchOverrideIconBlam extends AbstractBlam {
       return "Set the selected 32x32 pixel as the image for the workbench for this workspace.  This allows for easy recognition if multiple workbenches are running";
    }
 
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

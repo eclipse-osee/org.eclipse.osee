@@ -129,4 +129,10 @@ public class DeleteMultipleAttributesBlam extends AbstractBlam {
    public Collection<String> getCategories() {
       return Arrays.asList("Admin");
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

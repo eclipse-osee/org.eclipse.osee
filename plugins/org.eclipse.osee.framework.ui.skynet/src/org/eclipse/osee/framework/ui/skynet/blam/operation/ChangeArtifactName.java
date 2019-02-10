@@ -54,4 +54,10 @@ public class ChangeArtifactName extends AbstractBlam {
    public String getDescriptionUsage() {
       return "Renames artifacts given list of \"art ids, new name\" pairs.  Each rename should be separated by a return.";
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

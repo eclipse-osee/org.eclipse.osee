@@ -226,4 +226,9 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
       return Arrays.asList("ATS");
    }
 
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

@@ -19,8 +19,10 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
+import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateCommonItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -84,30 +86,37 @@ public class BlamContributionManager implements IXNavigateCommonItem {
    public void createCommonSection(List<XNavigateItem> items, List<String> excludeSectionIds) {
       Map<String, XNavigateItem> nameToParent = new HashMap<>();
       XNavigateItem blamOperationItems = new XNavigateItem(null, "Blam Operations", FrameworkImage.BLAM);
+      String target = System.getProperty("osee.target");
+      boolean admin = SystemGroup.OseeAdmin.isCurrentUserMember();
       for (AbstractBlam blamOperation : getBlamOperations()) {
-
-         // Create categories first (so can have them up top)
-         for (String category : blamOperation.getCategories()) {
-            try {
-               if (AccessControlManager.isOseeAdmin() || !category.contains("Admin") || category.contains(
-                  "Admin") && AccessControlManager.isOseeAdmin()) {
-                  createCategories(category.split("\\."), 0, blamOperationItems, nameToParent);
+         if (admin || "all".equals(
+            blamOperation.getTarget()) || OseeProperties.isTargetAll() || blamOperation.getTarget().equals(target)) {
+            // Create categories first (so can have them up top)
+            for (String category : blamOperation.getCategories()) {
+               try {
+                  if (AccessControlManager.isOseeAdmin() || !category.contains("Admin") || category.contains(
+                     "Admin") && AccessControlManager.isOseeAdmin()) {
+                     createCategories(category.split("\\."), 0, blamOperationItems, nameToParent);
+                  }
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       }
       // Add blams to categories
       for (AbstractBlam blamOperation : BlamContributionManager.getBlamOperations()) {
-         // If categories not specified, add to top level
-         if (blamOperation.getCategories().isEmpty()) {
-            new XNavigateItemBlam(blamOperationItems, blamOperation);
-         }
-         for (String category : blamOperation.getCategories()) {
-            // Category will be null if admin category and not admin
-            if (nameToParent.get(category) != null) {
-               new XNavigateItemBlam(nameToParent.get(category), blamOperation);
+         if (admin || "all".equals(
+            blamOperation.getTarget()) || OseeProperties.isTargetAll() || blamOperation.getTarget().equals(target)) {
+            // If categories not specified, add to top level
+            if (blamOperation.getCategories().isEmpty()) {
+               new XNavigateItemBlam(blamOperationItems, blamOperation);
+            }
+            for (String category : blamOperation.getCategories()) {
+               // Category will be null if admin category and not admin
+               if (nameToParent.get(category) != null) {
+                  new XNavigateItemBlam(nameToParent.get(category), blamOperation);
+               }
             }
          }
       }

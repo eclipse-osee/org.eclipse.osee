@@ -81,4 +81,9 @@ public class FixEmbeddedLinksBlam extends AbstractBlam {
       return Collections.singletonList("Admin");
    }
 
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

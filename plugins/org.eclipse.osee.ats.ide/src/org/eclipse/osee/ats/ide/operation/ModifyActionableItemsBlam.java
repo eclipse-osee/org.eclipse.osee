@@ -478,4 +478,10 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
    public int getNewTreeItemCount() {
       return newTree.getViewer().getTree().getItemCount();
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

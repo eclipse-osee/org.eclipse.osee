@@ -111,4 +111,10 @@ public class AdvancedKeywordSearchBlam extends AbstractBlam {
    public String getDescriptionUsage() {
       return "Perform keyword quick search (in word order) for a list of keywords.  Results will show artifacts paired with matching keyword groups.";
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

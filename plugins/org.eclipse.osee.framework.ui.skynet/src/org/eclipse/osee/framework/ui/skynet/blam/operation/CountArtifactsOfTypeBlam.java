@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
  * Counts artifact of type or inherited type
- * 
+ *
  * @author Donald G. Dunne
  */
 public class CountArtifactsOfTypeBlam extends AbstractBlam {
@@ -76,4 +76,10 @@ public class CountArtifactsOfTypeBlam extends AbstractBlam {
    public String getDescriptionUsage() {
       return "Count artifacts on specified branch by inherited type.";
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

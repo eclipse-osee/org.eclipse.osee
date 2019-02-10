@@ -248,4 +248,9 @@ public class EmailGroupsBlam extends AbstractBlam {
       }
    }
 
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

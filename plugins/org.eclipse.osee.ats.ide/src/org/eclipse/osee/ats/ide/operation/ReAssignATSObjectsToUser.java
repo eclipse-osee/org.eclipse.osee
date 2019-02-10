@@ -121,4 +121,10 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
    public Collection<String> getCategories() {
       return Arrays.asList("ATS.Admin");
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

@@ -117,4 +117,9 @@ public class OrcsScriptBlam extends AbstractBlam {
       return "Type script in console. Click run to execute and display results.";
    }
 
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

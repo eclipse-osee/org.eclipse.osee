@@ -87,8 +87,10 @@ import org.eclipse.osee.ats.ide.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.OpenPerspectiveNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IOperationFactory;
@@ -301,20 +303,21 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
    }
 
    private void createExampleItems(XNavigateItem parent, List<XNavigateItem> items) {
-      XNavigateItem exampleItems = new XNavigateItem(parent, "Examples", AtsImage.REPORT);
+      if (SystemGroup.OseeAdmin.isCurrentUserMember() || OseeProperties.isTargetAll()) {
+         XNavigateItem exampleItems = new XNavigateItem(parent, "Examples", AtsImage.REPORT);
 
-      new ResultsEditorExample(exampleItems);
-      new CompareEditorExample(exampleItems);
-      new XViewerExample(exampleItems);
-      new XResultDataExample(exampleItems);
-      new FilteredTreeDialogExample(exampleItems);
-      new FilteredTreeDialogSingleExample(exampleItems);
-      new FilteredTreeArtifactDialogExample(exampleItems);
-      new FilteredCheckboxTreeDialogExample(exampleItems);
-      new FilteredCheckboxTreeArtifactDialogExample(exampleItems);
-      new FilteredCheckboxTreeDialogSelectAllExample(exampleItems);
-      items.add(exampleItems);
-
+         new ResultsEditorExample(exampleItems);
+         new CompareEditorExample(exampleItems);
+         new XViewerExample(exampleItems);
+         new XResultDataExample(exampleItems);
+         new FilteredTreeDialogExample(exampleItems);
+         new FilteredTreeDialogSingleExample(exampleItems);
+         new FilteredTreeArtifactDialogExample(exampleItems);
+         new FilteredCheckboxTreeDialogExample(exampleItems);
+         new FilteredCheckboxTreeArtifactDialogExample(exampleItems);
+         new FilteredCheckboxTreeDialogSelectAllExample(exampleItems);
+         items.add(exampleItems);
+      }
    }
 
    private void createVersionsSection(XNavigateItem parent, List<XNavigateItem> items) {
@@ -386,7 +389,8 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
    }
 
    private void addExtensionPointItems(XNavigateItem parentItem, List<XNavigateItem> items) {
-      IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.ide.AtsNavigateItem");
+      IExtensionPoint point =
+         Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.ide.AtsNavigateItem");
       if (point == null) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't access AtsNavigateItem extension point");
          return;

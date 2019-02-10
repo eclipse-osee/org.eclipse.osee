@@ -533,4 +533,10 @@ public class SystemSubsystemReport extends AbstractBlam {
    public Collection<String> getCategories() {
       return Arrays.asList("Reports");
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

@@ -317,4 +317,10 @@ public class SubsystemFullTraceReport extends AbstractBlam {
       }
 
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

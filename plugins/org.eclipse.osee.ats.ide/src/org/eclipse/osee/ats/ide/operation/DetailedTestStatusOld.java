@@ -96,8 +96,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
    private CharBackedInputStream charBak;
    private ISheetWriter excelWriter;
 
-   private final CompositeKeyHashMap<String, String, RequirementStatus> reqTaskMap =
-      new CompositeKeyHashMap<>();
+   private final CompositeKeyHashMap<String, String, RequirementStatus> reqTaskMap = new CompositeKeyHashMap<>();
    private final StringBuilder sumFormula = new StringBuilder(500);
    private HashCollectionSet<Artifact, String> requirementToCodeUnitsMap;
    private final HashMap<String, String> testProcedureInfo = new HashMap<>();
@@ -643,4 +642,10 @@ public class DetailedTestStatusOld extends AbstractBlam {
    public Collection<String> getCategories() {
       return Arrays.asList("OTE");
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

@@ -62,6 +62,12 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    protected Set<ArtifactId> excludedArtifactIdMap = new HashSet<>();
    protected Map<Long, String> branchViews;
    protected ArtifactToken viewId = ArtifactToken.SENTINEL;
+   // Targets determine what customer is using the ide
+   // ALL - Should show in all ides
+   // ADMIN - Should only show if user is admin
+   // DEVLOP - Should only show if user is a developer
+   public static String TARGET_ALL = "all";
+   protected String TARGET_ADMIN = "admin";
 
    /**
     * Where Blam XML UI comes from
@@ -92,6 +98,8 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       this.description = Strings.isValid(usageDescription) ? usageDescription : DEFAULT_DESCRIPTION;
       this.source = source != null ? source : BlamUiSource.DEFAULT;
    }
+
+   public abstract String getTarget();
 
    private String generateNameFromClass() {
       String className = getClass().getSimpleName();

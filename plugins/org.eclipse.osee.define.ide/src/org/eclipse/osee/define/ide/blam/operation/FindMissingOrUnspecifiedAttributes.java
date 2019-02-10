@@ -77,4 +77,9 @@ public class FindMissingOrUnspecifiedAttributes extends AbstractBlam {
       return Arrays.asList("Define.Publish.Check");
    }
 
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

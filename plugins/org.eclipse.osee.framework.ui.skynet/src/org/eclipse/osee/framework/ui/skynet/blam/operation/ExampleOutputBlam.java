@@ -52,4 +52,9 @@ public class ExampleOutputBlam extends AbstractBlam {
       return Arrays.asList("Util");
    }
 
+   @Override
+   public String getTarget() {
+      return TARGET_ADMIN;
+   }
+
 }

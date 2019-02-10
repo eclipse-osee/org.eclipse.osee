@@ -115,4 +115,10 @@ public class PurgeAttributesBlam extends AbstractBlam {
          });
       }
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

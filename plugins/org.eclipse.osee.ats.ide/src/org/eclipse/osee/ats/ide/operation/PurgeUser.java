@@ -187,6 +187,12 @@ public class PurgeUser extends AbstractBlam {
 
    @Override
    public Collection<String> getCategories() {
-      return Arrays.asList("Admin");
+      return Arrays.asList("ATS.Admin");
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

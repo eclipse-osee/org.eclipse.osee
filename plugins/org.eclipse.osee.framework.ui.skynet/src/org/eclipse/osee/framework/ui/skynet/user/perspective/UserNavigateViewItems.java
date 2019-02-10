@@ -16,6 +16,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
@@ -97,12 +98,15 @@ public class UserNavigateViewItems implements XNavigateViewItems, IXNavigateComm
    @Override
    public void createCommonSection(List<XNavigateItem> items, List<String> excludeSectionIds) {
       try {
-         XNavigateItem reviewItem = new XNavigateItem(null, "User Management", FrameworkImage.USER);
+         boolean admin = SystemGroup.OseeAdmin.isCurrentUserMember();
+         if (OseeProperties.isTargetAll() || admin) {
+            XNavigateItem reviewItem = new XNavigateItem(null, "User Management", FrameworkImage.USER);
          new OpenPerspectiveNavigateItem(reviewItem, "User Management", UserPerspective.ID, FrameworkImage.USER);
-         addOseePeerSectionChildren(reviewItem);
-         items.add(reviewItem);
+            addOseePeerSectionChildren(reviewItem);
+            items.add(reviewItem);
+         }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, "Can't create OSEE Review section");
+         OseeLog.log(Activator.class, Level.SEVERE, "Can't create User Management section");
       }
    }
 

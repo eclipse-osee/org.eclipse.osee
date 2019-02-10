@@ -169,4 +169,9 @@ public class AtsExportBlam extends AbstractBlam {
       }
    }
 
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

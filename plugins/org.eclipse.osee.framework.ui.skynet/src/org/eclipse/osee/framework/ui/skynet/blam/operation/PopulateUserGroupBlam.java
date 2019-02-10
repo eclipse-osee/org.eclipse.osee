@@ -103,4 +103,10 @@ public class PopulateUserGroupBlam extends AbstractBlam {
    public Collection<String> getCategories() {
       return Arrays.asList("Util");
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

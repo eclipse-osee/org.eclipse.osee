@@ -222,4 +222,9 @@ public class DataRightsImporter extends AbstractBlam {
       }
 
    }
+
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
 }

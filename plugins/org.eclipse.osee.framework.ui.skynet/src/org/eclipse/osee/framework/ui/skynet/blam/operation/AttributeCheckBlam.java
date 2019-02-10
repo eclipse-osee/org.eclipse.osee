@@ -74,4 +74,9 @@ public class AttributeCheckBlam extends AbstractBlam {
       return Arrays.asList("Reports");
    }
 
+   @Override
+   public String getTarget() {
+      return TARGET_ALL;
+   }
+
 }

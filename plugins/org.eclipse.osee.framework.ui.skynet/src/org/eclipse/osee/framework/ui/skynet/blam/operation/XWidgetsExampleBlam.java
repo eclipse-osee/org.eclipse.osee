@@ -99,4 +99,9 @@ public class XWidgetsExampleBlam extends AbstractBlam {
       }
    }
 
+   @Override
+   public String getTarget() {
+      return TARGET_ADMIN;
+   }
+
 }
