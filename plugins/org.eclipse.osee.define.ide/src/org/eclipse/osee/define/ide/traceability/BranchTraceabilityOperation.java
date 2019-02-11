@@ -97,11 +97,11 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
       List<Artifact> unitsOnBranch = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestCase, branch);
       if (unitsOnBranch != null) {
          ViewIdUtility.removeExcludedArtifacts(unitsOnBranch.iterator(), excludedArtifactIdMap);
-      }
 
-      testUnits = new HashMap<>();
-      for (Artifact unit : unitsOnBranch) {
-         testUnits.put(convertToJavaFileName(unit.getName()), unit);
+         testUnits = new HashMap<>();
+         for (Artifact unit : unitsOnBranch) {
+            testUnits.put(convertToJavaFileName(unit.getName()), unit);
+         }
       }
 
       List<Artifact> reqs = new ArrayList<>();

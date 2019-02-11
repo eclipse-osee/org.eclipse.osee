@@ -35,7 +35,7 @@ public class RunRuleResults {
    public void addChange(Long id, RuleResultsEnum changeType) {
       Boolean addNew = true;
       for (RuleResultData result : this.resultsList) {
-         if (result.id == id) {
+         if (result.id.equals(id)) {
             if (!result.resultList.contains(changeType)) {
                result.resultList.add(changeType);
                addNew = false;

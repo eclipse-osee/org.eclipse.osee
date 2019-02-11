@@ -105,9 +105,10 @@ public class RequirementTraceabilityData {
          ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement, testProcedureBranch);
       if (artifacts != null) {
          ViewIdUtility.removeExcludedArtifacts(artifacts.iterator(), excludedArtifactIdMap);
-      }
-      for (Artifact tpRequirement : artifacts) {
-         testProcedureBranchReqsToReqsBranchMap.put(tpRequirement.getName(), tpRequirement);
+
+         for (Artifact tpRequirement : artifacts) {
+            testProcedureBranchReqsToReqsBranchMap.put(tpRequirement.getName(), tpRequirement);
+         }
       }
 
       Set<String> testProceduresFilter = getAllowedTestProcedures();

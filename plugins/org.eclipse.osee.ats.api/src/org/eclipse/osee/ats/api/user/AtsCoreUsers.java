@@ -49,7 +49,7 @@ public final class AtsCoreUsers {
          toReturn = AtsCoreUsers.SYSTEM_USER;
       } else if (SystemUser.Anonymous.getUserId().equals(userId)) {
          toReturn = AtsCoreUsers.ANONYMOUS_USER;
-      } else if (SystemUser.UnAssigned.equals(userId)) {
+      } else if (SystemUser.UnAssigned.toString().equals(userId)) {
          toReturn = AtsCoreUsers.UNASSIGNED_USER;
       }
       return toReturn;

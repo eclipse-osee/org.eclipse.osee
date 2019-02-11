@@ -209,7 +209,15 @@ public class TransitionManagerTest {
       sb.append(teamArt.getStateMgr().getAssigneesStr());
       sb.append("\n\n");
       sb.append("transitionOptions: ");
-      sb.append(helper.getTransitionOptions());
+      boolean firstOption = true;
+      for (TransitionOption transOp : helper.getTransitionOptions()) {
+         if (!firstOption) {
+            sb.append(", ");
+         } else {
+            firstOption = false;
+         }
+         sb.append(transOp);
+      }
       return sb.toString();
    }
 

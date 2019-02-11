@@ -67,7 +67,7 @@ public class AtsUser extends JaxAtsObject implements IAtsUser {
    @Override
    @JsonIgnore
    public String toStringWithId() {
-      return String.format("[%s]-[%d]", getName(), getUserId());
+      return String.format("[%s]-[%s]", getName(), getUserId());
    }
 
    @Override

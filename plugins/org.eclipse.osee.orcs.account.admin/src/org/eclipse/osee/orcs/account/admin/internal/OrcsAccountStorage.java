@@ -41,7 +41,7 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountStorage {
    private JdbcService jdbcService;
    private AccountSessionStorage sessionStore;
-   private Account bootstrapAccount;
+   private final Account bootstrapAccount = null;
    private final Supplier<ResultSet<Account>> anonymousAccountSupplier = Suppliers.memoize(getAnonymousSupplier());
 
    public void setJdbcService(JdbcService jdbcService) {

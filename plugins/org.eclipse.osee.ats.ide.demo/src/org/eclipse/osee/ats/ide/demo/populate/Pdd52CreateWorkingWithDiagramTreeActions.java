@@ -34,16 +34,17 @@ public class Pdd52CreateWorkingWithDiagramTreeActions implements IPopulateDemoDa
    private static Map<ArtifactToken, ArtifactToken> versionToWorkflowToken;
    private ArtifactToken currentVersion = null;
 
-   public Map<ArtifactToken, ArtifactToken> getVersionToWorkflowToken() {
-      if (versionToWorkflowToken == null) {
-         versionToWorkflowToken = new HashMap<>(3);
-         versionToWorkflowToken.put(DemoArtifactToken.SAW_Bld_1,
-            DemoArtifactToken.WorkingWithDiagramTreeWorkflowForBld1_TeamWf);
-         versionToWorkflowToken.put(DemoArtifactToken.SAW_Bld_2,
-            DemoArtifactToken.WorkingWithDiagramTreeWorkflowForBld2_TeamWf);
-         versionToWorkflowToken.put(DemoArtifactToken.SAW_Bld_3,
-            DemoArtifactToken.WorkingWithDiagramTreeWorkflowForBld3_TeamWf);
-      }
+   static {
+      versionToWorkflowToken = new HashMap<>(3);
+      versionToWorkflowToken.put(DemoArtifactToken.SAW_Bld_1,
+         DemoArtifactToken.WorkingWithDiagramTreeWorkflowForBld1_TeamWf);
+      versionToWorkflowToken.put(DemoArtifactToken.SAW_Bld_2,
+         DemoArtifactToken.WorkingWithDiagramTreeWorkflowForBld2_TeamWf);
+      versionToWorkflowToken.put(DemoArtifactToken.SAW_Bld_3,
+         DemoArtifactToken.WorkingWithDiagramTreeWorkflowForBld3_TeamWf);
+   }
+
+   public synchronized Map<ArtifactToken, ArtifactToken> getVersionToWorkflowToken() {
       return versionToWorkflowToken;
    }
 

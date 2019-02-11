@@ -494,7 +494,8 @@ public class OrcsTxQueryTest {
       assertEquals(CommonBranchHeadPriorTransaction, ids.next());
    }
 
-   private static void assertTx(List<TransactionReadable> transactions, TransactionId id, TransactionDetailsType type, String comment, BranchId branch, ArtifactId author) {
+   private static synchronized void assertTx(List<TransactionReadable> transactions, TransactionId id, TransactionDetailsType type, String comment, BranchId branch, ArtifactId author) {
+
       TransactionReadable transaction = getTransaction(transactions, id);
       assertEquals(id, transaction);
       assertEquals(type, transaction.getTxType());

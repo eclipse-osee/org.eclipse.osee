@@ -653,7 +653,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
    @Override
    public boolean isWorkingBranchCreationInProgress(IAtsTeamWorkflow teamWf) {
-      Boolean inProgress = workingBranchCreatingInProgress.get(teamWf);
+      Boolean inProgress = workingBranchCreatingInProgress.get(teamWf.getArtifactId());
       return inProgress == null ? false : inProgress;
    }
 
@@ -666,7 +666,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
    @Override
    public boolean isWorkingBranchCommitInProgress(IAtsTeamWorkflow teamWf) {
-      Boolean inProgress = workingBranchCommitInProgress.get(teamWf);
+      Boolean inProgress = workingBranchCommitInProgress.get(teamWf.getArtifactId());
       return inProgress == null ? false : inProgress;
    }
 

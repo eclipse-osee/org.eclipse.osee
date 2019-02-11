@@ -927,7 +927,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       // create new backlog
       IAgileBacklog backlog = null;
       if (!Strings.isValid(newBacklog.getName())) {
-         new OseeWebApplicationException(Status.BAD_REQUEST, "name is not valid");
+         throw new OseeWebApplicationException(Status.BAD_REQUEST, "name is not valid");
       }
 
       Long id = newBacklog.getId();
@@ -936,7 +936,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       }
       ArtifactToken teamArt = atsApi.getQueryService().getArtifact(newBacklog.getTeamId());
       if (!atsApi.getRelationResolver().getRelated(teamArt, AtsRelationTypes.AgileTeamToBacklog_Backlog).isEmpty()) {
-         new OseeWebApplicationException(Status.BAD_REQUEST, "Backlog already set for team %s",
+         throw new OseeWebApplicationException(Status.BAD_REQUEST, "Backlog already set for team %s",
             teamArt.toStringWithId());
       }
 

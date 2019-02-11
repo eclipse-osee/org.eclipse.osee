@@ -73,6 +73,6 @@ public enum DispoSetStatus {
    }
 
    public boolean isFailed() {
-      return value == FAILED.value;
+      return value.equals(FAILED.value);
    }
 }

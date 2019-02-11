@@ -94,7 +94,7 @@ public class TranslationManager {
       IdTranslator translator = translatorMap.get(name.toLowerCase());
       if (translator != null) {
          Long data = translator.getFromCache(original);
-         if (data == null || data != newValue) {
+         if (data == null || !data.equals(newValue)) {
             translator.addToCache(original, newValue);
          }
       }

@@ -34,16 +34,17 @@ public class Pdd51CreateWorkaroundForGraphViewActions implements IPopulateDemoDa
    private static Map<ArtifactToken, ArtifactToken> versionToWorkflowToken;
    private ArtifactToken currentVersion = null;
 
-   public Map<ArtifactToken, ArtifactToken> getVersionToWorkflowToken() {
-      if (versionToWorkflowToken == null) {
-         versionToWorkflowToken = new HashMap<>(3);
-         versionToWorkflowToken.put(DemoArtifactToken.SAW_Bld_1,
-            DemoArtifactToken.WorkaroundForGraphViewWorkflowForBld1_TeamWf);
-         versionToWorkflowToken.put(DemoArtifactToken.SAW_Bld_2,
-            DemoArtifactToken.WorkaroundForGraphViewWorkflowForBld2_TeamWf);
-         versionToWorkflowToken.put(DemoArtifactToken.SAW_Bld_3,
-            DemoArtifactToken.WorkaroundForGraphViewWorkflowForBld3_TeamWf);
-      }
+   static {
+      versionToWorkflowToken = new HashMap<>(3);
+      versionToWorkflowToken.put(DemoArtifactToken.SAW_Bld_1,
+         DemoArtifactToken.WorkaroundForGraphViewWorkflowForBld1_TeamWf);
+      versionToWorkflowToken.put(DemoArtifactToken.SAW_Bld_2,
+         DemoArtifactToken.WorkaroundForGraphViewWorkflowForBld2_TeamWf);
+      versionToWorkflowToken.put(DemoArtifactToken.SAW_Bld_3,
+         DemoArtifactToken.WorkaroundForGraphViewWorkflowForBld3_TeamWf);
+   }
+
+   public synchronized Map<ArtifactToken, ArtifactToken> getVersionToWorkflowToken() {
       return versionToWorkflowToken;
    }
 

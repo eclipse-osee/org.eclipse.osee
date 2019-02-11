@@ -76,7 +76,7 @@ public class FindDuplicateArtifactNames extends AbstractBlam {
             if (artifactListFromName != null) {
                ViewIdUtility.removeExcludedArtifacts(artifactListFromName.iterator(), findExcludedArtifactsByView);
             }
-            if (artifactListFromName.size() > 1) {
+            if (artifactListFromName != null && artifactListFromName.size() > 1) {
                for (Artifact art : artifactListFromName) {
                   String subsystem = art.getSoleAttributeValueAsString(CoreAttributeTypes.Subsystem, "");
                   excelWriter.writeRow(artifact.getName(), subsystem, art.getName(), art.getArtifactType().getName(),

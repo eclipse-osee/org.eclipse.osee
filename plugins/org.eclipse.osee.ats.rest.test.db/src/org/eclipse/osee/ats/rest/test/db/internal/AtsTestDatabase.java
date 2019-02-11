@@ -143,8 +143,10 @@ public class AtsTestDatabase {
       URL resourceURL = bundle.getResource(resource);
       InputStream inputStream = null;
       try {
-         inputStream = new BufferedInputStream(resourceURL.openStream());
-         Lib.decompressStream(inputStream, targetDirectory);
+         if (resourceURL != null) {
+            inputStream = new BufferedInputStream(resourceURL.openStream());
+            Lib.decompressStream(inputStream, targetDirectory);
+         }
       } finally {
          Lib.close(inputStream);
       }

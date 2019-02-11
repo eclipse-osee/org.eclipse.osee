@@ -282,7 +282,7 @@ public class LoadDeltasBetweenBranches {
             String value = chStmt.getString("value");
 
             ChangeItem change = changesByItemId.get(tableType, itemId);
-            if (previousItemId != itemId) {
+            if (!previousItemId.equals(itemId)) {
                isFirstSet = false;
             }
             if (sourceBaselineTxId.equals(transactionId)) {

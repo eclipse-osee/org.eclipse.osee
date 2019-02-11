@@ -23,17 +23,18 @@ public class AtsCoreXWidgetValidatorProvider implements IAtsXWidgetValidatorProv
 
    private static List<IAtsXWidgetValidator> atsValidators;
 
+   static {
+      atsValidators = new ArrayList<>();
+      atsValidators.add(new AtsXNumberValidator());
+      atsValidators.add(new AtsXTextValidator());
+      atsValidators.add(new AtsXDateValidator());
+      atsValidators.add(new AtsXComboValidator());
+      atsValidators.add(new AtsXComboBooleanValidator());
+      atsValidators.add(new AtsXListValidator());
+   }
+
    @Override
-   public Collection<IAtsXWidgetValidator> getValidators() {
-      if (atsValidators == null) {
-         atsValidators = new ArrayList<>();
-         atsValidators.add(new AtsXNumberValidator());
-         atsValidators.add(new AtsXTextValidator());
-         atsValidators.add(new AtsXDateValidator());
-         atsValidators.add(new AtsXComboValidator());
-         atsValidators.add(new AtsXComboBooleanValidator());
-         atsValidators.add(new AtsXListValidator());
-      }
+   public synchronized Collection<IAtsXWidgetValidator> getValidators() {
       return atsValidators;
    }
 

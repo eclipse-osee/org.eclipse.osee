@@ -41,7 +41,7 @@ public abstract class AttributeImpl<T> extends BaseId implements Comparable<Attr
 
    private AttributeTypes attributeTypeCache;
    private Reference<AttributeContainer> containerReference;
-   private Log logger;
+   private final Log logger = null;
    private AttributeData<T> attributeData;
 
    @Override

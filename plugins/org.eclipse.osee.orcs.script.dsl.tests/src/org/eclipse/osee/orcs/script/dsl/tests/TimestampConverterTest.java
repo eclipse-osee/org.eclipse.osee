@@ -29,7 +29,7 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Test Case for {@link TimestampConverter}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class TimestampConverterTest {
@@ -37,7 +37,7 @@ public class TimestampConverterTest {
    @Rule
    public ExpectedException thrown = ExpectedException.none();
 
-   private INode node;
+   private final INode node = null;
    private TimestampConverter converter;
 
    private final OrcsScriptDslFactory factory = OrcsScriptDslFactory.eINSTANCE;

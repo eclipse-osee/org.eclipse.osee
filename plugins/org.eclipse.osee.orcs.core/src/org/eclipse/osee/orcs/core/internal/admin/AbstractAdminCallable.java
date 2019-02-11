@@ -78,10 +78,8 @@ public abstract class AbstractAdminCallable<T> extends CancellableCallable<T> {
       super.setCancel(isCancelled);
       final Callable<?> inner = innerWorker;
       if (inner != null) {
-         synchronized (inner) {
-            if (inner instanceof HasCancellation) {
-               ((HasCancellation) inner).setCancel(isCancelled);
-            }
+         if (inner instanceof HasCancellation) {
+            ((HasCancellation) inner).setCancel(isCancelled);
          }
       }
    }

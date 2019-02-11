@@ -295,8 +295,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       builder.append(String.format(
          "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
          RendererOption.USE_PARAGRAPH_NUMBERS.getKey()));
-      builder.append(String.format(
-         "<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"Exclude Artifact Types\" />",
+      builder.append(String.format("<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"%s\" />",
          RendererOption.EXCLUDE_ARTIFACT_TYPES.getKey()));
 
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XCombo(");

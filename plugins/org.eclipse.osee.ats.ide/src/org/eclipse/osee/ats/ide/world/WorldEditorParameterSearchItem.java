@@ -124,15 +124,16 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       }
    }
 
-   private List<WorkItemType> getTeamDefWorkItemTypes() {
-      if (TEAM_DEF_WORKITEMTYPES == null) {
-         TEAM_DEF_WORKITEMTYPES = new LinkedList<>();
-         for (WorkItemType type : WorkItemType.values()) {
-            if (!GOAL_SPRINT_BACKLOG_WORKITEMTYPES.contains(type)) {
-               TEAM_DEF_WORKITEMTYPES.add(type);
-            }
+   static {
+      TEAM_DEF_WORKITEMTYPES = new LinkedList<>();
+      for (WorkItemType type : WorkItemType.values()) {
+         if (!GOAL_SPRINT_BACKLOG_WORKITEMTYPES.contains(type)) {
+            TEAM_DEF_WORKITEMTYPES.add(type);
          }
       }
+   }
+
+   private synchronized List<WorkItemType> getTeamDefWorkItemTypes() {
       return TEAM_DEF_WORKITEMTYPES;
    }
 

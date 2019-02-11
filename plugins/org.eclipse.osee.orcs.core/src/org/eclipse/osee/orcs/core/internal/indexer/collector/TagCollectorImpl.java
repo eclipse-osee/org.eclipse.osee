@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.osee.orcs.search.IndexerCollectorAdapter;
 
 /**
@@ -26,14 +27,14 @@ public class TagCollectorImpl extends IndexerCollectorAdapter {
    private volatile Set<Integer> queryIds;
    private volatile boolean wasProcessed;
    private volatile int expectedTotal;
-   private volatile int queryCount;
-   private volatile int attributeCount;
+   private final AtomicInteger queryCount = new AtomicInteger();
+   private final AtomicInteger attributeCount = new AtomicInteger();
 
    public TagCollectorImpl() {
       this.queryIds = Collections.synchronizedSet(new HashSet<Integer>());
       this.wasProcessed = false;
-      this.queryCount = 0;
-      this.attributeCount = 0;
+      this.queryCount.set(0);
+      this.attributeCount.set(0);
       this.tagErrors = Collections.synchronizedMap(new HashMap<Integer, Throwable>());
    }
 
@@ -46,11 +47,11 @@ public class TagCollectorImpl extends IndexerCollectorAdapter {
    }
 
    public int getAttributeCount() {
-      return attributeCount;
+      return attributeCount.get();
    }
 
    public int getQueryCount() {
-      return queryCount;
+      return queryCount.get();
    }
 
    public Map<Integer, Throwable> getTagErrors() {
@@ -71,14 +72,14 @@ public class TagCollectorImpl extends IndexerCollectorAdapter {
 
    @Override
    synchronized public void onIndexTaskSubmit(int queryId) {
-      queryCount++;
+      queryCount.incrementAndGet();
       queryIds.add(queryId);
    }
 
    @Override
    public void onIndexItemComplete(int queryId, long gammaId, int totalTags, long processingTime) {
       if (this.queryIds.contains(queryId)) {
-         attributeCount++;
+         attributeCount.incrementAndGet();
       }
    }
 
@@ -86,7 +87,7 @@ public class TagCollectorImpl extends IndexerCollectorAdapter {
    synchronized public void onIndexTaskComplete(int queryId, long waitTime, long processingTime) {
       if (this.queryIds.contains(queryId)) {
          this.queryIds.remove(queryId);
-         if (this.queryIds.isEmpty() && queryCount == expectedTotal) {
+         if (this.queryIds.isEmpty() && queryCount.get() == expectedTotal) {
             this.wasProcessed = true;
             this.notify();
          }

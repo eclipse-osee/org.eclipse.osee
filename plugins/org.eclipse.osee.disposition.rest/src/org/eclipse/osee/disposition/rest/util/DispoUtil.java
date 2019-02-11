@@ -326,6 +326,7 @@ public final class DispoUtil {
 
    public static List<Integer> splitDiscrepancyLocations(String locations) {
       List<Integer> range = new ArrayList<>();
+
       if (locations != null && !locations.isEmpty()) {
          String[] locationString = locations.split(",");
          for (String location : locationString) {

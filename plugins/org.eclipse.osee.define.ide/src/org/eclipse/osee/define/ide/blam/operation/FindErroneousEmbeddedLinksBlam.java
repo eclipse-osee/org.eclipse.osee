@@ -54,8 +54,8 @@ public class FindErroneousEmbeddedLinksBlam extends AbstractBlam {
       StringBuilder builder = new StringBuilder();
       builder.append(
          String.format("<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"%s\"/>", BRANCH));
-      builder.append(String.format(
-         "<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"Artifact Types\" />", ARTIFACT_TYPES));
+      builder.append(String.format("<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"%s\" />",
+         ARTIFACT_TYPES));
       builder.append("</xWidgets>");
       return builder.toString();
    }

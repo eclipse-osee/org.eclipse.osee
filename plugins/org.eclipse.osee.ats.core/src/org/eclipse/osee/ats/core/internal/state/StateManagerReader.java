@@ -44,9 +44,7 @@ public class StateManagerReader {
          for (String stateXml : attrResolver.getAttributesToStringList(workItem, AtsAttributeTypes.State)) {
             WorkState state = workStateFactory.fromStoreStr(stateXml);
             if (!state.getName().equals(currentState.getName())) {
-               if (!state.getName().equals(currentState.getName())) {
-                  stateMgr.addState(state);
-               }
+               stateMgr.addState(state);
             }
          }
       }

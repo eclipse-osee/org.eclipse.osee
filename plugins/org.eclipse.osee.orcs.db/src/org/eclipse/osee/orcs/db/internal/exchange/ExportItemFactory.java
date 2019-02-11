@@ -137,7 +137,8 @@ public class ExportItemFactory {
 
    private int createGammaJoin(JdbcClient jdbcClient, Long branchJoinId, PropertyStore options) {
       List<Object> bindList = new ArrayList<>();
-      int gammaJoinId = new Random().nextInt();
+      Random rand = new Random();
+      int gammaJoinId = rand.nextInt();
       StringBuilder sql = new StringBuilder(
          "INSERT INTO osee_join_id (id, query_id) SELECT DISTINCT(gamma_id), %s FROM osee_join_id, osee_txs txs WHERE query_id=? AND id = txs.branch_id");
       bindList.add(branchJoinId);

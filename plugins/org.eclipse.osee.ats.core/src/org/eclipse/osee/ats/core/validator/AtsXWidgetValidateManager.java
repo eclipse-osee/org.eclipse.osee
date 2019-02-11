@@ -60,11 +60,12 @@ public class AtsXWidgetValidateManager {
       return results;
    }
 
-   static List<IAtsXWidgetValidatorProvider> getProviders() {
-      if (providers == null) {
-         providers = new LinkedList<>();
-         providers.add(new AtsCoreXWidgetValidatorProvider());
-      }
+   static {
+      providers = new LinkedList<>();
+      providers.add(new AtsCoreXWidgetValidatorProvider());
+   }
+
+   static synchronized List<IAtsXWidgetValidatorProvider> getProviders() {
       return providers;
    }
 

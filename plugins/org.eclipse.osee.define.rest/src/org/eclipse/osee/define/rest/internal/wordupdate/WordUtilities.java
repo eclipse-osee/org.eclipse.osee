@@ -69,7 +69,6 @@ public class WordUtilities {
 
       Matcher referenceMatcher = referencePattern.matcher(content);
       while (referenceMatcher.find()) {
-         referenceMatcher.toString();
          String reference = referenceMatcher.group(1);
          references.add(reference);
       }

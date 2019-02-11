@@ -160,10 +160,7 @@ public abstract class OrcsVersionedObjectImpl<T extends Id> implements OrcsData<
             return false;
          }
          if (version == null) {
-            if (other.version != null) {
-               return false;
-            }
-            return version.equals(other.version);
+            return false;
          }
          return true;
       } else if (obj instanceof Id) {

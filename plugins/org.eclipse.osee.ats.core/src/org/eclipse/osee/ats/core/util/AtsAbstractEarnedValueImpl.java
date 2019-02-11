@@ -152,14 +152,6 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
       return atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.EstimatedHours, 0.0);
    }
 
-   @Override
-   public double getEstimatedHoursFromTasks(IAtsWorkItem workItem, IStateToken relatedToState) {
-      if (!(workItem instanceof IAtsTeamWorkflow)) {
-         return 0;
-      }
-      return getEstimatedHoursFromTasks(workItem, relatedToState);
-   }
-
    /**
     * Return Estimated Hours for all tasks
     */
@@ -198,12 +190,6 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
          }
       }
       return hours;
-   }
-
-   @Override
-   public double getEstimatedHoursTotal(IAtsWorkItem workItem, IStateToken relatedToState) {
-      return getEstimatedHoursFromArtifact(workItem) + getEstimatedHoursFromTasks(workItem,
-         relatedToState) + getEstimatedHoursFromReviews(workItem, relatedToState);
    }
 
    @Override

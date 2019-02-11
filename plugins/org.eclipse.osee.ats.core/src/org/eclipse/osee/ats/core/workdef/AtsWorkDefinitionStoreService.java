@@ -70,9 +70,7 @@ public class AtsWorkDefinitionStoreService implements IAtsWorkDefinitionStringPr
    private String loadWorkDefinitionFromArtifact(ArtifactToken artifact) {
       Conditions.checkNotNull(artifact, "Work Definition artifact");
       String modelText = null;
-      if (artifact != null) {
-         modelText = atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.DslSheet, "");
-      }
+      modelText = atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.DslSheet, "");
       return modelText;
    }
 

@@ -111,31 +111,32 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
       List<Artifact> descendants = subsystem.getDescendants();
       if (descendants != null) {
          ViewIdUtility.removeExcludedArtifacts(descendants.iterator(), excludedArtifactIdMap);
-      }
-      for (Artifact subsystemRequirement : descendants) {
-         excelWriter.writeCell(subsystemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
-         excelWriter.writeCell(subsystemRequirement.getName());
 
-         if (subsystemRequirement.isOfType(CoreArtifactTypes.SubsystemRequirementMSWord)) {
-            boolean loopNeverRan = true;
-            List<Artifact> relatedArtifacts =
-               subsystemRequirement.getRelatedArtifacts(CoreRelationTypes.Design__Design);
-            ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), excludedArtifactIdMap);
-            for (Artifact subsystemDesign : relatedArtifacts) {
-               if (subsystemDesign.isOfType(CoreArtifactTypes.SubsystemDesign)) {
-                  loopNeverRan = false;
-                  excelWriter.writeCell(subsystemDesign.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""),
-                     2);
-                  excelWriter.writeCell(subsystemDesign.getName(), 3);
+         for (Artifact subsystemRequirement : descendants) {
+            excelWriter.writeCell(subsystemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
+            excelWriter.writeCell(subsystemRequirement.getName());
+
+            if (subsystemRequirement.isOfType(CoreArtifactTypes.SubsystemRequirementMSWord)) {
+               boolean loopNeverRan = true;
+               List<Artifact> relatedArtifacts =
+                  subsystemRequirement.getRelatedArtifacts(CoreRelationTypes.Design__Design);
+               ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), excludedArtifactIdMap);
+               for (Artifact subsystemDesign : relatedArtifacts) {
+                  if (subsystemDesign.isOfType(CoreArtifactTypes.SubsystemDesign)) {
+                     loopNeverRan = false;
+                     excelWriter.writeCell(
+                        subsystemDesign.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""), 2);
+                     excelWriter.writeCell(subsystemDesign.getName(), 3);
+                     excelWriter.endRow();
+                  }
+               }
+               if (loopNeverRan) {
                   excelWriter.endRow();
                }
-            }
-            if (loopNeverRan) {
+            } else {
+               excelWriter.writeCell("N/A - " + subsystemRequirement.getArtifactTypeName());
                excelWriter.endRow();
             }
-         } else {
-            excelWriter.writeCell("N/A - " + subsystemRequirement.getArtifactTypeName());
-            excelWriter.endRow();
          }
       }
 

@@ -191,8 +191,8 @@ public class RelationTypeValidityTest {
       when(node.getExceptionString()).thenReturn("node message");
 
       thrown.expect(OseeStateException.class);
-      thrown.expectMessage(String.format("Relation type [%s] on [%s] exceeds max occurrence rule on [node message]",
-         TYPE_1, SIDE_A, node.getExceptionString()));
+      thrown.expectMessage(String.format("Relation type [%s] on [%s] exceeds max occurrence rule on [%s]", TYPE_1,
+         SIDE_A, node.getExceptionString()));
 
       validity.checkRelationTypeMultiplicity(TYPE_1, node, SIDE_A, 2);
    }

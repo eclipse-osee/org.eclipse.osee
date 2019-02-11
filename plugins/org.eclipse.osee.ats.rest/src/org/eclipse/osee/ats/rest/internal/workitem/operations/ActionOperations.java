@@ -149,7 +149,7 @@ public class ActionOperations {
             atsApi.getActionFactory().setCreatedBy(workItem, originator, true, workItem.getCreatedDate(), changes);
          }
       } else if (attrTypeIdOrKey.equals(AttributeKey.assocArt.name())) {
-         if (values != null && Strings.isNumeric(values.get(0))) {
+         if (Strings.isNumeric(values.get(0))) {
             attrTypeId = getAttributeType(values.get(0));
             if (attrTypeId != null) {
                values.remove(0);

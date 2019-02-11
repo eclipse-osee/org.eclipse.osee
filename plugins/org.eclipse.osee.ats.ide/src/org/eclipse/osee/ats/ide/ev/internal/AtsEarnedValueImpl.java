@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.ev.JaxWorkPackageData;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.core.util.AtsAbstractEarnedValueImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
@@ -98,6 +99,16 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
    @Override
    public Collection<String> getColorTeams() {
       return AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.ColorTeam);
+   }
+
+   @Override
+   public double getEstimatedHoursFromTasks(IAtsWorkItem workItem, IStateToken relatedToState) {
+      return 0;
+   }
+
+   @Override
+   public double getEstimatedHoursTotal(IAtsWorkItem workItem, IStateToken relatedToState) {
+      return 0;
    }
 
 }

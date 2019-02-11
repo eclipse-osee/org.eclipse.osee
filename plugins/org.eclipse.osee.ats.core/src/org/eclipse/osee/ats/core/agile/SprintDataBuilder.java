@@ -115,7 +115,7 @@ public class SprintDataBuilder {
             double points = getPoints(sprintData, item);
             if (completed) {
                // only get credit if completed before date bucket
-               if (completed && completedCancelledDate.before(dateBucket.getDate())) {
+               if (completedCancelledDate.before(dateBucket.getDate())) {
                   if (unPlanned) {
                      if (dateBucket.getCompletedUnPlannedPoints() != null) {
                         dateBucket.setCompletedUnPlannedPoints(dateBucket.getCompletedUnPlannedPoints() + points);

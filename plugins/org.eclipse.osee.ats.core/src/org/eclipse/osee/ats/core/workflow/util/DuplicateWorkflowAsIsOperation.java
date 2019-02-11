@@ -140,7 +140,7 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
                      excludeTypes.add(attributeType);
                   } else {
                      OseeLog.log(DuplicateWorkflowAsIsOperation.class, Level.SEVERE,
-                        String.format("Can't resolve Attribute Type for id %d in AtsConfig.%s", attrTypeId,
+                        String.format("Can't resolve Attribute Type for id %s in AtsConfig.%s", attrTypeId,
                            ATS_CONFIG_EXCLUDE_DUPLICATE_TYPE_IDS_KEY));
                   }
                } else {

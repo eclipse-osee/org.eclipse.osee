@@ -34,12 +34,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 public class AtsWorkItemFilter implements IAtsWorkItemFilter {
 
    private Collection<? extends IAtsWorkItem> items;
-   private AtsApi atsApi;
-
-   public AtsWorkItemFilter(AtsApi atsApi) {
-      this(null, atsApi);
-      this.atsApi = atsApi;
-   }
+   private final AtsApi atsApi;
 
    public AtsWorkItemFilter(Collection<? extends IAtsWorkItem> workItems, AtsApi atsApi) {
       this.items = new ArrayList<>(workItems);
