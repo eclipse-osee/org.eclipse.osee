@@ -115,8 +115,39 @@ public class ExportSet {
       private String getCoveringResolutionType() {
          if (resolutionTypes.size() == 1) {
             return resolutionTypes.iterator().next();
-         } else if (resolutionTypes.size() > 1) {
-            return "MIXED";
+         } else if (resolutionTypes.size() == 2) {
+            String toReturn;
+            List<String> typesCopy = new ArrayList<>(resolutionTypes);
+            if (typesCopy.remove("Test_Script")) {
+               switch (typesCopy.get(0)) {
+                  case "Defensive_Programming":
+                     toReturn = "Test_Def_Prog";
+                     break;
+                  case "Exception_Handling":
+                     toReturn = "Test_Ex_Handling";
+                     break;
+                  case "Analysis":
+                     toReturn = "Test_Analysis";
+                     break;
+                  case "Deactivated_EXT_ATE_PRESENT":
+                     toReturn = "Test_Deactivated_EXT_ATE_Present";
+                     break;
+                  case "Deactivated_IN_AIR_OR_ENG_ON":
+                     toReturn = "Test_Deactivated_AIR_OR_ENG_ON";
+                     break;
+                  case "Deactivated_J4_Connector":
+                     toReturn = "Test_Deactivated_J4";
+                     break;
+                  case "Deactivated_Compile_time":
+                     toReturn = "Test_Deactivated_Compile";
+                     break;
+                  default:
+                     toReturn = "MIXED";
+               }
+            } else {
+               toReturn = "MIXED - No Test_Script";
+            }
+            return toReturn;
          } else {
             return "SHOULD NOT HAVE LANDED HERE";
          }
@@ -208,6 +239,13 @@ public class ExportSet {
          }
          // Needed for Level A, pairs can but should not have different coverage methods
          innerMap.put("MIXED", new WrapInt(0));
+         innerMap.put("Test_Def_Prog", new WrapInt(0));
+         innerMap.put("Test_Ex_Handling", new WrapInt(0));
+         innerMap.put("Test_Analysis", new WrapInt(0));
+         innerMap.put("Test_Deactivated_EXT_ATE_Present", new WrapInt(0));
+         innerMap.put("Test_Deactivated _AIR_ENG_ON", new WrapInt(0));
+         innerMap.put("Test_Deactivated _J4", new WrapInt(0));
+         innerMap.put("Test_Deactivated _Compile", new WrapInt(0));
          levelToResolutionTypesToCount.put(level, innerMap);
       }
 
