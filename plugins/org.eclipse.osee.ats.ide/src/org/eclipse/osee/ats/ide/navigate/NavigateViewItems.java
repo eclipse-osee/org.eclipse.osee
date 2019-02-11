@@ -139,6 +139,26 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
       return items;
    }
 
+   @Override
+   public void addUtilItems(XNavigateItem utilItems) {
+      try {
+         new ToggleAtsAdmin(utilItems);
+         new XNavigateItemBlam(utilItems, new ImportActionsViaSpreadsheetBlam());
+         new XNavigateItemBlam(utilItems, new ImportAgileActionsViaSpreadsheetBlam());
+         new XNavigateItemAction(utilItems, new CompareTwoStringsAction(), FrameworkImage.EDIT);
+         new XNavigateItemAction(utilItems, new CompareTwoArtifactIdListsAction(), FrameworkImage.EDIT);
+         new XNavigateItemAction(utilItems, new AtsExportAction(), FrameworkImage.EXPORT_DATA);
+         new GenerateIdsAndArtId(utilItems);
+         new XNavigateItemOperation(utilItems, FrameworkImage.ARTIFACT_MASS_EDITOR, MassEditDirtyArtifactOperation.NAME,
+            new MassEditDirtyArtifactOperation());
+         new ClearAtsConfigCache(utilItems);
+         new XNavigateItemBlam(utilItems, new MoveTeamWorkflowsBlam(), AtsImage.TEAM_WORKFLOW);
+         new AtsConfigResultsEditorNavigateItem(utilItems);
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+   }
+
    private synchronized void ensurePopulated() {
       if (!ensurePopulatedRanOnce) {
          if (DbConnectionUtility.areOSEEServicesAvailable().isFalse()) {
@@ -202,8 +222,6 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
 
          createExampleItems(item, items);
 
-         createUtilItems(item, items);
-
          createAdminItems(item, items);
 
       } catch (OseeCoreException ex) {
@@ -259,24 +277,6 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
 
          items.add(adminItems);
       }
-   }
-
-   private void createUtilItems(XNavigateItem parent, List<XNavigateItem> items) {
-      XNavigateItem utilItems = new XNavigateItem(parent, "Util", FrameworkImage.GEAR);
-      new ToggleAtsAdmin(utilItems);
-      new XNavigateItemBlam(utilItems, new ImportActionsViaSpreadsheetBlam());
-      new XNavigateItemBlam(utilItems, new ImportAgileActionsViaSpreadsheetBlam());
-      new XNavigateItemAction(utilItems, new CompareTwoStringsAction(), FrameworkImage.EDIT);
-      new XNavigateItemAction(utilItems, new CompareTwoArtifactIdListsAction(), FrameworkImage.EDIT);
-      new XNavigateItemAction(utilItems, new AtsExportAction(), FrameworkImage.EXPORT_DATA);
-      new GenerateIdsAndArtId(utilItems);
-      new XNavigateItemOperation(utilItems, FrameworkImage.ARTIFACT_MASS_EDITOR, MassEditDirtyArtifactOperation.NAME,
-         new MassEditDirtyArtifactOperation());
-      new ClearAtsConfigCache(utilItems);
-      new XNavigateItemBlam(utilItems, new MoveTeamWorkflowsBlam(), AtsImage.TEAM_WORKFLOW);
-      new AtsConfigResultsEditorNavigateItem(utilItems);
-
-      items.add(utilItems);
    }
 
    private void createEmailItems(XNavigateItem parent, List<XNavigateItem> items) {

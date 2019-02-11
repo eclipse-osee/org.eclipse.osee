@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-   <extension-point id="DefineNavigateItem" name="DefineNavigateItem" schema="OSEE-INF/extensionPts/DefineNavigateItem.exsd"/>
    <extension-point id="TraceUnitHandler" name="TraceUnitHandler" schema="OSEE-INF/extensionPts/TraceUnitHandler.exsd"/>
       <extension
             point="org.eclipse.ui.importWizards">

@@ -14,13 +14,19 @@ import java.util.List;
 
 /**
  * Implement to contribute items to common navigate views.
- * 
+ *
  * @author Donald G. Dunne
  */
 public interface IXNavigateCommonItem {
 
    public String getSectionId();
 
-   public void createCommonSection(List<XNavigateItem> items, List<String> excludeSectionIds);
+   default public void createCommonSection(List<XNavigateItem> items, List<String> excludeSectionIds) {
+      // do nothing
+   }
+
+   default public void addUtilItems(XNavigateItem utilItems) {
+      // do nothing
+   }
 
 }

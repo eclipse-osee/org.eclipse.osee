@@ -44,11 +44,6 @@
 	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Blam_Editor" label="Blam Editor"/>
 	</context>
 	
-	<context id="define_navigator" title="Define Navigator">
-	   <description>The Define Navigator, shown by default in the Define Perspective, provides a central location to launch frequently user define operations.</description>
-	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Define_Navigator" label="Define Navigator"/>
-	</context>
-	
 	<context id="resource_history_view" title="Resource History View">
 		<description>Shows a detailed view of the changes made to an artifact over time.</description>
 	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Resource_History_View" label="Resource History"/>

@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.internal.UiPluginConstants;
 import org.osgi.framework.Bundle;
 
@@ -34,6 +35,23 @@ public class XNavigateCommonItems {
                item.createCommonSection(items, excludeSectionIds);
             }
          }
+      } catch (Exception ex) {
+         OseeLog.log(UiPluginConstants.class, Level.SEVERE, ex);
+      }
+
+      createUtilItemsSection(items, excludeSectionIds);
+   }
+
+   public static void createUtilItemsSection(List<XNavigateItem> items, List<String> excludeSectionIds) {
+      try {
+         XNavigateItem utilItems = new XNavigateItem(null, "Util", PluginUiImage.GEAR);
+
+         for (IXNavigateCommonItem item : getProviders()) {
+            item.addUtilItems(utilItems);
+         }
+
+         items.add(utilItems);
+
       } catch (Exception ex) {
          OseeLog.log(UiPluginConstants.class, Level.SEVERE, ex);
       }
