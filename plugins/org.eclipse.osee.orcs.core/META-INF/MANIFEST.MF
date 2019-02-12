@@ -52,5 +52,6 @@ Export-Package: org.eclipse.osee.orcs.core,
  org.eclipse.osee.orcs.core.ds,
  org.eclipse.osee.orcs.core.ds.criteria,
  org.eclipse.osee.orcs.core.internal.applicability,
- org.eclipse.osee.orcs.core.internal.tuple
+ org.eclipse.osee.orcs.core.internal.tuple,
+ org.eclipse.osee.orcs.core.util
 Bundle-ActivationPolicy: lazy
