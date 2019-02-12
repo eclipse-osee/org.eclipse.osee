@@ -131,12 +131,11 @@ public class JacksonFeature implements Feature {
 
       SimpleModule module = new SimpleModule("OSEE", new Version(1, 0, 0, ""));
 
-      module.addDeserializer(ApplicabilityToken.class,
-         new NamedIdDeserializer<>(ApplicabilityToken::create));
+      module.addDeserializer(ApplicabilityToken.class, new NamedIdDeserializer<>(ApplicabilityToken::create));
       module.addDeserializer(ArtifactToken.class, new NamedIdDeserializer<ArtifactToken>(ArtifactToken::valueOf));
       module.addDeserializer(ArtifactId.class, new IdDeserializer<ArtifactId>(ArtifactId::valueOf));
       module.addDeserializer(TransactionToken.class, new TransactionTokenDeserializer());
-      module.addSerializer(new TransactionTokenSerializer());
+      module.addSerializer(TransactionToken.class, new TransactionTokenSerializer());
       JsonSerializer<Id> idSerializer = new IdSerializer();
       module.addSerializer(TransactionId.class, idSerializer);
       module.addSerializer(BranchType.class, idSerializer);

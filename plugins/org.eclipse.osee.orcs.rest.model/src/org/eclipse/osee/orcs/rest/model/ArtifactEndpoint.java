@@ -25,10 +25,11 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
 
@@ -86,15 +87,24 @@ public interface ArtifactEndpoint {
     */
    @POST
    @Path("type/{artifactType}/parent/{parent}")
-   @Consumes({MediaType.APPLICATION_JSON})
-   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
    List<ArtifactToken> createArtifacts(@PathParam("branch") BranchId branch, @PathParam("artifactType") ArtifactTypeId artifactType, @DefaultValue("-1") @PathParam("parent") ArtifactId parent, List<String> names);
+
+   @POST
+   @Path("type/{artifactType}/parent/{parent}/create")
+   @Consumes(MediaType.TEXT_PLAIN)
+   @Produces(MediaType.APPLICATION_JSON)
+   ArtifactToken createArtifact(@PathParam("branch") BranchId branch, @PathParam("artifactType") ArtifactTypeToken artifactType, @DefaultValue("-1") @PathParam("parent") ArtifactId parent, String name);
 
    @DELETE
    @Path("{artifact}")
-   TransactionId deleteArtifact(@PathParam("branch") BranchId branch, @PathParam("artifact") ArtifactId artifact);
+   @Produces(MediaType.APPLICATION_JSON)
+   TransactionToken deleteArtifact(@PathParam("branch") BranchId branch, @PathParam("artifact") ArtifactId artifact);
 
    @PUT
    @Path("{artifact}/attribute/type/{attributeType}")
-   TransactionId setSoleAttributeValue(@PathParam("branch") BranchId branch, @PathParam("artifact") ArtifactId artifact, @PathParam("attributeType") AttributeTypeToken attributeType, String value);
+   @Consumes(MediaType.TEXT_PLAIN)
+   @Produces(MediaType.APPLICATION_JSON)
+   TransactionToken setSoleAttributeValue(@PathParam("branch") BranchId branch, @PathParam("artifact") ArtifactId artifact, @PathParam("attributeType") AttributeTypeToken attributeType, String value);
 }

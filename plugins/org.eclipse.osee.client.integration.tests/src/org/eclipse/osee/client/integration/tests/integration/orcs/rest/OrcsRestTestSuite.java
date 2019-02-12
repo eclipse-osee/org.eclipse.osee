@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ApplicabilityEndpointTest.class, ApplicabilityUiEndpointTest.class})
+@Suite.SuiteClasses({ApplicabilityEndpointTest.class, ApplicabilityUiEndpointTest.class, ArtifactEndpointTest.class})
 public class OrcsRestTestSuite {
    // Test Suite
 }

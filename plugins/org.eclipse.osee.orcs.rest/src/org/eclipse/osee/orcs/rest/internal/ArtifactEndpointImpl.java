@@ -17,10 +17,12 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -190,7 +192,16 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    }
 
    @Override
-   public TransactionId deleteArtifact(BranchId branch, ArtifactId artifact) {
+   public ArtifactToken createArtifact(BranchId branch, ArtifactTypeToken artifactType, ArtifactId parent, String name) {
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory().createTransaction(branch, account, "rest - create artifact");
+      ArtifactToken token = tx.createArtifact(parent, artifactType, name);
+      tx.commit();
+      return token;
+   }
+
+   @Override
+   public TransactionToken deleteArtifact(BranchId branch, ArtifactId artifact) {
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(branch, account, "rest - delete artifact");
       tx.deleteArtifact(artifact);
@@ -198,7 +209,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    }
 
    @Override
-   public TransactionId setSoleAttributeValue(BranchId branch, ArtifactId artifact, AttributeTypeToken attributeType, String value) {
+   public TransactionToken setSoleAttributeValue(BranchId branch, ArtifactId artifact, AttributeTypeToken attributeType, String value) {
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(branch, account, "rest - setSoleAttributeValue");
       tx.setSoleAttributeFromString(artifact, attributeType, value);
