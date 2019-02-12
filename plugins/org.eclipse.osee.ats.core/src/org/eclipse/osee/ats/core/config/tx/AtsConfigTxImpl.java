@@ -76,8 +76,8 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
          changes.setSoleAttributeValue(userArt, CoreAttributeTypes.Email, user.getEmail());
          changes.setSoleAttributeValue(userArt, CoreAttributeTypes.Active, user.isActive());
          if (user.isAdmin()) {
-            changes.relate(CoreArtifactTokens.OseeAdmin, CoreRelationTypes.User_Grouping__Members, userArt);
-            changes.relate(AtsArtifactToken.AtsAdmin, CoreRelationTypes.User_Grouping__Members, userArt);
+            changes.relate(CoreArtifactTokens.OseeAdmin, CoreRelationTypes.Users_User, userArt);
+            changes.relate(AtsArtifactToken.AtsAdmin, CoreRelationTypes.Users_User, userArt);
          }
       }
       return this;
