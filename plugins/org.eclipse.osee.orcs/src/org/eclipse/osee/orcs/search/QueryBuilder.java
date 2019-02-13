@@ -28,6 +28,12 @@ public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query 
 
    ArtifactToken loadArtifactToken();
 
+   /**
+    * @return a single ArtifactToken if exactly one found. Return ArtifactToken.SENTINEL is none found, else throw
+    * exception for finding more than one
+    */
+   ArtifactToken loadArtifactTokenOrSentinel();
+
    List<ArtifactToken> loadArtifactTokens();
 
    Map<ArtifactId, ArtifactToken> loadArtifactTokenMap();
@@ -35,6 +41,12 @@ public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query 
    List<ArtifactId> loadArtifactIds();
 
    ArtifactId loadArtifactId();
+
+   /**
+    * @return a single ArtifactId if exactly one found. Return ArtifactId.SENTINEL is none found, else throw exception
+    * for finding more than one
+    */
+   ArtifactId loadArtifactIdOrSentinel();
 
    /**
     * @param attributeType is used in place of the natural Name attribute to populate the name fields in the returned
@@ -93,5 +105,4 @@ public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query 
     * @return sole artifact or sentinal or exception if > 1
     */
    ArtifactToken getAtMostOneOrSentinal();
-
 }

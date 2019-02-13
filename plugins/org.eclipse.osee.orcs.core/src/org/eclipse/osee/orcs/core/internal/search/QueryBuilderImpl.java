@@ -82,12 +82,32 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
       return loadArtifact(this::loadArtifactIds);
    }
 
+   @Override
+   public ArtifactId loadArtifactIdOrSentinel() {
+      return loadArtifactOrSentinel(this::loadArtifactIds, ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public ArtifactToken loadArtifactTokenOrSentinel() {
+      return loadArtifactOrSentinel(this::loadArtifactTokens, ArtifactToken.SENTINEL);
+   }
+
    private <T> T loadArtifact(Supplier<List<T>> supplier) {
       List<T> artifacts = supplier.get();
       if (artifacts.size() != 1) {
          throw new OseeCoreException("Expected exactly 1 artifact not %s", artifacts.size());
       }
       return artifacts.get(0);
+   }
+
+   private <T> T loadArtifactOrSentinel(Supplier<List<T>> supplier, T sentinel) {
+      List<T> artifacts = supplier.get();
+      if (artifacts.size() > 1) {
+         throw new OseeCoreException("Expected at most 1 artifact not %s", artifacts.size());
+      } else if (artifacts.size() == 1) {
+         return artifacts.get(0);
+      }
+      return sentinel;
    }
 
    @Override
