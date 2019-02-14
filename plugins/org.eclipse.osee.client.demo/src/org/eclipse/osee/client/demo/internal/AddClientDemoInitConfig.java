@@ -12,7 +12,6 @@ package org.eclipse.osee.client.demo.internal;
 
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.framework.database.init.DatabaseInitConfiguration;
-import org.eclipse.osee.framework.database.init.DefaultDbInitTasks;
 import org.eclipse.osee.framework.database.init.DefaultOseeTypeDefinitions;
 import org.eclipse.osee.framework.database.init.IAddDbInitChoice;
 import org.eclipse.osee.framework.database.init.IGroupSelector;
@@ -26,7 +25,6 @@ public class AddClientDemoInitConfig implements IAddDbInitChoice {
    public void addDbInitChoice(IGroupSelector groupSelection) {
       DatabaseInitConfiguration config = new DatabaseInitConfiguration();
 
-      config.addTask(DefaultDbInitTasks.SIMPLE_TEMPLATE_PROVIDER.getExtensionId());
       config.addTask(asLocalExtensionId("AddRequirementData"));
 
       config.addOseeType(DefaultOseeTypeDefinitions.OSEE_BASE_TYPES);

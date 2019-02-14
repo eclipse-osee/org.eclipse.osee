@@ -43,6 +43,10 @@ public class CreateSystemBranches {
    private final EventAdmin eventAdmin;
    private final TransactionFactory txFactory;
    private final QueryBuilder query;
+   private static String EDIT_RENDERER_OPTIONS =
+      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
+   private static String RECURSIVE_RENDERER_OPTIONS =
+      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : true, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"*\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
 
    public CreateSystemBranches(OrcsApi orcsApi, EventAdmin eventAdmin) {
       this.orcsApi = orcsApi;
@@ -87,7 +91,58 @@ public class CreateSystemBranches {
 
       tx.createArtifact(CoreArtifactTokens.XViewerGlobalCustomization);
 
-      ArtifactId dataRightsArt = tx.createArtifact(CoreArtifactTokens.DataRightsFooters);
+      ArtifactId documentTemplateFolder = tx.createArtifact(rootArtifact, CoreArtifactTokens.DocumentTemplates);
+
+      createWordTemplates(tx, documentTemplateFolder);
+
+      createDataRights(tx, documentTemplateFolder);
+
+      createOrcsTypesArtifacts(typeModel);
+
+      addFrameworkAccessModel(tx);
+
+      tx.commit();
+   }
+
+   private void createWordTemplates(TransactionBuilder tx, ArtifactId documentTemplateFolder) {
+      ArtifactId templateArtWe =
+         tx.createArtifact(documentTemplateFolder, CoreArtifactTypes.RendererTemplate, "WordEditTemplate");
+
+      tx.setSoleAttributeValue(templateArtWe, CoreAttributeTypes.RendererOptions, EDIT_RENDERER_OPTIONS);
+      tx.setSoleAttributeValue(templateArtWe, CoreAttributeTypes.WholeWordContent,
+         OseeInf.getResourceContents("templates/Word Edit Template.xml", getClass()));
+      tx.createAttribute(templateArtWe, CoreAttributeTypes.TemplateMatchCriteria,
+         "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer SPECIALIZED_EDIT");
+      tx.createAttribute(templateArtWe, CoreAttributeTypes.TemplateMatchCriteria,
+         "org.eclipse.osee.framework.ui.skynet.render.TisRenderer SPECIALIZED_EDIT");
+      tx.createAttribute(templateArtWe, CoreAttributeTypes.TemplateMatchCriteria,
+         "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer MERGE");
+      tx.createAttribute(templateArtWe, CoreAttributeTypes.TemplateMatchCriteria,
+         "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer MERGE_EDIT");
+
+      ArtifactId templateArtPrev =
+         tx.createArtifact(documentTemplateFolder, CoreArtifactTypes.RendererTemplate, "PreviewAll");
+      tx.setSoleAttributeValue(templateArtPrev, CoreAttributeTypes.WholeWordContent,
+         OseeInf.getResourceContents("templates/PREVIEW_ALL.xml", getClass()));
+      tx.createAttribute(templateArtPrev, CoreAttributeTypes.TemplateMatchCriteria,
+         "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer PREVIEW PREVIEW_ARTIFACT");
+      tx.createAttribute(templateArtPrev, CoreAttributeTypes.TemplateMatchCriteria,
+         "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer PREVIEW");
+      tx.createAttribute(templateArtPrev, CoreAttributeTypes.TemplateMatchCriteria,
+         "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer DIFF");
+
+      // must match name used in client integration tests
+      ArtifactId templateArtPar =
+         tx.createArtifact(documentTemplateFolder, CoreArtifactTypes.RendererTemplate, "PREVIEW_ALL_RECURSE");
+      tx.setSoleAttributeValue(templateArtPar, CoreAttributeTypes.RendererOptions, RECURSIVE_RENDERER_OPTIONS);
+      tx.setSoleAttributeValue(templateArtPar, CoreAttributeTypes.WholeWordContent,
+         OseeInf.getResourceContents("templates/PREVIEW_ALL_RECURSE.xml", getClass()));
+      tx.createAttribute(templateArtPar, CoreAttributeTypes.TemplateMatchCriteria,
+         "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer PREVIEW PREVIEW_WITH_RECURSE");
+   }
+
+   private void createDataRights(TransactionBuilder tx, ArtifactId documentTemplateFolder) {
+      ArtifactId dataRightsArt = tx.createArtifact(documentTemplateFolder, CoreArtifactTokens.DataRightsFooters);
       tx.createAttribute(dataRightsArt, CoreAttributeTypes.GeneralStringData,
          OseeInf.getResourceContents("Unspecified.xml", getClass()));
       tx.createAttribute(dataRightsArt, CoreAttributeTypes.GeneralStringData,
@@ -96,12 +151,6 @@ public class CreateSystemBranches {
          OseeInf.getResourceContents("GovernmentPurposeRights.xml", getClass()));
       tx.createAttribute(dataRightsArt, CoreAttributeTypes.GeneralStringData,
          OseeInf.getResourceContents("RestrictedRights.xml", getClass()));
-
-      createOrcsTypesArtifacts(typeModel);
-
-      addFrameworkAccessModel(tx);
-
-      tx.commit();
    }
 
    private void addFrameworkAccessModel(TransactionBuilder tx) {

@@ -66,7 +66,7 @@ public class TxQuerySqlContextFactoryImplTest {
 
    private static final Criteria IDS =
       new CriteriaTxIds(Lists.transform(Arrays.asList(1L, 2L, 3L, 4l, 5L), TransactionId::valueOf));
-   private static final Criteria COMMENT = comment("SimpleTemplateProviderTask", false);
+   private static final Criteria COMMENT = comment("Transaction comment only checked for existence", false);
    private static final Criteria TYPES =
       type(Arrays.asList(TransactionDetailsType.Baselined, TransactionDetailsType.NonBaselined));
    private static final Criteria BRANCHIDS =

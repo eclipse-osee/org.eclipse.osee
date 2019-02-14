@@ -10,7 +10,6 @@
 	<extension-point id="XWidgetProvider" name="XWidgetProvider" schema="OSEE-INF/extensionPts/XWidgetProvider.exsd"/>
 	<extension-point id="IgnorePublishAttribute" name="IgnorePublishAttribute" schema="OSEE-INF/extensionPts/IgnorePublishAttribute.exsd"/>
 	<extension-point id="TemplateProvider" name="TemplateProvider" schema="OSEE-INF/extensionPts/TemplateProvider.exsd"/>
- <extension-point id="SimpleTemplateProviderTemplate" name="SimpleTemplateProviderTemplate" schema="OSEE-INF/extensionPts/SimpleTemplateProviderTemplate.exsd"/>
  <extension-point id="AttributeXWidgetProvider" name="AttributeXWidgetProvider" schema="OSEE-INF/extensionPts/AttributeXWidgetProvider.exsd"/>
  <extension-point id="WorkDefinitionProvider" name="WorkDefinitionProvider" schema="OSEE-INF/extensionPts/WorkDefinitionProvider.exsd"/>
  <extension-point id="DatabaseHealthOperation" name="DatabaseHealthOperation" schema="OSEE-INF/extensionPts/DatabaseHealthOperation.exsd"/>
@@ -210,45 +209,7 @@
           classname="org.eclipse.osee.framework.ui.skynet.templates.ArtifactTemplateProvider">
     </TemplateProvider>
  </extension>
- <extension
-       point="org.eclipse.osee.framework.ui.skynet.SimpleTemplateProviderTemplate">
-    <Template
-          File="OSEE-INF/templates/PREVIEW_ALL.xml">
-       <MatchCriteria
-             match="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer PREVIEW PREVIEW_ARTIFACT">
-       </MatchCriteria>
-       <MatchCriteria
-             match="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer PREVIEW">
-       </MatchCriteria>
-       <MatchCriteria
-             match="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer DIFF">
-       </MatchCriteria>
-    </Template>
-    <Template
-          File="OSEE-INF/templates/PREVIEW_ALL_RECURSE.xml">
-       <MatchCriteria
-             match="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer PREVIEW PREVIEW_WITH_RECURSE">
-       </MatchCriteria>
-    </Template>
-    <Template
-          File="OSEE-INF/templates/Word Edit Template.xml">
-       <MatchCriteria
-             match="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer SPECIALIZED_EDIT">
-       </MatchCriteria>
-       <MatchCriteria
-             match="org.eclipse.osee.framework.ui.skynet.render.TisRenderer SPECIALIZED_EDIT">
-       </MatchCriteria>
-    </Template>
-    <Template
-          File="OSEE-INF/templates/Word Edit Template.xml">
-       <MatchCriteria
-             match="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer MERGE">
-       </MatchCriteria>
-       <MatchCriteria
-             match="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer MERGE_EDIT">
-       </MatchCriteria>
-    </Template>
- </extension>
+
  	<extension name="The menus for the Mass Editor." point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassEdit">
      <dynamic

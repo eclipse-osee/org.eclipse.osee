@@ -25,13 +25,6 @@
    	</DatabaseInitializationTask>
 	</extension>
 	<extension
-			id="SimpleTemplateProviderTask"
-         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
-   	<DatabaseInitializationTask
-      	   classname="org.eclipse.osee.framework.database.init.internal.SimpleTemplateProviderTask">
-   	</DatabaseInitializationTask>
-	</extension>
-	<extension
 			id="SkynetDbBranchDataImport"
          point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
    	<DatabaseInitializationTask
