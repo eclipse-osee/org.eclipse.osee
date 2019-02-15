@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -47,6 +49,14 @@ public class BranchesResource {
    @Path("{uuid}")
    public BranchResource getBranch(@PathParam("uuid") BranchId id) {
       return new BranchResource(uriInfo, id, orcsApi);
+   }
+
+   @POST
+   @Path("nameQuery")
+   @Consumes({MediaType.TEXT_PLAIN})
+   @Produces({MediaType.APPLICATION_JSON})
+   public BranchId getBranchByName(String branchName) {
+      return orcsApi.getQueryFactory().branchQuery().andNameEquals(branchName).getResults().getExactlyOne();
    }
 
    @GET
