@@ -98,6 +98,11 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       txManager.setComment(txData, comment);
    }
 
+   @Override
+   public UserId getAuthor() {
+      return txData.getAuthor();
+   }
+
    public void setAuthor(UserId author) {
       txManager.setAuthor(txData, author);
    }

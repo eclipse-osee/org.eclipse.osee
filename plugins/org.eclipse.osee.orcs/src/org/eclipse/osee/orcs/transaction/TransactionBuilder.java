@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -44,6 +45,8 @@ public interface TransactionBuilder {
    String getComment();
 
    void setComment(String comment);
+
+   UserId getAuthor();
 
    /**
     * @return TransactionRecord or null of no changes made

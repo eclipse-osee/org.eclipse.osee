@@ -10,13 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -38,6 +42,7 @@ public class OrcsAdminImpl implements OrcsAdmin {
    private final OrcsSession session;
    private final DataStoreAdmin dataStoreAdmin;
    private final EventAdmin eventAdmin;
+   private final QueryBuilder fromCommon;
 
    public OrcsAdminImpl(OrcsApi orcsApi, Log logger, OrcsSession session, DataStoreAdmin dataStoreAdmin, EventAdmin eventAdmin) {
       this.orcsApi = orcsApi;
@@ -45,6 +50,7 @@ public class OrcsAdminImpl implements OrcsAdmin {
       this.session = session;
       this.dataStoreAdmin = dataStoreAdmin;
       this.eventAdmin = eventAdmin;
+      fromCommon = orcsApi.getQueryFactory().fromBranch(COMMON);
    }
 
    @Override
@@ -79,7 +85,17 @@ public class OrcsAdminImpl implements OrcsAdmin {
    }
 
    @Override
+   public void requireRole(UserId user, ArtifactId role) {
+      if (!fromCommon.andId(role).andRelatedTo(CoreRelationTypes.Users_User, role).exists()) {
+         throw new OseeAccessDeniedException("User [%s] not in user group [%s]", user, role);
+      }
+   }
+
+   @Override
    public void createUsers(TransactionBuilder tx, Iterable<UserToken> users, QueryBuilder query) {
+      if (tx.getAuthor().notEqual(SystemUser.OseeSystem)) {
+         requireRole(tx.getAuthor(), CoreArtifactTokens.OseeAdmin);
+      }
       List<? extends ArtifactId> defaultGroups =
          query.and(CoreAttributeTypes.DefaultGroup, "true").getResultsIds().getList();
 
