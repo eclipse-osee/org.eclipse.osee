@@ -13,12 +13,13 @@ package org.eclipse.osee.ats.ide.search.widget;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
  * @author Donald G. Dunne
@@ -51,7 +52,7 @@ public class TeamDefinitionSearchWidget {
    public Collection<IAtsTeamDefinition> get() {
       XHyperlabelTeamDefinitionSelection widget = getWidget();
       if (widget != null) {
-         return widget.getSelectedTeamDefintions();
+         return TeamDefinitions.getTeamDefs(widget.getSelectedTeamDefintions(), AtsClientService.get());
       }
       return null;
    }
@@ -60,17 +61,17 @@ public class TeamDefinitionSearchWidget {
       return (XHyperlabelTeamDefinitionSelection) searchItem.getxWidgets().get(TEAM_DEFINITIONS);
    }
 
-   public void set(Collection<IAtsTeamDefinition> teamDefs) {
+   public void set(Collection<JaxTeamDefinition> teamDefs) {
       getWidget().setSelectedTeamDefs(teamDefs);
    }
 
    public void set(AtsSearchData data) {
       if (getWidget() != null) {
          getWidget().handleClear();
-         List<IAtsTeamDefinition> teamDefs = new LinkedList<>();
+         List<JaxTeamDefinition> teamDefs = new LinkedList<>();
          for (Long id : data.getTeamDefIds()) {
-            IAtsTeamDefinition teamDef =
-               AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(ArtifactId.valueOf(id));
+            JaxTeamDefinition teamDef =
+               AtsClientService.get().getConfigService().getConfigurations().getIdToTeamDef().get(id);
             if (teamDef != null) {
                teamDefs.add(teamDef);
             }

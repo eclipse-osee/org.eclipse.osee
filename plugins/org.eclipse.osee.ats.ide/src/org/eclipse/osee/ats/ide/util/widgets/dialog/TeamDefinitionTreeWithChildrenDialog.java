@@ -14,7 +14,7 @@ package org.eclipse.osee.ats.ide.util.widgets.dialog;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsObjectLabelProvider;
@@ -32,17 +32,17 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class TeamDefinitionTreeWithChildrenDialog extends FilteredCheckboxTreeDialog {
+public class TeamDefinitionTreeWithChildrenDialog extends FilteredCheckboxTreeDialog<JaxTeamDefinition> {
 
    XCheckBox recurseChildrenCheck = new XCheckBox("Include all children Team Definition Actions");
    boolean recurseChildren = false;
    protected Composite dialogComp;
 
    public TeamDefinitionTreeWithChildrenDialog(Active active) {
-      this(active, TeamDefinitions.getTeamTopLevelDefinitions(active, AtsClientService.get().getQueryService()));
+      this(active, TeamDefinitions.getTeamTopLevelJaxDefinitions(active, AtsClientService.get()));
    }
 
-   public TeamDefinitionTreeWithChildrenDialog(Active active, Collection<IAtsTeamDefinition> TeamDefinitions) {
+   public TeamDefinitionTreeWithChildrenDialog(Active active, Collection<JaxTeamDefinition> TeamDefinitions) {
       super("Select Team Defintion", "Select Team Definition", new TeamDefinitionTreeContentProvider(active),
          new AtsObjectLabelProvider(), new AtsObjectNameSorter());
       setInput(TeamDefinitions);
@@ -51,15 +51,30 @@ public class TeamDefinitionTreeWithChildrenDialog extends FilteredCheckboxTreeDi
    /**
     * @return selected team defs and children if recurseChildren was checked
     */
-   public Collection<IAtsTeamDefinition> getResultAndRecursedTeamDefs() {
-      Set<IAtsTeamDefinition> teamDefs = new HashSet<>(10);
+   public Collection<JaxTeamDefinition> getResultAndRecursedTeamDefs() {
+      Set<JaxTeamDefinition> teamDefs = new HashSet<>(10);
       for (Object obj : getResult()) {
-         teamDefs.add((IAtsTeamDefinition) obj);
+         teamDefs.add((JaxTeamDefinition) obj);
          if (recurseChildren) {
-            teamDefs.addAll(TeamDefinitions.getChildren((IAtsTeamDefinition) obj, true));
+            teamDefs.addAll(getChildren((JaxTeamDefinition) obj, true));
          }
       }
       return teamDefs;
+   }
+
+   public static Collection<JaxTeamDefinition> getChildren(JaxTeamDefinition teamDef, boolean recurse) {
+      Set<JaxTeamDefinition> children = new HashSet<>();
+      for (Long childId : teamDef.getChildren()) {
+         JaxTeamDefinition child =
+            AtsClientService.get().getConfigService().getConfigurations().getIdToTeamDef().get(childId);
+         if (child != null) {
+            children.add(child);
+            if (recurse) {
+               children.addAll(getChildren(child, recurse));
+            }
+         }
+      }
+      return children;
    }
 
    @Override

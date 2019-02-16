@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelActionableItemSelection;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
@@ -111,7 +112,7 @@ public class VersionSearchWidget extends AbstractXComboViewerSearchWidget<IAtsVe
       if (teamSelection == null) {
          return java.util.Collections.emptyList();
       }
-      return teamSelection.getSelectedTeamDefintions();
+      return TeamDefinitions.getTeamDefs(teamSelection.getSelectedTeamDefintions(), AtsClientService.get());
    }
 
    public Collection<IAtsActionableItem> getSelectedActionableItems() {

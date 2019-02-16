@@ -13,9 +13,12 @@ package org.eclipse.osee.ats.core.config;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
@@ -178,4 +181,22 @@ public class TeamDefinitions {
       return getImpactedTeamDefInherited(parentArt);
    }
 
+   public static Collection<JaxTeamDefinition> getTeamTopLevelJaxDefinitions(Active active, AtsApi atsApi) {
+      List<JaxTeamDefinition> teamDefs = new LinkedList<>();
+      JaxTeamDefinition topTeam = atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(
+         atsApi.getConfigService().getConfigurations().getTopTeamDefinition());
+      for (Long id : topTeam.getChildren()) {
+         teamDefs.add(atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(id));
+      }
+      return teamDefs;
+   }
+
+   public static Collection<IAtsTeamDefinition> getTeamDefs(Collection<JaxTeamDefinition> jTeamDefs, AtsApi atsApi) {
+      List<IAtsTeamDefinition> teamDefs = new LinkedList<>();
+      for (JaxTeamDefinition jTeamDef : jTeamDefs) {
+         teamDefs.add(atsApi.getQueryService().getConfigItem(jTeamDef.getId()));
+      }
+      return teamDefs;
+
+   }
 }
