@@ -173,4 +173,10 @@ public class CheckBoxStateFilteredTreeViewer<T> extends FilteredTree implements 
    public void setEnabledChecker(IsEnabled enabledChecker) {
       this.enabledChecker = enabledChecker;
    }
+
+   public void expandOneLevel() {
+      for (TreeItem item : treeViewer.getTree().getItems()) {
+         item.setExpanded(true);
+      }
+   }
 }

@@ -43,7 +43,6 @@ public class TeamDefinitionCheckTreeDialog extends FilteredCheckboxTreeDialog {
       this.requiredSelection = requiredSelection;
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public Collection<IAtsTeamDefinition> getChecked() {
       return super.getTreeViewer().getChecked();
@@ -57,6 +56,9 @@ public class TeamDefinitionCheckTreeDialog extends FilteredCheckboxTreeDialog {
             TeamDefinitions.getTopLevelTeamDefinitions(active, AtsClientService.get().getQueryService()));
          if (getInitialTeamDefs() != null) {
             getTreeViewer().setInitalChecked(getInitialTeamDefs());
+         }
+         if (getInitialTeamDefs().size() == 1) {
+            getTreeViewer().getCheckboxTreeViewer().expandToLevel(initialTeamDefs.iterator().next(), 1);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -89,6 +91,9 @@ public class TeamDefinitionCheckTreeDialog extends FilteredCheckboxTreeDialog {
     */
    public void setInitialTeamDefs(List<IAtsTeamDefinition> initialTeamDefs) {
       this.initialTeamDefs = initialTeamDefs;
+      if (initialTeamDefs.size() == 1) {
+         getTreeViewer().getCheckboxTreeViewer().expandToLevel(initialTeamDefs.iterator().next(), 1);
+      }
    }
 
 }

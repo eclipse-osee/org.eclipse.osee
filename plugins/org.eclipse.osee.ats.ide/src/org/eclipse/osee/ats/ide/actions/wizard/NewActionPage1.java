@@ -149,8 +149,7 @@ public class NewActionPage1 extends WizardPage implements IsEnabled {
 
       new Label(aiComp, SWT.NONE).setText("Select Actionable Items:");
       CheckBoxStateFilteredTreeViewer<IAtsActionableItem> treeViewer =
-         new CheckBoxStateFilteredTreeViewer<>(aiComp,
-            SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+         new CheckBoxStateFilteredTreeViewer<>(aiComp, SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
       treeViewer.getViewer().getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       treeViewer.getViewer().setContentProvider(new AITreeContentProvider(Active.Active));
       treeViewer.getViewer().setLabelProvider(new AITreeLabelProvider(treeViewer));
@@ -166,8 +165,14 @@ public class NewActionPage1 extends WizardPage implements IsEnabled {
                }
             }
             treeViewer.getViewer().setInput(activeActionableItemTree);
+            if (activeActionableItemTree.size() == 1) {
+               treeViewer.expandOneLevel();
+            }
          } else {
             treeViewer.getViewer().setInput(selectableAis);
+            if (selectableAis.size() == 1) {
+               treeViewer.expandOneLevel();
+            }
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

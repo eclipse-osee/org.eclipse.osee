@@ -38,6 +38,7 @@ public class ActionableItemTreeWithChildrenDialog extends FilteredCheckboxTreeDi
    XCheckBox recurseChildrenCheck = new XCheckBox("Include all children Actionable Item Actions");
    boolean recurseChildren = false;
    protected Composite dialogComp;
+   Collection<IAtsActionableItem> actionableItems;
 
    public ActionableItemTreeWithChildrenDialog(Active active) {
       this(active, ActionableItems.getTopLevelActionableItems(active, AtsClientService.get()));
@@ -46,6 +47,7 @@ public class ActionableItemTreeWithChildrenDialog extends FilteredCheckboxTreeDi
    public ActionableItemTreeWithChildrenDialog(Active active, Collection<IAtsActionableItem> actionableItems) {
       super("Select Actionable Item", "Select Actionable Item", new ActionableItemTreeContentProvider(active),
          new AtsObjectLabelProvider(), new ArtifactNameSorter());
+      this.actionableItems = actionableItems;
       setInput(actionableItems);
    }
 
@@ -81,6 +83,9 @@ public class ActionableItemTreeWithChildrenDialog extends FilteredCheckboxTreeDi
             recurseChildren = recurseChildrenCheck.isSelected();
          };
       });
+      if (actionableItems.size() == 1) {
+         getTreeViewer().getCheckboxTreeViewer().expandToLevel(actionableItems.iterator().next(), 1);
+      }
 
       return container;
    }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.util.widgets.dialog;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -44,6 +45,19 @@ public class ActionableItemListDialog extends FilteredCheckboxTreeDialog {
          selectedactionItems.add((IAtsActionableItem) obj);
       }
       return selectedactionItems;
+   }
+
+   @Override
+   public void setInput(Object input) {
+      super.setInput(input);
+      if (input instanceof Collection<?>) {
+         Collection<?> coll = (Collection<?>) input;
+         if (coll.size() == 1) {
+            getTreeViewer().getViewer().expandToLevel(coll.iterator().next(), 1);
+         }
+      } else if (input instanceof IAtsActionableItem) {
+         getTreeViewer().getViewer().expandToLevel(input, 1);
+      }
    }
 
 }

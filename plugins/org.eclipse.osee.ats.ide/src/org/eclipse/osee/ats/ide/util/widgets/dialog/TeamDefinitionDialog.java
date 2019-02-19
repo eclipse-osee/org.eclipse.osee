@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.util.widgets.dialog;
 
+import java.util.Collection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -51,5 +52,18 @@ public class TeamDefinitionDialog extends FilteredTreeDialog {
       }
 
    };
+
+   @Override
+   public void setInput(Object input) {
+      super.setInput(input);
+      if (input instanceof Collection<?>) {
+         Collection<?> coll = (Collection<?>) input;
+         if (coll.size() == 1) {
+            getTreeViewer().getViewer().expandToLevel(coll.iterator().next(), 1);
+         }
+      } else if (input instanceof IAtsTeamDefinition) {
+         getTreeViewer().getViewer().expandToLevel(input, 1);
+      }
+   }
 
 }

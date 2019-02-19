@@ -80,7 +80,7 @@ public class FilteredTreeDialog extends MessageDialog {
     *
     * @param object the input.
     */
-   public final void setInput(Object input) {
+   public void setInput(Object input) {
       this.input = input;
       if (treeViewer != null) {
          treeViewer.getViewer().setInput(input);
