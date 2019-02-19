@@ -12,10 +12,14 @@
 package org.eclipse.osee.ats.ide.util.widgets.dialog;
 
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.Active;
 
 /**
@@ -42,6 +46,21 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
          } catch (Exception ex) {
             // do nothing
          }
+      } else if (parentElement instanceof JaxTeamDefinition && active != null) {
+         try {
+            JaxTeamDefinition teamDef = (JaxTeamDefinition) parentElement;
+            List<JaxTeamDefinition> teamDefs = new LinkedList<>();
+            for (Long id : teamDef.getChildren()) {
+               JaxTeamDefinition td =
+                  AtsClientService.get().getConfigService().getConfigurations().getIdToTeamDef().get(id);
+               if (active == Active.Both || (active == Active.Active && td.isActive()) || (active == Active.InActive && !td.isActive())) {
+                  teamDefs.add(td);
+               }
+            }
+            return teamDefs.toArray();
+         } catch (Exception ex) {
+            // do nothing
+         }
       }
       return new Object[] {};
    }
@@ -50,6 +69,12 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
    public Object getParent(Object element) {
       if (element instanceof IAtsTeamDefinition) {
          return ((IAtsTeamDefinition) element).getParentTeamDef();
+      } else if (element instanceof JaxTeamDefinition) {
+         Long id = ((JaxTeamDefinition) element).getId();
+         if (id > 0) {
+            JaxTeamDefinition td =
+               AtsClientService.get().getConfigService().getConfigurations().getIdToTeamDef().get(id);
+         }
       }
       return null;
    }

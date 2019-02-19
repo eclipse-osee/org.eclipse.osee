@@ -17,16 +17,6 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
  */
 public abstract class JaxAtsConfigObject extends JaxAtsObject implements IAtsConfigObject {
 
-   private boolean active;
-
-   @Override
-   public boolean isActive() {
-      return active;
-   }
-
-   @Override
-   public void setActive(boolean active) {
-      this.active = active;
-   }
+   // do nothing
 
 }
