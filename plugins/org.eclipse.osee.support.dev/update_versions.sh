@@ -1,8 +1,11 @@
 #!/bin/bash
 
-
-FROM_VERSION=0.25.2
-TO_VERSION=0.26.0
+if [ -z "$2" ]; then	
+	echo "Usage: update_versions <from_version> <to_version> "	
+	exit	
+fi
+FROM_VERSION=$1
+TO_VERSION=$2
 
 #########################################################################################
 # MANIFEST.MF	[FROM].qualifier [TO].qualifier
