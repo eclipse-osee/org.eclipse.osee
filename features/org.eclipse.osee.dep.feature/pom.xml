@@ -38,7 +38,6 @@
 								<plugin id="org.apache.cxf.core.config" />
 								<plugin id="javax.ws.rs" />
 								<plugin id="javax.wsdl" />
-								<plugin id="com.google.gson" />
 								<plugin id="org.eclipse.xtext" />
 								<plugin id="org.antlr.runtime" />
 								<plugin id="org.cyberneko.html" />
