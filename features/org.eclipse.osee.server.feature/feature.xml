@@ -22,7 +22,7 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.osee.server.external.feature"
+         id="org.eclipse.osee.core.server.external.feature"
          version="0.0.0"/>
 
    <includes

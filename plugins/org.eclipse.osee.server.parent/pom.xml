@@ -45,7 +45,6 @@
 			<module>../../features/org.eclipse.osee.server.legacy.feature</module>
 
 			<module>../../features/org.eclipse.osee.server.feature</module>
-			<module>../../features/org.eclipse.osee.server.external.feature</module>
 
 			<module>../../plugins/org.eclipse.osee.server.p2</module>
 			<module>../../plugins/org.eclipse.osee.server.application</module>
@@ -80,7 +79,6 @@
 			<module>../../features/org.eclipse.osee.server.legacy.feature</module>
 
 			<module>../../features/org.eclipse.osee.server.feature</module>
-			<module>../../features/org.eclipse.osee.server.external.feature</module>
 
 			<module>../../plugins/org.eclipse.osee.server.p2</module>
 			<module>../../plugins/org.eclipse.osee.server.integration.tests</module>
