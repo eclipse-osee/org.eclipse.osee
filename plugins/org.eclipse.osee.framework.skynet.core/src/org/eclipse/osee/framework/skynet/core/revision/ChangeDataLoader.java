@@ -238,8 +238,8 @@ public class ChangeDataLoader extends AbstractOperation {
             if (item.isApplicabilityCopy() || ChangeItemUtil.hasApplicabilityOnlyChange(item)) {
                netModType = ModificationType.APPLICABILITY;
                change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType,
-                  item.getCurrentVersion().getApplicabilityToken().getName(),
-                  item.getDestinationVersion().getApplicabilityToken().getName(), AttributeId.valueOf(itemId),
+                  item.getCurrentVersion().getApplicabilityToken().getName(), null,
+                  item.getDestinationVersion().getApplicabilityToken().getName(), null, AttributeId.valueOf(itemId),
                   attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
             } else {
 
@@ -254,8 +254,9 @@ public class ChangeDataLoader extends AbstractOperation {
                      artifactDelta);
                } else {
                   change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType,
-                     wasIsProvider.getIsValue(), wasIsProvider.getWasValue(), AttributeId.valueOf(itemId),
-                     attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
+                     wasIsProvider.getIsValue(), wasIsProvider.getIsUri(), wasIsProvider.getWasValue(),
+                     wasIsProvider.getWasUri(), AttributeId.valueOf(itemId), attributeType, netModType, isHistorical,
+                     changeArtifact, artifactDelta);
                }
             }
             break;
@@ -353,6 +354,16 @@ public class ChangeDataLoader extends AbstractOperation {
       @Override
       public String getIsValue() {
          return item.getCurrentVersion().getValue();
+      }
+
+      @Override
+      public String getWasUri() {
+         return null;
+      }
+
+      @Override
+      public String getIsUri() {
+         return null;
       }
 
    }

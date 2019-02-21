@@ -36,23 +36,26 @@ public final class AttributeChange extends Change {
    private final static LoadChangeType changeType = LoadChangeType.attribute;
 
    private String isValue;
+
+   private final String isUri;
    private String wasValue;
+   private final String wasUri;
    private final AttributeId attrId;
    private final AttributeTypeToken attributeType;
    private final ModificationType artModType;
    private final ArtifactWasIsLazyProvider wasIsProvider;
 
-   public AttributeChange(BranchId branch, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, String isValue, String wasValue, AttributeId attrId, AttributeTypeToken attributeType, ModificationType artModType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
-      this(branch, sourceGamma, artId, txDelta, modType, isValue, wasValue, null, attrId, attributeType, artModType,
-         isHistorical, changeArtifact, artifactDelta);
+   public AttributeChange(BranchId branch, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, String isValue, String isUri, String wasValue, String wasUri, AttributeId attrId, AttributeTypeToken attributeType, ModificationType artModType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
+      this(branch, sourceGamma, artId, txDelta, modType, isValue, isUri, wasValue, wasUri, null, attrId, attributeType,
+         artModType, isHistorical, changeArtifact, artifactDelta);
    }
 
    public AttributeChange(BranchId branch, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, ArtifactWasIsLazyProvider wasIsProvider, AttributeId attrId, AttributeTypeToken attributeType, ModificationType artModType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
-      this(branch, sourceGamma, artId, txDelta, modType, null, null, wasIsProvider, attrId, attributeType, artModType,
-         isHistorical, changeArtifact, artifactDelta);
+      this(branch, sourceGamma, artId, txDelta, modType, null, null, null, null, wasIsProvider, attrId, attributeType,
+         artModType, isHistorical, changeArtifact, artifactDelta);
    }
 
-   public AttributeChange(BranchId branch, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, String isValue, String wasValue, ArtifactWasIsLazyProvider wasIsProvider, AttributeId attrId, AttributeTypeToken attributeType, ModificationType artModType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
+   public AttributeChange(BranchId branch, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, String isValue, String isUri, String wasValue, String wasUri, ArtifactWasIsLazyProvider wasIsProvider, AttributeId attrId, AttributeTypeToken attributeType, ModificationType artModType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
       super(branch, sourceGamma, artId, txDelta, modType, isHistorical, changeArtifact, artifactDelta);
       this.isValue = isValue;
       this.wasValue = wasValue;
@@ -60,8 +63,8 @@ public final class AttributeChange extends Change {
       this.attrId = attrId;
       this.attributeType = attributeType;
       this.artModType = artModType;
-      this.isValue = isValue;
-      this.wasValue = wasValue;
+      this.isUri = isUri;
+      this.wasUri = wasUri;
    }
 
    @Override
@@ -169,5 +172,17 @@ public final class AttributeChange extends Change {
    @Override
    public LoadChangeType getChangeType() {
       return changeType;
+   }
+
+   public String getWasUri() {
+      return wasUri;
+   }
+
+   public void setWasValue(String wasValue) {
+      this.wasValue = wasValue;
+   }
+
+   public String getIsUri() {
+      return isUri;
    }
 }

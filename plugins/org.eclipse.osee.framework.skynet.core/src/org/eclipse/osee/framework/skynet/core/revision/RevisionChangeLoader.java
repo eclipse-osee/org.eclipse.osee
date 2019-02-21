@@ -240,8 +240,8 @@ public final class RevisionChangeLoader {
             } else if (builder instanceof AttributeChangeBuilder) {
                AttributeChangeBuilder attrBuilder = (AttributeChangeBuilder) builder;
                toReturn = new AttributeChange(branch, attrBuilder.getSourceGamma(), attrBuilder.getArtId(),
-                  attrBuilder.getTxDelta(), attrBuilder.getModType(), attrBuilder.getIsValue(),
-                  attrBuilder.getWasValue(), AttributeId.valueOf(attrBuilder.getAttrId()),
+                  attrBuilder.getTxDelta(), attrBuilder.getModType(), attrBuilder.getIsValue(), attrBuilder.getIsUri(),
+                  attrBuilder.getWasValue(), attrBuilder.getWasUri(), AttributeId.valueOf(attrBuilder.getAttrId()),
                   attrBuilder.getAttributeType(), attrBuilder.getArtModType(), isHistorical, changeArtifact, delta);
             } else if (builder instanceof RelationChangeBuilder) {
                RelationChangeBuilder relBuilder = (RelationChangeBuilder) builder;

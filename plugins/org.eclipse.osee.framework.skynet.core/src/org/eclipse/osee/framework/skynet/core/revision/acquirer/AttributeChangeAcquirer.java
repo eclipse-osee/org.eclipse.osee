@@ -114,6 +114,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
             AttributeTypeToken attributeType = AttributeTypeManager.getTypeById(chStmt.getLong("attr_type_id"));
             ArtifactTypeId artifactType = ArtifactTypeId.valueOf(chStmt.getLong("art_type_id"));
             String isValue = chStmt.getString("is_value");
+            String isUri = chStmt.getString("uri");
             ModificationType modificationType = ModificationType.valueOf(chStmt.getInt("mod_type"));
 
             if (artModTypes.containsKey(artId)) {
@@ -140,7 +141,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
                   modificationType = ModificationType.NEW;
                }
                attributeChangeBuilder = new AttributeChangeBuilder(sourceBranch, artifactType, sourceGamma, artId,
-                  txDelta, modificationType, !hasBranch, isValue, "", attrId, attributeType, artModType);
+                  txDelta, modificationType, !hasBranch, isValue, "", attrId, attributeType, artModType, isUri, "");
 
                changeBuilders.add(attributeChangeBuilder);
                attributesWasValueCache.put(attrId, attributeChangeBuilder);
@@ -195,6 +196,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
 
       if (previousAttrId != attrId) {
          String wasValue = stmt.getString("was_value");
+         String wasUri = stmt.getString("uri");
          if (attributesWasValueCache.containsKey(
             attrId) && attributesWasValueCache.get(attrId) instanceof AttributeChangeBuilder) {
             AttributeChangeBuilder changeBuilder = (AttributeChangeBuilder) attributesWasValueCache.get(attrId);
@@ -204,6 +206,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
                   changeBuilder.setModType(ModificationType.MODIFIED);
                }
                changeBuilder.setWasValue(wasValue);
+               changeBuilder.setWasUri(wasUri);
             }
          }
          previousAttrId = attrId;

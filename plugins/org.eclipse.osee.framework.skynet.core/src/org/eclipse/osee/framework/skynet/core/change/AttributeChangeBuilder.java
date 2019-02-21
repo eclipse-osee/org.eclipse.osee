@@ -26,14 +26,18 @@ public final class AttributeChangeBuilder extends ChangeBuilder {
    private final int attrId;
    private final AttributeTypeToken attributeType;
    private final ModificationType artModType;
+   private final String isUri;
+   private String wasUri;
 
-   public AttributeChangeBuilder(BranchId branch, ArtifactTypeId artifactType, GammaId sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, String isValue, String wasValue, int attrId, AttributeTypeToken attributeType, ModificationType artModType) {
+   public AttributeChangeBuilder(BranchId branch, ArtifactTypeId artifactType, GammaId sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, String isValue, String wasValue, int attrId, AttributeTypeToken attributeType, ModificationType artModType, String isUri, String wasUri) {
       super(branch, artifactType, sourceGamma, artId, txDelta, modType, isHistorical);
       this.isValue = isValue;
       this.wasValue = wasValue;
       this.attrId = attrId;
       this.attributeType = attributeType;
       this.artModType = artModType;
+      this.isUri = isUri;
+      this.wasUri = wasUri;
    }
 
    public ModificationType getArtModType() {
@@ -59,4 +63,17 @@ public final class AttributeChangeBuilder extends ChangeBuilder {
    public AttributeTypeToken getAttributeType() {
       return attributeType;
    }
+
+   public String getIsUri() {
+      return isUri;
+   }
+
+   public String getWasUri() {
+      return wasUri;
+   }
+
+   public void setWasUri(String wasUri) {
+      this.wasUri = wasUri;
+   }
+
 }

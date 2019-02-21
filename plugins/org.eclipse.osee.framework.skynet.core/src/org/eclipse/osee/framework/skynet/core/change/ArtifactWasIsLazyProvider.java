@@ -17,6 +17,10 @@ public interface ArtifactWasIsLazyProvider {
 
    public String getWasValue();
 
+   public String getWasUri();
+
    public String getIsValue();
+
+   public String getIsUri();
 
 }
