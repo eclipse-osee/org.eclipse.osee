@@ -56,6 +56,8 @@ public interface DispoApi {
 
    DispoSet getDispoItemParentSet(BranchId branch, String itemId);
 
+   List<String> getCheckedReruns(BranchId branch, String setId);
+
    // Writes
    Long createDispoProgram(String name, String userName);
 

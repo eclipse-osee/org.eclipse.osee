@@ -53,6 +53,8 @@ public interface DispoQuery {
 
    DispoItem findDispoItemById(BranchId branch, String itemId);
 
+   List<String> getCheckedReruns(HashMap<String, DispoItem> items, String setId);
+
    List<IOseeBranch> getDispoBranches();
 
    Collection<DispoItem> findDispoItemByAnnoationText(BranchId branch, String setId, String keyword, boolean isDetailed);

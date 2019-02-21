@@ -117,6 +117,20 @@ public class DispoSetResource {
    }
 
    /**
+    * @return The names of all items in a set that have "Rerun?" column checked. Error Code otherwise
+    * @response.representation.200.doc OK, Found Disposition Set
+    * @response.representation.404.doc Not Found, Could not find any Disposition Sets
+    */
+   @Path("toRerun")
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<String> getCheckedReruns(@QueryParam("name") String setName) {
+      String setId = dispoApi.getDispoSetIdByName(branch, setName);
+      List<String> reruns = dispoApi.getCheckedReruns(branch, setId);
+      return reruns;
+   }
+
+   /**
     * @return The updated Disposition Set if successful. Error Code otherwise
     * @response.representation.200.doc OK, Found Disposition Set
     * @response.representation.404.doc Not Found, Could not find any Disposition Sets

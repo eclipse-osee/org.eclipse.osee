@@ -488,6 +488,19 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
+   public List<String> getCheckedReruns(HashMap<String, DispoItem> items, String setId) {
+      List<String> reruns = new ArrayList<>();
+
+      List<DispoItem> dispoItems = new ArrayList<DispoItem>(items.values());
+      for (DispoItem item : dispoItems) {
+         if (item.getNeedsRerun()) {
+            reruns.add(item.getName());
+         }
+      }
+      return reruns;
+   }
+
+   @Override
    public Collection<DispoItem> findDispoItemByAnnoationText(BranchId branch, String setId, String keyword, boolean isDetailed) {
       ArtifactReadable dispoSetArt = findDispoArtifact(branch, setId);
 

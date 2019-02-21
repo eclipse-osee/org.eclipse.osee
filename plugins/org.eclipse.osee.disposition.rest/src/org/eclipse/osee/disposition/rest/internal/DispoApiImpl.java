@@ -512,6 +512,13 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
+   public List<String> getCheckedReruns(BranchId branch, String setId) {
+      DispoSet set = getDispoSetById(branch, setId);
+      HashMap<String, DispoItem> nameToItemMap = getItemsMap(branch, set);
+      return getQuery().getCheckedReruns(nameToItemMap, setId);
+   }
+
+   @Override
    public DispoAnnotationData getDispoAnnotationById(BranchId branch, String itemId, String annotationId) {
       DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
       List<DispoAnnotationData> annotationsList = dispoItem.getAnnotationsList();
