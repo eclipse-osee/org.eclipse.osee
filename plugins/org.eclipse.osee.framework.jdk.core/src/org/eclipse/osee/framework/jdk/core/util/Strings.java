@@ -44,7 +44,7 @@ public class Strings {
     * OTE pre-compile dependency. Left for binary compatibility for 0.9.8
     */
    public static boolean isValid(String value) {
-      return value != null && value.length() > 0;
+      return value != null && !value.isEmpty();
    }
 
    public static String intern(String str) {

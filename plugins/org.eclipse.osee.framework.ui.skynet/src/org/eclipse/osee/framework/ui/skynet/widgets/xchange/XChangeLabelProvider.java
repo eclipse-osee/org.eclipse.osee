@@ -44,6 +44,7 @@ import org.eclipse.swt.graphics.Image;
  */
 public class XChangeLabelProvider extends XViewerLabelProvider {
 
+   public static final String LARGE = "<large>";
    Font font = null;
    private final ChangeXViewer changeXViewer;
 
@@ -88,12 +89,12 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
                return "";
             }
             if (isBinaryAttributeType(change)) {
-               return "<large>";
+               return LARGE;
             }
             return change.getIsValue();
          } else if (cCol.equals(ChangeXViewerFactory.Was_Value)) {
             if (isBinaryAttributeType(change)) {
-               return "<large>";
+               return LARGE;
             }
             return change.getWasValue();
          } else if (cCol.equals(ChangeXViewerFactory.paraNumber)) {

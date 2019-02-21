@@ -19,13 +19,16 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
+import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.column.HistoryTransactionDateColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.column.HistoryTransactionIdColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xchange.XChangeLabelProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Color;
@@ -67,9 +70,17 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
             } else if (cCol.equals(HistoryXViewerFactory.itemId)) {
                toReturn = String.valueOf(data.getItemId());
             } else if (cCol.equals(HistoryXViewerFactory.was)) {
-               toReturn = data.getWasValue();
+               if (data instanceof AttributeChange && Strings.isValid(((AttributeChange) data).getWasUri())) {
+                  toReturn = XChangeLabelProvider.LARGE;
+               } else {
+                  toReturn = data.getWasValue();
+               }
             } else if (cCol.equals(HistoryXViewerFactory.is)) {
-               toReturn = data.getIsValue();
+               if (data instanceof AttributeChange && Strings.isValid(((AttributeChange) data).getIsUri())) {
+                  toReturn = XChangeLabelProvider.LARGE;
+               } else {
+                  toReturn = data.getIsValue();
+               }
             } else {
                toReturn = super.getColumnText(element, columnIndex);
             }
