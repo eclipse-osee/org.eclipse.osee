@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.RelationOrderContributionItem.SelectionListener;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -135,7 +134,6 @@ public class RelationsComposite extends Composite implements ISelectedArtifact, 
       treeViewer.setLabelProvider(relationLabelProvider);
       treeViewer.setUseHashlookup(true);
       treeViewer.setInput(artifact);
-      AWorkbench.getActivePage().getActivePart().getSite().setSelectionProvider(treeViewer);
 
       treeViewer.addDoubleClickListener(new DoubleClickListener());
       tree.addMouseListener(new MouseListener() {
