@@ -401,28 +401,31 @@ app.controller('userController', [
         }
 
         $scope.deleteAnnotation = function deleteAnnotation(annotation) {
-            Annotation.delete({
-                programId: $scope.programSelection,
-                setId: $scope.setSelection,
-                itemId: $scope.selectedItem.guid,
-                annotationId: annotation.guid,
-                userName: $rootScope.cachedName,
-            }, function() {
-                var index = $scope.annotations.indexOf(annotation);
-                if (index > -1) {
-                    $scope.annotations.splice(index, 1);
-                }
-                Item.get({
-                    programId: $scope.programSelection,
-                    setId: $scope.setSelection,
-                    itemId: $scope.selectedItem.guid
-                }, function(data) {
-                    $scope.updateItemFromServer($scope.selectedItem, data);
-                });
-            }, function(data) {
-                alert("Could not make change, please try refreshing");
-            });
-
+            if ($scope.selectedItem.assignee != $rootScope.cachedName) {
+            	alert("You are not assigned to this Item. Double click on the assignee field for this item to steal it and make changes");
+            } else { 
+	            Annotation.delete({
+	                programId: $scope.programSelection,
+	                setId: $scope.setSelection,
+	                itemId: $scope.selectedItem.guid,
+	                annotationId: annotation.guid,
+	                userName: $rootScope.cachedName
+	            }, function() {
+	                var index = $scope.annotations.indexOf(annotation);
+	                if (index > -1) {
+	                    $scope.annotations.splice(index, 1);
+	                }
+	                Item.get({
+	                    programId: $scope.programSelection,
+	                    setId: $scope.setSelection,
+	                    itemId: $scope.selectedItem.guid
+	                }, function(data) {
+	                    $scope.updateItemFromServer($scope.selectedItem, data);
+	                });
+	            }, function(data) {
+	                	alert("Could not make change, please try refreshing");
+	            });
+            }
         }
 
         $scope.massDisposition = function(itemIds, resolutionType, resolution) {
