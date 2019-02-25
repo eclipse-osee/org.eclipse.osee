@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.define.api;
 
+import org.eclipse.osee.activity.api.ActivityLog;
+
 /**
  * @author Angel Avila
  * @author David W. Miller
@@ -27,5 +29,7 @@ public interface DefineApi {
 
    //Import
    ImportOperations getImportOperations();
+
+   ActivityLog getActivityLog();
 
 }

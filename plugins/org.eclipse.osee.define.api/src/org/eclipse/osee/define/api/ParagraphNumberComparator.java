@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.rest.internal;
+package org.eclipse.osee.define.api;
 
 import java.util.ArrayList;
 import java.util.Comparator;

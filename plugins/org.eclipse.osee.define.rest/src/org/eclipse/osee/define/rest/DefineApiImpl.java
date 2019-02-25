@@ -78,4 +78,9 @@ public class DefineApiImpl implements DefineApi {
    public ImportOperations getImportOperations() {
       return importOperations;
    }
+
+   @Override
+   public ActivityLog getActivityLog() {
+      return activityLog;
+   }
 }
