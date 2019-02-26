@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.search.AtsQuickSearchComposite;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateEventListener;
@@ -165,7 +166,12 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
 
             public void refreshUserLabel() {
                String str = getWhoAmI();
+               String oseeTarget = System.getProperty("osee.target");
                boolean atsAdmin = AtsClientService.get().getUserService().isAtsAdmin();
+               boolean oseeTargetIsValid = Strings.isValid(oseeTarget);
+               if (oseeTargetIsValid) {
+                  str += " - [" + oseeTarget + "]";
+               }
                if (atsAdmin) {
                   str += " - [Admin]";
                   userLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
