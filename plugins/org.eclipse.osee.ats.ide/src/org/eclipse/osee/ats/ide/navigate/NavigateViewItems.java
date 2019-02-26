@@ -104,8 +104,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemFolder;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemOperation;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.action.CompareTwoArtifactIdListsAction;
-import org.eclipse.osee.framework.ui.skynet.action.CompareTwoStringsAction;
 import org.eclipse.osee.framework.ui.skynet.action.PurgeTransactionAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.MassEditDirtyArtifactOperation;
 import org.eclipse.osee.framework.ui.skynet.change.OpenChangeReportByTransactionIdAction;
@@ -145,8 +143,6 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          new ToggleAtsAdmin(utilItems);
          new XNavigateItemBlam(utilItems, new ImportActionsViaSpreadsheetBlam());
          new XNavigateItemBlam(utilItems, new ImportAgileActionsViaSpreadsheetBlam());
-         new XNavigateItemAction(utilItems, new CompareTwoStringsAction(), FrameworkImage.EDIT);
-         new XNavigateItemAction(utilItems, new CompareTwoArtifactIdListsAction(), FrameworkImage.EDIT);
          new XNavigateItemAction(utilItems, new AtsExportAction(), FrameworkImage.EXPORT_DATA);
          new GenerateIdsAndArtId(utilItems);
          new XNavigateItemOperation(utilItems, FrameworkImage.ARTIFACT_MASS_EDITOR, MassEditDirtyArtifactOperation.NAME,
