@@ -44,9 +44,7 @@
 			<module>../../plugins/org.eclipse.osee.web.ui</module>
 			<!-- <module>../../plugins/org.eclipse.osee.web.ui.test</module> -->
 
-			<module>../../features/org.eclipse.osee.server.legacy.feature</module>
-
-			<module>../../features/org.eclipse.osee.server.feature</module>
+			<module>../../features/org.eclipse.osee.core.server.feature</module>
 
 			<module>../../plugins/org.eclipse.osee.server.p2</module>
 			<module>../../plugins/org.eclipse.osee.server.application</module>
@@ -79,9 +77,7 @@
 			<module>../../plugins/org.eclipse.osee.web.ui</module>
 			<!-- <module>../../plugins/org.eclipse.osee.web.ui.test</module> -->
 
-			<module>../../features/org.eclipse.osee.server.legacy.feature</module>
 
-			<module>../../features/org.eclipse.osee.server.feature</module>
 
 			<module>../../plugins/org.eclipse.osee.server.p2</module>
 			<module>../../plugins/org.eclipse.osee.server.integration.tests</module>
@@ -102,7 +98,6 @@
 			<modules>
 				<module>../../features/org.eclipse.osee.core.server.external.feature</module>
 				<module>../../features/org.eclipse.osee.core.server.feature</module>
-				<module>../../features/org.eclipse.osee.orcs.feature</module>
 				<module>../../features/org.eclipse.osee.disposition.feature</module>
 				<module>../../features/org.eclipse.osee.ats.server.feature</module>
 			</modules>

@@ -34,11 +34,6 @@
 						<extraRequirements>
 							<requirement>
 								<type>eclipse-feature</type>
-								<id>org.eclipse.osee.orcs.feature</id>
-								<versionRange>0.0.0</versionRange>
-							</requirement>
-							<requirement>
-								<type>eclipse-feature</type>
 								<id>org.eclipse.osee.core.server.external.feature</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>

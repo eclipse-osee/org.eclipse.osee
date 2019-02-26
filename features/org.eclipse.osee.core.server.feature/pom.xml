@@ -25,7 +25,9 @@
 						</goals>
 						<configuration>
 							<excludes>
-								<plugin id="org.eclipse.osee.logback.config" />
+							   <plugin id="org.apache.xerces" />		
+							   <plugin id="org.eclipse.osee.web.ui" />					
+							   <plugin id="org.eclipse.osee.logback.config" />
 							</excludes>
 						</configuration>
 					</execution>

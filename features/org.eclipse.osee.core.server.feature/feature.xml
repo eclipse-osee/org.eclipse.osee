@@ -20,21 +20,185 @@
    <includes
          id="org.eclipse.osee.core.server.external.feature"
          version="0.0.0"/>
+         
+   <includes
+         id="org.eclipse.osee.ats.server.feature"
+         version="0.0.0"/>
 
-   <requires>
-      <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.eclipse.osgi.services"/>
-      <import plugin="org.slf4j.api"/>
-      <import plugin="ch.qos.logback.classic" version="0.9.27" match="greaterOrEqual"/>
-      <import plugin="org.apache.commons.codec"/>
-      <import plugin="org.apache.xerces"/>
-      <import plugin="javax.mail.glassfish"/>
-      <import plugin="javax.servlet"/>
-      <import plugin="javax.ws.rs" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="com.google.guava" version="11.0.0" match="greaterOrEqual"/>
-      <import plugin="org.junit" version="4.11.0" match="greaterOrEqual"/>
-   </requires>
+   <includes
+         id="org.eclipse.osee.disposition.feature"
+         version="0.0.0"/>   
+      
+   <plugin
+         id="org.eclipse.osee.orcs"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>  
+         
+   <plugin
+         id="org.eclipse.osee.orcs.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
+   <plugin
+         id="org.eclipse.osee.framework.core.dsl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.core.dsl.integration"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.osee.orcs.db"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>      
+   
+   <plugin
+         id="org.eclipse.osee.framework.resource.management"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+   
+   <plugin
+         id="org.eclipse.osee.orcs.rest"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+   
+   <plugin
+         id="org.eclipse.osee.framework.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.core.model"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+   
+    <plugin
+         id="org.eclipse.osee.framework.core.server"
+         download-size="0"
+          install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+    <plugin
+         id="org.eclipse.osee.framework.server.ide"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+    <plugin
+         id="org.eclipse.osee.framework.server.ide.api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+    <plugin
+         id="org.eclipse.osee.framework.authentication.ldap.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+     <plugin
+         id="org.apache.commons.lang"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+               
+   <plugin
+         id="org.eclipse.osgi"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osgi.services"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
+         id="org.slf4j.api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>      
+         
+   <plugin
+         id="ch.qos.logback.classic"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
+         id="org.apache.commons.codec"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>  
+         
+   <plugin
+         id="org.apache.xerces"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>    
+         
+   <plugin
+         id="javax.mail.glassfish"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>   
+         
+    <plugin
+         id="javax.servlet"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>  
+
+    <plugin
+         id="javax.ws.rs"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+    <plugin
+         id="com.google.guava"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>                                       
+ 
+
+                         
    <plugin
          id="org.eclipse.osee.logger"
          download-size="0"
@@ -80,6 +244,40 @@
 
    <plugin
          id="org.eclipse.osee.console.admin"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.app"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.osee.web.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.osee.server.application"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.osee.define.rest"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.define.api"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -184,17 +382,65 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.activity.api"
+         id="org.eclipse.osee.activity"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.osee.activity.api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.osee.orcs.rest.client"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
          id="org.eclipse.osee.jdbc"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.osee.orcs.rest.model"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.orcs.account.admin"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+  <plugin
+         id="org.eclipse.osee.orcs.script.dsl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.orcs.authorization"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+        
+   <plugin
+         id="org.junit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>           
 
 </feature>

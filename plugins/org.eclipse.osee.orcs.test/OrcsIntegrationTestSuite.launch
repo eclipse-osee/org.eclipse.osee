@@ -43,7 +43,6 @@
 <stringAttribute key="product" value="lba.ote.outfile.conversion.app.convert"/>
 <booleanAttribute key="run_in_ui_thread" value="true"/>
 <setAttribute key="selected_features">
-<setEntry value="org.eclipse.osee.orcs.feature:default"/>
 <setEntry value="org.eclipse.osee.core.server.external.feature:default"/>
 <setEntry value="org.eclipse.osee.core.server.feature:default"/>
 </setAttribute>
