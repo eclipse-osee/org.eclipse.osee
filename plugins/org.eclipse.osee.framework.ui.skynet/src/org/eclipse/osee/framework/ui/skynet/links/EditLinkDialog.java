@@ -85,7 +85,7 @@ public class EditLinkDialog extends EntryCheckDialog {
          }
       });
 
-      tagTextWidget = new XText("Enter Search Tags");
+      tagTextWidget = new XText("Enter Search Tags (comma sperated)");
       tagTextWidget.setFillHorizontally(true);
       if (isFillVertically()) {
          tagTextWidget.setFillVertically(true);
