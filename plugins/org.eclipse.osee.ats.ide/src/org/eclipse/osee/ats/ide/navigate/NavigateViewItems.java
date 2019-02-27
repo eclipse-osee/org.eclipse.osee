@@ -105,7 +105,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemOperation;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.PurgeTransactionAction;
-import org.eclipse.osee.framework.ui.skynet.artifact.MassEditDirtyArtifactOperation;
 import org.eclipse.osee.framework.ui.skynet.change.OpenChangeReportByTransactionIdAction;
 import org.eclipse.osee.framework.ui.skynet.results.example.ResultsEditorExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XResultDataExample;
@@ -145,8 +144,6 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          new XNavigateItemBlam(utilItems, new ImportAgileActionsViaSpreadsheetBlam());
          new XNavigateItemAction(utilItems, new AtsExportAction(), FrameworkImage.EXPORT_DATA);
          new GenerateIdsAndArtId(utilItems);
-         new XNavigateItemOperation(utilItems, FrameworkImage.ARTIFACT_MASS_EDITOR, MassEditDirtyArtifactOperation.NAME,
-            new MassEditDirtyArtifactOperation());
          new ClearAtsConfigCache(utilItems);
          new XNavigateItemBlam(utilItems, new MoveTeamWorkflowsBlam(), AtsImage.TEAM_WORKFLOW);
          new AtsConfigResultsEditorNavigateItem(utilItems);
@@ -258,7 +255,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          new ValidateAtsConfiguration(healthItems);
          new ValidateWorkspaceToDatabaseWorkDefinitions(healthItems);
          new CleanupOseeSystemAssignedWorkflows(healthItems);
-         new XNavigateItemAction(adminItems, new OpenOrphanedTasks(), AtsImage.TASK);
+         new XNavigateItemAction(healthItems, new OpenOrphanedTasks(), AtsImage.TASK);
          new XNavigateItemAction(adminItems, new RevertDuplicateTransitionByIdAction(), AtsImage.TASK);
          new XNavigateItemAction(adminItems, new RevertDuplicateTransitionsAction(), AtsImage.TASK);
 
