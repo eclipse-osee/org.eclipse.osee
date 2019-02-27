@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -104,7 +105,7 @@ public class XCheckBox extends XButtonCommon {
    }
 
    public boolean isChecked() {
-      if (checkButton == null || checkButton.isDisposed()) {
+      if (!Displays.isDisplayThread() || checkButton == null || checkButton.isDisposed()) {
          return selected;
       } else {
          return checkButton.getSelection();
