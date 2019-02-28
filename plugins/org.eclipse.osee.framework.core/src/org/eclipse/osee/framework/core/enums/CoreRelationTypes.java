@@ -71,11 +71,6 @@ public final class CoreRelationTypes {
    public static final RelationTypeSide Universal_Grouping__Group = RelationTypeSide.create(SIDE_A, 0x2000000000000156L, "Universal Grouping");
    public static final RelationTypeSide Universal_Grouping__Members = Universal_Grouping__Group.getOpposite();
 
-
-   public static final RelationTypeSide User_Grouping__Group = RelationTypeSide.create(SIDE_A, 0x2000000000000163L, "User Grouping");
-   public static final RelationTypeSide User_Grouping__Members = User_Grouping__Group.getOpposite();
-
-
    public static final RelationTypeSide Users_Artifact = RelationTypeSide.create(SIDE_A, 0x2000000000000164L, "Users");
    public static final RelationTypeSide Users_User = Users_Artifact.getOpposite();
 

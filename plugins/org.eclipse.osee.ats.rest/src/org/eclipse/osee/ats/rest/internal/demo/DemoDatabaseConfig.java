@@ -61,7 +61,7 @@ public class DemoDatabaseConfig {
       }
 
       IAtsChangeSet changes = atsApi.createChangeSet("Set ATS Admin");
-      changes.relate(AtsArtifactToken.AtsTempAdmin, CoreRelationTypes.User_Grouping__Members, DemoUsers.Joe_Smith);
+      changes.relate(AtsArtifactToken.AtsTempAdmin, CoreRelationTypes.Users_User, DemoUsers.Joe_Smith);
       changes.execute();
 
       (new OrganizePrograms(atsApi)).run();

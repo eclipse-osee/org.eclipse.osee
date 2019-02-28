@@ -1658,16 +1658,6 @@ relationType "Work Item" {
 	multiplicity MANY_TO_MANY
 }
 
-relationType "User Grouping" {
-	id 2305843009213694307
-	sideAName "group"
-	sideAArtifactType "User Group"
-	sideBName "users"
-	sideBArtifactType "User"
-	defaultOrderType Unordered
-	multiplicity MANY_TO_MANY
-}
-
 relationType "Users" {
 	id 2305843009213694308
 	sideAName "Artifact"
