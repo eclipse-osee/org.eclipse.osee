@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
+ 
 package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.util.Collection;
@@ -89,7 +89,7 @@ public class BlamContributionManager implements IXNavigateCommonItem {
       String target = System.getProperty("osee.target");
       boolean admin = SystemGroup.OseeAdmin.isCurrentUserMember();
       for (AbstractBlam blamOperation : getBlamOperations()) {
-         if (admin || "all".equals(
+         if ("all".equals(
             blamOperation.getTarget()) || OseeProperties.isTargetAll() || blamOperation.getTarget().equals(target)) {
             // Create categories first (so can have them up top)
             for (String category : blamOperation.getCategories()) {
@@ -106,7 +106,7 @@ public class BlamContributionManager implements IXNavigateCommonItem {
       }
       // Add blams to categories
       for (AbstractBlam blamOperation : BlamContributionManager.getBlamOperations()) {
-         if (admin || "all".equals(
+         if ("all".equals(
             blamOperation.getTarget()) || OseeProperties.isTargetAll() || blamOperation.getTarget().equals(target)) {
             // If categories not specified, add to top level
             if (blamOperation.getCategories().isEmpty()) {
