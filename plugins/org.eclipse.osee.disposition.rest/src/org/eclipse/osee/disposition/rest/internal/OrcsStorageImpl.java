@@ -37,11 +37,12 @@ import org.eclipse.osee.disposition.rest.DispoConstants;
 import org.eclipse.osee.disposition.rest.internal.importer.coverage.CoverageUtil;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -119,13 +120,13 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public ArtifactReadable findUser() {
-      return getQuery().fromBranch(COMMON).andId(SystemUser.OseeSystem).getResults().getExactlyOne();
+   public UserId findUser() {
+      return SystemUser.OseeSystem;
    }
 
    @Override
-   public ArtifactReadable findUser(String userId) {
-      return getQuery().fromBranch(COMMON).andGuid(userId).getResults().getExactlyOne();
+   public UserId findUser(String userId) {
+      return UserId.valueOf(userId);
    }
 
    @Override
@@ -233,7 +234,7 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public Long createDispoProgram(ArtifactReadable author, String name) {
+   public Long createDispoProgram(UserId author, String name) {
       String normalizedName = "(DISPO)" + name;
       IOseeBranch branch = IOseeBranch.create(normalizedName);
 
@@ -243,7 +244,7 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public Long createDispoSet(ArtifactReadable author, BranchId branch, DispoSet descriptor) {
+   public Long createDispoSet(UserId author, BranchId branch, DispoSet descriptor) {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Create Dispo Set");
       ArtifactId creatdArtId = tx.createArtifact(DispoConstants.DispoSet, descriptor.getName());
       tx.setSoleAttributeValue(creatdArtId, DispoConstants.ImportPath, descriptor.getImportPath());
@@ -265,16 +266,16 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public boolean deleteDispoItem(ArtifactReadable author, BranchId branch, String itemId) {
+   public boolean deleteDispoItem(UserId author, BranchId branch, String itemId) {
       return deleteDispoEntityArtifact(author, branch, itemId, DispoConstants.DispoItem);
    }
 
    @Override
-   public boolean deleteDispoSet(ArtifactReadable author, BranchId branch, String setId) {
+   public boolean deleteDispoSet(UserId author, BranchId branch, String setId) {
       return deleteDispoEntityArtifact(author, branch, setId, DispoConstants.DispoSet);
    }
 
-   private boolean deleteDispoEntityArtifact(ArtifactReadable author, BranchId branch, String entityId, ArtifactTypeToken type) {
+   private boolean deleteDispoEntityArtifact(UserId author, BranchId branch, String entityId, ArtifactTypeToken type) {
       boolean toReturn = false;
       ArtifactReadable dispoArtifact = findDispoArtifact(branch, entityId);
       if (dispoArtifact != null) {
@@ -287,7 +288,7 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public void updateDispoSet(ArtifactReadable author, BranchId branch, String setId, DispoSet newData) {
+   public void updateDispoSet(UserId author, BranchId branch, String setId, DispoSet newData) {
       ArtifactReadable dispoSet = findDispoArtifact(branch, setId);
       DispoSetArtifact origSetAs = new DispoSetArtifact(dispoSet);
 
@@ -326,7 +327,7 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public void createDispoItems(ArtifactReadable author, BranchId branch, DispoSet parentSet, List<DispoItem> data) {
+   public void createDispoItems(UserId author, BranchId branch, DispoSet parentSet, List<DispoItem> data) {
       ArtifactReadable parentSetArt = findDispoArtifact(branch, parentSet.getGuid());
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Create Dispoable Item");
 
@@ -365,7 +366,7 @@ public class OrcsStorageImpl implements Storage {
       tx.commit();
    }
 
-   private void updateSingleItem(ArtifactReadable author, BranchId branch, ArtifactReadable currentItemArt, DispoItem newItemData, TransactionBuilder tx, boolean resetRerunFlag, DispoStorageMetadata metadata) {
+   private void updateSingleItem(ArtifactReadable currentItemArt, DispoItem newItemData, TransactionBuilder tx, boolean resetRerunFlag, DispoStorageMetadata metadata) {
       Date lastUpdate = newItemData.getLastUpdate();
       String name = newItemData.getName();
       Map<String, Discrepancy> newDiscrepancies = newItemData.getDiscrepanciesList();
@@ -445,15 +446,15 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public void updateDispoItem(ArtifactReadable author, BranchId branch, String dispoItemId, DispoItem data, DispoStorageMetadata metadata) {
+   public void updateDispoItem(UserId author, BranchId branch, String dispoItemId, DispoItem data, DispoStorageMetadata metadata) {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Update Dispo Item");
       ArtifactReadable dispoItemArt = findDispoArtifact(branch, dispoItemId);
-      updateSingleItem(author, branch, dispoItemArt, data, tx, false, metadata);
+      updateSingleItem(dispoItemArt, data, tx, false, metadata);
       tx.commit();
    }
 
    @Override
-   public void updateDispoItems(ArtifactReadable author, BranchId branch, Collection<DispoItem> data, boolean resetRerunFlag, String operation, DispoStorageMetadata metadata) {
+   public void updateDispoItems(UserId author, BranchId branch, Collection<DispoItem> data, boolean resetRerunFlag, String operation, DispoStorageMetadata metadata) {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, operation);
       boolean isCommitNeeded = false;
 
@@ -462,7 +463,7 @@ public class OrcsStorageImpl implements Storage {
          if (Strings.isValid(itemId)) {
             isCommitNeeded = true;
             ArtifactReadable dispoItemArt = findDispoArtifact(branch, newItem.getGuid());
-            updateSingleItem(author, branch, dispoItemArt, newItem, tx, resetRerunFlag, metadata);
+            updateSingleItem(dispoItemArt, newItem, tx, resetRerunFlag, metadata);
          }
       }
 
@@ -546,7 +547,7 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public String createDispoReport(BranchId branch, ArtifactReadable author, String contents, String operationTitle) {
+   public String createDispoReport(BranchId branch, UserId author, String contents, String operationTitle) {
       String toReturn = "";
 
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Update Report: " + operationTitle);
@@ -601,7 +602,7 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public void updateOperationSummary(ArtifactReadable author, BranchId branch, String setId, OperationReport summary) {
+   public void updateOperationSummary(UserId author, BranchId branch, String setId, OperationReport summary) {
       OperationReport newReport = DispoUtil.cleanOperationReport(summary);
       ArtifactReadable dispoSet = findDispoArtifact(branch, setId);
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Update Dispo Operation Report");
@@ -681,10 +682,11 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public ArtifactReadable findUserByName(String name) {
-      ArtifactReadable user =
+   public UserId findUserByName(String name) {
+      ArtifactId userArtId =
          getQuery().fromBranch(COMMON).andTypeEquals(CoreArtifactTypes.User).and(CoreAttributeTypes.Name,
-            name).getResults().getOneOrDefault(ArtifactReadable.SENTINEL);
+            name).getAtMostOneOrSentinal();
+      UserId user = UserId.valueOf(userArtId);
       if (user.isInvalid()) {
          user = findUser();
       }

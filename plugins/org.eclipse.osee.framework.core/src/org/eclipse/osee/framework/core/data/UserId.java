@@ -30,6 +30,10 @@ public interface UserId extends ArtifactId {
       return valueOf(Long.valueOf(id));
    }
 
+   public static UserId valueOf(ArtifactId id) {
+      return valueOf(id.getId());
+   }
+
    public static UserId valueOf(Long id) {
       final class UserIdImpl extends BaseId implements UserId {
          public UserIdImpl(Long id) {

@@ -20,6 +20,7 @@ import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -29,11 +30,11 @@ public interface DispoQuery {
 
    Map<String, ArtifactReadable> getCoverageUnits(BranchId branch, Long artifactUuid);
 
-   ArtifactReadable findUser();
+   UserId findUser();
 
-   ArtifactReadable findUser(String userId);
+   UserId findUser(String userId);
 
-   ArtifactReadable findUserByName(String name);
+   UserId findUserByName(String name);
 
    boolean isUniqueProgramName(String name);
 

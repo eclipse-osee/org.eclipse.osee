@@ -17,31 +17,31 @@ import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoStorageMetadata;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.UserId;
 
 /**
  * @author Angel Avila
  */
 public interface DispoWriter {
 
-   Long createDispoProgram(ArtifactReadable author, String name);
+   Long createDispoProgram(UserId author, String name);
 
-   Long createDispoSet(ArtifactReadable author, BranchId branch, DispoSet descriptor);
+   Long createDispoSet(UserId author, BranchId branch, DispoSet descriptor);
 
-   void updateDispoSet(ArtifactReadable author, BranchId branch, String dispoSetId, DispoSet data);
+   void updateDispoSet(UserId author, BranchId branch, String dispoSetId, DispoSet data);
 
-   boolean deleteDispoSet(ArtifactReadable author, BranchId branch, String setId);
+   boolean deleteDispoSet(UserId author, BranchId branch, String setId);
 
-   void createDispoItems(ArtifactReadable author, BranchId branch, DispoSet parentSet, List<DispoItem> data);
+   void createDispoItems(UserId author, BranchId branch, DispoSet parentSet, List<DispoItem> data);
 
-   boolean deleteDispoItem(ArtifactReadable author, BranchId branch, String itemId);
+   boolean deleteDispoItem(UserId author, BranchId branch, String itemId);
 
-   void updateDispoItem(ArtifactReadable author, BranchId branch, String dispoItemId, DispoItem data, DispoStorageMetadata metadata);
+   void updateDispoItem(UserId author, BranchId branch, String dispoItemId, DispoItem data, DispoStorageMetadata metadata);
 
-   void updateDispoItems(ArtifactReadable author, BranchId branch, Collection<DispoItem> data, boolean resetRerunFlag, String operation, DispoStorageMetadata metadata);
+   void updateDispoItems(UserId author, BranchId branch, Collection<DispoItem> data, boolean resetRerunFlag, String operation, DispoStorageMetadata metadata);
 
-   void updateOperationSummary(ArtifactReadable author, BranchId branch, String setId, OperationReport summary);
+   void updateOperationSummary(UserId author, BranchId branch, String setId, OperationReport summary);
 
-   String createDispoReport(BranchId branch, ArtifactReadable author, String contens, String operationTitle);
+   String createDispoReport(BranchId branch, UserId author, String contens, String operationTitle);
 
 }

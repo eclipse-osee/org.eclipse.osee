@@ -49,6 +49,7 @@ import org.eclipse.osee.disposition.rest.internal.importer.coverage.CoverageAdap
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -140,21 +141,21 @@ public class DispoApiImpl implements DispoApi {
 
    @Override
    public Long createDispoProgram(String name, String userName) {
-      ArtifactReadable author = getQuery().findUserByName(userName);
+      UserId author = getQuery().findUserByName(userName);
       return getWriter().createDispoProgram(author, name);
    }
 
    @Override
    public Long createDispoSet(BranchId branch, DispoSetDescriptorData descriptor, String userName) {
       DispoSetData newSet = dataFactory.creteSetDataFromDescriptor(descriptor);
-      ArtifactReadable author = getQuery().findUserByName(userName);
+      UserId author = getQuery().findUserByName(userName);
       return getWriter().createDispoSet(author, branch, newSet);
    }
 
    private void createDispoItems(BranchId branch, String setId, List<DispoItem> dispoItems, String userName) {
       DispoSet parentSet = getQuery().findDispoSetsById(branch, setId);
       if (parentSet != null) {
-         ArtifactReadable author = getQuery().findUserByName(userName);
+         UserId author = getQuery().findUserByName(userName);
          getWriter().createDispoItems(author, branch, parentSet, dispoItems);
       }
    }
@@ -177,7 +178,7 @@ public class DispoApiImpl implements DispoApi {
 
          DispoItem updatedItem;
          updatedItem = dataFactory.createUpdatedItem(annotationsList, discrepanciesList);
-         ArtifactReadable author = getQuery().findUserByName(userName);
+         UserId author = getQuery().findUserByName(userName);
 
          DispoStorageMetadata metadata = new DispoStorageMetadata();
 
@@ -199,7 +200,7 @@ public class DispoApiImpl implements DispoApi {
          if (newSet.getOperation() != null) {
             runOperation(branch, dispSetToEdit, newSet, userName, false);
          } else {
-            ArtifactReadable author = getQuery().findUserByName(userName);
+            UserId author = getQuery().findUserByName(userName);
             getWriter().updateDispoSet(author, branch, dispSetToEdit.getGuid(), newSet);
          }
       }
@@ -223,7 +224,7 @@ public class DispoApiImpl implements DispoApi {
             filterState)) {
             runOperation(branch, set, newSet, userName, true);
          } else {
-            ArtifactReadable author = getQuery().findUserByName(userName);
+            UserId author = getQuery().findUserByName(userName);
             getWriter().updateDispoSet(author, branch, set.getGuid(), newSet);
          }
       }
@@ -243,7 +244,7 @@ public class DispoApiImpl implements DispoApi {
 
    @Override
    public boolean deleteDispoSet(BranchId branch, String setId, String userName) {
-      ArtifactReadable author = getQuery().findUserByName(userName);
+      UserId author = getQuery().findUserByName(userName);
       updateBroadcaster.broadcastDeleteSet(getDispoSetById(branch, setId));
       return getWriter().deleteDispoSet(author, branch, setId);
    }
@@ -266,7 +267,7 @@ public class DispoApiImpl implements DispoApi {
 
       // We will not allow the user to do mass edit of Annotations or discrepancies
       if (assignUser || dispoItemToEdit != null && newDispoItem.getAnnotationsList() == null && newDispoItem.getDiscrepanciesList() == null) {
-         ArtifactReadable author = getQuery().findUserByName(userName);
+         UserId author = getQuery().findUserByName(userName);
          DispoStorageMetadata metadata = new DispoStorageMetadata();
 
          getWriter().updateDispoItem(author, branch, dispoItemToEdit.getGuid(), newDispoItem, metadata);
@@ -345,7 +346,7 @@ public class DispoApiImpl implements DispoApi {
       }
 
       // Generate report
-      ArtifactReadable author = getQuery().findUserByName(userName);
+      UserId author = getQuery().findUserByName(userName);
       getWriter().updateOperationSummary(author, branch, setId, report);
       return wasUpdated;
    }
@@ -353,7 +354,7 @@ public class DispoApiImpl implements DispoApi {
    private boolean editDispoItems(BranchId branch, String setId, Collection<DispoItem> dispoItems, boolean resetRerunFlag, String operation, String userName) {
       boolean wasUpdated = false;
 
-      ArtifactReadable author = getQuery().findUserByName(userName);
+      UserId author = getQuery().findUserByName(userName);
       DispoStorageMetadata metadata = new DispoStorageMetadata();
       getWriter().updateDispoItems(author, branch, dispoItems, resetRerunFlag, operation, metadata);
       if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
@@ -366,7 +367,7 @@ public class DispoApiImpl implements DispoApi {
 
    @Override
    public boolean deleteDispoItem(BranchId branch, String itemId, String userName) {
-      ArtifactReadable author = getQuery().findUserByName(userName);
+      UserId author = getQuery().findUserByName(userName);
       return getWriter().deleteDispoItem(author, branch, itemId);
    }
 
@@ -402,7 +403,7 @@ public class DispoApiImpl implements DispoApi {
             dispoConnector.connectAnnotation(newAnnotation, discrepanciesList);
          }
          annotationsList.set(indexOfAnnotation, newAnnotation);
-         ArtifactReadable author = getQuery().findUserByName(userName);
+         UserId author = getQuery().findUserByName(userName);
          DispoItemData modifiedDispoItem = DispoUtil.itemArtToItemData(getDispoItemById(branch, itemId), true);
 
          modifiedDispoItem.setAnnotationsList(annotationsList);
@@ -437,7 +438,7 @@ public class DispoApiImpl implements DispoApi {
 
          DispoItem updatedItem = dataFactory.createUpdatedItem(newAnnotationsList, discrepanciesList);
 
-         ArtifactReadable author = getQuery().findUserByName(userName);
+         UserId author = getQuery().findUserByName(userName);
          DispoStorageMetadata metadata = new DispoStorageMetadata();
          getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), updatedItem, metadata);
          if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
@@ -543,7 +544,7 @@ public class DispoApiImpl implements DispoApi {
    private void runOperation(BranchId branch, DispoSet setToEdit, DispoSetData newSet, String userName, boolean isIterative) {
       OperationReport report = new OperationReport();
       String operation = newSet.getOperation();
-      ArtifactReadable author = getQuery().findUserByName(userName);
+      UserId author = getQuery().findUserByName(userName);
       if (operation.equals(DispoStrings.Operation_Import)) {
          try {
             HashMap<String, DispoItem> nameToItemMap = getItemsMap(branch, setToEdit);
@@ -768,7 +769,7 @@ public class DispoApiImpl implements DispoApi {
       newDate.setTime(System.currentTimeMillis());
       dispoSetData.setTime(newDate);
       dispoSetData.setRerunList(DispoStrings.BATCH_RERUN_LIST + sb.toString() + DispoStrings.BATCH_RERUN_LIST_END);
-      ArtifactReadable author = getQuery().findUser();
+      UserId author = getQuery().findUser();
       storageProvider.get().updateDispoSet(author, branch, destSetId, dispoSetData);
    }
 
@@ -820,7 +821,7 @@ public class DispoApiImpl implements DispoApi {
          newItem.setDiscrepanciesList(discrepancyList);
          newItem.setStatus(dispoConnector.getItemStatus(newItem));
 
-         ArtifactReadable author = getQuery().findUser();
+         UserId author = getQuery().findUser();
          DispoStorageMetadata metadata = new DispoStorageMetadata();
          getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), newItem, metadata);
          if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
@@ -858,7 +859,7 @@ public class DispoApiImpl implements DispoApi {
             dispoItems.add(newItem);
          }
 
-         ArtifactReadable author = getQuery().findUser();
+         UserId author = getQuery().findUser();
          DispoStorageMetadata metadata = new DispoStorageMetadata();
 
          String operation = String.format("Create Dispo Discrepancies in Program [%s], Item [%s]", branch, itemId);
@@ -891,7 +892,7 @@ public class DispoApiImpl implements DispoApi {
             throw new OseeCoreException(ex);
          }
 
-         ArtifactReadable author = getQuery().findUser();
+         UserId author = getQuery().findUser();
          getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), modifiedDispoItem, metadata);
          if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
             updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(modifiedDispoItem),
@@ -925,7 +926,7 @@ public class DispoApiImpl implements DispoApi {
 
          DispoStorageMetadata metadata = new DispoStorageMetadata();
 
-         ArtifactReadable author = getQuery().findUser();
+         UserId author = getQuery().findUser();
          getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), modifiedDispoItem, metadata);
          if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
             updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(modifiedDispoItem),
@@ -946,7 +947,7 @@ public class DispoApiImpl implements DispoApi {
          newItem.setDiscrepanciesList(discrepanciesList);
          newItem.setStatus(dispoConnector.getItemStatus(newItem));
 
-         ArtifactReadable author = getQuery().findUser();
+         UserId author = getQuery().findUser();
          DispoStorageMetadata metadata = new DispoStorageMetadata();
          getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), newItem, metadata);
          if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
@@ -971,7 +972,7 @@ public class DispoApiImpl implements DispoApi {
       List<DispoItem> newItem = new ArrayList<>();
       newItem.add(dispoItemData);
 
-      ArtifactReadable author = getQuery().findUser();
+      UserId author = getQuery().findUser();
       DispoSet parentSet = getQuery().findDispoSetsById(branch, data.getSetData().getDispoSetId());
       if (parentSet != null) {
          getWriter().createDispoItems(author, branch, parentSet, newItem);

@@ -38,9 +38,9 @@ import org.eclipse.osee.disposition.rest.internal.importer.TmoImporter;
 import org.eclipse.osee.disposition.rest.internal.importer.coverage.LisFileParser;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -68,7 +68,7 @@ public class DispoApiTest {
    @Mock
    private DispoItem dispoItem;
    @Mock
-   private ArtifactReadable author;
+   private UserId author;
    @Mock
    private BranchId branch;
    @Mock
