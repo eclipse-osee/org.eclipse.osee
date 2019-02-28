@@ -138,7 +138,7 @@ public class ExportSet {
                   case "Deactivated_J4_Connector":
                      toReturn = "Test_Deactivated_J4";
                      break;
-                  case "Deactivated_Compile_time":
+                  case "Deactivated_Compile_Time":
                      toReturn = "Test_Deactivated_Compile";
                      break;
                   default:
@@ -218,6 +218,8 @@ public class ExportSet {
    }
 
    public void runCoverageReport(BranchId branch, DispoSet setPrimary, String option, OutputStream outputStream) {
+      Map<String, String> resolutionsValueToText = new HashMap<>();
+      Set<CoverageLevel> levelsInSet = new HashSet<>();
       Map<CoverageLevel, Map<String, Pair<WrapInt, WrapInt>>> leveltoUnitToCovered = new HashMap<>();
       for (CoverageLevel level : CoverageLevel.values()) {
          leveltoUnitToCovered.put(level, new HashMap<>());
@@ -236,6 +238,7 @@ public class ExportSet {
          Map<String, WrapInt> innerMap = new HashMap<>();
          for (ResolutionMethod resolutionType : config.getValidResolutions()) {
             innerMap.put(resolutionType.getText(), new WrapInt(0));
+            resolutionsValueToText.put(resolutionType.getValue(), resolutionType.getText());
          }
          // Needed for Level A, pairs can but should not have different coverage methods
          innerMap.put("MIXED", new WrapInt(0));
@@ -263,7 +266,7 @@ public class ExportSet {
             List<DispoAnnotationData> annotations = item.getAnnotationsList();
             for (DispoAnnotationData annotation : annotations) {
                writeRowAnnotation(sheetWriter, columns, item, annotation, setPrimary.getName(),
-                  levelToResolutionTypesToCount, leveltoUnitToCovered, mcdcToCoverageData);
+                  levelToResolutionTypesToCount, leveltoUnitToCovered, mcdcToCoverageData, levelsInSet);
             }
          }
 
@@ -271,31 +274,53 @@ public class ExportSet {
 
          // START COVER SHEET
          sheetWriter.startSheet("Cover Sheet", headers.length);
-         Object[] coverSheetHeaders = {" ", "MCDC", "Branch", "Statement"};
+
+         List<String> coverSheetHeadersList = new ArrayList<>();
+         coverSheetHeadersList.add(" ");
+         if (levelsInSet.contains(CoverageLevel.A)) {
+            coverSheetHeadersList.add("MCDC");
+         }
+         if (levelsInSet.contains(CoverageLevel.B)) {
+            coverSheetHeadersList.add("Branch");
+         }
+         if (levelsInSet.contains(CoverageLevel.C)) {
+            coverSheetHeadersList.add("Statement");
+         }
+
+         Object[] coverSheetHeaders = coverSheetHeadersList.toArray();
          sheetWriter.writeRow(coverSheetHeaders);
          Object[] row = new String[CoverageLevel.values().length + 1];
          row[0] = "All Coverage Methods";
 
          // send correct numbers according to level for second param
-         int index = 1;
-         for (CoverageLevel level : CoverageLevel.values()) {
-            row[index++] = getPercent(levelToCoveredTotalCount.get(level).getValue(),
+         final WrapInt indexForLambda = new WrapInt(1);
+         levelsInSet.forEach(level -> {
+            row[indexForLambda.getValue()] = getPercent(levelToCoveredTotalCount.get(level).getValue(),
                levelToTotalCount.get(level).getValue(), false);
-         }
+            indexForLambda.inc();
+         });
          sheetWriter.writeRow(row);
 
          // Try to get Resolution from Level A if available, otherwise get from C
-         Set<String> resolutionTypes = levelToResolutionTypesToCount.get(CoverageLevel.A).keySet();
-         if (resolutionTypes.isEmpty()) {
+         Set<String> resolutionTypes;
+         if (levelsInSet.contains(CoverageLevel.A)) {
+            resolutionTypes = levelToResolutionTypesToCount.get(CoverageLevel.A).keySet();
+         } else if (levelsInSet.contains(CoverageLevel.B)) {
+            resolutionTypes = levelToResolutionTypesToCount.get(CoverageLevel.B).keySet();
+         } else {
             resolutionTypes = levelToResolutionTypesToCount.get(CoverageLevel.C).keySet();
          }
+
          for (String resolution : resolutionTypes) {
-            index = 0;
-            row[index++] = resolution;
-            for (CoverageLevel level : CoverageLevel.values()) {
-               row[index++] = getPercent(levelToResolutionTypesToCount.get(level).get(resolution).getValue(),
+            WrapInt index1 = new WrapInt(0);
+            row[index1.getValue()] = resolutionsValueToText.containsKey(resolution) ? resolutionsValueToText.get(
+               resolution) : "Resolution not in Config--" + resolution;
+            index1.inc();
+            levelsInSet.forEach(level -> {
+               row[index1.getValue()] = getPercent(levelToResolutionTypesToCount.get(level).get(resolution).getValue(),
                   levelToTotalCount.get(level).getValue(), false);
-            }
+               index1.inc();
+            });
             sheetWriter.writeRow(row);
          }
 
@@ -314,6 +339,8 @@ public class ExportSet {
          if (units.isEmpty()) {
             units = leveltoUnitToCovered.get(CoverageLevel.C).keySet();
          }
+
+         int index = 0;
          for (String unit : units) {
             index = 0;
             row2[index++] = unit;
@@ -403,7 +430,7 @@ public class ExportSet {
       return String.format("%2.2f%% - %d / %d", percent, complete, total);
    }
 
-   private void writeRowAnnotation(ExcelXmlWriter sheetWriter, int columns, DispoItem item, DispoAnnotationData annotation, String setName, Map<CoverageLevel, Map<String, WrapInt>> levelToResolutionToCount, Map<CoverageLevel, Map<String, Pair<WrapInt, WrapInt>>> levelToUnitsToCovered, Map<String, MCDCCoverageData> mcdcToCoverageData) throws IOException {
+   private void writeRowAnnotation(ExcelXmlWriter sheetWriter, int columns, DispoItem item, DispoAnnotationData annotation, String setName, Map<CoverageLevel, Map<String, WrapInt>> levelToResolutionToCount, Map<CoverageLevel, Map<String, Pair<WrapInt, WrapInt>>> levelToUnitsToCovered, Map<String, MCDCCoverageData> mcdcToCoverageData, Set<CoverageLevel> levelsInSet) throws IOException {
       String[] row = new String[columns];
       int index = 0;
       row[index++] = getNameSpace(item, setName);
@@ -430,15 +457,16 @@ public class ExportSet {
 
       // location ex. 24, 24.T, 24.A.RESULT
       calculateTotals(levelToResolutionToCount, levelToUnitsToCovered, unit, resolutionType, mcdcToCoverageData,
-         annotation.getLocationRefs());
+         annotation.getLocationRefs(), levelsInSet);
    }
 
-   private void calculateTotals(Map<CoverageLevel, Map<String, WrapInt>> levelToResolutionToCount, Map<CoverageLevel, Map<String, Pair<WrapInt, WrapInt>>> levelToUnitsToCovered, String unit, String resolutionType, Map<String, MCDCCoverageData> mcdcToCoverageData, String location) {
+   private void calculateTotals(Map<CoverageLevel, Map<String, WrapInt>> levelToResolutionToCount, Map<CoverageLevel, Map<String, Pair<WrapInt, WrapInt>>> levelToUnitsToCovered, String unit, String resolutionType, Map<String, MCDCCoverageData> mcdcToCoverageData, String location, Set<CoverageLevel> levelsInSet) {
       // Determine what level count to increment by location simple number = C, number.T or number.number.RESULT = B, number.number.T = A
       CoverageLevel thisAnnotationsLevel = getLevel(location);
 
       switch (thisAnnotationsLevel) {
          case A: {
+            levelsInSet.add(CoverageLevel.A);
             // Update total pairs count
             // MCDC pairs have different rules, T and F combo make up one pair so using bitflags
             String mcdcName = getNameFromLocation(location);
@@ -463,7 +491,9 @@ public class ExportSet {
          }
             break;
          case B:
+            levelsInSet.add(CoverageLevel.B);
          case C: {
+            levelsInSet.add(CoverageLevel.C);
             levelToTotalCount.get(thisAnnotationsLevel).inc();
 
             uptickBorC(levelToResolutionToCount.get(thisAnnotationsLevel),
