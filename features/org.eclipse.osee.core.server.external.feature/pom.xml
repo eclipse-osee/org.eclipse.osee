@@ -26,9 +26,17 @@
 						<configuration>
 							<excludes>
 								<plugin id="org.apache.xerces" />
+								<plugin id="org.apache.commons.cli" />
+		    					        <plugin id="org.apache.commons.io" />
+								<plugin id="org.apache.commons.dbcp" />
+								<plugin id="org.apache.commons.pool" />
+								<plugin id="org.apache.commons.lang" />
+								<plugin id="org.eclipse.core.net" />
+								<plugin id="org.aopalliance" />
 								<plugin id="javax.servlet" />
 								<plugin id="javax.ws.rs" />
 								<plugin id="javax.xml" />
+								<plugin id="javax.wsdl" />
 								<plugin id="org.apache.xml.resolver" />
 								<plugin id="org.apache.xml.serializer" />
 								<plugin id="org.json" />
@@ -45,6 +53,8 @@
 								<plugin id="org.eclipse.jetty.servlet" />
 								<plugin id="org.eclipse.jetty.util" />
 								<plugin id="ch.qos.logback.slf4j" />
+								<plugin id="org.eclipse.equinox.security" />
+								<plugin id="org.jsoup" />
 							</excludes>
 						</configuration>
 					</execution>
