@@ -66,22 +66,21 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       IAtsUser useUser = null;
-      if (selectedUser != null) {
-         useUser = selectedUser;
-      } else {
-         IAtsUserServiceClient userServiceClient = AtsClientService.get().getUserServiceClient();
-         UserListDialog dialog = new UserListDialog(Displays.getActiveShell(), "Select User",
-            userServiceClient.getOseeUsersSorted(Active.Active));
-         dialog.setMultiSelect(false);
-         int result = dialog.open();
-         if (result == 0) {
-            if (dialog.getSelectedFirst() == null) {
-               AWorkbench.popup("ERROR", "Must select user");
-               return;
-            }
-            useUser = userServiceClient.getUserFromOseeUser(dialog.getSelection());
+
+      IAtsUserServiceClient userServiceClient = AtsClientService.get().getUserServiceClient();
+      UserListDialog dialog = new UserListDialog(Displays.getActiveShell(), "Select User",
+         userServiceClient.getOseeUsersSorted(Active.Active));
+      dialog.setMultiSelect(false);
+      int result = dialog.open();
+      if (result == 0) {
+         if (dialog.getSelectedFirst() == null) {
+            AWorkbench.popup("ERROR", "Must select user");
+            return;
          }
+         useUser = userServiceClient.getUserFromOseeUser(dialog.getSelection());
       }
+
+      selectedUser = useUser;
 
       boolean forcePend = Arrays.asList(tableLoadOptions).contains(TableLoadOption.ForcePend);
       if (useUser != null) {
