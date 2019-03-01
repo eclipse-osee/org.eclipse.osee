@@ -59,7 +59,7 @@ public class ThreadActivity {
 
          StackTraceElement[] stackTrace = threadStats[i].threadInfo.getStackTrace();
          if (stackTrace.length > 0) {
-            int stackCount = Math.min(4, stackTrace.length);
+            int stackCount = Math.min(12, stackTrace.length);
             for (int j = 0; j < stackCount; j++) {
                threads.add("trace: " + String.valueOf(stackTrace[j]));
             }
