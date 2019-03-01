@@ -65,17 +65,9 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    public TransactionBuilder getTransaction() {
       if (transaction == null) {
-         transaction =
-            orcsApi.getTransactionFactory().createTransaction(atsApi.getAtsBranch(), getUser(asUser), comment);
+         transaction = orcsApi.getTransactionFactory().createTransaction(atsApi.getAtsBranch(), asUser, comment);
       }
       return transaction;
-   }
-
-   private ArtifactReadable getUser(IAtsUser user) {
-      if (user.getStoreObject() instanceof ArtifactReadable) {
-         return (ArtifactReadable) user.getStoreObject();
-      }
-      return (ArtifactReadable) atsApi.getQueryService().getArtifact(user.getId());
    }
 
    @Override

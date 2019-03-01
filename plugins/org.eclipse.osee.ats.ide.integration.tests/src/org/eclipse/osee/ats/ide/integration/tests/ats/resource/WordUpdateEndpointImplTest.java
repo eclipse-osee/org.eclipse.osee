@@ -111,15 +111,14 @@ public class WordUpdateEndpointImplTest {
    }
 
    private WordUpdateChange makeRequest(BranchId branch, List<Long> artifacts, String wordData, String comment) {
-      byte[] data = wordData.getBytes();
       WordUpdateData wud = new WordUpdateData();
-      wud.setWordData(data);
+      wud.setWordData(wordData.getBytes());
       wud.setArtifacts(artifacts);
       wud.setBranch(branch);
       wud.setThreeWayMerge(false);
       wud.setComment(comment);
       wud.setMultiEdit(false);
-      wud.setUserArtId((long) UserManager.getUser().getArtId());
+      wud.setUserArtId(UserManager.getUser());
 
       return HttpWordUpdateRequest.updateWordArtifacts(wud);
    }

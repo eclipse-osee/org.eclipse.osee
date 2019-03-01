@@ -12,13 +12,14 @@ package org.eclipse.osee.define.api;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.UserId;
 
 /**
  * @author David W. Miller
  */
 public class WordUpdateData {
    private byte[] wordData;
-   private Long userArtId;
+   private UserId userArtId;
    private List<Long> artifacts;
    private BranchId branch;
    private boolean threeWayMerge;
@@ -33,11 +34,11 @@ public class WordUpdateData {
       this.wordData = wordData;
    }
 
-   public Long getUserArtId() {
+   public UserId getUserArtId() {
       return userArtId;
    }
 
-   public void setUserArtId(Long userArtId) {
+   public void setUserArtId(UserId userArtId) {
       this.userArtId = userArtId;
    }
 

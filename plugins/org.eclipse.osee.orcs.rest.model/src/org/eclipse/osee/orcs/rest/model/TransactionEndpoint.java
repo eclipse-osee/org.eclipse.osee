@@ -21,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 
 /**
@@ -56,5 +57,5 @@ public interface TransactionEndpoint {
 
    @PUT
    @Path("{user}/branch/{branch-id}/transaction/{tx-id}/artifact/{art-id}/comment")
-   Response replaceWithBaselineTxVersion(@PathParam("user") String userId, @PathParam("branch-id") BranchId branchId, @PathParam("tx-id") TransactionId txId, @PathParam("art-id") int artId, String comment);
+   Response replaceWithBaselineTxVersion(@PathParam("user") UserId userId, @PathParam("branch-id") BranchId branchId, @PathParam("tx-id") TransactionId txId, @PathParam("art-id") int artId, String comment);
 }

@@ -111,8 +111,8 @@ public class WordUpdateArtifact {
          boolean singleArtifact = extractorDatas.size() == 1;
          boolean containsOleData = false;
          boolean containsWordData = false;
-         ArtifactId account = ArtifactId.valueOf(data.getUserArtId());
-         TransactionBuilder txBuilder = txFactory.createTransaction(data.getBranch(), account, data.getComment());
+         TransactionBuilder txBuilder =
+            txFactory.createTransaction(data.getBranch(), data.getUserArtId(), data.getComment());
          for (WordExtractorData extractorData : extractorDatas) {
             ArtifactReadable artifact = getArtifact(data.getBranch(), extractorData.getGuid());
             WordArtifactChange artChange = new WordArtifactChange();
@@ -195,7 +195,7 @@ public class WordUpdateArtifact {
          }
          TransactionToken tx = txBuilder.commit();
          if (tx.isValid()) {
-            postProcessChange(tx, updateChange, account);
+            postProcessChange(tx, updateChange, data.getUserArtId());
          }
 
       } catch (Exception ex) {

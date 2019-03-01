@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.Transaction;
@@ -72,7 +73,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    }
 
    @Override
-   public Response replaceWithBaselineTxVersion(String userId, BranchId branchId, TransactionId txId, int artId, String comment) {
+   public Response replaceWithBaselineTxVersion(UserId userId, BranchId branchId, TransactionId txId, int artId, String comment) {
       return OrcsRestUtil.asResponse(
          orcsApi.getTransactionFactory().replaceWithBaselineTxVersion(userId, branchId, txId, artId, comment));
    }

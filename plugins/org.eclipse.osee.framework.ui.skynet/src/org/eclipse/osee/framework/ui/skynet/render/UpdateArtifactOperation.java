@@ -74,7 +74,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
       wud.setThreeWayMerge(threeWayMerge);
       wud.setComment(getComment());
       wud.setMultiEdit(UserManager.getBooleanSetting(MsWordPreferencePage.MUTI_EDIT_SAVE_ALL_CHANGES));
-      wud.setUserArtId(UserManager.getUser().getId());
+      wud.setUserArtId(UserManager.getUser());
 
       WordUpdateChange change = HttpWordUpdateRequest.updateWordArtifacts(wud);
       postProcessChange(change);

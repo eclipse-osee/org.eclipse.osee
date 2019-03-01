@@ -29,14 +29,13 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
-import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
 /**
  * @author Ryan D. Brooks
@@ -193,11 +192,7 @@ public final class DataRightsSwReqAndCodeResource {
    }
 
    private TransactionBuilder createTxBuilder(String comment, BranchId branchId) {
-      TransactionFactory txFactory = orcsApi.getTransactionFactory();
-      ArtifactReadable userArtifact =
-         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andUuid(50).getResults().getExactlyOne();
-
-      return txFactory.createTransaction(branchId, userArtifact, comment);
+      return orcsApi.getTransactionFactory().createTransaction(branchId, SystemUser.OseeSystem, comment);
    }
 
    private void setBestValue(TransactionBuilder txBuilder, ArtifactReadable source, ArtifactReadable dest, AttributeTypeToken attributeType, StringBuilder strb) {

@@ -14,13 +14,11 @@ import com.google.common.collect.Lists;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -76,7 +74,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public TransactionBuilder createTransaction(BranchId branch, ArtifactId author, String comment) {
+   public TransactionBuilder createTransaction(BranchId branch, UserId author, String comment) {
       Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(author, "author");
       Conditions.checkNotNullOrEmpty(comment, "comment");
@@ -88,7 +86,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
       TransactionBuilderImpl orcsTxn =
          new TransactionBuilderImpl(txCallableFactory, txDataManager, txData, orcsApi, keyValueOps);
       orcsTxn.setComment(comment);
-      orcsTxn.setAuthor(UserId.valueOf(author.getId()));
+      orcsTxn.setAuthor(author);
       return orcsTxn;
    }
 
@@ -124,17 +122,14 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public boolean replaceWithBaselineTxVersion(String userId, BranchId branchId, TransactionId txId, int artId, String comment) {
+   public boolean replaceWithBaselineTxVersion(UserId userId, BranchId branchId, TransactionId txId, int artId, String comment) {
       boolean introduced = false;
-      ArtifactReadable userReadable =
-         queryFactory.fromBranch(CoreBranches.COMMON).andGuid(userId).getResults().getOneOrDefault(
-            ArtifactReadable.SENTINEL);
       ArtifactReadable baselineArtifact =
-         queryFactory.fromBranch(branchId).fromTransaction(txId).andUuid(artId).getResults().getOneOrDefault(
+         queryFactory.fromBranch(branchId).fromTransaction(txId).andId(artId).getResults().getOneOrDefault(
             ArtifactReadable.SENTINEL);
 
-      if (userReadable.isValid() && baselineArtifact.isValid()) {
-         TransactionBuilder tx = createTransaction(branchId, userReadable, comment);
+      if (userId.isValid() && baselineArtifact.isValid()) {
+         TransactionBuilder tx = createTransaction(branchId, userId, comment);
          ArtifactReadable destination =
             queryFactory.fromBranch(branchId).includeDeletedArtifacts().andUuid(artId).getResults().getOneOrDefault(
                ArtifactReadable.SENTINEL);

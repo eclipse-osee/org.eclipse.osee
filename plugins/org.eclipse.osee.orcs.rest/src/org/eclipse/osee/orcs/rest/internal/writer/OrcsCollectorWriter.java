@@ -24,8 +24,8 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -54,7 +54,7 @@ public class OrcsCollectorWriter {
    private Map<Long, ArtifactId> idToArtifact;
    private TransactionBuilder transaction;
    private final BranchId branch;
-   private ArtifactReadable user;
+   private UserId user;
    private final XResultData results;
 
    public OrcsCollectorWriter(OrcsApi orcsApi, OwCollector collector, XResultData results) {
@@ -404,10 +404,9 @@ public class OrcsCollectorWriter {
       return transaction;
    }
 
-   private ArtifactReadable getUser() {
+   private UserId getUser() {
       if (user == null) {
-         user = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.UserId,
-            collector.getAsUserId()).getResults().getExactlyOne();
+         user = UserId.valueOf(collector.getAsUserId());
       }
       return user;
    }

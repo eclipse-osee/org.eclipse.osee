@@ -19,7 +19,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfiguration;
@@ -29,7 +28,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.user.AtsCoreUsers;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
 import org.eclipse.osee.ats.rest.internal.demo.DemoDatabaseConfig;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -39,9 +38,11 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -123,7 +124,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       Conditions.checkNotNullOrEmpty(newBranchName, "newBranchName");
       String userId = form.getFirst("userId");
       Conditions.checkNotNullOrEmpty(userId, "UserId");
-      ArtifactId user = atsApi.getUserService().getUserById(userId).getStoreObject();
+      IAtsUser user = atsApi.getUserService().getUserById(userId);
       if (user == null) {
          logger.error("User by id [%s] does not exist", userId);
       }
@@ -142,9 +143,9 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       return config;
    }
 
-   private void introduceAtsHeadingArtifacts(BranchId fromBranch, BranchId newBranch, ArtifactId userArt) {
+   private void introduceAtsHeadingArtifacts(BranchId fromBranch, BranchId newBranch, UserId userId) {
       TransactionBuilder tx =
-         orcsApi.getTransactionFactory().createTransaction(newBranch, userArt, "Add ATS Configuration");
+         orcsApi.getTransactionFactory().createTransaction(newBranch, userId, "Add ATS Configuration");
 
       ArtifactId headingArt = introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.HeadingFolder, newBranch,
          CoreArtifactTokens.DefaultHierarchyRoot, null);
@@ -195,9 +196,9 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       return artifact;
    }
 
-   private AtsConfiguration createConfigArtifactOnCommon(String branchName, ArtifactId userArt, BranchId branch) {
+   private AtsConfiguration createConfigArtifactOnCommon(String branchName, UserId userId, BranchId branch) {
       TransactionBuilder tx =
-         orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, userArt, "Add ATS Configuration");
+         orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, userId, "Add ATS Configuration");
       AtsConfiguration config = new AtsConfiguration();
       config.setName(branchName);
       config.setBranchId(branch);
@@ -209,7 +210,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsApi, orcsApi);
 
       // Get or create Configs folder
-      ArtifactId configsFolderArt = update.getOrCreateConfigsFolder(userArt, rd);
+      ArtifactId configsFolderArt = update.getOrCreateConfigsFolder(userId, rd);
       if (rd.isErrors()) {
          throw new OseeStateException(rd.toString());
       }
@@ -233,8 +234,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @Override
    public Response storeWorkDef(JaxAtsWorkDef jaxWorkDef) {
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,
-         atsApi.getQueryService().getArtifact((IAtsObject) AtsCoreUsers.SYSTEM_USER),
-         "Store Work Definition " + jaxWorkDef.getName());
+         SystemUser.OseeSystem, "Store Work Definition " + jaxWorkDef.getName());
       ArtifactReadable workDefArt =
          (ArtifactReadable) atsApi.getQueryService().getArtifactByNameOrSentinel(AtsArtifactTypes.WorkDefinition,
             jaxWorkDef.getName());

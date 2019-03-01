@@ -14,12 +14,11 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -51,7 +50,7 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
          monitor.beginTask("Reverting artifact(s)", artifacts.size());
          if (!artifacts.isEmpty()) {
             OseeClient client = ServiceUtil.getOseeClient();
-            TransactionEndpoint txBuilder = client.getTransactionEndpoint();
+            TransactionEndpoint TransactionEndpoint = client.getTransactionEndpoint();
             Artifact firstArtifact = artifacts.iterator().next();
             TransactionRecord txRecord = BranchManager.getBaseTransaction(firstArtifact.getBranch());
             BranchId branch = firstArtifact.getBranch();
@@ -63,10 +62,9 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
                   ArtifactQuery.getHistoricalArtifactOrNull(artifact, txRecord, DeletionFlag.INCLUDE_DELETED);
                try {
                   if (sourceArtifact != null) {
-                     String userId = ClientSessionManager.getCurrentUserToken().getUserId();
-                     User user = UserManager.getUserByUserId(userId);
-                     txBuilder.replaceWithBaselineTxVersion(user.getGuid(), branch, txRecord, sourceArtifact.getArtId(),
-                        ReplaceArtifactWithBaselineOperation.class.getSimpleName());
+                     UserId userId = ClientSessionManager.getCurrentUserToken();
+                     TransactionEndpoint.replaceWithBaselineTxVersion(userId, branch, txRecord,
+                        sourceArtifact.getArtId(), ReplaceArtifactWithBaselineOperation.class.getSimpleName());
                      monitor.done();
                   } else {
                      artifact.deleteAndPersist();
