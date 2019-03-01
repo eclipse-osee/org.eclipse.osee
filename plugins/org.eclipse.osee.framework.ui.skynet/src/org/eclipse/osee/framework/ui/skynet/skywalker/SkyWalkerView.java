@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.util.ImageCapture;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -212,18 +211,6 @@ public class SkyWalkerView extends GenericViewPart {
       action.setText("Back");
       action.setToolTipText("Back");
       action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BACK));
-      tbm.add(action);
-
-      action = new Action() {
-         @Override
-         public void run() {
-            ImageCapture imgCapture = new ImageCapture(viewerComp);
-            imgCapture.popupDialog();
-         }
-      };
-      action.setText("Print");
-      action.setToolTipText("Print");
-      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.PRINT));
       tbm.add(action);
 
       action = new Action() {
