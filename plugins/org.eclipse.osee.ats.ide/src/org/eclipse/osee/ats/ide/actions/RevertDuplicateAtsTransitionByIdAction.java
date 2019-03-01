@@ -41,13 +41,13 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 /**
  * @author Donald G. Dunne
  */
-public class RevertDuplicateTransitionByIdAction extends Action {
+public class RevertDuplicateAtsTransitionByIdAction extends Action {
 
-   public RevertDuplicateTransitionByIdAction() {
-      this("Revert Duplicate Transition by ID");
+   public RevertDuplicateAtsTransitionByIdAction() {
+      this("Revert Duplicate ATS Transition by ID");
    }
 
-   public RevertDuplicateTransitionByIdAction(String name) {
+   public RevertDuplicateAtsTransitionByIdAction(String name) {
       super(name);
       setToolTipText(getText());
    }

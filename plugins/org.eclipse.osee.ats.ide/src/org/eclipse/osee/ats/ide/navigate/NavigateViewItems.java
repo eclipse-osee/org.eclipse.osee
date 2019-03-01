@@ -31,8 +31,8 @@ import org.eclipse.osee.ats.ide.actions.NewAction;
 import org.eclipse.osee.ats.ide.actions.NewGoal;
 import org.eclipse.osee.ats.ide.actions.OpenArtifactEditorById;
 import org.eclipse.osee.ats.ide.actions.OpenOrphanedTasks;
-import org.eclipse.osee.ats.ide.actions.RevertDuplicateTransitionByIdAction;
-import org.eclipse.osee.ats.ide.actions.RevertDuplicateTransitionsAction;
+import org.eclipse.osee.ats.ide.actions.RevertDuplicateAtsTransitionByIdAction;
+import org.eclipse.osee.ats.ide.actions.RevertDuplicateAtsTransitionsAction;
 import org.eclipse.osee.ats.ide.agile.navigate.CreateNewAgileBacklog;
 import org.eclipse.osee.ats.ide.agile.navigate.CreateNewAgileFeatureGroup;
 import org.eclipse.osee.ats.ide.agile.navigate.CreateNewAgileSprint;
@@ -64,7 +64,6 @@ import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.ide.util.AtsEditor;
 import org.eclipse.osee.ats.ide.util.CleanupOseeSystemAssignedWorkflows;
 import org.eclipse.osee.ats.ide.util.CreateActionUsingAllActionableItems;
-import org.eclipse.osee.ats.ide.util.DoesNotWorkItemAts;
 import org.eclipse.osee.ats.ide.util.Import.ImportActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.ide.util.Import.ImportAgileActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.ide.workdef.config.ImportAIsAndTeamDefinitionsItem;
@@ -232,20 +231,21 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          new XNavigateItemBlam(dbConvertItems, new ConvertWorkflowStatesBlam());
 
          new DisplayCurrentOseeEventListeners(adminItems);
-         new AtsRemoteEventTestItem(adminItems);
 
-         new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Actions", AtsArtifactTypes.Action));
-         new SearchNavigateItem(adminItems,
+         XNavigateItem demoItems = new XNavigateItemFolder(adminItems, "Demo");
+         new AtsRemoteEventTestItem(demoItems);
+
+         new SearchNavigateItem(demoItems, new ArtifactTypeSearchItem("Show all Actions", AtsArtifactTypes.Action));
+         new SearchNavigateItem(demoItems,
             new ArtifactTypeSearchItem("Show all Decision Review", AtsArtifactTypes.DecisionReview));
-         new SearchNavigateItem(adminItems,
+         new SearchNavigateItem(demoItems,
             new ArtifactTypeSearchItem("Show all PeerToPeer Review", AtsArtifactTypes.PeerToPeerReview));
-         new SearchNavigateItem(adminItems,
+         new SearchNavigateItem(demoItems,
             new ArtifactTypeWithInheritenceSearchItem("Show all Team Workflows", AtsArtifactTypes.TeamWorkflow));
-         new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", AtsArtifactTypes.Task));
-         new CreateActionUsingAllActionableItems(adminItems);
+         new SearchNavigateItem(demoItems, new ArtifactTypeSearchItem("Show all Tasks", AtsArtifactTypes.Task));
+         new CreateActionUsingAllActionableItems(demoItems);
 
-         new AtsConfig2ExampleNavigateItem(adminItems);
-         new DoesNotWorkItemAts(adminItems);
+         new AtsConfig2ExampleNavigateItem(demoItems);
          new XNavigateItemAction(adminItems, new OpenChangeReportByTransactionIdAction(), FrameworkImage.BRANCH_CHANGE);
          new XNavigateItemAction(adminItems, new OpenArtifactEditorById(), FrameworkImage.ARTIFACT_EDITOR);
          new XNavigateItemAction(adminItems, new PurgeTransactionAction(), FrameworkImage.PURGE);
@@ -256,15 +256,18 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          new ValidateWorkspaceToDatabaseWorkDefinitions(healthItems);
          new CleanupOseeSystemAssignedWorkflows(healthItems);
          new XNavigateItemAction(healthItems, new OpenOrphanedTasks(), AtsImage.TASK);
-         new XNavigateItemAction(adminItems, new RevertDuplicateTransitionByIdAction(), AtsImage.TASK);
-         new XNavigateItemAction(adminItems, new RevertDuplicateTransitionsAction(), AtsImage.TASK);
+         new XNavigateItemAction(adminItems, new RevertDuplicateAtsTransitionByIdAction(), AtsImage.TASK);
+         new XNavigateItemAction(adminItems, new RevertDuplicateAtsTransitionsAction(), AtsImage.TASK);
 
-         XNavigateItem extra = new XNavigateItemFolder(adminItems, "Other");
          Set<XNavigateExtensionPointData> extraItems =
             XNavigateContributionManager.getNavigateItems(NavigateView.VIEW_ID);
-         for (XNavigateExtensionPointData extraItem : extraItems) {
-            for (XNavigateItem navigateItem : extraItem.getNavigateItems()) {
-               extra.addChild(navigateItem);
+
+         if (!extraItems.isEmpty()) {
+            XNavigateItem extra = new XNavigateItemFolder(adminItems, "Other");
+            for (XNavigateExtensionPointData extraItem : extraItems) {
+               for (XNavigateItem navigateItem : extraItem.getNavigateItems()) {
+                  extra.addChild(navigateItem);
+               }
             }
          }
 

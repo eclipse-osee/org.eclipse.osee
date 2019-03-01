@@ -38,13 +38,13 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 /**
  * @author Donald G. Dunne
  */
-public class RevertDuplicateTransitionsAction extends Action {
+public class RevertDuplicateAtsTransitionsAction extends Action {
 
-   public RevertDuplicateTransitionsAction() {
-      this("Revert Duplicate Transitions");
+   public RevertDuplicateAtsTransitionsAction() {
+      this("Revert Duplicate ATS Transitions");
    }
 
-   public RevertDuplicateTransitionsAction(String name) {
+   public RevertDuplicateAtsTransitionsAction(String name) {
       super(name);
       setToolTipText(getText());
    }
@@ -70,7 +70,7 @@ public class RevertDuplicateTransitionsAction extends Action {
                   for (Artifact art : ArtifactQuery.getArtifactListFrom(artIds,
                      AtsClientService.get().getAtsBranch())) {
                      results.logf("\n\nReverting transition for %s\n\n", art.toStringWithId());
-                     if (RevertDuplicateTransitionByIdAction.revertTransition(art, results, persist, trans)) {
+                     if (RevertDuplicateAtsTransitionByIdAction.revertTransition(art, results, persist, trans)) {
                         changed = true;
                      } else {
                         results.log("Nothing to change.");
