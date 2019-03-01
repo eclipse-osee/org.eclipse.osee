@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.ide.search;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
@@ -25,6 +26,7 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -68,17 +70,22 @@ class AtsQuickSearchOperation extends AbstractOperation implements WorldEditorOp
          Collections.castAll(AtsClientService.get().getQueryService().getArtifactsByIdsOrAtsIds(data.getSearchStr())));
       for (Artifact art : ArtifactQuery.getArtifactListFromAttributeKeywords(AtsClientService.get().getAtsBranch(),
          data.getSearchStr(), false, DeletionFlag.EXCLUDE_DELETED, false)) {
-         // only ATS Artifacts
-         if (art instanceof AbstractWorkflowArtifact) {
-            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) art;
-            // default excludes canceled/completed
-            if (data.isIncludeCompleteCancelled() == false) {
-               if (!awa.isCompletedOrCancelled()) {
+         try {
+            // only ATS Artifacts
+            if (art instanceof AbstractWorkflowArtifact) {
+               AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) art;
+               // default excludes canceled/completed
+               if (data.isIncludeCompleteCancelled() == false) {
+                  if (!awa.isCompletedOrCancelled()) {
+                     allArtifacts.add(art);
+                  }
+               } else {
                   allArtifacts.add(art);
                }
-            } else {
-               allArtifacts.add(art);
             }
+         } catch (final Exception ex) {
+            String str = "Exception occurred in " + art.toStringWithId();
+            OseeLog.log(Activator.class, Level.SEVERE, str, ex);
          }
       }
       return allArtifacts;
