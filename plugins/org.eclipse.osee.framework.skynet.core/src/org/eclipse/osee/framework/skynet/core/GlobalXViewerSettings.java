@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.XViewerGlobalCustomization;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.XViewerCustomization;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +32,7 @@ public final class GlobalXViewerSettings {
       return new Supplier<Artifact>() {
          @Override
          public Artifact get() {
-            return ArtifactQuery.getArtifactFromToken(XViewerGlobalCustomization);
+            return ArtifactQuery.getArtifactFromToken(XViewerCustomization);
          }
       };
    }

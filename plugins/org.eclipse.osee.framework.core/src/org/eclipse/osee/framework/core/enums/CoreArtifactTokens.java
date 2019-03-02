@@ -10,6 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AccessControlModel;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GeneralData;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.RootArtifact;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.UniversalGroup;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.UserGroup;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.XViewerGlobalCustomization;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
@@ -19,28 +26,25 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 public final class CoreArtifactTokens {
 
    // @formatter:off
-   public static ArtifactToken GlobalPreferences = ArtifactToken.valueOf(18026, "AAABE8T1j3AA8O7WNsu89A", CoreArtifactTypes.GlobalPreferences.getName(), COMMON, CoreArtifactTypes.GlobalPreferences);
-   public static ArtifactToken AccessIdMap = ArtifactToken.valueOf(9885202, "Access Id Map - 0.26", COMMON, CoreArtifactTypes.GeneralData);
-   public static ArtifactToken XViewerGlobalCustomization = ArtifactToken.valueOf(78293, "AAABER+3rLwA8O7WMgtX1g", CoreArtifactTypes.XViewerGlobalCustomization.getName(), COMMON, CoreArtifactTypes.XViewerGlobalCustomization);
-   public static ArtifactToken DefaultHierarchyRoot = ArtifactToken.valueOf(197818, "Default Hierarchy Root", CoreArtifactTypes.RootArtifact);
-
-   public static ArtifactToken UniversalGroupRoot = ArtifactToken.valueOf(60807, "Root Artifact", CoreArtifactTypes.UniversalGroup);
-   public static ArtifactToken Everyone = ArtifactToken.valueOf(48656, "AAABEbn4DKoAaR82FZsL3A", "Everyone", COMMON, CoreArtifactTypes.UserGroup);
-   public static ArtifactToken OseeAdmin = ArtifactToken.valueOf(52247, "AAABHaItmnUAG6ZAYlFKag", "OseeAdmin", COMMON, CoreArtifactTypes.UserGroup);
-   public static ArtifactToken OseeAccessAdmin = ArtifactToken.valueOf(8033605, "AGXiIJi2qxZnuXEdZVwA", "OseeAccessAdmin", COMMON, CoreArtifactTypes.UserGroup);
-   public static ArtifactToken OseeDeveloper = ArtifactToken.valueOf(464565465, "AGXiIJiZscnuXEdZVwA", "OseeDeveloper", COMMON, CoreArtifactTypes.UserGroup);
-
-   public static ArtifactToken DataRightsFooters = ArtifactToken.valueOf(5443258, null, "DataRightsFooters",  COMMON,CoreArtifactTypes.GeneralData);
-   public static ArtifactToken FrameworkAccessModel = ArtifactToken.valueOf(35975422L, null, "Framework Access Model", COMMON, CoreArtifactTypes.AccessControlModel);
+   public static final ArtifactToken AccessIdMap          = ArtifactToken.valueOf(9885202, "Access Id Map - 0.26", COMMON, GeneralData);
+   public static final ArtifactToken DataRightsFooters    = ArtifactToken.valueOf(5443258, "DataRightsFooters", COMMON, GeneralData);
+   public static final ArtifactToken DefaultHierarchyRoot = ArtifactToken.valueOf(197818, "Default Hierarchy Root", RootArtifact);
+   public static final ArtifactToken Everyone             = ArtifactToken.valueOf(48656, "Everyone", COMMON, UserGroup);
+   public static final ArtifactToken FrameworkAccessModel = ArtifactToken.valueOf(35975422, "Framework Access Model", COMMON, AccessControlModel);
+   public static final ArtifactToken GlobalPreferences    = ArtifactToken.valueOf(18026, CoreArtifactTypes.GlobalPreferences.getName(), COMMON, CoreArtifactTypes.GlobalPreferences);
+   public static final ArtifactToken OseeAccessAdmin      = ArtifactToken.valueOf(8033605, "OseeAccessAdmin", COMMON, UserGroup);
+   public static final ArtifactToken OseeAdmin            = ArtifactToken.valueOf(52247, "OseeAdmin", COMMON, UserGroup);
+   public static final ArtifactToken OseeDeveloper        = ArtifactToken.valueOf(464565465, "OseeDeveloper", COMMON, UserGroup);
+   public static final ArtifactToken UniversalGroupRoot   = ArtifactToken.valueOf(60807, "Root Artifact", UniversalGroup);
+   public static final ArtifactToken XViewerCustomization = ArtifactToken.valueOf(78293, XViewerGlobalCustomization.getName(), COMMON, XViewerGlobalCustomization);
 
    // folders
-   public static ArtifactToken UserGroups = ArtifactToken.valueOf(80920, "AAABGTAGNY8BauB5GajiIQ", "User Groups", COMMON, CoreArtifactTypes.Folder);
-   public static ArtifactToken OseeTypesFolder = ArtifactToken.valueOf(7911256, "AKsESORrehN02WEfF9gA", "OSEE Types and Access Control", COMMON, CoreArtifactTypes.Folder);
-   public static ArtifactToken DocumentTemplates = ArtifactToken.valueOf(64970, null, "Document Templates", COMMON, CoreArtifactTypes.Folder);
-   public static ArtifactToken ProductLineFolder = ArtifactToken.valueOf(8255179, "Product Line", CoreArtifactTypes.Folder);
-   public static ArtifactToken VariantsFolder = ArtifactToken.valueOf(10039752, "Variants", CoreArtifactTypes.Folder);
-   public static ArtifactToken FeaturesFolder = ArtifactToken.valueOf(239420307, "Features", CoreArtifactTypes.Folder);
-
+   public static final ArtifactToken DocumentTemplates    = ArtifactToken.valueOf(64970, "Document Templates", COMMON, Folder);
+   public static final ArtifactToken FeaturesFolder       = ArtifactToken.valueOf(239420307, "Features", Folder);
+   public static final ArtifactToken OseeTypesFolder      = ArtifactToken.valueOf(7911256, "OSEE Types and Access Control", COMMON, Folder);
+   public static final ArtifactToken ProductLineFolder    = ArtifactToken.valueOf(8255179, "Product Line", Folder);
+   public static final ArtifactToken UserGroups           = ArtifactToken.valueOf(80920, "User Groups", COMMON, Folder);
+   public static final ArtifactToken VariantsFolder       = ArtifactToken.valueOf(10039752, "Variants", Folder);
    // @formatter:on
 
    private CoreArtifactTokens() {

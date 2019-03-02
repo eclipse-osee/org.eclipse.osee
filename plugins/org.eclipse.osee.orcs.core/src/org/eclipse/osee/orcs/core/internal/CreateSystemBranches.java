@@ -89,7 +89,7 @@ public class CreateSystemBranches {
       ArtifactId globalPreferences = tx.createArtifact(CoreArtifactTokens.GlobalPreferences);
       tx.setSoleAttributeValue(globalPreferences, CoreAttributeTypes.GeneralStringData, JSON_ATTR_VALUE);
 
-      tx.createArtifact(CoreArtifactTokens.XViewerGlobalCustomization);
+      tx.createArtifact(CoreArtifactTokens.XViewerCustomization);
 
       ArtifactId documentTemplateFolder = tx.createArtifact(rootArtifact, CoreArtifactTokens.DocumentTemplates);
 
