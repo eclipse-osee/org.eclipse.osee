@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.data;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Ryan D. Brooks
@@ -25,12 +24,8 @@ public final class TokenFactory {
       // Utility Class
    }
 
-   public static IArtifactType createArtifactType(long guid, String name) {
-      return new ArtifactTypeToken(guid, name);
-   }
-
-   public static IArtifactType createArtifactType() {
-      return new ArtifactTypeToken();
+   public static IArtifactType createArtifactType(long id, String name) {
+      return IArtifactType.valueOf(id, name);
    }
 
    /**
@@ -39,9 +34,9 @@ public final class TokenFactory {
    public static IArtifactType createArtifactTypeFromToken(String token) {
       Matcher matcher = nameIdPattern.matcher(token);
       if (matcher.find()) {
-         Long uuid = Long.valueOf(matcher.group(2));
+         long id = Long.valueOf(matcher.group(2));
          String name = matcher.group(1);
-         return new ArtifactTypeToken(uuid, name);
+         return IArtifactType.valueOf(id, name);
       }
       return null;
    }
@@ -53,21 +48,4 @@ public final class TokenFactory {
    public static ArtifactToken createArtifactToken(long id, String guid, String name, BranchId branch, IArtifactType artifactType) {
       return ArtifactToken.valueOf(id, guid, name, branch, artifactType);
    }
-
-   private final static class ArtifactTypeToken extends NamedIdBase implements IArtifactType {
-
-      public ArtifactTypeToken() {
-         super();
-      }
-
-      public ArtifactTypeToken(Long id, String name) {
-         super(id, name);
-      }
-
-      @Override
-      public Long getGuid() {
-         return getId();
-      }
-   }
-
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2019 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,28 +12,26 @@ package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Ryan D. Brooks
  */
-public interface IArtifactType extends ArtifactTypeToken {
-   IArtifactType SENTINEL = valueOf(Id.SENTINEL, Named.SENTINEL);
+public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
+   ArtifactTypeToken SENTINEL = valueOf(Id.SENTINEL, Named.SENTINEL);
 
-   Long getGuid();
+   public static ArtifactTypeToken valueOf(String id) {
+      return valueOf(Long.valueOf(id), Named.SENTINEL);
+   }
 
-   public static IArtifactType valueOf(long id, String name) {
-      final class IArtifactTypeImpl extends NamedIdBase implements IArtifactType {
+   public static ArtifactTypeToken valueOf(long id, String name) {
+      final class ArtifactTypeTokenImpl extends NamedIdBase implements ArtifactTypeToken {
 
-         public IArtifactTypeImpl(Long id, String name) {
+         public ArtifactTypeTokenImpl(Long id, String name) {
             super(id, name);
          }
-
-         @Override
-         public Long getGuid() {
-            return getId();
-         }
       }
-      return new IArtifactTypeImpl(id, name);
+      return new ArtifactTypeTokenImpl(id, name);
    }
 }
