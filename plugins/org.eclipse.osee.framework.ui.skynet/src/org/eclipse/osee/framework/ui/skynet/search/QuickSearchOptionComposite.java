@@ -629,7 +629,7 @@ public class QuickSearchOptionComposite extends Composite {
          String[] guids = new String[configuration.size()];
          int index = 0;
          for (IArtifactType type : configuration) {
-            guids[index++] = String.valueOf(type.getGuid());
+            guids[index++] = type.getIdString();
          }
          return guids;
       }

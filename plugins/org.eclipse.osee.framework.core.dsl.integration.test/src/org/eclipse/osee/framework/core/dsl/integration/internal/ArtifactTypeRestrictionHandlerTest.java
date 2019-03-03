@@ -93,5 +93,4 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedAccessObject,
          PermissionEnum.WRITE, expectedScope);
    }
-
 }

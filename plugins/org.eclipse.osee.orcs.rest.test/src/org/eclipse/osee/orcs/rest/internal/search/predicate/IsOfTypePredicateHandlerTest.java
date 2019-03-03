@@ -58,7 +58,7 @@ public class IsOfTypePredicateHandlerTest {
       verify(builder).andIsOfType(artifactTypesCaptor.capture());
       Assert.assertEquals(1, artifactTypesCaptor.getValue().size());
       // :-)
-      Assert.assertTrue(artifactTypesCaptor.getValue().iterator().next().getGuid().toString().equals(id1));
+      Assert.assertTrue(artifactTypesCaptor.getValue().iterator().next().getIdString().equals(id1));
    }
 
    @Test
@@ -73,8 +73,8 @@ public class IsOfTypePredicateHandlerTest {
       Assert.assertEquals(2, artifactTypesCaptor.getValue().size());
 
       Iterator<IArtifactType> iterator = artifactTypesCaptor.getValue().iterator();
-      Assert.assertEquals(id1, iterator.next().getGuid().toString());
-      Assert.assertEquals(id2, iterator.next().getGuid().toString());
+      Assert.assertEquals(id1, iterator.next().getIdString());
+      Assert.assertEquals(id2, iterator.next().getIdString());
    }
 
    @Test(expected = OseeArgumentException.class)

@@ -83,10 +83,10 @@ public class PurgeArtifactTypeCommand implements ConsoleCommand {
                try {
                   Long typeId = Long.valueOf(uuid);
                   IArtifactType type = artifactTypes.get(typeId);
-                  console.writeln("Type [%s] found. Guid: [0x%X]", type.getName(), type.getGuid());
+                  console.writeln("Type [%s] found.", type);
                   toReturn.add(type);
                } catch (OseeArgumentException ex) {
-                  console.writeln("Type [0x%X] NOT found.", uuid);
+                  console.writeln("Type [%s] NOT found.", uuid);
                   console.writeln(ex);
                }
             }

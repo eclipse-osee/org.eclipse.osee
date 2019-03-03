@@ -36,7 +36,7 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
       StringBuilder storageString = new StringBuilder();
 
       for (IArtifactType a : artifactTypes) {
-         storageString.append(a.getGuid().toString());
+         storageString.append(a.getIdString());
          storageString.append(",");
       }
       storageString.deleteCharAt(storageString.length() - 1);

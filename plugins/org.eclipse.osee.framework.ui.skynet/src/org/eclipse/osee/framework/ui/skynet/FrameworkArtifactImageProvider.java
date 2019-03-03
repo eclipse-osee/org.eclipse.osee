@@ -139,7 +139,7 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
                         if (artifactType != null) {
                            // register image for artifact type
                            ArtifactImageManager.registerBaseImage(artifactType, ImageManager.createKeyedImage(
-                              artifactType.getGuid().toString(), ImageDescriptor.createFromImage(image)), this);
+                              artifactType.getIdString(), ImageDescriptor.createFromImage(image)), this);
                         }
                      }
                   }
