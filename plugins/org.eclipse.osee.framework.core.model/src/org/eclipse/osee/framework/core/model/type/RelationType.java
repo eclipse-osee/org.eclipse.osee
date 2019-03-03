@@ -111,9 +111,4 @@ public final class RelationType extends AbstractOseeIdType implements RelationTy
    public RelationSorter getDefaultOrderTypeGuid() {
       return getFieldValueLogException(null, RELATION_DEFAULT_ORDER_TYPE_GUID_FIELD_KEY);
    }
-
-   @Override
-   public Long getGuid() {
-      return getId();
-   }
 }

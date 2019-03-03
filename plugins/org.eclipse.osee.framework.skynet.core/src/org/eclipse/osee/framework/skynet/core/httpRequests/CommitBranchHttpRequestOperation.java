@@ -136,7 +136,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                   change.getModificationType().isDeleted() ? RelationEventType.Deleted : change.getModificationType().isUnDeleted() ? RelationEventType.Undeleted : RelationEventType.Added;
 
                DefaultBasicIdRelation defaultBasicGuidRelation = new DefaultBasicIdRelation(relChange.getBranch(),
-                  relChange.getRelationType().getGuid(), relChange.getItemId().getId().intValue(), relChange.getGamma(),
+                  relChange.getRelationType().getId(), relChange.getItemId().getId().intValue(), relChange.getGamma(),
                   relChange.getChangeArtifact().getBasicGuidArtifact(),
                   relChange.getEndTxBArtifact().getBasicGuidArtifact());
                EventBasicGuidRelation event = new EventBasicGuidRelation(relationEventType, relChange.getArtId(),

@@ -109,7 +109,7 @@ public final class MockDataFactory {
    }
 
    public static ArtifactType createBaseArtifactType() {
-      return new ArtifactType(CoreArtifactTypes.Artifact.getGuid(), CoreArtifactTypes.Artifact.getName(), true);
+      return new ArtifactType(CoreArtifactTypes.Artifact.getId(), CoreArtifactTypes.Artifact.getName(), true);
    }
 
    public static RelationType createRelationType(int index, IArtifactType artTypeA, IArtifactType artTypeB) {

@@ -78,11 +78,11 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       restriction.setAttributeTypeRef(attributeTypeRef);
 
       IArtifactType artifactType = CoreArtifactTypes.Artifact;
-      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
+      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getId(), artifactType.getName());
       restriction.setArtifactTypeRef(artifactTypeRef);
 
       IArtifactType artifactType2 = CoreArtifactTypes.Requirement;
-      ArtifactType artArtifactType = new ArtifactType(artifactType2.getGuid(), artifactType2.getName(), false);
+      ArtifactType artArtifactType = new ArtifactType(artifactType2.getId(), artifactType2.getName(), false);
 
       final MutableBoolean wasIsAttributeTypeValidCalled = new MutableBoolean(false);
       ArtifactProxy artifactProxy = createArtifactProxy(artArtifactType, Name, wasIsAttributeTypeValidCalled, true);
@@ -99,10 +99,10 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       restriction.setAttributeTypeRef(attributeTypeRef);
 
       IArtifactType artifactType = CoreArtifactTypes.Requirement;
-      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
+      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getId(), artifactType.getName());
       restriction.setArtifactTypeRef(artifactTypeRef);
 
-      ArtifactType artArtifactType = new ArtifactType(artifactType.getGuid(), artifactType.getName(), false);
+      ArtifactType artArtifactType = new ArtifactType(artifactType.getId(), artifactType.getName(), false);
 
       final MutableBoolean wasIsAttributeTypeValidCalled = new MutableBoolean(false);
       ArtifactProxy artifactProxy = createArtifactProxy(artArtifactType, Name, wasIsAttributeTypeValidCalled, true);
@@ -119,16 +119,16 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       restriction.setAttributeTypeRef(attributeTypeRef);
 
       IArtifactType artifactType = CoreArtifactTypes.Artifact;
-      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
+      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getId(), artifactType.getName());
       restriction.setArtifactTypeRef(artifactTypeRef);
 
       IArtifactType artifactType2 = CoreArtifactTypes.Requirement;
-      ArtifactType artArtifactType = new ArtifactType(artifactType2.getGuid(), artifactType2.getName(), false);
+      ArtifactType artArtifactType = new ArtifactType(artifactType2.getId(), artifactType2.getName(), false);
 
       // Make expectedAccessObject inherit from ArtifactType
       Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(
-         new ArtifactType(CoreArtifactTypes.Artifact.getGuid(), CoreArtifactTypes.Artifact.getName(), false));
+         new ArtifactType(CoreArtifactTypes.Artifact.getId(), CoreArtifactTypes.Artifact.getName(), false));
       artArtifactType.setSuperTypes(superTypes);
 
       final MutableBoolean wasIsAttributeTypeValidCalled = new MutableBoolean(false);

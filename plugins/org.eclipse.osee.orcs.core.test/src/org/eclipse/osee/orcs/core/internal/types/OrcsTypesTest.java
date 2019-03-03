@@ -383,7 +383,7 @@ public class OrcsTypesTest {
       IArtifactType artifactType = artTypes.get(35L);
 
       assertEquals("Added Artifact Type", artifactType.getName());
-      assertEquals(Long.valueOf(35), artifactType.getGuid());
+      assertEquals(Long.valueOf(35), artifactType.getId());
 
       assertEquals(false, artTypes.isAbstract(artifactType));
       assertEquals(true, artTypes.inheritsFrom(artifactType, OTHER_ARTIFACT));

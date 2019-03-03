@@ -78,7 +78,7 @@ public class OrcsValidationHelperAdapterTest {
 
    @Test
    public void testIsArtifactTypeExist() {
-      Assert.assertTrue(helper.isArtifactTypeExist(CoreArtifactTypes.User.getGuid()));
+      Assert.assertTrue(helper.isArtifactTypeExist(CoreArtifactTypes.User.getId()));
 
       Assert.assertFalse(helper.isArtifactTypeExist(999999L));
    }

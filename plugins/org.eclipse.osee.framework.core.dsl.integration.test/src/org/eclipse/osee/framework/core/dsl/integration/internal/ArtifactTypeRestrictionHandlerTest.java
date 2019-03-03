@@ -40,7 +40,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    @Test
    public void testProcessDataNotMatchesRestriction() {
       IArtifactType artifactType = CoreArtifactTypes.Requirement;
-      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
+      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getId(), artifactType.getName());
 
       ArtifactTypeRestriction restriction = MockModel.createArtifactTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -55,13 +55,13 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    @Test
    public void testProcessCreateAccessDetail() {
       IArtifactType artifactType = CoreArtifactTypes.Requirement;
-      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
+      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getId(), artifactType.getName());
 
       ArtifactTypeRestriction restriction = MockModel.createArtifactTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setArtifactTypeRef(artifactTypeRef);
 
-      ArtifactType expectedAccessObject = new ArtifactType(artifactType.getGuid(), artifactType.getName(), false);
+      ArtifactType expectedAccessObject = new ArtifactType(artifactType.getId(), artifactType.getName(), false);
       MockArtifactProxy artData = new MockArtifactProxy(expectedAccessObject);
 
       Scope expectedScope = new Scope();
@@ -72,14 +72,14 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    @Test
    public void testProcessArtifactTypeInheritance() {
       IArtifactType artifactType = CoreArtifactTypes.Artifact;
-      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
+      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getId(), artifactType.getName());
 
       ArtifactTypeRestriction restriction = MockModel.createArtifactTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setArtifactTypeRef(artifactTypeRef);
 
       ArtifactType expectedAccessObject =
-         new ArtifactType(CoreArtifactTypes.Requirement.getGuid(), CoreArtifactTypes.Requirement.getName(), false);
+         new ArtifactType(CoreArtifactTypes.Requirement.getId(), CoreArtifactTypes.Requirement.getName(), false);
 
       MockArtifactProxy artData = new MockArtifactProxy(expectedAccessObject);
       Scope expectedScope = new Scope();
@@ -88,7 +88,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       // Make expectedAccessObject inherit from ArtifactType
       Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(
-         new ArtifactType(CoreArtifactTypes.Artifact.getGuid(), CoreArtifactTypes.Artifact.getName(), false));
+         new ArtifactType(CoreArtifactTypes.Artifact.getId(), CoreArtifactTypes.Artifact.getName(), false));
       expectedAccessObject.setSuperTypes(superTypes);
       DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedAccessObject,
          PermissionEnum.WRITE, expectedScope);

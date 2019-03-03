@@ -42,7 +42,7 @@ public class ArtifactSuperTypeFieldTest {
       art1 = MockDataFactory.createArtifactType(1);
       art2 = MockDataFactory.createArtifactType(2);
       art3 = MockDataFactory.createArtifactType(3);
-      base = new ArtifactType(CoreArtifactTypes.Artifact.getGuid(), CoreArtifactTypes.Artifact.getName(), false);
+      base = new ArtifactType(CoreArtifactTypes.Artifact.getId(), CoreArtifactTypes.Artifact.getName(), false);
    }
 
    @Test

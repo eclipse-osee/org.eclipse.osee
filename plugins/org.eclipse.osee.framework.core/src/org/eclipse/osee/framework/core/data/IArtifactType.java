@@ -20,18 +20,11 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 public interface IArtifactType extends ArtifactTypeToken {
    IArtifactType SENTINEL = valueOf(Id.SENTINEL, Named.SENTINEL);
 
-   Long getGuid();
-
    public static IArtifactType valueOf(long id, String name) {
       final class IArtifactTypeImpl extends NamedIdBase implements IArtifactType {
 
          public IArtifactTypeImpl(Long id, String name) {
             super(id, name);
-         }
-
-         @Override
-         public Long getGuid() {
-            return getId();
          }
       }
       return new IArtifactTypeImpl(id, name);

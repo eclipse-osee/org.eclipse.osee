@@ -161,9 +161,4 @@ public class AttributeType extends AbstractOseeIdType implements AttributeTypeTo
    public boolean isEnumerated() {
       return getOseeEnumTypeId() != -1;
    }
-
-   @Override
-   public Long getGuid() {
-      return getId();
-   }
 }

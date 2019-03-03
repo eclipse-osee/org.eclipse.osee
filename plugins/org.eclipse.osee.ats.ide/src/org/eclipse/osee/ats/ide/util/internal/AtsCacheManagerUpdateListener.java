@@ -84,7 +84,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
          for (EventBasicGuidRelation guidRel : artifactEvent.getRelations()) {
             try {
                RelationType typeByGuid = RelationTypeManager.getTypeByGuid(guidRel.getRelTypeGuid());
-               if (configReloadRelationTypeGuids.contains(typeByGuid.getGuid())) {
+               if (configReloadRelationTypeGuids.contains(typeByGuid.getId())) {
                   AtsClientService.get().reloadServerAndClientCaches();
                   break;
                }

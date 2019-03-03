@@ -120,7 +120,7 @@ public class RelationOrderData {
          }
          DefaultBasicGuidArtifact guidArtifact = artifact.getBasicGuidArtifact();
          DefaultBasicUuidRelationReorder reorder = new DefaultBasicUuidRelationReorder(relationOrderModType,
-            artifact.getBranch(), type.getGuid(), guidArtifact);
+            artifact.getBranch(), type.getId(), guidArtifact);
 
          accessor.store(artifact, this, reorder);
       }

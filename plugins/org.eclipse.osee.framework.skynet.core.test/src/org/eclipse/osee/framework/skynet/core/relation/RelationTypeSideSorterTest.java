@@ -187,7 +187,7 @@ public class RelationTypeSideSorterTest {
    }
 
    private static class MockArtifact extends Artifact {
-      private static final ArtifactType artifactType = new ArtifactType(Artifact.getGuid(), Artifact.getName(), false);
+      private static final ArtifactType artifactType = new ArtifactType(Artifact.getId(), Artifact.getName(), false);
       private final String name;
       private List<Artifact> artifacts = new ArrayList<>();
 

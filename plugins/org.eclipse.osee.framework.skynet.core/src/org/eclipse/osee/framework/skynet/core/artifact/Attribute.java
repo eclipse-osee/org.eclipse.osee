@@ -85,7 +85,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
    public AttributeChange createAttributeChangeFromSelf() {
       AttributeChange attributeChange = new AttributeChange();
 
-      attributeChange.setAttrTypeGuid(getAttributeType().getGuid());
+      attributeChange.setAttrTypeGuid(getAttributeType().getId());
       attributeChange.setGammaId(gammaId);
       attributeChange.setAttributeId(attrId.getId().intValue());
       attributeChange.setModTypeGuid(AttributeEventModificationType.getType(modificationType).getGuid());

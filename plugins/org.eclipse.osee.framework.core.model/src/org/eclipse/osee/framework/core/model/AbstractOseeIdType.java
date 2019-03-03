@@ -18,8 +18,4 @@ public abstract class AbstractOseeIdType extends AbstractOseeType {
    protected AbstractOseeIdType(Long guid, String key) {
       super(guid, key);
    }
-
-   public Long getGuid() {
-      return getId();
-   }
 }
