@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -46,10 +46,10 @@ public final class ArtifactImageManager {
    private static final String EXTENSION_ELEMENT = "ArtifactImageProvider";
    private static final String EXTENSION_ID = Activator.PLUGIN_ID + "." + EXTENSION_ELEMENT;
 
-   private static final Map<IArtifactType, ArtifactImageProvider> providersOverrideImageMap =
+   private static final Map<ArtifactTypeToken, ArtifactImageProvider> providersOverrideImageMap =
       new ConcurrentHashMap<>();
-   private static final Map<IArtifactType, KeyedImage> artifactTypeImageMap = new ConcurrentHashMap<>();
-   private static final Map<IArtifactType, String> artifactTypeImageProviderMap =
+   private static final Map<ArtifactTypeToken, KeyedImage> artifactTypeImageMap = new ConcurrentHashMap<>();
+   private static final Map<ArtifactTypeToken, String> artifactTypeImageProviderMap =
       new ConcurrentHashMap<>();
 
    private static final String OSEE_DATABASE_PROVIDER = "OSEE Database Provider";
@@ -62,12 +62,12 @@ public final class ArtifactImageManager {
 
    public synchronized static void loadCache() {
 
-      Set<IArtifactType> imageKeys = new HashSet<>();
+      Set<ArtifactTypeToken> imageKeys = new HashSet<>();
       imageKeys.addAll(providersOverrideImageMap.keySet());
       imageKeys.addAll(artifactTypeImageMap.keySet());
       imageKeys.addAll(artifactTypeImageProviderMap.keySet());
 
-      for (IArtifactType imageKey : imageKeys) {
+      for (ArtifactTypeToken imageKey : imageKeys) {
          ImageManager.removeFromRegistry(imageKey.getName());
       }
 
@@ -189,11 +189,11 @@ public final class ArtifactImageManager {
       return type.isDeletedOnDestAndNotResurrected() || type.isDeletedOnDestination();
    }
 
-   public static Image getImage(IArtifactType artifactType) {
+   public static Image getImage(ArtifactTypeToken artifactType) {
       return retrieveImage(artifactType);
    }
 
-   public static Image retrieveImage(IArtifactType artifactType) {
+   public static Image retrieveImage(ArtifactTypeToken artifactType) {
       try {
          if (overrideImageEnum != null) {
             return ImageManager.getImage(overrideImageEnum);
@@ -233,11 +233,11 @@ public final class ArtifactImageManager {
       return ImageManager.setupImageWithOverlay(image, overlay, location).getImageKey();
    }
 
-   public static void registerOverrideImageProvider(ArtifactImageProvider imageProvider, IArtifactType artifactType) {
+   public static void registerOverrideImageProvider(ArtifactImageProvider imageProvider, ArtifactTypeToken artifactType) {
       providersOverrideImageMap.put(artifactType, imageProvider);
    }
 
-   public synchronized static void registerBaseImage(IArtifactType artifactType, KeyedImage oseeImage, ArtifactImageProvider provider) {
+   public synchronized static void registerBaseImage(ArtifactTypeToken artifactType, KeyedImage oseeImage, ArtifactImageProvider provider) {
       boolean alreadyProvided = artifactTypeImageMap.containsKey(artifactType);
 
       String providerId = artifactTypeImageProviderMap.get(artifactType);
@@ -273,7 +273,7 @@ public final class ArtifactImageManager {
 
    private synchronized static String setupImage(Artifact artifact) {
       try {
-         IArtifactType type = artifact.getArtifactType();
+         ArtifactTypeToken type = artifact.getArtifactType();
          ArtifactImageProvider imageProvider = providersOverrideImageMap.get(type);
          if (imageProvider != null) {
             return imageProvider.setupImage(artifact);
@@ -321,7 +321,7 @@ public final class ArtifactImageManager {
       return ImageManager.setupImageWithOverlay(baseImageEnum, locked, Location.TOP_LEFT).getImageKey();
    }
 
-   public static KeyedImage getArtifactTypeImage(IArtifactType artifactType) {
+   public static KeyedImage getArtifactTypeImage(ArtifactTypeToken artifactType) {
       return artifactTypeImageMap.get(artifactType);
    }
 

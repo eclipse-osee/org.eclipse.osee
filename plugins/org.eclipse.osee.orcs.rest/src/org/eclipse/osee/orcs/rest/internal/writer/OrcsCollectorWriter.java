@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -249,7 +249,7 @@ public class OrcsCollectorWriter {
    private void processCreate(XResultData results) {
       for (OwArtifact owArtifact : collector.getCreate()) {
          OwArtifactType owArtType = owArtifact.getType();
-         IArtifactType artType = orcsApi.getOrcsTypes().getArtifactTypes().get(owArtType.getId());
+         ArtifactTypeToken artType = orcsApi.getOrcsTypes().getArtifactTypes().get(owArtType.getId());
 
          long artifactId = owArtifact.getId();
          String name = owArtifact.getName();

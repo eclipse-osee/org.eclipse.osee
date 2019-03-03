@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.model.internal.fields;
 
 import java.util.Collection;
 import java.util.Collections;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -22,9 +22,9 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
  */
 public final class ArtifactSuperTypeField extends CollectionField<ArtifactType> {
 
-   private final IArtifactType baseType;
+   private final ArtifactTypeToken baseType;
 
-   public ArtifactSuperTypeField(IArtifactType baseType, Collection<ArtifactType> superTypes) {
+   public ArtifactSuperTypeField(ArtifactTypeToken baseType, Collection<ArtifactType> superTypes) {
       super(superTypes);
       this.baseType = baseType;
    }

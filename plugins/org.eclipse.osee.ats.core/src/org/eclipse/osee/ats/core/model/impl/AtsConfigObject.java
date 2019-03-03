@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -36,9 +36,9 @@ public class AtsConfigObject extends org.eclipse.osee.ats.core.model.impl.AtsObj
    protected ArtifactToken artifact;
    protected final Log logger;
    protected final AtsApi atsApi;
-   private final IArtifactType artifactType;
+   private final ArtifactTypeToken artifactType;
 
-   public AtsConfigObject(Log logger, AtsApi atsApi, ArtifactToken artifact, IArtifactType artifactType) {
+   public AtsConfigObject(Log logger, AtsApi atsApi, ArtifactToken artifact, ArtifactTypeToken artifactType) {
       super(artifact.getName(), artifact.getId());
       this.logger = logger;
       this.atsApi = atsApi;

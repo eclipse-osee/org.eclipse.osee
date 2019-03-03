@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -245,7 +245,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    }
 
    @Override
-   public List<ArtifactToken> getArtifacts(IArtifactType artifactType) {
+   public List<ArtifactToken> getArtifacts(ArtifactTypeToken artifactType) {
       return Collections.castAll(atsApi.getQueryService().getArtifacts(atsApi.getAtsBranch(), true, artifactType));
    }
 

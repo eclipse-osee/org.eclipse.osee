@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.ide.traceability.TraceabilityExtractor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -39,11 +39,11 @@ public class RequirementData extends BaseTraceDataCache {
    private final List<Artifact> directRequirements = new ArrayList<>();
    private final HashMap<String, Artifact> allRequirementsMap = new HashMap<>();
    private final TraceabilityExtractor extractor = TraceabilityExtractor.getInstance();
-   private final Collection<? extends IArtifactType> types;
+   private final Collection<? extends ArtifactTypeToken> types;
    private final boolean withInheritance;
    private final ArtifactId viewId;
 
-   public RequirementData(BranchId branch, Collection<? extends IArtifactType> types, boolean withInheritance, ArtifactId viewId) {
+   public RequirementData(BranchId branch, Collection<? extends ArtifactTypeToken> types, boolean withInheritance, ArtifactId viewId) {
       super("Software Requirements Data", branch);
       this.types = types;
       this.withInheritance = withInheritance;
@@ -70,7 +70,7 @@ public class RequirementData extends BaseTraceDataCache {
       excludedArtifactIdMap = ViewIdUtility.findExcludedArtifactsByView(viewId, getBranch());
 
       List<Artifact> allSwRequirements = new ArrayList<>();
-      for (IArtifactType type : types) {
+      for (ArtifactTypeToken type : types) {
          if (withInheritance) {
             allSwRequirements.addAll(
                ArtifactQuery.getArtifactListFromTypeWithInheritence(type, getBranch(), EXCLUDE_DELETED));

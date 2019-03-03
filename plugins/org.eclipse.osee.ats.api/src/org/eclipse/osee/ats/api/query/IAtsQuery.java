@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -51,7 +51,7 @@ public interface IAtsQuery {
 
    IAtsWorkItemFilter andFilter();
 
-   IAtsQuery isOfType(IArtifactType... artifactType);
+   IAtsQuery isOfType(ArtifactTypeToken... artifactType);
 
    IAtsQuery andIds(Long... id);
 

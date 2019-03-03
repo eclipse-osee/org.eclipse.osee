@@ -22,7 +22,7 @@ import java.util.Set;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.CollectorArtifact;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -40,7 +40,7 @@ public abstract class MembersManager<T extends CollectorArtifact> {
 
    public abstract String getItemName();
 
-   public abstract IArtifactType getArtifactType();
+   public abstract ArtifactTypeToken getArtifactType();
 
    public boolean isHasCollector(Artifact artifact) {
       return artifact.getRelatedArtifactsCount(getMembersRelationTypeSide().getOpposite()) > 0;

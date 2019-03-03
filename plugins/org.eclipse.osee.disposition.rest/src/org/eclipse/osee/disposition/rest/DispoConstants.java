@@ -13,7 +13,7 @@ package org.eclipse.osee.disposition.rest;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 
@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 public final class DispoConstants {
 
    // @formatter:off
-   public static final IArtifactType DispoSet = TokenFactory.createArtifactType(807, "Disposition Set");
-   public static final IArtifactType DispoItem = TokenFactory.createArtifactType(808, "Dispositionable Item");
+   public static final ArtifactTypeToken DispoSet = TokenFactory.createArtifactType(807, "Disposition Set");
+   public static final ArtifactTypeToken DispoItem = TokenFactory.createArtifactType(808, "Dispositionable Item");
 
    public static final AttributeTypeToken DispoType= AttributeTypeToken.valueOf(1152921504606847893L, "dispo.Dispo Config");
    public static final AttributeTypeToken ImportPath= AttributeTypeToken.valueOf(1152921504606847881L, "dispo.Import Path");

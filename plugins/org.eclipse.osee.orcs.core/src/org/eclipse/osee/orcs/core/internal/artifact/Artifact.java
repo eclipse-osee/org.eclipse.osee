@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.artifact;
 
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.HasOrcsData;
@@ -24,11 +24,11 @@ import org.eclipse.osee.orcs.data.HasTransaction;
 /**
  * @author Megumi Telles
  */
-public interface Artifact extends AttributeManager, HasTransaction, ArtifactVisitable, HasOrcsData<IArtifactType, ArtifactData>, OrcsWriteable, GraphNode, OrderStore {
+public interface Artifact extends AttributeManager, HasTransaction, ArtifactVisitable, HasOrcsData<ArtifactTypeToken, ArtifactData>, OrcsWriteable, GraphNode, OrderStore {
 
    TransactionId getLastModifiedTransaction();
 
-   void setArtifactType(IArtifactType artifactType);
+   void setArtifactType(ArtifactTypeToken artifactType);
 
    void setName(String name);
 

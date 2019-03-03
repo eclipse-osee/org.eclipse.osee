@@ -22,7 +22,7 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
@@ -289,8 +289,8 @@ public class QuickSearchView extends GenericViewPart {
                   NewSearchUI.activateSearchResultView();
                   FilterModelList filterModelList = new FilterModelList();
 
-                  List<IArtifactType> artTypes = new LinkedList<>();
-                  for (IArtifactType artType : optionsComposite.getArtifactTypeFilter()) {
+                  List<ArtifactTypeToken> artTypes = new LinkedList<>();
+                  for (ArtifactTypeToken artType : optionsComposite.getArtifactTypeFilter()) {
                      artTypes.add(artType);
                   }
                   ISearchPrimitive primitive = new ArtifactTypeSearch(artTypes);

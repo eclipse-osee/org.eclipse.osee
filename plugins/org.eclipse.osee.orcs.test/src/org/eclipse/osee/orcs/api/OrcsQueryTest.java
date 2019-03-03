@@ -29,7 +29,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -554,8 +554,8 @@ public class OrcsQueryTest {
       return branch;
    }
 
-   private static void checkContainsTypes(Iterable<ArtifactReadable> arts, IArtifactType... types) {
-      List<IArtifactType> expected = Arrays.asList(types);
+   private static void checkContainsTypes(Iterable<ArtifactReadable> arts, ArtifactTypeToken... types) {
+      List<ArtifactTypeToken> expected = Arrays.asList(types);
       for (ArtifactReadable art : arts) {
          assertTrue(String.format("artifact type [%s] not found", art.getArtifactType()),
             expected.contains(art.getArtifactTypeId()));

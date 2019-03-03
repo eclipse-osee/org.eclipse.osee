@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -117,7 +117,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactToken createArtifact(ArtifactId parent, IArtifactType artifactType, String name) {
+   public ArtifactToken createArtifact(ArtifactId parent, ArtifactTypeToken artifactType, String name) {
       ArtifactToken child = createArtifact(artifactType, name);
       if (parent.isValid()) {
          addChild(parent, child);
@@ -126,7 +126,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactToken createArtifact(IArtifactType artifactType, String name) {
+   public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name) {
       return txManager.createArtifact(txData, artifactType, name, (String) null);
    }
 
@@ -136,17 +136,17 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactToken createArtifact(IArtifactType artifactType, String name, Long artifactId) {
+   public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId) {
       return txManager.createArtifact(txData, artifactType, name, artifactId);
    }
 
    @Override
-   public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid) {
+   public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, String guid) {
       return txManager.createArtifact(txData, artifactType, name, guid);
    }
 
    @Override
-   public ArtifactToken createArtifact(IArtifactType artifactType, String name, Long artifactId, String guid) {
+   public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId, String guid) {
       return txManager.createArtifact(txData, artifactType, name, artifactId, guid);
    }
 
@@ -162,7 +162,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
       List<ArtifactToken> tokens = new ArrayList<>(names.size());
 
-      IArtifactType artifactTypeToken = orcsApi.getOrcsTypes().getArtifactTypes().get(artifactType);
+      ArtifactTypeToken artifactTypeToken = orcsApi.getOrcsTypes().getArtifactTypes().get(artifactType);
       for (String name : names) {
          tokens.add(createArtifact(parent, artifactTypeToken, name));
       }
@@ -521,7 +521,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactToken createArtifact(ArtifactToken parent, IArtifactType artifactType, String name, Long id) {
+   public ArtifactToken createArtifact(ArtifactToken parent, ArtifactTypeToken artifactType, String name, Long id) {
       ArtifactToken art = createArtifact(artifactType, name, id);
       txManager.addChild(txData, parent, art);
       return art;

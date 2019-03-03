@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -106,15 +106,15 @@ public class AtsStoreService implements IAtsStoreService {
     * Uses artifact type inheritance to retrieve all TeamWorkflow artifact types
     */
    @Override
-   public Set<IArtifactType> getTeamWorkflowArtifactTypes() {
-      Set<IArtifactType> artifactTypes = new HashSet<>();
+   public Set<ArtifactTypeToken> getTeamWorkflowArtifactTypes() {
+      Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
       getTeamWorkflowArtifactTypesRecursive(ArtifactTypeManager.getType(AtsArtifactTypes.TeamWorkflow), artifactTypes);
       return artifactTypes;
    }
 
-   private static void getTeamWorkflowArtifactTypesRecursive(ArtifactType artifactType, Set<IArtifactType> allArtifactTypes) {
+   private static void getTeamWorkflowArtifactTypesRecursive(ArtifactType artifactType, Set<ArtifactTypeToken> allArtifactTypes) {
       allArtifactTypes.add(artifactType);
-      for (IArtifactType child : artifactType.getFirstLevelDescendantTypes()) {
+      for (ArtifactTypeToken child : artifactType.getFirstLevelDescendantTypes()) {
          getTeamWorkflowArtifactTypesRecursive(ArtifactTypeManager.getType(child), allArtifactTypes);
       }
    }
@@ -135,7 +135,7 @@ public class AtsStoreService implements IAtsStoreService {
    }
 
    @Override
-   public IArtifactType getArtifactType(ArtifactId artifact) {
+   public ArtifactTypeToken getArtifactType(ArtifactId artifact) {
       if (artifact instanceof Artifact) {
          return AtsClientService.get().getQueryServiceClient().getArtifact(artifact).getArtifactType();
       }
@@ -167,7 +167,7 @@ public class AtsStoreService implements IAtsStoreService {
    }
 
    @Override
-   public IArtifactType getArtifactType(Long artTypeId) {
+   public ArtifactTypeToken getArtifactType(Long artTypeId) {
       return ArtifactTypeManager.getType(artTypeId);
    }
 
@@ -183,17 +183,17 @@ public class AtsStoreService implements IAtsStoreService {
    }
 
    @Override
-   public IArtifactType getArtifactType(IAtsObject atsObject) {
+   public ArtifactTypeToken getArtifactType(IAtsObject atsObject) {
       return getArtifactType(AtsClientService.get().getQueryService().getArtifact(atsObject));
    }
 
    @Override
-   public boolean isOfType(IAtsObject atsObject, IArtifactType artifactType) {
+   public boolean isOfType(IAtsObject atsObject, ArtifactTypeToken artifactType) {
       return isOfType(AtsClientService.get().getQueryService().getArtifact(atsObject), artifactType);
    }
 
    @Override
-   public boolean isArtifactTypeInheritsFrom(IArtifactType artifactType, IArtifactType baseArtifactType) {
+   public boolean isArtifactTypeInheritsFrom(ArtifactTypeToken artifactType, ArtifactTypeToken baseArtifactType) {
       return ArtifactTypeManager.inheritsFrom(artifactType, baseArtifactType);
    }
 
@@ -265,17 +265,17 @@ public class AtsStoreService implements IAtsStoreService {
    }
 
    @Override
-   public boolean isOfType(IAtsObject atsObject, IArtifactType... artifactType) {
+   public boolean isOfType(IAtsObject atsObject, ArtifactTypeToken... artifactType) {
       return AtsClientService.get().getQueryServiceClient().getArtifact(atsObject).isOfType(artifactType);
    }
 
    @Override
-   public boolean inheritsFrom(IArtifactType artType, IArtifactType... artifactType) {
+   public boolean inheritsFrom(ArtifactTypeToken artType, ArtifactTypeToken... artifactType) {
       return ArtifactTypeManager.inheritsFrom(artType, artifactType);
    }
 
    @Override
-   public String getArtifactTypeName(IArtifactType artifactTypeId) {
+   public String getArtifactTypeName(ArtifactTypeToken artifactTypeId) {
       return ArtifactTypeManager.getType(artifactTypeId).getName();
    }
 

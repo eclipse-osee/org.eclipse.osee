@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -46,7 +46,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
 
    protected final List<AtsAttributeQuery> andAttr;
-   protected List<IArtifactType> artifactTypes;
+   protected List<ArtifactTypeToken> artifactTypes;
    protected ArtifactId artifactId;
    protected final AtsApi atsApi;
    protected Collection<Long> aiIds;
@@ -126,11 +126,11 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
       return ResultSets.newResultSet(getArtifacts());
    }
 
-   private boolean isArtifactTypeMatch(ArtifactId artifact, List<IArtifactType> artTypes) {
+   private boolean isArtifactTypeMatch(ArtifactId artifact, List<ArtifactTypeToken> artTypes) {
       if (artTypes == null || artTypes.isEmpty()) {
          return true;
       }
-      for (IArtifactType artType : artTypes) {
+      for (ArtifactTypeToken artType : artTypes) {
          if (atsApi.getArtifactResolver().isOfType(artifact, artType)) {
             return true;
          }
@@ -142,7 +142,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
 
    public abstract void queryAndExists(RelationTypeSide relationTypeSide);
 
-   public abstract void queryAndIsOfType(IArtifactType artifactType);
+   public abstract void queryAndIsOfType(ArtifactTypeToken artifactType);
 
    public boolean isOnlyIds() {
       return onlyIds != null;
@@ -151,12 +151,12 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    public abstract List<? extends ArtifactId> queryGetIds();
 
    @Override
-   public IAtsConfigQuery isOfType(IArtifactType... artifactType) {
+   public IAtsConfigQuery isOfType(ArtifactTypeToken... artifactType) {
       if (this.artifactTypes != null) {
          throw new OseeArgumentException("Can only specify one artifact type");
       }
       this.artifactTypes = new LinkedList<>();
-      for (IArtifactType type : artifactType) {
+      for (ArtifactTypeToken type : artifactType) {
          this.artifactTypes.add(type);
       }
       return this;
@@ -185,7 +185,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
       return andAttr(attributeType, Collections.singleton(value), queryOption);
    }
 
-   public abstract void queryAndIsOfType(List<IArtifactType> artTypes);
+   public abstract void queryAndIsOfType(List<ArtifactTypeToken> artTypes);
 
    public abstract void queryAnd(AttributeTypeId attrType, String value);
 
@@ -205,11 +205,11 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
 
    public abstract void queryAnd(AttributeTypeId attrType, Collection<String> values);
 
-   public Collection<IArtifactType> getArtifactTypes() {
+   public Collection<ArtifactTypeToken> getArtifactTypes() {
       return artifactTypes;
    }
 
-   public void setArtifactType(List<IArtifactType> artifactTypes) {
+   public void setArtifactType(List<ArtifactTypeToken> artifactTypes) {
       this.artifactTypes = artifactTypes;
    }
 

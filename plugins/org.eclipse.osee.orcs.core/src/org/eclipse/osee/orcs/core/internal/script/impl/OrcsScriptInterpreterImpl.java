@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -155,9 +155,9 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       return toReturn;
    }
 
-   private IArtifactType getArtifactType(String name) {
-      IArtifactType toReturn = null;
-      for (IArtifactType type : orcsTypes.getArtifactTypes().getAll()) {
+   private ArtifactTypeToken getArtifactType(String name) {
+      ArtifactTypeToken toReturn = null;
+      for (ArtifactTypeToken type : orcsTypes.getArtifactTypes().getAll()) {
          if (type.getName().equals(name)) {
             toReturn = type;
             break;

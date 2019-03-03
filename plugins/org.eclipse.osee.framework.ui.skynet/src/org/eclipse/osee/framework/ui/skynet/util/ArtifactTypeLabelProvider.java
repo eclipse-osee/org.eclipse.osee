@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -25,16 +25,16 @@ public class ArtifactTypeLabelProvider implements ILabelProvider {
 
    @Override
    public Image getImage(Object arg0) {
-      if (arg0 instanceof IArtifactType) {
-         return ArtifactImageManager.getImage((IArtifactType) arg0);
+      if (arg0 instanceof ArtifactTypeToken) {
+         return ArtifactImageManager.getImage((ArtifactTypeToken) arg0);
       }
       return null;
    }
 
    @Override
    public String getText(Object arg0) {
-      if (arg0 instanceof IArtifactType) {
-         return ((IArtifactType) arg0).getName();
+      if (arg0 instanceof ArtifactTypeToken) {
+         return ((ArtifactTypeToken) arg0).getName();
       }
       return "";
    }

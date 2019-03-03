@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
@@ -23,7 +23,7 @@ public interface ArtifactObjectFactory extends VersionObjectFactory {
 
    ArtifactData createArtifactData(VersionData version, Integer generateArtId, long artifactType, ModificationType modType, String guidToSet, ApplicabilityId applicId);
 
-   ArtifactData createArtifactData(VersionData version, Integer generateArtId, IArtifactType artifactType, ModificationType modType, String guidToSet, ApplicabilityId applicId);
+   ArtifactData createArtifactData(VersionData version, Integer generateArtId, ArtifactTypeToken artifactType, ModificationType modType, String guidToSet, ApplicabilityId applicId);
 
    ArtifactData createCopy(ArtifactData source);
 }

@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -76,7 +76,7 @@ public class ArtifactReadOnlyImplTest {
    @Mock private GraphData graph;
 
    @Mock private AttributeTypeId attributeType;
-   @Mock private IArtifactType artifactType;
+   @Mock private ArtifactTypeToken artifactType;
 
    @Mock private ArtifactReadable readable1;
    @Mock private Artifact artifact1;
@@ -152,8 +152,8 @@ public class ArtifactReadOnlyImplTest {
 
    @Test
    public void testIsOfType() {
-      IArtifactType type1 = mock(IArtifactType.class);
-      IArtifactType type2 = mock(IArtifactType.class);
+      ArtifactTypeToken type1 = mock(ArtifactTypeToken.class);
+      ArtifactTypeToken type2 = mock(ArtifactTypeToken.class);
       when(proxiedObject.isOfType(type1, type2)).thenReturn(true);
 
       boolean actual = readOnly.isOfType(type1, type2);

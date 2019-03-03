@@ -27,7 +27,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
@@ -196,7 +196,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       artifactTypeList.getViewer().setSorter(new ToStringViewerSorter());
       artifactTypeList.getViewer().setInput(ArtifactTypeManager.getValidArtifactTypes(getSelectedBranch()));
       try {
-         for (IArtifactType artType : ArtifactTypeManager.getValidArtifactTypes(getSelectedBranch())) {
+         for (ArtifactTypeToken artType : ArtifactTypeManager.getValidArtifactTypes(getSelectedBranch())) {
             artifactTypeList.getViewer().add(artifactTypeControls, artType);
             artifactTypeList.getViewer().setData(artType.getName(), artType);
          }

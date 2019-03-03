@@ -17,7 +17,7 @@ import java.util.Set;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -36,8 +36,8 @@ public class RoughArtifact {
    private RoughArtifactKind roughArtifactKind;
    private final RoughAttributeSet attributes;
    private final Collection<RoughArtifact> children;
-   private IArtifactType primaryArtifactType;
-   private IArtifactType type = IArtifactType.SENTINEL;
+   private ArtifactTypeToken primaryArtifactType;
+   private ArtifactTypeToken type = ArtifactTypeToken.SENTINEL;
    private final ActivityLog activityLog;
    private final OrcsApi orcsApi;
 
@@ -50,7 +50,7 @@ public class RoughArtifact {
       setName(name);
    }
 
-   public RoughArtifact(OrcsApi orcsApi, ActivityLog activityLog, IArtifactType type, String name) {
+   public RoughArtifact(OrcsApi orcsApi, ActivityLog activityLog, ArtifactTypeToken type, String name) {
       this.attributes = new RoughAttributeSet();
       this.children = new ArrayList<>();
       this.roughArtifactKind = RoughArtifactKind.TYPESET;
@@ -222,19 +222,19 @@ public class RoughArtifact {
       return attributes.getSoleAttributeValue(attributeName);
    }
 
-   public IArtifactType getPrimaryArtifactType() {
+   public ArtifactTypeToken getPrimaryArtifactType() {
       return primaryArtifactType;
    }
 
-   public void setPrimaryArtifactType(IArtifactType primaryArtifactType) {
+   public void setPrimaryArtifactType(ArtifactTypeToken primaryArtifactType) {
       this.primaryArtifactType = primaryArtifactType;
    }
 
-   public IArtifactType getType() {
+   public ArtifactTypeToken getType() {
       return type;
    }
 
-   public void setType(IArtifactType type) {
+   public void setType(ArtifactTypeToken type) {
       this.type = type;
    }
 

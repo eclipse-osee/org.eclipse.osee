@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.ide.workflow.CollectorArtifact;
 import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class GoalArtifact extends CollectorArtifact implements IAtsGoal {
 
-   public GoalArtifact(Long id, String guid, BranchId branch, IArtifactType artifactType) {
+   public GoalArtifact(Long id, String guid, BranchId branch, ArtifactTypeToken artifactType) {
       super(id, guid, branch, artifactType, AtsRelationTypes.Goal_Member);
    }
 

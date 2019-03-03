@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeDslSegmentParser;
 import org.eclipse.osee.framework.core.dsl.ui.integration.AbstractDslRenderer;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.ui.skynet.render.FileToAttributeUpdateOperatio
  * @author Roberto E. Escobar
  */
 public final class OseeDslRenderer extends AbstractDslRenderer {
-   private static final IArtifactType[] MATCHING_ARTIFACT_TYPES = {AccessControlModel, OseeTypeDefinition};
+   private static final ArtifactTypeToken[] MATCHING_ARTIFACT_TYPES = {AccessControlModel, OseeTypeDefinition};
 
    private static final OseeDslSegmentParser parser = new OseeDslSegmentParser();
 
@@ -113,7 +113,7 @@ public final class OseeDslRenderer extends AbstractDslRenderer {
    }
 
    @Override
-   protected IArtifactType[] getArtifactTypeMatches() {
+   protected ArtifactTypeToken[] getArtifactTypeMatches() {
       return MATCHING_ARTIFACT_TYPES;
    }
 }

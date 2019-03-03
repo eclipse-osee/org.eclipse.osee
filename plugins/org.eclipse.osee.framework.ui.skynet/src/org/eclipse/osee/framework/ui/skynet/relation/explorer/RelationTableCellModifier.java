@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.relation.explorer;
 
 import org.eclipse.jface.viewers.ICellModifier;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.swt.widgets.TableItem;
 
 public class RelationTableCellModifier implements ICellModifier {
@@ -100,7 +100,7 @@ public class RelationTableCellModifier implements ICellModifier {
             break;
          case RelationTableViewer.ARTIFACT_TYPE_NUM:
             if (!model.isArtifactFound()) {
-               model.setDescriptor((IArtifactType) value);
+               model.setDescriptor((ArtifactTypeToken) value);
             }
             break;
          case RelationTableViewer.RATIONALE_NUM:

@@ -5,7 +5,7 @@
  */
 package org.eclipse.osee.doors.connector.ui.handler;
 
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 
 /**
@@ -18,7 +18,7 @@ public class DoorsArtifactType {
    /**
     * Doors Artifact type
     */
-   public static final IArtifactType Doors_Artifact =
+   public static final ArtifactTypeToken Doors_Artifact =
       TokenFactory.createArtifactType(5764607523034243073L, "DoorsArtifact");
 
 }

@@ -15,7 +15,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -26,14 +26,14 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 public class OrganizePrograms {
 
    private final AtsApi atsApi;
-   private final IArtifactType artifactType;
+   private final ArtifactTypeToken artifactType;
    private final ArtifactToken folder;
 
    public OrganizePrograms(AtsApi atsApi) {
       this(atsApi, AtsArtifactTypes.Program, AtsArtifactToken.ProgramFolder);
    }
 
-   public OrganizePrograms(AtsApi atsApi, IArtifactType artifactType, ArtifactToken folder) {
+   public OrganizePrograms(AtsApi atsApi, ArtifactTypeToken artifactType, ArtifactToken folder) {
       this.atsApi = atsApi;
       this.artifactType = artifactType;
       this.folder = folder;

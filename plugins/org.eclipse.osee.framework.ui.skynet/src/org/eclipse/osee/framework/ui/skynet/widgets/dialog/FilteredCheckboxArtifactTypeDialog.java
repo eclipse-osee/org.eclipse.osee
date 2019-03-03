@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -34,39 +34,39 @@ import org.eclipse.swt.widgets.Control;
  */
 public class FilteredCheckboxArtifactTypeDialog extends FilteredCheckboxTreeDialog {
 
-   private Collection<? extends IArtifactType> selectable;
+   private Collection<? extends ArtifactTypeToken> selectable;
 
    public FilteredCheckboxArtifactTypeDialog(String title, String message) {
       this(title, message, ArtifactTypeManager.getAllTypes(), new ArrayTreeContentProvider(),
          new ArtifactTypeLabelProvider());
    }
 
-   public FilteredCheckboxArtifactTypeDialog(String title, String message, Collection<? extends IArtifactType> selectable) {
+   public FilteredCheckboxArtifactTypeDialog(String title, String message, Collection<? extends ArtifactTypeToken> selectable) {
       this(title, message, selectable, new ArrayTreeContentProvider(), new ArtifactTypeLabelProvider());
    }
 
-   public FilteredCheckboxArtifactTypeDialog(String title, String message, Collection<? extends IArtifactType> selectable, ILabelProvider labelProvider) {
+   public FilteredCheckboxArtifactTypeDialog(String title, String message, Collection<? extends ArtifactTypeToken> selectable, ILabelProvider labelProvider) {
       this(title, message, selectable, new ArrayTreeContentProvider(), labelProvider);
    }
 
-   public FilteredCheckboxArtifactTypeDialog(String title, String message, Collection<? extends IArtifactType> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
+   public FilteredCheckboxArtifactTypeDialog(String title, String message, Collection<? extends ArtifactTypeToken> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
       super(title, message, contentProvider, labelProvider, new ArtifactTypeNameSorter());
       this.selectable = selectable;
    }
 
-   public FilteredCheckboxArtifactTypeDialog(String title, Collection<? extends IArtifactType> selectable) {
+   public FilteredCheckboxArtifactTypeDialog(String title, Collection<? extends ArtifactTypeToken> selectable) {
       this(title, title, selectable, new ArtifactLabelProvider());
    }
 
    @SuppressWarnings("unchecked")
    @Override
-   public Collection<IArtifactType> getChecked() {
+   public Collection<ArtifactTypeToken> getChecked() {
       if (super.getTreeViewer() == null) {
          return Collections.emptyList();
       }
-      Set<IArtifactType> checked = new HashSet<>();
+      Set<ArtifactTypeToken> checked = new HashSet<>();
       for (Object obj : getResult()) {
-         checked.add((IArtifactType) obj);
+         checked.add((ArtifactTypeToken) obj);
       }
       return checked;
    }
@@ -87,11 +87,11 @@ public class FilteredCheckboxArtifactTypeDialog extends FilteredCheckboxTreeDial
       return super.isComplete();
    }
 
-   public Collection<? extends IArtifactType> getSelectable() {
+   public Collection<? extends ArtifactTypeToken> getSelectable() {
       return selectable;
    }
 
-   public void setSelectable(Collection<? extends IArtifactType> selectable) {
+   public void setSelectable(Collection<? extends ArtifactTypeToken> selectable) {
       this.selectable = selectable;
    }
 

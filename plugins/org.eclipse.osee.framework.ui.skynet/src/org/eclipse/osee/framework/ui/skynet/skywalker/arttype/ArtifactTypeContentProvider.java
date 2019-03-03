@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -28,8 +28,8 @@ import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
  */
 public class ArtifactTypeContentProvider implements IGraphEntityContentProvider {
 
-   private final Set<IArtifactType> parentTypes = new HashSet<>();
-   private IArtifactType selectedArtType = null;
+   private final Set<ArtifactTypeToken> parentTypes = new HashSet<>();
+   private ArtifactTypeToken selectedArtType = null;
 
    public ArtifactTypeContentProvider() {
       super();
@@ -41,25 +41,25 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
          if (entity instanceof ArtifactType) {
             ArtifactType artifactType = (ArtifactType) entity;
             if (parentTypes.contains(artifactType)) {
-               Set<IArtifactType> artifactTypes = new HashSet<>();
-               for (IArtifactType childType : artifactType.getFirstLevelDescendantTypes()) {
+               Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
+               for (ArtifactTypeToken childType : artifactType.getFirstLevelDescendantTypes()) {
                   if (parentTypes.contains(childType)) {
                      artifactTypes.add(childType);
                   }
                }
                return artifactTypes.toArray();
             } else if (parentTypes.contains(entity)) {
-               Set<IArtifactType> artifactTypes = new HashSet<>();
-               for (IArtifactType childType : artifactType.getSuperArtifactTypes()) {
+               Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
+               for (ArtifactTypeToken childType : artifactType.getSuperArtifactTypes()) {
                   if (parentTypes.contains(childType)) {
                      artifactTypes.add(childType);
                   }
                }
                return artifactTypes.toArray();
             } else if (selectedArtType.equals(entity) && selectedArtType.notEqual(CoreArtifactTypes.Artifact)) {
-               Set<IArtifactType> artifactTypes = new HashSet<>();
+               Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
                // parents
-               for (IArtifactType childType : artifactType.getSuperArtifactTypes()) {
+               for (ArtifactTypeToken childType : artifactType.getSuperArtifactTypes()) {
                   if (parentTypes.contains(childType)) {
                      artifactTypes.add(childType);
                   }
@@ -127,15 +127,15 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
       // do nothing
    }
 
-   public Set<IArtifactType> getParentTypes() {
+   public Set<ArtifactTypeToken> getParentTypes() {
       return parentTypes;
    }
 
-   public IArtifactType getSelectedArtType() {
+   public ArtifactTypeToken getSelectedArtType() {
       return selectedArtType;
    }
 
-   public void setSelectedArtType(IArtifactType selectedArtType) {
+   public void setSelectedArtType(ArtifactTypeToken selectedArtType) {
       this.selectedArtType = selectedArtType;
    }
 

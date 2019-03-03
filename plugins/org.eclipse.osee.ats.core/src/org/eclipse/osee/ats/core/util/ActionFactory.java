@@ -58,7 +58,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.JsonUtil;
@@ -349,7 +349,7 @@ public class ActionFactory implements IAtsActionFactory {
 
    @Override
    public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<IAtsUser> assignees, IAtsChangeSet changes, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, CreateTeamOption... createTeamOption) {
-      IArtifactType teamWorkflowArtifactType = getTeamWorkflowArtifactType(teamDef);
+      ArtifactTypeToken teamWorkflowArtifactType = getTeamWorkflowArtifactType(teamDef);
 
       // NOTE: The persist of the workflow will auto-email the assignees
       IAtsTeamWorkflow teamWf = createTeamWorkflow(action, teamDef, actionableItems, assignees, createdDate, createdBy,
@@ -357,19 +357,19 @@ public class ActionFactory implements IAtsActionFactory {
       return teamWf;
    }
 
-   public IArtifactType getTeamWorkflowArtifactType(IAtsTeamDefinition teamDef) {
+   public ArtifactTypeToken getTeamWorkflowArtifactType(IAtsTeamDefinition teamDef) {
       return getTeamWorkflowArtifactType(teamDef, atsApi);
    }
 
-   public static IArtifactType getTeamWorkflowArtifactType(IAtsTeamDefinition teamDef, AtsApi atsApi) {
+   public static ArtifactTypeToken getTeamWorkflowArtifactType(IAtsTeamDefinition teamDef, AtsApi atsApi) {
       Conditions.checkNotNull(teamDef, "teamDef");
-      IArtifactType teamWorkflowArtifactType = AtsArtifactTypes.TeamWorkflow;
+      ArtifactTypeToken teamWorkflowArtifactType = AtsArtifactTypes.TeamWorkflow;
       if (teamDef.getStoreObject() != null) {
          String artifactTypeName = atsApi.getAttributeResolver().getSoleAttributeValue(teamDef,
             AtsAttributeTypes.TeamWorkflowArtifactType, null);
          if (Strings.isValid(artifactTypeName)) {
             boolean found = false;
-            for (IArtifactType type : atsApi.getArtifactTypes()) {
+            for (ArtifactTypeToken type : atsApi.getArtifactTypes()) {
                if (type.getName().equals(artifactTypeName)) {
                   teamWorkflowArtifactType = type;
                   found = true;
@@ -387,7 +387,7 @@ public class ActionFactory implements IAtsActionFactory {
    }
 
    @Override
-   public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IArtifactType artifactType, INewActionListener newActionListener, IAtsChangeSet changes, CreateTeamOption... createTeamOption) {
+   public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, ArtifactTypeToken artifactType, INewActionListener newActionListener, IAtsChangeSet changes, CreateTeamOption... createTeamOption) {
 
       if (!Arrays.asList(createTeamOption).contains(CreateTeamOption.Duplicate_If_Exists)) {
          // Make sure team doesn't already exist

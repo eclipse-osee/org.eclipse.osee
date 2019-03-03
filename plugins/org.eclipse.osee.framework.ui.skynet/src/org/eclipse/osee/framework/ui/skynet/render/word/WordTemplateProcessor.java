@@ -48,7 +48,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -158,7 +158,7 @@ public class WordTemplateProcessor {
    private boolean isDiff;
    private boolean excludeFolders;
    private CharSequence paragraphNumber = null;
-   private IArtifactType[] excludeArtifactTypes = {};
+   private ArtifactTypeToken[] excludeArtifactTypes = {};
    private HashMap<ApplicabilityId, ApplicabilityToken> applicabilityTokens;
    private HashMap<ArtifactId, ArtifactId> artifactsToExclude;
 
@@ -248,19 +248,19 @@ public class WordTemplateProcessor {
       }
    }
 
-   private IArtifactType[] getExcludeArtifactTypes() {
+   private ArtifactTypeToken[] getExcludeArtifactTypes() {
       excludeArtifactTypes = null;
 
       Object o = renderer.getRendererOptionValue(RendererOption.EXCLUDE_ARTIFACT_TYPES);
       if (o instanceof Collection<?>) {
          Collection<?> coll = (Collection<?>) o;
-         excludeArtifactTypes = new IArtifactType[coll.size()];
+         excludeArtifactTypes = new ArtifactTypeToken[coll.size()];
          int i = 0;
          Iterator<?> iterator = coll.iterator();
          while (iterator.hasNext()) {
             Object next = iterator.next();
-            if (next instanceof IArtifactType) {
-               excludeArtifactTypes[i] = (IArtifactType) next;
+            if (next instanceof ArtifactTypeToken) {
+               excludeArtifactTypes[i] = (ArtifactTypeToken) next;
                i++;
             }
          }

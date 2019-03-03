@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -75,7 +75,7 @@ public class FilteredTreeEntryDialog extends FilteredTreeDialog {
       this.entryValue = entryValue;
    }
 
-   public IArtifactType getSelection() {
+   public ArtifactTypeToken getSelection() {
       return getSelectedFirst();
    }
 

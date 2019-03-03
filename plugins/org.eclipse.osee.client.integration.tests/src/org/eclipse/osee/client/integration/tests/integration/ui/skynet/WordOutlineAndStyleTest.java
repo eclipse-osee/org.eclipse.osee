@@ -22,7 +22,7 @@ import java.util.List;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -171,7 +171,7 @@ public final class WordOutlineAndStyleTest {
          IArtifactExtractor extractor = new WordOutlineExtractor();
          extractor.setDelegate(new WordOutlineExtractorDelegate());
 
-         List<IArtifactType> list = new ArrayList<>();
+         List<ArtifactTypeToken> list = new ArrayList<>();
          list.add(CoreArtifactTypes.HeadingMSWord);
 
          IOperation operation = ArtifactImportOperationFactory.createOperation(inputTestCase, folder,

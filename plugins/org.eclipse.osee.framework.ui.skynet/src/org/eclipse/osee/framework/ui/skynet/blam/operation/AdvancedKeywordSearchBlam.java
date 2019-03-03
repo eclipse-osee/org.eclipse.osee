@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -47,7 +47,7 @@ public class AdvancedKeywordSearchBlam extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      IArtifactType ofArtifactType = variableMap.getArtifactType("Filter results by Artifact Type");
+      ArtifactTypeToken ofArtifactType = variableMap.getArtifactType("Filter results by Artifact Type");
       BranchId branch = variableMap.getBranch("Branch");
       if (branch == null) {
          AWorkbench.popup("Must enter Branch");

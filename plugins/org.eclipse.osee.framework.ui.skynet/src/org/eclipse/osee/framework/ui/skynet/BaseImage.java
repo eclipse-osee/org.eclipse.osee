@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.io.ByteArrayInputStream;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -27,10 +27,10 @@ import org.eclipse.swt.graphics.ImageData;
  * @author Ryan D. Brooks
  */
 public class BaseImage implements KeyedImage {
-   private final IArtifactType artifactType;
+   private final ArtifactTypeToken artifactType;
    private final byte[] imageData;
 
-   private BaseImage(IArtifactType artifactType, byte[] imageData) {
+   private BaseImage(ArtifactTypeToken artifactType, byte[] imageData) {
       this.artifactType = artifactType;
       this.imageData = imageData;
    }
@@ -45,14 +45,14 @@ public class BaseImage implements KeyedImage {
       return Activator.PLUGIN_ID + ".artifact_type." + artifactType.getName();
    }
 
-   public static KeyedImage getBaseImageEnum(IArtifactType artifactType, byte[] imageData) {
+   public static KeyedImage getBaseImageEnum(ArtifactTypeToken artifactType, byte[] imageData) {
       if (ArtifactImageManager.getOverrideImageEnum() != null) {
          return ArtifactImageManager.getOverrideImageEnum();
       }
       return new BaseImage(artifactType, imageData);
    }
 
-   public static KeyedImage getBaseImageEnum(IArtifactType artifactType) {
+   public static KeyedImage getBaseImageEnum(ArtifactTypeToken artifactType) {
       if (ArtifactImageManager.getOverrideImageEnum() != null) {
          return ArtifactImageManager.getOverrideImageEnum();
       }

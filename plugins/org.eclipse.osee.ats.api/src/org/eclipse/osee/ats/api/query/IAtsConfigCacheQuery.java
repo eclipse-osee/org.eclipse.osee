@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.api.query;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.config.WorkType;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -24,7 +24,7 @@ public interface IAtsConfigCacheQuery {
 
    <T extends IAtsConfigObject> Collection<T> get(Class<T> clazz);
 
-   IAtsConfigCacheQuery isOfType(IArtifactType... artifactType);
+   IAtsConfigCacheQuery isOfType(ArtifactTypeToken... artifactType);
 
    IAtsConfigCacheQuery andActive(boolean active);
 

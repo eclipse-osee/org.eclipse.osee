@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
@@ -85,7 +85,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       RelationType testRelationType =
          getTestRelationType(relationType, CoreArtifactTypes.Artifact, CoreArtifactTypes.SoftwareRequirement);
 
-      IArtifactType artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
+      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
 
       MockArtifactProxy artData =
@@ -108,7 +108,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       RelationType testRelationType =
          getTestRelationType(relationType, CoreArtifactTypes.Artifact, CoreArtifactTypes.SoftwareRequirement);
 
-      IArtifactType artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
+      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
       Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(
@@ -135,7 +135,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       RelationType testRelationType =
          getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.Artifact);
 
-      IArtifactType artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
+      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
 
       MockArtifactProxy artData =
@@ -159,7 +159,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       RelationType testRelationType =
          getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.Artifact);
 
-      IArtifactType artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
+      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
       Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(
@@ -186,7 +186,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       RelationType testRelationType =
          getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.Artifact);
 
-      IArtifactType artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
+      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
       Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(
@@ -230,7 +230,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       RelationType testRelationType =
          getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.Artifact);
 
-      IArtifactType artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
+      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
       Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(
@@ -267,7 +267,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    @Test
    public void testProcessDataArtifactTypeMatch() {
 
-      IArtifactType artifactType = CoreArtifactTypes.AbstractSoftwareRequirement;
+      ArtifactTypeToken artifactType = CoreArtifactTypes.AbstractSoftwareRequirement;
       XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getId(), artifactType.getName());
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -283,7 +283,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       RelationType testRelationType =
          getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.Artifact);
 
-      IArtifactType artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
+      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
       Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(new ArtifactType(CoreArtifactTypes.AbstractSoftwareRequirement.getId(),
@@ -320,7 +320,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       RelationType testRelationType =
          getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.Artifact);
 
-      IArtifactType artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
+      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
       Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(
@@ -346,7 +346,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       testProcessRelationWithArtifactHelper("artifactToMatch", "differentArtifactToMatch", new Scope());
    }
 
-   private static RelationType getTestRelationType(RelationTypeToken relationType, IArtifactType aArtTypeToken, IArtifactType bArtTypeToken) {
+   private static RelationType getTestRelationType(RelationTypeToken relationType, ArtifactTypeToken aArtTypeToken, ArtifactTypeToken bArtTypeToken) {
       return new RelationType(relationType.getId(), relationType.getName(), "sideA_" + aArtTypeToken.getName(),
          "sideB_" + bArtTypeToken.getName(), aArtTypeToken, bArtTypeToken, RelationTypeMultiplicity.MANY_TO_MANY,
          LEXICOGRAPHICAL_ASC);

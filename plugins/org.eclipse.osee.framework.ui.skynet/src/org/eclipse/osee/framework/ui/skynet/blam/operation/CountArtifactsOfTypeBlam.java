@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -42,7 +42,7 @@ public class CountArtifactsOfTypeBlam extends AbstractBlam {
          rd.log(String.format("Aritfact Count for Type for Branch [%s]\n", variableMap.getBranch("Branch")));
          rd.addRaw(AHTML.beginMultiColumnTable(100, 1));
          rd.addRaw(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Type", "Count")));
-         for (IArtifactType artType : ArtifactTypeManager.getAllTypes()) {
+         for (ArtifactTypeToken artType : ArtifactTypeManager.getAllTypes()) {
             int count = ArtifactQuery.getArtifactCountFromTypeWithInheritence(artType, variableMap.getBranch("Branch"),
                DeletionFlag.EXCLUDE_DELETED);
             rd.addRaw(AHTML.addRowMultiColumnTable(artType.toString(), String.valueOf(count)));
@@ -50,7 +50,7 @@ public class CountArtifactsOfTypeBlam extends AbstractBlam {
          rd.addRaw(AHTML.endMultiColumnTable());
          XResultDataUI.report(rd, "Artifact Type Count");
       } else {
-         IArtifactType artType = variableMap.getArtifactType("Artifact Type");
+         ArtifactTypeToken artType = variableMap.getArtifactType("Artifact Type");
          int count = ArtifactQuery.getArtifactCountFromTypeWithInheritence(artType, variableMap.getBranch("Branch"),
             DeletionFlag.EXCLUDE_DELETED);
          String str = String.format("\nAritfact Count for Type [%s] = %d\n\n", artType, count);

@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager;
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.Named;
@@ -163,7 +163,7 @@ public class AtsDeleteManagerTest {
    private void verifyExists(TestNames testName, int expectedNumActions, int expectedNumCodeWorkflows, int expectedNumReqWorkflows, int expectedNumTasks, int expectedNumReviews) {
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(testName.toString(),
          AtsClientService.get().getAtsBranch(), EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS);
-      CountingMap<IArtifactType> countMap = new CountingMap<>();
+      CountingMap<ArtifactTypeToken> countMap = new CountingMap<>();
       for (Artifact artifact : artifacts) {
          countMap.put(artifact.getArtifactType());
       }

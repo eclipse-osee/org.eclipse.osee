@@ -15,7 +15,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -28,12 +28,12 @@ public interface IArtifactResolver {
 
    <A extends ArtifactId> List<A> get(Collection<? extends IAtsWorkItem> workItems, Class<?> clazz);
 
-   IArtifactType getArtifactType(IAtsWorkItem workItem);
+   ArtifactTypeToken getArtifactType(IAtsWorkItem workItem);
 
-   boolean isOfType(ArtifactId artifact, IArtifactType artifactType);
+   boolean isOfType(ArtifactId artifact, ArtifactTypeToken artifactType);
 
-   boolean isOfType(IAtsObject atsObject, IArtifactType artifactType);
+   boolean isOfType(IAtsObject atsObject, ArtifactTypeToken artifactType);
 
-   boolean inheritsFrom(IArtifactType artType, IArtifactType parentArtType);
+   boolean inheritsFrom(ArtifactTypeToken artType, ArtifactTypeToken parentArtType);
 
 }

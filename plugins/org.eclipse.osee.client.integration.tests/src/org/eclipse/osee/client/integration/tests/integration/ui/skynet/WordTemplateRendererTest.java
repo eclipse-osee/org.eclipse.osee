@@ -41,7 +41,7 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -155,7 +155,7 @@ public class WordTemplateRendererTest {
       rendererOptionsMap.put(TRANSACTION_OPTION, null);
       rendererOptionsMap.put(SKIP_ERRORS, true);
       rendererOptionsMap.put(EXCLUDE_FOLDERS, true);
-      rendererOptionsMap.put(EXCLUDE_ARTIFACT_TYPES, new ArrayList<IArtifactType>());
+      rendererOptionsMap.put(EXCLUDE_ARTIFACT_TYPES, new ArrayList<ArtifactTypeToken>());
       rendererOptionsMap.put(RECURSE_ON_LOAD, true);
       rendererOptionsMap.put(MAINTAIN_ORDER, true);
       rendererOptionsMap.put(USE_TEMPLATE_ONCE, true);

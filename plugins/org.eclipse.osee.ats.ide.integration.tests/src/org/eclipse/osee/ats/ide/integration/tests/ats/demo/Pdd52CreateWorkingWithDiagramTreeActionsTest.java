@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.ide.demo.populate.Pdd52CreateWorkingWithDiagramTreeA
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -55,7 +55,7 @@ public class Pdd52CreateWorkingWithDiagramTreeActionsTest implements IPopulateDe
       return version.equals(DemoArtifactToken.SAW_Bld_1) ? "" : DemoUsers.Kay_Jones.getName();
    }
 
-   private IArtifactType getArtifactType() {
+   private ArtifactTypeToken getArtifactType() {
       return AtsArtifactTypes.TeamWorkflow;
    }
 

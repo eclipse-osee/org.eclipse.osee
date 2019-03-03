@@ -16,7 +16,7 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import org.eclipse.define.api.importing.RoughArtifactCollector;
 import org.eclipse.osee.activity.api.ActivityLog;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
@@ -31,10 +31,10 @@ public class XmlDataExtractor extends AbstractArtifactExtractor {
 
    @Override
    protected void extractFromSource(OrcsApi orcsApi, ActivityLog activityLog, URI source, RoughArtifactCollector collector) throws Exception {
-      IArtifactType primaryArtifactType = null;
+      ArtifactTypeToken primaryArtifactType = null;
       ArtifactTypes artTypes = orcsApi.getOrcsTypes().getArtifactTypes();
 
-      for (IArtifactType type : artTypes.getAll()) {
+      for (ArtifactTypeToken type : artTypes.getAll()) {
          if (type.getName().equals(Lib.removeExtension(new File(source).getName()))) {
             primaryArtifactType = type;
          }

@@ -23,7 +23,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -312,10 +312,10 @@ public class ArtifactExplorerMenu {
          CoreRelationTypes.Default_Hierarchical__Child);
    }
 
-   public static Artifact handleCreateChild(Artifact parent, Collection<? extends IArtifactType> validArtifactTypes, TreeViewer treeViewer, RelationTypeSide relationTypeSide) {
+   public static Artifact handleCreateChild(Artifact parent, Collection<? extends ArtifactTypeToken> validArtifactTypes, TreeViewer treeViewer, RelationTypeSide relationTypeSide) {
       FilteredTreeArtifactTypeEntryDialog dialog = getDialog(validArtifactTypes);
       if (dialog.open() == Window.OK) {
-         IArtifactType type = dialog.getSelection();
+         ArtifactTypeToken type = dialog.getSelection();
          String name = dialog.getEntryValue();
 
          if (type == null) {
@@ -341,9 +341,9 @@ public class ArtifactExplorerMenu {
       return null;
    }
 
-   private static FilteredTreeArtifactTypeEntryDialog getDialog(Collection<? extends IArtifactType> validArtifactTypes) {
-      List<IArtifactType> artifactTypes = new ArrayList<>();
-      for (IArtifactType artifactType : validArtifactTypes) {
+   private static FilteredTreeArtifactTypeEntryDialog getDialog(Collection<? extends ArtifactTypeToken> validArtifactTypes) {
+      List<ArtifactTypeToken> artifactTypes = new ArrayList<>();
+      for (ArtifactTypeToken artifactType : validArtifactTypes) {
          if (!((ArtifactType) artifactType).isAbstract() && ArtifactTypeManager.isUserCreationAllowed(artifactType)) {
             artifactTypes.add(artifactType);
          }

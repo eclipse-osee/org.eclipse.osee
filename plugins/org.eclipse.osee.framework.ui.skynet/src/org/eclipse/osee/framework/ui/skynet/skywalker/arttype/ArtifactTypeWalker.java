@@ -18,7 +18,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -71,9 +71,9 @@ public class ArtifactTypeWalker extends GenericViewPart {
             Iterator<?> itemsIter = selection.iterator();
             while (itemsIter.hasNext()) {
                Object obj = itemsIter.next();
-               if (obj instanceof IArtifactType) {
+               if (obj instanceof ArtifactTypeToken) {
                   try {
-                     explore(ArtifactTypeManager.getType((IArtifactType) obj));
+                     explore(ArtifactTypeManager.getType((ArtifactTypeToken) obj));
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }
@@ -112,7 +112,7 @@ public class ArtifactTypeWalker extends GenericViewPart {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       try {
-         for (IArtifactType childType : contentProvider.getParentTypes()) {
+         for (ArtifactTypeToken childType : contentProvider.getParentTypes()) {
             GraphItem childItem = viewer.findGraphItem(childType);
             if (childItem != null && childItem instanceof GraphNode) {
                GraphNode node = (GraphNode) childItem;

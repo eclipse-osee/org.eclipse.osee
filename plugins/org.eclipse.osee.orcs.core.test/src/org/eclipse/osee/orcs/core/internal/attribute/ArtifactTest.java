@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -81,7 +81,7 @@ public class ArtifactTest {
    private Artifact artifact;
    private final String guid = GUID.create();
    private final AttributeTypeToken attributeType = CoreAttributeTypes.Annotation;
-   private final IArtifactType artifactType = CoreArtifactTypes.GeneralData;
+   private final ArtifactTypeToken artifactType = CoreArtifactTypes.GeneralData;
 
    @SuppressWarnings("unchecked")
    @Before

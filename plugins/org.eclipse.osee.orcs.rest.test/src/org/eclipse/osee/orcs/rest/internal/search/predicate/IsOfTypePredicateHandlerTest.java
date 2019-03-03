@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.IsOfTypePredicateHandler;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
@@ -39,7 +39,7 @@ public class IsOfTypePredicateHandlerTest {
    private QueryBuilder builder;
 
    @Captor
-   private ArgumentCaptor<Collection<IArtifactType>> artifactTypesCaptor;
+   private ArgumentCaptor<Collection<ArtifactTypeToken>> artifactTypesCaptor;
 
    @Before
    public void initialize() {
@@ -72,7 +72,7 @@ public class IsOfTypePredicateHandlerTest {
       verify(builder).andIsOfType(artifactTypesCaptor.capture());
       Assert.assertEquals(2, artifactTypesCaptor.getValue().size());
 
-      Iterator<IArtifactType> iterator = artifactTypesCaptor.getValue().iterator();
+      Iterator<ArtifactTypeToken> iterator = artifactTypesCaptor.getValue().iterator();
       Assert.assertEquals(id1, iterator.next().getIdString());
       Assert.assertEquals(id2, iterator.next().getIdString());
    }

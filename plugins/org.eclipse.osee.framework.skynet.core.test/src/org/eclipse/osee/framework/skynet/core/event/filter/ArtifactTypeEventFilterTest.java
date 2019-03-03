@@ -43,8 +43,7 @@ public class ArtifactTypeEventFilterTest {
 
    @Test
    public void testArtifactEventFilters_artifactTypeAndInherited() throws Exception {
-      when(typeProvider.getTypeByGuid(CoreArtifactTypes.Requirement.getId())).thenReturn(
-         CoreArtifactTypes.Requirement);
+      when(typeProvider.getTypeByGuid(CoreArtifactTypes.Requirement.getId())).thenReturn(CoreArtifactTypes.Requirement);
       ArtifactTypeEventFilter typeFilter = new ArtifactTypeEventFilter(typeProvider, CoreArtifactTypes.Requirement);
       EventBasicGuidArtifact guidArt =
          new EventBasicGuidArtifact(EventModType.Added, COMMON, CoreArtifactTypes.Requirement);
@@ -73,8 +72,7 @@ public class ArtifactTypeEventFilterTest {
    public void testBranchMatch_relationType() throws Exception {
       ArtifactTypeEventFilter typeFilter = new ArtifactTypeEventFilter(typeProvider, CoreArtifactTypes.Requirement);
 
-      when(typeProvider.getTypeByGuid(CoreArtifactTypes.Requirement.getId())).thenReturn(
-         CoreArtifactTypes.Requirement);
+      when(typeProvider.getTypeByGuid(CoreArtifactTypes.Requirement.getId())).thenReturn(CoreArtifactTypes.Requirement);
       EventBasicGuidArtifact guidArtA =
          new EventBasicGuidArtifact(EventModType.Added, COMMON, CoreArtifactTypes.Requirement);
       EventBasicGuidArtifact guidArtB =

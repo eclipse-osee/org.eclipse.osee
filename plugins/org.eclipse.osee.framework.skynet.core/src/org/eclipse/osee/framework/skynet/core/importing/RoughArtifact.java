@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -36,8 +36,8 @@ public class RoughArtifact {
    private RoughArtifactKind roughArtifactKind;
    private final RoughAttributeSet attributes;
    private final Collection<RoughArtifact> children;
-   private IArtifactType primaryArtifactType;
-   private IArtifactType type = IArtifactType.SENTINEL;
+   private ArtifactTypeToken primaryArtifactType;
+   private ArtifactTypeToken type = ArtifactTypeToken.SENTINEL;
 
    public RoughArtifact(RoughArtifactKind roughArtifactKind, String name) {
       this.attributes = new RoughAttributeSet();
@@ -206,19 +206,19 @@ public class RoughArtifact {
       return attributes.getSoleAttributeValue(attributeName);
    }
 
-   public IArtifactType getPrimaryArtifactType() {
+   public ArtifactTypeToken getPrimaryArtifactType() {
       return primaryArtifactType;
    }
 
-   public void setPrimaryArtifactType(IArtifactType primaryArtifactType) {
+   public void setPrimaryArtifactType(ArtifactTypeToken primaryArtifactType) {
       this.primaryArtifactType = primaryArtifactType;
    }
 
-   public IArtifactType getType() {
+   public ArtifactTypeToken getType() {
       return type;
    }
 
-   public void setType(IArtifactType type) {
+   public void setType(ArtifactTypeToken type) {
       this.type = type;
    }
 }

@@ -30,7 +30,7 @@ import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.ats.ide.editor.renderer.AtsWERenderer;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -63,12 +63,12 @@ public class RendererManagerTest {
       Both
    };
 
-   private final IArtifactType artifactType;
+   private final ArtifactTypeToken artifactType;
    private final PresentationType presentationType;
    private final Class<? extends IRenderer> clazz;
    private final DefaultOption defaultOption;
 
-   public RendererManagerTest(IArtifactType artifactType, PresentationType presentationType, Class<? extends IRenderer> clazz, DefaultOption defaultOption) {
+   public RendererManagerTest(ArtifactTypeToken artifactType, PresentationType presentationType, Class<? extends IRenderer> clazz, DefaultOption defaultOption) {
       this.artifactType = artifactType;
       this.presentationType = presentationType;
       this.clazz = clazz;

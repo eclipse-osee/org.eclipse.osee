@@ -30,7 +30,7 @@ import org.eclipse.osee.define.ide.traceability.data.RequirementData;
 import org.eclipse.osee.define.ide.traceability.data.TraceMark;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
@@ -96,7 +96,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
       this(new RequirementData(branch, viewId), file, writeOutResults, traceHandlers, isGitBased, includeImpd);
    }
 
-   public ScriptTraceabilityOperation(File file, BranchId branch, boolean writeOutResults, Collection<? extends IArtifactType> types, boolean withInheritance, Collection<TraceHandler> traceHandlers, boolean isGitBased, ArtifactId viewId, boolean includeImpd) throws IOException {
+   public ScriptTraceabilityOperation(File file, BranchId branch, boolean writeOutResults, Collection<? extends ArtifactTypeToken> types, boolean withInheritance, Collection<TraceHandler> traceHandlers, boolean isGitBased, ArtifactId viewId, boolean includeImpd) throws IOException {
       this(new RequirementData(branch, types, withInheritance, viewId), file, writeOutResults, traceHandlers,
          isGitBased, includeImpd);
    }

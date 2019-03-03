@@ -60,7 +60,7 @@ import org.eclipse.osee.ats.rest.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.rest.util.IAtsNotifierServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
@@ -254,8 +254,8 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    }
 
    @Override
-   public Collection<IArtifactType> getArtifactTypes() {
-      List<IArtifactType> types = new ArrayList<>();
+   public Collection<ArtifactTypeToken> getArtifactTypes() {
+      List<ArtifactTypeToken> types = new ArrayList<>();
       types.addAll(orcsApi.getOrcsTypes().getArtifactTypes().getAll());
       return types;
    }

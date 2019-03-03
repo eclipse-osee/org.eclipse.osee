@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -28,7 +28,7 @@ public class DoorsBestFitArtifactResolver extends NewArtifactImportResolver {
 
    private final boolean createNewIfNotExist;
 
-   public DoorsBestFitArtifactResolver(IRoughArtifactTranslator translator, IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
+   public DoorsBestFitArtifactResolver(IRoughArtifactTranslator translator, ArtifactTypeToken primaryArtifactType, ArtifactTypeToken secondaryArtifactType, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
       super(translator, primaryArtifactType, secondaryArtifactType);
       this.createNewIfNotExist = createNewIfNotExist;
    }

@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -138,30 +138,30 @@ public class ArtifactTypeManager {
    /**
     * Get a new instance of type artifactTypeName
     */
-   public static Artifact addArtifact(IArtifactType artifactType, BranchId branch) {
+   public static Artifact addArtifact(ArtifactTypeToken artifactType, BranchId branch) {
       return addArtifact(artifactType, branch, null, null, null);
    }
 
    /**
     * Get a new instance of type artifactTypeName and set it's name.
     */
-   public static Artifact addArtifact(IArtifactType artifactType, BranchId branch, String name) {
+   public static Artifact addArtifact(ArtifactTypeToken artifactType, BranchId branch, String name) {
       return addArtifact(artifactType, branch, name, null, null);
    }
 
-   public static Artifact addArtifact(IArtifactType artifactType, BranchId branch, String name, Long artifactId) {
+   public static Artifact addArtifact(ArtifactTypeToken artifactType, BranchId branch, String name, Long artifactId) {
       return addArtifact(artifactType, branch, name, null, artifactId);
    }
 
-   public static Artifact addArtifact(IArtifactType artifactType, BranchId branch, String name, ArtifactId artifact) {
+   public static Artifact addArtifact(ArtifactTypeToken artifactType, BranchId branch, String name, ArtifactId artifact) {
       return addArtifact(artifactType, branch, name, null, artifact.getId());
    }
 
-   public static Artifact addArtifact(IArtifactType artifactType, BranchId branch, String name, String guid) {
+   public static Artifact addArtifact(ArtifactTypeToken artifactType, BranchId branch, String name, String guid) {
       return getFactory(artifactType).makeNewArtifact(branch, artifactType, name, guid);
    }
 
-   public static Artifact addArtifact(IArtifactType artifactType, BranchId branch, String name, String guid, Long uuid) {
+   public static Artifact addArtifact(ArtifactTypeToken artifactType, BranchId branch, String name, String guid, Long uuid) {
       return getFactory(artifactType).makeNewArtifact(branch, artifactType, name, guid, uuid);
    }
 

@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -32,9 +32,9 @@ import org.eclipse.osee.ote.define.internal.Activator;
  * @author Roberto E. Escobar
  */
 public class OteArtifactFetcher<T extends Artifact> {
-   private final IArtifactType oteArtifactType;
+   private final ArtifactTypeToken oteArtifactType;
 
-   protected OteArtifactFetcher(IArtifactType oteArtifactType) {
+   protected OteArtifactFetcher(ArtifactTypeToken oteArtifactType) {
       this.oteArtifactType = oteArtifactType;
    }
 

@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.skywalker.ISkyWalkerOptionsChangeListener.ModType;
@@ -67,8 +67,8 @@ public class SkyWalkerArtTypeTabItem {
 
          @Override
          public Image getImage(Object obj) {
-            if (obj instanceof IArtifactType) {
-               return ArtifactImageManager.getImage((IArtifactType) obj);
+            if (obj instanceof ArtifactTypeToken) {
+               return ArtifactImageManager.getImage((ArtifactTypeToken) obj);
             }
             return null;
          }
@@ -143,10 +143,10 @@ public class SkyWalkerArtTypeTabItem {
    }
 
    public void storeSelected() {
-      Set<IArtifactType> selected = new HashSet<>();
+      Set<ArtifactTypeToken> selected = new HashSet<>();
       for (Object obj : treeViewer.getCheckedElements()) {
-         if (obj instanceof IArtifactType) {
-            selected.add((IArtifactType) obj);
+         if (obj instanceof ArtifactTypeToken) {
+            selected.add((ArtifactTypeToken) obj);
          }
       }
       options.setSelectedArtTypes(selected);

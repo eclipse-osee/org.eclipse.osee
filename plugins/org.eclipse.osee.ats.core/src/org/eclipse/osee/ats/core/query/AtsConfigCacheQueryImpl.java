@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.query.IAtsConfigCacheQuery;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
  */
 public class AtsConfigCacheQueryImpl implements IAtsConfigCacheQuery {
 
-   protected List<IArtifactType> artifactTypes;
+   protected List<ArtifactTypeToken> artifactTypes;
    protected final AtsApi atsApi;
    private Boolean active = null;
    private List<WorkType> workTypes = null;
@@ -66,12 +66,12 @@ public class AtsConfigCacheQueryImpl implements IAtsConfigCacheQuery {
    }
 
    @Override
-   public IAtsConfigCacheQuery isOfType(IArtifactType... artifactType) {
+   public IAtsConfigCacheQuery isOfType(ArtifactTypeToken... artifactType) {
       if (this.artifactTypes != null) {
          throw new OseeArgumentException("Can only specify one artifact type");
       }
       this.artifactTypes = new LinkedList<>();
-      for (IArtifactType type : artifactType) {
+      for (ArtifactTypeToken type : artifactType) {
          this.artifactTypes.add(type);
       }
       return this;

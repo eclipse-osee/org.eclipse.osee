@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -58,7 +58,7 @@ public class EndpointOperations {
    /**
     * @return list of artifact tokens for artifact type with check for active=true/false/null
     */
-   public List<JaxAtsObject> getActiveArtifactTypeTokens(IArtifactType artifactType, UriInfo uriInfo) throws Exception {
+   public List<JaxAtsObject> getActiveArtifactTypeTokens(ArtifactTypeToken artifactType, UriInfo uriInfo) throws Exception {
       Boolean active = getActiveQueryParamOrNull(uriInfo);
       List<JaxAtsObject> teams = new ArrayList<>();
       for (ArtifactToken art : atsApi.getQueryService().getArtifacts(artifactType)) {

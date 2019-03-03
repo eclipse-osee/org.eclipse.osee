@@ -79,7 +79,7 @@ import org.eclipse.osee.ats.ide.workflow.task.related.AtsTaskRelatedService;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionListeners;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
@@ -349,8 +349,8 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    }
 
    @Override
-   public Collection<IArtifactType> getArtifactTypes() {
-      List<IArtifactType> types = new ArrayList<>();
+   public Collection<ArtifactTypeToken> getArtifactTypes() {
+      List<ArtifactTypeToken> types = new ArrayList<>();
       types.addAll(ArtifactTypeManager.getAllTypes());
       return types;
    }

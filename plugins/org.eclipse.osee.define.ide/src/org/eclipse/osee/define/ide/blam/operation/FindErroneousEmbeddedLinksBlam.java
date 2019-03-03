@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -78,7 +78,7 @@ public class FindErroneousEmbeddedLinksBlam extends AbstractBlam {
       ISheetWriter excelWriter = new ExcelXmlWriter(file);
 
       BranchId branch = variableMap.getBranch(BRANCH);
-      List<IArtifactType> artifactTypes = variableMap.getArtifactTypes(ARTIFACT_TYPES);
+      List<ArtifactTypeToken> artifactTypes = variableMap.getArtifactTypes(ARTIFACT_TYPES);
 
       QueryBuilderArtifact queryBuilder = ArtifactQuery.createQueryBuilder(branch);
       queryBuilder.andExists(CoreAttributeTypes.WordTemplateContent);
@@ -107,8 +107,8 @@ public class FindErroneousEmbeddedLinksBlam extends AbstractBlam {
       Program.launch(file.getAbsolutePath());
    }
 
-   private boolean isOfTypes(List<IArtifactType> artifactTypes, Artifact artifact) {
-      for (IArtifactType type : artifactTypes) {
+   private boolean isOfTypes(List<ArtifactTypeToken> artifactTypes, Artifact artifact) {
+      for (ArtifactTypeToken type : artifactTypes) {
          if (artifact.isOfType(type)) {
             return true;
          }

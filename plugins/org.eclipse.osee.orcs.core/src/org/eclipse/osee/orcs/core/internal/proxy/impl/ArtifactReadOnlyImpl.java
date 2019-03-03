@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -51,9 +51,9 @@ import org.eclipse.osee.orcs.data.RelationReadable;
 public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements ArtifactReadable {
 
    private final RelationManager relationManager;
-   private final IArtifactType artifactType;
+   private final ArtifactTypeToken artifactType;
 
-   public ArtifactReadOnlyImpl(ExternalArtifactManager proxyManager, RelationManager relationManager, OrcsSession session, Artifact proxiedObject, IArtifactType artifactType) {
+   public ArtifactReadOnlyImpl(ExternalArtifactManager proxyManager, RelationManager relationManager, OrcsSession session, Artifact proxiedObject, ArtifactTypeToken artifactType) {
       super(proxyManager, session, proxiedObject);
       this.relationManager = relationManager;
       this.artifactType = artifactType;
@@ -94,12 +94,12 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public IArtifactType getArtifactType() {
+   public ArtifactTypeToken getArtifactType() {
       return artifactType;
    }
 
    @Override
-   public IArtifactType getArtifactTypeId() {
+   public ArtifactTypeToken getArtifactTypeId() {
       return artifactType;
    }
 

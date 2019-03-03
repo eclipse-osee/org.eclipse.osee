@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
@@ -38,7 +38,7 @@ public class TraceReportGenerator {
    private final TraceAccumulator traces;
    private final TraceMatch traceMatch;
    private final TraceAccumulator testTraces;
-   private final IArtifactType alternateArtifactType;
+   private final ArtifactTypeToken alternateArtifactType;
    private final AttributeTypeToken alternateAttributeType;
 
    public static int SOFTWARE_SHEETREQ_INDEX = 3;
@@ -77,7 +77,7 @@ public class TraceReportGenerator {
       queryFactory = orcsApi.getQueryFactory();
    }
 
-   public TraceReportGenerator(IArtifactType artifactType, AttributeTypeToken attributeType) {
+   public TraceReportGenerator(ArtifactTypeToken artifactType, AttributeTypeToken attributeType) {
       String traceFile = ".*\\.(ada$|cpp$|c$|h$)";
       String traceMatchReg = "\\^SRS\\s*([^;]+);?";
       String testFile = ".*\\.(java$)";
@@ -200,7 +200,7 @@ public class TraceReportGenerator {
       return testTraces.getFiles(accumulator.handleEquivalentName(softwareRequirement));
    }
 
-   public IArtifactType getAlternateArtifactType() {
+   public ArtifactTypeToken getAlternateArtifactType() {
       return alternateArtifactType;
    }
 

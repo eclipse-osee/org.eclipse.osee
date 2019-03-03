@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -50,19 +50,19 @@ public interface IAtsStoreService {
    /**
     * Uses artifact type inheritance to retrieve all TeamWorkflow artifact types
     */
-   Set<IArtifactType> getTeamWorkflowArtifactTypes();
+   Set<ArtifactTypeToken> getTeamWorkflowArtifactTypes();
 
    AttributeTypeId getAttributeType(String attrTypeName);
 
-   IArtifactType getArtifactType(ArtifactId artifact);
+   ArtifactTypeToken getArtifactType(ArtifactId artifact);
 
-   IArtifactType getArtifactType(IAtsObject atsObject);
+   ArtifactTypeToken getArtifactType(IAtsObject atsObject);
 
    boolean isDateType(AttributeTypeId attributeType);
 
    boolean isOfType(ArtifactId artifact, ArtifactTypeId... artifactType);
 
-   IArtifactType getArtifactType(Long artTypeId);
+   ArtifactTypeToken getArtifactType(Long artTypeId);
 
    void executeChangeSet(String comment, IAtsObject atsObject);
 
@@ -72,13 +72,13 @@ public interface IAtsStoreService {
 
    boolean isChangedInDb(IAtsWorkItem workItem);
 
-   boolean isOfType(IAtsObject atsObject, IArtifactType artifactType);
+   boolean isOfType(IAtsObject atsObject, ArtifactTypeToken artifactType);
 
    void clearCaches(IAtsWorkItem workItem);
 
    AttributeTypeToken getAttributeType(Long attrTypeId);
 
-   boolean isArtifactTypeInheritsFrom(IArtifactType artifactType, IArtifactType baseArtifactType);
+   boolean isArtifactTypeInheritsFrom(ArtifactTypeToken artifactType, ArtifactTypeToken baseArtifactType);
 
    Result setTransactionAssociatedArtifact(TransactionId trans, IAtsTeamWorkflow teamWf);
 
@@ -98,21 +98,21 @@ public interface IAtsStoreService {
 
    JdbcService getJdbcService();
 
-   default Map<ArtifactId, IArtifactType> getArtifactTypes(Collection<ArtifactId> artIds) {
+   default Map<ArtifactId, ArtifactTypeToken> getArtifactTypes(Collection<ArtifactId> artIds) {
       String query = String.format(ART_TYPE_FROM_ID_QUERY,
          org.eclipse.osee.framework.jdk.core.util.Collections.toString(artIds, ",", ArtifactId::getIdString));
 
-      Map<ArtifactId, IArtifactType> artIdToType = new HashMap<>();
+      Map<ArtifactId, ArtifactTypeToken> artIdToType = new HashMap<>();
       getJdbcService().getClient().runQuery(stmt -> artIdToType.put(ArtifactId.valueOf(stmt.getLong("art_id")),
          getArtifactType(stmt.getLong("art_type_id"))), query);
       return artIdToType;
    }
 
-   boolean isOfType(IAtsObject atsObject, IArtifactType... artifactType);
+   boolean isOfType(IAtsObject atsObject, ArtifactTypeToken... artifactType);
 
-   boolean inheritsFrom(IArtifactType artType, IArtifactType... artifactType);
+   boolean inheritsFrom(ArtifactTypeToken artType, ArtifactTypeToken... artifactType);
 
-   String getArtifactTypeName(IArtifactType artifactTypeId);
+   String getArtifactTypeName(ArtifactTypeToken artifactTypeId);
 
    boolean isHistorical(ArtifactId artifact);
 

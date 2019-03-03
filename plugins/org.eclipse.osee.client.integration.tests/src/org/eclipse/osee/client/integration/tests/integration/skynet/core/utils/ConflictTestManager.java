@@ -20,7 +20,7 @@ import java.util.List;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.ConflictDeletionTest;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -118,9 +118,9 @@ public class ConflictTestManager {
       protected Class<?> clas;
       protected BranchId branch;
       protected int rootArtifact;
-      protected IArtifactType type;
+      protected ArtifactTypeToken type;
 
-      protected ArtifactModification(Type itemToChange, Modification modificationToPerform, int rootArtifact, BranchId branch, IArtifactType type, String name) {
+      protected ArtifactModification(Type itemToChange, Modification modificationToPerform, int rootArtifact, BranchId branch, ArtifactTypeToken type, String name) {
          if (!itemToChange.equals(Type.ARTIFACT)) {
             throw new OseeCoreException("This is the Artifact Constructor");
          }
@@ -293,7 +293,7 @@ public class ConflictTestManager {
       }
    }
 
-   protected static Artifact createArtifact(int rootArtifactId, BranchId branch, IArtifactType type, String name) {
+   protected static Artifact createArtifact(int rootArtifactId, BranchId branch, ArtifactTypeToken type, String name) {
       Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, FOLDER, branch);
       if (rootArtifactId > 0 && rootArtifactId < NUMBER_OF_ARTIFACTS) {
          if (branch.equals(destArtifacts[0].getBranch())) {
@@ -661,7 +661,7 @@ public class ConflictTestManager {
    static final class ConflictDefinition {
       final Collection<AttributeValue> values = new HashSet<>();
       final Collection<AttributeValue> newAttributes = new HashSet<>();
-      IArtifactType artifactType;
+      ArtifactTypeToken artifactType;
       boolean sourceDelete;
       boolean destDelete;
       int rootArtifact;
@@ -670,7 +670,7 @@ public class ConflictTestManager {
       boolean sourceModified = false;
       boolean destModified = false;
 
-      protected void setValues(IArtifactType artifactType, boolean sourceDelete, boolean destDelete, int rootArtifact, int queryNumber) {
+      protected void setValues(ArtifactTypeToken artifactType, boolean sourceDelete, boolean destDelete, int rootArtifact, int queryNumber) {
          this.artifactType = artifactType;
          this.sourceDelete = sourceDelete;
          this.destDelete = destDelete;

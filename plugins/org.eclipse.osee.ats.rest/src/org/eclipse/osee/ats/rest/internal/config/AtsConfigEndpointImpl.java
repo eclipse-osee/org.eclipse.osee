@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -96,7 +96,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       if (images == null) {
          images = new LinkedList<>();
          images.addAll(AtsArtifactImages.getImages());
-         for (IArtifactType artifactType : atsApi.getStoreService().getTeamWorkflowArtifactTypes()) {
+         for (ArtifactTypeToken artifactType : atsApi.getStoreService().getTeamWorkflowArtifactTypes()) {
             images.add(ArtifactImage.construct(artifactType, AtsArtifactImages.AGILE_TASK.getImageName(),
                AtsArtifactImages.AGILE_TASK.getBaseUrl()));
          }

@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import java.util.Collection;
 import java.util.Collections;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -78,7 +78,7 @@ public class RelationTypeRestrictionHandler implements RestrictionHandler<Relati
             XArtifactType artifactTypeRef = artifactTypePredicate.getArtifactTypeRef();
             ArtifactType artifactType = artifactProxy.getArtifactType();
             if (artifactTypeRef != null && artifactType != null) {
-               IArtifactType ruleType =
+               ArtifactTypeToken ruleType =
                   TokenFactory.createArtifactType(Long.valueOf(artifactTypeRef.getId()), artifactTypeRef.getName());
                if (artifactType.inheritsFrom(ruleType)) {
                   toUse = scope.clone().addSubPath(artifactProxy.getName());

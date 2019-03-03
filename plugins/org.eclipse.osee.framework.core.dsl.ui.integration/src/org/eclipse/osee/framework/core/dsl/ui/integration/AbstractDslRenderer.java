@@ -23,7 +23,7 @@ import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.dsl.ui.integration.internal.DslUiIntegrationConstants;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -82,7 +82,7 @@ public abstract class AbstractDslRenderer extends FileSystemRenderer {
     *
     * @return a list of the artifact types that the renderer supports
     */
-   protected abstract IArtifactType[] getArtifactTypeMatches();
+   protected abstract ArtifactTypeToken[] getArtifactTypeMatches();
 
    @Override
    public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {

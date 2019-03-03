@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -76,14 +76,14 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public IAtsConfigQuery createQuery(IArtifactType... artifactType) {
+   public IAtsConfigQuery createQuery(ArtifactTypeToken... artifactType) {
       AtsConfigQueryImpl query = new AtsConfigQueryImpl(atsApi, orcsApi);
       query.isOfType(artifactType);
       return query;
    }
 
    @Override
-   public IAtsConfigCacheQuery createConfigCacheQuery(IArtifactType... artifactType) {
+   public IAtsConfigCacheQuery createConfigCacheQuery(ArtifactTypeToken... artifactType) {
       AtsConfigCacheQueryImpl query = new AtsConfigCacheQueryImpl(atsApi);
       query.isOfType(artifactType);
       return query;
@@ -130,7 +130,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifacts(BranchId branch, boolean includeInherited, IArtifactType... artifactType) {
+   public Collection<ArtifactToken> getArtifacts(BranchId branch, boolean includeInherited, ArtifactTypeToken... artifactType) {
       if (includeInherited) {
          return Collections.castAll(query.fromBranch(branch).andIsOfType(artifactType).getResults().getList());
       } else {
@@ -249,7 +249,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public List<ArtifactToken> getArtifactListFromTypeWithInheritence(IArtifactType artifactType, BranchId branch, DeletionFlag deletionFlag) {
+   public List<ArtifactToken> getArtifactListFromTypeWithInheritence(ArtifactTypeToken artifactType, BranchId branch, DeletionFlag deletionFlag) {
       return Collections.castAll(
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(artifactType).includeDeletedArtifacts(
             deletionFlag == DeletionFlag.INCLUDE_DELETED).getResults().getList());

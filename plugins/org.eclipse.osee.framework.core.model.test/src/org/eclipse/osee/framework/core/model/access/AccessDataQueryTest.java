@@ -14,7 +14,7 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -113,7 +113,7 @@ public class AccessDataQueryTest {
    public void testArtifactMatchesAll() {
       AccessData data = new AccessData();
       IOseeBranch branch = CoreBranches.COMMON;
-      IArtifactType artifactType = CoreArtifactTypes.AbstractSoftwareRequirement;
+      ArtifactTypeToken artifactType = CoreArtifactTypes.AbstractSoftwareRequirement;
 
       ArtifactToken artifact1 = ArtifactToken.valueOf(1, "one", branch, artifactType);
       ArtifactToken artifact2 = ArtifactToken.valueOf(2, "two", branch, artifactType);
@@ -148,7 +148,7 @@ public class AccessDataQueryTest {
       ArtifactToken accessArtifact = ArtifactToken.valueOf(45, "test1", branch, Folder);
       ArtifactToken typeAccessArtifact = ArtifactToken.valueOf(46, "test2", branch, Folder);
       ArtifactToken noAccessArtifact = ArtifactToken.valueOf(47, "test3", branch, Folder);
-      IArtifactType artType = TokenFactory.createArtifactType(1, "Folder");
+      ArtifactTypeToken artType = TokenFactory.createArtifactType(1, "Folder");
 
       AccessDetail<?> specificArtDetail = MockDataFactory.createAccessDetails(accessArtifact, PermissionEnum.DENY, "",
          new Scope().add("very").add("specific"));
@@ -179,7 +179,7 @@ public class AccessDataQueryTest {
 
    private TestObject getTestData() {
       IOseeBranch branchToCheck = CoreBranches.SYSTEM_ROOT;
-      IArtifactType artifactType = CoreArtifactTypes.AbstractSoftwareRequirement;
+      ArtifactTypeToken artifactType = CoreArtifactTypes.AbstractSoftwareRequirement;
       ArtifactToken artifactToCheck = ArtifactToken.valueOf(12, "Hello", branchToCheck, artifactType);
       AccessData data = new AccessData();
 

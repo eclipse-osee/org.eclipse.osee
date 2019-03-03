@@ -23,7 +23,7 @@ import org.eclipse.osee.define.ide.internal.Activator;
 import org.eclipse.osee.define.ide.traceability.data.RequirementData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -43,11 +43,11 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
    private final RequirementData requirementData;
    private HashCollectionSet<Artifact, String> requirementToTestUnitsMap;
    private Map<String, Artifact> testUnits;
-   private final Collection<? extends IArtifactType> types;
+   private final Collection<? extends ArtifactTypeToken> types;
    private final boolean withInheritance;
    private final ArtifactId viewId;
 
-   private BranchTraceabilityOperation(RequirementData requirementData, BranchId branch, Collection<? extends IArtifactType> types, boolean withInheritance, ArtifactId viewId) {
+   private BranchTraceabilityOperation(RequirementData requirementData, BranchId branch, Collection<? extends ArtifactTypeToken> types, boolean withInheritance, ArtifactId viewId) {
       super("Branch Traceability Provider", Activator.PLUGIN_ID);
       this.requirementData = requirementData;
       this.branch = branch;
@@ -61,7 +61,7 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
          Collections.singleton(CoreArtifactTypes.AbstractSoftwareRequirement), true, viewId);
    }
 
-   public BranchTraceabilityOperation(BranchId branch, Collection<? extends IArtifactType> types, boolean withInheritance, ArtifactId viewId) {
+   public BranchTraceabilityOperation(BranchId branch, Collection<? extends ArtifactTypeToken> types, boolean withInheritance, ArtifactId viewId) {
       this(new RequirementData(branch, types, withInheritance, viewId), branch, types, withInheritance, viewId);
    }
 
@@ -105,7 +105,7 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
       }
 
       List<Artifact> reqs = new ArrayList<>();
-      for (IArtifactType type : types) {
+      for (ArtifactTypeToken type : types) {
          if (withInheritance) {
             reqs.addAll(
                ArtifactQuery.getArtifactListFromTypeWithInheritence(type, branch, DeletionFlag.EXCLUDE_DELETED));

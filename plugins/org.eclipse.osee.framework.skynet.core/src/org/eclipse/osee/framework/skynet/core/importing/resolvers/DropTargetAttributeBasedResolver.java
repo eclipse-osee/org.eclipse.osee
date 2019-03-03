@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 
@@ -27,7 +27,7 @@ public class DropTargetAttributeBasedResolver extends AttributeBasedArtifactReso
    public static final Pattern oseeFilePattern = Pattern.compile("([^_]+)_[^\\d]+[^_]+_[^-]+.*");
    public static final Matcher oseeFileMatcher = oseeFilePattern.matcher("");
 
-   public DropTargetAttributeBasedResolver(IRoughArtifactTranslator translator, IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts, Artifact dropTarget) {
+   public DropTargetAttributeBasedResolver(IRoughArtifactTranslator translator, ArtifactTypeToken primaryArtifactType, ArtifactTypeToken secondaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts, Artifact dropTarget) {
       super(translator, primaryArtifactType, secondaryArtifactType, nonChangingAttributes, createNewIfNotExist,
          deleteUnmatchedArtifacts);
       this.dropTarget = dropTarget;

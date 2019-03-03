@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -341,7 +341,7 @@ public final class ArtifactLoader {
 
       Artifact artifact = historical ? null : ArtifactCache.getActive(artifactId, branch);
       if (artifact == null) {
-         IArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getLong("art_type_id"));
+         ArtifactTypeToken artifactType = ArtifactTypeManager.getType(chStmt.getLong("art_type_id"));
          ArtifactFactory factory = ArtifactTypeManager.getFactory(artifactType);
 
          artifact = factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"), artifactType,

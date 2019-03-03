@@ -11,21 +11,21 @@
 package org.eclipse.osee.define.rest.internal;
 
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author David W. Miller
  */
 public class AlternateTypeOutput {
-   IArtifactType alternateArtifact;
+   ArtifactTypeToken alternateArtifact;
    AttributeTypeId alternateAttribute;
 
-   public AlternateTypeOutput(IArtifactType alternateArtifact, AttributeTypeId alternateAttribute) {
+   public AlternateTypeOutput(ArtifactTypeToken alternateArtifact, AttributeTypeId alternateAttribute) {
       this.alternateArtifact = alternateArtifact;
       this.alternateAttribute = alternateAttribute;
    }
 
-   public IArtifactType getAlternateArtifactType() {
+   public ArtifactTypeToken getAlternateArtifactType() {
       return alternateArtifact;
    }
 

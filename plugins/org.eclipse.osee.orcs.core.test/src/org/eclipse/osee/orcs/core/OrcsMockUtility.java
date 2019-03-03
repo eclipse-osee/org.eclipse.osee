@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataImpl;
@@ -37,13 +37,13 @@ import org.mockito.Matchers;
  */
 public class OrcsMockUtility {
 
-   public static Artifact createTestArtifact(GraphData graph, BranchId branch, IArtifactType artifactType, Long artifactId, String name) {
+   public static Artifact createTestArtifact(GraphData graph, BranchId branch, ArtifactTypeToken artifactType, Long artifactId, String name) {
       Artifact artifact = createTestArtifact(branch, artifactType, artifactId, name);
       artifact.setGraph(graph);
       return artifact;
    }
 
-   public static Artifact createTestArtifact(BranchId branch, IArtifactType artifactType, Long artifactId, String name) {
+   public static Artifact createTestArtifact(BranchId branch, ArtifactTypeToken artifactType, Long artifactId, String name) {
       AttributeFactory attributeFactory = mock(AttributeFactory.class);
       ArtifactTypes artifactTypeCache = mock(ArtifactTypes.class);
 

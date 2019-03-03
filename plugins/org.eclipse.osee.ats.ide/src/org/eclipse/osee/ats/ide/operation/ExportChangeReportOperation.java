@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -61,7 +61,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
    private final Appendable resultFolder;
    private final boolean reverse;
    private final boolean writeChangeReports;
-   private final IArtifactType[] DISALLOW_TYPES = {CoreArtifactTypes.ImplementationDetails};
+   private final ArtifactTypeToken[] DISALLOW_TYPES = {CoreArtifactTypes.ImplementationDetails};
    private final String overrideDataRightsClassification;
    boolean debug = false;
 

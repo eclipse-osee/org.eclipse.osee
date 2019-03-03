@@ -19,14 +19,14 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactType> {
+public class ArtifactTypeIndex extends TokenTypeIndex<ArtifactTypeToken, XArtifactType> {
 
    private final Map<ArtifactTypeId, ArtifactTypeMetaData> tokenToTypeData;
    private final BranchHierarchyProvider hierarchyProvider;
@@ -37,17 +37,17 @@ public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactTy
       this.hierarchyProvider = hierarchyProvider;
    }
 
-   public void put(IArtifactType type, Set<IArtifactType> superTypes) {
+   public void put(ArtifactTypeToken type, Set<ArtifactTypeToken> superTypes) {
       ArtifactTypeMetaData metaData = getOrCreateData(type);
       metaData.setSuperTypes(superTypes);
    }
 
-   public void put(IArtifactType type, Map<BranchId, Collection<AttributeTypeToken>> attributes) {
+   public void put(ArtifactTypeToken type, Map<BranchId, Collection<AttributeTypeToken>> attributes) {
       ArtifactTypeMetaData metaData = getOrCreateData(type);
       metaData.setAttributeTypes(attributes);
    }
 
-   private ArtifactTypeMetaData getOrCreateData(IArtifactType type) {
+   private ArtifactTypeMetaData getOrCreateData(ArtifactTypeToken type) {
       ArtifactTypeMetaData metaData = tokenToTypeData.get(type);
       if (metaData == null) {
          metaData = new ArtifactTypeMetaData(type);
@@ -61,12 +61,12 @@ public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactTy
       return metaData.attributeTypes;
    }
 
-   public Collection<IArtifactType> getSuperTypes(ArtifactTypeId artifactType) {
+   public Collection<ArtifactTypeToken> getSuperTypes(ArtifactTypeId artifactType) {
       ArtifactTypeMetaData metaData = tokenToTypeData.get(artifactType);
       return metaData != null ? metaData.getSuperTypes() : Collections.emptyList();
    }
 
-   public Collection<IArtifactType> getDescendantTypes(ArtifactTypeId artifactType) {
+   public Collection<ArtifactTypeToken> getDescendantTypes(ArtifactTypeId artifactType) {
       ArtifactTypeMetaData metaData = tokenToTypeData.get(artifactType);
       return metaData != null ? metaData.getDescendantTypes() : Collections.emptyList();
    }
@@ -126,12 +126,12 @@ public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactTy
    }
 
    private final class ArtifactTypeMetaData {
-      private final IArtifactType type;
-      private Set<IArtifactType> superTypes;
-      private final Set<IArtifactType> descendantTypes;
+      private final ArtifactTypeToken type;
+      private Set<ArtifactTypeToken> superTypes;
+      private final Set<ArtifactTypeToken> descendantTypes;
       private Map<BranchId, Collection<AttributeTypeToken>> attributeTypes;
 
-      public ArtifactTypeMetaData(IArtifactType type) {
+      public ArtifactTypeMetaData(ArtifactTypeToken type) {
          super();
          this.type = type;
          superTypes = Collections.emptySet();
@@ -139,16 +139,16 @@ public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactTy
          attributeTypes = Collections.emptyMap();
       }
 
-      public void setSuperTypes(Set<IArtifactType> newSuperTypes) {
-         Set<IArtifactType> originals = Sets.newHashSet(superTypes);
+      public void setSuperTypes(Set<ArtifactTypeToken> newSuperTypes) {
+         Set<ArtifactTypeToken> originals = Sets.newHashSet(superTypes);
          superTypes = Sets.newHashSet(newSuperTypes);
-         for (IArtifactType superType : superTypes) {
+         for (ArtifactTypeToken superType : superTypes) {
             ArtifactTypeMetaData metaData = getOrCreateData(superType);
             if (metaData != null) {
                metaData.getDescendantTypes().add(type);
             }
          }
-         for (IArtifactType oldValue : originals) {
+         for (ArtifactTypeToken oldValue : originals) {
             ArtifactTypeMetaData metaData = getOrCreateData(oldValue);
             if (metaData != null) {
                metaData.getDescendantTypes().remove(type);
@@ -160,11 +160,11 @@ public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactTy
          this.attributeTypes = attributes;
       }
 
-      public Set<IArtifactType> getSuperTypes() {
+      public Set<ArtifactTypeToken> getSuperTypes() {
          return superTypes;
       }
 
-      public Set<IArtifactType> getDescendantTypes() {
+      public Set<ArtifactTypeToken> getDescendantTypes() {
          return descendantTypes;
       }
 

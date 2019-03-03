@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -576,7 +576,7 @@ public class ArtifactQuery {
       return reloadedArts;
    }
 
-   public static Artifact getOrCreate(String guid, IArtifactType type, BranchId branch) {
+   public static Artifact getOrCreate(String guid, ArtifactTypeToken type, BranchId branch) {
       Artifact artifact = ArtifactQuery.checkArtifactFromId(guid, branch, EXCLUDE_DELETED);
 
       if (artifact == null) {
@@ -739,7 +739,7 @@ public class ArtifactQuery {
       List<ArtifactToken> tokens = new LinkedList<>();
       while (chStmt.next()) {
          Long artId = chStmt.getLong("art_id");
-         IArtifactType artTypeId = ArtifactTypeManager.getType(chStmt.getLong("art_type_id"));
+         ArtifactTypeToken artTypeId = ArtifactTypeManager.getType(chStmt.getLong("art_type_id"));
          String name = chStmt.getString("value");
          String guid = chStmt.getString("guid");
          ArtifactToken token = ArtifactToken.valueOf(artId, guid, name, branch, artTypeId);
@@ -828,7 +828,7 @@ public class ArtifactQuery {
          while (chStmt.next()) {
             Long artId = chStmt.getLong("art_id");
 
-            IArtifactType artTypeId = ArtifactTypeManager.getType(chStmt.getLong("art_type_id"));
+            ArtifactTypeToken artTypeId = ArtifactTypeManager.getType(chStmt.getLong("art_type_id"));
             String name = chStmt.getString("value");
             ArtifactToken token = ArtifactToken.valueOf(artId, name, branch, artTypeId);
             Long artIdLong = isSideA ? artAIdToArtBId.get(artId) : artBIdToArtAId.get(artId);

@@ -36,7 +36,7 @@ import org.eclipse.osee.define.ide.traceability.data.TraceMark;
 import org.eclipse.osee.define.ide.traceability.data.TraceUnit;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -137,7 +137,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       return null;
    }
 
-   private AbstractSourceTagger getGuidUtility(IArtifactType artifactType) {
+   private AbstractSourceTagger getGuidUtility(ArtifactTypeToken artifactType) {
       if (artifactType.equals(CoreArtifactTypes.TestCase)) {
          return TestUnitTagger.getInstance();
       } else if (artifactType.equals(CoreArtifactTypes.CodeUnit)) {

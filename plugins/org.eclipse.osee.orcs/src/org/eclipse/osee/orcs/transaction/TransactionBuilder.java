@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -65,17 +65,17 @@ public interface TransactionBuilder {
    /**
     * If parent is invalid, the artifact will be created with no parent
     */
-   ArtifactToken createArtifact(ArtifactId parent, IArtifactType artifactType, String name);
+   ArtifactToken createArtifact(ArtifactId parent, ArtifactTypeToken artifactType, String name);
 
-   ArtifactToken createArtifact(IArtifactType artifactType, String name);
+   ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name);
 
-   ArtifactToken createArtifact(IArtifactType artifactType, String name, Long artifactId);
+   ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId);
 
    ArtifactToken createArtifact(ArtifactToken token);
 
-   ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid);
+   ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, String guid);
 
-   ArtifactToken createArtifact(IArtifactType artifactType, String name, Long artifactId, String guid);
+   ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId, String guid);
 
    /**
     * If parent is invalid, the artifact will be created with no parent
@@ -193,7 +193,7 @@ public interface TransactionBuilder {
 
    void addKeyValueOps(Long id, String name);
 
-   ArtifactToken createArtifact(ArtifactToken parent, IArtifactType artifactType, String name, Long id);
+   ArtifactToken createArtifact(ArtifactToken parent, ArtifactTypeToken artifactType, String name, Long id);
 
    /**
     * @return writable artifact or sentinal

@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.ide.demo.internal.Activator;
 import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -37,7 +37,7 @@ public class DemoDbUtil {
       return getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement, str.name(), branch);
    }
 
-   public static Collection<Artifact> getArtTypeRequirements(boolean DEBUG, IArtifactType artifactType, String artifactNameStr, BranchId branch) {
+   public static Collection<Artifact> getArtTypeRequirements(boolean DEBUG, ArtifactTypeToken artifactType, String artifactNameStr, BranchId branch) {
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO,
             "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getId());

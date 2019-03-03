@@ -20,7 +20,7 @@ import org.eclipse.define.api.importing.RoughAttributeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -32,7 +32,7 @@ public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
    private final Collection<AttributeTypeToken> nonChangingAttributes;
    private final boolean createNewIfNotExist;
 
-   public AttributeBasedArtifactResolver(TransactionBuilder transaction, IRoughArtifactTranslator translator, IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
+   public AttributeBasedArtifactResolver(TransactionBuilder transaction, IRoughArtifactTranslator translator, ArtifactTypeToken primaryArtifactType, ArtifactTypeToken secondaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
       super(transaction, translator, primaryArtifactType, secondaryArtifactType);
       this.nonChangingAttributes = nonChangingAttributes;
       this.createNewIfNotExist = createNewIfNotExist;

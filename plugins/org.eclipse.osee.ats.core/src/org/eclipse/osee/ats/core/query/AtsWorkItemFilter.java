@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -47,10 +47,10 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
    }
 
    @Override
-   public IAtsWorkItemFilter isOfType(IArtifactType... artifactType) {
+   public IAtsWorkItemFilter isOfType(ArtifactTypeToken... artifactType) {
       boolean found = false;
       for (IAtsWorkItem item : new CopyOnWriteArrayList<IAtsWorkItem>(items)) {
-         for (IArtifactType matchType : artifactType) {
+         for (ArtifactTypeToken matchType : artifactType) {
             if (atsApi.getArtifactResolver().isOfType(item, matchType)) {
                found = true;
                break;

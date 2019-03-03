@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.ide.column;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -43,7 +43,7 @@ public class BacklogOrderColumn extends GoalOrderColumn {
    }
 
    @Override
-   public IArtifactType getArtifactType() {
+   public ArtifactTypeToken getArtifactType() {
       return AtsArtifactTypes.AgileBacklog;
    }
 }

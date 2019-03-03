@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -49,17 +49,17 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    }
 
    @Override
-   public Collection<IArtifactType> getAll() {
+   public Collection<ArtifactTypeToken> getAll() {
       return getArtifactTypesIndex().getAllTokens();
    }
 
    @Override
-   public IArtifactType get(Id id) {
+   public ArtifactTypeToken get(Id id) {
       return getArtifactTypesIndex().get(id);
    }
 
    @Override
-   public IArtifactType get(Long id) {
+   public ArtifactTypeToken get(Long id) {
       return getArtifactTypesIndex().get(id);
    }
 
@@ -88,17 +88,17 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    }
 
    @Override
-   public Collection<? extends IArtifactType> getAllDescendantTypes(ArtifactTypeId artType) {
+   public Collection<? extends ArtifactTypeToken> getAllDescendantTypes(ArtifactTypeId artType) {
       Conditions.checkNotNull(artType, "artifactType");
-      LinkedHashSet<IArtifactType> descendants = Sets.newLinkedHashSet();
+      LinkedHashSet<ArtifactTypeToken> descendants = Sets.newLinkedHashSet();
       walkDescendants(artType, descendants);
       return descendants;
    }
 
-   private void walkDescendants(ArtifactTypeId artifactType, Collection<IArtifactType> descendants) {
-      Collection<IArtifactType> childTypes = getArtifactTypesIndex().getDescendantTypes(artifactType);
+   private void walkDescendants(ArtifactTypeId artifactType, Collection<ArtifactTypeToken> descendants) {
+      Collection<ArtifactTypeToken> childTypes = getArtifactTypesIndex().getDescendantTypes(artifactType);
       if (!childTypes.isEmpty()) {
-         for (IArtifactType type : childTypes) {
+         for (ArtifactTypeToken type : childTypes) {
             walkDescendants(type, descendants);
             descendants.add(type);
          }

@@ -27,7 +27,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -55,10 +55,10 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
    private final Map<String, Integer> summaryTraceCounter = new HashMap<>();
    private final Map<String, Integer> summaryAllocationCounter = new HashMap<>();
    private ExcelXmlWriter writer;
-   private final Collection<IArtifactType> includeOnlyArtifactTypes;
+   private final Collection<ArtifactTypeToken> includeOnlyArtifactTypes;
    private final String REQUIREMENT_TRACE_TYPE = "Requirement Trace";
    private final String ALLOCATION_TRACE_TYPE = "Allocation Trace";
-   private final Map<String, IArtifactType> allTypesMap = new HashMap<>();
+   private final Map<String, ArtifactTypeToken> allTypesMap = new HashMap<>();
 
    public PublishLowHighReqStreamingOutput(ActivityLog activityLog, OrcsApi orcsApi, BranchId branch, String selectedTypes) {
       this.activityLog = activityLog;
@@ -116,7 +116,7 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
 
       for (ArtifactReadable req : query.getResults().sort(new ParagraphNumberComparator(activityLog))) {
          boolean foundType = false;
-         for (IArtifactType type : includeOnlyArtifactTypes) {
+         for (ArtifactTypeToken type : includeOnlyArtifactTypes) {
             if (req.isTypeEqual(type)) {
                foundType = true;
                break;
@@ -345,18 +345,18 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
       }
    }
 
-   private Collection<IArtifactType> convertStringTypes(String csvTypes) {
+   private Collection<ArtifactTypeToken> convertStringTypes(String csvTypes) {
       if (allTypesMap.isEmpty()) {
          ArtifactTypes artifactTypes = types.getArtifactTypes();
-         for (IArtifactType type : artifactTypes.getAll()) {
+         for (ArtifactTypeToken type : artifactTypes.getAll()) {
             allTypesMap.put(type.getName(), type);
          }
       }
       StringTokenizer parser = new StringTokenizer(csvTypes, ",");
 
-      ArrayList<IArtifactType> theReturn = new ArrayList<>();
+      ArrayList<ArtifactTypeToken> theReturn = new ArrayList<>();
       while (parser.hasMoreTokens()) {
-         IArtifactType type = allTypesMap.get(parser.nextToken());
+         ArtifactTypeToken type = allTypesMap.get(parser.nextToken());
          if (type != null) {
             theReturn.add(type);
          }

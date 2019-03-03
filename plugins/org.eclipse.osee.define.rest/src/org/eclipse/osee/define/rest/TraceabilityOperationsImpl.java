@@ -23,7 +23,7 @@ import org.eclipse.osee.define.rest.internal.TraceReportGenerator;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -42,7 +42,7 @@ public class TraceabilityOperationsImpl implements TraceabilityOperations {
    }
 
    @Override
-   public void generateTraceReport(BranchId branchId, String codeRoot, String traceRoot, Writer providedWriter, IArtifactType artifactType, AttributeTypeToken attributeType) {
+   public void generateTraceReport(BranchId branchId, String codeRoot, String traceRoot, Writer providedWriter, ArtifactTypeToken artifactType, AttributeTypeToken attributeType) {
       TraceReportGenerator generator = new TraceReportGenerator(artifactType, attributeType);
       try {
          generator.generate(orcsApi, branchId, codeRoot, traceRoot, providedWriter);

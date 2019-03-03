@@ -39,7 +39,7 @@ import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -274,7 +274,7 @@ public class OrcsStorageImpl implements Storage {
       return deleteDispoEntityArtifact(author, branch, setId, DispoConstants.DispoSet);
    }
 
-   private boolean deleteDispoEntityArtifact(ArtifactReadable author, BranchId branch, String entityId, IArtifactType type) {
+   private boolean deleteDispoEntityArtifact(ArtifactReadable author, BranchId branch, String entityId, ArtifactTypeToken type) {
       boolean toReturn = false;
       ArtifactReadable dispoArtifact = findDispoArtifact(branch, entityId);
       if (dispoArtifact != null) {

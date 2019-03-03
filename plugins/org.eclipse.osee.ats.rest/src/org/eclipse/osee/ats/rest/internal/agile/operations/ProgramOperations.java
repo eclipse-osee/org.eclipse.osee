@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.insertion.JaxInsertionActivity;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -248,7 +248,7 @@ public class ProgramOperations {
       deleteConfigObject(artifact, "Delete Insertion Activity", AtsArtifactTypes.InsertionActivity);
    }
 
-   private void deleteConfigObject(ArtifactId id, String comment, IArtifactType type) {
+   private void deleteConfigObject(ArtifactId id, String comment, ArtifactTypeToken type) {
       ArtifactReadable toDelete = (ArtifactReadable) atsApi.getQueryService().getArtifact(id);
       if (toDelete == null) {
          throw new OseeCoreException("No object found for id %s", id);

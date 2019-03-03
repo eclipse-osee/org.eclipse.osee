@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration.internal;
 
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactTypeRestriction;
@@ -41,13 +41,13 @@ public class ArtifactTypeRestrictionHandler implements RestrictionHandler<Artifa
       ArtifactTypeRestriction restriction = asCastedObject(objectRestriction);
       if (restriction != null) {
          XArtifactType artifactTypeRef = restriction.getArtifactTypeRef();
-         IArtifactType typeToMatch = OseeUtil.toToken(artifactTypeRef);
+         ArtifactTypeToken typeToMatch = OseeUtil.toToken(artifactTypeRef);
 
          ArtifactType artifactType = artifactProxy.getArtifactType();
          boolean isOfType = artifactType != null && artifactType.inheritsFrom(typeToMatch);
          if (isOfType) {
             PermissionEnum permission = OseeUtil.getPermission(restriction);
-            collector.collect(new AccessDetail<IArtifactType>(artifactType, permission, scope));
+            collector.collect(new AccessDetail<ArtifactTypeToken>(artifactType, permission, scope));
          }
       }
    }

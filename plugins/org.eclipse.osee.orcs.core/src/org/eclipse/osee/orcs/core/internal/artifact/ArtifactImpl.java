@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -103,7 +103,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public IArtifactType getArtifactTypeId() {
+   public ArtifactTypeToken getArtifactTypeId() {
       return getOrcsData().getType();
    }
 
@@ -113,7 +113,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public void setArtifactType(IArtifactType artifactType) {
+   public void setArtifactType(ArtifactTypeToken artifactType) {
       if (!isTypeEqual(artifactType)) {
          getOrcsData().setType(artifactType);
          objectEditState = EditState.ARTIFACT_TYPE_MODIFIED;

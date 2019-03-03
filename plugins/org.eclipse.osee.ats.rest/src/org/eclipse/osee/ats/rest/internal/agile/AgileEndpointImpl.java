@@ -99,7 +99,7 @@ import org.eclipse.osee.ats.rest.internal.world.WorldResource;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.JsonUtil;
@@ -232,7 +232,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       return result;
    }
 
-   private JaxProgramBaseItem updateProgramItem(IAgileProgram program, JaxProgramBaseItem newItem, String itemName, IArtifactType artifactType, ArtifactToken parentArtifact) {
+   private JaxProgramBaseItem updateProgramItem(IAgileProgram program, JaxProgramBaseItem newItem, String itemName, ArtifactTypeToken artifactType, ArtifactToken parentArtifact) {
 
       if (newItem.getType().equals(UpdateType.New)) {
          if (!Strings.isValid(newItem.getTitle())) {

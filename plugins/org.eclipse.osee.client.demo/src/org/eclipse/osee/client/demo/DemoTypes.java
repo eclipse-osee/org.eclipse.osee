@@ -11,7 +11,7 @@
 package org.eclipse.osee.client.demo;
 
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 
 /**
@@ -20,9 +20,9 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 public final class DemoTypes {
 
    // @formatter:off
-   public static final IArtifactType DemoTestRequirement = TokenFactory.createArtifactType(86, "Demo Artifact With Selective Partition");
+   public static final ArtifactTypeToken DemoTestRequirement = TokenFactory.createArtifactType(86, "Demo Artifact With Selective Partition");
 
-   public static final IArtifactType DemoDslArtifact = TokenFactory.createArtifactType(204526342635554L, "Demo DSL Artifact");
+   public static final ArtifactTypeToken DemoDslArtifact = TokenFactory.createArtifactType(204526342635554L, "Demo DSL Artifact");
    public static final AttributeTypeToken DemoDslAttribute = AttributeTypeToken.valueOf(1153126013769613775L, "AxRbLlj+c2ZHjBeumfgA");
    // @formatter:on
 

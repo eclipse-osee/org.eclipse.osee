@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactTypeLabelProvider;
@@ -34,7 +34,7 @@ public class FilteredTreeArtifactTypeEntryDialog extends FilteredTreeArtifactTyp
       this.entryName = entryName;
    }
 
-   public FilteredTreeArtifactTypeEntryDialog(String title, String message, String entryName, Collection<? extends IArtifactType> selectable) {
+   public FilteredTreeArtifactTypeEntryDialog(String title, String message, String entryName, Collection<? extends ArtifactTypeToken> selectable) {
       super(title, message, selectable, new ArtifactTypeLabelProvider());
       this.entryName = entryName;
    }
@@ -72,7 +72,7 @@ public class FilteredTreeArtifactTypeEntryDialog extends FilteredTreeArtifactTyp
       return super.isComplete();
    }
 
-   public IArtifactType getSelection() {
+   public ArtifactTypeToken getSelection() {
       return getSelectedFirst();
    }
 

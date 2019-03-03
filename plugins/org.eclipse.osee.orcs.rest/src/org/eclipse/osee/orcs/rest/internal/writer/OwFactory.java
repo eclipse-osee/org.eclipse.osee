@@ -15,7 +15,7 @@ package org.eclipse.osee.orcs.rest.internal.writer;
  */
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -31,7 +31,7 @@ import org.eclipse.osee.orcs.rest.model.writer.reader.OwRelationType;
 
 public class OwFactory {
 
-   public static OwArtifactType createArtifactType(IArtifactType artType) {
+   public static OwArtifactType createArtifactType(ArtifactTypeToken artType) {
       String typeStr = String.format("[%s]-[%d]", artType.getName(), artType.getId());
       OwArtifactType type = new OwArtifactType(artType.getId(), artType.getName());
       type.setData(typeStr);
@@ -71,11 +71,11 @@ public class OwFactory {
       return owType;
    }
 
-   public static OwArtifact createArtifact(IArtifactType artifactType, String name) {
+   public static OwArtifact createArtifact(ArtifactTypeToken artifactType, String name) {
       return createArtifact(artifactType, name, null);
    }
 
-   public static OwArtifact createArtifact(IArtifactType artifactType, String name, Long id) {
+   public static OwArtifact createArtifact(ArtifactTypeToken artifactType, String name, Long id) {
       OwArtifact artifact = new OwArtifact(id, name);
       OwArtifactType owArtType = OwFactory.createArtifactType(artifactType);
       artifact.setType(owArtType);

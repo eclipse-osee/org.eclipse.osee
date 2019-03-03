@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -104,8 +104,8 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
     * Uses artifact type inheritance to retrieve all TeamWorkflow artifact types
     */
    @Override
-   public Set<IArtifactType> getTeamWorkflowArtifactTypes() {
-      Set<IArtifactType> artifactTypes = new HashSet<>();
+   public Set<ArtifactTypeToken> getTeamWorkflowArtifactTypes() {
+      Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
       artifactTypes.addAll(
          orcsApi.getOrcsTypes().getArtifactTypes().getAllDescendantTypes(AtsArtifactTypes.TeamWorkflow));
       return artifactTypes;
@@ -127,7 +127,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public IArtifactType getArtifactType(ArtifactId artifact) {
+   public ArtifactTypeToken getArtifactType(ArtifactId artifact) {
       if (artifact instanceof ArtifactReadable) {
          return ((ArtifactReadable) artifact).getArtifactType();
       }
@@ -145,7 +145,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public boolean isOfType(IAtsObject atsObject, IArtifactType... artifactType) {
+   public boolean isOfType(IAtsObject atsObject, ArtifactTypeToken... artifactType) {
       return ((ArtifactReadable) atsApi.getQueryService().getArtifact(atsObject)).isOfType(artifactType);
    }
 
@@ -164,7 +164,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public IArtifactType getArtifactType(Long artTypeId) {
+   public ArtifactTypeToken getArtifactType(Long artTypeId) {
       return orcsApi.getOrcsTypes().getArtifactTypes().get(artTypeId);
    }
 
@@ -182,12 +182,12 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public IArtifactType getArtifactType(IAtsObject atsObject) {
+   public ArtifactTypeToken getArtifactType(IAtsObject atsObject) {
       return getArtifactType(atsApi.getQueryService().getArtifact(atsObject.getStoreObject()));
    }
 
    @Override
-   public boolean isOfType(IAtsObject atsObject, IArtifactType artifactType) {
+   public boolean isOfType(IAtsObject atsObject, ArtifactTypeToken artifactType) {
       return isOfType(atsObject.getStoreObject(), artifactType);
    }
 
@@ -197,7 +197,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public boolean isArtifactTypeInheritsFrom(IArtifactType artifactType, IArtifactType baseArtifactType) {
+   public boolean isArtifactTypeInheritsFrom(ArtifactTypeToken artifactType, ArtifactTypeToken baseArtifactType) {
       return orcsApi.getOrcsTypes().getArtifactTypes().inheritsFrom(artifactType, baseArtifactType);
    }
 
@@ -260,12 +260,12 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public boolean inheritsFrom(IArtifactType artType, IArtifactType... artifactType) {
+   public boolean inheritsFrom(ArtifactTypeToken artType, ArtifactTypeToken... artifactType) {
       return orcsApi.getOrcsTypes().getArtifactTypes().inheritsFrom(artType, artifactType);
    }
 
    @Override
-   public String getArtifactTypeName(IArtifactType artifactTypeId) {
+   public String getArtifactTypeName(ArtifactTypeToken artifactTypeId) {
       return orcsApi.getOrcsTypes().getArtifactTypes().get(artifactTypeId).getName();
    }
 

@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -36,7 +36,7 @@ public class CheckDefaulHierarchy extends AbstractBlam {
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       BranchId branch = variableMap.getBranch("Branch");
-      IArtifactType artifactType = variableMap.getArtifactType("Artifact Type");
+      ArtifactTypeToken artifactType = variableMap.getArtifactType("Artifact Type");
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(artifactType, branch, EXCLUDE_DELETED);
       for (Artifact artifact : artifacts) {
          try {

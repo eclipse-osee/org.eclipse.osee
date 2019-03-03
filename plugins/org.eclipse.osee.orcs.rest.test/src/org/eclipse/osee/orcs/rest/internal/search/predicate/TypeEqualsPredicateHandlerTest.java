@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.PredicateHandler;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.TypeEqualsPredicateHandler;
@@ -41,7 +41,7 @@ public class TypeEqualsPredicateHandlerTest {
    private QueryBuilder builder;
 
    @Captor
-   private ArgumentCaptor<Collection<IArtifactType>> artifactTypesCaptor;
+   private ArgumentCaptor<Collection<ArtifactTypeToken>> artifactTypesCaptor;
 
    private PredicateHandler handler;
 
@@ -80,7 +80,7 @@ public class TypeEqualsPredicateHandlerTest {
 
       assertEquals(2, artifactTypesCaptor.getValue().size());
 
-      Iterator<IArtifactType> iterator = artifactTypesCaptor.getValue().iterator();
+      Iterator<ArtifactTypeToken> iterator = artifactTypesCaptor.getValue().iterator();
       assertEquals(id1, iterator.next().getIdString());
       assertEquals(id2, iterator.next().getIdString());
    }

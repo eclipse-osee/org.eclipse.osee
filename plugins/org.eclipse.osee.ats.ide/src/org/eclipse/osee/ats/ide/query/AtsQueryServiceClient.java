@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -93,7 +93,7 @@ public class AtsQueryServiceClient {
       return toArtifacts(queryService.getArtifactsFromQuery(query, data));
    }
 
-   public Collection<Artifact> getArtifacts(BranchId branch, boolean includeInherited, IArtifactType... artifactType) {
+   public Collection<Artifact> getArtifacts(BranchId branch, boolean includeInherited, ArtifactTypeToken... artifactType) {
       return toArtifacts(queryService.getArtifacts(branch, includeInherited, artifactType));
    }
 
@@ -133,7 +133,7 @@ public class AtsQueryServiceClient {
       return toArtifacts(queryService.getArtifactsByLegacyPcrId(id));
    }
 
-   public List<Artifact> getArtifacts(IArtifactType artifactType) {
+   public List<Artifact> getArtifacts(ArtifactTypeToken artifactType) {
       return toArtifacts(queryService.getArtifacts(artifactType));
    }
 

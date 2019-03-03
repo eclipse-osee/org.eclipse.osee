@@ -20,7 +20,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
@@ -49,7 +49,7 @@ public class TypeCountWriter {
          sheetWriter.startSheet("Type Count Report", headers.length);
          sheetWriter.writeRow((Object[]) headers);
 
-         List<IArtifactType> artifactTypes = getTypes(artTypes);
+         List<ArtifactTypeToken> artifactTypes = getTypes(artTypes);
 
          if (!newArts.isEmpty()) {
             ResultSet<ArtifactReadable> newArtifacts =
@@ -112,11 +112,11 @@ public class TypeCountWriter {
       }
    }
 
-   private List<IArtifactType> getTypes(List<Long> typeIds) {
-      List<IArtifactType> toReturn = new ArrayList<>();
+   private List<ArtifactTypeToken> getTypes(List<Long> typeIds) {
+      List<ArtifactTypeToken> toReturn = new ArrayList<>();
 
-      Collection<? extends IArtifactType> allTypes = orcsApi.getOrcsTypes().getArtifactTypes().getAll();
-      for (IArtifactType type : allTypes) {
+      Collection<? extends ArtifactTypeToken> allTypes = orcsApi.getOrcsTypes().getArtifactTypes().getAll();
+      for (ArtifactTypeToken type : allTypes) {
          if (typeIds.contains(type.getId())) {
             toReturn.add(type);
          }

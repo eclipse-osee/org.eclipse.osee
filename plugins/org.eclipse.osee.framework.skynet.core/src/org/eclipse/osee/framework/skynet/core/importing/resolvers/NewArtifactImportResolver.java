@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.importing.resolvers;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -28,12 +28,12 @@ import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 public class NewArtifactImportResolver implements IArtifactImportResolver {
 
    private final IRoughArtifactTranslator translator;
-   private final IArtifactType primaryArtifactType;
-   private final IArtifactType secondaryArtifactType;
-   private final IArtifactType tertiaryArtifactType;
-   private final IArtifactType quaternaryArtifactType;
+   private final ArtifactTypeToken primaryArtifactType;
+   private final ArtifactTypeToken secondaryArtifactType;
+   private final ArtifactTypeToken tertiaryArtifactType;
+   private final ArtifactTypeToken quaternaryArtifactType;
 
-   public NewArtifactImportResolver(IRoughArtifactTranslator translator, IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType) {
+   public NewArtifactImportResolver(IRoughArtifactTranslator translator, ArtifactTypeToken primaryArtifactType, ArtifactTypeToken secondaryArtifactType) {
       this.translator = translator;
       this.primaryArtifactType = primaryArtifactType;
       this.secondaryArtifactType = secondaryArtifactType;
@@ -41,7 +41,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
       this.quaternaryArtifactType = secondaryArtifactType;
    }
 
-   public NewArtifactImportResolver(IRoughArtifactTranslator translator, IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType, IArtifactType tertiaryArtifactType, IArtifactType quaternaryArtifactType) {
+   public NewArtifactImportResolver(IRoughArtifactTranslator translator, ArtifactTypeToken primaryArtifactType, ArtifactTypeToken secondaryArtifactType, ArtifactTypeToken tertiaryArtifactType, ArtifactTypeToken quaternaryArtifactType) {
       this.translator = translator;
       this.primaryArtifactType = primaryArtifactType;
       this.secondaryArtifactType = secondaryArtifactType;
@@ -55,7 +55,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
 
    @Override
    public Artifact resolve(final RoughArtifact roughArtifact, final BranchId branch, Artifact realParent, Artifact root) {
-      IArtifactType artifactType = getArtifactType(roughArtifact);
+      ArtifactTypeToken artifactType = getArtifactType(roughArtifact);
 
       OseeLog.logf(NewArtifactImportResolver.class, Level.INFO, "New artifact: [%s]. Attributes: [%s]", roughArtifact,
          roughArtifact.getAttributes());
@@ -66,8 +66,8 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
       return realArtifact;
    }
 
-   private IArtifactType getArtifactType(RoughArtifact art) {
-      IArtifactType type = art.getType();
+   private ArtifactTypeToken getArtifactType(RoughArtifact art) {
+      ArtifactTypeToken type = art.getType();
       if (!type.equals(ArtifactTypeId.SENTINEL)) {
          return type;
       } else {

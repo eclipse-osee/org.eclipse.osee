@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -65,7 +65,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public void queryAndIsOfType(IArtifactType artifactType) {
+   public void queryAndIsOfType(ArtifactTypeToken artifactType) {
       query.andIsOfType(artifactType);
    }
 
@@ -75,7 +75,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public void queryAndIsOfType(Collection<IArtifactType> artTypes) {
+   public void queryAndIsOfType(Collection<ArtifactTypeToken> artTypes) {
       query.andIsOfType(artTypes);
    }
 

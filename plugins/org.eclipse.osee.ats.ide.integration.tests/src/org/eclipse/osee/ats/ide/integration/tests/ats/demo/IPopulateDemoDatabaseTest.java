@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -59,7 +59,7 @@ public interface IPopulateDemoDatabaseTest {
       }
    }
 
-   default void testTeamContents(IAtsTeamWorkflow teamWf, String title, String priority, String versionName, String currentStateName, String actionableItemStr, String assigneeStr, IArtifactType artifactType, IAtsTeamDefinition teamDef) {
+   default void testTeamContents(IAtsTeamWorkflow teamWf, String title, String priority, String versionName, String currentStateName, String actionableItemStr, String assigneeStr, ArtifactTypeToken artifactType, IAtsTeamDefinition teamDef) {
       Assert.assertEquals(currentStateName, teamWf.getStateMgr().getCurrentStateName());
       Assert.assertEquals(priority, AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf,
          AtsAttributeTypes.PriorityType, ""));

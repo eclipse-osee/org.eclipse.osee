@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -38,7 +38,7 @@ public class TaskRelatedArtifactTypeColumn extends AbstractServicesColumn {
    @Override
    String getText(IAtsObject atsObject) throws Exception {
       if (atsObject instanceof IAtsWorkItem) {
-         IArtifactType artifactType = artIdToRelatedArtTypeCache.get((IAtsWorkItem) atsObject);
+         ArtifactTypeToken artifactType = artIdToRelatedArtTypeCache.get((IAtsWorkItem) atsObject);
          if (artifactType.isValid()) {
             return artifactType.toString();
          }
@@ -46,18 +46,18 @@ public class TaskRelatedArtifactTypeColumn extends AbstractServicesColumn {
       return "";
    }
 
-   private final LoadingCache<IAtsWorkItem, IArtifactType> artIdToRelatedArtTypeCache =
+   private final LoadingCache<IAtsWorkItem, ArtifactTypeToken> artIdToRelatedArtTypeCache =
       CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).build(
-         new CacheLoader<IAtsWorkItem, IArtifactType>() {
+         new CacheLoader<IAtsWorkItem, ArtifactTypeToken>() {
             @Override
-            public IArtifactType load(IAtsWorkItem workItem) throws Exception {
+            public ArtifactTypeToken load(IAtsWorkItem workItem) throws Exception {
                ArtifactId relatedArtId = TaskRelatedArtifactTypeColumn.this.getRelatedArtId(workItem);
                if (relatedArtId.isValid()) {
-                  Map<ArtifactId, IArtifactType> results =
+                  Map<ArtifactId, ArtifactTypeToken> results =
                      atsApi.getStoreService().getArtifactTypes(Collections.singleton(relatedArtId));
                   return results.values().iterator().next();
                }
-               return IArtifactType.SENTINEL;
+               return ArtifactTypeToken.SENTINEL;
             }
          });
 
@@ -75,10 +75,10 @@ public class TaskRelatedArtifactTypeColumn extends AbstractServicesColumn {
          }
       }
       if (!relatedArtIds.isEmpty()) {
-         Map<ArtifactId, IArtifactType> results = atsApi.getStoreService().getArtifactTypes(relatedArtIds);
+         Map<ArtifactId, ArtifactTypeToken> results = atsApi.getStoreService().getArtifactTypes(relatedArtIds);
          for (ArtifactId relatedArtId : relatedArtIds) {
             if (relatedArtId.isValid()) {
-               IArtifactType artifactType = results.get(relatedArtId);
+               ArtifactTypeToken artifactType = results.get(relatedArtId);
                artIdToRelatedArtTypeCache.put(workItemMap.get(relatedArtId), artifactType);
             }
          }

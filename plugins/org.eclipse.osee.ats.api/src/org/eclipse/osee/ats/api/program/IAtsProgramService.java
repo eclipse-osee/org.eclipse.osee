@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -88,7 +88,7 @@ public interface IAtsProgramService {
 
    Collection<IAtsActionableItem> getAis(IAtsProgram program, Collection<WorkType> workTypes);
 
-   Collection<IAtsProgram> getPrograms(IArtifactType artifactType);
+   Collection<IAtsProgram> getPrograms(ArtifactTypeToken artifactType);
 
    Collection<String> getCscis(IAtsProgram program);
 
@@ -115,7 +115,7 @@ public interface IAtsProgramService {
 
    Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program);
 
-   List<ProgramVersions> getProgramVersions(IArtifactType artType, boolean activeOnly);
+   List<ProgramVersions> getProgramVersions(ArtifactTypeToken artType, boolean activeOnly);
 
    ProgramVersions getVersionsForProgram(ArtifactId program, boolean onlyActive);
 

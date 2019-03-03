@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -58,7 +58,7 @@ public interface IAtsQueryService {
    AtsSearchData createSearchData(String namespace, String searchName);
 
    @NonNull
-   IAtsConfigQuery createQuery(IArtifactType... artifactType);
+   IAtsConfigQuery createQuery(ArtifactTypeToken... artifactType);
 
    Collection<ArtifactToken> getArtifacts(List<ArtifactId> ids, BranchId branch);
 
@@ -66,7 +66,7 @@ public interface IAtsQueryService {
 
    Collection<ArtifactToken> getArtifactsFromQuery(String query, Object... data);
 
-   Collection<ArtifactToken> getArtifacts(BranchId branch, boolean includeInherited, IArtifactType... artifactType);
+   Collection<ArtifactToken> getArtifacts(BranchId branch, boolean includeInherited, ArtifactTypeToken... artifactType);
 
    List<ArtifactId> getArtifactIdsFromQuery(String query, Object... data);
 
@@ -132,7 +132,7 @@ public interface IAtsQueryService {
       return getTeamWf(ArtifactId.valueOf(id));
    }
 
-   List<ArtifactToken> getArtifacts(IArtifactType artifactType);
+   List<ArtifactToken> getArtifacts(ArtifactTypeToken artifactType);
 
    ArtifactToken getConfigArtifact(IAtsConfigObject atsConfigObject);
 
@@ -160,13 +160,13 @@ public interface IAtsQueryService {
     */
    Collection<ArtifactToken> getArtifactsByIdsOrAtsIds(String searchStr);
 
-   List<ArtifactToken> getArtifactListFromTypeWithInheritence(IArtifactType artifactType, BranchId branch, DeletionFlag deletionFlag);
+   List<ArtifactToken> getArtifactListFromTypeWithInheritence(ArtifactTypeToken artifactType, BranchId branch, DeletionFlag deletionFlag);
 
    /**
     * Query for the AtsConfigurations cache. Since this is pre-loaded, this is the best query for configuration
     * information.
     */
-   IAtsConfigCacheQuery createConfigCacheQuery(IArtifactType... artifactType);
+   IAtsConfigCacheQuery createConfigCacheQuery(ArtifactTypeToken... artifactType);
 
    ArtifactToken getOrCreateArtifact(ArtifactToken parent, ArtifactToken artifact, IAtsChangeSet changes);
 

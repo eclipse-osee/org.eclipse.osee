@@ -20,7 +20,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -42,7 +42,7 @@ import org.eclipse.swt.graphics.Image;
  */
 public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
 
-   private static List<IArtifactType> laserArtifactTypes =
+   private static List<ArtifactTypeToken> laserArtifactTypes =
       Arrays.asList(CoreArtifactTypes.SystemDesign, CoreArtifactTypes.SupportingContent,
          CoreArtifactTypes.IndirectSoftwareRequirement, CoreArtifactTypes.TestProcedureWML,
          CoreArtifactTypes.InterfaceRequirement, CoreArtifactTypes.SystemFunction, CoreArtifactTypes.SubsystemFunction);
@@ -91,7 +91,7 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.PlainText, new ProgramImage("txt"), this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.Url, new ProgramImage("html"), this);
 
-      for (IArtifactType artifactType : laserArtifactTypes) {
+      for (ArtifactTypeToken artifactType : laserArtifactTypes) {
          ArtifactImageManager.registerBaseImage(artifactType, FrameworkImage.LASER, this);
       }
 
@@ -129,7 +129,7 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
                      Image image = ImageDescriptor.createFromURL(url).createImage();
                      if (image != null) {
                         // get artifact type
-                        IArtifactType artifactType = null;
+                        ArtifactTypeToken artifactType = null;
                         if (Strings.isNumeric(dynamicImage.getArtifactTypeUuid())) {
                            artifactType = ArtifactTypeManager.getType(Long.valueOf(dynamicImage.getArtifactTypeUuid()));
                         }

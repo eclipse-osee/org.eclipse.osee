@@ -26,7 +26,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.HelpContext;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -284,10 +284,10 @@ public class QuickSearchOptionComposite extends Composite {
       return isAttributeTypeFilterEnabled() ? types : new AttributeTypeId[0];
    }
 
-   public IArtifactType[] getArtifactTypeFilter() {
+   public ArtifactTypeToken[] getArtifactTypeFilter() {
       IOptionConfigurationHandler<?> handler = getConfiguration(SearchOption.Artifact_Types);
-      IArtifactType[] types = (IArtifactType[]) handler.getConfigData();
-      return isArtifactTypeFilterEnabled() ? types : new IArtifactType[0];
+      ArtifactTypeToken[] types = (ArtifactTypeToken[]) handler.getConfigData();
+      return isArtifactTypeFilterEnabled() ? types : new ArtifactTypeToken[0];
    }
 
    public void saveState(IMemento memento) {
@@ -431,10 +431,10 @@ public class QuickSearchOptionComposite extends Composite {
       }
 
    }
-   private final static class ArtifactTypeComparator implements Comparator<IArtifactType> {
+   private final static class ArtifactTypeComparator implements Comparator<ArtifactTypeToken> {
 
       @Override
-      public int compare(IArtifactType o1, IArtifactType o2) {
+      public int compare(ArtifactTypeToken o1, ArtifactTypeToken o2) {
          return o1.getName().compareTo(o2.getName());
       }
 
@@ -544,9 +544,9 @@ public class QuickSearchOptionComposite extends Composite {
          return guids;
       }
    }
-   private final static class ArtifactTypeFilterConfigHandler implements IOptionConfigurationHandler<IArtifactType> {
-      private final List<IArtifactType> configuration;
-      private final Comparator<IArtifactType> artTypeComparator;
+   private final static class ArtifactTypeFilterConfigHandler implements IOptionConfigurationHandler<ArtifactTypeToken> {
+      private final List<ArtifactTypeToken> configuration;
+      private final Comparator<ArtifactTypeToken> artTypeComparator;
 
       public ArtifactTypeFilterConfigHandler() {
          this.artTypeComparator = new ArtifactTypeComparator();
@@ -562,7 +562,7 @@ public class QuickSearchOptionComposite extends Composite {
             dialog.setShowSelectButtons(true);
             dialog.setInput(artifactTypes);
 
-            List<IArtifactType> selectedElements = new ArrayList<>();
+            List<ArtifactTypeToken> selectedElements = new ArrayList<>();
             for (ArtifactType type : artifactTypes) {
                if (configuration.contains(type)) {
                   selectedElements.add(type);
@@ -573,8 +573,8 @@ public class QuickSearchOptionComposite extends Composite {
             int result = dialog.open();
             if (result == Window.OK) {
                configuration.clear();
-               Collection<IArtifactType> results = dialog.getChecked();
-               for (IArtifactType selected : results) {
+               Collection<ArtifactTypeToken> results = dialog.getChecked();
+               for (ArtifactTypeToken selected : results) {
                   configuration.add(selected);
                }
             }
@@ -590,8 +590,8 @@ public class QuickSearchOptionComposite extends Composite {
       }
 
       @Override
-      public IArtifactType[] getConfigData() {
-         return configuration.toArray(new IArtifactType[configuration.size()]);
+      public ArtifactTypeToken[] getConfigData() {
+         return configuration.toArray(new ArtifactTypeToken[configuration.size()]);
       }
 
       @Override
@@ -628,7 +628,7 @@ public class QuickSearchOptionComposite extends Composite {
       public String[] toStore() {
          String[] guids = new String[configuration.size()];
          int index = 0;
-         for (IArtifactType type : configuration) {
+         for (ArtifactTypeToken type : configuration) {
             guids[index++] = type.getIdString();
          }
          return guids;

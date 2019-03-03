@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.core.model.impl.AtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -49,9 +49,9 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    protected final Log logger;
    IAtsTeamWorkflow parentTeamWf;
    IAtsAction parentAction;
-   private final IArtifactType artifactType;
+   private final ArtifactTypeToken artifactType;
 
-   public WorkItem(Log logger, AtsApi atsApi, ArtifactToken artifact, IArtifactType artifactType) {
+   public WorkItem(Log logger, AtsApi atsApi, ArtifactToken artifact, ArtifactTypeToken artifactType) {
       super(artifact.getName(), artifact.getId());
       this.logger = logger;
       this.atsApi = atsApi;

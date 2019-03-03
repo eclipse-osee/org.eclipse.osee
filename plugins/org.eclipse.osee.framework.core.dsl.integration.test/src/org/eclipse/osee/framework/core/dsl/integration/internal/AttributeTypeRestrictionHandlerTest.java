@@ -14,7 +14,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockArtifactProxy;
@@ -77,11 +77,11 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setAttributeTypeRef(attributeTypeRef);
 
-      IArtifactType artifactType = CoreArtifactTypes.Artifact;
+      ArtifactTypeToken artifactType = CoreArtifactTypes.Artifact;
       XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getId(), artifactType.getName());
       restriction.setArtifactTypeRef(artifactTypeRef);
 
-      IArtifactType artifactType2 = CoreArtifactTypes.Requirement;
+      ArtifactTypeToken artifactType2 = CoreArtifactTypes.Requirement;
       ArtifactType artArtifactType = new ArtifactType(artifactType2.getId(), artifactType2.getName(), false);
 
       final MutableBoolean wasIsAttributeTypeValidCalled = new MutableBoolean(false);
@@ -98,7 +98,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setAttributeTypeRef(attributeTypeRef);
 
-      IArtifactType artifactType = CoreArtifactTypes.Requirement;
+      ArtifactTypeToken artifactType = CoreArtifactTypes.Requirement;
       XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getId(), artifactType.getName());
       restriction.setArtifactTypeRef(artifactTypeRef);
 
@@ -118,11 +118,11 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setAttributeTypeRef(attributeTypeRef);
 
-      IArtifactType artifactType = CoreArtifactTypes.Artifact;
+      ArtifactTypeToken artifactType = CoreArtifactTypes.Artifact;
       XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getId(), artifactType.getName());
       restriction.setArtifactTypeRef(artifactTypeRef);
 
-      IArtifactType artifactType2 = CoreArtifactTypes.Requirement;
+      ArtifactTypeToken artifactType2 = CoreArtifactTypes.Requirement;
       ArtifactType artArtifactType = new ArtifactType(artifactType2.getId(), artifactType2.getName(), false);
 
       // Make expectedAccessObject inherit from ArtifactType

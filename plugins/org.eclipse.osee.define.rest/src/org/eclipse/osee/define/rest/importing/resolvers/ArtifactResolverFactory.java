@@ -12,7 +12,7 @@ package org.eclipse.osee.define.rest.importing.resolvers;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -32,8 +32,8 @@ public final class ArtifactResolverFactory {
       // Static Factory
    }
 
-   public static IArtifactImportResolver createAlwaysNewArtifacts(TransactionBuilder transaction, IArtifactType primaryArtifactType) {
-      IArtifactType secondaryArtifactType = CoreArtifactTypes.HeadingMSWord;
+   public static IArtifactImportResolver createAlwaysNewArtifacts(TransactionBuilder transaction, ArtifactTypeToken primaryArtifactType) {
+      ArtifactTypeToken secondaryArtifactType = CoreArtifactTypes.HeadingMSWord;
       if (primaryArtifactType.equals(CoreArtifactTypes.SubsystemRequirementHTML) || primaryArtifactType.equals(
          CoreArtifactTypes.SystemRequirementHTML)) {
          secondaryArtifactType = CoreArtifactTypes.HeadingHTML;
@@ -41,13 +41,13 @@ public final class ArtifactResolverFactory {
       return createAlwaysNewArtifacts(transaction, primaryArtifactType, secondaryArtifactType);
    }
 
-   public static IArtifactImportResolver createAlwaysNewArtifacts(TransactionBuilder transaction, IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType) {
+   public static IArtifactImportResolver createAlwaysNewArtifacts(TransactionBuilder transaction, ArtifactTypeToken primaryArtifactType, ArtifactTypeToken secondaryArtifactType) {
       IRoughArtifactTranslator translator = new RoughArtifactTranslatorImpl();
       return new NewArtifactImportResolver(transaction, translator, primaryArtifactType, secondaryArtifactType,
          CoreArtifactTypes.DocumentDescriptionMSWord, CoreArtifactTypes.DesignDescriptionMSWord);
    }
 
-   public static IArtifactImportResolver createResolver(TransactionBuilder transaction, ArtifactCreationStrategy strategy, IArtifactType primaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
+   public static IArtifactImportResolver createResolver(TransactionBuilder transaction, ArtifactCreationStrategy strategy, ArtifactTypeToken primaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
       IArtifactImportResolver toReturn;
       switch (strategy) {
          case CREATE_ON_DIFFERENT_ATTRIBUTES:

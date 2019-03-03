@@ -16,18 +16,18 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface ArtifactTypes extends IdCollection<IArtifactType> {
+public interface ArtifactTypes extends IdCollection<ArtifactTypeToken> {
 
    boolean hasSuperArtifactTypes(ArtifactTypeId artType);
 
    Collection<? extends ArtifactTypeId> getSuperArtifactTypes(ArtifactTypeId artType);
 
-   Collection<? extends IArtifactType> getAllDescendantTypes(ArtifactTypeId artType);
+   Collection<? extends ArtifactTypeToken> getAllDescendantTypes(ArtifactTypeId artType);
 
    boolean isValidAttributeType(ArtifactTypeId artType, BranchId branch, AttributeTypeId attributeType);
 

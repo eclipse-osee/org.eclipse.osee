@@ -19,7 +19,7 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -177,7 +177,7 @@ public class OrcsTypesImpl implements OrcsTypes {
    }
 
    @Override
-   public Callable<Void> purgeArtifactsByArtifactType(Collection<? extends IArtifactType> artifactTypes) {
+   public Callable<Void> purgeArtifactsByArtifactType(Collection<? extends ArtifactTypeToken> artifactTypes) {
       return dataStore.purgeArtifactsByArtifactType(session, artifactTypes);
    }
 

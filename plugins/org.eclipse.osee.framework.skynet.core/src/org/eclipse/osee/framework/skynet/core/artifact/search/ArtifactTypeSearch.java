@@ -12,16 +12,16 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 
 /**
  * @author Robert A. Fisher
  */
 public class ArtifactTypeSearch implements ISearchPrimitive {
-   private final List<IArtifactType> artifactTypes;
+   private final List<ArtifactTypeToken> artifactTypes;
 
-   public ArtifactTypeSearch(List<IArtifactType> artifactTypes) {
+   public ArtifactTypeSearch(List<ArtifactTypeToken> artifactTypes) {
       super();
       this.artifactTypes = artifactTypes;
    }
@@ -35,7 +35,7 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
    public String getStorageString() {
       StringBuilder storageString = new StringBuilder();
 
-      for (IArtifactType a : artifactTypes) {
+      for (ArtifactTypeToken a : artifactTypes) {
          storageString.append(a.getIdString());
          storageString.append(",");
       }
@@ -44,7 +44,7 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
    }
 
    public static ArtifactTypeSearch getPrimitive(String storageString) {
-      ArrayList<IArtifactType> artifactTypes = new ArrayList<>();
+      ArrayList<ArtifactTypeToken> artifactTypes = new ArrayList<>();
 
       for (String artifactTypeId : storageString.split(",")) {
          artifactTypes.add(TokenFactory.createArtifactType(Long.parseLong(artifactTypeId), "SearchArtType"));

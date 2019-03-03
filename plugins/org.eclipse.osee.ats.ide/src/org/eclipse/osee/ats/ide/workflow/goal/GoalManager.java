@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -89,7 +89,7 @@ public class GoalManager extends MembersManager<GoalArtifact> {
    }
 
    @Override
-   public IArtifactType getArtifactType() {
+   public ArtifactTypeToken getArtifactType() {
       return AtsArtifactTypes.Goal;
    }
 

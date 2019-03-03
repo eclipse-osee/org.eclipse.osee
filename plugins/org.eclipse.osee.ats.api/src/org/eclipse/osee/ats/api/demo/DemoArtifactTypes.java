@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.demo;
 
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 
 /**
@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 public final class DemoArtifactTypes {
 
    // @formatter:off
-   public static final IArtifactType DemoCodeTeamWorkflow = TokenFactory.createArtifactType(79, "Demo Code Team Workflow");
-   public static final IArtifactType DemoReqTeamWorkflow = TokenFactory.createArtifactType(80, "Demo Req Team Workflow");
-   public static final IArtifactType DemoTestTeamWorkflow = TokenFactory.createArtifactType(81, "Demo Test Team Workflow");
+   public static final ArtifactTypeToken DemoCodeTeamWorkflow = TokenFactory.createArtifactType(79, "Demo Code Team Workflow");
+   public static final ArtifactTypeToken DemoReqTeamWorkflow = TokenFactory.createArtifactType(80, "Demo Req Team Workflow");
+   public static final ArtifactTypeToken DemoTestTeamWorkflow = TokenFactory.createArtifactType(81, "Demo Test Team Workflow");
    // @formatter:on
 
    private DemoArtifactTypes() {

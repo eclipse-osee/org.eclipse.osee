@@ -11,14 +11,14 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author Ryan D. Brooks
  */
 public interface IArtifactTypeProvider {
 
-   IArtifactType getTypeByGuid(Long artTypeGuid);
+   ArtifactTypeToken getTypeByGuid(Long artTypeGuid);
 
    boolean inheritsFrom(ArtifactTypeId artifactType, ArtifactTypeId... parentTypes);
 

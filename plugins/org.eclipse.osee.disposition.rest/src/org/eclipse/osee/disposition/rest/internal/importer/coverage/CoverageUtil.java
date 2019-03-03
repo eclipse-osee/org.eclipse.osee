@@ -11,7 +11,7 @@
 package org.eclipse.osee.disposition.rest.internal.importer.coverage;
 
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 
 /**
@@ -23,9 +23,9 @@ public class CoverageUtil {
 
    }
    // @formatter:off
-   public static final IArtifactType CoveragePackage = TokenFactory.createArtifactType(0x000000000000004B, "Coverage Package");
-   public static final IArtifactType CoverageUnit = TokenFactory.createArtifactType(0x000000000000004E, "Coverage Unit");
-   public static final IArtifactType CoverageFolder = TokenFactory.createArtifactType(0x000000000000004D, "Coverage Folder");
+   public static final ArtifactTypeToken CoveragePackage = TokenFactory.createArtifactType(0x000000000000004B, "Coverage Package");
+   public static final ArtifactTypeToken CoverageUnit = TokenFactory.createArtifactType(0x000000000000004E, "Coverage Unit");
+   public static final ArtifactTypeToken CoverageFolder = TokenFactory.createArtifactType(0x000000000000004D, "Coverage Folder");
 
    // Attributes
    public static final AttributeTypeToken Item = AttributeTypeToken.valueOf(1152921504606847236L, "coverage.Coverage Item");

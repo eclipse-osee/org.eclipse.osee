@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.ide.world.search;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.Collection;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -22,9 +22,9 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
  * @author Donald G. Dunne
  */
 public class ArtifactTypeWithInheritenceSearchItem extends WorldUISearchItem {
-   private final IArtifactType artifactType;
+   private final ArtifactTypeToken artifactType;
 
-   public ArtifactTypeWithInheritenceSearchItem(String name, IArtifactType artifactType) {
+   public ArtifactTypeWithInheritenceSearchItem(String name, ArtifactTypeToken artifactType) {
       super(name, FrameworkImage.FLASHLIGHT);
       this.artifactType = artifactType;
    }

@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactTypeLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactTypeDialog;
@@ -26,9 +26,9 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactTypeSelectPanel extends AbstractItemSelectPanel<IArtifactType> {
+public class ArtifactTypeSelectPanel extends AbstractItemSelectPanel<ArtifactTypeToken> {
 
-   private Collection<IArtifactType> artifactTypes;
+   private Collection<ArtifactTypeToken> artifactTypes;
    private String title;
    private String message;
 
@@ -46,9 +46,9 @@ public class ArtifactTypeSelectPanel extends AbstractItemSelectPanel<IArtifactTy
       this.message = message;
    }
 
-   public void setAllowedArtifactTypes(Collection<IArtifactType> artifactTypes) {
+   public void setAllowedArtifactTypes(Collection<ArtifactTypeToken> artifactTypes) {
       this.artifactTypes = artifactTypes;
-      IArtifactType currentSelection = getSelected();
+      ArtifactTypeToken currentSelection = getSelected();
       if (!artifactTypes.contains(currentSelection)) {
          this.setSelected(null);
          this.updateCurrentItemWidget();
@@ -56,7 +56,7 @@ public class ArtifactTypeSelectPanel extends AbstractItemSelectPanel<IArtifactTy
    }
 
    @Override
-   protected Dialog createSelectDialog(Shell shell, IArtifactType lastSelected) {
+   protected Dialog createSelectDialog(Shell shell, ArtifactTypeToken lastSelected) {
       FilteredTreeArtifactTypeDialog dialog =
          new FilteredTreeArtifactTypeDialog(title, message, this.artifactTypes, new ArtifactTypeLabelProvider());
       dialog.setMultiSelect(false);
@@ -76,7 +76,7 @@ public class ArtifactTypeSelectPanel extends AbstractItemSelectPanel<IArtifactTy
    protected boolean updateFromDialogResult(Dialog dialog) {
       boolean wasUpdated = false;
       FilteredTreeArtifactTypeDialog castedDialog = (FilteredTreeArtifactTypeDialog) dialog;
-      IArtifactType artifactType = castedDialog.getSelectedFirst();
+      ArtifactTypeToken artifactType = castedDialog.getSelectedFirst();
       if (artifactType != null) {
          setSelected(artifactType);
          wasUpdated = true;

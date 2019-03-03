@@ -32,7 +32,7 @@ import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -91,7 +91,7 @@ public class TxSqlBuilderTest {
 
    private static final int ITEM_ID = 789;
    private static final String EXP_GUID = GUID.create();
-   private static final IArtifactType artfactType = CoreArtifactTypes.Artifact;
+   private static final ArtifactTypeToken artfactType = CoreArtifactTypes.Artifact;
    private static final RelationTypeToken relationType = CoreRelationTypes.DEFAULT_HIERARCHY;
    private static final AttributeTypeToken attributeType = CoreAttributeTypes.Name;
 

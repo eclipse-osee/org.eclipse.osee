@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class SprintArtifact extends CollectorArtifact implements IAgileSprint {
 
-   public SprintArtifact(Long id, String guid, BranchId branch, IArtifactType artifactType) {
+   public SprintArtifact(Long id, String guid, BranchId branch, ArtifactTypeToken artifactType) {
       super(id, guid, branch, artifactType, AtsRelationTypes.AgileSprintToItem_AtsItem);
    }
 

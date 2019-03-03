@@ -12,7 +12,7 @@ package org.eclipse.osee.define.ide.traceability;
 
 import java.nio.CharBuffer;
 import org.eclipse.osee.define.ide.utility.IResourceLocator;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author Roberto E. Escobar
@@ -21,6 +21,6 @@ public interface ITraceUnitResourceLocator extends IResourceLocator {
 
    public String UNIT_TYPE_UNKNOWN = "Unknown";
 
-   public IArtifactType getTraceUnitType(String name, CharBuffer fileBuffer);
+   public ArtifactTypeToken getTraceUnitType(String name, CharBuffer fileBuffer);
 
 }

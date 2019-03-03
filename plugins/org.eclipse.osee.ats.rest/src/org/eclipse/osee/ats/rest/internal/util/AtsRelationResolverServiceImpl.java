@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.core.util.AbstractRelationResolverServiceImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -188,7 +188,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    }
 
    @Override
-   public Collection<ArtifactToken> getRelated(ArtifactId artifact, RelationTypeSide relationType, IArtifactType artifactType) {
+   public Collection<ArtifactToken> getRelated(ArtifactId artifact, RelationTypeSide relationType, ArtifactTypeToken artifactType) {
       List<ArtifactToken> results = new LinkedList<>();
       ArtifactReadable art = getArtifact(artifact);
       for (ArtifactToken related : art.getRelated(relationType)) {

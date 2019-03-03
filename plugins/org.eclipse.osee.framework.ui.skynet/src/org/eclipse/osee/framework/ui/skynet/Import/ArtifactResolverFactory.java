@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.AttributeBasedArtifactResolver;
@@ -40,8 +40,8 @@ public final class ArtifactResolverFactory {
       // Static Factory
    }
 
-   public static IArtifactImportResolver createAlwaysNewArtifacts(IArtifactType primaryArtifactType) {
-      IArtifactType secondaryArtifactType = CoreArtifactTypes.HeadingMSWord;
+   public static IArtifactImportResolver createAlwaysNewArtifacts(ArtifactTypeToken primaryArtifactType) {
+      ArtifactTypeToken secondaryArtifactType = CoreArtifactTypes.HeadingMSWord;
       if (primaryArtifactType.equals(CoreArtifactTypes.SubsystemRequirementHTML) || primaryArtifactType.equals(
          CoreArtifactTypes.SystemRequirementHTML)) {
          secondaryArtifactType = CoreArtifactTypes.HeadingHTML;
@@ -49,13 +49,13 @@ public final class ArtifactResolverFactory {
       return createAlwaysNewArtifacts(primaryArtifactType, secondaryArtifactType);
    }
 
-   public static IArtifactImportResolver createAlwaysNewArtifacts(IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType) {
+   public static IArtifactImportResolver createAlwaysNewArtifacts(ArtifactTypeToken primaryArtifactType, ArtifactTypeToken secondaryArtifactType) {
       IRoughArtifactTranslator translator = new RoughArtifactTranslatorImpl();
       return new NewArtifactImportResolver(translator, primaryArtifactType, secondaryArtifactType,
          CoreArtifactTypes.DocumentDescriptionMSWord, CoreArtifactTypes.DesignDescriptionMSWord);
    }
 
-   public static IArtifactImportResolver createResolver(ArtifactCreationStrategy strategy, IArtifactType primaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
+   public static IArtifactImportResolver createResolver(ArtifactCreationStrategy strategy, ArtifactTypeToken primaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
       IArtifactImportResolver toReturn;
       switch (strategy) {
          case CREATE_ON_DIFFERENT_ATTRIBUTES:
@@ -78,7 +78,7 @@ public final class ArtifactResolverFactory {
       return toReturn;
    }
 
-   public static IArtifactImportResolver createResolver(ArtifactCreationStrategy strategy, IArtifactType primaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts, Artifact dropTarget) {
+   public static IArtifactImportResolver createResolver(ArtifactCreationStrategy strategy, ArtifactTypeToken primaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts, Artifact dropTarget) {
 
       return new DropTargetAttributeBasedResolver(new RoughArtifactTranslatorImpl(), primaryArtifactType,
          CoreArtifactTypes.HeadingMSWord, nonChangingAttributes, createNewIfNotExist, deleteUnmatchedArtifacts,

@@ -19,21 +19,21 @@ import org.codehaus.jackson.map.ser.std.ToStringSerializer;
  */
 public class ArtifactImage {
 
-   private IArtifactType artifactType;
+   private ArtifactTypeToken artifactType;
    @JsonSerialize(using = ToStringSerializer.class)
    private Long artifactTypeId;
    private String artifactTypeName;
    private String imageName;
    private String baseUrl;
 
-   public ArtifactImage(IArtifactType artifactType, String imageName, String baseUrl) {
+   public ArtifactImage(ArtifactTypeToken artifactType, String imageName, String baseUrl) {
       this.artifactType = artifactType;
       this.imageName = imageName;
       this.baseUrl = baseUrl;
    }
 
    @JsonIgnore
-   public IArtifactType getArtifactType() {
+   public ArtifactTypeToken getArtifactType() {
       return artifactType;
    }
 
@@ -41,7 +41,7 @@ public class ArtifactImage {
       return imageName;
    }
 
-   public void setArtifactType(IArtifactType artifactType) {
+   public void setArtifactType(ArtifactTypeToken artifactType) {
       this.artifactType = artifactType;
    }
 
@@ -49,11 +49,11 @@ public class ArtifactImage {
       this.imageName = imageName;
    }
 
-   public static ArtifactImage construct(IArtifactType artifactType, String imageName) {
+   public static ArtifactImage construct(ArtifactTypeToken artifactType, String imageName) {
       return construct(artifactType, imageName, null);
    }
 
-   public static ArtifactImage construct(IArtifactType artifactType, String imageName, String baseUrl) {
+   public static ArtifactImage construct(ArtifactTypeToken artifactType, String imageName, String baseUrl) {
       return new ArtifactImage(artifactType, imageName, baseUrl);
    }
 

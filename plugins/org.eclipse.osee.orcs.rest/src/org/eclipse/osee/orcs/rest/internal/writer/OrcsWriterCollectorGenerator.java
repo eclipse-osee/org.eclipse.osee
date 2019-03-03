@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -155,14 +155,14 @@ public class OrcsWriterCollectorGenerator {
    }
 
    private void createArtifactTypeSheet() {
-      Map<String, IArtifactType> types = new HashMap<>(100);
+      Map<String, ArtifactTypeToken> types = new HashMap<>(100);
       if (config == null) {
-         for (IArtifactType type : orcsApi.getOrcsTypes().getArtifactTypes().getAll()) {
+         for (ArtifactTypeToken type : orcsApi.getOrcsTypes().getArtifactTypes().getAll()) {
             types.put(type.getName(), type);
          }
       } else {
          for (Long typeId : config.getIncludeArtifactTypes()) {
-            IArtifactType type = orcsApi.getOrcsTypes().getArtifactTypes().get(typeId);
+            ArtifactTypeToken type = orcsApi.getOrcsTypes().getArtifactTypes().get(typeId);
             if (type != null) {
                types.put(type.getName(), type);
             }
@@ -172,7 +172,7 @@ public class OrcsWriterCollectorGenerator {
       typeNames.addAll(types.keySet());
       Collections.sort(typeNames);
       for (String typeName : typeNames) {
-         IArtifactType type = types.get(typeName);
+         ArtifactTypeToken type = types.get(typeName);
          OwArtifactType owType = OwFactory.createArtifactType(type);
          collector.getArtTypes().add(owType);
       }

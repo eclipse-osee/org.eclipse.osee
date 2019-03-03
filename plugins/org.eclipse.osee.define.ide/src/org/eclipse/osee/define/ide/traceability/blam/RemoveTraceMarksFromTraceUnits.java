@@ -34,7 +34,7 @@ import org.eclipse.osee.define.ide.traceability.TraceUnitExtensionManager;
 import org.eclipse.osee.define.ide.traceability.TraceUnitExtensionManager.TraceHandler;
 import org.eclipse.osee.define.ide.utility.IResourceHandler;
 import org.eclipse.osee.define.ide.utility.UriResourceContentFinder;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -221,7 +221,7 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
 
       @Override
       public void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer) {
-         IArtifactType traceUnitType = traceUnitLocator.getTraceUnitType(name, fileBuffer);
+         ArtifactTypeToken traceUnitType = traceUnitLocator.getTraceUnitType(name, fileBuffer);
          if (!traceUnitType.equals(ITraceUnitResourceLocator.UNIT_TYPE_UNKNOWN)) {
             if (traceParser.isTraceRemovalAllowed()) {
                CharBuffer modifiedBuffer = traceParser.removeTraceMarks(fileBuffer);

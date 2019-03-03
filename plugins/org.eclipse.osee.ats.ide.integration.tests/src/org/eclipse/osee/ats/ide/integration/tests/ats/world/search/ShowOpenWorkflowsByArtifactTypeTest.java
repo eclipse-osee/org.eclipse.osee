@@ -15,7 +15,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.world.search.ShowOpenWorkflowsByReviewType;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -59,7 +59,7 @@ public class ShowOpenWorkflowsByArtifactTypeTest {
       checkResults(6, AtsArtifactTypes.TeamWorkflow, results);
    }
 
-   private void checkResults(int expectedCount, IArtifactType ofType, Collection<Artifact> results) {
+   private void checkResults(int expectedCount, ArtifactTypeToken ofType, Collection<Artifact> results) {
       org.junit.Assert.assertEquals(expectedCount, results.size());
       int count = 0;
       for (Artifact art : results) {

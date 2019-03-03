@@ -20,7 +20,7 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -122,7 +122,7 @@ public class RelationDeletionTest {
 
    }
 
-   private Artifact createArtifact(IArtifactType artifactType, BranchId branch) {
+   private Artifact createArtifact(ArtifactTypeToken artifactType, BranchId branch) {
       Artifact newArtifact = ArtifactTypeManager.addArtifact(artifactType, branch);
       artifacts.add(newArtifact);
       return newArtifact;

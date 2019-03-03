@@ -28,7 +28,7 @@ import org.eclipse.osee.define.ide.traceability.data.TraceMark;
 import org.eclipse.osee.define.ide.traceability.data.TraceUnit;
 import org.eclipse.osee.define.ide.utility.IResourceHandler;
 import org.eclipse.osee.define.ide.utility.UriResourceContentFinder;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -131,7 +131,7 @@ public class ResourceToTraceUnit {
    }
 
    private void processCollector(IProgressMonitor monitor, TraceUnitCollector testUnitCollector) {
-      for (IArtifactType testUnitType : testUnitCollector.getTraceUnitTypes()) {
+      for (ArtifactTypeToken testUnitType : testUnitCollector.getTraceUnitTypes()) {
          if (monitor.isCanceled()) {
             break;
          }
@@ -179,7 +179,7 @@ public class ResourceToTraceUnit {
 
       private final ITraceParser traceParser;
       private final ITraceUnitResourceLocator traceUnitLocator;
-      private final Map<IArtifactType, Map<String, TraceUnit>> traceUnitToTraceMarks;
+      private final Map<ArtifactTypeToken, Map<String, TraceUnit>> traceUnitToTraceMarks;
       private final boolean includeImpd;
 
       public TraceUnitCollector(ITraceUnitResourceLocator traceUnitLocator, ITraceParser traceParser, boolean includeImpd) {
@@ -192,7 +192,7 @@ public class ResourceToTraceUnit {
       @Override
       public void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer) {
          traceParser.setupTraceMatcher(includeImpd);
-         IArtifactType traceUnitType = traceUnitLocator.getTraceUnitType(name, fileBuffer);
+         ArtifactTypeToken traceUnitType = traceUnitLocator.getTraceUnitType(name, fileBuffer);
          if (!traceUnitType.equals(ITraceUnitResourceLocator.UNIT_TYPE_UNKNOWN)) {
             Collection<TraceMark> traceMarks = traceParser.getTraceMarks(fileBuffer);
             if (traceParser.addIfEmpty() || Conditions.hasValues(traceMarks)) {
@@ -217,11 +217,11 @@ public class ResourceToTraceUnit {
          return traceUnitToTraceMarks.isEmpty();
       }
 
-      public Set<IArtifactType> getTraceUnitTypes() {
+      public Set<ArtifactTypeToken> getTraceUnitTypes() {
          return traceUnitToTraceMarks.keySet();
       }
 
-      public Map<String, TraceUnit> getUnitsToTraceMarks(IArtifactType unitType) {
+      public Map<String, TraceUnit> getUnitsToTraceMarks(ArtifactTypeToken unitType) {
          return traceUnitToTraceMarks.get(unitType);
       }
    }

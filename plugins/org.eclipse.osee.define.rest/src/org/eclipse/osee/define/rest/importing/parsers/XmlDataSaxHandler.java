@@ -14,7 +14,7 @@ import org.eclipse.define.api.importing.RoughArtifact;
 import org.eclipse.define.api.importing.RoughArtifactCollector;
 import org.eclipse.define.api.importing.RoughArtifactKind;
 import org.eclipse.osee.activity.api.ActivityLog;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.xml.sax.Attributes;
@@ -26,11 +26,11 @@ public class XmlDataSaxHandler extends AbstractSaxHandler {
    private int level = 0;
    private RoughArtifact roughArtifact;
    private final RoughArtifactCollector collector;
-   private final IArtifactType primaryArtifactType;
+   private final ArtifactTypeToken primaryArtifactType;
    private final ActivityLog activityLog;
    private final OrcsApi orcsApi;
 
-   public XmlDataSaxHandler(OrcsApi orcsApi, ActivityLog activityLog, RoughArtifactCollector collector, IArtifactType primaryArtifactType) {
+   public XmlDataSaxHandler(OrcsApi orcsApi, ActivityLog activityLog, RoughArtifactCollector collector, ArtifactTypeToken primaryArtifactType) {
       super();
       this.collector = collector;
       this.primaryArtifactType = primaryArtifactType;

@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -183,7 +183,7 @@ public class ChangeArtifactType {
       }
    }
 
-   private void getConflictString(StringBuilder message, IArtifactType artifactType) {
+   private void getConflictString(StringBuilder message, ArtifactTypeToken artifactType) {
       message.append("The following types are not supported on the artifact type " + artifactType.getName() + ":\n");
       message.append("\n");
       message.append("Attribute Types:\n" + attributeTypes + "\n");
@@ -217,7 +217,7 @@ public class ChangeArtifactType {
     * @return true if the user accepts the deletion of the attributes and relations that are not compatible for the new
     * artifact type else false.
     */
-   private boolean doesUserAcceptArtifactChange(IArtifactType artifactType) {
+   private boolean doesUserAcceptArtifactChange(ArtifactTypeToken artifactType) {
       if (!relationTypes.isEmpty() || !attributeTypes.isEmpty()) {
 
          StringBuilder sb = new StringBuilder(1024);

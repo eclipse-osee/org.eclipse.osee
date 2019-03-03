@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
@@ -36,7 +36,7 @@ public interface IAtsConfigQuery {
 
    <T extends IAtsConfigObject> Collection<T> getItems(Class<T> clazz);
 
-   IAtsConfigQuery isOfType(IArtifactType... artifactType);
+   IAtsConfigQuery isOfType(ArtifactTypeToken... artifactType);
 
    IAtsConfigQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOptions);
 

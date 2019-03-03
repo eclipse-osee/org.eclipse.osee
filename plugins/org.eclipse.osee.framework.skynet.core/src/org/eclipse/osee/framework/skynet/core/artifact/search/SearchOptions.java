@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 
 /**
@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 public class SearchOptions {
 
    private final Collection<AttributeTypeId> attributeTypes = new HashSet<>();
-   private final Collection<IArtifactType> artifactTypeGuids = new HashSet<>();
+   private final Collection<ArtifactTypeToken> artifactTypeGuids = new HashSet<>();
    private DeletionFlag deletionFlag;
    private boolean isMatchWordOrder;
    private boolean isCaseSensive;
@@ -95,13 +95,13 @@ public class SearchOptions {
       return "SearchOptions [attributeTypeGuids=" + attributeTypes + ", artifactTypeGuids=" + artifactTypeGuids + ", isIncludeDeleted=" + getDeletionFlag() + ", isMatchWordOrder=" + isMatchWordOrder + ", isCaseSensive=" + isCaseSensive + ", isExactMatch=" + isExactMatch + "]";
    }
 
-   public void setArtifactTypeFilter(IArtifactType[] artifactTypeFilter) {
-      for (IArtifactType type : artifactTypeFilter) {
+   public void setArtifactTypeFilter(ArtifactTypeToken[] artifactTypeFilter) {
+      for (ArtifactTypeToken type : artifactTypeFilter) {
          artifactTypeGuids.add(type);
       }
    }
 
-   public Collection<IArtifactType> getArtifactTypeFilter() {
+   public Collection<ArtifactTypeToken> getArtifactTypeFilter() {
       return artifactTypeGuids;
    }
 

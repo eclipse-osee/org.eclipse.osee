@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -100,7 +100,7 @@ public final class PortPairsOperation extends AbstractOperation {
    }
 
    private TeamWorkFlowArtifact getWorkflowFromRpcr(String workflowId) {
-      IArtifactType LbaReqTeamWorkflow = TokenFactory.createArtifactType(204509162766347L, "Lba Req Team Workflow");
+      ArtifactTypeToken LbaReqTeamWorkflow = TokenFactory.createArtifactType(204509162766347L, "Lba Req Team Workflow");
 
       return (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndAttribute(LbaReqTeamWorkflow,
          AtsAttributeTypes.LegacyPcrId, workflowId, AtsClientService.get().getAtsBranch());

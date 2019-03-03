@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.model.mocks;
 import java.util.Date;
 import java.util.Random;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -112,11 +112,11 @@ public final class MockDataFactory {
       return new ArtifactType(CoreArtifactTypes.Artifact.getId(), CoreArtifactTypes.Artifact.getName(), true);
    }
 
-   public static RelationType createRelationType(int index, IArtifactType artTypeA, IArtifactType artTypeB) {
+   public static RelationType createRelationType(int index, ArtifactTypeToken artTypeA, ArtifactTypeToken artTypeB) {
       return createRelationType(index, artTypeA, artTypeB, random.nextLong());
    }
 
-   public static RelationType createRelationType(int index, IArtifactType artTypeA, IArtifactType artTypeB, Long id) {
+   public static RelationType createRelationType(int index, ArtifactTypeToken artTypeA, ArtifactTypeToken artTypeB, Long id) {
       RelationTypeMultiplicity multiplicity =
          RelationTypeMultiplicity.values()[Math.abs(index % RelationTypeMultiplicity.values().length)];
       RelationSorter order = RelationSorter.values()[index % RelationTypeMultiplicity.values().length];

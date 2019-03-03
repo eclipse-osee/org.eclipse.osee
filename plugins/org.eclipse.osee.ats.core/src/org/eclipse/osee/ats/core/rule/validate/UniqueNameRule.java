@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.rule.validation.AbstractValidationRule;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -32,17 +32,17 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class UniqueNameRule extends AbstractValidationRule {
 
-   private final IArtifactType artifactType;
+   private final ArtifactTypeToken artifactType;
    private final Collection<IdPair> idPairs = new LinkedList<>();
-   private final Map<IArtifactType, List<ArtifactToken>> artTypeToArtifacts =
+   private final Map<ArtifactTypeToken, List<ArtifactToken>> artTypeToArtifacts =
       new HashMap<>();
 
-   public UniqueNameRule(IArtifactType artifactType, AtsApi atsApi) {
+   public UniqueNameRule(ArtifactTypeToken artifactType, AtsApi atsApi) {
       super(atsApi);
       this.artifactType = artifactType;
    }
 
-   public boolean hasArtifactType(IArtifactType artType) {
+   public boolean hasArtifactType(ArtifactTypeToken artType) {
       return atsApi.getStoreService().inheritsFrom(artType, artifactType);
    }
 
@@ -78,7 +78,7 @@ public class UniqueNameRule extends AbstractValidationRule {
       }
    }
 
-   protected List<ArtifactToken> getArtifactsOfType(BranchId branch, IArtifactType artifact) {
+   protected List<ArtifactToken> getArtifactsOfType(BranchId branch, ArtifactTypeToken artifact) {
       List<ArtifactToken> arts = artTypeToArtifacts.get(artifact);
       if (arts == null) {
          arts = atsApi.getQueryService().getArtifactListFromTypeWithInheritence(artifactType, branch,

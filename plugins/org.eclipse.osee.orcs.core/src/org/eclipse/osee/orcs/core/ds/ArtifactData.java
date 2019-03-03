@@ -11,12 +11,12 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface ArtifactData extends OrcsData<IArtifactType>, ArtifactToken {
+public interface ArtifactData extends OrcsData<ArtifactTypeToken>, ArtifactToken {
 
    void setGuid(String guid);
 }

@@ -18,7 +18,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -195,7 +195,7 @@ public class ArtifactDragDropSupport {
          try {
             artifact = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.ContentUrl, location, branch);
          } catch (ArtifactDoesNotExist ex) {
-            Collection<? extends IArtifactType> artifactTypes =
+            Collection<? extends ArtifactTypeToken> artifactTypes =
                ArtifactTypeManager.getArtifactTypesFromAttributeType(CoreAttributeTypes.ContentUrl, branch);
             FilteredTreeDialog dialog = new FilteredTreeDialog("Artifact Types",
                "No Artifact could be found for this file. To create one, please select an artfact type.",
@@ -203,7 +203,7 @@ public class ArtifactDragDropSupport {
             dialog.setInput(artifactTypes);
 
             if (dialog.open() == Window.OK) {
-               artifact = ArtifactTypeManager.addArtifact((IArtifactType) dialog.getSelectedFirst(), branch);
+               artifact = ArtifactTypeManager.addArtifact((ArtifactTypeToken) dialog.getSelectedFirst(), branch);
                artifact.setSoleAttributeValue(CoreAttributeTypes.ContentUrl, location);
                artifact.setName(new File(location).getName());
             }

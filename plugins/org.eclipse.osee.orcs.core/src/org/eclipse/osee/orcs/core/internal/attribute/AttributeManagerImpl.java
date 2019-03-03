@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -51,7 +51,7 @@ import org.eclipse.osee.orcs.core.internal.util.OrcsPredicates;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData<IArtifactType, ArtifactData>, AttributeManager, AttributeExceptionFactory, Iterable<Map.Entry<AttributeTypeId, List<Attribute<Object>>>> {
+public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData<ArtifactTypeToken, ArtifactData>, AttributeManager, AttributeExceptionFactory, Iterable<Map.Entry<AttributeTypeId, List<Attribute<Object>>>> {
 
    private final HashCollection<AttributeTypeId, Attribute<Object>> attributes;
    private final String guid;

@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -39,10 +39,10 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> implements BaseConfigEndpointApi<T> {
 
    protected final AtsApi atsApi;
-   protected final IArtifactType artifactType;
+   protected final ArtifactTypeToken artifactType;
    protected final ArtifactToken typeFolder;
 
-   public BaseConfigEndpointImpl(IArtifactType artifactType, ArtifactToken typeFolder, AtsApi atsApi) {
+   public BaseConfigEndpointImpl(ArtifactTypeToken artifactType, ArtifactToken typeFolder, AtsApi atsApi) {
       this.artifactType = artifactType;
       this.typeFolder = typeFolder;
       this.atsApi = atsApi;

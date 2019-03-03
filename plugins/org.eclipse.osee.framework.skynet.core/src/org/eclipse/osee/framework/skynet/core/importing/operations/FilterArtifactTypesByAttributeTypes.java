@@ -16,7 +16,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class FilterArtifactTypesByAttributeTypes extends AbstractOperation {
 
    private final BranchId branch;
-   private final Collection<IArtifactType> selectedArtifactTypes;
+   private final Collection<ArtifactTypeToken> selectedArtifactTypes;
    private final RoughArtifactCollector collector;
 
    /**
@@ -45,7 +45,7 @@ public class FilterArtifactTypesByAttributeTypes extends AbstractOperation {
     * @param selectedArtifactTypes ----> <b>MUTABLE</b> list of items {{@link #doWork(IProgressMonitor)} will operate
     * on.
     */
-   public FilterArtifactTypesByAttributeTypes(BranchId branch, RoughArtifactCollector collector, Collection<IArtifactType> selectedArtifactTypes) {
+   public FilterArtifactTypesByAttributeTypes(BranchId branch, RoughArtifactCollector collector, Collection<ArtifactTypeToken> selectedArtifactTypes) {
       super("Filter Artifact Types", Activator.PLUGIN_ID);
       this.branch = branch;
       this.selectedArtifactTypes = selectedArtifactTypes;

@@ -52,7 +52,7 @@ import org.eclipse.osee.ats.core.insertion.InsertionActivity;
 import org.eclipse.osee.ats.core.program.operations.AtsProgramOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -334,7 +334,7 @@ public class AtsProgramService implements IAtsProgramService {
    }
 
    @Override
-   public Collection<IAtsProgram> getPrograms(IArtifactType artifactType) {
+   public Collection<IAtsProgram> getPrograms(ArtifactTypeToken artifactType) {
       return Collections.castAll(atsApi.getQueryService() //
          .createQuery(artifactType).getConfigObjectResultSet().getList());
    }
@@ -499,7 +499,7 @@ public class AtsProgramService implements IAtsProgramService {
    }
 
    @Override
-   public List<ProgramVersions> getProgramVersions(IArtifactType artType, boolean activeOnly) {
+   public List<ProgramVersions> getProgramVersions(ArtifactTypeToken artType, boolean activeOnly) {
       AtsProgramOperations ops = new AtsProgramOperations(atsApi);
       return ops.getProgramVersions(artType, activeOnly);
    }

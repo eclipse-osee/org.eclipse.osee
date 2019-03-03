@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.api.data;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -44,7 +44,7 @@ public class AtsArtifactImages {
    public static ArtifactImage AGILE_STORY =
       AtsArtifactImages.construct(AtsArtifactTypes.AgileStory, "agileStory.gif", "/ats/agileui/images");
 
-   protected static ArtifactImage construct(IArtifactType artifactType, String imageName, String baseUrl) {
+   protected static ArtifactImage construct(ArtifactTypeToken artifactType, String imageName, String baseUrl) {
       ArtifactImage image = ArtifactImage.construct(artifactType, imageName, baseUrl);
       images.add(image);
       return image;

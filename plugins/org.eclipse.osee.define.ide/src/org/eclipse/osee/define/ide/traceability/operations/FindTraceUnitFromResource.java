@@ -26,7 +26,7 @@ import org.eclipse.osee.define.ide.traceability.ITraceUnitResourceLocator;
 import org.eclipse.osee.define.ide.traceability.ResourceIdentifier;
 import org.eclipse.osee.define.ide.traceability.TraceUnitExtensionManager;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -47,8 +47,8 @@ public final class FindTraceUnitFromResource {
       //
    }
 
-   private static HashCollectionSet<IArtifactType, ResourceIdentifier> toIdentifiers(IResource... resources) {
-      HashCollectionSet<IArtifactType, ResourceIdentifier> returnCollection = new HashCollectionSet<>(HashSet::new);
+   private static HashCollectionSet<ArtifactTypeToken, ResourceIdentifier> toIdentifiers(IResource... resources) {
+      HashCollectionSet<ArtifactTypeToken, ResourceIdentifier> returnCollection = new HashCollectionSet<>(HashSet::new);
       if (resources != null && resources.length > 0) {
          try {
             Set<ITraceUnitResourceLocator> locators = TraceUnitExtensionManager.getInstance().getAllTraceUnitLocators();
@@ -62,7 +62,7 @@ public final class FindTraceUnitFromResource {
       return returnCollection;
    }
 
-   private static void resourceToId(HashCollectionSet<IArtifactType, ResourceIdentifier> idStore, IResource resource, Set<ITraceUnitResourceLocator> locators) {
+   private static void resourceToId(HashCollectionSet<ArtifactTypeToken, ResourceIdentifier> idStore, IResource resource, Set<ITraceUnitResourceLocator> locators) {
       try {
          IFileStore fileStore = EFS.getStore(resource.getLocationURI());
          for (ITraceUnitResourceLocator locator : locators) {
@@ -72,7 +72,7 @@ public final class FindTraceUnitFromResource {
                   inputStream = fileStore.openInputStream(EFS.NONE, new NullProgressMonitor());
                   CharBuffer buffer = Lib.inputStreamToCharBuffer(inputStream);
                   ResourceIdentifier identifier = locator.getIdentifier(fileStore, buffer);
-                  IArtifactType traceType = locator.getTraceUnitType(identifier.getName(), buffer);
+                  ArtifactTypeToken traceType = locator.getTraceUnitType(identifier.getName(), buffer);
                   idStore.put(traceType, identifier);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -93,10 +93,10 @@ public final class FindTraceUnitFromResource {
    }
 
    public static void search(BranchId branch, IResource... resources) {
-      HashCollectionSet<IArtifactType, ResourceIdentifier> typeAndIds = toIdentifiers(resources);
+      HashCollectionSet<ArtifactTypeToken, ResourceIdentifier> typeAndIds = toIdentifiers(resources);
       if (!typeAndIds.isEmpty()) {
          Set<Artifact> artifacts = new HashSet<>();
-         for (IArtifactType artifactType : typeAndIds.keySet()) {
+         for (ArtifactTypeToken artifactType : typeAndIds.keySet()) {
             Collection<ResourceIdentifier> items = typeAndIds.getValues(artifactType);
             if (items != null) {
                for (ResourceIdentifier resource : items) {

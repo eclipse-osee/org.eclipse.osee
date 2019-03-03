@@ -25,7 +25,7 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -63,12 +63,12 @@ public abstract class AbstractEditTest {
 
    private final String editFile;
    private final BranchId branch;
-   private final IArtifactType artType;
+   private final ArtifactTypeToken artType;
    private final FileSystemRenderer renderer;
 
    private Artifact artifact;
 
-   protected AbstractEditTest(BranchId branch, String editFile, IArtifactType artType, FileSystemRenderer renderer) {
+   protected AbstractEditTest(BranchId branch, String editFile, ArtifactTypeToken artType, FileSystemRenderer renderer) {
       this.branch = branch;
       this.editFile = editFile;
       this.artType = artType;
@@ -90,7 +90,7 @@ public abstract class AbstractEditTest {
       }
    }
 
-   private Artifact createArtifact(BranchId branch, IArtifactType artType, String artifactName) {
+   private Artifact createArtifact(BranchId branch, ArtifactTypeToken artType, String artifactName) {
       Assert.assertNotNull(branch);
       Assert.assertNotNull(artifactName);
       Artifact artifact = ArtifactTypeManager.addArtifact(artType, branch, artifactName);

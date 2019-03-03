@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -86,7 +86,7 @@ public class AddRequirementData implements IDbInitializationTask {
       }
    }
 
-   private void importRequirements(BranchId branch, IArtifactType requirementType, String folderName, File file) throws Exception {
+   private void importRequirements(BranchId branch, ArtifactTypeToken requirementType, String folderName, File file) throws Exception {
       if (DEBUG) {
          OseeLog.logf(AddRequirementData.class, Level.INFO, "Importing \"%s\" requirements on branch \"%s\"",
             folderName, branch);
@@ -228,7 +228,7 @@ public class AddRequirementData implements IDbInitializationTask {
 
    }
 
-   private Collection<Artifact> getArtTypeRequirements(boolean DEBUG, IArtifactType artifactType, String artifactNameStr, BranchId branch) {
+   private Collection<Artifact> getArtTypeRequirements(boolean DEBUG, ArtifactTypeToken artifactType, String artifactNameStr, BranchId branch) {
       if (DEBUG) {
          OseeLog.logf(AddRequirementData.class, Level.INFO, "Getting [%s] requirement(s) from Branch [%s]",
             artifactNameStr, branch.getId());

@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -124,7 +124,7 @@ public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> impl
    @Produces(MediaType.APPLICATION_JSON)
    public List<ProgramVersions> getVersions(@Context UriInfo uriInfo) {
       boolean activeOnly = true;
-      IArtifactType artType = AtsArtifactTypes.Program;
+      ArtifactTypeToken artType = AtsArtifactTypes.Program;
       if (uriInfo != null) {
          MultivaluedMap<String, String> qp = uriInfo.getQueryParameters(true);
          String activeStr = qp.getFirst("activeOnly");

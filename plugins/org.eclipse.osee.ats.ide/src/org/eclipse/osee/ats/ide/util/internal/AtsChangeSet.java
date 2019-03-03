@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -287,7 +287,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public ArtifactToken createArtifact(IArtifactType artifactType, String name, Long artifactId) {
+   public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId) {
       Artifact artifact =
          ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), name, artifactId);
       add(artifact);
@@ -295,7 +295,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public ArtifactToken createArtifact(IArtifactType artifactType, String name) {
+   public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name) {
       Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), name);
       add(artifact);
       return artifact;
@@ -524,7 +524,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public ArtifactToken createArtifact(IArtifactType artifactType, String name, Long artifactId, String guid) {
+   public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId, String guid) {
       Artifact artifact =
          ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), name, guid, artifactId);
       add(artifact);

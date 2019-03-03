@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -69,7 +69,7 @@ public class DataFactoryImplTest {
    private static final Long ART_ID = 987L;
    private static final Long SHARED_ID = 555L;
    private static final ArtifactId artifactId555 = ArtifactId.valueOf(SHARED_ID);
-   private static final IArtifactType artifactType = CoreArtifactTypes.SoftwareRequirement;
+   private static final ArtifactTypeToken artifactType = CoreArtifactTypes.SoftwareRequirement;
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();

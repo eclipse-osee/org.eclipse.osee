@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.api.workflow;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -29,9 +29,9 @@ public enum WorkItemType {
    AgileBacklog("Agile Backlog", AtsArtifactTypes.AgileBacklog);
 
    private final String displayName;
-   private final IArtifactType artifactType;
+   private final ArtifactTypeToken artifactType;
 
-   private WorkItemType(String displayName, IArtifactType artifactType) {
+   private WorkItemType(String displayName, ArtifactTypeToken artifactType) {
       this.displayName = displayName;
       this.artifactType = artifactType;
    }
@@ -40,7 +40,7 @@ public enum WorkItemType {
       return displayName;
    }
 
-   public IArtifactType getArtifactType() {
+   public ArtifactTypeToken getArtifactType() {
       return artifactType;
    }
 }

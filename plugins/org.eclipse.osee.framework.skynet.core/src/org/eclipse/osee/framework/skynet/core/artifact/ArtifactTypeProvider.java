@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -25,7 +25,7 @@ public class ArtifactTypeProvider implements IArtifactTypeProvider {
    }
 
    @Override
-   public IArtifactType getTypeByGuid(Long artTypeGuid) {
+   public ArtifactTypeToken getTypeByGuid(Long artTypeGuid) {
       return ArtifactTypeManager.getType(artTypeGuid);
    }
 

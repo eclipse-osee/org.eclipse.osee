@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -83,7 +83,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public IAtsConfigQuery createQuery(IArtifactType... artifactType) {
+   public IAtsConfigQuery createQuery(ArtifactTypeToken... artifactType) {
       AtsConfigQueryImpl query = new AtsConfigQueryImpl(atsClient);
       query.isOfType(artifactType);
       return query;
@@ -247,8 +247,8 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifacts(BranchId branch, boolean includeInherited, IArtifactType... artifactType) {
-      List<IArtifactType> types = Arrays.asList(artifactType);
+   public Collection<ArtifactToken> getArtifacts(BranchId branch, boolean includeInherited, ArtifactTypeToken... artifactType) {
+      List<ArtifactTypeToken> types = Arrays.asList(artifactType);
       if (includeInherited) {
          if (artifactType.length == 1) {
             return Collections.castAll(ArtifactQuery.getArtifactListFromTypeWithInheritence(types.iterator().next(),
@@ -381,13 +381,13 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public List<ArtifactToken> getArtifactListFromTypeWithInheritence(IArtifactType artifactType, BranchId branch, DeletionFlag deletionFlag) {
+   public List<ArtifactToken> getArtifactListFromTypeWithInheritence(ArtifactTypeToken artifactType, BranchId branch, DeletionFlag deletionFlag) {
       return Collections.castAll(
          ArtifactQuery.getArtifactListFromTypeWithInheritence(artifactType, branch, deletionFlag));
    }
 
    @Override
-   public IAtsConfigCacheQuery createConfigCacheQuery(IArtifactType... artifactType) {
+   public IAtsConfigCacheQuery createConfigCacheQuery(ArtifactTypeToken... artifactType) {
       AtsConfigCacheQueryImpl query = new AtsConfigCacheQueryImpl(atsClient);
       query.isOfType(artifactType);
       return query;

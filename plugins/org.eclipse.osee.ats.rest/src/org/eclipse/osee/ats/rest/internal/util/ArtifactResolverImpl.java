@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -70,27 +70,27 @@ public class ArtifactResolverImpl implements IArtifactResolver {
    }
 
    @Override
-   public IArtifactType getArtifactType(IAtsWorkItem workItem) {
+   public ArtifactTypeToken getArtifactType(IAtsWorkItem workItem) {
       Assert.isNotNull(workItem, "Work Item can not be null");
       return ((ArtifactReadable) workItem.getStoreObject()).getArtifactType();
    }
 
    @Override
-   public boolean isOfType(ArtifactId artifact, IArtifactType artifactType) {
+   public boolean isOfType(ArtifactId artifact, ArtifactTypeToken artifactType) {
       Assert.isNotNull(artifact, "Artifact can not be null");
       Assert.isNotNull(artifactType, "Artifact Type can not be null");
       return atsApi.getStoreService().isOfType(artifact, artifactType);
    }
 
    @Override
-   public boolean isOfType(IAtsObject atsObject, IArtifactType artifactType) {
+   public boolean isOfType(IAtsObject atsObject, ArtifactTypeToken artifactType) {
       Assert.isNotNull(atsObject, "ATS Object can not be null");
       Assert.isNotNull(artifactType, "Artifact Type can not be null");
       return isOfType(atsApi.getQueryService().getArtifact(atsObject), artifactType);
    }
 
    @Override
-   public boolean inheritsFrom(IArtifactType artType, IArtifactType parentArtType) {
+   public boolean inheritsFrom(ArtifactTypeToken artType, ArtifactTypeToken parentArtType) {
       return orcsApi.getOrcsTypes().getArtifactTypes().inheritsFrom(artType, parentArtType);
    }
 

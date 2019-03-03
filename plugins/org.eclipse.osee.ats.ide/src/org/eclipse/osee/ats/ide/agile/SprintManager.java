@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.goal.MembersManager;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -57,7 +57,7 @@ public class SprintManager extends MembersManager<SprintArtifact> {
    }
 
    @Override
-   public IArtifactType getArtifactType() {
+   public ArtifactTypeToken getArtifactType() {
       return AtsArtifactTypes.AgileSprint;
    }
 

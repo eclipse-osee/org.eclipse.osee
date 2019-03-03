@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
@@ -94,7 +94,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public ArtifactData createArtifactData(VersionData version, Integer generateArtId, IArtifactType artifactType, ModificationType modType, String guidToSet, ApplicabilityId applicId) {
+   public ArtifactData createArtifactData(VersionData version, Integer generateArtId, ArtifactTypeToken artifactType, ModificationType modType, String guidToSet, ApplicabilityId applicId) {
       return createArtifactFromRow(version, generateArtId, artifactType, modType, artifactType, modType, guidToSet,
          applicId);
    }
@@ -142,7 +142,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
          applicId);
    }
 
-   private ArtifactData createArtifactFromRow(VersionData version, int generateArtId, IArtifactType artifactType, ModificationType modType, IArtifactType baseArtifactType, ModificationType baseModType, String guid, ApplicabilityId applicId) {
+   private ArtifactData createArtifactFromRow(VersionData version, int generateArtId, ArtifactTypeToken artifactType, ModificationType modType, ArtifactTypeToken baseArtifactType, ModificationType baseModType, String guid, ApplicabilityId applicId) {
       ArtifactData data = new ArtifactDataImpl(version);
       data.setLocalId(generateArtId);
       data.setType(artifactType);

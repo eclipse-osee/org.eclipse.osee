@@ -40,7 +40,7 @@ import org.eclipse.osee.ats.ide.config.IAtsUserServiceClient;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -306,7 +306,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
       for (ProgramDef dslProgramDef : programDefs) {
          String dslProgramName = Strings.unquote(dslProgramDef.getName());
          Artifact newProgramArt = null;
-         IArtifactType programArtifactType = AtsArtifactTypes.Program;
+         ArtifactTypeToken programArtifactType = AtsArtifactTypes.Program;
          String artifactTypeName = dslProgramDef.getArtifactTypeName();
          if (Strings.isValid(artifactTypeName)) {
             programArtifactType = ArtifactTypeManager.getType(artifactTypeName);

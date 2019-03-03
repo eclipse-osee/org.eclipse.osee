@@ -22,7 +22,7 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
@@ -87,7 +87,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    private final RoughArtifactCollector collector;
    private final ArtifactExtractorContributionManager importContributionManager;
    private final SelectionLatch selectionLatch;
-   private final Collection<IArtifactType> selectedArtifactTypes;
+   private final Collection<ArtifactTypeToken> selectedArtifactTypes;
 
    private static StringBuilder operationReportMessages;
 
@@ -329,7 +329,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       return artifactSelectPanel.getSelected();
    }
 
-   public IArtifactType getArtifactType() {
+   public ArtifactTypeToken getArtifactType() {
       return artifactTypeSelectPanel.getSelected();
    }
 

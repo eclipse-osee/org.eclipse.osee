@@ -16,7 +16,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.rule.validation.AbstractValidationRule;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
@@ -24,12 +24,12 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
  * @author Donald G. Dunne
  */
 public final class RelationSetRule extends AbstractValidationRule {
-   private final IArtifactType artifactType;
+   private final ArtifactTypeToken artifactType;
    private final Integer minimumRelations;
    private final RelationTypeSide relationEnum;
-   private final Collection<IArtifactType> ignoreArtifactTypes;
+   private final Collection<ArtifactTypeToken> ignoreArtifactTypes;
 
-   public RelationSetRule(IArtifactType artifactType, RelationTypeSide relationEnum, Integer minimumRelations, AtsApi atsApi, IArtifactType... ignoreArtifactTypes) {
+   public RelationSetRule(ArtifactTypeToken artifactType, RelationTypeSide relationEnum, Integer minimumRelations, AtsApi atsApi, ArtifactTypeToken... ignoreArtifactTypes) {
       super(atsApi);
       this.artifactType = artifactType;
       this.relationEnum = relationEnum;
@@ -38,13 +38,13 @@ public final class RelationSetRule extends AbstractValidationRule {
          ignoreArtifactTypes.length == 0 ? new ArrayList<>() : Arrays.asList(ignoreArtifactTypes);
    }
 
-   public boolean hasArtifactType(IArtifactType artType) {
+   public boolean hasArtifactType(ArtifactTypeToken artType) {
       return atsApi.getStoreService().inheritsFrom(artType, artifactType);
    }
 
    @Override
    public void validate(ArtifactToken artifact, XResultData results) {
-      IArtifactType type = atsApi.getStoreService().getArtifactType(artifact);
+      ArtifactTypeToken type = atsApi.getStoreService().getArtifactType(artifact);
 
       if (!isIgnoreType(type) && hasArtifactType(type)) {
          Collection<ArtifactToken> arts = atsApi.getRelationResolver().getRelatedArtifacts(artifact, relationEnum);
@@ -66,11 +66,11 @@ public final class RelationSetRule extends AbstractValidationRule {
       return "Relations Check:";
    }
 
-   private Collection<IArtifactType> getIgnoreArtifactTypes() {
+   private Collection<ArtifactTypeToken> getIgnoreArtifactTypes() {
       return ignoreArtifactTypes;
    }
 
-   private boolean isIgnoreType(IArtifactType type) {
+   private boolean isIgnoreType(ArtifactTypeToken type) {
       return getIgnoreArtifactTypes().contains(type);
    }
 }

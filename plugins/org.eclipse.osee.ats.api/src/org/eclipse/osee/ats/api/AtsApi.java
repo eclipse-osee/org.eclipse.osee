@@ -53,7 +53,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
@@ -87,7 +87,7 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkDefiniti
 
    String getAtsId(IAtsObject atsObject);
 
-   Collection<IArtifactType> getArtifactTypes();
+   Collection<ArtifactTypeToken> getArtifactTypes();
 
    IAtsStoreService getStoreService();
 

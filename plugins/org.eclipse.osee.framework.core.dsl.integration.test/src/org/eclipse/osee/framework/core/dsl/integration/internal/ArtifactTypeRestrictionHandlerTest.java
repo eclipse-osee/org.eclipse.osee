@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockModel;
@@ -39,7 +39,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
    @Test
    public void testProcessDataNotMatchesRestriction() {
-      IArtifactType artifactType = CoreArtifactTypes.Requirement;
+      ArtifactTypeToken artifactType = CoreArtifactTypes.Requirement;
       XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getId(), artifactType.getName());
 
       ArtifactTypeRestriction restriction = MockModel.createArtifactTypeRestriction();
@@ -54,7 +54,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
    @Test
    public void testProcessCreateAccessDetail() {
-      IArtifactType artifactType = CoreArtifactTypes.Requirement;
+      ArtifactTypeToken artifactType = CoreArtifactTypes.Requirement;
       XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getId(), artifactType.getName());
 
       ArtifactTypeRestriction restriction = MockModel.createArtifactTypeRestriction();
@@ -71,7 +71,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
    @Test
    public void testProcessArtifactTypeInheritance() {
-      IArtifactType artifactType = CoreArtifactTypes.Artifact;
+      ArtifactTypeToken artifactType = CoreArtifactTypes.Artifact;
       XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getId(), artifactType.getName());
 
       ArtifactTypeRestriction restriction = MockModel.createArtifactTypeRestriction();

@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, IATSStateMachineArtifact {
    Set<Long> taskHasNoParent = new HashSet<>();
 
-   public TaskArtifact(Long id, String guid, BranchId branch, IArtifactType artifactType) {
+   public TaskArtifact(Long id, String guid, BranchId branch, ArtifactTypeToken artifactType) {
       super(id, guid, branch, artifactType);
    }
 

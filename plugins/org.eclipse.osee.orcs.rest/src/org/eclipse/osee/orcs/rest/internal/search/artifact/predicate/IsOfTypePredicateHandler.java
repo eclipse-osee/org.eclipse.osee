@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.rest.internal.search.artifact.predicate;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.PredicateHandler;
@@ -32,7 +32,7 @@ public class IsOfTypePredicateHandler implements PredicateHandler {
       }
       Collection<String> values = predicate.getValues();
       Conditions.checkNotNull(values, "values");
-      Collection<IArtifactType> artTypes = PredicateHandlerUtil.getIArtifactTypes(values);
+      Collection<ArtifactTypeToken> artTypes = PredicateHandlerUtil.getArtifactTypeTokens(values);
       if (!artTypes.isEmpty()) {
          builder.andIsOfType(artTypes);
       }

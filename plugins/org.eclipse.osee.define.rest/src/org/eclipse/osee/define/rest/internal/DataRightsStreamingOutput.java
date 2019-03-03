@@ -26,7 +26,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -53,7 +53,7 @@ public final class DataRightsStreamingOutput implements StreamingOutput {
    private final List<ArtifactReadable> noTraceReqs = new ArrayList<>();
    private ExcelXmlWriter writer;
    private final ActivityLog activityLog;
-   private static final IArtifactType WCAFE = TokenFactory.createArtifactType(204509162766367L, "WCAFE");
+   private static final ArtifactTypeToken WCAFE = TokenFactory.createArtifactType(204509162766367L, "WCAFE");
 
    public DataRightsStreamingOutput(OrcsApi orcsApi, BranchId branch, String codeRoot, TraceAccumulator traceAccumulator, ActivityLog activityLog) {
 

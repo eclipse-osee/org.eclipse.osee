@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -31,7 +31,7 @@ public abstract class ArtifactImageProvider {
       return ArtifactImageManager.setupImageNoProviders(artifact);
    }
 
-   public String setupImage(IArtifactType artifactType) {
+   public String setupImage(ArtifactTypeToken artifactType) {
       return ArtifactImageManager.setupImage(BaseImage.getBaseImageEnum(artifactType));
    }
 

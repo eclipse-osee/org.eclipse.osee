@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.util;
 
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 
 /**
@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
  */
 public class ExportChangeReportUtil {
 
-   public static final IArtifactType[] ARTIFACT_ALLOW_TYPES = {
+   public static final ArtifactTypeToken[] ARTIFACT_ALLOW_TYPES = {
       CoreArtifactTypes.AbstractSoftwareRequirement,
       CoreArtifactTypes.InterfaceRequirement,
       CoreArtifactTypes.HeadingMSWord};

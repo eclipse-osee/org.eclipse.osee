@@ -29,7 +29,7 @@ import org.eclipse.osee.define.ide.traceability.TraceabilityFactory.Traceability
 import org.eclipse.osee.define.ide.traceability.TraceabilityProviderOperation;
 import org.eclipse.osee.define.ide.traceability.TraceabilityTable;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -138,7 +138,7 @@ public class PublishStdStpTraceability extends AbstractBlam {
       BranchId requirementsBranch = variableMap.getBranch(PROGRAM_BRANCH);
       Object view = variableMap.getValue(BRANCH_VIEW);
       setViewId(view);
-      Collection<? extends IArtifactType> types =
+      Collection<? extends ArtifactTypeToken> types =
          variableMap.getCollection(ArtifactType.class, "Artifact Type(s) to Trace");
       boolean searchInherited = variableMap.getBoolean("Search Inherited Types");
       File scriptDir = new File(variableMap.getString("Script Root Directory"));

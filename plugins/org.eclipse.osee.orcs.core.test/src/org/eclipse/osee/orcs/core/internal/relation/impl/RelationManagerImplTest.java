@@ -43,7 +43,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -143,8 +143,8 @@ public class RelationManagerImplTest {
    private Artifact node4;
    private Artifact node5;
    private Artifact node6;
-   private IArtifactType artifactType1;
-   private IArtifactType artifactType2;
+   private ArtifactTypeToken artifactType1;
+   private ArtifactTypeToken artifactType2;
 
    @Before
    public void setUp() {

@@ -14,7 +14,7 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
@@ -50,7 +50,7 @@ public interface OrcsTypes {
 
    Callable<Void> writeTypes(OutputStream outputStream);
 
-   Callable<Void> purgeArtifactsByArtifactType(Collection<? extends IArtifactType> artifactTypes);
+   Callable<Void> purgeArtifactsByArtifactType(Collection<? extends ArtifactTypeToken> artifactTypes);
 
    Callable<Void> purgeAttributesByAttributeType(Collection<? extends AttributeTypeId> attributeTypes);
 

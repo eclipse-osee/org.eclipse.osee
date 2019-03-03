@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.model.type;
 
 import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -33,7 +33,7 @@ public final class RelationType extends AbstractOseeType implements RelationType
       "osee.relation.type.default.order.type.guid.field";
    private static final String RELATION_MULTIPLICITY_FIELD_KEY = "osee.relation.type.multiplicity.field";
 
-   public RelationType(Long guid, String relationTypeName, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, RelationSorter defaultRelationSorter) {
+   public RelationType(Long guid, String relationTypeName, String sideAName, String sideBName, ArtifactTypeToken artifactTypeSideA, ArtifactTypeToken artifactTypeSideB, RelationTypeMultiplicity multiplicity, RelationSorter defaultRelationSorter) {
       super(guid, relationTypeName);
       initializeFields();
       setFields(relationTypeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
@@ -49,7 +49,7 @@ public final class RelationType extends AbstractOseeType implements RelationType
       addField(RELATION_MULTIPLICITY_FIELD_KEY, new OseeField<RelationTypeMultiplicity>());
    }
 
-   public void setFields(String relationTypeName, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, RelationSorter defaultRelationSorter) {
+   public void setFields(String relationTypeName, String sideAName, String sideBName, ArtifactTypeToken artifactTypeSideA, ArtifactTypeToken artifactTypeSideB, RelationTypeMultiplicity multiplicity, RelationSorter defaultRelationSorter) {
       setName(relationTypeName);
       setFieldLogException(RELATION_SIDE_A_NAME_FIELD_KEY, sideAName);
       setFieldLogException(RELATION_SIDE_B_NAME_FIELD_KEY, sideBName);
@@ -63,15 +63,15 @@ public final class RelationType extends AbstractOseeType implements RelationType
       return getFieldValueLogException(null, RELATION_MULTIPLICITY_FIELD_KEY);
    }
 
-   public IArtifactType getArtifactTypeSideA() {
+   public ArtifactTypeToken getArtifactTypeSideA() {
       return getFieldValueLogException(null, RELATION_SIDE_A_ART_TYPE_FIELD_KEY);
    }
 
-   public IArtifactType getArtifactTypeSideB() {
+   public ArtifactTypeToken getArtifactTypeSideB() {
       return getFieldValueLogException(null, RELATION_SIDE_B_ART_TYPE_FIELD_KEY);
    }
 
-   public IArtifactType getArtifactType(RelationSide relationSide) {
+   public ArtifactTypeToken getArtifactType(RelationSide relationSide) {
       return relationSide == RelationSide.SIDE_A ? getArtifactTypeSideA() : getArtifactTypeSideB();
    }
 
@@ -80,7 +80,7 @@ public final class RelationType extends AbstractOseeType implements RelationType
    }
 
    public boolean isArtifactTypeAllowed(RelationSide relationSide, ArtifactType artifactType) {
-      IArtifactType allowedType = getArtifactType(relationSide);
+      ArtifactTypeToken allowedType = getArtifactType(relationSide);
       return artifactType.inheritsFrom(allowedType);
    }
 

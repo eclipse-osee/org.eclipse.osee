@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.search;
 
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
@@ -33,8 +33,8 @@ public class ArtifactTypeFilter extends SearchFilter {
 
    @Override
    public void addFilterTo(FilterTableViewer filterViewer) {
-      Collection<IArtifactType> artTypes = checkBoxList.getChecked();
-      List<IArtifactType> artifactTypes = Collections.castAll(artTypes);
+      Collection<ArtifactTypeToken> artTypes = checkBoxList.getChecked();
+      List<ArtifactTypeToken> artifactTypes = Collections.castAll(artTypes);
 
       ISearchPrimitive primitive = new ArtifactTypeSearch(artifactTypes);
       filterViewer.addItem(primitive, getFilterName(), artifactTypes.toString(), "");

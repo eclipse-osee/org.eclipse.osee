@@ -28,7 +28,7 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -112,7 +112,7 @@ public final class ReplaceWithBaselineTest {
     */
    private static final int CASE_10_EXPECTED = 2;
    private static final int CASE_0_EXPECTED = 10;
-   private static final IArtifactType DOC = CoreArtifactTypes.GeneralDocument;
+   private static final ArtifactTypeToken DOC = CoreArtifactTypes.GeneralDocument;
    private static final IProgressMonitor MONITOR = new NullProgressMonitor();
 
    //@formatter:off

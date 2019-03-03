@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -66,12 +66,12 @@ public class VariableMap {
       variableMap.put(variableName, value);
    }
 
-   public IArtifactType getArtifactType(String parameterName) {
+   public ArtifactTypeToken getArtifactType(String parameterName) {
       return getSingleCollectionValue(ArtifactType.class, parameterName);
    }
 
-   public List<IArtifactType> getArtifactTypes(String parameterName) {
-      Collection<IArtifactType> artTypes = getCollection(IArtifactType.class, parameterName);
+   public List<ArtifactTypeToken> getArtifactTypes(String parameterName) {
+      Collection<ArtifactTypeToken> artTypes = getCollection(ArtifactTypeToken.class, parameterName);
       if (artTypes == null) {
          return new ArrayList<>();
       }

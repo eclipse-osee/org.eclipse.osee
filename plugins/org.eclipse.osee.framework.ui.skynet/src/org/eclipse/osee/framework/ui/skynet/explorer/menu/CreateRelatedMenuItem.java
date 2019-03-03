@@ -19,7 +19,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -153,7 +153,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
 
    private void handleCreateRelated(Artifact existingArtifact, RelationType relationType, RelationTypeSide relationTypeSide, RelationSide relationSide) {
       // get valid artifact types for this relation
-      List<IArtifactType> artifactTypes = new ArrayList<>();
+      List<ArtifactTypeToken> artifactTypes = new ArrayList<>();
       BranchId branch = artifactExplorer.getBranch();
       for (ArtifactType artifactType : ArtifactTypeManager.getConcreteArtifactTypes(branch)) {
          if (relationType.isArtifactTypeAllowed(relationSide,
@@ -163,7 +163,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
       }
 
       // determine which dialog to display
-      IArtifactType type = null;
+      ArtifactTypeToken type = null;
       String name = null;
       if (artifactTypes.size() > 1) {
          FilteredTreeArtifactTypeEntryDialog dialog = getDialog(artifactTypes);
@@ -186,7 +186,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
       }
    }
 
-   private void createRelatedArtifact(Artifact existingArtifact, RelationTypeSide relationTypeSide, BranchId branch, IArtifactType type, String name) {
+   private void createRelatedArtifact(Artifact existingArtifact, RelationTypeSide relationTypeSide, BranchId branch, ArtifactTypeToken type, String name) {
       SkynetTransaction transaction = TransactionManager.createTransaction(branch,
          String.format("Created new %s \"%s\" in artifact explorer", type.getName(), name));
       Artifact newArtifact = ArtifactTypeManager.addArtifact(type, branch, name);
@@ -199,7 +199,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
       artifactExplorer.getTreeViewer().refresh(false);
    }
 
-   private FilteredTreeArtifactTypeEntryDialog getDialog(List<IArtifactType> artifactTypes) {
+   private FilteredTreeArtifactTypeEntryDialog getDialog(List<ArtifactTypeToken> artifactTypes) {
       FilteredTreeArtifactTypeEntryDialog dialog = new FilteredTreeArtifactTypeEntryDialog("New Related",
          "Enter name and select Artifact type to create", "Artifact Name", artifactTypes);
       return dialog;
@@ -265,7 +265,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
    private Collection<ArtifactType> getArtifactTypesFromRelationType(IRelationType relationType, BranchId branchToken) {
       RelationType relType = RelationTypeManager.getType(relationType);
       List<ArtifactType> artifactTypes = new ArrayList<>();
-      IArtifactType artifactTypeSideB = relType.getArtifactTypeSideB();
+      ArtifactTypeToken artifactTypeSideB = relType.getArtifactTypeSideB();
       for (ArtifactType artifactType : ArtifactTypeManager.getValidArtifactTypes(branchToken)) {
          if (artifactType.inheritsFrom(artifactTypeSideB)) {
             artifactTypes.add(artifactType);

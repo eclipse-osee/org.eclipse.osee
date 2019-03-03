@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
@@ -75,7 +75,7 @@ public class OseeUtilTest {
    @Test
    public void testToTokenArtifactType() {
       XArtifactType type = OseeDslFactory.eINSTANCE.createXArtifactType();
-      IArtifactType expected = CoreArtifactTypes.GlobalPreferences;
+      ArtifactTypeToken expected = CoreArtifactTypes.GlobalPreferences;
 
       setupToToken(type, expected);
 

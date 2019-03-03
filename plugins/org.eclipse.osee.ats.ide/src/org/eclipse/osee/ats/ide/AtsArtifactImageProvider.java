@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.ide.util.FavoritesManager;
 import org.eclipse.osee.ats.ide.util.SubscribeManager;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider;
@@ -67,7 +67,7 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Goal);
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.AgileBacklog);
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.AgileSprint);
-      for (IArtifactType artifactType : AtsClientService.get().getStoreService().getTeamWorkflowArtifactTypes()) {
+      for (ArtifactTypeToken artifactType : AtsClientService.get().getStoreService().getTeamWorkflowArtifactTypes()) {
          ArtifactImageManager.registerOverrideImageProvider(this, artifactType);
       }
    }

@@ -23,7 +23,7 @@ import org.eclipse.define.api.importing.RoughArtifactCollector;
 import org.eclipse.define.api.importing.RoughArtifactKind;
 import org.eclipse.define.api.importing.RoughRelation;
 import org.eclipse.osee.activity.api.ActivityLog;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -111,7 +111,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
 
       private int rowCount;
       private String[] headerRow;
-      private IArtifactType primaryDescriptor;
+      private ArtifactTypeToken primaryDescriptor;
       private boolean importingRelations;
       private final OrcsApi orcsApi;
       private final ActivityLog activityLog;
@@ -143,8 +143,8 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
          }
       }
 
-      private IArtifactType getArtifactTypeFromName(String name) {
-         for (IArtifactType type : orcsApi.getOrcsTypes().getArtifactTypes().getAll()) {
+      private ArtifactTypeToken getArtifactTypeFromName(String name) {
+         for (ArtifactTypeToken type : orcsApi.getOrcsTypes().getArtifactTypes().getAll()) {
             if (name.equals(type.getName())) {
                return type;
             }

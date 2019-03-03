@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -32,10 +32,10 @@ public class PurgeArtifactType extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      Collection<? extends IArtifactType> purgeArtifactTypes =
+      Collection<? extends ArtifactTypeToken> purgeArtifactTypes =
          variableMap.getCollection(ArtifactType.class, "Artifact Type(s) to purge");
       convertArtifacts = variableMap.getBoolean("Convert Artifacts");
-      IArtifactType newArtifactType = convertArtifacts ? variableMap.getArtifactType("New Artifact Type") : null;
+      ArtifactTypeToken newArtifactType = convertArtifacts ? variableMap.getArtifactType("New Artifact Type") : null;
 
       ArtifactTypeManager.purgeArtifactTypesWithCheck(purgeArtifactTypes, newArtifactType);
    }

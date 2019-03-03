@@ -24,7 +24,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -58,8 +58,8 @@ public class RelationTypeValidityTest {
    // @formatter:off
    @Mock private RelationTypes relTypes;
    @Mock private Artifact node;
-   @Mock private IArtifactType artifactType;
-   @Mock private IArtifactType artifactType2;
+   @Mock private ArtifactTypeToken artifactType;
+   @Mock private ArtifactTypeToken artifactType2;
 
    @Mock private IRelationType relationType1;
    @Mock private IRelationType relationType2;

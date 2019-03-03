@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -31,26 +31,26 @@ import org.eclipse.swt.widgets.Control;
  */
 public class FilteredTreeArtifactTypeDialog extends FilteredTreeDialog {
 
-   private Collection<? extends IArtifactType> selectable;
+   private Collection<? extends ArtifactTypeToken> selectable;
 
    public FilteredTreeArtifactTypeDialog(String title, String message) {
       this(title, message, ArtifactTypeManager.getAllTypes(), new ArtifactTypeLabelProvider());
    }
 
-   public FilteredTreeArtifactTypeDialog(String title, String message, Collection<? extends IArtifactType> selectable, ILabelProvider labelProvider) {
+   public FilteredTreeArtifactTypeDialog(String title, String message, Collection<? extends ArtifactTypeToken> selectable, ILabelProvider labelProvider) {
       this(title, message, selectable, new ArrayTreeContentProvider(), labelProvider);
    }
 
-   public FilteredTreeArtifactTypeDialog(String title, String message, Collection<? extends IArtifactType> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
+   public FilteredTreeArtifactTypeDialog(String title, String message, Collection<? extends ArtifactTypeToken> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
       this(title, message, selectable, contentProvider, labelProvider, new ArtifactTypeNameSorter());
    }
 
-   public FilteredTreeArtifactTypeDialog(String title, String message, Collection<? extends IArtifactType> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider, ViewerComparator comparator) {
+   public FilteredTreeArtifactTypeDialog(String title, String message, Collection<? extends ArtifactTypeToken> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider, ViewerComparator comparator) {
       super(title, message, contentProvider, labelProvider, comparator);
       this.selectable = selectable;
    }
 
-   public FilteredTreeArtifactTypeDialog(String title, Collection<? extends IArtifactType> selectable) {
+   public FilteredTreeArtifactTypeDialog(String title, Collection<? extends ArtifactTypeToken> selectable) {
       this(title, title, selectable, new ArtifactTypeLabelProvider());
    }
 
@@ -77,7 +77,7 @@ public class FilteredTreeArtifactTypeDialog extends FilteredTreeDialog {
       return Result.TrueResult;
    }
 
-   public void setSelectable(Collection<? extends IArtifactType> selectable) {
+   public void setSelectable(Collection<? extends ArtifactTypeToken> selectable) {
       this.selectable = selectable;
    }
 

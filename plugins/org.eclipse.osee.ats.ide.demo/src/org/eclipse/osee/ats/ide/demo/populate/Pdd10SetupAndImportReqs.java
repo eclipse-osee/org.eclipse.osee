@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -287,7 +287,7 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
       }
    }
 
-   private void importRequirements(BranchId branch, IArtifactType requirementType, String folderName, File file) throws Exception {
+   private void importRequirements(BranchId branch, ArtifactTypeToken requirementType, String folderName, File file) throws Exception {
       Artifact systemReq = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, folderName, branch);
 
       IArtifactImportResolver artifactResolver = ArtifactResolverFactory.createAlwaysNewArtifacts(requirementType);

@@ -23,7 +23,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -106,7 +106,7 @@ public class OrcsTypesIndexer {
       }
 
       for (XArtifactType dslType : model.getArtifactTypes()) {
-         IArtifactType token = getOrCreateToken(artifactTypeIndex, dslType);
+         ArtifactTypeToken token = getOrCreateToken(artifactTypeIndex, dslType);
          indexSuperTypes(artifactTypeIndex, token, dslType);
          indexAttributes(artifactTypeIndex, attributeTypeIndex, dslType);
       }
@@ -125,10 +125,10 @@ public class OrcsTypesIndexer {
       return OseeDslResourceUtil.upConvertTo17(inputStream);
    }
 
-   private void indexSuperTypes(ArtifactTypeIndex artifactTypeIndex, IArtifactType token, XArtifactType dslType) {
-      Set<IArtifactType> tokenSuperTypes = Sets.newLinkedHashSet();
+   private void indexSuperTypes(ArtifactTypeIndex artifactTypeIndex, ArtifactTypeToken token, XArtifactType dslType) {
+      Set<ArtifactTypeToken> tokenSuperTypes = Sets.newLinkedHashSet();
       for (XArtifactType superTypes : dslType.getSuperArtifactTypes()) {
-         IArtifactType superToken = getOrCreateToken(artifactTypeIndex, superTypes);
+         ArtifactTypeToken superToken = getOrCreateToken(artifactTypeIndex, superTypes);
          tokenSuperTypes.add(superToken);
       }
       if (!tokenSuperTypes.isEmpty()) {
@@ -154,12 +154,12 @@ public class OrcsTypesIndexer {
             logger.warn("Type was null for [%s]", dslType.getName());
          }
       }
-      IArtifactType token = getOrCreateToken(artifactTypeIndex, dslType);
+      ArtifactTypeToken token = getOrCreateToken(artifactTypeIndex, dslType);
       artifactTypeIndex.put(token, validAttributes);
    }
 
-   private IArtifactType getOrCreateToken(ArtifactTypeIndex index, XArtifactType dslType) {
-      IArtifactType token = index.getTokenByDslType(dslType);
+   private ArtifactTypeToken getOrCreateToken(ArtifactTypeIndex index, XArtifactType dslType) {
+      ArtifactTypeToken token = index.getTokenByDslType(dslType);
       if (token == null) {
          long id = Long.valueOf(dslType.getId());
          token = TokenFactory.createArtifactType(id, dslType.getName());

@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -53,17 +53,17 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public ArtifactData create(BranchId branch, IArtifactType token, String guid) {
+   public ArtifactData create(BranchId branch, ArtifactTypeToken token, String guid) {
       return this.create(branch, token, guid, idFactory.getNextArtifactId());
    }
 
    @Override
-   public ArtifactData create(BranchId branch, IArtifactType token, Long artifactId) {
+   public ArtifactData create(BranchId branch, ArtifactTypeToken token, Long artifactId) {
       return this.create(branch, token, null, artifactId);
    }
 
    @Override
-   public ArtifactData create(BranchId branchId, IArtifactType token, String guid, long artifactId) {
+   public ArtifactData create(BranchId branchId, ArtifactTypeToken token, String guid, long artifactId) {
       Conditions.checkNotNull(branchId, "branch");
 
       Conditions.checkExpressionFailOnTrue(artifactCache.isAbstract(token),

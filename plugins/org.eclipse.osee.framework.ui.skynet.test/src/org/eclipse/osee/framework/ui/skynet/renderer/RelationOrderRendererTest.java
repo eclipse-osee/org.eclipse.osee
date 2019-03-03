@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -163,7 +163,7 @@ public class RelationOrderRendererTest {
       Assert.assertEquals(expected, builder.toString());
    }
 
-   private final static RelationType createRelationType(long id, AbstractOseeCache<RelationType> cache, String name, IArtifactType artifactType1, IArtifactType artifactType2) {
+   private final static RelationType createRelationType(long id, AbstractOseeCache<RelationType> cache, String name, ArtifactTypeToken artifactType1, ArtifactTypeToken artifactType2) {
       RelationType type = new RelationType(id, name, name + "_A", name + "_B", artifactType1, artifactType2,
          RelationTypeMultiplicity.MANY_TO_MANY, null);
       cache.cache(type);

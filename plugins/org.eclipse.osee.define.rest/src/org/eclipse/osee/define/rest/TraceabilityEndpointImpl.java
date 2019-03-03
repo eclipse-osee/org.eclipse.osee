@@ -25,7 +25,7 @@ import org.eclipse.osee.define.rest.internal.PublishPidsVerificationReport;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -85,7 +85,7 @@ public class TraceabilityEndpointImpl implements TraceabilityEndpoint {
       ArtifactTypes artifactTypes = orcsTypes.getArtifactTypes();
       Set<String> toReturn = new HashSet<>();
 
-      for (IArtifactType type : artifactTypes.getAll()) {
+      for (ArtifactTypeToken type : artifactTypes.getAll()) {
          toReturn.add(type.getName());
       }
       return toReturn;

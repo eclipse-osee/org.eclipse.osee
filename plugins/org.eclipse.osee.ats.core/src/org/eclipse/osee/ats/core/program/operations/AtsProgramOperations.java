@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.ProgramVersions;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
 /**
@@ -35,7 +35,7 @@ public class AtsProgramOperations {
       this.atsApi = atsApi;
    }
 
-   public List<ProgramVersions> getProgramVersions(IArtifactType programArtifactType, boolean onlyActive) {
+   public List<ProgramVersions> getProgramVersions(ArtifactTypeToken programArtifactType, boolean onlyActive) {
 
       Collection<ArtifactToken> programsArts =
          atsApi.getQueryService().getArtifacts(atsApi.getAtsBranch(), true, programArtifactType);

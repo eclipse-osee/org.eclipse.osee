@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.search.AtsArtifactQuery;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 
@@ -67,27 +67,27 @@ public class ArtifactResolverImpl implements IArtifactResolver {
    }
 
    @Override
-   public IArtifactType getArtifactType(IAtsWorkItem workItem) {
+   public ArtifactTypeToken getArtifactType(IAtsWorkItem workItem) {
       Assert.isNotNull(workItem, "Work Item can not be null");
       return AtsClientService.get().getQueryServiceClient().getArtifact(workItem).getArtifactType();
    }
 
    @Override
-   public boolean isOfType(ArtifactId artifact, IArtifactType artifactType) {
+   public boolean isOfType(ArtifactId artifact, ArtifactTypeToken artifactType) {
       Assert.isNotNull(artifact, "Artifact can not be null");
       Assert.isNotNull(artifactType, "Artifact Type can not be null");
       return AtsClientService.get().getQueryServiceClient().getArtifact(artifact).isOfType(artifactType);
    }
 
    @Override
-   public boolean isOfType(IAtsObject atsObject, IArtifactType artifactType) {
+   public boolean isOfType(IAtsObject atsObject, ArtifactTypeToken artifactType) {
       Assert.isNotNull(atsObject, "ATS Object can not be null");
       Assert.isNotNull(artifactType, "Artifact Type can not be null");
       return isOfType(AtsClientService.get().getQueryService().getArtifact(atsObject), artifactType);
    }
 
    @Override
-   public boolean inheritsFrom(IArtifactType artType, IArtifactType parentArtType) {
+   public boolean inheritsFrom(ArtifactTypeToken artType, ArtifactTypeToken parentArtType) {
       return ArtifactTypeManager.inheritsFrom(artType, parentArtType);
    }
 }

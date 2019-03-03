@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
@@ -115,7 +115,7 @@ public final class ArtifactImportOperationFactory {
     * <li>CompleteArtifactImportOperation</li>
     * </ol>
     */
-   public static IOperation createOperation(File sourceFile, Artifact destinationArtifact, OperationLogger logger, IArtifactExtractor extractor, IArtifactImportResolver resolver, RoughArtifactCollector collector, Collection<IArtifactType> selectionArtifactTypes, boolean stopOnError, boolean deleteUnMatched, boolean runFilterByAttributes) {
+   public static IOperation createOperation(File sourceFile, Artifact destinationArtifact, OperationLogger logger, IArtifactExtractor extractor, IArtifactImportResolver resolver, RoughArtifactCollector collector, Collection<ArtifactTypeToken> selectionArtifactTypes, boolean stopOnError, boolean deleteUnMatched, boolean runFilterByAttributes) {
       OperationBuilder builder =
          Operations.createBuilder("Artifact Import - ArtifactAndRoughToRealOperation, RoughToRealOperation");
       builder.addOp(createArtifactsCompOperation(
@@ -130,7 +130,7 @@ public final class ArtifactImportOperationFactory {
    /**
     * @see ArtifactImportPage
     */
-   public static IOperation createArtifactsCompOperation(String opDescription, File sourceFile, Artifact destinationArtifact, OperationLogger logger, IArtifactExtractor extractor, RoughArtifactCollector collector, Collection<IArtifactType> selectionArtifactTypes, boolean runFilterByAttributes) {
+   public static IOperation createArtifactsCompOperation(String opDescription, File sourceFile, Artifact destinationArtifact, OperationLogger logger, IArtifactExtractor extractor, RoughArtifactCollector collector, Collection<ArtifactTypeToken> selectionArtifactTypes, boolean runFilterByAttributes) {
       OperationBuilder builder = Operations.createBuilder(opDescription);
       builder.addOp(new SourceToRoughArtifactOperation(logger, extractor, sourceFile, collector));
       if (runFilterByAttributes) {

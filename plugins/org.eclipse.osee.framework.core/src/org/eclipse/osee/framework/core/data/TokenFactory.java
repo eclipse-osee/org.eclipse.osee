@@ -24,19 +24,19 @@ public final class TokenFactory {
       // Utility Class
    }
 
-   public static IArtifactType createArtifactType(long id, String name) {
-      return IArtifactType.valueOf(id, name);
+   public static ArtifactTypeToken createArtifactType(long id, String name) {
+      return ArtifactTypeToken.valueOf(id, name);
    }
 
    /**
     * @param token as [name]-[uuid]
     */
-   public static IArtifactType createArtifactTypeFromToken(String token) {
+   public static ArtifactTypeToken createArtifactTypeFromToken(String token) {
       Matcher matcher = nameIdPattern.matcher(token);
       if (matcher.find()) {
          long id = Long.valueOf(matcher.group(2));
          String name = matcher.group(1);
-         return IArtifactType.valueOf(id, name);
+         return ArtifactTypeToken.valueOf(id, name);
       }
       return null;
    }
@@ -45,7 +45,7 @@ public final class TokenFactory {
       return RelationTypeToken.create(id, name);
    }
 
-   public static ArtifactToken createArtifactToken(long id, String guid, String name, BranchId branch, IArtifactType artifactType) {
+   public static ArtifactToken createArtifactToken(long id, String guid, String name, BranchId branch, ArtifactTypeToken artifactType) {
       return ArtifactToken.valueOf(id, guid, name, branch, artifactType);
    }
 }

@@ -25,7 +25,7 @@ import org.eclipse.osee.app.OseeAppletPage;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -84,7 +84,7 @@ public final class DataRightsSwReqAndCodeResource {
       return pageUtil.realizeApplet(resourceRegistry, "dataRightsReport.html", getClass());
    }
 
-   private static final IArtifactType WCAFE = TokenFactory.createArtifactType(204509162766367L, "WCAFE");
+   private static final ArtifactTypeToken WCAFE = TokenFactory.createArtifactType(204509162766367L, "WCAFE");
 
    /**
     * Checks the Data Rights on the provided branch in the important subsystems: Controls and Displays, Mission System
@@ -151,7 +151,7 @@ public final class DataRightsSwReqAndCodeResource {
       return copyDataRights(sourceBranch, destinationBranch, CoreArtifactTypes.SubsystemDesign);
    }
 
-   private String copyDataRights(BranchId sourceBranch, BranchId destinationBranch, IArtifactType artifactType) {
+   private String copyDataRights(BranchId sourceBranch, BranchId destinationBranch, ArtifactTypeToken artifactType) {
       ResultSet<ArtifactReadable> results =
          queryFactory.fromBranch(destinationBranch).andIsOfType(artifactType).getResults();
 

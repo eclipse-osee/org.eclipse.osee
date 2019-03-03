@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.skywalker.arttype;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.zest.core.viewers.EntityConnectionData;
@@ -30,19 +30,19 @@ public class ArtifactTypeWalkerLabelProvider implements ILabelProvider {
 
    @Override
    public Image getImage(Object arg0) {
-      if (arg0 instanceof IArtifactType) {
-         return ArtifactImageManager.getImage((IArtifactType) arg0);
+      if (arg0 instanceof ArtifactTypeToken) {
+         return ArtifactImageManager.getImage((ArtifactTypeToken) arg0);
       }
       return null;
    }
 
    @Override
    public String getText(Object arg0) {
-      if (arg0 instanceof IArtifactType) {
-         return ((IArtifactType) arg0).getName();
+      if (arg0 instanceof ArtifactTypeToken) {
+         return ((ArtifactTypeToken) arg0).getName();
       } else if (arg0 instanceof EntityConnectionData) {
          EntityConnectionData connection = (EntityConnectionData) arg0;
-         IArtifactType dest = (IArtifactType) connection.dest;
+         ArtifactTypeToken dest = (ArtifactTypeToken) connection.dest;
          if (contentProvider.getParentTypes().contains(dest)) {
             return "parent";
          }

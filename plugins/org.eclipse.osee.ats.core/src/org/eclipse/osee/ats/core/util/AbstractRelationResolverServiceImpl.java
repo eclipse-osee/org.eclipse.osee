@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 public abstract class AbstractRelationResolverServiceImpl implements IRelationResolver {
 
    @Override
-   public Collection<ArtifactToken> getChildren(ArtifactId artifact, IArtifactType artifactType) {
+   public Collection<ArtifactToken> getChildren(ArtifactId artifact, ArtifactTypeToken artifactType) {
       return getRelated(artifact, CoreRelationTypes.Default_Hierarchical__Child, artifactType);
    }
 
