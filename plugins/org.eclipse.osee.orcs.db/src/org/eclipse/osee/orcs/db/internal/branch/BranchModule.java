@@ -117,12 +117,13 @@ public class BranchModule {
          }
 
          @Override
-         public TransactionId commitBranch(OrcsSession session, ArtifactId committer, Branch source, TransactionToken sourceTx, Branch destination, TransactionToken destinationTx, QueryFactory queryFactory) {
+         public TransactionId commitBranch(OrcsSession session, ArtifactId committer, OrcsTypes orcsTypes, Branch source, TransactionToken sourceTx, Branch destination, TransactionToken destinationTx, QueryFactory queryFactory) {
             BranchId mergeBranch = getMergeBranchId(queryFactory.branchQuery(), source, destination);
 
             try {
-               return new CommitBranchDatabaseTxCallable(idManager, committer, jdbcClient, joinFactory, source,
-                  destination, sourceTx, destinationTx, mergeBranch, queryFactory, missingChangeItemFactory).call();
+               return new CommitBranchDatabaseTxCallable(idManager, committer, jdbcClient, joinFactory, orcsTypes,
+                  source, destination, sourceTx, destinationTx, mergeBranch, queryFactory,
+                  missingChangeItemFactory).call();
             } catch (Exception ex) {
                throw OseeCoreException.wrap(ex);
             }
@@ -134,10 +135,10 @@ public class BranchModule {
          }
 
          @Override
-         public List<ChangeItem> compareBranch(OrcsSession session, TransactionToken sourceTx, TransactionToken destinationTx, QueryFactory queryFactory) {
+         public List<ChangeItem> compareBranch(OrcsSession session, OrcsTypes orcsTypes, TransactionToken sourceTx, TransactionToken destinationTx, QueryFactory queryFactory) {
             BranchId mergeBranch =
                getMergeBranchId(queryFactory.branchQuery(), sourceTx.getBranch(), destinationTx.getBranch());
-            return new LoadDeltasBetweenTxsOnTheSameBranch(jdbcClient, joinFactory, sourceTx, destinationTx,
+            return new LoadDeltasBetweenTxsOnTheSameBranch(jdbcClient, joinFactory, orcsTypes, sourceTx, destinationTx,
                mergeBranch, queryFactory, missingChangeItemFactory).compareTransactions();
          }
 

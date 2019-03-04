@@ -28,19 +28,22 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.orcs.OrcsTypes;
 
 public class AddSyntheticArtifactChangeData {
    private final List<ChangeItem> changeItems;
    private final JdbcClient jdbcClient;
    private final BranchId branch;
+   private final OrcsTypes orcsTypes;
    private static final String ART_TYPE_ID_QUERY =
       "select art.art_id, art.art_type_id from osee_artifact art, osee_txs txs where txs.BRANCH_ID = ? " //
          + "and art.GAMMA_ID = txs.GAMMA_ID and txs.tx_current = 1 and art_id in (%s)";
 
-   public AddSyntheticArtifactChangeData(List<ChangeItem> changeItems, JdbcClient jdbcClient, BranchId branch) {
+   public AddSyntheticArtifactChangeData(List<ChangeItem> changeItems, JdbcClient jdbcClient, BranchId branch, OrcsTypes orcsTypes) {
       this.changeItems = changeItems;
       this.jdbcClient = jdbcClient;
       this.branch = branch;
+      this.orcsTypes = orcsTypes;
    }
 
    public List<ChangeItem> doWork() {
@@ -80,7 +83,7 @@ public class AddSyntheticArtifactChangeData {
          if (isAllowableChange(change.getIgnoreType())) {
             changeItems.add(change);
             if (change.getChangeType().isArtifactChange()) {
-               change.setItemTypeId(ArtifactTypeId.valueOf(artIdToArtTypeid.get(change.getArtId().getId())));
+               change.setItemTypeId(orcsTypes.getArtifactTypes().get(artIdToArtTypeid.get(change.getArtId().getId())));
             }
          }
       }

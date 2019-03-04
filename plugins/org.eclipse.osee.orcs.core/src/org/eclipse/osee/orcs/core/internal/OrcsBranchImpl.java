@@ -143,12 +143,13 @@ public class OrcsBranchImpl implements OrcsBranch {
 
    @Override
    public Callable<TransactionToken> commitBranch(ArtifactId committer, BranchId source, BranchId destination) {
-      return new CommitBranchCallable(logger, session, branchStore, queryFactory, committer, source, destination);
+      return new CommitBranchCallable(logger, session, branchStore, queryFactory, committer, source, destination,
+         orcsTypes);
    }
 
    @Override
    public List<ChangeItem> compareBranch(TransactionToken sourceTx, TransactionToken destinationTx) {
-      return branchStore.compareBranch(session, sourceTx, destinationTx, queryFactory);
+      return branchStore.compareBranch(session, orcsTypes, sourceTx, destinationTx, queryFactory);
    }
 
    @Override
@@ -157,7 +158,7 @@ public class OrcsBranchImpl implements OrcsBranch {
          queryFactory.branchQuery().andId(branch).getResults().getExactlyOne().getBaselineTx();
       TransactionToken fromTx = queryFactory.transactionQuery().andTxId(baseTransaction).getResults().getExactlyOne();
       TransactionToken toTx = queryFactory.transactionQuery().andIsHead(branch).getResults().getExactlyOne();
-      return branchStore.compareBranch(session, fromTx, toTx, queryFactory);
+      return branchStore.compareBranch(session, orcsTypes, fromTx, toTx, queryFactory);
    }
 
    @Override

@@ -92,7 +92,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       try {
          Collection<IndexedResource> sources = new LinkedHashSet<>();
          OrcsDataHandler<IndexedResource> handler = createCollector(sources);
-         loader.loadSource(handler, getTagQueueQueryId());
+         loader.loadSource(handler, getTagQueueQueryId(), attributeTypes);
 
          if (!sources.isEmpty()) {
             try {

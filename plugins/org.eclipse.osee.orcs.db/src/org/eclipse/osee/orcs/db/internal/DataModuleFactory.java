@@ -71,7 +71,7 @@ public class DataModuleFactory {
       final DataFactory dataFactory = loaderModule.createDataFactory(objectFactory, artifactTypes);
       final DynamicLoadProcessor loadProcessor = loaderModule.createDynamicLoadProcessor(orcsTypes, proxyFactory);
       SqlObjectLoader sqlObjectLoader =
-         loaderModule.createSqlObjectLoader(objectFactory, loadProcessor, attributeTypes);
+         loaderModule.createSqlObjectLoader(objectFactory, loadProcessor, attributeTypes, relationTypes);
       final DataLoaderFactory dataLoaderFactory = loaderModule.createDataLoaderFactory(sqlObjectLoader);
       final KeyValueStore keyValueStore = keyValueModule.createKeyValueStore();
       final QueryEngine queryEngine = queryModule.createQueryEngine(dataLoaderFactory, attributeTypes, artifactTypes,

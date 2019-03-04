@@ -18,6 +18,7 @@ import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.data.RelationTypes;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.handlers.LoaderSqlHandlerFactoryUtil;
@@ -60,9 +61,9 @@ public class LoaderModule {
       return new DataLoaderFactoryImpl(logger, jdbcClient, sqlObjectLoader, joinFactory);
    }
 
-   public SqlObjectLoader createSqlObjectLoader(OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicLoadProcessor, AttributeTypes attributeTypes) {
+   public SqlObjectLoader createSqlObjectLoader(OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicLoadProcessor, AttributeTypes attributeTypes, RelationTypes relationTypes) {
       SqlHandlerFactory handlerFactory = LoaderSqlHandlerFactoryUtil.createHandlerFactory(logger, idFactory);
       return new SqlObjectLoader(logger, jdbcClient, joinFactory, handlerFactory, objectFactory, dynamicLoadProcessor,
-         attributeTypes);
+         attributeTypes, relationTypes);
    }
 }

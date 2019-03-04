@@ -17,13 +17,10 @@ import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationId;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
@@ -37,6 +34,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
@@ -77,6 +75,7 @@ public class LoadDeltasBetweenBranches {
    private static final String SELECT_BASE_TX = "select baseline_transaction_id from osee_branch where branch_id = ?";
 
    private final JdbcClient jdbcClient;
+   private final OrcsTypes orcsTypes;
    private final BranchId sourceBranch, destinationBranch;
    private final BranchId mergeBranch;
    private final TransactionId mergeTxId;
@@ -87,9 +86,10 @@ public class LoadDeltasBetweenBranches {
    private final ApplicabilityQuery applicabilityQuery;
    private final MissingChangeItemFactory missingChangeItemFactory;
 
-   public LoadDeltasBetweenBranches(JdbcClient jdbcClient, SqlJoinFactory joinFactory, BranchId sourceBranch, BranchId destinationBranch, TransactionToken sourceTx, TransactionToken destinationTx, BranchId mergeBranch, QueryFactory queryFactory, MissingChangeItemFactory missingChangeItemFactory) {
+   public LoadDeltasBetweenBranches(JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsTypes orcsTypes, BranchId sourceBranch, BranchId destinationBranch, TransactionToken sourceTx, TransactionToken destinationTx, BranchId mergeBranch, QueryFactory queryFactory, MissingChangeItemFactory missingChangeItemFactory) {
       this.jdbcClient = jdbcClient;
       this.joinFactory = joinFactory;
+      this.orcsTypes = orcsTypes;
       this.sourceBranch = sourceBranch;
       this.destinationBranch = destinationBranch;
       this.sourceTx = sourceTx;
@@ -165,13 +165,15 @@ public class LoadDeltasBetweenBranches {
             case 1:
                ArtifactId artId = ArtifactId.valueOf(stmt.getLong("item_first"));
                String value = stmt.getString("item_value");
-               hashChangeData.put(1, itemId, ChangeItemUtil.newAttributeChange(AttributeId.valueOf(itemId),
-                  AttributeTypeId.valueOf(itemTypeId), artId, gammaId, modType, value, getApplicabilityToken(appId)));
+               hashChangeData.put(1, itemId,
+                  ChangeItemUtil.newAttributeChange(AttributeId.valueOf(itemId),
+                     orcsTypes.getAttributeTypes().get(itemTypeId), artId, gammaId, modType, value,
+                     getApplicabilityToken(appId)));
                break;
 
             case 2: {
                hashChangeData.put(2, itemId, ChangeItemUtil.newArtifactChange(ArtifactId.valueOf(itemId),
-                  ArtifactTypeId.valueOf(itemTypeId), gammaId, modType, getApplicabilityToken(appId)));
+                  orcsTypes.getArtifactTypes().get(itemTypeId), gammaId, modType, getApplicabilityToken(appId)));
                break;
             }
             case 3: {
@@ -179,8 +181,9 @@ public class LoadDeltasBetweenBranches {
                ArtifactId bArtId = ArtifactId.valueOf(stmt.getLong("item_second"));
                String rationale = stmt.getString("item_value");
                hashChangeData.put(3, itemId,
-                  ChangeItemUtil.newRelationChange(RelationId.valueOf(itemId), RelationTypeId.valueOf(itemTypeId),
-                     gammaId, modType, aArtId, bArtId, rationale, getApplicabilityToken(appId)));
+                  ChangeItemUtil.newRelationChange(RelationId.valueOf(itemId),
+                     orcsTypes.getRelationTypes().get(itemTypeId), gammaId, modType, aArtId, bArtId, rationale,
+                     getApplicabilityToken(appId)));
                break;
             }
             case 4: {

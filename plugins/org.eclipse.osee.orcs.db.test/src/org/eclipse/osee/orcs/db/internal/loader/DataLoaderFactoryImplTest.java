@@ -45,6 +45,7 @@ import org.eclipse.osee.orcs.core.ds.LoadDescription;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.data.RelationTypes;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
@@ -105,7 +106,8 @@ public class DataLoaderFactoryImplTest {
 
       LoaderModule module = new LoaderModule(logger, jdbcClient, identityService, joinFactory, null);
       AttributeTypes attributeTypes = orcsApi.getOrcsTypes().getAttributeTypes();
-      SqlObjectLoader loader = module.createSqlObjectLoader(rowDataFactory, null, attributeTypes);
+      RelationTypes relationTypes = orcsApi.getOrcsTypes().getRelationTypes();
+      SqlObjectLoader loader = module.createSqlObjectLoader(rowDataFactory, null, attributeTypes, relationTypes);
 
       spyLoader = spy(loader);
       factory = module.createDataLoaderFactory(spyLoader);

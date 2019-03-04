@@ -43,9 +43,9 @@ public interface BranchDataStore {
 
    Callable<Void> purgeBranch(OrcsSession session, Branch branch);
 
-   TransactionId commitBranch(OrcsSession session, ArtifactId committer, Branch source, TransactionToken sourceHead, Branch destination, TransactionToken destinationHead, QueryFactory queryFactory);
+   TransactionId commitBranch(OrcsSession session, ArtifactId committer, OrcsTypes orcsTypes, Branch source, TransactionToken sourceHead, Branch destination, TransactionToken destinationHead, QueryFactory queryFactory);
 
-   List<ChangeItem> compareBranch(OrcsSession session, TransactionToken sourceTx, TransactionToken destinationTx, QueryFactory queryFactory);
+   List<ChangeItem> compareBranch(OrcsSession session, OrcsTypes orcsTypes, TransactionToken sourceTx, TransactionToken destinationTx, QueryFactory queryFactory);
 
    Callable<URI> exportBranch(OrcsSession session, OrcsTypes orcsTypes, List<? extends BranchId> branches, PropertyStore options, String exportName);
 

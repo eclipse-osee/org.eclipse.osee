@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
 import org.eclipse.osee.orcs.db.internal.change.LoadDeltasBetweenBranches;
@@ -65,6 +66,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
    private final IdentityManager idManager;
    private final ArtifactId committer;
+   private final OrcsTypes orcsTypes;
    private final Branch sourceBranch;
    private final BranchId destinationBranch;
    private final BranchId mergeBranch;
@@ -74,11 +76,12 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    private final QueryFactory queryFactory;
    private final MissingChangeItemFactory missingChangeItemFactory;
 
-   public CommitBranchDatabaseTxCallable(IdentityManager idManager, ArtifactId committer, JdbcClient jdbcClient, SqlJoinFactory joinFactory, Branch sourceBranch, BranchId destinationBranch, TransactionToken sourceTx, TransactionToken destinationTx, BranchId mergeBranch, QueryFactory queryFactory, MissingChangeItemFactory missingChangeItemFactory) {
+   public CommitBranchDatabaseTxCallable(IdentityManager idManager, ArtifactId committer, JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsTypes orcsTypes, Branch sourceBranch, BranchId destinationBranch, TransactionToken sourceTx, TransactionToken destinationTx, BranchId mergeBranch, QueryFactory queryFactory, MissingChangeItemFactory missingChangeItemFactory) {
       super(null, null, jdbcClient);
       this.joinFactory = joinFactory;
       this.idManager = idManager;
       this.committer = committer;
+      this.orcsTypes = orcsTypes;
       this.sourceBranch = sourceBranch;
       this.destinationBranch = destinationBranch;
       this.sourceTx = sourceTx;
@@ -90,7 +93,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
    @Override
    protected TransactionId handleTxWork(JdbcConnection connection) {
-      List<ChangeItem> changes = new LoadDeltasBetweenBranches(getJdbcClient(), joinFactory, sourceBranch,
+      List<ChangeItem> changes = new LoadDeltasBetweenBranches(getJdbcClient(), joinFactory, orcsTypes, sourceBranch,
          destinationBranch, sourceTx, destinationTx, mergeBranch, queryFactory, missingChangeItemFactory).call();
 
       changes = ChangeItemUtil.computeNetChangesAndFilter(changes);
