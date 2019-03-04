@@ -211,14 +211,18 @@ public class LisFileParser implements DispoImporterApi {
             Discrepancy discrepancy = discrepanciesList.get(id);
             if (uncovered.contains(discrepancy.getLocation())) {
                DispoAnnotationData uncoveredAnnotation = matchOldAnnotation(discrepancy, prevItems, item);
-               if (uncoveredAnnotation.getResolutionType().equalsIgnoreCase(DispoStrings.Test_Unit_Resolution)) {
-                  uncoveredAnnotation.setLastResolution(uncoveredAnnotation.getResolution());
-               } else if (uncoveredAnnotation.getResolutionType().equalsIgnoreCase(
-                  DispoStrings.Exception_Handling_Resolution)) {
-                  uncoveredAnnotation.setLastResolution("Exception_Handling");
+               if (uncoveredAnnotation != null) {
+                  if (uncoveredAnnotation.getResolutionType().equalsIgnoreCase(DispoStrings.Test_Unit_Resolution)) {
+                     uncoveredAnnotation.setLastResolution(uncoveredAnnotation.getResolution());
+                  } else if (uncoveredAnnotation.getResolutionType().equalsIgnoreCase(
+                     DispoStrings.Exception_Handling_Resolution)) {
+                     uncoveredAnnotation.setLastResolution("Exception_Handling");
+                  }
+                  addBlankAnnotationForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText(),
+                     uncoveredAnnotation.getLastResolution());
+               } else {
+                  addBlankAnnotationForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText(), "N/A");
                }
-               addBlankAnnotationForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText(),
-                  uncoveredAnnotation.getLastResolution());
             }
          }
       }
@@ -668,19 +672,20 @@ public class LisFileParser implements DispoImporterApi {
    private DispoAnnotationData matchOldAnnotation(Discrepancy discrepancy, List<DispoItem> oldItems, DispoItemData item) {
       DispoAnnotationData toReturn = null;
       DispoItem dispoItem = null;
-      for (DispoItem oldItem : oldItems) {
-         if (String.valueOf(oldItem.getName()).equals(item.getName())) {
-            dispoItem = oldItem;
-            break;
+      if (!oldItems.isEmpty()) {
+         for (DispoItem oldItem : oldItems) {
+            if (String.valueOf(oldItem.getName()).equals(item.getName())) {
+               dispoItem = oldItem;
+               break;
+            }
+         }
+         for (DispoAnnotationData value : dispoItem.getAnnotationsList()) {
+            if (String.valueOf(value.getLocationRefs()).equals(discrepancy.getLocation())) {
+               toReturn = value;
+               return toReturn;
+            }
          }
       }
-      for (DispoAnnotationData value : dispoItem.getAnnotationsList()) {
-         if (String.valueOf(value.getLocationRefs()).equals(discrepancy.getLocation())) {
-            toReturn = value;
-            return toReturn;
-         }
-      }
-
       return toReturn;
    }
 
