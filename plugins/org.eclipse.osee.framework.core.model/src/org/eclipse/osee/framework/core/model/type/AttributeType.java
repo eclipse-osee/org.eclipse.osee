@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.model.type;
 
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.model.AbstractOseeIdType;
+import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.OseeField;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
-public class AttributeType extends AbstractOseeIdType implements AttributeTypeToken {
+public class AttributeType extends AbstractOseeType implements AttributeTypeToken {
 
    private static final String ATTRIBUTE_BASE_TYPE_ID_FIELD_KEY = "osee.base.attribute.type.id.field";
    private static final String ATTRIBUTE_PROVIDER_ID_FIELD_KEY = "osee.attribute.provider.id.field";

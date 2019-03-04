@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.model.AbstractOseeIdType;
+import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IOseeField;
 import org.eclipse.osee.framework.core.model.OseeField;
@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.core.model.internal.fields.ArtifactTypeAttribu
 /**
  * @author Robert A. Fisher
  */
-public class ArtifactType extends AbstractOseeIdType implements IArtifactType {
+public class ArtifactType extends AbstractOseeType implements IArtifactType {
 
    public static final String ARTIFACT_IS_ABSTRACT_FIELD_KEY = "osee.artifact.type.is.abstract.field";
    public static final String ARTIFACT_INHERITANCE_FIELD_KEY = "osee.artifact.type.inheritance.field";
@@ -39,8 +39,7 @@ public class ArtifactType extends AbstractOseeIdType implements IArtifactType {
 
    private final Set<ArtifactType> superTypes = new HashSet<>();
    private final Set<ArtifactType> childTypes = new HashSet<>();
-   private final Map<BranchId, Collection<AttributeType>> attributes =
-      new HashMap<>();
+   private final Map<BranchId, Collection<AttributeType>> attributes = new HashMap<>();
 
    public ArtifactType(Long guid, String name, boolean isAbstract) {
       super(guid, name);

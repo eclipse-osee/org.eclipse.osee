@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.core.model.AbstractOseeIdType;
+import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.internal.fields.EnumEntryField;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  *
  * @author Roberto E. Escobar
  */
-public class OseeEnumType extends AbstractOseeIdType {
+public class OseeEnumType extends AbstractOseeType {
 
    public static final String OSEE_ENUM_TYPE_ENTRIES_FIELD = "osee.enum.type.entries.field";
 

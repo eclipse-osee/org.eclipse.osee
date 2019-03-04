@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.mocks;
 
-import org.eclipse.osee.framework.core.model.AbstractOseeIdType;
+import org.eclipse.osee.framework.core.model.AbstractOseeType;
 
 /**
  * @author Roberto E. Escobar
  */
-public class MockAbstractOseeType extends AbstractOseeIdType {
+public class MockAbstractOseeType extends AbstractOseeType {
 
    public MockAbstractOseeType(Long guid, String name) {
       super(guid, name);
