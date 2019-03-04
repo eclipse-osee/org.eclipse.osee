@@ -10,31 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workflow;
 
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+
 /**
  * @author Donald G. Dunne
  */
-public class AtsRestWorkItem {
+public class AtsRestWorkItem extends NamedIdBase {
 
-   private final String name;
-   private final long id;
    private final String atsId;
 
    public AtsRestWorkItem(String name, long id, String atsId) {
-      this.name = name;
-      this.id = id;
+      super(id, name);
       this.atsId = atsId;
-   }
-
-   public String getName() {
-      return name;
-   }
-
-   public long getId() {
-      return id;
    }
 
    public String getAtsId() {
       return atsId;
    }
-
 }
