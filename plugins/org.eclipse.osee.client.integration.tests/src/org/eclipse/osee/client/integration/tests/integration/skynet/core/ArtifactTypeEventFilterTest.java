@@ -1,12 +1,11 @@
 /*
  * Created on Mar 25, 2014
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
+ * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE  
  */
-package org.eclipse.osee.framework.skynet.core.event.filter;
+package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,35 +15,23 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
-import org.eclipse.osee.framework.skynet.core.artifact.IArtifactTypeProvider;
+import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 /**
  * @author Donald G. Dunne
  */
 public class ArtifactTypeEventFilterTest {
 
-   // @formatter:off
-   @Mock private IArtifactTypeProvider typeProvider;
-   // @formatter:on
-
-   @Before
-   public void setup() {
-      MockitoAnnotations.initMocks(this);
-   }
-
    @Test
    public void testArtifactEventFilters_artifactTypeAndInherited() throws Exception {
-      when(typeProvider.getTypeByGuid(CoreArtifactTypes.Requirement.getId())).thenReturn(CoreArtifactTypes.Requirement);
-      ArtifactTypeEventFilter typeFilter = new ArtifactTypeEventFilter(typeProvider, CoreArtifactTypes.Requirement);
+
+      ArtifactTypeEventFilter typeFilter = new ArtifactTypeEventFilter(CoreArtifactTypes.Requirement);
       EventBasicGuidArtifact guidArt =
          new EventBasicGuidArtifact(EventModType.Added, COMMON, CoreArtifactTypes.Requirement);
       List<EventBasicGuidArtifact> guidArts = Arrays.asList(guidArt);
@@ -52,16 +39,12 @@ public class ArtifactTypeEventFilterTest {
 
       // inherited type
       guidArt.setArtTypeGuid(CoreArtifactTypes.SoftwareRequirement);
-      when(typeProvider.getTypeByGuid(CoreArtifactTypes.SoftwareRequirement.getId())).thenReturn(
-         CoreArtifactTypes.SoftwareRequirement);
-      when(typeProvider.inheritsFrom(CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.Requirement)).thenReturn(
-         true);
 
       Assert.assertTrue("Should match cause SoftwareRequirement is subclass of Requirement",
          typeFilter.isMatchArtifacts(guidArts));
 
       // not inherited type
-      typeFilter = new ArtifactTypeEventFilter(typeProvider, CoreArtifactTypes.SoftwareRequirement);
+      typeFilter = new ArtifactTypeEventFilter(CoreArtifactTypes.SoftwareRequirement);
       guidArt.setArtTypeGuid(CoreArtifactTypes.Requirement);
 
       Assert.assertFalse("Should NOT match cause Requirement is NOT subclass of Software Requirement",
@@ -70,9 +53,8 @@ public class ArtifactTypeEventFilterTest {
 
    @Test
    public void testBranchMatch_relationType() throws Exception {
-      ArtifactTypeEventFilter typeFilter = new ArtifactTypeEventFilter(typeProvider, CoreArtifactTypes.Requirement);
+      ArtifactTypeEventFilter typeFilter = new ArtifactTypeEventFilter(CoreArtifactTypes.Requirement);
 
-      when(typeProvider.getTypeByGuid(CoreArtifactTypes.Requirement.getId())).thenReturn(CoreArtifactTypes.Requirement);
       EventBasicGuidArtifact guidArtA =
          new EventBasicGuidArtifact(EventModType.Added, COMMON, CoreArtifactTypes.Requirement);
       EventBasicGuidArtifact guidArtB =
@@ -94,7 +76,7 @@ public class ArtifactTypeEventFilterTest {
 
    @Test
    public void testBranchMatch_isMatch() throws Exception {
-      ArtifactTypeEventFilter typeFilter = new ArtifactTypeEventFilter(typeProvider, CoreArtifactTypes.Requirement);
+      ArtifactTypeEventFilter typeFilter = new ArtifactTypeEventFilter(CoreArtifactTypes.Requirement);
       Assert.assertTrue(typeFilter.isMatch(COMMON));
       Assert.assertTrue(typeFilter.isMatch(CoreBranches.SYSTEM_ROOT));
    }

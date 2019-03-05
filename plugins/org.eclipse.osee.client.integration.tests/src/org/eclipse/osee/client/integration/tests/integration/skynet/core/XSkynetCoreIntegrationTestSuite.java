@@ -24,6 +24,7 @@ import org.junit.runners.Suite;
    ArtifactQueryTest.class,
    ArtifactSetAttributeValuesTest.class,
    ArtifactTest.class,
+   ArtifactTypeEventFilterTest.class,
    ArtifactTypeInheritanceTest.class,
    AttributePurgeTest.class,
    AttributeResourceTest.class,

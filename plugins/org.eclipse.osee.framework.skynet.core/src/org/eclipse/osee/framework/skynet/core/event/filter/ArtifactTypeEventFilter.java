@@ -19,8 +19,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeProvider;
-import org.eclipse.osee.framework.skynet.core.artifact.IArtifactTypeProvider;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -29,17 +28,11 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class ArtifactTypeEventFilter implements IEventFilter {
 
    private final Collection<ArtifactTypeId> artifactTypes;
-   private final IArtifactTypeProvider typeProvider;
 
    /**
     * Provide artifact types of events to be passed through. All others will be ignored.
     */
    public ArtifactTypeEventFilter(ArtifactTypeId... artifactTypes) {
-      this(new ArtifactTypeProvider(), artifactTypes);
-   }
-
-   public ArtifactTypeEventFilter(IArtifactTypeProvider typeProvider, ArtifactTypeId... artifactTypes) {
-      this.typeProvider = typeProvider;
       this.artifactTypes = Arrays.asList(artifactTypes);
    }
 
@@ -52,7 +45,7 @@ public class ArtifactTypeEventFilter implements IEventFilter {
          for (DefaultBasicGuidArtifact guidArt : guidArts) {
             ArtifactTypeId artType = guidArt.getArtifactType();
             for (ArtifactTypeId artifactType : artifactTypes) {
-               if (typeProvider.inheritsFrom(artType, artifactType)) {
+               if (ArtifactTypeManager.inheritsFrom(artType, artifactType)) {
                   return true;
                }
                for (ArtifactTypeId matchArtType : artifactTypes) {
