@@ -47,6 +47,8 @@ import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -196,6 +198,14 @@ public class AttributesComposite extends Composite implements IArtifactEventList
       tableViewer.setContentProvider(new AttributeContentProvider());
       tableViewer.setLabelProvider(new AttributeLabelProvider());
       tableViewer.setComparator(new AttributeNameSorter());
+      final AttributesComposite fAttributesComposite = this;
+      tableViewer.getTable().addDisposeListener(new DisposeListener() {
+
+         @Override
+         public void widgetDisposed(DisposeEvent e) {
+            OseeEventManager.removeListener(fAttributesComposite);
+         }
+      });
       load();
    }
 
