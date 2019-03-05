@@ -13,12 +13,11 @@ package org.eclipse.osee.orcs.core.internal.types.impl;
 import com.google.common.collect.Sets;
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
@@ -58,18 +57,7 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    }
 
    @Override
-   public boolean hasSuperArtifactTypes(ArtifactTypeId artType) {
-      return !getSuperArtifactTypes(artType).isEmpty();
-   }
-
-   @Override
-   public Collection<? extends ArtifactTypeId> getSuperArtifactTypes(ArtifactTypeId artType) {
-      Conditions.checkNotNull(artType, "artifactType");
-      return getArtifactTypesIndex().getSuperTypes(artType);
-   }
-
-   @Override
-   public boolean inheritsFrom(ArtifactTypeId thisType, ArtifactTypeId... otherTypes) {
+   public boolean inheritsFrom(ArtifactTypeToken thisType, ArtifactTypeId... otherTypes) {
       Conditions.checkNotNull(thisType, "thisArtifactType");
       Conditions.checkNotNull(otherTypes, "otherArtifactTypes");
       return getArtifactTypesIndex().inheritsFrom(thisType, otherTypes);
@@ -94,13 +82,13 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    }
 
    @Override
-   public boolean isValidAttributeType(ArtifactTypeId artType, BranchId branch, AttributeTypeId attributeType) {
+   public boolean isValidAttributeType(ArtifactTypeToken artType, BranchId branch, AttributeTypeId attributeType) {
       Collection<AttributeTypeToken> attributes = getAttributeTypes(artType, branch);
       return attributes.contains(attributeType);
    }
 
    @Override
-   public Collection<AttributeTypeToken> getAttributeTypes(ArtifactTypeId artType, BranchId branch) {
+   public Collection<AttributeTypeToken> getAttributeTypes(ArtifactTypeToken artType, BranchId branch) {
       Conditions.checkNotNull(artType, "artifactType");
       Conditions.checkNotNull(branch, "branch");
       return getArtifactTypesIndex().getAttributeTypes(artType, branch);
@@ -120,10 +108,4 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    public boolean exists(Id id) {
       return getArtifactTypesIndex().exists(id);
    }
-
-   @Override
-   public Map<BranchId, Collection<AttributeTypeToken>> getAllAttributeTypes(ArtifactTypeId artType) {
-      return getArtifactTypesIndex().getAllAttributeTypes(artType);
-   }
-
 }

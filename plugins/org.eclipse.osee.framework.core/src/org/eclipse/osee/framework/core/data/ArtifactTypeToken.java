@@ -30,25 +30,42 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
    }
 
    public static ArtifactTypeToken valueOf(long id, String name, ArtifactTypeToken... superTypes) {
-      return create(id, NamespaceToken.OSEE, name, false, null, superTypes);
+      return new AttributeMultiplicity(id, NamespaceToken.OSEE, name, false, Arrays.asList(superTypes)).get();
+   }
+
+   public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract, List<ArtifactTypeToken> superTypes) {
+      return new AttributeMultiplicity(id, namespace, name, isAbstract, superTypes).get();
+   }
+
+   default boolean inheritsFrom(ArtifactTypeToken otherType) {
+      if (equals(otherType)) {
+         return true;
+      } else {
+         for (ArtifactTypeToken superType : getSuperTypes()) {
+            if (superType.inheritsFrom(otherType)) {
+               return true;
+            }
+         }
+      }
+      return false;
    }
 
    boolean isAbstract();
 
    List<ArtifactTypeToken> getSuperTypes();
 
-   public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract, AttributeMultiplicity attributeTypes, ArtifactTypeToken... superTypes) {
+   public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract, AttributeMultiplicity attributeTypes, List<ArtifactTypeToken> superTypes) {
       final class ArtifactTypeTokenImpl extends NamedIdBase implements ArtifactTypeToken {
          private final boolean isAbstract;
          private final List<ArtifactTypeToken> superTypes;
          private final AttributeMultiplicity attributeTypes;
 
-         public ArtifactTypeTokenImpl(Long id, String name, boolean isAbstract, AttributeMultiplicity attributeTypes, ArtifactTypeToken... superTypes) {
+         public ArtifactTypeTokenImpl(Long id, String name, boolean isAbstract, AttributeMultiplicity attributeTypes, List<ArtifactTypeToken> superTypes) {
             super(id, name);
             this.isAbstract = isAbstract;
-            this.superTypes = Arrays.asList(superTypes);
+            this.superTypes = superTypes;
             this.attributeTypes = attributeTypes;
-            if (superTypes.length > 1 && this.superTypes.contains(Artifact)) {
+            if (superTypes.size() > 1 && this.superTypes.contains(Artifact)) {
                throw new OseeArgumentException("Multiple super types for artifact type [%s] and and supertype Artifact",
                   name);
             }
@@ -70,5 +87,4 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
       }
       return new ArtifactTypeTokenImpl(id, name, isAbstract, attributeTypes, superTypes);
    }
-
 }

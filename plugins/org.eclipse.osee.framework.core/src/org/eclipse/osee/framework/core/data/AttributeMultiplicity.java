@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -19,8 +21,14 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
    private static final long serialVersionUID = 1L;
    private final ArtifactTypeToken artifactType;
 
-   public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, ArtifactTypeToken... superTypes) {
+   public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, List<ArtifactTypeToken> superTypes) {
       ArtifactTypeToken artifactType = ArtifactTypeToken.create(id, namespace, name, isAbstract, this, superTypes);
+      this.artifactType = artifactType;
+   }
+
+   public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, ArtifactTypeToken... superTypes) {
+      ArtifactTypeToken artifactType =
+         ArtifactTypeToken.create(id, namespace, name, isAbstract, this, Arrays.asList(superTypes));
       this.artifactType = artifactType;
    }
 

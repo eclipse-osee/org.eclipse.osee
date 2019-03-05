@@ -69,7 +69,7 @@ public class DataModuleFactory {
       final QueryEngineIndexer indexer = queryModule.getQueryIndexer();
       final AttributeDataProxyFactory proxyFactory = loaderModule.createProxyDataFactory(attributeTypes);
       final OrcsObjectFactory objectFactory = new OrcsObjectFactoryImpl(proxyFactory, relationTypes, artifactTypes);
-      final DataFactory dataFactory = loaderModule.createDataFactory(objectFactory, artifactTypes);
+      final DataFactory dataFactory = loaderModule.createDataFactory(objectFactory);
       final DynamicLoadProcessor loadProcessor = loaderModule.createDynamicLoadProcessor(orcsTypes, proxyFactory);
       SqlObjectLoader sqlObjectLoader = loaderModule.createSqlObjectLoader(objectFactory, loadProcessor, orcsTypes);
       final DataLoaderFactory dataLoaderFactory = loaderModule.createDataLoaderFactory(sqlObjectLoader);

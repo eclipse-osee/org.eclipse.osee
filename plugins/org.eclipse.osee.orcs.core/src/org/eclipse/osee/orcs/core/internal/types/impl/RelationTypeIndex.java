@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.types.impl;
 
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
@@ -36,7 +37,7 @@ public class RelationTypeIndex extends TokenTypeIndex<RelationTypeToken, XRelati
       return artifactTypeIndex.getTokenByDslType(artifactType);
    }
 
-   public boolean isArtifactTypeAllowed(RelationTypeId relation, RelationSide relationSide, ArtifactTypeId artifactType) {
+   public boolean isArtifactTypeAllowed(RelationTypeId relation, RelationSide relationSide, ArtifactTypeToken artifactType) {
       ArtifactTypeId allowedType = getArtifactType(relation, relationSide);
       return artifactTypeIndex.inheritsFrom(artifactType, allowedType);
    }

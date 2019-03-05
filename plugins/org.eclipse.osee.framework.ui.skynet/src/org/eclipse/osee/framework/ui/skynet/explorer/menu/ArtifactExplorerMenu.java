@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -345,7 +344,7 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
    private static FilteredTreeArtifactTypeEntryDialog getDialog(Collection<? extends ArtifactTypeToken> validArtifactTypes) {
       List<ArtifactTypeToken> artifactTypes = new ArrayList<>();
       for (ArtifactTypeToken artifactType : validArtifactTypes) {
-         if (!((ArtifactType) artifactType).isAbstract() && ArtifactTypeManager.isUserCreationAllowed(artifactType)) {
+         if (!artifactType.isAbstract() && ArtifactTypeManager.isUserCreationAllowed(artifactType)) {
             artifactTypes.add(artifactType);
          }
       }

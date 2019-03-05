@@ -34,7 +34,6 @@ import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.data.TupleDataImpl;
@@ -43,15 +42,12 @@ import org.eclipse.osee.orcs.db.internal.loader.data.TupleDataImpl;
  * @author Roberto E. Escobar
  */
 public class DataFactoryImpl implements DataFactory {
-
    private final IdentityManager idFactory;
    private final OrcsObjectFactory objectFactory;
-   private final ArtifactTypes artifactCache;
 
-   public DataFactoryImpl(IdentityManager idFactory, OrcsObjectFactory objectFactory, ArtifactTypes artifactTypes) {
+   public DataFactoryImpl(IdentityManager idFactory, OrcsObjectFactory objectFactory) {
       this.idFactory = idFactory;
       this.objectFactory = objectFactory;
-      this.artifactCache = artifactTypes;
    }
 
    @Override

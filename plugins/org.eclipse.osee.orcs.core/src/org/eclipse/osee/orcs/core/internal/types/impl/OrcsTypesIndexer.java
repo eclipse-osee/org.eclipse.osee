@@ -12,19 +12,21 @@ package org.eclipse.osee.orcs.core.internal.types.impl;
 
 import com.google.common.collect.Sets;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.OseeDslResource;
 import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
@@ -105,8 +107,7 @@ public class OrcsTypesIndexer {
       }
 
       for (XArtifactType dslType : model.getArtifactTypes()) {
-         ArtifactTypeToken token = getOrCreateToken(artifactTypeIndex, dslType);
-         indexSuperTypes(artifactTypeIndex, token, dslType);
+         indexSuperTypes(artifactTypeIndex, dslType);
          indexAttributes(artifactTypeIndex, attributeTypeIndex, dslType);
       }
 
@@ -124,14 +125,11 @@ public class OrcsTypesIndexer {
       return OseeDslResourceUtil.upConvertTo17(inputStream);
    }
 
-   private void indexSuperTypes(ArtifactTypeIndex artifactTypeIndex, ArtifactTypeToken token, XArtifactType dslType) {
-      Set<ArtifactTypeToken> tokenSuperTypes = Sets.newLinkedHashSet();
-      for (XArtifactType superTypes : dslType.getSuperArtifactTypes()) {
-         ArtifactTypeToken superToken = getOrCreateToken(artifactTypeIndex, superTypes);
-         tokenSuperTypes.add(superToken);
-      }
-      if (!tokenSuperTypes.isEmpty()) {
-         artifactTypeIndex.put(token, tokenSuperTypes);
+   private void indexSuperTypes(ArtifactTypeIndex artifactTypeIndex, XArtifactType dslType) {
+      ArtifactTypeToken token = getOrCreateToken(artifactTypeIndex, dslType);
+      List<ArtifactTypeToken> superTypes = token.getSuperTypes();
+      if (!superTypes.isEmpty()) {
+         artifactTypeIndex.put(token, new HashSet<>(superTypes));
       }
    }
 
@@ -161,11 +159,24 @@ public class OrcsTypesIndexer {
    private ArtifactTypeToken getOrCreateToken(ArtifactTypeIndex index, XArtifactType dslType) {
       ArtifactTypeToken token = index.getTokenByDslType(dslType);
       if (token == null) {
-         long id = Long.valueOf(dslType.getId());
-         token = ArtifactTypeToken.valueOf(id, dslType.getName());
+         token = createToken(index, dslType);
          index.put(token, dslType);
       }
       return token;
+   }
+
+   private ArtifactTypeToken createToken(ArtifactTypeIndex index, XArtifactType dslType) {
+      long id = Long.valueOf(dslType.getId());
+      List<ArtifactTypeToken> superTypes = getSuperTypes(index, dslType);
+      return ArtifactTypeToken.create(id, NamespaceToken.OSEE, dslType.getName(), dslType.isAbstract(), superTypes);
+   }
+
+   private List<ArtifactTypeToken> getSuperTypes(ArtifactTypeIndex index, XArtifactType dslType) {
+      List<ArtifactTypeToken> superTypes = new ArrayList<>(2);
+      for (XArtifactType dslSuperType : dslType.getSuperArtifactTypes()) {
+         superTypes.add(getOrCreateToken(index, dslSuperType));
+      }
+      return superTypes;
    }
 
    private AttributeTypeId getOrCreateToken(AttributeTypeIndex index, XAttributeType dslType) {

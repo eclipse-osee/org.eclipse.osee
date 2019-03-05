@@ -71,11 +71,7 @@ public class ArtifactTypeIndex extends TokenTypeIndex<ArtifactTypeToken, XArtifa
       return metaData != null ? metaData.getDescendantTypes() : Collections.emptyList();
    }
 
-   public boolean hasSuperArtifactTypes(ArtifactTypeId artType) {
-      return !getSuperTypes(artType).isEmpty();
-   }
-
-   public boolean inheritsFrom(ArtifactTypeId thisType, ArtifactTypeId... otherTypes) {
+   public boolean inheritsFrom(ArtifactTypeToken thisType, ArtifactTypeId... otherTypes) {
       boolean result = false;
       for (ArtifactTypeId otherType : otherTypes) {
          if (inheritsFromSingle(thisType, otherType)) {
@@ -86,13 +82,13 @@ public class ArtifactTypeIndex extends TokenTypeIndex<ArtifactTypeToken, XArtifa
       return result;
    }
 
-   private boolean inheritsFromSingle(ArtifactTypeId thisType, ArtifactTypeId otherType) {
+   private boolean inheritsFromSingle(ArtifactTypeToken thisType, ArtifactTypeId otherType) {
       boolean result = false;
       if (thisType.equals(otherType)) {
          result = true;
       } else {
-         for (ArtifactTypeId superType : getSuperTypes(thisType)) {
-            if (inheritsFrom(superType, otherType)) {
+         for (ArtifactTypeToken superType : thisType.getSuperTypes()) {
+            if (inheritsFromSingle(superType, otherType)) {
                result = true;
                break;
             }
@@ -101,13 +97,13 @@ public class ArtifactTypeIndex extends TokenTypeIndex<ArtifactTypeToken, XArtifa
       return result;
    }
 
-   public Collection<AttributeTypeToken> getAttributeTypes(ArtifactTypeId artType, BranchId branch) {
+   public Collection<AttributeTypeToken> getAttributeTypes(ArtifactTypeToken artType, BranchId branch) {
       Set<AttributeTypeToken> attributeTypes = Sets.newLinkedHashSet();
       getAttributeTypes(attributeTypes, artType, branch);
       return attributeTypes;
    }
 
-   private void getAttributeTypes(Set<AttributeTypeToken> attributeTypes, ArtifactTypeId artifactType, BranchId branch) {
+   private void getAttributeTypes(Set<AttributeTypeToken> attributeTypes, ArtifactTypeToken artifactType, BranchId branch) {
       ArtifactTypeMetaData metaData = tokenToTypeData.get(artifactType);
       if (metaData != null) {
          Map<BranchId, Collection<AttributeTypeToken>> validityMap = metaData.getAttributeTypes();
@@ -120,7 +116,7 @@ public class ArtifactTypeIndex extends TokenTypeIndex<ArtifactTypeToken, XArtifa
             }
          }
       }
-      for (ArtifactTypeId superType : getSuperTypes(artifactType)) {
+      for (ArtifactTypeToken superType : artifactType.getSuperTypes()) {
          getAttributeTypes(attributeTypes, superType, branch);
       }
    }

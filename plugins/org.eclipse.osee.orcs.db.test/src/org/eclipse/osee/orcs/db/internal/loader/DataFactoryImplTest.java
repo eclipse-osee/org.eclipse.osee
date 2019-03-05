@@ -101,7 +101,7 @@ public class DataFactoryImplTest {
       guid = GUID.create();
 
       OrcsObjectFactory objectFactory = new OrcsObjectFactoryImpl(proxyFactory, relationTypes, artifactCache);
-      dataFactory = new DataFactoryImpl(idFactory, objectFactory, artifactCache);
+      dataFactory = new DataFactoryImpl(idFactory, objectFactory);
       when(idFactory.getNextArtifactId()).thenReturn(ART_ID.intValue());
       when(idFactory.getUniqueGuid(guid)).thenReturn(guid);
 
