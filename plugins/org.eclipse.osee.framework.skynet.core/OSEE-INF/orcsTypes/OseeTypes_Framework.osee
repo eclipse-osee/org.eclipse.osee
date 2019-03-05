@@ -2013,6 +2013,115 @@ attributeType "Require Confirmation" extends BooleanAttribute {
 	mediaType "text/plain"
 }
 
+artifactType "Git Repository" extends "Artifact" {
+	id 97
+	attribute "Default Tracking Branch"
+	attribute "Exclude Path"
+	attribute "File System Path"
+	attribute "Repository URL"
+}
+
+attributeType "Repository URL" extends StringAttribute {
+	id 1152921504606847700
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "File System Path" extends StringAttribute {
+	id 1152921504606847707
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "Exclude Path" extends StringAttribute {
+	id 1152921504606847708
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "Default Tracking Branch" extends StringAttribute {
+	id 1152921504606847709
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+}
+
+artifactType "Git Commit" extends "Artifact" {
+	id 100
+	attribute "Git Commit SHA"
+	attribute "User Artifact Id"
+	attribute "Git Commit Author Date"
+	attribute "Git Commit Message"
+	attribute "Git Change-Id"
+}
+
+attributeType "User Artifact Id" extends ArtifactReferenceAttribute {
+	id 1152921504606847701
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	description "Artifact id of an artifact of type User"
+	mediaType "text/plain"
+}
+
+attributeType "Git Change-Id" extends StringAttribute {
+	id 1152921504606847702
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	description
+	"Change-Id embedded in Git commit message that is intended to be immutable even during rebase and amending the commit"
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "Git Commit SHA" extends StringAttribute {
+	id 1152921504606847703
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	description "SHA-1 checksum of the Git commit's content and header"
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "Git Commit Author Date" extends DateAttribute {
+	id 1152921504606847704
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	description "when this commit was originally made"
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "Git Commit Message" extends StringAttribute {
+	id 1152921504606847705
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	description "Full message minus Change-Id"
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+relationType "Git Repository Commit" {
+	id 2305843009213694290
+	sideAName "Git Repository"
+	sideAArtifactType "Git Repository"
+	sideBName "Git Commit"
+	sideBArtifactType "Git Commit"
+	defaultOrderType Unordered
+	multiplicity ONE_TO_MANY
+}
+
 artifactType "Model Diagram" extends "Artifact" {
    id 98
    attribute "Graphiti Diagram"

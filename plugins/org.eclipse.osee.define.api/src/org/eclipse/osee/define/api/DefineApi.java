@@ -32,4 +32,6 @@ public interface DefineApi {
 
    ActivityLog getActivityLog();
 
+   GitOperations gitOperations();
+
 }

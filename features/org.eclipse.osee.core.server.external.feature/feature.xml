@@ -17,31 +17,63 @@
       %license
    </license>
 
-
-         
    <includes
          id="org.eclipse.osee.ats.server.feature"
          version="0.0.0"/>
 
    <includes
          id="org.eclipse.osee.disposition.feature"
-         version="0.0.0"/>  
-    <requires>
-     <import plugin="com.fasterxml.jackson.core.jackson-core" version="2.9.2" match="greaterOrEqual"/>
-      <import plugin="com.fasterxml.jackson.core.jackson-annotations" version="2.9.2" match="greaterOrEqual" />
-      <import plugin="com.fasterxml.jackson.core.jackson-databind" version="2.9.2" match="greaterOrEqual" />     
-      <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.9.2" match="greaterOrEqual" />     
-      <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" version="2.9.2" match="greaterOrEqual" />		  
-     </requires>
-    
-    
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.jgit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
     <plugin
+         id="org.bouncycastle.bcpg"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+        
+    <plugin
+         id="org.bouncycastle.bcprov"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+    <plugin
+         id="org.bouncycastle.bcpkix"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.jcraft.jsch"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javaewah"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="com.fasterxml.jackson.core.jackson-core"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false" />
-                  
+         unpack="false"/>
+
    <plugin
          id="com.fasterxml.jackson.core.jackson-annotations"
          download-size="0"
@@ -55,63 +87,64 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>  
-         
-    <plugin
+         unpack="false"/>
+
+   <plugin
          id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/> 
-              
+         unpack="false"/>
+
    <plugin
          id="org.eclipse.osee.orcs"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>  
-         
+         unpack="false"/>
+
    <plugin
          id="org.eclipse.osee.orcs.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/> 
-         
+         unpack="false"/>
+
    <plugin
          id="org.eclipse.osee.orcs.db"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/> 
-         
+         unpack="false"/>
+
    <plugin
          id="org.eclipse.osee.orcs.rest"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>   
-         
+         unpack="false"/>
+
    <plugin
          id="org.eclipse.osee.orcs.rest.client"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>    
-         
-  <plugin
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.osee.orcs.account.admin"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-  <plugin
+
+   <plugin
          id="org.eclipse.osee.orcs.script.dsl"
          download-size="0"
          install-size="0"
@@ -123,36 +156,36 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/> 
-         
+         unpack="false"/>
+
    <plugin
          id="org.eclipse.osee.orcs.rest.model"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>                       
-
-    <plugin
-         id="javax.wsdl"   
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
          unpack="false"/>
-   
+
    <plugin
-         id="org.eclipse.core.runtime"   
+         id="javax.wsdl"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.core.jobs" 
+         id="org.eclipse.core.runtime"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
+   <plugin
+         id="org.eclipse.core.jobs"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
    <plugin
          id="org.eclipse.osgi"
          download-size="0"
@@ -216,21 +249,20 @@
          version="0.0.0"
          unpack="false"/>
 
-
    <plugin
          id="org.eclipse.osee.template.engine"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.osee.config.admin"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
- 
+
    <plugin
          id="javax.ws.rs"
          download-size="0"
@@ -320,7 +352,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-          unpack="false"/>
+         unpack="false"/>
 
    <plugin
          id="org.eclipse.equinox.registry"
@@ -328,14 +360,14 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="com.ibm.icu"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.equinox.http.servlet"
          download-size="0"
@@ -384,8 +416,8 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
- 	<plugin
+
+   <plugin
          id="org.apache.commons.dbcp"
          download-size="0"
          install-size="0"
@@ -406,7 +438,7 @@
          version="0.0.0"
          fragment="true"
          unpack="false"/>
-                         
+
    <plugin
          id="org.eclipse.osee.logger"
          download-size="0"
@@ -420,7 +452,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.osee.mail.api"
          download-size="0"
@@ -428,9 +460,6 @@
          version="0.0.0"
          unpack="false"/>
 
-         
-   
-         
    <plugin
          id="org.eclipse.osee.framework.jdk.core"
          download-size="0"
@@ -451,21 +480,21 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="com.google.guava"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
- 
-    <plugin
+
+   <plugin
          id="org.junit"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/> 
-         
+         unpack="false"/>
+
    <plugin
          id="org.hsqldb"
          download-size="0"
@@ -535,7 +564,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-  
+
    <plugin
          id="org.apache.commons.io"
          download-size="0"
@@ -627,7 +656,7 @@
          version="0.0.0"
          unpack="false"/>
 
-  <plugin
+   <plugin
          id="org.eclipse.xtend.lib"
          download-size="0"
          install-size="0"
@@ -640,8 +669,8 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
-    <plugin
+
+   <plugin
          id="org.eclipse.xtend"
          download-size="0"
          install-size="0"
@@ -654,7 +683,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.xtext.ecore"
          download-size="0"
@@ -675,21 +704,21 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.equinox.cm"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.xtext.xtext.generator"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.xtext.smap"
          download-size="0"
@@ -703,8 +732,8 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
-  <plugin
+
+   <plugin
          id="org.eclipse.xtext.common.types"
          download-size="0"
          install-size="0"
@@ -837,8 +866,6 @@
          version="0.0.0"
          unpack="false"/>
 
-
-
    <plugin
          id="com.sun.xml.fastinfoset"
          download-size="0"
@@ -854,46 +881,46 @@
          fragment="true"
          unpack="false"/>
 
-    <plugin
+   <plugin
          id="org.eclipse.oss.ajax"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
 
-    <plugin
+   <plugin
          id="com.lowagie.text"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
-    <plugin
+
+   <plugin
          id="org.eclipse.text"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
-    <plugin
+
+   <plugin
          id="org.eclipse.xpand"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
-    <plugin
+
+   <plugin
          id="org.eclipse.xtext.generator"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-      
-    <plugin
+
+   <plugin
          id="org.eclipse.osee.server.application"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>  
+         unpack="false"/>
 
    <plugin
          id="org.eclipse.osee.console.admin"
@@ -901,7 +928,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.osee.logback.config"
          download-size="0"
@@ -916,84 +943,84 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
-     <plugin
-         id="org.eclipse.core.contenttype" 
+
+   <plugin
+         id="org.eclipse.core.contenttype"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-          
+
    <plugin
          id="org.eclipse.osee.web.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-                 
-    <plugin
-         id="org.eclipse.core.net" 
+
+   <plugin
+         id="org.eclipse.core.net"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/> 
-         
-    <plugin
-         id="org.eclipse.core.filesystem" 
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.filesystem"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>  
-         
-    <plugin
+         unpack="false"/>
+
+   <plugin
          id="org.jsoup"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
-    <plugin
-         id="org.eclipse.core.expressions" 
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-   
-   <plugin
-         id="org.eclipse.core.commands" 
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-         
-   <plugin
-         id="org.eclipse.core.variables" 
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>     
 
    <plugin
-         id="org.eclipse.core.resources" 
+         id="org.eclipse.core.expressions"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
+   <plugin
+         id="org.eclipse.core.commands"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.variables"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.resources"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
    <plugin
          id="org.flywaydb.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
-    <plugin
+
+   <plugin
          id="org.eclipse.debug.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-    <plugin
+   <plugin
          id="org.eclipse.emf.mwe2.runtime"
          download-size="0"
          install-size="0"
@@ -1006,7 +1033,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.emf.common"
          download-size="0"
@@ -1034,14 +1061,14 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.emf.edit"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.emf.codegen.ecore"
          download-size="0"
@@ -1062,7 +1089,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.emf.mwe.core"
          download-size="0"
@@ -1082,7 +1109,6 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
 
    <plugin
          id="org.eclipse.osee.account.admin"
@@ -1105,7 +1131,6 @@
          version="0.0.0"
          unpack="false"/>
 
-
    <plugin
          id="org.eclipse.osee.account.rest.client"
          download-size="0"
@@ -1113,7 +1138,7 @@
          version="0.0.0"
          unpack="false"/>
 
- <plugin
+   <plugin
          id="org.eclipse.osee.framework.core.dsl"
          download-size="0"
          install-size="0"
@@ -1126,18 +1151,14 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
-         
-   
+
    <plugin
          id="org.eclipse.osee.framework.resource.management"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
 
-   
    <plugin
          id="org.eclipse.osee.framework.core"
          download-size="0"
@@ -1151,35 +1172,35 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
-    <plugin
+
+   <plugin
          id="org.eclipse.osee.framework.core.server"
          download-size="0"
-          install-size="0"
+         install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-    <plugin
+   <plugin
          id="org.eclipse.osee.framework.server.ide"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
-    <plugin
+
+   <plugin
          id="org.eclipse.osee.framework.server.ide.api"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
-    <plugin
+
+   <plugin
          id="org.eclipse.osee.framework.authentication.ldap.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-                  
+
    <plugin
          id="org.eclipse.osee.define.rest"
          download-size="0"
@@ -1234,14 +1255,14 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>    
-              
+         unpack="false"/>
+
    <plugin
          id="org.eclipse.osee.cache.admin"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>         
+         unpack="false"/>
 
    <plugin
          id="org.eclipse.osee.activity"
@@ -1256,12 +1277,12 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-                  
+
    <plugin
          id="org.eclipse.osee.jdbc"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-             
+
 </feature>

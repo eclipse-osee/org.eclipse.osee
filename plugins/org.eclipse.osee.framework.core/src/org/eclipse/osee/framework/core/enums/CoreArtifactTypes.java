@@ -35,6 +35,8 @@ public final class CoreArtifactTypes {
    public static final ArtifactTypeToken Folder = ArtifactTypeToken.valueOf(11, "Folder");
    public static final ArtifactTypeToken GeneralData = ArtifactTypeToken.valueOf(12, "General Data");
    public static final ArtifactTypeToken GeneralDocument = ArtifactTypeToken.valueOf(14, "General Document");
+   public static final ArtifactTypeToken GitCommit = ArtifactTypeToken.valueOf(100, "Git Commit");
+   public static final ArtifactTypeToken GitRepository = ArtifactTypeToken.valueOf(97, "Git Repository");
    public static final ArtifactTypeToken GlobalPreferences = ArtifactTypeToken.valueOf(3, "Global Preferences");
    public static final ArtifactTypeToken HardwareRequirement = ArtifactTypeToken.valueOf(33, "Hardware Requirement");
    public static final ArtifactTypeToken HeadingMSWord = ArtifactTypeToken.valueOf(56, "Heading - MS Word");
@@ -96,7 +98,6 @@ public final class CoreArtifactTypes {
    public static final ArtifactTypeToken User = ArtifactTypeToken.valueOf(5, "User");
    public static final ArtifactTypeToken UserGroup = ArtifactTypeToken.valueOf(7, "User Group");
    public static final ArtifactTypeToken XViewerGlobalCustomization = ArtifactTypeToken.valueOf(55, "XViewer Global Customization");
-
    public static final ArtifactTypeToken DocumentDescriptionMSWord = ArtifactTypeToken.valueOf(806, "Document Description - MS Word");
    public static final ArtifactTypeToken DesignDescriptionMSWord = ArtifactTypeToken.valueOf(807, "Design Description - MS Word");
    public static final ArtifactTypeToken CustomerRequirementMSWord = ArtifactTypeToken.valueOf(809, "Customer Requirement - MS Word");

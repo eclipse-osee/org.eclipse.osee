@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.api;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.Everyone;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import static org.eclipse.osee.framework.core.enums.CoreTupleTypes.GitCommitFile;
+import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.GitFamily;
 import static org.eclipse.osee.framework.core.enums.CoreTupleTypes.LruDataTypes;
 import static org.eclipse.osee.framework.core.enums.CoreTupleTypes.ViewApplicability;
 import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
@@ -20,7 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.Tuple4Type;
+import org.eclipse.osee.framework.core.data.TupleTypeImpl;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
@@ -106,6 +109,9 @@ public class OrcsTupleTest {
 
    @Test(expected = JdbcException.class)
    public void testAddTuple4() {
+      Tuple4Type<ArtifactId, ArtifactId, ArtifactId, String> GitCommitFile = Tuple4Type.valueOf(GitFamily, 7777L,
+         ArtifactId::valueOf, ArtifactId::valueOf, ArtifactId::valueOf, TupleTypeImpl.KeyedString);
+
       TransactionBuilder transaction =
          orcsApi.getTransactionFactory().createTransaction(COMMON, OseeSystem, "Add Tuple4 Test");
       GammaId gamma_id = transaction.addTuple4(GitCommitFile, OseeSystem, OseeSystem, OseeSystem, "four2");

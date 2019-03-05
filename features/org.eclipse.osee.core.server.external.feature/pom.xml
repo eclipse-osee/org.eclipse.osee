@@ -24,39 +24,43 @@
 							<goal>source-feature</goal>
 						</goals>
 						<configuration>
-							<excludes>														
-							        <plugin id="org.eclipse.osee.web.ui" />					
-							        <plugin id="org.eclipse.osee.logback.config" />							
-								<plugin id="org.apache.xerces" />
-								<plugin id="org.apache.commons.cli" />
-		    					        <plugin id="org.apache.commons.io" />
-								<plugin id="org.apache.commons.dbcp" />
-								<plugin id="org.apache.commons.pool" />
-								<plugin id="org.apache.commons.lang" />
-								<plugin id="org.eclipse.core.net" />
-								<plugin id="org.aopalliance" />
-								<plugin id="javax.servlet" />
-								<plugin id="javax.ws.rs" />
-								<plugin id="javax.xml" />
-								<plugin id="javax.wsdl" />
-								<plugin id="org.apache.xml.resolver" />
-								<plugin id="org.apache.xml.serializer" />
-								<plugin id="org.json" />
-								<plugin id="org.eclipse.persistence.antlr" />
-								<plugin id="org.eclipse.persistence.asm" />
-								<plugin id="org.eclipse.persistence.core" />
-								<plugin id="org.eclipse.persistence.moxy" />
-								<plugin id="org.apache.cxf.core.config" />
-								<plugin id="org.eclipse.oss.ajax" />
-								<plugin id="org.eclipse.jetty.http" />
-								<plugin id="org.eclipse.jetty.io" />
-								<plugin id="org.eclipse.jetty.security" />
-								<plugin id="org.eclipse.jetty.server" />
-								<plugin id="org.eclipse.jetty.servlet" />
-								<plugin id="org.eclipse.jetty.util" />
-								<plugin id="ch.qos.logback.slf4j" />
-								<plugin id="org.eclipse.equinox.security" />
-								<plugin id="org.jsoup" />
+							<excludes>
+							   <plugin id="ch.qos.logback.slf4j" />
+							   <plugin id="javaewah" />
+							   <plugin id="javax.servlet" />
+							   <plugin id="javax.ws.rs" />
+							   <plugin id="javax.wsdl" />
+							   <plugin id="javax.xml" />
+							   <plugin id="org.aopalliance" />
+							   <plugin id="org.apache.commons.cli" />
+							   <plugin id="org.apache.commons.dbcp" />
+							   <plugin id="org.apache.commons.io" />
+							   <plugin id="org.apache.commons.lang" />
+							   <plugin id="org.apache.commons.pool" />
+							   <plugin id="org.apache.cxf.core.config" />
+							   <plugin id="org.apache.xerces" />
+							   <plugin id="org.apache.xml.resolver" />
+							   <plugin id="org.apache.xml.serializer" />
+							   <plugin id="org.bouncycastle.bcpg" />
+							   <plugin id="org.bouncycastle.bcpkix" />								
+							   <plugin id="org.bouncycastle.bcprov" />
+							   <plugin id="org.eclipse.core.net" />
+							   <plugin id="org.eclipse.equinox.security" />
+							   <plugin id="org.eclipse.jetty.http" />
+							   <plugin id="org.eclipse.jetty.io" />
+							   <plugin id="org.eclipse.jetty.security" />
+							   <plugin id="org.eclipse.jetty.server" />
+							   <plugin id="org.eclipse.jetty.servlet" />
+							   <plugin id="org.eclipse.jetty.util" />
+							   <plugin id="org.eclipse.osee.logback.config" />							
+							   <plugin id="org.eclipse.osee.web.ui" />					
+							   <plugin id="org.eclipse.oss.ajax" />
+							   <plugin id="org.eclipse.persistence.antlr" />
+							   <plugin id="org.eclipse.persistence.asm" />
+							   <plugin id="org.eclipse.persistence.core" />
+							   <plugin id="org.eclipse.persistence.moxy" />
+							   <plugin id="org.json" />
+							   <plugin id="org.jsoup" />
 							</excludes>
 						</configuration>
 					</execution>

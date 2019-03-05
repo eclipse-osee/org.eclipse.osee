@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.enums;
 
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 
@@ -29,8 +30,8 @@ public final class CoreRelationTypes {
    public static final RelationTypeSide Default_Hierarchical__Parent = RelationTypeSide.create(SIDE_A, 2305843009213694292L, "Default Hierarchical");
    public static final RelationTypeSide Default_Hierarchical__Child = Default_Hierarchical__Parent.getOpposite();
    public static final RelationTypeToken DEFAULT_HIERARCHY = Default_Hierarchical__Parent;
-   public static final RelationSide IS_PARENT = RelationSide.SIDE_A;
-   public static final RelationSide IS_CHILD = RelationSide.SIDE_B;
+   public static final RelationSide IS_PARENT = SIDE_A;
+   public static final RelationSide IS_CHILD = SIDE_B;
 
    public static final RelationTypeSide Dependency__Artifact = RelationTypeSide.create(SIDE_A, 0x2000000000000155L, "Dependency");
    public static final RelationTypeSide Dependency__Dependency = Dependency__Artifact.getOpposite();
@@ -40,6 +41,8 @@ public final class CoreRelationTypes {
 
    public static final RelationTypeSide Executes__Test_Plan_Element = RelationTypeSide.create(SIDE_A, 0x200000000000015EL, "Executes");
    public static final RelationTypeSide Executes__Test_Procedure = Executes__Test_Plan_Element.getOpposite();
+
+   public static final RelationTypeSide Git_Repository_Commit = RelationTypeSide.create(SIDE_B, 2305843009213694290L, "Git Repository Commit");
 
    public static final RelationTypeSide Implementation_Info__Requirement = RelationTypeSide.create(SIDE_A, 3094530921867614694L, "Implementation_Info");
    public static final RelationTypeSide Implementation_Info__ImpD = Implementation_Info__Requirement.getOpposite();

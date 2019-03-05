@@ -9,6 +9,7 @@ Export-Package: org.eclipse.define.api.importing,
  org.eclipse.osee.define.api
 Import-Package: javax.ws.rs,
  javax.ws.rs.core,
+ org.eclipse.jgit.diff,
  org.eclipse.osee.activity.api,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,

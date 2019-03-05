@@ -254,6 +254,8 @@ public class OrcsBranchImpl implements OrcsBranch {
          "Applicability Tests"}) {
          tx.createArtifact(DefaultHierarchyRoot, Folder, name);
 
+      tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.GitRepoFolder);
+
       }
       tx.createArtifact(CoreArtifactTokens.CustomerReqFolder);
       tx.commit();
