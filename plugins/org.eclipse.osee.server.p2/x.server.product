@@ -36,7 +36,7 @@
    </plugins>
 
    <features>
-      <feature id="org.eclipse.osee.core.server.feature"/>
+      <feature id="org.eclipse.osee.core.server.external.feature"/>
    </features>
 
 

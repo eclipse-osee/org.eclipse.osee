@@ -44,7 +44,6 @@
 			<module>../../plugins/org.eclipse.osee.web.ui</module>
 			<!-- <module>../../plugins/org.eclipse.osee.web.ui.test</module> -->
 
-			<module>../../features/org.eclipse.osee.core.server.feature</module>
 
 			<module>../../plugins/org.eclipse.osee.server.p2</module>
 			<module>../../plugins/org.eclipse.osee.server.application</module>
@@ -97,7 +96,6 @@
 			<!-- Add features required to generate source features -->
 			<modules>
 				<module>../../features/org.eclipse.osee.core.server.external.feature</module>
-				<module>../../features/org.eclipse.osee.core.server.feature</module>
 				<module>../../features/org.eclipse.osee.disposition.feature</module>
 				<module>../../features/org.eclipse.osee.ats.server.feature</module>
 			</modules>

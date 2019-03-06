@@ -24,7 +24,9 @@
 							<goal>source-feature</goal>
 						</goals>
 						<configuration>
-							<excludes>
+							<excludes>														
+							        <plugin id="org.eclipse.osee.web.ui" />					
+							        <plugin id="org.eclipse.osee.logback.config" />							
 								<plugin id="org.apache.xerces" />
 								<plugin id="org.apache.commons.cli" />
 		    					        <plugin id="org.apache.commons.io" />

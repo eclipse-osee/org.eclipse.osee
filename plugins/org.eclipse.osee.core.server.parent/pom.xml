@@ -72,7 +72,6 @@
 		<module>../../plugins/org.eclipse.osee.jdbc.test</module>
 		
 		<module>../../features/org.eclipse.osee.core.server.external.feature</module>
-		<module>../../features/org.eclipse.osee.core.server.feature</module>
 
 		<module>../../plugins/org.eclipse.osee.core.server.p2</module>
 	</modules>

@@ -28,7 +28,6 @@
 <setEntry value="org.eclipse.osee.disposition.feature:default"/>
 <setEntry value="org.eclipse.osee.ats.server.feature:default"/>
 <setEntry value="org.eclipse.osee.core.server.external.feature:default"/>
-<setEntry value="org.eclipse.osee.core.server.feature:default"/>
 </setAttribute>
 <booleanAttribute key="show_selected_only" value="false"/>
 <stringAttribute key="timestamp" value="1369262663070"/>

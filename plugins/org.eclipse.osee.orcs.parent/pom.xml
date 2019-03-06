@@ -56,7 +56,7 @@
 				
 				<module>../../plugins/org.eclipse.osee.orcs.account.admin</module>
 				
-				<module>../../features/org.eclipse.osee.core.server.feature</module>
+				<module>../../features/org.eclipse.osee.core.server.external.feature</module>
 
 				<module>../../plugins/org.eclipse.osee.orcs.p2</module>
 			</modules>
