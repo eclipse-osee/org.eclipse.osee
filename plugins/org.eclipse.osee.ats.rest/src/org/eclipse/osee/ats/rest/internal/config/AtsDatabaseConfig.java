@@ -67,8 +67,11 @@ public class AtsDatabaseConfig {
       atsApi.clearCaches();
 
       changes = atsApi.createChangeSet("Create Admin groups");
-      changes.createArtifact(AtsArtifactToken.AtsAdmin);
-      changes.createArtifact(AtsArtifactToken.AtsTempAdmin);
+
+      ArtifactToken userGroup = atsApi.getQueryService().getArtifact(CoreArtifactTokens.UserGroups);
+
+      changes.createArtifact(userGroup, AtsArtifactToken.AtsAdmin);
+      changes.createArtifact(userGroup, AtsArtifactToken.AtsTempAdmin);
       changes.execute();
 
       createUserCreationDisabledConfig();

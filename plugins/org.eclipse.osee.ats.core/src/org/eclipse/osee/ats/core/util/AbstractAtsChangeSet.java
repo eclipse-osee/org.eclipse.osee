@@ -255,4 +255,12 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       return null;
    }
 
+   @Override
+   public void createArtifact(ArtifactToken parent, ArtifactToken artifact) {
+      ArtifactToken art = createArtifact(artifact);
+      if (parent != null) {
+         addChild(parent, art);
+      }
+   }
+
 }
