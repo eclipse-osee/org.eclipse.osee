@@ -11,8 +11,8 @@
 package org.eclipse.define.api.importing;
 
 import java.util.LinkedList;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  * @author David W. Miller
  */
 public abstract class ImportBlock implements Named {
-   protected IArtifactType type = IArtifactType.SENTINEL;
+   protected ArtifactTypeToken type = ArtifactTypeToken.SENTINEL;
    private Boolean complete = false;
    protected final LinkedList<BlockField> attrs = new LinkedList<>();
 
@@ -48,7 +48,7 @@ public abstract class ImportBlock implements Named {
       }
    }
 
-   public IArtifactType getType() {
+   public ArtifactTypeToken getType() {
       return type;
    }
 
