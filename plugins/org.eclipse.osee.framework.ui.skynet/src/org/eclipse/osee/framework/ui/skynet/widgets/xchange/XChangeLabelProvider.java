@@ -19,7 +19,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -134,7 +133,7 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
          if (isBinary != null) {
             return isBinary;
          }
-         AttributeType type = AttributeTypeManager.getType(AttributeTypeId.valueOf(itemTypeId.getId()));
+         AttributeType type = AttributeTypeManager.getTypeById(itemTypeId.getId());
          if (type == null) {
             return false;
          }

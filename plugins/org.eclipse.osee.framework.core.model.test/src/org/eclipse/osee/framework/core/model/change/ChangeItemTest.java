@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.core.model.change;
 import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.mocks.ChangeTestUtility;
 import org.junit.Test;
@@ -33,10 +35,8 @@ public class ChangeItemTest {
    private final ChangeVersion current;
    private final ChangeVersion destination;
    private final ChangeVersion net;
-   private final Long itemId;
 
    public ChangeItemTest(Long itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion net) {
-      this.itemId = itemId;
       this.base = base;
       this.first = first;
       this.current = current;
@@ -47,8 +47,7 @@ public class ChangeItemTest {
 
    @Test
    public void testGetItemId() {
-      Long actual = item.getItemId().getId();
-      assertEquals(itemId, actual);
+      assertEquals(CoreArtifactTokens.OseeTypesFolder, item.getItemId());
    }
 
    @Test
@@ -78,16 +77,12 @@ public class ChangeItemTest {
 
    @Test
    public void testGetItemTypeId() {
-      Long expected = item.getItemId().getId() * 10;
-      Long actual = item.getItemTypeId().getId();
-      assertEquals(expected, actual);
+      assertEquals(CoreArtifactTypes.Artifact, item.getItemTypeId());
    }
 
    @Test
    public void testGetArtId() {
-      Long expected = item.getItemId().getId() * 100;
-      Long actual = item.getArtId().getId();
-      assertEquals(expected, actual);
+      assertEquals(CoreArtifactTokens.UserGroups, item.getArtId());
    }
 
    @Parameters

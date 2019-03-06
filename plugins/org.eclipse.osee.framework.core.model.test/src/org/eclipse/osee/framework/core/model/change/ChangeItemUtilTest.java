@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
-import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.mocks.ChangeTestUtility;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -50,9 +50,9 @@ public class ChangeItemUtilTest {
       ChangeVersion net = ChangeTestUtility.createChange(5555L, ModificationType.DELETED);
 
       ChangeItem item = ChangeTestUtility.createItem(200L, base, first, current, destination, net);
-      assertEquals(ArtifactId.valueOf(200L), item.getItemId());
-      assertEquals(ArtifactTypeId.valueOf(2000L), item.getItemTypeId());
-      assertEquals(ArtifactId.valueOf(20000L), item.getArtId());
+      assertEquals(CoreArtifactTokens.OseeTypesFolder, item.getItemId());
+      assertEquals(CoreArtifactTypes.Artifact, item.getItemTypeId());
+      assertEquals(CoreArtifactTokens.UserGroups, item.getArtId());
       ChangeTestUtility.checkChange(base, item.getBaselineVersion());
       ChangeTestUtility.checkChange(first, item.getFirstNonCurrentChange());
       ChangeTestUtility.checkChange(current, item.getCurrentVersion());
@@ -268,8 +268,7 @@ public class ChangeItemUtilTest {
 
    @Test
    public void testGammasEqual() {
-      List<Triplet<ChangeVersion, ChangeVersion, Boolean>> cases =
-         new ArrayList<>();
+      List<Triplet<ChangeVersion, ChangeVersion, Boolean>> cases = new ArrayList<>();
 
       cases.add(createTriplet(3000L, ModificationType.MODIFIED, 3000L, ModificationType.NEW, true));
       cases.add(createTriplet(0L, ModificationType.MODIFIED, 3000L, ModificationType.NEW, false));

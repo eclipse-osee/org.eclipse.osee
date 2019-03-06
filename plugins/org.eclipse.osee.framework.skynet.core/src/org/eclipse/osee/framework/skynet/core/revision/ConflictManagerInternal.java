@@ -110,12 +110,13 @@ public class ConflictManagerInternal {
             if (BranchManager.isArchived(sourceBranch)) {
                sourceBranch = null;
             }
-            AttributeConflict attributeConflict = new AttributeConflict(
-               GammaId.valueOf(chStmt.getLong("source_gamma_id")), GammaId.valueOf(chStmt.getLong("dest_gamma_id")),
-               ArtifactId.valueOf(chStmt.getLong("art_id")), null, commitTransaction, chStmt.getString("source_value"),
-               AttributeId.valueOf(chStmt.getInt("attr_id")), AttributeTypeId.valueOf(chStmt.getLong("attr_type_id")),
-               BranchId.valueOf(chStmt.getLong("merge_branch_id")), sourceBranch,
-               BranchManager.getBranchToken(chStmt.getLong("dest_branch_id")));
+            AttributeConflict attributeConflict =
+               new AttributeConflict(GammaId.valueOf(chStmt.getLong("source_gamma_id")),
+                  GammaId.valueOf(chStmt.getLong("dest_gamma_id")), ArtifactId.valueOf(chStmt.getLong("art_id")), null,
+                  commitTransaction, chStmt.getString("source_value"), AttributeId.valueOf(chStmt.getInt("attr_id")),
+                  AttributeTypeManager.getTypeById(chStmt.getLong("attr_type_id")),
+                  BranchId.valueOf(chStmt.getLong("merge_branch_id")), sourceBranch,
+                  BranchManager.getBranchToken(chStmt.getLong("dest_branch_id")));
             attributeConflict.setStatus(ConflictStatus.valueOf(chStmt.getInt("status")));
             conflicts.add(attributeConflict);
          }
@@ -298,7 +299,7 @@ public class ConflictManagerInternal {
             ArtifactId artId = ArtifactId.valueOf(chStmt.getLong("art_id"));
             GammaId sourceGamma = GammaId.valueOf(chStmt.getLong("source_gamma"));
             GammaId destGamma = GammaId.valueOf(chStmt.getLong("dest_gamma"));
-            AttributeTypeId attrTypeId = AttributeTypeId.valueOf(chStmt.getLong("attr_type_id"));
+            AttributeTypeId attrTypeId = AttributeTypeManager.getTypeById(chStmt.getLong("attr_type_id"));
             String sourceValue = chStmt.getString("source_value") != null ? chStmt.getString(
                "source_value") : chStmt.getString("dest_value");
 

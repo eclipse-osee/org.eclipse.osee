@@ -50,7 +50,7 @@ public final class ErrorChange extends Change {
 
    @Override
    public Id getItemTypeId() {
-      return ArtifactTypeId.valueOf(0L);
+      return ArtifactTypeId.SENTINEL;
    }
 
    @Override

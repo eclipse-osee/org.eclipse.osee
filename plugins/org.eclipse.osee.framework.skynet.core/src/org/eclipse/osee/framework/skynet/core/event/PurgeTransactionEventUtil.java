@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -66,8 +65,8 @@ public final class PurgeTransactionEventUtil {
                   Artifact art = ArtifactQuery.getArtifactFromId(change.getArtId(), transId.getBranch(),
                      DeletionFlag.INCLUDE_DELETED);
                   guidToId.put(art.getGuid(), art.getId());
-                  DefaultBasicGuidArtifact guidArt = new DefaultBasicGuidArtifact(change.getBranch(),
-                     ArtifactTypeId.valueOf(change.getArtifactType().getId()), art.getGuid());
+                  DefaultBasicGuidArtifact guidArt =
+                     new DefaultBasicGuidArtifact(change.getBranch(), change.getArtifactType(), art.getGuid());
                   txChg.getArtifacts().add(guidArt);
                } catch (ArtifactDoesNotExist ex) {
                   OseeLog.log(Activator.class, Level.WARNING, ex);

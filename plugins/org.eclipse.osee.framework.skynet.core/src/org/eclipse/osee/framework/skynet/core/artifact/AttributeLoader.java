@@ -106,7 +106,7 @@ public class AttributeLoader {
          modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
 
          transactionId = chStmt.getLong("transaction_id");
-         attributeType = AttributeTypeId.valueOf(chStmt.getLong("attr_type_id"));
+         attributeType = AttributeTypeManager.getTypeById(chStmt.getLong("attr_type_id"));
 
          AttributeType typeByGuid = AttributeTypeManager.getType(attributeType);
          String baseAttributeType = typeByGuid.getBaseAttributeTypeId();

@@ -22,7 +22,6 @@ import org.codehaus.jackson.type.TypeReference;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -40,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.NativeDocumentExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WholeWordDocumentExtractor;
@@ -344,7 +344,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                parentArtifact.getBranch(), item.getName());
             List<JsonAttributeRepresentation> attrs = item.getAttrs();
             for (JsonAttributeRepresentation attr : attrs) {
-               art.addAttributeFromString(AttributeTypeId.valueOf(attr.getAttributeTypeId()), attr.getValue());
+               art.addAttributeFromString(AttributeTypeManager.getTypeById(attr.getAttributeTypeId()), attr.getValue());
             }
             art.persist(transaction);
             parentArtifact.addChild(art);

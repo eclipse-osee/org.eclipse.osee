@@ -192,7 +192,7 @@ public class MissingChangeItemFactoryTest {
       final GammaId missingGamma = GammaId.valueOf(9L);
       GammaId artGamma = GammaId.valueOf(7L);
 
-      ChangeItem ci1 = ChangeItemUtil.newAttributeChange(AttributeId.valueOf(ci1AttrId), AttributeTypeId.valueOf(2L),
+      ChangeItem ci1 = ChangeItemUtil.newAttributeChange(AttributeId.valueOf(ci1AttrId), CoreAttributeTypes.Category,
          artId, GammaId.valueOf(4L), ModificationType.MODIFIED, Strings.EMPTY_STRING, ApplicabilityToken.BASE);
       changes.add(ci1);
 
@@ -266,7 +266,7 @@ public class MissingChangeItemFactoryTest {
       List<ChangeItem> changes = new LinkedList<>();
       ArtifactId artId = ArtifactId.valueOf(3);
 
-      ChangeItem ci1 = ChangeItemUtil.newAttributeChange(AttributeId.valueOf(22), AttributeTypeId.valueOf(2L), artId,
+      ChangeItem ci1 = ChangeItemUtil.newAttributeChange(AttributeId.valueOf(22), CoreAttributeTypes.Category, artId,
          GammaId.valueOf(4L), ModificationType.DELETED, Strings.EMPTY_STRING, ApplicabilityToken.BASE);
       changes.add(ci1);
 
@@ -294,7 +294,7 @@ public class MissingChangeItemFactoryTest {
    private static Object[] testCase_artifactDeletedAttribute() {
       List<ChangeItem> changes = new LinkedList<>();
       final ArtifactId artId = ArtifactId.valueOf(3);
-      ChangeItem ci1 = ChangeItemUtil.newAttributeChange(AttributeId.valueOf(22), AttributeTypeId.valueOf(2L), artId,
+      ChangeItem ci1 = ChangeItemUtil.newAttributeChange(AttributeId.valueOf(22), CoreAttributeTypes.Category, artId,
          GammaId.valueOf(4L), ModificationType.ARTIFACT_DELETED, Strings.EMPTY_STRING, ApplicabilityToken.BASE);
       changes.add(ci1);
 
