@@ -34,10 +34,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -620,20 +620,13 @@ public class OrcsTypesTest {
       assertEnumEntry(values[4], "Not Performed", 0, "it was not performed");
       assertEnumEntry(values[5], "Partially Complete", 5, "is a partial");
 
-      assertEnumEntry(enumType.valueOf(0), "Not Performed", 0, "it was not performed");
-      assertEnumEntry(enumType.valueOf(1), "Completed -- Analysis in Work", 1, "");
-      assertEnumEntry(enumType.valueOf(2), "Completed -- Passed", 2, "");
-      assertEnumEntry(enumType.valueOf(3), "Completed -- With Issues", 3, "");
-      assertEnumEntry(enumType.valueOf(4), "Completed -- With Issues Resolved", 4, "");
-      assertEnumEntry(enumType.valueOf(5), "Partially Complete", 5, "is a partial");
-
       //@formatter:off
-      assertEnumEntry(enumType.valueOf("Not Performed"), "Not Performed",  0, "it was not performed");
-      assertEnumEntry(enumType.valueOf("Completed -- Analysis in Work"), "Completed -- Analysis in Work",  1, "");
-      assertEnumEntry(enumType.valueOf("Completed -- Passed"), "Completed -- Passed",2, "");
-      assertEnumEntry(enumType.valueOf("Completed -- With Issues"), "Completed -- With Issues",  3, "");
-      assertEnumEntry(enumType.valueOf("Completed -- With Issues Resolved"), "Completed -- With Issues Resolved",  4, "");
-      assertEnumEntry(enumType.valueOf("Partially Complete"), "Partially Complete",  5, "is a partial");
+      assertEnumEntry(enumType.getEntryByName("Not Performed"), "Not Performed",  0, "it was not performed");
+      assertEnumEntry(enumType.getEntryByName("Completed -- Analysis in Work"), "Completed -- Analysis in Work",  1, "");
+      assertEnumEntry(enumType.getEntryByName("Completed -- Passed"), "Completed -- Passed",2, "");
+      assertEnumEntry(enumType.getEntryByName("Completed -- With Issues"), "Completed -- With Issues",  3, "");
+      assertEnumEntry(enumType.getEntryByName("Completed -- With Issues Resolved"), "Completed -- With Issues Resolved",  4, "");
+      assertEnumEntry(enumType.getEntryByName("Partially Complete"), "Partially Complete",  5, "is a partial");
       //@formatter:on
 
       Iterator<String> iterator = enumType.valuesAsOrderedStringSet().iterator();

@@ -14,7 +14,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.data.EnumEntry;
 import org.eclipse.osee.orcs.data.EnumType;
 
@@ -59,30 +58,6 @@ public final class EnumTypeImpl extends NamedIdBase implements EnumType {
          values.add(oseeEnumEntry.getName());
       }
       return values;
-   }
-
-   @Override
-   public EnumEntry valueOf(int ordinal) {
-      EnumEntry toReturn = null;
-      for (EnumEntry entry : values()) {
-         if (entry.ordinal() == ordinal) {
-            toReturn = entry;
-         }
-      }
-      Conditions.checkNotNull(toReturn, "enumEntry", "No enum const [%s].[%s]", getName(), ordinal);
-      return toReturn;
-   }
-
-   @Override
-   public EnumEntry valueOf(String entryName) {
-      EnumEntry toReturn = null;
-      for (EnumEntry entry : values()) {
-         if (entry.getName().equals(entryName)) {
-            toReturn = entry;
-         }
-      }
-      Conditions.checkNotNull(toReturn, "enumEntry", "No enum const [%s].[%s]", getName(), entryName);
-      return toReturn;
    }
 
 }
