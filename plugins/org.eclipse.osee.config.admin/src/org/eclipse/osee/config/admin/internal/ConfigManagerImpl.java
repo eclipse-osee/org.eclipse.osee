@@ -77,7 +77,7 @@ public class ConfigManagerImpl implements UriWatcherListener {
 
    private void configure(ConfigManagerConfiguration config) {
       logger.info("Configuration Manager settings: [%s]", config);
-
+      logger.warn("configuration file [" + config.getConfigUri() + "]");
       URI configUri = ConfigUtil.asUri(config.getConfigUri());
       if (configUri != null) {
          long pollTime = config.getPollTime();
