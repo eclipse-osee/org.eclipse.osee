@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.disposition.model.Discrepancy;
@@ -293,11 +294,10 @@ public class ExportSet {
          row[0] = "All Coverage Methods";
 
          // send correct numbers according to level for second param
-         final WrapInt indexForLambda = new WrapInt(1);
+         final AtomicInteger indexForLambda = new AtomicInteger(1);
          levelsInSet.forEach(level -> {
-            row[indexForLambda.getValue()] = getPercent(levelToCoveredTotalCount.get(level).getValue(),
+            row[indexForLambda.getAndIncrement()] = getPercent(levelToCoveredTotalCount.get(level).getValue(),
                levelToTotalCount.get(level).getValue(), false);
-            indexForLambda.inc();
          });
          sheetWriter.writeRow(row);
 
@@ -312,14 +312,13 @@ public class ExportSet {
          }
 
          for (String resolution : resolutionTypes) {
-            WrapInt index1 = new WrapInt(0);
-            row[index1.getValue()] = resolutionsValueToText.containsKey(resolution) ? resolutionsValueToText.get(
+            AtomicInteger index1 = new AtomicInteger(0);
+            row[index1.getAndIncrement()] = resolutionsValueToText.containsKey(resolution) ? resolutionsValueToText.get(
                resolution) : "Resolution not in Config--" + resolution;
-            index1.inc();
             levelsInSet.forEach(level -> {
-               row[index1.getValue()] = getPercent(levelToResolutionTypesToCount.get(level).get(resolution).getValue(),
-                  levelToTotalCount.get(level).getValue(), false);
-               index1.inc();
+               row[index1.getAndIncrement()] =
+                  getPercent(levelToResolutionTypesToCount.get(level).get(resolution).getValue(),
+                     levelToTotalCount.get(level).getValue(), false);
             });
             sheetWriter.writeRow(row);
          }
