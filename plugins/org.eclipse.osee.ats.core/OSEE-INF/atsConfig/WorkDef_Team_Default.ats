@@ -67,6 +67,14 @@ workDefinition "WorkDef_Team_Default" {
       xWidgetName "XTextDam"
       option FILL_VERTICALLY
    }
+   
+   widgetDefinition "Working Branch" {
+      xWidgetName "XWorkingBranch"
+   }
+
+   widgetDefinition "Commit Manager" {
+      xWidgetName "XCommitManager"
+   }
 
    state "Endorse" {
       type Working
@@ -94,10 +102,12 @@ workDefinition "WorkDef_Team_Default" {
       ordinal 2
       to "Cancelled"
       to "Authorize" AsDefault
+      to "Implement"
       to "Endorse" OverrideAttributeValidation 
       rule AllowAssigneeToAll
       rule AllowEditToAll
       layout {
+         attributeWidget "ats.Work Package"
          widget "Problem"
          widget "Proposed Resolution"
          composite {
@@ -119,6 +129,7 @@ workDefinition "WorkDef_Team_Default" {
       rule AllowAssigneeToAll
       rule AllowEditToAll
       layout {
+         attributeWidget "ats.Work Package"
          widget "Estimated Completion Date"
       }
    }
@@ -133,6 +144,9 @@ workDefinition "WorkDef_Team_Default" {
       rule AllowAssigneeToAll
       rule AllowEditToAll
       layout {
+         widget "Working Branch"
+         widget "Commit Manager"
+         attributeWidget "ats.Work Package"
          widget "Estimated Completion Date"
          widget "Resolution"
       }
