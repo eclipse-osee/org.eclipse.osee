@@ -26,6 +26,15 @@
    <includes
          id="org.eclipse.osee.disposition.feature"
          version="0.0.0"/>  
+    <requires>
+     <import plugin="com.fasterxml.jackson.core.jackson-core" version="2.9.2" match="greaterOrEqual"/>
+      <import plugin="com.fasterxml.jackson.core.jackson-annotations" version="2.9.2" match="greaterOrEqual" />
+      <import plugin="com.fasterxml.jackson.core.jackson-databind" version="2.9.2" match="greaterOrEqual" />     
+      <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.9.2" match="greaterOrEqual" />     
+      <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" version="2.9.2" match="greaterOrEqual" />		  
+     </requires>
+    
+    
     <plugin
          id="com.fasterxml.jackson.core.jackson-core"
          download-size="0"

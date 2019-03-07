@@ -32,6 +32,11 @@
       <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.5" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.dbcp" version="1.4.0" match="compatible"/>
       <import plugin="org.apache.commons.pool" version="1.6.0" match="compatible"/>
+      <import plugin="com.fasterxml.jackson.core.jackson-core" version="2.9.2" match="greaterOrEqual"/>
+      <import plugin="com.fasterxml.jackson.core.jackson-annotations" version="2.9.2" match="greaterOrEqual" />
+      <import plugin="com.fasterxml.jackson.core.jackson-databind" version="2.9.2" match="greaterOrEqual" />     
+      <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.9.2" match="greaterOrEqual" />     
+      <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" version="2.9.2" match="greaterOrEqual" />
       <import plugin="com.google.guava" version="11.0.0" match="greaterOrEqual"/>
       <import plugin="org.jsoup"/>
       <import plugin="org.hsqldb"/>
@@ -39,11 +44,11 @@
 
    <plugin
          id="org.eclipse.osee.framework.skynet.core"
-         download-size="0"
+	 	   download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+      
    <plugin
          id="org.eclipse.osee.framework.templates"
          download-size="0"
