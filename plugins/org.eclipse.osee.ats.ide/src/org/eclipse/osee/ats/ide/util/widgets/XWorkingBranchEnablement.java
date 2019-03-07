@@ -155,6 +155,15 @@ public class XWorkingBranchEnablement {
          };
          return new FutureTask<>(callable);
       }
+   }
+
+   public boolean isUpdateWorkingBranchButtonEnabled() {
+      boolean result = false;
+      BranchEnablementData data = getEnablementDataLogException();
+      if (data != null && !data.isDisableAll()) {
+         result = data.isWorkingBranchInWork() && !data.isCommittedBranchExists();
+      }
+      return result;
    };
 
 }

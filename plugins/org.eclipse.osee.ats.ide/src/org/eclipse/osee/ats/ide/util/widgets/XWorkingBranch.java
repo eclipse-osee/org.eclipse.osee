@@ -153,7 +153,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
       }
 
       buttonComp = new Composite(mainComp, SWT.NONE);
-      buttonComp.setLayout(new GridLayout(7, false));
+      buttonComp.setLayout(new GridLayout(8, false));
       buttonComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       if (toolkit != null) {
          toolkit.adapt(buttonComp);
@@ -164,6 +164,9 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
       createBranchButton.addListener(SWT.Selection, new Listener() {
          @Override
          public void handleEvent(Event e) {
+            if (!Widgets.isAccessible(createBranchButton)) {
+               return;
+            }
             try {
                enablement.disableAll();
             } catch (Exception ex) {
@@ -185,6 +188,9 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
                   "Create a working branch from parent branch\n\n\"" + parentBranchName + "\"?\n\n" + "NOTE: Working branches are necessary when OSEE Artifact changes " + "are made during implementation.")) {
                   enablement.refresh();
                   refreshEnablement();
+                  return;
+               }
+               if (!Widgets.isAccessible(createBranchButton)) {
                   return;
                }
                createBranchButton.setText("Creating Branch...");
@@ -273,6 +279,9 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
       abandonMergeButton.addListener(SWT.Selection, new Listener() {
          @Override
          public void handleEvent(Event e) {
+            if (!Widgets.isAccessible(abandonMergeButton)) {
+               return;
+            }
             try {
                enablement.disableAll();
 
@@ -305,6 +314,9 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
       deleteBranchButton.addListener(SWT.Selection, new Listener() {
          @Override
          public void handleEvent(Event e) {
+            if (!Widgets.isAccessible(deleteBranchButton)) {
+               return;
+            }
             try {
                enablement.disableAll();
             } catch (Exception ex) {
@@ -341,6 +353,9 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
          }
       });
 
+      if (!Widgets.isAccessible(createBranchButton)) {
+         return;
+      }
       createBranchButton.setImage(ImageManager.getImage(FrameworkImage.BRANCH));
       deleteBranchButton.setImage(ImageManager.getImage(FrameworkImage.TRASH));
       abandonMergeButton.setImage(ImageManager.getImage(FrameworkImage.DELETE_MERGE_BRANCHES));
@@ -475,6 +490,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
 
    public void refreshEnablement() {
       createBranchButton.setEnabled(enablement.isCreateBranchButtonEnabled());
+      updateWorkingBranch.setEnabled(enablement.isUpdateWorkingBranchButtonEnabled());
       showArtifactExplorer.setEnabled(enablement.isShowArtifactExplorerButtonEnabled());
       abandonMergeButton.setEnabled(mergeInProgress());
       showChangeReport.setEnabled(enablement.isShowChangeReportButtonEnabled());
