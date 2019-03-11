@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
+import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
@@ -299,13 +300,14 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    }
 
    @Override
-   public void sendNotifications(final AtsNotificationCollector notifications) {
+   public synchronized void sendNotifications(final AtsNotificationCollector notifications) {
       if (AtsUtilClient.isEmailEnabled()) {
+         AtsNotifyEndpointApi notifyEndpoint = AtsClientService.getNotifyEndpoint();
          Jobs.startJob(new Job("Send Notifications") {
 
             @Override
             protected IStatus run(IProgressMonitor monitor) {
-               AtsClientService.getNotifyEndpoint().sendNotifications(notifications);
+               notifyEndpoint.sendNotifications(notifications);
                return Status.OK_STATUS;
             }
          }, false);
