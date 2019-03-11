@@ -41,10 +41,12 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
+import org.eclipse.osee.framework.ui.plugin.util.WorkbenchTargetProvider;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateEventListener;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateEventManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
+import org.eclipse.osee.framework.ui.skynet.OseeTargetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
@@ -166,7 +168,11 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
 
             public void refreshUserLabel() {
                String str = getWhoAmI();
-               String oseeTarget = System.getProperty("osee.target");
+               String oseeTarget = null;
+               WorkbenchTargetProvider provider = OseeTargetContributionItem.getWorkbenchProvider();
+               if (provider != null) {
+                  oseeTarget = provider.getText();
+               }
                boolean atsAdmin = AtsClientService.get().getUserService().isAtsAdmin();
                boolean oseeTargetIsValid = Strings.isValid(oseeTarget);
                if (oseeTargetIsValid) {

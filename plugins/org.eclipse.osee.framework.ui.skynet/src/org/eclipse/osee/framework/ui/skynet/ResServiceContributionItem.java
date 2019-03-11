@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArraySet;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.listener.IRemoteEventManagerEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.RemoteEventServiceEventType;
@@ -25,6 +26,10 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.OverlayImage;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.ViewPart;
 
 /**
  * @author Jeff C. Phillips
@@ -92,8 +97,7 @@ public class ResServiceContributionItem extends OseeStatusContributionItem imple
    }
 
    private static final class UpdateStatusTimerTask extends TimerTask {
-      private final Set<OseeStatusContributionItem> itemsToUpdate =
-         new CopyOnWriteArraySet<>();
+      private final Set<OseeStatusContributionItem> itemsToUpdate = new CopyOnWriteArraySet<>();
 
       public void addItem(OseeStatusContributionItem item) {
          itemsToUpdate.add(item);
@@ -119,6 +123,43 @@ public class ResServiceContributionItem extends OseeStatusContributionItem imple
             }
          }
          itemsToUpdate.removeAll(toRemove);
+      }
+   }
+
+   public static void addToAllViews() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            try {
+               if (PlatformUI.getWorkbench() == null || PlatformUI.getWorkbench().getActiveWorkbenchWindow() == null) {
+                  return;
+               }
+               for (IViewReference viewDesc : PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences()) {
+                  IViewPart viewPart = viewDesc.getView(false);
+                  if (viewPart != null) {
+                     addToViewpart((ViewPart) viewPart);
+                  }
+               }
+            } catch (Exception ex) {
+               // DO NOTHING
+            }
+         }
+      });
+   }
+
+   public static void addToViewpart(ViewPart viewPart) {
+      // Attempt to add to PackageExplorerPart
+      try {
+         if (viewPart != null) {
+            for (IContributionItem item : viewPart.getViewSite().getActionBars().getStatusLineManager().getItems()) {
+               if (item instanceof ResServiceContributionItem) {
+                  return;
+               }
+            }
+            viewPart.getViewSite().getActionBars().getStatusLineManager().add(new ResServiceContributionItem());
+         }
+      } catch (Exception ex) {
+         // do nothing
       }
    }
 }

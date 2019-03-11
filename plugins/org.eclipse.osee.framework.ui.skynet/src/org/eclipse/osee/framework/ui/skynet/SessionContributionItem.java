@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -28,7 +29,10 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.OverlayImage;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.ViewPart;
 
 /**
  * @author Roberto E. Escobar
@@ -123,5 +127,42 @@ public final class SessionContributionItem extends OseeStatusContributionItem {
          return String.format(ENABLED_TOOLTIP, skynetName, userId, sessionId);
       }
       return DISABLED_TOOLTIP;
+   }
+
+   public static void addToAllViews() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            try {
+               if (PlatformUI.getWorkbench() == null || PlatformUI.getWorkbench().getActiveWorkbenchWindow() == null) {
+                  return;
+               }
+               for (IViewReference viewDesc : PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences()) {
+                  IViewPart viewPart = viewDesc.getView(false);
+                  if (viewPart != null) {
+                     addToViewpart((ViewPart) viewPart);
+                  }
+               }
+            } catch (Exception ex) {
+               // DO NOTHING
+            }
+         }
+      });
+   }
+
+   public static void addToViewpart(ViewPart viewPart) {
+      // Attempt to add to PackageExplorerPart
+      try {
+         if (viewPart != null) {
+            for (IContributionItem item : viewPart.getViewSite().getActionBars().getStatusLineManager().getItems()) {
+               if (item instanceof SessionContributionItem) {
+                  return;
+               }
+            }
+            viewPart.getViewSite().getActionBars().getStatusLineManager().add(new SessionContributionItem());
+         }
+      } catch (Exception ex) {
+         // do nothing
+      }
    }
 }

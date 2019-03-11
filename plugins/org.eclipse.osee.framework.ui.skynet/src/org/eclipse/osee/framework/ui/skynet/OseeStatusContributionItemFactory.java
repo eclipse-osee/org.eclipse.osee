@@ -33,6 +33,8 @@ public final class OseeStatusContributionItemFactory {
       createItem(manager, OseeBuildTypeContributionItem.class);
       createItem(manager, ResServiceContributionItem.class);
       createItem(manager, SessionContributionItem.class);
+      createItem(manager, WorkspaceContributionItem.class);
+      createItem(manager, OseeTargetContributionItem.class);
    }
 
    private static void createItem(IStatusLineManager manager, Class<? extends OseeStatusContributionItem> contribClazz) {

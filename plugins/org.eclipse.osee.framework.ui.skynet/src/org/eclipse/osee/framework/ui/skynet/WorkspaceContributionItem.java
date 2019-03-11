@@ -14,17 +14,18 @@ import java.io.File;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.osee.framework.ui.plugin.OseeStatusContributionItem;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.texteditor.StatusLineContributionItem;
 
-public class WorkspaceContributionItem extends StatusLineContributionItem {
+public class WorkspaceContributionItem extends OseeStatusContributionItem {
    public WorkspaceContributionItem() {
-      super("org.eclipse.osee.framework.ui.skynet.workspace.status", true, getShortPath().length() + 5);
+      super("org.eclipse.osee.framework.ui.skynet.workspace.status", getShortPath().length() + 5);
       setToolTipText(ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString());
       setText(getShortPath());
       setActionHandler(new Action() {
@@ -80,5 +81,25 @@ public class WorkspaceContributionItem extends StatusLineContributionItem {
       } catch (Exception ex) {
          // do nothing
       }
+   }
+
+   @Override
+   protected String getEnabledToolTip() {
+      return null;
+   }
+
+   @Override
+   protected String getDisabledToolTip() {
+      return null;
+   }
+
+   @Override
+   protected Image getEnabledImage() {
+      return null;
+   }
+
+   @Override
+   protected Image getDisabledImage() {
+      return null;
    }
 }

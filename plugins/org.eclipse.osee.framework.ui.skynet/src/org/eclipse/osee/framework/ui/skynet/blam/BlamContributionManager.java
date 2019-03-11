@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
- 
+
 package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.util.Collection;
@@ -86,7 +86,7 @@ public class BlamContributionManager implements IXNavigateCommonItem {
    public void createCommonSection(List<XNavigateItem> items, List<String> excludeSectionIds) {
       Map<String, XNavigateItem> nameToParent = new HashMap<>();
       XNavigateItem blamOperationItems = new XNavigateItem(null, "Blam Operations", FrameworkImage.BLAM);
-      String target = System.getProperty("osee.target");
+      String target = OseeProperties.getTarget();
       boolean admin = SystemGroup.OseeAdmin.isCurrentUserMember();
       for (AbstractBlam blamOperation : getBlamOperations()) {
          if ("all".equals(

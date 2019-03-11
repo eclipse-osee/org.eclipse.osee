@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
@@ -220,8 +221,15 @@ public class OseeProperties {
       return org.eclipse.osee.framework.jdk.core.util.Collections.toString("\n", list);
    }
 
+   @NonNull
    public static String getTarget() {
-      return System.getProperty(OSEE_TARGET);
+      String target = System.getProperty(OSEE_TARGET);
+
+      if (Strings.isInValid(target)) {
+         return "all";
+      } else {
+         return target;
+      }
    }
 
    public static boolean isTargetAll() {
