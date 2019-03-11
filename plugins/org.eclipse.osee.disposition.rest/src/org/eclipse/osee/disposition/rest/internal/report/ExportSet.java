@@ -18,10 +18,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.disposition.model.Discrepancy;
@@ -293,12 +293,14 @@ public class ExportSet {
          Object[] row = new String[CoverageLevel.values().length + 1];
          row[0] = "All Coverage Methods";
 
+         int index = 1;
          // send correct numbers according to level for second param
-         final AtomicInteger indexForLambda = new AtomicInteger(1);
-         levelsInSet.forEach(level -> {
-            row[indexForLambda.getAndIncrement()] = getPercent(levelToCoveredTotalCount.get(level).getValue(),
-               levelToTotalCount.get(level).getValue(), false);
-         });
+         Iterator<CoverageLevel> iterator = levelsInSet.iterator();
+         while (iterator.hasNext()) {
+            CoverageLevel lvl = iterator.next();
+            row[index++] =
+               getPercent(levelToCoveredTotalCount.get(lvl).getValue(), levelToTotalCount.get(lvl).getValue(), false);
+         }
          sheetWriter.writeRow(row);
 
          // Try to get Resolution from Level A if available, otherwise get from C
@@ -312,14 +314,16 @@ public class ExportSet {
          }
 
          for (String resolution : resolutionTypes) {
-            AtomicInteger index1 = new AtomicInteger(0);
-            row[index1.getAndIncrement()] = resolutionsValueToText.containsKey(resolution) ? resolutionsValueToText.get(
+            int index1 = 0;
+            row[index1++] = resolutionsValueToText.containsKey(resolution) ? resolutionsValueToText.get(
                resolution) : "Resolution not in Config--" + resolution;
-            levelsInSet.forEach(level -> {
-               row[index1.getAndIncrement()] =
-                  getPercent(levelToResolutionTypesToCount.get(level).get(resolution).getValue(),
-                     levelToTotalCount.get(level).getValue(), false);
-            });
+
+            Iterator<CoverageLevel> it = levelsInSet.iterator();
+            while (it.hasNext()) {
+               CoverageLevel lvl = it.next();
+               row[index1++] = getPercent(levelToResolutionTypesToCount.get(lvl).get(resolution).getValue(),
+                  levelToTotalCount.get(lvl).getValue(), false);
+            }
             sheetWriter.writeRow(row);
          }
 
@@ -339,7 +343,7 @@ public class ExportSet {
             units = leveltoUnitToCovered.get(CoverageLevel.C).keySet();
          }
 
-         int index = 0;
+         index = 0;
          for (String unit : units) {
             index = 0;
             row2[index++] = unit;
