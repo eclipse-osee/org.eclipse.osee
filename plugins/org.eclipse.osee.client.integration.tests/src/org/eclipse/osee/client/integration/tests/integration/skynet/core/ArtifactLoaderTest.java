@@ -78,7 +78,7 @@ public class ArtifactLoaderTest {
     * Another interesting side-effect, is this test also gives a repeatable case for duplicate relation loading. These
     * are caught by the SevereLoggingMonitor.
     */
-   @Test(timeout = 10000)
+   @Test(timeout = 20000)
    public void testThreadSafeLoading() throws Exception {
       // Create some software artifacts
       SkynetTransaction transaction = TransactionManager.createTransaction(COMMON, "ArtifactLoaderTest");
