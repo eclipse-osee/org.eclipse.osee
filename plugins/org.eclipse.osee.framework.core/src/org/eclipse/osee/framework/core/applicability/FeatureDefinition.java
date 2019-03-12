@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.core.applicability;
 
 import java.util.List;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author Donald G. Dunne

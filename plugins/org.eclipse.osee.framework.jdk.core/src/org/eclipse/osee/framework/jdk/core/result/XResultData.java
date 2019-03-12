@@ -16,11 +16,11 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Used to log Info, Warning and Errors to multiple locations (logger, stderr/out and XResultView). Upon completion, a

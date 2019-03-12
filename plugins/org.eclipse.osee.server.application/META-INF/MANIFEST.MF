@@ -8,6 +8,7 @@ Service-Component: OSGI-INF/*.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: javax.ws.rs,
  javax.ws.rs.core,
+ com.fasterxml.jackson.annotation,
  org.codehaus.jackson.annotate,
  org.codehaus.jackson.map,
  org.eclipse.osee.activity.api,

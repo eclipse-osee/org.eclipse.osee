@@ -7,6 +7,7 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: javax.ws.rs.core,
  org.codehaus.jackson.annotate,
+ com.fasterxml.jackson.annotation,
  org.codehaus.jackson.map.annotate,
  org.codehaus.jackson.map.ser,
  org.codehaus.jackson.map.ser.std,
