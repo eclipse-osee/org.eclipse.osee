@@ -27,6 +27,8 @@ public class VersionLabelProvider extends LabelProvider {
 
    private static Image releasedVersion;
    private static Image lockedVersion;
+   public static final String CLEAR = "--clear--";
+
 
    @Override
    public String getText(Object element) {
@@ -41,6 +43,9 @@ public class VersionLabelProvider extends LabelProvider {
             str += "   (Released)";
          }
          return str;
+      }
+      else if(element instanceof String && element.equals(CLEAR)){
+    	 return (String) element;
       }
       return "Unknown element type";
    }
