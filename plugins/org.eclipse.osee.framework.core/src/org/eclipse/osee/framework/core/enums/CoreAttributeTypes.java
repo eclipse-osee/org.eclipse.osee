@@ -87,6 +87,7 @@ public final class CoreAttributeTypes {
    public static final AttributeTypeToken SoftwareControlCategory = AttributeTypeToken.valueOf(1958401980089733639L, "Software Control Category");
    public static final AttributeTypeToken SoftwareControlCategoryRationale = AttributeTypeToken.valueOf(750929222178534710L, "Software Control Category Rationale");
    public static final AttributeTypeToken SoftwareSafetyImpact = AttributeTypeToken.valueOf(8318805403746485981L, "Software Safety Impact");
+   public static final AttributeTypeToken SafetyImpact = AttributeTypeToken.valueOf(1684721504606847095L, "Safety Impact");
    public static final AttributeTypeToken State = AttributeTypeToken.valueOf(1152921504606847070L, "State");
    public static final AttributeTypeToken StaticId = AttributeTypeToken.valueOf(1152921504606847095L, "Static Id");
    public static final AttributeTypeToken Street = AttributeTypeToken.valueOf(1152921504606847069L, "Street");

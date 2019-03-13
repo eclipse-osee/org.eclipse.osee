@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.api;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -29,6 +30,7 @@ public interface ImportEndpoint {
 
    @POST
    @Path("{branch}/word")
+   @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
    TransactionToken importWord(@PathParam("branch") BranchId branch, @DefaultValue("-1") @QueryParam("wordDoc") String wordURI, @QueryParam("parentArtifact") ArtifactId parent);
 }

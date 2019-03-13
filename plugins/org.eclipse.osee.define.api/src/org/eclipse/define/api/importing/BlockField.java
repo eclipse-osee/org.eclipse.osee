@@ -40,6 +40,14 @@ public class BlockField {
       return match;
    }
 
+   public void appendContent(String content, boolean first) {
+      String newline = "";
+      if (!first) {
+         newline = "\n";
+      }
+      data = data + newline + content;
+   }
+
    public String getImportTypeName() {
       return bft.getName();
    }

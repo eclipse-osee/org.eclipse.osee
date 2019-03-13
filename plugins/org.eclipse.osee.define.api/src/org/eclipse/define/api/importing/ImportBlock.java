@@ -80,4 +80,21 @@ public abstract class ImportBlock implements Named {
       }
       return roughArt;
    }
+
+   public void addText(String text) {
+      BlockField textAttr = null;
+      for (BlockField attr : attrs) {
+         if (attr.getImportTypeName().equals("Text")) {
+            textAttr = attr;
+         }
+      }
+      if (textAttr == null) {
+         textAttr = DoorsImportFieldTokens.blockAttrText.getNewParser();
+         textAttr.appendContent(text, true);
+         attrs.add(textAttr);
+      } else {
+         textAttr.appendContent(text, false);
+      }
+   }
+
 }

@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
  * @author David W. Miller
  */
 public final class DoorsImportFieldTokens {
-   private static final String BLOCK_ATTR_REGEX = "^[^:]+:\\s*(.*)";
+   private static final String BLOCK_ATTR_REGEX = "^[^:]+:(?:\\s|[^\\p{ASCII}])*(.*)";
    private static final String IDEN_REGEX = "^Object I[dD].*";
    private static final String LEVE_REGEX = "^Object Leve.*";
    private static final String TYPE_REGEX = "^Object Type.*";
