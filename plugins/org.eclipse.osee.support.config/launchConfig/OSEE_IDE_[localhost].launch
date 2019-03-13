@@ -28,7 +28,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -debug -perspective org.eclipse.osee.OseePerspective"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024M&#13;&#10;-Dosee.log.default=INFO&#13;&#10;-Dosee.application.server=http://localhost:8089&#13;&#10;-Dlogback.configurationFile=C:\UserData\logback-dev.xml&#13;&#10;-Dosee.dwa.url=https://doorsdwa-sw-pd1.ca.boeing.com:8444/dwa"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024M&#13;&#10;-Dosee.log.default=INFO&#13;&#10;-Dosee.application.server=http://localhost:8089&#13;&#10;-Dlogback.configurationFile=C:\UserData\logback-dev.xml"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="org.eclipse.osee.framework.ui.product.osee"/>
 <booleanAttribute key="restart" value="false"/>
