@@ -65,21 +65,18 @@ public class WfeTargetedVersionHeader extends Composite {
 
                @Override
                public void linkActivated(HyperlinkEvent e) {
-                  try {
-                     if (editor.isDirty()) {
-                        editor.doSave(null);
-                     }
-                     if (TargetedVersionColumnUI.promptChangeVersion(sma,
-                        AtsClientService.get().getUserService().isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
-                        VersionLockedType.UnLocked)) {
-                        updateLabel(sma);
-                        editor.onDirtied();
-                     }
-                  } catch (Exception ex) {
-                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+                  if (editor.isDirty()) {
+                     editor.doSave(null);
                   }
+                  if (chooseVersion(sma)) {
+                     updateLabel(sma);
+
+                  }
+
+                  editor.onDirtied();
                }
             });
+
          } else {
             origLabel = editor.getToolkit().createLabel(this, TARGET_VERSION);
             origLabel.setLayoutData(new GridData());
@@ -95,6 +92,25 @@ public class WfeTargetedVersionHeader extends Composite {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
+   }
+
+   public static boolean chooseVersion(final AbstractWorkflowArtifact sma) {
+      try {
+         WorkflowEditor editor = WorkflowEditor.getWorkflowEditor(sma);
+
+         if (editor.isDirty()) {
+            editor.doSave(null);
+         }
+         if (TargetedVersionColumnUI.promptChangeVersion(sma,
+            AtsClientService.get().getUserService().isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
+            VersionLockedType.UnLocked)) {
+
+            return true;
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return false;
    }
 
    private void updateLabel(AbstractWorkflowArtifact sma) {

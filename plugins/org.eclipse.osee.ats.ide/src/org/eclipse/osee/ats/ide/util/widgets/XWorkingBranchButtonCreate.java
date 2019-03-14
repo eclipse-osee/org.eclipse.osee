@@ -11,7 +11,9 @@
 package org.eclipse.osee.ats.ide.util.widgets;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
+import org.eclipse.osee.ats.ide.editor.WfeTargetedVersionHeader;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.util.Result;
@@ -44,6 +46,10 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
             refreshEnablement(button);
             // Create working branch
             Result result = AtsBranchUtil.createWorkingBranch_Validate(getTeamArt());
+            boolean appropriate = selectTargetedVersionIfAppropriate(result, button);
+            if (appropriate) {
+               return;
+            }
             if (result.isFalse()) {
                AWorkbench.popup(result);
                disableAll = false;
@@ -70,6 +76,27 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
             }
          }
       });
+   }
+
+   private boolean selectTargetedVersionIfAppropriate(Result result, Button button) {
+      boolean returnVal = false;
+      if (result.getText().equals(AtsBranchUtil.PARENT_BRANCH_CAN_NOT_BE_DETERMINED)) {
+         returnVal = true;
+         IAtsVersion version = AtsClientService.get().getVersionService().getTargetedVersion(getTeamArt());
+         if (version == null) {
+            MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), "Create Working Branch", null,
+               AtsBranchUtil.PARENT_BRANCH_CAN_NOT_BE_DETERMINED, MessageDialog.ERROR,
+               new String[] {"Select Targeted Version", "Cancel"}, 0);
+            if (dialog.open() == 0) {
+               if (!(WfeTargetedVersionHeader.chooseVersion(getTeamArt()))) {
+                  refreshEnablement(button);
+               }
+            } else {
+               refreshEnablement(button);
+            }
+         }
+      }
+      return returnVal;
    }
 
    @Override

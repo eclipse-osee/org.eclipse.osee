@@ -51,6 +51,9 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 public class AtsBranchUtil {
 
+   public static final String PARENT_BRANCH_CAN_NOT_BE_DETERMINED =
+      "Parent Branch can not be determined.\n\nPlease specify parent branch through Targeted Version or Team Definition.\n\n Contact your team lead to configure this.";
+
    /**
     * @return true if one or more reviews were created
     */
@@ -100,8 +103,7 @@ public class AtsBranchUtil {
          }
          BranchId parentBranch = AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamWf);
          if (parentBranch == null || parentBranch.isInvalid()) {
-            return new Result(
-               "Parent Branch can not be determined.\n\nPlease specify " + "parent branch through Version Artifact or Team Definition Artifact.\n\n" + "Contact your team lead to configure this.");
+            return new Result(PARENT_BRANCH_CAN_NOT_BE_DETERMINED);
          }
          Result result = AtsClientService.get().getBranchService().isCreateBranchAllowed(teamWf);
          if (result.isFalse()) {

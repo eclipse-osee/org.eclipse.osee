@@ -20,10 +20,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
+import org.eclipse.osee.ats.ide.editor.WfeTargetedVersionHeader;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -177,6 +179,10 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
             refreshEnablement();
             // Create working branch
             Result result = AtsBranchUtil.createWorkingBranch_Validate(teamArt);
+            boolean appropriate = selectTargetedVersionIfAppropriate(result);
+            if (appropriate) {
+               return;
+            }
             if (result.isFalse()) {
                AWorkbench.popup(result);
                enablement.refresh();
@@ -203,6 +209,29 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
                enablement.refresh();
                refreshEnablement();
             }
+         }
+
+         private boolean selectTargetedVersionIfAppropriate(Result result) {
+            boolean returnVal = false;
+            if (result.getText().equals(AtsBranchUtil.PARENT_BRANCH_CAN_NOT_BE_DETERMINED)) {
+               returnVal = true;
+               IAtsVersion version = AtsClientService.get().getVersionService().getTargetedVersion(teamArt);
+               if (version == null) {
+                  MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), "Create Working Branch", null,
+                     AtsBranchUtil.PARENT_BRANCH_CAN_NOT_BE_DETERMINED, MessageDialog.ERROR,
+                     new String[] {"Select Targeted Version", "Cancel"}, 0);
+                  if (dialog.open() == 0) {
+                     if (!WfeTargetedVersionHeader.chooseVersion(teamArt)) {
+                        enablement.refresh();
+                        refreshEnablement();
+                     }
+                  } else {
+                     enablement.refresh();
+                     refreshEnablement();
+                  }
+               }
+            }
+            return returnVal;
          }
       });
 
