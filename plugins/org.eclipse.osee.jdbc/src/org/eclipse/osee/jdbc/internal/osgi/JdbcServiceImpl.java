@@ -60,7 +60,7 @@ public class JdbcServiceImpl implements JdbcService {
 
    public void start(Map<String, Object> props) {
       // update() eventually calls org.hsqldb.server.Server.start() which hangs under certain unknown circumstances so keep that from halting OSGi startup
-      executorAdmin.submitAndWait("Start JDBC service", () -> update(props), 6, TimeUnit.SECONDS);
+      executorAdmin.submitAndWait("Start JDBC service", () -> update(props), 20, TimeUnit.SECONDS);
    }
 
    public void stop(Map<String, Object> props) {
