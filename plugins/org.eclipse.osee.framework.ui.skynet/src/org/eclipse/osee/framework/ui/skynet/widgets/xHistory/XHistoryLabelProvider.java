@@ -163,14 +163,28 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Color getBackground(Object element, int columnIndex) {
-      if (historyXViewer.isSortByTransaction()) {
+      Color searchColor = null;
+      try {
+         if (historyXViewer.isSearch()) {
+            searchColor = getSearchBackground(element, columnIndex);
+         }
+      } catch (Exception ex) {
+         //do nothing
+      }
+
+      if (historyXViewer.isSortByTransaction() && searchColor == null) {
          Change change = (Change) element;
          long transactionId = change.getTxDelta().getEndTx().getId();
          if (historyXViewer.getXHistoryViewer().isShaded(transactionId)) {
             return getLightGreyColor();
+         } else {
+            return super.getBackground(element, columnIndex);
          }
+      } else if (searchColor != null) {
+         return searchColor;
+      } else {
+         return super.getBackground(element, columnIndex);
       }
-      return super.getBackground(element, columnIndex);
    }
 
    private Color getLightGreyColor() {
