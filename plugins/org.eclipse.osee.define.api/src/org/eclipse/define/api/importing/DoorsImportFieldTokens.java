@@ -24,6 +24,12 @@ public final class DoorsImportFieldTokens {
    private static final String NUMB_REGEX = "^Object Numb.*";
    private static final String REQ_REGEX = "^Requirement.*";
    private static final String TEXT_REGEX = "^Object Text.*";
+   private static final String STATE_REGEX = "^Object State.*";
+   private static final String ADDED_REGEX = "^Object Added.*";
+   private static final String MODIFIED_REGEX = "^Object Modified.*";
+   private static final String DELETED_REGEX = "^Object Del.*";
+   private static final String COMMENTS_REGEX = "^Comments.*";
+
    private static final String OBJECT_TEXT_REGEX = "(.*?)<w:r>(.*?)</w:r>(.*)";
 
    // @formatter:off
@@ -34,5 +40,10 @@ public final class DoorsImportFieldTokens {
    public static final BlockFieldToken blockAttrRequirement = BlockFieldToken.valueOf(5, "Requirement", REQ_REGEX, BLOCK_ATTR_REGEX, BlockField::new);
    public static final BlockFieldToken blockAttrType =        BlockFieldToken.valueOf(6, "Type", TYPE_REGEX, BLOCK_ATTR_REGEX, BlockField::new);
    public static final BlockFieldToken blockAttrText =        BlockFieldToken.valueOf(7, "Text", TEXT_REGEX, OBJECT_TEXT_REGEX, BlockFieldText::new, CoreAttributeTypes.WordTemplateContent);
+   public static final BlockFieldToken blockAttrState =       BlockFieldToken.valueOf(8, "State", STATE_REGEX, OBJECT_TEXT_REGEX, BlockField::new);
+   public static final BlockFieldToken blockAttrAdded =       BlockFieldToken.valueOf(9, "Added", ADDED_REGEX, OBJECT_TEXT_REGEX, BlockField::new);
+   public static final BlockFieldToken blockAttrModified =    BlockFieldToken.valueOf(10, "Modified", MODIFIED_REGEX, OBJECT_TEXT_REGEX, BlockField::new);
+   public static final BlockFieldToken blockAttrDeleted =     BlockFieldToken.valueOf(11, "Deleted", DELETED_REGEX, OBJECT_TEXT_REGEX, BlockField::new);
+   public static final BlockFieldToken blockAttrComments =    BlockFieldToken.valueOf(12, "Comments", COMMENTS_REGEX, OBJECT_TEXT_REGEX, BlockField::new, CoreAttributeTypes.Annotation, true);
    // @formatter:on
 }
