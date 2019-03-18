@@ -30,6 +30,8 @@ Import-Package: com.google.common.cache,
  org.apache.cxf.transport.http,
  org.apache.cxf.transports.http.configuration,
  org.codehaus.jackson.jaxrs,
+ com.fasterxml.jackson.jaxrs.base,
+ com.fasterxml.jackson.jaxrs.json,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.jaxrs

@@ -10,6 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.script.impl;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.common.collect.Iterables;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,15 +34,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeSet;
 import javax.script.ScriptContext;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.Version;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.SerializerProvider;
-import org.codehaus.jackson.map.module.SimpleModule;
-import org.codehaus.jackson.util.DefaultPrettyPrinter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -99,17 +101,16 @@ public class JsonOutputHandler extends OrcsScriptOutputHandler {
       try {
          ObjectMapper mapper = new ObjectMapper();
          mapper.setDateFormat(new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a"));
-         mapper.configure(SerializationConfig.Feature.SORT_PROPERTIES_ALPHABETICALLY, true);
-         mapper.configure(SerializationConfig.Feature.WRAP_EXCEPTIONS, true);
-         mapper.configure(SerializationConfig.Feature.WRITE_EMPTY_JSON_ARRAYS, false);
-         mapper.configure(SerializationConfig.Feature.WRITE_NULL_MAP_VALUES, true);
+         mapper.configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true);
+         mapper.configure(DeserializationFeature.WRAP_EXCEPTIONS, true);
+         mapper.setSerializationInclusion(Include.NON_EMPTY);
 
-         SimpleModule module = new SimpleModule("DataProxy", new Version(1, 0, 0, null));
+         SimpleModule module = new SimpleModule("DataProxy", new Version(1, 0, 0, null, null, null));
          module.addSerializer(DataProxy.class, new DataProxySerializer(DataProxy.class));
          mapper.registerModule(module);
 
-         JsonFactory jsonFactory = mapper.getJsonFactory();
-         writer = jsonFactory.createJsonGenerator(context.getWriter());
+         JsonFactory jsonFactory = mapper.getFactory();
+         writer = jsonFactory.createGenerator(context.getWriter());
          writer.setPrettyPrinter(new DefaultPrettyPrinter());
 
          writer.writeStartObject();
@@ -398,7 +399,7 @@ public class JsonOutputHandler extends OrcsScriptOutputHandler {
       }
    }
 
-   private static final class DataProxySerializer extends org.codehaus.jackson.map.ser.std.SerializerBase<DataProxy> {
+   private static final class DataProxySerializer extends com.fasterxml.jackson.databind.ser.std.StdSerializer<DataProxy> {
 
       protected DataProxySerializer(Class<DataProxy> t) {
          super(t);

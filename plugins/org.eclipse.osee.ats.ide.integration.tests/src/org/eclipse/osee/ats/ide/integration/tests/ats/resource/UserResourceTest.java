@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.resource;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.junit.Assert;

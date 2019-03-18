@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.io.InputSupplier;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import org.codehaus.jackson.type.TypeReference;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;

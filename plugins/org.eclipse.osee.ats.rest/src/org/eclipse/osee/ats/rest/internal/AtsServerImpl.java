@@ -83,8 +83,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    private volatile boolean emailEnabled = true;
    private boolean loggedNotificationDisabled = false;
    private final List<IAtsNotifierServer> notifiers = new CopyOnWriteArrayList<>();
-   private final Map<String, IAtsDatabaseConversion> externalConversions =
-      new ConcurrentHashMap<>();
+   private final Map<String, IAtsDatabaseConversion> externalConversions = new ConcurrentHashMap<>();
    private AtsActionEndpointApi actionEndpoint;
    private ExecutorAdmin executorAdmin;
 

@@ -6,11 +6,15 @@ Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.disposition.model
-Import-Package: org.codehaus.jackson,
+Import-Package: com.fasterxml.jackson.core,
+ com.fasterxml.jackson.annotation,
+ com.fasterxml.jackson.databind,
+ com.fasterxml.jackson.databind.annotation,
+ com.fasterxml.jackson.databind.deser.std,
+ org.codehaus.jackson,
  org.codehaus.jackson.annotate,
  org.codehaus.jackson.map,
  org.codehaus.jackson.map.annotate,
- com.fasterxml.jackson.annotation,
  org.codehaus.jackson.map.deser.std,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,

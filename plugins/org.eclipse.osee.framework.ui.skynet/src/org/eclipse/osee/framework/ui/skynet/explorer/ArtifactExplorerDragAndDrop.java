@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.explorer;
 
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
+import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.File;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -18,7 +19,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import org.apache.commons.io.FilenameUtils;
-import org.codehaus.jackson.type.TypeReference;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;

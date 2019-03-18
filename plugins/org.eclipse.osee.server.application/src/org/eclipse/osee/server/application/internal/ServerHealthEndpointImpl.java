@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.server.application.internal;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URL;
@@ -21,7 +22,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;

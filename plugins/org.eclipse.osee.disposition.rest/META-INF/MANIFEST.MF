@@ -7,11 +7,14 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
 Import-Package: 
+ com.fasterxml.jackson.databind,
  com.google.common.collect,
  javax.annotation.security,
  javax.ws.rs,
  javax.ws.rs.core,
  javax.ws.rs.ext,
+ com.fasterxml.jackson.core,
+ com.fasterxml.jackson.core.type,
  org.codehaus.jackson,
  org.codehaus.jackson.annotate,
  org.codehaus.jackson.map,

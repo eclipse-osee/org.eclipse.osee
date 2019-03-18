@@ -10,6 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs;
 
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.jaxrs.base.JsonMappingExceptionMapper;
+import com.fasterxml.jackson.jaxrs.base.JsonParseExceptionMapper;
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,16 +29,6 @@ import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 import javax.ws.rs.ext.Provider;
-import org.codehaus.jackson.Version;
-import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
-import org.codehaus.jackson.jaxrs.JsonMappingExceptionMapper;
-import org.codehaus.jackson.jaxrs.JsonParseExceptionMapper;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.JsonSerializer;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.module.SimpleModule;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -108,28 +109,26 @@ public class JacksonFeature implements Feature {
    private static JacksonJsonProvider newJacksonJsonProvider() {
       ObjectMapper objectMapper = new ObjectMapper();
 
-      objectMapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, true);
-      objectMapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
-      objectMapper.configure(SerializationConfig.Feature.WRAP_EXCEPTIONS, true);
-      objectMapper.configure(SerializationConfig.Feature.WRITE_EMPTY_JSON_ARRAYS, true);
-      objectMapper.configure(SerializationConfig.Feature.CAN_OVERRIDE_ACCESS_MODIFIERS, true);
-      objectMapper.configure(SerializationConfig.Feature.AUTO_DETECT_FIELDS, true);
-      objectMapper.configure(SerializationConfig.Feature.AUTO_DETECT_GETTERS, true);
-      objectMapper.configure(SerializationConfig.Feature.AUTO_DETECT_IS_GETTERS, true);
-      objectMapper.configure(SerializationConfig.Feature.USE_ANNOTATIONS, true);
-      objectMapper.configure(SerializationConfig.Feature.WRAP_ROOT_VALUE, false);
-      objectMapper.configure(SerializationConfig.Feature.WRITE_CHAR_ARRAYS_AS_JSON_ARRAYS, true);
+      objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+      objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+      objectMapper.configure(SerializationFeature.WRAP_EXCEPTIONS, true);
+      objectMapper.configure(MapperFeature.CAN_OVERRIDE_ACCESS_MODIFIERS, true);
+      objectMapper.configure(MapperFeature.AUTO_DETECT_FIELDS, true);
+      objectMapper.configure(MapperFeature.AUTO_DETECT_GETTERS, true);
+      objectMapper.configure(MapperFeature.AUTO_DETECT_IS_GETTERS, true);
+      objectMapper.configure(MapperFeature.USE_ANNOTATIONS, true);
+      objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+      objectMapper.configure(SerializationFeature.WRITE_CHAR_ARRAYS_AS_JSON_ARRAYS, true);
 
-      objectMapper.configure(DeserializationConfig.Feature.CAN_OVERRIDE_ACCESS_MODIFIERS, true);
-      objectMapper.configure(DeserializationConfig.Feature.AUTO_DETECT_FIELDS, true);
-      objectMapper.configure(DeserializationConfig.Feature.AUTO_DETECT_SETTERS, true);
-      objectMapper.configure(DeserializationConfig.Feature.AUTO_DETECT_CREATORS, true);
-      objectMapper.configure(DeserializationConfig.Feature.USE_ANNOTATIONS, true);
-      objectMapper.configure(DeserializationConfig.Feature.USE_JAVA_ARRAY_FOR_JSON_ARRAY, true);
-      objectMapper.configure(DeserializationConfig.Feature.UNWRAP_ROOT_VALUE, false);
-      objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+      objectMapper.configure(MapperFeature.AUTO_DETECT_FIELDS, true);
+      objectMapper.configure(MapperFeature.AUTO_DETECT_SETTERS, true);
+      objectMapper.configure(MapperFeature.AUTO_DETECT_CREATORS, true);
+      objectMapper.configure(MapperFeature.USE_ANNOTATIONS, true);
+      objectMapper.configure(DeserializationFeature.USE_JAVA_ARRAY_FOR_JSON_ARRAY, true);
+      objectMapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, false);
+      objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-      SimpleModule module = new SimpleModule("OSEE", new Version(1, 0, 0, ""));
+      SimpleModule module = new SimpleModule("OSEE", new Version(1, 0, 0, "", "", ""));
 
       module.addDeserializer(ApplicabilityToken.class, new NamedIdDeserializer<>(ApplicabilityToken::create));
       module.addDeserializer(ArtifactToken.class, new NamedIdDeserializer<ArtifactToken>(ArtifactToken::valueOf));

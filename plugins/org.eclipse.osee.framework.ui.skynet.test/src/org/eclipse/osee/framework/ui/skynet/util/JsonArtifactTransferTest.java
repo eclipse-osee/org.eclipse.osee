@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.codehaus.jackson.type.TypeReference;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;

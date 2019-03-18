@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.writers;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
@@ -21,8 +23,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -46,7 +46,7 @@ public class ArtifactJsonWriter implements MessageBodyWriter<Object> {
    }
 
    public void start() {
-      jsonFactory = JsonUtil.getMapper().getJsonFactory();
+      jsonFactory = JsonUtil.getMapper().getFactory();
    }
 
    public void stop() {
@@ -87,7 +87,7 @@ public class ArtifactJsonWriter implements MessageBodyWriter<Object> {
       if (type.isAssignableFrom(ArtifactReadable.class)) {
          ArtifactReadable artifact = (ArtifactReadable) object;
          try {
-            writer = jsonFactory.createJsonGenerator(entityStream);
+            writer = jsonFactory.createGenerator(entityStream);
             //         writer.setPrettyPrinter(new DefaultPr)
             writer.writeStartObject();
             writer.writeNumberField("uuid", artifact.getUuid());

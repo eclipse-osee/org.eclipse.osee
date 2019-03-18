@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.util;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import java.io.StringWriter;
 import java.util.Collection;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -34,7 +34,7 @@ public class ActionFactoryOperations {
       try {
          JsonGenerator writer = null;
          StringWriter stringWriter = new StringWriter();
-         writer = jsonFactory.createJsonGenerator(stringWriter);
+         writer = jsonFactory.createGenerator(stringWriter);
          if (workItems.size() > 1) {
             writer.writeStartArray();
          }

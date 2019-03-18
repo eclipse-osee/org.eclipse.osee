@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.util;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Map;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -78,7 +78,7 @@ public class JsonUtil {
    }
 
    public static JsonFactory getFactory() {
-      return getMapperZ().getJsonFactory();
+      return getMapperZ().getFactory();
    }
 
    /**

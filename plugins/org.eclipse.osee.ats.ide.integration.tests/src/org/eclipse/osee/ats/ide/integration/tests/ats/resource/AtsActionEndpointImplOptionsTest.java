@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.resource;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;

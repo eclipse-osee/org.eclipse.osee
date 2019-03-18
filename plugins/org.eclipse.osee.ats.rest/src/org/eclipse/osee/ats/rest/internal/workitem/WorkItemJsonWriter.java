@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.workitem;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
@@ -21,10 +25,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonProcessingException;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -108,7 +108,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
    public void writeTo(IAtsWorkItem config, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
       JsonGenerator writer = null;
       try {
-         writer = jsonFactory.createJsonGenerator(entityStream);
+         writer = jsonFactory.createGenerator(entityStream);
          addWorkItem(atsApi, orcsApi, config, annotations, writer, matches(IdentityView.class, annotations),
             getAttributeTypes(), Collections.emptyList());
       } finally {

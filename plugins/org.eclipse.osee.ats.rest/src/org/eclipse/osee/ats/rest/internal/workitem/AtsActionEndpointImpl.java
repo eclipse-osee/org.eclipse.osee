@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.rest.internal.workitem;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import com.fasterxml.jackson.core.JsonFactory;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +36,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import org.codehaus.jackson.JsonFactory;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;

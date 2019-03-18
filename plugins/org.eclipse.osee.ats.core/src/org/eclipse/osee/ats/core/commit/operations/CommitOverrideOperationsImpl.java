@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.commit.operations;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.commit.CommitOverride;
 import org.eclipse.osee.ats.api.commit.CommitOverrideOperations;

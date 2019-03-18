@@ -10,19 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.SerializerProvider;
-import org.codehaus.jackson.map.TypeSerializer;
-import org.codehaus.jackson.map.ser.std.SerializerBase;
 
 /**
  * @author Donald G. Dunne
  */
-public class TransactionTokenSerializer extends SerializerBase<TransactionToken> {
+public class TransactionTokenSerializer extends StdSerializer<TransactionToken> {
 
    public TransactionTokenSerializer() {
       super(TransactionToken.class);

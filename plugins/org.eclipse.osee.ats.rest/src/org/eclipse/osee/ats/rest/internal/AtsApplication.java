@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal;
 
+import com.fasterxml.jackson.core.JsonFactory;
 import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
-import org.codehaus.jackson.JsonFactory;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.agile.AgileEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.agile.operations.SprintDataUiOperation;

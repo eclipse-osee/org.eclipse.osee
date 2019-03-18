@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.script.impl;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonGenerator;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Map;
 import javax.script.ScriptContext;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonGenerator;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.CharacterDataProxy;
 

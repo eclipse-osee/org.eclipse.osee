@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.util.chart;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.ILineChart;

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal.importer;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * @author Dominic A. Guss

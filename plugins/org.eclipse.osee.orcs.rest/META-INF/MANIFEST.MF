@@ -7,7 +7,9 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*.xml
 Bundle-ActivationPolicy: lazy
-Import-Package: com.google.common.base,
+Import-Package: com.fasterxml.jackson.core,
+ com.fasterxml.jackson.databind,
+ com.google.common.base,
  com.google.common.collect,
  com.google.common.net,
  javax.ws.rs,

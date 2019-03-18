@@ -25,5 +25,8 @@ Import-Package: javax.annotation.security,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.result,
  org.eclipse.osee.framework.jdk.core.type,
- org.eclipse.osee.framework.jdk.core.util
+ org.eclipse.osee.framework.jdk.core.util,
+ com.fasterxml.jackson.databind,
+ com.fasterxml.jackson.databind.annotation,
+ com.fasterxml.jackson.annotation
 Require-Bundle: org.codehaus.jackson.mapper

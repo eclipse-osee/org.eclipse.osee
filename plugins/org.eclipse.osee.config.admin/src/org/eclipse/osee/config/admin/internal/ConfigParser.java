@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.config.admin.internal;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map.Entry;
-import org.codehaus.jackson.JsonNode;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.osgi.framework.Constants;
@@ -38,7 +38,7 @@ public class ConfigParser {
          for (JsonNode serviceNode : services) {
             Hashtable<String, Object> properties = new Hashtable<>();
 
-            for (Iterator<Entry<String, JsonNode>> kvPairs = serviceNode.getFields(); kvPairs.hasNext();) {
+            for (Iterator<Entry<String, JsonNode>> kvPairs = serviceNode.fields(); kvPairs.hasNext();) {
                Entry<String, JsonNode> entry = kvPairs.next();
 
                String key = entry.getKey();

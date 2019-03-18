@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.util;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +27,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.codehaus.jackson.JsonNode;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoConfig;
@@ -297,7 +297,7 @@ public final class DispoUtil {
    public static <T> List<T> jsonStringToList(String jObj, Class<T> valueType) {
       List<T> toReturn = new ArrayList<>();
       JsonNode node = JsonUtil.readTree(jObj);
-      Iterator<JsonNode> elements = node.getElements();
+      Iterator<JsonNode> elements = node.elements();
       while (elements.hasNext()) {
          toReturn.add(JsonUtil.readValue(elements.next().toString(), valueType));
       }
@@ -307,7 +307,7 @@ public final class DispoUtil {
    public static Map<String, Discrepancy> jsonStringToDiscrepanciesMap(String jObj) {
       Map<String, Discrepancy> toReturn = new HashMap<>();
       JsonNode node = JsonUtil.readTree(jObj);
-      Iterator<JsonNode> elements = node.getElements();
+      Iterator<JsonNode> elements = node.elements();
       while (elements.hasNext()) {
          Discrepancy discrepancy = JsonUtil.readValue(elements.next().toString(), Discrepancy.class);
          toReturn.put(discrepancy.getId(), discrepancy);

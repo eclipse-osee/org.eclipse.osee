@@ -11,8 +11,8 @@
 
 package org.eclipse.osee.framework.jdk.core.type;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.function.Function;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  * @author Ryan D. Brooks

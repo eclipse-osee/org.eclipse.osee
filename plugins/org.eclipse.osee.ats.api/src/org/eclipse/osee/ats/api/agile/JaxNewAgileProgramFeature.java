@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.agile;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.ser.std.ToStringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 
 /**

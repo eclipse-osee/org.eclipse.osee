@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal.importer;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -23,8 +24,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.type.TypeReference;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
@@ -140,7 +139,7 @@ public class TmzImporter implements DispoImporterApi {
 
    private void processTestPointSummary(String json, Map<String, Discrepancy> discrepancies) throws IOException {
       List<TmzChildRecord> childRecords = new LinkedList<>();
-      JsonNode node = JsonUtil.getMapper().readTree(json).get("childRecords");
+      String node = JsonUtil.getMapper().readTree(json).get("childRecords").toString();
       childRecords = JsonUtil.getMapper().readValue(node, new TypeReference<List<TmzChildRecord>>() { //
       });
 

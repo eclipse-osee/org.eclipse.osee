@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.resource;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import java.net.URI;
 import java.util.List;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-import org.codehaus.jackson.JsonNode;
 import org.eclipse.osee.ats.ide.workflow.WorkItemsJsonReader;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;

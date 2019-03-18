@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.task;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.ArrayList;
 import java.util.List;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.ser.std.ToStringSerializer;
 
 /**
  * @author Donald G. Dunne

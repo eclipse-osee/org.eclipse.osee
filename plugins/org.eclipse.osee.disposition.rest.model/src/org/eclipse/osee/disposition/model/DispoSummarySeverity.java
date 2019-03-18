@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.model;
 
-import org.codehaus.jackson.annotate.JsonValue;
-import org.codehaus.jackson.map.annotate.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
