@@ -139,8 +139,8 @@ public final class AtsBranchManager {
             if (BranchManager.hasChanges(branch)) {
                message.append("Warning: Changes have been made on this branch.\n\n");
             }
-            message.append("Are you sure you want to delete the branch: ");
-            message.append(branch);
+            message.append("Are you sure you want to delete the branch? \n\n");
+            message.append("BRANCH NAME: \n\"" + branch + "\"");
 
             isExecutionAllowed =
                MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
