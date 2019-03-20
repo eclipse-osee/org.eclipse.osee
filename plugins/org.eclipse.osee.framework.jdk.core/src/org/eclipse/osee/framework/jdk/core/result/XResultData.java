@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  *
  * @author Donald G. Dunne
  */
+
 public class XResultData {
 
    public static enum Type {
@@ -276,5 +277,4 @@ public class XResultData {
    public void setIds(List<String> ids) {
       this.ids = ids;
    }
-
 }

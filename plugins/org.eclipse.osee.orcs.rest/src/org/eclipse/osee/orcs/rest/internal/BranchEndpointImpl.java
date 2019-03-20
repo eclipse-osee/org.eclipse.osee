@@ -22,8 +22,12 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
@@ -39,6 +43,7 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -243,7 +248,33 @@ public class BranchEndpointImpl implements BranchEndpoint {
       return createBranch(createData, data);
    }
 
+   @Override
+   @POST
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   public XResultData createBranchValidation(NewBranch data) {
+      CreateBranchData branchData = new CreateBranchData();
+      createBranchData(branchData, data);
+      return branchOps.createBranchValidation(branchData);
+   }
+
    private BranchId createBranch(CreateBranchData createData, NewBranch data) {
+      createBranchData(createData, data);
+
+      Branch result = branchOps.createBranch(createData);
+
+      try {
+         activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
+            String.format("Branch Operation Create Branch {branchId: %s, branchName: %s}", createData.getBranch(),
+               data.getBranchName()));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+
+      return result;
+   }
+
+   private void createBranchData(CreateBranchData createData, NewBranch data) {
       createData.setName(data.getBranchName());
       createData.setBranchType(data.getBranchType());
       createData.setCreationComment(data.getCreationComment());
@@ -258,18 +289,6 @@ public class BranchEndpointImpl implements BranchEndpoint {
       createData.setMergeAddressingQueryId(data.getMergeAddressingQueryId());
 
       createData.setTxCopyBranchType(data.isTxCopyBranchType());
-
-      Branch result = branchOps.createBranch(createData);
-
-      try {
-         activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
-            String.format("Branch Operation Create Branch {branchId: %s, branchName: %s}", createData.getBranch(),
-               data.getBranchName()));
-      } catch (OseeCoreException ex) {
-         OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-
-      return result;
    }
 
    @Override

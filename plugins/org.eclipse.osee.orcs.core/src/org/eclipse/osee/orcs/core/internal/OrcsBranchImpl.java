@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.Requirements;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
@@ -66,6 +67,11 @@ public class OrcsBranchImpl implements OrcsBranch {
       branchDataFactory = new BranchDataFactory(queryFactory);
       this.orcsTypes = orcsTypes;
       this.queryFactory = queryFactory;
+   }
+
+   @Override
+   public XResultData createBranchValidation(CreateBranchData branchData) {
+      return branchStore.createBranchValidation(branchData);
    }
 
    @Override
@@ -261,4 +267,5 @@ public class OrcsBranchImpl implements OrcsBranch {
       tx.commit();
       return newBranch;
    }
+
 }
