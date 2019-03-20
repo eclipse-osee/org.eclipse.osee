@@ -21,15 +21,21 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.DeleteBranchOperation;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
+import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
+import org.eclipse.osee.orcs.rest.model.NewBranch;
+import org.eclipse.osee.orcs.rest.model.Transaction;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -84,7 +90,7 @@ public class CreateBranchOperationTest {
    }
 
    /**
-    * expecting really an OseeStateException from CreateBranchOperation
+    * Expecting OseeStateException from CreateBranchOperation
     */
    @Test
    public void test_checkPreconditions_DisallowWorkingBranchCreation() {
@@ -102,9 +108,17 @@ public class CreateBranchOperationTest {
             BranchManager.createWorkingBranch(SAW_Bld_1, method.getQualifiedTestName(), folder);
          BranchManager.setState(workingBranch, state);
 
-         try {
-            BranchManager.createWorkingBranch(workingBranch, getName(workingBranch, "child"), folder);
-         } catch (OseeCoreException ex) {
+         Transaction trans = new Transaction();
+
+         BranchEndpoint branchEndpoint = ServiceUtil.getOseeClient().getBranchEndpoint();
+         NewBranch newBranch = new NewBranch();
+         newBranch.setBranchName(getClass().getSimpleName());
+         newBranch.setAssociatedArtifact(folder);
+         newBranch.setParentBranchId(workingBranch);
+         newBranch.setBranchType(BranchType.WORKING);
+         newBranch.setSourceTransactionId(TransactionToken.SENTINEL);
+         XResultData rd = branchEndpoint.createBranchValidation(newBranch);
+         if (rd.isErrors()) {
             exceptionsCaught++;
          }
 

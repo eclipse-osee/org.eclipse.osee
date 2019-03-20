@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -109,11 +110,14 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       this.buildVersionId = buildVersionId;
    }
 
-   private void checkPreconditions(JdbcConnection connection, BranchId parentBranch, BranchId destinationBranch) {
+   public XResultData checkPreconditions(JdbcConnection connection) {
+      XResultData rd = new XResultData();
+      BranchId parentBranch = newBranchData.getParentBranch();
+      BranchId destinationBranch = newBranchData.getMergeDestinationBranchId();
+
       if (newBranchData.getBranchType().isMergeBranch()) {
          if (jdbcClient.fetch(connection, 0, TEST_MERGE_BRANCH_EXISTENCE, parentBranch, destinationBranch) > 0) {
-            throw new OseeStateException("Existing merge branch detected for [%s] and [%d]", parentBranch,
-               destinationBranch);
+            rd.errorf("Existing merge branch detected for [%s] and [%d]", parentBranch, destinationBranch);
          }
       } else if (!newBranchData.getBranchType().isSystemRootBranch()) {
          ArtifactId associatedArtifactId = newBranchData.getAssociatedArtifact();
@@ -134,24 +138,26 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
                      newBranchData.getAssociatedArtifact(), BranchState.DELETED, BranchState.REBASELINED,
                      BranchType.PORT);
                   if (portcount > 0) {
-                     throw new OseeStateException("Existing port branch creation detected for [%s]",
-                        newBranchData.getName());
+                     rd.errorf("Existing port branch creation detected for [%s]", newBranchData.getName());
                   }
                } else {
-                  throw new OseeStateException("Existing branch creation detected for [%s]-[%s]",
-                     newBranchData.getBranch().getId(), newBranchData.getName());
+                  rd.errorf("Existing branch creation detected for [%s]-[%s]", newBranchData.getBranch().getId(),
+                     newBranchData.getName());
                }
             }
          }
       }
+      return rd;
    }
 
    @Override
    public void handleTxWork(JdbcConnection connection) {
       BranchId parentBranch = newBranchData.getParentBranch();
-      BranchId destinationBranchUuid = newBranchData.getMergeDestinationBranchId();
 
-      checkPreconditions(connection, parentBranch, destinationBranchUuid);
+      XResultData rd = checkPreconditions(connection);
+      if (rd.isErrors()) {
+         throw new OseeStateException(rd.toString());
+      }
 
       BranchId branch = newBranchData.getBranch();
 
