@@ -52,8 +52,8 @@ public class AtsArtifactChecks extends ArtifactCheck {
    @Override
    public IStatus isDeleteableRelation(Artifact artifact, IRelationType relationType) {
       if (deletionChecksEnabled) {
-         boolean isAtsAdmin = AtsClientService.get().getUserService().isAtsAdmin();
-         if (!isAtsAdmin && Admin_Only_Relation_Type_Ids.contains(relationType.getId())) {
+         if (Admin_Only_Relation_Type_Ids.contains(
+            relationType.getId()) && !AtsClientService.get().getUserService().isAtsAdmin()) {
             return createStatus(
                String.format("Deletion of relation type [%s] off artifact [%s] is only permitted by ATS Admin",
                   relationType, artifact));
@@ -64,13 +64,16 @@ public class AtsArtifactChecks extends ArtifactCheck {
 
    @Override
    public IStatus isDeleteable(Collection<Artifact> artifacts) {
-      boolean isAtsAdmin = AtsClientService.get().getUserService().isAtsAdmin();
-
       IStatus result = Status.OK_STATUS;
 
       if (deletionChecksEnabled) {
          Set<Artifact> allArtifacts = getAllArtifacts(artifacts, new HashSet<>());
 
+         if (allArtifacts.isEmpty()) {
+            return result;
+         }
+
+         boolean isAtsAdmin = AtsClientService.get().getUserService().isAtsAdmin();
          if (result.isOK()) {
             result = checkActionableItems(isAtsAdmin, allArtifacts);
          }
