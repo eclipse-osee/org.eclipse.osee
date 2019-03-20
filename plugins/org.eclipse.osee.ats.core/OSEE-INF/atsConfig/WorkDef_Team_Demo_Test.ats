@@ -39,6 +39,7 @@ workDefinition "WorkDef_Team_Demo_Test" {
       to "Cancelled"
       to "Analyze" AsDefault
       rule RequireStateHourSpentPrompt
+      rule AllowAssigneeToAll
       layout {
          widget "Title"
          widget "Description"
@@ -61,6 +62,7 @@ workDefinition "WorkDef_Team_Demo_Test" {
       to "Authorize" AsDefault
       to "Endorse" OverrideAttributeValidation
       rule RequireStateHourSpentPrompt
+      rule AllowAssigneeToAll
       layout {
          attributeWidget "ats.Work Package"
          widget "Problem"
@@ -81,6 +83,7 @@ workDefinition "WorkDef_Team_Demo_Test" {
       to "Cancelled"
       to "Implement" AsDefault
       to "Analyze" OverrideAttributeValidation
+      rule AllowAssigneeToAll
       layout {
          attributeWidget "ats.Work Package"
          attributeWidget "ats.Estimated Completion Date"
@@ -95,6 +98,7 @@ workDefinition "WorkDef_Team_Demo_Test" {
       to "Analyze" OverrideAttributeValidation
       to "Authorize" OverrideAttributeValidation
       rule RequireStateHourSpentPrompt
+      rule AllowAssigneeToAll
       layout {
          attributeWidget "ats.Work Package"
          attributeWidget "ats.Estimated Completion Date"

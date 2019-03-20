@@ -46,6 +46,7 @@ workDefinition "WorkDef_Team_AtsConfig2Example" {
       to "Cancelled"
       to "Implement" AsDefault
       rule RequireStateHourSpentPrompt
+      rule AllowAssigneeToAll
       layout {
          widget "Title"
          widget "Description"
@@ -67,6 +68,7 @@ workDefinition "WorkDef_Team_AtsConfig2Example" {
       to "Completed" AsDefault
       to "Analyze" OverrideAttributeValidation
       rule RequireStateHourSpentPrompt
+      rule AllowAssigneeToAll
       layout {
          attributeWidget "ats.Work Package"
          attributeWidget "ats.Estimated Completion Date"

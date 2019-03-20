@@ -44,6 +44,7 @@ workDefinition "WorkDef_Team_Demo_Code" {
       to "Cancelled"
       to "Analyze" AsDefault
       rule RequireStateHourSpentPrompt
+      rule AllowAssigneeToAll
       layout {
          widget "Title"
          widget "Referenced Applicability"
@@ -66,6 +67,7 @@ workDefinition "WorkDef_Team_Demo_Code" {
       to "Cancelled"
       to "Authorize" AsDefault
       to "Endorse" OverrideAttributeValidation
+      rule AllowAssigneeToAll
       rule RequireStateHourSpentPrompt
       layout {
          widget "Referenced Applicability"
@@ -88,6 +90,7 @@ workDefinition "WorkDef_Team_Demo_Code" {
       to "Cancelled"
       to "Implement" AsDefault
       to "Analyze" OverrideAttributeValidation
+      rule AllowAssigneeToAll
       layout {
          attributeWidget "ats.Work Package"
          attributeWidget "ats.Estimated Completion Date"
@@ -101,6 +104,7 @@ workDefinition "WorkDef_Team_Demo_Code" {
       to "Completed" AsDefault
       to "Authorize" OverrideAttributeValidation
       to "Analyze" OverrideAttributeValidation
+      rule AllowAssigneeToAll
       rule RequireStateHourSpentPrompt
       layout {
          widget "Referenced Applicability"

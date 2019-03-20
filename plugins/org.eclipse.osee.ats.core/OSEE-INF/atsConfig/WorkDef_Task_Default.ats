@@ -27,6 +27,7 @@ workDefinition "WorkDef_Task_Default" {
       to "Completed" AsDefault
       to "Cancelled" OverrideAttributeValidation
       rule RequireStateHourSpentPrompt
+      rule AllowAssigneeToAll
       layout {
          widget "Title"
          widget "Description"

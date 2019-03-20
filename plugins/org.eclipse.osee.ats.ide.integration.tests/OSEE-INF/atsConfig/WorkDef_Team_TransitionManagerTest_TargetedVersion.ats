@@ -31,6 +31,7 @@ workDefinition "WorkDef_Team_TransitionManagerTest_TargetedVersion" {
 		to "Implement" AsDefault
 		to "Completed"
 		to "Cancelled" OverrideAttributeValidation
+		rule AllowAssigneeToAll
 		rule RequireTargetedVersion
 		layout {
 			widget "Title"
@@ -49,6 +50,7 @@ workDefinition "WorkDef_Team_TransitionManagerTest_TargetedVersion" {
 		to "Analyze" OverrideAttributeValidation
 		to "Completed" AsDefault
 		to "Cancelled" OverrideAttributeValidation
+		rule AllowAssigneeToAll
 		layout {
 			widget "Title"
 			widget "Description"

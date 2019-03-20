@@ -86,6 +86,7 @@ workDefinition "WorkDef_Team_Demo_SwDesign" {
       to "Cancelled"
       to "Analyze" AsDefault
       rule RequireStateHourSpentPrompt
+      rule AllowAssigneeToAll
       layout {
          widget "Title"
          widget "Description"
@@ -108,6 +109,7 @@ workDefinition "WorkDef_Team_Demo_SwDesign" {
       to "Authorize" AsDefault
       to "Endorse" OverrideAttributeValidation
       rule RequireStateHourSpentPrompt 
+      rule AllowAssigneeToAll
       decisionReview "Analyze.None.TransitionTo"
       layout {
          attributeWidget "ats.Work Package"
@@ -128,7 +130,8 @@ workDefinition "WorkDef_Team_Demo_SwDesign" {
       ordinal 3
       to "Cancelled"
       to "Implement" AsDefault
-      to "Analyze" OverrideAttributeValidation 
+      to "Analyze" OverrideAttributeValidation
+      rule AllowAssigneeToAll 
       peerReview "Authorize.None.TransitionTo"
       layout {
          attributeWidget "ats.Work Package"
@@ -143,7 +146,8 @@ workDefinition "WorkDef_Team_Demo_SwDesign" {
       to "Completed" AsDefault
       to "Analyze" OverrideAttributeValidation
       to "Authorize" OverrideAttributeValidation
-      rule RequireStateHourSpentPrompt 
+      rule RequireStateHourSpentPrompt
+      rule AllowAssigneeToAll 
       decisionReview "Implement.None.CreateBranch"
       peerReview "Implement.None.CommitBranch"
       layout {

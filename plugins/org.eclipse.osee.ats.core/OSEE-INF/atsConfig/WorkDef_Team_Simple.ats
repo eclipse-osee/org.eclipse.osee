@@ -33,6 +33,7 @@ workDefinition "WorkDef_Team_Simple" {
       to "Cancelled"
       to "InWork" AsDefault
       rule RequireStateHourSpentPrompt
+      rule AllowAssigneeToAll
       layout {
          widget "Title"
          widget "Description"
@@ -54,6 +55,7 @@ workDefinition "WorkDef_Team_Simple" {
       to "Completed" AsDefault
       to "Endorse" OverrideAttributeValidation
       rule RequireStateHourSpentPrompt
+      rule AllowAssigneeToAll
       layout {
          widget "Resolution"
       }

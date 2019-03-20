@@ -31,6 +31,7 @@ workDefinition "WorkDef_Team_AtsTestUtil" {
 		to "Implement" AsDefault
 		to "Completed"
 		to "Cancelled" OverrideAttributeValidation
+		rule AllowAssigneeToAll
 		layout {
 			widget "Title"
 			widget "Description"
@@ -48,6 +49,7 @@ workDefinition "WorkDef_Team_AtsTestUtil" {
 		to "Analyze" OverrideAttributeValidation
 		to "Completed" AsDefault
 		to "Cancelled" OverrideAttributeValidation
+		rule AllowAssigneeToAll
 		layout {
 			widget "Title"
 			widget "Description"
