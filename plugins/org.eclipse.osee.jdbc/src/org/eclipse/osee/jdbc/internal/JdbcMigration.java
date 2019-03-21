@@ -69,11 +69,11 @@ public class JdbcMigration {
             URL location = migration.getLocation();
             try {
                location = FileLocator.toFileURL(location);
+               String formated = String.format(LOCATION_TEMPLATE, location.getFile());
+               allPaths.add(formated);
             } catch (Exception ex) {
                // do nothing
             }
-            String formated = String.format(LOCATION_TEMPLATE, location.getFile());
-            allPaths.add(formated);
          }
          fly.setLocations(allPaths.toArray(new String[allPaths.size()]));
          before(placeholders);
