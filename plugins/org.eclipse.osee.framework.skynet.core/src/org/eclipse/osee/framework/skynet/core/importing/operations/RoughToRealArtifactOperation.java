@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.operations;
 
-import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -55,7 +55,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
       this.transaction = transaction;
       this.artifactResolver = artifactResolver;
       this.destinationArtifact = destinationArtifact;
-      this.importArtifactOrder = USER_DEFINED;
+      this.importArtifactOrder = PREEXISTING;
       this.roughToRealArtifact = new HashMap<>();
       this.createdArtifacts = new LinkedList<>();
       this.deleteUnmatchedArtifacts = deleteUnmatchedArtifacts;
