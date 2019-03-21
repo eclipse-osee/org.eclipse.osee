@@ -112,7 +112,7 @@ public interface BranchEndpoint {
 
    /**
     * If -1 is supplied for the branch path parameter, then a random valid id will be used
-    * 
+    *
     * @param account
     * @param branchId
     * @param branchName
@@ -166,6 +166,7 @@ public interface BranchEndpoint {
 
    @PUT
    @Path("{branch}/name")
+   @Consumes({MediaType.TEXT_PLAIN})
    Response setBranchName(@PathParam("branch") BranchId branch, String newName);
 
    @PUT
@@ -186,6 +187,7 @@ public interface BranchEndpoint {
 
    @PUT
    @Path("{branch}/txs/{tx-id}/comment")
+   @Consumes({MediaType.TEXT_PLAIN})
    Response setTxComment(@PathParam("branchd") BranchId branch, @PathParam("tx-id") TransactionId txId, String comment);
 
    @DELETE
@@ -212,5 +214,6 @@ public interface BranchEndpoint {
 
    @PUT
    @Path("log")
+   @Consumes({MediaType.TEXT_PLAIN})
    Response logBranchActivity(String comment);
 }
