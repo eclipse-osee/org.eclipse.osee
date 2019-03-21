@@ -44,6 +44,6 @@ public final class DoorsImportFieldTokens {
    public static final BlockFieldToken blockAttrAdded =       BlockFieldToken.valueOf(9, "Added", ADDED_REGEX, OBJECT_TEXT_REGEX, BlockField::new);
    public static final BlockFieldToken blockAttrModified =    BlockFieldToken.valueOf(10, "Modified", MODIFIED_REGEX, OBJECT_TEXT_REGEX, BlockField::new);
    public static final BlockFieldToken blockAttrDeleted =     BlockFieldToken.valueOf(11, "Deleted", DELETED_REGEX, OBJECT_TEXT_REGEX, BlockField::new);
-   public static final BlockFieldToken blockAttrComments =    BlockFieldToken.valueOf(12, "Comments", COMMENTS_REGEX, OBJECT_TEXT_REGEX, BlockField::new, CoreAttributeTypes.Annotation, true);
+   public static final BlockFieldToken blockAttrComments =    BlockFieldToken.valueOf(12, "Comments", COMMENTS_REGEX, OBJECT_TEXT_REGEX, BlockField::new, CoreAttributeTypes.Annotation);
    // @formatter:on
 }

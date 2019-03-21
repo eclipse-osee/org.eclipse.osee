@@ -21,33 +21,23 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 public class BlockFieldToken extends NamedIdBase {
    protected final Pattern typeRegex;
    protected final Pattern contentRegex;
-   private final boolean marksComplete;
    private final AttributeTypeToken oseeType;
    private final Function<BlockFieldToken, BlockField> parser;
 
-   public BlockFieldToken(Long id, String name, String typeRegex, String contentRegex, Function<BlockFieldToken, BlockField> parser, AttributeTypeToken oseeType, boolean marksComplete) {
+   public BlockFieldToken(Long id, String name, String typeRegex, String contentRegex, Function<BlockFieldToken, BlockField> parser, AttributeTypeToken oseeType) {
       super(id, name);
       this.typeRegex = Pattern.compile(typeRegex);
       this.contentRegex = Pattern.compile(contentRegex, Pattern.DOTALL); // DOTALL is important for block attr text subclass
       this.oseeType = oseeType;
-      this.marksComplete = marksComplete;
       this.parser = parser;
    }
 
-   public static BlockFieldToken valueOf(long id, String name, String typeRegex, String contentRegex, Function<BlockFieldToken, BlockField> parser, AttributeTypeToken oseeType, boolean marksComplete) {
-      return new BlockFieldToken(id, name, typeRegex, contentRegex, parser, oseeType, marksComplete);
-   }
-
    public static BlockFieldToken valueOf(long id, String name, String typeRegex, String contentRegex, Function<BlockFieldToken, BlockField> parser, AttributeTypeToken oseeType) {
-      return new BlockFieldToken(id, name, typeRegex, contentRegex, parser, oseeType, false);
+      return new BlockFieldToken(id, name, typeRegex, contentRegex, parser, oseeType);
    }
 
    public static BlockFieldToken valueOf(long id, String name, String typeRegex, String contentRegex, Function<BlockFieldToken, BlockField> parser) {
       return valueOf(id, name, typeRegex, contentRegex, parser, AttributeTypeToken.SENTINEL);
-   }
-
-   public boolean getMarksComplete() {
-      return marksComplete;
    }
 
    public String getImportTypeName() {

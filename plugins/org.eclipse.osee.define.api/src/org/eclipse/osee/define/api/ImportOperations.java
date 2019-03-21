@@ -19,6 +19,6 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
  */
 public interface ImportOperations {
 
-   public TransactionToken importWord(BranchId branch, String wordURI, ArtifactId parent);
+   public TransactionToken importWord(BranchId branch, String wordURI, ArtifactId parent, Integer tier);
 
 }

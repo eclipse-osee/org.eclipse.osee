@@ -22,8 +22,8 @@ import org.eclipse.osee.define.rest.importing.operations.SourceToRoughArtifactOp
 import org.eclipse.osee.define.rest.importing.parsers.WordOutlineExtractor;
 import org.eclipse.osee.define.rest.importing.parsers.WordOutlineExtractorDelegate;
 import org.eclipse.osee.define.rest.importing.resolvers.ArtifactResolverFactory;
-import org.eclipse.osee.define.rest.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.define.rest.importing.resolvers.ArtifactResolverFactory.ArtifactCreationStrategy;
+import org.eclipse.osee.define.rest.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.define.rest.operations.ArtifactValidationCheckOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -49,7 +49,7 @@ public class ImportOperationsImpl implements ImportOperations {
    }
 
    @Override
-   public TransactionToken importWord(BranchId branch, String wordURI, ArtifactId parent) {
+   public TransactionToken importWord(BranchId branch, String wordURI, ArtifactId parent, Integer tier) {
       Conditions.checkNotNull(branch, "branch query param");
       Conditions.checkNotNull(wordURI, "selected_types query param");
       Conditions.checkNotNull(parent, "parent Artifact");

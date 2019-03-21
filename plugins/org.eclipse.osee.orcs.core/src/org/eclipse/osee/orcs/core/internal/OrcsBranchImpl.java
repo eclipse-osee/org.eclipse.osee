@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.Requirements;
@@ -252,8 +253,9 @@ public class OrcsBranchImpl implements OrcsBranch {
          "Integration Tests",
          "Applicability Tests"}) {
          tx.createArtifact(DefaultHierarchyRoot, Folder, name);
-      }
 
+      }
+      tx.createArtifact(CoreArtifactTokens.CustomerReqFolder);
       tx.commit();
       return newBranch;
    }

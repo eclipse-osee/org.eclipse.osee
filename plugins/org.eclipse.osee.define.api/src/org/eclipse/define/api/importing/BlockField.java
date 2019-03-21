@@ -63,8 +63,4 @@ public class BlockField {
    public AttributeTypeToken getOseeType() {
       return bft.getOseeType();
    }
-
-   public Boolean getMarksComplete() {
-      return bft.getMarksComplete();
-   }
 }

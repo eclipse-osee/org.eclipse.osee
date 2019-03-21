@@ -43,7 +43,7 @@ public abstract class ImportBlock implements Named {
       if (attr.getImportTypeName().equals("Type")) {
          setType(attr);
       }
-      if (attr.getMarksComplete()) {
+      if (attr.getImportTypeName().equals(getCompleteMarker().getName())) {
          complete = true;
       }
    }
@@ -51,6 +51,8 @@ public abstract class ImportBlock implements Named {
    public ArtifactTypeToken getType() {
       return type;
    }
+
+   public abstract BlockFieldToken getCompleteMarker();
 
    public abstract void addContent(String content);
 
@@ -86,6 +88,7 @@ public abstract class ImportBlock implements Named {
       for (BlockField attr : attrs) {
          if (attr.getImportTypeName().equals("Text")) {
             textAttr = attr;
+            break;
          }
       }
       if (textAttr == null) {
