@@ -8,6 +8,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.cache,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
+ org.eclipse.jdt.annotation,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
