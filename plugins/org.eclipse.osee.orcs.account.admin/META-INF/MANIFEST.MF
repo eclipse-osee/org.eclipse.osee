@@ -8,7 +8,6 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
 Import-Package: com.google.common.base,
  com.google.common.io,
- org.codehaus.jackson.type,
  org.eclipse.jdt.annotation,
  org.eclipse.osee.account.admin,
  com.fasterxml.jackson.core,

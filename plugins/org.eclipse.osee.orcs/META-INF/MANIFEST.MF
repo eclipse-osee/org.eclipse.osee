@@ -6,10 +6,6 @@ Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: javax.ws.rs.core,
- org.codehaus.jackson.annotate,
- org.codehaus.jackson.map.annotate,
- org.codehaus.jackson.map.ser,
- org.codehaus.jackson.map.ser.std,
  org.eclipse.core.runtime,
  org.eclipse.osee.activity.api,
  com.fasterxml.jackson.annotation,

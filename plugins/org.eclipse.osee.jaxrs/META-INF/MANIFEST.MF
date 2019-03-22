@@ -7,11 +7,7 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: javax.ws.rs,
  javax.ws.rs.core,
- javax.ws.rs.ext,
- org.codehaus.jackson,
- org.codehaus.jackson.jaxrs,
- org.codehaus.jackson.map,
- org.codehaus.jackson.map.module,
+ javax.ws.rs.ext, 
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
  com.fasterxml.jackson.databind.module,

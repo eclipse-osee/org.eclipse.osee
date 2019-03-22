@@ -15,8 +15,6 @@ Import-Package: javax.annotation.security,
  javax.ws.rs.core,
  javax.xml.bind.annotation,
  org.apache.cxf.jaxrs.ext.multipart,
- org.codehaus.jackson.map.annotate,
- org.codehaus.jackson.map.ser,
  org.eclipse.osee.framework.core.applicability,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
@@ -29,4 +27,3 @@ Import-Package: javax.annotation.security,
  com.fasterxml.jackson.databind,
  com.fasterxml.jackson.databind.annotation,
  com.fasterxml.jackson.annotation
-Require-Bundle: org.codehaus.jackson.mapper
