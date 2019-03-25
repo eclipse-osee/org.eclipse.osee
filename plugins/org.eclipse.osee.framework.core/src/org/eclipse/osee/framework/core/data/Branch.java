@@ -13,11 +13,15 @@ package org.eclipse.osee.framework.core.data;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 
 /**
  * @author Ryan D. Brooks
  */
 public class Branch extends BranchViewToken implements IOseeBranch {
+   public static final Branch SENTINEL = new Branch(Id.SENTINEL, Named.SENTINEL, ArtifactId.SENTINEL,
+      TransactionId.SENTINEL, TransactionId.SENTINEL, BranchId.SENTINEL, false, null, null, false, ArtifactId.SENTINEL);
+
    private final ArtifactId associatedArtifact;
    private final TransactionId baselineTx;
    private final TransactionId parentTx;
@@ -43,23 +47,6 @@ public class Branch extends BranchViewToken implements IOseeBranch {
 
    public ArtifactId getAssociatedArtifact() {
       return associatedArtifact;
-   }
-
-   private Branch() {
-      super(Id.SENTINEL, "SENTINEL", null);
-      this.associatedArtifact = null;
-      this.baselineTx = null;
-      this.parentTx = null;
-      this.parentBranch = null;
-      this.isArchived = false;
-      this.branchState = null;
-      this.branchType = null;
-      this.inheritAccessControl = false;
-      this.viewId = null;
-   }
-
-   public static Branch getSentinel() {
-      return new Branch();
    }
 
    public TransactionId getBaselineTx() {

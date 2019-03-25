@@ -136,7 +136,7 @@ public class BranchModule {
 
          private BranchId getMergeBranchId(BranchQuery branchQuery, BranchId source, BranchId destination) {
             BranchId mergeBranch =
-               branchQuery.andIsMergeFor(source, destination).getResults().getAtMostOneOrDefault(Branch.getSentinel());
+               branchQuery.andIsMergeFor(source, destination).getResults().getAtMostOneOrDefault(Branch.SENTINEL);
 
             if (mergeBranch.isInvalid()) {
                mergeBranch = BranchId.SENTINEL;

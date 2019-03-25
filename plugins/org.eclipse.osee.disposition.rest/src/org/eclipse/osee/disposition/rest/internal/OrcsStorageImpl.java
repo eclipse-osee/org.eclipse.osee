@@ -671,7 +671,7 @@ public class OrcsStorageImpl implements Storage {
 
    private List<Branch> findDispoBranches() {
       Branch dispoParent =
-         getQuery().branchQuery().andNameEquals("Dispo Parent").getResults().getOneOrDefault(Branch.getSentinel());
+         getQuery().branchQuery().andNameEquals("Dispo Parent").getResults().getOneOrDefault(Branch.SENTINEL);
       return getQuery().branchQuery().andIsChildOf(
          dispoParent).excludeArchived().excludeDeleted().getResults().getList();
    }
