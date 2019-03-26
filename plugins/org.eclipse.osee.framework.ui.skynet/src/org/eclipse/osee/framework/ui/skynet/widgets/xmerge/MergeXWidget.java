@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
+
 import org.apache.commons.lang.mutable.MutableBoolean;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -31,7 +32,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -598,7 +598,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
             IOseeCmService cmService = ServiceUtil.getOseeCmService();
             if (cmService.isPcrArtifact(associatedArtifact)) {
                cmService.openArtifact(associatedArtifact, OseeCmEditor.CmPcrEditor);
-            } else if (associatedArtifact.notEqual(SystemUser.OseeSystem)) {
+            } else if (associatedArtifact.notEqual(Artifact.SENTINEL)) {
                RendererManager.open(associatedArtifact, PresentationType.SPECIALIZED_EDIT);
             } else {
                AWorkbench.popup("ERROR", "Unknown branch association");

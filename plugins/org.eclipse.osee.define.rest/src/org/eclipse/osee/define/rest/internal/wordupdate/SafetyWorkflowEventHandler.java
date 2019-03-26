@@ -12,6 +12,7 @@ package org.eclipse.osee.define.rest.internal.wordupdate;
 
 import java.util.Arrays;
 import java.util.Date;
+
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -79,7 +79,7 @@ public class SafetyWorkflowEventHandler implements EventHandler {
 
          Branch branch = queryFactory.branchQuery().andId((BranchId) branchId).getResults().getExactlyOne();
          ArtifactId workflowId = branch.getAssociatedArtifact();
-         if (workflowId.notEqual(SystemUser.OseeSystem)) {
+         if (workflowId.notEqual(ArtifactId.SENTINEL)) {
             ArtifactReadable assocArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(workflowId);
             IAtsTeamWorkflow safetyWf = getSafetyWorkflow(assocArt);
             if (safetyWf == null) {

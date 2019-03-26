@@ -12,24 +12,25 @@ package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
-import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.Collection;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.Asserts;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -208,7 +209,7 @@ public class BranchStateTest {
          Asserts.assertOperation(operation, IStatus.OK);
 
          Assert.assertEquals(BranchState.DELETED, BranchManager.getState(workingBranch));
-         Assert.assertEquals(SystemUser.OseeSystem, BranchManager.getAssociatedArtifact(workingBranch));
+         Assert.assertEquals(Artifact.SENTINEL, BranchManager.getAssociatedArtifact(workingBranch));
 
          IOseeBranch newWorkingBranch = operation.getNewBranch();
          assertFalse(workingBranch.equals(newWorkingBranch));
@@ -268,7 +269,7 @@ public class BranchStateTest {
 
          checkBranchWasRebaselined(originalBranchName, workingBranch);
          // Check that the associated artifact remained unchanged
-         assertEquals(BranchManager.getAssociatedArtifactId(workingBranch), OseeSystem);
+         assertEquals(BranchManager.getAssociatedArtifactId(workingBranch), ArtifactId.SENTINEL);
 
          Collection<IOseeBranch> branches = BranchManager.getBranchesByName(originalBranchName);
          assertEquals("Check only 1 original branch", 1, branches.size());

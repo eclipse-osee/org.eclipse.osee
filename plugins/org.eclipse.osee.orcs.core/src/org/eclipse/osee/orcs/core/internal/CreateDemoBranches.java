@@ -18,7 +18,9 @@ import static org.eclipse.osee.framework.core.enums.DemoBranches.CIS_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_PL;
 import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
+
 import java.util.Arrays;
+
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -74,8 +76,8 @@ public class CreateDemoBranches {
 
       createDemoProgramBranch(CIS_Bld_1, account);
 
-      branchOps.createBaselineBranch(DemoBranches.SAW_PL, DemoUsers.Joe_Smith, SAW_Bld_1, OseeSystem);
-      branchOps.createBaselineBranch(DemoBranches.SAW_PL_Hardening_Branch, DemoUsers.Joe_Smith, SAW_PL, OseeSystem);
+      branchOps.createBaselineBranch(DemoBranches.SAW_PL, DemoUsers.Joe_Smith, SAW_Bld_1, ArtifactId.SENTINEL);
+      branchOps.createBaselineBranch(DemoBranches.SAW_PL_Hardening_Branch, DemoUsers.Joe_Smith, SAW_PL, ArtifactId.SENTINEL);
 
       createProductLineConfig(DemoBranches.SAW_PL, account);
    }

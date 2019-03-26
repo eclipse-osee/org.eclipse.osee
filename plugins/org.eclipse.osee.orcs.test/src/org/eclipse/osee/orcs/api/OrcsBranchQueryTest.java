@@ -21,9 +21,11 @@ import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -89,10 +91,10 @@ public class OrcsBranchQueryTest {
 
       // list, IOseeBranch, BranchType, BranchState, isArchived, parentId, baseTx, sourceTx, assocArtId
       assertBranch(list, SYSTEM_ROOT, BranchType.SYSTEM_ROOT, MODIFIED, false, BranchId.SENTINEL, ArtifactId.SENTINEL);
-      assertBranch(list, SAW_Bld_1, BASELINE, MODIFIED, false, SYSTEM_ROOT, OseeSystem);
-      assertBranch(list, CIS_Bld_1, BASELINE, MODIFIED, false, SYSTEM_ROOT, OseeSystem);
-      assertBranch(list, SAW_Bld_2, BASELINE, MODIFIED, false, SAW_Bld_1, OseeSystem);
-      assertBranch(list, COMMON, BASELINE, MODIFIED, false, SYSTEM_ROOT, OseeSystem);
+      assertBranch(list, SAW_Bld_1, BASELINE, MODIFIED, false, SYSTEM_ROOT, ArtifactId.SENTINEL);
+      assertBranch(list, CIS_Bld_1, BASELINE, MODIFIED, false, SYSTEM_ROOT, ArtifactId.SENTINEL);
+      assertBranch(list, SAW_Bld_2, BASELINE, MODIFIED, false, SAW_Bld_1, ArtifactId.SENTINEL);
+      assertBranch(list, COMMON, BASELINE, MODIFIED, false, SYSTEM_ROOT, ArtifactId.SENTINEL);
    }
 
    @Test

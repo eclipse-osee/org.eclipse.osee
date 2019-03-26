@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -22,7 +23,6 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -119,7 +119,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
          ArtifactId associatedArtifactId = newBranchData.getAssociatedArtifact();
 
          // this checks to see if there are any branches that aren't either DELETED or REBASELINED with the same artifact ID
-         if (associatedArtifactId.isValid() && SystemUser.OseeSystem.notEqual(associatedArtifactId)) {
+         if (associatedArtifactId.isValid() && ArtifactId.SENTINEL.notEqual(associatedArtifactId)) {
             int count = jdbcClient.fetch(connection, 0,
                "SELECT (1) FROM osee_branch WHERE associated_art_id = ? AND branch_state NOT IN (?, ?)",
                newBranchData.getAssociatedArtifact(), BranchState.DELETED, BranchState.REBASELINED);

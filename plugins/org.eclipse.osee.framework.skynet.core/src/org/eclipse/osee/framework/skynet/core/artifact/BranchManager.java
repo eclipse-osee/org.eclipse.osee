@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
-import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -22,7 +22,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.logging.Level;
+
 import javax.ws.rs.core.Response;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -484,7 +486,7 @@ public final class BranchManager {
    }
 
    public static IOseeBranch createWorkingBranch(BranchId parentBranch, String childBranchName) {
-      return createWorkingBranch(parentBranch, childBranchName, OseeSystem);
+      return createWorkingBranch(parentBranch, childBranchName, ArtifactId.SENTINEL);
    }
 
    public static IOseeBranch createWorkingBranch(BranchId parentBranch, String childBranchName, ArtifactId associatedArtifact) {
@@ -494,7 +496,7 @@ public final class BranchManager {
 
    public static IOseeBranch createWorkingBranch(BranchId parentBranch, IOseeBranch childBranch) {
       TransactionToken parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
-      return createBranch(BranchType.WORKING, parentTransactionId, childBranch, OseeSystem);
+      return createBranch(BranchType.WORKING, parentTransactionId, childBranch, ArtifactId.SENTINEL);
    }
 
    public static IOseeBranch createWorkingBranch(TransactionToken parentTransaction, String branchName, ArtifactId associatedArtifact) {
@@ -502,11 +504,11 @@ public final class BranchManager {
    }
 
    public static BranchId createBaselineBranch(BranchId parentBranch, IOseeBranch childBranch) {
-      return createBaselineBranch(parentBranch, childBranch, OseeSystem);
+      return createBaselineBranch(parentBranch, childBranch, ArtifactId.SENTINEL);
    }
 
    public static BranchId createTopLevelBranch(IOseeBranch branch) {
-      return createBaselineBranch(SYSTEM_ROOT, branch, OseeSystem);
+      return createBaselineBranch(SYSTEM_ROOT, branch, ArtifactId.SENTINEL);
    }
 
    private static BranchId createBaselineBranch(BranchId parentBranch, IOseeBranch childBranch, ArtifactId associatedArtifact) {
@@ -594,7 +596,7 @@ public final class BranchManager {
 
    public static boolean isChangeManaged(BranchId branch) {
       ArtifactId associatedArtifactId = getAssociatedArtifactId(branch);
-      return associatedArtifactId.isValid() && associatedArtifactId.notEqual(OseeSystem);
+      return associatedArtifactId.isValid() && associatedArtifactId.notEqual(ArtifactId.SENTINEL);
    }
 
    public static void setAssociatedArtifactId(BranchId branch, ArtifactId artifactId) {
@@ -614,7 +616,7 @@ public final class BranchManager {
    public static Artifact getAssociatedArtifact(BranchId branch) {
       ArtifactId associatedArtifactId = getAssociatedArtifactId(branch);
       if (associatedArtifactId.isInvalid()) {
-         return UserManager.getUser(OseeSystem);
+         return Artifact.SENTINEL;
       }
       return ArtifactQuery.getArtifactFromId(associatedArtifactId, COMMON);
    }

@@ -16,12 +16,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicIdRelation;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -102,7 +102,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
 
       // Update commit artifact cache with new information
       Artifact associatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
-      if (associatedArtifact.notEqual(SystemUser.OseeSystem)) {
+      if (associatedArtifact.notEqual(Artifact.SENTINEL)) {
          TransactionManager.cacheCommittedArtifactTransaction(associatedArtifact, newTransaction);
       }
 

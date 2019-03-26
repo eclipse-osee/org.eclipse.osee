@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 
-import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -18,6 +17,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -73,7 +73,7 @@ public class BranchCreationHandler extends CommandHandler {
                   if (dialog.isChecked()) {
                      BranchManager.createWorkingBranchFromTx(parentTransactionId, dialog.getEntry(), null);
                   } else {
-                     BranchManager.createWorkingBranch(parentTransactionId, dialog.getEntry(), OseeSystem);
+                     BranchManager.createWorkingBranch(parentTransactionId, dialog.getEntry(), ArtifactId.SENTINEL);
                   }
 
                }

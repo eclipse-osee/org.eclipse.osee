@@ -15,6 +15,7 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -28,18 +29,19 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.HasBranch;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -67,6 +69,7 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -101,6 +104,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 
 public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, FullyNamed {
+   public static final Artifact SENTINEL = new Artifact(String.valueOf(Id.SENTINEL), BranchId.SENTINEL, ArtifactTypeToken.SENTINEL);
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";

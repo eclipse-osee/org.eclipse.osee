@@ -15,27 +15,28 @@ import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -288,7 +289,7 @@ public final class ReplaceWithBaselineTest {
          }
       }
 
-      workingBranch = BranchManager.createWorkingBranch(baselineBranch, "working branch", SystemUser.OseeSystem);
+      workingBranch = BranchManager.createWorkingBranch(baselineBranch, "working branch", ArtifactId.SENTINEL);
 
       SkynetTransaction workingBranchTransaction = TransactionManager.createTransaction(workingBranch, testName);
 
@@ -313,7 +314,7 @@ public final class ReplaceWithBaselineTest {
                      break;
                   case INTRODUCED:
                      BranchId anotherBranch = BranchManager.createWorkingBranch(workingBranch, "another working branch",
-                        SystemUser.OseeSystem);
+                    		 ArtifactId.SENTINEL);
 
                      Artifact artifactToIntroduce = createNewArtifact(anotherBranch, "introduce artifact");
 

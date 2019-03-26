@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.httpRequests;
 
-import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -67,7 +66,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
 
       NewBranch data = new NewBranch();
       data.setAssociatedArtifact(
-         associatedArtifact != null && associatedArtifact.isValid() ? associatedArtifact : OseeSystem);
+         associatedArtifact != null && associatedArtifact.isValid() ? associatedArtifact : ArtifactId.SENTINEL);
       data.setAuthor(UserManager.getUser());
       data.setBranchName(branchName);
       data.setBranchType(branchType);

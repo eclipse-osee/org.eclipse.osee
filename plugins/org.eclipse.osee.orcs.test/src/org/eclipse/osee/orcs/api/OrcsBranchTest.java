@@ -15,8 +15,10 @@ import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
 import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import java.util.Collections;
 import java.util.List;
+
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -83,7 +85,7 @@ public class OrcsBranchTest {
       UserId author = OseeSystem;
 
       TransactionId tx = TransactionId.valueOf(SOURCE_TX_ID);
-      Branch priorBranch = branchOps.createCopyTxBranch(branch, author, tx, ArtifactId.SENTINEL);
+      Branch priorBranch = branchOps.createCopyTxBranch(branch, author, tx, SENTINEL);
 
       // in the database, on the common branch, the users are all created in transaction 9
       // the common branch will have one user named Joe Smith
@@ -104,7 +106,7 @@ public class OrcsBranchTest {
       IOseeBranch postbranch = IOseeBranch.create("PostBranch");
 
       TransactionId tx1 = TransactionId.valueOf(CHANGED_TX_ID);
-      Branch postBranch = branchOps.createCopyTxBranch(postbranch, author, tx1, ArtifactId.SENTINEL);
+      Branch postBranch = branchOps.createCopyTxBranch(postbranch, author, tx1, SENTINEL);
 
       int postResult = query.fromBranch(postBranch).andNameEquals(ARTIFACT_NAME).getResults().size();
       assertEquals(1, postResult);
@@ -126,7 +128,7 @@ public class OrcsBranchTest {
       IOseeBranch branch = IOseeBranch.create("CopiedBranch");
 
       // the new branch will contain two transactions - these should have the same change report as the original branch
-      Branch postBranch = branchOps.createCopyTxBranch(branch, OseeSystem, SOURCE_TX_ID, ArtifactId.SENTINEL);
+      Branch postBranch = branchOps.createCopyTxBranch(branch, OseeSystem, SOURCE_TX_ID, SENTINEL);
 
       List<ChangeItem> newItems = branchOps.compareBranch(postBranch);
       compareBranchChanges(priorItems, newItems);
@@ -147,7 +149,7 @@ public class OrcsBranchTest {
       // create working branch off of base to make some changes
       // set up the child branch
       IOseeBranch branchName = IOseeBranch.create("ChildBranch");
-      Branch childBranch = branchOps.createWorkingBranch(branchName, author, base, ArtifactId.SENTINEL);
+      Branch childBranch = branchOps.createWorkingBranch(branchName, author, base, SENTINEL);
 
       TransactionBuilder tx2 = txFactory.createTransaction(childBranch, author, "modify and make new arts");
       ArtifactReadable readableFolder = query.fromBranch(childBranch).andId(folder).getResults().getExactlyOne();
@@ -165,7 +167,7 @@ public class OrcsBranchTest {
 
       IOseeBranch commonName = IOseeBranch.create("ChildFromCommonBranch");
       Branch commonChildBranch =
-         branchOps.createWorkingBranch(commonName, author, CoreBranches.COMMON, ArtifactId.SENTINEL);
+         branchOps.createWorkingBranch(commonName, author, CoreBranches.COMMON, SENTINEL);
 
       branchOps.commitBranch(author, childBranch, commonChildBranch).call();
 
@@ -202,11 +204,11 @@ public class OrcsBranchTest {
       actual = getBranch(branch);
       assertBranch(actual, branchName, branchState, branchType, SENTINEL);
 
-      UserId assocArtifact = OseeSystem;
-      branchOps.associateBranchToArtifact(branch, assocArtifact).call();
+      //UserId assocArtifact = OseeSystem;
+      branchOps.associateBranchToArtifact(branch, ArtifactId.SENTINEL).call();
 
       actual = getBranch(branch);
-      assertBranch(actual, branchName, branchState, branchType, assocArtifact);
+      assertBranch(actual, branchName, branchState, branchType, ArtifactId.SENTINEL);
 
       branchOps.unassociateBranch(branch).call();
 
