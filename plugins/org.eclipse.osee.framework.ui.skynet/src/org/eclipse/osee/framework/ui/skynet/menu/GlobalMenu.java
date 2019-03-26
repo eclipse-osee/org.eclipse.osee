@@ -181,75 +181,79 @@ public class GlobalMenu {
    private final Action purgeArtifactAction = new Action("&Purge Artifact(s)", Action.AS_PUSH_BUTTON) {
       @Override
       public void run() {
-         final Collection<Artifact> artifactsToBePurged = globalMenuHelper.getArtifacts();
-
-         final MessageDialogWithToggle dialog = MessageDialogWithToggle.openOkCancelConfirm(
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Confirm Artifact Purge ",
-            " Are you sure you want to purge this artifact and all history associated from the database? (cannot be undone)",
-            "Purge selected artifact's children?", false, null, null);
-
-         if (dialog.getReturnCode() == Window.OK) {
-            final boolean recusivePurge =
-               MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                  "Recursive Purge", "Recurse and purge from child branches?");
-            Job job = new Job("Purge artifact") {
-
-               @Override
-               protected IStatus run(final IProgressMonitor monitor) {
-                  IStatus toReturn = Status.CANCEL_STATUS;
-
-                  // Notify and confirm that menus should be actioned
-                  try {
-                     for (GlobalMenuListener listener : listeners) {
-                        Result result = listener.actioning(GlobalMenuItem.PurgeArtifacts, artifactsToBePurged);
-                        if (result.isFalse()) {
-                           return new Status(IStatus.ERROR, Activator.PLUGIN_ID, IStatus.OK, result.getText(), null);
-                        }
-                     }
-                  } catch (Exception ex) {
-                     OseeLog.log(Activator.class, Level.SEVERE, ex);
-                  }
-                  monitor.beginTask("Purge artifact", artifactsToBePurged.size());
-
-                  try {
-                     boolean recurseChildren = dialog.getToggleState();
-                     Collection<Artifact> toPurge = new LinkedHashSet<>();
-                     for (Artifact artifactToPurge : artifactsToBePurged) {
-                        if (!artifactToPurge.isDeleted()) {
-                           toPurge.add(artifactToPurge);
-                           if (recurseChildren) {
-                              toPurge.addAll(artifactToPurge.getDescendants());
-                           }
-                        }
-                     }
-                     monitor.setTaskName("Purging " + toPurge.size() + " artifacts");
-                     Operations.executeWorkAndCheckStatus(new PurgeArtifacts(toPurge, recusivePurge));
-                     monitor.worked(toPurge.size());
-                     toReturn = Status.OK_STATUS;
-                  } catch (Exception ex) {
-                     OseeLog.log(Activator.class, Level.SEVERE, ex);
-                     toReturn = new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getMessage(), ex);
-                  } finally {
-                     monitor.done();
-                  }
-
-                  // Notify Listeners that menu was actioned
-                  try {
-                     for (GlobalMenuListener listener : listeners) {
-                        listener.actioned(GlobalMenuItem.PurgeArtifacts, artifactsToBePurged);
-                     }
-                  } catch (Exception ex) {
-                     OseeLog.log(Activator.class, Level.SEVERE, ex);
-                  }
-
-                  return toReturn;
-               }
-            };
-
-            Jobs.startJob(job);
-         }
+         purgeArtifactsMethod(globalMenuHelper.getArtifacts(), listeners);
       }
+
    };
+
+   public static void purgeArtifactsMethod(Collection<Artifact> artifactsToBePurged, Collection<GlobalMenuListener> listeners) {
+
+      final MessageDialogWithToggle dialog = MessageDialogWithToggle.openOkCancelConfirm(
+         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Confirm Artifact Purge ",
+         " Are you sure you want to purge this artifact and all history associated from the database? (cannot be undone)",
+         "Purge selected artifact's children?", false, null, null);
+
+      if (dialog.getReturnCode() == Window.OK) {
+         final boolean recusivePurge =
+            MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+               "Recursive Purge", "Recurse and purge from child branches?");
+         Job job = new Job("Purge artifact") {
+
+            @Override
+            protected IStatus run(final IProgressMonitor monitor) {
+               IStatus toReturn = Status.CANCEL_STATUS;
+
+               // Notify and confirm that menus should be actioned
+               try {
+                  for (GlobalMenuListener listener : listeners) {
+                     Result result = listener.actioning(GlobalMenuItem.PurgeArtifacts, artifactsToBePurged);
+                     if (result.isFalse()) {
+                        return new Status(IStatus.ERROR, Activator.PLUGIN_ID, IStatus.OK, result.getText(), null);
+                     }
+                  }
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
+               monitor.beginTask("Purge artifact", artifactsToBePurged.size());
+
+               try {
+                  boolean recurseChildren = dialog.getToggleState();
+                  Collection<Artifact> toPurge = new LinkedHashSet<>();
+                  for (Artifact artifactToPurge : artifactsToBePurged) {
+                     if (!artifactToPurge.isDeleted()) {
+                        toPurge.add(artifactToPurge);
+                        if (recurseChildren) {
+                           toPurge.addAll(artifactToPurge.getDescendants());
+                        }
+                     }
+                  }
+                  monitor.setTaskName("Purging " + toPurge.size() + " artifacts");
+                  Operations.executeWorkAndCheckStatus(new PurgeArtifacts(toPurge, recusivePurge));
+                  monitor.worked(toPurge.size());
+                  toReturn = Status.OK_STATUS;
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+                  toReturn = new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getMessage(), ex);
+               } finally {
+                  monitor.done();
+               }
+
+               // Notify Listeners that menu was actioned
+               try {
+                  for (GlobalMenuListener listener : listeners) {
+                     listener.actioned(GlobalMenuItem.PurgeArtifacts, artifactsToBePurged);
+                  }
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
+
+               return toReturn;
+            }
+         };
+
+         Jobs.startJob(job);
+      }
+   }
 
    private void createPurgeMenuItem(Menu parentMenu) {
       purgeMenuItem = new MenuItem(parentMenu, SWT.PUSH);
