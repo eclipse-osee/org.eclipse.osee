@@ -62,7 +62,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor;
 import org.eclipse.osee.framework.lifecycle.ILifecycleService;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -775,15 +774,6 @@ public class AccessControlService implements IAccessControlService {
          hasAccess = artifactLockCache.get(object.getBranch(), object.getId()).equals(UserManager.getUser());
       }
       return hasAccess;
-   }
-
-   private static Boolean isOseeAdmin = null;
-
-   public boolean isOseeAdmin() {
-      if (isOseeAdmin == null) {
-         isOseeAdmin = SystemGroup.OseeAdmin.isCurrentUserMember();
-      }
-      return isOseeAdmin;
    }
 
    private final class AccessControlUpdateListener implements IArtifactEventListener {

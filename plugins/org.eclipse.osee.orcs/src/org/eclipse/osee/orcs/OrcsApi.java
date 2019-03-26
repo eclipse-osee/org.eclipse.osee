@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs;
 
 import javax.script.ScriptEngine;
+import org.eclipse.osee.framework.core.data.IUserGroupService;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
@@ -42,4 +43,6 @@ public interface OrcsApi {
    SystemPreferences getSystemPreferences();
 
    OrcsApplicability getApplicabilityOps();
+
+   IUserGroupService getUserGroupService();
 }

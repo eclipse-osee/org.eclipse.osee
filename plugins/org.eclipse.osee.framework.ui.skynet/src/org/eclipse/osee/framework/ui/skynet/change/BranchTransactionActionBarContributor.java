@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.change;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.osee.framework.skynet.core.SystemGroup;
+import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor;
 import org.eclipse.osee.framework.ui.skynet.change.actions.OpenAssociatedArtifact;
 import org.eclipse.osee.framework.ui.skynet.change.actions.OpenQuickSearchAction;
@@ -36,7 +36,7 @@ public class BranchTransactionActionBarContributor implements IActionContributor
    @Override
    public void contributeToToolBar(IToolBarManager manager) {
       ChangeUiData uiData = editor.getEditorInput().getChangeData();
-      if (SystemGroup.OseeAdmin.isCurrentUserMember()) {
+      if (UserGroupService.getOseeAdmin().isCurrentUserMember()) {
          manager.add(new OpenChangeReportByTransactionIdAction());
       }
       manager.add(getReloadAction());

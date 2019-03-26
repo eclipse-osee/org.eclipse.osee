@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateCommonItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -87,7 +86,6 @@ public class BlamContributionManager implements IXNavigateCommonItem {
       Map<String, XNavigateItem> nameToParent = new HashMap<>();
       XNavigateItem blamOperationItems = new XNavigateItem(null, "Blam Operations", FrameworkImage.BLAM);
       String target = OseeProperties.getTarget();
-      boolean admin = SystemGroup.OseeAdmin.isCurrentUserMember();
       for (AbstractBlam blamOperation : getBlamOperations()) {
          if ("all".equals(
             blamOperation.getTarget()) || OseeProperties.isTargetAll() || blamOperation.getTarget().equals(target)) {

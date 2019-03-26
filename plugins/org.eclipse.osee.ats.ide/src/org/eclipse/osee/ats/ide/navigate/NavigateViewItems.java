@@ -89,7 +89,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SystemGroup;
+import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.OpenPerspectiveNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IOperationFactory;
@@ -299,7 +299,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
    }
 
    private void createExampleItems(XNavigateItem parent, List<XNavigateItem> items) {
-      if (SystemGroup.OseeAdmin.isCurrentUserMember() || OseeProperties.isTargetAll()) {
+      if (UserGroupService.getOseeAdmin().isCurrentUserMember() || OseeProperties.isTargetAll()) {
          XNavigateItem exampleItems = new XNavigateItem(parent, "Examples", AtsImage.REPORT);
 
          new ResultsEditorExample(exampleItems);

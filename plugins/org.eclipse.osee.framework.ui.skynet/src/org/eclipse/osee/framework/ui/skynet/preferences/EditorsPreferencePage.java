@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -97,7 +97,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
       }
 
       try {
-         if (SystemGroup.OseeAdmin.isCurrentUserMember()) {
+         if (UserGroupService.getOseeAdmin().isCurrentUserMember()) {
             includeAttributeTabOnArtifactEditor = new Button(composite, SWT.CHECK);
             includeAttributeTabOnArtifactEditor.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
             includeAttributeTabOnArtifactEditor.setText("Admin - Include Attribute Tab on Artifact Editor");

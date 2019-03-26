@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.ats.ide.config.IAtsUserServiceClient;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.util.AtsGroup;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -163,7 +162,8 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
 
    @Override
    public boolean isAtsAdmin() {
-      if (AtsGroup.AtsAdmin.isCurrentUserTemporaryOverride()) {
+      if (AtsClientService.get().getUserGroupService().getUserGroup(
+         AtsArtifactToken.AtsAdmin).isCurrentUserTemporaryOverride()) {
          return true;
       }
       return configurationService.getConfigurations().getAtsAdmins().contains(getCurrentUser());

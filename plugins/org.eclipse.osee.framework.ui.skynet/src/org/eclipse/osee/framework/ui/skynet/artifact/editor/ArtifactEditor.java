@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.SystemGroup;
+import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
@@ -219,7 +219,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
 
    private void createAttributesTab() {
       try {
-         if (!SystemGroup.OseeAdmin.isCurrentUserMember()) {
+         if (!UserGroupService.getOseeAdmin().isCurrentUserMember()) {
             return;
          }
 

@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -77,15 +78,8 @@ public final class AccessControlManager {
       return getService().hasLockAccess(object);
    }
 
-   @SuppressWarnings("deprecation")
    public static boolean isOseeAdmin() {
-      AccessControlService service = null;
-      try {
-         service = AccessControlHelper.getAccessControlService();
-      } catch (Exception ex) {
-         // Do nothing;
-      }
-      return service != null ? service.isOseeAdmin() : false;
+      return UserGroupService.getOseeAdmin().isCurrentUserMember();
    }
 
    public static Collection<AccessControlData> getAccessControlList(Object object) {

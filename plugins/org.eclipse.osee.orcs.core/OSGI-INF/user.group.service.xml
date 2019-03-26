@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true">
+   <implementation class="org.eclipse.osee.orcs.core.internal.access.UserGroupService"/>
+   <service>
+      <provide interface="org.eclipse.osee.framework.core.data.IUserGroupService"/>
+   </service>
+   <reference bind="setOrcsApi" cardinality="1..1" interface="org.eclipse.osee.orcs.OrcsApi" name="OrcsApi" policy="static"/>
+</scr:component>

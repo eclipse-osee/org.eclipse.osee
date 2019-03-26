@@ -31,6 +31,7 @@ import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
+import org.eclipse.osee.orcs.core.internal.access.UserGroupService;
 import org.eclipse.osee.orcs.core.internal.applicability.OrcsApplicabilityOps;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
@@ -88,6 +89,7 @@ public class OrcsApiImpl implements OrcsApi {
    private TxCallableFactory txCallableFactory;
    private ScriptEngineManager manager;
    private OrcsApplicabilityOps applicability;
+   private UserGroupService userGroupService;
 
    ExternalArtifactManager proxyManager;
 
@@ -116,8 +118,7 @@ public class OrcsApiImpl implements OrcsApi {
 
       BranchHierarchyProvider hierarchyProvider = new BranchHierarchyProvider() {
 
-         private final ThreadLocal<Iterable<? extends BranchId>> cache =
-            new ThreadLocal<>();
+         private final ThreadLocal<Iterable<? extends BranchId>> cache = new ThreadLocal<>();
 
          @Override
          public Iterable<? extends BranchId> getParentHierarchy(BranchId branch) {
@@ -301,4 +302,13 @@ public class OrcsApiImpl implements OrcsApi {
    public OrcsApplicability getApplicabilityOps() {
       return applicability;
    }
+
+   @Override
+   public UserGroupService getUserGroupService() {
+      if (userGroupService == null) {
+         userGroupService = new UserGroupService();
+      }
+      return userGroupService;
+   }
+
 }

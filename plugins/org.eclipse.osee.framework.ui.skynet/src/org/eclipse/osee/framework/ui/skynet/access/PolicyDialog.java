@@ -21,14 +21,15 @@ import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -226,7 +227,8 @@ public class PolicyDialog extends Dialog {
    private boolean isAccessEnabled(PermissionEnum permission) {
       boolean returnValue = true;
       try {
-         boolean isOseeAccessAdmin = SystemGroup.OseeAccessAdmin.isCurrentUserMember();
+         IUserGroup oseeAccessGroup = UserGroupService.getOseeAccessAdmin();
+         boolean isOseeAccessAdmin = oseeAccessGroup.isCurrentUserMember();
          boolean objectHasAccessSet = !policyTableViewer.getAccessControlList().isEmpty();
          if (!isOseeAccessAdmin && objectHasAccessSet) {
             returnValue = AccessControlManager.hasPermission(accessControlledObject, permission);

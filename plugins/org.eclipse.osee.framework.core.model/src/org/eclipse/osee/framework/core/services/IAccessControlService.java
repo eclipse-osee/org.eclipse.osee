@@ -29,4 +29,5 @@ public interface IAccessControlService {
    void removePermissions(BranchId branch);
 
    AccessDataQuery getAccessData(ArtifactToken userArtifact, Collection<?> itemsToCheck);
+
 }

@@ -14,6 +14,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.jsoup,
  org.eclipse.osee.framework.core
 Export-Package: org.eclipse.osee.framework.skynet.core,
+ org.eclipse.osee.framework.skynet.core.access,
  org.eclipse.osee.framework.skynet.core.artifact,
  org.eclipse.osee.framework.skynet.core.artifact.factory,
  org.eclipse.osee.framework.skynet.core.artifact.operation,

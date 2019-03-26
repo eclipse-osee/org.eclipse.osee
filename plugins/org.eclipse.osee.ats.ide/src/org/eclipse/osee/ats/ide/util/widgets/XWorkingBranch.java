@@ -31,14 +31,16 @@ import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IUserGroup;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -434,8 +436,8 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
             isLocked = false;
          } else {
             AccessControlData data = datas.iterator().next();
-            if (data.getSubject().equals(
-               SystemGroup.Everyone.getArtifact()) && data.getBranchPermission() == PermissionEnum.READ) {
+            if (data.getSubject().equals(AtsClientService.get().getUserGroupService().getUserGroup(
+               CoreArtifactTokens.Everyone).getArtifact()) && data.getBranchPermission() == PermissionEnum.READ) {
                isLocked = true;
             } else {
                manuallyLocked = true;
@@ -452,7 +454,10 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
             if (isLocked) {
                AccessControlManager.removeAccessControlDataIf(true, datas.iterator().next());
             } else {
-               AccessControlManager.setPermission(SystemGroup.Everyone.getArtifact(), branch, PermissionEnum.READ);
+               IUserGroup everyoneGroup =
+                  AtsClientService.get().getUserGroupService().getUserGroup(CoreArtifactTokens.Everyone);
+               Conditions.assertTrue(everyoneGroup.getArtifact() instanceof Artifact, "Must be Artifact");
+               AccessControlManager.setPermission((Artifact) everyoneGroup.getArtifact(), branch, PermissionEnum.READ);
             }
             AWorkbench.popup(String.format("Branch set to [%s]", !isLocked ? "Locked" : "NOT Locked"));
          }

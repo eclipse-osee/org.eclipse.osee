@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateEventListener;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -118,11 +118,11 @@ public class UserNavigateView extends ViewPart implements IXNavigateEventListene
 
                      Label label = new Label(xNavComp, SWT.None);
                      String str = getWhoAmI();
-                     if (SystemGroup.OseeAdmin.isCurrentUserMember()) {
+                     if (UserGroupService.getOseeAdmin().isCurrentUserMember()) {
                         str += " - Admin";
                      }
                      if (!str.equals("")) {
-                        if (SystemGroup.OseeAdmin.isCurrentUserMember()) {
+                        if (UserGroupService.getOseeAdmin().isCurrentUserMember()) {
                            label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
                         } else {
                            label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));

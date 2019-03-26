@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.osee.framework.ui.skynet.access.AccessControlService">
-   <implementation class="org.eclipse.osee.framework.ui.skynet.access.AccessControlService"/>
-   <reference bind="setAccessService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IAccessControlService" name="IAccessControlService" policy="static"/>
-</scr:component>
