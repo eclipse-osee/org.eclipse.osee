@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.TransactionTokenDeserializer;
 import org.eclipse.osee.framework.core.data.TransactionTokenSerializer;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.IdDeserializer;
@@ -138,6 +139,7 @@ public class JacksonFeature implements Feature {
       JsonSerializer<Id> idSerializer = new IdSerializer();
       module.addSerializer(TransactionId.class, idSerializer);
       module.addSerializer(BranchType.class, idSerializer);
+      module.addSerializer(BranchState.class, idSerializer);
       module.addDeserializer(TransactionId.class, new IdDeserializer<TransactionId>(TransactionId::valueOf));
 
       objectMapper.registerModule(module);

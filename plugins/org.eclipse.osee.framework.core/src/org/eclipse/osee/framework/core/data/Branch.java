@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -18,6 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.Named;
 /**
  * @author Ryan D. Brooks
  */
+@JsonSerialize(as = Branch.class)
 public class Branch extends BranchViewToken implements IOseeBranch {
    public static final Branch SENTINEL = new Branch(Id.SENTINEL, Named.SENTINEL, ArtifactId.SENTINEL,
       TransactionId.SENTINEL, TransactionId.SENTINEL, BranchId.SENTINEL, false, null, null, false, ArtifactId.SENTINEL);
