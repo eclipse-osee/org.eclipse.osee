@@ -1,0 +1,83 @@
+Introduction:
+- Below is a list of various online tutorials and instructions accompanying them. Lot of the resources below have overlapping concepts. It is not required to go through every single resource entirely.
+- It is better to go through the material you personally find easiest to learn from, and skim accordingly on the other materials.
+	
+1) Git YouTube Tutorials
+	- There are some great YouTube tutorials regarding Git available on YouTube.
+	- Below are some that are selected, many of the videos have overlapping material. But you are encouraged to review them to reinforce fundamental concepts. Skip accordingly if you feel comfortable.
+	
+	-Basics
+		- https://www.youtube.com/playlist?list=PL6gx4Cwl9DGAKWClAD_iKpNC0bGHxGhcx
+			- This playlist is helpful, only review videos 1-16.
+			- Do not go beyond 16, they deal with GitHub specifically and it may not be necessary.
+		- https://www.youtube.com/watch?v=SWYqp7iY_Tc&t=3s
+		- https://www.youtube.com/watch?v=HVsySz-h9r4&list=PL-osiE80TeTuRUfjRe54Eea17-YfnOOAx
+		- https://www.youtube.com/playlist?list=PLeo1K3hjS3usJuxZZUBdjAcilgfQHkRzW
+			- Only go through videos, 1-7. The rest deal with Github specifically.
+		- https://www.youtube.com/watch?list=PLfdtiltiRHWFEbt9V04NrbmksLV4Pdf3j&time_continue=3&v=DR7MLaAKcUk
+			
+	-Advanced
+		- Rebase Concepts
+			- https://www.youtube.com/watch?v=CEtqad1jM2E
+			- https://www.youtube.com/watch?v=tukOm3Afd8s
+		- Stashing
+			- https://www.youtube.com/watch?v=KLEDKgMmbBI
+		- Overall videos covering advanced topics
+			- Videos are long, some will have material that was covered above. Follow/skip however you feel comfortable with the material.
+			- https://www.youtube.com/watch?v=-kVzV6m5_Qg
+			- https://www.youtube.com/watch?v=0SJCYPsef54
+			- https://www.youtube.com/watch?v=FdZecVxzJbk
+			- https://www.youtube.com/watch?v=Lb4yvfrX_7I&list=PLe6EXFvnTV7-_41SpakZoTIYCgX4aMTdU
+				- This video playlist has from beginner to advanced topics. Skip accordingly.
+
+				********
+				- https://www.youtube.com/watch?v=gjtXTm_TvvE&list=PLe6EXFvnTV78WqGmGSq8JPnafR3lAa55n
+				- This video playlist has from beginner to advanced topics. Skip accordingly.
+				
+2) Various online git learning resources
+	- http://try.github.io/  
+		- They offer documentation and resources to understand git overall.
+		- There is interactive tutorials as well.
+	- https://www.atlassian.com/git
+		- Another full set of introductory material. They cover same topics as above but in a more engagine manner.
+		- This resource is provided by Atlassian, the company that owns Bitbucket. Their tutorial is comprehensive and engaging.
+	- https://learngitbranching.js.org/
+		- This is an interactive tool that helps you visualize about git and version control.
+	- http://rogerdudler.github.io/git-guide/
+		- Full tutorial series. Offers some engaging material.
+	- Udacity free course on git
+		- Most likely unnecessary and maybe not as comprehensive as other materials. But good tool for beginners.
+		- https://www.udacity.com/course/how-to-use-git-and-github--ud775
+	- https://blog.udemy.com/git-tutorial-a-comprehensive-guide/
+	- https://gist.github.com/jaseemabid/1321592
+	
+
+3) EGit Tutorials
+	
+	YouTube Tutorials
+	- https://www.youtube.com/watch?v=LPT7v69guVY
+	- https://www.youtube.com/watch?v=C0bFLGJqnI8&list=PL-suslzEBiMo0B5RcAikOaqDLKoG9Okub
+		- Playlist
+		
+	Online Guides
+	- https://wiki.eclipse.org/EGit/User_Guide
+	- https://www.baeldung.com/egit
+	- https://www.concretepage.com/ide/eclipse/getting-started-with-git-and-eclipse-egit-integration-tutorial-using-github
+	
+4) TortoiseGit Tutorials
+	YouTube Videos
+	- https://www.youtube.com/watch?v=N1KNw1tr47k&list=PLMJfvBwcOl66_1UJV8ywUoL7mZFPIMJKx
+	
+	Online Guides
+	- https://tortoisegit.org/docs/tortoisegit/
+	- https://joelabrahamsson.com/remote-branches-with-tortoisegit/
+	
+5) GitHub Shortcuts & Supplementary Materials
+	- https://education.github.com/git-cheat-sheet-education.pdf
+	
+	Good Practices
+	- https://www.git-tower.com/learn/git/ebook/en/command-line/appendix/best-practices
+	- https://sethrobertson.github.io/GitBestPractices/
+	
+6) Software Architecture
+	- https://www.youtube.com/watch?v=SMtEa9XNMJw&list=PLnIXQSIsn7B1XbkWY9Shf5_LJW8GAOUuI
