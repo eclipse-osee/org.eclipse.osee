@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xHistory;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -103,9 +104,11 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
 
    private XHistoryWidget xHistoryWidget;
    private Artifact artifact;
+   private final AtomicBoolean viewClosed;
 
    public HistoryView() {
       super();
+      viewClosed = new AtomicBoolean();
    }
 
    @Override
@@ -337,7 +340,11 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
 
    @Override
    public void init(IViewSite site, IMemento memento) throws PartInitException {
+      if (viewClosed.get()) {
+         return;
+      }
       super.init(site, memento);
+
       try {
          if (memento != null) {
             String id = memento.getString(ART_ID);
@@ -357,6 +364,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
    }
 
    private void closeView() {
+      viewClosed.set(true);
       SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
    }
 
