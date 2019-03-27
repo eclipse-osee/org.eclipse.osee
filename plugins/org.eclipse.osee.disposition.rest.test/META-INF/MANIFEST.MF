@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Disposition REST Test (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.disposition.rest.test
+Bundle-SymbolicName: org.eclipse.osee.disposition.rest.test;singleton:=true
 Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment

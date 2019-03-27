@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE JAX-RS ClientTest (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.jaxrs.client.test
+Bundle-SymbolicName: org.eclipse.osee.jaxrs.client.test;singleton:=true
 Bundle-Version: 0.26.0.qualifier
 Fragment-Host: org.eclipse.osee.jaxrs.client
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
