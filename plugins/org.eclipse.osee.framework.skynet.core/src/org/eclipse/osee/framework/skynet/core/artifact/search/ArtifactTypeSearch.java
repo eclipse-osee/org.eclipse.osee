@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 
 /**
  * @author Robert A. Fisher
@@ -47,7 +46,7 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
       ArrayList<ArtifactTypeToken> artifactTypes = new ArrayList<>();
 
       for (String artifactTypeId : storageString.split(",")) {
-         artifactTypes.add(TokenFactory.createArtifactType(Long.parseLong(artifactTypeId), "SearchArtType"));
+         artifactTypes.add(ArtifactTypeToken.valueOf(Long.parseLong(artifactTypeId), "SearchArtType"));
       }
 
       return new ArtifactTypeSearch(artifactTypes);

@@ -24,10 +24,6 @@ public final class TokenFactory {
       // Utility Class
    }
 
-   public static ArtifactTypeToken createArtifactType(long id, String name) {
-      return ArtifactTypeToken.valueOf(id, name);
-   }
-
    /**
     * @param token as [name]-[uuid]
     */

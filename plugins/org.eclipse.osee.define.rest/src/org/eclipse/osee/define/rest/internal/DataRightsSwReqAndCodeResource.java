@@ -22,11 +22,10 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.app.OseeAppletPage;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -83,7 +82,7 @@ public final class DataRightsSwReqAndCodeResource {
       return pageUtil.realizeApplet(resourceRegistry, "dataRightsReport.html", getClass());
    }
 
-   private static final ArtifactTypeToken WCAFE = TokenFactory.createArtifactType(204509162766367L, "WCAFE");
+   private static final ArtifactTypeToken WCAFE = ArtifactTypeToken.valueOf(204509162766367L, "WCAFE");
 
    /**
     * Checks the Data Rights on the provided branch in the important subsystems: Controls and Displays, Mission System

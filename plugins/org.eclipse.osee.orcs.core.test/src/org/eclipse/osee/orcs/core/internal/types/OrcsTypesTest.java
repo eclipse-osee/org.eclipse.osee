@@ -77,13 +77,13 @@ public class OrcsTypesTest {
 
    private static final String TEST_TYPE_MODEL = "testTypeModel.osee";
 
-   private static final ArtifactTypeToken ARTIFACT = TokenFactory.createArtifactType(1, "Artifact");
-   private static final ArtifactTypeToken REQUIREMENT = TokenFactory.createArtifactType(21, "Requirement");
-   private static final ArtifactTypeToken SOFTWARE_REQUIREMENT = TokenFactory.createArtifactType(24, "Software Requirement");
-   private static final ArtifactTypeToken SYSTEM_REQUIREMENT = TokenFactory.createArtifactType(30, "System Requirement");
-   private static final ArtifactTypeToken SUBSYSTEM_REQUIREMENT = TokenFactory.createArtifactType(29, "SubSystem Requirement");
-   private static final ArtifactTypeToken OTHER_ARTIFACT = TokenFactory.createArtifactType(32, "Other Artifact");
-   private static final ArtifactTypeToken LAST_ARTIFACT = TokenFactory.createArtifactType(33, "Last Artifact");
+   private static final ArtifactTypeToken ARTIFACT = ArtifactTypeToken.valueOf(1, "Artifact");
+   private static final ArtifactTypeToken REQUIREMENT = ArtifactTypeToken.valueOf(21, "Requirement");
+   private static final ArtifactTypeToken SOFTWARE_REQUIREMENT = ArtifactTypeToken.valueOf(24, "Software Requirement");
+   private static final ArtifactTypeToken SYSTEM_REQUIREMENT = ArtifactTypeToken.valueOf(30, "System Requirement");
+   private static final ArtifactTypeToken SUBSYSTEM_REQUIREMENT = ArtifactTypeToken.valueOf(29, "SubSystem Requirement");
+   private static final ArtifactTypeToken OTHER_ARTIFACT = ArtifactTypeToken.valueOf(32, "Other Artifact");
+   private static final ArtifactTypeToken LAST_ARTIFACT = ArtifactTypeToken.valueOf(33, "Last Artifact");
 
    private static final AttributeTypeId NAME = AttributeTypeToken.valueOf(1152921504606847088L, "Name");
    private static final AttributeTypeId ANNOTATION = AttributeTypeToken.valueOf(1152921504606847094L, "Annotation");

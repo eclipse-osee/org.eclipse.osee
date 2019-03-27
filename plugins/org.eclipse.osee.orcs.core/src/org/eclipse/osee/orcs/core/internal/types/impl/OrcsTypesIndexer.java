@@ -20,10 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -162,7 +162,7 @@ public class OrcsTypesIndexer {
       ArtifactTypeToken token = index.getTokenByDslType(dslType);
       if (token == null) {
          long id = Long.valueOf(dslType.getId());
-         token = TokenFactory.createArtifactType(id, dslType.getName());
+         token = ArtifactTypeToken.valueOf(id, dslType.getName());
          index.put(token, dslType);
       }
       return token;

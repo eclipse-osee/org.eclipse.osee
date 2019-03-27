@@ -12,11 +12,10 @@ package org.eclipse.osee.framework.core.model.access;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -148,7 +147,7 @@ public class AccessDataQueryTest {
       ArtifactToken accessArtifact = ArtifactToken.valueOf(45, "test1", branch, Folder);
       ArtifactToken typeAccessArtifact = ArtifactToken.valueOf(46, "test2", branch, Folder);
       ArtifactToken noAccessArtifact = ArtifactToken.valueOf(47, "test3", branch, Folder);
-      ArtifactTypeToken artType = TokenFactory.createArtifactType(1, "Folder");
+      ArtifactTypeToken artType = ArtifactTypeToken.valueOf(1, "Folder");
 
       AccessDetail<?> specificArtDetail = MockDataFactory.createAccessDetails(accessArtifact, PermissionEnum.DENY, "",
          new Scope().add("very").add("specific"));

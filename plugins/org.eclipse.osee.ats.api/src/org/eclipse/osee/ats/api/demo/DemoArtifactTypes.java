@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.api.demo;
 
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 
 /**
  * @author Ryan D. Brooks
@@ -19,9 +18,9 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 public final class DemoArtifactTypes {
 
    // @formatter:off
-   public static final ArtifactTypeToken DemoCodeTeamWorkflow = TokenFactory.createArtifactType(79, "Demo Code Team Workflow");
-   public static final ArtifactTypeToken DemoReqTeamWorkflow = TokenFactory.createArtifactType(80, "Demo Req Team Workflow");
-   public static final ArtifactTypeToken DemoTestTeamWorkflow = TokenFactory.createArtifactType(81, "Demo Test Team Workflow");
+   public static final ArtifactTypeToken DemoCodeTeamWorkflow = ArtifactTypeToken.valueOf(79, "Demo Code Team Workflow");
+   public static final ArtifactTypeToken DemoReqTeamWorkflow = ArtifactTypeToken.valueOf(80, "Demo Req Team Workflow");
+   public static final ArtifactTypeToken DemoTestTeamWorkflow = ArtifactTypeToken.valueOf(81, "Demo Test Team Workflow");
    // @formatter:on
 
    private DemoArtifactTypes() {

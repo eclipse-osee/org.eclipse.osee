@@ -74,7 +74,7 @@ public class ConvertOseeTypesToLong {
          String text = Lib.fileToString(file);
 
          for (String createTypePrefix : Arrays.asList("createType\\(", "AttributeTypeToken.valueOf\\(",
-            "TokenFactory.createArtifactType\\(", "RelationTypeSide.create\\(RelationSide.SIDE_A, ")) {
+            "ArtifactTypeToken.valueOf\\(", "RelationTypeSide.create\\(RelationSide.SIDE_A, ")) {
             Pattern javaTypePattern = Pattern.compile(createTypePrefix + "(.*)L,");
             Matcher matcher = javaTypePattern.matcher(text);
             Map<String, Long> hexToLong = getHextToLong(matcher);

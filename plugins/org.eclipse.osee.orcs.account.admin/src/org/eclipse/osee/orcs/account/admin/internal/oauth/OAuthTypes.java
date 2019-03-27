@@ -12,9 +12,8 @@ package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 
 /**
@@ -27,7 +26,7 @@ public final class OAuthTypes {
    }
 
    // @formatter:off
-   public static final ArtifactTypeToken OAUTH_CLIENT = TokenFactory.createArtifactType(756912961500447526L, "OAuth Client");
+   public static final ArtifactTypeToken OAUTH_CLIENT = ArtifactTypeToken.valueOf(756912961500447526L, "OAuth Client");
 
    public static final AttributeTypeToken OAUTH_CLIENT_WEBSITE_URI = AttributeTypeToken.valueOf(7824657901879283800L, "Website URL");
    public static final AttributeTypeToken OAUTH_CLIENT_LOGO_URI = AttributeTypeToken.valueOf(7843963586445815729L, "Logo URL");

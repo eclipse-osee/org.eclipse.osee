@@ -25,10 +25,9 @@ import java.util.Map;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.activity.api.ActivityLog;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
@@ -48,12 +47,11 @@ public final class DataRightsStreamingOutput implements StreamingOutput {
    private final IOseeBranch branch;
    private final String codeRoot;
    private final TraceAccumulator traceAccumulator;
-   private final Map<CaseInsensitiveString, ArtifactReadable> nameToReqMap =
-      new LinkedHashMap<>();
+   private final Map<CaseInsensitiveString, ArtifactReadable> nameToReqMap = new LinkedHashMap<>();
    private final List<ArtifactReadable> noTraceReqs = new ArrayList<>();
    private ExcelXmlWriter writer;
    private final ActivityLog activityLog;
-   private static final ArtifactTypeToken WCAFE = TokenFactory.createArtifactType(204509162766367L, "WCAFE");
+   private static final ArtifactTypeToken WCAFE = ArtifactTypeToken.valueOf(204509162766367L, "WCAFE");
 
    public DataRightsStreamingOutput(OrcsApi orcsApi, BranchId branch, String codeRoot, TraceAccumulator traceAccumulator, ActivityLog activityLog) {
 

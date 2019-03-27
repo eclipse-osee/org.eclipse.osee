@@ -15,7 +15,6 @@ import java.util.Collections;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
@@ -79,7 +78,7 @@ public class RelationTypeRestrictionHandler implements RestrictionHandler<Relati
             ArtifactType artifactType = artifactProxy.getArtifactType();
             if (artifactTypeRef != null && artifactType != null) {
                ArtifactTypeToken ruleType =
-                  TokenFactory.createArtifactType(Long.valueOf(artifactTypeRef.getId()), artifactTypeRef.getName());
+                  ArtifactTypeToken.valueOf(Long.valueOf(artifactTypeRef.getId()), artifactTypeRef.getName());
                if (artifactType.inheritsFrom(ruleType)) {
                   toUse = scope.clone().addSubPath(artifactProxy.getName());
                }
@@ -92,8 +91,8 @@ public class RelationTypeRestrictionHandler implements RestrictionHandler<Relati
          for (RelationType relationType : relationTypes) {
             for (RelationSide relationSide : RelationSide.values()) {
                if (OseeUtil.isRestrictedSide(restrictedSide, relationSide)) {
-                  collector.collect(new AccessDetail<>(new RelationTypeSide(relationType, relationSide),
-                     permission, toUse));
+                  collector.collect(
+                     new AccessDetail<>(new RelationTypeSide(relationType, relationSide), permission, toUse));
                }
             }
          }
