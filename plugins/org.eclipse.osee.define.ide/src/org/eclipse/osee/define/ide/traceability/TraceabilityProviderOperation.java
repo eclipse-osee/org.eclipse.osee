@@ -31,6 +31,8 @@ public abstract class TraceabilityProviderOperation extends AbstractOperation im
       List<String> qualMethod = req.getAttributeValues(CoreAttributeTypes.QualificationMethod);
       if (qualMethod.contains("Inspection") || qualMethod.contains("Analysis")) {
          return "INSPECTION";
+      } else if (qualMethod.contains("Special Qualification") || qualMethod.contains("Demonstration")) {
+         return "MANUAL";
       }
       return "";
    }

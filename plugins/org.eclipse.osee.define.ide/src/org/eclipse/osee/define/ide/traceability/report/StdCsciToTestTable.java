@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.define.ide.traceability.ArtifactOperations;
 import org.eclipse.osee.define.ide.traceability.RequirementTraceabilityData;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -133,7 +134,14 @@ public class StdCsciToTestTable implements ISimpleTable {
       }
 
       if (builder.length() == 0) {
-         builder.append("None");
+         List<String> qualMethod = artifact.getAttributeValues(CoreAttributeTypes.QualificationMethod);
+         if (qualMethod.contains("Inspection") || qualMethod.contains("Analysis")) {
+            builder.append("INSPECTION");
+         } else if (qualMethod.contains("Special Qualification") || qualMethod.contains("Demonstration")) {
+            builder.append("MANUAL");
+         } else {
+            builder.append("None");
+         }
       }
       return builder.toString();
    }
