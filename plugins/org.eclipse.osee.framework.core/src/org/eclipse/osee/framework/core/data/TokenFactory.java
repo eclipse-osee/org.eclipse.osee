@@ -36,8 +36,4 @@ public final class TokenFactory {
       }
       return null;
    }
-
-   public static ArtifactToken createArtifactToken(long id, String guid, String name, BranchId branch, ArtifactTypeToken artifactType) {
-      return ArtifactToken.valueOf(id, guid, name, branch, artifactType);
-   }
 }

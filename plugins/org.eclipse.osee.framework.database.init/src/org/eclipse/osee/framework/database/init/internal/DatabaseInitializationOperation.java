@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeCredential;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -59,8 +58,8 @@ public class DatabaseInitializationOperation extends AbstractOperation {
       super("Database Initialization", Activator.PLUGIN_ID);
       this.preSelectedChoice = preSelectedChoice;
       this.isPromptEnabled = isPromptEnabled;
-      MAPPING_ARTIFACT = TokenFactory.createArtifactToken(5443258, "AOkJ_kFNbEXCS7UjmfwA", "DataRightsFooters",
-         BranchId.SENTINEL, CoreArtifactTypes.GeneralData);
+      MAPPING_ARTIFACT = ArtifactToken.valueOf(5443258, "AOkJ_kFNbEXCS7UjmfwA", "DataRightsFooters", BranchId.SENTINEL,
+         CoreArtifactTypes.GeneralData);
    }
 
    private boolean isPromptingAllowed() {
