@@ -32,8 +32,8 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -436,10 +436,12 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
                HistoryView historyView = (HistoryView) page.showView(VIEW_ID,
                   artifactTok.getIdString() + artifactTok.getBranch().getIdString(), IWorkbenchPage.VIEW_ACTIVATE);
                try {
-                  Artifact artifact = ArtifactQuery.getArtifactFromId(artifactTok, artifactTok.getBranch());
+                  Artifact artifact = ArtifactQuery.getArtifactFromId(artifactTok, artifactTok.getBranch(),
+                     DeletionFlag.INCLUDE_DELETED);
                   historyView.explore(artifact, loadHistory);
-               } catch (ArtifactDoesNotExist ex) {
+               } catch (Exception ex) {
                   historyView.closeView();
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
