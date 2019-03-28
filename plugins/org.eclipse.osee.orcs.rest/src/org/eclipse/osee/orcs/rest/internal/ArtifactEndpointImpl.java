@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.rest.internal;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -163,13 +164,23 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    }
 
    /**
-    * if exists = false then return all artifact of given type that do not have an attribute of the given type with the
+    * if exists = false then return all artifacts of given type that do not have an attribute of the given type with the
     * specified value. This includes artifacts that lack attributes of the given type as well as those that have that
     * type but with a different value.
     */
    @Override
    public List<ArtifactId> getArtifactIdsByAttribute(AttributeTypeId attributeType, String value, boolean exists, ArtifactTypeId artifactType) {
       return getArtifactXByAttribute(attributeType, value, exists, artifactType, query::loadArtifactIds);
+   }
+
+   /**
+    * if exists = false then return all artifacts of given type that do not have an attribute of the given type with the
+    * specified value. This includes artifacts that lack attributes of the given type as well as those that have that
+    * type but with a different value.
+    */
+   @Override
+   public Map<String, Object> getArtifactByAttribute(AttributeTypeId attributeType, String representation, String value, boolean exists, ArtifactTypeId artifactType) {
+      return getArtifactXByAttribute(attributeType, value, exists, artifactType, query::loadArtifactFieldMap);
    }
 
    @Override

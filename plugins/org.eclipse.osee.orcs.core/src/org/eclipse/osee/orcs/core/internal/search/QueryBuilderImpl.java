@@ -11,13 +11,17 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -46,6 +50,26 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
       this.queryFactory = queryFactory;
       this.session = session;
       this.queryEngine = queryFactory.getQueryEngine();
+   }
+
+   @Override
+   public Map<String, Object> loadArtifactFieldMap() {
+      ArtifactReadable artifact = getArtifact();
+      Map<String, Object> map = new LinkedHashMap<>();
+      map.put("Artifact Id", artifact.getIdString());
+      map.put("Name", artifact.getName());
+
+      List<AttributeTypeToken> attributeTypes = new ArrayList<>(artifact.getExistingAttributeTypes());
+      Collections.sort(attributeTypes);
+      for (AttributeTypeToken attributeType : attributeTypes) {
+         List<Object> attributeValues = artifact.getAttributeValues(attributeType);
+         if (attributeValues.size() == 1) {
+            map.put(attributeType.getName(), attributeValues.get(0));
+         } else {
+            map.put(attributeType.getName(), attributeValues);
+         }
+      }
+      return map;
    }
 
    @Override
