@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
  */
 public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommitConfigItem {
 
-   boolean isActionable();
+   Boolean isActionable();
 
    Collection<IAtsActionableItem> getActionableItems();
 
@@ -137,7 +137,7 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
          }
 
          @Override
-         public boolean isActionable() {
+         public Boolean isActionable() {
             return false;
          }
 

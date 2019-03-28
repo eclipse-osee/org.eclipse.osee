@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -67,11 +67,11 @@ public class AtsConfigObject extends org.eclipse.osee.ats.core.model.impl.AtsObj
       return getTypeName();
    }
 
-   public void setActionable(boolean actionable) {
+   public void setActionable(Boolean actionable) {
       throw new UnsupportedOperationException("TeamDefinition.setActionable not implemented yet");
    }
 
-   public boolean isActionable() {
+   public Boolean isActionable() {
       return getAttributeValue(AtsAttributeTypes.Actionable, false);
    }
 

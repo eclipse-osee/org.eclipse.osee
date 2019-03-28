@@ -56,9 +56,10 @@ public class TeamDefinitionCheckTreeDialog extends FilteredCheckboxTreeDialog {
             TeamDefinitions.getTopLevelTeamDefinitions(active, AtsClientService.get().getQueryService()));
          if (getInitialTeamDefs() != null) {
             getTreeViewer().setInitalChecked(getInitialTeamDefs());
-         }
-         if (getInitialTeamDefs().size() == 1) {
-            getTreeViewer().getCheckboxTreeViewer().expandToLevel(initialTeamDefs.iterator().next(), 1);
+
+            if (getInitialTeamDefs().size() == 1) {
+               getTreeViewer().getCheckboxTreeViewer().expandToLevel(initialTeamDefs.iterator().next(), 1);
+            }
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

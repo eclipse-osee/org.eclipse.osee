@@ -49,7 +49,7 @@ public interface IAtsActionableItem extends IAtsConfigObject, IAtsRules {
     ******************************/
    Collection<String> getStaticIds();
 
-   public boolean isActionable();
+   public Boolean isActionable();
 
    /*****************************************************
     * Team Leads, Members
@@ -90,6 +90,7 @@ public interface IAtsActionableItem extends IAtsConfigObject, IAtsRules {
 
          @Override
          public void setDescription(String description) {
+            // Do nothing
          }
 
          @Override
@@ -118,7 +119,7 @@ public interface IAtsActionableItem extends IAtsConfigObject, IAtsRules {
          }
 
          @Override
-         public boolean isActionable() {
+         public Boolean isActionable() {
             return false;
          }
 

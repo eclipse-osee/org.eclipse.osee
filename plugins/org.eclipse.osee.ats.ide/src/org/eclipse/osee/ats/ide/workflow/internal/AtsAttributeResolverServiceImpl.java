@@ -255,7 +255,10 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    @Override
    public <T> T getSoleAttributeValue(ArtifactId artifact, AttributeTypeId attributeType, T defaultValue) {
-      return getArtifact(artifact).getSoleAttributeValue(attributeType, defaultValue);
+      if (getArtifact(artifact) != null) {
+         return getArtifact(artifact).getSoleAttributeValue(attributeType, defaultValue);
+      }
+      return null;
    }
 
    @Override

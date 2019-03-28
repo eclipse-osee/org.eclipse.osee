@@ -213,7 +213,7 @@ public class NewActionPage1 extends WizardPage implements IsEnabled {
          boolean enabled = false;
          if (element instanceof IAtsActionableItem) {
             IAtsActionableItem ai = (IAtsActionableItem) element;
-            if (ai.isActionable()) {
+            if (ai.isActionable() != null && ai.isActionable()) {
                enabled = true;
             }
          }
