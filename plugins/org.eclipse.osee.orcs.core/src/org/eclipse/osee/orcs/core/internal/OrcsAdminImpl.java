@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -131,11 +132,9 @@ public class OrcsAdminImpl implements OrcsAdmin {
          tx.setSoleAttributeValue(user, CoreAttributeTypes.UserId, userToken.getUserId());
          tx.setSoleAttributeValue(user, CoreAttributeTypes.Email, userToken.getEmail());
 
-         if (userToken.isAdmin()) {
-            tx.relate(CoreArtifactTokens.OseeAdmin, CoreRelationTypes.Users_User, user);
-            tx.relate(CoreArtifactTokens.OseeAccessAdmin, CoreRelationTypes.Users_User, user);
+         for (ArtifactToken userRole : userToken.getRoles()) {
+            tx.relate(userRole, CoreRelationTypes.Users_User, user);
          }
-
          for (ArtifactId userGroup : defaultGroups) {
             tx.relate(userGroup, CoreRelationTypes.Users_User, user);
          }

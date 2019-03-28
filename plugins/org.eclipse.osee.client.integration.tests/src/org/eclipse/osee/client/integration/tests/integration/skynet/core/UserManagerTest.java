@@ -96,7 +96,7 @@ public final class UserManagerTest {
 
    private User createUser(SkynetTransaction transaction, int index) {
       UserToken token = UserToken.create(Lib.generateArtifactIdAsInt(), NEW_USER_NAMES[index],
-         "this" + index + "@that.com", "9999999" + index, true, index % 2 == 0, true);
+         "this" + index + "@that.com", "9999999" + index, true, true);
       User user = UserManager.createUser(token, transaction);
       user.persist(transaction);
       return user;

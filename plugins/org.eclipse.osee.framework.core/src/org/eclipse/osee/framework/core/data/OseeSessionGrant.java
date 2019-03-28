@@ -91,7 +91,7 @@ public class OseeSessionGrant {
 
    private UserToken getGrantedUserToken() {
       return UserToken.create(Lib.generateArtifactIdAsInt(), oseeUserName, oseeUserEmail, oseeUserId, isOseeUserActive,
-         false, false);
+         false);
    }
 
    public String getDbDriver() {

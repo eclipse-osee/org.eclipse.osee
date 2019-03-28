@@ -116,7 +116,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
       return UserToken.create(Lib.generateArtifactIdAsInt(), Strings.unquote(dslUserDef.getName()),
          Strings.isValid(dslUserDef.getEmail()) ? dslUserDef.getEmail() : Strings.unquote(dslUserDef.getName()),
          Strings.isValid(dslUserDef.getUserId()) ? dslUserDef.getUserId() : Strings.unquote(dslUserDef.getName()),
-         BooleanDefUtil.get(dslUserDef.getActive(), true), false, true);
+         BooleanDefUtil.get(dslUserDef.getActive(), true), true);
    }
 
    @SuppressWarnings("deprecation")
