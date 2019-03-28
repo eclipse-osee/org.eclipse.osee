@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="OSEE Client Server Target Platform" sequenceNumber="99">
+<?pde version="3.8"?><target name="OSEE Client Server Target Platform" sequenceNumber="100">
 <locations>
 <location path="${eclipse_home}" type="Profile"/>
 </locations>
@@ -29,10 +29,9 @@
 <plugin id="com.ibm.icu"/>
 <plugin id="com.jcraft.jsch"/>
 <plugin id="com.lowagie.text"/>
-<plugin id="com.mountainminds.eclemma.core"/>
-<plugin id="com.mountainminds.eclemma.debug.ui.compatibility"/>
-<plugin id="com.mountainminds.eclemma.doc"/>
-<plugin id="com.mountainminds.eclemma.ui"/>
+<plugin id="org.eclipse.eclemma.core"/>
+<plugin id="org.eclipse.eclemma.doc"/>
+<plugin id="org.eclipse.eclemma.ui"/>
 <plugin id="com.sun.el"/>
 <plugin id="com.sun.xml.fastinfoset"/>
 <plugin id="javaewah"/>
