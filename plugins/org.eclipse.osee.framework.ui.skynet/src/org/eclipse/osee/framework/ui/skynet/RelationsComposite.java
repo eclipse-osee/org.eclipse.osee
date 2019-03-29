@@ -127,6 +127,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact, 
 
       CellEditor[] editors = new CellEditor[columnNames.length];
       editors[1] = new TextCellEditor(tree);
+      editors[2] = new TextCellEditor(tree);
       treeViewer.setCellEditors(editors);
       treeViewer.setCellModifier(new RelationCellModifier(treeViewer, editor));
       treeViewer.setColumnProperties(columnNames);
