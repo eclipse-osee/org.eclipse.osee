@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -44,9 +43,9 @@ import org.mockito.MockitoAnnotations;
  */
 public class RelationNodeAdjacenciesTest {
 
-   private static final IRelationType TYPE_1 = TokenFactory.createRelationType(123456789L, "TYPE_1");
-   private static final IRelationType TYPE_2 = TokenFactory.createRelationType(987654321L, "TYPE_2");
-   private static final IRelationType TYPE_3 = TokenFactory.createRelationType(678912345L, "TYPE_3");
+   private static final IRelationType TYPE_1 = RelationTypeToken.create(123456789L, "TYPE_1");
+   private static final IRelationType TYPE_2 = RelationTypeToken.create(987654321L, "TYPE_2");
+   private static final IRelationType TYPE_3 = RelationTypeToken.create(678912345L, "TYPE_3");
 
    // @formatter:off
    @Mock Relation dirty;

@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 
@@ -52,7 +53,7 @@ public class PredicateHandlerUtil {
       for (String value : rels) {
          long longUuid = parseUuid(value);
          if (longUuid != -1L) {
-            types.add(TokenFactory.createRelationType(longUuid, "SearchRelationType"));
+            types.add(RelationTypeToken.create(longUuid, "SearchRelationType"));
          }
       }
       return types;

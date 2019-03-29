@@ -91,8 +91,8 @@ public class OrcsTypesTest {
    private static final AttributeTypeId FIELD_1 = AttributeTypeToken.valueOf(1152921504606847104L, "Field 1");
    private static final AttributeTypeId FIELD_2 = AttributeTypeToken.valueOf(1152921504606847105L, "Field 2");
 
-   private static final IRelationType REQUIREMENT_REL = TokenFactory.createRelationType(2305843009213694295L, "Requirement Relation");
-   private static final IRelationType ANOTHER_REL = TokenFactory.createRelationType(2305843009213694296L, "Another Relation");
+   private static final IRelationType REQUIREMENT_REL = RelationTypeToken.create(2305843009213694295L, "Requirement Relation");
+   private static final IRelationType ANOTHER_REL = RelationTypeToken.create(2305843009213694296L, "Another Relation");
 
    private static final BranchId BRANCH_A = IOseeBranch.create(3458234234L, "Branch A");
    private static final BranchId BRANCH_B = IOseeBranch.create(9993245332L, "Branch B");

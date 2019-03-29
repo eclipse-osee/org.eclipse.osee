@@ -37,10 +37,6 @@ public final class TokenFactory {
       return null;
    }
 
-   public static RelationTypeToken createRelationType(long id, String name) {
-      return RelationTypeToken.create(id, name);
-   }
-
    public static ArtifactToken createArtifactToken(long id, String guid, String name, BranchId branch, ArtifactTypeToken artifactType) {
       return ArtifactToken.valueOf(id, guid, name, branch, artifactType);
    }

@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
@@ -50,7 +49,7 @@ import org.mockito.stubbing.Answer;
  */
 public class RelationTypeValidityTest {
 
-   private static final RelationTypeToken TYPE_1 = TokenFactory.createRelationType(123456789L, "TYPE_1");
+   private static final RelationTypeToken TYPE_1 = RelationTypeToken.create(123456789L, "TYPE_1");
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();

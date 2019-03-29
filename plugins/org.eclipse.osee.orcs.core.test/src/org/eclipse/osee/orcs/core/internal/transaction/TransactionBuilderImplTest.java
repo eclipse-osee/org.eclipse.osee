@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -73,7 +72,7 @@ import org.mockito.Mockito;
  */
 public class TransactionBuilderImplTest {
 
-   private static final RelationTypeToken TYPE_1 = TokenFactory.createRelationType(123456789L, "TYPE_1");
+   private static final RelationTypeToken TYPE_1 = RelationTypeToken.create(123456789L, "TYPE_1");
    @Rule
    public ExpectedException thrown = ExpectedException.none();
 

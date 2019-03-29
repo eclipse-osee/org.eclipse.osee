@@ -18,7 +18,6 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.logger.Log;
@@ -49,7 +48,7 @@ import org.mockito.Mock;
  */
 public class GraphBuilderImplTest {
    private static final ArtifactId artifactId60 = ArtifactId.valueOf(60);
-   private static final RelationTypeToken TYPE_1 = TokenFactory.createRelationType(123456789L, "TYPE_1");
+   private static final RelationTypeToken TYPE_1 = RelationTypeToken.create(123456789L, "TYPE_1");
    private static final TransactionId TRANSACTION_ID = TransactionId.valueOf(231214214);
 
    @Rule

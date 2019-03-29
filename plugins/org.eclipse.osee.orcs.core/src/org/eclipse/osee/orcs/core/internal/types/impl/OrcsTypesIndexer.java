@@ -182,7 +182,7 @@ public class OrcsTypesIndexer {
       RelationTypeToken token = index.getTokenByDslType(dslType);
       if (token == null) {
          long id = Long.valueOf(dslType.getId());
-         token = TokenFactory.createRelationType(id, dslType.getName());
+         token = RelationTypeToken.create(id, dslType.getName());
          index.put(token, dslType);
       }
       return token;

@@ -28,7 +28,7 @@ public class RelationTypeSideTest {
 
    @Test
    public void testHashCodeEquals() {
-      IRelationType relType1 = TokenFactory.createRelationType(uuid1, "X");
+      IRelationType relType1 = RelationTypeToken.create(uuid1, "X");
       RelationTypeSide relTypeSide1 = RelationTypeSide.create(sideA, uuid1, uuid1 + "_sideA");
 
       Assert.assertTrue(relType1.equals(relTypeSide1));
