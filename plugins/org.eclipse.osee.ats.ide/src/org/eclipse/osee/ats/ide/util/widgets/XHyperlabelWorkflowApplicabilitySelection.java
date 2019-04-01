@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
@@ -60,7 +59,7 @@ public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCm
 
    @Override
    public String getCurrentValue() {
-      return Artifacts.commaArts(selectedAppls);
+      return Collections.toString(",", selectedAppls);
    }
 
    @Override

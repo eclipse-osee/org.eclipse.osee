@@ -19,9 +19,9 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.VersionTreeDialog;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
 
 /**
@@ -55,7 +55,7 @@ public class XHyperlabelVersionSelection extends XHyperlinkLabelCmdValueSelectio
 
    @Override
    public String getCurrentValue() {
-      return Artifacts.commaArts(selectedVersions);
+      return Collections.toString(",", selectedVersions);
    }
 
    public void setSelectedVersions(Collection<Version> selectedVersions) {

@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -191,7 +190,8 @@ public class EmailGroupsBlam extends AbstractBlam {
          }
          HtmlDialog dialog = new HtmlDialog("Email Groups - Preview",
             String.format("Subject: %s\n\nSending message to [%d] users from groups [%s]", data.getSubject(),
-               data.getUserToGroupMap().keySet().size(), Artifacts.commaArts(data.getGroups())),
+               data.getUserToGroupMap().keySet().size(),
+               org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", data.getGroups())),
             data.getHtmlResult(UserManager.getUser()));
          dialog.open();
       } catch (OseeCoreException ex) {

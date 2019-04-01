@@ -66,13 +66,6 @@ public final class Artifacts {
    /**
     * getName() all artifacts, else toString()
     */
-   public static String commaArts(Collection<? extends Object> objects) {
-      return toTextList(objects, ", ");
-   }
-
-   /**
-    * getName() all artifacts, else toString()
-    */
    public static String semmicolonArts(Collection<? extends Object> objects) {
       return toTextList(objects, "; ");
    }
