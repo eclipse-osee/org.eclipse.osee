@@ -10,11 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.notify;
 
-import static org.eclipse.osee.framework.core.enums.DemoUsers.Alex_Kay;
-import static org.eclipse.osee.framework.core.enums.DemoUsers.Inactive_Steve;
-import static org.eclipse.osee.framework.core.enums.DemoUsers.Jason_Michael;
-import static org.eclipse.osee.framework.core.enums.DemoUsers.Joe_Smith;
-import static org.eclipse.osee.framework.core.enums.DemoUsers.Kay_Jones;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
@@ -48,6 +43,7 @@ import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.junit.Assert;
@@ -92,11 +88,11 @@ public class WorkItemNotificationProcessorTest {
    public void setup() {
       MockitoAnnotations.initMocks(this);
 
-      joeSmith_CurrentUser = setupUser(Joe_Smith);
-      kay_ValidEmail = setupUser(Kay_Jones);
-      jason_ValidEmail = setupUser(Jason_Michael);
-      alex_NoValidEmail = setupUser(Alex_Kay);
-      inactiveSteve = setupUser(Inactive_Steve);
+      joeSmith_CurrentUser = setupUser(DemoUsers.Joe_Smith);
+      kay_ValidEmail = setupUser(DemoUsers.Kay_Jones);
+      jason_ValidEmail = setupUser(DemoUsers.Jason_Michael);
+      alex_NoValidEmail = setupUser(DemoUsers.Alex_Kay);
+      inactiveSteve = setupUser(DemoUsers.Inactive_Steve);
 
       when(teamWf.getName()).thenReturn(WorkItemNotificationProcessorTest.class.getSimpleName() + "-testNotify");
       List<IAtsUser> assignees = new ArrayList<>();

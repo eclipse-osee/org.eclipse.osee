@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal.authentication;
 
-import static org.eclipse.osee.framework.core.enums.DemoUsers.Joe_Smith;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -34,7 +33,8 @@ public class DemoAuthenticationProvider extends AbstractAuthenticationProvider {
             }
          }
       }
-      return createUserToken(true, Joe_Smith.getName(), Joe_Smith.getUserId(), "joe@boeing.com", true);
+      return createUserToken(true, DemoUsers.Joe_Smith.getName(), DemoUsers.Joe_Smith.getUserId(), "joe@boeing.com",
+         true);
    }
 
    @Override

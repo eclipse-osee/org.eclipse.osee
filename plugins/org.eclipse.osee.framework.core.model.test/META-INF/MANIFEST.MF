@@ -11,3 +11,4 @@ Export-Package: org.eclipse.osee.framework.core.model,
  org.eclipse.osee.framework.core.model.cache,
  org.eclipse.osee.framework.core.model.mocks,
  org.eclipse.osee.framework.core.model.type
+Import-Package: org.eclipse.osee.framework.core.enums
