@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * Initialization class that will load configuration information for a sample DB.
@@ -42,9 +43,11 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 public class DemoDatabaseConfig {
 
    private final AtsApi atsApi;
+   private final OrcsApi orcsApi;
 
-   public DemoDatabaseConfig(AtsApi atsApi) {
+   public DemoDatabaseConfig(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
+      this.orcsApi = orcsApi;
    }
 
    public XResultData run() {

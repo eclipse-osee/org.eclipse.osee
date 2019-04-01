@@ -256,11 +256,12 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    }
 
    @Override
-   public void createArtifact(ArtifactToken parent, ArtifactToken artifact) {
+   public ArtifactToken createArtifact(ArtifactToken parent, ArtifactToken artifact) {
       ArtifactToken art = createArtifact(artifact);
       if (parent != null) {
          addChild(parent, art);
       }
+      return art;
    }
 
 }

@@ -177,6 +177,6 @@ public interface IAtsChangeSet {
    @Deprecated
    ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long id, String guid);
 
-   void createArtifact(ArtifactToken parent, ArtifactToken artifact);
+   ArtifactToken createArtifact(ArtifactToken parent, ArtifactToken artifact);
 
 }

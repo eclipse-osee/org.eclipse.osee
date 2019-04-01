@@ -23,6 +23,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({ //
    OpenBlamsTest.class, //
    LinkUtilTest.class, //
+   WordTemplateProcessorTest.class //
 })
 public class FrameworkUiSkynetTest_Suite {
 

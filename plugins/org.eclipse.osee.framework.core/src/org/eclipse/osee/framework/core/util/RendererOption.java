@@ -35,6 +35,7 @@ public enum RendererOption {
    SECOND_TIME("SecondTime", OptionType.Boolean),
    TEMPLATE_ONLY("Template Only", OptionType.Boolean),
    IN_PUBLISH_MODE("In Publish Mode", OptionType.Boolean),
+   PUBLISH_EMPTY_HEADERS("Push Empty Headers", OptionType.Boolean),
 
    // BranchId
    BRANCH("Branch", OptionType.BranchId),

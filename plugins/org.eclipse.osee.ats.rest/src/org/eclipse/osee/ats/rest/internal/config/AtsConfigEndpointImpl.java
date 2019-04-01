@@ -34,9 +34,9 @@ import org.eclipse.osee.ats.rest.internal.demo.DemoDatabaseConfig;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -338,7 +338,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    public XResultData demoDbInit() {
       XResultData rd = new XResultData();
       try {
-         DemoDatabaseConfig config = new DemoDatabaseConfig(atsApi);
+         DemoDatabaseConfig config = new DemoDatabaseConfig(atsApi, orcsApi);
          config.run();
       } catch (Exception ex) {
          rd.error(Lib.exceptionToString(ex));

@@ -181,6 +181,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       rendererOptionsMap.put(FIRST_TIME, true);
       rendererOptionsMap.put(PUBLISH_DIFF, variableMap.getValue(PUBLISH_DIFF.getKey()));
       rendererOptionsMap.put(VIEW, viewId);
+      rendererOptionsMap.put(RendererOption.PUBLISH_EMPTY_HEADERS, false);
 
       WordTemplateRenderer renderer = new WordTemplateRenderer(rendererOptionsMap);
 

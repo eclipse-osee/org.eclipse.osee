@@ -161,6 +161,7 @@ public class WordTemplateRendererTest {
       rendererOptionsMap.put(USE_TEMPLATE_ONCE, true);
       rendererOptionsMap.put(FIRST_TIME, true);
       rendererOptionsMap.put(NO_DISPLAY, true);
+      rendererOptionsMap.put(RendererOption.PUBLISH_EMPTY_HEADERS, true);
 
       renderer = new WordTemplateRenderer(rendererOptionsMap);
 

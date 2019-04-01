@@ -45,10 +45,10 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -94,6 +94,7 @@ import org.json.JSONObject;
  * @author Jeff C. Phillips
  * @author Ryan D. Brooks
  * @author Andrew M. Finkbeiner
+ * @author Branden W. Phillips
  * @link WordTemplateProcessorTest
  */
 public class WordTemplateProcessor {
@@ -158,9 +159,10 @@ public class WordTemplateProcessor {
    private boolean isDiff;
    private boolean excludeFolders;
    private CharSequence paragraphNumber = null;
-   private ArtifactTypeToken[] excludeArtifactTypes = {};
+   private final List<ArtifactTypeToken> excludeArtifactTypes = new LinkedList<>();
    private HashMap<ApplicabilityId, ApplicabilityToken> applicabilityTokens;
    private HashMap<ArtifactId, ArtifactId> artifactsToExclude;
+   private final Set<ArtifactId> emptyFolders = new HashSet<>();
 
    public WordTemplateProcessor(WordTemplateRenderer renderer) {
       this.renderer = renderer;
@@ -236,6 +238,10 @@ public class WordTemplateProcessor {
 
       getExcludeArtifactTypes();
 
+      if (!(boolean) renderer.getRendererOptionValue(RendererOption.PUBLISH_EMPTY_HEADERS)) {
+         isEmptyHeaders(artifacts);
+      }
+
       IFile file = RendererUtil.getRenderFile(COMMON, PREVIEW, "/", masterTemplateArtifact.getSafeName(), ".xml");
       renderer.updateOption(RendererOption.RESULT_PATH_RETURN, file.getLocation().toOSString());
 
@@ -248,20 +254,53 @@ public class WordTemplateProcessor {
       }
    }
 
-   private ArtifactTypeToken[] getExcludeArtifactTypes() {
-      excludeArtifactTypes = null;
+   /**
+    * Takes a list of artifacts and loops through finding which headers should not be published. Takes an artifact and
+    * loops through its' children. On each set of grandchildren, the method is called recursively.<br/>
+    * <br/>
+    * case1: Any MS Word Header that has only excluded children is not published<br/>
+    * case2: Any MS Word Header that has only excluded children, but has included grandchildren, is published<br/>
+    * case3: Non MS Word Header artifacts are still published even if all children/grandchildren are excluded<br/>
+    * case4: Any MS Word Header that has no children is not published<br/>
+    * case5: Any MS Word Header with only excluded header children, should not be published<br/>
+    */
+   public boolean isEmptyHeaders(List<Artifact> artifacts) {
+      boolean hasIncludedChildren = false;
+      boolean includeParent = false;
+      List<Artifact> children = null;
+      for (Artifact artifact : artifacts) {
+         children = artifact.getChildren();
+         if (!children.isEmpty()) {
+            hasIncludedChildren = isEmptyHeaders(children);
+            if (!hasIncludedChildren) {
+               if (artifact.isOfType(CoreArtifactTypes.HeadingMSWord)) {
+                  emptyFolders.add(artifact);
+               }
+            }
+         } else if (children.isEmpty() && artifact.isOfType(CoreArtifactTypes.HeadingMSWord)) {
+            emptyFolders.add(artifact);
+         }
+         if (!isOfType(artifact, excludeArtifactTypes) && !artifact.isOfType(CoreArtifactTypes.HeadingMSWord)) {
+            includeParent = true;
+         }
+         if (hasIncludedChildren) {
+            includeParent = true;
+         }
+      }
+      return includeParent;
+   }
+
+   private List<ArtifactTypeToken> getExcludeArtifactTypes() {
+      excludeArtifactTypes.clear();
 
       Object o = renderer.getRendererOptionValue(RendererOption.EXCLUDE_ARTIFACT_TYPES);
       if (o instanceof Collection<?>) {
          Collection<?> coll = (Collection<?>) o;
-         excludeArtifactTypes = new ArtifactTypeToken[coll.size()];
-         int i = 0;
          Iterator<?> iterator = coll.iterator();
          while (iterator.hasNext()) {
             Object next = iterator.next();
             if (next instanceof ArtifactTypeToken) {
-               excludeArtifactTypes[i] = (ArtifactTypeToken) next;
-               i++;
+               excludeArtifactTypes.add((ArtifactTypeToken) next);
             }
          }
 
@@ -621,10 +660,10 @@ public class WordTemplateProcessor {
          if (!processedArtifacts.contains(artifact)) {
 
             boolean ignoreArtifact =
-               excludeFolders && artifact.isOfType(CoreArtifactTypes.Folder) || artifactsToExclude.containsKey(
-                  ArtifactId.valueOf(artifact.getId()));
+               (excludeFolders && artifact.isOfType(CoreArtifactTypes.Folder)) || (artifactsToExclude.containsKey(
+                  ArtifactId.valueOf(artifact.getId())) || emptyFolders.contains(artifact));
 
-            boolean ignoreArtType = excludeArtifactTypes != null && artifact.isOfType(excludeArtifactTypes);
+            boolean ignoreArtType = excludeArtifactTypes != null && isOfType(artifact, excludeArtifactTypes);
             boolean publishInline = artifact.getSoleAttributeValue(CoreAttributeTypes.PublishInline, false);
             boolean startedSection = false;
             boolean templateOnly = (boolean) renderer.getRendererOptionValue(RendererOption.TEMPLATE_ONLY);
@@ -695,6 +734,15 @@ public class WordTemplateProcessor {
       } else {
          nonTemplateArtifacts.add(artifact);
       }
+   }
+
+   private boolean isOfType(Artifact artifact, List<ArtifactTypeToken> excludeArtifactTypes) {
+      for (ArtifactTypeToken artType : excludeArtifactTypes) {
+         if (artifact.isOfType(artType)) {
+            return true;
+         }
+      }
+      return false;
    }
 
    private void processMetadata(Artifact artifact, WordMLProducer wordMl) {
@@ -833,6 +881,17 @@ public class WordTemplateProcessor {
                WordUiUtil.displayUnhandledArtifacts(artifacts, warningString);
             }
          });
+      }
+   }
+
+   public Set<ArtifactId> getEmptyFolders() {
+      return emptyFolders;
+   }
+
+   public void setExcludedArtifactTypeForTest(List<ArtifactTypeToken> excludeTokens) {
+      excludeArtifactTypes.clear();
+      for (ArtifactTypeToken token : excludeTokens) {
+         excludeArtifactTypes.add(token);
       }
    }
 }

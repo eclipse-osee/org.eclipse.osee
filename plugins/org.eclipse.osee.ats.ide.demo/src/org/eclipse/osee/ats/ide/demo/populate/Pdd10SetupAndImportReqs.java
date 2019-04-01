@@ -18,13 +18,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.ide.demo.internal.Activator;
 import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -96,6 +97,81 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
 
       createNewBaselineBranch(SAW_Bld_1, SAW_Bld_2);
       createNewBaselineBranch(SAW_Bld_2, SAW_Bld_3);
+
+      configureRequirementsForImplDetails();
+   }
+
+   private void configureRequirementsForImplDetails() {
+
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(SAW_Bld_1, "Configure Requirements for Impl Details");
+
+      Artifact robotInterfaceHeader =
+         ArtifactTypeManager.addArtifact(DemoArtifactToken.RobotInterfaceHeading, SAW_Bld_1);
+      Artifact robotUIHeading = ArtifactTypeManager.addArtifact(DemoArtifactToken.RobotUserInterfaceHeading, SAW_Bld_1);
+      Artifact robotAdminUI = ArtifactTypeManager.addArtifact(DemoArtifactToken.RobotAdminUserInterface, SAW_Bld_1);
+      Artifact robotAdminUIImpl =
+         ArtifactTypeManager.addArtifact(DemoArtifactToken.RobotAdminUserInterfaceImpl, SAW_Bld_1);
+      Artifact robotUI = ArtifactTypeManager.addArtifact(DemoArtifactToken.RobotUserInterface, SAW_Bld_1);
+      Artifact robotUIImpl = ArtifactTypeManager.addArtifact(DemoArtifactToken.RobotUserInterfaceImpl, SAW_Bld_1);
+      Artifact robotCollabDetails = ArtifactTypeManager.addArtifact(DemoArtifactToken.RobotCollabDetails, SAW_Bld_1);
+      Artifact eventDetailsHeader = ArtifactTypeManager.addArtifact(DemoArtifactToken.EventsDetailHeader, SAW_Bld_1);
+      Artifact eventDetail = ArtifactTypeManager.addArtifact(DemoArtifactToken.EventsDetails, SAW_Bld_1);
+      Artifact virtualFixDetailHeader =
+         ArtifactTypeManager.addArtifact(DemoArtifactToken.VirtualFixDetailHeader, SAW_Bld_1);
+      Artifact virtualFixDetail = ArtifactTypeManager.addArtifact(DemoArtifactToken.VirtualFixDetails, SAW_Bld_1);
+      Artifact virtualFixDetailReq = ArtifactTypeManager.addArtifact(DemoArtifactToken.VirtualFixDetailReq, SAW_Bld_1);
+      Artifact virtualFixDetailReqImpl =
+         ArtifactTypeManager.addArtifact(DemoArtifactToken.VirtualFixDetailReqImplementation, SAW_Bld_1);
+
+      Artifact robotInterface =
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Robot Interfaces", SAW_Bld_1);
+      robotInterface.addChild(robotInterfaceHeader);
+      transaction.addArtifact(robotInterfaceHeader);
+
+      robotInterface.addChild(robotUIHeading);
+      transaction.addArtifact(robotUIHeading);
+
+      robotUIHeading.addChild(robotAdminUI);
+      transaction.addArtifact(robotAdminUI);
+
+      robotAdminUI.addChild(robotAdminUIImpl);
+      transaction.addArtifact(robotAdminUIImpl);
+
+      robotUIHeading.addChild(robotUI);
+      transaction.addArtifact(robotUI);
+
+      robotUI.addChild(robotUIImpl);
+      transaction.addArtifact(robotUIImpl);
+
+      Artifact robotCollab = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement,
+         "Robot collaboration", SAW_Bld_1);
+      robotCollab.addChild(robotCollabDetails);
+      transaction.addArtifact(robotCollabDetails);
+
+      Artifact events =
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Events", SAW_Bld_1);
+      events.addChild(eventDetailsHeader);
+      transaction.addArtifact(eventDetailsHeader);
+
+      eventDetailsHeader.addChild(eventDetail);
+      transaction.addArtifact(eventDetail);
+
+      Artifact virtualFix =
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Virtual fixtures", SAW_Bld_1);
+      virtualFix.addChild(virtualFixDetailHeader);
+      transaction.addArtifact(virtualFixDetailHeader);
+
+      virtualFixDetailHeader.addChild(virtualFixDetail);
+      transaction.addArtifact(virtualFixDetail);
+
+      virtualFixDetail.addChild(virtualFixDetailReq);
+      transaction.addArtifact(virtualFixDetailReq);
+
+      virtualFixDetailReq.addChild(virtualFixDetailReqImpl);
+      transaction.addArtifact(virtualFixDetailReqImpl);
+
+      transaction.execute();
    }
 
    private static void validateArtifactCache() {
