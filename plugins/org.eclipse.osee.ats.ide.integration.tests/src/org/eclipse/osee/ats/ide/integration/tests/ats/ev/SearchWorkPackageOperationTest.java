@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,10 +43,10 @@ public class SearchWorkPackageOperationTest {
    private final boolean includeChildrenTeamDefs;
    private final Collection<Long> aiIds;
    private final Active activeOption;
-   private final Collection<Long> expectedWpIds;
+   private final Collection<ArtifactId> expectedWpIds;
    private final boolean includeChildrenAIs;
 
-   public SearchWorkPackageOperationTest(String resultSize, Collection<Long> teamDefIds, boolean includeChildrenTeamDefs, Collection<Long> aiIds, boolean includeChildrenAIs, Active activeOption, Collection<Long> expectedWpIds) {
+   public SearchWorkPackageOperationTest(String resultSize, Collection<Long> teamDefIds, boolean includeChildrenTeamDefs, Collection<Long> aiIds, boolean includeChildrenAIs, Active activeOption, Collection<ArtifactId> expectedWpIds) {
       this.resultSize = resultSize;
       this.teamDefIds = teamDefIds;
       this.includeChildrenTeamDefs = includeChildrenTeamDefs;
@@ -60,13 +59,13 @@ public class SearchWorkPackageOperationTest {
    @Parameters
    public static Collection<Object[]> data() {
       List<Object[]> data = new ArrayList<>();
-      List<Long> EMPYT_RESULTS = new ArrayList<>();
-      Long WP_01 = DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getId();
-      Long WP_02 = DemoArtifactToken.SAW_Code_Team_WorkPackage_02.getId();
-      Long WP_03 = DemoArtifactToken.SAW_Code_Team_WorkPackage_03.getId();
-      Long WP_0A = DemoArtifactToken.SAW_Test_AI_WorkPackage_0A.getId();
-      Long WP_0B = DemoArtifactToken.SAW_Test_AI_WorkPackage_0B.getId();
-      Long WP_0C = DemoArtifactToken.SAW_Test_AI_WorkPackage_0C.getId();
+      List<ArtifactId> EMPYT_RESULTS = new ArrayList<>();
+      ArtifactId WP_01 = DemoArtifactToken.SAW_Code_Team_WorkPackage_01;
+      ArtifactId WP_02 = DemoArtifactToken.SAW_Code_Team_WorkPackage_02;
+      ArtifactId WP_03 = DemoArtifactToken.SAW_Code_Team_WorkPackage_03;
+      ArtifactId WP_0A = DemoArtifactToken.SAW_Test_AI_WorkPackage_0A;
+      ArtifactId WP_0B = DemoArtifactToken.SAW_Test_AI_WorkPackage_0B;
+      ArtifactId WP_0C = DemoArtifactToken.SAW_Test_AI_WorkPackage_0C;
 
       // Test Work Packages configured by Team Def
       addTest(data, "no work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getId()), false,
@@ -116,15 +115,13 @@ public class SearchWorkPackageOperationTest {
          ais, includeChildrenAIs, activeOption);
       Operations.executeWorkAndCheckStatus(operation);
       Set<Artifact> resultArtifacts = operation.getResultArtifacts();
-      Collection<Long> resultArtifactIds = Artifacts.toIdsL(resultArtifacts);
       Assert.assertEquals(resultSize, expectedWpIds.size(), resultArtifacts.size());
-      for (Long expectedId : expectedWpIds) {
-         Assert.assertTrue("Expected id " + expectedId + " not found in results",
-            resultArtifactIds.contains(expectedId));
+      for (ArtifactId expectedId : expectedWpIds) {
+         Assert.assertTrue("Expected id " + expectedId + " not found in results", resultArtifacts.contains(expectedId));
       }
    }
 
-   private static void addTest(List<Object[]> testData, String toSearch, Collection<Long> teamDefIds, boolean includeChildrenTeamDefs, Collection<Long> aiIds, boolean includeChildrenAIs, Active both, Collection<Long> expectedWpIds) {
+   private static void addTest(List<Object[]> testData, String toSearch, Collection<Long> teamDefIds, boolean includeChildrenTeamDefs, Collection<Long> aiIds, boolean includeChildrenAIs, Active both, Collection<ArtifactId> expectedWpIds) {
       testData.add(
          new Object[] {toSearch, teamDefIds, includeChildrenTeamDefs, aiIds, includeChildrenAIs, both, expectedWpIds});
    }
