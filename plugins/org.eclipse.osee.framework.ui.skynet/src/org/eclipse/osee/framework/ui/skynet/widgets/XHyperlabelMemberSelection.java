@@ -78,6 +78,8 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
          if (uld.open() != 0) {
             return false;
          }
+         selectedUsers.clear();
+         selectedUsers.addAll(uld.getChecked());
          return true;
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
