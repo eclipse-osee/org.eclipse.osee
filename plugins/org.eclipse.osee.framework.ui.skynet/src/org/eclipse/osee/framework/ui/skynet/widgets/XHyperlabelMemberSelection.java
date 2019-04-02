@@ -13,11 +13,11 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -55,7 +55,7 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
 
    @Override
    public String getCurrentValue() {
-      return Artifacts.toString("; ", selectedUsers);
+      return Collections.toString("; ", selectedUsers);
    }
 
    public void setSelectedUsers(Set<User> selectedUsers) {

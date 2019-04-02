@@ -134,10 +134,10 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
                groups.addAll(Collections.castAll(AtsClientService.get().getRelationResolver().getRelatedArtifacts(team,
                   CoreRelationTypes.Universal_Grouping__Group)));
             }
-            return Artifacts.toString("; ", groups);
+            return Collections.toString("; ", groups);
          }
          if (element instanceof Artifact) {
-            return Artifacts.toString("; ",
+            return Collections.toString("; ",
                AtsClientService.get().getQueryServiceClient().getArtifact(element).getRelatedArtifacts(
                   CoreRelationTypes.Universal_Grouping__Group));
          }

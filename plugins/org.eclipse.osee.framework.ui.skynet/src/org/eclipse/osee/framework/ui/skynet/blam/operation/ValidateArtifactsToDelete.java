@@ -16,10 +16,10 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChecks;
 import org.eclipse.osee.framework.skynet.core.artifact.IArtifactCheck;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -50,7 +50,7 @@ public class ValidateArtifactsToDelete extends AbstractBlam {
       }
 
       XResultData rd = new XResultData();
-      rd.log("Validation Artifacts: " + Artifacts.toString("; ", artifacts));
+      rd.log("Validation Artifacts: " + Collections.toString("; ", artifacts));
       // Confirm artifacts are fit to delete
       try {
          for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {

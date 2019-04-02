@@ -57,35 +57,6 @@ public final class Artifacts {
    /**
     * getName() all artifacts, else toString()
     */
-   public static String semmicolonArts(Collection<? extends Object> objects) {
-      return toTextList(objects, "; ");
-   }
-
-   /**
-    * getName() all artifacts, else toString()
-    */
-   public static String toString(String separator, Collection<? extends Object> objects) {
-      return toTextList(objects, separator);
-   }
-
-   /**
-    * getName() all artifacts, else toString()
-    */
-   public static String toTextList(Collection<? extends Object> objects, String separator) {
-      StringBuilder sb = new StringBuilder();
-      for (Object obj : objects) {
-         if (obj instanceof Artifact) {
-            sb.append(((Artifact) obj).getName());
-         } else {
-            sb.append(obj.toString());
-         }
-         sb.append(separator);
-      }
-      if (sb.length() > separator.length()) {
-         return sb.substring(0, sb.length() - separator.length());
-      }
-      return "";
-   }
 
    public static Collection<String> getNames(Collection<? extends Named> artifacts) {
       ArrayList<String> names = new ArrayList<>();

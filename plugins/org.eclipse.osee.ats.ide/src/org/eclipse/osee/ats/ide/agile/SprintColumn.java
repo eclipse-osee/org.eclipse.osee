@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -199,7 +200,7 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof Artifact) {
-            return Artifacts.toString("; ",
+            return Collections.toString("; ",
                AtsClientService.get().getQueryServiceClient().getArtifact(element).getRelatedArtifacts(
                   AtsRelationTypes.AgileSprintToItem_Sprint));
          }

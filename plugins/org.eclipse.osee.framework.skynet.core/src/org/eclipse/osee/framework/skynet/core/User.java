@@ -52,15 +52,6 @@ public class User extends Artifact implements UserId {
       setActive(u.isActive());
    }
 
-   @Override
-   public String toString() {
-      try {
-         return String.format("%s (%s)", getName(), getUserId());
-      } catch (Exception ex) {
-         return "Exception: " + ex.getLocalizedMessage();
-      }
-   }
-
    public String getUserId() {
       return getSoleAttributeValue(CoreAttributeTypes.UserId, "");
    }
