@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.LexicographicalRelationSorter.SortMode;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -123,7 +122,7 @@ public class RelationSorterTest {
 
       List<ArtifactToken> itemsToOrder = Arrays.asList(art2, art1, art3, art4);
       List<ArtifactToken> expectedOrder = Arrays.asList(art1, art2, art3, art4);
-      List<String> relatives = Artifacts.toGuids(Arrays.asList(art1, art2, art3, art4));
+      List<String> relatives = Arrays.asList(art1.getGuid(), art2.getGuid(), art3.getGuid(), art4.getGuid());
       return new Object[] {
          "UserDefined",
          new UserDefinedRelationSorter(),

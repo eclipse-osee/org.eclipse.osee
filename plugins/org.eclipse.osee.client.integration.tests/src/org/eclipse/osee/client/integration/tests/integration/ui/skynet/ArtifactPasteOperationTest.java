@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderFactory;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactNameConflictHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPasteOperation;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactPasteConfiguration;
@@ -160,11 +159,10 @@ public class ArtifactPasteOperationTest {
          Assert.assertEquals(names.length, childArtifacts.size());
 
          List<Artifact> sourceChildren = parent1.getChildren();
-         List<String> guids = Artifacts.toGuids(sourceChildren);
          for (int index = 0; index < names.length; index++) {
             Artifact childArtifact = childArtifacts.get(index);
             Assert.assertEquals(names[index], childArtifact.getName());
-            Assert.assertTrue(!guids.contains(childArtifact.getGuid()));
+            Assert.assertTrue(!sourceChildren.contains(childArtifact));
          }
       } else {
          Assert.assertTrue(childArtifacts.isEmpty());

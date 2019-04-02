@@ -103,7 +103,7 @@ public class RelationTypeSideSorterTest {
       Artifact art4 = new MockArtifact("d");
 
       List<Artifact> relatives = Arrays.asList(art3, art4);
-      List<String> expected = Artifacts.toGuids(relatives);
+      List<String> expected = Arrays.asList(art3.getGuid(), art4.getGuid());
 
       // set same sorter id
       sorter.setOrder(relatives, sorter.getSorterId());
@@ -113,7 +113,7 @@ public class RelationTypeSideSorterTest {
       // Set Different sorter id
       sorter.setOrder(relatives, USER_DEFINED);
       actual = orderData.getOrderList(sorter.getRelationType(), sorter.getSide());
-      expected = Artifacts.toGuids(relatives);
+      expected = Arrays.asList(art3.getGuid(), art4.getGuid());
       Assert.assertTrue(actual.equals(expected));
    }
 
