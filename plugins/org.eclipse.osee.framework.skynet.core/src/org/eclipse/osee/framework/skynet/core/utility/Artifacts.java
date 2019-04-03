@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -45,14 +44,6 @@ public final class Artifacts {
 
    private Artifacts() {
       // This constructor is private because there is no reason to instantiate this class
-   }
-
-   public static Collection<Integer> toIds(Collection<? extends ArtifactId> artifacts) {
-      Set<Integer> toReturn = new HashSet<>(artifacts.size());
-      for (ArtifactId artifact : artifacts) {
-         toReturn.add(artifact.getId().intValue());
-      }
-      return toReturn;
    }
 
    public static List<String> toGuids(Collection<? extends ArtifactToken> artifacts) {
@@ -135,16 +126,6 @@ public final class Artifacts {
     * @return Set of type class that includes parentArtifact and children and will recurse children if true
     */
    @SuppressWarnings("unchecked")
-   public static <A extends Artifact> Set<A> getChildrenAndThisOfTypeSet(Artifact parentArtifact, Class<A> clazz, boolean recurse) {
-      Set<A> thisAndChildren = new HashSet<>();
-      if (parentArtifact.getClass().equals(clazz)) {
-         thisAndChildren.add((A) parentArtifact);
-      }
-      getChildrenOfTypeSet(parentArtifact, clazz, recurse);
-      return thisAndChildren;
-   }
-
-   @SuppressWarnings("unchecked")
    public static <A extends Artifact> Set<A> getChildrenOfTypeSet(Artifact parentArtifact, Class<A> clazz, boolean recurse) {
       Set<A> children = new HashSet<>();
       for (Artifact child : parentArtifact.getChildren()) {
@@ -220,16 +201,6 @@ public final class Artifacts {
       return branchMap;
    }
 
-   public static Collection<Artifact> getOfType(ArtifactTypeId artifactType, Collection<? extends Artifact> artifacts) {
-      List<Artifact> results = new ArrayList<>();
-      for (Artifact art : artifacts) {
-         if (art.isOfType(artifactType)) {
-            results.add(art);
-         }
-      }
-      return results;
-   }
-
    public static boolean isOfType(Object object, ArtifactTypeId artifactType) {
       if (object instanceof Artifact) {
          return ((Artifact) object).isOfType(artifactType);
@@ -249,13 +220,5 @@ public final class Artifacts {
 
       strB.append(RelationManager.reportHasDirtyLinks(artifact));
       return strB.toString();
-   }
-
-   public static Collection<Long> toUuids(Set<Artifact> artifacts) {
-      List<Long> uuids = new ArrayList<>(artifacts.size());
-      for (ArtifactId artifact : artifacts) {
-         uuids.add(artifact.getId());
-      }
-      return uuids;
    }
 }
