@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -36,6 +37,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -116,8 +118,8 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       }
       BranchId txBranch = getBranch();
       if (!artifact.isOnBranch(txBranch)) {
-         String msg = String.format("The artifact [%s] is on branch [%s] but this transaction is for branch [%s]",
-            artifact.getGuid(), artifact.getBranch(), txBranch);
+         Branch branch = BranchManager.getBranch(artifact.getBranch());
+         String msg = getCheckAccessError(artifact, txBranch, branch);
          throw new OseeStateException(msg);
       }
 
@@ -126,25 +128,52 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       getAccess().hasArtifactPermission(Collections.singleton(artifact), PermissionEnum.WRITE, Level.FINE);
    }
 
+   public String getCheckAccessError(ArtifactToken artifact, BranchId txBranch, IOseeBranch branch) {
+      String msg =
+         String.format("The artifact\n\n%s\n\nis on branch\n\n%s\n\nbut this transaction is for branch\n\n%s\n\n",
+            artifact.getGuid(), branch.toStringWithId(), txBranch);
+      return msg;
+   }
+
    private void checkBranch(ArtifactToken artifact) {
       if (!isBranchWritable(artifact.getBranch())) {
-         throw new OseeStateException("The artifact [%s] is on a non-editable branch [%s] ", artifact,
-            artifact.getBranch());
+         Branch branch = BranchManager.getBranch(artifact.getBranch());
+         String msg = getCheckBranchError(artifact, branch);
+         throw new OseeStateException(msg);
       }
+   }
+
+   public String getCheckBranchError(ArtifactToken artifact, IOseeBranch branch) {
+      String msg = String.format("The artifact\n\n%s\n\nis on a non-editable branch\n\n%s\n\n",
+         artifact.toStringWithId(), branch.toStringWithId());
+      return msg;
    }
 
    private void checkBranch(RelationLink link) {
       if (!isBranchWritable(link.getBranch())) {
-         throw new OseeStateException("The relation link [%s] is on a non-editable branch [%s] ", link,
-            link.getBranch());
+         Branch branch = BranchManager.getBranch(link.getBranch());
+         String msg = getCheckBranchError(link, branch);
+         throw new OseeStateException(msg);
       }
+   }
+
+   public String getCheckBranchError(RelationLink link, IOseeBranch branch) {
+      String msg = String.format("The relation link\n\n%s\n\nis on a non-editable branch\n\n%s\n\n", link,
+         branch.toStringWithId());
+      return msg;
    }
 
    private void checkNotHistorical(Artifact artifact) {
       if (artifact.isHistorical()) {
-         throw new OseeStateException("The artifact [%s] must be at the head of the branch to be edited.",
-            artifact.getGuid());
+         String msg = getCheckNotHistoricalError(artifact);
+         throw new OseeStateException(msg);
       }
+   }
+
+   public String getCheckNotHistoricalError(Artifact artifact) {
+      String msg =
+         String.format("The artifact\n\n%s\n\nmust be at the head of the branch to be edited.", artifact.getGuid());
+      return msg;
    }
 
    private boolean isBranchWritable(BranchId branch) {
@@ -163,8 +192,10 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       checkBranch(link);
       BranchId txBranch = getBranch();
       if (!link.isOnBranch(txBranch)) {
-         String msg = String.format("The relation link [%s] is on branch [%s] but this transaction is for branch [%s]",
-            link.getId(), link.getBranch(), txBranch);
+         Branch branch = BranchManager.getBranch(link.getBranch());
+         String msg = String.format(
+            "The relation link\n\n%s\n\nis on branch\n\n%s\n\nbut this transaction is for branch\n\n%s\n\n",
+            link.getId(), branch.toStringWithId(), txBranch);
          throw new OseeStateException(msg);
       }
 
