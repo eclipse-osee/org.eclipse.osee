@@ -141,7 +141,6 @@ public class AtsHealthCheckOperation {
                   vResults.logTestTimeSpent(date, check.getName());
                }
             }
-            System.gc();
          }
          // Throw away checks so caches will get garbage collected
          checks = null;
