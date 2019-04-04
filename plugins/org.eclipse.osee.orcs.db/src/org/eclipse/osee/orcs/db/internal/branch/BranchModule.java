@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -102,12 +101,6 @@ public class BranchModule {
          public void createBranch(CreateBranchData branchData) {
             jdbcClient.runTransaction(
                new CreateBranchDatabaseTxCallable(jdbcClient, idManager, branchData, OseeCodeVersion.getVersionId()));
-         }
-
-         @Override
-         public XResultData createBranchValidation(CreateBranchData branchData) {
-            return new CreateBranchDatabaseTxCallable(jdbcClient, idManager, branchData,
-               OseeCodeVersion.getVersionId()).checkPreconditions(jdbcClient.getConnection());
          }
 
          @Override

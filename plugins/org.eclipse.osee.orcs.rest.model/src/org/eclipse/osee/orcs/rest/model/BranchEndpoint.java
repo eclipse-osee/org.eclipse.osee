@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Roberto E. Escobar
@@ -110,11 +109,6 @@ public interface BranchEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    BranchId createBranch(NewBranch data);
-
-   @POST
-   @Consumes({MediaType.APPLICATION_JSON})
-   @Produces({MediaType.APPLICATION_JSON})
-   XResultData createBranchValidation(NewBranch data);
 
    /**
     * If -1 is supplied for the branch path parameter, then a random valid id will be used

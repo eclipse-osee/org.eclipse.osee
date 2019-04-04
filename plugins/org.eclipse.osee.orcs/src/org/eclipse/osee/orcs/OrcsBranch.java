@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.CreateBranchData;
@@ -98,7 +97,5 @@ public interface OrcsBranch {
    void addMissingApplicabilityFromParentBranch(BranchId branch);
 
    IOseeBranch createProgramBranch(IOseeBranch branch, UserId account);
-
-   XResultData createBranchValidation(CreateBranchData branchData);
 
 }
