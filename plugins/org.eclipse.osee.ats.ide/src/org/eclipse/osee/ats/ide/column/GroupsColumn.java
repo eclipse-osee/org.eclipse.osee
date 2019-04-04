@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeArtifactDialog;
@@ -116,7 +117,7 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
             Collection<Artifact> checked = dialog.getChecked();
             awa.setRelations(CoreRelationTypes.Universal_Grouping__Group, checked);
          }
-         Artifacts.persistInTransaction("Set Groups", awas);
+         TransactionManager.persistInTransaction("Set Groups", awas);
          return true;
       }
       return false;

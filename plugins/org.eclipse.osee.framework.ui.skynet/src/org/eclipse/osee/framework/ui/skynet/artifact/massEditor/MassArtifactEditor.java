@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
@@ -83,7 +83,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor {
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
-         Artifacts.persistInTransaction("Mass Artifact Editor - Save", xViewer.getArtifacts());
+         TransactionManager.persistInTransaction("Mass Artifact Editor - Save", xViewer.getArtifacts());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

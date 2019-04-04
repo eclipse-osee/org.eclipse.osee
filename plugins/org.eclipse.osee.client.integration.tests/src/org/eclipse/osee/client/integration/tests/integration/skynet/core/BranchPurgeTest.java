@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.junit.After;
@@ -82,7 +81,7 @@ public class BranchPurgeTest {
       BranchId branch = BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
       Collection<Artifact> softArts = TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10,
          method.getQualifiedTestName(), branch);
-      Artifacts.persistInTransaction("Test purge branch", softArts);
+      TransactionManager.persistInTransaction("Test purge branch", softArts);
 
       SkynetTransaction transaction = TransactionManager.createTransaction(branch, method.getQualifiedTestName());
       // make more changes to artifacts

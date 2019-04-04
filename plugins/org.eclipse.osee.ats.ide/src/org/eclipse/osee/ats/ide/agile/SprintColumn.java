@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
@@ -167,7 +168,7 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
                }
                changes.relate(awa, AtsRelationTypes.AgileSprintToItem_Sprint, newSprintArt);
             }
-            Artifacts.persistInTransaction("Set Sprint", awas);
+            TransactionManager.persistInTransaction("Set Sprint", awas);
          }
          return true;
       }

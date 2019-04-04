@@ -395,4 +395,15 @@ public final class TransactionManager {
       return new AttributeRow(branch, gammaId, artId, modType, value, attrId, attributeType);
    }
 
+   public static void persistInTransaction(String comment, final Collection<? extends Artifact> artifacts) {
+      persistInTransaction(comment, artifacts.toArray(new Artifact[artifacts.size()]));
+   }
+
+   public static void persistInTransaction(String comment, Artifact... artifacts) {
+      SkynetTransaction transaction = createTransaction(artifacts[0].getBranch(), comment);
+      for (Artifact art : artifacts) {
+         art.persist(transaction);
+      }
+      transaction.execute();
+   }
 }

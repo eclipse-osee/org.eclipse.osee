@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -81,7 +81,7 @@ public class ArtifactPurgeTest {
 
       Collection<Artifact> softArts = TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10,
          method.getQualifiedTestName(), workingBranch);
-      Artifacts.persistInTransaction(method.getQualifiedTestName(), softArts);
+      TransactionManager.persistInTransaction(method.getQualifiedTestName(), softArts);
 
       // make more changes to artifacts
       for (Artifact softArt : softArts) {

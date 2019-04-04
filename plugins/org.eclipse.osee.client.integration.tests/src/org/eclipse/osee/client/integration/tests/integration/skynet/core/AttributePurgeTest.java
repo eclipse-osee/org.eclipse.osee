@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeAttributes;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
@@ -57,7 +57,7 @@ public class AttributePurgeTest {
    public void testPurge() throws Exception {
       Collection<Artifact> softArts = TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10,
          getClass().getSimpleName(), SAW_Bld_2);
-      Artifacts.persistInTransaction("Test purge artifacts", softArts);
+      TransactionManager.persistInTransaction("Test purge artifacts", softArts);
 
       Map<String, Integer> initialRowCount = TestUtil.getTableRowCounts(TABLES);
 

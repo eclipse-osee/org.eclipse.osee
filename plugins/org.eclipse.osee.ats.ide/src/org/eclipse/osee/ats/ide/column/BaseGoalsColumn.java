@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -126,7 +126,7 @@ public abstract class BaseGoalsColumn extends XViewerAtsColumn implements IXView
          for (Artifact awa : awas) {
             awa.setRelations(AtsRelationTypes.Goal_Goal, dialog.getChecked());
          }
-         Artifacts.persistInTransaction(getPersistString(), awas);
+         TransactionManager.persistInTransaction(getPersistString(), awas);
          return true;
       }
       return false;

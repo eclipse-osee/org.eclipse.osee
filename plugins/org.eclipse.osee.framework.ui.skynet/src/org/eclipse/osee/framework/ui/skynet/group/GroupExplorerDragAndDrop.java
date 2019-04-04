@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -213,7 +213,8 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                         // Add items to new group
                         targetArtifact.addRelation(CoreRelationTypes.Universal_Grouping__Members, artifact);
                      }
-                     Artifacts.persistInTransaction("Group Explorer - Drag/Drop", parentArtifact, targetArtifact);
+                     TransactionManager.persistInTransaction("Group Explorer - Drag/Drop", parentArtifact,
+                        targetArtifact);
                   }
                }
             }

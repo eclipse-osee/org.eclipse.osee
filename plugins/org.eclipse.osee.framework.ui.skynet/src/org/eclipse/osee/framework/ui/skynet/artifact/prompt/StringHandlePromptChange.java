@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.LongAttribute;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 
 /**
@@ -56,7 +56,7 @@ public class StringHandlePromptChange implements IHandlePromptChange {
    public boolean store() {
       updateSmaAttributes(artifacts, attributeType, format, entryDialog);
       if (persist) {
-         Artifacts.persistInTransaction("Persist SMA attributes", artifacts);
+         TransactionManager.persistInTransaction("Persist SMA attributes", artifacts);
       }
       return true;
    }

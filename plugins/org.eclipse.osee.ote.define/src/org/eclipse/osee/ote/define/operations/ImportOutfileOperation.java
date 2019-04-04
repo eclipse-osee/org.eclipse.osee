@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.osee.ote.define.jobs.FindCommitableJob;
 import org.eclipse.osee.ote.define.jobs.OutfileToArtifactJob;
@@ -145,7 +145,7 @@ public class ImportOutfileOperation {
          monitor.worked(1);
       }
 
-      Artifacts.persistInTransaction(commitComment, artifacts);
+      TransactionManager.persistInTransaction(commitComment, artifacts);
       if (monitor.isCanceled() != false) {
          throw new OseeCoreException("User Cancelled");
       }

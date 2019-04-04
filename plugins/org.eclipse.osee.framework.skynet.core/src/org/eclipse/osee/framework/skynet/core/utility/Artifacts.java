@@ -31,8 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * Utility methods for common tasks performed on Artifacts.
@@ -64,18 +62,6 @@ public final class Artifacts {
          names.add(namedArtifact.getName());
       }
       return names;
-   }
-
-   public static void persistInTransaction(String comment, final Collection<? extends Artifact> artifacts) {
-      persistInTransaction(comment, artifacts.toArray(new Artifact[artifacts.size()]));
-   }
-
-   public static void persistInTransaction(String comment, Artifact... artifacts) {
-      SkynetTransaction transaction = TransactionManager.createTransaction(artifacts[0].getBranch(), comment);
-      for (Artifact art : artifacts) {
-         art.persist(transaction);
-      }
-      transaction.execute();
    }
 
    /**

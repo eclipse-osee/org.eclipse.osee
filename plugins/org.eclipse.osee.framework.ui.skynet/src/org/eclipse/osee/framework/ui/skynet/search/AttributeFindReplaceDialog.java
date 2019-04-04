@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -180,7 +180,7 @@ public class AttributeFindReplaceDialog extends Dialog {
                      throw new IllegalStateException("USER_PURPLE CANCELLED");
                   }
                }
-               Artifacts.persistInTransaction("Attribute find replace dialog", artifacts);
+               TransactionManager.persistInTransaction("Attribute find replace dialog", artifacts);
                toReturn = Status.OK_STATUS;
             } catch (Exception ex) {
                if (ex.getMessage().equals("USER_PURPLE CANCELLED")) {
