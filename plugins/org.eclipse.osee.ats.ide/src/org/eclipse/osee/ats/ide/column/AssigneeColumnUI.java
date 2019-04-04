@@ -70,28 +70,34 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
-         IAtsTeamWorkflow teamWf = null;
+         IAtsWorkItem workItem = null;
+         boolean modified = false;
+         XViewer xViewer = null;
          if (treeItem.getData() instanceof IAtsAction) {
-            if (AtsClientService.get().getWorkItemService().getTeams(teamWf).size() == 1) {
-               teamWf = AtsClientService.get().getWorkItemService().getFirstTeam(teamWf);
+            if (AtsClientService.get().getWorkItemService().getTeams(workItem).size() == 1) {
+               workItem = AtsClientService.get().getWorkItemService().getFirstTeam(workItem);
             } else {
                return false;
             }
-         } else if (treeItem.getData() instanceof IAtsTeamWorkflow) {
-            teamWf = (IAtsTeamWorkflow) treeItem.getData();
+         } else if (treeItem.getData() instanceof IAtsWorkItem) {
+            workItem = (IAtsWorkItem) treeItem.getData();
          }
-         if (teamWf == null) {
+
+         if (workItem == null) {
             return false;
          }
-         boolean modified = promptChangeAssignees(Arrays.asList(teamWf), isPersistViewer());
-         XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
+
+         modified = promptChangeAssignees(Arrays.asList(workItem), isPersistViewer());
+         xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
+
          if (modified && isPersistViewer(xViewer)) {
-            AtsClientService.get().getStoreService().executeChangeSet("persist assignees via alt-left-click", teamWf);
+            AtsClientService.get().getStoreService().executeChangeSet("persist assignees via alt-left-click", workItem);
          }
          if (modified) {
-            xViewer.update(teamWf.getStoreObject(), null);
+            xViewer.update(workItem.getStoreObject(), null);
             return true;
          }
+
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
