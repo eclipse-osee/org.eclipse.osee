@@ -18,9 +18,9 @@ import java.util.List;
 import org.eclipse.define.api.importing.RoughArtifact;
 import org.eclipse.define.api.importing.RoughAttributeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -79,8 +79,8 @@ public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
          List<ArtifactReadable> descendants = root.getDescendants();
          Collection<ArtifactReadable> candidates = new LinkedList<>();
 
-         System.out.println(
-            String.format("Resolved using: %s", !descendants.isEmpty() ? "root node." : "realParent descendants."));
+         roughArtifact.getActivityLog().getDebugLogger().info("Resolved using: %s",
+            !descendants.isEmpty() ? "root node." : "realParent descendants.");
          ArtifactReadable realParent =
             roughArtifact.getOrcsApi().getQueryFactory().fromBranch(branch).andId(realParentId).getArtifact();
          for (ArtifactReadable artifact : !descendants.isEmpty() ? descendants : realParent.getDescendants()) {

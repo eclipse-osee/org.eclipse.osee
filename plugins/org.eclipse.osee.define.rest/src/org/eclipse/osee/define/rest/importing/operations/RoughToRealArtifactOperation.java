@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -66,8 +65,9 @@ public class RoughToRealArtifactOperation {
    }
 
    public void doWork() {
-
-      this.unmatchedArtifacts = destinationArtifact.getDescendants();
+      if (deleteUnmatchedArtifacts) {
+         this.unmatchedArtifacts = destinationArtifact.getDescendants();
+      }
 
       for (RoughArtifact roughArtifact : rawData.getParentRoughArtifact().getChildren()) {
          ArtifactId child = createArtifact(roughArtifact, destinationArtifact);
@@ -90,17 +90,15 @@ public class RoughToRealArtifactOperation {
    }
 
    private boolean noParent(ArtifactId artifact) {
-      if (artifact instanceof ArtifactReadable) {
-         ArtifactReadable parent = ((ArtifactReadable) artifact).getParent();
-         if (parent == null) {
-            return true;
-         }
-         if (!parent.isValid()) {
-            return true;
-         }
-         return false;
+      ArtifactReadable art = getArtifactReadable(artifact);
+      ArtifactReadable parent = art.getParent();
+      if (parent == null) {
+         return true;
       }
-      throw new OseeCoreException("Incorrect artifact instance in noParent in rough to real operation");
+      if (!parent.isValid()) {
+         return true;
+      }
+      return false;
    }
 
    private ArtifactId createArtifact(RoughArtifact roughArtifact, ArtifactId realParent) {
@@ -110,8 +108,9 @@ public class RoughToRealArtifactOperation {
       }
       ArtifactId realArtifactId =
          artifactResolver.resolve(roughArtifact, transaction.getBranch(), realParent, destinationArtifact);
-      unmatchedArtifacts.remove(realArtifactId);
-
+      if (deleteUnmatchedArtifacts) {
+         unmatchedArtifacts.remove(realArtifactId);
+      }
       for (RoughArtifact childRoughArtifact : roughArtifact.getDescendants()) {
          ArtifactId childArtifact = createArtifact(childRoughArtifact, realArtifactId);
          if (areValid(realArtifactId, childArtifact)) {
@@ -122,26 +121,32 @@ public class RoughToRealArtifactOperation {
       return realArtifactId;
    }
 
-   private void replaceParent(ArtifactId child, ArtifactId parent) {
+   private void replaceParent(ArtifactId childId, ArtifactId parentId) {
+      ArtifactReadable child = getArtifactReadable(childId);
+      ArtifactReadable parent = getArtifactReadable(parentId);
 
       if (hasDifferentParent(child, parent)) {
-         if (child instanceof ArtifactReadable) {
-            transaction.unrelate(((ArtifactReadable) child).getParent(), CoreRelationTypes.Default_Hierarchical__Child,
-               child);
-         }
+         transaction.unrelate(child.getParent(), CoreRelationTypes.Default_Hierarchical__Child, child);
       }
       transaction.relate(parent, CoreRelationTypes.Default_Hierarchical__Child, child, importArtifactOrder);
    }
 
-   private boolean hasDifferentParent(ArtifactId art, ArtifactId parent) {
-      ArtifactReadable knownParent;
-      if (parent instanceof ArtifactReadable) {
-         knownParent = ((ArtifactReadable) art).getParent();
-      } else {
-         throw new OseeCoreException("Failed artifact creation on rough to real operation");
+   private ArtifactReadable getArtifactReadable(ArtifactId art) {
+      if (art instanceof ArtifactReadable) {
+         return (ArtifactReadable) art;
       }
-      return knownParent != null && knownParent.notEqual(parent);
+      ArtifactReadable realArt = null;
+      try {
+         realArt = orcsApi.getQueryFactory().fromBranch(transaction.getBranch()).andId(art).getArtifact();
+      } catch (Exception ex) {
+         // leave null
+      }
+      return realArt;
+   }
 
+   private boolean hasDifferentParent(ArtifactReadable art, ArtifactReadable parent) {
+      ArtifactReadable knownParent = art.getParent();
+      return knownParent != null && knownParent.notEqual(parent);
    }
 
    private boolean isValid(ArtifactId art) {

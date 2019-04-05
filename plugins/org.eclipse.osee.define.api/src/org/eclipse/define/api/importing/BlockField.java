@@ -35,7 +35,7 @@ public class BlockField {
          data = contentMatcher.group(1);
          match = true;
       } else {
-         data = "Failed to set content";
+         data = "";
       }
       return match;
    }
