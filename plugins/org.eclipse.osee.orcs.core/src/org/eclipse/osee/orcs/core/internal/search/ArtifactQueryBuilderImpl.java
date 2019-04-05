@@ -32,6 +32,7 @@ import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeRaw;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -274,6 +275,13 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
    @Override
    public T and(AttributeTypeId attributeType, Collection<String> values, QueryOption... options) {
       return and(Collections.singleton(attributeType), values, options);
+   }
+
+   @Override
+   public T andAttributeIs(AttributeTypeId attributeType, String value, QueryOption... options) {
+      Criteria criteria =
+         new CriteriaAttributeRaw(Collections.singleton(attributeType), Collections.singleton(value), options);
+      return addAndCheck(getQueryData(), criteria);
    }
 
    @Override

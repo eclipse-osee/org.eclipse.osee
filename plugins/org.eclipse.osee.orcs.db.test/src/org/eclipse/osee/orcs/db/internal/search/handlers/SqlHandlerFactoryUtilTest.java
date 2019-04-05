@@ -23,7 +23,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeRaw;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
@@ -71,7 +71,7 @@ public class SqlHandlerFactoryUtilTest {
       queryData.addCriteria(new CriteriaRelationTypeExists(null));
       queryData.addCriteria(new CriteriaAttributeTypeExists(null));
       queryData.addCriteria(new CriteriaAttributeTypeNotExists(null));
-      queryData.addCriteria(new CriteriaAttributeOther(null, null));
+      queryData.addCriteria(new CriteriaAttributeRaw(null, null));
       queryData.addCriteria(
          new CriteriaAttributeKeywords(false, null, null, Collections.<String> emptyList(), null, null, null));
       queryData.addCriteria(new CriteriaRelatedTo(null, (Collection<? extends ArtifactId>) null));
@@ -84,7 +84,7 @@ public class SqlHandlerFactoryUtilTest {
       assertHandler(iterator.next(), ArtifactIdsSqlHandler.class, SqlHandlerPriority.ARTIFACT_ID);
       assertHandler(iterator.next(), ArtifactGuidSqlHandler.class, SqlHandlerPriority.ARTIFACT_GUID);
       assertHandler(iterator.next(), RelatedToSqlHandler.class, SqlHandlerPriority.RELATED_TO_ART_IDS);
-      assertHandler(iterator.next(), AttributeOtherSqlHandler.class, SqlHandlerPriority.ATTRIBUTE_VALUE);
+      assertHandler(iterator.next(), AttributeRawSqlHandler.class, SqlHandlerPriority.ATTRIBUTE_VALUE);
 
       assertHandler(iterator.next(), AttributeTokenSqlHandler.class, SqlHandlerPriority.ATTRIBUTE_TOKENIZED_VALUE,
          tagProcessor);

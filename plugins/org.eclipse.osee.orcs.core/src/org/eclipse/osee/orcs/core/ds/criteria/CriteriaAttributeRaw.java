@@ -27,7 +27,7 @@ import org.eclipse.osee.orcs.search.ArtifactQueryBuilder;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaAttributeOther extends Criteria {
+public class CriteriaAttributeRaw extends Criteria {
 
    public static final List<QueryOption> VALID_OPTIONS =
       Arrays.asList(QueryOption.TOKEN_COUNT__MATCH, QueryOption.TOKEN_DELIMITER__EXACT,
@@ -37,7 +37,7 @@ public class CriteriaAttributeOther extends Criteria {
    private final Collection<String> values;
    private final List<QueryOption> options;
 
-   public CriteriaAttributeOther(Collection<AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options) {
+   public CriteriaAttributeRaw(Collection<AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options) {
       super();
       this.attributeTypes = attributeTypes;
       this.values = values;

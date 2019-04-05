@@ -225,4 +225,6 @@ public interface ArtifactQueryBuilder<T> {
     * @return DefaultHeirarchicalRootArtifact
     */
    T andIsHeirarchicalRootArtifact();
+
+   T andAttributeIs(AttributeTypeId attributeType, String value, QueryOption... options);
 }

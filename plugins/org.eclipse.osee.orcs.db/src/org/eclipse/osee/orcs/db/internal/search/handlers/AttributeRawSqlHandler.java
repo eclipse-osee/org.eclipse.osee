@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.ObjectType;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.TableEnum;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeRaw;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
@@ -26,12 +26,12 @@ import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther> {
+public class AttributeRawSqlHandler extends SqlHandler<CriteriaAttributeRaw> {
 
-   private CriteriaAttributeOther criteria;
+   private CriteriaAttributeRaw criteria;
 
    private String attrAlias;
-   private String txsAlias1;
+   private String txsAlias;
 
    private String valueJoinAlias;
    private AbstractJoinQuery valueJoinQuery;
@@ -44,7 +44,7 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther>
    private Collection<AttributeTypeId> types;
 
    @Override
-   public void setData(CriteriaAttributeOther criteria) {
+   public void setData(CriteriaAttributeRaw criteria) {
       this.criteria = criteria;
    }
 
@@ -63,7 +63,7 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther>
       }
 
       attrAlias = writer.addTable(TableEnum.ATTRIBUTE_TABLE);
-      txsAlias1 = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ATTRIBUTE);
+      txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ATTRIBUTE);
    }
 
    private Collection<String> getValuesForSearch() {
@@ -153,9 +153,9 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther>
       writer.write(" AND ");
       writer.write(attrAlias);
       writer.write(".gamma_id = ");
-      writer.write(txsAlias1);
+      writer.write(txsAlias);
       writer.write(".gamma_id AND ");
-      writer.write(writer.getTxBranchFilter(txsAlias1));
+      writer.write(writer.getTxBranchFilter(txsAlias));
 
    }
 

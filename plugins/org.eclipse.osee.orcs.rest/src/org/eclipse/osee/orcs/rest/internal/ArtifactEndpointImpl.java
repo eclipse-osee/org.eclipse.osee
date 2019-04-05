@@ -146,7 +146,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
          query.andTypeEquals(artifactType);
       }
       if (exists) {
-         query.and(attributeType, value);
+         query.andAttributeIs(attributeType, value);
       } else {
          query.andNotExists(attributeType, value);
       }
