@@ -33,4 +33,10 @@ public interface ImportEndpoint {
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
    TransactionToken importWord(@PathParam("branch") BranchId branch, @DefaultValue("-1") @QueryParam("wordDoc") String wordURI, @QueryParam("parentArtifact") ArtifactId parent, @QueryParam("tier") Integer tier);
+
+   @POST
+   @Path("{branch}/all")
+   @Consumes(MediaType.TEXT_PLAIN)
+   @Produces(MediaType.APPLICATION_JSON)
+   TransactionToken importSetup(@PathParam("branch") BranchId branch, @QueryParam("baseDir") String baseDir);
 }
