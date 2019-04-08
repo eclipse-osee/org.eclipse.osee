@@ -449,7 +449,7 @@
 			</reporting>
 		</profile>
 
-	<!--  	<profile>
+   	<profile>
 			<id>client-external-p2</id>
 			<activation>
 				<property>
@@ -458,14 +458,14 @@
 				</property>
 			</activation>
 			<properties>
-				<nebula-site>http://download.eclipse.org/technology/nebula/snapshot</nebula-site>
+			<!--	<nebula-site>http://download.eclipse.org/technology/nebula/snapshot</nebula-site>
 				<wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site>
 				<subversive-site>http://download.eclipse.org/technology/subversive/${subversive-version}/update-site</subversive-site>
-				<polarion-site>http://community.polarion.com/projects/subversive/download/eclipse/${polarion-version}/update-site</polarion-site>
+				<polarion-site>http://community.polarion.com/projects/subversive/download/eclipse/${polarion-version}/update-site</polarion-site> -->
 				<egit-site>http://download.eclipse.org/egit/updates</egit-site>
 			</properties>
 			<repositories>
-				<repository>
+			<!--	<repository>
 					<id>nebula</id>
 					<layout>p2</layout>
 					<url>${nebula-site}</url>
@@ -481,13 +481,16 @@
 					<id>subversive</id>
 					<layout>p2</layout>
 					<url>${subversive-site}</url>
+				</repository> -->
+				<repository> 
+					<id>egit</id> 
+					<layout>p2</layout>
+					<url>${egit-site}</url> 
 				</repository>
-				<repository> <id>egit</id> <layout>p2</layout> <url>${egit-site}</url> 
-					</repository>
 			</repositories>
-		</profile> -->
-
-<!-- 
+		</profile>
+		<!-- 
+		
 		<profile>
 			<id>osee-all</id>
 			<activation>

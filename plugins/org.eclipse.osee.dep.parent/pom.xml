@@ -39,7 +39,7 @@
 		<orbit-version>R20181128170323</orbit-version>
 		<subversive-version>1.0</subversive-version>
 		<polarion-version>3.0</polarion-version>
-
+	   <egit-site>http://download.eclipse.org/egit/updates</egit-site>
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
 		<eclipse-ip-site>https://github.com/osee-dev/osee.external.releases/raw/master/org.eclipse.ip</eclipse-ip-site>
@@ -66,6 +66,11 @@
 	</organization>
 
  	<repositories>
+ 	<repository> 
+ 	   	<id>egit</id>
+ 	   	<layout>p2</layout> 
+ 	   	<url>${egit-site}</url> 
+		</repository>
 		<repository>
 			<id>orbit</id>
 			<layout>p2</layout>
