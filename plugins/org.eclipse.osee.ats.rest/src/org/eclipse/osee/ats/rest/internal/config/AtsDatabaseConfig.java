@@ -66,17 +66,23 @@ public class AtsDatabaseConfig {
       }
       atsApi.clearCaches();
 
-      changes = atsApi.createChangeSet("Create Admin groups");
-
-      ArtifactToken userGroup = atsApi.getQueryService().getArtifact(CoreArtifactTokens.UserGroups);
-
-      changes.createArtifact(userGroup, AtsArtifactToken.AtsAdmin);
-      changes.createArtifact(userGroup, AtsArtifactToken.AtsTempAdmin);
-      changes.execute();
+      createUserGroups(atsApi);
 
       createUserCreationDisabledConfig();
 
       return results;
+   }
+
+   public static void createUserGroups(AtsApi atsApi) {
+      if (atsApi.getQueryService().getArtifact(AtsArtifactToken.AtsAdmin) == null) {
+         IAtsChangeSet changes = atsApi.createChangeSet("Create Admin groups");
+
+         ArtifactToken userGroup = atsApi.getQueryService().getArtifact(CoreArtifactTokens.UserGroups);
+
+         changes.createArtifact(userGroup, AtsArtifactToken.AtsAdmin);
+         changes.createArtifact(userGroup, AtsArtifactToken.AtsTempAdmin);
+         changes.execute();
+      }
    }
 
    private void createUserCreationDisabledConfig() {
