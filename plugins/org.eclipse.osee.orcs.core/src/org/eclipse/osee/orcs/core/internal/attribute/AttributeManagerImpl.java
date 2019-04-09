@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -290,6 +290,9 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       try {
          attribute = getSoleAttribute(attributeType);
          value = attribute.getValue();
+         if (value == null) {
+            return defaultValue;
+         }
       } catch (AttributeDoesNotExist ex) {
          // do nothing
       }
