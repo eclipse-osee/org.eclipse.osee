@@ -40,6 +40,7 @@
 								<plugin id="javax.wsdl" />
 								<plugin id="org.eclipse.xtext" />
 								<plugin id="org.antlr.runtime" />
+								<plugin id="com.google.guava" />
 								<plugin id="org.cyberneko.html" />
 								<plugin id="org.apache.commons.io" />
 								<plugin id="org.apache.commons.cli" />
@@ -60,14 +61,30 @@
 								<plugin id="org.eclipse.gmf.runtime.emf.ui" />
 								<plugin id="org.eclipse.uml2.uml" />
 								<plugin id="org.eclipse.uml2.uml.resources" />
+								<plugin id="org.eclipse.uml2.uml.edit" />
+								<plugin id="org.eclipse.uml2.uml.editor" />
+								<plugin id="org.eclipse.ocl.examples.emf.validation.validity.ui" />
+								<plugin id="org.eclipse.ocl.examples.emf.validation.validity" />
+								<plugin id="org.eclipse.nebula.widgets.cdatetime" />
+								<plugin id="org.eclipse.nebula.widgets.ganttchart" />
+								<plugin id="org.eclipse.uml2.uml.profile.standard" />
+								<plugin id="org.eclipse.uml2.uml.validation" />
+								<plugin id="org.eclipse.uml2.types" />
+								<plugin id="org.eclipse.uml2.common" />
+								<plugin id="org.eclipse.uml2.common.edit" />
 								<plugin id="org.apache.batik.pdf" />
 								<plugin id="org.eclipse.ocl.common" />								
 								<plugin id="org.hamcrest" />
-																
+								<plugin id="javax.xml.bind" />					
 								<plugin id="org.eclipse.ocl.ecore" />
 								<feature id="org.eclipse.graphiti.feature" />					
-								<feature id="org.eclipse.graphiti.source.feature" />
+								<feature id="org.eclipse.graphiti.feature.source" />
 								<feature id="org.eclipse.equinox.server.jetty" />
+								<feature id="org.eclipse.emf.doc" />
+								<feature id="org.eclipse.xtext.runtime" />
+								<feature id="org.eclipse.xtext.xbase" />
+								<feature id="org.eclipse.xtext.ui" />
+								<plugin id="org.eclipse.uml2.codegen.ecore" />
 								<feature id="org.eclipse.core.runtime.feature" />
 								<feature id="org.eclipse.xtext.sdk" />
 								<feature id="org.eclipse.emf" />
@@ -88,17 +105,17 @@
 								<feature id="org.eclipse.equinox.compendium.sdk" />
 								<feature id="org.eclipse.ecf.core.feature" />
 								<feature id="org.eclipse.m2e.feature" />
-								<feature id="org.eclipse.ecf.core.source.feature" />
+								<feature id="org.eclipse.ecf.core.feature.source" />
 								<feature id="org.eclipse.ecf.core.ssl.feature" />
-								<feature id="org.eclipse.ecf.core.ssl.source.feature" />
+								<feature id="org.eclipse.ecf.core.ssl.feature.source" />
 								<feature id="org.eclipse.ecf.filetransfer.feature" />
-								<feature id="org.eclipse.ecf.filetransfer.source.feature" />
+								<feature id="org.eclipse.ecf.filetransfer.feature.source" />
 								<feature id="org.eclipse.ecf.filetransfer.ssl.feature" />
-								<feature id="org.eclipse.ecf.filetransfer.ssl.source.feature" />
+								<feature id="org.eclipse.ecf.filetransfer.ssl.feature.source" />
 								<feature id="org.eclipse.ecf.filetransfer.httpclient4.feature" />
-								<feature id="org.eclipse.ecf.filetransfer.httpclient4.source.feature" />
+								<feature id="org.eclipse.ecf.filetransfer.httpclient4.feature.source" />
 								<feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature" />
-								<feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.source.feature" />
+								<feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.source" />
 								<feature id="org.eclipse.papyrus.sdk.feature" />
 							</excludes>
 						</configuration>

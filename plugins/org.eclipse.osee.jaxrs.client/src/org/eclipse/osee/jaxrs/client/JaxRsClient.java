@@ -29,6 +29,7 @@ public final class JaxRsClient {
    }
 
    public static JaxRsClientBuilder newBuilder() {
+
       JaxRsClientFactory factory = JaxRsClientRuntime.getClientFactoryInstance();
       return new JaxRsClientBuilder(factory);
    }

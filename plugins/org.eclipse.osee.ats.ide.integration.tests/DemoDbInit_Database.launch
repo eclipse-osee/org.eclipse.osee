@@ -82,9 +82,7 @@
 <setEntry value="org.eclipse.sdk:default"/>
 <setEntry value="org.eclipse.xtend.sdk:default"/>
 <setEntry value="org.eclipse.xtext.docs:default"/>
-<setEntry value="org.eclipse.xtext.examples.source:default"/>
 <setEntry value="org.eclipse.xtext.examples:default"/>
-<setEntry value="org.eclipse.xtext.runtime.source:default"/>
 <setEntry value="org.eclipse.xtext.runtime:default"/>
 <setEntry value="org.eclipse.xtext.sdk:default"/>
 <setEntry value="org.eclipse.xtext.ui.source:default"/>

@@ -13,7 +13,7 @@ package org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.adapters
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.io.InputSupplier;
+import com.google.common.io.ByteSource;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -141,9 +141,9 @@ public class ClientProviderImpl implements ClientProvider {
       client.setApplicationCertificates(data.getCertificates());
       client.setApplicationLogoUri(data.getLogoUri());
       if (data.isLogoAvailable()) {
-         InputSupplier<InputStream> logoSupplier = new InputSupplier<InputStream>() {
+         ByteSource logoSupplier = new ByteSource() {
             @Override
-            public InputStream getInput() {
+            public InputStream openStream() {
                return data.getLogoContent();
             }
          };
@@ -168,9 +168,9 @@ public class ClientProviderImpl implements ClientProvider {
    }
 
    @Override
-   public InputSupplier<InputStream> getClientLogoSupplier(UriInfo uriInfo, String applicationGuid) {
+   public ByteSource getClientLogoSupplier(UriInfo uriInfo, String applicationGuid) {
       OAuthClient client = storage.getClientByClientGuid(applicationGuid);
-      InputSupplier<InputStream> supplier = null;
+      ByteSource supplier = null;
       if (client.hasApplicationLogoSupplier()) {
          supplier = client.getApplicationLogoSupplier();
       } else {
@@ -184,11 +184,11 @@ public class ClientProviderImpl implements ClientProvider {
       return supplier;
    }
 
-   private InputSupplier<InputStream> newSupplier(final String uri) {
-      return new InputSupplier<InputStream>() {
+   private ByteSource newSupplier(final String uri) {
+      return new ByteSource() {
 
          @Override
-         public InputStream getInput() throws IOException {
+         public InputStream openStream() throws IOException {
             CachedOutputStream cos;
             try {
                cos = logosCache.get(uri);

@@ -128,7 +128,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
                String taggerId = attributeTypes.getTaggerId(source.getAttributeType());
                if (taggingEngine.hasTagger(taggerId)) {
                   Tagger tagger = taggingEngine.getTagger(taggerId);
-                  tagger.tagIt(source, tagCollector);
+                  tagger.tagIt(source.getResourceInput(), tagCollector);
                   if (isStorageAllowed(toStore)) {
                      getLogger().debug("Stored a - [%s] - connectionId[%s] - [%s]", getTagQueueQueryId(), connection,
                         toStore);

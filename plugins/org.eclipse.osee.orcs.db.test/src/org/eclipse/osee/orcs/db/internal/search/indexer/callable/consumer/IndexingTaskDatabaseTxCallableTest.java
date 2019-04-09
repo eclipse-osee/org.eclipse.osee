@@ -95,7 +95,7 @@ public class IndexingTaskDatabaseTxCallableTest {
 
       verify(logger, times(1)).error("Field has invalid tagger[%s] provider and cannot be tagged - [Gamma: %s]", null,
          GammaId.valueOf(2L));
-      verify(tagger, times(1)).tagIt(Matchers.eq(resource1), Matchers.any(TagCollector.class));
+      verify(tagger, times(1)).tagIt(Matchers.eq(resource1.getResourceInput()), Matchers.any(TagCollector.class));
    }
 
 }

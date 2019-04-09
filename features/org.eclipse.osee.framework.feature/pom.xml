@@ -32,7 +32,10 @@
 							   <plugin id="org.hamcrest" />
 							   <plugin id="org.eclipse.egit" />
 							   <feature id="org.eclipse.sdk" />
+							    <plugin id="org.eclipse.egit" />
+							   <feature id="org.eclipse.sdk" />
 							    <plugin id="org.eclipse.sdk" />
+							   <plugin id="javax.xml.bind" />
 							   <feature id="org.eclipse.wtp.capabilities.feature" />
 							</excludes>
 						</configuration>

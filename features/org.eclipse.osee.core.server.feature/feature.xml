@@ -19,7 +19,7 @@
 
    <includes
          id="org.eclipse.egit"
-         version="0.0.0"/>
+         version="5.0.0"/>
 
    <plugin
          id="org.xerial.sqlite"
@@ -27,6 +27,13 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="javax.xml.bind"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false" />
    
    <plugin
          id="rest.assured"
@@ -498,7 +505,6 @@
          version="0.0.0"
          unpack="false"/>
 
-
    <plugin
          id="org.apache.cxf.transport.http"
          download-size="0"
@@ -954,7 +960,9 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
+   
+     
+    <plugin
          id="org.objenesis"
          download-size="0"
          install-size="0"

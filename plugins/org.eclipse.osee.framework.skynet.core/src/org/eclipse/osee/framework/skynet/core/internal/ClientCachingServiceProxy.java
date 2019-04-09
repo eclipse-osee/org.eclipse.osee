@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal;
 
-import com.google.common.io.InputSupplier;
+import com.google.common.io.ByteSource;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
 public class ClientCachingServiceProxy implements IOseeCachingService {
 
    public static interface TypesLoader {
-      void loadTypes(IOseeCachingService service, InputSupplier<? extends InputStream> supplier);
+      void loadTypes(IOseeCachingService service, ByteSource supplier);
    }
 
    private JdbcService jdbcService;
@@ -138,9 +138,9 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
    @Override
    public void reloadTypes() {
       DslToTypeLoader typesLoader = new DslToTypeLoader(branchCache);
-      typesLoader.loadTypes(this, new InputSupplier<InputStream>() {
+      typesLoader.loadTypes(this, new ByteSource() {
          @Override
-         public InputStream getInput() {
+         public InputStream openStream() {
             OseeLog.log(Activator.class, Level.INFO, "Loading All type caches <<<<<<<<<<<<<<<<<<<<<<");
             TypesEndpoint typesEndpoint = oseeClient.getTypesEndpoint();
             try {

@@ -28,6 +28,5 @@ Import-Package: org.apache.commons.dbcp,
  org.osgi.service.component;resolution:=optional
 Export-Package: org.eclipse.osee.jdbc
 Service-Component: OSGI-INF/*.xml
-DynamicImport-Package: *
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.xerial.sqlite;resolution:=optional

@@ -40,6 +40,7 @@ public abstract class AbstractRestTest {
 
    protected Object getFirstAndCount(String url, int count) {
       String json = getJson(url);
+
       Object[] objs = JsonUtil.readValue(json, Object[].class);
       Assert.assertEquals(count, objs.length);
       return objs[0];
@@ -67,6 +68,7 @@ public abstract class AbstractRestTest {
    }
 
    protected String getJson(String url) {
+      url = url.replaceAll("%3F", "?");
       return getAndCheckResponseCode(url, MediaType.APPLICATION_JSON_TYPE);
    }
 
@@ -79,13 +81,35 @@ public abstract class AbstractRestTest {
    }
 
    protected URI toURI(String urlPath) {
+      urlPath = urlPath.replaceAll("%3F", "?");
       return UriBuilder.fromUri(OseeClientProperties.getOseeApplicationServer()).path(urlPath).build();
    }
 
    private String getAndCheckResponseCode(URI uri, MediaType mediaType) {
+      boolean uriChanged = false;
+      String newURI = "";
+      boolean statusError = false;
+      String uriString = uri.toString().replaceAll("%3F", "?");
       Response response = JaxRsClient.newClient().target(uri).request(mediaType).get();
+      if (response.getStatus() != 200) {
+         response = JaxRsClient.newClient().target(uriString).request(mediaType).get();
+         statusError = true;
+      }
       Assert.assertEquals("Unexpected error code: " + response.readEntity(String.class),
          javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.getStatus());
+
+      if (response.readEntity(String.class).length() < 3) {
+         newURI = uri.toString().replaceAll("%3F", "?");
+         uriChanged = true;
+      }
+      if (uriChanged == true) {
+         response = JaxRsClient.newClient().target(newURI).request(mediaType).get();
+      } else {
+         response = JaxRsClient.newClient().target(uri).request(mediaType).get();
+      }
+      if (statusError == true) {
+         response = JaxRsClient.newClient().target(uriString).request(mediaType).get();
+      }
       return response.readEntity(String.class);
    }
 

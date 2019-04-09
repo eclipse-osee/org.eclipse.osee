@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.endpoints;
 
-import com.google.common.io.InputSupplier;
+import com.google.common.io.ByteSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -44,11 +44,11 @@ public class ClientEndpoint extends AbstractClientService {
 
          @Override
          public void write(OutputStream outputStream) throws IOException, WebApplicationException {
-            InputSupplier<InputStream> supplier = getDataProvider().getClientLogoSupplier(uriInfo, applicationGuid);
+            ByteSource supplier = getDataProvider().getClientLogoSupplier(uriInfo, applicationGuid);
             if (supplier != null) {
                InputStream inputStream = null;
                try {
-                  inputStream = supplier.getInput();
+                  inputStream = supplier.openStream();
                   Lib.inputStreamToOutputStream(inputStream, outputStream);
                } finally {
                   Lib.close(inputStream);

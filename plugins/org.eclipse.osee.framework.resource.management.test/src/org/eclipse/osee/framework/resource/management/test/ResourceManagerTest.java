@@ -17,18 +17,16 @@ import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorProvider;
-import org.eclipse.osee.framework.resource.management.IResourceProvider;
 import org.eclipse.osee.framework.resource.management.ResourceManager;
 import org.eclipse.osee.framework.resource.management.test.mocks.MockLocatorProvider;
 import org.eclipse.osee.framework.resource.management.test.mocks.MockResourceLocator;
-import org.eclipse.osee.framework.resource.management.test.mocks.ResourceProviderAdaptor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Resource Manager Test {@link ResourceManager}
- * 
+ *
  * @author Andrew M. Finkbeiner
  */
 public class ResourceManagerTest {
@@ -48,27 +46,6 @@ public class ResourceManagerTest {
       manager.addResourceLocatorProvider(provider1);
       manager.addResourceLocatorProvider(provider2);
       manager.addResourceLocatorProvider(provider3);
-   }
-
-   //   private IResourceManager resourceManager;
-   //   private IResourceLocatorManager locatorManager;
-   //
-   //   private URL testFileURL;
-   //
-   //   @Before
-   //   public void setup() {
-   //      resourceManager = new ResourceManager();
-   //      locatorManager = new ResourceLocatorManager();
-   //      testFileURL =
-   //            getClass().getClassLoader().getResource("org/eclipse/osee/framework/resource/management/test/TestFile.txt");
-   //   }
-   @Test
-   public void testAddRemoveProvider() {
-      ResourceManager resourceManagerX = new ResourceManager();
-      IResourceProvider provider1 = new ResourceProviderAdaptor();
-      Assert.assertTrue(resourceManagerX.addResourceProvider(provider1));
-      Assert.assertFalse(resourceManagerX.addResourceProvider(provider1)); // Add again
-      Assert.assertTrue(resourceManagerX.removeResourceProvider(provider1));
    }
 
    @Test
@@ -114,21 +91,21 @@ public class ResourceManagerTest {
    public void testAddAndRemove() {
       ResourceManager testManager = new ResourceManager();
 
-      Assert.assertTrue(testManager.addResourceLocatorProvider(provider1));
-      Assert.assertTrue(testManager.addResourceLocatorProvider(provider2));
+      testManager.addResourceLocatorProvider(provider1);
+      testManager.addResourceLocatorProvider(provider2);
 
       Assert.assertEquals(2, testManager.getProtocols().size());
 
-      Assert.assertFalse(testManager.addResourceLocatorProvider(provider2)); // Add the same one again
+      testManager.addResourceLocatorProvider(provider2);
       Assert.assertEquals(2, testManager.getProtocols().size());
 
-      Assert.assertTrue(testManager.removeResourceLocatorProvider(provider1));
+      testManager.removeResourceLocatorProvider(provider1);
       Assert.assertEquals(1, testManager.getProtocols().size());
 
-      Assert.assertFalse(testManager.removeResourceLocatorProvider(provider1));// Remove the same one again
+      testManager.removeResourceLocatorProvider(provider1);
       Assert.assertEquals(1, testManager.getProtocols().size());
 
-      Assert.assertTrue(testManager.removeResourceLocatorProvider(provider2));
+      testManager.removeResourceLocatorProvider(provider2);
       Assert.assertEquals(0, testManager.getProtocols().size());
    }
 

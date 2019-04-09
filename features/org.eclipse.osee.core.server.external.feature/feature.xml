@@ -24,30 +24,41 @@
    <includes
          id="org.eclipse.osee.disposition.feature"
          version="0.0.0"/>
-
-
-   <includes
-         id="org.eclipse.egit"
-         version="4.4.0"/>
-         
+    
    <includes
          id="org.eclipse.jgit"
-         version="4.4.0"/>
+         version="5.0.0"/>
          
-    <plugin
-         id="org.eclipse.jsch.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-         
+    <requires>
+      <import plugin="com.fasterxml.jackson.core.jackson-core" version="2.9.2" match="greaterOrEqual"/>
+      <import plugin="com.fasterxml.jackson.core.jackson-annotations" version="2.9.2" match="greaterOrEqual" />
+      <import plugin="com.fasterxml.jackson.core.jackson-databind" version="2.9.2" match="greaterOrEqual" />  
+      <import plugin="org.eclipse.osgi.util"/>  
+      <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.9.2" match="greaterOrEqual" />  
+    </requires>
+                  
   <plugin
-        id="org.eclipse.jdt.launching"
+         id="javax.xml.bind"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>        
- <plugin
+         unpack="false" />  
+   
+   <plugin
+         id="org.eclipse.jdt.launching"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+	 unpack="false"/> 
+	
+    <plugin
+         id="org.eclipse.egit"
+         download-size="0"
+         install-size="0"
+         version="5.0.0"
+         unpack="false"/>
+                
+   <plugin
          id="org.eclipse.jdt.debug"
          download-size="0"
          install-size="0"
@@ -57,21 +68,35 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>       
-    <plugin
-         id="org.eclipse.egit"
+         unpack="false"/>   
+             
+   <plugin
+         id="org.eclipse.jdt.annotation"
          download-size="0"
          install-size="0"
-         version="4.4.0"
-         unpack="false"/>
+         version="0.0.0"/> 
          
    <plugin
          id="org.eclipse.jgit"
          download-size="0"
          install-size="0"
-         version="4.4.0"
+         version="5.0.0"
          unpack="false"/>
      
+  <plugin
+         id="org.eclipse.osgi.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.felix.scr"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>   
+          
    <plugin
          id="rest.assured"
          download-size="0"
@@ -84,8 +109,8 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>      
-   
+         unpack="false"/> 
+         
    <plugin
          id="org.objenesis"
          download-size="0"
@@ -93,11 +118,11 @@
          version="0.0.0"
          unpack="false" />      
 
-    <plugin
-         id="org.mockito"
+   <plugin
+	 id="org.mockito"
          download-size="0"
          install-size="0"
-         version="2.13.0"
+	 version="2.13.0"
          unpack="false"/>
          
    <plugin
@@ -106,7 +131,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-    
+         
     <plugin
          id="javaewah"
          download-size="0"
@@ -588,12 +613,14 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
- <plugin
+ 
+   <plugin
          id="org.eclipse.jdt.annotation"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
    <plugin
          id="org.apache.felix.gogo.command"
          download-size="0"

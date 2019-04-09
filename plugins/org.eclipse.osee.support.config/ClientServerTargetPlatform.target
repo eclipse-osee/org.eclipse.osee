@@ -483,6 +483,7 @@
 <plugin id="org.eclipse.graphiti.mm.source"/>
 <plugin id="org.eclipse.graphiti.pattern"/>
 <plugin id="org.eclipse.graphiti.pattern.source"/>
+<plugin id="org.eclipse.graphiti.source"/>
 <plugin id="org.eclipse.graphiti.ui"/>
 <plugin id="org.eclipse.graphiti.ui.source"/>
 <plugin id="org.eclipse.help"/>
@@ -836,8 +837,8 @@
 <plugin id="org.mozilla.javascript"/>
 <plugin id="org.objectweb.asm" version="5.0.1.v201404251740"/>
 <plugin id="org.objectweb.asm.source"/>
-<plugin id="org.objectweb.asm.tree" version="5.0.1.v201404251740"/>
-<plugin id="org.objenesis"/>
+<plugin id="org.objectweb.asm.tree" version="7.0.0.v20181030-2244"/>
+<plugin id="org.objectweb.asm.tree"/>
 <plugin id="org.objenesis.source"/>
 <plugin id="org.openoffice"/>
 <plugin id="org.osgi.service.blueprint"/>

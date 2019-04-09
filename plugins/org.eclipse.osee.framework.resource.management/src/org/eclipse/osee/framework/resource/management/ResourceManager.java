@@ -50,12 +50,12 @@ public class ResourceManager implements IResourceManager {
          locator, Arrays.deepToString(resourceProviders.toArray()));
    }
 
-   public boolean addResourceProvider(IResourceProvider resourceProvider) {
-      return resourceProviders.add(resourceProvider);
+   public void addResourceProvider(IResourceProvider resourceProvider) {
+      resourceProviders.add(resourceProvider);
    }
 
-   public boolean removeResourceProvider(IResourceProvider resourceProvider) {
-      return resourceProviders.remove(resourceProvider);
+   public void removeResourceProvider(IResourceProvider resourceProvider) {
+      resourceProviders.remove(resourceProvider);
    }
 
    @Override
@@ -95,12 +95,12 @@ public class ResourceManager implements IResourceManager {
       return protocols;
    }
 
-   public boolean addResourceLocatorProvider(IResourceLocatorProvider resourceLocatorProvider) {
-      return this.resourceLocatorProviders.add(resourceLocatorProvider);
+   public void addResourceLocatorProvider(IResourceLocatorProvider resourceLocatorProvider) {
+      this.resourceLocatorProviders.add(resourceLocatorProvider);
    }
 
-   public boolean removeResourceLocatorProvider(IResourceLocatorProvider resourceLocatorProvider) {
-      return this.resourceLocatorProviders.remove(resourceLocatorProvider);
+   public void removeResourceLocatorProvider(IResourceLocatorProvider resourceLocatorProvider) {
+      this.resourceLocatorProviders.remove(resourceLocatorProvider);
    }
 
    @Override

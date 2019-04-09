@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import com.google.common.io.InputSupplier;
+import java.io.IOException;
 import java.io.InputStream;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.GammaId;
@@ -18,10 +18,11 @@ import org.eclipse.osee.framework.core.data.GammaId;
 /**
  * @author Roberto E. Escobar
  */
-public interface IndexedResource extends InputSupplier<InputStream> {
+public interface IndexedResource {
 
    GammaId getGammaId();
 
    AttributeTypeId getAttributeType();
 
+   InputStream getResourceInput() throws IOException;
 }

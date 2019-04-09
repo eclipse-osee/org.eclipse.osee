@@ -40,6 +40,7 @@
 								<plugin id="org.apache.cxf.core.config" />
 								<plugin id="ch.qos.logback.slf4j" />
 								<plugin id="javax.ws.rs" />
+								<plugin id="com.google.guava" />
 							</excludes>
 						</configuration>
 					</execution>

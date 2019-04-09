@@ -160,6 +160,7 @@ public class JdbcMigration {
 
    private Flyway newFlyway() {
       JdbcClientConfig config = jdbcClient.getConfig();
+
       Flyway fly = new Flyway();
       fly.setTable("OSEE_SCHEMA_VERSION");
       fly.setClassLoader(getClass().getClassLoader());

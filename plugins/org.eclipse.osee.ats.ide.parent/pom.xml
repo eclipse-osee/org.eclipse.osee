@@ -26,6 +26,7 @@
 				</property>
 			</activation>
 			<modules>
+			
 				<module>../../plugins/org.eclipse.osee.support.test.util</module>
 
 				<module>../../plugins/org.eclipse.osee.ats.ide.help.ui</module>
@@ -37,7 +38,6 @@
 				<module>../../features/org.eclipse.osee.ats.ide.feature</module>
 
 				<module>../../features/org.eclipse.osee.ats.ide.demo.feature</module>
-
 				<module>../../plugins/org.eclipse.osee.ats.ide.integration.tests</module>
 				<module>../../plugins/org.eclipse.osee.ats.ide.p2</module>
 			</modules>
@@ -62,8 +62,8 @@
 				<module>../../features/org.eclipse.osee.ats.ide.feature</module>
 
 				<module>../../features/org.eclipse.osee.ats.ide.demo.feature</module>
-
-				<module>../../plugins/org.eclipse.osee.ats.ide.integration.tests</module>
+								<module>../../plugins/org.eclipse.osee.ats.ide.integration.tests</module>
+				
 				<module>../../plugins/org.eclipse.osee.ats.ide.p2</module>
 			</modules>
 		</profile>
@@ -77,7 +77,7 @@
 				</property>
 			</activation>
 			<modules>
-				<module>../../plugins/org.eclipse.osee.ats.ide.help.ui.test</module>
+			<module>../../plugins/org.eclipse.osee.ats.ide.help.ui.test</module>
 			</modules>
 		</profile>
 	</profiles>

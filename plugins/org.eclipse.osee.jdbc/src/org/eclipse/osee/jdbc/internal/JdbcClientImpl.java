@@ -488,6 +488,7 @@ public final class JdbcClientImpl implements JdbcClient {
 
    @Override
    public void migrate(JdbcMigrationOptions options, Iterable<JdbcMigrationResource> schemaResources) {
+
       migration.migrate(options, schemaResources);
    }
 

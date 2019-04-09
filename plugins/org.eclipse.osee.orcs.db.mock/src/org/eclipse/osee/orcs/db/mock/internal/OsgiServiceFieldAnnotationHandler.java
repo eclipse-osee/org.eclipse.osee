@@ -21,6 +21,7 @@ public class OsgiServiceFieldAnnotationHandler extends AbstractFieldAnnotationHa
 
    @Override
    public void handleAnnotation(OsgiService annotation, Object object, Field field) throws Exception {
+      Thread.sleep(1000);
       Object service = OsgiUtil.getService(field.getType());
       injectToFields(annotation, object, field, service);
    }

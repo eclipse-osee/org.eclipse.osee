@@ -30,7 +30,6 @@ public class AtsActionEndpointImplOptionsTest extends AbstractRestTest {
    public void testAtsActionsWriteWithGammasRestCall() {
       String url =
          "/ats/action/" + DemoUtil.getSawCodeCommittedWf().getIdString() + "/details?" + WorkItemWriterOptions.ValuesWithIds.name() + "=true";
-      ;
       JsonNode action = testActionRestCall(url, 1);
       Assert.assertEquals(action.get("AtsId").asText(), action.get("ats.Id").get("value").asText());
       Assert.assertTrue(Strings.isNumeric(action.get("ats.Id").get("gammaId").asText()));
@@ -82,6 +81,7 @@ public class AtsActionEndpointImplOptionsTest extends AbstractRestTest {
    }
 
    private JsonNode testActionRestCall(String url, int size) {
+      url = url.replaceAll("%3F", "?");
       String json = getJson(url);
       JsonNode arrayNode = JsonUtil.readTree(json);
       Assert.assertEquals(size, arrayNode.size());

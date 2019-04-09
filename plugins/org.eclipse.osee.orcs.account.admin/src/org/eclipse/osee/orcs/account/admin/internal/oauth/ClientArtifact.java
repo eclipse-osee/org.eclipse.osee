@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.google.common.io.InputSupplier;
+import com.google.common.io.ByteSource;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
@@ -26,10 +26,11 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 /**
  * @author Roberto E. Escobar
  */
-public class ClientArtifact extends BaseIdentity<String> implements OAuthClient, InputSupplier<InputStream> {
+public class ClientArtifact extends BaseIdentity<String> implements OAuthClient {
 
    private final ArtifactReadable artifact;
    private final OAuthClientCredential credential;
+   private ByteSource logoSupplier;
 
    public ClientArtifact(ArtifactReadable artifact, OAuthClientCredential credential) {
       super(artifact.getGuid());
@@ -123,11 +124,14 @@ public class ClientArtifact extends BaseIdentity<String> implements OAuthClient,
    }
 
    @Override
-   public InputSupplier<InputStream> getApplicationLogoSupplier() {
-      return this;
+   public ByteSource getApplicationLogoSupplier() {
+      return logoSupplier;
    }
 
-   @Override
+   public void setApplicationLogoSupplier(ByteSource supplier) {
+      this.logoSupplier = supplier;
+   }
+
    public InputStream getInput() {
       return artifact.getSoleAttributeValue(CoreAttributeTypes.ImageContent);
    }

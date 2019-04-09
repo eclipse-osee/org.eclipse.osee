@@ -13,5 +13,5 @@
 	<artifactId>org.eclipse.osee.jdbc</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	<name>OSEE JDBC - (Incubation)</name>
-
+	
 </project>

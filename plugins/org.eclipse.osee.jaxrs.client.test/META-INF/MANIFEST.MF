@@ -6,6 +6,7 @@ Bundle-Version: 0.26.0.qualifier
 Fragment-Host: org.eclipse.osee.jaxrs.client
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
+Require-Bundle: org.junit;visibility:=reexport
 Import-Package: org.junit,
  org.junit.rules,
  org.junit.runner,

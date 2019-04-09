@@ -20,7 +20,7 @@ import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUT
 import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUTH_CLIENT_PROPERTIES;
 import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUTH_CLIENT_WEBSITE_URI;
 import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUTH_TYPES;
-import com.google.common.io.InputSupplier;
+import com.google.common.io.ByteSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -119,10 +119,10 @@ public class ClientStorage {
       tx.setAttributesFromStrings(artId, OAUTH_CLIENT_AUTHORIZED_SCOPE, data.getRegisteredScopes());
       //@formatter:on
 
-      InputSupplier<InputStream> supplier = data.getApplicationLogoSupplier();
+      ByteSource supplier = data.getApplicationLogoSupplier();
       if (supplier != null) {
          try {
-            tx.setSoleAttributeValue(artId, CoreAttributeTypes.ImageContent, supplier.getInput());
+            tx.setSoleAttributeValue(artId, CoreAttributeTypes.ImageContent, supplier.openStream());
          } catch (Exception ex) {
             throw new OseeCoreException(ex, "Error reading logo data for [%s]", artId);
          }
@@ -145,12 +145,12 @@ public class ClientStorage {
       return newQuery().andUuid(OAUTH_TYPES.getUuid()).andTypeEquals(OAUTH_TYPES.getArtifactTypeId()).getResults();
    }
 
-   public ArtifactId storeTypes(InputSupplier<? extends InputStream> resource) {
+   public ArtifactId storeTypes(ByteSource resource) {
       TransactionBuilder tx = newTransaction(null, "Initialize OAuth Type Definitions");
       ArtifactId artifactId = tx.createArtifact(OAUTH_TYPES);
       InputStream stream = null;
       try {
-         stream = resource.getInput();
+         stream = resource.openStream();
          tx.setSoleAttributeFromStream(artifactId, CoreAttributeTypes.UriGeneralStringData, stream);
       } catch (IOException ex) {
          throw new OseeCoreException(ex);

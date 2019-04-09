@@ -30,7 +30,6 @@
 							<excludes>
 								<plugin id="org.eclipse.osee.framework.ui.product" />
 								<plugin id="org.eclipse.osee.framework.dev.help.ui" />
-							   <plugin id="org.hamcrest" />
 							   <plugin id="org.eclipse.sdk" />
 							</excludes>
 						</configuration>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.EquinoxLauncher">
 <setAttribute key="additional_plugins">
-<setEntry value="com.google.guava:15.0.0.v201403281430:default:false"/>
+<setEntry value="com.google.guava:21.0.0.v20170206-1425:default:false"/>
 </setAttribute>
 <booleanAttribute key="append.args" value="true"/>
 <booleanAttribute key="automaticAdd" value="false"/>
@@ -25,9 +25,9 @@
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024m&#13;&#10;-Declipse.ignoreApp=true &#13;&#10;-Dosgi.noShutdown=true&#13;&#10;-Dorg.osgi.service.http.port=8089&#13;&#10;-Dosee.log.default=INFO&#13;&#10;-Dosee.authentication.protocol=demo&#13;&#10;-Dlogback.configurationFile=C:\UserData\logback-dev.xml&#13;&#10;-Dcm.config.uri=&quot;${project_loc:org.eclipse.osee.support.config}/launchConfig/osee.hsql.json&quot;"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <setAttribute key="selected_features">
-<setEntry value="org.eclipse.osee.disposition.feature:default"/>
 <setEntry value="org.eclipse.osee.ats.server.feature:default"/>
 <setEntry value="org.eclipse.osee.core.server.external.feature:default"/>
+<setEntry value="org.eclipse.osee.disposition.feature:default"/>
 </setAttribute>
 <booleanAttribute key="show_selected_only" value="false"/>
 <stringAttribute key="timestamp" value="1369262663070"/>

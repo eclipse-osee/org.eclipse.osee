@@ -54,10 +54,18 @@ public class OseeInf {
 
    public static URL getResourceAsUrl(String path, Class<?> clazz) {
       Bundle bundle = FrameworkUtil.getBundle(clazz);
-      URL url = bundle.getEntry("OSEE-INF" + "/" + path);
+      String inf = "OSEE-INF/" + path;
+
+      URL url = null;
+      try {
+         url = bundle.getResource(inf);
+      } catch (Exception ex) {
+         System.out.println("Exception caught from class loader: " + clazz.getClassLoader().toString());
+      }
       try {
          return FileLocator.toFileURL(url);
       } catch (Exception ex) {
+         System.out.println("Exception caught at: " + inf + "  " + ex.getLocalizedMessage());
          throw new OseeCoreException(ex, "Error getting resource [%s] as file", path);
       }
    }

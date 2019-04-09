@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.adapters;
 
-import com.google.common.io.InputSupplier;
-import java.io.InputStream;
+import com.google.common.io.ByteSource;
 import org.apache.cxf.rs.security.oauth2.common.Client;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.jaxrs.server.security.OAuthClient;
@@ -26,7 +25,7 @@ public class ApplicationClient extends Client implements OAuthClient {
    private final long clientUuid;
    private final long subjectId;
    private final String guid;
-   private InputSupplier<InputStream> logoSupplier;
+   private ByteSource logoSupplier;
 
    public ApplicationClient(long clientUuid, long subjectId, String guid) {
       super();
@@ -79,11 +78,11 @@ public class ApplicationClient extends Client implements OAuthClient {
    }
 
    @Override
-   public InputSupplier<InputStream> getApplicationLogoSupplier() {
+   public ByteSource getApplicationLogoSupplier() {
       return logoSupplier;
    }
 
-   public void setApplicationLogoSupplier(InputSupplier<InputStream> logoSupplier) {
+   public void setApplicationLogoSupplier(ByteSource logoSupplier) {
       this.logoSupplier = logoSupplier;
    }
 

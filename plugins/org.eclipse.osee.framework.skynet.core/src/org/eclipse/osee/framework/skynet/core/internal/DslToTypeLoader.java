@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal;
 
-import com.google.common.io.InputSupplier;
+import com.google.common.io.ByteSource;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -86,11 +86,11 @@ public class DslToTypeLoader implements TypesLoader {
    }
 
    @Override
-   public void loadTypes(IOseeCachingService caches, InputSupplier<? extends InputStream> supplier) {
+   public void loadTypes(IOseeCachingService caches, ByteSource supplier) {
       OseeDslResource loadModel;
       InputStream inputStream = null;
       try {
-         inputStream = supplier.getInput();
+         inputStream = supplier.openStream();
          loadModel = OseeDslResourceUtil.loadModel("osee:/text.osee", inputStream);
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);

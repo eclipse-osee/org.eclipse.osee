@@ -11,7 +11,7 @@
 package org.eclipse.osee.jaxrs.server.internal;
 
 import static org.junit.Assert.fail;
-import com.google.common.io.InputSupplier;
+import com.google.common.io.ByteSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -26,7 +26,7 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Unit Test for {@link RestResourceConcatenator}
- * 
+ *
  * @author David W. Miller
  */
 public class RestResourceConcatenatorTest {
@@ -195,10 +195,10 @@ public class RestResourceConcatenatorTest {
 
    }
 
-   private static InputSupplier<InputStream> testSupplier(final String input) {
-      return new InputSupplier<InputStream>() {
+   private static ByteSource testSupplier(final String input) {
+      return new ByteSource() {
          @Override
-         public InputStream getInput() throws IOException {
+         public InputStream openStream() throws IOException {
             return Lib.stringToInputStream(input);
          }
       };

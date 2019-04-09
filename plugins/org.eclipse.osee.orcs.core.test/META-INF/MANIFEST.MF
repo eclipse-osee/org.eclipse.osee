@@ -8,7 +8,7 @@ Fragment-Host: org.eclipse.osee.orcs.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.mockito;visibility:=reexport,
  org.hamcrest.core
-Import-Package: com.google.common.util.concurrent;version="15.0.0",
+Import-Package: com.google.common.util.concurrent,
  org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.model.cache,

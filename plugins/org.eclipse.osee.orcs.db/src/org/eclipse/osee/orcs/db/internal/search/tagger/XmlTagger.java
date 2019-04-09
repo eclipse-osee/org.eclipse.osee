@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.tagger;
 
-import com.google.common.io.InputSupplier;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -31,7 +30,7 @@ public class XmlTagger extends AbstractTagger {
    }
 
    @Override
-   public void tagIt(InputSupplier<? extends InputStream> provider, TagCollector collector) throws Exception {
+   public void tagIt(InputStream provider, TagCollector collector) throws Exception {
       InputStream inputStream = null;
       try {
          inputStream = getStream(provider);
@@ -42,7 +41,7 @@ public class XmlTagger extends AbstractTagger {
    }
 
    @Override
-   public List<MatchLocation> find(InputSupplier<? extends InputStream> provider, String toSearch, boolean matchAllLocations, QueryOption... options) throws Exception {
+   public List<MatchLocation> find(InputStream provider, String toSearch, boolean matchAllLocations, QueryOption... options) throws Exception {
       List<MatchLocation> toReturn;
       if (Strings.isValid(toSearch)) {
          InputStream inputStream = null;
@@ -58,7 +57,7 @@ public class XmlTagger extends AbstractTagger {
       return toReturn;
    }
 
-   private InputStream getStream(InputSupplier<? extends InputStream> provider) throws IOException {
-      return new XmlTextInputStream(provider.getInput());
+   private InputStream getStream(InputStream provider) throws IOException {
+      return new XmlTextInputStream(provider);
    }
 }

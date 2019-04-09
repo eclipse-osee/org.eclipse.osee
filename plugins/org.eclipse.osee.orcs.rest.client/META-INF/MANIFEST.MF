@@ -6,9 +6,9 @@ Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
-Import-Package: javax.ws.rs;version="2.0.0",
- javax.ws.rs.client;version="2.0.0",
- javax.ws.rs.core;version="2.0.0",
+Import-Package: javax.ws.rs,
+ javax.ws.rs.client,
+ javax.ws.rs.core,
  org.eclipse.osee.activity.api,
  org.eclipse.osee.define.api,
  org.eclipse.osee.framework.core.data,

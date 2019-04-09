@@ -38,6 +38,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.FileChannel;
@@ -1757,16 +1758,34 @@ public final class Lib {
     */
    public static String getURIAbsolutePath(UriInfo uriInfo) {
       String uriPath = uriInfo.getPath();
+
       if (uriPath.startsWith("/")) {
          uriPath = uriPath.replaceFirst("\\/+", "");
       }
       uriPath = uriPath.replaceAll(INVALID_URI_CHARACTERS_REGEX, "");
       URI baseUri = uriInfo.getBaseUri();
       String basePath = baseUri.toString();
+
       if (!basePath.endsWith("/")) {
          basePath += "/";
-         baseUri = URI.create(basePath);
+         try {
+            baseUri = URI.create(basePath);
+
+         } catch (Exception s) {
+            basePath = basePath.replace(" ", "");
+            baseUri = URI.create(basePath);
+         }
       }
+      try {
+         uriPath = URLEncoder.encode(uriPath, "UTF-8");
+      } catch (UnsupportedEncodingException ex) {
+         System.out.println("Cant Encode");
+      }
+      uriPath = uriPath.replace(" ", "");
+      uriPath = uriPath.replaceAll("%2F", "/");
+      uriPath = uriPath.replaceAll("%3F", "?");
+      uriPath = uriPath.replaceAll("%3A", ":");
       return baseUri.resolve(uriPath).getPath();
+
    }
 }

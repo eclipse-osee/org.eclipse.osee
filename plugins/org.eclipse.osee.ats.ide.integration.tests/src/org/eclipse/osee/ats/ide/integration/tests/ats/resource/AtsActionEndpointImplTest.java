@@ -94,6 +94,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testQueryPriority() {
+
       getAndCountWorkItems(
          String.format("ats/action/query?Team=%s&Priority=1&Priority=3", DemoArtifactToken.SAW_Code.getIdString()), 3);
    }
@@ -118,6 +119,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testQueryTeam() {
+      System.out.println("TEST QUERY TEAM");
       getFirstAndCount("ats/action/query?Team=30013695", 3);
    }
 
@@ -165,6 +167,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
       url = String.format("/ats/action/query?Team=%s&1152921504606847877=%s",
          sawCodeCommittedWf.getTeamDefinition().getIdString(), sawCodeCommittedWf.getAtsId());
+
       action = testActionRestCall(url, 1);
       Assert.assertEquals(action.get("AtsId").asText(), sawCodeCommittedWf.getAtsId());
    }
@@ -175,8 +178,14 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    private JsonNode testActionRestCall(URI uri, int size) {
       String json = getJson(uri);
+      if (json.length() < 3) {
+         json = getJson(uri.toString());
+         String ur = uri.toString().replaceAll("%3F", "?");
+         json = getJson(ur);
+      }
       JsonNode arrayNode = JsonUtil.readTree(json);
       Assert.assertEquals(size, arrayNode.size());
+
       arrayNode.forEach(this::testAction);
       return arrayNode.get(0);
    }

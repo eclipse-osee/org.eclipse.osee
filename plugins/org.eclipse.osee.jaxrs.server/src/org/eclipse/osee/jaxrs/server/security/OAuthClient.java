@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.security;
 
-import com.google.common.io.InputSupplier;
-import java.io.InputStream;
+import com.google.common.io.ByteSource;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
@@ -53,6 +52,6 @@ public interface OAuthClient extends Identity<String> {
 
    boolean hasApplicationLogoSupplier();
 
-   InputSupplier<InputStream> getApplicationLogoSupplier();
+   ByteSource getApplicationLogoSupplier();
 
 }

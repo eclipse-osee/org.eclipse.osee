@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.internal.ext;
 
-import com.google.common.io.InputSupplier;
+import com.google.common.io.ByteSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -47,11 +47,11 @@ public class RestResourceConcatenator {
       return String.format("%s Object: \n  contents {%s}\n", this.getClass().getName(), getResources());
    }
 
-   public void addResource(InputSupplier<? extends InputStream> supplier) throws IOException {
+   public void addResource(ByteSource supplier) throws IOException {
       Conditions.checkNotNull(supplier, "InputStreamSupplier");
       InputStream is = null;
       try {
-         is = supplier.getInput();
+         is = supplier.openStream();
          processResource(Lib.inputStreamToString(is));
       } finally {
          Lib.close(is);

@@ -8,12 +8,15 @@
 	<packaging>pom</packaging>
 	<name>OSEE MASTER - Parent (Incubation)</name>
 	<version>0.26.0-SNAPSHOT</version>
-
-	<modules>
-		<module>../../plugins/org.eclipse.osee.dep.target</module>
-		<module>../../plugins/org.eclipse.osee.x.parent</module>
-		<module>../../plugins/org.eclipse.osee.ide.parent</module>
-	</modules>
+ 
+<!-- To only test certain modules and not run whole build comment these 3 modules out and activate a profile below -->
+ 
+      <modules>
+			<module>../../plugins/org.eclipse.osee.dep.target</module>
+			<module>../../plugins/org.eclipse.osee.x.parent</module>
+			<module>../../plugins/org.eclipse.osee.ide.parent</module>
+		</modules>
+	
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -67,7 +70,7 @@
 <!-- 		<cbi-jdt-repo.url>http://repo.eclipse.org/content/repositories/eclipse-releases/</cbi-jdt-repo.url> -->
 <!-- 		<cbi-jdt-version>3.10.0.v20140604-1726</cbi-jdt-version> -->
 	</properties>
-
+	
 	<licenses>
 		<license>
 			<name>Eclipse Public License v1.0</name>
@@ -123,6 +126,7 @@
 	</extensions>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
+    
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-maven-plugin</artifactId>
@@ -393,6 +397,9 @@
 	</build>
 
 	<profiles>
+	
+
+
 		<profile>
 			<id>osee-target-build</id>
 		   <activation>
@@ -908,6 +915,37 @@
 			</repositories>
 		</profile>
 
+	<profile>
+		<id>CliInt</id>
+		
+		<modules>
+			<module> ../org.eclipse.osee.client.integration.tests</module>
+		</modules>
+	</profile>
+
+	<profile>
+		<id>AtsInt</id>
+		
+		<modules>
+			<module> ../org.eclipse.osee.ats.ide.integration.tests</module>
+		</modules>
+	</profile>
+
+	<profile>
+		<id>AtsRestInt</id>
+		
+		<modules>
+			<module> ../org.eclipse.osee.ats.ide.parent</module>
+		</modules>
+	</profile>
+
+  <profile>
+		<id>OrcAccAdmTest</id>
+		
+		<modules>
+			<module> ../org.eclipse.osee.orcs.account.admin.test</module>
+		</modules>
+	</profile>
 	</profiles>
 
 </project>

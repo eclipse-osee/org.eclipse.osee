@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.tagger;
 
-import com.google.common.io.InputSupplier;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
@@ -29,10 +28,10 @@ public class TextStreamTagger extends AbstractTagger {
    }
 
    @Override
-   public void tagIt(InputSupplier<? extends InputStream> provider, TagCollector collector) throws Exception {
+   public void tagIt(InputStream provider, TagCollector collector) throws Exception {
       InputStream inputStream = null;
       try {
-         inputStream = provider.getInput();
+         inputStream = provider;
          getTagProcessor().collectFromInputStream(inputStream, collector);
       } finally {
          Lib.close(inputStream);
@@ -40,12 +39,12 @@ public class TextStreamTagger extends AbstractTagger {
    }
 
    @Override
-   public List<MatchLocation> find(InputSupplier<? extends InputStream> provider, String toSearch, boolean matchAllLocations, QueryOption... options) throws Exception {
+   public List<MatchLocation> find(InputStream provider, String toSearch, boolean matchAllLocations, QueryOption... options) throws Exception {
       List<MatchLocation> toReturn;
       if (Strings.isValid(toSearch)) {
          InputStream inputStream = null;
          try {
-            inputStream = provider.getInput();
+            inputStream = provider;
             toReturn = getMatcher().findInStream(inputStream, toSearch, matchAllLocations, options);
          } finally {
             Lib.close(inputStream);

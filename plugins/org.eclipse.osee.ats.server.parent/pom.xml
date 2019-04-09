@@ -22,13 +22,13 @@
 
 		<module>../../plugins/org.eclipse.osee.ats.dsl</module>
 		<module>../../plugins/org.eclipse.osee.ats.dsl.integration</module>
-		<module>../../plugins/org.eclipse.osee.ats.dsl.integration.test</module>
-
+      <module>../../plugins/org.eclipse.osee.ats.dsl.integration.test</module>
+      
 		<module>../../plugins/org.eclipse.osee.ats.core</module>
-		<module>../../plugins/org.eclipse.osee.ats.core.test</module>
-
+      <module>../../plugins/org.eclipse.osee.ats.core.test</module>
+      
 		<module>../../plugins/org.eclipse.osee.ats.rest</module>
-		<module>../../plugins/org.eclipse.osee.ats.rest.test</module>
+      <module>../../plugins/org.eclipse.osee.ats.rest.test</module>
 
 		<module>../../features/org.eclipse.osee.ats.server.feature</module>
 		<module>../../plugins/org.eclipse.osee.ats.server.p2</module>

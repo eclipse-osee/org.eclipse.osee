@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.indexer.data;
 
+import com.google.common.io.ByteSource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +30,7 @@ import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 /**
  * @author Roberto E. Escobar
  */
-public class IndexerDataSourceImpl implements IndexedResource {
+public class IndexerDataSourceImpl extends ByteSource implements IndexedResource {
 
    private final IResourceManager resourceManager;
 
@@ -84,7 +85,20 @@ public class IndexerDataSourceImpl implements IndexedResource {
    }
 
    @Override
-   public InputStream getInput() throws IOException {
+   public InputStream getResourceInput() throws IOException {
+      return openStream();
+   }
+
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + gammaId.hashCode();
+      return result;
+   }
+
+   @Override
+   public InputStream openStream() throws IOException {
       InputStream toReturn = null;
       if (isUriValid()) {
          try {
@@ -100,14 +114,6 @@ public class IndexerDataSourceImpl implements IndexedResource {
          toReturn = new ByteArrayInputStream(getStringValue().getBytes("UTF-8"));
       }
       return toReturn;
-   }
-
-   @Override
-   public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + gammaId.hashCode();
-      return result;
    }
 
    @Override

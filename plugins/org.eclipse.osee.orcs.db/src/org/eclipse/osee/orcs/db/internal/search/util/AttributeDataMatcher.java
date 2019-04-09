@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.search.util;
 
 import com.google.common.collect.Lists;
+import com.google.common.io.ByteSource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -98,7 +99,7 @@ public class AttributeDataMatcher {
             try {
                List<MatchLocation> matched = Lists.newLinkedList();
                for (String toMatch : valuesToMatch) {
-                  matched.addAll(tagger.find(source, toMatch, true, options));
+                  matched.addAll(tagger.find(source.getResourceInput(), toMatch, true, options));
                }
                return matched;
             } catch (Exception ex) {
@@ -125,7 +126,7 @@ public class AttributeDataMatcher {
       return value;
    }
 
-   private final class AttributeIndexedResource implements IndexedResource {
+   private final class AttributeIndexedResource extends ByteSource implements IndexedResource {
       private final AttributeData<?> attrData;
 
       public AttributeIndexedResource(AttributeData<?> attrData) {
@@ -144,7 +145,12 @@ public class AttributeDataMatcher {
       }
 
       @Override
-      public InputStream getInput() throws IOException {
+      public InputStream getResourceInput() throws IOException {
+         return openStream();
+      }
+
+      @Override
+      public InputStream openStream() throws IOException {
          InputStream stream = null;
          DataProxy<?> dataProxy = attrData.getDataProxy();
          if (dataProxy instanceof BinaryDataProxy) {

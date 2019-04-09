@@ -19,14 +19,14 @@
  
     <includes
          id="org.eclipse.egit.mylyn"
-         version="4.4.0"/>   
+         version="5.0.0"/>   
   
    <includes
          id="org.eclipse.graphiti.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.graphiti.source.feature"
+         id="org.eclipse.graphiti.feature.source"
          version="0.0.0"/>
 
    <includes
@@ -43,10 +43,8 @@
 
    <includes
          id="org.eclipse.egit"
-         version="4.4.0"/>
+         version="5.0.0"/>
          
- 
-                      
    <includes
          id="org.eclipse.m2e.feature"
          version="0.0.0"/>
@@ -263,7 +261,7 @@
          id="org.eclipse.sdk"
          version="0.0.0"/>
          
-<includes
+   <includes
          id="org.eclipse.jdt"
          version="0.0.0"/>
 
@@ -272,7 +270,7 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.ecf.core.source.feature"
+         id="org.eclipse.ecf.core.feature.source"
          version="0.0.0"/>
 
    <includes
@@ -280,7 +278,7 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.ecf.core.ssl.source.feature"
+         id="org.eclipse.ecf.core.ssl.feature.source"
          version="0.0.0"/>
 
    <includes
@@ -288,7 +286,7 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.ecf.filetransfer.source.feature"
+         id="org.eclipse.ecf.filetransfer.feature.source"
          version="0.0.0"/>
 
    <includes
@@ -296,7 +294,7 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.ecf.filetransfer.ssl.source.feature"
+         id="org.eclipse.ecf.filetransfer.ssl.feature.source"
          version="0.0.0"/>
 
    <includes
@@ -304,7 +302,7 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.ecf.filetransfer.httpclient4.source.feature"
+         id="org.eclipse.ecf.filetransfer.httpclient4.feature.source"
          version="0.0.0"/>
 
    <includes
@@ -312,7 +310,7 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.ecf.filetransfer.httpclient4.ssl.source.feature"
+         id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.source"
          version="0.0.0"/>
 
    <includes
@@ -321,10 +319,8 @@
          
    <includes
          id="org.eclipse.jgit"
-         version="4.4.0"/>
+         version="5.0.0"/>
    
-  
-                    
    <requires>
       <import plugin="org.eclipse.osgi.services"/>
       <import plugin="org.apache.log4j" version="1.2.15" match="greaterOrEqual"/>
@@ -343,6 +339,7 @@
       <import plugin="org.eclipse.equinox.security"/>
       <import plugin="org.eclipse.equinox.common"/>
       <import plugin="org.eclipse.jetty.http"/>
+      <import plugin="org.eclipse.osgi.util"/>
       <import plugin="org.eclipse.jetty.io"/>
       <import plugin="org.eclipse.jetty.security"/>
       <import plugin="org.eclipse.jetty.server"/>
@@ -361,10 +358,8 @@
       <import feature="org.eclipse.emf.common" version="2.9.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.ecore" version="2.9.0" match="greaterOrEqual"/>
       <import plugin="com.lowagie.text" version="2.0.0" match="compatible"/>
-      
    </requires>
-  
-      
+
    <plugin
          id="net.bytebuddy.byte-buddy"
          download-size="0"
@@ -386,6 +381,13 @@
          version="0.0.0"
          unpack="false" />
                   
+    <plugin
+         id="org.flywaydb.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>  
+
    <plugin
          id="javax.xml.bind"
          download-size="0"
@@ -578,6 +580,12 @@
          unpack="false"/>
 
    <plugin
+         id="javax.xml.bind"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+   <plugin
          id="org.apache.log4j"
          download-size="0"
          install-size="0"
@@ -589,9 +597,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-
-  
+         unpack="false"/> 
 
    <plugin
          id="org.codehaus.stax2"
@@ -656,12 +662,6 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.eclipse.team.svn.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.eclipse.xtext"
@@ -693,14 +693,6 @@
 
    <plugin
          id="org.eclipse.xtext.generator"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-
-   <plugin
-         id="org.eclipse.xtext.junit4"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -808,7 +800,7 @@
          id="org.objectweb.asm"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="5.0.1"
          unpack="false"/>
 
    <plugin
@@ -914,9 +906,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-
- 
+         unpack="false"/> 
 
    <plugin
          id="javax.ws.rs"
@@ -946,6 +936,69 @@
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="org.eclipse.nebula.widgets.cdatetime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osgi"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osgi.services"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osgi.util"
+         download-size="0"
+        install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+	id="org.eclipse.osgi.compatibility.state"
+	download-size="0"
+        install-size="0"
+        version="0.0.0"
+        unpack="false"/>
+        
+   <plugin
+         id="com.google.inject.multibindings"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gwt.servlet"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gwtjsonrpc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gwtorm"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
    <plugin
          id="org.apache.aries.util"
          download-size="0"
@@ -1087,12 +1140,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.junit"
-         download-size="0"
-         install-size="0"
-         version="4.11.0"/>
-
-   <plugin
          id="org.eclipse.emf.transaction"
          download-size="0"
          install-size="0"
@@ -1174,7 +1221,7 @@
          download-size="0"
          install-size="0"
          version="2.13.0"
-			unpack="false"/>
+	 unpack="false"/>
 			
   <plugin
          id="org.eclipse.jsch.core"
@@ -1183,7 +1230,7 @@
          version="0.0.0"
          unpack="false"/>			
 	
-	<plugin
+  <plugin
          id="org.hamcrest"
          download-size="0"
          install-size="0"
@@ -1260,7 +1307,7 @@
          version="0.0.0"
          unpack="false"/>
 
-	<plugin
+   <plugin
          id="org.eclipse.uml2.uml"
          download-size="0"
          install-size="0"
@@ -1681,13 +1728,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.gmf.tooling.runtime"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.gmf.runtime.common.ui.action.ide"
          download-size="0"
          install-size="0"
@@ -1702,12 +1742,19 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ocl.ecore"
+	 id="org.eclipse.ocl.examples.emf.validation.validity.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+	 id="org.eclipse.ocl.examples.emf.validation.validity"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
    <plugin
          id="lpg.runtime.java"
          download-size="0"

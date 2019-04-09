@@ -11,6 +11,7 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: com.fasterxml.jackson.core.type,
  com.fasterxml.jackson.databind,
  com.google.common.base,
+ com.google.common.cache,
  com.google.common.collect,
  com.lowagie.text,
  com.lowagie.text.html,

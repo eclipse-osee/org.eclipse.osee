@@ -21,8 +21,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.io.ByteStreams;
-import com.google.common.io.InputSupplier;
+import com.google.common.io.ByteSource;
 import com.google.common.io.Resources;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -41,7 +40,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -107,7 +105,7 @@ public class OrcsTypesTest {
    //@formatter:on
 
    private OrcsTypes orcsTypes;
-   private List<InputSupplier<? extends InputStream>> resources;
+   private List<ByteSource> resources;
    private Multimap<BranchId, BranchId> branchHierachies;
    private OrcsTypesModule module;
 
@@ -939,24 +937,24 @@ public class OrcsTypesTest {
       assertEquals(message, true, actual.containsAll(asList));
    }
 
-   private static InputSupplier<? extends InputStream> getResource(String resourcePath) {
+   private static ByteSource getResource(String resourcePath) {
       URL resource = Resources.getResource(OrcsTypesTest.class, resourcePath);
-      return Resources.newInputStreamSupplier(resource);
+      return Resources.asByteSource(resource);
    }
 
-   private static InputSupplier<? extends InputStream> asInput(final String data) {
-      return new InputSupplier<InputStream>() {
+   private static ByteSource asInput(final String data) {
+      return new ByteSource() {
          @Override
-         public InputStream getInput() throws java.io.IOException {
+         public InputStream openStream() throws java.io.IOException {
             return new ByteArrayInputStream(data.getBytes("UTF-8"));
          }
       };
    }
    private static final class MultiResource implements IResource {
-      private final Iterable<? extends InputSupplier<? extends InputStream>> suppliers;
+      private final Iterable<? extends ByteSource> suppliers;
       private final URI resourceUri;
 
-      public MultiResource(URI resourceUri, Iterable<? extends InputSupplier<? extends InputStream>> suppliers) {
+      public MultiResource(URI resourceUri, Iterable<? extends ByteSource> suppliers) {
          super();
          this.suppliers = suppliers;
          this.resourceUri = resourceUri;
@@ -965,7 +963,7 @@ public class OrcsTypesTest {
       @Override
       public InputStream getContent() {
          try {
-            return ByteStreams.join(suppliers).getInput();
+            return ByteSource.concat(suppliers).openStream();
          } catch (IOException ex) {
             throw OseeCoreException.wrap(ex);
          }

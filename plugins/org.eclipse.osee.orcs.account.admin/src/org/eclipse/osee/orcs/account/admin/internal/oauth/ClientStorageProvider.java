@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import com.google.common.io.InputSupplier;
+import com.google.common.io.ByteSource;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,7 +59,7 @@ public class ClientStorageProvider extends LazyObject<ClientStorage> {
             ClientStorage clientStorage = new ClientStorage(logger, orcsApi, storageBranch);
 
             if (!clientStorage.typesExist()) {
-               InputSupplier<InputStream> newTypesSupplier = newTypesSupplier();
+               ByteSource newTypesSupplier = newTypesSupplier();
                ArtifactReadable typeArt = (ArtifactReadable) clientStorage.storeTypes(newTypesSupplier);
 
                TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON, SystemUser.OseeSystem,
@@ -77,11 +77,11 @@ public class ClientStorageProvider extends LazyObject<ClientStorage> {
       return new FutureTask<>(callable);
    }
 
-   private InputSupplier<InputStream> newTypesSupplier() {
-      return new InputSupplier<InputStream>() {
+   private ByteSource newTypesSupplier() {
+      return new ByteSource() {
 
          @Override
-         public InputStream getInput() throws IOException {
+         public InputStream openStream() throws IOException {
             URL resource = OseeInf.getResourceAsUrl(OAUTH_TYPES_DEFITIONS, getClass());
             return new BufferedInputStream(resource.openStream());
          }
