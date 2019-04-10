@@ -69,7 +69,7 @@ public class CreateDemoBranches {
    public void populate() {
       UserId account = DemoUsers.Joe_Smith;
       TransactionBuilder tx = txFactory.createTransaction(COMMON, OseeSystem, "Create Demo Users");
-      orcsApi.getAdminOps().createUsers(tx, DemoUsers.values(), query);
+      orcsApi.getAdminOps().createUsers(tx, DemoUsers.values());
       tx.commit();
 
       createDemoProgramBranch(SAW_Bld_1, account);

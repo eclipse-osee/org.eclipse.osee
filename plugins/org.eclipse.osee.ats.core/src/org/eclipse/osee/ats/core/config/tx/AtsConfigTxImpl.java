@@ -12,11 +12,9 @@ package org.eclipse.osee.ats.core.config.tx;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.tx.AtsVersionArtifactToken;
@@ -29,7 +27,6 @@ import org.eclipse.osee.ats.api.config.tx.IAtsConfigTxVersion;
 import org.eclipse.osee.ats.api.config.tx.IAtsProgramArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsVersionArtifactToken;
-import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -44,9 +41,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.data.UserToken;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -65,26 +59,6 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
    public AtsConfigTxImpl(String name, AtsApi atsApi, IAtsUser asUser) {
       this.atsApi = atsApi;
       changes = atsApi.createChangeSet(name, asUser);
-   }
-
-   @Override
-   public IAtsConfigTx createUsers(List<UserToken> users) {
-      for (UserToken user : users) {
-         @Nullable
-         ArtifactToken userArt = atsApi.getQueryService().getArtifact(user);
-         if (userArt == null || userArt.isInvalid()) {
-            userArt = changes.createArtifact(user);
-         }
-         changes.setName(userArt, user.getName());
-         changes.setSoleAttributeValue(userArt, CoreAttributeTypes.UserId, user.getUserId());
-         changes.setSoleAttributeValue(userArt, CoreAttributeTypes.Email, user.getEmail());
-         changes.setSoleAttributeValue(userArt, CoreAttributeTypes.Active, user.isActive());
-         if (user.isOseeAdmin()) {
-            changes.relate(CoreArtifactTokens.OseeAdmin, CoreRelationTypes.Users_User, userArt);
-            changes.relate(AtsArtifactToken.AtsAdmin, CoreRelationTypes.Users_User, userArt);
-         }
-      }
-      return this;
    }
 
    @Override

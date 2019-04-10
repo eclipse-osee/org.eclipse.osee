@@ -22,15 +22,11 @@ import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsMetaData;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreInfo;
-import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
-import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -39,15 +35,11 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    @Context
    private UriInfo uriInfo;
    private final ActivityLog activityLog;
-   private final OrcsAdmin adminOps;
-   private final TransactionFactory txFactory;
-   private final QueryBuilder query;
+   private final OrcsApi orcsApi;
 
    public DatastoreEndpointImpl(OrcsApi orcsApi, ActivityLog activityLog) {
+      this.orcsApi = orcsApi;
       this.activityLog = activityLog;
-      this.adminOps = orcsApi.getAdminOps();
-      this.txFactory = orcsApi.getTransactionFactory();
-      query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
    }
 
    protected void setUriInfo(UriInfo uriInfo) {
@@ -56,7 +48,7 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
 
    @Override
    public DatastoreInfo getInfo() {
-      Callable<OrcsMetaData> callable = adminOps.createFetchOrcsMetaData();
+      Callable<OrcsMetaData> callable = orcsApi.getAdminOps().createFetchOrcsMetaData();
       OrcsMetaData metaData = executeCallable(callable);
       return asDatastoreInfo(metaData);
    }
@@ -64,7 +56,7 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    @Override
    public void initialize(String typeModel) {
       activityLog.setEnabled(false);
-      adminOps.createDatastoreAndSystemBranches(typeModel);
+      orcsApi.getAdminOps().createDatastoreAndSystemBranches(typeModel);
       activityLog.setEnabled(true);
    }
 
@@ -72,7 +64,7 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    public Response migrate() {
       activityLog.setEnabled(false);
 
-      Callable<OrcsMetaData> callable = adminOps.migrateDatastore();
+      Callable<OrcsMetaData> callable = orcsApi.getAdminOps().migrateDatastore();
       OrcsMetaData metaData = executeCallable(callable);
       URI location = getDatastoreLocation(uriInfo);
       return Response.created(location).entity(asDatastoreInfo(metaData)).build();
@@ -90,13 +82,22 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
 
    @Override
    public void createDemoBranches() {
-      adminOps.createDemoBranches();
+      orcsApi.getAdminOps().createDemoBranches();
    }
 
    @Override
    public TransactionId createUsers(List<UserToken> users, UserId account) {
-      TransactionBuilder tx = txFactory.createTransaction(COMMON, account, "DatastoreEndpointImpl.createUsers()");
-      adminOps.createUsers(tx, users, query);
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory().createTransaction(COMMON, account, "DatastoreEndpointImpl.createUsers()");
+      orcsApi.getAdminOps().createUsers(tx, users);
+      return tx.commit();
+   }
+
+   @Override
+   public TransactionId createUser(UserToken user, UserId account) {
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory().createTransaction(COMMON, account, "DatastoreEndpointImpl.createUser()");
+      orcsApi.getAdminOps().createUser(tx, user);
       return tx.commit();
    }
 }

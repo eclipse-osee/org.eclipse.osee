@@ -29,7 +29,7 @@ public interface UserToken extends ArtifactToken, UserId {
       return create(Lib.generateArtifactIdAsInt(), name, email, userId, true, true);
    }
 
-   public static UserToken create(long id, String name, String email, String userId, boolean active, boolean creationRequired, ArtifactToken... roles) {
+   public static UserToken create(long id, String name, String email, String userId, boolean active, boolean creationRequired, IUserGroupArtifactToken... roles) {
       return new UserTokenImpl(id, name, userId, active, email, creationRequired, roles);
    }
 

@@ -14,7 +14,6 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
-import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -32,7 +31,9 @@ public interface OrcsAdmin {
 
    void createDemoBranches();
 
-   void createUsers(TransactionBuilder tx, Iterable<UserToken> users, QueryBuilder query);
-
    void requireRole(UserId user, ArtifactId role);
+
+   void createUsers(TransactionBuilder tx, Iterable<UserToken> users);
+
+   void createUser(TransactionBuilder tx, UserToken userToken);
 }

@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
@@ -119,13 +120,13 @@ public class OrcsAdminImpl implements OrcsAdmin {
    }
 
    @Override
-   public void createUsers(TransactionBuilder tx, Iterable<UserToken> users, QueryBuilder query) {
+   public void createUsers(TransactionBuilder tx, Iterable<UserToken> users) {
       if (tx.getAuthor().notEqual(SystemUser.OseeSystem)) {
          requireRole(tx.getAuthor(), CoreArtifactTokens.OseeAdmin);
       }
       List<? extends ArtifactId> defaultGroups =
-         query.and(CoreAttributeTypes.DefaultGroup, "true").getResultsIds().getList();
-
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.DefaultGroup,
+            "true").getResultsIds().getList();
       for (UserToken userToken : users) {
          ArtifactId user = tx.createArtifact(userToken);
          tx.setSoleAttributeValue(user, CoreAttributeTypes.Active, userToken.isActive());
@@ -138,6 +139,32 @@ public class OrcsAdminImpl implements OrcsAdmin {
          for (ArtifactId userGroup : defaultGroups) {
             tx.relate(userGroup, CoreRelationTypes.Users_User, user);
          }
+         setUserInfo(tx, userToken, defaultGroups);
       }
    }
+
+   @Override
+   public void createUser(TransactionBuilder tx, UserToken userToken) {
+      if (tx.getAuthor().notEqual(SystemUser.OseeSystem)) {
+         requireRole(tx.getAuthor(), CoreArtifactTokens.OseeAdmin);
+      }
+      List<? extends ArtifactId> defaultGroups =
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.DefaultGroup,
+            "true").getResultsIds().getList();
+      setUserInfo(tx, userToken, defaultGroups);
+   }
+
+   private void setUserInfo(TransactionBuilder tx, UserToken userToken, List<? extends ArtifactId> defaultGroups) {
+      ArtifactId userId = tx.createArtifact(userToken);
+      tx.setSoleAttributeValue(userId, CoreAttributeTypes.Active, userToken.isActive());
+      tx.setSoleAttributeValue(userId, CoreAttributeTypes.UserId, userToken.getUserId());
+      tx.setSoleAttributeValue(userId, CoreAttributeTypes.Email, userToken.getEmail());
+      for (ArtifactToken userRole : userToken.getRoles()) {
+         tx.relate(userRole, CoreRelationTypes.Users_User, userId);
+      }
+      for (ArtifactId userGroup : defaultGroups) {
+         tx.relate(userGroup, CoreRelationTypes.Users_User, userId);
+      }
+   }
+
 }

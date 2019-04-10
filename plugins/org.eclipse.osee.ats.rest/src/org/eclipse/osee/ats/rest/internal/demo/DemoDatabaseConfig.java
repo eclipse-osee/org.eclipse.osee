@@ -29,11 +29,14 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.config.ImportWorkDefinitions;
 import org.eclipse.osee.ats.core.config.OrganizePrograms;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
 /**
  * Initialization class that will load configuration information for a sample DB.
@@ -44,10 +47,14 @@ public class DemoDatabaseConfig {
 
    private final AtsApi atsApi;
    private final OrcsApi orcsApi;
+   private final TransactionFactory txFactory;
+   private final QueryBuilder query;
 
    public DemoDatabaseConfig(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
+      this.txFactory = orcsApi.getTransactionFactory();
+      this.query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
    }
 
    public XResultData run() {
@@ -74,10 +81,8 @@ public class DemoDatabaseConfig {
    }
 
    private void configTxDemoAisAndTeams() {
+
       IAtsConfigTx cfgTx = atsApi.getConfigService().createConfigTx("Create Demo Config", AtsCoreUsers.SYSTEM_USER);
-
-      cfgTx.createUsers(DemoUsers.values());
-
       IAtsConfigTxTeamDef topTeam =
          cfgTx.createTeamDef((IAtsTeamDefinition) null, AtsArtifactToken.TopTeamDefinition).andWorkDef(
             AtsArtifactToken.WorkDef_Team_Default);

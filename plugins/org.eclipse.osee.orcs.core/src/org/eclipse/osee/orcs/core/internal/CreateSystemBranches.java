@@ -87,7 +87,7 @@ public class CreateSystemBranches {
 		tx.createArtifact(userGroupsFolder, CoreArtifactTokens.OseeAdmin);
 		tx.createArtifact(userGroupsFolder, CoreArtifactTokens.OseeAccessAdmin);
 
-		orcsApi.getAdminOps().createUsers(tx, SystemUser.values(), query);
+		orcsApi.getAdminOps().createUsers(tx, SystemUser.values());
 
 		ArtifactId globalPreferences = tx.createArtifact(CoreArtifactTokens.GlobalPreferences);
 		tx.setSoleAttributeValue(globalPreferences, CoreAttributeTypes.GeneralStringData, JSON_ATTR_VALUE);

@@ -49,8 +49,14 @@ public interface DatastoreEndpoint {
    void createDemoBranches();
 
    @POST
-   @Path("user")
+   @Path("users")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    TransactionId createUsers(List<UserToken> users, @HeaderParam("osee.account.id") UserId account);
+
+   @POST
+   @Path("user")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   TransactionId createUser(UserToken user, @HeaderParam("osee.account.id") UserId account);
 }
