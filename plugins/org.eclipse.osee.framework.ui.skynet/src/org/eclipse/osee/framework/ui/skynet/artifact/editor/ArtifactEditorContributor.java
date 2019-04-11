@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
@@ -23,7 +22,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.StatusLineContributionItem;
 
-public class ArtifactEditorContributor extends MultiPageEditorActionBarContributor implements ISelectedArtifact {
+public class ArtifactEditorContributor extends MultiPageEditorActionBarContributor {
 
    private StatusLineContributionItem typeStatusItem;
    private RevealInExplorerAction showInExplorerAction;
@@ -59,7 +58,7 @@ public class ArtifactEditorContributor extends MultiPageEditorActionBarContribut
       typeStatusItem = new StatusLineContributionItem("skynet.artifactType", true, 25);
       typeStatusItem.setToolTipText("The type of the artifact being edited.");
 
-      showInExplorerAction = new RevealInExplorerAction(this);
+      showInExplorerAction = new RevealInExplorerAction(artifact);
    }
 
    @Override
@@ -71,11 +70,6 @@ public class ArtifactEditorContributor extends MultiPageEditorActionBarContribut
    @Override
    public void contributeToCoolBar(ICoolBarManager coolBarManager) {
       coolBarManager.add(showInExplorerAction);
-   }
-
-   @Override
-   public Artifact getSelectedArtifact() {
-      return artifact;
    }
 
 }

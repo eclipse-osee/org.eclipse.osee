@@ -12,6 +12,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xHistory;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,6 +45,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -84,6 +86,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
@@ -95,7 +98,7 @@ import org.eclipse.ui.progress.UIJob;
  *
  * @author Jeff C. Phillips
  */
-public class HistoryView extends GenericViewPart implements IBranchEventListener, ITransactionRecordSelectionProvider, IRebuildMenuListener {
+public class HistoryView extends GenericViewPart implements IBranchEventListener, ITransactionRecordSelectionProvider, IRebuildMenuListener, ISelectedArtifacts {
 
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView";
    private static final String ART_ID = "artifactId";
@@ -178,7 +181,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       OpenOnShowListener openListener = new OpenOnShowListener();
       popupMenu.addMenuListener(openListener);
 
-      OpenContributionItem contributionItem = new OpenContributionItem(getClass().getSimpleName() + ".open");
+      OpenContributionItem contributionItem = new OpenContributionItem(getClass().getSimpleName() + ".open", this);
       contributionItem.fill(popupMenu, -1);
       openListener.add(popupMenu.getItem(0));
       new MenuItem(popupMenu, SWT.SEPARATOR);
@@ -389,13 +392,13 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
             @Override
             public void run() {
                try {
+                  // refresh view with new branch and transaction id
                   explore(artifact, true);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          });
-         // refresh view with new branch and transaction id
       }
    }
 
@@ -441,15 +444,18 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
          public IStatus runInUIThread(IProgressMonitor monitor) {
             try {
                IWorkbenchPage page = AWorkbench.getActivePage();
-               HistoryView historyView = (HistoryView) page.showView(VIEW_ID,
+               IViewPart viewPart = page.showView(VIEW_ID,
                   artifactTok.getIdString() + artifactTok.getBranch().getIdString(), IWorkbenchPage.VIEW_ACTIVATE);
-               try {
-                  Artifact artifact = ArtifactQuery.getArtifactFromId(artifactTok, artifactTok.getBranch(),
-                     DeletionFlag.INCLUDE_DELETED);
-                  historyView.explore(artifact, loadHistory);
-               } catch (Exception ex) {
-                  historyView.closeView();
-                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+               if (viewPart instanceof HistoryView) {
+                  HistoryView historyView = (HistoryView) viewPart;
+                  try {
+                     Artifact artifact = ArtifactQuery.getArtifactFromId(artifactTok, artifactTok.getBranch(),
+                        DeletionFlag.INCLUDE_DELETED);
+                     historyView.explore(artifact, loadHistory);
+                  } catch (Exception ex) {
+                     historyView.closeView();
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+                  }
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -458,5 +464,13 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
          }
       };
       Jobs.startJob(job);
+   }
+
+   @Override
+   public Collection<Artifact> getSelectedArtifacts() {
+      if (artifact == null) {
+         return Collections.emptyList();
+      }
+      return Collections.singleton(artifact);
    }
 }

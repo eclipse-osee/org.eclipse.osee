@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.results.table.xresults;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -19,6 +21,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
@@ -28,7 +31,7 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class ResultsXViewer extends XViewer {
+public class ResultsXViewer extends XViewer implements ISelectedArtifacts {
 
    List<IResultsEditorTableListener> listeners = new ArrayList<>();
 
@@ -92,10 +95,24 @@ public class ResultsXViewer extends XViewer {
    private void getPopupMenu() {
       MenuManager menuManager = getMenuManager();
       if (isArtifactContent()) {
-         OpenContributionItem contrib = new OpenContributionItem(getClass().getSimpleName() + ".open");
+         OpenContributionItem contrib = new OpenContributionItem(getClass().getSimpleName() + ".open", this);
          contrib.fill(menuManager.getMenu(), -1);
          menuManager.insertBefore(XViewer.MENU_GROUP_PRE, contrib);
       }
+   }
+
+   @Override
+   public Collection<Artifact> getSelectedArtifacts() {
+      List<Artifact> selected = new LinkedList<>();
+      TreeItem items[] = getTree().getSelection();
+      for (TreeItem item : items) {
+         if (item.getData() instanceof ResultsXViewerRow) {
+            if (((ResultsXViewerRow) item.getData()).getData() instanceof Artifact) {
+               selected.add((Artifact) ((ResultsXViewerRow) item.getData()).getData());
+            }
+         }
+      }
+      return selected;
    }
 
 }

@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
@@ -71,7 +72,7 @@ import org.eclipse.ui.PartInitException;
 /**
  * @author Donald G. Dunne
  */
-public class GroupExplorer extends GenericViewPart implements IArtifactEventListener, IRebuildMenuListener {
+public class GroupExplorer extends GenericViewPart implements IArtifactEventListener, IRebuildMenuListener, ISelectedArtifacts {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.group.GroupExplorer";
    private GroupTreeViewer treeViewer;
    private Artifact rootArt;
@@ -155,7 +156,7 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
       OpenOnShowListener openListener = new OpenOnShowListener();
       popupMenu.addMenuListener(openListener);
 
-      OpenContributionItem contrib = new OpenContributionItem(getClass().getSimpleName() + ".open");
+      OpenContributionItem contrib = new OpenContributionItem(getClass().getSimpleName() + ".open", this);
       contrib.fill(popupMenu, -1);
       openListener.add(popupMenu.getItem(0));
 
@@ -503,6 +504,15 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
          // do nothing
       }
 
+   }
+
+   @Override
+   public Collection<Artifact> getSelectedArtifacts() {
+      List<Artifact> selected = new LinkedList<>();
+      for (GroupExplorerItem item : getSelectedItems()) {
+         selected.add(item.getArtifact());
+      }
+      return selected;
    }
 
 }

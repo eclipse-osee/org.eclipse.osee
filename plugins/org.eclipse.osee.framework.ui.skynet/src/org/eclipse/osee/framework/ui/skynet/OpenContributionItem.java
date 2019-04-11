@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -24,16 +23,12 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
+import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -52,9 +47,6 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
@@ -74,13 +66,11 @@ public class OpenContributionItem extends ContributionItem {
    private final ICommandService commandService = PlatformUI.getWorkbench().getService(ICommandService.class);
 
    private IContributionItem defaultOpenItem;
+   private final ISelectedArtifacts selectionProvider;
 
-   public OpenContributionItem() {
-      this(null);
-   }
-
-   public OpenContributionItem(String id) {
+   public OpenContributionItem(String id, ISelectedArtifacts selectionProvider) {
       super(id);
+      this.selectionProvider = selectionProvider;
    }
 
    @Override
@@ -189,7 +179,7 @@ public class OpenContributionItem extends ContributionItem {
 
    private Collection<IContributionItem> createOpenWithItems() {
       clearOpenWithItems();
-      Collection<Artifact> artifacts = getSelectedArtifacts();
+      Collection<Artifact> artifacts = selectionProvider.getSelectedArtifacts();
       boolean readOnly = false;
       if (!artifacts.isEmpty()) {
          for (Artifact art : artifacts) {
@@ -254,34 +244,6 @@ public class OpenContributionItem extends ContributionItem {
 
       CommandContributionItem contributionItem = new CommandContributionItem(param);
       return contributionItem;
-   }
-
-   private ISelectionProvider getSelectionProvider() {
-      ISelectionProvider toReturn = null;
-      IWorkbenchPage page = AWorkbench.getActivePage();
-      if (page != null) {
-         IWorkbenchPart part = page.getActivePart();
-         if (part != null) {
-            IWorkbenchPartSite site = part.getSite();
-            if (site != null) {
-               toReturn = site.getSelectionProvider();
-            }
-         }
-      }
-      return toReturn;
-   }
-
-   private Collection<Artifact> getSelectedArtifacts() {
-      List<Artifact> toReturn = Collections.emptyList();
-      ISelectionProvider selectionProvider = getSelectionProvider();
-      if (selectionProvider != null) {
-         ISelection selection = selectionProvider.getSelection();
-         if (selection instanceof IStructuredSelection) {
-            IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-            toReturn = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-         }
-      }
-      return toReturn;
    }
 
    private void fillOpenWithSubMenu(Menu menu) {

@@ -23,8 +23,10 @@ import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -38,10 +40,10 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.RelationOrderContributionItem.SelectionListener;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -73,7 +75,7 @@ import org.eclipse.swt.widgets.TreeColumn;
 /**
  * @author Ryan D. Brooks
  */
-public class RelationsComposite extends Composite implements ISelectedArtifact, ISelectedArtifacts {
+public class RelationsComposite extends Composite implements ISelectedArtifacts {
    private TreeViewer treeViewer;
    private Tree tree;
    private NeedSelectedArtifactListener needSelectedArtifactListener;
@@ -135,6 +137,13 @@ public class RelationsComposite extends Composite implements ISelectedArtifact, 
       treeViewer.setLabelProvider(relationLabelProvider);
       treeViewer.setUseHashlookup(true);
       treeViewer.setInput(artifact);
+      treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+         @Override
+         public void selectionChanged(SelectionChangedEvent event) {
+            AWorkbench.getActivePage().getActivePart().getSite().setSelectionProvider(treeViewer);
+         }
+      });
 
       treeViewer.addDoubleClickListener(new DoubleClickListener());
       tree.addMouseListener(new MouseListener() {
@@ -201,7 +210,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact, 
 
       createOpenMenuItem(popupMenu);
 
-      OpenContributionItem contrib = new OpenContributionItem(getClass().getSimpleName() + ".open");
+      OpenContributionItem contrib = new OpenContributionItem(getClass().getSimpleName() + ".open", this);
       contrib.fill(popupMenu, -1, false);
 
       new MenuItem(popupMenu, SWT.SEPARATOR);
@@ -237,7 +246,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact, 
    public class DoubleClickListener implements IDoubleClickListener {
       @Override
       public void doubleClick(DoubleClickEvent event) {
-         openViewer((IStructuredSelection) event.getSelection());
+         openViewer();
       }
    }
 
@@ -250,8 +259,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact, 
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-            performDeleteRelation(selection);
+            performDeleteRelation();
          }
       });
 
@@ -267,9 +275,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact, 
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-
-            performDeleteArtifact(selection);
+            performDeleteArtifact();
          }
       });
 
@@ -299,13 +305,13 @@ public class RelationsComposite extends Composite implements ISelectedArtifact, 
       openMenuItem.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent event) {
-            openViewer((IStructuredSelection) treeViewer.getSelection());
+            openViewer();
          }
       });
    }
 
-   private void openViewer(IStructuredSelection selection) {
-      for (Object object : selection.toArray()) {
+   private void openViewer() {
+      for (Object object : ((IStructuredSelection) treeViewer.getSelection()).toArray()) {
          if (object instanceof WrapperForRelationLink) {
             WrapperForRelationLink link = (WrapperForRelationLink) object;
             try {
@@ -317,9 +323,10 @@ public class RelationsComposite extends Composite implements ISelectedArtifact, 
       }
    }
 
-   private Set<Artifact> getSelectedArtifacts(IStructuredSelection selection) {
+   @Override
+   public Set<Artifact> getSelectedArtifacts() {
       Set<Artifact> selectedArtifacts = new HashSet<>();
-      Iterator<?> iter = selection.iterator();
+      Iterator<?> iter = ((IStructuredSelection) treeViewer.getSelection()).iterator();
       while (iter.hasNext()) {
          Object object = iter.next();
          if (object instanceof WrapperForRelationLink) {
@@ -427,12 +434,9 @@ public class RelationsComposite extends Composite implements ISelectedArtifact, 
       packColumnData();
    }
 
-   /**
-    * Performs the deletion functionality
-    */
-   private void performDeleteArtifact(IStructuredSelection selection) {
+   private void performDeleteArtifact() {
       try {
-         Set<Artifact> artifactsToBeDeleted = getSelectedArtifacts(selection);
+         Set<Artifact> artifactsToBeDeleted = getSelectedArtifacts();
 
          //Ask if they are sure they want all artifacts to be deleted
          if (!artifactsToBeDeleted.isEmpty()) {
@@ -452,11 +456,8 @@ public class RelationsComposite extends Composite implements ISelectedArtifact, 
       refresh();
    }
 
-   /**
-    * Performs the deletion functionality
-    */
-   private void performDeleteRelation(IStructuredSelection selection) {
-      Object[] objects = selection.toArray();
+   private void performDeleteRelation() {
+      Object[] objects = ((IStructuredSelection) treeViewer.getSelection()).toArray();
       for (Object object : objects) {
          if (hasWriteRelationTypePermission(artifact, object)) {
             if (object instanceof WrapperForRelationLink) {
@@ -508,7 +509,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact, 
       @Override
       public void keyReleased(KeyEvent e) {
          if (e.keyCode == SWT.DEL) {
-            performDeleteRelation((IStructuredSelection) treeViewer.getSelection());
+            performDeleteRelation();
          }
          if (e.keyCode == 'a' && e.stateMask == SWT.CONTROL) {
             treeViewer.getTree().selectAll();
@@ -563,25 +564,6 @@ public class RelationsComposite extends Composite implements ISelectedArtifact, 
 
    public ToolBar getToolBar() {
       return toolBar;
-   }
-
-   @Override
-   public Artifact getSelectedArtifact() {
-      if (!treeViewer.getSelection().isEmpty()) {
-         Set<Artifact> selectedArts = getSelectedArtifacts((IStructuredSelection) treeViewer.getSelection());
-         if (selectedArts.size() > 0) {
-            return selectedArts.iterator().next();
-         }
-      }
-      return null;
-   }
-
-   @Override
-   public Collection<Artifact> getSelectedArtifacts() {
-      if (!treeViewer.getSelection().isEmpty()) {
-         return getSelectedArtifacts((IStructuredSelection) treeViewer.getSelection());
-      }
-      return java.util.Collections.emptyList();
    }
 
 }

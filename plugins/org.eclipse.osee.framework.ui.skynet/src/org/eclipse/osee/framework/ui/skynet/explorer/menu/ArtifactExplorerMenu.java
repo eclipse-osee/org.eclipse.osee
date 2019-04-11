@@ -22,8 +22,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -99,7 +100,7 @@ import org.eclipse.ui.actions.ImportResourcesAction;
 /**
  * @author Donald G. Dunne
  */
-public class ArtifactExplorerMenu {
+public class ArtifactExplorerMenu implements ISelectedArtifacts {
 
    private final TreeViewer treeViewer;
    private MenuItem createMenuItem;
@@ -198,7 +199,7 @@ public class ArtifactExplorerMenu {
       popupMenu.addMenuListener(needArtifactListener);
       popupMenu.addMenuListener(needProjectListener);
 
-      OpenContributionItem openWithMenu = new OpenContributionItem(getClass().getSimpleName() + ".open");
+      OpenContributionItem openWithMenu = new OpenContributionItem(getClass().getSimpleName() + ".open", this);
       openWithMenu.fill(popupMenu, -1);
       needArtifactListener.add(popupMenu.getItem(0));
       new MenuItem(popupMenu, SWT.SEPARATOR);
@@ -785,6 +786,11 @@ public class ArtifactExplorerMenu {
             collapseAll(child);
          }
       }
+   }
+
+   @Override
+   public Collection<Artifact> getSelectedArtifacts() {
+      return getSelection().toList();
    }
 
 }

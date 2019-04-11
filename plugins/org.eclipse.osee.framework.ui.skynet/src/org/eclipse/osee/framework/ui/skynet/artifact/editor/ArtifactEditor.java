@@ -63,7 +63,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
 
    public IActionContributor getActionBarContributor() {
       if (actionBarContributor == null) {
-         actionBarContributor = new ArtifactEditorActionBarContributor(this);
+         actionBarContributor = new ArtifactEditorActionBarContributor(getArtifactFromEditorInput());
       }
       return actionBarContributor;
    }

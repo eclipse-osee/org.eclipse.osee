@@ -10,20 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
+import java.util.Collection;
+import java.util.Collections;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
@@ -41,12 +41,12 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactEditorActionBarContributor implements IActionContributor {
+public class ArtifactEditorActionBarContributor implements IActionContributor, ISelectedArtifacts {
 
-   private final AbstractArtifactEditor editor;
+   private final Artifact artifact;
 
-   public ArtifactEditorActionBarContributor(AbstractArtifactEditor editor) {
-      this.editor = editor;
+   public ArtifactEditorActionBarContributor(Artifact artifact) {
+      this.artifact = artifact;
    }
 
    @Override
@@ -56,7 +56,6 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
       manager.add(new Separator());
       manager.add(new OpenOutlineAction());
       manager.add(new OpenHistoryAction());
-      Artifact artifact = editor.getArtifactFromEditorInput();
       manager.add(new RevealInExplorerAction(artifact));
       manager.add(new RevealBranchAction());
       manager.add(new Separator());
@@ -72,26 +71,8 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
       }
    }
 
-   private Artifact getSelectedArtifact() {
-      Artifact toReturn = null;
-
-      ISelectionProvider provider = editor.getDefaultSelectionProvider();
-      if (provider == null) {
-         provider = editor.getSite().getSelectionProvider();
-      }
-      ISelection selection = provider.getSelection();
-      if (!selection.isEmpty()) {
-         IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-         Object selectedObject = structuredSelection.getFirstElement();
-         if (selectedObject instanceof Artifact) {
-            toReturn = (Artifact) selectedObject;
-         }
-      }
-      return toReturn;
-   }
-
    private void addOpenWithContributionItem(IToolBarManager manager) {
-      OpenContributionItem contributionItem = new OpenContributionItem(getClass().getSimpleName() + ".open");
+      OpenContributionItem contributionItem = new OpenContributionItem(getClass().getSimpleName() + ".open", this);
       contributionItem.setVisible(true);
       manager.add(contributionItem);
    }
@@ -106,7 +87,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
       @Override
       public void run() {
          try {
-            BranchView.revealBranch(getSelectedArtifact().getBranch());
+            BranchView.revealBranch(artifact.getBranch());
          } catch (Exception ex) {
             OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
          }
@@ -125,10 +106,12 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
       public void run() {
          try {
             MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), "Confirm Artifact Deletion", null,
-               " Are you sure you want to delete this artifact and all of the default hierarchy children?",
+               String.format(
+                  "Are you sure you want to delete the artifact\n\n%s\n\nand all of the default hierarchy children?",
+                  artifact.toStringWithId()),
                MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
             if (dialog.open() == Window.OK) {
-               getSelectedArtifact().deleteAndPersist();
+               artifact.deleteAndPersist();
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -147,7 +130,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
       @Override
       public void run() {
          try {
-            HistoryView.open(getSelectedArtifact());
+            HistoryView.open(artifact);
          } catch (Exception ex) {
             OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
          }
@@ -165,7 +148,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
       @Override
       public void run() {
          try {
-            PolicyDialog pd = new PolicyDialog(Displays.getActiveShell(), getSelectedArtifact());
+            PolicyDialog pd = new PolicyDialog(Displays.getActiveShell(), artifact);
             pd.open();
          } catch (Exception ex) {
             OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
@@ -189,6 +172,11 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Unable to open outline", ex);
          }
       }
+   }
+
+   @Override
+   public Collection<Artifact> getSelectedArtifacts() {
+      return Collections.singleton(artifact);
    }
 
 }
