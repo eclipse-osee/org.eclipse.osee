@@ -23,11 +23,19 @@ import org.eclipse.osee.framework.core.data.UserToken;
 public class DatabaseInitConfiguration implements IDatabaseInitConfiguration {
    private final List<String> dbInitTasks;
    private final List<String> oseeTypeIds;
-   private final List<UserToken> dbInitUsers = new ArrayList<>();
+   private List<UserToken> dbInitUsers = new ArrayList<>();
 
    public DatabaseInitConfiguration() {
       this.dbInitTasks = new ArrayList<>();
       this.oseeTypeIds = new ArrayList<>();
+   }
+
+   public List<UserToken> getDbInitUsers() {
+      return dbInitUsers;
+   }
+
+   public void setDbInitUsers(List<UserToken> dbInitUsers) {
+      this.dbInitUsers = dbInitUsers;
    }
 
    public void addTask(String taskId) {
