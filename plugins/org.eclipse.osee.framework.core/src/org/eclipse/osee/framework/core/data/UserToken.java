@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.data;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -22,6 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 /**
  * @author Donald G. Dunne
  */
+@JsonSerialize(using = UserTokenSerializer.class)
 public interface UserToken extends ArtifactToken, UserId {
 
    @JsonCreator

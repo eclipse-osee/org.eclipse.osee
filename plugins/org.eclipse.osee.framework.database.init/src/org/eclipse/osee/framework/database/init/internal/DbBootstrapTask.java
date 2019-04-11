@@ -54,6 +54,9 @@ public class DbBootstrapTask implements IDbInitializationTask {
       DatastoreEndpoint datastoreEndpoint = OsgiUtil.getService(getClass(), OseeClient.class).getDatastoreEndpoint();
       datastoreEndpoint.initialize(typeModel);
       datastoreEndpoint.createDemoBranches();
+      if (!configuration.getUserTokens().isEmpty()) {
+         datastoreEndpoint.createUsers(configuration.getUserTokens(), SystemUser.OseeSystem);
+      }
 
       Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.skynet.core");
       int state = bundle.getState();

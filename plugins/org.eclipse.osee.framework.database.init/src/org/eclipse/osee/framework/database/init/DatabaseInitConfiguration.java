@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.UserToken;
 
 /**
  * @author Roberto E. Escobar
@@ -22,6 +23,7 @@ import java.util.Set;
 public class DatabaseInitConfiguration implements IDatabaseInitConfiguration {
    private final List<String> dbInitTasks;
    private final List<String> oseeTypeIds;
+   private final List<UserToken> dbInitUsers = new ArrayList<>();
 
    public DatabaseInitConfiguration() {
       this.dbInitTasks = new ArrayList<>();
@@ -44,6 +46,11 @@ public class DatabaseInitConfiguration implements IDatabaseInitConfiguration {
       addDefaultType(oseeTypeIds, typeDef);
    }
 
+   public void addUserTokens(List<UserToken> userTokens) {
+      dbInitUsers.clear();
+      dbInitUsers.addAll(userTokens);
+   }
+
    @Override
    public List<String> getTaskExtensionIds() {
       List<String> initTasks = new ArrayList<>();
@@ -60,6 +67,11 @@ public class DatabaseInitConfiguration implements IDatabaseInitConfiguration {
       Set<String> oseeTypes = new LinkedHashSet<>();
       oseeTypes.addAll(oseeTypeIds);
       return new ArrayList<>(oseeTypes);
+   }
+
+   @Override
+   public List<UserToken> getUserTokens() {
+      return dbInitUsers;
    }
 
    private void addDefaultTask(Collection<String> initTasks, DefaultDbInitTasks task) {
