@@ -185,17 +185,7 @@
           classname="org.eclipse.osee.framework.ui.skynet.render.OpenOfficeWriterRenderer">
     </Renderer>
  </extension>
-	<extension point="org.eclipse.osee.framework.ui.skynet.ArtifactRendererTemplate">
-		<Template presentationType="ALL" templateFile="OSEE-INF/templates/PREVIEW_ALL.xml" templateName="PREVIEW_ALL"/>
-		<Template presentationType="ALL" templateFile="OSEE-INF/templates/Word Edit Template.xml" templateName="Word Edit Template"/>
-		<Template presentationType="ALL" templateFile="OSEE-INF/templates/PREVIEW Software Requirement with Recursion.xml" templateName="PREVIEW Software Requirement with Recursion"/>
-  <Template
-        presentationType="org.eclipse.osee.framework.ui.skynet.Template1"
-        templateFile="OSEE-INF/templates/PREVIEW_ALL_RECURSE.xml"
-        templateName="Preview Recurse">
-  </Template>
-	</extension>
-	<extension point="org.eclipse.osee.framework.ui.skynet.OseeDictionary">
+ <extension point="org.eclipse.osee.framework.ui.skynet.OseeDictionary">
 		<OseeDictionary classname="org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary"/>
 		<OseeDictionary classname="org.eclipse.osee.framework.ui.skynet.util.OseeMainDictionary"/>
 	</extension>
