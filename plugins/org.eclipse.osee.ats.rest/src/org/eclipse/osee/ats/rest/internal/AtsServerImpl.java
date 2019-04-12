@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -27,7 +26,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.team.ChangeType;
-import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.workdef.WorkDefData;
@@ -67,7 +65,6 @@ import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -148,31 +145,22 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
       addAtsDatabaseConversion(new ConvertBaselineGuidToBaselineId(logger, jdbcService.getClient(), orcsApi, this));
       addAtsDatabaseConversion(new ConvertFavoriteBranchGuidToId(logger, jdbcService.getClient(), orcsApi, this));
 
-      scheduleAtsConfigCacheReloader();
+      loadAtsConfigCache();
 
       logger.info("ATS Application started");
    }
 
-   private void scheduleAtsConfigCacheReloader() {
-      long reloadTime = AtsUtil.SERVER_CONFIG_RELOAD_MIN_DEFAULT;
-      String reloadTimeStr =
-         orcsApi.getAdminOps().isDataStoreInitialized() ? getConfigValue(AtsUtil.SERVER_CONFIG_RELOAD_MIN_KEY) : "";
-      if (Strings.isNumeric(reloadTimeStr)) {
-         reloadTime = Long.valueOf(reloadTimeStr);
-      }
+   private void loadAtsConfigCache() {
+      Thread loadCache = new Thread("Load ATS Config Cache") {
 
-      // run immediately, then re-run at reloadTime
-      executorAdmin.scheduleWithFixedDelay("ATS Configuration Cache Reloader", new ReloadConfigCache(), 0, reloadTime,
-         TimeUnit.MINUTES);
-   }
+         @Override
+         public void run() {
+            super.run();
+            getConfigService().getConfigurationsWithPend();
+         }
 
-   private class ReloadConfigCache implements Runnable {
-
-      @Override
-      public void run() {
-         getConfigService().getConfigurationsWithPend();
-      }
-
+      };
+      loadCache.start();
    }
 
    @Override

@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.config.AtsViews;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationViewsProvider;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.ColorColumns;
 import org.eclipse.osee.ats.core.column.ColorTeamColumn;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -74,7 +73,6 @@ public class UpdateAtsConfiguration {
       } catch (Exception ex) {
          rd.errorf("Error in createUpdateValidStateAttributes [%s]", Lib.exceptionToString(ex));
       }
-      atsApi.setConfigValue(AtsUtil.SERVER_CONFIG_RELOAD_MIN_KEY, AtsUtil.SERVER_CONFIG_RELOAD_MIN_KEY);
       return rd;
    }
 
