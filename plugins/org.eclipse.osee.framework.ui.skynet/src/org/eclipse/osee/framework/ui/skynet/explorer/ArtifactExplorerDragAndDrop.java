@@ -202,7 +202,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
          Operations.executeAsJob(interDropHandler, true);
       } else if (artifactsToBeRelated != null && isValidForArtifactDrop(event) && MessageDialog.openQuestion(
          viewPart.getViewSite().getShell(), "Confirm Move",
-         "Are you sure you want to make each of the selected artifacts a child of " + parentArtifact.getName() + "?")) {
+         "Are you sure you want to make each of the selected artifacts a child of\n\n" + parentArtifact.getName() + "?")) {
          try {
             SkynetTransaction transaction =
                TransactionManager.createTransaction(parentArtifact.getBranch(), "Artifact explorer drag & drop");

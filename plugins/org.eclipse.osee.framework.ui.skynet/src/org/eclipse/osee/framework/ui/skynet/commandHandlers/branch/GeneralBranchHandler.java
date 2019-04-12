@@ -96,7 +96,7 @@ public abstract class GeneralBranchHandler extends CommandHandler {
 
       if (!selectedBranches.isEmpty()) {
          StringBuilder branchesStatement = new StringBuilder();
-         branchesStatement.append(String.format("Are you sure you want to %s branch(es): ", type.dialogType));
+         branchesStatement.append(String.format("Are you sure you want to %s branch(es):\n\n", type.dialogType));
          branchesStatement.append(Strings.buildStatment(selectedBranches));
          branchesStatement.append(" \u003F");
 

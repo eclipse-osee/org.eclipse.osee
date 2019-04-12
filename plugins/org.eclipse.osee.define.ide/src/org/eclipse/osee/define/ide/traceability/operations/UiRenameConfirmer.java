@@ -68,7 +68,7 @@ public class UiRenameConfirmer implements RenameConfirmer {
 
    private MessageDialog createDialog(final Map<Artifact, String> nameUpdateRequired) {
       MessageDialog dialog = new XTableDialog(Displays.getActiveShell(), "Rename Artifacts", null,
-         "The following artifacts will be renamed.\n Select OK to continue with rename or Cancel to abort.",
+         "The following artifacts will be renamed.\n\n Select OK to continue with rename or Cancel to abort.",
          MessageDialog.CONFIRM, new String[] {"Ok", "Cancel"}, 0, nameUpdateRequired);
       return dialog;
    }
