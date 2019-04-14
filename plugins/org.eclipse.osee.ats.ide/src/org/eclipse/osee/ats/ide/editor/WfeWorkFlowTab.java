@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.note.NoteItem;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
@@ -63,7 +62,6 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -386,7 +384,8 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
       // Display relations
       try {
-         createCurrentStateAndTeamHeaders(headerComp, editor.getToolkit());
+         new WfeStateCreatedOrigHeader(headerComp, SWT.NONE, awa, editor);
+         new WfeTeamAndIdsHeader(headerComp, SWT.NONE, awa, editor);
          createTargetVersionAndAssigneeHeader(headerComp, currentStateXWidgetPage, editor.getToolkit());
 
          createLatestHeader(headerComp, editor.getToolkit());
@@ -610,48 +609,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          });
          return Status.OK_STATUS;
 
-      }
-   }
-
-   private void createCurrentStateAndTeamHeaders(Composite comp, XFormToolkit toolkit) {
-      Composite topLineComp = new Composite(comp, SWT.NONE);
-      topLineComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      topLineComp.setLayout(ALayout.getZeroMarginLayout(3, false));
-      toolkit.adapt(topLineComp);
-
-      try {
-         FormsUtil.createLabelText(toolkit, topLineComp, "Current State: ", awa.getStateMgr().getCurrentStateName());
-         FormsUtil.createLabelText(toolkit, topLineComp, "Created: ", DateUtil.getMMDDYYHHMM(awa.getCreatedDate()));
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-
-      new WfeOriginatorHeader(topLineComp, SWT.NONE, awa, editor);
-
-      try {
-         if (awa.isTeamWorkflow()) {
-            FormsUtil.createLabelText(toolkit, topLineComp, "Team: ", ((TeamWorkFlowArtifact) awa).getTeamName());
-         } else if ((awa.isTask() || awa.isReview()) && awa.getParentAWA() != null) {
-            FormsUtil.createLabelText(toolkit, topLineComp, "Parent Id: ",
-               AtsClientService.get().getWorkItemService().getCombinedPcrId(awa.getParentAWA()));
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-
-      try {
-         FormsUtil.createLabelText(toolkit, topLineComp, awa.getArtifactType().getName() + " Id: ",
-            AtsClientService.get().getWorkItemService().getCombinedPcrId(awa));
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      try {
-         IAtsAction action = awa.getParentAction();
-         if (action != null) {
-            FormsUtil.createLabelText(toolkit, topLineComp, "Action Id: ", action.getAtsId());
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
