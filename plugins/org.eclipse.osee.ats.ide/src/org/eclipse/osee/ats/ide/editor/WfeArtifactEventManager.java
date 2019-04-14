@@ -11,16 +11,13 @@
 package org.eclipse.osee.ats.ide.editor;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
@@ -38,7 +35,6 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListe
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
-import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * Common location for event handling for SMAEditors in order to keep number of registrations and processing to a
@@ -95,110 +91,115 @@ public class WfeArtifactEventManager implements IArtifactEventListener {
 
    private void safelyProcessHandler(final ArtifactEvent artifactEvent, final IWfeEventHandler handler) {
       final AbstractWorkflowArtifact awa = handler.getWorkflowEditor().getWorkItem();
-      boolean refreshed = false;
+      //      boolean refreshed = false;
 
       if (artifactEvent.isDeletedPurged(awa)) {
          handler.getWorkflowEditor().closeEditor();
-      } else if (
-      //
-      workflowModifiedOrReloaded(artifactEvent, awa) ||
-      //
-         workflowRelationIsAddedChangedOrDeleted(artifactEvent, awa) ||
-         //
-         workflowActionIsModifedOrReloaded(artifactEvent, awa) ||
-         //
-         workflowActionRelationIsAddedChangedOrDeleted(artifactEvent, awa) ||
-         //
-         teamWorkflowParallelConfigurationChanged(artifactEvent, awa)
-      //
-      ) {
-         refreshed = true;
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               handler.getWorkflowEditor().refreshPages();
-            }
-         });
-      } else if (isReloaded(artifactEvent, awa)) {
-         if (awa.isDeleted()) {
-            WorkflowEditor.close(Collections.singleton(awa), false);
-         } else {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  handler.getWorkflowEditor().refreshPages();
-               }
-            });
-         }
+         return;
       }
-      if (!refreshed && awa.isTeamWorkflow() && AtsClientService.get().getReviewService().hasReviews(
-         (TeamWorkFlowArtifact) awa)) {
-         try {
-            // If related review has made a change, redraw
-            for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) awa)) {
-               if (artifactEvent.isHasEvent(reviewArt)) {
-                  refreshed = true;
-                  Displays.ensureInDisplayThread(new Runnable() {
-                     @Override
-                     public void run() {
-                        handler.getWorkflowEditor().refreshPages();
-                     }
-                  });
-                  // Only refresh editor for first review that has event
-                  break;
-               }
-            }
-         } catch (Exception ex) {
-            // do nothing
-         }
-      }
-      if (!refreshed && awa.isTeamWorkflow() && AtsClientService.get().getTaskService().hasTasks(
-         (TeamWorkFlowArtifact) awa)) {
-         try {
-            // If related review has made a change, redraw
-            for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(awa, awa.getStateDefinition())) {
-               if (artifactEvent.isHasEvent((TaskArtifact) task.getStoreObject())) {
-                  refreshed = true;
-                  Displays.ensureInDisplayThread(new Runnable() {
-                     @Override
-                     public void run() {
-                        handler.getWorkflowEditor().refreshPages();
-                     }
-                  });
-                  // Only refresh editor for first task that has event
-                  break;
-               }
-            }
-         } catch (Exception ex) {
-            // do nothing
-         }
-      }
-      if (!refreshed) {
-         try {
-            // Since SMAEditor is refreshed when a sibling workflow is changed, need to refresh this
-            // list of actionable items when a sibling changes
-            for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams(
-               awa.getParentAction())) {
-               IAtsAction parentAction = teamWf.getParentAction();
-               if (awa.notEqual(teamWf) && artifactEvent.isHasEvent(
-                  AtsClientService.get().getQueryServiceClient().getArtifact(
-                     teamWf)) && parentAction != null && artifactEvent.isRelAddedChangedDeleted(
-                        AtsClientService.get().getQueryServiceClient().getArtifact(parentAction.getStoreObject()))) {
-                  refreshed = true;
-                  Displays.ensureInDisplayThread(new Runnable() {
-                     @Override
-                     public void run() {
-                        handler.getWorkflowEditor().refreshPages();
-                     }
-                  });
-                  // Only need to refresh once
-                  return;
-               }
-            }
-         } catch (Exception ex) {
-            // do nothing
-         }
-      }
+
+      handler.getWorkflowEditor().handleEvent(artifactEvent);
+
+      //      else if (
+      //      //
+      //      workflowModifiedOrReloaded(artifactEvent, awa) ||
+      //      //
+      //         workflowRelationIsAddedChangedOrDeleted(artifactEvent, awa) ||
+      //         //
+      //         workflowActionIsModifedOrReloaded(artifactEvent, awa) ||
+      //         //
+      //         workflowActionRelationIsAddedChangedOrDeleted(artifactEvent, awa) ||
+      //         //
+      //         teamWorkflowParallelConfigurationChanged(artifactEvent, awa)
+      //      //
+      //      ) {
+      //         refreshed = true;
+      //         Displays.ensureInDisplayThread(new Runnable() {
+      //            @Override
+      //            public void run() {
+      //               handler.getWorkflowEditor().refreshPages();
+      //            }
+      //         });
+      //      } else if (isReloaded(artifactEvent, awa)) {
+      //         if (awa.isDeleted()) {
+      //            WorkflowEditor.close(Collections.singleton(awa), false);
+      //         } else {
+      //            Displays.ensureInDisplayThread(new Runnable() {
+      //               @Override
+      //               public void run() {
+      //                  handler.getWorkflowEditor().refreshPages();
+      //               }
+      //            });
+      //         }
+      //      }
+      //      if (!refreshed && awa.isTeamWorkflow() && AtsClientService.get().getReviewService().hasReviews(
+      //         (TeamWorkFlowArtifact) awa)) {
+      //         try {
+      //            // If related review has made a change, redraw
+      //            for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) awa)) {
+      //               if (artifactEvent.isHasEvent(reviewArt)) {
+      //                  refreshed = true;
+      //                  Displays.ensureInDisplayThread(new Runnable() {
+      //                     @Override
+      //                     public void run() {
+      //                        handler.getWorkflowEditor().refreshPages();
+      //                     }
+      //                  });
+      //                  // Only refresh editor for first review that has event
+      //                  break;
+      //               }
+      //            }
+      //         } catch (Exception ex) {
+      //            // do nothing
+      //         }
+      //      }
+      //      if (!refreshed && awa.isTeamWorkflow() && AtsClientService.get().getTaskService().hasTasks(
+      //         (TeamWorkFlowArtifact) awa)) {
+      //         try {
+      //            // If related review has made a change, redraw
+      //            for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(awa, awa.getStateDefinition())) {
+      //               if (artifactEvent.isHasEvent((TaskArtifact) task.getStoreObject())) {
+      //                  refreshed = true;
+      //                  Displays.ensureInDisplayThread(new Runnable() {
+      //                     @Override
+      //                     public void run() {
+      //                        handler.getWorkflowEditor().refreshPages();
+      //                     }
+      //                  });
+      //                  // Only refresh editor for first task that has event
+      //                  break;
+      //               }
+      //            }
+      //         } catch (Exception ex) {
+      //            // do nothing
+      //         }
+      //      }
+      //      if (!refreshed) {
+      //         try {
+      //            // Since SMAEditor is refreshed when a sibling workflow is changed, need to refresh this
+      //            // list of actionable items when a sibling changes
+      //            for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams(
+      //               awa.getParentAction())) {
+      //               IAtsAction parentAction = teamWf.getParentAction();
+      //               if (awa.notEqual(teamWf) && artifactEvent.isHasEvent(
+      //                  AtsClientService.get().getQueryServiceClient().getArtifact(
+      //                     teamWf)) && parentAction != null && artifactEvent.isRelAddedChangedDeleted(
+      //                        AtsClientService.get().getQueryServiceClient().getArtifact(parentAction.getStoreObject()))) {
+      //                  refreshed = true;
+      //                  Displays.ensureInDisplayThread(new Runnable() {
+      //                     @Override
+      //                     public void run() {
+      //                        handler.getWorkflowEditor().refreshPages();
+      //                     }
+      //                  });
+      //                  // Only need to refresh once
+      //                  return;
+      //               }
+      //            }
+      //         } catch (Exception ex) {
+      //            // do nothing
+      //         }
+      //      }
 
    }
 

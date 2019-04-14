@@ -11,11 +11,12 @@
 package org.eclipse.osee.ats.ide.editor;
 
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.actions.EditActionableItemsAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -34,16 +35,16 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class WfeActionableItemHeader extends Composite {
+public class WfeActionableItemHeader extends Composite implements IWfeEventHandle {
 
    private Label label;
-   private final AbstractWorkflowArtifact sma;
+   private final IAtsWorkItem workItem;
 
-   public WfeActionableItemHeader(Composite parent, XFormToolkit toolkit, AbstractWorkflowArtifact sma, final WorkflowEditor editor) {
+   public WfeActionableItemHeader(Composite parent, XFormToolkit toolkit, IAtsWorkItem workItem, final WorkflowEditor editor) {
       super(parent, SWT.NONE);
-      this.sma = sma;
+      this.workItem = workItem;
       try {
-         final TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) sma;
+         final TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) workItem;
 
          toolkit.adapt(this);
          setLayout(ALayout.getZeroMarginLayout(2, false));
@@ -80,17 +81,19 @@ public class WfeActionableItemHeader extends Composite {
 
          label = toolkit.createLabel(this, " ");
          refresh();
+         editor.registerEvent(this, AtsAttributeTypes.ActionableItemReference);
 
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
-   private void refresh() {
+   @Override
+   public void refresh() {
       if (label.isDisposed()) {
          return;
       }
-      final TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) sma;
+      final TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) workItem;
       ActionArtifact parentAction = teamWf.getParentActionArtifact();
       if (parentAction == null) {
          label.setText(" " + "Error: No Parent Action.");
@@ -119,4 +122,10 @@ public class WfeActionableItemHeader extends Composite {
       label.update();
       layout();
    }
+
+   @Override
+   public IAtsWorkItem getWorkItem() {
+      return workItem;
+   }
+
 }

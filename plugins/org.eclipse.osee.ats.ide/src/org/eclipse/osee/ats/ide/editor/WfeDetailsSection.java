@@ -13,18 +13,19 @@ package org.eclipse.osee.ats.ide.editor;
 import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -47,7 +48,7 @@ import org.eclipse.ui.forms.widgets.Section;
 /**
  * @author Donald G. Dunne
  */
-public class WfeDetailsSection extends SectionPart {
+public class WfeDetailsSection extends SectionPart implements IWfeEventHandle {
 
    private Browser browser;
    private final WorkflowEditor editor;
@@ -74,6 +75,7 @@ public class WfeDetailsSection extends SectionPart {
             createSection();
          }
       });
+      editor.registerEvent(this, editor.getWorkItem());
    }
 
    private synchronized void createSection() {
@@ -103,12 +105,17 @@ public class WfeDetailsSection extends SectionPart {
          sectionCreated = true;
       }
 
+      refresh();
+   }
+
+   @Override
+   public void refresh() {
       if (Widgets.isAccessible(browser)) {
-         AbstractWorkflowArtifact workflow = editor.getWorkItem();
+         IAtsWorkItem workItem = editor.getWorkItem();
 
          try {
-            Map<String, String> smaDetails = Artifacts.getDetailsKeyValues(workflow);
-            addSMADetails(workflow, smaDetails);
+            Map<String, String> smaDetails = Artifacts.getDetailsKeyValues((Artifact) workItem.getStoreObject());
+            addSMADetails(workItem, smaDetails);
 
             FontData systemFont = browser.getDisplay().getSystemFont().getFontData()[0];
             String formattedDetails =
@@ -121,19 +128,19 @@ public class WfeDetailsSection extends SectionPart {
       }
    }
 
-   private void addSMADetails(AbstractWorkflowArtifact workflow, Map<String, String> details) {
-      details.put("Workflow Definition", workflow.getWorkDefinition().getName());
-      ActionArtifact parentAction = workflow.getParentActionArtifact();
+   private void addSMADetails(IAtsWorkItem workItem, Map<String, String> details) {
+      details.put("Workflow Definition", workItem.getWorkDefinition().getName());
+      IAtsAction parentAction = workItem.getParentAction();
       if (parentAction == null) {
          details.put("Action Id", "No Parent Action");
       } else {
          details.put("Action Id", parentAction.getAtsId());
       }
-      if (!workflow.isOfType(AtsArtifactTypes.TeamWorkflow) && workflow.getParentTeamWorkflow() != null) {
-         details.put("Parent Team Workflow Id", workflow.getParentTeamWorkflow().getAtsId());
+      if (!workItem.isOfType(AtsArtifactTypes.TeamWorkflow) && workItem.getParentTeamWorkflow() != null) {
+         details.put("Parent Team Workflow Id", workItem.getParentTeamWorkflow().getAtsId());
       }
-      if (workflow.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-         details.put("Working Branch Access Context Id", getAccessContextId((TeamWorkFlowArtifact) workflow));
+      if (workItem.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+         details.put("Working Branch Access Context Id", getAccessContextId((TeamWorkFlowArtifact) workItem));
       }
    }
 
@@ -172,6 +179,11 @@ public class WfeDetailsSection extends SectionPart {
          }
       }
       return message;
+   }
+
+   @Override
+   public IAtsWorkItem getWorkItem() {
+      return null;
    }
 
 }

@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -143,7 +144,8 @@ public class WfeTransitionComposite extends Composite {
       });
 
       if (editor.getWorkFlowTab().isShowTargetedVersion()) {
-         WfeTargetedVersionHeader smaTargetedVersionHeader = new WfeTargetedVersionHeader(this, SWT.NONE, awa, editor);
+         WfeTargetedVersionHeader smaTargetedVersionHeader =
+            new WfeTargetedVersionHeader(this, SWT.NONE, (IAtsTeamWorkflow) awa, editor);
          smaTargetedVersionHeader.setBackground(ACTIVE_COLOR);
       }
 

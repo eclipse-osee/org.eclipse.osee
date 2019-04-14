@@ -51,15 +51,24 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.ide.world.IAtsMetricsProvider;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
+import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
+import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -110,6 +119,9 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    private boolean privilegedEditModeEnabled = false;
    private final List<IWfeEditorListener> editorListeners = new ArrayList<>();
    WfeOutlinePage outlinePage;
+   private final HashCollection<AttributeTypeId, IWfeEventHandle> attrHandlers = new HashCollection<>();
+   private final HashCollection<RelationTypeId, IWfeEventHandle> relHandlers = new HashCollection<>();
+   private final HashCollection<ArtifactId, IWfeEventHandle> artHandlers = new HashCollection<>();
 
    @Override
    protected void addPages() {
@@ -551,13 +563,14 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       });
    }
 
-   public static WorkflowEditor getWorkflowEditor(AbstractWorkflowArtifact artifact) {
+   public static WorkflowEditor getWorkflowEditor(IAtsWorkItem workItem) {
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       IEditorReference editors[] = page.getEditorReferences();
       for (int j = 0; j < editors.length; j++) {
          IEditorReference editor = editors[j];
          if (editor.getPart(
-            false) instanceof WorkflowEditor && ((WorkflowEditor) editor.getPart(false)).getWorkItem().equals(artifact)) {
+            false) instanceof WorkflowEditor && ((WorkflowEditor) editor.getPart(false)).getWorkItem().equals(
+               workItem)) {
             return (WorkflowEditor) editor.getPart(false);
          }
       }
@@ -781,6 +794,60 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    public void setTabName(int index, String tabName) {
       setPageText(index, tabName);
+   }
+
+   public void registerEvent(IWfeEventHandle handler, AttributeTypeId... attrTypes) {
+      for (AttributeTypeId attrType : attrTypes) {
+         attrHandlers.put(attrType, handler);
+      }
+   }
+
+   public void registerEvent(IWfeEventHandle handler, RelationTypeId... relTypes) {
+      for (RelationTypeId relType : relTypes) {
+         relHandlers.put(relType, handler);
+      }
+   }
+
+   public void registerEvent(IWfeEventHandle handler, ArtifactId... artifacts) {
+      for (ArtifactId art : artifacts) {
+         artHandlers.put(art, handler);
+      }
+   }
+
+   public void handleEvent(ArtifactEvent artifactEvent) {
+      for (EventBasicGuidArtifact eArt : artifactEvent.getArtifacts()) {
+         if (eArt instanceof EventModifiedBasicGuidArtifact) {
+            EventModifiedBasicGuidArtifact eMArt = (EventModifiedBasicGuidArtifact) eArt;
+            if (eMArt.getGuid().equals(getWorkItem().getGuid())) {
+               for (AttributeChange attr : eMArt.getAttributeChanges()) {
+                  for (IWfeEventHandle handler : attrHandlers.getValues(
+                     AttributeTypeId.valueOf(attr.getAttrTypeGuid()))) {
+                     Displays.ensureInDisplayThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                           handler.refresh();
+                        }
+                     });
+                  }
+               }
+            }
+         }
+      }
+      for (EventBasicGuidRelation eRel : artifactEvent.getRelations()) {
+         if (eRel.getArtA().getGuid().equals(getWorkItem().getGuid()) || eRel.getArtB().getGuid().equals(
+            getWorkItem().getGuid())) {
+            for (IWfeEventHandle handler : relHandlers.getValues(RelationTypeId.valueOf(eRel.getRelTypeGuid()))) {
+               Displays.ensureInDisplayThread(new Runnable() {
+
+                  @Override
+                  public void run() {
+                     handler.refresh();
+                  }
+               });
+            }
+         }
+      }
    }
 
 }

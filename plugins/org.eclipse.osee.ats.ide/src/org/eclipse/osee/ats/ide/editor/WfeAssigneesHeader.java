@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.editor;
 
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -32,18 +33,20 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class WfeAssigneesHeader extends Composite {
+public class WfeAssigneesHeader extends Composite implements IWfeEventHandle {
 
    private final static String TARGET_VERSION = "Assignee(s):";
    Label valueLabel;
+   private final IAtsWorkItem workItem;
 
-   public WfeAssigneesHeader(Composite parent, int style, final AbstractWorkflowArtifact sma, final boolean isEditable, final WorkflowEditor editor) {
+   public WfeAssigneesHeader(Composite parent, int style, final IAtsWorkItem workItem, final boolean isEditable, final WorkflowEditor editor) {
       super(parent, style);
+      this.workItem = workItem;
       setLayoutData(new GridData());
       setLayout(ALayout.getZeroMarginLayout(2, false));
       editor.getToolkit().adapt(this);
 
-      if (!sma.isCancelled() && !sma.isCompleted()) {
+      if (!workItem.isCancelled() && !workItem.isCompleted()) {
          Hyperlink link = editor.getToolkit().createHyperlink(this, TARGET_VERSION, SWT.NONE);
          link.addHyperlinkListener(new IHyperlinkListener() {
 
@@ -63,14 +66,14 @@ public class WfeAssigneesHeader extends Composite {
                   if (editor.isDirty()) {
                      editor.doSave(null);
                   }
-                  if (!isEditable && !sma.getStateMgr().getAssignees().contains(
-                     AtsCoreUsers.UNASSIGNED_USER) && !sma.getStateMgr().getAssignees().contains(
+                  if (!isEditable && !workItem.getStateMgr().getAssignees().contains(
+                     AtsCoreUsers.UNASSIGNED_USER) && !workItem.getStateMgr().getAssignees().contains(
                         AtsClientService.get().getUserService().getCurrentUser())) {
                      AWorkbench.popup("ERROR",
                         "You must be assigned to modify assignees.\nContact current Assignee or Select Privileged Edit for Authorized Overriders.");
                      return;
                   }
-                  if (AssigneeColumnUI.promptChangeAssignees(sma, false)) {
+                  if (AssigneeColumnUI.promptChangeAssignees(workItem, false)) {
                      editor.doSave(null);
                   }
                } catch (Exception ex) {
@@ -84,18 +87,19 @@ public class WfeAssigneesHeader extends Composite {
       }
       valueLabel = editor.getToolkit().createLabel(this, "Not Set");
       valueLabel.setLayoutData(new GridData());
-      updateLabel(sma);
-
+      refresh();
+      editor.registerEvent(this, AtsAttributeTypes.CurrentState);
    }
 
-   private void updateLabel(AbstractWorkflowArtifact sma) {
+   @Override
+   public void refresh() {
       String value = "";
       try {
-         if (sma.getStateMgr().getAssignees().isEmpty()) {
+         if (workItem.getStateMgr().getAssignees().isEmpty()) {
             value = "Error: State has no assignees";
          } else {
-            valueLabel.setToolTipText(sma.getStateMgr().getAssigneesStr());
-            value = sma.getStateMgr().getAssigneesStr();
+            valueLabel.setToolTipText(workItem.getStateMgr().getAssigneesStr());
+            value = workItem.getStateMgr().getAssigneesStr();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -103,7 +107,12 @@ public class WfeAssigneesHeader extends Composite {
          valueLabel.setToolTipText(value);
       }
       valueLabel.setText(Strings.truncate(value, 150, true));
-      valueLabel.getParent().layout();
+      valueLabel.getParent().getParent().layout();
+   }
+
+   @Override
+   public IAtsWorkItem getWorkItem() {
+      return workItem;
    }
 
 }

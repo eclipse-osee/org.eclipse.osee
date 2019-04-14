@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.note.NoteItem;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
@@ -432,7 +433,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
       // Targeted Version
       if (isShowTargetedVersion) {
-         new WfeTargetedVersionHeader(comp, SWT.NONE, awa, editor);
+         new WfeTargetedVersionHeader(comp, SWT.NONE, (IAtsTeamWorkflow) awa, editor);
          toolkit.createLabel(comp, "    ");
       }
 

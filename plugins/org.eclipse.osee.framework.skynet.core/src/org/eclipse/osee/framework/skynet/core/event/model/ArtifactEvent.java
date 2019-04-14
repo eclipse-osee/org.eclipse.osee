@@ -46,8 +46,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender, HasBranc
    private NetworkSender networkSender;
    private final List<EventBasicGuidArtifact> artifacts = new ArrayList<>();
    private final List<EventBasicGuidRelation> relations = new ArrayList<>();
-   private final Set<DefaultBasicUuidRelationReorder> relationReorderRecords =
-      new HashSet<>();
+   private final Set<DefaultBasicUuidRelationReorder> relationReorderRecords = new HashSet<>();
    private final ArtifactEventType reloadEvent;
 
    public ArtifactEvent(BranchId branch) {
@@ -218,7 +217,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender, HasBranc
       return guidArts;
    }
 
-   private Collection<EventBasicGuidRelation> getRelations(RelationEventType... eventModTypes) {
+   public Collection<EventBasicGuidRelation> getRelations(RelationEventType... eventModTypes) {
       Set<EventBasicGuidRelation> guidRels = new HashSet<>();
       for (EventBasicGuidRelation guidRel : relations) {
          for (RelationEventType modType : eventModTypes) {

@@ -11,12 +11,15 @@
 package org.eclipse.osee.ats.ide.editor;
 
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.column.TargetedVersionColumnUI;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -35,21 +38,23 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class WfeTargetedVersionHeader extends Composite {
+public class WfeTargetedVersionHeader extends Composite implements IWfeEventHandle {
 
    private final static String TARGET_VERSION = "Target Version:";
    Label valueLabel;
    Label origLabel;
    Hyperlink link;
+   private final IAtsTeamWorkflow teamWf;
 
-   public WfeTargetedVersionHeader(Composite parent, int style, final AbstractWorkflowArtifact sma, final WorkflowEditor editor) {
+   public WfeTargetedVersionHeader(Composite parent, int style, final IAtsTeamWorkflow teamWf, final WorkflowEditor editor) {
       super(parent, style);
+      this.teamWf = teamWf;
       setLayoutData(new GridData());
       setLayout(ALayout.getZeroMarginLayout(2, false));
       editor.getToolkit().adapt(this);
 
       try {
-         if (editor.isPrivilegedEditModeEnabled() || !sma.isCancelled() && !sma.isCompleted()) {
+         if (editor.isPrivilegedEditModeEnabled() || !teamWf.isCancelled() && !teamWf.isCompleted()) {
             link = editor.getToolkit().createHyperlink(this, TARGET_VERSION, SWT.NONE);
             link.addHyperlinkListener(new IHyperlinkListener() {
 
@@ -68,8 +73,8 @@ public class WfeTargetedVersionHeader extends Composite {
                   if (editor.isDirty()) {
                      editor.doSave(null);
                   }
-                  if (chooseVersion(sma)) {
-                     updateLabel(sma);
+                  if (chooseVersion(teamWf)) {
+                     refresh();
 
                   }
 
@@ -84,7 +89,8 @@ public class WfeTargetedVersionHeader extends Composite {
 
          valueLabel = editor.getToolkit().createLabel(this, "Not Set");
          valueLabel.setLayoutData(new GridData());
-         updateLabel(sma);
+         refresh();
+         editor.registerEvent(this, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
 
       } catch (OseeCoreException ex) {
          Label errorLabel = editor.getToolkit().createLabel(this, "Error: " + ex.getLocalizedMessage());
@@ -94,14 +100,14 @@ public class WfeTargetedVersionHeader extends Composite {
 
    }
 
-   public static boolean chooseVersion(final AbstractWorkflowArtifact sma) {
+   public static boolean chooseVersion(final IAtsTeamWorkflow teamWf) {
       try {
-         WorkflowEditor editor = WorkflowEditor.getWorkflowEditor(sma);
+         WorkflowEditor editor = WorkflowEditor.getWorkflowEditor(teamWf);
 
          if (editor.isDirty()) {
             editor.doSave(null);
          }
-         if (TargetedVersionColumnUI.promptChangeVersion(sma,
+         if (TargetedVersionColumnUI.promptChangeVersion((TeamWorkFlowArtifact) teamWf,
             AtsClientService.get().getUserService().isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
             VersionLockedType.UnLocked)) {
 
@@ -113,14 +119,15 @@ public class WfeTargetedVersionHeader extends Composite {
       return false;
    }
 
-   private void updateLabel(AbstractWorkflowArtifact sma) {
+   @Override
+   public void refresh() {
       if (Widgets.isAccessible(valueLabel)) {
          String value = "Not Set";
-         if (AtsClientService.get().getVersionService().hasTargetedVersion(sma)) {
-            value = AtsClientService.get().getVersionService().getTargetedVersion(sma).getName();
+         if (AtsClientService.get().getVersionService().hasTargetedVersion(teamWf)) {
+            value = AtsClientService.get().getVersionService().getTargetedVersion(teamWf).getName();
          }
          valueLabel.setText(value);
-         valueLabel.getParent().layout();
+         valueLabel.getParent().getParent().layout();
       }
    }
 
@@ -136,6 +143,11 @@ public class WfeTargetedVersionHeader extends Composite {
       if (Widgets.isAccessible(link)) {
          link.setBackground(color);
       }
+   }
+
+   @Override
+   public IAtsWorkItem getWorkItem() {
+      return teamWf;
    }
 
 }
