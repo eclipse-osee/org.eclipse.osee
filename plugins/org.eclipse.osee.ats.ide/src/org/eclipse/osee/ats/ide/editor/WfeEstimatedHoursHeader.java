@@ -11,12 +11,12 @@
 package org.eclipse.osee.ats.ide.editor;
 
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
-import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -33,21 +33,21 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class WfeEstimatedHoursHeader extends Composite {
+public class WfeEstimatedHoursHeader extends Composite implements IWfeEventHandle {
 
    private final static String LABEL = "Estimated Hours:";
    Label valueLabel;
-   private final AbstractWorkflowArtifact awa;
+   private final IAtsWorkItem workItem;
 
-   public WfeEstimatedHoursHeader(Composite parent, int style, final AbstractWorkflowArtifact sma, final WorkflowEditor editor) {
+   public WfeEstimatedHoursHeader(Composite parent, int style, final IAtsWorkItem workItem, final WorkflowEditor editor) {
       super(parent, style);
-      this.awa = sma;
+      this.workItem = workItem;
       setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
       setLayout(ALayout.getZeroMarginLayout(2, false));
       editor.getToolkit().adapt(this);
 
       try {
-         if (!sma.isCancelled() && !sma.isCompleted()) {
+         if (!workItem.isCancelled() && !workItem.isCompleted()) {
             Hyperlink link = editor.getToolkit().createHyperlink(this, LABEL, SWT.NONE);
             link.addHyperlinkListener(new IHyperlinkListener() {
 
@@ -67,7 +67,7 @@ public class WfeEstimatedHoursHeader extends Composite {
                      if (editor.isDirty()) {
                         editor.doSave(null);
                      }
-                     PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.EstimatedHours, true, false);
+                     PromptChangeUtil.promptChangeAttribute(workItem, AtsAttributeTypes.EstimatedHours, true, false);
                   } catch (Exception ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }
@@ -81,7 +81,8 @@ public class WfeEstimatedHoursHeader extends Composite {
          valueLabel = editor.getToolkit().createLabel(this, "0.0");
          valueLabel.setToolTipText(getToolTip());
          valueLabel.setLayoutData(new GridData());
-         updateLabel(sma);
+         refresh();
+         editor.registerEvent(this, AtsAttributeTypes.EstimatedHours);
 
       } catch (OseeCoreException ex) {
          Label errorLabel = editor.getToolkit().createLabel(this, "Error: " + ex.getLocalizedMessage());
@@ -93,13 +94,14 @@ public class WfeEstimatedHoursHeader extends Composite {
 
    private String getEstHoursStr() {
       double totalEst = 0;
-      double awaEst = awa.getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0);
+      double awaEst = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workItem,
+         AtsAttributeTypes.EstimatedHours, 0.0);
       if (awaEst < 0) {
          OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP,
             "Negative estimated hours not allowed.  Please set to the expected estimated hours.");
-         PromptChangeUtil.promptChangeAttribute(awa, AtsAttributeTypes.EstimatedHours, true, false);
+         PromptChangeUtil.promptChangeAttribute(workItem, AtsAttributeTypes.EstimatedHours, true, false);
       } else {
-         totalEst = AtsClientService.get().getEarnedValueService().getEstimatedHoursTotal(awa);
+         totalEst = AtsClientService.get().getEarnedValueService().getEstimatedHoursTotal(workItem);
       }
       if (awaEst != totalEst) {
          return String.format("%s | %s", AtsUtil.doubleToI18nString(awaEst), AtsUtil.doubleToI18nString(totalEst));
@@ -108,17 +110,19 @@ public class WfeEstimatedHoursHeader extends Composite {
       }
    }
 
+   @Override
    public void refresh() {
-      updateLabel(awa);
-   }
-
-   private void updateLabel(AbstractWorkflowArtifact sma) {
       valueLabel.setText(getEstHoursStr());
-      valueLabel.getParent().layout();
+      valueLabel.getParent().getParent().layout();
    }
 
    private String getToolTip() {
       return "[Workflow Estimate] | [Calculation: Sum estimated hours for workflow and all tasks and reviews]";
+   }
+
+   @Override
+   public IAtsWorkItem getWorkItem() {
+      return workItem;
    }
 
 }

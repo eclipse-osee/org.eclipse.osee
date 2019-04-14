@@ -52,4 +52,13 @@ public final class PromptChangeUtil {
       return false;
    }
 
+   public static boolean promptChangeAttribute(IAtsWorkItem workItem, AttributeTypeToken attributeType, boolean persist, boolean multiLine) {
+      if (workItem.getStoreObject() instanceof AbstractWorkflowArtifact) {
+         return promptChangeAttribute((AbstractWorkflowArtifact) workItem.getStoreObject(), attributeType, persist,
+            multiLine);
+      }
+      return false;
+
+   }
+
 }

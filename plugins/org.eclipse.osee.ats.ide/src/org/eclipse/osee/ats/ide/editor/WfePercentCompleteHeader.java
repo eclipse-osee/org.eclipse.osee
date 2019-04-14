@@ -12,11 +12,11 @@ package org.eclipse.osee.ats.ide.editor;
 
 import java.text.NumberFormat;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -34,21 +34,21 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class WfePercentCompleteHeader extends Composite {
+public class WfePercentCompleteHeader extends Composite implements IWfeEventHandle {
 
    private final static String PERCENT_COMPLETE = "Percent Complete:";
    Label valueLabel;
-   private final AbstractWorkflowArtifact awa;
+   private final IAtsWorkItem workItem;
 
-   public WfePercentCompleteHeader(Composite parent, int style, final AbstractWorkflowArtifact sma, final WorkflowEditor editor) {
+   public WfePercentCompleteHeader(Composite parent, int style, final IAtsWorkItem workItem, final WorkflowEditor editor) {
       super(parent, style);
-      this.awa = sma;
+      this.workItem = workItem;
       setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
       setLayout(ALayout.getZeroMarginLayout(2, false));
       editor.getToolkit().adapt(this);
 
       try {
-         if (!sma.isCancelled() && !sma.isCompleted()) {
+         if (!workItem.isCancelled() && !workItem.isCompleted()) {
             Hyperlink link = editor.getToolkit().createHyperlink(this, PERCENT_COMPLETE, SWT.NONE);
             link.addHyperlinkListener(new IHyperlinkListener() {
 
@@ -72,15 +72,15 @@ public class WfePercentCompleteHeader extends Composite {
                         "Enter Percent Complete (0 to 99)\n\n(use Transition to mark complete.)", 0, 99);
                      dialog.setNumberFormat(NumberFormat.getIntegerInstance());
                      int percent = 0;
-                     if (sma.getStateMgr().getPercentCompleteValue() != null) {
-                        percent = sma.getStateMgr().getPercentCompleteValue();
+                     if (workItem.getStateMgr().getPercentCompleteValue() != null) {
+                        percent = workItem.getStateMgr().getPercentCompleteValue();
                      }
                      dialog.setEntry(String.valueOf(percent));
                      if (dialog.open() == 0) {
                         Integer intValue = dialog.getInt();
-                        sma.getStateMgr().setPercentCompleteValue(intValue);
+                        workItem.getStateMgr().setPercentCompleteValue(intValue);
                         AtsClientService.get().getStoreService().executeChangeSet(
-                           "ATS Workflow Editor - set Percent Complete", sma);
+                           "ATS Workflow Editor - set Percent Complete", workItem);
                      }
                   } catch (Exception ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -95,7 +95,8 @@ public class WfePercentCompleteHeader extends Composite {
          valueLabel = editor.getToolkit().createLabel(this, "0");
          valueLabel.setToolTipText(getToolTip());
          valueLabel.setLayoutData(new GridData());
-         updateLabel(sma);
+         refresh();
+         editor.registerEvent(this, AtsAttributeTypes.PercentComplete);
 
       } catch (OseeCoreException ex) {
          Label errorLabel = editor.getToolkit().createLabel(this, "Error: " + ex.getLocalizedMessage());
@@ -106,8 +107,10 @@ public class WfePercentCompleteHeader extends Composite {
    }
 
    public String getPercentCompleteStr() {
-      int awaPercent = awa.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0);
-      int totalPecent = PercentCompleteTotalUtil.getPercentCompleteTotal(awa, AtsClientService.get().getServices());
+      int awaPercent = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workItem,
+         AtsAttributeTypes.PercentComplete, 0);
+      int totalPecent =
+         PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, AtsClientService.get().getServices());
       if (awaPercent != totalPecent) {
          return String.format("%d | %d", awaPercent, totalPecent);
       } else {
@@ -115,16 +118,18 @@ public class WfePercentCompleteHeader extends Composite {
       }
    }
 
+   @Override
    public void refresh() {
-      updateLabel(awa);
-   }
-
-   private void updateLabel(AbstractWorkflowArtifact sma) {
       valueLabel.setText(getPercentCompleteStr());
-      valueLabel.getParent().layout();
+      valueLabel.getParent().getParent().layout();
    }
 
    private String getToolTip() {
       return " [Workflow Percent] | [Calculation: Sum of percent for workflow, reviews and tasks / # workflows, reviews and tasks] ";
+   }
+
+   @Override
+   public IAtsWorkItem getWorkItem() {
+      return workItem;
    }
 }
