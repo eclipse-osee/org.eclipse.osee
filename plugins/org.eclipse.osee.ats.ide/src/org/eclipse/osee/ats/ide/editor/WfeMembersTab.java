@@ -281,10 +281,10 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
          new MembersDragAndDrop(worldComposite, WorkflowEditor.EDITOR_ID);
          worldComposite.setLayout(ALayout.getZeroMarginLayout());
 
-         if (editor.getAwa().isOfType(AtsArtifactTypes.Goal)) {
-            worldComposite.getXViewer().setParentGoal((GoalArtifact) editor.getAwa());
+         if (editor.getWorkItem().isOfType(AtsArtifactTypes.Goal)) {
+            worldComposite.getXViewer().setParentGoal((GoalArtifact) editor.getWorkItem());
          } else {
-            worldComposite.getXViewer().setParentSprint((SprintArtifact) editor.getAwa());
+            worldComposite.getXViewer().setParentSprint((SprintArtifact) editor.getWorkItem());
          }
 
          worldComposite.getWorldXViewer().addMenuActionProvider(this);
@@ -628,7 +628,7 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
    private NewActionToGoalAction newActionToGoalAction;
 
    private void createActions() {
-      setCollectorOrderAction = new SetCollectorOrderAction(provider, (CollectorArtifact) editor.getAwa(), this);
+      setCollectorOrderAction = new SetCollectorOrderAction(provider, (CollectorArtifact) editor.getWorkItem(), this);
       RemovedFromCollectorHandler handler = new RemovedFromCollectorHandler() {
 
          @Override
@@ -638,8 +638,8 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
 
       };
       removeFromCollectorAction =
-         new RemoveFromCollectorAction(provider, (CollectorArtifact) editor.getAwa(), this, handler);
-      newActionToGoalAction = new NewActionToGoalAction(provider, (CollectorArtifact) editor.getAwa(), this);
+         new RemoveFromCollectorAction(provider, (CollectorArtifact) editor.getWorkItem(), this, handler);
+      newActionToGoalAction = new NewActionToGoalAction(provider, (CollectorArtifact) editor.getWorkItem(), this);
    }
 
    @Override

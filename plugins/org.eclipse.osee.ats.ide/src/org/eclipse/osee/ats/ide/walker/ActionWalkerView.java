@@ -243,7 +243,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
       if (page != null) {
          IEditorPart editor = page.getActiveEditor();
          if (editor instanceof WorkflowEditor) {
-            explore(((WorkflowEditor) editor).getAwa());
+            explore(((WorkflowEditor) editor).getWorkItem());
          }
       }
    }

@@ -82,7 +82,7 @@ public class WfeBranchEventManager implements IBranchEventListener {
          if (handler.isDisposed()) {
             OseeLog.log(Activator.class, Level.SEVERE, "Unexpected handler disposed but not unregistered.");
          }
-         final AbstractWorkflowArtifact awa = handler.getWorkflowEditor().getAwa();
+         final AbstractWorkflowArtifact awa = handler.getWorkflowEditor().getWorkItem();
          try {
             if (!awa.isTeamWorkflow()) {
                return;

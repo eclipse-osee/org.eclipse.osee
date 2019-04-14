@@ -100,7 +100,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
  */
 public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyReportable, IWfeEventHandler, ISelectedAtsArtifacts, IAtsMetricsProvider {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.ide.editor.WorkflowEditor";
-   private AbstractWorkflowArtifact awa;
+   private AbstractWorkflowArtifact workItem;
    private WfeWorkFlowTab workFlowTab;
    private WfeMembersTab membersTab;
    private WfeDefectsTab defectsTab;
@@ -117,7 +117,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       try {
          if (input.getArtifact() != null) {
             if (input.getArtifact() instanceof AbstractWorkflowArtifact) {
-               awa = (AbstractWorkflowArtifact) input.getArtifact();
+               workItem = (AbstractWorkflowArtifact) input.getArtifact();
             } else {
                throw new OseeArgumentException("WfeInput artifact must be StateMachineArtifact");
             }
@@ -127,7 +127,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
          return;
       }
 
-      if (!input.isReload() && awa == null) {
+      if (!input.isReload() && workItem == null) {
          MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Open Error",
             "Can't Find Action in DB");
          return;
@@ -190,7 +190,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
     */
    private void createWorkflowTab() {
       try {
-         workFlowTab = new WfeWorkFlowTab(this, awa);
+         workFlowTab = new WfeWorkFlowTab(this, workItem);
          addPage(workFlowTab);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -202,26 +202,26 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    }
 
    private void createMembersTab() throws PartInitException {
-      if (awa instanceof GoalArtifact) {
-         membersTab = new WfeMembersTab(this, new GoalMemberProvider((GoalArtifact) awa));
+      if (workItem instanceof GoalArtifact) {
+         membersTab = new WfeMembersTab(this, new GoalMemberProvider((GoalArtifact) workItem));
          addPage(membersTab);
-      } else if (awa instanceof SprintArtifact) {
-         membersTab = new WfeMembersTab(this, new SprintMemberProvider((SprintArtifact) awa));
+      } else if (workItem instanceof SprintArtifact) {
+         membersTab = new WfeMembersTab(this, new SprintMemberProvider((SprintArtifact) workItem));
          addPage(membersTab);
       }
    }
 
    private void createTaskTab() throws PartInitException {
       if (isTaskable()) {
-         taskTab = new WfeTasksTab(this, (IAtsTeamWorkflow) awa, AtsClientService.get());
+         taskTab = new WfeTasksTab(this, (IAtsTeamWorkflow) workItem, AtsClientService.get());
          addPage(taskTab);
          taskTab.refreshTabName();
       }
    }
 
    private void createDefectsTab() throws PartInitException {
-      if (awa.isOfType(AtsArtifactTypes.PeerToPeerReview)) {
-         defectsTab = new WfeDefectsTab(this, (IAtsPeerToPeerReview) awa);
+      if (workItem.isOfType(AtsArtifactTypes.PeerToPeerReview)) {
+         defectsTab = new WfeDefectsTab(this, (IAtsPeerToPeerReview) workItem);
          addPage(defectsTab);
       }
    }
@@ -237,23 +237,23 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
-         if (awa.isHistorical()) {
+         if (workItem.isHistorical()) {
             AWorkbench.popup("Historical Error",
-               "You can not change a historical version of " + awa.getArtifactTypeName() + ":\n\n" + awa);
-         } else if (!awa.isAccessControlWrite()) {
+               "You can not change a historical version of " + workItem.getArtifactTypeName() + ":\n\n" + workItem);
+         } else if (!workItem.isAccessControlWrite()) {
             AWorkbench.popup("Authentication Error",
-               "You do not have permissions to save " + awa.getArtifactTypeName() + ":" + awa);
+               "You do not have permissions to save " + workItem.getArtifactTypeName() + ":" + workItem);
          } else {
             try {
                if (attributesComposite != null && getActivePage() == attributesPageIndex) {
-                  awa.persist("Workflow Editor - Attributes Tab - Save");
+                  workItem.persist("Workflow Editor - Attributes Tab - Save");
                } else {
                   IAtsChangeSet changes = AtsClientService.get().createChangeSet("Workflow Editor - Save");
                   // If change was made on Attribute tab, persist awa separately.  This is cause attribute
                   // tab changes conflict with XWidget changes
                   // Save widget data to artifact
                   workFlowTab.saveXWidgetToArtifact();
-                  awa.save(changes);
+                  workItem.save(changes);
                   changes.execute();
                }
             } catch (Exception ex) {
@@ -292,8 +292,8 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       }
       WfeArtifactEventManager.remove(this);
       WfeBranchEventManager.remove(this);
-      if (awa != null && !awa.isDeleted() && awa.isWfeDirty().isTrue()) {
-         awa.revert();
+      if (workItem != null && !workItem.isDeleted() && workItem.isWfeDirty().isTrue()) {
+         workItem.revert();
       }
       if (workFlowTab != null) {
          workFlowTab.dispose();
@@ -314,7 +314,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    @Override
    public Result isDirtyResult() {
-      if (getWfeInput().isReload() || awa.isDeleted()) {
+      if (getWfeInput().isReload() || workItem.isDeleted()) {
          return Result.FalseResult;
       }
       try {
@@ -328,7 +328,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
          }
 
          String rString = null;
-         for (Attribute<?> attribute : awa.internalGetAttributes()) {
+         for (Attribute<?> attribute : workItem.internalGetAttributes()) {
             if (attribute.isDirty()) {
                rString = "Attribute: " + attribute.getNameValueDescription();
                break;
@@ -336,7 +336,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
          }
 
          if (rString == null) {
-            rString = RelationManager.reportHasDirtyLinks(awa);
+            rString = RelationManager.reportHasDirtyLinks(workItem);
          }
 
          return new Result(rString != null, rString);
@@ -348,7 +348,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    @Override
    public String toString() {
-      return "WorkflowEditor - " + awa.getAtsId() + " - " + awa.getArtifactTypeName() + " named \"" + awa.getName() + "\"";
+      return "WorkflowEditor - " + workItem.getAtsId() + " - " + workItem.getArtifactTypeName() + " named \"" + workItem.getName() + "\"";
    }
 
    @Override
@@ -387,7 +387,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
             @Override
             public void widgetSelected(SelectionEvent e) {
                try {
-                  awa.persist(getClass().getSimpleName());
+                  workItem.persist(getClass().getSimpleName());
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -401,7 +401,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
             @Override
             public void widgetSelected(SelectionEvent e) {
                try {
-                  awa.reloadAttributesAndRelations();
+                  workItem.reloadAttributesAndRelations();
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -412,7 +412,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
          label.setText("  NOTE: Changes made on this page MUST be saved through save icon on this page");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
 
-         attributesComposite = new AttributesComposite(this, composite, SWT.NONE, awa);
+         attributesComposite = new AttributesComposite(this, composite, SWT.NONE, workItem);
          attributesPageIndex = addPage(composite);
          setPageText(attributesPageIndex, "Attributes");
       } catch (Exception ex) {
@@ -428,13 +428,13 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    private ToolBar createToolBar(Composite parent) {
       ToolBar toolBar = createCommonToolBar(parent);
 
-      actionToToolItem(toolBar, new ResourceHistoryAction(awa), FrameworkImage.EDIT_BLUE);
-      actionToToolItem(toolBar, new AccessControlAction(awa), FrameworkImage.AUTHENTICATED);
+      actionToToolItem(toolBar, new ResourceHistoryAction(workItem), FrameworkImage.EDIT_BLUE);
+      actionToToolItem(toolBar, new AccessControlAction(workItem), FrameworkImage.AUTHENTICATED);
       actionToToolItem(toolBar, new DirtyReportAction(this), FrameworkImage.DIRTY);
       new ToolItem(toolBar, SWT.SEPARATOR);
       Text artifactInfoLabel = new Text(toolBar.getParent(), SWT.END);
       artifactInfoLabel.setEditable(false);
-      artifactInfoLabel.setText("Type: \"" + awa.getArtifactTypeName() + "\"   ATS: " + awa.getAtsId());
+      artifactInfoLabel.setText("Type: \"" + workItem.getArtifactTypeName() + "\"   ATS: " + workItem.getAtsId());
       artifactInfoLabel.setToolTipText("The human readable id and database id for this artifact");
 
       return toolBar;
@@ -455,7 +455,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
             taskTab.refresh();
          }
          if (attributesComposite != null) {
-            attributesComposite.refreshArtifact(awa);
+            attributesComposite.refreshArtifact(workItem);
          }
          onDirtied();
          updatePartName();
@@ -527,7 +527,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
             for (int j = 0; j < editors.length; j++) {
                IEditorReference editor = editors[j];
                if (editor.getPart(false) instanceof WorkflowEditor && artifacts.contains(
-                  ((WorkflowEditor) editor.getPart(false)).getAwa())) {
+                  ((WorkflowEditor) editor.getPart(false)).getWorkItem())) {
                   ((WorkflowEditor) editor.getPart(false)).closeEditor();
                }
             }
@@ -557,7 +557,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       for (int j = 0; j < editors.length; j++) {
          IEditorReference editor = editors[j];
          if (editor.getPart(
-            false) instanceof WorkflowEditor && ((WorkflowEditor) editor.getPart(false)).getAwa().equals(artifact)) {
+            false) instanceof WorkflowEditor && ((WorkflowEditor) editor.getPart(false)).getWorkItem().equals(artifact)) {
             return (WorkflowEditor) editor.getPart(false);
          }
       }
@@ -588,12 +588,12 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    }
 
    public boolean isTaskable() {
-      return awa instanceof TeamWorkFlowArtifact;
+      return workItem instanceof TeamWorkFlowArtifact;
    }
 
    public boolean isTasksEditable() {
       boolean editable = true;
-      if (!(awa instanceof TeamWorkFlowArtifact) || awa.isCompletedOrCancelled()) {
+      if (!(workItem instanceof TeamWorkFlowArtifact) || workItem.isCompletedOrCancelled()) {
          editable = false;
       }
       return editable;
@@ -618,25 +618,25 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    }
 
    public boolean isAccessControlWrite() {
-      return AccessControlManager.hasPermission(awa, PermissionEnum.WRITE);
+      return AccessControlManager.hasPermission(workItem, PermissionEnum.WRITE);
    }
 
    @Override
    public Collection<? extends Artifact> getMetricsWorkItems() {
-      if (awa.isOfType(AtsArtifactTypes.Goal)) {
-         return ((GoalArtifact) awa).getMembers();
+      if (workItem.isOfType(AtsArtifactTypes.Goal)) {
+         return ((GoalArtifact) workItem).getMembers();
       }
-      return Arrays.asList(awa);
+      return Arrays.asList(workItem);
    }
 
    @Override
    public IAtsVersion getMetricsVersion() {
-      return AtsClientService.get().getVersionService().getTargetedVersion(awa);
+      return AtsClientService.get().getVersionService().getTargetedVersion(workItem);
    }
 
    @Override
    public double getManHoursPerDayPreference() {
-      return awa.getManHrsPerDayPreference();
+      return workItem.getManHrsPerDayPreference();
    }
 
    public WfeWorkFlowTab getWorkFlowTab() {
@@ -649,7 +649,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    @Override
    public Set<Artifact> getSelectedWorkflowArtifacts() {
-      return Collections.singleton(awa);
+      return Collections.singleton(workItem);
    }
 
    @Override
@@ -673,7 +673,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    @Override
    public List<Artifact> getSelectedAtsArtifacts() {
-      return Collections.<Artifact> singletonList(awa);
+      return Collections.<Artifact> singletonList(workItem);
    }
 
    @Override
@@ -684,7 +684,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       } else if (getWfeInput().isBacklog()) {
          image = ImageManager.getImage(AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_BACKLOG));
       } else {
-         image = ArtifactImageManager.getImage(awa);
+         image = ArtifactImageManager.getImage(workItem);
       }
       return image;
    }
@@ -725,14 +725,14 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    @Override
    public List<TaskArtifact> getSelectedTaskArtifacts() {
-      if (awa instanceof TaskArtifact) {
-         return Arrays.asList((TaskArtifact) awa);
+      if (workItem instanceof TaskArtifact) {
+         return Arrays.asList((TaskArtifact) workItem);
       }
       return java.util.Collections.emptyList();
    }
 
-   public AbstractWorkflowArtifact getAwa() {
-      return awa;
+   public AbstractWorkflowArtifact getWorkItem() {
+      return workItem;
    }
 
    public static void edit(IAtsWorkItem workItem) {

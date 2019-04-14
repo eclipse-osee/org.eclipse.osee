@@ -69,7 +69,7 @@ public class WfeHistorySection extends SectionPart {
          return;
       }
 
-      AbstractWorkflowArtifact awa = editor.getAwa();
+      AbstractWorkflowArtifact awa = editor.getWorkItem();
       final FormToolkit toolkit = getManagedForm().getToolkit();
       Composite composite = toolkit.createComposite(getSection(), SWT.WRAP);
       composite.setLayout(new GridLayout(1, false));

@@ -104,7 +104,7 @@ public class WfeDetailsSection extends SectionPart {
       }
 
       if (Widgets.isAccessible(browser)) {
-         AbstractWorkflowArtifact workflow = editor.getAwa();
+         AbstractWorkflowArtifact workflow = editor.getWorkItem();
 
          try {
             Map<String, String> smaDetails = Artifacts.getDetailsKeyValues(workflow);

@@ -125,7 +125,7 @@ public class WfeOperationsSection extends SectionPart {
    }
 
    private void createImpactsSection(Composite parent, FormToolkit toolkit) {
-      if (!editor.getAwa().isTeamWorkflow() && !editor.getAwa().isTask()) {
+      if (!editor.getWorkItem().isTeamWorkflow() && !editor.getWorkItem().isTask()) {
          return;
       }
       Section section = toolkit.createSection(parent, ExpandableComposite.TITLE_BAR);
@@ -138,19 +138,19 @@ public class WfeOperationsSection extends SectionPart {
       sectionBody.setLayout(ALayout.getZeroMarginLayout(1, false));
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      if (editor.getAwa().isTeamWorkflow()) {
-         new XButtonViaAction(new EditActionableItemsAction((TeamWorkFlowArtifact) editor.getAwa())).createWidgets(
+      if (editor.getWorkItem().isTeamWorkflow()) {
+         new XButtonViaAction(new EditActionableItemsAction((TeamWorkFlowArtifact) editor.getWorkItem())).createWidgets(
             sectionBody, 2);
          new XButtonViaAction(
-            new DuplicateWorkflowAction(Collections.singleton((TeamWorkFlowArtifact) editor.getAwa()))).createWidgets(
+            new DuplicateWorkflowAction(Collections.singleton((TeamWorkFlowArtifact) editor.getWorkItem()))).createWidgets(
                sectionBody, 2);
-         new XButtonViaAction(new ModifyActionableItemAction((TeamWorkFlowArtifact) editor.getAwa())).createWidgets(
+         new XButtonViaAction(new ModifyActionableItemAction((TeamWorkFlowArtifact) editor.getWorkItem())).createWidgets(
             sectionBody, 2);
-         new XButtonViaAction(new AccessControlAction(editor.getAwa())).createWidgets(sectionBody, 2);
+         new XButtonViaAction(new AccessControlAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
       }
-      if (editor.getAwa().isTask()) {
+      if (editor.getWorkItem().isTask()) {
          new XButtonViaAction(
-            new CreateActionFromTaskAction(Collections.singleton((TaskArtifact) editor.getAwa()))).createWidgets(
+            new CreateActionFromTaskAction(Collections.singleton((TaskArtifact) editor.getWorkItem()))).createWidgets(
                sectionBody, 2);
       }
       section.setClient(sectionBody);
@@ -167,9 +167,9 @@ public class WfeOperationsSection extends SectionPart {
       sectionBody.setLayout(ALayout.getZeroMarginLayout(1, false));
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      if (editor.getAwa().isTeamWorkflow()) {
+      if (editor.getWorkItem().isTeamWorkflow()) {
          new XButtonViaAction(new DirtyReportAction(editor)).createWidgets(sectionBody, 2);
-         new XButtonViaAction(new ReloadAction(editor.getAwa(), editor)).createWidgets(sectionBody, 2);
+         new XButtonViaAction(new ReloadAction(editor.getWorkItem(), editor)).createWidgets(sectionBody, 2);
          new XButtonViaAction(new MoveTeamWorkflowsAction()).createWidgets(sectionBody, 2);
       }
 
@@ -196,8 +196,8 @@ public class WfeOperationsSection extends SectionPart {
 
       new XButtonViaAction(new RefreshDirtyAction(editor)).createWidgets(sectionBody, 2);
       new XButtonViaAction(new DeletePurgeAtsArtifactsAction(editor, false)).createWidgets(sectionBody, 2);
-      if (ShowBranchChangeDataAction.isApplicable(editor.getAwa())) {
-         new XButtonViaAction(new ShowBranchChangeDataAction(editor.getAwa())).createWidgets(sectionBody, 2);
+      if (ShowBranchChangeDataAction.isApplicable(editor.getWorkItem())) {
+         new XButtonViaAction(new ShowBranchChangeDataAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
       }
       new XButtonViaAction(new MoveWorkflowWorkingBranchToWorkflowAction(editor, AtsClientService.get())).createWidgets(
          sectionBody, 2);
@@ -221,11 +221,11 @@ public class WfeOperationsSection extends SectionPart {
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       try {
-         new XButtonViaAction(new OpenInAtsWorldAction(editor.getAwa())).createWidgets(sectionBody, 2);
-         new XButtonViaAction(new OpenInSkyWalkerAction(editor.getAwa())).createWidgets(sectionBody, 2);
-         new XButtonViaAction(new ResourceHistoryAction(editor.getAwa())).createWidgets(sectionBody, 2);
-         if (editor.getAwa().getParentAWA() != null) {
-            new XButtonViaAction(new OpenParentAction(editor.getAwa())).createWidgets(sectionBody, 2);
+         new XButtonViaAction(new OpenInAtsWorldAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
+         new XButtonViaAction(new OpenInSkyWalkerAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
+         new XButtonViaAction(new ResourceHistoryAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
+         if (editor.getWorkItem().getParentAWA() != null) {
+            new XButtonViaAction(new OpenParentAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
          }
          if (AtsClientService.get().getUserService().isAtsAdmin()) {
             new XButtonViaAction(new OpenInArtifactEditorAction(editor)).createWidgets(sectionBody, 2);

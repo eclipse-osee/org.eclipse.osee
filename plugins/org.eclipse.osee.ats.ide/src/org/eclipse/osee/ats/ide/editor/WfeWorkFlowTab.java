@@ -333,7 +333,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
    private void createUndefinedStateSections() {
       try {
-         if (WfeUndefinedStateSection.hasUndefinedStates(editor.getAwa())) {
+         if (WfeUndefinedStateSection.hasUndefinedStates(editor.getWorkItem())) {
             for (String stateName : WfeUndefinedStateSection.getUndefinedStateNames(awa)) {
                WfeUndefinedStateSection section =
                   new WfeUndefinedStateSection(stateName, editor, atsBody, editor.getToolkit(), SWT.NONE);

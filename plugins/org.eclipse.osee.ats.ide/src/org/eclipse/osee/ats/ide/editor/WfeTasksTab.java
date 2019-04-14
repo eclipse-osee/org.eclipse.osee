@@ -288,7 +288,7 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
       if (isTableDisposed()) {
          return;
       }
-      String getLoadingString = String.format("Loading Tasks for %s", editor.getAwa());
+      String getLoadingString = String.format("Loading Tasks for %s", editor.getWorkItem());
       Job job = new Job(getLoadingString) {
 
          @Override

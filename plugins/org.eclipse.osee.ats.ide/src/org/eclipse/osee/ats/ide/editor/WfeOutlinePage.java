@@ -93,7 +93,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             if (editor != null && getTreeViewer() != null && Widgets.isAccessible(getTreeViewer().getTree())) {
                getTreeViewer().setInput(editor);
                try {
-                  AbstractWorkflowArtifact awa = editor.getAwa();
+                  AbstractWorkflowArtifact awa = editor.getWorkItem();
                   if (awa != null) {
                      IAtsStateDefinition stateDef = WorkflowManager.getCurrentAtsWorkPage(awa).getStateDefinition();
                      StructuredSelection newSelection = new StructuredSelection(Arrays.asList(stateDef));
@@ -168,7 +168,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
 
       private InternalContentProvider(WorkflowEditor editor) {
          this.editor = editor;
-         this.awa = editor.getAwa();
+         this.awa = editor.getWorkItem();
       }
 
       @Override
@@ -185,7 +185,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
       public Object[] getChildren(Object element) {
          List<Object> items = new ArrayList<>();
          if (element instanceof WorkflowEditor) {
-            add(items, ((WorkflowEditor) element).getAwa());
+            add(items, ((WorkflowEditor) element).getWorkItem());
             items.add(new WrappedStateItems(AtsStateItemManager.getStateItems()));
          } else if (element instanceof AbstractWorkflowArtifact) {
             add(items, ((AbstractWorkflowArtifact) element).getWorkDefinition());
@@ -388,7 +388,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             items.add("Recommended Percent Complete: " + stateDef.getRecommendedPercentComplete());
          }
          items.add("Color: " + (stateDef.getColor() == null ? "not set" : stateDef.getColor().toString()));
-         if (editor.getAwa().isOfType(AtsArtifactTypes.TeamWorkflow)) {
+         if (editor.getWorkItem().isOfType(AtsArtifactTypes.TeamWorkflow)) {
             items.add(new WrappedDecisionReviews(stateDef.getDecisionReviews()));
             items.add(new WrappedPeerReviews(stateDef.getPeerReviews()));
          }

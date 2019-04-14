@@ -36,7 +36,7 @@ public class WfeContributor extends MultiPageEditorActionBarContributor {
          if (actionBars != null) {
 
             WorkflowEditor editor = (WorkflowEditor) part;
-            actionBars.setGlobalActionHandler(ActionFactory.PRINT.getId(), new WfePrint(editor.getAwa()));
+            actionBars.setGlobalActionHandler(ActionFactory.PRINT.getId(), new WfePrint(editor.getWorkItem()));
             actionBars.updateActionBars();
          }
       }

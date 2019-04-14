@@ -54,7 +54,7 @@ public class WfeUndefinedStateSection extends SectionPart {
       super.initialize(form);
       Section section = getSection();
       try {
-         section.setText("Un-Defined State - " + WfeWorkflowSection.getCurrentStateTitle(editor.getAwa(), stateName,
+         section.setText("Un-Defined State - " + WfeWorkflowSection.getCurrentStateTitle(editor.getWorkItem(), stateName,
             false, false, false));
       } catch (OseeCoreException ex) {
          section.setText(stateName + " - Exception:" + ex.getLocalizedMessage());
@@ -77,7 +77,7 @@ public class WfeUndefinedStateSection extends SectionPart {
    }
 
    public List<String> getUndefinedStateNames() {
-      return getUndefinedStateNames(editor.getAwa());
+      return getUndefinedStateNames(editor.getWorkItem());
    }
 
    public static List<String> getUndefinedStateNames(AbstractWorkflowArtifact awa) {
@@ -99,7 +99,7 @@ public class WfeUndefinedStateSection extends SectionPart {
          return;
       }
 
-      AbstractWorkflowArtifact awa = editor.getAwa();
+      AbstractWorkflowArtifact awa = editor.getWorkItem();
       final FormToolkit toolkit = getManagedForm().getToolkit();
       Composite composite = toolkit.createComposite(getSection(), SWT.WRAP);
       composite.setLayout(new GridLayout(1, true));

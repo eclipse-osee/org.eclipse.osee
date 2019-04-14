@@ -94,7 +94,7 @@ public class WfeArtifactEventManager implements IArtifactEventListener {
    }
 
    private void safelyProcessHandler(final ArtifactEvent artifactEvent, final IWfeEventHandler handler) {
-      final AbstractWorkflowArtifact awa = handler.getWorkflowEditor().getAwa();
+      final AbstractWorkflowArtifact awa = handler.getWorkflowEditor().getWorkItem();
       boolean refreshed = false;
 
       if (artifactEvent.isDeletedPurged(awa)) {
