@@ -110,21 +110,21 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
       return false;
    }
 
-   public static boolean promptChangeOriginator(AbstractWorkflowArtifact sma, boolean persist) {
-      return promptChangeOriginator(Arrays.asList(sma), persist);
+   public static boolean promptChangeOriginator(IAtsWorkItem workItem, boolean persist) {
+      return promptChangeOriginator(Arrays.asList(workItem), persist);
    }
 
-   public static boolean promptChangeOriginator(final Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) {
+   public static boolean promptChangeOriginator(final Collection<IAtsWorkItem> workItems, boolean persist) {
       UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New Originator",
          AtsClientService.get().getUserServiceClient().getOseeUsersSorted(Active.Active));
       int result = ld.open();
       if (result == 0) {
          IAtsUser selectedUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(ld.getSelection());
          IAtsChangeSet changes = AtsClientService.get().createChangeSet("ATS Prompt Change Originator");
-         for (AbstractWorkflowArtifact awa : awas) {
-            awa.getStateMgr().setCreatedBy(selectedUser, true, null, changes);
-            addOriginatorNotification(awa, changes);
-            changes.add(awa);
+         for (IAtsWorkItem workItem : workItems) {
+            workItem.getStateMgr().setCreatedBy(selectedUser, true, null, changes);
+            addOriginatorNotification(workItem, changes);
+            changes.add(workItem);
          }
          if (persist) {
             changes.execute();
@@ -186,9 +186,9 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       try {
-         Set<AbstractWorkflowArtifact> awas = new HashSet<>();
+         Set<IAtsWorkItem> awas = new HashSet<>();
          for (TreeItem item : treeItems) {
-            if (item.getData() instanceof Artifact) {
+            if (item.getData() instanceof AbstractWorkflowArtifact) {
                Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
                if (art instanceof AbstractWorkflowArtifact) {
                   awas.add((AbstractWorkflowArtifact) art);
