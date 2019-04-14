@@ -45,7 +45,7 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
 
    @Override
    public boolean exists() {
-      return true;
+      return false;
    }
 
    public boolean isReload() {
