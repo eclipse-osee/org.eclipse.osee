@@ -60,7 +60,7 @@ public class ValidateBranchOperation {
          results.errorf("Children have duplicate default hierarchy parents [%s].",
             Collections.toString(",", returnArtIds));
          for (Long id : returnArtIds) {
-            results.getIds().add(ArtifactId.valueOf(id));
+            results.getIds().add(id.toString());
          }
       }
       return results;

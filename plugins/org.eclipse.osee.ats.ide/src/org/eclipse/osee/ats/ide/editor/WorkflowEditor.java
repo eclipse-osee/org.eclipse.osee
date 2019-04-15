@@ -820,16 +820,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
             EventModifiedBasicGuidArtifact eMArt = (EventModifiedBasicGuidArtifact) eArt;
             if (eMArt.getGuid().equals(getWorkItem().getGuid())) {
                for (AttributeChange attr : eMArt.getAttributeChanges()) {
-                  for (IWfeEventHandle handler : attrHandlers.getValues(
-                     AttributeTypeId.valueOf(attr.getAttrTypeGuid()))) {
-                     Displays.ensureInDisplayThread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                           handler.refresh();
-                        }
-                     });
-                  }
+                  handleEvent(AttributeTypeId.valueOf(attr.getAttrTypeGuid()));
                }
             }
          }
@@ -847,6 +838,18 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
                });
             }
          }
+      }
+   }
+
+   public void handleEvent(AttributeTypeId attrType) {
+      for (IWfeEventHandle handler : attrHandlers.getValues(attrType)) {
+         Displays.ensureInDisplayThread(new Runnable() {
+
+            @Override
+            public void run() {
+               handler.refresh();
+            }
+         });
       }
    }
 

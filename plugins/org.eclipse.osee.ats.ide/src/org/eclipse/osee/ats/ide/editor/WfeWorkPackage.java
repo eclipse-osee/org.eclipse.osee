@@ -12,18 +12,16 @@ package org.eclipse.osee.ats.ide.editor;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.ide.column.ev.WorkPackageColumnUI;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -38,22 +36,23 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class WfeWorkPackage extends Composite {
+public class WfeWorkPackage extends Composite implements IWfeEventHandle {
 
    private final static String WORK_PACKAGE = "Work Package:";
    Text valueLabel;
-   Label label;
    Hyperlink link;
+   private final IAtsWorkItem workItem;
 
-   public WfeWorkPackage(Composite parent, int style, final AbstractWorkflowArtifact sma, final WorkflowEditor editor) {
+   public WfeWorkPackage(Composite parent, int style, final IAtsWorkItem workItem, final WorkflowEditor editor) {
       super(parent, style);
+      this.workItem = workItem;
       setLayoutData(new GridData());
       setLayout(ALayout.getZeroMarginLayout(2, false));
       editor.getToolkit().adapt(this);
 
       try {
-         if (editor.isPrivilegedEditModeEnabled() || !sma.isCancelled() && !sma.isCompleted()) {
-            link = editor.getToolkit().createHyperlink(this, WORK_PACKAGE, SWT.NONE);
+         link = editor.getToolkit().createHyperlink(this, WORK_PACKAGE, SWT.NONE);
+         if (editor.isPrivilegedEditModeEnabled() || !workItem.isCancelled() && !workItem.isCompleted()) {
             link.addHyperlinkListener(new IHyperlinkListener() {
 
                @Override
@@ -72,25 +71,22 @@ public class WfeWorkPackage extends Composite {
                      if (editor.isDirty()) {
                         editor.doSave(null);
                      }
-                     WorkPackageColumnUI.promptChangeActivityId(sma, true);
+                     WorkPackageColumnUI.promptChangeActivityId(workItem, true);
                   } catch (Exception ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
             });
          } else {
-            label = new Label(this, SWT.NO_TRIM);
-            label.setLayoutData(new GridData());
-            label.setText(WORK_PACKAGE);
-            FormsUtil.setLabelFonts(label, FontManager.getDefaultLabelFont());
-            editor.getToolkit().adapt(label, true, true);
+            link.setEnabled(false);
          }
 
          valueLabel = new Text(this, SWT.NO_TRIM);
          valueLabel.setLayoutData(new GridData());
          editor.getToolkit().adapt(valueLabel, true, true);
          valueLabel.setText("Not Set");
-         updateLabel(sma);
+         editor.registerEvent(this, AtsAttributeTypes.WorkPackage, AtsAttributeTypes.WorkPackageReference);
+         refresh();
 
       } catch (OseeCoreException ex) {
          Label errorLabel = editor.getToolkit().createLabel(this, "Error: " + ex.getLocalizedMessage());
@@ -100,16 +96,17 @@ public class WfeWorkPackage extends Composite {
 
    }
 
-   private void updateLabel(AbstractWorkflowArtifact sma) {
+   @Override
+   public void refresh() {
       if (Widgets.isAccessible(valueLabel)) {
          String value = "Not Set";
-         IAtsWorkPackage workPackage =
-            AtsClientService.get().getEarnedValueService().getWorkPackage((IAtsWorkItem) sma);
+         IAtsWorkPackage workPackage = AtsClientService.get().getEarnedValueService().getWorkPackage(workItem);
          if (workPackage != null) {
             value = workPackage.toString();
          }
          valueLabel.setText(value);
          valueLabel.getParent().layout();
+         valueLabel.getParent().getParent().layout();
       }
    }
 
@@ -119,12 +116,14 @@ public class WfeWorkPackage extends Composite {
       if (Widgets.isAccessible(valueLabel)) {
          valueLabel.setBackground(color);
       }
-      if (Widgets.isAccessible(label)) {
-         label.setBackground(color);
-      }
       if (Widgets.isAccessible(link)) {
          link.setBackground(color);
       }
+   }
+
+   @Override
+   public IAtsWorkItem getWorkItem() {
+      return workItem;
    }
 
 }

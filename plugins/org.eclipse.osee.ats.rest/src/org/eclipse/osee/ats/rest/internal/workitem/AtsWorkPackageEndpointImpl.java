@@ -20,7 +20,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -33,6 +32,7 @@ import org.eclipse.osee.ats.api.util.ColorTeams;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.util.JsonUtil;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
@@ -70,34 +70,37 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
    @PUT
    @Path("{workPackageId}")
    @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
    @Override
-   public Response setWorkPackage(@PathParam("workPackageId") long workPackageId, JaxWorkPackageData workPackageData) {
+   public XResultData setWorkPackage(@PathParam("workPackageId") long workPackageId, JaxWorkPackageData workPackageData) {
+      XResultData rd = new XResultData();
       ArtifactReadable workPackageArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(workPackageId);
       if (workPackageArt == null) {
-         throw new OseeArgumentException("Work Package with id [%s] Not Found", workPackageId);
+         rd.errorf("Work Package with id [%s] Not Found", workPackageId);
       }
       IAtsUser asUser = atsApi.getUserService().getUserById(workPackageData.getAsUserId());
       if (asUser == null) {
-         throw new OseeArgumentException("Author with id [%s] Not Found", workPackageData.getAsUserId());
+         rd.errorf("Author with id [%s] Not Found", workPackageData.getAsUserId());
       }
       IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Set Work Package", asUser);
       for (Long workItemId : workPackageData.getWorkItemIds()) {
          IAtsWorkItem workItem = atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andIds(
             workItemId).getResults().getAtMostOneOrDefault(IAtsWorkItem.SENTINEL);
          if (workItem.getId().equals(IAtsWorkItem.SENTINEL.getId())) {
-            throw new OseeArgumentException("Work Item with id [%s] Not Found", workItemId);
+            rd.errorf("Work Item with id [%s] Not Found", workItemId);
          }
          if (!workItem.isTask() && !workItem.isTeamWorkflow()) {
-            throw new OseeArgumentException("Work Packages can only be set on Team Workflow or Task, not [%s]",
+            rd.errorf("Work Packages can only be set on Team Workflow or Task, not [%s]",
                workItem.getArtifactTypeName());
          }
          changes.setSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageReference, workPackageArt);
          autoAddWorkItemToColorTeamGoals(getColorTeams(), workPackageArt, workPackageId, workItem, changes);
+         rd.getIds().add(workItemId.toString());
       }
       if (!changes.isEmpty()) {
          changes.execute();
       }
-      return Response.ok().build();
+      return rd;
    }
 
    private void autoAddWorkItemToColorTeamGoals(ColorTeams colorTeams, ArtifactReadable workPackageArt, long workPackageId, IAtsWorkItem workItem, IAtsChangeSet changes) {
@@ -149,27 +152,30 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
    @DELETE
    @Path("{workPackageId}/workitem")
    @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
    @Override
-   public Response deleteWorkPackageItems(@PathParam("workPackageId") long workPackageId, JaxWorkPackageData workPackageData) {
+   public XResultData deleteWorkPackageItems(@PathParam("workPackageId") long workPackageId, JaxWorkPackageData workPackageData) {
+      XResultData rd = new XResultData();
       IAtsUser asUser = atsApi.getUserService().getUserById(workPackageData.getAsUserId());
       if (asUser == null) {
-         throw new OseeArgumentException("Author with id [%s] Not Found", workPackageData.getAsUserId());
+         rd.errorf("Author with id [%s] Not Found", workPackageData.getAsUserId());
       }
       IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Remove Work Package", asUser);
       for (Long workItemId : workPackageData.getWorkItemIds()) {
          IAtsWorkItem workItem = atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andIds(
             workItemId).getResults().getAtMostOneOrDefault(IAtsWorkItem.SENTINEL);
          if (workItem.getId().equals(IAtsWorkItem.SENTINEL.getId())) {
-            throw new OseeArgumentException("Work Item with id [%s] Not Found", workItemId);
+            rd.errorf("Work Item with id [%s] Not Found", workItemId);
          }
          if (atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageReference,
             null) != null) {
             changes.deleteAttributes(workItem, AtsAttributeTypes.WorkPackageReference);
+            rd.getIds().add(workItemId.toString());
          }
       }
       if (!changes.isEmpty()) {
          changes.execute();
       }
-      return Response.ok().build();
+      return rd;
    }
 }

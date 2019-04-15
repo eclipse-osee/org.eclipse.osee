@@ -24,8 +24,10 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.ide.column.WorkPackageFilterTreeDialog;
 import org.eclipse.osee.ats.ide.ev.WorkPackageCollectionProvider;
@@ -90,18 +92,17 @@ public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColum
       try {
          if (treeItem.getData() instanceof Artifact) {
             Artifact selectedArt = AtsClientService.get().getQueryServiceClient().getArtifact(treeItem);
-            AbstractWorkflowArtifact useAwa = null;
+            IAtsTeamWorkflow useTeamWF = null;
             if (selectedArt instanceof IAtsAction && AtsClientService.get().getWorkItemService().getTeams(
                selectedArt).size() == 1) {
-               useAwa = (AbstractWorkflowArtifact) AtsClientService.get().getWorkItemService().getFirstTeam(
-                  selectedArt).getStoreObject();
+               useTeamWF = AtsClientService.get().getWorkItemService().getFirstTeam(selectedArt);
             } else if (selectedArt instanceof AbstractWorkflowArtifact) {
-               useAwa = (AbstractWorkflowArtifact) selectedArt;
+               useTeamWF = (IAtsTeamWorkflow) selectedArt;
             }
-            if (useAwa != null) {
-               modified = promptChangeActivityId(useAwa, false);
+            if (useTeamWF != null) {
+               modified = promptChangeActivityId(useTeamWF, false);
                if (modified) {
-                  ((XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer()).update(useAwa, null);
+                  ((XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer()).update(useTeamWF, null);
                }
             }
          }
@@ -111,29 +112,31 @@ public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColum
       return modified;
    }
 
-   public static boolean promptChangeActivityId(AbstractWorkflowArtifact teamWf, boolean persist) {
-      return promptChangeActivityIds(Arrays.asList(teamWf));
+   public static boolean promptChangeActivityId(IAtsWorkItem workItem, boolean persist) {
+      return promptChangeActivityIds(Arrays.asList(workItem));
    }
 
-   private static boolean promptChangeActivityIds(final Collection<? extends AbstractWorkflowArtifact> awas) {
+   private static boolean promptChangeActivityIds(final Collection<IAtsWorkItem> workItems) {
       boolean modified = false;
       Set<IAtsWorkPackage> commonWorkPackageOptions = new HashSet<>();
       Set<IAtsWorkPackage> uniqueWorkPackageOptions = new HashSet<>();
-      Result result = getConfiguredWorkPackageOptions(awas, commonWorkPackageOptions, uniqueWorkPackageOptions);
+      Result result = getConfiguredWorkPackageOptions(workItems, commonWorkPackageOptions, uniqueWorkPackageOptions);
       if (result.isFalse()) {
          AWorkbench.popup("Options Invalid", result.getText());
       } else {
          WorkPackageFilterTreeDialog dialog = new WorkPackageFilterTreeDialog("Select Work Package",
-            getMessage(awas, commonWorkPackageOptions, uniqueWorkPackageOptions),
+            getMessage(workItems, commonWorkPackageOptions, uniqueWorkPackageOptions),
             new WorkPackageCollectionProvider(commonWorkPackageOptions));
          dialog.setInput();
          if (dialog.open() == Window.OK) {
             boolean removeFromWorkPackage = dialog.isRemoveFromWorkPackage();
             IAtsWorkPackage workPackage = dialog.getSelection();
             if (removeFromWorkPackage) {
-               AtsClientService.get().getEarnedValueService().removeWorkPackage(workPackage, Collections.castAll(awas));
+               AtsClientService.get().getEarnedValueService().removeWorkPackage(workPackage,
+                  Collections.castAll(workItems));
             } else {
-               AtsClientService.get().getEarnedValueService().setWorkPackage(workPackage, Collections.castAll(awas));
+               AtsClientService.get().getEarnedValueService().setWorkPackage(workPackage,
+                  Collections.castAll(workItems));
             }
             modified = true;
          }
@@ -141,9 +144,9 @@ public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColum
       return modified;
    }
 
-   private static String getMessage(Collection<? extends AbstractWorkflowArtifact> awas, Set<IAtsWorkPackage> commonWorkPackageOptions, Set<IAtsWorkPackage> uniqueWorkPackageOptions) {
+   private static String getMessage(Collection<IAtsWorkItem> workItems, Set<IAtsWorkPackage> commonWorkPackageOptions, Set<IAtsWorkPackage> uniqueWorkPackageOptions) {
       String message = "Select Work Package";
-      if (awas.size() > 1) {
+      if (workItems.size() > 1) {
          message = String.format(
             "Select Work Package Option from %d common option(s) out of %d unique options from selected Work Items",
             commonWorkPackageOptions.size(), uniqueWorkPackageOptions.size());
@@ -151,11 +154,11 @@ public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColum
       return message;
    }
 
-   private static Result getConfiguredWorkPackageOptions(final Collection<? extends AbstractWorkflowArtifact> awas, Set<IAtsWorkPackage> workPackageOptions, Set<IAtsWorkPackage> uniqueWorkPackageOptions) {
+   private static Result getConfiguredWorkPackageOptions(final Collection<IAtsWorkItem> workItems, Set<IAtsWorkPackage> workPackageOptions, Set<IAtsWorkPackage> uniqueWorkPackageOptions) {
       Result result = null;
-      for (AbstractWorkflowArtifact teamWf : awas) {
+      for (IAtsWorkItem workItem : workItems) {
          Collection<IAtsWorkPackage> options =
-            AtsClientService.get().getEarnedValueService().getWorkPackageOptions(teamWf);
+            AtsClientService.get().getEarnedValueService().getWorkPackageOptions(workItem);
          uniqueWorkPackageOptions.addAll(options);
          if (options.isEmpty()) {
             result = new Result(false, "One or more selected Work Items had no Work Package Options configured.");
@@ -182,19 +185,19 @@ public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColum
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       try {
-         Set<AbstractWorkflowArtifact> awas = new HashSet<>();
+         Set<IAtsWorkItem> workItems = new HashSet<>();
          for (TreeItem item : treeItems) {
             if (item.getData() instanceof Artifact) {
                Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
                if (art instanceof AbstractWorkflowArtifact) {
-                  awas.add((AbstractWorkflowArtifact) art);
+                  workItems.add((IAtsWorkItem) art);
                }
             }
          }
-         if (awas.isEmpty()) {
+         if (workItems.isEmpty()) {
             AWorkbench.popup("No Work Items Selected");
          } else {
-            promptChangeActivityIds(awas);
+            promptChangeActivityIds(workItems);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

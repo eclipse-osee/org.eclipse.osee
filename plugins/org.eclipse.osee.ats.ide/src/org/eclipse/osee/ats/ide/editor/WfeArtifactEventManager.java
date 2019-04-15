@@ -16,6 +16,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -26,7 +27,10 @@ import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -35,6 +39,8 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListe
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventHandler;
 
 /**
  * Common location for event handling for SMAEditors in order to keep number of registrations and processing to a
@@ -42,7 +48,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
  *
  * @author Donald G. Dunne
  */
-public class WfeArtifactEventManager implements IArtifactEventListener {
+public class WfeArtifactEventManager implements IArtifactEventListener, EventHandler {
 
    static List<IWfeEventHandler> handlers = new CopyOnWriteArrayList<>();
    static WfeArtifactEventManager instance = new WfeArtifactEventManager();
@@ -313,6 +319,35 @@ public class WfeArtifactEventManager implements IArtifactEventListener {
          }
       }
       return false;
+   }
+
+   @Override
+   public void handleEvent(Event event) {
+      try {
+         if (event.getTopic().equals(AtsTopicEvent.WORK_ITEM_MODIFIED.getTopic())) {
+            String ids = (String) event.getProperty(AtsTopicEvent.WORK_ITEM_IDS_KEY);
+            for (Long workItemId : Collections.fromString(ids, ";", Long::valueOf)) {
+               ArtifactId workItemArtId = ArtifactId.valueOf(workItemId);
+               String attrTypeIds = (String) event.getProperty(AtsTopicEvent.WORK_ITEM_ATTR_TYPE_IDS_KEY);
+               for (Long attrTypeId : Collections.fromString(attrTypeIds, ";", Long::valueOf)) {
+                  for (IWfeEventHandler handler : handlers) {
+                     try {
+                        if (!handler.isDisposed()) {
+                           if (handler.getWorkflowEditor().getArtifactFromEditorInput().equals(workItemArtId)) {
+                              handler.getWorkflowEditor().handleEvent(AttributeTypeId.valueOf(attrTypeId));
+                           }
+                        }
+                     } catch (Exception ex) {
+                        OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error processing event handler for - %s",
+                           handler);
+                     }
+                  }
+               }
+            }
+         }
+      } catch (Exception ex) {
+         // do nothing
+      }
    }
 
 }

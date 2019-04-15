@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.ev.internal;
 
+import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -23,6 +24,9 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -70,13 +74,22 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
 
       AtsWorkPackageEndpointApi workPackageEp = AtsClientService.getWorkPackageEndpoint();
       if (remove) {
-         workPackageEp.deleteWorkPackageItems(workPackage == null ? 0L : workPackage.getId(), data);
+         XResultData rd = workPackageEp.deleteWorkPackageItems(workPackage == null ? 0L : workPackage.getId(), data);
+         if (rd.isErrors()) {
+            throw new OseeCoreException(rd.toString());
+         }
       } else {
-         workPackageEp.setWorkPackage(workPackage.getId(), data);
+         XResultData rd = workPackageEp.setWorkPackage(workPackage.getId(), data);
+         if (rd.isErrors()) {
+            throw new OseeCoreException(rd.toString());
+         }
       }
 
       TopicEvent event = new TopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, AtsTopicEvent.WORK_ITEM_IDS_KEY,
          AtsObjects.toIdsString(";", workItems));
+      event.put(AtsTopicEvent.WORK_ITEM_ATTR_TYPE_IDS_KEY,
+         Collections.toString(";", Arrays.asList(AtsAttributeTypes.WorkPackage.getIdString(),
+            AtsAttributeTypes.WorkPackageReference.getIdString())));
       OseeEventManager.kickTopicEvent(getClass(), event);
 
       atsApi.getStoreService().reload(workItems);

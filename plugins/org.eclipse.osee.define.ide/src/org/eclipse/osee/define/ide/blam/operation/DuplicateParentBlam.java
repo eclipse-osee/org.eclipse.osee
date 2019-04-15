@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
@@ -62,7 +61,7 @@ public class DuplicateParentBlam extends AbstractBlam {
       XResultData results = defineBrchEp.getChildrenWithMultipleParents(branch, ArtifactTypeId.SENTINEL);
       if (results.isErrors()) {
          List<ArtifactId> artifactIds = new ArrayList<>(results.getIds().size());
-         for (Id id : results.getIds()) {
+         for (String id : results.getIds()) {
             artifactIds.add(ArtifactId.valueOf(id));
          }
          logf(results.getResults().iterator().next());

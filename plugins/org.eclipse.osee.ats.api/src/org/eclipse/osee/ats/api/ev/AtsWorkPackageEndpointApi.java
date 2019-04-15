@@ -19,9 +19,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.ColorTeams;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald D. Dunne
@@ -42,11 +42,13 @@ public interface AtsWorkPackageEndpointApi {
    @PUT
    @Path("{workPackageId}")
    @Consumes({MediaType.APPLICATION_JSON})
-   abstract Response setWorkPackage(@PathParam("workPackageId") long workPackageId, JaxWorkPackageData workPackageData);
+   @Produces({MediaType.APPLICATION_JSON})
+   XResultData setWorkPackage(@PathParam("workPackageId") long workPackageId, JaxWorkPackageData workPackageData);
 
    @DELETE
    @Path("{workPackageId}/workitem")
    @Consumes({MediaType.APPLICATION_JSON})
-   Response deleteWorkPackageItems(@PathParam("workPackageId") long workPackageId, JaxWorkPackageData workPackageData);
+   @Produces({MediaType.APPLICATION_JSON})
+   XResultData deleteWorkPackageItems(@PathParam("workPackageId") long workPackageId, JaxWorkPackageData workPackageData);
 
 }

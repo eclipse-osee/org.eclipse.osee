@@ -11,26 +11,23 @@
 
 package org.eclipse.osee.ats.ide.editor;
 
-import java.util.Collection;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
-import org.eclipse.osee.ats.ide.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -47,7 +44,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class WfeRelationsHyperlinkComposite extends Composite {
+public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEventHandle {
 
    private static RelationTypeSide[] sides = new RelationTypeSide[] {
       AtsRelationTypes.TeamWorkflowToReview_Review,
@@ -61,17 +58,20 @@ public class WfeRelationsHyperlinkComposite extends Composite {
       CoreRelationTypes.SupportingInfo_SupportingInfo,
       CoreRelationTypes.Dependency__Artifact,
       CoreRelationTypes.Dependency__Dependency};
-   private AbstractWorkflowArtifact awa;
-   private Label actionableItemsLabel;
    private final WorkflowEditor editor;
+   private final IAtsWorkItem workItem;
+   private final CompositeKeyHashMap<Artifact, RelationTypeSide, Hyperlink> artAndRelToHyperlink =
+      new CompositeKeyHashMap<Artifact, RelationTypeSide, Hyperlink>();
+   private final CompositeKeyHashMap<Artifact, RelationTypeSide, Label> artAndRelToLabel =
+      new CompositeKeyHashMap<Artifact, RelationTypeSide, Label>();
 
    public WfeRelationsHyperlinkComposite(Composite parent, int style, WorkflowEditor editor) {
       super(parent, style);
       this.editor = editor;
+      this.workItem = editor.getWorkItem();
    }
 
-   public void create(AbstractWorkflowArtifact sma) {
-      this.awa = sma;
+   public void create(AbstractWorkflowArtifact workItem) {
       setLayout(ALayout.getZeroMarginLayout(2, false));
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       gd.widthHint = 500;
@@ -79,34 +79,55 @@ public class WfeRelationsHyperlinkComposite extends Composite {
       editor.getToolkit().adapt(this);
 
       // Create all hyperlinks from this artifact to others of interest
-      if (sma.isTeamWorkflow()) {
-         for (IAtsTeamWorkflow teamWf : sma.getParentAction().getTeamWorkflows()) {
-            if (!teamWf.equals(sma)) {
+      if (workItem.isTeamWorkflow()) {
+         for (IAtsTeamWorkflow teamWf : workItem.getParentAction().getTeamWorkflows()) {
+            if (!teamWf.equals(workItem)) {
                createLink("This", AtsClientService.get().getQueryServiceClient().getArtifact(teamWf), " has sibling ",
-                  sma);
+                  workItem, null);
             }
          }
       }
-      createArtifactRelationHyperlinks("This", sma, "is reviewed by", AtsRelationTypes.TeamWorkflowToReview_Review);
-      createArtifactRelationHyperlinks("This", sma, "reviews", AtsRelationTypes.TeamWorkflowToReview_Team);
-      createArtifactRelationHyperlinks("This", sma, "is superceded by", CoreRelationTypes.Supercedes_Superceded);
-      createArtifactRelationHyperlinks("This", sma, "supercedes", CoreRelationTypes.Supercedes_Supercedes);
-      createArtifactRelationHyperlinks("This", sma, "depends on", CoreRelationTypes.Dependency__Dependency);
-      createArtifactRelationHyperlinks("This", sma, "is dependency of", CoreRelationTypes.Dependency__Artifact);
+      createArtifactRelationHyperlinks("This", workItem, "is reviewed by",
+         AtsRelationTypes.TeamWorkflowToReview_Review);
+      createArtifactRelationHyperlinks("This", workItem, "reviews", AtsRelationTypes.TeamWorkflowToReview_Team);
+      createArtifactRelationHyperlinks("This", workItem, "is superceded by", CoreRelationTypes.Supercedes_Superceded);
+      createArtifactRelationHyperlinks("This", workItem, "supercedes", CoreRelationTypes.Supercedes_Supercedes);
+      createArtifactRelationHyperlinks("This", workItem, "depends on", CoreRelationTypes.Dependency__Dependency);
+      createArtifactRelationHyperlinks("This", workItem, "is dependency of", CoreRelationTypes.Dependency__Artifact);
 
-      createArtifactRelationHyperlinks("This", sma, "is derived from", AtsRelationTypes.Derive_From);
-      createArtifactRelationHyperlinks("This", sma, "derived", AtsRelationTypes.Derive_To);
+      createArtifactRelationHyperlinks("This", workItem, "is derived from", AtsRelationTypes.Derive_From);
+      createArtifactRelationHyperlinks("This", workItem, "derived", AtsRelationTypes.Derive_To);
 
-      createArtifactRelationHyperlinks("This", sma, "is supported info for",
+      createArtifactRelationHyperlinks("This", workItem, "is supported info for",
          CoreRelationTypes.SupportingInfo_SupportedBy);
-      createArtifactRelationHyperlinks("This", sma, "has supporting info",
+      createArtifactRelationHyperlinks("This", workItem, "has supporting info",
          CoreRelationTypes.SupportingInfo_SupportingInfo);
 
-      // Create label for review's related actionable items (if any)
-      if (sma instanceof AbstractReviewArtifact) {
-         processReviewArtifact((AbstractReviewArtifact) sma);
-      }
+      editor.registerEvent(this, sides);
+   }
 
+   @Override
+   public void refresh() {
+      boolean found = false;
+      for (Pair<Artifact, RelationTypeSide> keyPair : artAndRelToHyperlink.keySet()) {
+         Artifact artifact = keyPair.getFirst();
+         RelationTypeSide relationTypeSide = keyPair.getSecond();
+         boolean needDel = false;
+         if (relationTypeSide != null) {
+            needDel = !AtsClientService.get().getRelationResolver().areRelated(workItem.getStoreObject(),
+               relationTypeSide, artifact);
+         }
+         if (needDel) {
+            Hyperlink link = artAndRelToHyperlink.get(artifact, relationTypeSide);
+            link.dispose();
+            Label label = artAndRelToLabel.get(artifact, relationTypeSide);
+            label.dispose();
+            found = true;
+         }
+      }
+      if (found) {
+         getParent().layout();
+      }
    }
 
    public static boolean relationExists(AbstractWorkflowArtifact smaArt) {
@@ -129,21 +150,28 @@ public class WfeRelationsHyperlinkComposite extends Composite {
       return "";
    }
 
-   private void createArtifactRelationHyperlinks(String prefix, Artifact thisArt, String action, RelationTypeSide relationEnum) {
-      for (final Artifact art : thisArt.getRelatedArtifacts(relationEnum)) {
-         createLink(prefix, art, action, thisArt);
+   private void createArtifactRelationHyperlinks(String prefix, Artifact thisArt, String action, RelationTypeSide relation) {
+      for (final Artifact art : thisArt.getRelatedArtifacts(relation)) {
+         createLink(prefix, art, action, thisArt, relation);
       }
    }
 
-   private void createLink(String prefix, final Artifact art, String action, Artifact thisArt) {
+   /**
+    * @param relation or null if sibling relation ship
+    */
+   private void createLink(String prefix, final Artifact art, String action, Artifact thisArt, RelationTypeSide relation) {
       try {
-         editor.getToolkit().createLabel(this,
+         Label label = editor.getToolkit().createLabel(this,
             prefix + " \"" + thisArt.getArtifactTypeName() + "\" " + action + getCompletedCancelledString(
                art) + " \"" + art.getArtifactTypeName() + "\" ");
          Hyperlink link = editor.getToolkit().createHyperlink(this,
             String.format("\"%s\" - %s", art.getName().length() < 60 ? art.getName() : art.getName().substring(0, 60),
                AtsClientService.get().getAtsId(art)),
             SWT.NONE);
+         if (!art.equals(thisArt)) {
+            artAndRelToHyperlink.put(art, relation, link);
+            artAndRelToLabel.put(art, relation, label);
+         }
          link.addHyperlinkListener(new IHyperlinkListener() {
 
             @Override
@@ -174,68 +202,9 @@ public class WfeRelationsHyperlinkComposite extends Composite {
       }
    }
 
-   private void processReviewArtifact(final AbstractReviewArtifact reviewArt) {
-      if (!AtsClientService.get().getWorkItemService().getActionableItemService().hasActionableItems(reviewArt)) {
-         return;
-      }
-      actionableItemsLabel = editor.getToolkit().createLabel(this, "");
-      Hyperlink link = editor.getToolkit().createHyperlink(this, "(Edit)", SWT.NONE);
-      link.addHyperlinkListener(new IHyperlinkListener() {
-
-         @Override
-         public void linkEntered(HyperlinkEvent e) {
-            // do nothing
-         }
-
-         @Override
-         public void linkExited(HyperlinkEvent e) {
-            // do nothing
-         }
-
-         @Override
-         public void linkActivated(HyperlinkEvent e) {
-            editRelatedActionableItems(reviewArt);
-         }
-      });
-      refreshActionableItemsLabel();
-   }
-
-   private void refreshActionableItemsLabel() {
-      if (actionableItemsLabel != null && awa instanceof AbstractReviewArtifact) {
-         actionableItemsLabel.setText("This \"" + ((AbstractReviewArtifact) awa).getArtifactTypeName() +
-         //
-            "\" is review of Actionable Items  \"" +
-            //
-            AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItemsStr(awa) + "\" ");
-      }
-   }
-
-   public void refresh() {
-      refreshActionableItemsLabel();
-   }
-
-   private void editRelatedActionableItems(final AbstractReviewArtifact reviewArt) {
-      final AICheckTreeDialog diag =
-         new AICheckTreeDialog("Edit Actionable Items", "Select Actionable Items for this review", Active.Active);
-      try {
-         Collection<IAtsActionableItem> actionableItems = ActionableItems.getUserEditableActionableItems(
-            AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(reviewArt));
-
-         diag.setInitialSelections(actionableItems);
-         if (diag.open() != 0) {
-            return;
-         }
-         IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet("Edit Actionable Items",
-            AtsClientService.get().getUserService().getCurrentUser());
-         AtsClientService.get().getWorkItemService().getActionableItemService().setActionableItems(reviewArt,
-            actionableItems, changes);
-         changes.execute();
-         editor.onDirtied();
-         refreshActionableItemsLabel();
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-
+   @Override
+   public IAtsWorkItem getWorkItem() {
+      return workItem;
    }
 
 }

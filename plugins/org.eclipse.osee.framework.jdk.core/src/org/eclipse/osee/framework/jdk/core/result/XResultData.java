@@ -11,16 +11,15 @@
 
 package org.eclipse.osee.framework.jdk.core.result;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Used to log Info, Warning and Errors to multiple locations (logger, stderr/out and XResultView). Upon completion, a
@@ -42,7 +41,7 @@ public class XResultData {
    public List<IResultDataListener> listeners;
    public String title;
    private List<String> results = new LinkedList<>();
-   private List<Id> ids = new LinkedList<>();
+   private List<String> ids = new LinkedList<>();
    // Use primitives for serialization
    private int errorCount;
    private int warningCount;
@@ -270,11 +269,11 @@ public class XResultData {
       }
    }
 
-   public List<Id> getIds() {
+   public List<String> getIds() {
       return ids;
    }
 
-   public void setIds(List<Id> ids) {
+   public void setIds(List<String> ids) {
       this.ids = ids;
    }
 
