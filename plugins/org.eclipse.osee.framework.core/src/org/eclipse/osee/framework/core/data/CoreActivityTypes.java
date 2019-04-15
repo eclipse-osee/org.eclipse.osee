@@ -35,6 +35,7 @@ public final class CoreActivityTypes {
    public static final ActivityTypeToken THREAD_ACTIVITY = create(777L, INFO, "org.eclipse.osee.activity");
    public static final ActivityTypeToken MEMORY_ACTIVITY = create(888L, INFO, "org.eclipse.osee.activity");
    public static final ActivityTypeToken PURGE_TRANSACTION = create(4455L, INFO, "org.eclipse.osee.orcs.rest.purge.transaction");
+   public static final ActivityTypeToken IMPORT_DELETE = create(71077345L, INFO, "org.eclipse.osee.activity");
    // @formatter:on
 
    private CoreActivityTypes() {

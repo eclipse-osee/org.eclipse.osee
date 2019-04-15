@@ -16,12 +16,13 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -251,6 +252,16 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
          descendants.add(child);
          child.getDescendants(descendants);
       }
+   }
+
+   @Override
+   public boolean isDescendantOf(ArtifactToken parent) {
+      for (ArtifactReadable nextParent = getParent(); nextParent != null; nextParent = nextParent.getParent()) {
+         if (nextParent.equals(parent)) {
+            return true;
+         }
+      }
+      return false;
    }
 
    @Override

@@ -15,11 +15,11 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -96,6 +96,8 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
    List<ArtifactReadable> getDescendants();
 
    void getDescendants(List<ArtifactReadable> descendants);
+
+   boolean isDescendantOf(ArtifactToken parent);
 
    List<ArtifactReadable> getAncestors();
 
@@ -283,6 +285,11 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
          @Override
          public void getDescendants(List<ArtifactReadable> descendants) {
+         }
+
+         @Override
+         public boolean isDescendantOf(ArtifactToken parent) {
+            return false;
          }
 
          @Override
