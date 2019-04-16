@@ -14,6 +14,10 @@
 		<module>../../plugins/org.eclipse.osee.dep.p2</module>
 	</modules>
 	
+	
+	
+	
+	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -44,6 +48,7 @@
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
 		<eclipse-ip-site>https://github.com/osee-dev/osee.external.releases/raw/master/org.eclipse.ip</eclipse-ip-site>
 		<nebula-site>http://download.eclipse.org/nebula/snapshot</nebula-site>
+		<jgit-site>https://repo.eclipse.org/content/groups/releases</jgit-site>
 	</properties>
 
 	<licenses>
@@ -66,16 +71,22 @@
 	</organization>
 
  	<repositories>
- 	<repository> 
- 	   	<id>egit</id>
- 	   	<layout>p2</layout> 
- 	   	<url>${egit-site}</url> 
-		</repository>
-		<repository>
+ 	  <repository>
 			<id>orbit</id>
 			<layout>p2</layout>
 			<url>${orbit-site}</url>
-		</repository>
+	  </repository>
+     <repository>
+         <id>jgit</id>         
+         <url>${jgit-site}</url>
+    </repository>
+ 	 <repository>  		
+ 	   	<id>egit</id>
+ 	   	<layout>p2</layout> 
+ 	   	<url>${egit-site}</url> 
+	</repository>
+		
+	
 		<repository>
 			<id>eclipse</id>
 			<layout>p2</layout>
@@ -92,10 +103,18 @@
 			<url>${nebula-site}</url>
 		</repository>
 	</repositories>
+	
+
 	<build>
+	
 	<extensions>
 	</extensions>
 		<sourceDirectory>src</sourceDirectory>
+		
+		
+		
+		
+		
 		<plugins>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>

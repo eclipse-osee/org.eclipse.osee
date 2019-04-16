@@ -312,7 +312,13 @@
    <includes
          id="org.eclipse.papyrus.sdk.feature"
          version="0.0.0"/>
-
+         
+   <includes
+         id="org.eclipse.jgit"
+         version="0.0.0"/>
+   
+  
+                    
    <requires>
       <import plugin="org.eclipse.osgi.services"/>
       <import plugin="org.apache.log4j" version="1.2.15" match="greaterOrEqual"/>
@@ -348,6 +354,8 @@
       <import feature="org.eclipse.emf.ecore" version="2.9.0" match="greaterOrEqual"/>
       <import plugin="com.lowagie.text" version="2.0.0" match="compatible"/>
    </requires>
+
+
 
    <plugin
          id="com.fasterxml.jackson.core.jackson-core"
