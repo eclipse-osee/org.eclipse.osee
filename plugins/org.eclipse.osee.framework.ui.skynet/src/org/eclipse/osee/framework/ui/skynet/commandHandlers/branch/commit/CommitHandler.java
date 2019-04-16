@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.lang.mutable.MutableBoolean;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -20,6 +21,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -33,6 +35,7 @@ import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.MergeInProgressHandler;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchOptionsEnum;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.PlatformUI;
@@ -54,6 +57,7 @@ public abstract class CommitHandler extends CommandHandler {
 
    public static boolean commitBranch(final ConflictManagerExternal conflictManager, final boolean archiveSourceBranch, boolean skipPrompts) {
       boolean toReturn = false;
+      AtomicBoolean checkBox = new AtomicBoolean(false);
       BranchState state = BranchManager.getState(conflictManager.getSourceBranch());
       if (!state.isRebaselineInProgress() && !state.isRebaselined()) {
          if (conflictManager.getOriginalConflicts().size() > 0) {
@@ -64,10 +68,18 @@ public abstract class CommitHandler extends CommandHandler {
                Displays.pendInDisplayThread(new Runnable() {
                   @Override
                   public void run() {
-                     dialogResult.setValue(
-                        MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                           "Commit Branch", String.format("Commit branch\n\n\"[%s]\" onto destination\n\n\"[%s]\"",
-                              conflictManager.getSourceBranch(), conflictManager.getDestinationBranch())));
+                     String message = String.format("Commit branch\n\n\"[%s]\" onto destination\n\n\"[%s]\"",
+                        conflictManager.getSourceBranch(), conflictManager.getDestinationBranch());
+                     CheckBoxDialog diag =
+                        new CheckBoxDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                           "Commit Branch", null, message, "Archive Branch(es)", MessageDialog.QUESTION, 0);
+
+                     if (diag.open() == Window.OK) {
+                        if (diag.isChecked()) {
+                           checkBox.set(true);
+                        }
+                        dialogResult.setValue(true);
+                     }
                   }
                });
             } else {
@@ -75,7 +87,7 @@ public abstract class CommitHandler extends CommandHandler {
             }
 
             if (dialogResult.booleanValue()) {
-               BranchManager.commitBranch(null, conflictManager, archiveSourceBranch, false);
+               BranchManager.commitBranch(null, conflictManager, checkBox.get(), false);
                toReturn = true;
             }
          }

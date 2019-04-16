@@ -47,23 +47,30 @@ public class ArchiveBranchHandler extends CommandHandler {
          public void run() {
             if (MessageDialog.openConfirm(Displays.getActiveShell(), "Archive Branches",
                "Archive Selected Branches?")) {
-               Thread thread = new Thread(new Runnable() {
-
-                  @Override
-                  public void run() {
-                     Collection<? extends BranchId> branches = Handlers.getBranchesFromStructuredSelection(selection);
-
-                     for (BranchId branch : branches) {
-                        BranchArchivedState state = BranchArchivedState.fromBoolean(!BranchManager.isArchived(branch));
-                        BranchManager.setArchiveState(branch, state);
-                        OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Committed, branch));
-                     }
-                  }
-               }, "Archive Branch(es)");
-               thread.start();
+               archiveSelectedBranches(selection);
             }
          }
+
       });
       return null;
+   }
+
+   public static void archiveSelectedBranches(IStructuredSelection selection) {
+      {
+         Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+               Collection<? extends BranchId> branches = Handlers.getBranchesFromStructuredSelection(selection);
+
+               for (BranchId branch : branches) {
+                  BranchArchivedState state = BranchArchivedState.fromBoolean(!BranchManager.isArchived(branch));
+                  BranchManager.setArchiveState(branch, state);
+                  OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Committed, branch));
+               }
+            }
+         }, "Archive Branch(es)");
+         thread.start();
+      }
    }
 }

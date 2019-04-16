@@ -65,7 +65,7 @@ public abstract class CommandHandler extends AbstractHandler {
 
    protected abstract Object executeWithException(ExecutionEvent event, IStructuredSelection selection);
 
-   protected ISelectionProvider getSelectionProvider() {
+   protected static ISelectionProvider getSelectionProvider() {
       ISelectionProvider selectionProvider = null;
       IWorkbench workbench = PlatformUI.getWorkbench();
       if (!workbench.isStarting() && !workbench.isClosing()) {
@@ -83,7 +83,7 @@ public abstract class CommandHandler extends AbstractHandler {
       return selectionProvider;
    }
 
-   private IStructuredSelection getCurrentSelection() throws Exception {
+   protected static IStructuredSelection getCurrentSelection() throws Exception {
       IStructuredSelection structuredSelection = null;
       ISelectionProvider selectionProvider = getSelectionProvider();
       if (selectionProvider != null) {
