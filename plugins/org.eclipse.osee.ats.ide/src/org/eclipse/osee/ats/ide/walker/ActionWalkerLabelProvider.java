@@ -65,7 +65,7 @@ public class ActionWalkerLabelProvider implements ILabelProvider {
       } else if (obj instanceof IActionWalkerItem) {
          str = ((IActionWalkerItem) obj).getName();
       }
-      return Strings.truncate(str, 40, true);
+      return Strings.truncate(str, 50, true);
    }
 
    @Override

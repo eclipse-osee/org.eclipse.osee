@@ -32,8 +32,8 @@ import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.action.ActionArtifactRollup;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -102,8 +102,8 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
       try {
          if (getTeamDefinition().isTeamUsesVersions()) {
             IAtsVersion version = AtsClientService.get().getVersionService().getTargetedVersion(this);
-            return String.format("%s: [%s] - %s", getArtifactType(), version != null ? version : "Un-Targeted",
-               getName());
+            return String.format("%s: [%s] - %s", getTeamName(), version != null ? version : "Un-Targeted", getName());
+
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
