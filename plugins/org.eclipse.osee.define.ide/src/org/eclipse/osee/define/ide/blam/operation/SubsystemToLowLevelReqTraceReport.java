@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -65,6 +66,8 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
    private XCombo branchViewWidget;
    private XListDropViewer lowerLevel;
+   private AttributeTypeId safetyAttribute = CoreAttributeTypes.ItemDAL;
+   private static final String LEGACY_DAL = "Use Legacy DAL";
 
    @Override
    public String getName() {
@@ -96,6 +99,10 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       BranchId branch = arts.get(0).getBranch();
       Object view = variableMap.getValue(BRANCH_VIEW);
       setViewId(view);
+      Object isLegacy = variableMap.getValue(LEGACY_DAL);
+      if (isLegacy.equals(true)) {
+         safetyAttribute = CoreAttributeTypes.LegacyDAL;
+      }
       excludedArtifactIdMap = ViewIdUtility.findExcludedArtifactsByView(viewId, branch);
 
       initLowLevelRequirements(arts); // depends on excludedArtifactIdMap being set correctly
@@ -137,7 +144,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
          row[2] = lowLevelReq.getAttributesToStringSorted(CoreAttributeTypes.QualificationMethod);
          row[7] = lowLevelReq.getArtifactType().getName();
          row[8] = lowLevelReq.getAttributesToStringSorted(CoreAttributeTypes.Partition);
-         row[9] = lowLevelReq.getSoleAttributeValue(CoreAttributeTypes.ItemDAL, "");
+         row[9] = lowLevelReq.getSoleAttributeValue(safetyAttribute, "");
          row[10] = lowLevelReq.getIdString();
 
          List<Artifact> relatedArtifacts =
@@ -291,12 +298,16 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       }
    }
 
+   private static final String TRACE_HANDLER_CHECKBOX =
+      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"%s\" labelAfter=\"true\" horizontalLabel=\"true\"/>";
+
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Lower Level Requirements\" />" + //
          "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"Allocation Components\" />" + //
          "<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"Low Level Requirement Type(s)\" multiSelect=\"true\" />" + //
          "<XWidget xwidgetType=\"XCombo()\" displayName=\"Branch View\" horizontalLabel=\"true\"/>" + //
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + LEGACY_DAL + "\" labelAfter=\"true\" horizontalLabel=\"true\"/>" + //
          "</xWidgets>";
    }
 
