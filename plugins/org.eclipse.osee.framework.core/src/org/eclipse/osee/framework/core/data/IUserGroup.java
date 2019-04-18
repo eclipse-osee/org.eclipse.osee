@@ -25,18 +25,6 @@ public interface IUserGroup {
 
    boolean isCurrentUserMember();
 
-   boolean isTemporaryOverride(UserId user);
-
-   /**
-    * Allow user to temporarily override group membership. Value of "member" will be returned until
-    * .removeTemporaryOverride() is called
-    */
-   void setTemporaryOverride(boolean member);
-
-   void removeTemporaryOverride();
-
-   boolean isCurrentUserTemporaryOverride();
-
    void removeMember(UserId user);
 
    Collection<UserToken> getMembers();

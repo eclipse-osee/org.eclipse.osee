@@ -58,7 +58,7 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    public boolean isMember(UserId user) {
       checkGroupExists();
       Conditions.assertTrue(user instanceof Artifact, "User must be artifact");
-      return isTemporaryOverride(user) || getArtifact().isRelated(CoreRelationTypes.Users_User, (Artifact) user);
+      return getArtifact().isRelated(CoreRelationTypes.Users_User, (Artifact) user);
    }
 
    @Override
@@ -90,11 +90,6 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
          }
       }
       return usersGroupFolder;
-   }
-
-   @Override
-   public boolean isCurrentUserTemporaryOverride() {
-      return isTemporaryOverride(UserManager.getUser());
    }
 
    @Override

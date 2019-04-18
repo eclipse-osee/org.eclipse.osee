@@ -47,8 +47,7 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    public boolean isMember(UserId user) {
       checkGroupExists();
       Conditions.assertTrue(user instanceof ArtifactReadable, "User must be artifact");
-      return isTemporaryOverride(user) || getArtifact().areRelated(CoreRelationTypes.Users_User,
-         (ArtifactReadable) user);
+      return getArtifact().areRelated(CoreRelationTypes.Users_User, (ArtifactReadable) user);
    }
 
    @Override
@@ -58,11 +57,6 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
 
    @Override
    protected ArtifactReadable getOrCreateGroupArtifact(ArtifactToken token) {
-      throw new UnsupportedOperationException();
-   }
-
-   @Override
-   public boolean isCurrentUserTemporaryOverride() {
       throw new UnsupportedOperationException();
    }
 

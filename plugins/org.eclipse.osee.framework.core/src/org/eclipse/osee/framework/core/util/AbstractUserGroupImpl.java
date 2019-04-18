@@ -10,11 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.util;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
-import org.eclipse.osee.framework.core.data.UserId;
 
 /**
  * @author Donald G. Dunne
@@ -22,7 +19,6 @@ import org.eclipse.osee.framework.core.data.UserId;
 public abstract class AbstractUserGroupImpl implements IUserGroup {
 
    protected ArtifactToken groupArtifact;
-   private final Map<ArtifactToken, Boolean> temporaryOverride = new HashMap<>();
 
    public AbstractUserGroupImpl(ArtifactToken userGroupArt) {
       this.groupArtifact = userGroupArt;
@@ -32,24 +28,6 @@ public abstract class AbstractUserGroupImpl implements IUserGroup {
    public ArtifactToken getArtifact() {
       checkGroupExists();
       return groupArtifact;
-   }
-
-   @Override
-   public boolean isTemporaryOverride(UserId user) {
-      if (temporaryOverride.get(groupArtifact) != null) {
-         return temporaryOverride.get(groupArtifact);
-      }
-      return false;
-   }
-
-   @Override
-   public void setTemporaryOverride(boolean member) {
-      temporaryOverride.put(groupArtifact, member);
-   }
-
-   @Override
-   public void removeTemporaryOverride() {
-      temporaryOverride.remove(groupArtifact);
    }
 
    protected void checkGroupExists() {

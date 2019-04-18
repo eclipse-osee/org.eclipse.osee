@@ -162,8 +162,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
 
    @Override
    public boolean isAtsAdmin() {
-      if (AtsClientService.get().getUserGroupService().getUserGroup(
-         AtsArtifactToken.AtsAdmin).isCurrentUserTemporaryOverride()) {
+      if (AtsClientService.get().getUserGroupService().getUserGroup(AtsArtifactToken.AtsAdmin).isCurrentUserMember()) {
          return true;
       }
       return configurationService.getConfigurations().getAtsAdmins().contains(getCurrentUser());
