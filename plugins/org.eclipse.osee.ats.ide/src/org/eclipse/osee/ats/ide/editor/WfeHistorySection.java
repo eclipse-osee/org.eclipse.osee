@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.ide.editor;
 
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.ide.editor.history.XHistoryViewer;
 import org.eclipse.osee.ats.ide.editor.log.XLogViewer;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -36,14 +37,19 @@ import org.eclipse.ui.forms.widgets.Section;
 /**
  * @author Donald G. Dunne
  */
-public class WfeHistorySection extends SectionPart {
+public class WfeHistorySection extends SectionPart implements IWfeEventHandle {
 
    private final WorkflowEditor editor;
    private boolean sectionCreated = false;
+   private final IAtsWorkItem workItem;
+   private XHistoryViewer xHistoryViewer;
+   private XLogViewer xLogViewer;
 
    public WfeHistorySection(WorkflowEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(parent, toolkit, style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
       this.editor = editor;
+      workItem = editor.getWorkItem();
+      editor.registerEvent(this, workItem.getStoreObject());
    }
 
    @Override
@@ -77,12 +83,12 @@ public class WfeHistorySection extends SectionPart {
 
       Label logLabel = toolkit.createLabel(composite, "ATS Log:", SWT.NONE);
       logLabel.setFont(FontManager.getCourierNew12Bold());
-      XLogViewer xLogViewer = new XLogViewer(awa);
+      xLogViewer = new XLogViewer(awa);
       xLogViewer.createWidgets(composite, 2);
 
       Label historyLabel = toolkit.createLabel(composite, "Detailed History (if available):", SWT.NONE);
       historyLabel.setFont(FontManager.getCourierNew12Bold());
-      XHistoryViewer xHistoryViewer = new XHistoryViewer(awa);
+      xHistoryViewer = new XHistoryViewer(awa);
       xHistoryViewer.createWidgets(composite, 2);
 
       Label button = toolkit.createLabel(composite, "   ", SWT.NONE);
@@ -103,6 +109,17 @@ public class WfeHistorySection extends SectionPart {
       toolkit.paintBordersFor(composite);
       sectionCreated = true;
 
+   }
+
+   @Override
+   public void refresh() {
+      xHistoryViewer.refresh();
+      xLogViewer.refresh();
+   }
+
+   @Override
+   public IAtsWorkItem getWorkItem() {
+      return workItem;
    }
 
 }
