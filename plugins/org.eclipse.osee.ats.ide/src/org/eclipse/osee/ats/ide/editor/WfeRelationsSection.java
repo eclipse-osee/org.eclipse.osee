@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -30,10 +31,13 @@ import org.eclipse.ui.forms.widgets.Section;
  * @author Roberto E. Escobar
  * @author Donald G. Dunne
  */
-public class WfeRelationsSection extends RelationsFormSection {
+public class WfeRelationsSection extends RelationsFormSection implements IWfeEventHandle {
+   IAtsWorkItem workItem;
 
    public WfeRelationsSection(WorkflowEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(editor, parent, toolkit, style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR, true);
+      editor.registerEvent(this, editor.getWorkItem().getStoreObject());
+      workItem = editor.getWorkItem();
    }
 
    @Override
@@ -76,5 +80,10 @@ public class WfeRelationsSection extends RelationsFormSection {
          AtsRelationTypes.TeamWorkflowTargetedForVersion_Version.getName(), AtsRelationTypes.TeamLead_Lead.getName(),
          AtsRelationTypes.TeamMember_Member.getName(), AtsRelationTypes.TeamWorkflowToReview_Review.getName(),
          CoreRelationTypes.Default_Hierarchical__Child.getName(), CoreRelationTypes.Users_Artifact.getName());
+
+   @Override
+   public IAtsWorkItem getWorkItem() {
+      return workItem;
+   }
 
 }

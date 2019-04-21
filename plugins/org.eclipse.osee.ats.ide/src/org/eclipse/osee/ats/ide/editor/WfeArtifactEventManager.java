@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListe
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
@@ -104,7 +105,13 @@ public class WfeArtifactEventManager implements IArtifactEventListener, EventHan
          return;
       }
 
-      handler.getWorkflowEditor().handleEvent(artifactEvent);
+      Displays.ensureInDisplayThread(new Runnable() {
+
+         @Override
+         public void run() {
+            handler.getWorkflowEditor().handleEvent(artifactEvent);
+         }
+      });
 
       //      else if (
       //      //

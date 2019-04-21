@@ -53,10 +53,12 @@ public class WfeDetailsSection extends SectionPart implements IWfeEventHandle {
    private Browser browser;
    private final WorkflowEditor editor;
    private boolean sectionCreated = false;
+   private final IAtsWorkItem workItem;
 
    public WfeDetailsSection(WorkflowEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(parent, toolkit, style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
       this.editor = editor;
+      workItem = editor.getWorkItem();
    }
 
    @Override
@@ -183,7 +185,7 @@ public class WfeDetailsSection extends SectionPart implements IWfeEventHandle {
 
    @Override
    public IAtsWorkItem getWorkItem() {
-      return null;
+      return workItem;
    }
 
 }

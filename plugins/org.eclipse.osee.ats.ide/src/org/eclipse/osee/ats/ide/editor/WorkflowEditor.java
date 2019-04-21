@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -63,6 +64,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
@@ -815,9 +817,12 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    }
 
    public void handleEvent(ArtifactEvent artifactEvent) {
+      // Only want to call artHandlers once if an artifact changed for any reason
+      Set<String> handledArts = new HashSet<>();
       for (EventBasicGuidArtifact eArt : artifactEvent.getArtifacts()) {
          if (eArt instanceof EventModifiedBasicGuidArtifact) {
             EventModifiedBasicGuidArtifact eMArt = (EventModifiedBasicGuidArtifact) eArt;
+            handleArtifactEvent(handledArts, eMArt.getGuid());
             if (eMArt.getGuid().equals(getWorkItem().getGuid())) {
                for (AttributeChange attr : eMArt.getAttributeChanges()) {
                   handleEvent(AttributeTypeId.valueOf(attr.getAttrTypeGuid()));
@@ -837,19 +842,47 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
                   }
                });
             }
+            handledArts.clear();
+            if (!handledArts.contains(getWorkItem().getGuid())) {
+               for (IWfeEventHandle handler : artHandlers.getValues(getWorkItem().getStoreObject())) {
+                  Displays.ensureInDisplayThread(new Runnable() {
+
+                     @Override
+                     public void run() {
+                        handler.refresh();
+                     }
+                  });
+               }
+            }
+            handledArts.add(getWorkItem().getGuid());
          }
       }
    }
 
-   public void handleEvent(AttributeTypeId attrType) {
-      for (IWfeEventHandle handler : attrHandlers.getValues(attrType)) {
-         Displays.ensureInDisplayThread(new Runnable() {
-
-            @Override
-            public void run() {
+   private void handleArtifactEvent(Set<String> handledArts, String guid) {
+      if (!handledArts.contains(guid)) {
+         Artifact loadedWf = ArtifactCache.getActive(guid, AtsClientService.get().getAtsBranch());
+         if (loadedWf != null) {
+            for (IWfeEventHandle handler : artHandlers.getValues(loadedWf)) {
                handler.refresh();
             }
-         });
+         }
+         handledArts.add(guid);
+      }
+   }
+
+   public void handleEvent(AttributeTypeId attrType) {
+      List<IWfeEventHandle> handlers = attrHandlers.getValues(attrType);
+      if (handlers != null && !handlers.isEmpty()) {
+         for (IWfeEventHandle handler : handlers) {
+            Displays.ensureInDisplayThread(new Runnable() {
+
+               @Override
+               public void run() {
+                  handler.refresh();
+               }
+            });
+         }
       }
    }
 

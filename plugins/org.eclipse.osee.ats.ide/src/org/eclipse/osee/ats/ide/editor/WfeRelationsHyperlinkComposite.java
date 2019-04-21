@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -84,6 +85,7 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
             if (!teamWf.equals(workItem)) {
                createLink("This", AtsClientService.get().getQueryServiceClient().getArtifact(teamWf), " has sibling ",
                   workItem, null);
+               editor.registerEvent(this, teamWf.getStoreObject());
             }
          }
       }
@@ -113,15 +115,25 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
          Artifact artifact = keyPair.getFirst();
          RelationTypeSide relationTypeSide = keyPair.getSecond();
          boolean needDel = false;
-         if (relationTypeSide != null) {
+         if (relationTypeSide == null) {
+            if (artifact.isDeleted()) {
+               needDel = true;
+            }
+         } else {
             needDel = !AtsClientService.get().getRelationResolver().areRelated(workItem.getStoreObject(),
                relationTypeSide, artifact);
          }
          if (needDel) {
-            Hyperlink link = artAndRelToHyperlink.get(artifact, relationTypeSide);
-            link.dispose();
-            Label label = artAndRelToLabel.get(artifact, relationTypeSide);
-            label.dispose();
+            Displays.ensureInDisplayThread(new Runnable() {
+
+               @Override
+               public void run() {
+                  Hyperlink link = artAndRelToHyperlink.get(artifact, relationTypeSide);
+                  link.dispose();
+                  Label label = artAndRelToLabel.get(artifact, relationTypeSide);
+                  label.dispose();
+               }
+            });
             found = true;
          }
       }
@@ -168,7 +180,10 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
             String.format("\"%s\" - %s", art.getName().length() < 60 ? art.getName() : art.getName().substring(0, 60),
                AtsClientService.get().getAtsId(art)),
             SWT.NONE);
-         if (!art.equals(thisArt)) {
+         if (art.equals(thisArt)) {
+            artAndRelToHyperlink.put(thisArt, relation, link);
+            artAndRelToLabel.put(thisArt, relation, label);
+         } else {
             artAndRelToHyperlink.put(art, relation, link);
             artAndRelToLabel.put(art, relation, label);
          }
