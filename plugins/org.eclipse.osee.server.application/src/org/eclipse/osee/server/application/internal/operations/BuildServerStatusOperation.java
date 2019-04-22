@@ -56,8 +56,9 @@ public class BuildServerStatusOperation {
       int seconds = (int) (runtimeMxBean.getUptime() / 1000) % 60;
       int minutes = (int) (runtimeMxBean.getUptime() / (1000 * 60) % 60);
       int hours = (int) (runtimeMxBean.getUptime() / (1000 * 60 * 60) % 24);
+      int days = (int) (runtimeMxBean.getUptime() / (1000 * 60 * 60 * 24));
 
-      stat.set(StatusKey.UpTime, String.format("%s hr %s min %s sec", hours, minutes, seconds));
+      stat.set(StatusKey.UpTime, String.format("%s days %s hr %s min %s sec", days, hours, minutes, seconds));
       stat.set(StatusKey.SystemLoad, String.valueOf(osMxBean.getSystemLoadAverage()));
       stat.set(StatusKey.CodeLocation, System.getProperty("user.dir"));
       stat.set(StatusKey.BinaryDataPath, OseeServerProperties.getOseeApplicationServerData(null));
