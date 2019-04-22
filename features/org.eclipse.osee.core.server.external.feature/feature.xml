@@ -25,6 +25,7 @@
          id="org.eclipse.osee.disposition.feature"
          version="0.0.0"/>
 
+
    <plugin
          id="org.eclipse.jgit"
          download-size="0"
@@ -52,27 +53,34 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+    
+    <plugin
+         id="org.mockito"
+         download-size="0"
+         install-size="0"
+         version="2.13.0"
+         unpack="false"/>
+         
    <plugin
          id="com.jcraft.jsch"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
+    
+    <plugin
          id="javaewah"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
+    
+    <plugin
          id="com.fasterxml.jackson.core.jackson-core"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
+         unpack="false" />
 
    <plugin
          id="com.fasterxml.jackson.core.jackson-annotations"
@@ -501,6 +509,9 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+         
+
+         
 
    <plugin
          id="org.eclipse.jetty.http"
@@ -1284,5 +1295,5 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+   
 </feature>

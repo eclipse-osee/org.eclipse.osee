@@ -32,4 +32,5 @@ Require-Bundle: org.eclipse.osee.ats.api,
  org.apache.httpcomponents.httpcore,
  org.apache.commons.lang,
  org.apache.commons.logging,
- org.hamcrest.core
+ org.hamcrest.core,
+ org.mockito;visibility:=reexport

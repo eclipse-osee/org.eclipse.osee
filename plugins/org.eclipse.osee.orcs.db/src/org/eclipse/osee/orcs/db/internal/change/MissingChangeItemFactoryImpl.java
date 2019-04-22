@@ -62,6 +62,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
          Multimap<Long, Long> modifiedTuples = LinkedListMultimap.create();
 
          for (ChangeItem change : changes) {
+
             switch (change.getChangeType()) {
                case ARTIFACT_CHANGE:
                   if (!change.isSynthetic()) {
@@ -72,6 +73,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
                   modifiedAttrIds.put(change.getArtId(), change.getItemId());
                   break;
                case RELATION_CHANGE:
+                  modifiedRels.put(change.getArtId(), change.getItemId());
                   modifiedRels.put(change.getArtId(), change.getItemId());
                   modifiedRels.put(change.getArtIdB(), change.getItemId());
                   break;
@@ -85,10 +87,15 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
 
          Set<ArtifactId> allArtIds = new HashSet<>(modifiedArtIds);
          allArtIds.addAll(modifiedAttrIds.keySet());
+
          allArtIds.addAll(modifiedRels.keySet());
+         Set<ArtifactId> missingArtIds = Collections.EMPTY_SET;
 
-         Set<ArtifactId> missingArtIds = determineWhichArtifactsNotOnDestination(allArtIds, destTx);
-
+         try {
+            missingArtIds = determineWhichArtifactsNotOnDestination(allArtIds, destTx);
+         } catch (NullPointerException f) {
+            // do nothing
+         }
          if (!missingArtIds.isEmpty()) {
             applicTokensForMissingArts = applicQuery.getApplicabilityTokens(sourceTx.getBranch(), destTx.getBranch());
             return createMissingChangeItems(sourceTx, destTx, modifiedArtIds, modifiedAttrIds, modifiedRels,

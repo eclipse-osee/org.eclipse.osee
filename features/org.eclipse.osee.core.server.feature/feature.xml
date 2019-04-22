@@ -31,6 +31,8 @@
          version="0.0.0"
          unpack="false"/>
 
+
+
    <plugin
          id="org.eclipse.osee.logback.config"
          download-size="0"
@@ -990,6 +992,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+         
 
    <plugin
          id="org.apache.cxf.core.config"
@@ -999,4 +1002,47 @@
          fragment="true"
          unpack="false"/>
 
+   <plugin
+         id="org.mockito"
+         download-size="0"
+         install-size="0"
+         version="2.13.0"
+         fragment="true"
+         unpack="false"/>
+       
+   <plugin
+         id="org.hamcrest"
+         download-size="0"
+         install-size="0"
+         version="1.1.0"
+         unpack="false"/>        
+   
+    <plugin
+         id="org.hamcrest.core"
+         download-size="0"
+         install-size="0"
+         version="1.1.0"
+         unpack="false"/>       
+                  
+    <plugin
+         id="org.hamcrest.integration"
+         download-size="0"
+         install-size="0"
+         version="1.1.0"
+         unpack="false"/>      
+                 
+    <plugin
+         id="org.hamcrest.library"
+         download-size="0"
+         install-size="0"
+         version="1.1.0"
+         unpack="false"/>  
+   
+    <plugin
+         id="org.hamcrest.text"
+         download-size="0"
+         install-size="0"
+         version="1.1.0"
+         unpack="false"/>      
+         
 </feature>

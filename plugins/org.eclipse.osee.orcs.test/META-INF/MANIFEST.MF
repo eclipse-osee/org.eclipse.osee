@@ -6,13 +6,14 @@ Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.orcs
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.hamcrest.core,
+ org.mockito;visibility:=reexport
 Import-Package: com.google.common.base;version="15.0.0",
  com.google.common.collect;version="15.0.0",
  org.eclipse.osee.framework.core.services,
  org.eclipse.osee.jdbc,
  org.eclipse.osee.logger,
  org.eclipse.osee.orcs.db.mock,
- org.hamcrest.core,
  org.junit,
  org.junit.rules,
  org.junit.runner,

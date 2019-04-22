@@ -7,10 +7,11 @@ Bundle-SymbolicName: org.eclipse.osee.orcs.script.dsl.tests;singleton:=true
 Bundle-ActivationPolicy: lazy
 Fragment-Host: org.eclipse.osee.orcs.script.dsl
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.xtext.junit4
-Import-Package: org.apache.log4j,
+ org.eclipse.xtext.junit4,
  org.hamcrest.core,
- org.junit,
+ org.mockito;visibility:=reexport
+Import-Package: org.apache.log4j,
+ org.junit;visibility:=reexport,
  org.junit.rules,
  org.junit.runner;version="4.5.0",
  org.junit.runner.manipulation;version="4.5.0",

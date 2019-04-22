@@ -61,7 +61,8 @@
 								<plugin id="org.eclipse.uml2.uml" />
 								<plugin id="org.eclipse.uml2.uml.resources" />
 								<plugin id="org.apache.batik.pdf" />
-								<plugin id="org.eclipse.ocl.common" />
+								<plugin id="org.eclipse.ocl.common" />								
+								<plugin id="org.hamcrest" />								
 								<plugin id="org.eclipse.ocl.ecore" />
 								<feature id="org.eclipse.graphiti.feature" />
 								<feature id="org.eclipse.graphiti.source.feature" />

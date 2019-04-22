@@ -6,11 +6,9 @@ Bundle-Version: 0.26.0.qualifier
 Fragment-Host: org.eclipse.osee.config.admin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Import-Package: org.hamcrest.core,
- org.junit,
+Require-Bundle: org.hamcrest.core,
+ org.mockito;visibility:=reexport
+Import-Package: org.junit,
  org.junit.rules,
  org.junit.runner,
- org.junit.runners,
- org.mockito,
- org.mockito.invocation,
- org.mockito.stubbing
+ org.junit.runners

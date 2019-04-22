@@ -4,7 +4,7 @@
 <setEntry value="org.eclipse.equinox.ds:1.4.400.v20160226-2036:default:true"/>
 <setEntry value="org.eclipse.osee.orcs.db.mock:0.26.0.qualifier:default:true"/>
 <setEntry value="org.hsqldb:2.2.9.qualifier:default:false"/>
-<setEntry value="org.mockito:1.9.0.qualifier:default:false"/>
+<setEntry value="org.mockito:2.13.0.qualifier:default:false"/>
 </setAttribute>
 <booleanAttribute key="append.args" value="true"/>
 <stringAttribute key="application" value="org.eclipse.pde.junit.runtime.coretestapplication"/>

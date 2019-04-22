@@ -43,6 +43,7 @@
       <import plugin="com.google.guava" version="11.0.0" match="greaterOrEqual"/>
       <import plugin="org.slf4j.api" version="1.6.1" match="greaterOrEqual"/>
       <import plugin="javax.wsdl"/>
+      <import plugin="org.mockito" version="2.13.0" match="greaterOrEqual"/>            
       <import plugin="com.fasterxml.jackson.core.jackson-core" version="2.9.2" match="greaterOrEqual" />
       <import plugin="com.fasterxml.jackson.core.jackson-annotations" version="2.9.2" match="greaterOrEqual" />
       <import plugin="com.fasterxml.jackson.core.jackson-databind" version="2.9.2" match="greaterOrEqual" />   
@@ -99,7 +100,15 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+         
+   <plugin
+         id="org.mockito"
+         download-size="0"
+         install-size="0"
+         version="2.13.0" 
+	 unpack="false"/>
+ 
+ 
    <plugin
          id="org.apache.commons.logging"
          download-size="0"

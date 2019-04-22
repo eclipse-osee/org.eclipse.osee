@@ -6,8 +6,8 @@ Bundle-Version: 0.26.0.qualifier
 Fragment-Host: org.eclipse.osee.framework.skynet.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit;bundle-version="4.11.0",
- org.mockito;bundle-version="1.9.0",
  org.hamcrest.core,
+ org.mockito;visibility:=reexport,
  org.objenesis
 Export-Package: org.eclipse.osee.framework.skynet.core
 Import-Package: org.apache.commons.lang;version="2.4.0",

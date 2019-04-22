@@ -6,10 +6,7 @@ Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.template.engine
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.hamcrest.core,
- org.junit,
+Require-Bundle: org.mockito;visibility:=reexport
+Import-Package: org.junit,
  org.junit.runner,
- org.junit.runners,
- org.mockito,
- org.mockito.invocation,
- org.mockito.stubbing
+ org.junit.runners

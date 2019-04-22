@@ -125,6 +125,7 @@ public class MissingChangeItemFactoryTest {
 
    @Test
    public void testCreateMissingChanges() {
+
       doAnswer(new Answer<Object>() {
 
          @Override
@@ -169,6 +170,7 @@ public class MissingChangeItemFactoryTest {
       }).when(destDataLoader).load(any(HasCancellation.class), any(LoadDataHandler.class));
 
       Collection<ChangeItem> results = changeItemFactory.createMissingChanges(changes, sourceTx, destTx, applicQuery);
+
       if (expectedMissingChanges == null) {
          Assert.assertTrue(results.isEmpty());
       } else {
@@ -177,8 +179,10 @@ public class MissingChangeItemFactoryTest {
             Assert.assertNotNull(expected);
             Assert.assertEquals(expected.getCurrentVersion().getGammaId(), change.getCurrentVersion().getGammaId());
             Assert.assertEquals(expected.getCurrentVersion().getModType(), change.getCurrentVersion().getModType());
+            Assert.assertEquals(expectedMissingChanges.size(), results.size());
+
          }
-         Assert.assertEquals(expectedMissingChanges.size(), results.size());
+
       }
    }
 

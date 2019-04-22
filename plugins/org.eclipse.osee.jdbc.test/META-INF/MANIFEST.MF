@@ -6,8 +6,9 @@ Bundle-Version: 0.26.0.qualifier
 Fragment-Host: org.eclipse.osee.jdbc
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Import-Package: org.hamcrest.core,
- org.hsqldb,
+Require-Bundle: org.mockito;visibility:=reexport,
+ org.hamcrest.core
+Import-Package: org.hsqldb,
  org.hsqldb.jdbc,
  org.hsqldb.persist,
  org.hsqldb.server,
@@ -16,7 +17,5 @@ Import-Package: org.hamcrest.core,
  org.junit.rules,
  org.junit.runner,
  org.junit.runners,
- org.mockito;bundle-version="1.9.0",
- org.mockito.stubbing;bundle-version="1.9.0",
  org.eclipse.osee.logger,
  org.osgi.service.component

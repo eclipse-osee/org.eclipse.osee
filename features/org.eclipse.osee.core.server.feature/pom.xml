@@ -26,6 +26,7 @@
 						<configuration>
 							<excludes>
 								<plugin id="org.eclipse.osee.logback.config" />
+							        <plugin id="org.hamcrest" />								
 							</excludes>
 						</configuration>
 					</execution>

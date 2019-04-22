@@ -9,8 +9,6 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: org.junit,
  org.junit.rules,
  org.junit.runner,
- org.junit.runners,
- org.mockito,
- org.mockito.invocation,
- org.mockito.stubbing
-Require-Bundle: org.hamcrest.core
+ org.junit.runners
+Require-Bundle: org.hamcrest.core,
+ org.mockito;visibility:=reexport

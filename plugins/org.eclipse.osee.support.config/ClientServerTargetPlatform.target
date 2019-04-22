@@ -8,6 +8,7 @@
 <plugin id="ch.qos.logback.core"/>
 <plugin id="ch.qos.logback.slf4j"/>
 <plugin id="com.ctc.wstx"/>
+<plugin id="org.mockito"/>
 <plugin id="com.fasterxml.jackson.core.jackson-core"/>
 <plugin id="com.fasterxml.jackson.core.jackson-annotations"/>
 <plugin id="com.fasterxml.jackson.core.jackson-databind"/>

@@ -7,5 +7,6 @@ Fragment-Host: org.eclipse.osee.ats.dsl.integration
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Require-Bundle: org.junit;bundle-version="4.11.0",
- org.mockito;bundle-version="1.9.0"
+ org.hamcrest.core,
+ org.mockito;visibility:=reexport
 Import-Package: org.eclipse.osee.framework.jdk.core.result
