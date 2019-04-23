@@ -24,7 +24,7 @@ public class AtsObjectNameSorter extends ViewerComparator {
    @Override
    public int compare(Viewer viewer, Object o1, Object o2) {
       if (o1 instanceof Named && o2 instanceof Named) {
-         return getComparator().compare(((Named) o2).getName(), ((Named) o1).getName());
+         return getComparator().compare(((Named) o1).getName(), ((Named) o2).getName());
       } else if (o1 instanceof String && o2 instanceof String) {
          return getComparator().compare((String) o1, (String) o2);
       }
