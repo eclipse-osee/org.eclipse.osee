@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -205,17 +206,19 @@ public class XHistoryWidget extends GenericXWidget {
 
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(ImageManager.getImage(FrameworkImage.OPEN));
-      item.setToolTipText("Load by GUID");
+      item.setToolTipText("Load by Artifact ID");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            EntryDialogWithBranchSelect dialog = new EntryDialogWithBranchSelect("Open by GUID", "Enter GUID");
+            EntryDialogWithBranchSelect dialog =
+               new EntryDialogWithBranchSelect("Open by Artifact ID", "Enter Artifact ID");
             if (dialog.open() == 0) {
-               String guid = dialog.getEntry();
-               Conditions.checkNotNullOrEmpty(guid, "GUID");
+               String artId = dialog.getEntry();
+               Conditions.checkNotNullOrEmpty(artId, "Artifact ID");
                BranchId branch = dialog.getBranch();
                Conditions.checkNotNull(branch, "Branch");
-               Artifact art = ArtifactQuery.getArtifactFromId(guid, branch, DeletionFlag.EXCLUDE_DELETED);
+               Artifact art =
+                  ArtifactQuery.getArtifactFromId(ArtifactId.valueOf(artId), branch, DeletionFlag.EXCLUDE_DELETED);
                if (art != null) {
                   setInputData(art, true);
                   onRefresh();
