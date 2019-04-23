@@ -215,4 +215,9 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       return users;
    }
 
+   @Override
+   public void setCurrentUser(IAtsUser currentUser) {
+      this.currentUser = currentUser;
+   }
+
 }

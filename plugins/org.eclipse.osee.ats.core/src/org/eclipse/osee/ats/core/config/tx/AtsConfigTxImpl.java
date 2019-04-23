@@ -11,9 +11,11 @@
 package org.eclipse.osee.ats.core.config.tx;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -46,6 +48,7 @@ import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
@@ -57,6 +60,7 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
    private final IAtsChangeSet changes;
    private final Map<String, IAtsTeamDefinition> newTeams = new HashMap<>();
    private final Map<String, IAtsActionableItem> newAis = new HashMap<>();
+   private final Set<Long> usedIds = new HashSet<>();
 
    public AtsConfigTxImpl(String name, AtsApi atsApi, IAtsUser asUser) {
       this.atsApi = atsApi;
@@ -87,6 +91,7 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
    public IAtsConfigTxTeamDef createTeamDef(IAtsTeamDefinition parent, IAtsTeamDefinitionArtifactToken teamDef) {
       ArtifactToken newTeam = atsApi.getQueryService().getArtifact(teamDef);
       if (newTeam == null || newTeam.isInvalid()) {
+         checkUsedIds(teamDef);
          newTeam = changes.createArtifact(teamDef);
       }
       IAtsTeamDefinition newTeamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(newTeam);
@@ -97,10 +102,19 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
       return new AtsConfigTxTeamDef(newTeamDef, atsApi, changes, this);
    }
 
+   private void checkUsedIds(ArtifactToken art) {
+      if (usedIds.contains(art.getId())) {
+         throw new OseeArgumentException("Id %s already used.  Can't create token %s", art.getId(),
+            art.toStringWithId());
+      }
+      usedIds.add(art.getId());
+   }
+
    @Override
    public IAtsConfigTxActionableItem createActionableItem(IAtsActionableItem parent, IAtsActionableItemArtifactToken ai) {
       ArtifactToken newAiArt = atsApi.getQueryService().getArtifact(ai);
       if (newAiArt == null || newAiArt.isInvalid()) {
+         checkUsedIds(ai);
          newAiArt = changes.createArtifact(ai);
       }
       IAtsActionableItem newAi = atsApi.getActionableItemService().getActionableItemById(newAiArt);
@@ -115,6 +129,7 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
    public IAtsConfigTxActionableItem createActionableItem(IAtsActionableItemArtifactToken actionableItem) {
       ArtifactToken newAiArt = atsApi.getQueryService().getArtifact(actionableItem);
       if (newAiArt == null || newAiArt.isInvalid()) {
+         checkUsedIds(actionableItem);
          newAiArt = changes.createArtifact(actionableItem);
       }
       IAtsActionableItem newAi = atsApi.getActionableItemService().getActionableItemById(newAiArt);
@@ -129,6 +144,7 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
 
    @Override
    public IAtsConfigTxVersion createVersion(IAtsVersionArtifactToken versionTok, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IAtsTeamDefinition teamDef) {
+      checkUsedIds(versionTok);
       ArtifactToken verArt = changes.createArtifact(AtsArtifactTypes.Version, versionTok.getName(), versionTok.getId());
       changes.setSoleAttributeValue(verArt, AtsAttributeTypes.Released, released != ReleasedOption.UnReleased);
       changes.setSoleAttributeValue(verArt, AtsAttributeTypes.NextVersion, nextRelease == NextRelease.Next);
@@ -167,6 +183,7 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
    public IAtsConfigTxProgram createProgram(IAtsProgramArtifactToken programTok) {
       ArtifactToken newProgramArt = atsApi.getQueryService().getArtifact(programTok);
       if (newProgramArt == null || newProgramArt.isInvalid()) {
+         checkUsedIds(programTok);
          newProgramArt = changes.createArtifact(programTok);
       }
       IAtsProgram program = atsApi.getProgramService().getProgramById(newProgramArt);

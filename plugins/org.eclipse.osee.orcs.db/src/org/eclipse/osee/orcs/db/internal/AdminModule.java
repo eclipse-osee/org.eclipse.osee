@@ -118,6 +118,11 @@ public class AdminModule {
             }
             return initialized;
          }
+
+         @Override
+         public JdbcClient getJdbcClient() {
+            return jdbcClient;
+         }
       };
    }
 }

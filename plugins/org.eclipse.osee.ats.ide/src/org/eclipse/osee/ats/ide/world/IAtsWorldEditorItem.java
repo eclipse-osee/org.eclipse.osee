@@ -51,4 +51,8 @@ public interface IAtsWorldEditorItem {
    }
 
    public List<AtsSearchWorkflowSearchItem> getSearchWorkflowSearchItems();
+
+   default public String getOseeTarget() {
+      return "";
+   }
 }

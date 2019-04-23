@@ -67,4 +67,6 @@ public interface IAtsUserService {
 
    Collection<IAtsUser> getActiveAndAssignedInActive(Collection<? extends IAtsWorkItem> workItems);
 
+   void setCurrentUser(IAtsUser user);
+
 }

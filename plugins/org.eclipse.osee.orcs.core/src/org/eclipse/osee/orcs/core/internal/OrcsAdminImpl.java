@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -21,6 +22,8 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
+import org.eclipse.osee.framework.core.util.OseeInf;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -62,6 +65,33 @@ public class OrcsAdminImpl implements OrcsAdmin {
    @Override
    public void createSystemBranches(String typeModel) {
       new CreateSystemBranches(orcsApi, eventAdmin).create(typeModel);
+      createSynonymsAndGrants();
+
+   }
+
+   private void createSynonymsAndGrants() {
+      JdbcClient jdbcClient = dataStoreAdmin.getJdbcClient();
+      for (String table : Arrays.asList("OSEE_ACCOUNT_SESSION", "OSEE_ACTIVITY", "OSEE_ACTIVITY_TYPE", "OSEE_ARTIFACT",
+         "OSEE_ARTIFACT_ACL", "OSEE_ATTRIBUTE", "OSEE_BRANCH", "OSEE_BRANCH_ACL", "OSEE_CONFLICT",
+         "OSEE_IMPORT_INDEX_MAP", "OSEE_IMPORT_MAP", "OSEE_IMPORT_SAVE_POINT", "OSEE_IMPORT_SOURCE", "OSEE_INFO",
+         "OSEE_JOIN_ARTIFACT", "OSEE_JOIN_CHAR_ID", "OSEE_JOIN_CLEANUP", "OSEE_JOIN_EXPORT_IMPORT", "OSEE_JOIN_ID",
+         "OSEE_JOIN_ID4", "OSEE_JOIN_TRANSACTION", "OSEE_KEY_VALUE", "OSEE_MERGE", "OSEE_OAUTH_AUTHORIZATION",
+         "OSEE_OAUTH_CLIENT_CREDENTIAL", "OSEE_OAUTH_TOKEN", "OSEE_PERMISSION", "OSEE_RELATION_LINK",
+         "OSEE_SCHEMA_VERSION", "OSEE_SEARCH_TAGS", "OSEE_SEQUENCE", "OSEE_SERVER_LOOKUP", "OSEE_SESSION",
+         "OSEE_TAG_GAMMA_QUEUE", "OSEE_TTE_CLASSROOMS", "OSEE_TTE_COURSE", "OSEE_TTE_SESSION", "OSEE_TTE_USER",
+         "OSEE_TTE_USERSESSIONS", "OSEE_TUPLE2", "OSEE_TUPLE3", "OSEE_TUPLE4", "OSEE_TXS", "OSEE_TXS_ARCHIVED",
+         "OSEE_TX_DETAILS")) {
+         try {
+            jdbcClient.runCall("create public synonym " + table + " for " + table);
+         } catch (Exception ex) {
+            System.err.println("Error creating synonym for table " + table);
+         }
+         try {
+            jdbcClient.runCall("grant insert, update, delete, select on " + table + " to osee_client_role");
+         } catch (Exception ex) {
+            System.err.println("Error granting permissions for table " + table);
+         }
+      }
    }
 
    @Override

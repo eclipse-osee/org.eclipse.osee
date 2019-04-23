@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import java.util.concurrent.Callable;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.OrcsSession;
 
 /**
@@ -29,5 +30,7 @@ public interface DataStoreAdmin {
    boolean isDataStoreInitialized();
 
    Callable<DataStoreInfo> migrateDataStore(OrcsSession session);
+
+   JdbcClient getJdbcClient();
 
 }

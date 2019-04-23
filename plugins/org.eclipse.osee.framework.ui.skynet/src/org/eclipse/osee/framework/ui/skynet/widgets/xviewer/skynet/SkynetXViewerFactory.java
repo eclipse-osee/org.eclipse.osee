@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
@@ -41,7 +40,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.Attrib
 /**
  * @author Donald G. Dunne
  */
-public class SkynetXViewerFactory extends XViewerFactory {
+public class SkynetXViewerFactory extends OseeTargetXViewerFactory {
 
    private IOseeTreeReportProvider reportProvider;
    private static List<XViewerColumn> attrColumns;
@@ -163,4 +162,8 @@ public class SkynetXViewerFactory extends XViewerFactory {
       this.reportProvider = reportProvider;
    }
 
+   @Override
+   public String getOseeTarget() {
+      return "";
+   }
 }
