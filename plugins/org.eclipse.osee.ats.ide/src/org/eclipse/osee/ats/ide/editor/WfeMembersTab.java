@@ -168,9 +168,12 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
          if (!scrolledForm.getText().equals(displayableTitle)) {
             scrolledForm.setText(displayableTitle);
          }
+
          KeyedImage image = provider.getImageKey();
-         if (!ImageManager.getImage(image).equals(scrolledForm.getImage())) {
-            scrolledForm.setImage(ImageManager.getImage(image));
+         if (image != null) {
+            if (!ImageManager.getImage(image).equals(scrolledForm.getImage())) {
+               scrolledForm.setImage(ImageManager.getImage(image));
+            }
          }
       }
    }

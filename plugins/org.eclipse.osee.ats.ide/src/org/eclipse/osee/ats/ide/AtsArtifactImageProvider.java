@@ -35,44 +35,54 @@ import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
  */
 public class AtsArtifactImageProvider extends ArtifactImageProvider {
 
-   private static Map<ArtifactImage, KeyedImage> keyedImageMap = new HashMap<>();
+   private final Map<ArtifactImage, KeyedImage> keyedImageMap = new HashMap<>();
+   private static AtsArtifactImageProvider provider = new AtsArtifactImageProvider();
+   boolean initRan = false;
 
    @Override
    public void init() {
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.DecisionReview, AtsImage.DECISION_REVIEW, this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Action, AtsImage.ACTION, this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Version, FrameworkImage.VERSION, this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Task, AtsImage.TASK, this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.ActionableItem, AtsImage.ACTIONABLE_ITEM, this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.TeamDefinition, AtsImage.TEAM_DEFINITION, this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.RuleDefinition, AtsImage.RULE_DEFINITION, this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.WorkDefinition, AtsImage.WORK_DEFINITION, this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Goal, AtsImage.GOAL, this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.PeerToPeerReview, AtsImage.PEER_REVIEW, this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Program, AtsImage.PROGRAM, this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Insertion, AtsImage.INSERTION, this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.InsertionActivity, AtsImage.INSERTION_ACTIVITY, this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.WorkPackage, AtsImage.WORK_PACKAGE, this);
+      if (!initRan) {
+         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.DecisionReview, AtsImage.DECISION_REVIEW, this);
+         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Action, AtsImage.ACTION, this);
+         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Version, FrameworkImage.VERSION, this);
+         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Task, AtsImage.TASK, this);
+         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.ActionableItem, AtsImage.ACTIONABLE_ITEM, this);
+         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.TeamDefinition, AtsImage.TEAM_DEFINITION, this);
+         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.RuleDefinition, AtsImage.RULE_DEFINITION, this);
+         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.WorkDefinition, AtsImage.WORK_DEFINITION, this);
+         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Goal, AtsImage.GOAL, this);
+         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.PeerToPeerReview, AtsImage.PEER_REVIEW, this);
+         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Program, AtsImage.PROGRAM, this);
+         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Insertion, AtsImage.INSERTION, this);
+         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.InsertionActivity, AtsImage.INSERTION_ACTIVITY, this);
+         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.WorkPackage, AtsImage.WORK_PACKAGE, this);
 
-      for (ArtifactImage artImage : AtsArtifactImages.getImages()) {
-         CoreImage keyedImage = new CoreImage(Activator.PLUGIN_ID, artImage.getImageName());
-         keyedImageMap.put(artImage, keyedImage);
-         ArtifactImageManager.registerBaseImage(artImage.getArtifactType(), keyedImage, this);
-      }
+         for (ArtifactImage artImage : AtsArtifactImages.getImages()) {
+            CoreImage keyedImage = new CoreImage(Activator.PLUGIN_ID, artImage.getImageName());
+            keyedImageMap.put(artImage, keyedImage);
+            ArtifactImageManager.registerBaseImage(artImage.getArtifactType(), keyedImage, this);
+         }
 
-      ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Version);
-      ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Task);
-      ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.PeerToPeerReview);
-      ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.DecisionReview);
-      ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Goal);
-      ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.AgileBacklog);
-      ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.AgileSprint);
-      for (ArtifactTypeToken artifactType : AtsClientService.get().getStoreService().getTeamWorkflowArtifactTypes()) {
-         ArtifactImageManager.registerOverrideImageProvider(this, artifactType);
+         ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Version);
+         ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Task);
+         ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.PeerToPeerReview);
+         ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.DecisionReview);
+         ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Goal);
+         ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.AgileBacklog);
+         ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.AgileSprint);
+         for (ArtifactTypeToken artifactType : AtsClientService.get().getStoreService().getTeamWorkflowArtifactTypes()) {
+            ArtifactImageManager.registerOverrideImageProvider(this, artifactType);
+         }
+         initRan = true;
       }
    }
 
    public static KeyedImage getKeyedImage(ArtifactImage artifactImage) {
+      provider.init();
+      return provider.getImage(artifactImage);
+   }
+
+   public KeyedImage getImage(ArtifactImage artifactImage) {
       return keyedImageMap.get(artifactImage);
    }
 
