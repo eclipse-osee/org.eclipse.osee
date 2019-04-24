@@ -45,10 +45,10 @@ public class ProgramFinder {
 
    public static Program findProgram(String extension) {
       Program program = Program.findProgram(extension);
-      if (program == null && isMediaFile(extension)) {
+      if (program == null && isMediaFile(extension.toLowerCase())) {
          Program[] programs = Program.getPrograms();
          for (Program prog : programs) {
-            if (prog.getName().equals("Windows Media Photo")) {
+            if (prog.getName().equals("PhotoViewer.FileAssoc.Tiff")) {
                program = prog;
                break;
             }
