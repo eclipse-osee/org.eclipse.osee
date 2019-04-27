@@ -30,4 +30,9 @@ public class ImportEndpointImpl implements ImportEndpoint {
    public TransactionToken importWord(BranchId branch, String wordURI, ArtifactId parentArtifactId, Integer tier) {
       return defineApi.getImportOperations().importWord(branch, wordURI, parentArtifactId, tier);
    }
+
+   @Override
+   public TransactionToken importSetup(BranchId branch, String baseDir) {
+      return defineApi.getImportOperations().importSetup(branch, baseDir);
+   }
 }
