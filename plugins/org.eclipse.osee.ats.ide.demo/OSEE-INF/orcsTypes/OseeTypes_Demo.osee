@@ -154,7 +154,7 @@ attributeType "demo.code.Detection" extends EnumeratedAttribute {
 }
 
 attributeType "demo.code.Include Build" extends StringAttribute {
-   id 1152921504606847244
+   id 6624602983846643901
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -163,7 +163,7 @@ attributeType "demo.code.Include Build" extends StringAttribute {
 }
 
 attributeType "demo.code.LOC Affected" extends IntegerAttribute {
-   id 1152921504606847245
+   id 2266722106367646882
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -171,7 +171,7 @@ attributeType "demo.code.LOC Affected" extends IntegerAttribute {
 }
 
 attributeType "demo.code.Originating Build" extends StringAttribute {
-   id 1152921504606847246
+   id 6539429238794418072
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -189,7 +189,7 @@ oseeEnumType "enum.demo.code.req.doc" {
 }
 
 attributeType "demo.code.Req Doc" extends EnumeratedAttribute {
-   id 1152921504606847247
+   id 1740569308658341
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1

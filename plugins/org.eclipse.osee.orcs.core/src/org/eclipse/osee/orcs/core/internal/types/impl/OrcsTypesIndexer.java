@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.OseeDslResource;
 import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AddAttribute;
@@ -151,7 +150,8 @@ public class OrcsTypesIndexer {
             }
             listOfAllowedAttributes.add(attributeType);
          } else {
-            logger.warn("Type was null for [%s]", dslType.getName());
+            logger.warn("Attribute Type [%s] for Artifact Type [%s] is not a valid type.", xAttributeType.getName(),
+               dslType.getName());
          }
       }
       ArtifactTypeToken token = getOrCreateToken(artifactTypeIndex, dslType);

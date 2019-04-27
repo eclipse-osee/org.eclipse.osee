@@ -16,6 +16,7 @@ import com.google.common.collect.Maps;
 import java.util.Collection;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 
 /**
  * @author Roberto E. Escobar
@@ -66,6 +67,10 @@ public class TokenTypeIndex<TOKEN extends Id, DSLTYPE> {
    }
 
    public void put(TOKEN token, DSLTYPE dslType) {
+      if (uuidToToken.containsKey(token)) {
+         throw new OseeStateException("Duplicate tokens with same id %s: %s and %s", token.getId(), dslType.toString(),
+            uuidToToken.get(token));
+      }
       uuidToToken.put(token.getId(), token);
       tokenToType.put(token, dslType);
    }
