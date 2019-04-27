@@ -11,7 +11,6 @@
 package org.eclipse.define.api.importing;
 
 import java.util.LinkedList;
-import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -26,11 +25,6 @@ public abstract class ImportBlock implements Named {
    protected ArtifactTypeToken type = ArtifactTypeToken.SENTINEL;
    private Boolean complete = false;
    protected final LinkedList<BlockField> attrs = new LinkedList<>();
-   protected final ActivityLog activityLog;
-
-   protected ImportBlock(ActivityLog activityLog) {
-      this.activityLog = activityLog;
-   }
 
    public Boolean isParentBlock() {
       if (type.isValid() && type.equals(CoreArtifactTypes.HeadingMSWord)) {

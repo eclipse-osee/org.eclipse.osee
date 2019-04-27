@@ -12,13 +12,14 @@ package org.eclipse.osee.define.rest.importing.resolvers;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.define.api.importing.RoughArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.CoreActivityTypes;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -48,7 +49,7 @@ public class DoorsBestFitArtifactResolver extends NewArtifactImportResolver {
             getTranslator().translate(transaction, roughArtifact, realArtifact);
          }
       } else {
-         roughArtifact.getActivityLog().createEntry(CoreActivityTypes.IMPORT_DELETE,
+         OseeLog.logf(DoorsBestFitArtifactResolver.class, Level.INFO,
             "Doors Best Fit based resolver is comparing a null GUID. roughArtifactifact: [%s]. Attributes: [%s]",
             roughArtifact, roughArtifact.getAttributes());
       }

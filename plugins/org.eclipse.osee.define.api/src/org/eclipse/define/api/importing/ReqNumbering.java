@@ -47,28 +47,6 @@ public final class ReqNumbering implements Comparable<ReqNumbering> {
       return numberStr;
    }
 
-   public String getParentString() {
-      int finalIndex = values.length - 1;
-      for (int i = 0; i < values.length; ++i) {
-         if (values[i].equals("0")) {
-            finalIndex = i;
-            break;
-         }
-      }
-      return unTokenize(values, finalIndex);
-   }
-
-   private String unTokenize(String[] input, int index) {
-      StringBuilder toReturn = new StringBuilder();
-      for (int i = 0; i < index; ++i) {
-         if (toReturn.length() > 0) {
-            toReturn.append(".");
-         }
-         toReturn.append(input[i]);
-      }
-      return toReturn.toString();
-   }
-
    /**
     * @return returns whether the numbering argument is a child of this number
     */

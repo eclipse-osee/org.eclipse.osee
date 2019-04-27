@@ -11,8 +11,8 @@
 package org.eclipse.osee.define.rest.importing.resolvers;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -25,8 +25,7 @@ public final class ArtifactResolverFactory {
       CREATE_NEW_ALWAYS,
       CREATE_ON_NEW_ART_GUID,
       CREATE_ON_DIFFERENT_ATTRIBUTES,
-      CREATE_ON_DOORS_BEST_FIT,
-      INSERT_OR_OVERLAY
+      CREATE_ON_DOORS_BEST_FIT
    }
 
    private ArtifactResolverFactory() {
@@ -63,10 +62,6 @@ public final class ArtifactResolverFactory {
          case CREATE_ON_DOORS_BEST_FIT:
             toReturn = new DoorsBestFitArtifactResolver(transaction, new RoughArtifactTranslatorImpl(),
                primaryArtifactType, CoreArtifactTypes.HeadingHTML, createNewIfNotExist, deleteUnmatchedArtifacts);
-            break;
-         case INSERT_OR_OVERLAY:
-            toReturn = new DoorsIdResolver(transaction, new RoughArtifactTranslatorImpl(), primaryArtifactType,
-               CoreArtifactTypes.HeadingHTML, createNewIfNotExist, deleteUnmatchedArtifacts);
             break;
          case CREATE_NEW_ALWAYS:
          default:
