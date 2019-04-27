@@ -11,12 +11,11 @@
 package org.eclipse.osee.define.rest.importing.resolvers;
 
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.define.api.importing.RoughArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -46,7 +45,7 @@ public class GuidBasedArtifactResolver extends NewArtifactImportResolver {
       ArtifactId realArtifact = null;
 
       if (roughArtifact.getGuid() == null) {
-         OseeLog.logf(GuidBasedArtifactResolver.class, Level.INFO,
+         roughArtifact.getActivityLog().createEntry(CoreActivityTypes.IMPORT_DELETE,
             "Guid based resolver is comparing a null GUID. roughArtifactifact: [%s]. Attributes: [%s]", roughArtifact,
             roughArtifact.getAttributes());
       }

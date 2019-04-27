@@ -10,16 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.define.rest.importing.resolvers;
 
-import java.util.logging.Level;
 import org.eclipse.define.api.importing.RoughArtifact;
 import org.eclipse.define.api.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -60,8 +59,8 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
    public ArtifactId resolve(final RoughArtifact roughArtifact, final BranchId branch, ArtifactId realParent, ArtifactId root) {
       ArtifactTypeToken artifactType = getArtifactType(roughArtifact);
 
-      OseeLog.logf(NewArtifactImportResolver.class, Level.INFO, "New artifact: [%s]. Attributes: [%s]", roughArtifact,
-         roughArtifact.getAttributes());
+      roughArtifact.getActivityLog().createEntry(CoreActivityTypes.IMPORT_DELETE,
+         "New artifact: [%s]. Attributes: [%s]", roughArtifact, roughArtifact.getAttributes());
 
       ArtifactId realArtifact =
          transaction.createArtifact(artifactType, roughArtifact.getName(), roughArtifact.getGuid());
@@ -69,7 +68,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
       return realArtifact;
    }
 
-   private ArtifactTypeToken getArtifactType(RoughArtifact art) {
+   protected ArtifactTypeToken getArtifactType(RoughArtifact art) {
       ArtifactTypeToken type = art.getType();
       if (!type.equals(ArtifactTypeId.SENTINEL)) {
          return type;
