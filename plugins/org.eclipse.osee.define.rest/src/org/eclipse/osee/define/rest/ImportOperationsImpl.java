@@ -74,9 +74,4 @@ public class ImportOperationsImpl implements ImportOperations {
       XResultData results = validator.validate();
       return transaction.commit();
    }
-
-   @Override
-   public TransactionToken importSetup(BranchId branch, String baseDir) {
-      return null;
-   }
 }

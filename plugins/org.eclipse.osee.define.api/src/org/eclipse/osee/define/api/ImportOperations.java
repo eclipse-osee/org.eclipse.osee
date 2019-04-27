@@ -21,6 +21,4 @@ public interface ImportOperations {
 
    public TransactionToken importWord(BranchId branch, String wordURI, ArtifactId parent, Integer tier);
 
-   public TransactionToken importSetup(BranchId branch, String baseDir);
-
 }
