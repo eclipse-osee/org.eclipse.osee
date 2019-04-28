@@ -66,7 +66,9 @@ public class SourceToRoughArtifactOperation extends AbstractOperation {
          } else {
             throw new OseeStateException("Source location [%s] is not a valid file or directory", file);
          }
-         monitor.worked(workAmount);
+         if (monitor != null) {
+            monitor.worked(workAmount);
+         }
       }
    }
 
