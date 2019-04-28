@@ -8,5 +8,5 @@ Fragment-Host: org.eclipse.osee.framework.jdk.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit,
  org.hamcrest.core,
- org.mockito;visibility:=reexport
+ org.mockito;visibility:=reexport,
  org.objenesis

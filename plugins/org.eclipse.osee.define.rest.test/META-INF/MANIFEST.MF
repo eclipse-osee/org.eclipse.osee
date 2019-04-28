@@ -13,5 +13,3 @@ Import-Package: org.eclipse.osee.framework.jdk.core.type,
  org.junit.rules,
  org.junit.runner,
  org.junit.runners
-
- 

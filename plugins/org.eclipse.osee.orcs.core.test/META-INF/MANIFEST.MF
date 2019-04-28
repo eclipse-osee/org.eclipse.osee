@@ -21,4 +21,3 @@ Import-Package: com.google.common.util.concurrent;version="15.0.0",
  org.junit.rules,
  org.junit.runner,
  org.junit.runners
- 
