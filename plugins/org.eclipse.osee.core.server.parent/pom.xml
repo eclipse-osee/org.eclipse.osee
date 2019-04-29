@@ -61,7 +61,6 @@
 		<module>../../plugins/org.eclipse.osee.jaxrs.server</module>
 		<module>../../plugins/org.eclipse.osee.jaxrs.server.test</module>
 		<module>../../plugins/org.eclipse.osee.jaxrs.client</module>
-		<module>../../plugins/org.eclipse.osee.jaxrs.client.test</module>
 
 		<module>../../plugins/org.eclipse.osee.account.rest.model</module>
 		<module>../../plugins/org.eclipse.osee.account.rest</module>

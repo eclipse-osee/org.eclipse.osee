@@ -343,6 +343,7 @@
       <import plugin="org.eclipse.jetty.servlet"/>
       <import plugin="org.eclipse.jetty.util"/>
       <import plugin="org.mockito" version="2.13.0" match="greaterOrEqual"/>      
+      <import plugin="javax.annotation" version="1.2.0" match="greaterOrEqual"/>      
       <import plugin="com.fasterxml.jackson.core.jackson-core" version="2.9.2" match="greaterOrEqual"/>
       <import plugin="com.fasterxml.jackson.core.jackson-annotations" version="2.9.2" match="greaterOrEqual" />
       <import plugin="com.fasterxml.jackson.core.jackson-databind" version="2.9.2" match="greaterOrEqual" />     
@@ -899,7 +900,7 @@
          id="javax.annotation"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.2.0"
          unpack="false"/>
 
    <plugin
