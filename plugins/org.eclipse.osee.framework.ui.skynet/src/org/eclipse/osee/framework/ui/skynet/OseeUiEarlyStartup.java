@@ -165,8 +165,6 @@ public class OseeUiEarlyStartup implements IStartup {
             }
          });
       }
-      OseeTargetContributionItem oTarget = new OseeTargetContributionItem();
-
       OseeBuildTypeContributionItem.addToAllViews();
       ResServiceContributionItem.addToAllViews();
       SessionContributionItem.addToAllViews();

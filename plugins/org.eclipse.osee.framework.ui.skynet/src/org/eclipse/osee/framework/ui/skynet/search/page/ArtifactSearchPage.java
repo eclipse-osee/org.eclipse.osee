@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDecorator;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
-import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchResult;
@@ -210,7 +209,6 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    public void init(IPageSite site) {
       super.init(site);
       setID(VIEW_ID);
-      OseeStatusContributionItemFactory.addTo(getSite(), false);
       getSite().getActionBars().updateActionBars();
       OseeEventManager.addListener(this);
    }
