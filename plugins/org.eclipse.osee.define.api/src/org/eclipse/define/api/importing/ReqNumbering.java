@@ -58,6 +58,14 @@ public final class ReqNumbering implements Comparable<ReqNumbering> {
       return unTokenize(values, finalIndex);
    }
 
+   public int getLength() {
+      return values.length;
+   }
+
+   public String getReqNumberByLevel(int level) {
+      return unTokenize(values, level);
+   }
+
    private String unTokenize(String[] input, int index) {
       StringBuilder toReturn = new StringBuilder();
       for (int i = 0; i < index; ++i) {
