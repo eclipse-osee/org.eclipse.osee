@@ -70,7 +70,7 @@ public final class SaveSearchAction extends Action {
          if (NavigateView.getNavigateView() != null) {
             NavigateViewItems.refreshTopAtsSearchItem();
          }
-         AWorkbench.popup(String.format("Search [%s] Saved", data.getSearchName()));
+         AWorkbench.popupf("Search [%s] Saved", data.getSearchName());
       }
    }
 
