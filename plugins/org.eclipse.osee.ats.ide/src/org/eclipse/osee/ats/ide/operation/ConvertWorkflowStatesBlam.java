@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
@@ -96,7 +97,7 @@ public class ConvertWorkflowStatesBlam extends AbstractBlam {
       for (String line : fromToMapStr.split(";")) {
          String[] fromTo = line.split(":");
          if (fromTo.length != 2 || fromTo[0].isEmpty() || fromTo[1].isEmpty()) {
-            AWorkbench.popup(String.format("Invalid from:to values [%s]", line));
+            AWorkbench.popupf("Invalid from:to values [%s]", line);
             return null;
          }
          fromToMap.put(fromTo[0], fromTo[1]);
