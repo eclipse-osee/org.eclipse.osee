@@ -135,7 +135,7 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
          }
       }
       if (awas.isEmpty()) {
-         AWorkbench.popup("Must select Team Workflows");
+         AWorkbench.popup("Must select Team Workflow(s)");
          return;
       }
       promptChangePriority(awas, true);
