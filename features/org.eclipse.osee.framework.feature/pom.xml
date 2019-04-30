@@ -28,8 +28,11 @@
 						</goals>
 						<configuration>
 							<excludes>
-								<plugin id="org.eclipse.osee.framework.templates" />
-							        <plugin id="org.hamcrest" />
+							   <plugin id="org.eclipse.osee.framework.templates" />
+							   <plugin id="org.hamcrest" />
+							   <plugin id="org.bouncycastle.bcpg" />
+							   <plugin id="org.bouncycastle.bcpkix" />								
+							   <plugin id="org.bouncycastle.bcprov" />
 							</excludes>
 						</configuration>
 					</execution>

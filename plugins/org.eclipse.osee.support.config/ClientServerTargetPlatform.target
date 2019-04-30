@@ -12,6 +12,11 @@
 <plugin id="com.fasterxml.jackson.core.jackson-core"/>
 <plugin id="com.fasterxml.jackson.core.jackson-annotations"/>
 <plugin id="com.fasterxml.jackson.core.jackson-databind"/>
+<plugin id="net.bytebuddy.byte-buddy"/>
+<plugin id="net.bytebuddy.byte-buddy-agent"/>
+<plugin id="org.bouncycastle.bcpg"/>
+<plugin id="org.bouncycastle.bcpg"/>
+<plugin id="org.bouncycastle.bcpkix"/>
 <plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base"/>
 <plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"/>
 <plugin id="com.google.eclipse.mechanic"/>
@@ -37,6 +42,8 @@
 <plugin id="com.sun.xml.fastinfoset"/>
 <plugin id="javaewah"/>
 <plugin id="javax.activation"/>
+<plugin id="javax.annotation"/>
+<plugin id="org.objenesis"/>
 <plugin id="javax.el"/>
 <plugin id="javax.inject"/>
 <plugin id="javax.mail.glassfish"/>

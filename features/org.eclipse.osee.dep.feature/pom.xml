@@ -47,6 +47,9 @@
 								<plugin id="org.eclipse.team.svn.core" />
 								<plugin id="ch.qos.logback.slf4j" />
 								<plugin id="org.jsoup" />
+							    <plugin id="org.bouncycastle.bcpg" />
+							    <plugin id="org.bouncycastle.bcpkix" />								
+							    <plugin id="org.bouncycastle.bcprov" />
 								<plugin id="org.eclipse.swt" />
 								<plugin id="org.eclipse.wst.common.project.facet.core" />
 								<plugin id="org.eclipse.wst.xml.core" />
