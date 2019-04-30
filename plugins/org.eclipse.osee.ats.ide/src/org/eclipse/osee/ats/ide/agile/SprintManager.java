@@ -31,7 +31,7 @@ public class SprintManager extends MembersManager<SprintArtifact> {
     */
    public SprintArtifact promptChangeSprintOrder(Artifact artifact) {
       if (!isHasCollector(artifact)) {
-         AWorkbench.popup(String.format("No Sprint set for artifact [%s]", artifact));
+         AWorkbench.popupf("No Sprint set for artifact %s", artifact.toStringWithId());
          return null;
       }
       Collection<Artifact> sprints = getCollectors(artifact, false);
