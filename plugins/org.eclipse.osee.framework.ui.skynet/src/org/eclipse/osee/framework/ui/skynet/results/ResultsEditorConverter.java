@@ -129,7 +129,7 @@ public class ResultsEditorConverter {
             writer.write(HTML_HEADER);
             writer.write(String.format(PAGE_TITLE, "Report"));
             writer.write(STYLE_CSS);
-            writer.write(String.format(JAVASCRIPT, tabs.size() + 1));
+            writer.write(String.format(JAVASCRIPT));
             writer.write(START_HTML);
             writer.write("<div id=\"alldivs\">\n");
             int index = 1;

@@ -70,6 +70,15 @@ public final class NormalizeHtml {
       // Utility Class
    }
 
+   static {
+      allowedAttributes = new ArrayList<>();
+      allowedAttributes.add("border");
+      allowedAttributes.add("frame");
+      allowedAttributes.add("rules");
+      allowedAttributes.add("valign");
+      allowedAttributes.add("src");
+   }
+
    private static TreeMap<Integer, String> initializeFontMap() {
       TreeMap<Integer, String> map = new TreeMap<>();
       map.put(new Integer(8), "xx-small;");
@@ -221,7 +230,7 @@ public final class NormalizeHtml {
       }
    }
 
-   private static void processTagsWithAttributes(Document doc) {
+   private static synchronized void processTagsWithAttributes(Document doc) {
       /****************************************************************************
        * HTML allows the same table to be represented many ways. Normalize the information into a standard format. Note
        * this will simplify the table as well (that is some formatting may be lost) Remember, the goal is to reduce the
@@ -229,14 +238,6 @@ public final class NormalizeHtml {
        * normalize to the basic keyword
        */
 
-      if (allowedAttributes == null) {
-         allowedAttributes = new ArrayList<>();
-         allowedAttributes.add("border");
-         allowedAttributes.add("frame");
-         allowedAttributes.add("rules");
-         allowedAttributes.add("valign");
-         allowedAttributes.add("src");
-      }
       Elements tables = doc.select("table");
       for (Element table : tables) {
          removeUnsupportedAttributes(table, true);

@@ -137,10 +137,6 @@ public class FigureFactory {
       return label;
    }
 
-   public static Label createLabel(String text, Font font, Color fgColor, Color bgColor) {
-      return createLabel(text, font, fgColor, bgColor);
-   }
-
    public static Label createLabel(String text, Font font, int alignment, Color fgColor, Color bgColor) {
       Label label = new Label(text);
       label.setFont(font);

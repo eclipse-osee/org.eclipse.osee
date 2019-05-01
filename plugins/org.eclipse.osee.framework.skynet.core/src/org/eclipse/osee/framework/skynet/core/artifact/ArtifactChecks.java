@@ -24,16 +24,16 @@ public class ArtifactChecks {
    private static String EXTENSION_ID = Activator.PLUGIN_ID + "." + ELEMENT_ID;
    private static String CLASS_NAME_ATTRIBUTE = "classname";
    private static List<IArtifactCheck> checks = null;
-
    private static final ExtensionDefinedObjects<IArtifactCheck> artifactCheckObjects =
       new ExtensionDefinedObjects<>(EXTENSION_ID, ELEMENT_ID, CLASS_NAME_ATTRIBUTE, true);
 
-   public static List<IArtifactCheck> getArtifactChecks() {
-      if (checks == null) {
-         checks = new ArrayList<>();
-         checks.addAll(artifactCheckObjects.getObjects());
-         checks.add(new UserArtifactCheck());
-      }
+   static {
+      checks = new ArrayList<>();
+      checks.addAll(artifactCheckObjects.getObjects());
+      checks.add(new UserArtifactCheck());
+   }
+
+   public static synchronized List<IArtifactCheck> getArtifactChecks() {
       return checks;
    }
 }

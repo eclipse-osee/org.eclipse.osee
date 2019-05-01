@@ -19,7 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.LexicographicalRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.LexicographicalRelationSorter.SortMode;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.UnorderedRelationSorter;
@@ -44,13 +43,6 @@ public class RelationSorterProvider {
 
    private void registerOrderType(IRelationSorter order) {
       orderMap.put(order.getSorterId(), order);
-   }
-
-   public boolean exists(String orderGuid) {
-      if (!GUID.isValid(orderGuid)) {
-         throw new OseeArgumentException("Error invalid guid argument");
-      }
-      return orderMap.get(orderGuid) != null;
    }
 
    public IRelationSorter getRelationOrder(RelationSorter sorterId) {

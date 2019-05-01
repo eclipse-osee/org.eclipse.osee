@@ -22,7 +22,7 @@ public final class Readers {
    /**
     * Forward a reader until just after the balanced close of the given xml element name. It is assumed that the
     * balanced open end of the element was just read off of the reader.
-    * 
+    *
     * @param reader The reader to pull the data from
     * @param appendable If supplied, all data read from the reader is appended to the appendable
     * @param elementName The name of the element, including the namespace if applicable
@@ -57,11 +57,11 @@ public final class Readers {
             throw new IllegalStateException("end of reader met when expecting an end of a tag");
          }
 
-         if (stopTag == CLOSE_TAG) {
+         if (stopTag.equals(CLOSE_TAG)) {
             elementDepthCount--;
-         } else if (stopTag == OPEN_TAG) {
+         } else if (stopTag.equals(OPEN_TAG)) {
             elementDepthCount++;
-         } else if (stopTag == OPEN_TAG_WITH_ATTR) {
+         } else if (stopTag.equals(OPEN_TAG_WITH_ATTR)) {
             if (forward(reader, (Appendable) read, ">") == null) {
                throw new IllegalStateException("end of reader met when expecting >");
             }
@@ -74,7 +74,7 @@ public final class Readers {
                appendable.append(read);
                read.setLength(0);
             }
-         } else if (stopTag == EMPTY_TAG) {
+         } else if (stopTag.equals(EMPTY_TAG)) {
             // no effect on the stack count
          } else {
             throw new IllegalStateException("unexpected element returned");
@@ -85,7 +85,7 @@ public final class Readers {
 
    /**
     * Forward a reader to just after the specified CharSequence.
-    * 
+    *
     * @return The sequence that was found which stopped the forwarding. A null is returned if no sequence was found
     * @throws IllegalArgumentException if any parameter is null
     * @throws IllegalArgumentException if any of the sequences elements are length zero
@@ -97,7 +97,7 @@ public final class Readers {
    /**
     * Forward a reader to just after the specified CharSequence. If an appendable is supplied then all characters
     * consumed from the reader will be appended to the appendable.
-    * 
+    *
     * @return The sequence that was found which stopped the forwarding. A null is returned if no sequence was found
     * @throws IllegalArgumentException if reader is null
     * @throws IllegalArgumentException if sequences is null

@@ -19,10 +19,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -54,7 +54,7 @@ public final class SkyWalkerOptions {
    private int levels = 1;
    private static Map<AbstractLayoutAlgorithm, String> layouts;
    private AbstractLayoutAlgorithm layout;
-   protected AbstractLayoutAlgorithm defaultLayout;
+   protected static AbstractLayoutAlgorithm defaultLayout;
    private Map<ArtifactTypeToken, Boolean> artTypes;
    private Map<AttributeTypeToken, Boolean> showAttributes;
    // RelationLinkDescriptor and RelationLinkDescriptorSide
@@ -77,6 +77,25 @@ public final class SkyWalkerOptions {
    public SkyWalkerOptions() {
       loadLayouts();
       layout = defaultLayout;
+   }
+
+   static {
+      layouts = new HashMap<>();
+
+      RadialLayoutAlgorithm radLayout = new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
+      radLayout.setRangeToLayout(-90 * Math.PI / 360, 90 * Math.PI / 360);
+      defaultLayout = radLayout;
+      layouts.put(radLayout, "Radial - Right (default)");
+
+      radLayout = new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
+      radLayout.setRangeToLayout(0, 180 * Math.PI / 360);
+      layouts.put(radLayout, RADIAL_DOWN_LAYOUT);
+
+      layouts.put(new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), "Radial - Full");
+      layouts.put(new SpringLayoutAlgorithm(), SPRING_LAYOUT);
+      layouts.put(new TreeLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), "Tree");
+      layouts.put(new VerticalLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), "Vertical");
+      layouts.put(new GridLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), "Grid");
    }
 
    public void addSkyWalkerOptionsChangeListener(ISkyWalkerOptionsChangeListener skyWalkerOptionsChangeListener) {
@@ -241,25 +260,7 @@ public final class SkyWalkerOptions {
       return artifact;
    }
 
-   private Map<AbstractLayoutAlgorithm, String> loadLayouts() {
-      if (layouts == null) {
-         layouts = new HashMap<>();
-
-         RadialLayoutAlgorithm radLayout = new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
-         radLayout.setRangeToLayout(-90 * Math.PI / 360, 90 * Math.PI / 360);
-         defaultLayout = radLayout;
-         layouts.put(radLayout, "Radial - Right (default)");
-
-         radLayout = new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
-         radLayout.setRangeToLayout(0, 180 * Math.PI / 360);
-         layouts.put(radLayout, RADIAL_DOWN_LAYOUT);
-
-         layouts.put(new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), "Radial - Full");
-         layouts.put(new SpringLayoutAlgorithm(), SPRING_LAYOUT);
-         layouts.put(new TreeLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), "Tree");
-         layouts.put(new VerticalLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), "Vertical");
-         layouts.put(new GridLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), "Grid");
-      }
+   private synchronized Map<AbstractLayoutAlgorithm, String> loadLayouts() {
       return layouts;
    }
 
@@ -512,7 +513,7 @@ public final class SkyWalkerOptions {
     * @param defaultLayout the defaultLayout to set
     */
    public void setDefaultLayout(AbstractLayoutAlgorithm defaultLayout) {
-      this.defaultLayout = defaultLayout;
+      SkyWalkerOptions.defaultLayout = defaultLayout;
    }
 
 }

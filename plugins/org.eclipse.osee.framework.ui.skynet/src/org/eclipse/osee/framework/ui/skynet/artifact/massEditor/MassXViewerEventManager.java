@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 /**
  * Common location for event handling for mass editor in order to keep number of registrations and processing to a
  * minimum.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class MassXViewerEventManager implements IArtifactEventListener {
@@ -38,11 +38,12 @@ public class MassXViewerEventManager implements IArtifactEventListener {
    List<IMassViewerEventHandler> handlers = new CopyOnWriteArrayList<>();
    static MassXViewerEventManager instance;
 
-   public static void add(IMassViewerEventHandler iWorldEventHandler) {
-      if (instance == null) {
-         instance = new MassXViewerEventManager();
-         OseeEventManager.addListener(instance);
-      }
+   static {
+      instance = new MassXViewerEventManager();
+      OseeEventManager.addListener(instance);
+   }
+
+   public static synchronized void add(IMassViewerEventHandler iWorldEventHandler) {
       instance.handlers.add(iWorldEventHandler);
    }
 

@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -65,7 +64,6 @@ public class BranchVisualizationView extends ViewPart {
    private XBranchSelectWidget xBranchSelectWidget;
    private static String BRANCH_KEY = "branch.visualization.default";
    private Composite bodyComposite;
-   private ScrolledComposite bottomComposite;
    private Composite bottomGroup1;
    private Composite bottomGroup2;
 
@@ -155,9 +153,6 @@ public class BranchVisualizationView extends ViewPart {
       }
       if (bottomGroup2 != null && !bottomGroup2.isDisposed()) {
          bottomGroup2.dispose();
-      }
-      if (bottomComposite != null && !bottomComposite.isDisposed()) {
-         bottomComposite.dispose();
       }
       if (settings == null) {
          settings = new BranchGanttSettings();
@@ -301,7 +296,7 @@ public class BranchVisualizationView extends ViewPart {
       ganttChart.setFocus();
    }
 
-   private Composite createBottom(final Composite parent) {
+   private void createBottom(final Composite parent) {
       bottomGroup1 = new Composite(parent, SWT.NONE);
       GridData layoutData = new GridData(GridData.FILL_HORIZONTAL);
       layoutData.widthHint = 200;
@@ -476,7 +471,6 @@ public class BranchVisualizationView extends ViewPart {
 
       });
 
-      return bottomComposite;
    }
 
    private void moveFocus() {

@@ -399,10 +399,6 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
       return arts;
    }
 
-   public String getTitle() {
-      return title;
-   }
-
    public void add(Collection<? extends Artifact> artifacts) {
       if (xViewerFactory instanceof MassXViewerFactory) {
          ((MassXViewerFactory) xViewerFactory).registerAllAttributeColumnsForArtifacts(artifacts, true, true);

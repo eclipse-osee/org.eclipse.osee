@@ -70,7 +70,7 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements Ha
       boolean equals = super.equals(obj);
       if (equals && obj instanceof DefaultBasicGuidArtifact) {
          DefaultBasicGuidArtifact other = (DefaultBasicGuidArtifact) obj;
-         return other.artifactType.equals(artifactType) & isOnSameBranch(other);
+         return other.artifactType.equals(artifactType) && isOnSameBranch(other);
       }
       return equals;
    }

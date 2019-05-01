@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Roberto E. Escobar
  */
 @XmlRootElement(name = "MatchLocation")
-public class MatchLocation {
+public class MatchLocation implements Cloneable {
    private int startPosition;
    private int endPosition;
 

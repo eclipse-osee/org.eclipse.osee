@@ -191,9 +191,10 @@ public class ChangeItem implements Comparable<ChangeItem> {
          if (other.currentVersion != null) {
             return false;
          }
-      }
-      if (!currentVersion.equals(other.currentVersion)) {
-         return false;
+      } else {
+         if (!currentVersion.equals(other.currentVersion)) {
+            return false;
+         }
       }
       if (itemTypeId.notEqual(other.itemTypeId)) {
          return false;
@@ -224,33 +225,37 @@ public class ChangeItem implements Comparable<ChangeItem> {
          if (other.baselineVersion != null) {
             return false;
          }
-      }
-      if (!baselineVersion.equals(other.baselineVersion)) {
-         return false;
+      } else {
+         if (!baselineVersion.equals(other.baselineVersion)) {
+            return false;
+         }
       }
       if (destinationVersion == null) {
          if (other.destinationVersion != null) {
             return false;
          }
-      }
-      if (!destinationVersion.equals(other.destinationVersion)) {
-         return false;
+      } else {
+         if (!destinationVersion.equals(other.destinationVersion)) {
+            return false;
+         }
       }
       if (netChange == null) {
          if (other.netChange != null) {
             return false;
          }
-      }
-      if (!netChange.equals(other.netChange)) {
-         return false;
+      } else {
+         if (!netChange.equals(other.netChange)) {
+            return false;
+         }
       }
       if (firstNonCurrentChange == null) {
          if (other.firstNonCurrentChange != null) {
             return false;
          }
-      }
-      if (!firstNonCurrentChange.equals(other.firstNonCurrentChange)) {
-         return false;
+      } else {
+         if (!firstNonCurrentChange.equals(other.firstNonCurrentChange)) {
+            return false;
+         }
       }
       return true;
    }
@@ -266,7 +271,6 @@ public class ChangeItem implements Comparable<ChangeItem> {
    }
 
    public boolean isDeleted() {
-      return getNetChange().getModType().equals(
-         ModificationType.ARTIFACT_DELETED) || getNetChange().getModType().equals(ModificationType.ARTIFACT_DELETED);
+      return getNetChange().getModType().equals(ModificationType.ARTIFACT_DELETED);
    }
 }

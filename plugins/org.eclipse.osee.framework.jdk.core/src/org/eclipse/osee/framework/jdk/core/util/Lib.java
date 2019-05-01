@@ -52,6 +52,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -211,13 +212,15 @@ public final class Lib {
    public static void copyDirectory(File source, File destination) throws IOException {
       File[] files = source.listFiles();
 
-      for (int i = 0; i < files.length; i++) {
-         if (files[i].isDirectory()) {
-            File dir = new File(destination, files[i].getName());
-            dir.mkdir();
-            copyDirectory(files[i], dir);
-         } else { // else is a file
-            copyFile(files[i], destination);
+      if (files != null) {
+         for (int i = 0; i < files.length; i++) {
+            if (files[i].isDirectory()) {
+               File dir = new File(destination, files[i].getName());
+               dir.mkdir();
+               copyDirectory(files[i], dir);
+            } else { // else is a file
+               copyFile(files[i], destination);
+            }
          }
       }
    }
@@ -299,11 +302,13 @@ public final class Lib {
    public static void deleteContents(File directory, FilenameFilter filter) {
       File[] files = directory.listFiles(filter);
 
-      for (int i = 0; i < files.length; i++) {
-         if (files[i].isDirectory()) {
-            deleteContents(files[i]);
+      if (files != null) {
+         for (int i = 0; i < files.length; i++) {
+            if (files[i].isDirectory()) {
+               deleteContents(files[i]);
+            }
+            files[i].delete();
          }
-         files[i].delete();
       }
    }
 
@@ -681,9 +686,11 @@ public final class Lib {
    public static void moveFiles(File source, FilenameFilter filter, File destination) {
       File[] files = source.listFiles(filter);
 
-      for (int i = 0; i < files.length; i++) {
-         if (files[i].isFile()) {
-            files[i].renameTo(new File(destination, files[i].getName()));
+      if (files != null) {
+         for (int i = 0; i < files.length; i++) {
+            if (files[i].isFile()) {
+               files[i].renameTo(new File(destination, files[i].getName()));
+            }
          }
       }
    }
@@ -986,9 +993,8 @@ public final class Lib {
       return Lib.getBasePath(Lib.class);
    }
 
-   private static final SimpleDateFormat filenameDateFormat = new SimpleDateFormat("yyyy-MM-dd_hh-mm");
-
    public static String getDateTimeString() {
+      final SimpleDateFormat filenameDateFormat = new SimpleDateFormat("yyyy-MM-dd_hh-mm");
       return filenameDateFormat.format(new Date());
    }
 
@@ -1327,13 +1333,15 @@ public final class Lib {
          throw new IllegalArgumentException(directory.getPath() + " is not a valid directory.");
       }
       File[] jars = directory.listFiles(new MatchFilter(".*\\.jar"));
-      for (int i = 0; i < jars.length; i++) {
-         JarFile jar = new JarFile(jars[i]);
-         Attributes attributes = jar.getManifest().getMainAttributes();
-         String jarTitle = attributes.getValue("Implementation-Title");
-         String jarVersion = attributes.getValue("Implementation-Version");
-         if (jarTitle != null && jarVersion != null && jarTitle.equals(title) && jarVersion.equals(version)) {
-            return jars[i].toURI().toURL();
+      if (jars != null) {
+         for (int i = 0; i < jars.length; i++) {
+            JarFile jar = new JarFile(jars[i]);
+            Attributes attributes = jar.getManifest().getMainAttributes();
+            String jarTitle = attributes.getValue("Implementation-Title");
+            String jarVersion = attributes.getValue("Implementation-Version");
+            if (jarTitle != null && jarVersion != null && jarTitle.equals(title) && jarVersion.equals(version)) {
+               return jars[i].toURI().toURL();
+            }
          }
       }
       throw new IllegalArgumentException("The specified version: " + version + " for " + title + " was not found.");
@@ -1492,12 +1500,14 @@ public final class Lib {
 
    private static void compressDirectory(String basePath, File source, ZipOutputStream outputStream, boolean includeSubDirectories) throws IOException {
       File[] children = source.listFiles();
-      for (File file : children) {
-         if (file.isDirectory() != true) {
-            compressFile(basePath, file, outputStream);
-         } else {
-            if (includeSubDirectories) {
-               compressDirectory(basePath, file, outputStream, includeSubDirectories);
+      if (children != null) {
+         for (File file : children) {
+            if (file.isDirectory() != true) {
+               compressFile(basePath, file, outputStream);
+            } else {
+               if (includeSubDirectories) {
+                  compressDirectory(basePath, file, outputStream, includeSubDirectories);
+               }
             }
          }
       }
@@ -1654,7 +1664,7 @@ public final class Lib {
     * @return randomly generated unique long > 0
     */
    public static Long generateUuid() {
-      long id = Math.abs(RANDOM.nextLong());
+      long id = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
       if (id == 0) {
          return generateUuid();
       }

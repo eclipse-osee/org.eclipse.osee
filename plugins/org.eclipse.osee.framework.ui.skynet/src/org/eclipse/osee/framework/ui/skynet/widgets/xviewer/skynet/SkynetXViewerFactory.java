@@ -93,13 +93,14 @@ public class SkynetXViewerFactory extends OseeTargetXViewerFactory {
       }
    }
 
-   public static List<XViewerColumn> getAllAttributeColumns() {
-      if (attrColumns == null) {
-         attrColumns = new LinkedList<>();
-         for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
-            attrColumns.add(getAttributeColumn(attributeType));
-         }
+   static {
+      attrColumns = new LinkedList<>();
+      for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
+         attrColumns.add(getAttributeColumn(attributeType));
       }
+   }
+
+   public static synchronized List<XViewerColumn> getAllAttributeColumns() {
       return attrColumns;
    }
 

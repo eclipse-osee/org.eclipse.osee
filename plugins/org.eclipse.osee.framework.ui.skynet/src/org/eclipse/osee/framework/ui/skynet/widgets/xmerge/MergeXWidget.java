@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
-
 import org.apache.commons.lang.mutable.MutableBoolean;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -33,6 +32,7 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -232,16 +232,14 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
          protected IStatus run(IProgressMonitor monitor) {
             try {
                Conflict[] conflicts = getConflicts();
-               if (conflicts.length >= 0) {
-                  Conflict[] artifactChanges = new Conflict[0];
-                  if (conflicts[0].getToTransactionId().isValid()) {
-                     setConflicts(ConflictManagerInternal.getConflictsPerBranch(conflicts[0].getSourceBranch(),
-                        conflicts[0].getDestBranch(), conflicts[0].getToTransactionId(), monitor).toArray(
-                           artifactChanges));
-                  } else {
-                     setConflicts(ConflictManagerInternal.getConflictsPerBranch(conflicts[0].getCommitTransactionId(),
-                        monitor).toArray(artifactChanges));
-                  }
+               Conflict[] artifactChanges = new Conflict[0];
+               if (conflicts[0].getToTransactionId().isValid()) {
+                  setConflicts(ConflictManagerInternal.getConflictsPerBranch(conflicts[0].getSourceBranch(),
+                     conflicts[0].getDestBranch(), conflicts[0].getToTransactionId(), monitor).toArray(
+                        artifactChanges));
+               } else {
+                  setConflicts(ConflictManagerInternal.getConflictsPerBranch(conflicts[0].getCommitTransactionId(),
+                     monitor).toArray(artifactChanges));
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -726,7 +724,9 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
    @Override
    public String getEditorTitle() {
       try {
-         return String.format("Table Report - Merge View [%s]", getEditorTitle());
+         Branch branch = BranchManager.getBranch(sourceBranch);
+
+         return String.format("Table Report - Merge View [%s]", branch.toStringWithId());
       } catch (Exception ex) {
          // do nothing
       }

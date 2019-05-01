@@ -48,11 +48,12 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener, Eve
    static List<IArtifactExplorerEventHandler> handlers = new CopyOnWriteArrayList<>();
    static ArtifactExplorerEventManager instance;
 
-   public static void add(IArtifactExplorerEventHandler iWorldEventHandler) {
-      if (instance == null) {
-         instance = new ArtifactExplorerEventManager();
-         OseeEventManager.addListener(instance);
-      }
+   static {
+      instance = new ArtifactExplorerEventManager();
+      OseeEventManager.addListener(instance);
+   }
+
+   public static synchronized void add(IArtifactExplorerEventHandler iWorldEventHandler) {
       ArtifactExplorerEventManager.handlers.add(iWorldEventHandler);
    }
 

@@ -37,11 +37,14 @@ public class JsonUtil {
    private static ObjectMapper mapper;
    private static ObjectMapper mapper2;
 
-   public static ObjectMapper getMapper() {
-      if (mapper == null) {
-         mapper = new ObjectMapper();
-         mapper.setDateFormat(new SimpleDateFormat("MMM d, yyyy h:mm:ss aa"));
-      }
+   static {
+      mapper = new ObjectMapper();
+      mapper.setDateFormat(new SimpleDateFormat("MMM d, yyyy h:mm:ss aa"));
+      mapper2 = new ObjectMapper();
+      mapper2.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm a z"));
+   }
+
+   public static synchronized ObjectMapper getMapper() {
       return mapper;
    }
 
@@ -69,11 +72,7 @@ public class JsonUtil {
       }
    }
 
-   private static ObjectMapper getMapperZ() {
-      if (mapper2 == null) {
-         mapper2 = new ObjectMapper();
-         mapper2.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm a z"));
-      }
+   private static synchronized ObjectMapper getMapperZ() {
       return mapper2;
    }
 

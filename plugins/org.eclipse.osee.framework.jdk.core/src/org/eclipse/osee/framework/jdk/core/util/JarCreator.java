@@ -58,8 +58,10 @@ public class JarCreator {
    private void addRelativeToPosition(File path, int rootPathPos, FileFilter filenameFilter) throws IOException {
       if (path.isDirectory()) {
          File[] files = path.listFiles(filenameFilter);
-         for (int i = 0; i < files.length; i++) {
-            addRelativeToPosition(files[i], rootPathPos, filenameFilter);
+         if (files != null) {
+            for (int i = 0; i < files.length; i++) {
+               addRelativeToPosition(files[i], rootPathPos, filenameFilter);
+            }
          }
       } else {
          addFile(path, path.getAbsolutePath().substring(rootPathPos));

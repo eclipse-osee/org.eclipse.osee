@@ -51,7 +51,7 @@ public final class Address implements Comparable<Address> {
    }
 
    public boolean isSameTransaction(Address other) {
-      return other != null && transactionId == other.transactionId;
+      return other != null && transactionId.equals(other.transactionId);
    }
 
    public boolean hasSameGamma(Address other) {
@@ -146,7 +146,7 @@ public final class Address implements Comparable<Address> {
 
    @Override
    public int compareTo(Address otherAddress) {
-      if (transactionId != otherAddress.transactionId) {
+      if (!transactionId.equals(otherAddress.transactionId)) {
          return Long.compare(transactionId, otherAddress.transactionId);
       } else {
          return Long.compare(gammaId.getId(), otherAddress.gammaId.getId());

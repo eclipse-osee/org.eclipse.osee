@@ -58,8 +58,7 @@ public class EmailWizard extends Wizard {
             return true;
          }
          if (wizardPage.getToAddresses().length == 0) {
-            AWorkbench.popup(
-               String.format("Emails can not be resolved for recipients.\n\nEmail not be sent", UserManager.getUser()));
+            AWorkbench.popup(String.format("Emails can not be resolved for recipients.\n\nEmail not be sent"));
             return true;
          }
          OseeEmail emailMessage = new OseeEmail(Arrays.asList(wizardPage.getToAddresses()),

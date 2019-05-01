@@ -190,7 +190,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
             branchSelectCombo.add(branchName);
             branchSelectCombo.setData(branch.getIdString(), branch);
             branchSelectCombo.setData(branchName, branch);
-            if (toStore.equals(lastSelected)) {
+            if (toStore.toString().equals(lastSelected)) {
                toSelect = i;
                branchSelectCombo.select(toSelect);
             }

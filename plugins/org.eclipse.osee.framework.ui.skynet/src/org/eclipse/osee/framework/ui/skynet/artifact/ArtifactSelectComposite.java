@@ -81,7 +81,7 @@ public class ArtifactSelectComposite extends Composite {
 
    private void createButton(Composite parent) {
       artifactSelectButton = new Button(parent, SWT.PUSH);
-      artifactSelectButton.setText(String.format("Select", itemName));
+      artifactSelectButton.setText("Select " + itemName);
       artifactSelectButton.addListener(SWT.Selection, new Listener() {
 
          @Override

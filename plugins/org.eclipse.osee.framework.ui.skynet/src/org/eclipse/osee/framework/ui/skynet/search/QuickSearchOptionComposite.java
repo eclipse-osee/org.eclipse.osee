@@ -23,10 +23,10 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.HelpContext;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -380,6 +380,15 @@ public class QuickSearchOptionComposite extends Composite {
       private final String toolTip;
       private final IOptionConfigurationHandler<?> configHandler;
 
+      static {
+         configurable = new HashMap<>();
+         for (SearchOption option : SearchOption.values()) {
+            if (option.isConfigurable()) {
+               configurable.put(option, option.getConfigHandler());
+            }
+         }
+      }
+
       SearchOption(HelpContext helpContext, String toolTip) {
          this(helpContext, toolTip, null);
       }
@@ -410,15 +419,7 @@ public class QuickSearchOptionComposite extends Composite {
          return configHandler;
       }
 
-      public static Map<SearchOption, IOptionConfigurationHandler<?>> getConfigurableOptions() {
-         if (configurable == null) {
-            configurable = new HashMap<>();
-            for (SearchOption option : SearchOption.values()) {
-               if (option.isConfigurable()) {
-                  configurable.put(option, option.getConfigHandler());
-               }
-            }
-         }
+      public static synchronized Map<SearchOption, IOptionConfigurationHandler<?>> getConfigurableOptions() {
          return configurable;
       }
    }

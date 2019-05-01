@@ -36,7 +36,6 @@ public class RendererUtil {
    private static IFolder previewFolder;
 
    private static final Random generator = new Random();
-   private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
    private static final int FILENAME_LIMIT = 215;
 
    public static String toFileName(IOseeBranch branch) {
@@ -61,6 +60,8 @@ public class RendererUtil {
          name.append(fileNamePrefix);
          name.append("_");
       }
+
+      final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
       name.append(mainName);
       name.append("_");

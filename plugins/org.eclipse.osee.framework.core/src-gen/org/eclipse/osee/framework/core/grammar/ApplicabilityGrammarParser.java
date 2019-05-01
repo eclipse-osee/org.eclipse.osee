@@ -77,10 +77,12 @@ public class ApplicabilityGrammarParser extends Parser {
       return adaptor;
    }
 
+   @Override
    public String[] getTokenNames() {
       return ApplicabilityGrammarParser.tokenNames;
    }
 
+   @Override
    public String getGrammarFileName() {
       return "ApplicabilityGrammar.g";
    }
@@ -88,8 +90,8 @@ public class ApplicabilityGrammarParser extends Parser {
    private String applicabilityType = null;
    private String id = null;
 
-   private HashMap<String, List<String>> id_values_map = new HashMap<>();
-   private ArrayList<String> operators = new ArrayList<>();
+   private final HashMap<String, List<String>> id_values_map = new HashMap<>();
+   private final ArrayList<String> operators = new ArrayList<>();
 
    public ArrayList<String> getOperators() {
       return operators;
@@ -106,6 +108,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class start_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -160,6 +163,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class applicability_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -243,6 +247,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class config_applicability_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -272,10 +277,10 @@ public class ApplicabilityGrammarParser extends Parser {
          {
             root_0 = (CommonTree) adaptor.nil();
 
-            set5 = (Token) input.LT(1);
+            set5 = input.LT(1);
             if ((input.LA(1) >= 9 && input.LA(1) <= 10)) {
                input.consume();
-               adaptor.addChild(root_0, (CommonTree) adaptor.create(set5));
+               adaptor.addChild(root_0, adaptor.create(set5));
                state.errorRecovery = false;
             } else {
                MismatchedSetException mse = new MismatchedSetException(null, input);
@@ -311,7 +316,9 @@ public class ApplicabilityGrammarParser extends Parser {
                      break;
 
                   default:
-                     if (cnt2 >= 1) break loop2;
+                     if (cnt2 >= 1) {
+                        break loop2;
+                     }
                      EarlyExitException eee = new EarlyExitException(2, input);
                      throw eee;
                }
@@ -343,6 +350,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class feature_applicability_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -399,7 +407,9 @@ public class ApplicabilityGrammarParser extends Parser {
                      break;
 
                   default:
-                     if (cnt3 >= 1) break loop3;
+                     if (cnt3 >= 1) {
+                        break loop3;
+                     }
                      EarlyExitException eee = new EarlyExitException(3, input);
                      throw eee;
                }
@@ -431,6 +441,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class expressions_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -512,6 +523,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class expression_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -542,7 +554,11 @@ public class ApplicabilityGrammarParser extends Parser {
             ID14_tree = (CommonTree) adaptor.create(ID14);
             adaptor.addChild(root_0, ID14_tree);
 
-            id = (ID14 != null ? ID14.getText() : null).trim();
+            if (ID14 != null) {
+               id = ID14.getText().trim();
+            } else {
+               id = null;
+            }
             id_values_map.put(id, new ArrayList<String>());
 
             // ApplicabilityGrammar.g:54:9: ( '=' temp= val )?
@@ -597,6 +613,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class val_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -678,6 +695,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class start_compound_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -742,6 +760,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class compound_value_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -804,7 +823,9 @@ public class ApplicabilityGrammarParser extends Parser {
                         break;
 
                      default:
-                        if (cnt7 >= 1) break loop7;
+                        if (cnt7 >= 1) {
+                           break loop7;
+                        }
                         EarlyExitException eee = new EarlyExitException(7, input);
                         throw eee;
                   }
@@ -848,6 +869,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class multiple_compounds_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -915,6 +937,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class value_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -966,9 +989,15 @@ public class ApplicabilityGrammarParser extends Parser {
             ID26_tree = (CommonTree) adaptor.create(ID26);
             adaptor.addChild(root_0, ID26_tree);
 
-            if ((temp != null ? input.toString(temp.start, temp.stop) : null) != null) id_values_map.get(id).add(
-               (temp != null ? input.toString(temp.start, temp.stop) : null));
-            id_values_map.get(id).add((ID26 != null ? ID26.getText() : null).trim());
+            if ((temp != null ? input.toString(temp.start, temp.stop) : null) != null) {
+               id_values_map.get(id).add((temp != null ? input.toString(temp.start, temp.stop) : null));
+            }
+
+            if (ID26 != null) {
+               id_values_map.get(id).add(ID26.getText().trim());
+            } else {
+               id_values_map.get(id).add(null);
+            }
 
          }
 
@@ -991,6 +1020,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class operator_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -1014,10 +1044,10 @@ public class ApplicabilityGrammarParser extends Parser {
          {
             root_0 = (CommonTree) adaptor.nil();
 
-            set27 = (Token) input.LT(1);
+            set27 = input.LT(1);
             if ((input.LA(1) >= AND && input.LA(1) <= OR)) {
                input.consume();
-               adaptor.addChild(root_0, (CommonTree) adaptor.create(set27));
+               adaptor.addChild(root_0, adaptor.create(set27));
                state.errorRecovery = false;
             } else {
                MismatchedSetException mse = new MismatchedSetException(null, input);

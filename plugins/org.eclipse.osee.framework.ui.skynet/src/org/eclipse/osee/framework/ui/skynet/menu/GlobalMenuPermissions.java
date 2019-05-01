@@ -59,12 +59,13 @@ public class GlobalMenuPermissions {
       Artifact combinationSubject = null;
 
       for (Artifact objectArtifact : artifacts) {
-         writePermission &= AccessControlManager.hasPermission(objectArtifact,
+         writePermission = writePermission && AccessControlManager.hasPermission(objectArtifact,
             PermissionEnum.WRITE) && BranchManager.isEditable(objectArtifact.getBranch());
-         readPermission &= AccessControlManager.hasPermission(objectArtifact, PermissionEnum.READ);
-         fullAccess &= AccessControlManager.hasPermission(objectArtifact, PermissionEnum.FULLACCESS);
-         isLocked |= AccessControlManager.hasLock(objectArtifact);
-         accessToRemoveLock &= AccessControlManager.canUnlockObject(objectArtifact, UserManager.getUser());
+         readPermission = readPermission && AccessControlManager.hasPermission(objectArtifact, PermissionEnum.READ);
+         fullAccess = fullAccess && AccessControlManager.hasPermission(objectArtifact, PermissionEnum.FULLACCESS);
+         isLocked = isLocked || AccessControlManager.hasLock(objectArtifact);
+         accessToRemoveLock =
+            accessToRemoveLock && AccessControlManager.canUnlockObject(objectArtifact, UserManager.getUser());
 
          // acquire the name of the subject that has the lock
          Artifact subject = AccessControlManager.getSubjectFromLockedObject(objectArtifact);

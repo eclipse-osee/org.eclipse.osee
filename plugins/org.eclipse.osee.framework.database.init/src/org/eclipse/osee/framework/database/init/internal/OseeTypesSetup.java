@@ -51,8 +51,10 @@ public class OseeTypesSetup {
          sheet.setGuid(element.getAttribute("guid"));
          sheet.setId(element.getAttribute("id"));
          try {
-            sheet.setTypesSheet(Lib.inputStreamToString(new BufferedInputStream(url.openStream())));
-            oseeTypes.add(sheet);
+            if (url != null) {
+               sheet.setTypesSheet(Lib.inputStreamToString(new BufferedInputStream(url.openStream())));
+               oseeTypes.add(sheet);
+            }
          } catch (IOException ex) {
             OseeCoreException.wrapAndThrow(ex);
          }

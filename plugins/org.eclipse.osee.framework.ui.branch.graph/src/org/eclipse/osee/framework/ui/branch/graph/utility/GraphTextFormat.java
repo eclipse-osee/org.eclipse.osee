@@ -23,10 +23,11 @@ public class GraphTextFormat {
    private GraphTextFormat() {
    }
 
-   public static String formatDate(Date date) {
-      if (dateFormat == null) {
-         dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
-      }
+   static {
+      dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
+   }
+
+   public static synchronized String formatDate(Date date) {
       return dateFormat.format(date);
    }
 }

@@ -34,15 +34,13 @@ import org.osgi.framework.ServiceReference;
  */
 public final class CmAccessProviderProxy implements IAccessProvider {
 
-   private final List<ServiceReference<CmAccessControl>> pending =
-      new CopyOnWriteArrayList<>();
+   private final List<ServiceReference<CmAccessControl>> pending = new CopyOnWriteArrayList<>();
 
    private final Collection<CmAccessControl> cmServices = new CopyOnWriteArraySet<>();
 
    private IAccessProvider accessProvider;
    private CmAccessControlProvider cmProvider;
    private BundleContext bundleContext;
-   private Thread thread;
 
    private volatile boolean requiresReload = true;
 
@@ -109,10 +107,6 @@ public final class CmAccessProviderProxy implements IAccessProvider {
    }
 
    public void stop() {
-      if (thread != null) {
-         thread.interrupt();
-         thread = null;
-      }
       accessProvider = null;
       cmProvider.setDefaultAccessControl(null);
       cmServices.clear();

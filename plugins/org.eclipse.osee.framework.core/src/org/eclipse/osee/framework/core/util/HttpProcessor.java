@@ -65,8 +65,7 @@ public class HttpProcessor {
    private static final Map<String, IProxyData[]> proxiedData = new ConcurrentHashMap<>();
    private static int requests = 0;
 
-   private static final Map<String, Pair<Integer, Long>> isAliveMap =
-      new ConcurrentHashMap<>();
+   private static final Map<String, Pair<Integer, Long>> isAliveMap = new ConcurrentHashMap<>();
 
    private HttpProcessor() {
       // Static class
@@ -169,7 +168,7 @@ public class HttpProcessor {
                params.setSoTimeout(1000);
                method.setParams(params);
                int responseCode = executeMethod(url, method);
-               if (responseCode == HttpURLConnection.HTTP_NOT_FOUND || responseCode == HttpURLConnection.HTTP_ACCEPTED || responseCode == HttpURLConnection.HTTP_ACCEPTED || responseCode == HttpURLConnection.HTTP_OK) {
+               if (responseCode == HttpURLConnection.HTTP_NOT_FOUND || responseCode == HttpURLConnection.HTTP_ACCEPTED || responseCode == HttpURLConnection.HTTP_OK) {
                   isAlive = true;
                }
             } finally {

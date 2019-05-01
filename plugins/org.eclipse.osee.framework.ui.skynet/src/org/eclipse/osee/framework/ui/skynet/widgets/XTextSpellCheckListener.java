@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.MenuItem;
 /**
  * PaintListener that will underline all misspelled words in a StyledText widget. This class must be extended to provide
  * for getting the dictionary and activating/deactivating certain functionality.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class XTextSpellCheckListener implements ModifyListener {
@@ -45,7 +45,7 @@ public class XTextSpellCheckListener implements ModifyListener {
    private final IDictionary dict;
    private final XText xText;
    private final Set<ASpellWord> errors = new LinkedHashSet<>();
-   private XTextSpellModifyDictionary modDict;
+   private XTextSpellModifyDictionary modDict = null;
    private Integer maxLength = 50000;
 
    public XTextSpellCheckListener(final XText xText, IDictionary dict) {

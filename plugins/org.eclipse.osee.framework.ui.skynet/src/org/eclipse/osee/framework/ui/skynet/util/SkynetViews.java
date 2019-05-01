@@ -35,8 +35,10 @@ public class SkynetViews {
                      IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
                      if (workbenchPage != null) {
                         IViewReference viewReference = workbenchPage.findViewReference(viewId, secondaryId);
-                        if (viewReference.getPart(false) != null) {
-                           workbenchPage.hideView(viewReference);
+                        if (viewReference != null) {
+                           if (viewReference.getPart(false) != null) {
+                              workbenchPage.hideView(viewReference);
+                           }
                         }
                      }
                   }

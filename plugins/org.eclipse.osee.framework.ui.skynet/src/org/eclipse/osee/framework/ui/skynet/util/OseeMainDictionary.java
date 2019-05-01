@@ -44,7 +44,7 @@ public class OseeMainDictionary implements IOseeDictionary {
             br = new BufferedReader(new InputStreamReader(url.openStream()));
             String line = null;
             while ((line = br.readLine()) != null) {
-               line.replaceAll("[\t\r\n ]+$", "");
+               line = line.replaceAll("[\t\r\n ]+$", "");
                dictionary.add(line);
             }
          } catch (Exception ex) {

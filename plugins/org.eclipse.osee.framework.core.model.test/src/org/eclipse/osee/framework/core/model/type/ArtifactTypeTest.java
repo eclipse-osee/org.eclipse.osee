@@ -21,7 +21,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test Case for {@link ArtifactType}
- * 
+ *
  * @author Roberto E. Escobar
  */
 @RunWith(Parameterized.class)
@@ -83,12 +83,10 @@ public class ArtifactTypeTest extends AbstractOseeTypeTest<Long, ArtifactType> {
    @Parameters
    public static Collection<Object[]> getData() {
       Collection<Object[]> data = new ArrayList<>();
-      boolean isAbstract = true;
       for (int index = 1; index <= 3; index++) {
          Long guid = 0x00L;
          String name = "index: " + index;
-         isAbstract ^= isAbstract;
-         data.add(new Object[] {new ArtifactType(guid, name, isAbstract), guid, name, isAbstract});
+         data.add(new Object[] {new ArtifactType(guid, name, false), guid, name, false});
       }
       return data;
    }

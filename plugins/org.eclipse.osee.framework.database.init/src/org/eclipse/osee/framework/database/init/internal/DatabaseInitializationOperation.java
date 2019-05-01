@@ -177,7 +177,9 @@ public class DatabaseInitializationOperation extends AbstractOperation {
             }
             System.out.println("Enter: 0 - " + (choices.size() - 1));
             String line = stdin.readLine();
-            selection = Integer.parseInt(line);
+            if (line != null) {
+               selection = Integer.parseInt(line);
+            }
             if (selection < 0 || selection >= choices.size()) {
                System.out.println("Invalid selection:  Index [" + selection + "] is out of range.");
                selection = -1;

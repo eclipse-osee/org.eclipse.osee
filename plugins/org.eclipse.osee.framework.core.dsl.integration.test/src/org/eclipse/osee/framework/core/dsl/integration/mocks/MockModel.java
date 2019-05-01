@@ -117,7 +117,7 @@ public final class MockModel {
       Assert.assertNotNull(toReturn);
       toReturn.setId(id.getIdString());
       toReturn.setName(name);
-      Assert.assertEquals(id, Long.valueOf(toReturn.getId()));
+      Assert.assertEquals(id.getId(), Long.valueOf(toReturn.getId()));
       Assert.assertEquals(name, toReturn.getName());
       return toReturn;
    }

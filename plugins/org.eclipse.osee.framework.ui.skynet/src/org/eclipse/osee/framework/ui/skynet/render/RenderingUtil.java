@@ -46,7 +46,6 @@ public final class RenderingUtil {
    private static IFolder compareFolder;
    private static IFolder previewFolder;
    private static boolean arePopupsAllowed = true;
-   private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
    public static void setPopupsAllowed(boolean popupsAllowed) {
       arePopupsAllowed = popupsAllowed;
@@ -189,6 +188,8 @@ public final class RenderingUtil {
          name.append(fileNamePrefix);
          name.append("_");
       }
+
+      DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
       name.append(mainName);
       name.append("_");

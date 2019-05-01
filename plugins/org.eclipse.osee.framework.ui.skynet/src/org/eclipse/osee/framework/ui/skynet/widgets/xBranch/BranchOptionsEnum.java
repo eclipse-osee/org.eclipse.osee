@@ -34,6 +34,6 @@ public enum BranchOptionsEnum {
             return optEnum;
          }
       }
-      throw new IllegalArgumentException(String.format("Incorrect BranchOptionEnum value", initKey));
+      throw new IllegalArgumentException(String.format("Incorrect BranchOptionEnum value: " + initKey));
    }
 }

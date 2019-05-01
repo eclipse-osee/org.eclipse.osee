@@ -40,7 +40,9 @@ public class ExtractText {
                   while (line != null && pos == -1) {
                      writeText();
                      line = in.readLine();
-                     pos = line.indexOf("*/");
+                     if (line != null) {
+                        pos = line.indexOf("*/");
+                     }
                   }
                   writeText();
                } else { // line contains a string

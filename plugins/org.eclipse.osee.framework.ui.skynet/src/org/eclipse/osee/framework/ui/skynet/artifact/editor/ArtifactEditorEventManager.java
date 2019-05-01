@@ -45,11 +45,12 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
    static List<IArtifactEditorEventHandler> handlers = new CopyOnWriteArrayList<>();
    static ArtifactEditorEventManager instance;
 
-   public static void add(IArtifactEditorEventHandler iWorldEventHandler) {
-      if (instance == null) {
-         instance = new ArtifactEditorEventManager();
-         OseeEventManager.addListener(instance);
-      }
+   static {
+      instance = new ArtifactEditorEventManager();
+      OseeEventManager.addListener(instance);
+   }
+
+   public static synchronized void add(IArtifactEditorEventHandler iWorldEventHandler) {
       ArtifactEditorEventManager.handlers.add(iWorldEventHandler);
    }
 

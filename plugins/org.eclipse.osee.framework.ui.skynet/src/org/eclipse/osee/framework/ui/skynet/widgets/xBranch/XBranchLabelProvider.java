@@ -11,14 +11,12 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
@@ -44,9 +42,10 @@ import org.eclipse.swt.graphics.Image;
  * @author Jeff C. Phillips
  */
 public class XBranchLabelProvider extends XViewerLabelProvider {
-   private final static DateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
 
    private final BranchXViewer branchXViewer;
+
+   private final DateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
 
    public XBranchLabelProvider(BranchXViewer branchXViewer) {
       super(branchXViewer);
@@ -109,6 +108,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          try {
             String date = "";
             if (branch.getBaseTransaction() != null) {
+               DateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
                date = DATE_FORMAT.format(branch.getBaseTransaction().getTimeStamp());
             }
             return date;
@@ -183,6 +183,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          columnText = String.valueOf(transaction.getId());
       }
       if (cCol.equals(BranchXViewerFactory.timeStamp)) {
+         DateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
          columnText = DATE_FORMAT.format(transaction.getTimeStamp());
       } else if (cCol.equals(BranchXViewerFactory.author)) {
          try {

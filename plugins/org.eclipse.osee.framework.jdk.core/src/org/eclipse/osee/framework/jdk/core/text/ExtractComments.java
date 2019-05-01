@@ -58,11 +58,14 @@ public class ExtractComments {
             if (tLine.startsWith("/*")) {
                comments.add(++count + line);
                while (tLine != null && !tLine.endsWith("*/")) {
-                  tLine = in.readLine().trim();
+                  tLine = in.readLine();
+                  if (tLine != null) {
+                     tLine = tLine.trim();
+                  }
                   comments.add(++count + line);
                }
             } else if (!tLine.startsWith("//")) {
-               //a logical	LOC might have	a  comment folloing it on the  same line
+               //a logical	LOC might have	a  comment following it on the  same line
                line = stripOffComment(tLine);
                return;
             }

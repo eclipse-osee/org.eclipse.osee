@@ -38,11 +38,6 @@ public class ResultsEditorInput implements IEditorInput, Adaptable {
    }
 
    @Override
-   public boolean equals(Object obj) {
-      return false;
-   }
-
-   @Override
    public boolean exists() {
       return false;
    }

@@ -39,12 +39,18 @@ public class AssociatedArtifactField extends AbstractOseeField<Integer> {
    }
 
    private boolean isDifferent(Integer artId1, Integer artId2) {
-      boolean result = false;
-      if (artId1 != null && artId2 == null || artId1 == null && artId2 != null) {
-         result = true;
+      if (artId1 == null) {
+         if (artId2 == null) {
+            return false;
+         } else {
+            return true;
+         }
       } else {
-         result = artId1 != artId2;
+         if (artId2 == null) {
+            return true;
+         } else {
+            return !(artId1.equals(artId2));
+         }
       }
-      return result;
    }
 }

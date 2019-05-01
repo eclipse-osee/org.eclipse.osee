@@ -22,7 +22,6 @@ public class StatusCallback implements OseeMessagingStatusCallback {
    private volatile int currentCount;
    private volatile boolean wasUpdateReceived;
    private volatile boolean failed;
-   private Throwable th;
 
    public StatusCallback(int expectedCount) {
       this.expectedCount = expectedCount;
@@ -31,7 +30,6 @@ public class StatusCallback implements OseeMessagingStatusCallback {
 
    public void reset() {
       failed = false;
-      th = null;
       currentCount = 0;
       wasUpdateReceived = false;
    }
@@ -49,18 +47,14 @@ public class StatusCallback implements OseeMessagingStatusCallback {
 
    @Override
    public void fail(Throwable th) {
-      failed = true;
       synchronized (this) {
+         failed = true;
          notify();
       }
    }
 
    public boolean failed() {
       return failed;
-   }
-
-   public Throwable getError() {
-      return th;
    }
 
    public int getTotalReceived() {
