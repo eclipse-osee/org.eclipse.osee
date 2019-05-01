@@ -125,6 +125,10 @@ public class RoughToRealArtifactOperation {
       ArtifactReadable child = getArtifactReadable(childId);
       ArtifactReadable parent = getArtifactReadable(parentId);
 
+      if (parent == null || child == null) {
+         return;
+      }
+
       if (hasDifferentParent(child, parent)) {
          transaction.unrelate(child.getParent(), CoreRelationTypes.Default_Hierarchical__Child, child);
       }

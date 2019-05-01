@@ -23,7 +23,6 @@ public final class DoorsImportFieldTokens {
    private static final String CAPTION_REGEX = "^Caption Type.*";
    private static final String HEAD_REGEX = "^Object Head.*";
    private static final String NUMB_REGEX = "^Object Numb.*";
-   private static final String REQ_REGEX = "^Requirement.*";
    private static final String TEXT_REGEX = "^Object Text.*";
    private static final String STATE_REGEX = "^Object State.*";
    private static final String ADDED_REGEX = "^Object Added.*";
@@ -38,7 +37,6 @@ public final class DoorsImportFieldTokens {
    public static final BlockFieldToken blockAttrLevel =       BlockFieldToken.valueOf(2, "Level", LEVE_REGEX, BLOCK_ATTR_REGEX, BlockField::new);
    public static final BlockFieldToken blockAttrHeading =     BlockFieldToken.valueOf(3, "Heading", HEAD_REGEX, BLOCK_ATTR_REGEX, BlockField::new);
    public static final BlockFieldToken blockAttrNumber =      BlockFieldToken.valueOf(4, "Number", NUMB_REGEX, BLOCK_ATTR_REGEX, BlockField::new, CoreAttributeTypes.DoorsHierarchy);
-   public static final BlockFieldToken blockAttrRequirement = BlockFieldToken.valueOf(5, "Requirement", REQ_REGEX, BLOCK_ATTR_REGEX, BlockField::new);
    public static final BlockFieldToken blockAttrType =        BlockFieldToken.valueOf(6, "Type", TYPE_REGEX, BLOCK_ATTR_REGEX, BlockField::new);
    public static final BlockFieldToken blockAttrCaption =     BlockFieldToken.valueOf(13, "Caption", CAPTION_REGEX, BLOCK_ATTR_REGEX, BlockField::new);
    public static final BlockFieldToken blockAttrText =        BlockFieldToken.valueOf(7, "Text", TEXT_REGEX, OBJECT_TEXT_REGEX, BlockFieldText::new, CoreAttributeTypes.WordTemplateContent);
