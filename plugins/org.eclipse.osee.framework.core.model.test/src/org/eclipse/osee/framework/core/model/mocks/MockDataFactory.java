@@ -11,11 +11,9 @@
 package org.eclipse.osee.framework.core.model.mocks;
 
 import java.util.Date;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -28,26 +26,14 @@ import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
-import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.junit.Assert;
 
 /**
  * @author Roberto E. Escobar
  */
 public final class MockDataFactory {
-
-   private static final Random random = new Random();
-
    private MockDataFactory() {
       // Utility Class
-   }
-
-   public static IAccessContextId createAccessContextId(Long id, String name) {
-      IAccessContextId cxt = IAccessContextId.valueOf(id, name);
-      Assert.assertEquals(id, cxt.getId());
-      Assert.assertEquals(name, cxt.getName());
-      return cxt;
    }
 
    public static <T> AccessDetail<T> createAccessDetails(T expAccessObject, PermissionEnum expPermission, String expReason, Scope scope) {
@@ -58,14 +44,6 @@ public final class MockDataFactory {
          target = new AccessDetail<>(expAccessObject, expPermission, scope);
       }
       return target;
-   }
-
-   public static AttributeType createAttributeType() {
-      OseeEnumTypeFactory oseeEnumTypeFactory = new OseeEnumTypeFactory();
-      AttributeType attributeType = new AttributeType(random.nextLong(), "name", "baseType", "providerName", ".xml", "",
-         1, 1, "description", "tagger", "mediaType");
-      attributeType.setOseeEnumType(oseeEnumTypeFactory.createEnumType(0x01L, "enum type name"));
-      return attributeType;
    }
 
    public static TransactionRecord createTransaction(int index, long branchUuid) {
@@ -89,7 +67,7 @@ public final class MockDataFactory {
    }
 
    public static AttributeType createAttributeType(int index, OseeEnumType oseeEnumType) {
-      return createAttributeType(index, oseeEnumType, random.nextLong());
+      return createAttributeType(index, oseeEnumType, ThreadLocalRandom.current().nextLong());
    }
 
    public static AttributeType createAttributeType(int index, OseeEnumType oseeEnumType, Long id) {
@@ -101,19 +79,11 @@ public final class MockDataFactory {
    }
 
    public static ArtifactType createArtifactType(int index) {
-      return createArtifactType(index, random.nextLong());
+      return createArtifactType(index, ThreadLocalRandom.current().nextLong());
    }
 
    public static ArtifactType createArtifactType(int index, Long id) {
       return new ArtifactType(id, "art_" + index, index % 2 == 0);
-   }
-
-   public static ArtifactType createBaseArtifactType() {
-      return new ArtifactType(CoreArtifactTypes.Artifact.getId(), CoreArtifactTypes.Artifact.getName(), true);
-   }
-
-   public static RelationType createRelationType(int index, ArtifactTypeToken artTypeA, ArtifactTypeToken artTypeB) {
-      return createRelationType(index, artTypeA, artTypeB, random.nextLong());
    }
 
    public static RelationType createRelationType(int index, ArtifactTypeToken artTypeA, ArtifactTypeToken artTypeB, Long id) {

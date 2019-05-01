@@ -16,18 +16,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.model.mocks.ModelAsserts;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.junit.Assert;
@@ -61,9 +61,8 @@ public class AccessDataTest {
       attributeType = CoreAttributeTypes.ParagraphNumber;
       wordAttributeType = CoreAttributeTypes.WordTemplateContent;
 
-      RelationType relType = MockDataFactory.createRelationType(2, null, null);
-      relTypeSide1 = new RelationTypeSide(relType, RelationSide.SIDE_A);
-      relTypeSide2 = new RelationTypeSide(relType, RelationSide.SIDE_B);
+      relTypeSide1 = new RelationTypeSide(CoreRelationTypes.DEFAULT_HIERARCHY, RelationSide.SIDE_A);
+      relTypeSide2 = new RelationTypeSide(CoreRelationTypes.DEFAULT_HIERARCHY, RelationSide.SIDE_B);
 
       artifactToCheck = ArtifactToken.valueOf(12, "Hello", COMMON);
    }
@@ -227,9 +226,9 @@ public class AccessDataTest {
       data.add(branchToCheck2, detail2);
 
       String branch1 =
-         "System Root Branch - AccessDetail [permission=DENY, scope=/scope_1, accessObject=RelationTypeSide [type=[sideA_2]<-[relType_2]->[sideB_2], side=SIDE_A], reason=item 1 - deny]";
+         "System Root Branch - AccessDetail [permission=DENY, scope=/scope_1, accessObject=RelationTypeSide [type=Default Hierarchical, side=SIDE_A], reason=item 1 - deny]";
       String branch2 =
-         "Common - AccessDetail [permission=WRITE, scope=/scope_2, accessObject=RelationTypeSide [type=[sideA_2]<-[relType_2]->[sideB_2], side=SIDE_A], reason=item 2 - write]";
+         "Common - AccessDetail [permission=WRITE, scope=/scope_2, accessObject=RelationTypeSide [type=Default Hierarchical, side=SIDE_A], reason=item 2 - write]";
       String message = "accessData [\n\t%s,\n\t%s,\n]";
       String forward = String.format(message, branch1, branch2);
       String backward = String.format(message, branch2, branch1);

@@ -67,7 +67,7 @@ public class RelationTypeSide extends NamedIdBase implements RelationTypeToken {
 
    @Override
    public String toString() {
-      return "RelationTypeSide [type=" + type + ", side=" + side + "]";
+      return "RelationTypeSide [type=" + type.getName() + ", side=" + side + "]";
    }
 
    public Long getGuid() {
