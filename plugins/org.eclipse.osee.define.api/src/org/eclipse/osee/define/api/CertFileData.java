@@ -12,14 +12,17 @@
 package org.eclipse.osee.define.api;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Ryan D. Brooks
  */
 public final class CertFileData {
    public String path;
-   public String latestChangeId;
-   public Date latestTimestamp;
-   public String baselinedChangeId;
-   public Date baselinedTimestamp;
+   public List<BaselineData> baselinedInfo;
+
+   public final class BaselineData {
+      public String baselinedChangeId;
+      public Date baselinedTimestamp;
+   }
 }

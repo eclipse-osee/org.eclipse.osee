@@ -14,20 +14,15 @@ import static org.eclipse.osee.define.api.DefineTupleTypes.GitLatest;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractSoftwareRequirement;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.CertificationBaselineEvent;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.CodeUnit;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GitCommit;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.BaselinedBy;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.BaselinedTimestamp;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChangeId;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitCommitAuthorDate;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitCommitSha;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ReviewId;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ReviewStoryId;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.UserId;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.SupportingInfo_SupportingInfo;
 import java.io.Writer;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,6 +32,7 @@ import java.util.stream.Collectors;
 import javax.ws.rs.WebApplicationException;
 import org.eclipse.osee.define.api.CertBaselineData;
 import org.eclipse.osee.define.api.CertFileData;
+import org.eclipse.osee.define.api.CertFileData.BaselineData;
 import org.eclipse.osee.define.api.GitOperations;
 import org.eclipse.osee.define.api.TraceData;
 import org.eclipse.osee.define.api.TraceabilityOperations;
@@ -51,9 +47,9 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.type.TriConsumer;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -154,6 +150,7 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
       tx.setSoleAttributeValue(baselineEvent, BaselinedBy, baselinedByUser);
       Date baselinedTimestamp = baselineData.baselinedTimestamp == null ? new Date() : baselineData.baselinedTimestamp;
       tx.setSoleAttributeValue(baselineEvent, BaselinedTimestamp, baselinedTimestamp);
+
       if (baselineData.reviewId != null) {
          tx.setSoleAttributeValue(baselineEvent, ReviewId, baselineData.reviewId);
       }
@@ -231,49 +228,34 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
    public List<CertFileData> getCertFileData(BranchId branch, ArtifactReadable repoArtifact) {
       List<CertFileData> files = new ArrayList<>();
 
-      Map<ArtifactId, ArtifactToken> codeUnits =
-         queryFactory.fromBranch(branch).andIsOfType(CodeUnit).asArtifactTokenMap();
-      Map<ArtifactId, ArtifactReadable> commits =
-         queryFactory.fromBranch(branch).andIsOfType(GitCommit).asArtifactMap();
+      HashCollection<String, CertBaselineData> baselineEvents = new HashCollection<>();
 
-      TriConsumer<ArtifactId, ArtifactId, ArtifactId> consumer = (codeUnit, lastestCommitId, baselinedCommitId) -> {
-         CertFileData file = new CertFileData();
-
-         ArtifactToken codeUnitToken = codeUnits.get(codeUnit);
-         file.path = codeUnitToken.isValid() ? codeUnitToken.getName() : "code unit artifact missing";
-
-         ArtifactReadable latestCommit = commits.get(lastestCommitId);
-         String latestSha;
-         if (latestCommit == null) {
-            latestSha = "commit artifact missing: " + latestCommit;
-            file.latestChangeId = "commit artifact missing: " + latestCommit;
-            file.latestTimestamp = null;
-         } else {
-            latestSha = latestCommit.getSoleAttributeValue(GitCommitSha);
-            file.latestChangeId = latestCommit.getSoleAttributeValue(GitChangeId, latestSha);
-            try {
-               file.latestTimestamp =
-                  new SimpleDateFormat().parse(latestCommit.getSoleAttributeValue(GitCommitAuthorDate));
-            } catch (ParseException ex) {
-               ex.printStackTrace();
-            }
+      for (ArtifactReadable bl : repoArtifact.getChildren()) {
+         CertBaselineData baselineData = getBaselineData(bl);
+         for (String filePath : baselineData.files) {
+            baselineEvents.put(filePath, baselineData);
          }
+      }
 
-         if (baselinedCommitId.isValid()) {
-            ArtifactReadable baselinedCommit = commits.get(baselinedCommitId);
-            file.baselinedChangeId = baselinedCommit.getSoleAttributeValue(GitChangeId);
-            try {
-               file.baselinedTimestamp =
-                  new SimpleDateFormat().parse(baselinedCommit.getSoleAttributeValue(GitCommitAuthorDate));
-            } catch (ParseException ex) {
-               ex.printStackTrace();
-            }
+      for (String fileName : baselineEvents.keySet()) {
+
+         CertFileData file = new CertFileData();
+         file.baselinedInfo = new ArrayList<BaselineData>();
+
+         List<CertBaselineData> baselinedCommits = baselineEvents.getValues(fileName);
+         java.util.Collections.sort(baselinedCommits);
+
+         file.path = fileName;
+
+         for (CertBaselineData baselinedCommit : baselinedCommits) {
+            CertFileData.BaselineData baselineData = file.new BaselineData();
+            baselineData.baselinedChangeId = baselinedCommit.changeId;
+            baselineData.baselinedTimestamp = baselinedCommit.baselinedTimestamp;
+            file.baselinedInfo.add(baselineData);
          }
 
          files.add(file);
-      };
-
-      tupleQuery.getTuple4E2E3E4FromE1(GitLatest, branch, repoArtifact, consumer);
+      }
 
       return files;
    }
