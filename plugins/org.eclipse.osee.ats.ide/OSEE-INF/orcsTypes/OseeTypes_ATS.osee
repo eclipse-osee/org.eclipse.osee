@@ -58,6 +58,14 @@ artifactType "Agile Sprint" extends "ats.State Machine" {
 	attribute "ats.kb.Story Name"
 }
 
+attributeType "ats.Requested Hours" extends IntegerAttribute {
+   id 5708922143198125133
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	mediaType "text/plain"
+}
+
 artifactType "Work Definition" extends "Artifact" {
 	id 62
 	attribute "ats.DSL Sheet"
@@ -281,6 +289,7 @@ artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Cont
 	attribute "ats.Color Team"
 	attribute "ats.IPT"
 	attribute "ats.Commit Override"
+	attribute "ats.Requested Hours"
 }
 
 artifactType "Work Package" extends "Artifact" {
