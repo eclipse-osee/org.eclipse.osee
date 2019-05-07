@@ -182,12 +182,14 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
    }
 
    private ArtifactId loadCodeUnit(ArtifactId repository, BranchId branch, String path) {
-      List<ArtifactId> codeUnits =
-         queryFactory.fromBranch(branch).andNameEquals(path).andTypeEquals(CodeUnit).loadArtifactIds();
-      for (ArtifactId codeUnit : codeUnits) {
+      List<ArtifactToken> codeUnits =
+         queryFactory.fromBranch(branch).andNameEquals(path).andTypeEquals(CodeUnit).loadArtifactTokens();
+      for (ArtifactToken codeUnit : codeUnits) {
          //TODO: if CoreTupleTypes.GitCommitFile for this repository and path matches then return this codeUnit
          //tupleQuery.doesTuple3E3Exist(tupleType, e3);
-         return codeUnit;
+         if (codeUnit.getName().equals(path)) {
+            return codeUnit;
+         }
       }
 
       return ArtifactId.SENTINEL;
