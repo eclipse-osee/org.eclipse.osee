@@ -60,7 +60,6 @@
 							   <plugin id="org.eclipse.persistence.core" />
 							   <plugin id="org.eclipse.persistence.moxy" />
 							   <plugin id="org.json" />
-							   <plugin id="org.eclipse.egit" />
 							   <plugin id="org.jsoup" />
 							</excludes>
 						</configuration>

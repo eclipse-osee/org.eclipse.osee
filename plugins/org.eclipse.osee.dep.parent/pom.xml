@@ -71,6 +71,11 @@
 	</organization>
 
  	<repositories>
+ 	 <repository>  		
+ 	   	<id>egit</id>
+ 	   	<layout>p2</layout> 
+ 	   	<url>${egit-site}</url> 
+	</repository>
  	  <repository>
 			<id>orbit</id>
 			<layout>p2</layout>
@@ -80,11 +85,7 @@
          <id>jgit</id>         
          <url>${jgit-site}</url>
     </repository>
- 	 <repository>  		
- 	   	<id>egit</id>
- 	   	<layout>p2</layout> 
- 	   	<url>${egit-site}</url> 
-	</repository>
+
 		
 	
 		<repository>

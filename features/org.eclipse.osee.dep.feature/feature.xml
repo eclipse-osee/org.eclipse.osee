@@ -40,7 +40,7 @@
    <includes
          id="org.eclipse.egit"
          version="0.0.0"/>
-                  
+                
    <includes
          id="org.eclipse.m2e.feature"
          version="0.0.0"/>
@@ -555,9 +555,14 @@
          version="0.0.0"
          fragment="true"
          unpack="false"/>
-
    <plugin
          id="org.apache.cxf.jaxrs.model.wadl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+ <plugin
+         id="org.eclipse.jgit.ssh.apache"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -704,6 +709,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
 
    <plugin
          id="org.eclipse.xtext.junit4"

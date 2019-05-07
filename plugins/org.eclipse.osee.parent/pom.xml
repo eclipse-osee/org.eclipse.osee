@@ -462,11 +462,16 @@
 				<wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site>
 				<subversive-site>http://download.eclipse.org/technology/subversive/${subversive-version}/update-site</subversive-site>
 				<polarion-site>http://community.polarion.com/projects/subversive/download/eclipse/${polarion-version}/update-site</polarion-site> -->
-				<egit-site>http://download.eclipse.org/egit/updates</egit-site>
+			 	<egit-site>http://download.eclipse.org/egit/updates</egit-site> 
 				<jgit-site>https://repo.eclipse.org/content/groups/releases</jgit-site>
 				
 			</properties>
 			<repositories>
+			<repository>
+					<id>egit</id>
+					<layout>p2</layout>
+					<url>${egit-site}</url>
+					</repository>
 			<!--	<repository>
 					<id>nebula</id>
 					<layout>p2</layout>
@@ -484,11 +489,7 @@
 					<layout>p2</layout>
 					<url>${subversive-site}</url>
 				</repository> -->
-				<repository> 
-					<id>egit</id> 
-					<layout>p2</layout>
-					<url>${egit-site}</url> 
-				</repository>
+				
 				<repository> 
 					<id>jgit</id> 
 					<url>${jgit-site}</url> 
