@@ -85,7 +85,9 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
             if (!teamWf.equals(workItem)) {
                createLink("This", AtsClientService.get().getQueryServiceClient().getArtifact(teamWf), " has sibling ",
                   workItem, null);
-               editor.registerEvent(this, teamWf.getStoreObject());
+               if (teamWf instanceof Artifact) {
+                  editor.registerEvent(this, (Artifact) teamWf);
+               }
             }
          }
       }

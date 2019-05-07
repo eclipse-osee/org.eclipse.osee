@@ -52,7 +52,6 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.ide.world.IAtsMetricsProvider;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -123,7 +122,8 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    WfeOutlinePage outlinePage;
    private final HashCollection<AttributeTypeId, IWfeEventHandle> attrHandlers = new HashCollection<>();
    private final HashCollection<RelationTypeId, IWfeEventHandle> relHandlers = new HashCollection<>();
-   private final HashCollection<ArtifactId, IWfeEventHandle> artHandlers = new HashCollection<>();
+   // This MUST be string guid until types are converted to id all at once
+   private final HashCollection<String, IWfeEventHandle> artHandlers = new HashCollection<>();
 
    @Override
    protected void addPages() {
@@ -810,9 +810,9 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       }
    }
 
-   public void registerEvent(IWfeEventHandle handler, ArtifactId... artifacts) {
-      for (ArtifactId art : artifacts) {
-         artHandlers.put(art, handler);
+   public void registerEvent(IWfeEventHandle handler, Artifact... artifacts) {
+      for (Artifact art : artifacts) {
+         artHandlers.put(art.getGuid(), handler);
       }
    }
 
@@ -844,7 +844,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
             }
             handledArts.clear();
             if (!handledArts.contains(getWorkItem().getGuid())) {
-               for (IWfeEventHandle handler : artHandlers.getValues(getWorkItem().getStoreObject())) {
+               for (IWfeEventHandle handler : artHandlers.getValues(getWorkItem().getStoreObject().getGuid())) {
                   Displays.ensureInDisplayThread(new Runnable() {
 
                      @Override
@@ -863,8 +863,10 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       if (!handledArts.contains(guid)) {
          Artifact loadedWf = ArtifactCache.getActive(guid, AtsClientService.get().getAtsBranch());
          if (loadedWf != null) {
-            for (IWfeEventHandle handler : artHandlers.getValues(loadedWf)) {
-               handler.refresh();
+            if (artHandlers.containsKey(loadedWf.getGuid())) {
+               for (IWfeEventHandle handler : artHandlers.getValues(loadedWf.getGuid())) {
+                  handler.refresh();
+               }
             }
          }
          handledArts.add(guid);

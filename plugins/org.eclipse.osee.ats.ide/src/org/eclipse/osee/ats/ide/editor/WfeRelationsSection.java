@@ -36,7 +36,7 @@ public class WfeRelationsSection extends RelationsFormSection implements IWfeEve
 
    public WfeRelationsSection(WorkflowEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(editor, parent, toolkit, style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR, true);
-      editor.registerEvent(this, editor.getWorkItem().getStoreObject());
+      editor.registerEvent(this, editor.getWorkItem());
       workItem = editor.getWorkItem();
    }
 

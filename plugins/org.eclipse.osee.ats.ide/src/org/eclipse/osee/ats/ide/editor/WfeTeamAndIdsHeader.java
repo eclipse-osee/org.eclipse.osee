@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.layout.GridData;
@@ -68,7 +69,9 @@ public class WfeTeamAndIdsHeader extends Composite implements IWfeEventHandle {
       }
 
       refresh();
-      editor.registerEvent(this, workItem.getStoreObject());
+      if (workItem.getStoreObject() instanceof Artifact) {
+         editor.registerEvent(this, (Artifact) workItem.getStoreObject());
+      }
 
    }
 

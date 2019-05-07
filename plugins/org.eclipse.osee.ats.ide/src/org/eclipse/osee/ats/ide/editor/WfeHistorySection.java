@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.swt.SWT;
@@ -49,7 +50,9 @@ public class WfeHistorySection extends SectionPart implements IWfeEventHandle {
       super(parent, toolkit, style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
       this.editor = editor;
       workItem = editor.getWorkItem();
-      editor.registerEvent(this, workItem.getStoreObject());
+      if (workItem.getStoreObject() instanceof Artifact) {
+         editor.registerEvent(this, (Artifact) workItem.getStoreObject());
+      }
    }
 
    @Override
@@ -113,8 +116,12 @@ public class WfeHistorySection extends SectionPart implements IWfeEventHandle {
 
    @Override
    public void refresh() {
-      xHistoryViewer.refresh();
-      xLogViewer.refresh();
+      if (xHistoryViewer != null) {
+         xHistoryViewer.refresh();
+      }
+      if (xLogViewer != null) {
+         xLogViewer.refresh();
+      }
    }
 
    @Override
