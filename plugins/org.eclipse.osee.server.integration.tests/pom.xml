@@ -46,7 +46,11 @@
 								<id>org.eclipse.osee.core.server.external.feature</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
-							
+						<requirement>
+								<type>eclipse-plugin</type>
+								<id>rest.assured</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
 							<requirement>
 								<type>eclipse-plugin</type>
 								<id>org.eclipse.equinox.cm</id>
