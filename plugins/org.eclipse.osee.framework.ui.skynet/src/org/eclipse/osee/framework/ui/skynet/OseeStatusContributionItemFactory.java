@@ -30,7 +30,6 @@ public final class OseeStatusContributionItemFactory {
    }
 
    public static void addTo(IStatusLineManager manager) {
-      createItem(manager, OseeBuildTypeContributionItem.class);
       createItem(manager, ResServiceContributionItem.class);
       createItem(manager, SessionContributionItem.class);
       createItem(manager, WorkspaceContributionItem.class);

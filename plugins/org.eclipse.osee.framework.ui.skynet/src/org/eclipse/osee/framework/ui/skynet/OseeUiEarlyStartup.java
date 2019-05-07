@@ -90,7 +90,6 @@ public class OseeUiEarlyStartup implements IStartup {
                      @Override
                      public void partActivated(IWorkbenchPart part) {
                         if (part instanceof ViewPart) {
-                           OseeBuildTypeContributionItem.addToViewpart((ViewPart) part);
                            ResServiceContributionItem.addToViewpart((ViewPart) part);
                            SessionContributionItem.addToViewpart((ViewPart) part);
                            WorkspaceContributionItem.addToViewpart((ViewPart) part);
@@ -102,7 +101,6 @@ public class OseeUiEarlyStartup implements IStartup {
                      @Override
                      public void partBroughtToTop(IWorkbenchPart part) {
                         if (part instanceof ViewPart) {
-                           OseeBuildTypeContributionItem.addToViewpart((ViewPart) part);
                            ResServiceContributionItem.addToViewpart((ViewPart) part);
                            SessionContributionItem.addToViewpart((ViewPart) part);
                            WorkspaceContributionItem.addToViewpart((ViewPart) part);
@@ -124,7 +122,6 @@ public class OseeUiEarlyStartup implements IStartup {
                      @Override
                      public void partOpened(IWorkbenchPart part) {
                         if (part instanceof ViewPart) {
-                           OseeBuildTypeContributionItem.addToViewpart((ViewPart) part);
                            ResServiceContributionItem.addToViewpart((ViewPart) part);
                            SessionContributionItem.addToViewpart((ViewPart) part);
                            WorkspaceContributionItem.addToViewpart((ViewPart) part);
@@ -140,7 +137,6 @@ public class OseeUiEarlyStartup implements IStartup {
                   @Override
                   public void perspectiveActivated(IWorkbenchPage page, IPerspectiveDescriptor perspective) {
                      if (page instanceof ViewPart) {
-                        OseeBuildTypeContributionItem.addToViewpart((ViewPart) page);
                         ResServiceContributionItem.addToViewpart((ViewPart) page);
                         SessionContributionItem.addToViewpart((ViewPart) page);
                         WorkspaceContributionItem.addToViewpart((ViewPart) page);
@@ -152,7 +148,6 @@ public class OseeUiEarlyStartup implements IStartup {
                   @Override
                   public void perspectiveChanged(IWorkbenchPage page, IPerspectiveDescriptor perspective, String changeId) {
                      if (page instanceof ViewPart) {
-                        OseeBuildTypeContributionItem.addToViewpart((ViewPart) page);
                         ResServiceContributionItem.addToViewpart((ViewPart) page);
                         SessionContributionItem.addToViewpart((ViewPart) page);
                         WorkspaceContributionItem.addToViewpart((ViewPart) page);
@@ -165,7 +160,6 @@ public class OseeUiEarlyStartup implements IStartup {
             }
          });
       }
-      OseeBuildTypeContributionItem.addToAllViews();
       ResServiceContributionItem.addToAllViews();
       SessionContributionItem.addToAllViews();
       WorkspaceContributionItem.addToAllViews();

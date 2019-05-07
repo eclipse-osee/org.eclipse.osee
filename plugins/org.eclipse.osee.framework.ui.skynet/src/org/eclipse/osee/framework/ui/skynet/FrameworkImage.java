@@ -213,7 +213,6 @@ public enum FrameworkImage implements KeyedImage {
    system_requirement("system_requirement.gif"),
    SWITCHED("switched.gif"),
    TRASH("trash.gif"),
-   TOOLS("tools.gif"),
    TUPLE("tuple.png"),
    SKYWALKER("skywalker.gif"),
    SUPPORT("users2.gif"),
