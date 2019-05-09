@@ -53,7 +53,7 @@ public class OrganizePrograms {
                changes.addChild(programFolder, programArt);
             }
          }
-         changes.execute();
+         changes.executeIfNeeded();
       } catch (Exception ex) {
          results.error(Lib.exceptionToString(ex));
       }
