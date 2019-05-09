@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.api;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -37,8 +35,8 @@ public final class ParagraphNumberComparator implements Comparator<ArtifactReada
          int toReturn = 0;
          String paragraph1 = art1.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
          String paragraph2 = art2.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
-         Integer[] set1 = getParagraphIndices(paragraph1);
-         Integer[] set2 = getParagraphIndices(paragraph2);
+         int[] set1 = getParagraphIndices(paragraph1);
+         int[] set2 = getParagraphIndices(paragraph2);
          int length1 = set1.length;
          int length2 = set2.length;
 
@@ -47,7 +45,7 @@ public final class ParagraphNumberComparator implements Comparator<ArtifactReada
             toReturn = length1 < length2 ? -1 : 1;
          } else {
             for (int index = 0; index < size; index++) {
-               toReturn = set1[index].compareTo(set2[index]);
+               toReturn = Integer.compare(set1[index], set2[index]);
                if (toReturn != 0) {
                   break;
                }
@@ -60,14 +58,17 @@ public final class ParagraphNumberComparator implements Comparator<ArtifactReada
       return 1;
    }
 
-   private Integer[] getParagraphIndices(String paragraph) {
-      List<Integer> paragraphs = new ArrayList<>();
+   private int[] getParagraphIndices(String paragraph) {
+      int[] paragraphs;
       if (Strings.isValid(paragraph)) {
          String[] values = paragraph.split("\\.");
+         paragraphs = new int[values.length];
          for (int index = 0; index < values.length; index++) {
-            paragraphs.add(new Integer(values[index].replace("-", "")));
+            paragraphs[index] = Integer.parseInt(values[index].replace("-", ""));
          }
+      } else {
+         paragraphs = new int[0];
       }
-      return paragraphs.toArray(new Integer[paragraphs.size()]);
+      return paragraphs;
    }
 }
