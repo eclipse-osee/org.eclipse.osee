@@ -30,6 +30,7 @@
 							        <plugin id="org.bouncycastle.bcpg" />
 							        <plugin id="org.bouncycastle.bcpkix" />								
 							        <plugin id="org.bouncycastle.bcprov" />
+	     							  <plugin id="com.jcraft.jsch" />
 							</excludes>
 						</configuration>
 					</execution>

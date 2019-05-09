@@ -30,6 +30,7 @@
 							<excludes>
 								<plugin id="org.apache.xerces" />
 								<plugin id="javax.xml" />
+								<plugin id="com.jcraft.jsch" />
 								<plugin id="org.apache.xml.resolver" />
 								<plugin id="org.apache.xml.serializer" />								
 								<plugin id="org.aopalliance" />
