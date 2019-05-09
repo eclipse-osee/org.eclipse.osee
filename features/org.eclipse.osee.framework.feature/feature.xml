@@ -16,10 +16,7 @@
    <license url="%licenseURL">
       %license
    </license>
-   
-   <includes
-         id="org.eclipse.egit"
-         version="0.0.0"/>
+
          
    <requires>
       <import feature="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
@@ -55,20 +52,6 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="net.bytebuddy.byte-buddy"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false" />
-
-   <plugin
-         id="net.bytebuddy.byte-buddy-agent"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false" />
 
    <plugin
          id="org.bouncycastle.bcpg"

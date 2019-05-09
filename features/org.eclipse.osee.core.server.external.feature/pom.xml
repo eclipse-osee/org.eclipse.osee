@@ -31,6 +31,7 @@
 							   <plugin id="javax.ws.rs" />
 							   <plugin id="javax.wsdl" />
 							   <plugin id="javax.xml" />
+							   <plugin id="com.jcraft.jsch" />
 							   <plugin id="org.aopalliance" />
 							   <plugin id="org.apache.commons.cli" />
 							   <plugin id="org.apache.commons.dbcp" />

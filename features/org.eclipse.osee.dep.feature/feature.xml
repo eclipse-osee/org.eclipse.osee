@@ -39,7 +39,7 @@
 
    <includes
          id="org.eclipse.egit"
-         version="0.0.0"/>
+         version="4.4.0"/>
                 
    <includes
          id="org.eclipse.m2e.feature"
