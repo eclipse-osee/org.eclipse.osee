@@ -34,6 +34,11 @@ public class BootStrapUser extends User {
    }
 
    @Override
+   public Long getId() {
+      return SystemUser.BootStrap.getId();
+   }
+
+   @Override
    public String getEmail() {
       return SystemUser.BootStrap.getEmail();
    }
@@ -41,6 +46,11 @@ public class BootStrapUser extends User {
    @Override
    public String getPhone() {
       return "phone home";
+   }
+
+   @Override
+   public String getName() {
+      return SystemUser.BootStrap.getName();
    }
 
    @Override
