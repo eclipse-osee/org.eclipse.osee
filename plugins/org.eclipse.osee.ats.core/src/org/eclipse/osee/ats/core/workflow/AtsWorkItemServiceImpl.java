@@ -55,6 +55,7 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidateManager;
 import org.eclipse.osee.ats.core.workflow.note.ArtifactNote;
 import org.eclipse.osee.ats.core.workflow.note.AtsWorkItemNotes;
+import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -256,7 +257,8 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    @Override
    public IAtsWorkItem getWorkItem(Long id) {
       ArtifactToken art = atsApi.getQueryService().getArtifact(id);
-      if (art == null || art.isInvalid() || !atsApi.getStoreService().isOfType(art, AtsArtifactTypes.AbstractWorkflowArtifact)) {
+      if (art == null || art.isInvalid() || !atsApi.getStoreService().isOfType(art,
+         AtsArtifactTypes.AbstractWorkflowArtifact)) {
          return null;
       }
       return getWorkItem(art);
@@ -436,6 +438,11 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          }
       }
       return siblings;
+   }
+
+   @Override
+   public String getChangeTypeStr(IAtsWorkItem workItem) {
+      return ChangeTypeUtil.getChangeTypeStr(workItem, atsApi);
    }
 
 }

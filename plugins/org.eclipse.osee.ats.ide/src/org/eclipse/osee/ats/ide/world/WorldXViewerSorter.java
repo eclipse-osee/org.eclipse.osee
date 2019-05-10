@@ -16,10 +16,10 @@ import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
+import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.ide.column.ChangeTypeColumnUI;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.ChangeTypeUtil;
 
 /**
  * @author Donald G. Dunne
@@ -33,7 +33,6 @@ public class WorldXViewerSorter extends XViewerSorter {
       this.xViewer = xViewer;
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public int compare(Viewer viewer, Object o1, Object o2, int sortXColIndex) {
       try {
@@ -52,8 +51,9 @@ public class WorldXViewerSorter extends XViewerSorter {
                   ""));
             return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
          } else if (sortXCol.equals(ChangeTypeColumnUI.getInstance())) {
-            int compareInt = getComparator().compare(ChangeTypeUtil.getChangeType(m1).ordinal() + "",
-               ChangeTypeUtil.getChangeType(m2).ordinal() + "");
+            int compareInt =
+               getComparator().compare(ChangeTypeUtil.getChangeType(m1, AtsClientService.get()).ordinal() + "",
+                  ChangeTypeUtil.getChangeType(m2, AtsClientService.get()).ordinal() + "");
             return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
          }
 

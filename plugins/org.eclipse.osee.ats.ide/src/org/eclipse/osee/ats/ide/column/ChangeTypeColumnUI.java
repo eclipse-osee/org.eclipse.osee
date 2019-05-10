@@ -22,13 +22,13 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
+import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.ChangeTypeDialog;
 import org.eclipse.osee.ats.ide.workflow.ChangeTypeToSwtImage;
-import org.eclipse.osee.ats.ide.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -80,7 +80,7 @@ public class ChangeTypeColumnUI extends XViewerAtsAttributeValueColumn {
          }
          final ChangeTypeDialog dialog = new ChangeTypeDialog(Displays.getActiveShell());
          if (teams.size() == 1) {
-            ChangeType changeType = ChangeTypeUtil.getChangeType(teams.iterator().next());
+            ChangeType changeType = ChangeTypeUtil.getChangeType(teams.iterator().next(), AtsClientService.get());
             if (changeType != null) {
                dialog.setSelected(changeType);
             }
@@ -91,9 +91,9 @@ public class ChangeTypeColumnUI extends XViewerAtsAttributeValueColumn {
 
             ChangeType newChangeType = dialog.getSelection();
             for (TeamWorkFlowArtifact team : teams) {
-               ChangeType currChangeType = ChangeTypeUtil.getChangeType(team);
+               ChangeType currChangeType = ChangeTypeUtil.getChangeType(team, AtsClientService.get());
                if (currChangeType != newChangeType) {
-                  ChangeTypeUtil.setChangeType(team, newChangeType);
+                  ChangeTypeUtil.setChangeType(team, newChangeType, changes);
                   if (persist) {
                      team.save(changes);
                   }
@@ -154,7 +154,7 @@ public class ChangeTypeColumnUI extends XViewerAtsAttributeValueColumn {
             IAtsWorkItem workItem = (IAtsWorkItem) element;
             Artifact useArt = getParentTeamWorkflowOrArtifact(workItem);
             if (useArt != null) {
-               ChangeType changeType = ChangeTypeUtil.getChangeType(workItem);
+               ChangeType changeType = ChangeTypeUtil.getChangeType(workItem, AtsClientService.get());
                if (changeType != null) {
                   return ChangeTypeToSwtImage.getImage(changeType);
                }

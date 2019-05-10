@@ -25,9 +25,9 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.result.Manipulations;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -167,7 +167,7 @@ public class VersionReportJob extends Job {
                   "Action",
                   teamWf.getTeamName(),
                   teamWf.getSoleAttributeValue(AtsAttributeTypes.Priority, ""),
-                  ChangeTypeUtil.getChangeTypeStr(teamWf),
+                  ChangeTypeUtil.getChangeTypeStr(teamWf, AtsClientService.get()),
                   teamWf.getName(),
                   teamWf.getAtsId()}, null, x % 2 == 0 ? null : "#cccccc"));
 

@@ -424,7 +424,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       if (awa instanceof TeamWorkFlowArtifact) {
          toolBarMgr.add(new OpenTeamDefinitionAction((TeamWorkFlowArtifact) awa));
       }
-      toolBarMgr.add(new CopyActionDetailsAction(awa));
+      toolBarMgr.add(new CopyActionDetailsAction(awa, AtsClientService.get()));
       toolBarMgr.add(new OpenInBrowserAction(awa));
       toolBarMgr.add(new ResourceHistoryAction(awa));
       toolBarMgr.add(new ReloadAction(awa, editor));

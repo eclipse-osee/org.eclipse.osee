@@ -20,9 +20,9 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -100,7 +100,7 @@ public class VersionMetrics {
       Set<TeamWorkFlowArtifact> teams = new HashSet<>();
       for (IAtsTeamWorkflow team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(verArt)) {
          TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) team.getStoreObject();
-         if (changeTypes.contains(ChangeTypeUtil.getChangeType(teamArt))) {
+         if (changeTypes.contains(ChangeTypeUtil.getChangeType(teamArt, AtsClientService.get()))) {
             teams.add(teamArt);
          }
       }

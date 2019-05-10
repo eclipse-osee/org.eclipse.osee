@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.workflow;
 
 import java.util.Collection;
 import java.util.Set;
+
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
@@ -34,6 +35,8 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
  * @author Donald G. Dunne
  */
 public interface IAtsWorkItemService {
+	
+   String getChangeTypeStr(IAtsWorkItem workItem);
 
    IStateToken getCurrentState(IAtsWorkItem workItem);
 

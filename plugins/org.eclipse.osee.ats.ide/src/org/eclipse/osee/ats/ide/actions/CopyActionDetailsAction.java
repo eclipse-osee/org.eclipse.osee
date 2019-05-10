@@ -13,9 +13,10 @@ package org.eclipse.osee.ats.ide.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.core.workflow.util.CopyActionDetails;
 import org.eclipse.osee.ats.ide.AtsImage;
-import org.eclipse.osee.ats.ide.util.CopyActionDetails;
-import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -26,19 +27,21 @@ import org.eclipse.swt.dnd.Transfer;
  */
 public class CopyActionDetailsAction extends Action {
 
-   private final AbstractWorkflowArtifact awa;
+   private final IAtsWorkItem workItem;
+private AtsApi atsApi;
 
-   public CopyActionDetailsAction(AbstractWorkflowArtifact awa) {
+   public CopyActionDetailsAction(IAtsWorkItem workItem, AtsApi atsApi) {
       super();
-      this.awa = awa;
-      setText("Copy " + awa.getArtifactTypeName() + " details to clipboard");
+      this.workItem = workItem;
+		this.atsApi = atsApi;
+      setText("Copy " + workItem.getArtifactTypeName() + " details to clipboard");
       setToolTipText(getText());
    }
 
    private void performCopy() {
       Clipboard clipboard = new Clipboard(null);
       try {
-         String detailsStr = new CopyActionDetails(awa).getDetailsString();
+         String detailsStr = new CopyActionDetails(workItem, atsApi).getDetailsString();
          clipboard.setContents(new Object[] {detailsStr}, new Transfer[] {TextTransfer.getInstance()});
       } finally {
          clipboard.dispose();

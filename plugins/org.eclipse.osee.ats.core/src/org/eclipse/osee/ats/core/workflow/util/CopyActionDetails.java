@@ -8,75 +8,77 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.util;
+package org.eclipse.osee.ats.core.workflow.util;
 
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
-import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
  */
 public class CopyActionDetails {
 
-   private final AbstractWorkflowArtifact awa;
+   private final IAtsWorkItem workItem;
    private static final String USE_DEVELOPER_CHANGE_TYPES = "UseDeveloperChangeTypes";
+   private final AtsApi atsApi;
 
-   public CopyActionDetails(AbstractWorkflowArtifact awa) {
-      this.awa = awa;
+   public CopyActionDetails(IAtsWorkItem workItem, AtsApi atsApi) {
+      this.workItem = workItem;
+      this.atsApi = atsApi;
    }
 
    public String getDetailsString() {
       String detailsStr = "";
       try {
-         if (awa.getParentTeamWorkflow() != null) {
-            IAtsTeamDefinition teamDef = awa.getParentTeamWorkflow().getTeamDefinition();
+         if (workItem.getParentTeamWorkflow() != null) {
+            IAtsTeamDefinition teamDef = workItem.getParentTeamWorkflow().getTeamDefinition();
             String formatStr = getFormatStr(teamDef);
             if (Strings.isValid(formatStr)) {
                detailsStr = formatStr;
-               IAtsAction action = awa.getParentAction();
+               IAtsAction action = workItem.getParentAction();
                if (action != null) {
                   detailsStr = detailsStr.replaceAll("<actionatsid>", action.getAtsId());
                }
-               String legacyPcrId = awa.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, null);
+               String legacyPcrId =
+                  atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.LegacyPcrId, null);
                if (Strings.isValid(legacyPcrId)) {
                   detailsStr = detailsStr.replaceAll("<legacypcrid>", " - [" + legacyPcrId + "]");
                } else {
                   detailsStr = detailsStr.replaceAll("<legacypcrid>", "");
                }
-               detailsStr = detailsStr.replaceAll("<atsid>", awa.getAtsId());
-               detailsStr = detailsStr.replaceAll("<name>", awa.getName());
-               detailsStr = detailsStr.replaceAll("<artType>", awa.getArtifactTypeName());
-               detailsStr = detailsStr.replaceAll("<changeType>", getChangeTypeOrObjectType(awa));
+               detailsStr = detailsStr.replaceAll("<atsid>", workItem.getAtsId());
+               detailsStr = detailsStr.replaceAll("<name>", workItem.getName());
+               detailsStr = detailsStr.replaceAll("<artType>", workItem.getArtifactTypeName());
+               detailsStr = detailsStr.replaceAll("<changeType>", getChangeTypeOrObjectType(workItem));
             }
          }
          if (!Strings.isValid(detailsStr)) {
-            detailsStr = "\"" + awa.getArtifactTypeName() + "\" - " + awa.getAtsId() + " - \"" + awa.getName() + "\"";
+            detailsStr =
+               "\"" + workItem.getArtifactTypeName() + "\" - " + workItem.getAtsId() + " - \"" + workItem.getName() + "\"";
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(CopyActionDetails.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return detailsStr;
    }
 
-   private String getChangeTypeOrObjectType(AbstractWorkflowArtifact awa) {
+   private String getChangeTypeOrObjectType(IAtsWorkItem workItem) {
       String result = "";
-      if (awa instanceof TeamWorkFlowArtifact) {
-         TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) awa;
-         result = ChangeTypeUtil.getChangeTypeStr(awa, AtsClientService.get());
-         if (AtsClientService.get().getAttributeResolver().getAttributesToStringList(teamArt.getTeamDefinition(),
+      if (workItem instanceof IAtsTeamWorkflow) {
+         IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
+         result = ChangeTypeUtil.getChangeTypeStr(workItem, atsApi);
+         if (atsApi.getAttributeResolver().getAttributesToStringList(teamWf.getTeamDefinition(),
             CoreAttributeTypes.StaticId).contains(USE_DEVELOPER_CHANGE_TYPES)) {
             if (result.equals("Improvement")) {
                result = "feature";
@@ -86,13 +88,13 @@ public class CopyActionDetails {
                result = "refinement";
             }
          }
-      } else if (awa instanceof TaskArtifact) {
+      } else if (workItem instanceof IAtsTask) {
          result = "Task";
-      } else if (awa.isOfType(AtsArtifactTypes.AbstractReview)) {
+      } else if (workItem.isOfType(AtsArtifactTypes.AbstractReview)) {
          result = "Review";
-      } else if (awa.isTypeEqual(AtsArtifactTypes.Goal)) {
+      } else if (workItem.isTypeEqual(AtsArtifactTypes.Goal)) {
          result = "Goal";
-      } else if (awa.isTypeEqual(AtsArtifactTypes.AgileBacklog)) {
+      } else if (workItem.isTypeEqual(AtsArtifactTypes.AgileBacklog)) {
          result = "Backlog";
       }
       if (!Strings.isValid(result)) {
@@ -103,9 +105,10 @@ public class CopyActionDetails {
 
    private String getFormatStr(IAtsTeamDefinition teamDef) {
       if (teamDef != null) {
-         Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(teamDef);
+         ArtifactId artifact = atsApi.getQueryService().getArtifact(teamDef);
          if (artifact != null) {
-            String formatStr = artifact.getSoleAttributeValue(AtsAttributeTypes.ActionDetailsFormat, "");
+            String formatStr =
+               atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.ActionDetailsFormat, "");
             if (Strings.isValid(formatStr)) {
                return formatStr;
             }

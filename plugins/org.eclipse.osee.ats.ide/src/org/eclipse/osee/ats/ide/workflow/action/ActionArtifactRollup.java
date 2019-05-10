@@ -16,8 +16,8 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -53,20 +53,24 @@ public class ActionArtifactRollup {
       ChangeType changeType = null;
       Collection<IAtsTeamWorkflow> teamWfs = AtsClientService.get().getWorkItemService().getTeams(action);
       if (teamWfs.size() == 1) {
-         changeType = ChangeTypeUtil.getChangeType(teamWfs.iterator().next());
+         changeType = ChangeTypeUtil.getChangeType(teamWfs.iterator().next(), AtsClientService.get());
       } else {
          for (IAtsTeamWorkflow team : teamWfs) {
             if (!team.isCancelled()) {
                if (changeType == null) {
-                  changeType = ChangeTypeUtil.getChangeType(team);
-               } else if (changeType != ChangeTypeUtil.getChangeType(team)) {
+                  changeType = ChangeTypeUtil.getChangeType(team, AtsClientService.get());
+               } else if (changeType != ChangeTypeUtil.getChangeType(team, AtsClientService.get())) {
                   return;
                }
             }
          }
       }
-      if (changeType != null && ChangeTypeUtil.getChangeType(action) != changeType) {
-         ChangeTypeUtil.setChangeType(action, changeType);
+      if (changeType != null && ChangeTypeUtil.getChangeType(action, AtsClientService.get()) != changeType) {
+         if (changeType == ChangeType.None) {
+            ((Artifact) action.getStoreObject()).deleteAttributes(AtsAttributeTypes.ChangeType);
+         } else {
+            ((Artifact) action.getStoreObject()).setSoleAttributeValue(AtsAttributeTypes.ChangeType, changeType.name());
+         }
       }
    }
 
