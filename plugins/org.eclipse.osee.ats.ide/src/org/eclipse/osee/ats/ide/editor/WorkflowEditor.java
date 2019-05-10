@@ -52,7 +52,7 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.ide.world.IAtsMetricsProvider;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -65,6 +65,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
@@ -120,7 +121,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    private boolean privilegedEditModeEnabled = false;
    private final List<IWfeEditorListener> editorListeners = new ArrayList<>();
    WfeOutlinePage outlinePage;
-   private final HashCollection<AttributeTypeId, IWfeEventHandle> attrHandlers = new HashCollection<>();
+   private final HashCollection<AttributeTypeToken, IWfeEventHandle> attrHandlers = new HashCollection<>();
    private final HashCollection<RelationTypeId, IWfeEventHandle> relHandlers = new HashCollection<>();
    // This MUST be string guid until types are converted to id all at once
    private final HashCollection<String, IWfeEventHandle> artHandlers = new HashCollection<>();
@@ -798,8 +799,8 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       setPageText(index, tabName);
    }
 
-   public void registerEvent(IWfeEventHandle handler, AttributeTypeId... attrTypes) {
-      for (AttributeTypeId attrType : attrTypes) {
+   public void registerEvent(IWfeEventHandle handler, AttributeTypeToken... attrTypes) {
+      for (AttributeTypeToken attrType : attrTypes) {
          attrHandlers.put(attrType, handler);
       }
    }
@@ -825,7 +826,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
             handleArtifactEvent(handledArts, eMArt.getGuid());
             if (eMArt.getGuid().equals(getWorkItem().getGuid())) {
                for (AttributeChange attr : eMArt.getAttributeChanges()) {
-                  handleEvent(AttributeTypeId.valueOf(attr.getAttrTypeGuid()));
+                  handleEvent(AttributeTypeManager.getTypeById(attr.getAttrTypeGuid()));
                }
             }
          }
@@ -873,7 +874,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       }
    }
 
-   public void handleEvent(AttributeTypeId attrType) {
+   public void handleEvent(AttributeTypeToken attrType) {
       List<IWfeEventHandle> handlers = attrHandlers.getValues(attrType);
       if (handlers != null && !handlers.isEmpty()) {
          for (IWfeEventHandle handler : handlers) {

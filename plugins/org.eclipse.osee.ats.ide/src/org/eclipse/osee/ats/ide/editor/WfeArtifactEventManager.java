@@ -28,11 +28,11 @@ import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
@@ -331,6 +331,7 @@ public class WfeArtifactEventManager implements IArtifactEventListener, EventHan
    @Override
    public void handleEvent(Event event) {
       try {
+
          if (event.getTopic().equals(AtsTopicEvent.WORK_ITEM_MODIFIED.getTopic())) {
             String ids = (String) event.getProperty(AtsTopicEvent.WORK_ITEM_IDS_KEY);
             for (Long workItemId : Collections.fromString(ids, ";", Long::valueOf)) {
@@ -341,7 +342,7 @@ public class WfeArtifactEventManager implements IArtifactEventListener, EventHan
                      try {
                         if (!handler.isDisposed()) {
                            if (handler.getWorkflowEditor().getArtifactFromEditorInput().equals(workItemArtId)) {
-                              handler.getWorkflowEditor().handleEvent(AttributeTypeId.valueOf(attrTypeId));
+                              handler.getWorkflowEditor().handleEvent(AttributeTypeManager.getTypeById(attrTypeId));
                            }
                         }
                      } catch (Exception ex) {
