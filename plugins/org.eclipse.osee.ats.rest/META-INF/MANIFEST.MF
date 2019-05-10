@@ -9,8 +9,8 @@ Service-Component: OSGI-INF/*.xml
 Osee-JaxRs-Resource: /web/*;path=/ats/cpa/ui,
  OSEE-INF/web/*;path=/ats
 Osee-Template: OSEE-INF/templates/*.html
-Import-Package: com.fasterxml.jackson.databind,
- com.fasterxml.jackson.core,
+Import-Package: com.fasterxml.jackson.core,
+ com.fasterxml.jackson.databind,
  com.google.common.base,
  com.google.common.cache,
  com.lowagie.text,
@@ -28,6 +28,7 @@ Import-Package: com.fasterxml.jackson.databind,
  org.eclipse.osee.ats.core.column,
  org.eclipse.osee.ats.core.config,
  org.eclipse.osee.ats.core.cpa,
+ org.eclipse.osee.ats.core.health,
  org.eclipse.osee.ats.core.insertion,
  org.eclipse.osee.ats.core.model,
  org.eclipse.osee.ats.core.model.impl,

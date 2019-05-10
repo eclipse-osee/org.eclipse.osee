@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
+import org.eclipse.osee.ats.api.util.IAtsHealthService;
 import org.eclipse.osee.ats.api.workdef.WorkDefData;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -42,6 +43,7 @@ import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.config.AtsConfigurationsService;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertBaselineGuidToBaselineId;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertFavoriteBranchGuidToId;
+import org.eclipse.osee.ats.rest.internal.health.AtsHealthServiceImpl;
 import org.eclipse.osee.ats.rest.internal.notify.AtsNotificationEventProcessor;
 import org.eclipse.osee.ats.rest.internal.notify.AtsNotifierServiceImpl;
 import org.eclipse.osee.ats.rest.internal.notify.WorkItemNotificationProcessor;
@@ -83,6 +85,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    private final Map<String, IAtsDatabaseConversion> externalConversions = new ConcurrentHashMap<>();
    private AtsActionEndpointApi actionEndpoint;
    private ExecutorAdmin executorAdmin;
+   private IAtsHealthService healthService;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -368,6 +371,14 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    @Override
    public IAtsTaskRelatedService getTaskRelatedService() {
       return taskRelatedService;
+   }
+
+   @Override
+   public IAtsHealthService getHealthService() {
+      if (healthService == null) {
+         healthService = new AtsHealthServiceImpl(this);
+      }
+      return healthService;
    }
 
 }

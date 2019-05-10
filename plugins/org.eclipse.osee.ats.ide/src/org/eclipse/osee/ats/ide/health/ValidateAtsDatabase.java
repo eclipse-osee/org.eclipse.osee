@@ -147,7 +147,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   public void runIt(IProgressMonitor monitor, XResultData xResultData) {
+   public XResultData runIt(IProgressMonitor monitor, XResultData xResultData) {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
 
@@ -251,6 +251,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       if (monitor != null) {
          xResultData.log("Completed processing " + count + " artifacts.");
       }
+      return xResultData;
    }
 
    public void testCompletedCancelledStateAttributesSetWithPersist(Collection<Artifact> artifacts) {

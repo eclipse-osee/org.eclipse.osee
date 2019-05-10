@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.IAtsHealthService;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
@@ -175,5 +176,7 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkDefiniti
    IAtsTaskRelatedService getTaskRelatedService();
 
    IUserGroupService getUserGroupService();
+
+   IAtsHealthService getHealthService();
 
 }

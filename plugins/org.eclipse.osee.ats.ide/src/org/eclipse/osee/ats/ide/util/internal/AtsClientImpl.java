@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsEventService;
+import org.eclipse.osee.ats.api.util.IAtsHealthService;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.WorkDefData;
@@ -57,6 +58,7 @@ import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.ide.branch.internal.AtsBranchServiceImpl;
 import org.eclipse.osee.ats.ide.config.IAtsUserServiceClient;
 import org.eclipse.osee.ats.ide.ev.internal.AtsEarnedValueImpl;
+import org.eclipse.osee.ats.ide.health.AtsHealthServiceImpl;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.query.AtsQueryServiceClient;
@@ -469,6 +471,11 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    @Override
    public AtsQueryServiceClient getQueryServiceClient() {
       return queryServiceClient;
+   }
+
+   @Override
+   public IAtsHealthService getHealthService() {
+      return new AtsHealthServiceImpl(this);
    }
 
 }
