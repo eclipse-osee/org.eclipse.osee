@@ -110,17 +110,17 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public int getAttributeCount(AttributeTypeId type) {
+   public int getAttributeCount(AttributeTypeToken type) {
       return getProxiedObject().getAttributeCount(type);
    }
 
    @Override
-   public int getAttributeCount(AttributeTypeId type, DeletionFlag deletionFlag) {
+   public int getAttributeCount(AttributeTypeToken type, DeletionFlag deletionFlag) {
       return getProxiedObject().getAttributeCount(type, deletionFlag);
    }
 
    @Override
-   public boolean isAttributeTypeValid(AttributeTypeId attributeType) {
+   public boolean isAttributeTypeValid(AttributeTypeToken attributeType) {
       return getProxiedObject().isAttributeTypeValid(attributeType);
    }
 

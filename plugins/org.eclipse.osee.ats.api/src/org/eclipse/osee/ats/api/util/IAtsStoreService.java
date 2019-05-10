@@ -43,16 +43,16 @@ public interface IAtsStoreService {
 
    boolean isDeleted(IAtsObject atsObject);
 
-   boolean isAttributeTypeValid(IAtsObject atsObject, AttributeTypeId attributeType);
+   boolean isAttributeTypeValid(IAtsObject atsObject, AttributeTypeToken attributeType);
 
-   boolean isAttributeTypeValid(ArtifactId artifact, AttributeTypeId attributeType);
+   boolean isAttributeTypeValid(ArtifactId artifact, AttributeTypeToken attributeType);
 
    /**
     * Uses artifact type inheritance to retrieve all TeamWorkflow artifact types
     */
    Set<ArtifactTypeToken> getTeamWorkflowArtifactTypes();
 
-   AttributeTypeId getAttributeType(String attrTypeName);
+   AttributeTypeToken getAttributeType(String attrTypeName);
 
    ArtifactTypeToken getArtifactType(ArtifactId artifact);
 

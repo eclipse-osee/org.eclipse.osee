@@ -31,11 +31,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -75,7 +75,7 @@ public class ArtifactReadOnlyImplTest {
    @Mock private Artifact proxiedObject;
    @Mock private GraphData graph;
 
-   @Mock private AttributeTypeId attributeType;
+   @Mock private AttributeTypeToken attributeType;
    @Mock private ArtifactTypeToken artifactType;
 
    @Mock private ArtifactReadable readable1;

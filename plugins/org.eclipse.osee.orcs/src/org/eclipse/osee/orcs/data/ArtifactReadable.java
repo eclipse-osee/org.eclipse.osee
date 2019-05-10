@@ -44,11 +44,11 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
    ArtifactReadable SENTINEL = createSentinel();
    ////////////////////
 
-   int getAttributeCount(AttributeTypeId type);
+   int getAttributeCount(AttributeTypeToken type);
 
-   int getAttributeCount(AttributeTypeId type, DeletionFlag deletionFlag);
+   int getAttributeCount(AttributeTypeToken type, DeletionFlag deletionFlag);
 
-   boolean isAttributeTypeValid(AttributeTypeId attributeType);
+   boolean isAttributeTypeValid(AttributeTypeToken attributeType);
 
    Collection<AttributeTypeToken> getValidAttributeTypes();
 
@@ -164,17 +164,17 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
          }
 
          @Override
-         public int getAttributeCount(AttributeTypeId type) {
+         public int getAttributeCount(AttributeTypeToken type) {
             return 0;
          }
 
          @Override
-         public int getAttributeCount(AttributeTypeId type, DeletionFlag deletionFlag) {
+         public int getAttributeCount(AttributeTypeToken type, DeletionFlag deletionFlag) {
             return 0;
          }
 
          @Override
-         public boolean isAttributeTypeValid(AttributeTypeId attributeType) {
+         public boolean isAttributeTypeValid(AttributeTypeToken attributeType) {
             return false;
          }
 

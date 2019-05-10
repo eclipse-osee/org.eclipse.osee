@@ -94,7 +94,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType) {
+   public boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeToken attributeType) {
       return getArtifact(workItem.getStoreObject()).isAttributeTypeValid(attributeType);
    }
 
@@ -146,17 +146,17 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public int getAttributeCount(IAtsWorkItem workItem, AttributeTypeId attributeType) {
+   public int getAttributeCount(IAtsWorkItem workItem, AttributeTypeToken attributeType) {
       return getArtifact(workItem).getAttributeCount(attributeType);
    }
 
    @Override
-   public int getAttributeCount(IAtsObject atsObject, AttributeTypeId attributeType) {
+   public int getAttributeCount(IAtsObject atsObject, AttributeTypeToken attributeType) {
       return getArtifact(atsObject).getAttributeCount(attributeType);
    }
 
    @Override
-   public int getAttributeCount(ArtifactId artifact, AttributeTypeId attributeType) {
+   public int getAttributeCount(ArtifactId artifact, AttributeTypeToken attributeType) {
       return getArtifact(artifact).getAttributeCount(attributeType);
    }
 

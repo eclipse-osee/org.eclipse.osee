@@ -30,7 +30,7 @@ public class ArtifactValueProvider implements IValueProvider {
    private final ArtifactToken artifact;
    private final String attributeTypeName;
    private final AtsApi atsApi;
-   private AttributeTypeId attributeType;
+   private AttributeTypeToken attributeType;
 
    public ArtifactValueProvider(ArtifactToken artifact, IAtsWidgetDefinition widgetDef, AtsApi atsApi) {
       this.artifact = artifact;
@@ -46,7 +46,7 @@ public class ArtifactValueProvider implements IValueProvider {
 
    @Override
    public boolean isEmpty() {
-      AttributeTypeId attributeType = getAtributeType();
+      AttributeTypeToken attributeType = getAtributeType();
       if (attributeType != null) {
          return atsApi.getAttributeResolver().getAttributeCount(artifact, attributeType) == 0;
       }
@@ -62,7 +62,7 @@ public class ArtifactValueProvider implements IValueProvider {
       return Collections.emptyList();
    }
 
-   public AttributeTypeId getAtributeType() {
+   public AttributeTypeToken getAtributeType() {
       if (attributeType == null && Strings.isValid(attributeTypeName)) {
          attributeType = atsApi.getStoreService().getAttributeType(attributeTypeName);
       }
@@ -91,5 +91,4 @@ public class ArtifactValueProvider implements IValueProvider {
    public Object getObject() {
       return artifact;
    }
-
 }

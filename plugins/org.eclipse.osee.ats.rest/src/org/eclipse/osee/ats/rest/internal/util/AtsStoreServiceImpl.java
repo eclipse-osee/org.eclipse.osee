@@ -112,17 +112,17 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public boolean isAttributeTypeValid(IAtsObject atsObject, AttributeTypeId attributeType) {
+   public boolean isAttributeTypeValid(IAtsObject atsObject, AttributeTypeToken attributeType) {
       return isAttributeTypeValid(atsObject.getStoreObject(), attributeType);
    }
 
    @Override
-   public boolean isAttributeTypeValid(ArtifactId artifact, AttributeTypeId attributeType) {
+   public boolean isAttributeTypeValid(ArtifactId artifact, AttributeTypeToken attributeType) {
       return ((ArtifactReadable) artifact).isAttributeTypeValid(attributeType);
    }
 
    @Override
-   public AttributeTypeId getAttributeType(String attrTypeName) {
+   public AttributeTypeToken getAttributeType(String attrTypeName) {
       return orcsApi.getOrcsTypes().getAttributeTypes().getByName(attrTypeName);
    }
 

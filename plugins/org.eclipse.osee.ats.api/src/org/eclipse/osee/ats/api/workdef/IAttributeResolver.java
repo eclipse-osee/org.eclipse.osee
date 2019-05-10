@@ -39,13 +39,13 @@ public interface IAttributeResolver {
 
    Collection<String> getAttributesToStringList(IAtsObject atsObject, AttributeTypeId attributeType);
 
-   boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType);
+   boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeToken attributeType);
 
    String getSoleAttributeValueAsString(IAtsObject atsObject, AttributeTypeId attributeType, String defaultReturnValue);
 
-   int getAttributeCount(IAtsObject atsObject, AttributeTypeId attributeType);
+   int getAttributeCount(IAtsObject atsObject, AttributeTypeToken attributeType);
 
-   int getAttributeCount(ArtifactId artifact, AttributeTypeId attributeType);
+   int getAttributeCount(ArtifactId artifact, AttributeTypeToken attributeType);
 
    void addAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, Object value);
 
@@ -87,7 +87,7 @@ public interface IAttributeResolver {
 
    String getSoleAttributeValueAsString(ArtifactId artifact, AttributeTypeId attributeType, String defaultReturnValue);
 
-   int getAttributeCount(IAtsWorkItem workItem, AttributeTypeId attributeType);
+   int getAttributeCount(IAtsWorkItem workItem, AttributeTypeToken attributeType);
 
    default public String getAttributesToStringUniqueList(IAtsObject atsObject, AttributeTypeId attributeType, String separator) {
       Set<String> strs = new HashSet<>();
