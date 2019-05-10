@@ -87,33 +87,37 @@ public class BlamContributionManager implements IXNavigateCommonItem {
       XNavigateItem blamOperationItems = new XNavigateItem(null, "Blam Operations", FrameworkImage.BLAM);
       String target = OseeProperties.getTarget();
       for (AbstractBlam blamOperation : getBlamOperations()) {
-         if ("all".equals(
-            blamOperation.getTarget()) || OseeProperties.isTargetAll() || blamOperation.getTarget().equals(target)) {
-            // Create categories first (so can have them up top)
-            for (String category : blamOperation.getCategories()) {
-               try {
-                  if (AccessControlManager.isOseeAdmin() || !category.contains("Admin") || category.contains(
-                     "Admin") && AccessControlManager.isOseeAdmin()) {
-                     createCategories(category.split("\\."), 0, blamOperationItems, nameToParent);
+         String blamTarget = blamOperation.getTarget();
+         if (blamTarget != null) {
+            if ("all".equals(blamTarget) || OseeProperties.isTargetAll() || blamTarget.equals(target)) {
+               // Create categories first (so can have them up top)
+               for (String category : blamOperation.getCategories()) {
+                  try {
+                     if (AccessControlManager.isOseeAdmin() || !category.contains("Admin") || category.contains(
+                        "Admin") && AccessControlManager.isOseeAdmin()) {
+                        createCategories(category.split("\\."), 0, blamOperationItems, nameToParent);
+                     }
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          }
       }
       // Add blams to categories
       for (AbstractBlam blamOperation : BlamContributionManager.getBlamOperations()) {
-         if ("all".equals(
-            blamOperation.getTarget()) || OseeProperties.isTargetAll() || blamOperation.getTarget().equals(target)) {
-            // If categories not specified, add to top level
-            if (blamOperation.getCategories().isEmpty()) {
-               new XNavigateItemBlam(blamOperationItems, blamOperation);
-            }
-            for (String category : blamOperation.getCategories()) {
-               // Category will be null if admin category and not admin
-               if (nameToParent.get(category) != null) {
-                  new XNavigateItemBlam(nameToParent.get(category), blamOperation);
+         String blamTarget = blamOperation.getTarget();
+         if (blamTarget != null) {
+            if ("all".equals(blamTarget) || OseeProperties.isTargetAll() || blamTarget.equals(target)) {
+               // If categories not specified, add to top level
+               if (blamOperation.getCategories().isEmpty()) {
+                  new XNavigateItemBlam(blamOperationItems, blamOperation);
+               }
+               for (String category : blamOperation.getCategories()) {
+                  // Category will be null if admin category and not admin
+                  if (nameToParent.get(category) != null) {
+                     new XNavigateItemBlam(nameToParent.get(category), blamOperation);
+                  }
                }
             }
          }
