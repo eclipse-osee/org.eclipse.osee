@@ -11,6 +11,7 @@
 <plugin id="com.fasterxml.jackson.core.jackson-annotations"/>
 <plugin id="com.fasterxml.jackson.core.jackson-core"/>
 <plugin id="com.fasterxml.jackson.core.jackson-databind"/>
+<plugin id="rest.assured"/>
 <plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base"/>
 <plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"/>
 <plugin id="com.google.eclipse.mechanic"/>
