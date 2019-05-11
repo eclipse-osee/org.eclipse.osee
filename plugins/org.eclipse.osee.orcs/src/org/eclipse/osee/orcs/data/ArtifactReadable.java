@@ -53,19 +53,19 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    Collection<AttributeTypeToken> getExistingAttributeTypes();
 
-   <T> T getSoleAttributeValue(AttributeTypeId attributeType);
+   <T> T getSoleAttributeValue(AttributeTypeToken attributeType);
 
-   <T> T getSoleAttributeValue(AttributeTypeId attributeType, DeletionFlag flag, T defaultValue);
+   <T> T getSoleAttributeValue(AttributeTypeToken attributeType, DeletionFlag flag, T defaultValue);
 
-   <T> T getSoleAttributeValue(AttributeTypeId attributeType, T defaultValue);
+   <T> T getSoleAttributeValue(AttributeTypeToken attributeType, T defaultValue);
 
-   String getSoleAttributeAsString(AttributeTypeId attributeType);
+   String getSoleAttributeAsString(AttributeTypeToken attributeType);
 
-   String getSoleAttributeAsString(AttributeTypeId attributeType, String defaultValue);
+   String getSoleAttributeAsString(AttributeTypeToken attributeType, String defaultValue);
 
-   Long getSoleAttributeId(AttributeTypeId attributeType);
+   Long getSoleAttributeId(AttributeTypeToken attributeType);
 
-   <T> List<T> getAttributeValues(AttributeTypeId attributeType);
+   <T> List<T> getAttributeValues(AttributeTypeToken attributeType);
 
    Iterable<Collection<? extends AttributeReadable<Object>>> getAttributeIterable();
 
@@ -79,9 +79,9 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    ResultSet<? extends AttributeReadable<Object>> getAttributes(DeletionFlag deletionFlag);
 
-   public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeId attributeType, DeletionFlag deletionFlag);
+   public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType, DeletionFlag deletionFlag);
 
-   String getAttributeValuesAsString(AttributeTypeId attributeType);
+   String getAttributeValuesAsString(AttributeTypeToken attributeType);
 
    ////////////////////
    int getMaximumRelationAllowed(RelationTypeSide relationTypeSide);
@@ -182,37 +182,37 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
          }
 
          @Override
-         public <T> T getSoleAttributeValue(AttributeTypeId attributeType) {
+         public <T> T getSoleAttributeValue(AttributeTypeToken attributeType) {
             return null;
          }
 
          @Override
-         public <T> T getSoleAttributeValue(AttributeTypeId attributeType, DeletionFlag flag, T defaultValue) {
+         public <T> T getSoleAttributeValue(AttributeTypeToken attributeType, DeletionFlag flag, T defaultValue) {
             return null;
          }
 
          @Override
-         public <T> T getSoleAttributeValue(AttributeTypeId attributeType, T defaultValue) {
+         public <T> T getSoleAttributeValue(AttributeTypeToken attributeType, T defaultValue) {
             return null;
          }
 
          @Override
-         public String getSoleAttributeAsString(AttributeTypeId attributeType) {
+         public String getSoleAttributeAsString(AttributeTypeToken attributeType) {
             return null;
          }
 
          @Override
-         public String getSoleAttributeAsString(AttributeTypeId attributeType, String defaultValue) {
+         public String getSoleAttributeAsString(AttributeTypeToken attributeType, String defaultValue) {
             return null;
          }
 
          @Override
-         public Long getSoleAttributeId(AttributeTypeId attributeType) {
+         public Long getSoleAttributeId(AttributeTypeToken attributeType) {
             return null;
          }
 
          @Override
-         public <T> List<T> getAttributeValues(AttributeTypeId attributeType) {
+         public <T> List<T> getAttributeValues(AttributeTypeToken attributeType) {
             return null;
          }
 
@@ -242,12 +242,12 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
          }
 
          @Override
-         public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeId attributeType, DeletionFlag deletionFlag) {
+         public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
             return null;
          }
 
          @Override
-         public String getAttributeValuesAsString(AttributeTypeId attributeType) {
+         public String getAttributeValuesAsString(AttributeTypeToken attributeType) {
             return null;
          }
 

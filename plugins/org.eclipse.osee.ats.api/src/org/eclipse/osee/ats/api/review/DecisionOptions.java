@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 
 /**
@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.util.Result;
  */
 public class DecisionOptions {
 
-   private final AttributeTypeId attributeType;
+   private final AttributeTypeToken attributeType;
    private final AtsApi atsApi;
    private final IAtsDecisionReview decRev;
 
@@ -34,7 +34,7 @@ public class DecisionOptions {
       this.attributeType = AtsAttributeTypes.DecisionReviewOptions;
    }
 
-   public AttributeTypeId getAttributeType() {
+   public AttributeTypeToken getAttributeType() {
       return attributeType;
    }
 

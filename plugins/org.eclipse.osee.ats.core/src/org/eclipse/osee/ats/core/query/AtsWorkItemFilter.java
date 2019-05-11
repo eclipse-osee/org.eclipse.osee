@@ -25,8 +25,8 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -111,7 +111,7 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
    }
 
    @Override
-   public IAtsWorkItemFilter withOrValue(AttributeTypeId attributeType, Collection<? extends Object> matchValues) {
+   public IAtsWorkItemFilter withOrValue(AttributeTypeToken attributeType, Collection<? extends Object> matchValues) {
       if (matchValues != null && !matchValues.isEmpty()) {
          for (IAtsWorkItem workItem : new CopyOnWriteArrayList<IAtsWorkItem>(items)) {
             Collection<Object> currAttrValues =

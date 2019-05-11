@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -55,7 +54,7 @@ public class ArtifactValueProvider implements IValueProvider {
 
    @Override
    public Collection<String> getValues() {
-      AttributeTypeId attributeType = getAtributeType();
+      AttributeTypeToken attributeType = getAtributeType();
       if (attributeType != null) {
          return atsApi.getAttributeResolver().getAttributesToStringList(artifact, attributeType);
       }
@@ -76,7 +75,7 @@ public class ArtifactValueProvider implements IValueProvider {
 
    @Override
    public Collection<Date> getDateValues() {
-      AttributeTypeId attributeType = getAtributeType();
+      AttributeTypeToken attributeType = getAtributeType();
       if (attributeType != null && atsApi.getStoreService().isDateType(attributeType)) {
          return atsApi.getAttributeResolver().getAttributeValues(artifact, attributeType);
       }

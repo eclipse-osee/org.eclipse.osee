@@ -16,8 +16,8 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -34,7 +34,7 @@ public interface IAtsWorkItemFilter {
 
    <T extends IAtsWorkItem> Collection<T> getItems();
 
-   IAtsWorkItemFilter withOrValue(AttributeTypeId attributeType, Collection<? extends Object> values);
+   IAtsWorkItemFilter withOrValue(AttributeTypeToken attributeType, Collection<? extends Object> values);
 
    Collection<IAtsAction> getActions();
 

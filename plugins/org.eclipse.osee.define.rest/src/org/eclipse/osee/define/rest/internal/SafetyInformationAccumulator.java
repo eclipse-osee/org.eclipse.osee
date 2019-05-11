@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -179,7 +179,7 @@ public final class SafetyInformationAccumulator {
       writer.endRow();
    }
 
-   private String writeCriticality(ArtifactReadable art, AttributeTypeId thisType) throws IOException {
+   private String writeCriticality(ArtifactReadable art, AttributeTypeToken thisType) throws IOException {
       String current = art.getSoleAttributeAsString(thisType, "Error");
 
       if (AttributeId.UNSPECIFIED.equals(current)) {
@@ -214,13 +214,11 @@ public final class SafetyInformationAccumulator {
       }
    }
 
-   public List<String> getAttributesToStringList(ArtifactReadable artifact, AttributeTypeId attributeType) {
-
+   public List<String> getAttributesToStringList(ArtifactReadable artifact, AttributeTypeToken attributeType) {
       List<String> items = new ArrayList<>();
       for (AttributeReadable<?> attribute : artifact.getAttributes(attributeType)) {
          items.add(attribute.getDisplayableString());
       }
       return items;
    }
-
 }

@@ -50,6 +50,7 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -537,7 +538,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
          Arrays.asList(DemoUsers.Kay_Jones.getId().toString()));
    }
 
-   public void testSetActionByKey(String defaultAttrValue, String newValue, AttributeTypeId attrType, AttributeKey attrKey) {
+   public void testSetActionByKey(String defaultAttrValue, String newValue, AttributeTypeToken attrType, AttributeKey attrKey) {
       AtsActionEndpointApi actionEp = AtsClientService.getActionEndpoint();
 
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();

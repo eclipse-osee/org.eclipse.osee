@@ -26,7 +26,6 @@ import org.eclipse.define.api.importing.RoughArtifactCollector;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.define.rest.internal.importing.NormalizeHtml;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
@@ -207,7 +206,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       return toReturn;
    }
 
-   private ResultSet<?> getAttributes(OrcsApi orcsApi, BranchId branch, ArtifactId theArtifact, AttributeTypeId attr) {
+   private ResultSet<?> getAttributes(OrcsApi orcsApi, BranchId branch, ArtifactId theArtifact, AttributeTypeToken attr) {
       return orcsApi.getQueryFactory().fromBranch(branch).andId(theArtifact).getArtifact().getAttributes(attr);
    }
 

@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -228,7 +228,7 @@ public class SprintDataBuilder {
    }
 
    private double getPoints(AgileSprintData burn, IAgileItem item) {
-      AttributeTypeId pointsType = atsApi.getStoreService().getAttributeType(burn.getPointsAttrTypeName());
+      AttributeTypeToken pointsType = atsApi.getStoreService().getAttributeType(burn.getPointsAttrTypeName());
       Object value = atsApi.getAttributeResolver().getSoleAttributeValue(item, pointsType, "");
       if (value instanceof Double) {
          return (Double) value;

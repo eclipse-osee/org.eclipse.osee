@@ -77,18 +77,18 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public <T> T getSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, T defaultReturnValue) {
+   public <T> T getSoleAttributeValue(IAtsObject atsObject, AttributeTypeToken attributeType, T defaultReturnValue) {
       return getArtifact(atsObject).getSoleAttributeValue(attributeType, defaultReturnValue);
 
    }
 
    @Override
-   public List<String> getAttributesToStringList(IAtsObject atsObject, AttributeTypeId attributeType) {
+   public List<String> getAttributesToStringList(IAtsObject atsObject, AttributeTypeToken attributeType) {
       return getArtifact(atsObject).getAttributesToStringList(attributeType);
    }
 
    @Override
-   public List<String> getAttributesToStringList(ArtifactId artifact, AttributeTypeId attributeType) {
+   public List<String> getAttributesToStringList(ArtifactId artifact, AttributeTypeToken attributeType) {
       return AtsClientService.get().getQueryServiceClient().getArtifact(artifact).getAttributesToStringList(
          attributeType);
    }
@@ -99,7 +99,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public String getSoleAttributeValueAsString(IAtsObject atsObject, AttributeTypeId attributeType, String defaultValue) {
+   public String getSoleAttributeValueAsString(IAtsObject atsObject, AttributeTypeToken attributeType, String defaultValue) {
       String result = defaultValue;
       Artifact artifact = getArtifact(atsObject.getArtifactId());
       if (artifact != null) {
@@ -109,7 +109,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public String getSoleAttributeValueAsString(ArtifactId artifact, AttributeTypeId attributeType, String defaultValue) {
+   public String getSoleAttributeValueAsString(ArtifactId artifact, AttributeTypeToken attributeType, String defaultValue) {
       String result = defaultValue;
       Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(artifact);
       if (art != null) {
@@ -167,7 +167,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    @SuppressWarnings({"unchecked", "deprecation"})
    @Override
-   public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, AttributeTypeId attributeType) {
+   public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, AttributeTypeToken attributeType) {
       List<IAttribute<T>> attrs = new ArrayList<>();
       for (Attribute<Object> attr : getArtifact(workItem).getAttributes(attributeType)) {
          attrs.add((IAttribute<T>) attr);
@@ -254,7 +254,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public <T> T getSoleAttributeValue(ArtifactId artifact, AttributeTypeId attributeType, T defaultValue) {
+   public <T> T getSoleAttributeValue(ArtifactId artifact, AttributeTypeToken attributeType, T defaultValue) {
       if (getArtifact(artifact) != null) {
          return getArtifact(artifact).getSoleAttributeValue(attributeType, defaultValue);
       }
@@ -262,14 +262,14 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public <T> Collection<T> getAttributeValues(ArtifactId artifact, AttributeTypeId attributeType) {
+   public <T> Collection<T> getAttributeValues(ArtifactId artifact, AttributeTypeToken attributeType) {
       Assert.isNotNull(artifact, "Artifact can not be null");
       Assert.isNotNull(attributeType, "Attribute Type can not be null");
       return getArtifact(artifact).getAttributeValues(attributeType);
    }
 
    @Override
-   public <T> Collection<T> getAttributeValues(IAtsObject atsObject, AttributeTypeId attributeType) {
+   public <T> Collection<T> getAttributeValues(IAtsObject atsObject, AttributeTypeToken attributeType) {
       Assert.isNotNull(atsObject, "ATS Object can not be null");
       Assert.isNotNull(attributeType, "Attribute Type can not be null");
       return getAttributeValues(atsObject.getStoreObject(), attributeType);
@@ -277,7 +277,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    @SuppressWarnings({"unchecked", "deprecation"})
    @Override
-   public <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact, AttributeTypeId attributeType) {
+   public <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact, AttributeTypeToken attributeType) {
       Assert.isNotNull(artifact, "Artifact can not be null");
       Assert.isNotNull(attributeType, "Attribute Type can not be null");
       List<IAttribute<T>> attributes = new LinkedList<>();

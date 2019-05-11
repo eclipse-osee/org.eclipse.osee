@@ -135,37 +135,37 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public <T> T getSoleAttributeValue(AttributeTypeId attributeType) {
+   public <T> T getSoleAttributeValue(AttributeTypeToken attributeType) {
       return getProxiedObject().getSoleAttributeValue(attributeType);
    }
 
    @Override
-   public <T> T getSoleAttributeValue(AttributeTypeId attributeType, DeletionFlag flag, T defaultValue) {
+   public <T> T getSoleAttributeValue(AttributeTypeToken attributeType, DeletionFlag flag, T defaultValue) {
       return getProxiedObject().getSoleAttributeValue(attributeType, flag, defaultValue);
    }
 
    @Override
-   public <T> T getSoleAttributeValue(AttributeTypeId attributeType, T defaultValue) {
+   public <T> T getSoleAttributeValue(AttributeTypeToken attributeType, T defaultValue) {
       return getProxiedObject().getSoleAttributeValue(attributeType, defaultValue);
    }
 
    @Override
-   public String getSoleAttributeAsString(AttributeTypeId attributeType) {
+   public String getSoleAttributeAsString(AttributeTypeToken attributeType) {
       return getProxiedObject().getSoleAttributeAsString(attributeType);
    }
 
    @Override
-   public String getSoleAttributeAsString(AttributeTypeId attributeType, String defaultValue) {
+   public String getSoleAttributeAsString(AttributeTypeToken attributeType, String defaultValue) {
       return getProxiedObject().getSoleAttributeAsString(attributeType, defaultValue);
    }
 
    @Override
-   public Long getSoleAttributeId(AttributeTypeId attributeType) {
+   public Long getSoleAttributeId(AttributeTypeToken attributeType) {
       return getProxiedObject().getSoleAttribute(attributeType).getId();
    }
 
    @Override
-   public <T> List<T> getAttributeValues(AttributeTypeId attributeType) {
+   public <T> List<T> getAttributeValues(AttributeTypeToken attributeType) {
       return getProxiedObject().getAttributeValues(attributeType);
    }
 
@@ -175,7 +175,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public String getAttributeValuesAsString(AttributeTypeId attributeType) {
+   public String getAttributeValuesAsString(AttributeTypeToken attributeType) {
       List<Attribute<Object>> attributes = getProxiedObject().getAttributes(attributeType);
       return Collections.toString(", ", attributes);
    }
@@ -199,7 +199,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeId attributeType, DeletionFlag deletionFlag) {
+   public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
       List<Attribute<T>> attributes = getProxiedObject().getAttributes(attributeType, deletionFlag);
       return getProxyManager().asExternalAttributes(getSession(), attributes);
    }

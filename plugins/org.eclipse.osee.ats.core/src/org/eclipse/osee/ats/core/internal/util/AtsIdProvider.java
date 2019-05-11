@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -99,7 +99,7 @@ public final class AtsIdProvider {
       return String.format("%s%d", prefix, sequenceProvider.getNext(seqName));
    }
 
-   protected String getAttrValueFromTeamDef(AttributeTypeId attrType) {
+   protected String getAttrValueFromTeamDef(AttributeTypeToken attrType) {
       String attrValue = attrResolver.getSoleAttributeValueAsString(teamDef, attrType, (String) null);
       if (!Strings.isValid(attrValue)) {
          IAtsTeamDefinition parentTeamDef = teamDef.getTeamDefinitionHoldingVersions();

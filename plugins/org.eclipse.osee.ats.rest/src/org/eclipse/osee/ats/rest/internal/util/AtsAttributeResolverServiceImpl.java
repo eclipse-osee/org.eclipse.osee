@@ -102,13 +102,13 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public <T> T getSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, T defaultReturnValue) {
+   public <T> T getSoleAttributeValue(IAtsObject atsObject, AttributeTypeToken attributeType, T defaultReturnValue) {
       return getArtifact(atsObject).getSoleAttributeValue(attributeType, defaultReturnValue);
 
    }
 
    @Override
-   public List<String> getAttributesToStringList(IAtsObject atsObject, AttributeTypeId attributeType) {
+   public List<String> getAttributesToStringList(IAtsObject atsObject, AttributeTypeToken attributeType) {
       return getArtifact(atsObject).getAttributeValues(attributeType);
    }
 
@@ -118,12 +118,12 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public String getSoleAttributeValueAsString(IAtsObject atsObject, AttributeTypeId attributeType, String defaultValue) {
+   public String getSoleAttributeValueAsString(IAtsObject atsObject, AttributeTypeToken attributeType, String defaultValue) {
       return getArtifact(atsObject).getSoleAttributeValue(attributeType, defaultValue);
    }
 
    @Override
-   public String getSoleAttributeValueAsString(ArtifactId artifact, AttributeTypeId attributeType, String defaultValue) {
+   public String getSoleAttributeValueAsString(ArtifactId artifact, AttributeTypeToken attributeType, String defaultValue) {
       return getArtifact(artifact).getSoleAttributeValue(attributeType, defaultValue);
    }
 
@@ -157,7 +157,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, AttributeTypeId attributeType) {
+   public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, AttributeTypeToken attributeType) {
       Collection<IAttribute<T>> attrs = new ArrayList<>();
       for (AttributeReadable<Object> attr : getArtifact(workItem).getAttributes(attributeType)) {
          attrs.add((IAttribute<T>) attr);
@@ -216,23 +216,23 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public <T> T getSoleAttributeValue(ArtifactId artifact, AttributeTypeId attributeType, T defaultValue) {
+   public <T> T getSoleAttributeValue(ArtifactId artifact, AttributeTypeToken attributeType, T defaultValue) {
       return getArtifact(artifact).getSoleAttributeValue(attributeType, defaultValue);
    }
 
    @Override
-   public <T> Collection<T> getAttributeValues(ArtifactId artifact, AttributeTypeId attributeType) {
+   public <T> Collection<T> getAttributeValues(ArtifactId artifact, AttributeTypeToken attributeType) {
       return getArtifact(artifact).getAttributeValues(attributeType);
    }
 
    @Override
-   public <T> Collection<T> getAttributeValues(IAtsObject atsObject, AttributeTypeId attributeType) {
+   public <T> Collection<T> getAttributeValues(IAtsObject atsObject, AttributeTypeToken attributeType) {
       return getAttributeValues(atsObject.getStoreObject(), attributeType);
    }
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact, AttributeTypeId attributeType) {
+   public <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact, AttributeTypeToken attributeType) {
       Assert.isNotNull(artifact, "Artifact can not be null");
       Assert.isNotNull(attributeType, "Attribute Type can not be null");
       List<IAttribute<T>> attributes = new LinkedList<>();
@@ -243,7 +243,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public List<String> getAttributesToStringList(ArtifactId artifact, AttributeTypeId attributeType) {
+   public List<String> getAttributesToStringList(ArtifactId artifact, AttributeTypeToken attributeType) {
       return ((ArtifactReadable) artifact).getAttributeValues(attributeType);
    }
 
@@ -265,5 +265,4 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    public void setServices(AtsApi atsApi) {
       this.atsApi = atsApi;
    }
-
 }

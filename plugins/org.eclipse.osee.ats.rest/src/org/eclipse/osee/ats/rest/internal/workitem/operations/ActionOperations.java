@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -195,11 +194,10 @@ public class ActionOperations {
    }
 
    public Attribute getActionAttributeValues(String attrTypeId, IAtsWorkItem workItem) {
-      AttributeTypeId attrType = atsApi.getStoreService().getAttributeType(Long.valueOf(attrTypeId));
-      return getActionAttributeValues(attrType, workItem);
+      return getActionAttributeValues(getAttributeType(attrTypeId), workItem);
    }
 
-   private Attribute getActionAttributeValues(AttributeTypeId attrType, IAtsWorkItem workItem) {
+   private Attribute getActionAttributeValues(AttributeTypeToken attrType, IAtsWorkItem workItem) {
       Attribute attribute = new Attribute();
       attribute.setArtId(workItem.getStoreObject());
       attribute.setAttrTypeId(attrType);

@@ -17,10 +17,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
@@ -61,7 +60,7 @@ public class TypeCountWriter {
                row[index++] = art.getName();
                row[index++] = "NEW";
                row[index++] = art.getArtifactType().toString();
-               for (AttributeTypeId type : attributes) {
+               for (AttributeTypeToken type : attributes) {
                   row[index++] = art.getAttributeValues(type).toString();
                }
 
@@ -80,7 +79,7 @@ public class TypeCountWriter {
                row[index++] = art.getName();
                row[index++] = "MODIFIED";
                row[index++] = art.getArtifactType().toString();
-               for (AttributeTypeId type : attributes) {
+               for (AttributeTypeToken type : attributes) {
                   row[index++] = art.getAttributeValues(type).toString();
                }
                sheetWriter.writeRow((Object[]) row);
@@ -98,7 +97,7 @@ public class TypeCountWriter {
                row[index++] = art.getName();
                row[index++] = "DELETED";
                row[index++] = art.getArtifactType().toString();
-               for (AttributeTypeId type : attributes) {
+               for (AttributeTypeToken type : attributes) {
                   row[index++] = art.getAttributeValues(type).toString();
                }
                sheetWriter.writeRow((Object[]) row);

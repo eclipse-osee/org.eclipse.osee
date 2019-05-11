@@ -84,6 +84,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
@@ -94,6 +95,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
    private final AtsApi atsApi;
    private final OrcsApi orcsApi;
+   private final AttributeTypes attributeTypes;
    private static final String ATS_UI_ACTION_PREFIX = "/ui/action/ID";
 
    @Context
@@ -102,6 +104,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public AtsActionEndpointImpl(AtsApi atsApi, OrcsApi orcsApi, JsonFactory jsonFactory) {
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
+      this.attributeTypes = orcsApi.getOrcsTypes().getAttributeTypes();
    }
 
    @Override
@@ -227,12 +230,12 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       List<String> requirements = new LinkedList<>();
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(COMMON);
       ArtifactReadable workflow = query.andId(workflowId).getArtifact();
-      Integer vertionArtId = workflow.getSoleAttributeValue(versionType);
+      Integer vertionArtId = workflow.getSoleAttributeValue(attributeTypes.get(versionType));
       ArtifactReadable version = query.andId(ArtifactId.valueOf(vertionArtId)).getArtifact();
       BranchId versionBranch =
          BranchId.valueOf(version.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchId, "-1"));
 
-      String values = workflow.getSoleAttributeValue(relatedReqs);
+      String values = workflow.getSoleAttributeValue(attributeTypes.get(relatedReqs));
       if (Strings.isValid(values)) {
          List<String> items = Arrays.asList(values.split("\\s*,\\s*"));
          List<ArtifactId> artIds = Collections.transform(items, ArtifactId::valueOf);

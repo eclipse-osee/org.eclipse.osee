@@ -26,7 +26,7 @@ import org.eclipse.osee.define.api.WordUpdateChange;
 import org.eclipse.osee.define.api.WordUpdateData;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -233,7 +233,7 @@ public class WordUpdateArtifact {
             WordUtilities.referencesOnly(content));
    }
 
-   private boolean checkIfSafetyRelated(ArtifactReadable artifact, AttributeTypeId dalAttrType) {
+   private boolean checkIfSafetyRelated(ArtifactReadable artifact, AttributeTypeToken dalAttrType) {
       String dal = artifact.getSoleAttributeAsString(dalAttrType, "");
       return "A".equals(dal) || "B".equals(dal) || "C".equals(dal);
    }

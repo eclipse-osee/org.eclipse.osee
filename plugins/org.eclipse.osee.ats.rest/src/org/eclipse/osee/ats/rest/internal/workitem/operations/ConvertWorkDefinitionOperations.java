@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -170,7 +169,7 @@ public class ConvertWorkDefinitionOperations {
       System.gc();
    }
 
-   private int setNewWorkDefRefIfNecessary(XResultData rd, int updatedCount, IAtsChangeSet changes, ArtifactToken artifact, AttributeTypeId oldAttrType, AttributeTypeToken newAttrType) {
+   private int setNewWorkDefRefIfNecessary(XResultData rd, int updatedCount, IAtsChangeSet changes, ArtifactToken artifact, AttributeTypeToken oldAttrType, AttributeTypeToken newAttrType) {
       String oldWorkDefName = atsApi.getAttributeResolver().getSoleAttributeValue(artifact, oldAttrType, "");
       if (Strings.isValid(oldWorkDefName)) {
 

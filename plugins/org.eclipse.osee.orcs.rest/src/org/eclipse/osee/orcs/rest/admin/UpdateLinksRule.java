@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.rest.admin;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -56,7 +56,7 @@ public class UpdateLinksRule extends Rule {
    }
 
    private Long getAttributeId(ArtifactReadable artifact) {
-      AttributeTypeId attributeType;
+      AttributeTypeToken attributeType;
 
       if (artifact.isOfType(CoreArtifactTypes.WholeWord)) {
          attributeType = CoreAttributeTypes.WholeWordContent;

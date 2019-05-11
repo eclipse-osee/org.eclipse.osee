@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -190,7 +191,7 @@ public final class ValidatingSafetyInformationAccumulator {
       writer.writeRow((Object[]) currentRowValues);
    }
 
-   private String writeCriticalityWithDesignCheck(ArtifactReadable art, String criticality, AttributeTypeId thisType, RelationTypeSide relType, AttributeTypeId otherType, String[] currentRowValues, int col) {
+   private String writeCriticalityWithDesignCheck(ArtifactReadable art, String criticality, AttributeTypeToken thisType, RelationTypeSide relType, AttributeTypeToken otherType, String[] currentRowValues, int col) {
       String current = art.getSoleAttributeAsString(thisType, "Error");
       if ("Error".equals(criticality) || "Error".equals(current)) {
          writeCell("Error: invalid content", currentRowValues, col);
@@ -220,7 +221,7 @@ public final class ValidatingSafetyInformationAccumulator {
       return current;
    }
 
-   private void checkBackTrace(ArtifactReadable art, Integer current, AttributeTypeId thisType, RelationTypeSide relType, AttributeTypeId otherType, String[] currentRowValues, int col) {
+   private void checkBackTrace(ArtifactReadable art, Integer current, AttributeTypeId thisType, RelationTypeSide relType, AttributeTypeToken otherType, String[] currentRowValues, int col) {
       /**
        * when the parent criticality is less critical than the child, we check to see if the child traces to any more
        * critical parent (thus justifying the criticality of the child) note: more critical = lower number

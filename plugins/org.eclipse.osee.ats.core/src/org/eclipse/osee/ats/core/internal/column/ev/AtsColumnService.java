@@ -50,7 +50,7 @@ import org.eclipse.osee.ats.core.column.TeamColumn;
 import org.eclipse.osee.ats.core.column.TitleColumn;
 import org.eclipse.osee.ats.core.column.TypeColumn;
 import org.eclipse.osee.ats.core.internal.column.WorkDefinitionColumn;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -181,12 +181,13 @@ public class AtsColumnService implements IAtsColumnService {
       // Add columns defined as attribute, if valid attribute
       if (column == null) {
          if (id.startsWith("attribute.")) {
-            AttributeTypeId attrType = atsApi.getStoreService().getAttributeType(id.replaceFirst("attribute\\.", ""));
+            AttributeTypeToken attrType =
+               atsApi.getStoreService().getAttributeType(id.replaceFirst("attribute\\.", ""));
             column = new AttributeColumn(atsApi, attrType);
 
          }
          if (id.startsWith("ats.")) {
-            AttributeTypeId attrType = atsApi.getStoreService().getAttributeType(id);
+            AttributeTypeToken attrType = atsApi.getStoreService().getAttributeType(id);
             if (attrType != null) {
                column = new AttributeColumn(atsApi, attrType);
             }

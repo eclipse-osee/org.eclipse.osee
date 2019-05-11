@@ -14,8 +14,8 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.rule.validation.AbstractValidationRule;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -23,11 +23,11 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
  */
 public final class AttributeFormatRule extends AbstractValidationRule {
    private final ArtifactTypeToken baseArtifactType;
-   private final AttributeTypeId attributeType;
+   private final AttributeTypeToken attributeType;
    private final Integer minimumValues;
    private final String regex;
 
-   public AttributeFormatRule(AtsApi atsApi, ArtifactTypeToken artifactType, AttributeTypeId attributeType, Integer minimumValues, String regex) {
+   public AttributeFormatRule(AtsApi atsApi, ArtifactTypeToken artifactType, AttributeTypeToken attributeType, Integer minimumValues, String regex) {
       super(atsApi);
       this.baseArtifactType = artifactType;
       this.attributeType = attributeType;
