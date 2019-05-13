@@ -41,6 +41,7 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken AtsIdPrefix = createType(1162773128791720837L, "ATS Id Prefix", "ATS Id Prefix");
    public static final AttributeTypeToken AtsIdSequenceName = createType(1163054603768431493L, "ATS Id Sequence Name", "ATS Id Sequence Name");
    public static final AttributeTypeToken BaselineBranchId = createType(1152932018686787753L, "Baseline Branch Id", "Baseline branch associated with ATS object.");
+   public static final AttributeTypeToken BlockedReason = createType(7797797474874870503L, "Blocked Reason", "Reason for action being blocked");
    public static final AttributeTypeToken CSCI = createType(72063457007112443L, "CSCI", "CSCI this Team is reponsible for.");
    public static final AttributeTypeToken CancelledBy = createType(1152921504606847170L, "Cancelled By", "UserId of the user who cancelled workflow.");
    public static final AttributeTypeToken CancelledDate = createType(1152921504606847169L, "Cancelled Date", "Date the workflow was cancelled.");

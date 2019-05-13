@@ -38,7 +38,7 @@ public class WfeTeamAndIdsHeader extends Composite implements IWfeEventHandle {
       super(parent, style);
       this.workItem = workItem;
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      setLayout(ALayout.getZeroMarginLayout(4, false));
+      setLayout(ALayout.getZeroMarginLayout(3, true));
       editor.getToolkit().adapt(this);
 
       try {

@@ -238,6 +238,7 @@ abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
 	attribute "ats.Id"
 	attribute "ats.Unplanned Work"
 	attribute "ats.Peer Review Id"
+	attribute "ats.Blocked Reason"
 }
 
 artifactType "Goal" extends "ats.State Machine" {
@@ -896,6 +897,15 @@ attributeType "ats.Allow User Action Creation" extends BooleanAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
+}
+
+attributeType "ats.Blocked Reason" extends StringAttribute {
+	id 7797797474874870503
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 	mediaType "text/plain"
 }
 

@@ -407,6 +407,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          int headerCompColumns = 4;
          createWorkPacakageHeader(headerComp, editor.getToolkit(), awa, headerCompColumns, editor);
          createWorkDefHeader(headerComp, editor.getToolkit(), awa, headerCompColumns);
+         new WfeBlockedWorkflowHeader(headerComp, SWT.NONE, awa, editor);
          createSMANotesHeader(headerComp, editor.getToolkit(), awa, headerCompColumns);
          createStateNotesHeader(headerComp, editor.getToolkit(), awa, headerCompColumns, null);
          createAnnotationsHeader(headerComp, editor.getToolkit());
@@ -659,7 +660,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
       gridData.horizontalSpan = horizontalSpan;
       headerComp.setLayoutData(gridData);
-      headerComp.setLayout(ALayout.getZeroMarginLayout(6, false));
+      headerComp.setLayout(ALayout.getZeroMarginLayout(5, false));
       toolkit.adapt(headerComp);
 
       IAtsWorkDefinition workDef = workflow.getWorkDefinition();

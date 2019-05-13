@@ -15,6 +15,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
@@ -24,10 +25,13 @@ import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workdef.StateColorToSwtColor;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 
@@ -53,6 +57,16 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          }
          if (xCol.getId().equals(AtsColumnToken.TypeColumn.getId())) {
             return ArtifactImageManager.getImage(AtsClientService.get().getQueryServiceClient().getArtifact(element));
+         }
+         if (xCol.getId().equals(AtsColumnToken.StateColumn.getId())) {
+            if (element instanceof IAtsWorkItem) {
+               IAtsWorkItem workItem = (IAtsWorkItem) element;
+               String isBlocked = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workItem,
+                  AtsAttributeTypes.BlockedReason, "");
+               if (Strings.isValid(isBlocked)) {
+                  return ImageManager.getImage(FrameworkImage.X_RED);
+               }
+            }
          }
       } catch (Exception ex) {
          // do nothing

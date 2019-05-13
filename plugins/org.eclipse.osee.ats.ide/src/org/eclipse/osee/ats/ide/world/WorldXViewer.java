@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.ide.actions.DeleteTasksAction;
 import org.eclipse.osee.ats.ide.actions.DeleteTasksAction.TaskArtifactProvider;
 import org.eclipse.osee.ats.ide.actions.EditActionableItemsAction;
 import org.eclipse.osee.ats.ide.actions.EditAssigneeAction;
+import org.eclipse.osee.ats.ide.actions.EditBlockedStatusAction;
 import org.eclipse.osee.ats.ide.actions.EditStatusAction;
 import org.eclipse.osee.ats.ide.actions.EmailActionAction;
 import org.eclipse.osee.ats.ide.actions.FavoriteAction;
@@ -149,6 +150,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    Action editActionableItemsAction;
    protected EditStatusAction editStatusAction;
    EditAssigneeAction editAssigneeAction;
+   EditBlockedStatusAction editBlockedStatusAction;
 
    FavoriteAction favoritesAction;
    SubscribedAction subscribedAction;
@@ -167,6 +169,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       emailAction = new EmailActionAction(this);
       editStatusAction = new EditStatusAction(this, this, this);
       editAssigneeAction = new EditAssigneeAction(this, this);
+      editBlockedStatusAction = new EditBlockedStatusAction(this);
       addTaskAction = new AddTaskAction(this);
       TaskArtifactProvider taskProvider = new TaskArtifactProvider() {
 
@@ -353,6 +356,11 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
       mm.insertBefore(MENU_GROUP_PRE, editActionableItemsAction);
       editActionableItemsAction.setEnabled(getSelectedTeamWorkflowArtifacts().size() == 1);
+
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
+
+      mm.insertBefore(MENU_GROUP_PRE, editBlockedStatusAction);
+      editBlockedStatusAction.setEnabled(getSelectedWorkflowArtifacts().size() == 1);
 
    }
 
