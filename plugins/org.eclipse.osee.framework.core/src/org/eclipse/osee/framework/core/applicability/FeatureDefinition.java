@@ -10,14 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.applicability;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author Donald G. Dunne
  */
+
 public class FeatureDefinition extends NamedIdBase {
 
    private List<String> values;
@@ -26,6 +27,7 @@ public class FeatureDefinition extends NamedIdBase {
    private boolean multiValued;
    private String valueType;
    private Object data;
+   private String type;
 
    public FeatureDefinition() {
       super(ArtifactId.SENTINEL.getId(), "");
@@ -88,5 +90,13 @@ public class FeatureDefinition extends NamedIdBase {
 
    public void setData(Object data) {
       this.data = data;
+   }
+
+   public String getType() {
+      return type;
+   }
+
+   public void setType(String type) {
+      this.type = type;
    }
 }
