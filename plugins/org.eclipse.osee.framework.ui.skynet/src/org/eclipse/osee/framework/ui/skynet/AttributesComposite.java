@@ -70,8 +70,8 @@ public class AttributesComposite extends Composite implements IArtifactEventList
    private TableViewer tableViewer;
    private Table table;
    private Text helpText;
-   private static final String[] columnNames = new String[] {"name", "value", "attrId", "gammaId"};
-   private static final Integer[] columnWidths = new Integer[] {200, 400, 70, 70};
+   private static final String[] columnNames = new String[] {"name", "value", "attrId", "attrTypeId", "gammaId"};
+   private static final Integer[] columnWidths = new Integer[] {200, 400, 70, 70, 70};
    private Artifact artifact;
    private final IDirtiableEditor editor;
    private Label warningLabel;

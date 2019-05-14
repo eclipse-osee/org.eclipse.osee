@@ -48,6 +48,12 @@ public class AttributeLabelProvider implements ITableLabelProvider {
          } catch (OseeCoreException ex) {
             return Lib.exceptionToString(ex);
          }
+      } else if (columnIndex == 3) {
+         try {
+            return attribute.getAttributeType().getIdString();
+         } catch (OseeCoreException ex) {
+            return Lib.exceptionToString(ex);
+         }
       } else {
          return String.valueOf(attribute.getGammaId());
       }
