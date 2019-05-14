@@ -35,12 +35,12 @@ import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
  */
 public class AtsArtifactImageProvider extends ArtifactImageProvider {
 
-   private final Map<ArtifactImage, KeyedImage> keyedImageMap = new HashMap<>();
+   private static final Map<ArtifactImage, KeyedImage> keyedImageMap = new HashMap<>();
    private static AtsArtifactImageProvider provider = new AtsArtifactImageProvider();
-   boolean initRan = false;
+   private static Boolean initRan = false;
 
    @Override
-   public void init() {
+   public synchronized void init() {
       if (!initRan) {
          ArtifactImageManager.registerBaseImage(AtsArtifactTypes.DecisionReview, AtsImage.DECISION_REVIEW, this);
          ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Action, AtsImage.ACTION, this);
