@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="OSEE Client Server Target Platform" sequenceNumber="100">
+<?pde version="3.8"?><target name="OSEE Client Server Target Platform" sequenceNumber="104">
 <locations>
 <location path="${eclipse_home}" type="Profile"/>
 </locations>
@@ -8,15 +8,9 @@
 <plugin id="ch.qos.logback.core"/>
 <plugin id="ch.qos.logback.slf4j"/>
 <plugin id="com.ctc.wstx"/>
-<plugin id="org.mockito"/>
-<plugin id="com.fasterxml.jackson.core.jackson-core"/>
 <plugin id="com.fasterxml.jackson.core.jackson-annotations"/>
+<plugin id="com.fasterxml.jackson.core.jackson-core"/>
 <plugin id="com.fasterxml.jackson.core.jackson-databind"/>
-<plugin id="net.bytebuddy.byte-buddy"/>
-<plugin id="net.bytebuddy.byte-buddy-agent"/>
-<plugin id="org.bouncycastle.bcpg"/>
-<plugin id="org.bouncycastle.bcpg"/>
-<plugin id="org.bouncycastle.bcpkix"/>
 <plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base"/>
 <plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"/>
 <plugin id="com.google.eclipse.mechanic"/>
@@ -33,17 +27,13 @@
 <plugin id="com.gradleware.tooling.model"/>
 <plugin id="com.gradleware.tooling.utils"/>
 <plugin id="com.ibm.icu"/>
-<plugin id="com.jcraft.jsch"/>
+<plugin id="com.jcraft.jsch" version="0.1.54.v20170116-1932"/>
 <plugin id="com.lowagie.text"/>
-<plugin id="org.eclipse.eclemma.core"/>
-<plugin id="org.eclipse.eclemma.doc"/>
-<plugin id="org.eclipse.eclemma.ui"/>
 <plugin id="com.sun.el"/>
 <plugin id="com.sun.xml.fastinfoset"/>
 <plugin id="javaewah"/>
 <plugin id="javax.activation"/>
-<plugin id="javax.annotation"/>
-<plugin id="org.objenesis"/>
+<plugin id="javax.annotation" version="1.2.0.v201905062237-DEV"/>
 <plugin id="javax.el"/>
 <plugin id="javax.inject"/>
 <plugin id="javax.mail.glassfish"/>
@@ -55,6 +45,8 @@
 <plugin id="javax.xml"/>
 <plugin id="jms.activemq.launch"/>
 <plugin id="jms.libraries"/>
+<plugin id="net.bytebuddy.byte-buddy"/>
+<plugin id="net.bytebuddy.byte-buddy-agent"/>
 <plugin id="oracle.driver"/>
 <plugin id="org.antlr.runtime"/>
 <plugin id="org.aopalliance"/>
@@ -105,7 +97,9 @@
 <plugin id="org.apache.xml.resolver"/>
 <plugin id="org.apache.xml.serializer"/>
 <plugin id="org.apache.xmlrpc"/>
-
+<plugin id="org.bouncycastle.bcpg"/>
+<plugin id="org.bouncycastle.bcpkix"/>
+<plugin id="org.bouncycastle.bcprov"/>
 <plugin id="org.codehaus.stax2"/>
 <plugin id="org.cyberneko.html"/>
 <plugin id="org.eclipse.aether.api"/>
@@ -182,6 +176,9 @@
 <plugin id="org.eclipse.ecf.provider.filetransfer.httpclient4.ssl"/>
 <plugin id="org.eclipse.ecf.provider.filetransfer.ssl"/>
 <plugin id="org.eclipse.ecf.ssl"/>
+<plugin id="org.eclipse.eclemma.core"/>
+<plugin id="org.eclipse.eclemma.doc"/>
+<plugin id="org.eclipse.eclemma.ui"/>
 <plugin id="org.eclipse.egit"/>
 <plugin id="org.eclipse.egit.core"/>
 <plugin id="org.eclipse.egit.doc"/>
@@ -518,16 +515,18 @@
 <plugin id="org.jacoco.report"/>
 <plugin id="org.json"/>
 <plugin id="org.jsoup"/>
-<plugin id="org.junit"/>
+<plugin id="org.junit" version="4.12.0.v201504281640"/>
+<plugin id="org.mockito"/>
 <plugin id="org.mozilla.javascript"/>
 <plugin id="org.objectweb.asm" version="5.0.1.v201404251740"/>
-<plugin id="org.objectweb.asm.tree"/>
+<plugin id="org.objectweb.asm.tree" version="7.0.0.v20181030-2244"/>
+<plugin id="org.objenesis"/>
 <plugin id="org.openoffice"/>
 <plugin id="org.osgi.service.blueprint"/>
 <plugin id="org.postgresql.driver"/>
 <plugin id="org.sat4j.core"/>
 <plugin id="org.sat4j.pb"/>
-<plugin id="org.slf4j.api"/>
+<plugin id="org.slf4j.api" version="1.7.10.v20170428-1633"/>
 <plugin id="org.slf4j.jcl"/>
 <plugin id="org.tukaani.xz"/>
 <plugin id="org.w3c.css.sac"/>
