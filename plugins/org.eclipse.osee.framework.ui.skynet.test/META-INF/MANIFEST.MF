@@ -6,13 +6,13 @@ Bundle-Version: 0.26.0.qualifier
 Fragment-Host: org.eclipse.osee.framework.ui.skynet
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.osee.framework.ui.skynet
-Import-Package: com.lowagie.text.pdf;version="2.1.7",
- com.lowagie.text.rtf;version="2.1.7",
- org.eclipse.nebula.widgets.xviewer.core.model,
+Import-Package: org.eclipse.nebula.widgets.xviewer.core.model,
  org.eclipse.osee.framework.access,
  org.eclipse.osee.framework.core.enums,
- org.eclipse.osee.framework.jdk.core.util.windows
-Require-Bundle: org.junit,
- org.hamcrest.core,
- org.mockito;visibility:=reexport,
- org.objenesis
+ org.eclipse.osee.framework.jdk.core.util.windows,
+ org.junit,
+ org.junit.rules,
+ org.junit.runner,
+ org.junit.runners,
+ org.mockito,
+ org.mockito.stubbing
