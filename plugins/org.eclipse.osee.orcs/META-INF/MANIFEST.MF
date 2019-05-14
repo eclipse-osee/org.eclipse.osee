@@ -5,27 +5,18 @@ Bundle-SymbolicName: org.eclipse.osee.orcs
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: javax.ws.rs.core,
- org.eclipse.core.runtime,
- org.eclipse.osee.activity.api,
- com.fasterxml.jackson.annotation,
- com.fasterxml.jackson.core,
+Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.databind.annotation,
+ javax.ws.rs.core,
  org.eclipse.osee.framework.core.applicability,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.executor,
- org.eclipse.osee.framework.core.model,
- org.eclipse.osee.framework.core.model.cache,
  org.eclipse.osee.framework.core.model.change,
- org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.result,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
- org.eclipse.osee.framework.jdk.core.util.io.xml,
- org.eclipse.osee.framework.resource.management,
- org.eclipse.osee.orcs.rest.model,
- org.json
+ org.eclipse.osee.framework.resource.management
 Export-Package: org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search,

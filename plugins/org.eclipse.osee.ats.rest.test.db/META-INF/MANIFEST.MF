@@ -5,25 +5,8 @@ Bundle-SymbolicName: org.eclipse.osee.ats.rest.test.db
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.eclipse.osee.ats.api,
- org.eclipse.osee.ats.api.ai,
- org.eclipse.osee.ats.api.commit,
- org.eclipse.osee.ats.api.data,
- org.eclipse.osee.ats.api.review,
- org.eclipse.osee.ats.api.team,
- org.eclipse.osee.ats.api.user,
- org.eclipse.osee.ats.api.util,
- org.eclipse.osee.ats.api.version,
- org.eclipse.osee.ats.api.workdef,
- org.eclipse.osee.ats.api.workflow,
- org.eclipse.osee.ats.api.workflow.log,
- org.eclipse.osee.ats.api.workflow.state,
- org.eclipse.osee.ats.core.util,
- org.eclipse.osee.ats.rest,
- org.eclipse.osee.framework.core.data,
- org.eclipse.osee.framework.core.exception,
+Import-Package: org.eclipse.osee.ats.rest,
  org.eclipse.osee.framework.core.executor,
- org.eclipse.osee.framework.core.model.cache,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
@@ -32,14 +15,11 @@ Import-Package: org.eclipse.osee.ats.api,
  org.eclipse.osee.orcs.db.mock,
  org.json,
  org.junit,
- org.junit.rules;version="4.12.0",
- org.junit.runner;version="4.12.0",
- org.junit.runners.model;version="4.12.0",
- org.osgi.framework;version="1.8.0",
- org.osgi.service.cm;version="1.5.0",
- org.osgi.service.event;version="1.3.1"
+ org.junit.rules,
+ org.junit.runner,
+ org.junit.runners.model,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.event
 Export-Package: org.eclipse.osee.ats.rest.test.db
-Require-Bundle: org.hamcrest.core,
- org.mockito;visibility:=reexport,
- org.objenesis,
- org.eclipse.osee.logger
+Require-Bundle: org.eclipse.osee.logger
