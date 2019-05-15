@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -57,7 +58,6 @@ import org.eclipse.osee.ats.ide.workflow.WorkflowManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.IWorldViewerEventHandler;
 import org.eclipse.osee.ats.ide.world.WorldXViewer;
-import org.eclipse.osee.ats.ide.world.WorldXViewerEventManager;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
@@ -108,7 +108,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler {
+public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler, IWfeEventHandle {
    private final AbstractWorkflowArtifact awa;
    private final List<WfeWorkflowSection> sections = new ArrayList<>();
    private final List<StateXWidgetPage> statePages = new ArrayList<>();
@@ -169,7 +169,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          }
 
          refreshData();
-         WorldXViewerEventManager.add(this);
+         editor.registerEvent(this, awa);
       } catch (Exception ex) {
          handleException(ex);
       }
@@ -356,11 +356,22 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
    private void createPageSections() {
       try {
+         Composite sectionsComp = editor.getToolkit().createComposite(atsBody);
+         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+         gd.widthHint = 100;
+         sectionsComp.setLayoutData(gd);
+         sectionsComp.setLayout(ALayout.getZeroMarginLayout(1, false));
+         for (WfeWorkflowSection section : sections) {
+            section.dispose();
+         }
+         sections.clear();
+         statePages.clear();
+
          // Only display current or past states
          for (StateXWidgetPage statePage : WorkflowManager.getStatePagesOrderedByOrdinal(awa)) {
             try {
                if (awa.isInState(statePage) || awa.getStateMgr().isStateVisited(statePage)) {
-                  WfeWorkflowSection section = new WfeWorkflowSection(atsBody, SWT.NONE, statePage, awa, editor);
+                  WfeWorkflowSection section = new WfeWorkflowSection(sectionsComp, SWT.NONE, statePage, awa, editor);
                   managedForm.addPart(section);
                   control = section.getMainComp();
                   sections.add(section);
@@ -697,7 +708,19 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       }
    }
 
+   @Override
    public void refresh() {
+      if (editor != null) {
+         // remove all pages
+         for (WfeWorkflowSection section : sections) {
+            section.dispose();
+         }
+         // add pages back
+         refreshData();
+      }
+   }
+
+   public void hardRefresh() {
       if (editor != null) {
          // remove all pages
          for (WfeWorkflowSection section : sections) {
@@ -748,5 +771,10 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          LIGHT_GREY = Displays.getColor(240, 240, 240);
       }
       return LIGHT_GREY;
+   }
+
+   @Override
+   public IAtsWorkItem getWorkItem() {
+      return awa;
    }
 }
