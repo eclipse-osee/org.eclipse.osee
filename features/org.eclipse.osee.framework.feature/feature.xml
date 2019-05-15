@@ -53,27 +53,14 @@
          version="0.0.0"
          unpack="false"/>
 
+  
    <plugin
-         id="org.bouncycastle.bcpg"
+         id="org.eclipse.egit"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="4.4.0"
          unpack="false"/>
-        
-    <plugin
-         id="org.bouncycastle.bcprov"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-    <plugin
-         id="org.bouncycastle.bcpkix"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
+   
    <plugin
          id="javax.annotation"
          download-size="0"
@@ -104,7 +91,7 @@
 
    <plugin
          id="org.eclipse.osee.framework.skynet.core"
-	 download-size="0"
+	      download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>

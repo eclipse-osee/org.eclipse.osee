@@ -315,7 +315,7 @@
          
    <includes
          id="org.eclipse.jgit"
-         version="0.0.0"/>
+         version="4.4.1"/>
    
   
                     
@@ -357,27 +357,7 @@
       <import plugin="com.lowagie.text" version="2.0.0" match="compatible"/>
       
    </requires>
-   
-   <plugin
-         id="org.bouncycastle.bcpg"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-        
-    <plugin
-         id="org.bouncycastle.bcprov"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-    <plugin
-         id="org.bouncycastle.bcpkix"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+  
       
    <plugin
          id="net.bytebuddy.byte-buddy"
@@ -561,12 +541,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
- <plugin
-         id="org.eclipse.jgit.ssh.apache"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+
 
    <plugin
          id="org.apache.cxf.jaxrs.provider"

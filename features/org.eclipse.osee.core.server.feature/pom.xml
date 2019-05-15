@@ -25,12 +25,9 @@
 						</goals>
 						<configuration>
 							<excludes>
-								    <plugin id="org.eclipse.osee.logback.config" />
+								     <plugin id="org.eclipse.osee.logback.config" />
 							        <plugin id="org.hamcrest" />
-							        <plugin id="org.bouncycastle.bcpg" />
-							        <plugin id="org.bouncycastle.bcpkix" />								
-							        <plugin id="org.bouncycastle.bcprov" />
-	     							  <plugin id="com.jcraft.jsch" />
+							        <plugin id="com.jcraft.jsch" />
 							</excludes>
 						</configuration>
 					</execution>

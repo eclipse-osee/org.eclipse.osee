@@ -32,6 +32,7 @@
 							   <plugin id="javax.wsdl" />
 							   <plugin id="javax.xml" />
 							   <plugin id="com.jcraft.jsch" />
+							   <plugin id="org.eclipse.egit" />
 							   <plugin id="org.aopalliance" />
 							   <plugin id="org.apache.commons.cli" />
 							   <plugin id="org.apache.commons.dbcp" />
@@ -42,9 +43,6 @@
 							   <plugin id="org.apache.xerces" />
 							   <plugin id="org.apache.xml.resolver" />
 							   <plugin id="org.apache.xml.serializer" />
-							   <plugin id="org.bouncycastle.bcpg" />
-							   <plugin id="org.bouncycastle.bcpkix" />								
-							   <plugin id="org.bouncycastle.bcprov" />
 							   <plugin id="org.eclipse.core.net" />
 							   <plugin id="org.eclipse.equinox.security" />
 							   <plugin id="org.eclipse.jetty.http" />
