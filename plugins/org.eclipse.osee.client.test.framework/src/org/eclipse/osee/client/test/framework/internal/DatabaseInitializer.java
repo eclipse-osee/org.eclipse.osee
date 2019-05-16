@@ -13,7 +13,7 @@ package org.eclipse.osee.client.test.framework.internal;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.database.init.DatabaseInitOpFactory;
+import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
 import org.eclipse.osee.framework.database.init.IDbInitChoiceEnum;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -45,7 +45,7 @@ public class DatabaseInitializer {
    }
 
    private void initialize() throws Exception {
-      DatabaseInitOpFactory.executeWithoutPrompting(demoChoiceId);
+      DatabaseInitializationOperation.execute(demoChoiceId);
       OseeLog.log(DatabaseInitializer.class, Level.INFO, "datastore configured...");
 
       // Re-authenticate so we can continue and NOT be bootstrap

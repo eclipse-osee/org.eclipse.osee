@@ -8,10 +8,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.init.internal;
+package org.eclipse.osee.framework.database.init;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -31,10 +30,11 @@ import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.database.init.DefaultDbInitTasks;
-import org.eclipse.osee.framework.database.init.IDatabaseInitConfiguration;
-import org.eclipse.osee.framework.database.init.IDbInitializationRule;
-import org.eclipse.osee.framework.database.init.IDbInitializationTask;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.database.init.internal.Activator;
+import org.eclipse.osee.framework.database.init.internal.DbBootstrapTask;
+import org.eclipse.osee.framework.database.init.internal.GroupSelection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -47,23 +47,19 @@ import org.osgi.framework.FrameworkUtil;
  */
 public class DatabaseInitializationOperation extends AbstractOperation {
 
-   private static BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
-
    private final String preSelectedChoice;
-   private final boolean isPromptEnabled;
-
    public static ArtifactToken MAPPING_ARTIFACT;
 
-   public DatabaseInitializationOperation(String preSelectedChoice, boolean isPromptEnabled) {
+   private DatabaseInitializationOperation(String preSelectedChoice) {
       super("Database Initialization", Activator.PLUGIN_ID);
       this.preSelectedChoice = preSelectedChoice;
-      this.isPromptEnabled = isPromptEnabled;
       MAPPING_ARTIFACT = ArtifactToken.valueOf(5443258, "AOkJ_kFNbEXCS7UjmfwA", "DataRightsFooters", BranchId.SENTINEL,
          CoreArtifactTypes.GeneralData);
    }
 
-   private boolean isPromptingAllowed() {
-      return isPromptEnabled;
+   public static void execute(IDbInitChoiceEnum choice) {
+      IOperation operation = new DatabaseInitializationOperation(choice.name());
+      Operations.executeWorkAndCheckStatus(operation);
    }
 
    private String getPreSelectedChoice() {
@@ -72,7 +68,6 @@ public class DatabaseInitializationOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      boolean isConfigured = false;
       checkServerPreconditions();
 
       ClientSessionManager.authenticate(new BaseCredentialProvider() {
@@ -84,38 +79,23 @@ public class DatabaseInitializationOperation extends AbstractOperation {
          }
       });
       String dbName = ClientSessionManager.getDataStoreName();
-      String userName = ClientSessionManager.getDataStoreLoginName();
-      String dbDriverName = ClientSessionManager.getDataStoreDriver();
       if (ClientSessionManager.isProductionDataStore()) {
          System.err.println(
             String.format("You are not allowed to run config client against production: [%s].\nExiting.", dbName));
          return;
       }
 
-      String line = null;
-      if (isPromptEnabled) {
-         System.out.println(
-            String.format("\nAre you sure you want to configure: [%s:%s] - [%s]", dbName, userName, dbDriverName));
-         line = waitForUserResponse();
-      } else {
-         line = "Y";
-      }
-      if (line.equalsIgnoreCase("Y")) {
-         isConfigured = true;
+      System.out.println("Begin Database Initialization...");
 
-         OseeClientProperties.setInDbInit(true);
-         try {
-            processTasks();
-         } catch (Exception ex) {
-            OseeLog.log(DatabaseInitializationOperation.class, Level.SEVERE, ex);
-            OseeCoreException.wrapAndThrow(ex);
-         } finally {
-            OseeClientProperties.setInDbInit(false);
-         }
-      }
-
-      if (isConfigured != true) {
-         System.out.println("Database will not be configured. ");
+      OseeClientProperties.setInDbInit(true);
+      try {
+         processTasks();
+         System.out.println("Database Initialization Complete");
+      } catch (Exception ex) {
+         OseeLog.log(DatabaseInitializationOperation.class, Level.SEVERE, ex);
+         OseeCoreException.wrapAndThrow(ex);
+      } finally {
+         OseeClientProperties.setInDbInit(false);
       }
    }
 
@@ -248,22 +228,6 @@ public class DatabaseInitializationOperation extends AbstractOperation {
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
       }
-   }
-
-   private String waitForUserResponse() {
-      System.out.println("Enter: [Y|N]\n");
-      String line = "N";
-
-      if (!isPromptingAllowed()) {
-         line = "Y";
-      } else {
-         try {
-            line = stdin.readLine();
-         } catch (IOException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
-      return line;
    }
 
    private boolean isApplicationServerAlive(String applicationServerUrl) {

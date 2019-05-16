@@ -15,7 +15,7 @@ import java.util.List;
 import org.eclipse.osee.ats.ide.demo.DemoChoice;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.database.init.DatabaseInitOpFactory;
+import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -51,7 +51,7 @@ public class DbInitTest {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       OseeLog.registerLoggerListener(monitorLog);
 
-      DatabaseInitOpFactory.executeWithoutPrompting(DemoChoice.ATS_CLIENT_DEMO);
+      DatabaseInitializationOperation.execute(DemoChoice.ATS_CLIENT_DEMO);
 
       TestUtil.severeLoggingEnd(monitorLog);
       wasDbInitSuccessful = true;

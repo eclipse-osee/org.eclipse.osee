@@ -26,7 +26,6 @@ public class OseeClientProperties extends OseeProperties {
    // Database Initialization Properties
    private static final String OSEE_IMPORT_DURING_DB_INIT = "osee.import.on.db.init";
 
-   private static final String OSEE_PROMPT_ON_DB_INIT = "osee.prompt.on.db.init";
    private static final String OSEE_CHOICE_ON_DB_INIT = "osee.choice.on.db.init";
 
    private static final String OSEE_IS_IN_DB_INIT = "osee.is.in.db.init";
@@ -39,13 +38,6 @@ public class OseeClientProperties extends OseeProperties {
 
    public static void setInDbInit(boolean value) {
       System.setProperty(OSEE_IS_IN_DB_INIT, Boolean.toString(value));
-   }
-
-   /**
-    * @return whether to interactively prompt the user during database initialization for init choice
-    */
-   public static boolean promptOnDbInit() {
-      return Boolean.valueOf(getProperty(OSEE_PROMPT_ON_DB_INIT, "true"));
    }
 
    public static boolean isSkipCommitChecksAndEvents() {
