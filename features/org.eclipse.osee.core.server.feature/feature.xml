@@ -958,10 +958,8 @@
          id="org.eclipse.jgit"
          download-size="0"
          install-size="0"
-         version="4.4.1"
+         version="4.4.0"
          unpack="false"/>
-
-
 
    <plugin
          id="org.objenesis"
