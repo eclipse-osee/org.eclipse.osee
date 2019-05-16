@@ -76,6 +76,16 @@ public abstract class ImportBlock implements Named {
       throw new OseeCoreException("Invalid Attribute Name requested: %s", attrName);
    }
 
+   public BlockField getImportAttr(BlockFieldToken token) {
+
+      for (BlockField attr : attrs) {
+         if (attr.getId().equals(token.getId())) {
+            return attr;
+         }
+      }
+      throw new OseeCoreException("Invalid Attribute requested: %s", token.getName());
+   }
+
    public RoughArtifact addAttributesToRoughArtifact(RoughArtifact roughArt) {
       if (!isComplete()) {
          throw new OseeCoreException("Imported Block not complete");
@@ -92,7 +102,7 @@ public abstract class ImportBlock implements Named {
    public void addText(String text) {
       BlockField textAttr = null;
       for (BlockField attr : attrs) {
-         if (attr.getImportTypeName().equals("Text")) {
+         if (attr.getId().equals(DoorsImportFieldTokens.blockAttrText.getId())) {
             textAttr = attr;
             break;
          }
@@ -106,4 +116,20 @@ public abstract class ImportBlock implements Named {
       }
    }
 
+   public void addAttribute(BlockFieldToken token, String text) {
+      BlockField addAttr = null;
+      for (BlockField attr : attrs) {
+         if (attr.getId().equals(token.getId())) {
+            addAttr = attr;
+            break;
+         }
+      }
+      if (addAttr == null) {
+         addAttr = token.getNewParser();
+         addAttr.setData(text);
+         attrs.add(addAttr);
+      } else {
+         addAttr.setData(text);
+      }
+   }
 }

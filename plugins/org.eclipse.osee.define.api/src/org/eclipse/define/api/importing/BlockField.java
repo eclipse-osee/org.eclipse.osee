@@ -52,6 +52,10 @@ public class BlockField {
       return bft.getName();
    }
 
+   public Long getId() {
+      return bft.getId();
+   }
+
    public String getData() {
       return data;
    }

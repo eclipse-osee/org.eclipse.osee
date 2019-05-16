@@ -67,6 +67,9 @@ public final class ReqNumbering implements Comparable<ReqNumbering> {
    }
 
    private String unTokenize(String[] input, int index) {
+      if (index > input.length) {
+         index = input.length;
+      }
       StringBuilder toReturn = new StringBuilder();
       for (int i = 0; i < index; ++i) {
          if (toReturn.length() > 0) {

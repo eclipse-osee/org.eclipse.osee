@@ -536,7 +536,7 @@ attributeType "Safety Impact" extends StringAttribute {
 	id 1684721504606847095
 	dataProvider DefaultAttributeDataProvider
 	min 0
-	max unlimited
+	max 1
 	taggerId DefaultAttributeTaggerProvider
 	mediaType "text/plain"
 }
