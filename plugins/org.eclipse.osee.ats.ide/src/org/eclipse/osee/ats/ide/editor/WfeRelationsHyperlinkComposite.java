@@ -175,9 +175,8 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
     */
    private void createLink(String prefix, final Artifact art, String action, Artifact thisArt, RelationTypeSide relation) {
       try {
-         Label label = editor.getToolkit().createLabel(this,
-            prefix + " \"" + thisArt.getArtifactTypeName() + "\" " + action + getCompletedCancelledString(
-               art) + " \"" + art.getArtifactTypeName() + "\" ");
+         Label label = editor.getToolkit().createLabel(this, prefix + " \"" + getObjectName(
+            thisArt) + "\" " + action + getCompletedCancelledString(art) + " \"" + getObjectName(art) + "\" ");
          Hyperlink link = editor.getToolkit().createHyperlink(this,
             String.format("\"%s\" - %s", art.getName().length() < 60 ? art.getName() : art.getName().substring(0, 60),
                AtsClientService.get().getAtsId(art)),
@@ -216,6 +215,14 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
          });
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+   }
+
+   private String getObjectName(Artifact art) {
+      if (art instanceof IAtsTeamWorkflow) {
+         return ((IAtsTeamWorkflow) art).getTeamDefinition().getName();
+      } else {
+         return art.getArtifactTypeName();
       }
    }
 
