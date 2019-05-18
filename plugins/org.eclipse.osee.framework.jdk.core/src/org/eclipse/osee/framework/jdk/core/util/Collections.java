@@ -69,6 +69,9 @@ public class Collections {
    }
 
    public static <T> String toString(Iterable<T> items, String prefix, String separator, String suffix, Function<T, String> function) {
+      if (items == null) {
+         return "";
+      }
       StringBuilder strB = new StringBuilder();
 
       if (prefix != null) {

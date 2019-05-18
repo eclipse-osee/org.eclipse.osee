@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
@@ -19,14 +22,14 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
  * @author Megumi Telles
@@ -34,12 +37,12 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  * @author Andrew M. Finkbeiner
  */
 public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsReadable {
+   ArtifactReadableImpl SENTINEL =
+      new ArtifactReadableImpl(Id.SENTINEL, Artifact, COMMON, ApplicabilityId.BASE, null, null);
+
    TransactionId getLastModifiedTransaction();
 
    boolean isOfType(ArtifactTypeId... otherTypes);
-
-   ArtifactReadable SENTINEL = createSentinel();
-   ////////////////////
 
    int getAttributeCount(AttributeTypeToken type);
 
@@ -79,7 +82,9 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType, DeletionFlag deletionFlag);
 
-   String getAttributeValuesAsString(AttributeTypeToken attributeType);
+   default String getAttributeValuesAsString(AttributeTypeToken attributeType) {
+      return Collections.toString(", ", getAttributeValues(attributeType));
+   }
 
    ////////////////////
    int getMaximumRelationAllowed(RelationTypeSide relationTypeSide);
@@ -88,7 +93,9 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    Collection<RelationTypeId> getExistingRelationTypes();
 
-   ArtifactReadable getParent();
+   default ArtifactReadable getParent() {
+      return getRelated(CoreRelationTypes.Default_Hierarchical__Parent).getExactlyOne();
+   }
 
    List<ArtifactReadable> getDescendants();
 
@@ -102,11 +109,23 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    ResultSet<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide);
 
-   List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeId artifactType);
+   default List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeId artifactType) {
+      List<ArtifactReadable> artifacts = new ArrayList<>();
+      for (ArtifactReadable artifact : getRelated(relationTypeSide)) {
+         if (artifact.isOfType(artifactType)) {
+            artifacts.add(artifact);
+         }
+      }
+      return artifacts;
+   }
+
+   default List<ArtifactToken> getRelatedIds(RelationTypeSide relationTypeSide, ArtifactTypeId artifactType) {
+      return Collections.transform(getRelated(relationTypeSide, artifactType), r -> r);
+   }
 
    ResultSet<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, DeletionFlag deletionFlag);
 
-   boolean areRelated(RelationTypeSide typeAndSide, ArtifactReadable readable);
+   boolean areRelated(RelationTypeSide typeAndSide, ArtifactReadable artifact);
 
    int getRelatedCount(RelationTypeSide typeAndSide);
 
@@ -121,235 +140,4 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
    boolean isHistorical();
 
    ApplicabilityId getApplicability();
-
-   public static ArtifactReadable createSentinel() {
-      final class ArtifactReadableSentinel extends NamedIdBase implements ArtifactReadable {
-         @Override
-         public BranchId getBranch() {
-            return null;
-         }
-
-         @Override
-         public TransactionId getTransaction() {
-            return null;
-         }
-
-         @Override
-         public ModificationType getModificationType() {
-            return null;
-         }
-
-         @Override
-         public ArtifactTypeToken getArtifactType() {
-            return null;
-         }
-
-         @Override
-         public TransactionId getLastModifiedTransaction() {
-            return null;
-         }
-
-         @Override
-         public boolean isOfType(ArtifactTypeId... otherTypes) {
-            return false;
-         }
-
-         @Override
-         public int getAttributeCount(AttributeTypeToken type) {
-            return 0;
-         }
-
-         @Override
-         public int getAttributeCount(AttributeTypeToken type, DeletionFlag deletionFlag) {
-            return 0;
-         }
-
-         @Override
-         public boolean isAttributeTypeValid(AttributeTypeToken attributeType) {
-            return false;
-         }
-
-         @Override
-         public Collection<AttributeTypeToken> getValidAttributeTypes() {
-            return null;
-         }
-
-         @Override
-         public Collection<AttributeTypeToken> getExistingAttributeTypes() {
-            return null;
-         }
-
-         @Override
-         public <T> T getSoleAttributeValue(AttributeTypeToken attributeType) {
-            return null;
-         }
-
-         @Override
-         public <T> T getSoleAttributeValue(AttributeTypeToken attributeType, DeletionFlag flag, T defaultValue) {
-            return null;
-         }
-
-         @Override
-         public <T> T getSoleAttributeValue(AttributeTypeToken attributeType, T defaultValue) {
-            return null;
-         }
-
-         @Override
-         public String getSoleAttributeAsString(AttributeTypeToken attributeType) {
-            return null;
-         }
-
-         @Override
-         public String getSoleAttributeAsString(AttributeTypeToken attributeType, String defaultValue) {
-            return null;
-         }
-
-         @Override
-         public Long getSoleAttributeId(AttributeTypeToken attributeType) {
-            return null;
-         }
-
-         @Override
-         public <T> List<T> getAttributeValues(AttributeTypeToken attributeType) {
-            return null;
-         }
-
-         @Override
-         public Iterable<Collection<? extends AttributeReadable<Object>>> getAttributeIterable() {
-            return null;
-         }
-
-         @Override
-         public AttributeReadable<Object> getAttributeById(AttributeId attributeId) {
-            return null;
-         }
-
-         @Override
-         public ResultSet<? extends AttributeReadable<Object>> getAttributes() {
-            return null;
-         }
-
-         @Override
-         public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeId attributeType) {
-            return null;
-         }
-
-         @Override
-         public ResultSet<? extends AttributeReadable<Object>> getAttributes(DeletionFlag deletionFlag) {
-            return null;
-         }
-
-         @Override
-         public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
-            return null;
-         }
-
-         @Override
-         public String getAttributeValuesAsString(AttributeTypeToken attributeType) {
-            return null;
-         }
-
-         @Override
-         public int getMaximumRelationAllowed(RelationTypeSide relationTypeSide) {
-            return 0;
-         }
-
-         @Override
-         public Collection<RelationTypeId> getValidRelationTypes() {
-            return null;
-         }
-
-         @Override
-         public Collection<RelationTypeId> getExistingRelationTypes() {
-            return null;
-         }
-
-         @Override
-         public ArtifactReadable getParent() {
-            return null;
-         }
-
-         @Override
-         public List<ArtifactReadable> getDescendants() {
-            return null;
-         }
-
-         @Override
-         public void getDescendants(List<ArtifactReadable> descendants) {
-         }
-
-         @Override
-         public boolean isDescendantOf(ArtifactToken parent) {
-            return false;
-         }
-
-         @Override
-         public List<ArtifactReadable> getAncestors() {
-            return null;
-         }
-
-         @Override
-         public ResultSet<ArtifactReadable> getChildren() {
-            return null;
-         }
-
-         @Override
-         public ResultSet<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide) {
-            return null;
-         }
-
-         @Override
-         public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeId artifactType) {
-            return null;
-         }
-
-         @Override
-         public ResultSet<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, DeletionFlag deletionFlag) {
-            return null;
-         }
-
-         @Override
-         public boolean areRelated(RelationTypeSide typeAndSide, ArtifactReadable readable) {
-            return false;
-         }
-
-         @Override
-         public int getRelatedCount(RelationTypeSide typeAndSide) {
-            return 0;
-         }
-
-         @Override
-         public String getRationale(RelationTypeSide typeAndSide, ArtifactReadable readable) {
-            return null;
-         }
-
-         @Override
-         public ResultSet<RelationReadable> getRelations(RelationTypeSide relationTypeSide) {
-            return null;
-         }
-
-         @Override
-         public Collection<Long> getChildrentIds() {
-            return null;
-         }
-
-         @Override
-         public Collection<Long> getRelatedIds(RelationTypeSide relationTypeSide) {
-            return null;
-         }
-
-         @Override
-         public boolean isHistorical() {
-            return false;
-         }
-
-         @Override
-         public ApplicabilityId getApplicability() {
-            return null;
-         }
-
-      }
-      return new ArtifactReadableSentinel();
-   }
-
 }
