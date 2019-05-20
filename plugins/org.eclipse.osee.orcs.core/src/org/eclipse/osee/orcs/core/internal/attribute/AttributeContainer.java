@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.orcs.core.ds.Attribute;
@@ -22,9 +21,9 @@ import org.eclipse.osee.orcs.core.ds.Attribute;
  */
 public interface AttributeContainer extends ArtifactToken {
 
-   void add(AttributeTypeId attributeType, Attribute<?> attribute);
+   void add(AttributeTypeToken attributeType, Attribute<?> attribute);
 
-   void remove(AttributeTypeId type, Attribute<?> attribute);
+   void remove(AttributeTypeToken type, Attribute<?> attribute);
 
    boolean isLoaded();
 
@@ -32,24 +31,13 @@ public interface AttributeContainer extends ArtifactToken {
 
    String getExceptionString();
 
-   @Override
-   String toString();
-
-   /////////////////////////////////////////////////////////////////
-
    boolean areAttributesDirty();
 
-   int getMaximumAttributeTypeAllowed(AttributeTypeId attributeType);
+   int getAttributeCount(AttributeTypeToken type);
 
-   int getMinimumAttributeTypeAllowed(AttributeTypeId attributeType);
+   int getAttributeCount(AttributeTypeToken type, DeletionFlag deletionFlag);
 
-   /////////////////////////////////////////////////////////////////
-
-   int getAttributeCount(AttributeTypeId type);
-
-   int getAttributeCount(AttributeTypeId type, DeletionFlag deletionFlag);
-
-   boolean isAttributeTypeValid(AttributeTypeId attributeType);
+   boolean isAttributeTypeValid(AttributeTypeToken attributeType);
 
    Collection<AttributeTypeToken> getValidAttributeTypes();
 

@@ -84,13 +84,13 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public synchronized void add(AttributeTypeId attributeType, Attribute<?> attribute) {
+   public synchronized void add(AttributeTypeToken attributeType, Attribute<?> attribute) {
       attributes.put(attributeType, (Attribute<Object>) attribute);
       attribute.getOrcsData().setArtifactId(this);
    }
 
    @Override
-   public synchronized void remove(AttributeTypeId type, Attribute<?> attribute) {
+   public synchronized void remove(AttributeTypeToken type, Attribute<?> attribute) {
       attributes.removeValue(type, (Attribute<Object>) attribute);
       attribute.getOrcsData().setArtifactId(ArtifactId.SENTINEL);
    }
@@ -134,24 +134,6 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
          name = Lib.exceptionToString(ex);
       }
       return name;
-   }
-
-   @Override
-   public int getMaximumAttributeTypeAllowed(AttributeTypeId attributeType) {
-      int result = -1;
-      if (isAttributeTypeValid(attributeType)) {
-         result = attributeFactory.getMaxOccurrenceLimit(attributeType);
-      }
-      return result;
-   }
-
-   @Override
-   public int getMinimumAttributeTypeAllowed(AttributeTypeId attributeType) {
-      int result = -1;
-      if (isAttributeTypeValid(attributeType)) {
-         result = attributeFactory.getMinOccurrenceLimit(attributeType);
-      }
-      return result;
    }
 
    @Override
@@ -204,12 +186,12 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public int getAttributeCount(AttributeTypeId attributeType) {
+   public int getAttributeCount(AttributeTypeToken attributeType) {
       return getAttributeCount(attributeType, DeletionFlag.EXCLUDE_DELETED);
    }
 
    @Override
-   public int getAttributeCount(AttributeTypeId attributeType, DeletionFlag deletionFlag) {
+   public int getAttributeCount(AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
       return filterAttributes(attributes.getValues(attributeType), deletionFlag).size();
    }
 
@@ -521,7 +503,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
 
    //////////////////////////////////////////////////////////////
 
-   private void checkTypeValid(AttributeTypeId attributeType) {
+   private void checkTypeValid(AttributeTypeToken attributeType) {
       if (CoreAttributeTypes.Name.notEqual(attributeType)) {
          if (!isAttributeTypeValid(attributeType)) {
             throw new OseeArgumentException("The attribute type [%s] is not valid for artifacts [%s]", attributeType,
@@ -530,11 +512,11 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       }
    }
 
-   private void checkMultiplicityCanAdd(AttributeTypeId attributeType) {
+   private void checkMultiplicityCanAdd(AttributeTypeToken attributeType) {
       checkMultiplicity(attributeType, getAttributeCount(attributeType) + 1);
    }
 
-   private void checkMultiplicityCanDelete(AttributeTypeId attributeType) {
+   private void checkMultiplicityCanDelete(AttributeTypeToken attributeType) {
       checkMultiplicity(attributeType, getAttributeCount(attributeType) - 1);
    }
 
@@ -578,7 +560,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       }
    }
 
-   private final int getRemainingAttributeCount(AttributeTypeId attributeType) {
+   private final int getRemainingAttributeCount(AttributeTypeToken attributeType) {
       int minLimit = attributeFactory.getMinOccurrenceLimit(attributeType);
       return minLimit - getAttributeCount(attributeType);
    }

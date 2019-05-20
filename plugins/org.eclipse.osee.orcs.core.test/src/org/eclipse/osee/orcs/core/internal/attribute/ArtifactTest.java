@@ -23,9 +23,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -291,34 +291,6 @@ public class ArtifactTest {
       artifact.setName("test");
       name = artifact.getName();
       Assert.assertEquals("test", name);
-   }
-
-   @Test
-   public void testGetMaximumAttributeTypeAllowed() {
-      int expected = 5;
-
-      when(attributeFactory.getMaxOccurrenceLimit(CoreAttributeTypes.AccessContextId)).thenReturn(expected);
-
-      int result = artifact.getMaximumAttributeTypeAllowed(CoreAttributeTypes.AccessContextId);
-      Assert.assertEquals(expected, result);
-
-      reset(types);
-      result = artifact.getMaximumAttributeTypeAllowed(CoreAttributeTypes.AccessContextId);
-      Assert.assertEquals(-1, result);
-   }
-
-   @Test
-   public void testGetMinimumAttributeTypeAllowed() {
-      int expected = 5;
-
-      when(attributeFactory.getMinOccurrenceLimit(CoreAttributeTypes.AccessContextId)).thenReturn(expected);
-
-      int result = artifact.getMinimumAttributeTypeAllowed(CoreAttributeTypes.AccessContextId);
-      Assert.assertEquals(expected, result);
-
-      reset(types);
-      result = artifact.getMaximumAttributeTypeAllowed(CoreAttributeTypes.AccessContextId);
-      Assert.assertEquals(-1, result);
    }
 
    @Test
