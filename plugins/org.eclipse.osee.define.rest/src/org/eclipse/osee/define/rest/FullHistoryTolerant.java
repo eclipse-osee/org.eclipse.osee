@@ -13,7 +13,6 @@ package org.eclipse.osee.define.rest;
 import static org.eclipse.osee.define.api.DefineTupleTypes.GitCommitFile;
 import static org.eclipse.osee.define.api.DefineTupleTypes.GitLatest;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChangeId;
-import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -36,17 +35,18 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  * @author Ryan D. Brooks
  */
 public class FullHistoryTolerant implements HistoryImportStrategy {
-   protected final Map<String, ArtifactId> pathToCodeunitMap = new HashMap<>(10000);
+   protected final Map<String, ArtifactId> pathToCodeunitMap;
    private final TupleQuery tupleQuery;
    protected final ArtifactToken repoArtifact;
    protected final BranchId branch;
    protected final QueryFactory queryFactory;
 
-   public FullHistoryTolerant(ArtifactToken repoArtifact, OrcsApi orcsApi) {
+   public FullHistoryTolerant(ArtifactToken repoArtifact, OrcsApi orcsApi, Map<String, ArtifactId> pathToCodeunitMap) {
       this.repoArtifact = repoArtifact;
       this.branch = repoArtifact.getBranch();
       queryFactory = orcsApi.getQueryFactory();
       this.tupleQuery = queryFactory.tupleQuery();
+      this.pathToCodeunitMap = pathToCodeunitMap;
    }
 
    @Override

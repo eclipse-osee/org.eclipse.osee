@@ -32,8 +32,8 @@ public class FastHistoryStrategy extends FullHistoryTolerant {
    private final HashSet<String> changeIds = new HashSet<>();
    private final boolean initialImport;
 
-   public FastHistoryStrategy(ArtifactToken repository, OrcsApi orcsApi, TransactionBuilder tx, boolean initialImport) {
-      super(repository, orcsApi);
+   public FastHistoryStrategy(ArtifactToken repository, OrcsApi orcsApi, TransactionBuilder tx, boolean initialImport, Map<String, ArtifactId> pathToCodeunitMap) {
+      super(repository, orcsApi, pathToCodeunitMap);
       this.tx = tx;
       this.initialImport = initialImport;
    }

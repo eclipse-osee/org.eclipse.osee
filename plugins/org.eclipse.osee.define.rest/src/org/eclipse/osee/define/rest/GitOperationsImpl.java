@@ -25,7 +25,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.jgit.api.CloneCommand;
@@ -87,6 +89,7 @@ public final class GitOperationsImpl implements GitOperations {
    private final OrcsApi orcsApi;
    private final QueryFactory queryFactory;
    private final SystemPreferences systemPrefs;
+   private final Map<String, ArtifactId> pathToCodeunitMap = new HashMap<>(10000);
 
    private static final Pattern changeIdPattern = Pattern.compile("\\s+Change-Id: (I\\w{40})");
    private final Matcher changeIdMatcher = changeIdPattern.matcher("");
@@ -220,9 +223,16 @@ public final class GitOperationsImpl implements GitOperations {
             }
          }
 
+         List<ArtifactToken> currentCommits =
+            queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.CodeUnit).loadArtifactTokens();
+         for (ArtifactToken singleCommit : currentCommits) {
+            pathToCodeunitMap.put(singleCommit.getName(), singleCommit);
+         }
+
          TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(repoArtifact.getBranch(), account,
             "updateGitTrackingBranch repo [" + repoArtifact + "]");
-         HistoryImportStrategy importStrategy = new FastHistoryStrategy(repoArtifact, orcsApi, tx, initialImport);
+         HistoryImportStrategy importStrategy =
+            new FastHistoryStrategy(repoArtifact, orcsApi, tx, initialImport, pathToCodeunitMap);
          walkTree(repoArtifact, jgitRepo, to, from, repoArtifact.getBranch(), account, importStrategy);
       } catch (RevisionSyntaxException | IOException ex) {
          throw OseeCoreException.wrap(ex);
