@@ -31,7 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -107,7 +107,7 @@ public class TxDataManagerTest {
 
    private TxDataManager txDataManager;
    private TxData txDataReal;
-   private final Collection<AttributeTypeId> types = Arrays.asList(Name, Category);
+   private final Collection<AttributeTypeToken> types = Arrays.asList(Name, Category);
    private String r1Guid;
    private String r2Guid;
    private String r3Guid;
@@ -456,7 +456,7 @@ public class TxDataManagerTest {
 
       when(data.getId()).thenReturn(artifactId2.getId());
       when(data.getLocalId()).thenReturn(artifactId2.getId().intValue());
-      List<AttributeTypeId> copyTypes = Arrays.asList(CoreAttributeTypes.Active, CoreAttributeTypes.Name);
+      List<AttributeTypeToken> copyTypes = Arrays.asList(CoreAttributeTypes.Active, CoreAttributeTypes.Name);
       when(sourceArtifact.getExistingAttributeTypes()).thenAnswer(answerValue(copyTypes));
 
       when(artifact2.getOrcsData()).thenReturn(data);

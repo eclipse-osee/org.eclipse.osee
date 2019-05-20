@@ -37,7 +37,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -145,7 +145,7 @@ public class TransactionBuilderImplTest {
 
    @Test
    public void testCopyArtifactWithList() {
-      Collection<AttributeTypeId> attributesToDuplicate = Arrays.asList(Name, Annotation);
+      Collection<AttributeTypeToken> attributesToDuplicate = Arrays.asList(Name, Annotation);
 
       factory.copyArtifact(expectedAuthor, attributesToDuplicate);
 

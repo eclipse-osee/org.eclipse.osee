@@ -86,11 +86,11 @@ public interface TransactionBuilder {
 
    ArtifactToken copyArtifact(ArtifactReadable sourceArtifact);
 
-   ArtifactToken copyArtifact(ArtifactReadable sourceArtifact, Collection<AttributeTypeId> attributesToDuplicate);
+   ArtifactToken copyArtifact(ArtifactReadable sourceArtifact, Collection<AttributeTypeToken> attributesToDuplicate);
 
    ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact);
 
-   ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact, Collection<AttributeTypeId> attributesToDuplicate);
+   ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact, Collection<AttributeTypeToken> attributesToDuplicate);
 
    ArtifactToken introduceArtifact(BranchId fromBranch, ArtifactId sourceArtifact);
 

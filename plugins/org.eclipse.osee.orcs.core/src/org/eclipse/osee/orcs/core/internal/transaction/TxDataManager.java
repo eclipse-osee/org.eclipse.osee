@@ -20,10 +20,10 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -287,13 +287,13 @@ public class TxDataManager {
       return copyArtifactHelper(txData, source, source.getExistingAttributeTypes());
    }
 
-   public ArtifactReadable copyArtifact(TxData txData, BranchId fromBranch, ArtifactId artifactId, Collection<AttributeTypeId> attributesToDuplicate) {
+   public ArtifactReadable copyArtifact(TxData txData, BranchId fromBranch, ArtifactId artifactId, Collection<AttributeTypeToken> attributesToDuplicate) {
       checkChangesAllowed(txData);
       Artifact source = getSourceArtifact(txData, fromBranch, artifactId);
       return copyArtifactHelper(txData, source, attributesToDuplicate);
    }
 
-   private ArtifactReadable copyArtifactHelper(TxData txData, Artifact source, Collection<? extends AttributeTypeId> attributesToDuplicate) {
+   private ArtifactReadable copyArtifactHelper(TxData txData, Artifact source, Collection<AttributeTypeToken> attributesToDuplicate) {
       Artifact copy =
          artifactFactory.copyArtifact(txData.getSession(), source, attributesToDuplicate, txData.getBranch());
       return asExternalArtifact(txData, copy);
