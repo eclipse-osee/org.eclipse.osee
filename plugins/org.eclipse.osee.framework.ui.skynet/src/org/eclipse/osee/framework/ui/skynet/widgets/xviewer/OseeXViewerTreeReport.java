@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.swt.widgets.TreeItem;
 
 public class OseeXViewerTreeReport extends XViewerTreeReport {
 
@@ -40,9 +39,9 @@ public class OseeXViewerTreeReport extends XViewerTreeReport {
    }
 
    @Override
-   public void open(TreeItem items[], String defaultString) {
+   public void open(String defaultString) {
       try {
-         String html = getHtml(items);
+         String html = getHtml(xViewer.getTree().getItems());
          if (provider != null && Strings.isValid(provider.getReportTitle())) {
             html = html.replaceFirst("<body>", "<body><b>" + provider.getReportTitle() + "</b></br>");
          }
