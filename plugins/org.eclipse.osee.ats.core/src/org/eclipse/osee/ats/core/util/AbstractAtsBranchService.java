@@ -340,7 +340,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       }
       if (branch.isInvalid()) {
          branch = BranchId.valueOf(atsApi.getAttributeResolver().getSoleAttributeValue(configObject,
-            AtsAttributeTypes.BaselineBranchId, Id.SENTINEL));
+            AtsAttributeTypes.BaselineBranchId, Id.SENTINEL.toString()));
       }
       return branch;
    }
