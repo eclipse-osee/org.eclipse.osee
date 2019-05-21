@@ -15,7 +15,6 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -29,7 +28,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
@@ -104,13 +102,12 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 
 public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, FullyNamed {
-   public static final Artifact SENTINEL = new Artifact(String.valueOf(Id.SENTINEL), BranchId.SENTINEL, ArtifactTypeToken.SENTINEL);
+   public static final Artifact SENTINEL = new Artifact(Id.SENTINEL, BranchId.SENTINEL, ArtifactTypeToken.SENTINEL);
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
    private final HashCollection<AttributeTypeId, Attribute<?>> attributes = new HashCollection<>(true);
-   private final Set<DefaultBasicUuidRelationReorder> relationOrderRecords =
-      new HashSet<>();
+   private final Set<DefaultBasicUuidRelationReorder> relationOrderRecords = new HashSet<>();
    private final BranchId branch;
    private TransactionToken transaction = TransactionToken.SENTINEL;
    private GammaId gammaId;

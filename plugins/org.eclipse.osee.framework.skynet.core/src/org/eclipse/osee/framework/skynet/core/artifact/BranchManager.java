@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -22,9 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.logging.Level;
-
 import javax.ws.rs.core.Response;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -547,9 +544,8 @@ public final class BranchManager {
 
    private static BranchId getDefaultInitialBranch() {
       ExtensionDefinedObjects<IDefaultInitialBranchesProvider> extensions =
-         new ExtensionDefinedObjects<>(
-            "org.eclipse.osee.framework.skynet.core.DefaultInitialBranchProvider", "DefaultInitialBranchProvider",
-            "class", true);
+         new ExtensionDefinedObjects<>("org.eclipse.osee.framework.skynet.core.DefaultInitialBranchProvider",
+            "DefaultInitialBranchProvider", "class", true);
       for (IDefaultInitialBranchesProvider provider : extensions.getObjects()) {
          try {
             // Guard against problematic extensions
@@ -595,8 +591,7 @@ public final class BranchManager {
    }
 
    public static boolean isChangeManaged(BranchId branch) {
-      ArtifactId associatedArtifactId = getAssociatedArtifactId(branch);
-      return associatedArtifactId.isValid() && associatedArtifactId.notEqual(ArtifactId.SENTINEL);
+      return getAssociatedArtifactId(branch).isValid();
    }
 
    public static void setAssociatedArtifactId(BranchId branch, ArtifactId artifactId) {
