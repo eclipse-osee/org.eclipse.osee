@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.proxy.impl;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Annotation;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitCommitAuthorDate;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ReviewId;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Allocation__Requirement;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
@@ -49,7 +52,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
-import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -71,31 +73,21 @@ public class ArtifactReadOnlyImplTest {
    //@formatter:off
    @Mock private ExternalArtifactManager proxyManager;
    @Mock private RelationManager relationManager;
-   @Mock private OrcsSession session;
    @Mock private Artifact proxiedObject;
-   @Mock private GraphData graph;
-
-   @Mock private AttributeTypeToken attributeType;
-   @Mock private ArtifactTypeToken artifactType;
-
-   @Mock private ArtifactReadable readable1;
    @Mock private Artifact artifact1;
-
-   private final AttributeId attributeId = AttributeId.valueOf(12345);
-
-   @Mock private Attribute<Object> attribute1;
-   @Mock private AttributeReadable<Object> attributeReadable1;
+   @Mock private Attribute<String> attribute1;
+   @Mock private AttributeReadable<String> attributeReadable1;
    //@formatter:on
 
+   private final OrcsSession session = null;
+   private final AttributeId attributeId = AttributeId.valueOf(12345);
    private ArtifactReadable readOnly;
+   private final ArtifactReadable readable1 = ArtifactReadable.SENTINEL;
 
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
-
-      readOnly = new ArtifactReadOnlyImpl(proxyManager, relationManager, session, proxiedObject, artifactType);
-
-      when(proxiedObject.getGraph()).thenReturn(graph);
+      readOnly = new ArtifactReadOnlyImpl(proxyManager, relationManager, session, proxiedObject, Artifact);
    }
 
    @Test
@@ -186,76 +178,76 @@ public class ArtifactReadOnlyImplTest {
 
    @Test
    public void testGetAttributeCount1() {
-      when(proxiedObject.getAttributeCount(attributeType)).thenReturn(45);
+      when(proxiedObject.getAttributeCount(Name)).thenReturn(45);
 
-      int actual = readOnly.getAttributeCount(attributeType);
+      int actual = readOnly.getAttributeCount(Name);
 
       assertEquals(45, actual);
-      verify(proxiedObject).getAttributeCount(attributeType);
+      verify(proxiedObject).getAttributeCount(Name);
    }
 
    @Test
    public void testGetAttributeCount2() {
-      when(proxiedObject.getAttributeCount(attributeType, EXCLUDE_DELETED)).thenReturn(47);
+      when(proxiedObject.getAttributeCount(Name, EXCLUDE_DELETED)).thenReturn(47);
 
-      int actual = readOnly.getAttributeCount(attributeType, EXCLUDE_DELETED);
+      int actual = readOnly.getAttributeCount(Name, EXCLUDE_DELETED);
 
       assertEquals(47, actual);
-      verify(proxiedObject).getAttributeCount(attributeType, EXCLUDE_DELETED);
+      verify(proxiedObject).getAttributeCount(Name, EXCLUDE_DELETED);
    }
 
    @Test
    public void testIsAttributeTypeValid() {
-      when(proxiedObject.isAttributeTypeValid(attributeType)).thenReturn(true);
+      when(proxiedObject.isAttributeTypeValid(Name)).thenReturn(true);
 
-      boolean actual = readOnly.isAttributeTypeValid(attributeType);
+      boolean actual = readOnly.isAttributeTypeValid(Name);
 
       assertEquals(true, actual);
-      verify(proxiedObject).isAttributeTypeValid(attributeType);
+      verify(proxiedObject).isAttributeTypeValid(Name);
    }
 
    @Test
    public void testGetAttributeValues() {
-      List<Long> values = Arrays.asList(1L, 2L, 3L);
-      when(proxiedObject.getAttributeValues(attributeType)).thenAnswer(answer(values));
+      List<Integer> values = Arrays.asList(1, 2, 3);
+      when(proxiedObject.getAttributeValues(ReviewId)).thenAnswer(answer(values));
 
-      List<Long> actual = readOnly.getAttributeValues(attributeType);
+      List<Integer> actual = readOnly.getAttributeValues(ReviewId);
 
       assertEquals(values, actual);
-      verify(proxiedObject).getAttributeValues(attributeType);
+      verify(proxiedObject).getAttributeValues(ReviewId);
    }
 
    @Test
    public void testGetSoleAttributeValue() {
       Date date = new Date();
-      when(proxiedObject.getSoleAttributeValue(attributeType)).thenReturn(date);
+      when(proxiedObject.getSoleAttributeValue(GitCommitAuthorDate)).thenReturn(date);
 
-      Date actual = readOnly.getSoleAttributeValue(attributeType);
+      Date actual = readOnly.getSoleAttributeValue(GitCommitAuthorDate);
 
       assertEquals(date, actual);
-      verify(proxiedObject).getSoleAttributeValue(attributeType);
+      verify(proxiedObject).getSoleAttributeValue(GitCommitAuthorDate);
    }
 
    @Test
    public void testGetSoleAttributeAsString1() {
       String expected = "Hello";
-      when(proxiedObject.getSoleAttributeAsString(attributeType)).thenReturn(expected);
+      when(proxiedObject.getSoleAttributeAsString(Name)).thenReturn(expected);
 
-      String actual = readOnly.getSoleAttributeAsString(attributeType);
+      String actual = readOnly.getSoleAttributeAsString(Name);
 
       assertEquals(expected, actual);
-      verify(proxiedObject).getSoleAttributeAsString(attributeType);
+      verify(proxiedObject).getSoleAttributeAsString(Name);
    }
 
    @Test
    public void testGetSoleAttributeAsString2() {
       String expected = "AnotherValue";
-      when(proxiedObject.getSoleAttributeAsString(attributeType, "Hello")).thenReturn(expected);
+      when(proxiedObject.getSoleAttributeAsString(Name, "Hello")).thenReturn(expected);
 
-      String actual = readOnly.getSoleAttributeAsString(attributeType, "Hello");
+      String actual = readOnly.getSoleAttributeAsString(Name, "Hello");
 
       assertEquals(expected, actual);
-      verify(proxiedObject).getSoleAttributeAsString(attributeType, "Hello");
+      verify(proxiedObject).getSoleAttributeAsString(Name, "Hello");
    }
 
    @Test
@@ -385,8 +377,8 @@ public class ArtifactReadOnlyImplTest {
 
    @Test
    public void testGetAttributes1() {
-      List<Attribute<Object>> attributes1 = Collections.singletonList(attribute1);
-      ResultSet<? extends AttributeReadable<Object>> expected = ResultSets.singleton(attributeReadable1);
+      List<Attribute<String>> attributes1 = Collections.singletonList(attribute1);
+      ResultSet<? extends AttributeReadable<String>> expected = ResultSets.singleton(attributeReadable1);
       when(proxiedObject.getAttributes()).thenAnswer(answer(attributes1));
       when(proxyManager.asExternalAttributes(session, attributes1)).thenAnswer(answer(expected));
 
@@ -399,8 +391,8 @@ public class ArtifactReadOnlyImplTest {
 
    @Test
    public void testGetAttributes2() {
-      List<Attribute<Object>> attributes1 = Collections.singletonList(attribute1);
-      ResultSet<? extends AttributeReadable<Object>> expected = ResultSets.singleton(attributeReadable1);
+      List<Attribute<String>> attributes1 = Collections.singletonList(attribute1);
+      ResultSet<? extends AttributeReadable<String>> expected = ResultSets.singleton(attributeReadable1);
       when(proxiedObject.getAttributes(EXCLUDE_DELETED)).thenAnswer(answer(attributes1));
       when(proxyManager.asExternalAttributes(session, attributes1)).thenAnswer(answer(expected));
 
@@ -413,29 +405,29 @@ public class ArtifactReadOnlyImplTest {
 
    @Test
    public void testGetAttributes3() {
-      List<Attribute<Object>> attributes1 = Collections.singletonList(attribute1);
-      ResultSet<? extends AttributeReadable<Object>> expected = ResultSets.singleton(attributeReadable1);
-      when(proxiedObject.getAttributes(attributeType)).thenAnswer(answer(attributes1));
+      List<Attribute<String>> attributes1 = Collections.singletonList(attribute1);
+      ResultSet<? extends AttributeReadable<String>> expected = ResultSets.singleton(attributeReadable1);
+      when(proxiedObject.getAttributes(Name)).thenAnswer(answer(attributes1));
       when(proxyManager.asExternalAttributes(session, attributes1)).thenAnswer(answer(expected));
 
-      ResultSet<? extends AttributeReadable<Object>> actual = readOnly.getAttributes(attributeType);
+      ResultSet<? extends AttributeReadable<Object>> actual = readOnly.getAttributes(Name);
 
       assertEquals(expected, actual);
-      verify(proxiedObject).getAttributes(attributeType);
+      verify(proxiedObject).getAttributes(Name);
       verify(proxyManager).asExternalAttributes(session, attributes1);
    }
 
    @Test
    public void testGetAttributes4() {
-      List<Attribute<Object>> attributes1 = Collections.singletonList(attribute1);
-      ResultSet<? extends AttributeReadable<Object>> expected = ResultSets.singleton(attributeReadable1);
-      when(proxiedObject.getAttributes(attributeType, EXCLUDE_DELETED)).thenAnswer(answer(attributes1));
+      List<Attribute<String>> attributes1 = Collections.singletonList(attribute1);
+      ResultSet<? extends AttributeReadable<String>> expected = ResultSets.singleton(attributeReadable1);
+      when(proxiedObject.getAttributes(Name, EXCLUDE_DELETED)).thenAnswer(answer(attributes1));
       when(proxyManager.asExternalAttributes(session, attributes1)).thenAnswer(answer(expected));
 
-      ResultSet<? extends AttributeReadable<Object>> actual = readOnly.getAttributes(attributeType, EXCLUDE_DELETED);
+      ResultSet<? extends AttributeReadable<Object>> actual = readOnly.getAttributes(Name, EXCLUDE_DELETED);
 
       assertEquals(expected, actual);
-      verify(proxiedObject).getAttributes(attributeType, EXCLUDE_DELETED);
+      verify(proxiedObject).getAttributes(Name, EXCLUDE_DELETED);
       verify(proxyManager).asExternalAttributes(session, attributes1);
    }
 
