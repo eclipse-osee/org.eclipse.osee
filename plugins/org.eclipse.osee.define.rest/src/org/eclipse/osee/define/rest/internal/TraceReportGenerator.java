@@ -15,9 +15,9 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
@@ -140,7 +140,7 @@ public class TraceReportGenerator {
       for (ArtifactReadable systemReqt : systemRequirements) {
          if (systemReqt.isOfType(CoreArtifactTypes.SystemRequirementHTML)) {
             outputCommonCells(systemReqt, writer);
-            writer.writeCell(accumulator.getAttributesToStringList(systemReqt, CoreAttributeTypes.QualificationMethod));
+            writer.writeCell(systemReqt.getAttributeValuesAsString(CoreAttributeTypes.QualificationMethod));
             accumulator.outputSubsystemsRequirementsMap(systemReqt, writer);
          }
       }

@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * @author David W. Miller
@@ -151,20 +150,4 @@ public class TraceInformationAccumulator {
       }
       return items.size();
    }
-
-   public String getAttributesToStringList(ArtifactReadable artifact, AttributeTypeId attributeType) {
-
-      StringBuilder items = new StringBuilder();
-      boolean first = true;
-      for (AttributeReadable<?> attribute : artifact.getAttributes(attributeType)) {
-         if (!first) {
-            items.append(", ");
-         } else {
-            first = false;
-         }
-         items.append(attribute.getDisplayableString());
-      }
-      return items.toString();
-   }
-
 }

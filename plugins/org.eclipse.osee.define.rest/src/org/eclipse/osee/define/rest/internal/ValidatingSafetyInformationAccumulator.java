@@ -15,7 +15,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,11 +27,9 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * @author David W. Miller
@@ -278,8 +275,8 @@ public final class ValidatingSafetyInformationAccumulator {
          currentRowValues, ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 5);
       writeCell(functionalCategory, currentRowValues, ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 6);
 
-      writeCell(Collections.toString(",", getAttributesToStringList(softwareRequirement, CoreAttributeTypes.Partition)),
-         currentRowValues, ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 7);
+      writeCell(softwareRequirement.getAttributeValuesAsString(CoreAttributeTypes.Partition), currentRowValues,
+         ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 7);
 
       writeCell(safetyReport.getComponentUtil().getQualifiedComponentNames(softwareRequirement), currentRowValues,
          ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 8);
@@ -294,14 +291,4 @@ public final class ValidatingSafetyInformationAccumulator {
          writer.writeRow((Object[]) currentRowValues);
       }
    }
-
-   public List<String> getAttributesToStringList(ArtifactReadable artifact, AttributeTypeId attributeType) {
-
-      List<String> items = new ArrayList<>();
-      for (AttributeReadable<?> attribute : artifact.getAttributes(attributeType)) {
-         items.add(attribute.getDisplayableString());
-      }
-      return items;
-   }
-
 }
