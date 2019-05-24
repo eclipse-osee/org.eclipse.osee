@@ -49,8 +49,7 @@ public final class ArtifactImageManager {
    private static final Map<ArtifactTypeToken, ArtifactImageProvider> providersOverrideImageMap =
       new ConcurrentHashMap<>();
    private static final Map<ArtifactTypeToken, KeyedImage> artifactTypeImageMap = new ConcurrentHashMap<>();
-   private static final Map<ArtifactTypeToken, String> artifactTypeImageProviderMap =
-      new ConcurrentHashMap<>();
+   private static final Map<ArtifactTypeToken, String> artifactTypeImageProviderMap = new ConcurrentHashMap<>();
 
    private static final String OSEE_DATABASE_PROVIDER = "OSEE Database Provider";
 
@@ -173,7 +172,8 @@ public final class ArtifactImageManager {
             }
          }
          if (keyedImage != null && modType != null) {
-            KeyedImage overlay = FrameworkImage.valueOf("OUTGOING_" + modType.toString().toUpperCase());
+            String imageEnum = "OUTGOING_" + (modType.toString().toUpperCase()).replaceAll(" ", "_");
+            KeyedImage overlay = FrameworkImage.valueOf(imageEnum);
             toReturn =
                ImageManager.getImage(ImageManager.setupImageWithOverlay(keyedImage, overlay, Location.TOP_LEFT));
          }
