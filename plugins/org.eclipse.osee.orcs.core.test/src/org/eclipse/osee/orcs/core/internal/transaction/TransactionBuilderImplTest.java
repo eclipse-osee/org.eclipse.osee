@@ -18,12 +18,10 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.FavoriteB
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.PlainTextContent;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.QualificationMethod;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.RelationOrder;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
-import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
@@ -36,6 +34,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -192,10 +191,11 @@ public class TransactionBuilderImplTest {
 
    @Test
    public void testSetSoleAttributeValue() {
-      factory.setSoleAttributeValue(expectedAuthor, RelationOrder, LEXICOGRAPHICAL_DESC);
+      String value = "check this out";
+      factory.setSoleAttributeValue(expectedAuthor, Company, value);
 
       verify(txDataManager).getForWrite(txData, expectedAuthor);
-      verify(artifact).setSoleAttributeValue(RelationOrder, LEXICOGRAPHICAL_DESC);
+      verify(artifact).setSoleAttributeValue(Company, value);
    }
 
    @Test
@@ -218,10 +218,11 @@ public class TransactionBuilderImplTest {
 
    @Test
    public void testSetAttributesFromValues() {
-      factory.setAttributesFromValues(expectedAuthor, PlainTextContent, Arrays.asList(true, true, false));
+      List<Boolean> values = Arrays.asList(true, true, false);
+      factory.setAttributesFromValues(expectedAuthor, Active, values);
 
       verify(txDataManager).getForWrite(txData, expectedAuthor);
-      verify(artifact).setAttributesFromValues(PlainTextContent, Arrays.asList(true, true, false));
+      verify(artifact).setAttributesFromValues(Active, values);
    }
 
    @SuppressWarnings("unchecked")

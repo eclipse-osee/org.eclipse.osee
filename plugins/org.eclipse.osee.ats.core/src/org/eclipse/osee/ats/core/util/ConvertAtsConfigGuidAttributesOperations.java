@@ -64,11 +64,7 @@ public class ConvertAtsConfigGuidAttributesOperations {
       }
 
       // convert id to guid
-      Collection<IAttribute<Object>> aiGuidAttrs = atsApi.getAttributeResolver().getAttributes(art, ActionableItem);
-      List<String> currentAiGuidIds = new LinkedList<>();
-      for (IAttribute<Object> aiRefAttr : aiGuidAttrs) {
-         currentAiGuidIds.add(aiRefAttr.getValue().toString());
-      }
+      List<String> currentAiGuidIds = atsApi.getAttributeResolver().getAttributesToStringList(art, ActionableItem);
 
       List<String> neededAiGuidIds = new LinkedList<>();
       Collection<ArtifactId> aiArts =
