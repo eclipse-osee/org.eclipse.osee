@@ -83,12 +83,12 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public Collection<String> getAttributesToStringList(IAtsObject atsObject, AttributeTypeId attributeType) {
+   public List<String> getAttributesToStringList(IAtsObject atsObject, AttributeTypeId attributeType) {
       return getArtifact(atsObject).getAttributesToStringList(attributeType);
    }
 
    @Override
-   public Collection<String> getAttributesToStringList(ArtifactId artifact, AttributeTypeId attributeType) {
+   public List<String> getAttributesToStringList(ArtifactId artifact, AttributeTypeId attributeType) {
       return AtsClientService.get().getQueryServiceClient().getArtifact(artifact).getAttributesToStringList(
          attributeType);
    }

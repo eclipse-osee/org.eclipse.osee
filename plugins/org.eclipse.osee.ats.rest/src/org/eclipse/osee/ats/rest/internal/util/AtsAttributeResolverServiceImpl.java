@@ -108,7 +108,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public Collection<String> getAttributesToStringList(IAtsObject atsObject, AttributeTypeId attributeType) {
+   public List<String> getAttributesToStringList(IAtsObject atsObject, AttributeTypeId attributeType) {
       return getArtifact(atsObject).getAttributeValues(attributeType);
    }
 
@@ -243,7 +243,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public Collection<String> getAttributesToStringList(ArtifactId artifact, AttributeTypeId attributeType) {
+   public List<String> getAttributesToStringList(ArtifactId artifact, AttributeTypeId attributeType) {
       return ((ArtifactReadable) artifact).getAttributeValues(attributeType);
    }
 

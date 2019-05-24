@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.workdef;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -37,7 +38,7 @@ public interface IAttributeResolver {
 
    <T> T getSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, T defaultReturnValue);
 
-   Collection<String> getAttributesToStringList(IAtsObject atsObject, AttributeTypeId attributeType);
+   List<String> getAttributesToStringList(IAtsObject atsObject, AttributeTypeId attributeType);
 
    boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeToken attributeType);
 
@@ -95,7 +96,7 @@ public interface IAttributeResolver {
       return org.eclipse.osee.framework.jdk.core.util.Collections.toString(separator, strs);
    }
 
-   Collection<String> getAttributesToStringList(ArtifactId customizeStoreArt, AttributeTypeId xviewercustomization);
+   List<String> getAttributesToStringList(ArtifactId customizeStoreArt, AttributeTypeId attributeType);
 
    ArtifactId getSoleArtifactIdReference(IAtsObject atsObject, AttributeTypeToken artifactReferencedAttributeType, ArtifactId defaultValue);
 
