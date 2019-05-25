@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -121,11 +120,6 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
    public static IAtsWorkItem createSentinel() {
       final class IAtsWorkItemSentinel extends NamedIdBase implements IAtsWorkItem {
-
-         public IAtsWorkItemSentinel() {
-            super(Id.SENTINEL, "SENTINEL");
-
-         }
 
          @Override
          public ArtifactTypeId getArtifactType() {

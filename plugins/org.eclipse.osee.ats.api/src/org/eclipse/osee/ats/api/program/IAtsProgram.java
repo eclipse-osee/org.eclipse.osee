@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.api.program;
 
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -25,11 +24,6 @@ public interface IAtsProgram extends IAtsConfigObject {
 
    public static IAtsProgram createSentinel() {
       final class IAtsProgramSentinel extends NamedIdBase implements IAtsProgram {
-
-         public IAtsProgramSentinel() {
-            super(Id.SENTINEL, "SENTINEL");
-
-         }
 
          @Override
          public boolean isActive() {

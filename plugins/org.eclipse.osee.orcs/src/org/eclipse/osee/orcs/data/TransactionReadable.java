@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -40,11 +39,6 @@ public interface TransactionReadable extends TransactionToken {
 
    public static TransactionReadable createSentinel() {
       final class TransactionReadableSentinel extends NamedIdBase implements TransactionReadable {
-
-         public TransactionReadableSentinel() {
-            super(Id.SENTINEL, "SENTINEL");
-
-         }
 
          @Override
          public TransactionDetailsType getTxType() {

@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.api.ev;
 import java.util.Date;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -41,11 +40,6 @@ public interface IAtsWorkPackage extends IAtsConfigObject {
 
    public static IAtsWorkPackage createSentinel() {
       final class IAtsWorkPackageSentinel extends NamedIdBase implements IAtsWorkPackage {
-
-         public IAtsWorkPackageSentinel() {
-            super(Id.SENTINEL, "SENTINEL");
-
-         }
 
          @Override
          public boolean isActive() {

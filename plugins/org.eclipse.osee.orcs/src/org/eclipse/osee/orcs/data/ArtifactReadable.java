@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
@@ -127,12 +126,6 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    public static ArtifactReadable createSentinel() {
       final class ArtifactReadableSentinel extends NamedIdBase implements ArtifactReadable {
-
-         public ArtifactReadableSentinel() {
-            super(Id.SENTINEL, "SENTINEL");
-
-         }
-
          @Override
          public BranchId getBranch() {
             return null;

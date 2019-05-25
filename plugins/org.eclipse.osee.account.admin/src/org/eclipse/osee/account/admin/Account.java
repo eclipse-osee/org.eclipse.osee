@@ -11,7 +11,6 @@
 package org.eclipse.osee.account.admin;
 
 import org.eclipse.osee.account.rest.model.AccountWebPreferences;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
@@ -34,11 +33,6 @@ public interface Account extends NamedId {
 
    public static Account createSentinel() {
       final class AccountSentinel extends NamedIdBase implements Account {
-
-         public AccountSentinel() {
-            super(Id.SENTINEL, "SENTINEL");
-
-         }
 
          @Override
          public boolean isActive() {

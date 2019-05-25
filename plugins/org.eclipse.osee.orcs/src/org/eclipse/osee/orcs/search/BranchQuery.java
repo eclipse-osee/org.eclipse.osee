@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
@@ -37,11 +36,6 @@ public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
 
    public static BranchQuery createSentinel() {
       final class BranchQuerySentinel extends NamedIdBase implements BranchQuery {
-
-         public BranchQuerySentinel() {
-            super(Id.SENTINEL, "SENTINEL");
-
-         }
 
          @Override
          public BranchQuery includeDeleted() {

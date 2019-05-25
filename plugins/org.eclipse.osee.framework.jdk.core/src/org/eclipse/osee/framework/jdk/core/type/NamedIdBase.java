@@ -24,7 +24,7 @@ public class NamedIdBase extends BaseId implements NamedId {
 
    public NamedIdBase() {
       super(Id.SENTINEL);
-      this.name = "SENTINEL";
+      this.name = Named.SENTINEL;
    }
 
    @Override

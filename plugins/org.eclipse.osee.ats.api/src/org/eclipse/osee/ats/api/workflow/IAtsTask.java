@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -35,11 +34,6 @@ public interface IAtsTask extends IAtsWorkItem {
 
    public static IAtsTask createSentinel() {
       final class IAtsTaskSentinel extends NamedIdBase implements IAtsTask {
-
-         public IAtsTaskSentinel() {
-            super(Id.SENTINEL, "SENTINEL");
-
-         }
 
          @Override
          public String getAtsId() {

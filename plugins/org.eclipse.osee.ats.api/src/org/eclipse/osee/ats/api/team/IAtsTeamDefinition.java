@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -100,11 +99,6 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
 
    public static IAtsTeamDefinition createSentinel() {
       final class IAtsTeamDefinitionSentinel extends NamedIdBase implements IAtsTeamDefinition {
-
-         public IAtsTeamDefinitionSentinel() {
-            super(Id.SENTINEL, "SENTINEL");
-
-         }
 
          @Override
          public boolean isActive() {

@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.api.rule.IAtsRules;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -62,11 +61,6 @@ public interface IAtsActionableItem extends IAtsConfigObject, IAtsRules {
 
    public static IAtsActionableItem createSentinel() {
       final class IAtsActionableItemSentinel extends NamedIdBase implements IAtsActionableItem {
-
-         public IAtsActionableItemSentinel() {
-            super(Id.SENTINEL, "SENTINEL");
-
-         }
 
          @Override
          public boolean isActive() {
