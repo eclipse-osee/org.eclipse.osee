@@ -74,9 +74,9 @@ public interface ArtifactEndpoint {
    List<ArtifactId> getArtifactIdsByAttribute(@PathParam("attributeType") AttributeTypeId attributeType, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists, @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeId artifactType);
 
    @GET
-   @Path("attType/{attributeType}")
+   @Path("map")
    @Produces(MediaType.APPLICATION_JSON)
-   Map<String, Object> getArtifactByAttribute(@PathParam("attributeType") AttributeTypeId attributeType, @QueryParam("representation") String representation, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists, @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeId artifactType);
+   List<Map<String, Object>> getArtifactMaps(@DefaultValue("-1") @QueryParam("attributeType") AttributeTypeId attributeType, @QueryParam("representation") String representation, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists, @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeId artifactType);
 
    @GET
    @Path("type/{artifactType}/token")

@@ -145,10 +145,12 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       if (artifactType.isValid()) {
          query.andTypeEquals(artifactType);
       }
-      if (exists) {
-         query.andAttributeIs(attributeType, value);
-      } else {
-         query.andNotExists(attributeType, value);
+      if (attributeType.isValid()) {
+         if (exists) {
+            query.andAttributeIs(attributeType, value);
+         } else {
+            query.andNotExists(attributeType, value);
+         }
       }
       return queryMethod.get();
    }
@@ -179,8 +181,8 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
     * type but with a different value.
     */
    @Override
-   public Map<String, Object> getArtifactByAttribute(AttributeTypeId attributeType, String representation, String value, boolean exists, ArtifactTypeId artifactType) {
-      return getArtifactXByAttribute(attributeType, value, exists, artifactType, query::loadArtifactFieldMap);
+   public List<Map<String, Object>> getArtifactMaps(AttributeTypeId attributeType, String representation, String value, boolean exists, ArtifactTypeId artifactType) {
+      return getArtifactXByAttribute(attributeType, value, exists, artifactType, query::asArtifactMaps);
    }
 
    @Override

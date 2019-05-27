@@ -42,7 +42,7 @@ public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query 
 
    ArtifactId loadArtifactId();
 
-   Map<String, Object> loadArtifactFieldMap();
+   List<Map<String, Object>> asArtifactMaps();
 
    /**
     * @return a single ArtifactId if exactly one found. Return ArtifactId.SENTINEL is none found, else throw exception

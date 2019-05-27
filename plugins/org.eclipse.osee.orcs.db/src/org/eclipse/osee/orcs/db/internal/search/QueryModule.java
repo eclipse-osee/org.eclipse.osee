@@ -71,19 +71,19 @@ public class QueryModule {
       return queryIndexer;
    }
 
-   public QueryEngine createQueryEngine(DataLoaderFactory loaderFactory, AttributeTypes attrTypes, ArtifactTypes artifactTypes, SqlObjectLoader sqlObjectLoader, KeyValueStore keyValue) {
+   public QueryEngine createQueryEngine(DataLoaderFactory loaderFactory, AttributeTypes attributeTypes, ArtifactTypes artifactTypes, SqlObjectLoader sqlObjectLoader, KeyValueStore keyValue) {
       QuerySqlContextFactory artifactSqlContextFactory =
          Engines.createArtifactSqlContext(logger, sqlJoinFactory, idService, jdbcClient, taggingEngine);
       QueryCallableFactory factory1 = newArtifactQueryEngine(artifactSqlContextFactory, logger, taggingEngine,
-         executorAdmin, loaderFactory, attrTypes);
+         executorAdmin, loaderFactory, attributeTypes);
       QuerySqlContextFactory branchSqlContextFactory =
          Engines.newBranchSqlContextFactory(logger, sqlJoinFactory, idService, jdbcClient);
       QuerySqlContextFactory txSqlContextFactory =
          Engines.newTxSqlContextFactory(logger, sqlJoinFactory, idService, jdbcClient);
 
       QueryCallableFactory factory4 = newQueryEngine(logger, sqlJoinFactory, idService, jdbcClient, taggingEngine,
-         executorAdmin, loaderFactory, attrTypes);
+         executorAdmin, loaderFactory, attributeTypes);
       return new QueryEngineImpl(factory1, branchSqlContextFactory, txSqlContextFactory, factory4, jdbcClient,
-         sqlJoinFactory, artifactSqlContextFactory, sqlObjectLoader, artifactTypes, keyValue);
+         sqlJoinFactory, artifactSqlContextFactory, sqlObjectLoader, artifactTypes, attributeTypes, keyValue);
    }
 }

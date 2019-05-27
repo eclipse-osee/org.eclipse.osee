@@ -11,10 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -53,23 +50,9 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
    }
 
    @Override
-   public Map<String, Object> loadArtifactFieldMap() {
-      ArtifactReadable artifact = getArtifact();
-      Map<String, Object> map = new LinkedHashMap<>();
-      map.put("Artifact Id", artifact.getIdString());
-      map.put("Name", artifact.getName());
-
-      List<AttributeTypeToken> attributeTypes = new ArrayList<>(artifact.getExistingAttributeTypes());
-      Collections.sort(attributeTypes);
-      for (AttributeTypeToken attributeType : attributeTypes) {
-         List<Object> attributeValues = artifact.getAttributeValues(attributeType);
-         if (attributeValues.size() == 1) {
-            map.put(attributeType.getName(), attributeValues.get(0));
-         } else {
-            map.put(attributeType.getName(), attributeValues);
-         }
-      }
-      return map;
+   public List<Map<String, Object>> asArtifactMaps() {
+      getQueryData().addCriteria(new CriteriaTokenQuery(AttributeTypeToken.SENTINEL));
+      return queryEngine.asArtifactMaps(getQueryData());
    }
 
    @Override

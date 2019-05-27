@@ -10,16 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_FETCH_SIZE;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -30,6 +36,7 @@ import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.search.QueryCallableFactory;
@@ -52,9 +59,10 @@ public class QueryEngineImpl implements QueryEngine {
    private final QuerySqlContextFactory artifactSqlContextFactory;
    private final SqlObjectLoader sqlObjectLoader;
    private final ArtifactTypes artifactTypes;
+   private final AttributeTypes attributeTypes;
    private final KeyValueStore keyValue;
 
-   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QuerySqlContextFactory branchSqlContextFactory, QuerySqlContextFactory txSqlContextFactory, QueryCallableFactory allQueryEngineFactory, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, QuerySqlContextFactory artifactSqlContextFactory, SqlObjectLoader sqlObjectLoader, ArtifactTypes artifactTypes, KeyValueStore keyValue) {
+   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QuerySqlContextFactory branchSqlContextFactory, QuerySqlContextFactory txSqlContextFactory, QueryCallableFactory allQueryEngineFactory, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, QuerySqlContextFactory artifactSqlContextFactory, SqlObjectLoader sqlObjectLoader, ArtifactTypes artifactTypes, AttributeTypes attributeTypes, KeyValueStore keyValue) {
       this.artifactQueryEngineFactory = artifactQueryEngineFactory;
       this.branchSqlContextFactory = branchSqlContextFactory;
       this.txSqlContextFactory = txSqlContextFactory;
@@ -64,6 +72,7 @@ public class QueryEngineImpl implements QueryEngine {
       this.artifactSqlContextFactory = artifactSqlContextFactory;
       this.sqlObjectLoader = sqlObjectLoader;
       this.artifactTypes = artifactTypes;
+      this.attributeTypes = attributeTypes;
       this.keyValue = keyValue;
    }
 
@@ -132,6 +141,48 @@ public class QueryEngineImpl implements QueryEngine {
       loadArtifactX(queryData, QueryType.TOKEN, stmt -> tokens.add(ArtifactToken.valueOf(stmt.getLong("art_id"),
          stmt.getString("value"), queryData.getBranch(), artifactTypes.get(stmt.getLong("art_type_id")))));
       return tokens;
+   }
+
+   @Override
+   public List<Map<String, Object>> asArtifactMaps(QueryData queryData) {
+      List<Map<String, Object>> maps = new ArrayList<>(500);
+      HashCollection<AttributeTypeToken, Object> attributes = new HashCollection<>();
+      Long[] artifactId = new Long[] {Id.SENTINEL};
+
+      Consumer<JdbcStatement> consumer = stmt -> {
+         Long newArtId = stmt.getLong("art_id");
+         if (artifactId[0].equals(Id.SENTINEL)) {
+            artifactId[0] = newArtId;
+         } else if (!artifactId[0].equals(newArtId)) {
+            maps.add(createFieldMap(artifactId, attributes));
+            attributes.clear();
+            artifactId[0] = newArtId;
+         }
+         attributes.put(attributeTypes.get(stmt.getLong("attr_type_id")), stmt.getString("value"));
+      };
+      loadArtifactX(queryData, QueryType.TOKEN, consumer);
+      if (!artifactId[0].equals(Id.SENTINEL)) {
+         maps.add(createFieldMap(artifactId, attributes));
+      }
+      return maps;
+   }
+
+   private Map<String, Object> createFieldMap(Long[] artifactId, HashCollection<AttributeTypeToken, Object> attributes) {
+      Map<String, Object> map = new LinkedHashMap<>();
+      map.put("Artifact Id", artifactId[0].toString());
+      map.put("Name", attributes.getValues(Name));
+
+      List<AttributeTypeToken> attributeTypes = new ArrayList<>(attributes.keySet());
+      Collections.sort(attributeTypes);
+      for (AttributeTypeToken attributeType : attributeTypes) {
+         List<Object> attributeValues = attributes.getValues(attributeType);
+         if (attributeValues.size() == 1) {
+            map.put(attributeType.getName(), attributeValues.get(0));
+         } else {
+            map.put(attributeType.getName(), attributeValues);
+         }
+      }
+      return map;
    }
 
    @Override

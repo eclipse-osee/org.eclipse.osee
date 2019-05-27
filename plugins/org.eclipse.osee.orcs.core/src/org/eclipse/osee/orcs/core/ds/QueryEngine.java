@@ -45,6 +45,8 @@ public interface QueryEngine {
 
    List<ArtifactToken> loadArtifactTokens(QueryData queryData);
 
+   List<Map<String, Object>> asArtifactMaps(QueryData queryData);
+
    Map<ArtifactId, ArtifactToken> loadArtifactTokenMap(QueryData queryData);
 
    List<ArtifactId> loadArtifactIds(QueryData queryData);
