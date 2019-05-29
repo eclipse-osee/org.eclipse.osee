@@ -242,4 +242,15 @@ public class AttributeTypesImpl implements AttributeTypes {
       throw new OseeTypeDoesNotExist("AttributeTypeToken does not exist: %s", attrTypeName);
    }
 
+   @Override
+   public boolean typeExists(String attrTypeName) {
+
+      for (AttributeTypeToken type : getAll()) {
+         if (type.getName().equals(attrTypeName)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
 }

@@ -63,4 +63,6 @@ public interface AttributeTypes extends IdCollection<AttributeTypeToken> {
 
    boolean isArtifactReferencedAttribute(AttributeTypeId attrType);
 
+   boolean typeExists(String attrTypeName);
+
 }
