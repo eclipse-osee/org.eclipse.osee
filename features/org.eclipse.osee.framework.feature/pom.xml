@@ -31,7 +31,6 @@
 							   <plugin id="org.eclipse.osee.framework.templates" />
 							   <plugin id="org.hamcrest" />
 							   <plugin id="org.eclipse.egit" />
-							   <feature id="org.eclipse.sdk" />
 							</excludes>
 						</configuration>
 					</execution>

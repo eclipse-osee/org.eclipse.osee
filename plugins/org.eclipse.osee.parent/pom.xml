@@ -56,7 +56,6 @@
 		<subversive-version>1.0</subversive-version>
 		<polarion-version>3.0</polarion-version>
 
-
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
 
@@ -464,15 +463,15 @@
 				<subversive-site>http://download.eclipse.org/technology/subversive/${subversive-version}/update-site</subversive-site>
 				<polarion-site>http://community.polarion.com/projects/subversive/download/eclipse/${polarion-version}/update-site</polarion-site> -->
 			 	<egit-site>http://download.eclipse.org/egit/updates</egit-site> 
+				<jgit-site>https://repo.eclipse.org/content/groups/releases</jgit-site>
 				
 			</properties>
 			<repositories>
-			   
-			   <repository>
+			<repository>
 					<id>egit</id>
 					<layout>p2</layout>
 					<url>${egit-site}</url>
-				</repository>
+					</repository>
 			<!--	<repository>
 					<id>nebula</id>
 					<layout>p2</layout>
@@ -490,6 +489,11 @@
 					<layout>p2</layout>
 					<url>${subversive-site}</url>
 				</repository> -->
+				
+				<repository> 
+					<id>jgit</id> 
+					<url>${jgit-site}</url> 
+				</repository>
 			</repositories>
 		</profile>
 		<!-- 
@@ -537,7 +541,6 @@
 					<layout>p2</layout>
 					<url>${osee-xserver-site}</url>
 				</repository>
-				
 			</repositories>
 		</profile>
 
