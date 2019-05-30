@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -43,7 +44,6 @@ import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
@@ -123,9 +123,10 @@ public class WholeWordRenderer extends WordRenderer {
             content = WordMlLinkHandler.link(linkType, artifact, content, unknownGuids, presentationType);
             WordUiUtil.displayUnknownGuids(artifact, unknownGuids);
 
-            String classification =
-               artifact.getSoleAttributeValueAsString(CoreAttributeTypes.DataRightsClassification, "");
-            if (Strings.isValid(classification)) {
+            DataRightsClassification classification = artifact.getSoleAttributeValue(
+               CoreAttributeTypes.DataRightsClassification, DataRightsClassification.noOverride);
+
+            if (DataRightsClassification.isValid(classification)) {
                content = addDataRights(content, classification, artifact);
             }
 
@@ -154,7 +155,7 @@ public class WholeWordRenderer extends WordRenderer {
       }
    }
 
-   private String addDataRights(String content, String classification, Artifact artifact) {
+   private String addDataRights(String content, DataRightsClassification classification, Artifact artifact) {
       String toReturn = content;
       PageOrientation orientation = WordRendererUtil.getPageOrientation(artifact);
 

@@ -15,6 +15,7 @@ import org.eclipse.osee.define.api.DataRightsEndpoint;
 import org.eclipse.osee.define.api.DefineApi;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 
 /**
@@ -29,7 +30,7 @@ public class DataRightsEndpointImpl implements DataRightsEndpoint {
    }
 
    @Override
-   public DataRightResult getDataRights(BranchId branch, String overrideClassification, List<ArtifactId> artifacts) {
+   public DataRightResult getDataRights(BranchId branch, DataRightsClassification overrideClassification, List<ArtifactId> artifacts) {
       return defineApi.getDataRightsOperations().getDataRights(artifacts, branch, overrideClassification);
    }
 

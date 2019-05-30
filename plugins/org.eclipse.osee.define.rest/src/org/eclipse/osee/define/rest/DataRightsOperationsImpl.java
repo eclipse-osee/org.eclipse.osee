@@ -54,11 +54,11 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
 
    @Override
    public DataRightResult getDataRights(List<ArtifactId> artifacts, BranchId branch) {
-      return getDataRights(artifacts, branch, "");
+      return getDataRights(artifacts, branch, null);
    }
 
    @Override
-   public DataRightResult getDataRights(List<ArtifactId> artifacts, BranchId branch, String overrideClassification) {
+   public DataRightResult getDataRights(List<ArtifactId> artifacts, BranchId branch, DataRightsClassification overrideClassification) {
       DataRightInput request = new DataRightInput();
       populateRequest(artifacts, branch, request, overrideClassification);
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
@@ -73,7 +73,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
       return mapping;
    }
 
-   private void populateRequest(List<ArtifactId> artifacts, BranchId branch, DataRightInput request, String overrideClassification) {
+   private void populateRequest(List<ArtifactId> artifacts, BranchId branch, DataRightInput request, DataRightsClassification overrideClassification) {
       int index = 0;
 
       for (ArtifactId artifact : artifacts) {
@@ -84,7 +84,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
          String classification = null;
          String orientation = "Portrait";
          if (DataRightsClassification.isValid(overrideClassification)) {
-            classification = overrideClassification;
+            classification = overrideClassification.getDataRightsClassification();
          } else if (art.isValid()) {
             classification = art.getSoleAttributeAsString(CoreAttributeTypes.DataRightsClassification, "");
             orientation = art.getSoleAttributeValue(CoreAttributeTypes.PageType, "Portrait");

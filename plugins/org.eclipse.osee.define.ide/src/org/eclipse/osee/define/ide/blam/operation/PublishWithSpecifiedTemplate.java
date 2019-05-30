@@ -19,8 +19,10 @@ import static org.eclipse.osee.framework.core.util.RendererOption.FIRST_TIME;
 import static org.eclipse.osee.framework.core.util.RendererOption.INCLUDE_UUIDS;
 import static org.eclipse.osee.framework.core.util.RendererOption.LINK_TYPE;
 import static org.eclipse.osee.framework.core.util.RendererOption.MAINTAIN_ORDER;
+import static org.eclipse.osee.framework.core.util.RendererOption.OVERRIDE_DATA_RIGHTS;
 import static org.eclipse.osee.framework.core.util.RendererOption.PROGRESS_MONITOR;
 import static org.eclipse.osee.framework.core.util.RendererOption.PUBLISH_DIFF;
+import static org.eclipse.osee.framework.core.util.RendererOption.PUBLISH_EMPTY_HEADERS;
 import static org.eclipse.osee.framework.core.util.RendererOption.RECURSE;
 import static org.eclipse.osee.framework.core.util.RendererOption.SKIP_ERRORS;
 import static org.eclipse.osee.framework.core.util.RendererOption.TRANSACTION_OPTION;
@@ -46,6 +48,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -75,6 +78,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -89,6 +93,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    private static String ARTIFACTS = "Artifacts";
    private static String MASTER_TEMPLATE = "Master Template";
    private static String SLAVE_TEMPLATE = "Slave Template";
+   private static String DATA_RIGHTS = "Data Rights";
 
    private List<Artifact> templates;
    private BranchId branch;
@@ -99,6 +104,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    private XDslEditorWidget orcsQueryWidget;
    private XCombo branchViewWidget;
    private XListDropViewer artifactsWidget;
+   private XCombo dataRightsWidget;
 
    @Override
    public String getName() {
@@ -129,6 +135,8 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
          throw new OseeArgumentException("Must select a Master Template");
       }
       Artifact slave = getTemplate(variableMap.getString(SLAVE_TEMPLATE));
+
+      String classification = variableMap.getString(DATA_RIGHTS);
 
       List<Artifact> artifacts = null;
       try {
@@ -181,7 +189,8 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       rendererOptionsMap.put(FIRST_TIME, true);
       rendererOptionsMap.put(PUBLISH_DIFF, variableMap.getValue(PUBLISH_DIFF.getKey()));
       rendererOptionsMap.put(VIEW, viewId);
-      rendererOptionsMap.put(RendererOption.PUBLISH_EMPTY_HEADERS, false);
+      rendererOptionsMap.put(PUBLISH_EMPTY_HEADERS, false);
+      rendererOptionsMap.put(OVERRIDE_DATA_RIGHTS, classification);
 
       WordTemplateRenderer renderer = new WordTemplateRenderer(rendererOptionsMap);
 
@@ -312,7 +321,6 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
       builder.append(String.format(
          ")\" displayName=\"%s\" horizontalLabel=\"true\"/><XWidget xwidgetType=\"XLabel\" displayName=\" \" />",
-
          SLAVE_TEMPLATE));
       builder.append(String.format("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"%s\" />", ARTIFACTS));
 
@@ -324,6 +332,17 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
       builder.append("orcs");
       builder.append("\" fill=\"vertically\"/>");
+
+      builder.append(String.format(
+         "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
+         RendererOption.OVERRIDE_DATA_RIGHTS.getKey()));
+      builder.append("<XWidget xwidgetType=\"XCombo(");
+      for (DataRightsClassification classification : DataRightsClassification.values()) {
+         builder.append(classification.getDataRightsClassification());
+         builder.append(",");
+      }
+      builder.append(String.format(")\" displayName=\"%s\" horizontalLabel=\"true\"/>", DATA_RIGHTS));
+
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Generate Differences:\"/>");
       builder.append(String.format(
          "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
@@ -419,6 +438,33 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       } else if (xWidget.getLabel().equals(RendererOption.VIEW.getKey())) {
          branchViewWidget = (XCombo) xWidget;
          branchViewWidget.setEditable(false);
+      } else if (xWidget.getLabel().equals(RendererOption.OVERRIDE_DATA_RIGHTS.getKey())) {
+         final XCheckBox overrideCheck = (XCheckBox) xWidget;
+         overrideCheck.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               super.widgetSelected(e);
+
+               if (overrideCheck.isChecked()) {
+                  boolean override = MessageDialog.openQuestion(
+                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Override Data Rights",
+                     "Delivering documents with the wrong data rights cannot be undone once submitted.\nAre you sure you want to override the data rights for this document?");
+                  if (override) {
+                     dataRightsWidget.setEnabled(true);
+                  } else {
+                     overrideCheck.set(false);
+                  }
+               } else {
+                  dataRightsWidget.setEnabled(false);
+                  dataRightsWidget.set(0);
+               }
+            }
+
+         });
+      } else if (xWidget.getLabel().equals(DATA_RIGHTS)) {
+         dataRightsWidget = (XCombo) xWidget;
+         dataRightsWidget.setEnabled(false);
       }
    }
 

@@ -53,6 +53,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
@@ -122,7 +123,7 @@ public class WordTemplateProcessor {
    private String slaveTemplateStyles;
 
    private String elementType;
-   private String overrideClassification;
+   private DataRightsClassification overrideClassification;
    private BranchId branch;
 
    //Outlining Options
@@ -319,9 +320,12 @@ public class WordTemplateProcessor {
     */
    public InputStream applyTemplate(List<Artifact> artifacts, String templateContent, String templateOptions, String templateStyles, IContainer folder, String outlineNumber, String outlineType, PresentationType presentationType) {
 
-      overrideClassification = (String) renderer.getRendererOptionValue(RendererOption.OVERRIDE_DATA_RIGHTS);
-      if (overrideClassification == null) {
-         overrideClassification = "invalid";
+      String overrideDataRights = (String) renderer.getRendererOptionValue(RendererOption.OVERRIDE_DATA_RIGHTS);
+      overrideClassification = DataRightsClassification.noOverride;
+      for (DataRightsClassification classification : DataRightsClassification.values()) {
+         if (classification.getDataRightsClassification().equals(overrideDataRights)) {
+            overrideClassification = classification;
+         }
       }
 
       excludeFolders = (boolean) renderer.getRendererOptionValue(RendererOption.EXCLUDE_FOLDERS);

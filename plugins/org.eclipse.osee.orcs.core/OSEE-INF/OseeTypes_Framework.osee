@@ -789,6 +789,7 @@ oseeEnumType "enum.data.rights.classification" {
 	entry "Unspecified"
 	entry "Proprietary"
 	entry "Limited Rights"
+	entry "Export Controlled ITAR"
 }
 
 abstract artifactType "Direct Software Requirement" extends "Abstract Software Requirement" {

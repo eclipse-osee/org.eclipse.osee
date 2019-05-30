@@ -212,6 +212,8 @@ public class WordTemplateRenderer extends WordRenderer {
 
          } else if (data != null) {
             wordMl.addWordMl(data);
+         } else if (footer != null) {
+            wordMl.addWordMl(footer);
          }
          wordMl.resetListValue();
       } else {

@@ -13,6 +13,7 @@ package org.eclipse.osee.define.api;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 
 /**
@@ -22,6 +23,6 @@ public interface DataRightsOperations {
 
    DataRightResult getDataRights(List<ArtifactId> artifacts, BranchId branch);
 
-   DataRightResult getDataRights(List<ArtifactId> artifacts, BranchId branch, String overrideClassification);
+   DataRightResult getDataRights(List<ArtifactId> artifacts, BranchId branch, DataRightsClassification overrideClassification);
 
 }
