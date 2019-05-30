@@ -50,6 +50,7 @@
       <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.9.2" match="greaterOrEqual" />     
       <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" version="2.9.2" match="greaterOrEqual" />
       <import plugin="javax.ws.rs" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="javax.validation" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="javax.annotation" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.team.svn.core"/>
    </requires>
