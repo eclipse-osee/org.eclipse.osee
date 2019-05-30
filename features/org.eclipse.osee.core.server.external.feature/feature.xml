@@ -25,7 +25,6 @@
          id="org.eclipse.osee.disposition.feature"
          version="0.0.0"/>
 
-
    <includes
          id="org.eclipse.egit"
          version="4.4.0"/>
@@ -33,37 +32,10 @@
    <includes
          id="org.eclipse.jgit"
          version="4.4.0"/>
-          
-    <plugin
+         
+   <includes
          id="org.eclipse.sdk"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-         
-   <plugin
-         id="org.eclipse.jdt.launching"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-     
-   <plugin
-         id="org.eclipse.jdt.debug"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-         
-    <plugin
-         id="org.eclipse.jdt.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>     
-         
-    <plugin
-         id="org.eclipse.jdt.annotation"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>          
-         
+         version="0.0.0"/> 
  
     <plugin
          id="org.eclipse.egit"
