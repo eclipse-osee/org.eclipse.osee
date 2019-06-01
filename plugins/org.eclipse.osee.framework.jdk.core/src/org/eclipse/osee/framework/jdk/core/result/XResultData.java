@@ -76,6 +76,20 @@ public class XResultData {
       infoCount = 0;
    }
 
+   public void combine(XResultData other) {
+      if (this.equals(other)) {
+         return;
+      }
+      this.errorCount += other.errorCount;
+      this.warningCount += other.warningCount;
+      this.infoCount += other.infoCount;
+      this.results.addAll(other.results);
+      this.ids.addAll(other.ids);
+      if (other.listeners != null) {
+         this.listeners.addAll(other.listeners);
+      }
+   }
+
    public void addRaw(String str) {
       results.add(str);
    }

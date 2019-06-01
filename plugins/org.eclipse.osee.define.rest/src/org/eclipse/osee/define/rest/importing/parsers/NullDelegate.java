@@ -13,7 +13,7 @@ package org.eclipse.osee.define.rest.importing.parsers;
 import org.eclipse.define.api.importing.IArtifactExtractor;
 import org.eclipse.define.api.importing.IArtifactExtractorDelegate;
 import org.eclipse.define.api.importing.RoughArtifactCollector;
-import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.OrcsApi;
 
 public final class NullDelegate implements IArtifactExtractorDelegate {
@@ -39,12 +39,12 @@ public final class NullDelegate implements IArtifactExtractorDelegate {
    }
 
    @Override
-   public void processContent(OrcsApi orcsApi, ActivityLog activityLog, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) {
-      //
+   public XResultData processContent(OrcsApi orcsApi, XResultData results, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) {
+      return results;
    }
 
    @Override
-   public void finish(OrcsApi orcsApi, ActivityLog activityLog, RoughArtifactCollector collector) {
+   public void finish(OrcsApi orcsApi, XResultData results, RoughArtifactCollector collector) {
       //
    }
 

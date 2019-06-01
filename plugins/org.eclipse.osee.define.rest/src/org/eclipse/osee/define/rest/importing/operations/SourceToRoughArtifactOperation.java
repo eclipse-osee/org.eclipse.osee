@@ -15,7 +15,7 @@ import org.eclipse.define.api.importing.IArtifactExtractor;
 import org.eclipse.define.api.importing.RoughArtifact;
 import org.eclipse.define.api.importing.RoughArtifactCollector;
 import org.eclipse.define.api.importing.RoughArtifactKind;
-import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -27,56 +27,59 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class SourceToRoughArtifactOperation {
 
    private final OrcsApi orcsApi;
-   private final ActivityLog activityLog;
    private final IArtifactExtractor extractor;
    private final File sourceFile;
    private final RoughArtifactCollector collector;
+   private final XResultData results;
 
-   public SourceToRoughArtifactOperation(OrcsApi orcsApi, ActivityLog activityLog, IArtifactExtractor extractor, File sourceFile, RoughArtifactCollector collector) {
+   public SourceToRoughArtifactOperation(OrcsApi orcsApi, XResultData results, IArtifactExtractor extractor, File sourceFile, RoughArtifactCollector collector) {
       this.extractor = extractor;
       this.sourceFile = sourceFile;
       this.collector = collector;
-      this.activityLog = activityLog;
       this.orcsApi = orcsApi;
+      this.results = results;
    }
 
-   public void importFiles() {
+   public XResultData importFiles() {
       File[] files;
       files = new File[] {sourceFile};
-      extractArtifacts(files, collector, collector.getParentRoughArtifact());
+      results.combine(extractArtifacts(files, collector, collector.getParentRoughArtifact()));
+      return results;
    }
 
    /**
     * used recursively when originally passed a directory, thus an array of files is accepted
     */
-   private void extractArtifacts(File[] files, RoughArtifactCollector collector, RoughArtifact parentArtifact) {
-
+   private XResultData extractArtifacts(File[] files, RoughArtifactCollector collector, RoughArtifact parentArtifact) {
       for (File file : files) {
          if (file.isFile()) {
-            processFile(file, collector, parentArtifact);
+            results.combine(processFile(file, collector, parentArtifact));
          } else if (file.isDirectory()) {
             RoughArtifact directoryArtifact =
-               new RoughArtifact(orcsApi, activityLog, RoughArtifactKind.CONTAINER, file.getName());
+               new RoughArtifact(orcsApi, results, RoughArtifactKind.CONTAINER, file.getName());
             collector.addChildRoughArtifact(directoryArtifact);
             File[] subFiles = file.listFiles(extractor.getFileFilter());
             if (files.length > 0) {
-               extractArtifacts(subFiles, collector, directoryArtifact);
+               results.combine(extractArtifacts(subFiles, collector, directoryArtifact));
             }
          } else {
             throw new OseeStateException("Source location [%s] is not a valid file or directory", file);
          }
       }
+      return results;
    }
 
-   private void processFile(File file, RoughArtifactCollector collector, RoughArtifact parent) {
+   private XResultData processFile(File file, RoughArtifactCollector collector, RoughArtifact parent) {
+      XResultData results = new XResultData();
       RoughArtifactCollector tempCollector = new RoughArtifactCollector(parent);
       try {
-         extractor.process(orcsApi, activityLog, file.toURI(), tempCollector);
+         results.combine(extractor.process(orcsApi, results, file.toURI(), tempCollector));
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
       // pass through all the collected items
       collector.addAllRoughArtifacts(tempCollector.getRoughArtifacts());
       collector.addAllRoughRelations(tempCollector.getRoughRelations());
+      return results;
    }
 }

@@ -20,7 +20,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author David W. Miller
@@ -32,11 +32,11 @@ public interface ImportEndpoint {
    @Path("{branch}/word")
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
-   TransactionToken importWord(@PathParam("branch") BranchId branch, @DefaultValue("-1") @QueryParam("wordDoc") String wordURI, @QueryParam("parentArtifact") ArtifactId parent, @QueryParam("tier") Integer tier);
+   XResultData importWord(@PathParam("branch") BranchId branch, @DefaultValue("-1") @QueryParam("wordDoc") String wordURI, @QueryParam("parentArtifact") ArtifactId parent, @QueryParam("tier") Integer tier);
 
    @POST
    @Path("{branch}/all")
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
-   TransactionToken importSetup(@PathParam("branch") BranchId branch, @QueryParam("baseDir") String baseDir);
+   XResultData importSetup(@PathParam("branch") BranchId branch, @QueryParam("baseDir") String baseDir);
 }

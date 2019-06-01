@@ -14,11 +14,10 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
-import org.eclipse.osee.activity.api.ActivityLog;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.AttributeTypes;
@@ -38,30 +37,30 @@ public class RoughArtifact {
    private final Collection<RoughArtifact> children;
    private ArtifactTypeToken primaryArtifactType;
    private ArtifactTypeToken type = ArtifactTypeToken.SENTINEL;
-   private final ActivityLog activityLog;
+   private final XResultData results;
    private final OrcsApi orcsApi;
 
-   public RoughArtifact(OrcsApi orcsApi, ActivityLog activityLog, RoughArtifactKind roughArtifactKind, String name) {
+   public RoughArtifact(OrcsApi orcsApi, XResultData results, RoughArtifactKind roughArtifactKind, String name) {
       this.attributes = new RoughAttributeSet();
       this.children = new ArrayList<>();
       this.roughArtifactKind = roughArtifactKind;
-      this.activityLog = activityLog;
+      this.results = results;
       this.orcsApi = orcsApi;
       setName(name);
    }
 
-   public RoughArtifact(OrcsApi orcsApi, ActivityLog activityLog, ArtifactTypeToken type, String name) {
+   public RoughArtifact(OrcsApi orcsApi, XResultData results, ArtifactTypeToken type, String name) {
       this.attributes = new RoughAttributeSet();
       this.children = new ArrayList<>();
       this.roughArtifactKind = RoughArtifactKind.TYPESET;
       this.type = type;
-      this.activityLog = activityLog;
+      this.results = results;
       this.orcsApi = orcsApi;
       setName(name);
    }
 
-   public RoughArtifact(OrcsApi orcsApi, ActivityLog activityLog, RoughArtifactKind roughArtifactKind) {
-      this(orcsApi, activityLog, roughArtifactKind, "unnamed");
+   public RoughArtifact(OrcsApi orcsApi, XResultData results, RoughArtifactKind roughArtifactKind) {
+      this(orcsApi, results, roughArtifactKind, "unnamed");
    }
 
    public void setName(String name) {
@@ -158,7 +157,7 @@ public class RoughArtifact {
             result = true;
          }
       } catch (OseeCoreException ex) {
-         activityLog.createThrowableEntry(CoreActivityTypes.OSEE_ERROR, ex);
+         results.errorf(ex.toString());
       }
       return result;
    }
@@ -238,8 +237,8 @@ public class RoughArtifact {
       this.type = type;
    }
 
-   public ActivityLog getActivityLog() {
-      return this.activityLog;
+   public XResultData getResults() {
+      return this.results;
    }
 
    public OrcsApi getOrcsApi() {

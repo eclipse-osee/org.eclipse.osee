@@ -80,7 +80,7 @@ public class DoorsTableRowCollector {
       analyzeRows();
       Queue<DoorsTableRow> queue = new LinkedList<>();
       DoorsArtifactBuilder dab =
-         new DoorsArtifactBuilder(orcsApi, collector.getParentRoughArtifact().getActivityLog(), extractor, this);
+         new DoorsArtifactBuilder(orcsApi, collector.getParentRoughArtifact().getResults(), extractor, this);
 
       for (DoorsTableRow dr : getTableRows()) {
          switch (dr.getType()) {

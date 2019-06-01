@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -55,7 +54,7 @@ public class DoorsIdResolver extends NewArtifactImportResolver {
             getTranslator().translate(transaction, roughArtifact, createdArt);
             transaction.relate(parentArtifact, CoreRelationTypes.Default_Hierarchical__Child, createdArt);
          } else {
-            roughArtifact.getActivityLog().createEntry(CoreActivityTypes.IMPORT_DELETE,
+            roughArtifact.getResults().warningf(
                "Doors ID resolver cant find parent. roughArtifactifact: [%s]. Doors Hierarchy: [%s]",
                roughArtifact.getName(), roughArtifact.getAttributes().getSoleAttributeValue("Doors Hierarchy"));
          }
@@ -82,8 +81,8 @@ public class DoorsIdResolver extends NewArtifactImportResolver {
       }
       ArtifactToken art = results.iterator().next();
       if (results.size() > 1) {
-         roughArtifact.getActivityLog().createEntry(CoreActivityTypes.IMPORT_DELETE,
-            "DoorsId attribute resolution found multiple items, using: %s", art.getName());
+         roughArtifact.getResults().warningf("DoorsId attribute resolution found multiple items, using: %s",
+            art.getName());
       }
       return art;
    }

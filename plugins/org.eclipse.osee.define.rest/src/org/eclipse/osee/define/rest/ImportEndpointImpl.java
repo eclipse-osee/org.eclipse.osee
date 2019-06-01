@@ -14,7 +14,7 @@ import org.eclipse.osee.define.api.DefineApi;
 import org.eclipse.osee.define.api.ImportEndpoint;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author David W. Miller
@@ -27,12 +27,12 @@ public class ImportEndpointImpl implements ImportEndpoint {
    }
 
    @Override
-   public TransactionToken importWord(BranchId branch, String wordURI, ArtifactId parentArtifactId, Integer tier) {
+   public XResultData importWord(BranchId branch, String wordURI, ArtifactId parentArtifactId, Integer tier) {
       return defineApi.getImportOperations().importWord(branch, wordURI, parentArtifactId, tier);
    }
 
    @Override
-   public TransactionToken importSetup(BranchId branch, String baseDir) {
+   public XResultData importSetup(BranchId branch, String baseDir) {
       return defineApi.getImportOperations().importSetup(branch, baseDir);
    }
 }

@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -59,8 +58,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
    public ArtifactId resolve(final RoughArtifact roughArtifact, final BranchId branch, ArtifactId realParent, ArtifactId root) {
       ArtifactTypeToken artifactType = getArtifactType(roughArtifact);
 
-      roughArtifact.getActivityLog().createEntry(CoreActivityTypes.IMPORT_DELETE,
-         "New artifact: [%s]. Attributes: [%s]", roughArtifact, roughArtifact.getAttributes());
+      roughArtifact.getResults().logf("New artifact resolved: [%s].", roughArtifact.getName());
 
       ArtifactId realArtifact =
          transaction.createArtifact(artifactType, roughArtifact.getName(), roughArtifact.getGuid());

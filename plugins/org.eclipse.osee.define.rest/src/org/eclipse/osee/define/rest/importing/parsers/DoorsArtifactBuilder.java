@@ -15,9 +15,9 @@ import java.util.Collection;
 import java.util.Queue;
 import org.eclipse.define.api.importing.RoughArtifact;
 import org.eclipse.define.api.importing.RoughArtifactKind;
-import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -30,13 +30,13 @@ public class DoorsArtifactBuilder {
    private final DoorsTableRowCollector rowCollector;
    private final DoorsArtifactExtractor extractor;
    private final OrcsApi orcsApi;
-   private final ActivityLog activityLog;
+   private final XResultData results;
 
-   public DoorsArtifactBuilder(OrcsApi orcsApi, ActivityLog activityLog, DoorsArtifactExtractor extractor, DoorsTableRowCollector rowCollector) {
+   public DoorsArtifactBuilder(OrcsApi orcsApi, XResultData results, DoorsArtifactExtractor extractor, DoorsTableRowCollector rowCollector) {
       this.rowCollector = rowCollector;
       this.extractor = extractor;
       this.orcsApi = orcsApi;
-      this.activityLog = activityLog;
+      this.results = results;
    }
 
    public RoughArtifact populateArtifact(DoorsTableRow dr) {
@@ -65,7 +65,7 @@ public class DoorsArtifactBuilder {
 
    private RoughArtifact initRoughArtifact(DoorsTableRow dr) {
       RoughArtifactKind rk = kindFromDataType(dr);
-      RoughArtifact toReturn = new RoughArtifact(orcsApi, activityLog, rk, rowCollector.getPreferredName(dr));
+      RoughArtifact toReturn = new RoughArtifact(orcsApi, results, rk, rowCollector.getPreferredName(dr));
       String paragraph = rowCollector.getSimpleText(dr, DoorsColumnType.OBJECT_NUMBER);
       toReturn.setSectionNumber(paragraph);
       toReturn.addAttribute(CoreAttributeTypes.ParagraphNumber, paragraph);

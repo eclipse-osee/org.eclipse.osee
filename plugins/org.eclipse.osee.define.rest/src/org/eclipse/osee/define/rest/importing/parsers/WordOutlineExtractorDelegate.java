@@ -19,9 +19,9 @@ import org.eclipse.define.api.importing.IArtifactExtractorDelegate;
 import org.eclipse.define.api.importing.RoughArtifact;
 import org.eclipse.define.api.importing.RoughArtifactCollector;
 import org.eclipse.define.api.importing.RoughArtifactKind;
-import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordUtilities;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -110,13 +110,13 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
     * Core of processing different WordML content "chunks".
     */
    @Override
-   public final void processContent(OrcsApi orcsApi, ActivityLog activityLog, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) {
+   public final XResultData processContent(OrcsApi orcsApi, XResultData results, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) {
       if (Strings.isValid(content) && initalized) {
 
          if (!possibleTableOfContents) {
             possibleTableOfContents = TOC_HYPERLINK_PATTERN.matcher(content).matches();
-            if (possibleTableOfContents && activityLog != null) {
-               activityLog.getDebugLogger().error("Document cannot contain a table of contents");
+            if (possibleTableOfContents && results != null) {
+               results.error("Document cannot contain a table of contents");
             }
          }
 
@@ -128,16 +128,16 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
          if (newOutlineNumber) {
             setContent();
             String number = outlineNumber.toString();
-            roughArtifact = setUpNewArtifact(orcsApi, activityLog, collector, number);
+            roughArtifact = setUpNewArtifact(orcsApi, results, collector, number);
             if (roughArtifact == null) {
-               return;
+               return results;
             }
             previousNamedArtifact = roughArtifact;
             processHeadingText(roughArtifact, WordUtilities.textOnly(outlineName.toString()));
             roughArtMeta.put(number, paragraphStyle);
             resetReqNumber();
          } else {
-            addChildRoughArtifact(orcsApi, activityLog, content, collector);
+            addChildRoughArtifact(orcsApi, results, content, collector);
          }
 
       } else {
@@ -145,9 +145,10 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
             "%s::processContent() Either passed in content is invalid or *Delegate hasn't been initialized...",
             toString());
       }
+      return results;
    }
 
-   protected void addChildRoughArtifact(OrcsApi orcsApi, ActivityLog activityLog, String content, RoughArtifactCollector collector) {
+   protected void addChildRoughArtifact(OrcsApi orcsApi, XResultData results, String content, RoughArtifactCollector collector) {
       // Override with inheriting class if needed
       // Allows child classes to choose to make given content into additional RoughArtifacts
       wordFormattedContent.append(content);
@@ -307,7 +308,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    }
 
    @Override
-   public void finish(OrcsApi orcsApi, ActivityLog activityLog, RoughArtifactCollector collector) {
+   public void finish(OrcsApi orcsApi, XResultData results, RoughArtifactCollector collector) {
       setContent();
    }
 
@@ -323,10 +324,10 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    /**
     * Checks if another artifact with the same outlineNumber was created
     */
-   private RoughArtifact setUpNewArtifact(OrcsApi orcsApi, ActivityLog activityLog, RoughArtifactCollector collector, String outlineNumber) {
+   private RoughArtifact setUpNewArtifact(OrcsApi orcsApi, XResultData results, RoughArtifactCollector collector, String outlineNumber) {
       RoughArtifact duplicateArtifact = duplicateCatcher.get(outlineNumber);
       if (duplicateArtifact == null) {
-         RoughArtifact roughArtifact = new RoughArtifact(orcsApi, activityLog, RoughArtifactKind.PRIMARY);
+         RoughArtifact roughArtifact = new RoughArtifact(orcsApi, results, RoughArtifactKind.PRIMARY);
          duplicateCatcher.put(outlineNumber, roughArtifact);
 
          if (collector != null) {
@@ -339,8 +340,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
          return roughArtifact;
       } else {
          String previousArtifcatName = previousNamedArtifact != null ? previousNamedArtifact.getName() : "null";
-         activityLog.getDebugLogger().info(
-            "Paragraph %s found more than once following \"%s\" which is a duplicate of %s", outlineNumber,
+         results.logf("Paragraph %s found more than once following \"%s\" which is a duplicate of %s", outlineNumber,
             previousArtifcatName, duplicateArtifact.getName());
          return null;
       }

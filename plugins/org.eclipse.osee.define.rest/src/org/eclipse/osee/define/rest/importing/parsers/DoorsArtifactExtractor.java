@@ -23,13 +23,12 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import org.eclipse.define.api.importing.RoughArtifact;
 import org.eclipse.define.api.importing.RoughArtifactCollector;
-import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.define.rest.internal.importing.NormalizeHtml;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -50,7 +49,6 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
 
    private final Vector<String> postProcessImages = new Vector<>();
    private String uriDirectoryName = "";
-   private ActivityLog activityLog;
    private final static String NAME_TAG = "<a name=";
    private final static String CLOSING_A_TAG = "</a>";
    private final static String BR_TAG = "<br />";
@@ -113,11 +111,12 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   public void extractFromSource(OrcsApi orcsApi, ActivityLog activityLog, URI source, RoughArtifactCollector collector) throws Exception {
-      doExtraction(orcsApi, activityLog, source, collector, "");
+   public XResultData extractFromSource(OrcsApi orcsApi, XResultData results, URI source, RoughArtifactCollector collector) throws Exception {
+      doExtraction(orcsApi, results, source, collector, "");
+      return results;
    }
 
-   public void doExtraction(OrcsApi orcsApi, ActivityLog activityLog, URI source, RoughArtifactCollector collector, String documentApplicabilty) {
+   public void doExtraction(OrcsApi orcsApi, XResultData results, URI source, RoughArtifactCollector collector, String documentApplicabilty) {
 
       InputStream htmlStream = null;
       try {
@@ -127,7 +126,6 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
          // we only need to post process the images, so we will add the uri of each
          // rough artifact that has an image to the list for post processing
          postProcessImages.clear();
-         this.activityLog = activityLog;
          htmlStream = source.toURL().openStream();
          DoorsTableRowCollector rowCollector = new DoorsTableRowCollector(this);
          Document doc = Jsoup.parse(htmlStream, "UTF-8", "");
@@ -154,7 +152,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
          }
          rowCollector.createArtifacts(orcsApi, collector);
       } catch (Exception ex) {
-         activityLog.createThrowableEntry(CoreActivityTypes.OSEE_ERROR, ex);
+         results.error(ex.toString());
       } finally {
          Lib.close(htmlStream);
       }
@@ -197,9 +195,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                   }
                }
             } catch (OseeCoreException ex) {
-               if (activityLog != null) {
-                  activityLog.createThrowableEntry(CoreActivityTypes.OSEE_ERROR, ex);
-               }
+               source.getResults().error(ex.toString());
+
             }
          }
       }
@@ -635,20 +632,22 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             }
             try {
                URI imageURI = new URI(theImage);
-               roughArtifact.addAttribute(CoreAttributeTypes.ImageContent.getName(), imageURI);
+               if (roughArtifact != null) {
+                  roughArtifact.addAttribute(CoreAttributeTypes.ImageContent.getName(), imageURI);
+               }
 
                rowValue = rowValue.replace(replaceName, IMAGE_BASE_NAME + Integer.toString(imageNumber));
                imageNumber++;
                // put it into the post processing list
                postProcessImages.add(imageURI.toASCIIString());
             } catch (URISyntaxException ex) {
-               if (activityLog != null) {
-                  activityLog.createThrowableEntry(CoreActivityTypes.OSEE_ERROR, ex);
+               if (roughArtifact != null) {
+                  roughArtifact.getResults().error(ex.toString());
                }
             }
          } while (comma != -1);
       }
-      if (Strings.isValid(rowValue)) {
+      if (Strings.isValid(rowValue) && roughArtifact != null) {
          roughArtifact.addAttribute(CoreAttributeTypes.HTMLContent, rowValue);
       }
    }

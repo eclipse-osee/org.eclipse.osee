@@ -79,7 +79,7 @@ public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
          List<ArtifactReadable> descendants = root.getDescendants();
          Collection<ArtifactReadable> candidates = new LinkedList<>();
 
-         roughArtifact.getActivityLog().getDebugLogger().info("Resolved using: %s",
+         roughArtifact.getResults().logf("Resolved using: %s",
             !descendants.isEmpty() ? "root node." : "realParent descendants.");
          ArtifactReadable realParent =
             roughArtifact.getOrcsApi().getQueryFactory().fromBranch(branch).andId(realParentId).getArtifact();
@@ -93,8 +93,8 @@ public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
             realArtifact = candidates.iterator().next();
             getTranslator().translate(transaction, roughArtifact, realArtifact);
          } else {
-            roughArtifact.getActivityLog().getDebugLogger().info("Found %s candidates during reuse import for \"%s\"",
-               candidates.size(), roughArtifact.getName());
+            roughArtifact.getResults().logf("Found %s candidates during reuse import for \"%s\"", candidates.size(),
+               roughArtifact.getName());
             if (createNewIfNotExist) {
                return super.resolve(roughArtifact, branch, null, root);
             }

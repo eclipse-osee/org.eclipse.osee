@@ -23,8 +23,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.define.api.importing.IArtifactExtractorDelegate;
 import org.eclipse.define.api.importing.RoughArtifactCollector;
-import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordUtilities;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -106,7 +106,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   protected void extractFromSource(OrcsApi orcsApi, ActivityLog activityLog, URI source, RoughArtifactCollector collector) throws IOException {
+   protected XResultData extractFromSource(OrcsApi orcsApi, XResultData results, URI source, RoughArtifactCollector collector) throws IOException {
       Reader reader = null;
       try {
          reader = new BufferedReader(new InputStreamReader(source.toURL().openStream(), "UTF-8"));
@@ -122,8 +122,8 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
          while ((element = Readers.forward(reader, BODY_TAGS)) != null) {
 
             if (element == WordUtilities.BODY_END) {
-               delegate.finish(orcsApi, activityLog, collector);
-               return;
+               delegate.finish(orcsApi, results, collector);
+               return results;
             } else {
                // Get the next parse-able chunk from the stream. This will throttle the amount of the file read in to
                // memory at one time to the smallest area that will provide all the necessary context.
@@ -159,8 +159,8 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
                listIdentifier = "";
                paragraphStyle = null;
                parseContentDetails(content, new Stack<String>());
-               delegate.processContent(orcsApi, activityLog, collector, forceBody, forcePrimaryType, headerNumber,
-                  listIdentifier, paragraphStyle, content.toString(), element == PARAGRAPH_TAG);
+               results.combine(delegate.processContent(orcsApi, results, collector, forceBody, forcePrimaryType,
+                  headerNumber, listIdentifier, paragraphStyle, content.toString(), element == PARAGRAPH_TAG));
             }
          }
 
@@ -170,6 +170,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
             reader.close();
          }
       }
+      return results;
    }
 
    private void parseContentDetails(CharSequence content, Stack<String> parentElementNames) {

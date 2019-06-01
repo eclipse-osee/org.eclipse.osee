@@ -11,7 +11,6 @@
 package org.eclipse.osee.define.rest.operations;
 
 import java.util.List;
-import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -22,11 +21,12 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class ArtifactValidationCheckOperation {
    private final List<ArtifactReadable> itemsToCheck;
    private final boolean stopOnFirstError;
-   private final XResultData results = new XResultData(false);
+   private final XResultData results;
 
-   public ArtifactValidationCheckOperation(OrcsApi orcsApi, ActivityLog activityLog, ArtifactReadable parentArtifact, boolean stopOnFirstError) {
+   public ArtifactValidationCheckOperation(OrcsApi orcsApi, XResultData results, ArtifactReadable parentArtifact, boolean stopOnFirstError) {
       this.stopOnFirstError = stopOnFirstError;
       this.itemsToCheck = parentArtifact.getDescendants();
+      this.results = results;
    }
 
    public boolean isStopOnFirstError() {
@@ -35,7 +35,7 @@ public class ArtifactValidationCheckOperation {
 
    public XResultData validate() {
       for (ArtifactReadable artifact : itemsToCheck) {
-         boolean hasError = validateArt(artifact);
+         boolean hasError = validateArt(artifact, results);
          if (isStopOnFirstError() && hasError) {
             break;
          }
@@ -43,7 +43,7 @@ public class ArtifactValidationCheckOperation {
       return results;
    }
 
-   private boolean validateArt(ArtifactReadable artifact) {
+   private boolean validateArt(ArtifactReadable artifact, XResultData results) {
       return false; //TODO put the correct validation here
    }
 }

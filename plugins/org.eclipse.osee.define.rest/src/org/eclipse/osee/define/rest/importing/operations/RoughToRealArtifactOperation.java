@@ -19,13 +19,12 @@ import org.eclipse.define.api.importing.IArtifactExtractor;
 import org.eclipse.define.api.importing.RoughArtifact;
 import org.eclipse.define.api.importing.RoughArtifactCollector;
 import org.eclipse.define.api.importing.RoughRelation;
-import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.define.rest.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -36,7 +35,7 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  */
 public class RoughToRealArtifactOperation {
    private final OrcsApi orcsApi;
-   private final ActivityLog activityLog;
+   private final XResultData results;
    private final RoughArtifactCollector rawData;
    private final IArtifactImportResolver artifactResolver;
    private final Map<RoughArtifact, ArtifactReadable> roughToRealArtifacts;
@@ -49,8 +48,8 @@ public class RoughToRealArtifactOperation {
    private final TransactionBuilder transaction;
    private boolean addRelation = true;
 
-   public RoughToRealArtifactOperation(OrcsApi orcsApi, ActivityLog activityLog, TransactionBuilder transaction, ArtifactReadable destinationArtifact, RoughArtifactCollector rawData, IArtifactImportResolver artifactResolver, boolean deleteUnmatchedArtifacts, IArtifactExtractor extractor) {
-      this.activityLog = activityLog;
+   public RoughToRealArtifactOperation(OrcsApi orcsApi, XResultData results, TransactionBuilder transaction, ArtifactReadable destinationArtifact, RoughArtifactCollector rawData, IArtifactImportResolver artifactResolver, boolean deleteUnmatchedArtifacts, IArtifactExtractor extractor) {
+      this.results = results;
       this.orcsApi = orcsApi;
       this.rawData = rawData;
       this.transaction = transaction;
@@ -174,22 +173,19 @@ public class RoughToRealArtifactOperation {
          roughRelation.getBartifactGuid()).getArtifact();
 
       if (aArt == null || bArt == null) {
-         activityLog.getDebugLogger().warn("The relation of type %s could not be created.",
-            roughRelation.getRelationTypeName());
+         results.warningf("The relation of type %s could not be created.", roughRelation.getRelationTypeName());
 
          if (aArt == null) {
-            activityLog.getDebugLogger().warn("The artifact with guid: %s does not exist.",
-               roughRelation.getAartifactGuid());
+            results.warningf("The artifact with guid: %s does not exist.", roughRelation.getAartifactGuid());
          }
          if (bArt == null) {
-            activityLog.getDebugLogger().warn("The artifact with guid: %s does not exist.",
-               roughRelation.getBartifactGuid());
+            results.warningf("The artifact with guid: %s does not exist.", roughRelation.getBartifactGuid());
          }
       } else {
          try {
             transaction.relate(aArt, relationType, bArt, roughRelation.getRationale(), importArtifactOrder);
          } catch (IllegalArgumentException ex) {
-            activityLog.createThrowableEntry(CoreActivityTypes.OSEE_ERROR, ex);
+            results.error(ex.toString());
          }
       }
    }

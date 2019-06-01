@@ -12,15 +12,15 @@ package org.eclipse.osee.define.api;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author David W. Miller
  */
 public interface ImportOperations {
 
-   public TransactionToken importWord(BranchId branch, String wordURI, ArtifactId parent, Integer tier);
+   public XResultData importWord(BranchId branch, String wordURI, ArtifactId parent, Integer tier);
 
-   public TransactionToken importSetup(BranchId branch, String baseDir);
+   public XResultData importSetup(BranchId branch, String baseDir);
 
 }

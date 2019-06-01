@@ -15,7 +15,6 @@ import org.eclipse.define.api.importing.RoughArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -45,7 +44,7 @@ public class GuidBasedArtifactResolver extends NewArtifactImportResolver {
       ArtifactId realArtifact = null;
 
       if (roughArtifact.getGuid() == null) {
-         roughArtifact.getActivityLog().createEntry(CoreActivityTypes.IMPORT_DELETE,
+         roughArtifact.getResults().warningf(
             "Guid based resolver is comparing a null GUID. roughArtifactifact: [%s]. Attributes: [%s]", roughArtifact,
             roughArtifact.getAttributes());
       }

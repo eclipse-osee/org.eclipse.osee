@@ -22,9 +22,9 @@ import org.eclipse.define.api.importing.RoughArtifact;
 import org.eclipse.define.api.importing.RoughArtifactCollector;
 import org.eclipse.define.api.importing.RoughArtifactKind;
 import org.eclipse.define.api.importing.RoughRelation;
-import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -69,10 +69,11 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   protected void extractFromSource(OrcsApi orcsApi, ActivityLog activityLog, URI source, RoughArtifactCollector collector) throws Exception {
+   protected XResultData extractFromSource(OrcsApi orcsApi, XResultData results, URI source, RoughArtifactCollector collector) throws Exception {
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-      xmlReader.setContentHandler(new ExcelSaxHandler(new ExcelRowProcessor(orcsApi, activityLog, collector), true));
+      xmlReader.setContentHandler(new ExcelSaxHandler(new ExcelRowProcessor(orcsApi, results, collector), true));
       xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
+      return results;
    }
 
    private static final class ExcelRowProcessor implements RowProcessor {
@@ -114,15 +115,15 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
       private ArtifactTypeToken primaryDescriptor;
       private boolean importingRelations;
       private final OrcsApi orcsApi;
-      private final ActivityLog activityLog;
+      private final XResultData results;
 
-      public ExcelRowProcessor(OrcsApi orcsApi, ActivityLog activityLog, RoughArtifactCollector collector) {
+      public ExcelRowProcessor(OrcsApi orcsApi, XResultData results, RoughArtifactCollector collector) {
          this.guidMatcher = guidPattern.matcher("");
          this.collector = collector;
          rowCount = 0;
          importingRelations = false;
          this.orcsApi = orcsApi;
-         this.activityLog = activityLog;
+         this.results = results;
       }
 
       @Override
@@ -190,12 +191,12 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
             guidb = getGuid(row[2]);
 
             if (guida == null || guidb == null) {
-               activityLog.getDebugLogger().warn(
-                  "we failed to add a relation because at least on of its guids are null");
+               results.warning("we failed to add a relation because at least on of its guids are null");
             }
             collector.addRoughRelation(new RoughRelation(row[0], guida, guidb, row[5]));
          } else {
-            RoughArtifact roughArtifact = new RoughArtifact(orcsApi, activityLog, RoughArtifactKind.PRIMARY);
+            XResultData results = new XResultData();
+            RoughArtifact roughArtifact = new RoughArtifact(orcsApi, results, RoughArtifactKind.PRIMARY);
             if (!rowIndexToRowTypeMap.isEmpty()) {
                for (int rowIndex = 0; rowIndex < row.length; rowIndex++) {
                   RowTypeEnum rowType = rowIndexToRowTypeMap.get(rowIndex);

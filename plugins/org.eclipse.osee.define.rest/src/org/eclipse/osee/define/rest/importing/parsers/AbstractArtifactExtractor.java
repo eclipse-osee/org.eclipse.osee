@@ -15,8 +15,8 @@ import org.eclipse.define.api.importing.IArtifactExtractor;
 import org.eclipse.define.api.importing.IArtifactExtractorDelegate;
 import org.eclipse.define.api.importing.RoughArtifact;
 import org.eclipse.define.api.importing.RoughArtifactCollector;
-import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -34,7 +34,7 @@ public abstract class AbstractArtifactExtractor implements IArtifactExtractor {
       // Protect Constructor
    }
 
-   protected abstract void extractFromSource(OrcsApi orcsApi, ActivityLog activityLog, URI source, RoughArtifactCollector collector) throws Exception;
+   protected abstract XResultData extractFromSource(OrcsApi orcsApi, XResultData results, URI source, RoughArtifactCollector collector) throws Exception;
 
    @Override
    public String toString() {
@@ -68,17 +68,17 @@ public abstract class AbstractArtifactExtractor implements IArtifactExtractor {
    }
 
    @Override
-   public final void process(OrcsApi orcsApi, ActivityLog activityLog, URI source, RoughArtifactCollector collector) throws Exception {
+   public final XResultData process(OrcsApi orcsApi, XResultData results, URI source, RoughArtifactCollector collector) throws Exception {
       checkDelegate();
-
       delegate.initialize();
       try {
-         extractFromSource(orcsApi, activityLog, source, collector);
+         extractFromSource(orcsApi, results, source, collector);
          connectParentChildRelations(collector);
          connectCollectorParent(collector);
       } finally {
          delegate.dispose();
       }
+      return results;
    }
 
    /**********************************************************

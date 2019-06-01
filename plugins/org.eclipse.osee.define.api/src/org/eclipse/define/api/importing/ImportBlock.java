@@ -11,10 +11,10 @@
 package org.eclipse.define.api.importing;
 
 import java.util.LinkedList;
-import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -26,10 +26,10 @@ public abstract class ImportBlock implements Named {
    protected ArtifactTypeToken type = ArtifactTypeToken.SENTINEL;
    private Boolean complete = false;
    protected final LinkedList<BlockField> attrs = new LinkedList<>();
-   protected final ActivityLog activityLog;
+   protected final XResultData results;
 
-   protected ImportBlock(ActivityLog activityLog) {
-      this.activityLog = activityLog;
+   protected ImportBlock(XResultData results) {
+      this.results = results;
    }
 
    public Boolean isParentBlock() {

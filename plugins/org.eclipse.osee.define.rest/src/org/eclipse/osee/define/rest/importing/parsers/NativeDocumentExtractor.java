@@ -16,8 +16,8 @@ import java.net.URI;
 import org.eclipse.define.api.importing.RoughArtifact;
 import org.eclipse.define.api.importing.RoughArtifactCollector;
 import org.eclipse.define.api.importing.RoughArtifactKind;
-import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -29,14 +29,15 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   protected void extractFromSource(OrcsApi orcsApi, ActivityLog activityLog, URI source, RoughArtifactCollector collector) {
+   protected XResultData extractFromSource(OrcsApi orcsApi, XResultData results, URI source, RoughArtifactCollector collector) {
       String extension = Lib.getExtension(source.toASCIIString());
       String name = Lib.removeExtension(new File(source).getName());
 
-      RoughArtifact roughArtifact = new RoughArtifact(orcsApi, activityLog, RoughArtifactKind.PRIMARY, name);
+      RoughArtifact roughArtifact = new RoughArtifact(orcsApi, results, RoughArtifactKind.PRIMARY, name);
       collector.addRoughArtifact(roughArtifact);
       roughArtifact.addAttribute(CoreAttributeTypes.Extension, extension);
       roughArtifact.addAttribute(CoreAttributeTypes.NativeContent, source);
+      return results;
    }
 
    @Override

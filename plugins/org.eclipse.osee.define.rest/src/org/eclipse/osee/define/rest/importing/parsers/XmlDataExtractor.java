@@ -15,8 +15,8 @@ import java.io.FileFilter;
 import java.io.InputStreamReader;
 import java.net.URI;
 import org.eclipse.define.api.importing.RoughArtifactCollector;
-import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
@@ -30,7 +30,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 public class XmlDataExtractor extends AbstractArtifactExtractor {
 
    @Override
-   protected void extractFromSource(OrcsApi orcsApi, ActivityLog activityLog, URI source, RoughArtifactCollector collector) throws Exception {
+   protected XResultData extractFromSource(OrcsApi orcsApi, XResultData results, URI source, RoughArtifactCollector collector) throws Exception {
       ArtifactTypeToken primaryArtifactType = null;
       ArtifactTypes artTypes = orcsApi.getOrcsTypes().getArtifactTypes();
 
@@ -40,8 +40,9 @@ public class XmlDataExtractor extends AbstractArtifactExtractor {
          }
       }
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-      xmlReader.setContentHandler(new XmlDataSaxHandler(orcsApi, activityLog, collector, primaryArtifactType));
+      xmlReader.setContentHandler(new XmlDataSaxHandler(orcsApi, results, collector, primaryArtifactType));
       xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
+      return results;
    }
 
    @Override
