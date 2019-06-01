@@ -39,7 +39,7 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    }
 
    @Override
-   public void addMember(UserId user) {
+   public boolean addMember(UserId user) {
       throw new UnsupportedOperationException();
    }
 
@@ -61,7 +61,7 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    }
 
    @Override
-   public void removeMember(UserId user) {
+   public boolean removeMember(UserId user) {
       throw new UnsupportedOperationException();
    }
 

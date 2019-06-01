@@ -19,13 +19,13 @@ public interface IUserGroup {
 
    ArtifactToken getArtifact();
 
-   void addMember(UserId user);
+   boolean addMember(UserId user);
 
    boolean isMember(UserId user);
 
    boolean isCurrentUserMember();
 
-   void removeMember(UserId user);
+   boolean removeMember(UserId user);
 
    Collection<UserToken> getMembers();
 

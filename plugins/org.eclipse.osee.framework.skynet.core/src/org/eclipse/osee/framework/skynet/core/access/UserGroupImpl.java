@@ -48,10 +48,14 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    }
 
    @Override
-   public void addMember(UserId user) {
+   public boolean addMember(UserId user) {
       checkGroupExists();
       Conditions.assertTrue(user instanceof Artifact, "User must be artifact");
-      getArtifact().addRelation(CoreRelationTypes.Users_User, (Artifact) user);
+      if (!getArtifact().isRelated(CoreRelationTypes.Users_User, (Artifact) user)) {
+         getArtifact().addRelation(CoreRelationTypes.Users_User, (Artifact) user);
+         return true;
+      }
+      return false;
    }
 
    @Override
@@ -93,10 +97,14 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    }
 
    @Override
-   public void removeMember(UserId user) {
+   public boolean removeMember(UserId user) {
       checkGroupExists();
       Conditions.assertTrue(user instanceof Artifact, "User must be artifact");
-      getArtifact().deleteRelation(CoreRelationTypes.Users_User, (Artifact) user);
+      if (getArtifact().isRelated(CoreRelationTypes.Users_User, (Artifact) user)) {
+         getArtifact().deleteRelation(CoreRelationTypes.Users_User, (Artifact) user);
+         return true;
+      }
+      return false;
    }
 
    @Override
