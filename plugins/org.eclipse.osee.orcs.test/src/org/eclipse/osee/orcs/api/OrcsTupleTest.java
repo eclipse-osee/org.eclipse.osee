@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.api;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.Everyone;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.GitFamily;
 import static org.eclipse.osee.framework.core.enums.CoreTupleTypes.LruDataTypes;
@@ -26,6 +25,7 @@ import org.eclipse.osee.framework.core.data.Tuple4Type;
 import org.eclipse.osee.framework.core.data.TupleTypeImpl;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.jdbc.JdbcException;
@@ -85,12 +85,12 @@ public class OrcsTupleTest {
    public void testAddTuple2() {
       TransactionBuilder transaction =
          orcsApi.getTransactionFactory().createTransaction(COMMON, OseeSystem, "Add Tuple2 Test");
-      GammaId gamma_id = transaction.addTuple2(ViewApplicability, Everyone, "t");
+      GammaId gamma_id = transaction.addTuple2(ViewApplicability, CoreUserGroups.Everyone, "t");
       transaction.commit();
 
       Assert.assertTrue(gamma_id.isValid());
 
-      transaction.addTuple2(ViewApplicability, Everyone, "t");
+      transaction.addTuple2(ViewApplicability, CoreUserGroups.Everyone, "t");
       transaction.commit();
    }
 

@@ -10,12 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.world;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.ide.workflow.task.TaskXViewer;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 
@@ -52,7 +56,7 @@ public interface IAtsWorldEditorItem {
 
    public List<AtsSearchWorkflowSearchItem> getSearchWorkflowSearchItems();
 
-   default public String getOseeTarget() {
-      return "";
+   default public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Collections.singleton(CoreUserGroups.Everyone);
    }
 }

@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
@@ -37,7 +36,6 @@ public class OseeProperties {
    private static final String OSEE_DB_CONNECTION_POOL_SIZE = "osee.db.connection.pool.size";
    private static final String OSEE_DB_CONNECTION_POOL_CONFIG_URI = "osee.db.connection.pool.config.uri";
    public static final String OSEE_SHOW_TOKEN_FOR_CHANGE_NAME = "osee.show.token.for.change.name";
-   public static final String OSEE_TARGET = "osee.target";
 
    protected OseeProperties() {
       // Utility Class
@@ -219,21 +217,6 @@ public class OseeProperties {
       toStringHelper(list, getClass());
       Collections.sort(list);
       return org.eclipse.osee.framework.jdk.core.util.Collections.toString("\n", list);
-   }
-
-   @NonNull
-   public static String getTarget() {
-      String target = System.getProperty(OSEE_TARGET);
-
-      if (Strings.isInValid(target)) {
-         return "all";
-      } else {
-         return target;
-      }
-   }
-
-   public static boolean isTargetAll() {
-      return "all".equals(getTarget()) || Strings.isInValid(getTarget());
    }
 
 }

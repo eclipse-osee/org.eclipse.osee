@@ -47,8 +47,16 @@ public interface ArtifactId extends Id {
 
    public static ArtifactId valueOf(Long id) {
       final class ArtifactIdImpl extends BaseId implements ArtifactId, Comparable<ArtifactId> {
+         private final Long id;
+
+         @Override
+         public Long getId() {
+            return id;
+         }
+
          public ArtifactIdImpl(Long artId) {
             super(artId);
+            this.id = artId;
          }
 
          @Override
@@ -59,8 +67,4 @@ public interface ArtifactId extends Id {
       return new ArtifactIdImpl(id);
    }
 
-   @Override
-   default Long getId() {
-      return getUuid();
-   }
 }

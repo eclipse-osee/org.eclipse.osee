@@ -17,7 +17,9 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -118,8 +120,8 @@ public class RelationOrderRepairBlam extends AbstractBlam {
    }
 
    @Override
-   public String getTarget() {
-      return TARGET_ALL;
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Collections.singleton(CoreUserGroups.Everyone);
    }
 
 }

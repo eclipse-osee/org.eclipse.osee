@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.ide.workflow.review;
 import org.eclipse.osee.ats.api.review.DecisionOptions;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 
 /**

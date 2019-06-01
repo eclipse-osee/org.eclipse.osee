@@ -11,13 +11,13 @@
 package org.eclipse.osee.ats.ide.navigate;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.core.access.UserGroupService;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IUserGroup;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -49,7 +49,7 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
    public static void run() {
       try {
          if (!AtsClientService.get().getUserGroupService().getUserGroup(
-            AtsArtifactToken.AtsTempAdmin).isCurrentUserMember()) {
+            AtsUserGroups.AtsTempAdmin).isCurrentUserMember()) {
             AWorkbench.popup("Current User not configured for Temporary Admin");
             return;
          }
@@ -73,7 +73,7 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
                }
             } else {
                IUserGroup atsAdminGroup =
-                  AtsClientService.get().getUserGroupService().getUserGroup(AtsArtifactToken.AtsAdmin);
+                  AtsClientService.get().getUserGroupService().getUserGroup(AtsUserGroups.AtsAdmin);
                if (atsAdminGroup.isCurrentUserMember()) {
                   atsAdminGroup.removeMember(UserManager.getUser());
                   Conditions.assertTrue(atsAdminGroup.getArtifact() instanceof Artifact, "Must be artifact.");
@@ -81,7 +81,7 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
                }
 
                IUserGroup oseeAdminGroup =
-                  AtsClientService.get().getUserGroupService().getUserGroup(CoreArtifactTokens.OseeAdmin);
+                  AtsClientService.get().getUserGroupService().getUserGroup(CoreUserGroups.OseeAdmin);
                if (oseeAdminGroup.isCurrentUserMember()) {
                   oseeAdminGroup.removeMember(UserManager.getUser());
                   Conditions.assertTrue(oseeAdminGroup.getArtifact() instanceof Artifact, "Must be artifact.");

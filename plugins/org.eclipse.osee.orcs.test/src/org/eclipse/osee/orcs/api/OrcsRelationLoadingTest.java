@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -59,8 +60,9 @@ public class OrcsRelationLoadingTest {
       ArtifactReadable art7 = queryFactory.fromBranch(CoreBranches.COMMON).andId(
          CoreArtifactTokens.UserGroups).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
       Conditions.assertNotSentinel(art7);
-      ArtifactReadable art8 = queryFactory.fromBranch(CoreBranches.COMMON).andId(
-         CoreArtifactTokens.Everyone).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+      ArtifactReadable art8 =
+         queryFactory.fromBranch(CoreBranches.COMMON).andId(CoreUserGroups.Everyone).getResults().getAtMostOneOrDefault(
+            ArtifactReadable.SENTINEL);
       Conditions.assertNotSentinel(art8);
 
       //art 6 has no relations

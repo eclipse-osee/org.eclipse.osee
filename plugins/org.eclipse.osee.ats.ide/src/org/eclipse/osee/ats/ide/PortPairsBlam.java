@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.ide;
 
 import java.util.Collection;
 import java.util.Collections;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -57,8 +59,8 @@ public class PortPairsBlam extends AbstractBlam {
    }
 
    @Override
-   public String getTarget() {
-      return TARGET_ALL;
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Collections.singleton(CoreUserGroups.Everyone);
    }
 
 }

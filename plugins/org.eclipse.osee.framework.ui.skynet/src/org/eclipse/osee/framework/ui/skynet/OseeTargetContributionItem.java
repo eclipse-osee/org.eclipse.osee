@@ -15,7 +15,6 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.OseeStatusContributionItem;
@@ -34,7 +33,7 @@ import org.osgi.framework.Bundle;
 public class OseeTargetContributionItem extends OseeStatusContributionItem {
 
    public OseeTargetContributionItem() {
-      super(OseeProperties.OSEE_TARGET, 5);
+      super("user.group", 5);
       setTargetImage();
    }
 

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.OseeAccessAdmin;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.OseeAdmin;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.UserToken;
@@ -24,7 +22,7 @@ public final class DemoUsers {
    // @formatter:off
    public static final UserToken Joe_Smith = UserToken.create(61106791, "Joe Smith", "joe@boeing.com", "3333", true, false);
    public static final UserToken Kay_Jones = UserToken.create(5896672, "Kay Jones", "kay@boeing.com", "4444", true, false);
-   public static final UserToken Jason_Michael = UserToken.create(277990, "Jason Michael", "jason@boeing.com", "5555", true, false, OseeAdmin, OseeAccessAdmin);
+   public static final UserToken Jason_Michael = UserToken.create(277990, "Jason Michael", "jason@boeing.com", "5555", true, false, CoreUserGroups.OseeAdmin, CoreUserGroups.OseeAccessAdmin);
    public static final UserToken Alex_Kay = UserToken.create(8006939, "Alex Kay", "", "6666", true, false);
    public static final UserToken Kay_Jason = UserToken.create(1402067349, "Kay Jason", "kayj@boeing.com", "7777", true, false);
    public static final UserToken Steven_Kohn = UserToken.create(1668581959, "Steven Kohn", "stevenk@boeing.com", "8888", true, false);

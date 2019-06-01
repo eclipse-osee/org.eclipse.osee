@@ -112,4 +112,10 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
       checkGroupExists();
       return Collections.castAll(getArtifact().getRelatedArtifacts(CoreRelationTypes.Users_User));
    }
+
+   @Override
+   public BranchId getBranch() {
+      return groupArtifact.getBranch();
+   }
+
 }

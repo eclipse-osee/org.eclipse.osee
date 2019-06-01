@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet;
 
+import java.util.Collection;
 import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 
 /**
  * Provides OSEE XViewerFactories to ability to define their osee.target property
@@ -23,5 +25,5 @@ public abstract class OseeTargetXViewerFactory extends XViewerFactory {
       super(namespace);
    }
 
-   public abstract String getOseeTarget();
+   public abstract Collection<IUserGroupArtifactToken> getUserGroups();
 }

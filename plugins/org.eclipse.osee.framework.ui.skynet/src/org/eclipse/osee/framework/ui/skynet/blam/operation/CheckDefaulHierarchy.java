@@ -14,10 +14,13 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -62,8 +65,8 @@ public class CheckDefaulHierarchy extends AbstractBlam {
    }
 
    @Override
-   public String getTarget() {
-      return TARGET_ALL;
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Collections.singleton(CoreUserGroups.Everyone);
    }
 
 }

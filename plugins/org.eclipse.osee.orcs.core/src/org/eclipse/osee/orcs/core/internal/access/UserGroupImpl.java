@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.access;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -69,5 +70,10 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    public Collection<UserToken> getMembers() {
       checkGroupExists();
       return Collections.castAll(getArtifact().getRelated(CoreRelationTypes.Users_User).getList());
+   }
+
+   @Override
+   public BranchId getBranch() {
+      return getArtifact().getBranch();
    }
 }

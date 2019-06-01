@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.ide.workflow;
 
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**

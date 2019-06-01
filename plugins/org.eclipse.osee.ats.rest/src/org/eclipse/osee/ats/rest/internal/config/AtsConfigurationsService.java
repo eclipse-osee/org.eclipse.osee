@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
 import org.eclipse.osee.ats.api.config.JaxVersion;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.WorkDefData;
@@ -132,7 +133,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
          configs.getUsers().add((AtsUser) user);
       }
       // load admins
-      ArtifactReadable atsAdminArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(AtsArtifactToken.AtsAdmin);
+      ArtifactReadable atsAdminArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(AtsUserGroups.AtsAdmin);
       if (atsAdminArt != null) {
          for (ArtifactReadable member : atsAdminArt.getRelated(Users_User)) {
             configs.getAtsAdmins().add(member);

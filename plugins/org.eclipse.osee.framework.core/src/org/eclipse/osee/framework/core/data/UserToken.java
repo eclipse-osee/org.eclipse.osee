@@ -12,11 +12,11 @@ package org.eclipse.osee.framework.core.data;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Arrays;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import java.util.Arrays;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
@@ -62,7 +62,7 @@ public interface UserToken extends ArtifactToken, UserId {
          this.email = email;
          this.creationRequired = creationRequired;
          this.roles = roles;
-         this.admin = Arrays.asList(roles).contains(CoreArtifactTokens.OseeAdmin);
+         this.admin = Arrays.asList(roles).contains(CoreUserGroups.OseeAdmin);
       }
 
       @Override

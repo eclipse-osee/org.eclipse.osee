@@ -82,4 +82,10 @@ public class ArtifactAccessObject extends AccessObject implements ArtifactId {
       ArtifactAccessObject ao = (ArtifactAccessObject) obj;
       return ao.artId.equals(this.artId) && ao.branch.equals(this.branch);
    }
+
+   @Override
+   public Long getId() {
+      return artId.getId();
+   }
+
 }

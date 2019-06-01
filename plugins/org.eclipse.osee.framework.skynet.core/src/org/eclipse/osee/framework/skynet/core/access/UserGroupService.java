@@ -10,12 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.access;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroupService;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
@@ -27,18 +32,15 @@ public class UserGroupService implements IUserGroupService {
    private static UserGroupService userGroupService;
 
    public static IUserGroup getOseeAdmin() {
-      return get(CoreArtifactTokens.OseeAdmin);
+      return get(CoreUserGroups.OseeAdmin);
    }
 
    public static IUserGroup getOseeAccessAdmin() {
-      return get(CoreArtifactTokens.OseeAccessAdmin);
+      return get(CoreUserGroups.OseeAccessAdmin);
    }
 
    private static IUserGroup get(IUserGroupArtifactToken userGroupArtToken) {
-      if (userGroupService == null) {
-         userGroupService = new UserGroupService();
-      }
-      return userGroupService.getUserGroup(userGroupArtToken);
+      return getUserGroupService().getUserGroup(userGroupArtToken);
    }
 
    @Override
@@ -55,6 +57,43 @@ public class UserGroupService implements IUserGroupService {
       } else {
          throw new OseeArgumentException("parameter must be artifact");
       }
+   }
+
+   private static IUserGroupService getUserGroupService() {
+      if (userGroupService == null) {
+         userGroupService = new UserGroupService();
+      }
+      return userGroupService;
+   }
+
+   public static Collection<IUserGroupArtifactToken> getUserGrps() {
+      List<IUserGroupArtifactToken> userGrps = new ArrayList<>();
+      for (Artifact userGrp : UserManager.getUser().getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
+         userGrps.add(new UserGroupImpl(userGrp));
+      }
+      return userGrps;
+   }
+
+   @Override
+   public Collection<IUserGroupArtifactToken> getMyUserGroups() {
+      return UserGroupService.getUserGrps();
+   }
+
+   @Override
+   public boolean isInUserGroup(IUserGroupArtifactToken... userGroups) {
+      boolean isInGroup = false;
+      Collection<IUserGroupArtifactToken> userGrps = getMyUserGroups();
+      for (IUserGroupArtifactToken userGroup : userGroups) {
+         if (userGrps.contains(userGroup)) {
+            isInGroup = true;
+            break;
+         }
+      }
+      return isInGroup;
+   }
+
+   public static boolean isInUserGrp(IUserGroupArtifactToken... userGroups) {
+      return getUserGroupService().isInUserGroup(userGroups);
    }
 
 }

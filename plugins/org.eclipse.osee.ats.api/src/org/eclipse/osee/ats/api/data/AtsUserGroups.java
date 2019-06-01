@@ -8,19 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.data;
+package org.eclipse.osee.ats.api.data;
 
-import java.util.Collection;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IUserGroupService {
+public class AtsUserGroups {
 
-   IUserGroup getUserGroup(IUserGroupArtifactToken userGroup);
-
-   Collection<IUserGroupArtifactToken> getMyUserGroups();
-
-   boolean isInUserGroup(IUserGroupArtifactToken... userGroups);
+   public static IUserGroupArtifactToken AtsAdmin = UserGroupArtifactToken.valueOf(136750L, "AtsAdmin");
+   public static IUserGroupArtifactToken AtsTempAdmin = UserGroupArtifactToken.valueOf(5367074L, "AtsTempAdmin");
 
 }

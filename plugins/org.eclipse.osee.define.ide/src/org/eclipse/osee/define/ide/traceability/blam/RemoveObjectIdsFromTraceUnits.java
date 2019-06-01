@@ -16,6 +16,7 @@ import java.net.URI;
 import java.nio.CharBuffer;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
@@ -24,6 +25,8 @@ import org.eclipse.osee.define.ide.traceability.TestUnitTagger;
 import org.eclipse.osee.define.ide.utility.IResourceHandler;
 import org.eclipse.osee.define.ide.utility.IResourceLocator;
 import org.eclipse.osee.define.ide.utility.UriResourceContentFinder;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -148,8 +151,8 @@ public class RemoveObjectIdsFromTraceUnits extends AbstractBlam {
    }
 
    @Override
-   public String getTarget() {
-      return TARGET_ALL;
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Collections.singleton(CoreUserGroups.Everyone);
    }
 
 }

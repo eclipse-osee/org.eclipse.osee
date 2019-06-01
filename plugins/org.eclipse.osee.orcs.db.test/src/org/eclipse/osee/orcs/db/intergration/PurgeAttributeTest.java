@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -81,8 +82,8 @@ public class PurgeAttributeTest {
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(COMMON, DemoUsers.Joe_Smith, getClass().getSimpleName());
       tx.createAttribute(CoreArtifactTokens.UserGroups, CoreAttributeTypes.Annotation, UNIQUE_ATTR_VALUE);
-      tx.createAttribute(CoreArtifactTokens.Everyone, CoreAttributeTypes.Annotation, UNIQUE_ATTR_VALUE);
-      tx.createAttribute(CoreArtifactTokens.OseeAdmin, CoreAttributeTypes.Annotation, UNIQUE_ATTR_VALUE);
+      tx.createAttribute(CoreUserGroups.Everyone, CoreAttributeTypes.Annotation, UNIQUE_ATTR_VALUE);
+      tx.createAttribute(CoreUserGroups.OseeAdmin, CoreAttributeTypes.Annotation, UNIQUE_ATTR_VALUE);
       tx.commit();
 
       int prePurgeAttributeCount = getCount(jdbcClient, "osee_attribute");

@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -62,12 +63,6 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    protected Set<ArtifactId> excludedArtifactIdMap = new HashSet<>();
    protected Map<Long, String> branchViews;
    protected ArtifactToken viewId = ArtifactToken.SENTINEL;
-   // Targets determine what customer is using the ide
-   // ALL - Should show in all ides
-   // ADMIN - Should only show if user is admin
-   // DEVLOP - Should only show if user is a developer
-   public static String TARGET_ALL = "all";
-   protected String TARGET_ADMIN = "admin";
 
    /**
     * Where Blam XML UI comes from
@@ -99,7 +94,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       this.source = source != null ? source : BlamUiSource.DEFAULT;
    }
 
-   public abstract String getTarget();
+   public abstract Collection<IUserGroupArtifactToken> getUserGroups();
 
    private String generateNameFromClass() {
       String className = getClass().getSimpleName();

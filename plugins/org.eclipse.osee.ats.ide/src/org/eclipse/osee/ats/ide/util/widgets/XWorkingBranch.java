@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IUserGroup;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.util.Result;
@@ -466,7 +466,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
          } else {
             AccessControlData data = datas.iterator().next();
             if (data.getSubject().equals(AtsClientService.get().getUserGroupService().getUserGroup(
-               CoreArtifactTokens.Everyone).getArtifact()) && data.getBranchPermission() == PermissionEnum.READ) {
+               CoreUserGroups.Everyone).getArtifact()) && data.getBranchPermission() == PermissionEnum.READ) {
                isLocked = true;
             } else {
                manuallyLocked = true;
@@ -484,7 +484,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
                AccessControlManager.removeAccessControlDataIf(true, datas.iterator().next());
             } else {
                IUserGroup everyoneGroup =
-                  AtsClientService.get().getUserGroupService().getUserGroup(CoreArtifactTokens.Everyone);
+                  AtsClientService.get().getUserGroupService().getUserGroup(CoreUserGroups.Everyone);
                Conditions.assertTrue(everyoneGroup.getArtifact() instanceof Artifact, "Must be Artifact");
                AccessControlManager.setPermission((Artifact) everyoneGroup.getArtifact(), branch, PermissionEnum.READ);
             }

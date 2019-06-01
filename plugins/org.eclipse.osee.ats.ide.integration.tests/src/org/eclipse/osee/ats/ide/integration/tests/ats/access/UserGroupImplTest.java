@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.access;
 
-import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.core.access.UserGroupService;
 import org.eclipse.osee.framework.core.data.IUserGroupService;
 import org.junit.Assert;
@@ -29,8 +29,8 @@ public class UserGroupImplTest {
       Assert.assertNotNull(svc);
 
       // Joe Smith is no admin by default, but is temp admin
-      Assert.assertFalse(svc.getUserGroup(AtsArtifactToken.AtsAdmin).isCurrentUserMember());
-      Assert.assertTrue(svc.getUserGroup(AtsArtifactToken.AtsTempAdmin).isCurrentUserMember());
+      Assert.assertFalse(svc.getUserGroup(AtsUserGroups.AtsAdmin).isCurrentUserMember());
+      Assert.assertTrue(svc.getUserGroup(AtsUserGroups.AtsTempAdmin).isCurrentUserMember());
    }
 
 }

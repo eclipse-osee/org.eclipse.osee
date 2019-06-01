@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
@@ -75,7 +76,7 @@ public class TxQuerySqlContextFactoryImplTest {
    private static final Criteria DATE_WITH_OPERATOR =
       dateWithOperator(Operator.LESS_THAN, Timestamp.valueOf("2013-05-06 12:34:56"));
    private static final Collection<ArtifactId> artifactIds =
-      Arrays.asList(CoreArtifactTokens.DefaultHierarchyRoot, CoreArtifactTokens.Everyone);
+      Arrays.asList(CoreArtifactTokens.DefaultHierarchyRoot, CoreUserGroups.Everyone);
    private static final Criteria AUTHORS = new CriteriaAuthorIds(artifactIds);
    private static final Criteria COMMITS = new CriteriaCommitIds(artifactIds);
 

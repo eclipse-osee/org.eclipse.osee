@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.ide.util.widgets;
 
 import java.util.Collection;
 import java.util.HashSet;
-
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;

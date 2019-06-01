@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -74,13 +75,13 @@ public class AtsDatabaseConfig {
    }
 
    public static void createUserGroups(AtsApi atsApi) {
-      if (atsApi.getQueryService().getArtifact(AtsArtifactToken.AtsAdmin) == null) {
+      if (atsApi.getQueryService().getArtifact(AtsUserGroups.AtsAdmin) == null) {
          IAtsChangeSet changes = atsApi.createChangeSet("Create Admin groups");
 
          ArtifactToken userGroup = atsApi.getQueryService().getArtifact(CoreArtifactTokens.UserGroups);
 
-         changes.createArtifact(userGroup, AtsArtifactToken.AtsAdmin);
-         changes.createArtifact(userGroup, AtsArtifactToken.AtsTempAdmin);
+         changes.createArtifact(userGroup, AtsUserGroups.AtsAdmin);
+         changes.createArtifact(userGroup, AtsUserGroups.AtsTempAdmin);
          changes.execute();
       }
    }

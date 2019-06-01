@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.access;
 
-import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupService;
 
@@ -30,11 +30,11 @@ public class UserGroupService {
    }
 
    public static IUserGroup getAtsAdmin() {
-      return userGroupService.getUserGroup(AtsArtifactToken.AtsAdmin);
+      return userGroupService.getUserGroup(AtsUserGroups.AtsAdmin);
    }
 
    public static IUserGroup getAtsTemmpAdmin() {
-      return userGroupService.getUserGroup(AtsArtifactToken.AtsTempAdmin);
+      return userGroupService.getUserGroup(AtsUserGroups.AtsTempAdmin);
    }
 
 }

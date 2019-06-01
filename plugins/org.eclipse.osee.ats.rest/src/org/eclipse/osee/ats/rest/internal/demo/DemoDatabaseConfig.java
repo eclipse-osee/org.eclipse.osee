@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.config.tx.IAtsConfigTxTeamDef;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.query.NextRelease;
@@ -71,7 +72,7 @@ public class DemoDatabaseConfig {
       }
 
       IAtsChangeSet changes = atsApi.createChangeSet("Set ATS Admin");
-      changes.relate(AtsArtifactToken.AtsTempAdmin, CoreRelationTypes.Users_User, DemoUsers.Joe_Smith);
+      changes.relate(AtsUserGroups.AtsTempAdmin, CoreRelationTypes.Users_User, DemoUsers.Joe_Smith);
       changes.execute();
 
       (new OrganizePrograms(atsApi)).run();

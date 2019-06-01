@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.core.util.OseeInf;
@@ -125,7 +126,7 @@ public class OrcsAdminImpl implements OrcsAdmin {
    @Override
    public void createUsers(TransactionBuilder tx, Iterable<UserToken> users) {
       if (tx.getAuthor().notEqual(SystemUser.OseeSystem)) {
-         requireRole(tx.getAuthor(), CoreArtifactTokens.OseeAdmin);
+         requireRole(tx.getAuthor(), CoreUserGroups.OseeAdmin);
       }
       // Create UserGroups Header if not already created
       ArtifactToken userGroupHeader = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
@@ -176,7 +177,7 @@ public class OrcsAdminImpl implements OrcsAdmin {
    @Override
    public void createUser(TransactionBuilder tx, UserToken userToken) {
       if (tx.getAuthor().notEqual(SystemUser.OseeSystem)) {
-         requireRole(tx.getAuthor(), CoreArtifactTokens.OseeAdmin);
+         requireRole(tx.getAuthor(), CoreUserGroups.OseeAdmin);
       }
       List<? extends ArtifactId> defaultGroups =
          orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.DefaultGroup,

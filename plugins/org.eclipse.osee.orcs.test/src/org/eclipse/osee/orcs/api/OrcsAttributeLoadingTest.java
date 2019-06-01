@@ -15,8 +15,8 @@ import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -57,7 +57,7 @@ public class OrcsAttributeLoadingTest {
 
    @Test
    public void testAttributeLoading() throws Exception {
-      ArtifactReadable art = query.fromBranch(COMMON).andId(CoreArtifactTokens.Everyone).getResults().getExactlyOne();
+      ArtifactReadable art = query.fromBranch(COMMON).andId(CoreUserGroups.Everyone).getResults().getExactlyOne();
       Assert.assertNotNull(art);
       assertEquals("Everyone", art.getSoleAttributeAsString(CoreAttributeTypes.Name));
 

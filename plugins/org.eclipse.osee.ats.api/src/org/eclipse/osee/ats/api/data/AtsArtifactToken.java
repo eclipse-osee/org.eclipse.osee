@@ -18,8 +18,6 @@ import org.eclipse.osee.ats.api.config.tx.IAtsActionableItemArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsWorkDefinitionArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
-import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 
 /**
@@ -34,9 +32,6 @@ public final class AtsArtifactToken {
     * grammar.
     */
    public static final ArtifactToken AtsCmAccessControl = ArtifactToken.valueOf(9885573, "ATS CM Access Control", COMMON, CoreArtifactTypes.GeneralData);
-
-   public static IUserGroupArtifactToken AtsAdmin = UserGroupArtifactToken.valueOf(136750L, "AtsAdmin");
-   public static IUserGroupArtifactToken AtsTempAdmin = UserGroupArtifactToken.valueOf(5367074L, "AtsTempAdmin");
 
    public static final ArtifactToken AtsConfig = ArtifactToken.valueOf(5367053, "ATS Config", COMMON, CoreArtifactTypes.GeneralData);
    public static final ArtifactToken RuleDefinitions = ArtifactToken.valueOf(7880473, "Rule Definitions", COMMON, AtsArtifactTypes.RuleDefinition);

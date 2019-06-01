@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.config.TeamDefinition;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +59,7 @@ public class AtsWorkItemFilterTest {
    // @formatter:on
 
    private final IAtsTeamDefinition teamDef1 = new TeamDefinition(null, atsApi, CoreArtifactTokens.UserGroups);
-   private final IAtsTeamDefinition teamDef2 = new TeamDefinition(null, atsApi, CoreArtifactTokens.Everyone);
+   private final IAtsTeamDefinition teamDef2 = new TeamDefinition(null, atsApi, CoreUserGroups.Everyone);
 
    @Before
    public void setup() {

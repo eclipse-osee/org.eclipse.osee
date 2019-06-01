@@ -44,7 +44,9 @@ import org.eclipse.osee.ats.ide.util.AtsObjectLabelProvider;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.AITreeContentProvider;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.AtsObjectNameSorter;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -480,8 +482,8 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
    }
 
    @Override
-   public String getTarget() {
-      return TARGET_ALL;
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Collections.singleton(CoreUserGroups.Everyone);
    }
 
 }

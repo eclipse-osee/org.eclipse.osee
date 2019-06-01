@@ -18,10 +18,12 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
+import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateCommonItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -81,43 +83,40 @@ public class BlamContributionManager implements IXNavigateCommonItem {
       }
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public void createCommonSection(List<XNavigateItem> items, List<String> excludeSectionIds) {
       Map<String, XNavigateItem> nameToParent = new HashMap<>();
       XNavigateItem blamOperationItems = new XNavigateItem(null, "Blam Operations", FrameworkImage.BLAM);
-      String target = OseeProperties.getTarget();
+      Collection<IUserGroupArtifactToken> userGroups = UserGroupService.getUserGrps();
       for (AbstractBlam blamOperation : getBlamOperations()) {
-         String blamTarget = blamOperation.getTarget();
-         if (blamTarget != null) {
-            if ("all".equals(blamTarget) || OseeProperties.isTargetAll() || blamTarget.equals(target)) {
-               // Create categories first (so can have them up top)
-               for (String category : blamOperation.getCategories()) {
-                  try {
-                     if (AccessControlManager.isOseeAdmin() || !category.contains("Admin") || category.contains(
-                        "Admin") && AccessControlManager.isOseeAdmin()) {
-                        createCategories(category.split("\\."), 0, blamOperationItems, nameToParent);
-                     }
-                  } catch (OseeCoreException ex) {
-                     OseeLog.log(Activator.class, Level.SEVERE, ex);
+         Collection<IUserGroupArtifactToken> blamUserGroups = blamOperation.getUserGroups();
+         if (!Collections.setUnion(userGroups, blamUserGroups).isEmpty()) {
+            // Create categories first (so can have them up top)
+            for (String category : blamOperation.getCategories()) {
+               try {
+                  if (AccessControlManager.isOseeAdmin() || !category.contains("Admin") || category.contains(
+                     "Admin") && AccessControlManager.isOseeAdmin()) {
+                     createCategories(category.split("\\."), 0, blamOperationItems, nameToParent);
                   }
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          }
       }
       // Add blams to categories
       for (AbstractBlam blamOperation : BlamContributionManager.getBlamOperations()) {
-         String blamTarget = blamOperation.getTarget();
-         if (blamTarget != null) {
-            if ("all".equals(blamTarget) || OseeProperties.isTargetAll() || blamTarget.equals(target)) {
-               // If categories not specified, add to top level
-               if (blamOperation.getCategories().isEmpty()) {
-                  new XNavigateItemBlam(blamOperationItems, blamOperation);
-               }
-               for (String category : blamOperation.getCategories()) {
-                  // Category will be null if admin category and not admin
-                  if (nameToParent.get(category) != null) {
-                     new XNavigateItemBlam(nameToParent.get(category), blamOperation);
-                  }
+         Collection<IUserGroupArtifactToken> blamUserGroups = blamOperation.getUserGroups();
+         if (!Collections.setUnion(userGroups, blamUserGroups).isEmpty()) {
+            // If categories not specified, add to top level
+            if (blamOperation.getCategories().isEmpty()) {
+               new XNavigateItemBlam(blamOperationItems, blamOperation);
+            }
+            for (String category : blamOperation.getCategories()) {
+               // Category will be null if admin category and not admin
+               if (nameToParent.get(category) != null) {
+                  new XNavigateItemBlam(nameToParent.get(category), blamOperation);
                }
             }
          }

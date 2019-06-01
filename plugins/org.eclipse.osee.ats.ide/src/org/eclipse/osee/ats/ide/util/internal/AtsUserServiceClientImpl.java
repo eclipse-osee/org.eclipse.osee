@@ -17,8 +17,8 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.core.HttpHeaders;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
@@ -154,7 +154,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    @Override
    public boolean isAtsAdmin(boolean useCache) {
       if (!useCache) {
-         Artifact atsAdmin = AtsClientService.get().getQueryServiceClient().getArtifact(AtsArtifactToken.AtsAdmin);
+         Artifact atsAdmin = AtsClientService.get().getQueryServiceClient().getArtifact(AtsUserGroups.AtsAdmin);
          return atsAdmin.isRelated(CoreRelationTypes.Users_User, getCurrentOseeUser());
       }
       return isAtsAdmin();
@@ -162,7 +162,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
 
    @Override
    public boolean isAtsAdmin() {
-      if (AtsClientService.get().getUserGroupService().getUserGroup(AtsArtifactToken.AtsAdmin).isCurrentUserMember()) {
+      if (AtsClientService.get().getUserGroupService().getUserGroup(AtsUserGroups.AtsAdmin).isCurrentUserMember()) {
          return true;
       }
       return configurationService.getConfigurations().getAtsAdmins().contains(getCurrentUser());

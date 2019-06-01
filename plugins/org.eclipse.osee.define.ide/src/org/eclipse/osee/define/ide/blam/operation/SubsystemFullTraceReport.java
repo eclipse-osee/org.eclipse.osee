@@ -24,10 +24,12 @@ import org.eclipse.osee.define.ide.traceability.ScriptTraceabilityOperation;
 import org.eclipse.osee.define.ide.traceability.TraceUnitExtensionManager;
 import org.eclipse.osee.define.ide.traceability.TraceUnitExtensionManager.TraceHandler;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -319,8 +321,8 @@ public class SubsystemFullTraceReport extends AbstractBlam {
    }
 
    @Override
-   public String getTarget() {
-      return TARGET_ALL;
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return java.util.Collections.singleton(CoreUserGroups.Everyone);
    }
 
 }

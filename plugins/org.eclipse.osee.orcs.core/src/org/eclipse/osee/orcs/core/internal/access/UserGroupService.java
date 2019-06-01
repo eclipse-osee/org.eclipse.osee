@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.access;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroupService;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -33,18 +34,22 @@ public class UserGroupService implements IUserGroupService {
    }
 
    public static IUserGroup getOseeAdmin() {
-      return get(CoreArtifactTokens.OseeAdmin);
+      return get(CoreUserGroups.OseeAdmin);
    }
 
    public static IUserGroup getOseeAccessAdmin() {
-      return get(CoreArtifactTokens.OseeAccessAdmin);
+      return get(CoreUserGroups.OseeAccessAdmin);
    }
 
    private static IUserGroup get(IUserGroupArtifactToken userGroupArtToken) {
+      return getUserGroupService().getUserGroup(userGroupArtToken);
+   }
+
+   private static IUserGroupService getUserGroupService() {
       if (userGroupService == null) {
          userGroupService = new UserGroupService();
       }
-      return userGroupService.getUserGroup(userGroupArtToken);
+      return userGroupService;
    }
 
    @Override
@@ -65,6 +70,22 @@ public class UserGroupService implements IUserGroupService {
       } else {
          throw new OseeArgumentException("parameter must be artifact");
       }
+   }
+
+   @Override
+   public Collection<IUserGroupArtifactToken> getMyUserGroups() {
+      return UserGroupService.getUserGroupService().getMyUserGroups();
+   }
+
+   @Override
+   public boolean isInUserGroup(IUserGroupArtifactToken... userGroups) {
+      Collection<IUserGroupArtifactToken> myUserGroups = getUserGroupService().getMyUserGroups();
+      for (IUserGroupArtifactToken userGrp : userGroups) {
+         if (myUserGroups.contains(userGrp)) {
+            return true;
+         }
+      }
+      return false;
    }
 
 }

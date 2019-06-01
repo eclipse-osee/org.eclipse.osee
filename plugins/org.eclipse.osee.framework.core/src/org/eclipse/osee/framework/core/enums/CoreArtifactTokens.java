@@ -18,8 +18,6 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.UniversalG
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.XViewerGlobalCustomization;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
-import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 
 /**
  * @author Ryan D. Brooks
@@ -27,10 +25,6 @@ import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 public final class CoreArtifactTokens {
 
    // @formatter:off
-   public static final IUserGroupArtifactToken Everyone             = UserGroupArtifactToken.valueOf(48656L, "Everyone");
-   public static final IUserGroupArtifactToken OseeAccessAdmin      = UserGroupArtifactToken.valueOf(8033605L, "OseeAccessAdmin");
-   public static final IUserGroupArtifactToken OseeAdmin            = UserGroupArtifactToken.valueOf(52247L, "OseeAdmin");
-   public static final IUserGroupArtifactToken OseeDeveloper        = UserGroupArtifactToken.valueOf(464565465L, "OseeDeveloper");
 
    public static final ArtifactToken AccessIdMap          = ArtifactToken.valueOf(9885202, "Access Id Map - 0.26", COMMON, GeneralData);
    public static final ArtifactToken DataRightsFooters    = ArtifactToken.valueOf(5443258, "DataRightsFooters", COMMON, GeneralData);

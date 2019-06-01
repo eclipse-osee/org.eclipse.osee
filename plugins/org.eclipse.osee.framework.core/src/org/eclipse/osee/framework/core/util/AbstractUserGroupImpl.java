@@ -12,11 +12,12 @@ package org.eclipse.osee.framework.core.util;
 
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 
 /**
  * @author Donald G. Dunne
  */
-public abstract class AbstractUserGroupImpl implements IUserGroup {
+public abstract class AbstractUserGroupImpl implements IUserGroup, IUserGroupArtifactToken {
 
    protected ArtifactToken groupArtifact;
 
@@ -42,5 +43,10 @@ public abstract class AbstractUserGroupImpl implements IUserGroup {
    }
 
    protected abstract ArtifactToken getOrCreateGroupArtifact(ArtifactToken groupArtifact2);
+
+   @Override
+   public Long getId() {
+      return groupArtifact.getId();
+   }
 
 }

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.ws.rs.core.HttpHeaders;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
@@ -53,7 +53,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    @Override
    public boolean isAtsAdmin(IAtsUser user) {
       if (atsAdminArt == null) {
-         atsAdminArt = getArtifact(AtsArtifactToken.AtsAdmin);
+         atsAdminArt = getArtifact(AtsUserGroups.AtsAdmin);
       }
       return atsAdminArt.areRelated(CoreRelationTypes.Users_User, getArtifact((IAtsObject) user));
    }

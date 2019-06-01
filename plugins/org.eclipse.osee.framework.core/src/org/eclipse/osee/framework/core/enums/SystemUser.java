@@ -10,12 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.OseeAccessAdmin;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.OseeAdmin;
-
 import java.util.Arrays;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 
@@ -25,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
 public final class SystemUser {
 
    // @formatter:off
-   public static final UserToken OseeSystem = UserToken.create(11, "OSEE System", "", "99999999", false, false, OseeAdmin, OseeAccessAdmin);
+   public static final UserToken OseeSystem = UserToken.create(11, "OSEE System", "", "99999999", false, false, CoreUserGroups.OseeAdmin, CoreUserGroups.OseeAccessAdmin);
    public static final UserToken Anonymous = UserToken.create(1896, "Anonymous", "", "99999998", false, false);
    public static final UserToken BootStrap = UserToken.create(2184322, "Boot Strap", "bootstrap@osee.org", "bootstrap", true, false);
    public static final UserToken UnAssigned = UserToken.create(33429, "UnAssigned", "", "99999997", true, false);

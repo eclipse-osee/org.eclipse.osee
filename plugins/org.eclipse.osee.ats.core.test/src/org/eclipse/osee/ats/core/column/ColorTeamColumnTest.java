@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.Everyone;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -25,6 +24,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.junit.Before;
 import org.mockito.Mock;
@@ -46,7 +46,7 @@ public class ColorTeamColumnTest {
    // @formatter:on
 
    public static final ArtifactToken workPackageArt = ArtifactToken.valueOf(5, "Work Package", COMMON);
-   private final IAtsTeamWorkflow teamWf1 = new TeamWorkflow(null, null, Everyone);
+   private final IAtsTeamWorkflow teamWf1 = new TeamWorkflow(null, null, CoreUserGroups.Everyone);
 
    @Before
    public void setup() {
