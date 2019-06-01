@@ -37,6 +37,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateRange;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateWithOperator;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaIdQuery;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMergeBranchFor;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedRecursive;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
@@ -68,29 +69,25 @@ public final class SqlHandlerFactoryUtil {
    }
 
    public static SqlHandlerFactory createArtifactSqlHandlerFactory(Log logger, IdentityLocator identityService, TagProcessor tagProcessor) {
-      Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
-         new HashMap<>();
+      Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap = new HashMap<>();
       addArtifactHandlers(handleMap);
       return new SqlHandlerFactoryImpl(logger, identityService, tagProcessor, handleMap);
    }
 
    public static SqlHandlerFactory createBranchSqlHandlerFactory(Log logger, IdentityLocator identityService) {
-      Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
-         new HashMap<>();
+      Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap = new HashMap<>();
       addBranchHandlers(handleMap);
       return new SqlHandlerFactoryImpl(logger, identityService, null, handleMap);
    }
 
    public static SqlHandlerFactory createTxSqlHandlerFactory(Log logger, IdentityLocator identityService) {
-      Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
-         new HashMap<>();
+      Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap = new HashMap<>();
       addTxHandlers(handleMap);
       return new SqlHandlerFactoryImpl(logger, identityService, null, handleMap);
    }
 
    public static SqlHandlerFactory createObjectSqlHandlerFactory(Log logger, IdentityLocator identityService, TagProcessor tagProcessor) {
-      Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
-         new HashMap<>();
+      Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap = new HashMap<>();
       addBranchHandlers(handleMap);
       addTxHandlers(handleMap);
       addArtifactHandlers(handleMap);
@@ -104,6 +101,7 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaArtifactIds.class, ArtifactIdsSqlHandler.class);
       handleMap.put(CriteriaArtifactType.class, ArtifactTypeSqlHandler.class);
       handleMap.put(CriteriaRelatedTo.class, RelatedToSqlHandler.class);
+      handleMap.put(CriteriaRelatedRecursive.class, RelatedRecursiveHandler.class);
       handleMap.put(CriteriaRelationTypeExists.class, RelationTypeExistsSqlHandler.class);
       handleMap.put(CriteriaRelationTypeSideExists.class, RelationTypeSideExistsSqlHandler.class);
       handleMap.put(CriteriaRelationTypeNotExists.class, RelationTypeNotExistsSqlHandler.class);

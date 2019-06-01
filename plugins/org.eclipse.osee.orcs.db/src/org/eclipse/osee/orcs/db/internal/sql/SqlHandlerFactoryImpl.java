@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.QueryData;
@@ -69,11 +70,10 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
    public SqlHandler<?> createHandler(Criteria criteria) {
       Class<? extends Criteria> key = criteria.getClass();
       Class<? extends SqlHandler> item = handleMap.get(key);
-      SqlHandler<?> toReturn = null;
-      if (item != null) {
-         toReturn = createHandler(criteria, item);
+      if (item == null) {
+         throw new OseeStateException("No handler configured for criteria of %s", key);
       }
-      return toReturn;
+      return createHandler(criteria, item);
    }
 
    private <C extends Criteria, H extends SqlHandler<C>> SqlHandler<C> createHandler(C criteria, Class<H> item) {

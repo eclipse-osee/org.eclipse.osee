@@ -214,6 +214,8 @@ public interface ArtifactQueryBuilder<T> {
     */
    T andRelatedTo(RelationTypeSide relationTypeSide, ArtifactId artifactId);
 
+   T andRelatedRecursive(RelationTypeSide relationTypeSide, ArtifactId artifactId);
+
    /**
     * Search related artifacts with specific criteria. Will only follow first level of relations
     *

@@ -34,6 +34,7 @@ import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeRaw;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedRecursive;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.ArtifactQueryBuilder;
@@ -323,6 +324,11 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
    @Override
    public T andRelatedTo(RelationTypeSide relationTypeSide, ArtifactId artifactId) {
       return addAndCheck(getQueryData(), new CriteriaRelatedTo(relationTypeSide, artifactId));
+   }
+
+   @Override
+   public T andRelatedRecursive(RelationTypeSide relationTypeSide, ArtifactId artifactId) {
+      return addAndCheck(getQueryData(), new CriteriaRelatedRecursive(relationTypeSide, artifactId));
    }
 
    @SuppressWarnings("unchecked")
