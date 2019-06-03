@@ -113,8 +113,12 @@ public class XBranchViewSelect extends GenericXWidget {
          try {
             ArtifactId versionConfig = applEndpoint.getVersionConfig(artifact);
             String baselineBranch = artifact.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchId, "");
-            result = ArtifactQuery.getArtifactTokenFromId(BranchId.valueOf(baselineBranch), versionConfig).getName();
-         } catch (OseeCoreException ex) {
+            if (versionConfig.isInvalid() || BranchId.valueOf(baselineBranch).isInvalid()) {
+               result = "Not Set";
+            } else {
+               result = ArtifactQuery.getArtifactTokenFromId(BranchId.valueOf(baselineBranch), versionConfig).getName();
+            }
+         } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             result = "Error retrieving applicability. (see log)";
          }
