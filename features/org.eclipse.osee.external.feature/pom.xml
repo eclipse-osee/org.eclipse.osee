@@ -35,6 +35,7 @@
 								<plugin id="org.apache.xml.serializer" />								
 								<plugin id="org.aopalliance" />
 								<plugin id="jms.libraries" />
+								<plugin id="org.eclipse.sdk" />
 								<plugin id="org.json" />
 								<plugin id="org.apache.cxf.core.config" />
 								<plugin id="ch.qos.logback.slf4j" />

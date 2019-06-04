@@ -60,6 +60,11 @@
 							   <plugin id="org.eclipse.persistence.moxy" />
 							   <plugin id="org.json" />
 							   <plugin id="org.jsoup" />
+							   <plugin id="org.apache.commons.codec" />
+							   							   <plugin id="org.eclipse.sdk" />
+							   
+							   <feature id="org.eclipse.sdk" />
+							   <feature id="org.eclipse.wtp.capabilities.feature" />
 							</excludes>
 						</configuration>
 					</execution>
