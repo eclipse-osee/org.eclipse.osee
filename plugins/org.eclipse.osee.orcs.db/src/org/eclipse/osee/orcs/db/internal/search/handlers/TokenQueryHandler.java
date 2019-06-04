@@ -46,16 +46,14 @@ public class TokenQueryHandler extends SqlHandler<CriteriaTokenQuery> {
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
       String artAlias = writer.getMainTableAlias(TableEnum.ARTIFACT_TABLE);
-      writer.writeEquals(artAlias, attAlias, "art_id");
-      writer.write(" AND ");
+      writer.writeEqualsAnd(artAlias, attAlias, "art_id");
       if (criteria.getAttributeType().isValid()) {
          writer.write(attAlias);
          writer.write(".attr_type_id = ? AND ");
          writer.addParameter(criteria.getAttributeType());
       }
-      writer.writeEquals(attAlias, attTxsAlias, "gamma_id");
-      writer.write(" AND ");
-      writer.write(writer.getTxBranchFilter(attTxsAlias));
+      writer.writeEqualsAnd(attAlias, attTxsAlias, "gamma_id");
+      writer.writeTxBranchFilter(attTxsAlias);
    }
 
    @Override

@@ -142,8 +142,7 @@ public class DataLoaderFactoryImplTest {
       String expected =
          "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, jart1.id2, jart1.id4, art1.art_type_id, art1.guid\n" + //
             " FROM osee_join_id4 jart1, osee_artifact art1, osee_txs txs1\n" + //
-            " WHERE art1.art_id = jart1.id2 AND jart1.query_id = ? AND art1.gamma_id = txs1.gamma_id\n" + //
-            " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.id1\n" + //
+            " WHERE art1.art_id = jart1.id2 AND jart1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = jart1.id1\n" + //
             " ORDER BY txs1.branch_id, jart1.id2, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
@@ -163,8 +162,7 @@ public class DataLoaderFactoryImplTest {
       String expected =
          "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, jart1.id2, jart1.id4, art1.art_type_id, art1.guid\n" + //
             " FROM osee_join_id4 jart1, osee_artifact art1, osee_txs txs1\n" + //
-            " WHERE art1.art_id = jart1.id2 AND jart1.query_id = ? AND art1.gamma_id = txs1.gamma_id\n" + //
-            " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.id1\n" + //
+            " WHERE art1.art_id = jart1.id2 AND jart1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.id1\n" + //
             " ORDER BY txs1.branch_id, jart1.id2, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
@@ -185,8 +183,7 @@ public class DataLoaderFactoryImplTest {
       String expected =
          "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, txs1.transaction_id as stripe_transaction_id, jart1.id2, jart1.id4, art1.art_type_id, art1.guid\n" + //
             " FROM osee_join_id4 jart1, osee_artifact art1, osee_txs txs1\n" + //
-            " WHERE art1.art_id = jart1.id2 AND jart1.query_id = ? AND art1.gamma_id = txs1.gamma_id\n" + //
-            " AND txs1.transaction_id <= jart1.id3 AND txs1.mod_type != 3 AND txs1.branch_id = jart1.id1\n" + //
+            " WHERE art1.art_id = jart1.id2 AND jart1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= jart1.id3 AND txs1.mod_type != 3 AND txs1.branch_id = jart1.id1\n" + //
             " ORDER BY txs1.branch_id, jart1.id2, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
@@ -206,8 +203,7 @@ public class DataLoaderFactoryImplTest {
       String expected =
          "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, txs1.transaction_id as stripe_transaction_id, jart1.id2, jart1.id4, art1.art_type_id, art1.guid\n" + //
             " FROM osee_join_id4 jart1, osee_artifact art1, osee_txs txs1\n" + //
-            " WHERE art1.art_id = jart1.id2 AND jart1.query_id = ? AND art1.gamma_id = txs1.gamma_id\n" + //
-            " AND txs1.transaction_id <= jart1.id3 AND txs1.branch_id = jart1.id1\n" + //
+            " WHERE art1.art_id = jart1.id2 AND jart1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= jart1.id3 AND txs1.branch_id = jart1.id1\n" + //
             " ORDER BY txs1.branch_id, jart1.id2, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));

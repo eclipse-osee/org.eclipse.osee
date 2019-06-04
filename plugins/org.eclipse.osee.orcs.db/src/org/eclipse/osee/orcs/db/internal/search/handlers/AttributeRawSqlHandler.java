@@ -155,7 +155,7 @@ public class AttributeRawSqlHandler extends SqlHandler<CriteriaAttributeRaw> {
       writer.write(".gamma_id = ");
       writer.write(txsAlias);
       writer.write(".gamma_id AND ");
-      writer.write(writer.getTxBranchFilter(txsAlias));
+      writer.writeTxBranchFilter(txsAlias);
 
    }
 

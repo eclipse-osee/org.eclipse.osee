@@ -71,8 +71,7 @@ public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds> {
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
       if (OptionsUtil.isHistorical(writer.getOptions())) {
-         writer.writeEquals(withClauseName, txsAlias, "transaction_id");
-         writer.write(" AND ");
+         writer.writeEqualsAnd(withClauseName, txsAlias, "transaction_id");
          writer.writeEquals(withClauseName, artAlias, "art_id");
       } else {
          writer.write(artAlias);

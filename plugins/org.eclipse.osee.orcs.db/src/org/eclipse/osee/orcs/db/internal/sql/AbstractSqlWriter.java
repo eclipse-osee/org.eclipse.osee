@@ -204,6 +204,10 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    public abstract String getTxBranchFilter(String txsAlias);
 
+   public void writeTxBranchFilter(String txsAlias) {
+      write(getTxBranchFilter(txsAlias));
+   }
+
    public abstract String getTxBranchFilter(String txsAlias, boolean allowDeleted);
 
    protected abstract void writeGroupAndOrder();
@@ -253,9 +257,8 @@ public abstract class AbstractSqlWriter implements HasOptions {
             write("\n AND ");
          }
          String mainTxsAlias = getMainTableAlias(TableEnum.TXS_TABLE);
-         writeEquals(mainTableAlias, mainTxsAlias, "gamma_id");
-         write(" AND ");
-         write(getTxBranchFilter(mainTxsAlias));
+         writeEqualsAnd(mainTableAlias, mainTxsAlias, "gamma_id");
+         writeTxBranchFilter(mainTxsAlias);
       }
    }
 
@@ -363,8 +366,18 @@ public abstract class AbstractSqlWriter implements HasOptions {
       write("%s.%s = %s.%s", table1, column, table2, column);
    }
 
+   public void writeEqualsAnd(String table1, String table2, String column) {
+      writeEquals(table1, table2, column);
+      write(" AND ");
+   }
+
    public void writeEquals(String table1, String column1, String table2, String column2) {
       write("%s.%s = %s.%s", table1, column1, table2, column2);
+   }
+
+   public void writeEqualsAnd(String table1, String column1, String table2, String column2) {
+      writeEquals(table1, column1, table2, column2);
+      write(" AND ");
    }
 
    public void addParameter(Object parameter) {
@@ -386,6 +399,11 @@ public abstract class AbstractSqlWriter implements HasOptions {
       output.append(column);
       output.append(" = ?");
       addParameter(parameter);
+   }
+
+   public void writeEqualsParameterAnd(String column, Object parameter) {
+      writeEqualsParameter(column, parameter);
+      write(" AND ");
    }
 
    private void addJoin(AbstractJoinQuery join) {

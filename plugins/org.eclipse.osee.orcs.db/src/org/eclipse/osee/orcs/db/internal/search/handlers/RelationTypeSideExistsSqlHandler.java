@@ -67,6 +67,6 @@ public class RelationTypeSideExistsSqlHandler extends AbstractRelationSqlHandler
       writer.write(txsAlias);
       writer.write(".gamma_id");
       writer.writeAndLn();
-      writer.write(writer.getTxBranchFilter(txsAlias));
+      writer.writeTxBranchFilter(txsAlias);
    }
 }

@@ -32,11 +32,9 @@ public class XtraAttributeDataSqlHandler extends AbstractXtraTableSqlHandler {
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      writer.writeEquals(artAlias, attAlias, "art_id");
-      writer.write(" AND ");
-      writer.writeEquals(attAlias, txsAlias, "gamma_id");
-      writer.write(" AND ");
-      writer.write(writer.getTxBranchFilter(txsAlias));
+      writer.writeEqualsAnd(artAlias, attAlias, "art_id");
+      writer.writeEqualsAnd(attAlias, txsAlias, "gamma_id");
+      writer.writeTxBranchFilter(txsAlias);
    }
 
    @Override

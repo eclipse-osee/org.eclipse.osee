@@ -120,6 +120,6 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
       writer.write(txsAlias);
       writer.write(".gamma_id");
       writer.write("\n AND ");
-      writer.write(writer.getTxBranchFilter(txsAlias));
+      writer.writeTxBranchFilter(txsAlias);
    }
 }

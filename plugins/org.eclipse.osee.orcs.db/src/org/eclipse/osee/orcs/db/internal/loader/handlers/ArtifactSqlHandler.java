@@ -51,20 +51,9 @@ public class ArtifactSqlHandler extends SqlHandler<CriteriaArtifact> {
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      writer.write(artAlias);
-      writer.write(".art_id = ");
-      writer.write(jArtAlias);
-      writer.write(".id2 AND ");
-      writer.write(jArtAlias);
-      writer.write(".query_id = ?");
-      writer.addParameter(criteria.getQueryId());
-
-      writer.write(" AND ");
-      writer.write(artAlias);
-      writer.write(".gamma_id = ");
-      writer.write(txsAlias);
-      writer.write(".gamma_id");
-      writer.write("\n AND ");
-      writer.write(writer.getTxBranchFilter(txsAlias));
+      writer.writeEqualsAnd(artAlias, "art_id", jArtAlias, "id2");
+      writer.writeEqualsParameterAnd(jArtAlias, "query_id", criteria.getQueryId());
+      writer.writeEqualsAnd(artAlias, txsAlias, "gamma_id");
+      writer.writeTxBranchFilter(txsAlias);
    }
 }

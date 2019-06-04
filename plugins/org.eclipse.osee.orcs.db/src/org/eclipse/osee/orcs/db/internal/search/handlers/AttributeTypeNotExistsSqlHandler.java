@@ -53,8 +53,7 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
       writer.write(", ");
       String txsNotAlias = writer.writeTable(TableEnum.TXS_TABLE);
       writer.write(" WHERE ");
-      writer.writeEquals(attAlias, artAlias, "art_id");
-      writer.write(" AND ");
+      writer.writeEqualsAnd(attAlias, artAlias, "art_id");
 
       if (types.size() > 1) {
          Set<AttributeTypeId> typeIds = new HashSet<>();
@@ -75,9 +74,8 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
       }
       writer.write(" AND ");
 
-      writer.writeEquals(attAlias, txsNotAlias, "gamma_id");
-      writer.write(" AND ");
-      writer.write(writer.getTxBranchFilter(txsNotAlias));
+      writer.writeEqualsAnd(attAlias, txsNotAlias, "gamma_id");
+      writer.writeTxBranchFilter(txsNotAlias);
       writer.write(")");
    }
 

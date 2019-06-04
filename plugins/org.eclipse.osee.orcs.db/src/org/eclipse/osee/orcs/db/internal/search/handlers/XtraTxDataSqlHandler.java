@@ -39,8 +39,7 @@ public class XtraTxDataSqlHandler extends AbstractXtraTableSqlHandler {
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      writer.writeEquals(txsAlias, txdAlias, "transaction_id");
-      writer.write(" AND ");
+      writer.writeEqualsAnd(txsAlias, txdAlias, "transaction_id");
       writer.writeEquals(txsAlias, txdAlias, "branch_id");
    }
 

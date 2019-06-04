@@ -42,8 +42,7 @@ public class TxGetPriorSqlHandler extends SqlHandler<CriteriaTxGetPrior> {
       writer.write("(SELECT max(transaction_id) FROM ");
       writer.writeTableNoAlias(TableEnum.TX_DETAILS_TABLE);
       writer.write(" WHERE ");
-      writer.writeEqualsParameter("branch_id", branch);
-      writer.write(" AND ");
+      writer.writeEqualsParameterAnd("branch_id", branch);
       writer.write("transaction_id < ?");
       writer.addParameter(criteria.getTxId());
       writer.write(")");

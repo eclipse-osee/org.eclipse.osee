@@ -48,7 +48,7 @@ public class RelationTypeSideNotExistsSqlHandler extends AbstractRelationSqlHand
       writer.writeAndLn();
       writer.writeEquals(relAlias, txsAlias, "gamma_id");
       writer.writeAndLn();
-      writer.write(writer.getTxBranchFilter(txsAlias));
+      writer.writeTxBranchFilter(txsAlias);
       writer.write(")");
    }
 }
