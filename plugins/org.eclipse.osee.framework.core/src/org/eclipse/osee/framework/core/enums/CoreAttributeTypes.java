@@ -47,6 +47,7 @@ public final class CoreAttributeTypes {
    public static final AttributeTypeToken Description = AttributeTypeToken.valueOf(1152921504606847090L, "Description");
    public static final AttributeTypeToken Dictionary = AttributeTypeToken.valueOf(1152921504606847083L, "Dictionary");
    public static final AttributeTypeToken DoorsID = AttributeTypeToken.valueOf(8243262488122393232L, "Doors ID");
+   public static final AttributeTypeToken DoorsModID = AttributeTypeToken.valueOf(5326122488147393161L, "Doors Mod ID");
    public static final AttributeTypeToken DoorsHierarchy = AttributeTypeToken.valueOf(1873562488122323009L, "Doors Hierarchy");
    public static final AttributeTypeToken Effectivity = AttributeTypeToken.valueOf(1152921504606847108L, "Effectivity");
    public static final AttributeTypeToken Email = AttributeTypeToken.valueOf(1152921504606847082L, "Email");
