@@ -53,7 +53,8 @@ public class UserRoleValidator {
       if (roleMgr.getUserRoles(Role.Author).size() <= 0) {
          return UserRoleError.MustHaveAtLeastOneAuthor;
       }
-      if (roleMgr.getUserRoles(Role.Reviewer).size() <= 0) {
+      //add condition for Moderator/Reviewer to count as a Moderator per patch TW14484
+      if (roleMgr.getUserRoles(Role.Reviewer).size() <= 0 && roleMgr.getUserRoles(Role.ModeratorReviewer).size() == 0) {
          return UserRoleError.MustHaveAtLeastOneReviewer;
       }
       // If in review state, all roles must have hours spent entered

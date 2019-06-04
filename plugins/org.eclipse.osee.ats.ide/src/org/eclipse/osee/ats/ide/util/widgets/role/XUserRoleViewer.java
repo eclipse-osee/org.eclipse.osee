@@ -40,7 +40,6 @@ import org.eclipse.osee.ats.ide.workflow.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.ide.workflow.review.role.UserRoleError;
 import org.eclipse.osee.ats.ide.workflow.review.role.UserRoleValidator;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -320,19 +319,6 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
       NewRoleDialog dialog = new NewRoleDialog();
       dialog.setReview(reviewArt);
       if (dialog.open() == Window.OK) {
-         if (dialog.getRole() == null) {
-            AWorkbench.popup("Role not selected");
-            return;
-         }
-         try {
-            if (dialog.getUsers().isEmpty()) {
-               AWorkbench.popup("Users not selected");
-               return;
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-            return;
-         }
          try {
             IAtsChangeSet changes = AtsClientService.get().createChangeSet("Add Review Roles");
             for (IAtsUser user : dialog.getUsers()) {
@@ -398,12 +384,11 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
             return new Status(IStatus.ERROR, getClass().getSimpleName(), "At least one role entry is required");
          }
          if (!error.isOK()) {
-            extraInfoLabel.setText(
-               error.getError() + " - Select \"New Role\" to add.  Select icon in cell to update value.");
+            extraInfoLabel.setText(error.getError() + " Select \"New Role\" to add.");
             extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
             return new Status(IStatus.ERROR, getClass().getSimpleName(), error.getError());
          }
-         extraInfoLabel.setText("Select \"New Role\" to add.  Select icon in cell to update value.");
+         extraInfoLabel.setText("Select \"New Role\" to add.");
          extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

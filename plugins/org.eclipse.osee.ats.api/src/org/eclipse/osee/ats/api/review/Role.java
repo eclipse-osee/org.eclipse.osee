@@ -20,6 +20,7 @@ import java.util.Set;
 public enum Role {
    Moderator,
    Reviewer,
+   ModeratorReviewer,
    Author,
    Quality;
 

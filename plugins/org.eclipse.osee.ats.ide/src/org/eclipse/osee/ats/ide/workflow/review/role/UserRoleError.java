@@ -22,8 +22,8 @@ public enum UserRoleError {
    None("", WidgetStatus.Valid),
    OneRoleEntryRequired("At least one role entry is required.", WidgetStatus.Invalid_Incompleted),
    ExceptionValidatingRoles("Exception validating roles. See log for details.", WidgetStatus.Exception),
-   MustHaveAtLeastOneAuthor("Must have at least one Author", WidgetStatus.Invalid_Incompleted),
-   MustHaveAtLeastOneReviewer("Must have at least one Reviewer", WidgetStatus.Invalid_Incompleted),
+   MustHaveAtLeastOneAuthor("Must have at least one Author.", WidgetStatus.Invalid_Incompleted),
+   MustHaveAtLeastOneReviewer("Must have at least one Reviewer (a ModeratorReviewer can fulfill this requirement).", WidgetStatus.Invalid_Incompleted),
    HoursSpentMustBeEnteredForEachRole("Hours spent must be entered for each role.", WidgetStatus.Invalid_Incompleted);
 
    private final String error;
