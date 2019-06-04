@@ -19,6 +19,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
+import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.JaxAtsTaskFactory;
 import org.eclipse.osee.ats.api.task.NewTaskData;
@@ -27,6 +28,7 @@ import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.actions.EditAssigneeAction;
+import org.eclipse.osee.ats.ide.actions.EditBlockedStatusAction;
 import org.eclipse.osee.ats.ide.actions.EditStatusAction;
 import org.eclipse.osee.ats.ide.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -54,6 +56,7 @@ public class TaskXViewer extends WorldXViewer {
 
    Action editAssigneeAction;
    Action addNewTaskAction;
+   EditBlockedStatusAction editBlockedStatusAction;
    private boolean newTaskSelectionEnabled = false;
    private boolean tasksEditable = true;
    private IAtsTeamWorkflow teamWf;
@@ -68,6 +71,7 @@ public class TaskXViewer extends WorldXViewer {
 
       editStatusAction = new EditStatusAction(this, this, this);
       editAssigneeAction = new EditAssigneeAction(this, this);
+      editBlockedStatusAction = new EditBlockedStatusAction(this);
 
       addNewTaskAction = new Action("New Task", IAction.AS_PUSH_BUTTON) {
          @Override
@@ -99,6 +103,11 @@ public class TaskXViewer extends WorldXViewer {
 
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editAssigneeAction);
       editAssigneeAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0);
+
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
+
+      mm.insertBefore(MENU_GROUP_PRE, editBlockedStatusAction);
+      editBlockedStatusAction.setEnabled(getSelectedWorkflowArtifacts().size() == 1);
 
    }
 
