@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.ide;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -37,11 +38,11 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
 
    private static final Map<ArtifactImage, KeyedImage> keyedImageMap = new HashMap<>();
    private static AtsArtifactImageProvider provider = new AtsArtifactImageProvider();
-   private static Boolean initRan = false;
+   private static AtomicBoolean initRan = new AtomicBoolean(false);
 
    @Override
-   public synchronized void init() {
-      if (!initRan) {
+   public void init() {
+      if (!initRan.getAndSet(true)) {
          ArtifactImageManager.registerBaseImage(AtsArtifactTypes.DecisionReview, AtsImage.DECISION_REVIEW, this);
          ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Action, AtsImage.ACTION, this);
          ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Version, FrameworkImage.VERSION, this);
@@ -73,7 +74,6 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
          for (ArtifactTypeToken artifactType : AtsClientService.get().getStoreService().getTeamWorkflowArtifactTypes()) {
             ArtifactImageManager.registerOverrideImageProvider(this, artifactType);
          }
-         initRan = true;
       }
    }
 
