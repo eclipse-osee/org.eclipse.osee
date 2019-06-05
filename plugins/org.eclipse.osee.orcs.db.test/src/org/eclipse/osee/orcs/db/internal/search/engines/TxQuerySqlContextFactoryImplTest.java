@@ -194,8 +194,8 @@ public class TxQuerySqlContextFactoryImplTest {
    public void testBranchTypeAndTxId() throws Exception {
       String expected = "SELECT txd1.*\n" + //
          " FROM osee_tx_details txd1, osee_join_id jid1, osee_join_id jid2\n" + //
-         " WHERE txd1.transaction_id = jid1.id AND jid1.query_id = ?\n" + //
-         " AND txd1.tx_type = jid2.id AND jid2.query_id = ?\n" + //
+         " WHERE txd1.transaction_id = jid1.id AND jid1.query_id = ? AND\n" + //
+         "txd1.tx_type = jid2.id AND jid2.query_id = ?\n" + //
          " ORDER BY txd1.transaction_id";
 
       queryData.addCriteria(TYPES, IDS);
@@ -222,11 +222,11 @@ public class TxQuerySqlContextFactoryImplTest {
    public void testSixItemQuery() throws Exception {
       String expected = "SELECT txd1.*\n" + //
          " FROM osee_tx_details txd1, osee_join_id jid1, osee_join_id jid2, osee_join_id jid3\n" + //
-         " WHERE txd1.branch_id = jid1.id AND jid1.query_id = ?\n" + //
-         " AND txd1.commit_art_id = jid2.id AND jid2.query_id = ?\n" + //
-         " AND txd1.author = jid3.id AND jid3.query_id = ?\n" + //
-         " AND txd1.time < ?\n" + //
-         " AND txd1.transaction_id < ?\n" + //
+         " WHERE txd1.branch_id = jid1.id AND jid1.query_id = ? AND\n" + //
+         "txd1.commit_art_id = jid2.id AND jid2.query_id = ? AND\n" + //
+         "txd1.author = jid3.id AND jid3.query_id = ? AND\n" + //
+         "txd1.time < ? AND\n" + //
+         "txd1.transaction_id < ?\n" + //
          " ORDER BY txd1.transaction_id";
 
       queryData.addCriteria(BRANCHIDS, IDS_WITH_OPERATOR, DATE_WITH_OPERATOR, AUTHORS, COMMITS);

@@ -17,7 +17,6 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
-import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
@@ -37,11 +36,9 @@ public class QuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   protected void writeSelectFields(Iterable<SqlHandler<?>> handlers) {
+   protected void writeSelectFields() {
       tableAlias = getMainTableAlias(table);
-      writeCommaIfNotFirst();
-      write(tableAlias);
-      write(".*");
+      writeSelectFields(tableAlias, "*");
    }
 
    @Override

@@ -90,7 +90,7 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
          xtraHandlers = Collections.emptyList();
       }
 
-      writeWithClause();
+      writeWithClauses();
       writeSelect(handlers);
       write("\n FROM \n");
       writeTables();
@@ -104,7 +104,7 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   protected void writeSelectFields(Iterable<SqlHandler<?>> handlers) {
+   protected void writeSelectFields() {
       writeCommaIfNotFirst();
       MutableBoolean isFirst = new MutableBoolean(true);
       for (DynamicData data : fieldResolver.getResult().getDynamicData()) {

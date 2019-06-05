@@ -20,7 +20,6 @@ import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
-import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
@@ -36,14 +35,13 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   protected void writeSelectFields(Iterable<SqlHandler<?>> handlers) {
+   protected void writeSelectFields() {
       String txAlias = getMainTableAlias(TableEnum.TXS_TABLE);
       String artAlias = getMainTableAlias(TableEnum.ARTIFACT_TABLE);
 
-      writeCommaIfNotFirst();
-      write("%s.art_id, %s.branch_id", artAlias, txAlias);
+      writeSelectFields(artAlias, "art_id", txAlias, "branch_id");
       if (OptionsUtil.isHistorical(getOptions())) {
-         write(", %s.transaction_id", txAlias);
+         writeSelectFields(txAlias, "transaction_id");
       }
    }
 
@@ -95,7 +93,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
    private void writeTxFilter(String txsAlias, StringBuilder sb, boolean allowDeleted) {
       if (OptionsUtil.isHistorical(getOptions())) {
          if (allowDeleted) {
-            removeDanglingSeparator(AND_WITH_NEWLINES);
+            removeDanglingSeparator(AND_NEW_LINE);
             removeDanglingSeparator(" AND ");
          } else {
             sb.append(txsAlias);

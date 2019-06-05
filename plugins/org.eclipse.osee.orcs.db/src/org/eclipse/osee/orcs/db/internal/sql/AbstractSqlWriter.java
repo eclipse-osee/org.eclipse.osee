@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.core.ds.HasOptions;
@@ -36,8 +35,7 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
  * @author Roberto E. Escobar
  */
 public abstract class AbstractSqlWriter implements HasOptions {
-
-   protected static final String AND_WITH_NEWLINES = "\n AND \n";
+   protected static final String AND_NEW_LINE = " AND\n";
 
    private final StringBuilder output = new StringBuilder();
    private final List<String> tableEntries = new ArrayList<>();
@@ -95,7 +93,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       computeWithClause(handlers);
       computeTables(handlers);
 
-      writeWithClause();
+      writeWithClauses();
       writeSelect(handlers);
       write("\n FROM ");
       writeTables();
@@ -106,7 +104,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       writeGroupAndOrder();
    }
 
-   protected void writeWithClause() {
+   protected void writeWithClauses() {
       if (Conditions.hasValues(withClauses)) {
          write("WITH");
          int size = withClauses.size();
@@ -171,19 +169,17 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    protected void writeSelect(Iterable<SqlHandler<?>> handlers) {
-      write("SELECT");
-      write(getSqlHint());
-      write(" ");
+      writeSelectAndHint();
       if (isCountQueryType()) {
          if (OptionsUtil.isHistorical(getOptions())) {
-            write("count(xTable.art_id) FROM (SELECT");
-            write(getSqlHint());
+            write("count(xTable.art_id) FROM (");
+            writeSelectAndHint();
             write("1");
          } else {
             write("count(*)");
          }
       } else {
-         writeSelectFields(handlers);
+         writeSelectFields();
          for (SqlHandler<?> handler : handlers) {
             handler.writeSelectFields(this);
          }
@@ -198,7 +194,18 @@ public abstract class AbstractSqlWriter implements HasOptions {
       }
    }
 
-   protected abstract void writeSelectFields(Iterable<SqlHandler<?>> handlers);
+   protected abstract void writeSelectFields();
+
+   public void writeSelectFields(String... tablesAndFields) {
+      for (int i = 0; i < tablesAndFields.length; i++) {
+         writeCommaIfNotFirst();
+         String table = tablesAndFields[i++];
+         String field = tablesAndFields[i];
+         write(table);
+         write(".");
+         write(field);
+      }
+   }
 
    public abstract String getWithClauseTxBranchFilter(String txsAlias, boolean deletedPredicate);
 
@@ -245,7 +252,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
             if (first) {
                first = false;
             } else {
-               write("\n AND ");
+               write(AND_NEW_LINE);
             }
             handler.addPredicates(this);
          }
@@ -254,7 +261,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       String mainTableAlias = mainAliases.get(TableEnum.ARTIFACT_TABLE);
       if (mainTableAlias != null) {
          if (!first) {
-            write("\n AND ");
+            write(" AND ");
          }
          String mainTxsAlias = getMainTableAlias(TableEnum.TXS_TABLE);
          writeEqualsAnd(mainTableAlias, mainTxsAlias, "gamma_id");
@@ -263,7 +270,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    public void writeAndLn() {
-      write(AND_WITH_NEWLINES);
+      write(AND_NEW_LINE);
    }
 
    protected void removeDanglingSeparator(String token) {
@@ -436,12 +443,12 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return getContext().getOptions();
    }
 
-   protected String getSqlHint() {
-      String hint = Strings.EMPTY_STRING;
+   protected void writeSelectAndHint() {
+      write("SELECT");
       if (!Conditions.hasValues(withClauses) && jdbcClient != null && jdbcClient.getConfig() != null) {
-         hint = OseeSql.Strings.getHintsOrdered(jdbcClient.getConfig().getDbProps());
+         write(OseeSql.Strings.getHintsOrdered(jdbcClient.getConfig().getDbProps()));
       }
-      return hint;
+      write(" ");
    }
 
    @Override

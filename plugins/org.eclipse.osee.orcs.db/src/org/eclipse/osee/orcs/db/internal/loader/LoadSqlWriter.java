@@ -22,7 +22,6 @@ import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
-import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
@@ -35,17 +34,17 @@ public class LoadSqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   protected void writeSelectFields(Iterable<SqlHandler<?>> handlers) {
+   protected void writeSelectFields() {
       String txAlias = getLastAlias(TableEnum.TXS_TABLE);
       String artJoinAlias = getLastAlias(TableEnum.JOIN_ID4_TABLE);
 
-      writeCommaIfNotFirst();
-      write("%s.gamma_id, %s.mod_type, %s.branch_id, %s.transaction_id, %s.app_id", txAlias, txAlias, txAlias, txAlias,
-         txAlias);
+      writeSelectFields(txAlias, "gamma_id", txAlias, "mod_type", txAlias, "branch_id", txAlias, "transaction_id",
+         txAlias, "app_id");
+
       if (OptionsUtil.isHistorical(getOptions())) {
-         write(", %s.transaction_id as stripe_transaction_id", txAlias);
+         writeSelectFields(txAlias, "transaction_id as stripe_transaction_id");
       }
-      write(", %s.id2, %s.id4", artJoinAlias, artJoinAlias);
+      writeSelectFields(artJoinAlias, "id2", artJoinAlias, "id4");
    }
 
    @Override

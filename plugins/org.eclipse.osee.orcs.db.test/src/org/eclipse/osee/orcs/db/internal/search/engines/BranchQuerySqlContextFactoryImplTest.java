@@ -106,9 +106,8 @@ public class BranchQuerySqlContextFactoryImplTest {
    public void testCount() throws Exception {
       String expected = "SELECT count(*)\n" + //
          " FROM osee_branch br1, osee_join_id jid1, osee_join_id jid2\n" + //
-         " WHERE br1.branch_id = jid1.id AND jid1.query_id = ?\n" + //
-         " AND br1.branch_type = jid2.id AND jid2.query_id = ?";
-
+         " WHERE br1.branch_id = jid1.id AND jid1.query_id = ? AND\n" + //
+         "br1.branch_type = jid2.id AND jid2.query_id = ?";
       queryData.addCriteria(UUIDS, TYPES);
 
       QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.COUNT);
@@ -131,8 +130,8 @@ public class BranchQuerySqlContextFactoryImplTest {
    public void testQueryUuidIdsTypes() throws Exception {
       String expected = "SELECT br1.*\n" + //
          " FROM osee_branch br1, osee_join_id jid1, osee_join_id jid2\n" + //
-         " WHERE br1.branch_id = jid1.id AND jid1.query_id = ?\n" + //
-         " AND br1.branch_type = jid2.id AND jid2.query_id = ?\n" + //
+         " WHERE br1.branch_id = jid1.id AND jid1.query_id = ? AND\n" + //
+         "br1.branch_type = jid2.id AND jid2.query_id = ?\n" + //
          " ORDER BY br1.branch_id";
 
       queryData.addCriteria(UUIDS, TYPES);
@@ -175,8 +174,8 @@ public class BranchQuerySqlContextFactoryImplTest {
    public void testQueryUuidIdsTypesSingles() throws Exception {
       String expected = "SELECT br1.*\n" + //
          " FROM osee_branch br1\n" + //
-         " WHERE br1.branch_id = ?\n" + //
-         " AND br1.branch_type = ?\n" + //
+         " WHERE br1.branch_id = ? AND\n" + //
+         "br1.branch_type = ?\n" + //
          " ORDER BY br1.branch_id";
 
       queryData.addCriteria(uuid(CoreBranches.SYSTEM_ROOT.getId()), type(SYSTEM_ROOT));
@@ -243,8 +242,8 @@ public class BranchQuerySqlContextFactoryImplTest {
    public void testQueryStateArchive() throws Exception {
       String expected = "SELECT br1.*\n" + //
          " FROM osee_branch br1, osee_join_id jid1\n" + //
-         " WHERE br1.branch_state = jid1.id AND jid1.query_id = ?\n" + //
-         " AND br1.archived = ?\n" + //
+         " WHERE br1.branch_state = jid1.id AND jid1.query_id = ? AND\n" + //
+         "br1.archived = ?\n" + //
          " ORDER BY br1.branch_id";
 
       queryData.addCriteria(STATE, IS_ARCHIVED);
@@ -268,8 +267,8 @@ public class BranchQuerySqlContextFactoryImplTest {
    public void testQuerySingleStateArchive() throws Exception {
       String expected = "SELECT br1.*\n" + //
          " FROM osee_branch br1\n" + //
-         " WHERE br1.branch_state = ?\n" + //
-         " AND br1.archived = ?\n" + //
+         " WHERE br1.branch_state = ? AND\n" + //
+         "br1.archived = ?\n" + //
          " ORDER BY br1.branch_id";
 
       queryData.addCriteria(state(CREATION_IN_PROGRESS), IS_ARCHIVED);
@@ -354,11 +353,11 @@ public class BranchQuerySqlContextFactoryImplTest {
          " )\n" + //
          "SELECT br1.*\n" + //
          " FROM chof1, osee_branch br1, osee_join_id jid1\n" + //
-         " WHERE chof1.child_id = br1.branch_id\n" + //
-         " AND br1.branch_type = ?\n" + //
-         " AND br1.branch_state = jid1.id AND jid1.query_id = ?\n" + //
-         " AND br1.archived = ?\n" + //
-         " AND REGEXP_MATCHES (br1.branch_name, ?)\n" + //
+         " WHERE chof1.child_id = br1.branch_id AND\n" + //
+         "br1.branch_type = ? AND\n" + //
+         "br1.branch_state = jid1.id AND jid1.query_id = ? AND\n" + //
+         "br1.archived = ? AND\n" + //
+         "REGEXP_MATCHES (br1.branch_name, ?)\n" + //
          " ORDER BY br1.branch_id";
 
       queryData.addCriteria(STATE, IS_ARCHIVED, type(WORKING), childOf(COMMON), NAME_PATTERN);
