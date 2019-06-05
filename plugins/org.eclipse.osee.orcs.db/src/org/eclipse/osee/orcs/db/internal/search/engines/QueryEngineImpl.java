@@ -88,9 +88,8 @@ public class QueryEngineImpl implements QueryEngine {
       if (isPostProcessRequired(queryData)) {
          return artifactQueryEngineFactory.getArtifactCount(queryData);
       }
-      Long[] count = new Long[1];
-      selectiveArtifactLoad(queryData, stmt -> count[0] = stmt.getLong("art_count"));
-      return count[0].intValue();
+      QueryData rootQueryData = queryData.getRootQueryData();
+      return new SelectiveArtifactSqlWriter(sqlJoinFactory, jdbcClient, rootQueryData).getCount(handlerFactory);
    }
 
    private boolean isPostProcessRequired(QueryData queryData) {
@@ -167,7 +166,7 @@ public class QueryEngineImpl implements QueryEngine {
             attributes.clear();
             artifactId[0] = newArtId;
          }
-         attributes.put(attributeTypes.get(stmt.getLong("attr_type_id")), stmt.getString("value"));
+         attributes.put(attributeTypes.get(stmt.getLong("type_id")), stmt.getString("value"));
       };
       selectiveArtifactLoad(queryData, consumer);
       if (!artifactId[0].equals(Id.SENTINEL)) {

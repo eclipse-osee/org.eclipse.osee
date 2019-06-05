@@ -147,10 +147,6 @@ public class OrcsScriptSqlWriter extends AbstractSqlWriter {
             }
             write(value);
          }
-      } else {
-         if (OptionsUtil.isHistorical(getOptions())) {
-            throw new UnsupportedOperationException("Historical Count dynamic query not supported");
-         }
       }
    }
 

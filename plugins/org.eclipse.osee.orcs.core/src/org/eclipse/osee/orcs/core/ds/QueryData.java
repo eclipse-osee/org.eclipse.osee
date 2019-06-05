@@ -52,7 +52,6 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeRaw;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaIdQuery;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedRecursive;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
@@ -60,7 +59,6 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeNotExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideNotExists;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTokenQuery;
 import org.eclipse.osee.orcs.core.internal.search.CallableQueryFactory;
 import org.eclipse.osee.orcs.core.internal.types.impl.OrcsTypesImpl;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -81,6 +79,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    private final BranchId branch;
    private final QueryData parentQueryData;
    private final List<QueryData> childrenQueryData = new ArrayList<>(2);
+   private AttributeTypeId attributeType = AttributeTypeToken.SENTINEL;
    private final CallableQueryFactory artQueryFactory;
    private final QueryEngine queryEngine;
    private final OrcsTypes orcsTypes;
@@ -148,6 +147,10 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       return queryType == QueryType.ID;
    }
 
+   public boolean isAttributesOnlyQueryType() {
+      return queryType == QueryType.ATTRIBUTES_ONLY;
+   }
+
    public List<Criteria> getAllCriteria() {
       List<Criteria> allCriterias = new ArrayList<>();
       for (List<Criteria> list : criterias) {
@@ -158,6 +161,16 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    public boolean hasNoCriteria() {
       return criterias.get(0).isEmpty();
+   }
+
+   /**
+    * Prove this CriteriaSet nesting is no longer needed except for orcs script follow relation
+    */
+   public List<Criteria> getOnlyCriteriaSet() {
+      if (criterias.size() > 1) {
+         throw new OseeStateException("Expected excactly one criteria set not:" + criterias.size());
+      }
+      return criterias.get(0);
    }
 
    public List<List<Criteria>> getCriteriaSets() {
@@ -233,6 +246,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       mainAliases.clear();
       childrenQueryData.clear();
       followCausesChild = true;
+      attributeType = AttributeTypeToken.SENTINEL;
    }
 
    @Override
@@ -243,6 +257,10 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    @Override
    public BranchId getBranch() {
       return branch;
+   }
+
+   public void select(AttributeTypeId attributeType) {
+      this.attributeType = attributeType;
    }
 
    @Override
@@ -270,6 +288,10 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    public QueryBuilder includeDeletedRelations(boolean enabled) {
       OptionsUtil.setIncludeDeletedRelations(getOptions(), enabled);
       return this;
+   }
+
+   public AttributeTypeId getAttributeType() {
+      return attributeType;
    }
 
    @Override
@@ -549,7 +571,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    @Override
    public List<Map<String, Object>> asArtifactMaps() {
-      addCriteria(new CriteriaTokenQuery(AttributeTypeToken.SENTINEL));
+      setQueryType(QueryType.ATTRIBUTES_ONLY);
       return queryEngine.asArtifactMaps(this);
    }
 
@@ -565,14 +587,14 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    @Override
    public Map<ArtifactId, ArtifactToken> loadArtifactTokenMap() {
-      addCriteria(new CriteriaTokenQuery(Name));
+      select(Name);
       return queryEngine.loadArtifactTokenMap(this);
    }
 
    @Override
    public List<ArtifactToken> loadArtifactTokens(AttributeTypeId attributeType) {
       setQueryType(QueryType.TOKEN);
-      addCriteria(new CriteriaTokenQuery(attributeType));
+      select(attributeType);
       return queryEngine.loadArtifactTokens(this);
    }
 
@@ -619,7 +641,6 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    @Override
    public List<ArtifactId> loadArtifactIds() {
       setQueryType(QueryType.ID);
-      addCriteria(new CriteriaIdQuery());
       return queryEngine.loadArtifactIds(this);
    }
 

@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs;
 public enum QueryType {
    COUNT,
    SELECT,
+   ATTRIBUTES_ONLY,
    TOKEN,
    ID;
 }

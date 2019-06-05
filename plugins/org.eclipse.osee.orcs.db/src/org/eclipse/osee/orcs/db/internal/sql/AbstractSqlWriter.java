@@ -175,7 +175,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
             writeSelectAndHint();
             write("1");
          } else {
-            write("count(*) AS art_count");
+            write("count(*)");
          }
       } else {
          writeSelectFields();
