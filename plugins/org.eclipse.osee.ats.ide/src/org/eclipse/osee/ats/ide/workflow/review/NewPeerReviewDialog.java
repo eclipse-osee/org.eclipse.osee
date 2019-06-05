@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.CheckBoxStateFilteredTreeViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.ICheckBoxStateTreeListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -85,6 +86,17 @@ public class NewPeerReviewDialog extends EntryDialog implements IsEnabled {
          NewActionPage1.createActionableItemTreeViewer(parent, null);
       treeViewer = results.getFirst();
       treeViewer.setEnabledChecker(this);
+
+      treeViewer.addCheckListener(new ICheckBoxStateTreeListener() {
+         @Override
+         public void checkStateNodesChanged() {
+            selectedAis.clear();
+            for (Object obj : treeViewer.getChecked()) {
+               selectedAis.add((IAtsActionableItem) obj);
+            }
+            handleModified();
+         }
+      });
    }
 
    public Set<IAtsActionableItem> getSelectedActionableItems() {
