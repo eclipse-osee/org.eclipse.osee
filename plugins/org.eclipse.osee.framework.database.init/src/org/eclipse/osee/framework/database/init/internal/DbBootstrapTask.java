@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.OseeCredential;
+import org.eclipse.osee.framework.core.data.UserTokens;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
@@ -55,7 +56,10 @@ public class DbBootstrapTask implements IDbInitializationTask {
       datastoreEndpoint.initialize(typeModel);
       datastoreEndpoint.createDemoBranches();
       if (!configuration.getUserTokens().isEmpty()) {
-         datastoreEndpoint.createUsers(configuration.getUserTokens(), SystemUser.OseeSystem);
+         UserTokens userToks = new UserTokens();
+         userToks.getUsers().addAll(configuration.getUserTokens());
+         userToks.setAccount(SystemUser.OseeSystem);
+         datastoreEndpoint.createUsers(userToks);
       }
 
       Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.skynet.core");

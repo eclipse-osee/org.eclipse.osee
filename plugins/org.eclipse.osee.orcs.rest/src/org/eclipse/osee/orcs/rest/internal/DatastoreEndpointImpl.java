@@ -13,15 +13,13 @@ package org.eclipse.osee.orcs.rest.internal;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
 import java.net.URI;
-import java.util.List;
 import java.util.concurrent.Callable;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.data.UserTokens;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsMetaData;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
@@ -86,18 +84,11 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    }
 
    @Override
-   public TransactionId createUsers(List<UserToken> users, UserId account) {
-      TransactionBuilder tx =
-         orcsApi.getTransactionFactory().createTransaction(COMMON, account, "DatastoreEndpointImpl.createUsers()");
-      orcsApi.getAdminOps().createUsers(tx, users);
+   public TransactionId createUsers(UserTokens users) {
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON, users.getAccount(),
+         "DatastoreEndpointImpl.createUsers()");
+      orcsApi.getAdminOps().createUsers(tx, users.getUsers());
       return tx.commit();
    }
 
-   @Override
-   public TransactionId createUser(UserToken user, UserId account) {
-      TransactionBuilder tx =
-         orcsApi.getTransactionFactory().createTransaction(COMMON, account, "DatastoreEndpointImpl.createUser()");
-      orcsApi.getAdminOps().createUser(tx, user);
-      return tx.commit();
-   }
 }

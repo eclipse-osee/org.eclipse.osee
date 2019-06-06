@@ -10,18 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model;
 
-import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.data.UserTokens;
 
 /**
  * @author Roberto E. Escobar
@@ -49,14 +46,9 @@ public interface DatastoreEndpoint {
    void createDemoBranches();
 
    @POST
-   @Path("users")
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_JSON)
-   TransactionId createUsers(List<UserToken> users, @HeaderParam("osee.account.id") UserId account);
-
-   @POST
    @Path("user")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   TransactionId createUser(UserToken user, @HeaderParam("osee.account.id") UserId account);
+   TransactionId createUsers(UserTokens users);
+
 }

@@ -37,10 +37,10 @@ public class UserTokenDeserializer extends StdDeserializer<UserToken> {
    @Override
    public UserToken deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
       JsonNode readTree = jp.getCodec().readTree(jp);
-      List<ArtifactToken> roles = new ArrayList<ArtifactToken>();
-      for (JsonNode artToken : readTree.get("roles")) {
+      List<ArtifactToken> userGroups = new ArrayList<ArtifactToken>();
+      for (JsonNode artToken : readTree.get("groups")) {
          ArtifactToken roleToken = ArtifactToken.valueOf(artToken.get("id").asLong(), artToken.get("name").textValue());
-         roles.add(roleToken);
+         userGroups.add(roleToken);
       }
       ArtifactToken.valueOf(readTree.get("id").asLong(), readTree.get("name").textValue());
       return UserToken.create(readTree.get("id").asLong(), readTree.get("name").textValue(),
