@@ -37,7 +37,7 @@
 <plugin id="com.gradleware.tooling.utils"/>
 <plugin id="com.ibm.icu"/>
 <plugin id="com.ibm.icu.source"/>
-<plugin id="com.jcraft.jsch" version="0.1.54.v20170116-1932"/>
+<plugin id="com.jcraft.jsch" />
 <plugin id="com.lowagie.text"/>
 <plugin id="com.sun.el"/>
 <plugin id="com.sun.el.source"/>
@@ -54,7 +54,7 @@
 <plugin id="javax.inject.source"/>
 <plugin id="javax.mail.glassfish"/>
 <plugin id="javax.mail.glassfish.source"/>
-<plugin id="javax.servlet" version="3.1.0.v201410161800"/>
+<plugin id="javax.servlet" />
 <plugin id="javax.servlet.jsp"/>
 <plugin id="javax.servlet.jsp.source"/>
 <plugin id="javax.servlet.source"/>
@@ -82,10 +82,10 @@
 <plugin id="org.apache.aries.quiesce.source"/>
 <plugin id="org.apache.aries.util"/>
 <plugin id="org.apache.aries.util.source"/>
-<plugin id="org.apache.batik.css" version="1.7.0.v201011041433"/>
+<plugin id="org.apache.batik.css" />
 <plugin id="org.apache.batik.css.source"/>
-<plugin id="org.apache.batik.util" version="1.7.0.v201011041433"/>
-<plugin id="org.apache.batik.util.gui" version="1.7.0.v200903091627"/>
+<plugin id="org.apache.batik.util" />
+<plugin id="org.apache.batik.util.gui" />
 <plugin id="org.apache.batik.util.gui.source"/>
 <plugin id="org.apache.batik.util.source"/>
 <plugin id="org.apache.commons.cli"/>
@@ -493,8 +493,8 @@
 <plugin id="org.eclipse.help.webapp"/>
 <plugin id="org.eclipse.help.webapp.source"/>
 <plugin id="org.eclipse.jdt"/>
-<plugin id="org.eclipse.jdt.annotation" version="2.1.0.v20160418-1457"/>
-<plugin id="org.eclipse.jdt.annotation.source" version="2.1.0.v20160418-1457"/>
+<plugin id="org.eclipse.jdt.annotation" />
+<plugin id="org.eclipse.jdt.annotation.source" />
 <plugin id="org.eclipse.jdt.apt.core"/>
 <plugin id="org.eclipse.jdt.apt.core.source"/>
 <plugin id="org.eclipse.jdt.apt.pluggable.core"/>
@@ -829,8 +829,8 @@
 <plugin id="org.jacoco.report"/>
 <plugin id="org.json"/>
 <plugin id="org.jsoup"/>
-<plugin id="org.junit" version="4.12.0.v201504281640"/>
-<plugin id="org.junit.source" version="4.12.0.v201504281640"/>
+<plugin id="org.junit" />
+<plugin id="org.junit.source" />
 <plugin id="org.mockito"/>
 <plugin id="org.mockito.source"/>
 <plugin id="org.mozilla.javascript"/>
@@ -845,7 +845,7 @@
 <plugin id="org.postgresql.driver"/>
 <plugin id="org.sat4j.core"/>
 <plugin id="org.sat4j.pb"/>
-<plugin id="org.slf4j.api" version="1.7.10.v20170428-1633"/>
+<plugin id="org.slf4j.api" />
 <plugin id="org.slf4j.api.source"/>
 <plugin id="org.slf4j.jcl"/>
 <plugin id="org.slf4j.jcl.source"/>
