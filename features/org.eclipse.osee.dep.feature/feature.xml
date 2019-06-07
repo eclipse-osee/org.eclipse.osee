@@ -1176,6 +1176,13 @@
          version="2.13.0"
 			unpack="false"/>
 			
+  <plugin
+         id="org.eclipse.jsch.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>			
+	
 	<plugin
          id="org.hamcrest"
          download-size="0"

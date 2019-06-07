@@ -30,6 +30,7 @@
 							   <plugin id="javax.servlet" />
 							   <plugin id="javax.ws.rs" />
 							   <plugin id="javax.wsdl" />
+							     <plugin id="org.eclipse.jdt.launching" />
 							   <plugin id="javax.xml" />
 							   <plugin id="com.jcraft.jsch" />
 							   <plugin id="org.eclipse.egit" />
