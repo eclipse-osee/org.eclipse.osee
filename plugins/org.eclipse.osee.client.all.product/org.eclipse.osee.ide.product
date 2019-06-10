@@ -40,6 +40,7 @@
       <feature id="org.eclipse.osee.client.all.feature"/>
       <feature id="org.eclipse.osee.client.all.feature.source"/>
       <feature id="org.eclipse.sdk"/>
+      <feature id="org.eclipse.egit"/>
    </features>
 
    <configurations>
