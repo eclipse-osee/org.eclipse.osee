@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 
@@ -109,14 +110,16 @@ public class RoughArtifact {
    }
 
    public void addAttribute(String typeName, String value) {
-      if (isEnumeration(typeName)) {
-         if (isMultipleEnum(typeName, value)) {
-            attributes.addAttribute(typeName, getEnumValues(value));
+      if (Strings.isValid(value)) {
+         if (isEnumeration(typeName)) {
+            if (isMultipleEnum(typeName, value)) {
+               attributes.addAttribute(typeName, getEnumValues(value));
+            } else {
+               attributes.addAttribute(typeName, value.trim());
+            }
          } else {
-            attributes.addAttribute(typeName, value.trim());
+            attributes.addAttribute(typeName, value);
          }
-      } else {
-         attributes.addAttribute(typeName, value);
       }
    }
 

@@ -49,13 +49,20 @@ public final class ReqNumbering implements Comparable<ReqNumbering> {
 
    public String getParentString() {
       int finalIndex = values.length - 1;
-      for (int i = 0; i < values.length; ++i) {
-         if (values[i].equals("0")) {
-            finalIndex = i;
-            break;
-         }
+      int lastZero = findIndexOfLastZero();
+      if (lastZero > 0 && lastZero < finalIndex) {
+         finalIndex = lastZero;
       }
       return unTokenize(values, finalIndex);
+   }
+
+   private int findIndexOfLastZero() {
+      for (int i = values.length - 1; i >= 0; --i) {
+         if (values[i].equals("0")) {
+            return i;
+         }
+      }
+      return -1;
    }
 
    public int getLength() {

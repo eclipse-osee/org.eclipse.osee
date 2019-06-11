@@ -60,6 +60,15 @@ public class ReqNumberingTest {
    }
 
    @Test
+   public void testIsChild_DoubleDoubleZeroBasedParagraphNumber() {
+      String parent = "3.7.7.1.3.0-2";
+      String child = "3.7.7.1.3.0-2.0-1";
+      ReqNumbering reqParent = new ReqNumbering(parent);
+      ReqNumbering reqChild = new ReqNumbering(child);
+      assertTrue(reqParent.isChild(reqChild));
+   }
+
+   @Test
    public void testIsNotChild_ZeroBasedParagraphNumber() {
       String parent = "1.3.4";
       String child = "1.3.5.0-5";
