@@ -47,7 +47,7 @@
 								<plugin id="org.eclipse.team.svn.core" />
 								<plugin id="ch.qos.logback.slf4j" />
 								<plugin id="org.jsoup" />
-							  	<plugin id="org.eclipse.swt" />
+								<plugin id="org.eclipse.swt" />
 								<plugin id="org.eclipse.wst.common.project.facet.core" />
 								<plugin id="org.eclipse.wst.xml.core" />
 								<plugin id="org.eclipse.wst.sse.core" />
@@ -62,14 +62,16 @@
 								<plugin id="org.eclipse.uml2.uml.resources" />
 								<plugin id="org.apache.batik.pdf" />
 								<plugin id="org.eclipse.ocl.common" />								
-								<plugin id="org.hamcrest" />								
+								<plugin id="org.hamcrest" />
+																
 								<plugin id="org.eclipse.ocl.ecore" />
-								<feature id="org.eclipse.graphiti.feature" />
+								<feature id="org.eclipse.graphiti.feature" />					
 								<feature id="org.eclipse.graphiti.source.feature" />
 								<feature id="org.eclipse.equinox.server.jetty" />
 								<feature id="org.eclipse.core.runtime.feature" />
 								<feature id="org.eclipse.xtext.sdk" />
 								<feature id="org.eclipse.emf" />
+								<feature id="org.eclipse.egit.mylyn" />
 								<feature id="org.eclipse.emf.mwe2.language.sdk" />
 								<feature id="org.eclipse.emf.mwe2.runtime.sdk" />
 								<feature id="org.eclipse.sdk" />

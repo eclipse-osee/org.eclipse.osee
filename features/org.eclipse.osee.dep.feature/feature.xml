@@ -16,7 +16,11 @@
    <license url="%licenseURL">
       %license
    </license>
-
+ 
+    <includes
+         id="org.eclipse.egit.mylyn"
+         version="4.4.0"/>   
+  
    <includes
          id="org.eclipse.graphiti.feature"
          version="0.0.0"/>
@@ -40,7 +44,9 @@
    <includes
          id="org.eclipse.egit"
          version="4.4.0"/>
-                
+         
+ 
+                      
    <includes
          id="org.eclipse.m2e.feature"
          version="0.0.0"/>
