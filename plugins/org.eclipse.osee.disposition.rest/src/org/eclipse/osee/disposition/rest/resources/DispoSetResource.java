@@ -88,6 +88,31 @@ public class DispoSetResource {
    }
 
    /**
+    * Create a new Disposition Set given a name, dispoType, and path
+    *
+    * @param importPath String used to specify the directory to populate the set
+    * @param name String used to name the set
+    * @param dispoType String used to specify if using disposition vs coverage
+    * @return Response type for success of call
+    * @response.representation.201.doc Created the Disposition Set
+    * @response.representation.409.doc Conflict, tried to create a Disposition Set with same name
+    * @response.representation.400.doc Bad Request, did not provide both a Name and a valid Import Path
+    */
+   @Path("{name}")
+   @POST
+   @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
+   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response postDispoSetByName(@FormParam("path") String importPath, @PathParam("name") String name, @QueryParam("dispoType") String dispoType, @QueryParam("userName") String userName) {
+      DispoSetDescriptorData descriptor = new DispoSetDescriptorData();
+      descriptor.setName(name);
+      descriptor.setImportPath(importPath);
+      descriptor.setDispoType(dispoType);
+
+      return postDispoSet(descriptor, userName);
+   }
+
+   /**
     * Get a specific Disposition Set given a setId
     *
     * @param setId The Id of the Disposition Set to search for
@@ -128,6 +153,19 @@ public class DispoSetResource {
       String setId = dispoApi.getDispoSetIdByName(branch, setName);
       List<String> reruns = dispoApi.getCheckedReruns(branch, setId);
       return reruns;
+   }
+
+   /**
+    * @return The found setId if successful. Error Code otherwise
+    * @response.representation.200.doc OK, Found branchId
+    * @response.representation.404.doc Not Found, Could not find any branchId
+    */
+   @Path("getDispoSetId")
+   @GET
+   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+   @Produces(MediaType.APPLICATION_JSON)
+   public String getDispoBranchId(@FormParam("name") String setName) {
+      return dispoApi.getDispoSetIdByName(branch, setName);
    }
 
    /**

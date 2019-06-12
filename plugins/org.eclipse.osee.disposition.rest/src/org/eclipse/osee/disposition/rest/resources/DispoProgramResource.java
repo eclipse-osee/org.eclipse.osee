@@ -53,7 +53,7 @@ public class DispoProgramResource {
     * Create a new Disposition Set given a DispoSetDescriptor
     *
     * @param descriptor Descriptor Data which includes name and import path
-    * @return The created Disposition Set if successful. Error Code otherwise
+    * @return Response type for success of call
     * @response.representation.201.doc Created the Disposition Set
     * @response.representation.409.doc Conflict, tried to create a Disposition Set with same name
     * @response.representation.400.doc Bad Request, did not provide both a Name and a valid Import Path
@@ -81,6 +81,25 @@ public class DispoProgramResource {
          response = Response.status(status).entity(DispoMessages.Set_EmptyNameOrPath).build();
       }
       return response;
+   }
+
+   /**
+    * Create a new Disposition Set given a name
+    *
+    * @param name String used to name the branch
+    * @return Response type for success of call
+    * @response.representation.201.doc Created the Disposition Set
+    * @response.representation.409.doc Conflict, tried to create a Disposition Set with same name
+    * @response.representation.400.doc Bad Request, did not provide both a Name and a valid Import Path
+    */
+   @Path("{name}")
+   @POST
+   @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
+   @Produces(MediaType.TEXT_PLAIN)
+   public Response createDispoProgramByName(@PathParam("name") String name, @QueryParam("userName") String userName) {
+      DispoProgamDescriptorData programDescriptor = new DispoProgamDescriptorData();
+      programDescriptor.setName(userName);
+      return createProgram(programDescriptor, userName);
    }
 
    /**
