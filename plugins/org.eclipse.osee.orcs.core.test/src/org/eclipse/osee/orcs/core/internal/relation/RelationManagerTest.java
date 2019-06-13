@@ -257,41 +257,41 @@ public class RelationManagerTest {
 
    @Test
    public void testGetRationale() {
-      String rationale = manager.getRationale(session, node4, DEFAULT_HIERARCHY, node1);
+      String rationale = manager.getRationale(node4, DEFAULT_HIERARCHY, node1);
       assertEquals("rationale on relation3", rationale);
    }
 
    @Test
    public void testGetRelatedCount() {
-      int actual = manager.getRelatedCount(session, DEFAULT_HIERARCHY, node1, IS_PARENT);
+      int actual = manager.getRelatedCount(DEFAULT_HIERARCHY, node1, IS_PARENT);
       assertEquals(3, actual);
 
       when(relation2.getModificationType()).thenReturn(ModificationType.ARTIFACT_DELETED);
       when(relation2.isDeleted()).thenReturn(true);
 
-      int actual2 = manager.getRelatedCount(session, DEFAULT_HIERARCHY, node1, IS_PARENT);
+      int actual2 = manager.getRelatedCount(DEFAULT_HIERARCHY, node1, IS_PARENT);
       assertEquals(2, actual2);
 
-      int actual3 = manager.getRelatedCount(session, DEFAULT_HIERARCHY, node1, IS_PARENT, INCLUDE_DELETED);
+      int actual3 = manager.getRelatedCount(DEFAULT_HIERARCHY, node1, IS_PARENT, INCLUDE_DELETED);
       assertEquals(3, actual3);
    }
 
    @Test
    public void testAreRelated() {
-      assertTrue(manager.areRelated(session, node4, DEFAULT_HIERARCHY, node1));
+      assertTrue(manager.areRelated(node4, DEFAULT_HIERARCHY, node1));
 
-      assertTrue(manager.areRelated(session, node1, DEFAULT_HIERARCHY, node2));
-      assertTrue(manager.areRelated(session, node1, DEFAULT_HIERARCHY, node3));
-      assertTrue(manager.areRelated(session, node1, DEFAULT_HIERARCHY, node5));
+      assertTrue(manager.areRelated(node1, DEFAULT_HIERARCHY, node2));
+      assertTrue(manager.areRelated(node1, DEFAULT_HIERARCHY, node3));
+      assertTrue(manager.areRelated(node1, DEFAULT_HIERARCHY, node5));
 
-      assertFalse(manager.areRelated(session, node1, DEFAULT_HIERARCHY, node4));
-      assertFalse(manager.areRelated(session, node2, DEFAULT_HIERARCHY, node1));
-      assertFalse(manager.areRelated(session, node3, DEFAULT_HIERARCHY, node1));
-      assertFalse(manager.areRelated(session, node5, DEFAULT_HIERARCHY, node1));
+      assertFalse(manager.areRelated(node1, DEFAULT_HIERARCHY, node4));
+      assertFalse(manager.areRelated(node2, DEFAULT_HIERARCHY, node1));
+      assertFalse(manager.areRelated(node3, DEFAULT_HIERARCHY, node1));
+      assertFalse(manager.areRelated(node5, DEFAULT_HIERARCHY, node1));
 
-      assertFalse(manager.areRelated(session, node4, DEFAULT_HIERARCHY, node2));
-      assertFalse(manager.areRelated(session, node4, DEFAULT_HIERARCHY, node3));
-      assertFalse(manager.areRelated(session, node4, DEFAULT_HIERARCHY, node5));
+      assertFalse(manager.areRelated(node4, DEFAULT_HIERARCHY, node2));
+      assertFalse(manager.areRelated(node4, DEFAULT_HIERARCHY, node3));
+      assertFalse(manager.areRelated(node4, DEFAULT_HIERARCHY, node5));
    }
 
    @Test
@@ -302,7 +302,7 @@ public class RelationManagerTest {
          RelationTypeMultiplicity.ONE_TO_MANY);
       when(relationFactory.introduce(COMMON, data1)).thenReturn(relation1);
 
-      manager.introduce(session, COMMON, node2, node3);
+      manager.introduce(COMMON, node2, node3);
       RelationNodeAdjacencies node2Adj = node2.getGraph().getAdjacencies(node2);
       RelationNodeAdjacencies node3Adj = node3.getGraph().getAdjacencies(node3);
 

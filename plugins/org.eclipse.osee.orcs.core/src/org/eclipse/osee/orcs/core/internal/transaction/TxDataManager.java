@@ -185,7 +185,7 @@ public class TxDataManager {
    private Artifact copyArtifactForWrite(TxData txData, Artifact source) {
       Artifact artifact = artifactFactory.clone(txData.getSession(), source);
       txData.getGraph().addNode(artifact, artifact.getOrcsData().isExistingVersionUsed());
-      relationManager.cloneRelations(txData.getSession(), source, artifact);
+      relationManager.cloneRelations(source, artifact);
       return artifact;
    }
 
@@ -311,7 +311,7 @@ public class TxDataManager {
          dest = getSourceArtifact(txData, fromBranch, destination);
       }
       artifactFactory.introduceArtifact(txData.getSession(), src, dest, txData.getBranch());
-      relationManager.introduce(txData.getSession(), txData.getBranch(), src, dest);
+      relationManager.introduce(txData.getBranch(), src, dest);
       addAdjacencies(txData, dest);
       return asExternalArtifact(txData, dest);
    }
@@ -414,13 +414,13 @@ public class TxDataManager {
          asArtifactBs.add(getForWrite(txData, artB));
       }
 
-      relationManager.order(txData.getSession(), asArtifactA, relationSide, relationSide.getSide(), asArtifactBs);
+      relationManager.order(asArtifactA, relationSide, relationSide.getSide(), asArtifactBs);
    }
 
    public void setRationale(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, String rationale) {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
-      relationManager.setRationale(txData.getSession(), asArtifactA, type, asArtifactB, rationale);
+      relationManager.setRationale(asArtifactA, type, asArtifactB, rationale);
    }
 
    public void unrelate(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB) {
@@ -442,17 +442,16 @@ public class TxDataManager {
    public void setRelationApplicabilityId(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, ApplicabilityId applicId) {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
-      relationManager.setApplicabilityId(txData.getSession(), asArtifactA, type, asArtifactB, applicId);
+      relationManager.setApplicabilityId(asArtifactA, type, asArtifactB, applicId);
    }
 
    public TransactionData createChangeData(TxData txData) {
-      OrcsSession session = txData.getSession();
       GraphData graph = txData.getGraph();
 
       ChangeSetBuilder builder = new ChangeSetBuilder();
       for (Artifact artifact : txData.getAllWriteables()) {
          artifact.accept(builder);
-         relationManager.accept(session, graph, artifact, builder);
+         relationManager.accept(graph, artifact, builder);
       }
       builder.handleTuples(txData);
 

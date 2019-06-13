@@ -193,7 +193,7 @@ public class RelationManagerImplTest {
          }
       });
 
-      assertEquals(expected, manager.getValidRelationTypes(session, node1));
+      assertEquals(expected, manager.getValidRelationTypes(node1));
       verify(validity).getValidRelationTypes(artifactType1);
    }
 
@@ -201,7 +201,7 @@ public class RelationManagerImplTest {
    public void testGetMaximumRelationAllowed() {
       when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType1, SIDE_A)).thenReturn(11);
 
-      int actual = manager.getMaximumRelationAllowed(session, TYPE_1, node1, SIDE_A);
+      int actual = manager.getMaximumRelationAllowed(TYPE_1, node1, SIDE_A);
 
       assertEquals(11, actual);
       verify(validity).getMaximumRelationsAllowed(TYPE_1, artifactType1, SIDE_A);
@@ -211,7 +211,7 @@ public class RelationManagerImplTest {
    public void testAccept() {
       RelationVisitor visitor = mock(RelationVisitor.class);
 
-      manager.accept(session, graph, node1, visitor);
+      manager.accept(graph, node1, visitor);
 
       verify(container1).accept(visitor);
    }
@@ -219,27 +219,27 @@ public class RelationManagerImplTest {
    @Test
    public void testHasDirtyRelations() {
       when(graph.getAdjacencies(node1)).thenReturn(null);
-      assertFalse(manager.hasDirtyRelations(session, node1));
+      assertFalse(manager.hasDirtyRelations(node1));
 
       when(container1.hasDirty()).thenReturn(true);
       when(graph.getAdjacencies(node1)).thenReturn(container1);
-      assertTrue(manager.hasDirtyRelations(session, node1));
+      assertTrue(manager.hasDirtyRelations(node1));
 
       when(container1.hasDirty()).thenReturn(false);
-      assertFalse(manager.hasDirtyRelations(session, node1));
+      assertFalse(manager.hasDirtyRelations(node1));
    }
 
    @Test
    public void testGetExistingRelationTypeNullNode() {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("node cannot be null");
-      manager.getExistingRelationTypes(session, null);
+      manager.getExistingRelationTypes(null);
    }
 
    @Test
    public void testGetExistingRelationType() {
       when(graph.getAdjacencies(node1)).thenReturn(null);
-      Collection<RelationTypeId> actuals = manager.getExistingRelationTypes(session, node1);
+      Collection<RelationTypeId> actuals = manager.getExistingRelationTypes(node1);
       assertEquals(Collections.emptyList(), actuals);
 
       final List<IRelationType> types = Arrays.asList(relType1, relType2);
@@ -252,7 +252,7 @@ public class RelationManagerImplTest {
          }
 
       });
-      actuals = manager.getExistingRelationTypes(session, node1);
+      actuals = manager.getExistingRelationTypes(node1);
       verify(container1).getExistingTypes(EXCLUDE_DELETED);
       assertEquals(2, actuals.size());
       Iterator<RelationTypeId> iterator = actuals.iterator();
@@ -371,13 +371,13 @@ public class RelationManagerImplTest {
    public void testAreRelated() {
       when(container1.getRelation(node1, TYPE_1, node2, EXCLUDE_DELETED)).thenReturn(relation1);
 
-      boolean value = manager.areRelated(session, node1, TYPE_1, node2);
+      boolean value = manager.areRelated(node1, TYPE_1, node2);
       assertTrue(value);
 
       when(container1.getRelation(node1, TYPE_1, node2, EXCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, TYPE_1, node2, EXCLUDE_DELETED)).thenReturn(null);
 
-      boolean value2 = manager.areRelated(session, node1, TYPE_1, node2);
+      boolean value2 = manager.areRelated(node1, TYPE_1, node2);
       assertFalse(value2);
    }
 
@@ -386,7 +386,7 @@ public class RelationManagerImplTest {
       when(container1.getRelation(node1, TYPE_1, node2, EXCLUDE_DELETED)).thenReturn(relation1);
       when(relation1.getRationale()).thenReturn("Hello rationale");
 
-      String value = manager.getRationale(session, node1, TYPE_1, node2);
+      String value = manager.getRationale(node1, TYPE_1, node2);
       assertEquals("Hello rationale", value);
 
       verify(container1).getRelation(node1, TYPE_1, node2, EXCLUDE_DELETED);
@@ -399,7 +399,7 @@ public class RelationManagerImplTest {
 
       when(container1.getList(TYPE_1, EXCLUDE_DELETED, node1, SIDE_B)).thenReturn(list);
 
-      int actual = manager.getRelatedCount(session, TYPE_1, node1, SIDE_B);
+      int actual = manager.getRelatedCount(TYPE_1, node1, SIDE_B);
       Assert.assertEquals(3, actual);
 
       verify(container1).getList(TYPE_1, EXCLUDE_DELETED, node1, SIDE_B);
@@ -411,7 +411,7 @@ public class RelationManagerImplTest {
 
       when(container1.getList(TYPE_1, INCLUDE_DELETED, node1, SIDE_A)).thenReturn(list);
 
-      int actual = manager.getRelatedCount(session, TYPE_1, node1, SIDE_A, INCLUDE_DELETED);
+      int actual = manager.getRelatedCount(TYPE_1, node1, SIDE_A, INCLUDE_DELETED);
       Assert.assertEquals(2, actual);
 
       verify(container1).getList(TYPE_1, INCLUDE_DELETED, node1, SIDE_A);
@@ -504,7 +504,7 @@ public class RelationManagerImplTest {
 
       when(container2.getRelation(node1, TYPE_1, node2, EXCLUDE_DELETED)).thenReturn(relation1);
 
-      manager.setRationale(session, node1, TYPE_1, node2, rationale);
+      manager.setRationale(node1, TYPE_1, node2, rationale);
 
       verify(container1).getRelation(node1, TYPE_1, node2, EXCLUDE_DELETED);
       verify(container2).getRelation(node1, TYPE_1, node2, EXCLUDE_DELETED);

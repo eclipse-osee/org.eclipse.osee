@@ -254,22 +254,22 @@ public class ArtifactReadOnlyImplTest {
    public void testGetValidRelationTypes() {
       List<? extends IRelationType> types = Arrays.asList(CoreRelationTypes.Default_Hierarchical__Child);
 
-      when(relationManager.getValidRelationTypes(session, proxiedObject)).thenAnswer(answer(types));
+      when(relationManager.getValidRelationTypes(proxiedObject)).thenAnswer(answer(types));
 
       assertEquals(types, readOnly.getValidRelationTypes());
-      verify(relationManager).getValidRelationTypes(session, proxiedObject);
+      verify(relationManager).getValidRelationTypes(proxiedObject);
    }
 
    @Test
    public void testAreRelated() {
       when(proxyManager.asInternalArtifact(readable1)).thenReturn(artifact1);
-      when(relationManager.areRelated(session, proxiedObject, DEFAULT_HIERARCHY, artifact1)).thenReturn(true);
+      when(relationManager.areRelated(proxiedObject, DEFAULT_HIERARCHY, artifact1)).thenReturn(true);
 
       boolean actual = readOnly.areRelated(Default_Hierarchical__Child, readable1);
 
       assertEquals(true, actual);
       verify(proxyManager).asInternalArtifact(readable1);
-      verify(relationManager).areRelated(session, proxiedObject, DEFAULT_HIERARCHY, artifact1);
+      verify(relationManager).areRelated(proxiedObject, DEFAULT_HIERARCHY, artifact1);
    }
 
    @Test
@@ -287,48 +287,48 @@ public class ArtifactReadOnlyImplTest {
    @Test
    public void testGetExistingRelationTypes() {
       List<? extends IRelationType> types = Arrays.asList(Allocation__Requirement);
-      when(relationManager.getExistingRelationTypes(session, proxiedObject)).thenAnswer(answer(types));
+      when(relationManager.getExistingRelationTypes(proxiedObject)).thenAnswer(answer(types));
 
       Collection<RelationTypeId> actual = readOnly.getExistingRelationTypes();
 
       assertEquals(types, actual);
-      verify(relationManager).getExistingRelationTypes(session, proxiedObject);
+      verify(relationManager).getExistingRelationTypes(proxiedObject);
    }
 
    @Test
    public void testGetMaximumRelationAllowed() {
       RelationTypeSide typeAndSide = Default_Hierarchical__Child;
-      when(relationManager.getMaximumRelationAllowed(session, DEFAULT_HIERARCHY, proxiedObject, IS_PARENT)).thenReturn(
+      when(relationManager.getMaximumRelationAllowed(DEFAULT_HIERARCHY, proxiedObject, IS_PARENT)).thenReturn(
          6);
 
       int actual = readOnly.getMaximumRelationAllowed(typeAndSide);
 
       assertEquals(6, actual);
-      verify(relationManager).getMaximumRelationAllowed(session, DEFAULT_HIERARCHY, proxiedObject, IS_PARENT);
+      verify(relationManager).getMaximumRelationAllowed(DEFAULT_HIERARCHY, proxiedObject, IS_PARENT);
    }
 
    @Test
    public void testGetRationale() {
       String expected = "This is my rationale";
       when(proxyManager.asInternalArtifact(readable1)).thenReturn(artifact1);
-      when(relationManager.getRationale(session, artifact1, DEFAULT_HIERARCHY, proxiedObject)).thenReturn(expected);
+      when(relationManager.getRationale(artifact1, DEFAULT_HIERARCHY, proxiedObject)).thenReturn(expected);
 
       String actual = readOnly.getRationale(Default_Hierarchical__Parent, readable1);
 
       assertEquals(expected, actual);
 
-      verify(relationManager).getRationale(session, artifact1, DEFAULT_HIERARCHY, proxiedObject);
+      verify(relationManager).getRationale(artifact1, DEFAULT_HIERARCHY, proxiedObject);
    }
 
    @Test
    public void testGetRelatedCount() {
       int expected = 35;
-      when(relationManager.getRelatedCount(session, DEFAULT_HIERARCHY, proxiedObject, IS_CHILD)).thenReturn(expected);
+      when(relationManager.getRelatedCount(DEFAULT_HIERARCHY, proxiedObject, IS_CHILD)).thenReturn(expected);
 
       int actual = readOnly.getRelatedCount(Default_Hierarchical__Parent);
 
       assertEquals(expected, actual);
-      verify(relationManager).getRelatedCount(session, DEFAULT_HIERARCHY, proxiedObject, IS_CHILD);
+      verify(relationManager).getRelatedCount(DEFAULT_HIERARCHY, proxiedObject, IS_CHILD);
    }
 
    @Test

@@ -560,7 +560,7 @@ public class TxDataManagerTest {
 
       txDataManager.setRationale(txData, readable1, DEFAULT_HIERARCHY, readable2, rationale);
 
-      verify(relationManager).setRationale(session, artifact1, DEFAULT_HIERARCHY, artifact3, rationale);
+      verify(relationManager).setRationale(artifact1, DEFAULT_HIERARCHY, artifact3, rationale);
    }
 
    @Test

@@ -214,17 +214,17 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    public int getMaximumRelationAllowed(RelationTypeSide typeAndSide) {
       IRelationType type = typeAndSide.getRelationType();
       RelationSide side = whichSideAmIOn(typeAndSide);
-      return getRelationManager().getMaximumRelationAllowed(getSession(), type, getProxiedObject(), side);
+      return getRelationManager().getMaximumRelationAllowed(type, getProxiedObject(), side);
    }
 
    @Override
    public Collection<RelationTypeId> getValidRelationTypes() {
-      return getRelationManager().getValidRelationTypes(getSession(), getProxiedObject());
+      return getRelationManager().getValidRelationTypes(getProxiedObject());
    }
 
    @Override
    public Collection<RelationTypeId> getExistingRelationTypes() {
-      return getRelationManager().getExistingRelationTypes(getSession(), getProxiedObject());
+      return getRelationManager().getExistingRelationTypes(getProxiedObject());
    }
 
    @Override
@@ -292,7 +292,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    @Override
    public ResultSet<RelationReadable> getRelations(RelationTypeSide typeAndSide) {
       return new ResultSetList<>(Collections.castAll(
-         getRelationManager().getRelations(getSession(), getProxiedObject(), DeletionFlag.EXCLUDE_DELETED)));
+         getRelationManager().getRelations(getProxiedObject(), DeletionFlag.EXCLUDE_DELETED)));
    }
 
    @Override
@@ -308,21 +308,21 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    public int getRelatedCount(RelationTypeSide typeAndSide) {
       IRelationType type = typeAndSide.getRelationType();
       RelationSide side = whichSideAmIOn(typeAndSide);
-      return getRelationManager().getRelatedCount(getSession(), type, getProxiedObject(), side);
+      return getRelationManager().getRelatedCount(type, getProxiedObject(), side);
    }
 
    @Override
    public boolean areRelated(RelationTypeSide typeAndSide, ArtifactReadable readable) {
       IRelationType type = typeAndSide.getRelationType();
       Pair<Artifact, Artifact> nodes = asABNodes(typeAndSide.getSide(), readable);
-      return getRelationManager().areRelated(getSession(), nodes.getFirst(), type, nodes.getSecond());
+      return getRelationManager().areRelated(nodes.getFirst(), type, nodes.getSecond());
    }
 
    @Override
    public String getRationale(RelationTypeSide typeAndSide, ArtifactReadable readable) {
       IRelationType type = typeAndSide.getRelationType();
       Pair<Artifact, Artifact> nodes = asABNodes(typeAndSide.getSide(), readable);
-      return getRelationManager().getRationale(getSession(), nodes.getFirst(), type, nodes.getSecond());
+      return getRelationManager().getRationale(nodes.getFirst(), type, nodes.getSecond());
    }
 
    private Pair<Artifact, Artifact> asABNodes(RelationSide side, ArtifactReadable readable) {
@@ -374,8 +374,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    @Override
    public Collection<Long> getRelatedIds(RelationTypeSide relationTypeSide) {
       List<Long> childIds = new ArrayList<>();
-      for (Relation relation : getRelationManager().getRelations(getSession(), getProxiedObject(),
-         DeletionFlag.EXCLUDE_DELETED)) {
+      for (Relation relation : getRelationManager().getRelations(getProxiedObject(), DeletionFlag.EXCLUDE_DELETED)) {
          boolean relIsSideA = relationTypeSide.getSide().isSideA();
          boolean thisOnCorrectSide =
             relIsSideA && relation.getArtIdB() == getId().intValue() || !relIsSideA && relation.getArtIdA() == getId().intValue();
