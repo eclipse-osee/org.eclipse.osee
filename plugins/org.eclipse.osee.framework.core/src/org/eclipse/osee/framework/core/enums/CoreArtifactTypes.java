@@ -72,6 +72,7 @@ public final class CoreArtifactTypes {
    public static final ArtifactTypeToken SoftwareRequirementHtml = ArtifactTypeToken.valueOf(42, "Software Requirement - HTML");
    public static final ArtifactTypeToken SoftwareRequirementPlainText = ArtifactTypeToken.valueOf(792, "Software Requirement Plain Text");
    public static final ArtifactTypeToken SoftwareRequirementProcedure = ArtifactTypeToken.valueOf(27, "Software Requirement Procedure");
+   public static final ArtifactTypeToken SoftwareTestProcedurePlainText = ArtifactTypeToken.valueOf(564397212436322878L, "Software Test Procedure Plain Text");
    public static final ArtifactTypeToken SubscriptionGroup = ArtifactTypeToken.valueOf(6753071794573299176L, "Subscription Group");
    public static final ArtifactTypeToken SubsystemDesign = ArtifactTypeToken.valueOf(43, "Subsystem Design");
    public static final ArtifactTypeToken SubsystemFunction = ArtifactTypeToken.valueOf(36, "Subsystem Function");

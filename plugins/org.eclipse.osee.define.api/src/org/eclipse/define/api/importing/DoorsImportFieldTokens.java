@@ -24,11 +24,13 @@ public final class DoorsImportFieldTokens {
    private static final String HEAD_REGEX = "^Object Head.*";
    private static final String NUMB_REGEX = "^Object Numb.*";
    private static final String TEXT_REGEX = "^Object Text.*";
+   private static final String PLAIN_TEXT_REGEX = "^Object Plain Text.*";
    private static final String STATE_REGEX = "^Object State.*";
    private static final String ADDED_REGEX = "^Object Added.*";
    private static final String MODIFIED_REGEX = "^Object Modified.*";
    private static final String DELETED_REGEX = "^Object Del.*";
    private static final String COMMENTS_REGEX = "^Comments.*";
+   private static final String EXT_LINK_REGEX = "^Ext Doc Link.*";
 
    private static final String OBJECT_TEXT_REGEX = "(.*?)<w:r>(.*?)</w:r>(.*)";
 
@@ -40,10 +42,12 @@ public final class DoorsImportFieldTokens {
    public static final BlockFieldToken blockAttrType =        BlockFieldToken.valueOf(6, "Type", TYPE_REGEX, BLOCK_ATTR_REGEX, BlockField::new);
    public static final BlockFieldToken blockAttrCaption =     BlockFieldToken.valueOf(13, "Caption", CAPTION_REGEX, BLOCK_ATTR_REGEX, BlockField::new);
    public static final BlockFieldToken blockAttrText =        BlockFieldToken.valueOf(7, "Text", TEXT_REGEX, OBJECT_TEXT_REGEX, BlockFieldText::new, CoreAttributeTypes.WordTemplateContent);
-   public static final BlockFieldToken blockAttrState =       BlockFieldToken.valueOf(8, "State", STATE_REGEX, OBJECT_TEXT_REGEX, BlockField::new);
-   public static final BlockFieldToken blockAttrAdded =       BlockFieldToken.valueOf(9, "Added", ADDED_REGEX, OBJECT_TEXT_REGEX, BlockField::new);
-   public static final BlockFieldToken blockAttrModified =    BlockFieldToken.valueOf(10, "Modified", MODIFIED_REGEX, OBJECT_TEXT_REGEX, BlockField::new);
-   public static final BlockFieldToken blockAttrDeleted =     BlockFieldToken.valueOf(11, "Deleted", DELETED_REGEX, OBJECT_TEXT_REGEX, BlockField::new);
+   public static final BlockFieldToken blockAttrState =       BlockFieldToken.valueOf(8, "State", STATE_REGEX, BLOCK_ATTR_REGEX, BlockField::new);
+   public static final BlockFieldToken blockAttrAdded =       BlockFieldToken.valueOf(9, "Added", ADDED_REGEX, BLOCK_ATTR_REGEX, BlockField::new);
+   public static final BlockFieldToken blockAttrModified =    BlockFieldToken.valueOf(10, "Modified", MODIFIED_REGEX, BLOCK_ATTR_REGEX, BlockField::new);
+   public static final BlockFieldToken blockAttrDeleted =     BlockFieldToken.valueOf(11, "Deleted", DELETED_REGEX, BLOCK_ATTR_REGEX, BlockField::new);
    public static final BlockFieldToken blockAttrComments =    BlockFieldToken.valueOf(12, "Comments", COMMENTS_REGEX, OBJECT_TEXT_REGEX, BlockField::new, CoreAttributeTypes.Annotation);
+   public static final BlockFieldToken blockAttrExtLink =     BlockFieldToken.valueOf(14, "ExternalLink", EXT_LINK_REGEX, BLOCK_ATTR_REGEX, BlockField::new, CoreAttributeTypes.ContentUrl);
+   public static final BlockFieldToken blockAttrPlainText =   BlockFieldToken.valueOf(15, "Plain Text", PLAIN_TEXT_REGEX, OBJECT_TEXT_REGEX, BlockField::new, CoreAttributeTypes.PlainTextContent); // TODO write a plain text converter - see BlockFieldText. Use that constructor here
    // @formatter:on
 }

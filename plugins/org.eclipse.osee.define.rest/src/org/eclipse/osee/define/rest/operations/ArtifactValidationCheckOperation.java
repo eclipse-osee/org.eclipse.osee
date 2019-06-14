@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.rest.operations;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -25,7 +26,8 @@ public class ArtifactValidationCheckOperation {
 
    public ArtifactValidationCheckOperation(OrcsApi orcsApi, XResultData results, ArtifactReadable parentArtifact, boolean stopOnFirstError) {
       this.stopOnFirstError = stopOnFirstError;
-      this.itemsToCheck = parentArtifact.getDescendants();
+      this.itemsToCheck = new ArrayList<>();
+      itemsToCheck.add(parentArtifact);// performance problem here> parentArtifact.getDescendants();
       this.results = results;
    }
 

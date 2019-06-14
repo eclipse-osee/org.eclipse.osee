@@ -825,6 +825,12 @@ artifactType "Software Requirement Plain Text" extends "Plain Text" , "Direct So
 	id 792
 }
 
+artifactType "Software Test Procedure Plain Text" extends "Plain Text"  {
+	id 564397212436322878
+	attribute "Doors ID"
+	attribute "Doors Hierarchy"
+}
+
 artifactType "Indirect Software Requirement" extends "Abstract Software Requirement" , "MS Word Template" {
 	id 25
 }
