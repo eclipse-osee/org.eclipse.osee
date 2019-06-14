@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.util.AbstractUserGroupImpl;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.RelationReadable;
 
 /**
  * @author Donald G. Dunne
@@ -49,6 +50,17 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
       checkGroupExists();
       Conditions.assertTrue(user instanceof ArtifactReadable, "User must be artifact");
       return getArtifact().areRelated(CoreRelationTypes.Users_User, (ArtifactReadable) user);
+   }
+
+   @Override
+   public boolean isMember(Long id) {
+      checkGroupExists();
+      for (RelationReadable rel : getArtifact().getRelations(CoreRelationTypes.Users_User)) {
+         if (rel.getArtIdB() == id.intValue()) {
+            return true;
+         }
+      }
+      return false;
    }
 
    @Override

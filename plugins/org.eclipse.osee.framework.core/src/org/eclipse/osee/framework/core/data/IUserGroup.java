@@ -29,4 +29,6 @@ public interface IUserGroup {
 
    Collection<UserToken> getMembers();
 
+   boolean isMember(Long id);
+
 }

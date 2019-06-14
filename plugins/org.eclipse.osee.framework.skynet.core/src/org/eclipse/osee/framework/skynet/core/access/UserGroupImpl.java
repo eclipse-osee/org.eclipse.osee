@@ -21,12 +21,12 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.AbstractUserGroupImpl;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 
 /**
  * @author Roberto E. Escobar
@@ -44,13 +44,13 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
       if (groupArtifact instanceof Artifact) {
          return (Artifact) groupArtifact;
       }
-      return null;
+      groupArtifact = ArtifactQuery.getArtifactFromId(groupArtifact, COMMON);
+      return (Artifact) groupArtifact;
    }
 
    @Override
    public boolean addMember(UserId user) {
       checkGroupExists();
-      Conditions.assertTrue(user instanceof Artifact, "User must be artifact");
       if (!getArtifact().isRelated(CoreRelationTypes.Users_User, (Artifact) user)) {
          getArtifact().addRelation(CoreRelationTypes.Users_User, (Artifact) user);
          return true;
@@ -61,8 +61,18 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    @Override
    public boolean isMember(UserId user) {
       checkGroupExists();
-      Conditions.assertTrue(user instanceof Artifact, "User must be artifact");
       return getArtifact().isRelated(CoreRelationTypes.Users_User, (Artifact) user);
+   }
+
+   @Override
+   public boolean isMember(Long id) {
+      checkGroupExists();
+      for (RelationLink rel : getArtifact().getRelations(CoreRelationTypes.Users_User)) {
+         if (rel.getArtifactIdB().equals(id)) {
+            return true;
+         }
+      }
+      return false;
    }
 
    @Override
@@ -99,7 +109,6 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    @Override
    public boolean removeMember(UserId user) {
       checkGroupExists();
-      Conditions.assertTrue(user instanceof Artifact, "User must be artifact");
       if (getArtifact().isRelated(CoreRelationTypes.Users_User, (Artifact) user)) {
          getArtifact().deleteRelation(CoreRelationTypes.Users_User, (Artifact) user);
          return true;
