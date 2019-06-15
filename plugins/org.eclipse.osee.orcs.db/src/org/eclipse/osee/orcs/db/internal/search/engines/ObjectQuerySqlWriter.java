@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.core.ds.DynamicData;
 import org.eclipse.osee.orcs.core.ds.DynamicObject;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -38,7 +39,6 @@ import org.eclipse.osee.orcs.db.internal.search.handlers.XtraRelationDataSqlHand
 import org.eclipse.osee.orcs.db.internal.search.handlers.XtraTxDataSqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.ObjectField;
-import org.eclipse.osee.orcs.db.internal.sql.QueryType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.SqlFieldResolver;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;

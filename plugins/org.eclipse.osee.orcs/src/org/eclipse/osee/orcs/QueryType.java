@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.sql;
+package org.eclipse.osee.orcs;
 
 /**
  * @author Roberto E. Escobar
