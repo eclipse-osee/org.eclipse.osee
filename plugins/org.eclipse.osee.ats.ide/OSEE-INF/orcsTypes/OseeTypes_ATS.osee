@@ -1302,6 +1302,7 @@ attributeType "ats.DSL Sheet" extends StringAttribute {
 	min 0
 	max 1
 	fileExtension "txt"
+	taggerId DefaultAttributeTaggerProvider
 	mediaType "application/ats+dsl"
 }
 
