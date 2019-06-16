@@ -18,7 +18,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchUtil;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -144,9 +143,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       }
 
       if (getVersion().get() != null) {
-         if (getVersion().get() instanceof IAtsVersion) {
-            data.setVersionId(getVersion().get().getId());
-         }
+         data.setVersionId(getVersion().get().getId());
       }
       if (getStateName() != null && Strings.isValid(getStateName().get())) {
          data.setState(getStateName().get());

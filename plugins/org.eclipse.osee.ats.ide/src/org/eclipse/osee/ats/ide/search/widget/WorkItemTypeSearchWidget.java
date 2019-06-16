@@ -24,27 +24,35 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 public class WorkItemTypeSearchWidget {
 
    private final WorldEditorParameterSearchItem searchItem;
+   private boolean reviewSearch;
 
    public WorkItemTypeSearchWidget(WorldEditorParameterSearchItem searchItem) {
       this.searchItem = searchItem;
    }
 
    public void addWidget(int beginComposite) {
-      searchItem.addWidgetXml(String.format(
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Team Workflow\" defaultValue=\"true\" labelAfter=\"true\" horizontalLabel=\"true\" %s />",
-         searchItem.getBeginComposite(beginComposite)));
-      searchItem.addWidgetXml(
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Task\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-      searchItem.addWidgetXml(
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Peer Review\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-      searchItem.addWidgetXml(
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Decision Review\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-      searchItem.addWidgetXml(
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Goal\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-      searchItem.addWidgetXml(
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Agile Sprint\" labelAfter=\"true\" horizontalLabel=\"true\" />");
-      searchItem.addWidgetXml(
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Agile Backlog\" labelAfter=\"true\" horizontalLabel=\"true\" endComposite=\"true\" />");
+      if (reviewSearch) {
+         searchItem.addWidgetXml(
+            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Peer Review\" labelAfter=\"true\" horizontalLabel=\"true\" beginComposite=\"6\"/>");
+         searchItem.addWidgetXml(
+            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Decision Review\" labelAfter=\"true\" horizontalLabel=\"true\" />");
+      } else {
+         searchItem.addWidgetXml(String.format(
+            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Team Workflow\" defaultValue=\"true\" labelAfter=\"true\" horizontalLabel=\"true\" %s />",
+            searchItem.getBeginComposite(beginComposite)));
+         searchItem.addWidgetXml(
+            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Task\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+         searchItem.addWidgetXml(
+            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Peer Review\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+         searchItem.addWidgetXml(
+            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Decision Review\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+         searchItem.addWidgetXml(
+            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Goal\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+         searchItem.addWidgetXml(
+            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Agile Sprint\" labelAfter=\"true\" horizontalLabel=\"true\" />");
+         searchItem.addWidgetXml(
+            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Agile Backlog\" labelAfter=\"true\" horizontalLabel=\"true\" endComposite=\"true\" />");
+      }
    }
 
    public XCheckBox getWidget(String workItemType) {
@@ -68,13 +76,18 @@ public class WorkItemTypeSearchWidget {
 
    public Collection<WorkItemType> get() {
       List<WorkItemType> types = new ArrayList<>();
-      addTypeIfChecked(types, WorkItemType.TeamWorkflow);
-      addTypeIfChecked(types, WorkItemType.Task);
-      addTypeIfChecked(types, WorkItemType.PeerReview);
-      addTypeIfChecked(types, WorkItemType.DecisionReview);
-      addTypeIfChecked(types, WorkItemType.Goal);
-      addTypeIfChecked(types, WorkItemType.AgileSprint);
-      addTypeIfChecked(types, WorkItemType.AgileBacklog);
+      if (isReviewSearch()) {
+         addTypeIfChecked(types, WorkItemType.PeerReview);
+         addTypeIfChecked(types, WorkItemType.DecisionReview);
+      } else {
+         addTypeIfChecked(types, WorkItemType.TeamWorkflow);
+         addTypeIfChecked(types, WorkItemType.Task);
+         addTypeIfChecked(types, WorkItemType.PeerReview);
+         addTypeIfChecked(types, WorkItemType.DecisionReview);
+         addTypeIfChecked(types, WorkItemType.Goal);
+         addTypeIfChecked(types, WorkItemType.AgileSprint);
+         addTypeIfChecked(types, WorkItemType.AgileBacklog);
+      }
       return types;
    }
 
@@ -100,6 +113,14 @@ public class WorkItemTypeSearchWidget {
             set(type, true);
          }
       }
+   }
+
+   public boolean isReviewSearch() {
+      return reviewSearch;
+   }
+
+   public void setReviewSearch(boolean reviewSearch) {
+      this.reviewSearch = reviewSearch;
    }
 
 }

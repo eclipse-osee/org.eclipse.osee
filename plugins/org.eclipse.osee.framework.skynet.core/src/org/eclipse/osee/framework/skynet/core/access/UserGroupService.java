@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.access;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroupService;
@@ -96,4 +97,12 @@ public class UserGroupService implements IUserGroupService {
       return getUserGroupService().isInUserGroup(userGroups);
    }
 
+   @Override
+   public boolean isUserMember(IUserGroupArtifactToken userGroup, Long id) {
+      ArtifactToken art = ArtifactQuery.getArtifactTokenFromId(CoreBranches.COMMON, userGroup);
+      if (art.isInvalid()) {
+         return false;
+      }
+      return getUserGroup(userGroup).isMember(id);
+   }
 }

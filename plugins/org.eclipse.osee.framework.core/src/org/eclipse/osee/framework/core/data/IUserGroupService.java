@@ -23,4 +23,9 @@ public interface IUserGroupService {
 
    boolean isInUserGroup(IUserGroupArtifactToken... userGroups);
 
+   /**
+    * Checks for existence of user group, then if member
+    */
+   public boolean isUserMember(IUserGroupArtifactToken amsUsers, Long id);
+
 }

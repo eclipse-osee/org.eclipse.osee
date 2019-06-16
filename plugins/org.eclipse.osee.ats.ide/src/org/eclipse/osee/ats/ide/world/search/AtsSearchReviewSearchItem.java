@@ -55,11 +55,18 @@ public class AtsSearchReviewSearchItem extends AtsSearchWorkflowSearchItem {
    }
 
    @Override
+   public boolean isReviewSearch() {
+      return true;
+   }
+
+   @Override
+   protected boolean showWorkItemWidgets() {
+      return true;
+   }
+
+   @Override
    protected void addWidgets() {
-      addWidgetXml(
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Peer Review\" labelAfter=\"true\" horizontalLabel=\"true\" beginComposite=\"6\"/>");
-      addWidgetXml(
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Decision Review\" labelAfter=\"true\" horizontalLabel=\"true\" />");
+      getWorkItemType().addWidget(1);
       getReviewType().addWidgetEndComposite();
       getTitle().addWidget();
       getAi().addWidget(3);

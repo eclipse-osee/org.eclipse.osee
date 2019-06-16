@@ -141,7 +141,8 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
     * @return true if any of the work item types are related to team defs and ais
     */
    private boolean isTeamDefWorkItemTypesSelected() {
-      boolean sel = !Collections.setIntersection(getTeamDefWorkItemTypes(), workItemType.get()).isEmpty();
+      List<WorkItemType> teamDefWorkItemTypes = getTeamDefWorkItemTypes();
+      boolean sel = !Collections.setIntersection(teamDefWorkItemTypes, workItemType.get()).isEmpty();
       return sel;
    }
 
@@ -315,9 +316,14 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       return user;
    }
 
+   public boolean isReviewSearch() {
+      return false;
+   }
+
    public WorkItemTypeSearchWidget getWorkItemType() {
       if (workItemType == null) {
          workItemType = new WorkItemTypeSearchWidget(this);
+         workItemType.setReviewSearch(isReviewSearch());
       }
       return workItemType;
    }

@@ -113,11 +113,6 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
          OseeLog.log(Activator.class, Level.SEVERE,
             getArtifactTypeName() + " " + getAtsId() + " has multiple parent workflows");
       } else if (!isStandAloneReview() && teams.isEmpty()) {
-         try {
-            Thread.sleep(2000);
-         } catch (InterruptedException ex) {
-            //
-         }
          if (!isDeleted()) {
             OseeLog.log(Activator.class, Level.SEVERE,
                getArtifactTypeName() + " " + getAtsId() + " has no parent workflow");

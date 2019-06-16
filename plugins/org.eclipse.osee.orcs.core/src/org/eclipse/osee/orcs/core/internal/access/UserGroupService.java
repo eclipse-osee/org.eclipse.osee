@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.access;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroupService;
@@ -86,6 +87,16 @@ public class UserGroupService implements IUserGroupService {
          }
       }
       return false;
+   }
+
+   @Override
+   public boolean isUserMember(IUserGroupArtifactToken userGroup, Long id) {
+      ArtifactToken art =
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(userGroup).getArtifactOrSentinal();
+      if (art.isInvalid()) {
+         return false;
+      }
+      return getUserGroup(userGroup).isMember(id);
    }
 
 }
