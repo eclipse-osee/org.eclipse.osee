@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.core.config.ActionableItem;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.Result;
@@ -148,7 +149,14 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
 
    @Override
    public boolean hasActionableItems(IAtsObject atsObject) {
-      return attrResolver.getAttributeCount(atsObject, AtsAttributeTypes.ActionableItemReference) > 0;
+      boolean hasAis = false;
+      hasAis = attrResolver.getAttributeCount(atsObject, AtsAttributeTypes.ActionableItemReference) > 0;
+      if (!hasAis && atsApi.getStoreService().getAttributeTypes().contains(
+         ConvertAtsConfigGuidAttributesOperations.ActionableItem)) {
+         hasAis =
+            attrResolver.getAttributeCount(atsObject, ConvertAtsConfigGuidAttributesOperations.ActionableItem) > 0;
+      }
+      return hasAis;
    }
 
    @Override
