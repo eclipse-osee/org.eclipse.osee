@@ -834,18 +834,9 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       for (EventBasicGuidRelation eRel : artifactEvent.getRelations()) {
          if (eRel.getArtA().getGuid().equals(getWorkItem().getGuid()) || eRel.getArtB().getGuid().equals(
             getWorkItem().getGuid())) {
-            for (IWfeEventHandle handler : relHandlers.getValues(RelationTypeId.valueOf(eRel.getRelTypeGuid()))) {
-               Displays.ensureInDisplayThread(new Runnable() {
-
-                  @Override
-                  public void run() {
-                     handler.refresh();
-                  }
-               });
-            }
-            handledArts.clear();
-            if (!handledArts.contains(getWorkItem().getGuid())) {
-               for (IWfeEventHandle handler : artHandlers.getValues(getWorkItem().getStoreObject().getGuid())) {
+            List<IWfeEventHandle> handlers = relHandlers.getValues(RelationTypeId.valueOf(eRel.getRelTypeGuid()));
+            if (handlers != null) {
+               for (IWfeEventHandle handler : handlers) {
                   Displays.ensureInDisplayThread(new Runnable() {
 
                      @Override
@@ -853,6 +844,21 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
                         handler.refresh();
                      }
                   });
+               }
+            }
+            handledArts.clear();
+            if (!handledArts.contains(getWorkItem().getGuid())) {
+               List<IWfeEventHandle> handlers2 = artHandlers.getValues(getWorkItem().getStoreObject().getGuid());
+               if (handlers2 != null) {
+                  for (IWfeEventHandle handler : handlers2) {
+                     Displays.ensureInDisplayThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                           handler.refresh();
+                        }
+                     });
+                  }
                }
             }
             handledArts.add(getWorkItem().getGuid());
