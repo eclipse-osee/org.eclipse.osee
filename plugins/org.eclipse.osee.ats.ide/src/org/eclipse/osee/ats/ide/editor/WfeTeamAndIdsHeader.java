@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -77,16 +78,19 @@ public class WfeTeamAndIdsHeader extends Composite implements IWfeEventHandle {
 
    @Override
    public void refresh() {
-      idValueLabel.setText(workItem.getAtsId());
-      if (workItem.isTeamWorkflow()) {
-         teamWfIdValueLabel.setText(((TeamWorkFlowArtifact) workItem).getTeamName());
-      } else if ((workItem.isTask() || workItem.isReview()) && workItem.getParentTeamWorkflow() != null) {
-         IAtsTeamWorkflow parentTeamWorkflow = workItem.getParentTeamWorkflow();
-         parentIdValueLabel.setText(AtsClientService.get().getWorkItemService().getCombinedPcrId(parentTeamWorkflow));
-      }
-      IAtsAction action = workItem.getParentAction();
-      if (action != null) {
-         actionIdValueLabel.setText(action.getAtsId());
+      if (Widgets.isAccessible(idValueLabel)) {
+         idValueLabel.setText(workItem.getAtsId());
+         if (workItem.isTeamWorkflow()) {
+            teamWfIdValueLabel.setText(((TeamWorkFlowArtifact) workItem).getTeamName());
+         } else if ((workItem.isTask() || workItem.isReview()) && workItem.getParentTeamWorkflow() != null) {
+            IAtsTeamWorkflow parentTeamWorkflow = workItem.getParentTeamWorkflow();
+            parentIdValueLabel.setText(
+               AtsClientService.get().getWorkItemService().getCombinedPcrId(parentTeamWorkflow));
+         }
+         IAtsAction action = workItem.getParentAction();
+         if (action != null) {
+            actionIdValueLabel.setText(action.getAtsId());
+         }
       }
    }
 
