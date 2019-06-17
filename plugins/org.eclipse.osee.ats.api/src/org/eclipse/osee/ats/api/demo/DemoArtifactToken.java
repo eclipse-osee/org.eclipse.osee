@@ -177,7 +177,6 @@ public final class DemoArtifactToken {
 
    public static final ArtifactToken Test_Group = ArtifactToken.valueOf(46894461, "Demo Group", COMMON, CoreArtifactTypes.UniversalGroup);
    public static final IAtsTeamDefinitionArtifactToken Process_Team = AtsTeamDefinitionArtifactToken.valueOf(55170736L, "Process_Team");
-   public static final ArtifactToken DemoPrograms = ArtifactToken.valueOf(90120, " Programs", COMMON, CoreArtifactTypes.Artifact);
 
    //////////////////////////////////
    // System Safety

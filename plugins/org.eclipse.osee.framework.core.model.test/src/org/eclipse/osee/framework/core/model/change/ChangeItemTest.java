@@ -47,7 +47,7 @@ public class ChangeItemTest {
 
    @Test
    public void testGetItemId() {
-      assertEquals(CoreArtifactTokens.OseeTypesFolder, item.getItemId());
+      assertEquals(CoreArtifactTokens.OseeTypesAndAccessFolder, item.getItemId());
    }
 
    @Test

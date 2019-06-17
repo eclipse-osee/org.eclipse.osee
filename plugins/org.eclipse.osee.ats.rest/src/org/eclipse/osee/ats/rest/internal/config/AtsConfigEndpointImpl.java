@@ -148,11 +148,11 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          orcsApi.getTransactionFactory().createTransaction(newBranch, userId, "Add ATS Configuration");
 
       ArtifactId headingArt = introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.HeadingFolder, newBranch,
-         CoreArtifactTokens.DefaultHierarchyRoot, null);
+         CoreArtifactTokens.OseeConfiguration, null);
       introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.TopActionableItem, newBranch, null, headingArt);
       introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.TopTeamDefinition, newBranch, null, headingArt);
       ArtifactId configArt =
-         introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.ConfigFolder, newBranch, null, headingArt);
+         introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.HeadingFolder, newBranch, null, headingArt);
       introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.ConfigsFolder, newBranch, null, configArt);
       ArtifactId workDefFolder =
          introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.WorkDefinitionsFolder, newBranch, null, headingArt);
@@ -169,7 +169,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       tx.commit();
    }
 
-   private ArtifactId introduceAndRelateTo(TransactionBuilder tx, BranchId fromBranch, ArtifactToken introToken, BranchId newBranch, ArtifactToken relateToToken, ArtifactId relateToArt) {
+   private ArtifactId introduceAndRelateTo(TransactionBuilder tx, BranchId fromBranch, ArtifactToken introToken, BranchId newBranch, ArtifactToken parentToken, ArtifactId parentArt) {
       ArtifactReadable introArt =
          orcsApi.getQueryFactory().fromBranch(fromBranch).andId(introToken).getResults().getAtMostOneOrDefault(
             ArtifactReadable.SENTINEL);
@@ -182,17 +182,17 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       Conditions.assertNotSentinel(introArt);
 
       ArtifactId artifact = tx.introduceArtifact(fromBranch, introArt);
-      if (relateToToken != null && !relateToToken.getId().equals(Id.SENTINEL)) {
-         relateToArt =
-            orcsApi.getQueryFactory().fromBranch(newBranch).andId(relateToToken).getResults().getAtMostOneOrDefault(
+      if (parentToken != null && !parentToken.getId().equals(Id.SENTINEL)) {
+         parentArt =
+            orcsApi.getQueryFactory().fromBranch(newBranch).andId(parentToken).getResults().getAtMostOneOrDefault(
                ArtifactReadable.SENTINEL);
-         if (relateToArt.getId().equals(ArtifactReadable.SENTINEL.getId())) {
-            relateToArt = orcsApi.getQueryFactory().fromBranch(newBranch).andTypeEquals(
-               relateToToken.getArtifactTypeId()).andNameEquals(
-                  relateToToken.getName()).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+         if (parentArt.getId().equals(ArtifactReadable.SENTINEL.getId())) {
+            parentArt = orcsApi.getQueryFactory().fromBranch(newBranch).andTypeEquals(
+               parentToken.getArtifactTypeId()).andNameEquals(
+                  parentToken.getName()).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
          }
       }
-      tx.addChild(relateToArt, artifact);
+      tx.addChild(parentArt, artifact);
       return artifact;
    }
 

@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
@@ -44,9 +43,9 @@ public class OrganizePrograms {
       try {
          IAtsChangeSet changes = atsApi.createChangeSet("Organize Programs");
          ArtifactToken programFolder =
-            atsApi.getQueryService().getOrCreateArtifact(CoreArtifactTokens.DefaultHierarchyRoot, folder, changes);
+            atsApi.getQueryService().getOrCreateArtifact(AtsArtifactToken.HeadingFolder, folder, changes);
          if (programFolder == null || programFolder.isInvalid()) {
-            changes.createArtifact(AtsArtifactToken.ProgramFolder);
+            changes.createArtifact(AtsArtifactToken.HeadingFolder, AtsArtifactToken.ProgramFolder);
          }
          for (ArtifactToken programArt : atsApi.getQueryService().getArtifacts(artifactType)) {
             if (!atsApi.getRelationResolver().getChildren(programFolder).contains(programArt)) {

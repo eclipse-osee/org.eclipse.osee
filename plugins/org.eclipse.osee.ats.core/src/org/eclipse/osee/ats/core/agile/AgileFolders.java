@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.agile;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
@@ -64,7 +66,10 @@ public class AgileFolders {
       if (agileFolder == null) {
          agileFolder = changes.createArtifact(AtsArtifactToken.TopAgileFolder);
          ArtifactId rootArtifact = atsApi.getQueryService().getArtifact(CoreArtifactTokens.DefaultHierarchyRoot);
-         changes.addChild(rootArtifact, agileFolder);
+         List<ArtifactId> children = new ArrayList<ArtifactId>();
+         children.add(agileFolder);
+         children.addAll(atsApi.getRelationResolver().getChildren(rootArtifact));
+         changes.setRelationsAndOrder(rootArtifact, CoreRelationTypes.Default_Hierarchical__Child, children);
       }
       return agileFolder;
    }

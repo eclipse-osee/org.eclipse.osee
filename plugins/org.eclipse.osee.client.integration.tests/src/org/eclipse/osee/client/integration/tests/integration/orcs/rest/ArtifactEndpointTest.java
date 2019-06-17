@@ -77,7 +77,7 @@ public class ArtifactEndpointTest {
 
    @Test
    public void getArtifactAsHtml() {
-      ArtifactId artifact = CoreArtifactTokens.OseeTypesFolder;
+      ArtifactId artifact = CoreArtifactTokens.OseeTypesAndAccessFolder;
       String artifactHtml = artifactEndpoint.getArtifactAsHtml(artifact);
       boolean isPopulated = artifactHtml.contains("Name:");
       Assert.assertNotNull(artifactHtml);
@@ -86,14 +86,14 @@ public class ArtifactEndpointTest {
 
    @Test
    public void getArtifactToken() {
-      ArtifactId artifact = CoreArtifactTokens.OseeTypesFolder;
+      ArtifactId artifact = CoreArtifactTokens.OseeTypesAndAccessFolder;
       ArtifactToken userToken = artifactEndpoint.getArtifactToken(artifact);
       Assert.assertNotNull(userToken);
    }
 
    @Test
    public void getAttributes() {
-      ArtifactId artifact = CoreArtifactTokens.OseeTypesFolder;
+      ArtifactId artifact = CoreArtifactTokens.OseeTypesAndAccessFolder;
       AttributeEndpoint attributes = artifactEndpoint.getAttributes(artifact);
       Assert.assertNotNull(attributes);
    }
@@ -140,7 +140,7 @@ public class ArtifactEndpointTest {
 
    @Test
    public void createArtifacts() {
-      ArtifactId parentArtifact = CoreArtifactTokens.OseeTypesFolder;
+      ArtifactId parentArtifact = CoreArtifactTokens.OseeTypesAndAccessFolder;
       List<String> names = Arrays.asList("TestArtifact1", "TestArtifact2", "TestArtifact3");
 
       List<ArtifactToken> newArtifacts =
@@ -150,7 +150,7 @@ public class ArtifactEndpointTest {
 
    @Test
    public void createArtifact() {
-      ArtifactId parentArtifact = CoreArtifactTokens.OseeTypesFolder;
+      ArtifactId parentArtifact = CoreArtifactTokens.OseeTypesAndAccessFolder;
       String name = "TestArtifactA";
       ArtifactToken artifactToken =
          artifactEndpoint.createArtifact(COMMON, CoreArtifactTypes.PlainText, parentArtifact, name);
@@ -180,7 +180,7 @@ public class ArtifactEndpointTest {
    }
 
    private ArtifactToken createTestArtifact() {
-      ArtifactId parentArtifact = CoreArtifactTokens.OseeTypesFolder;
+      ArtifactId parentArtifact = CoreArtifactTokens.OseeTypesAndAccessFolder;
       String name = "TestArtifactB";
       ArtifactToken artifactToken =
          artifactEndpoint.createArtifact(COMMON, CoreArtifactTypes.PlainText, parentArtifact, name);

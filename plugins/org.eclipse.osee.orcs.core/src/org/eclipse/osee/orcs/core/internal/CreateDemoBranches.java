@@ -11,16 +11,12 @@
 package org.eclipse.osee.orcs.core.internal;
 
 import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.DefaultHierarchyRoot;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.ProductLineFolder;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.CIS_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_PL;
 import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
-
 import java.util.Arrays;
-
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -77,7 +73,8 @@ public class CreateDemoBranches {
       createDemoProgramBranch(CIS_Bld_1, account);
 
       branchOps.createBaselineBranch(DemoBranches.SAW_PL, DemoUsers.Joe_Smith, SAW_Bld_1, ArtifactId.SENTINEL);
-      branchOps.createBaselineBranch(DemoBranches.SAW_PL_Hardening_Branch, DemoUsers.Joe_Smith, SAW_PL, ArtifactId.SENTINEL);
+      branchOps.createBaselineBranch(DemoBranches.SAW_PL_Hardening_Branch, DemoUsers.Joe_Smith, SAW_PL,
+         ArtifactId.SENTINEL);
 
       createProductLineConfig(DemoBranches.SAW_PL, account);
    }
@@ -93,7 +90,9 @@ public class CreateDemoBranches {
 
       TransactionBuilder tx = txFactory.createTransaction(branch, OseeSystem, "Create Product Line folders");
 
-      ArtifactToken plFolder = Artifacts.getOrCreate(ProductLineFolder, DefaultHierarchyRoot, tx, orcsApi);
+      ArtifactId oseeConfig = Artifacts.getOrCreate(CoreArtifactTokens.OseeConfiguration,
+         CoreArtifactTokens.DefaultHierarchyRoot, tx, orcsApi);
+      ArtifactToken plFolder = Artifacts.getOrCreate(CoreArtifactTokens.ProductLineFolder, oseeConfig, tx, orcsApi);
       Artifacts.getOrCreate(CoreArtifactTokens.VariantsFolder, plFolder, tx, orcsApi);
       ArtifactToken featuresFolder = Artifacts.getOrCreate(CoreArtifactTokens.FeaturesFolder, plFolder, tx, orcsApi);
 
@@ -184,8 +183,9 @@ public class CreateDemoBranches {
 
       TransactionBuilder tx = txFactory.createTransaction(branch, account, "Create SAW Product Decomposition");
 
-      ArtifactId sawProduct =
-         tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTypes.Component, "SAW Product Decomposition");
+      ArtifactId oseeConfig = Artifacts.getOrCreate(CoreArtifactTokens.OseeConfiguration,
+         CoreArtifactTokens.DefaultHierarchyRoot, tx, orcsApi);
+      ArtifactId sawProduct = tx.createArtifact(oseeConfig, CoreArtifactTypes.Component, "SAW Product Decomposition");
 
       for (String subsystem : DemoSubsystems.getSubsystems()) {
          tx.createArtifact(sawProduct, CoreArtifactTypes.Component, subsystem);

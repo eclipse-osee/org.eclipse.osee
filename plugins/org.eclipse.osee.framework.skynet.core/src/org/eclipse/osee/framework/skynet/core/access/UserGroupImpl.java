@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.AbstractUserGroupImpl;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -27,6 +28,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Roberto E. Escobar
@@ -93,15 +96,19 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    }
 
    private Artifact getOrCreateUserGroupsFolder(BranchId branch) {
+      SkynetTransaction tx = TransactionManager.createTransaction(CoreBranches.COMMON, "Create UserGroups Folder");
       Artifact usersGroupFolder = ArtifactQuery.checkArtifactFromId(CoreArtifactTokens.UserGroups, branch);
       if (usersGroupFolder == null) {
          Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
-         if (root.hasChild(CoreArtifactTokens.UserGroups.getName())) {
-            usersGroupFolder = root.getChild(CoreArtifactTokens.UserGroups.getName());
-         } else {
-            usersGroupFolder = ArtifactTypeManager.addArtifact(CoreArtifactTokens.UserGroups, branch);
-            root.addChild(usersGroupFolder);
+         Artifact oseeConfig = ArtifactQuery.checkArtifactFromId(CoreArtifactTokens.OseeConfiguration, branch);
+         if (oseeConfig == null) {
+            oseeConfig = ArtifactTypeManager.addArtifact(CoreArtifactTokens.OseeConfiguration);
+            root.addChild(oseeConfig);
+            tx.addArtifact(oseeConfig);
          }
+         usersGroupFolder = ArtifactTypeManager.addArtifact(CoreArtifactTokens.UserGroups, branch);
+         usersGroupFolder.persist(tx);
+         oseeConfig.addChild(usersGroupFolder);
       }
       return usersGroupFolder;
    }

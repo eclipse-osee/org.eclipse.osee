@@ -50,7 +50,7 @@ public class ChangeItemUtilTest {
       ChangeVersion net = ChangeTestUtility.createChange(5555L, ModificationType.DELETED);
 
       ChangeItem item = ChangeTestUtility.createItem(200L, base, first, current, destination, net);
-      assertEquals(CoreArtifactTokens.OseeTypesFolder, item.getItemId());
+      assertEquals(CoreArtifactTokens.OseeTypesAndAccessFolder, item.getItemId());
       assertEquals(CoreArtifactTypes.Artifact, item.getItemTypeId());
       assertEquals(CoreArtifactTokens.UserGroups, item.getArtId());
       ChangeTestUtility.checkChange(base, item.getBaselineVersion());

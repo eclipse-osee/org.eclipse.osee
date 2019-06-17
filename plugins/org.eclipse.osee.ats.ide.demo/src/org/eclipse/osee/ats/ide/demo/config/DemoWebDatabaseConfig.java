@@ -35,17 +35,15 @@ public class DemoWebDatabaseConfig implements IDbInitializationTask {
       BranchId atsBranch = AtsClientService.get().getAtsBranch();
       SkynetTransaction transaction = TransactionManager.createTransaction(atsBranch, "Create ATS Folders");
       Artifact headingArt = OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.HeadingFolder, atsBranch);
+      headingArt.persist(transaction);
 
       Artifact oseeWebArt = ArtifactTypeManager.addArtifact(AtsArtifactToken.WebPrograms, atsBranch);
-      oseeWebArt.persist(transaction);
-
-      Artifact demoProgramsArt = OseeSystemArtifacts.getOrCreateArtifact(DemoArtifactToken.DemoPrograms, atsBranch);
-      oseeWebArt.addRelation(CoreRelationTypes.Universal_Grouping__Members, demoProgramsArt);
-      oseeWebArt.persist(transaction);
-
       headingArt.addChild(oseeWebArt);
-      headingArt.addChild(demoProgramsArt);
-      headingArt.persist(transaction);
+
+      Artifact sawProgram =
+         (Artifact) AtsClientService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_PL_Program);
+      oseeWebArt.addRelation(CoreRelationTypes.Universal_Grouping__Members, sawProgram);
+      oseeWebArt.persist(transaction);
 
       transaction.execute();
    }

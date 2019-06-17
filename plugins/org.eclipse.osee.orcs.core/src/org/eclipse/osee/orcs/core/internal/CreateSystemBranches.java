@@ -76,31 +76,39 @@ public class CreateSystemBranches {
 
    private void populateCommonBranch(String typeModel) {
       TransactionBuilder tx = txFactory.createTransaction(COMMON, SystemUser.OseeSystem, "Add Common branch artifacts");
-      ArtifactReadable rootArtifact = query.andIsHeirarchicalRootArtifact().getResults().getExactlyOne();
+      ArtifactReadable root = query.andIsHeirarchicalRootArtifact().getResults().getExactlyOne();
 
-      ArtifactId userGroupsFolder = tx.createArtifact(rootArtifact, CoreArtifactTokens.UserGroups);
+      ArtifactId oseeConfig = query.andId(CoreArtifactTokens.OseeConfiguration).getArtifactOrSentinal();
+      if (oseeConfig.isInvalid()) {
+         oseeConfig = tx.createArtifact(root, CoreArtifactTokens.OseeConfiguration);
+      }
+
+      ArtifactId userGroupsFolder = tx.createArtifact(oseeConfig, CoreArtifactTokens.UserGroups);
       ArtifactId everyOne = tx.createArtifact(userGroupsFolder, CoreUserGroups.Everyone);
       tx.setSoleAttributeValue(everyOne, CoreAttributeTypes.DefaultGroup, true);
 
       tx.createArtifact(userGroupsFolder, CoreUserGroups.OseeAdmin);
       tx.createArtifact(userGroupsFolder, CoreUserGroups.OseeAccessAdmin);
+      tx.commit();
 
+      oseeConfig = query.andId(CoreArtifactTokens.OseeConfiguration).getArtifactOrSentinal();
+      tx = txFactory.createTransaction(COMMON, SystemUser.OseeSystem, "Add Common branch artifacts");
       orcsApi.getAdminOps().createUsers(tx, SystemUser.values());
 
-      ArtifactId globalPreferences = tx.createArtifact(CoreArtifactTokens.GlobalPreferences);
+      ArtifactId globalPreferences = tx.createArtifact(oseeConfig, CoreArtifactTokens.GlobalPreferences);
       tx.setSoleAttributeValue(globalPreferences, CoreAttributeTypes.GeneralStringData, JSON_ATTR_VALUE);
 
-      tx.createArtifact(CoreArtifactTokens.XViewerCustomization);
+      tx.createArtifact(oseeConfig, CoreArtifactTokens.XViewerCustomization);
 
-      ArtifactId documentTemplateFolder = tx.createArtifact(rootArtifact, CoreArtifactTokens.DocumentTemplates);
+      ArtifactId documentTemplateFolder = tx.createArtifact(oseeConfig, CoreArtifactTokens.DocumentTemplates);
 
       createWordTemplates(tx, documentTemplateFolder);
 
       createDataRights(tx, documentTemplateFolder);
 
-      createOrcsTypesArtifacts(typeModel);
+      ArtifactId typesAccessFolder = createOrcsTypesArtifacts(typeModel, oseeConfig);
 
-      addFrameworkAccessModel(tx);
+      addFrameworkAccessModel(tx, typesAccessFolder);
 
       tx.commit();
    }
@@ -154,24 +162,24 @@ public class CreateSystemBranches {
          OseeInf.getResourceContents("RestrictedRights.xml", getClass()));
    }
 
-   private void addFrameworkAccessModel(TransactionBuilder tx) {
+   private void addFrameworkAccessModel(TransactionBuilder tx, ArtifactId typesAccessFolder) {
       InputStream inputStream = OseeInf.getResourceAsStream("access/OseeAccess_FrameworkAccess.osee", getClass());
 
       try (InputStream stream = new BufferedInputStream(inputStream)) {
-         ArtifactId accessModel = tx.createArtifact(CoreArtifactTokens.FrameworkAccessModel);
+         ArtifactId accessModel = tx.createArtifact(typesAccessFolder, CoreArtifactTokens.FrameworkAccessModel);
          tx.setSoleAttributeFromStream(accessModel, CoreAttributeTypes.GeneralStringData, stream);
       } catch (IOException ex) {
          throw OseeCoreException.wrap(ex);
       }
    }
 
-   private void createOrcsTypesArtifacts(String typeModel) {
+   private ArtifactId createOrcsTypesArtifacts(String typeModel, ArtifactId oseeConfig) {
       TransactionBuilder tx = txFactory.createTransaction(COMMON, SystemUser.OseeSystem, "Add Types to Common Branch");
       ArtifactId typesFolder =
-         query.andId(CoreArtifactTokens.OseeTypesFolder).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+         query.andId(CoreArtifactTokens.OseeTypesAndAccessFolder).getResults().getAtMostOneOrDefault(
+            ArtifactReadable.SENTINEL);
       if (typesFolder.isInvalid()) {
-         ArtifactId rootArt = query.andId(CoreArtifactTokens.DefaultHierarchyRoot).getResults().getExactlyOne();
-         typesFolder = tx.createArtifact(rootArt, CoreArtifactTokens.OseeTypesFolder);
+         typesFolder = tx.createArtifact(oseeConfig, CoreArtifactTokens.OseeTypesAndAccessFolder);
       }
       ArtifactId types = tx.createArtifact(typesFolder, CoreArtifactTypes.OseeTypeDefinition, "OSEE Types");
       tx.setSoleAttributeValue(types, CoreAttributeTypes.Active, true);
@@ -187,6 +195,7 @@ public class CreateSystemBranches {
 
       Event event = new Event(OrcsTopicEvents.DBINIT_IMPORT_TYPES, (Map<String, ?>) null);
       eventAdmin.postEvent(event);
+      return typesFolder;
    }
 
    private static final String JSON_ATTR_VALUE = "{ \"WCAFE\" : [" + //

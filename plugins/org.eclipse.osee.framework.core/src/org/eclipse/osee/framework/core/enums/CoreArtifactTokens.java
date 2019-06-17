@@ -35,11 +35,12 @@ public final class CoreArtifactTokens {
    public static final ArtifactToken XViewerCustomization = ArtifactToken.valueOf(78293, XViewerGlobalCustomization.getName(), COMMON, XViewerGlobalCustomization);
 
    // folders
+   public static final ArtifactToken OseeConfiguration    = ArtifactToken.valueOf(10525153, "OSEE Configuration", Folder);
    public static final ArtifactToken CustomerReqFolder    = ArtifactToken.valueOf(239420308, "Customer Requirements", Folder);
    public static final ArtifactToken DocumentTemplates    = ArtifactToken.valueOf(64970, "Document Templates", COMMON, Folder);
    public static final ArtifactToken FeaturesFolder       = ArtifactToken.valueOf(239420307, "Features", Folder);
    public static final ArtifactToken GitRepoFolder        = ArtifactToken.valueOf(111111111, "Git Repositories", Folder);
-   public static final ArtifactToken OseeTypesFolder      = ArtifactToken.valueOf(7911256, "OSEE Types and Access Control", COMMON, Folder);
+   public static final ArtifactToken OseeTypesAndAccessFolder      = ArtifactToken.valueOf(7911256, "OSEE Types and Access Control", COMMON, Folder);
    public static final ArtifactToken ProductLineFolder    = ArtifactToken.valueOf(8255179, "Product Line", Folder);
    public static final ArtifactToken UserGroups           = ArtifactToken.valueOf(80920, "User Groups", COMMON, Folder);
    public static final ArtifactToken VariantsFolder       = ArtifactToken.valueOf(10039752, "Variants", Folder);

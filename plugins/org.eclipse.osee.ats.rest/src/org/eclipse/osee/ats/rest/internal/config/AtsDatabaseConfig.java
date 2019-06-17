@@ -95,7 +95,7 @@ public class AtsDatabaseConfig {
 
       IAtsChangeSet changes = atsApi.createChangeSet("Create ATS Folders");
 
-      ArtifactToken headingArt = atsApi.getQueryService().getOrCreateArtifact(CoreArtifactTokens.DefaultHierarchyRoot,
+      ArtifactToken headingArt = atsApi.getQueryService().getOrCreateArtifact(CoreArtifactTokens.OseeConfiguration,
          AtsArtifactToken.HeadingFolder, changes);
       for (ArtifactToken token : Arrays.asList(AtsArtifactToken.TopActionableItem, AtsArtifactToken.TopTeamDefinition,
          AtsArtifactToken.WorkDefinitionsFolder)) {

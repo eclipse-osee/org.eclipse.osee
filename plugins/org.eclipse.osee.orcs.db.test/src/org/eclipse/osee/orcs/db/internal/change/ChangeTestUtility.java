@@ -45,7 +45,7 @@ public final class ChangeTestUtility {
 
    public static ChangeItem createItem(Long itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion net) {
       ChangeItem change = new ChangeItem();
-      change.setItemId(CoreArtifactTokens.OseeTypesFolder);
+      change.setItemId(CoreArtifactTokens.OseeTypesAndAccessFolder);
       change.setItemTypeId(CoreArtifactTypes.Artifact);
       change.setArtId(CoreArtifactTokens.UserGroups);
 

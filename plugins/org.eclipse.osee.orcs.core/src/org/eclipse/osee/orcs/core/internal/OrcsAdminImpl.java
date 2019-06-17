@@ -132,10 +132,9 @@ public class OrcsAdminImpl implements OrcsAdmin {
       ArtifactToken userGroupHeader = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
          CoreArtifactTokens.UserGroups).getArtifactOrNull();
       if (userGroupHeader == null) {
-         ArtifactToken defaultHierArt = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
-            CoreArtifactTokens.DefaultHierarchyRoot).getArtifactOrNull();
-         userGroupHeader = tx.createArtifact(CoreArtifactTokens.UserGroups);
-         tx.addChild(defaultHierArt, userGroupHeader);
+         ArtifactToken oseeConfig = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
+            CoreArtifactTokens.OseeConfiguration).getArtifactOrNull();
+         userGroupHeader = tx.createArtifact(oseeConfig, CoreArtifactTokens.UserGroups);
       }
 
       // Create users and relate to user groups
