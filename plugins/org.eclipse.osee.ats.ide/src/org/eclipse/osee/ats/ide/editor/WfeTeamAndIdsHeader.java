@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * @author Donald G. Dunne
@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Label;
 public class WfeTeamAndIdsHeader extends Composite implements IWfeEventHandle {
 
    private final IAtsWorkItem workItem;
-   Label teamWfIdValueLabel, parentIdValueLabel, idValueLabel, actionIdValueLabel;
+   Text teamWfIdValue, parentIdValue, idValue, actionIdValue;
 
    public WfeTeamAndIdsHeader(Composite parent, int style, final IAtsWorkItem workItem, final WorkflowEditor editor) {
       super(parent, style);
@@ -45,17 +45,17 @@ public class WfeTeamAndIdsHeader extends Composite implements IWfeEventHandle {
       try {
 
          if (workItem.isTeamWorkflow()) {
-            teamWfIdValueLabel = FormsUtil.createLabelValue(editor.getToolkit(), this, "Team: ", "");
+            teamWfIdValue = FormsUtil.createLabelText(editor.getToolkit(), this, "Team: ", "").getSecond();
          } else if ((workItem.isTask() || workItem.isReview()) && workItem.getParentTeamWorkflow() != null) {
-            parentIdValueLabel = FormsUtil.createLabelValue(editor.getToolkit(), this, "Parent Id: ", "");
+            parentIdValue = FormsUtil.createLabelText(editor.getToolkit(), this, "Parent Id: ", "").getSecond();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       try {
-         idValueLabel =
-            FormsUtil.createLabelValue(editor.getToolkit(), this, workItem.getArtifactTypeName() + " Id: ", "");
+         idValue = FormsUtil.createLabelText(editor.getToolkit(), this, workItem.getArtifactTypeName() + " Id: ",
+            "").getSecond();
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -63,7 +63,7 @@ public class WfeTeamAndIdsHeader extends Composite implements IWfeEventHandle {
       try {
          IAtsAction action = workItem.getParentAction();
          if (action != null) {
-            actionIdValueLabel = FormsUtil.createLabelValue(editor.getToolkit(), this, "Action Id: ", "");
+            actionIdValue = FormsUtil.createLabelText(editor.getToolkit(), this, "Action Id: ", "").getSecond();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -78,18 +78,17 @@ public class WfeTeamAndIdsHeader extends Composite implements IWfeEventHandle {
 
    @Override
    public void refresh() {
-      if (Widgets.isAccessible(idValueLabel)) {
-         idValueLabel.setText(workItem.getAtsId());
+      if (Widgets.isAccessible(idValue)) {
+         idValue.setText(workItem.getAtsId());
          if (workItem.isTeamWorkflow()) {
-            teamWfIdValueLabel.setText(((TeamWorkFlowArtifact) workItem).getTeamName());
+            teamWfIdValue.setText(((TeamWorkFlowArtifact) workItem).getTeamName());
          } else if ((workItem.isTask() || workItem.isReview()) && workItem.getParentTeamWorkflow() != null) {
             IAtsTeamWorkflow parentTeamWorkflow = workItem.getParentTeamWorkflow();
-            parentIdValueLabel.setText(
-               AtsClientService.get().getWorkItemService().getCombinedPcrId(parentTeamWorkflow));
+            parentIdValue.setText(AtsClientService.get().getWorkItemService().getCombinedPcrId(parentTeamWorkflow));
          }
          IAtsAction action = workItem.getParentAction();
          if (action != null) {
-            actionIdValueLabel.setText(action.getAtsId());
+            actionIdValue.setText(action.getAtsId());
          }
       }
    }

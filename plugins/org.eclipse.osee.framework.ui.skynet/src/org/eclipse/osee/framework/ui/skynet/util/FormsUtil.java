@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
@@ -36,8 +37,8 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
  */
 public class FormsUtil {
 
-   public static void createLabelText(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr) {
-      createLabelText(toolkit, comp, labelStr, valueStr, null);
+   public static Pair<Label, Text> createLabelText(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr) {
+      return createLabelText(toolkit, comp, labelStr, valueStr, null);
    }
 
    public static void createLabelOrHyperlink(Composite comp, XFormToolkit toolkit, final int horizontalSpan, final String str) {
@@ -61,7 +62,7 @@ public class FormsUtil {
       }
    }
 
-   public static Text createLabelText(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr, String tooltip) {
+   public static Pair<Label, Text> createLabelText(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr, String tooltip) {
       Composite topLineComp = new Composite(comp, SWT.NONE);
       topLineComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       topLineComp.setLayout(ALayout.getZeroMarginLayout(2, false));
@@ -79,7 +80,7 @@ public class FormsUtil {
       if (Strings.isValid(tooltip)) {
          text.setToolTipText(tooltip);
       }
-      return text;
+      return new Pair<Label, Text>(label, text);
    }
 
    public static Label createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr) {
