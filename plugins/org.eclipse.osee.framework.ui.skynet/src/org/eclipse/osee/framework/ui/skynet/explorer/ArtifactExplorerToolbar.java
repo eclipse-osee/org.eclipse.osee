@@ -154,7 +154,7 @@ public class ArtifactExplorerToolbar {
             try {
                artifactExplorer = (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.create(),
                   IWorkbenchPage.VIEW_ACTIVATE);
-               if (artifactExplorer.getBranch() != null) {
+               if (artifactExplorer.getBranch().isValid()) {
                   artifactExplorer.explore(
                      OseeSystemArtifacts.getDefaultHierarchyRootArtifact(artifactExplorer.getBranch()));
                   artifactExplorer.setExpandedArtifacts(artifactExplorer.getTreeViewer().getExpandedElements());
