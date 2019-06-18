@@ -37,7 +37,7 @@
 <plugin id="com.gradleware.tooling.utils"/>
 <plugin id="com.ibm.icu"/>
 <plugin id="com.ibm.icu.source"/>
-<plugin id="com.jcraft.jsch" />
+<plugin id="com.jcraft.jsch"/>
 <plugin id="com.lowagie.text"/>
 <plugin id="com.sun.el"/>
 <plugin id="com.sun.el.source"/>
@@ -836,7 +836,7 @@
 <plugin id="org.mozilla.javascript"/>
 <plugin id="org.objectweb.asm" version="5.0.1.v201404251740"/>
 <plugin id="org.objectweb.asm.source"/>
-<plugin id="org.objectweb.asm.tree" version="7.0.0.v20181030-2244"/>
+<plugin id="org.objectweb.asm.tree" version="5.0.1.v201404251740"/>
 <plugin id="org.objenesis"/>
 <plugin id="org.objenesis.source"/>
 <plugin id="org.openoffice"/>
