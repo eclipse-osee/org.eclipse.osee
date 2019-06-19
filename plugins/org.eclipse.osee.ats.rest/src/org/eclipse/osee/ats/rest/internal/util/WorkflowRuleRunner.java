@@ -58,7 +58,6 @@ public class WorkflowRuleRunner {
                      for (String teamDefRule : workItem.getParentTeamWorkflow().getTeamDefinition().getRules()) {
                         IAtsRuleDefinition ruleDefinition =
                            atsApi.getWorkDefinitionService().getRuleDefinition(teamDefRule);
-
                         if (ruleDefinition != null && ruleDefinition.getRuleEvents().contains(
                            eventType) && ruleDefinition instanceof IExecutableRule) {
                            ((IExecutableRule) ruleDefinition).execute(workItem, atsApi, changes, ruleResults);
@@ -76,7 +75,6 @@ public class WorkflowRuleRunner {
                         for (String aiRule : ai.getRules()) {
                            IAtsRuleDefinition ruleDefinition =
                               atsApi.getWorkDefinitionService().getRuleDefinition(aiRule);
-
                            if (ruleDefinition != null && ruleDefinition.getRuleEvents().contains(
                               eventType) && ruleDefinition instanceof IExecutableRule) {
                               ((IExecutableRule) ruleDefinition).execute(workItem, atsApi, changes, ruleResults);
@@ -97,7 +95,7 @@ public class WorkflowRuleRunner {
                      for (String teamDefRule : stateDef.getRules()) {
                         IAtsRuleDefinition ruleDefinition =
                            atsApi.getWorkDefinitionService().getRuleDefinition(teamDefRule);
-                        if (ruleDefinition.getRuleEvents().contains(
+                        if (ruleDefinition != null && ruleDefinition.getRuleEvents().contains(
                            eventType) && ruleDefinition instanceof IExecutableRule) {
                            ((IExecutableRule) ruleDefinition).execute(workItem, atsApi, changes, ruleResults);
                         }

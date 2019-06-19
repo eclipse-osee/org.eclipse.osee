@@ -13,10 +13,8 @@ package org.eclipse.osee.ats.api.data;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.ats.api.config.tx.AtsActionableItemArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.AtsTeamDefinitionArtifactToken;
-import org.eclipse.osee.ats.api.config.tx.AtsWorkDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsActionableItemArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
-import org.eclipse.osee.ats.api.config.tx.IAtsWorkDefinitionArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 
@@ -47,16 +45,6 @@ public final class AtsArtifactToken {
    public static ArtifactToken EVReportPrograms = ArtifactToken.valueOf(8174118, "EV Report Programs", COMMON, CoreArtifactTypes.UniversalGroup);
 
    // Default Work Definitions
-   public static IAtsWorkDefinitionArtifactToken WorkDef_Sprint = AtsWorkDefinitionArtifactToken.valueOf(6915497L, "WorkDef_Sprint");
-   public static IAtsWorkDefinitionArtifactToken WorkDef_Goal = AtsWorkDefinitionArtifactToken.valueOf(142177L, "WorkDef_Goal");
-   public static IAtsWorkDefinitionArtifactToken WorkDef_Review_Decision = AtsWorkDefinitionArtifactToken.valueOf(25335L, "WorkDef_Review_Decision");
-   public static IAtsWorkDefinitionArtifactToken WorkDef_Review_PeerToPeer = AtsWorkDefinitionArtifactToken.valueOf(25334L, "WorkDef_Review_PeerToPeer");
-   public static IAtsWorkDefinitionArtifactToken WorkDef_Task_Default = AtsWorkDefinitionArtifactToken.valueOf(105373L, "WorkDef_Task_Default");
-   public static IAtsWorkDefinitionArtifactToken WorkDef_Team_Default = AtsWorkDefinitionArtifactToken.valueOf(72301L, "WorkDef_Team_Default");
-   public static IAtsWorkDefinitionArtifactToken WorkDef_Team_Simple = AtsWorkDefinitionArtifactToken.valueOf(72302L, "WorkDef_Team_Simple");
-
-   public static IAtsWorkDefinitionArtifactToken WorkDef_Team_AtsConfig2Example = AtsWorkDefinitionArtifactToken.valueOf(282846363L, "WorkDef_Team_AtsConfig2Example");
-   public static IAtsWorkDefinitionArtifactToken WorkDef_Task_AtsConfig2Example = AtsWorkDefinitionArtifactToken.valueOf(824992064L, "WorkDef_Task_AtsConfig2Example");
 
    // Safety Workflow configuration
    public static final ArtifactToken SafetyActionableItem = ArtifactToken.valueOf(7244546, "System Safety", COMMON, AtsArtifactTypes.ActionableItem);
@@ -64,7 +52,7 @@ public final class AtsArtifactToken {
 
    // Agile
    public static ArtifactToken TopAgileFolder = ArtifactToken.valueOf(6915493, "Agile", COMMON, CoreArtifactTypes.Folder);
-   // @formatter:off
+   // @formatter:on
 
    private AtsArtifactToken() {
       // Constants

@@ -32,6 +32,13 @@ public class CompositeLayoutItem extends LayoutItem implements IAtsCompositeLayo
       this.numColumns = numColumns;
    }
 
+   public CompositeLayoutItem(int numColumns, IAtsLayoutItem... layoutItems) {
+      this(numColumns);
+      for (IAtsLayoutItem item : layoutItems) {
+         stateItems.add(item);
+      }
+   }
+
    @Override
    public int getNumColumns() {
       return numColumns;

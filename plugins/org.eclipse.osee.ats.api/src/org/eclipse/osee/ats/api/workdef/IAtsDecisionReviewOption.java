@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -21,7 +22,7 @@ public interface IAtsDecisionReviewOption {
 
    void setName(String name);
 
-   List<String> getUserIds();
+   Collection<String> getUserIds();
 
    void setUserIds(List<String> userIds);
 
@@ -29,7 +30,7 @@ public interface IAtsDecisionReviewOption {
 
    void setFollowupRequired(boolean followupRequired);
 
-   List<String> getUserNames();
+   Collection<String> getUserNames();
 
    void setUserNames(List<String> userNames);
 

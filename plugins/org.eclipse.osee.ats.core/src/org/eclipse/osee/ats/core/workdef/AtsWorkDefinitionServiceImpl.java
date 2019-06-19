@@ -10,29 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
@@ -41,17 +31,16 @@ import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsRuleDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionDslService;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStringProvider;
-import org.eclipse.osee.ats.api.workdef.NullRuleDefinition;
-import org.eclipse.osee.ats.api.workdef.WorkDefData;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -60,60 +49,46 @@ import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
-   private final Cache<String, IAtsRuleDefinition> ruleDefinitionCache =
-      CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
-   private LoadingCache<Long, IAtsWorkDefinition> workDefIdToWorkDef;
    private final AtsApi atsApi;
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
-   private final IAtsWorkDefinitionDslService workDefinitionDslService;
-   private final IAtsWorkDefinitionStringProvider workDefinitionStringProvider;
-   private final AtsWorkDefinitionStoreService workDefinitionStore;
    private final Map<String, IAtsWorkDefinition> workDefNameToWorkDef = new HashMap<>();
    private final Map<IAtsWorkItem, IAtsWorkDefinition> bootstrappingWorkItemToWorkDefCache = new HashMap<>();
+   private final Map<String, IAtsRuleDefinition> ruleDefNameToRuleDef = new HashMap<>();
 
-   public AtsWorkDefinitionServiceImpl(AtsApi atsApi, AtsWorkDefinitionStoreService workDefinitionStore, IAtsWorkDefinitionStringProvider workDefinitionStringProvider, IAtsWorkDefinitionDslService workDefinitionDslService, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
+   public AtsWorkDefinitionServiceImpl(AtsApi atsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       this.atsApi = atsApi;
-      this.workDefinitionStore = workDefinitionStore;
-      this.workDefinitionStringProvider = workDefinitionStringProvider;
-      this.workDefinitionDslService = workDefinitionDslService;
       this.teamWorkflowProvidersLazy = teamWorkflowProvidersLazy;
    }
 
-   private final CacheLoader<Long, IAtsWorkDefinition> workDefLoader = new CacheLoader<Long, IAtsWorkDefinition>() {
-      @Override
-      public IAtsWorkDefinition load(Long id) {
-         return getWorkDefinition(id);
+   @Override
+   public IAtsWorkDefinition getWorkDefinitionFromAsObject(IAtsObject atsObject, AttributeTypeToken workDefAttrTypeId) {
+      IAtsWorkDefinition workDefinition = null;
+      String workDefIdStr =
+         atsApi.getAttributeResolver().getSoleAttributeValueAsString(atsObject, workDefAttrTypeId, "");
+      if (Strings.isNumeric(workDefIdStr)) {
+         workDefinition = getWorkDefinition(Long.valueOf(workDefIdStr));
       }
-   };
-
-   @Override
-   public void clearCaches() {
-      getWorkDefIdToWorkDef().invalidateAll();
-      ruleDefinitionCache.invalidateAll();
+      return workDefinition;
    }
 
-   @Override
-   public void addWorkDefinition(IAtsWorkDefinition workDef) {
-      getWorkDefIdToWorkDef().put(workDef.getId(), workDef);
-   }
-
-   @Override
-   public void removeWorkDefinition(IAtsWorkDefinition workDef) {
-      getWorkDefIdToWorkDef().invalidate(workDef.getId());
+   private IAtsWorkDefinition getWorkDefinitionFromAsObject(IAtsObject atsObject) {
+      return getWorkDefinitionFromAsObject(atsObject, AtsAttributeTypes.WorkflowDefinitionReference);
    }
 
    @Override
@@ -124,11 +99,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          return workDefinition;
       }
       try {
-         ArtifactId workDefArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(workItem,
-            AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.SENTINEL);
-         if (workDefArt.isValid()) {
-            workDefinition = getWorkDefIdToWorkDef().get(workDefArt.getId());
-         }
+         workDefinition = getWorkDefinitionFromAsObject(workItem);
       } catch (Exception ex) {
          throw new OseeWrappedException(ex, "Error getting work definition for work item %s",
             workItem.toStringWithId());
@@ -145,71 +116,17 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    @Override
-   public IAtsRuleDefinition getRuleDefinition(String name) {
-      IAtsRuleDefinition ruleDef = null;
-      try {
-         ruleDef = ruleDefinitionCache.get(name, new Callable<IAtsRuleDefinition>() {
-            @Override
-            public IAtsRuleDefinition call() {
-               List<IAtsRuleDefinition> ruleDefinitions =
-                  workDefinitionDslService.getRuleDefinitions(workDefinitionStore.loadRuleDefinitionString());
-               IAtsRuleDefinition ruleDefinition = NullRuleDefinition.getInstance();
-               for (IAtsRuleDefinition ruleDef : ruleDefinitions) {
-                  if (!(ruleDef instanceof NullRuleDefinition)) {
-                     ruleDefinitionCache.put(ruleDef.getName(), ruleDef);
-                  }
-                  if (ruleDef.getName().equals(name)) {
-                     ruleDefinition = ruleDef;
-                  }
-               }
-               return ruleDefinition;
-            }
-         });
-
-      } catch (ExecutionException ex) {
-         OseeLog.logf(AtsWorkDefinitionServiceImpl.class, Level.WARNING, "Could not load Rule Definition [%s]", name);
-      }
-      return ruleDef;
-   }
-
-   @Override
    public IAtsWorkDefinition getWorkDefinition(String name) {
-      for (Entry<Long, IAtsWorkDefinition> entry : getWorkDefIdToWorkDef().asMap().entrySet()) {
-         if (entry.getValue().getName().equals(name)) {
-            return entry.getValue();
+      for (IAtsWorkDefinition workDef : atsApi.getWorkDefinitionProviderService().getAll()) {
+         if (workDef.getName().equals(name)) {
+            return workDef;
          }
-      }
-      XResultData resultData = new XResultData(false);
-      IAtsWorkDefinition workDef = null;
-      try {
-         workDef = getWorkDefinition(name, resultData);
-      } catch (Exception ex) {
-         atsApi.getLogger().error(ex, "Exception getting work definition [%s]", name);
-      }
-      if (workDef != null) {
-         getWorkDefIdToWorkDef().put(workDef.getId(), workDef);
-      }
-      return workDef;
-   }
-
-   @Override
-   public IAtsWorkDefinition getWorkDefinition(ArtifactId workDefArt) {
-      Conditions.assertNotNull(workDefArt, "workDefArt");
-      try {
-         return getWorkDefIdToWorkDef().get(workDefArt.getId());
-      } catch (ExecutionException ex) {
-         atsApi.getLogger().error(ex, "Exception getting work definition [%s]", workDefArt);
       }
       return null;
    }
 
    private IAtsWorkDefinition getWorkDefinitionFromArtifactsAttributeValue(IAtsWorkItem workItem) {
-      IAtsWorkDefinition workDefinition = null;
-      ArtifactId workDefArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(workItem,
-         AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.SENTINEL);
-      if (workDefArt != null && workDefArt.isValid()) {
-         workDefinition = getWorkDefinition(workDefArt);
-      }
+      IAtsWorkDefinition workDefinition = getWorkDefinitionFromAsObject(workItem);
       if (workDefinition == null && atsApi.isWorkDefAsName()) {
          // If this artifact specifies it's own workflow definition, use it
          String workFlowDefId = null;
@@ -226,13 +143,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    private IAtsWorkDefinition getWorkDefinitionFromArtifactsAttributeValue(IAtsTeamDefinition teamDef) {
-      IAtsWorkDefinition workDefinition = null;
-      // If this artifact specifies it's own workflow definition, use it
-      ArtifactId workDefArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(teamDef,
-         AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.SENTINEL);
-      if (workDefArt.isValid()) {
-         workDefinition = getWorkDefinition(workDefArt);
-      }
+      IAtsWorkDefinition workDefinition = getWorkDefinitionFromAsObject(teamDef);
       if (workDefinition == null && atsApi.isWorkDefAsName()) {
          String workFlowDefId = atsApi.getAttributeResolver().getSoleAttributeValue(teamDef,
             ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition, "");
@@ -244,12 +155,8 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    private IAtsWorkDefinition getTaskWorkDefinitionFromArtifactsAttributeValue(IAtsTeamDefinition teamDef) {
-      IAtsWorkDefinition workDefinition = null;
-      ArtifactId workDefArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(teamDef,
-         AtsAttributeTypes.RelatedTaskWorkDefinitionReference, ArtifactId.SENTINEL);
-      if (workDefArt.isValid()) {
-         workDefinition = getWorkDefinition(workDefArt);
-      }
+      IAtsWorkDefinition workDefinition =
+         getWorkDefinitionFromAsObject(teamDef, AtsAttributeTypes.RelatedTaskWorkDefinitionReference);
       if (workDefinition == null && atsApi.isWorkDefAsName()) {
          // If this artifact specifies it's own workflow definition, use it
          String workFlowDefId = atsApi.getAttributeResolver().getSoleAttributeValueAsString(teamDef,
@@ -285,15 +192,15 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       Conditions.assertNotNull(teamWf, "Team Workflow can not be null");
       IAtsWorkDefinition workDefinition = null;
       for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getTeamWorkflowProviders()) {
-         ArtifactId workDefArt = provider.getRelatedTaskWorkflowDefinitionId(teamWf);
-         if (workDefArt != null && workDefArt.isValid()) {
-            workDefinition = getWorkDefinition(workDefArt);
+         AtsWorkDefinitionToken workDefTok = provider.getRelatedTaskWorkflowDefinitionId(teamWf);
+         if (workDefTok != null && workDefTok.isValid()) {
+            workDefinition = getWorkDefinition(workDefTok);
             break;
          }
          if (atsApi.isWorkDefAsName()) {
-            ArtifactToken workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(teamWf);
-            if (workFlowDefId != null && workFlowDefId.isValid()) {
-               workDefinition = getWorkDefinition(workFlowDefId);
+            AtsWorkDefinitionToken workDefT = provider.getRelatedTaskWorkflowDefinitionId(teamWf);
+            if (workDefT != null && workDefT.isValid()) {
+               workDefinition = getWorkDefinition(workDefT);
                break;
             }
          }
@@ -303,7 +210,8 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          workDefinition = getTaskWorkDefinitionFromArtifactsAttributeValue(teamWf.getTeamDefinition());
       }
       if (workDefinition == null) {
-         workDefinition = getWorkDefinition(AtsArtifactToken.WorkDef_Task_Default);
+         workDefinition =
+            atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Task_Default);
       }
       return workDefinition;
    }
@@ -320,7 +228,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          if (workDef == null) {
             // Check extensions for definition handling
             for (ITeamWorkflowProvider provider : teamWorkflowProvidersLazy.getProviders()) {
-               ArtifactToken workFlowDefId = provider.getWorkflowDefinitionId(workItem);
+               AtsWorkDefinitionToken workFlowDefId = provider.getWorkflowDefinitionId(workItem);
                if (workFlowDefId != null && workFlowDefId.isValid()) {
                   workDef = getWorkDefinition(workFlowDefId);
                }
@@ -334,15 +242,17 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
                      workItem.toStringWithId());
                   workDef = getWorkDefinitionFromTeamDefinitionAttributeInherited(teamDef);
                } else if (workItem instanceof IAtsGoal) {
-                  workDef = getWorkDefinition(AtsArtifactToken.WorkDef_Goal);
+                  workDef = atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal);
                } else if (workItem instanceof IAgileBacklog) {
-                  workDef = getWorkDefinition(AtsArtifactToken.WorkDef_Goal);
+                  workDef = atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal);
                } else if (workItem instanceof IAgileSprint) {
-                  workDef = getWorkDefinition(AtsArtifactToken.WorkDef_Sprint);
+                  workDef = atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Sprint);
                } else if (workItem instanceof IAtsPeerToPeerReview) {
-                  workDef = getWorkDefinition(AtsArtifactToken.WorkDef_Review_PeerToPeer);
+                  workDef = atsApi.getWorkDefinitionService().getWorkDefinition(
+                     AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer);
                } else if (workItem instanceof IAtsDecisionReview) {
-                  workDef = getWorkDefinition(AtsArtifactToken.WorkDef_Review_Decision);
+                  workDef = atsApi.getWorkDefinitionService().getWorkDefinition(
+                     AtsWorkDefinitionTokens.WorkDef_Review_Decision);
                }
             }
          }
@@ -365,7 +275,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    @Override
    public IAtsWorkDefinition getDefaultPeerToPeerWorkflowDefinition() {
-      return getWorkDefinition(AtsArtifactToken.WorkDef_Review_PeerToPeer);
+      return getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer);
    }
 
    /**
@@ -405,16 +315,13 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
     */
    public IAtsWorkDefinition getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(IAtsTeamDefinition teamDefinition) {
       Conditions.notNull(teamDefinition, AtsWorkDefinitionServiceImpl.class.getSimpleName());
-      IAtsWorkDefinition workDefinition = null;
-      ArtifactId workDefArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(teamDefinition,
-         AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, ArtifactId.SENTINEL);
-      if (workDefArt == null || workDefArt.isInvalid()) {
+      IAtsWorkDefinition workDefinition =
+         getWorkDefinitionFromAsObject(teamDefinition, AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference);
+      if (workDefinition == null || workDefinition.isInvalid()) {
          IAtsTeamDefinition parentTeamDef = teamDefinition.getParentTeamDef();
          if (parentTeamDef != null) {
             workDefinition = getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(parentTeamDef);
          }
-      } else {
-         workDefinition = getWorkDefinition(workDefArt);
       }
       if (workDefinition == null && atsApi.isWorkDefAsName()) {
          String workDefId = atsApi.getAttributeResolver().getSoleAttributeValue(teamDefinition,
@@ -429,11 +336,6 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          }
       }
       return workDefinition;
-   }
-
-   @Override
-   public IAtsWorkDefinition copyWorkDefinition(String newName, IAtsWorkDefinition workDef, XResultData resultData) {
-      return workDefinitionDslService.copyWorkDefinition(newName, workDef, resultData);
    }
 
    @Override
@@ -515,72 +417,9 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    @Override
-   public String getStorageString(IAtsWorkDefinition workDef, XResultData resultData) throws Exception {
-      return workDefinitionDslService.getStorageString(workDef, resultData);
-   }
-
-   @Override
-   public IAtsWorkDefinition getWorkDefinition(String workDefName, XResultData resultData) throws Exception {
-      Conditions.checkNotNullOrEmpty(workDefName, "workDefName");
-      WorkDefData workDefData = null;
-      if (workDefinitionStringProvider != null && workDefinitionStringProvider.getWorkDefinitionsData() != null) {
-         for (WorkDefData data : workDefinitionStringProvider.getWorkDefinitionsData()) {
-            if (data.getName().equals(workDefName)) {
-               workDefData = data;
-               break;
-            }
-         }
-      }
-      if (workDefData == null) {
-         workDefData = workDefinitionStore.loadWorkDefinitionString(workDefName);
-      }
-      IAtsWorkDefinition workDef = null;
-      if (workDefData != null) {
-         workDef = workDefinitionDslService.getWorkDefinition(workDefData.getId(), workDefData.getDsl());
-         workDef.setStoreObject(workDefData.getStoreObject());
-      }
-      return workDef;
-   }
-
-   @Override
    public IAtsWorkDefinition getWorkDefinition(Long id) {
       Conditions.assertTrue(id > 0, "Id must be > 0, not %s", id);
-      IAtsWorkDefinition workDef = null;
-      try {
-         workDef = getWorkDefIdToWorkDef().get(id);
-      } catch (Exception ex) {
-         // do nothing
-      }
-      if (workDef == null) {
-         WorkDefData workDefData = null;
-         if (workDefinitionStringProvider != null && workDefinitionStringProvider.getWorkDefinitionsData() != null) {
-            for (WorkDefData data : workDefinitionStringProvider.getWorkDefinitionsData()) {
-               if (data.getId().equals(id)) {
-                  workDefData = data;
-                  break;
-               }
-            }
-         }
-         if (workDefData == null) {
-            workDefData = workDefinitionStore.loadWorkDefinitionString(id);
-         }
-         Conditions.checkNotNull(workDefData, "workDefData");
-         workDef = workDefinitionDslService.getWorkDefinition(workDefData.getId(), workDefData.getDsl());
-         workDef.setStoreObject(workDefData.getStoreObject());
-      }
-      return workDef;
-   }
-
-   @Override
-   public void reloadAll() {
-      getWorkDefIdToWorkDef().invalidateAll();
-      for (WorkDefData data : workDefinitionStringProvider.getWorkDefinitionsData()) {
-         IAtsWorkDefinition workDef = workDefinitionDslService.getWorkDefinition(data.getId(), data.getDsl());
-         if (workDef != null) {
-            getWorkDefIdToWorkDef().put(workDef.getId(), workDef);
-            workDef.setStoreObject(data.getStoreObject());
-         }
-      }
+      return atsApi.getWorkDefinitionProviderService().getWorkDefinition(id);
    }
 
    @Override
@@ -601,7 +440,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    @Override
    public Collection<String> getAllValidStateNames(XResultData resultData) throws Exception {
       Set<String> allValidStateNames = new HashSet<>();
-      for (IAtsWorkDefinition workDef : getAllWorkDefinitions(resultData)) {
+      for (IAtsWorkDefinition workDef : getAllWorkDefinitions()) {
          for (String stateName : getStateNames(workDef)) {
             if (!allValidStateNames.contains(stateName)) {
                allValidStateNames.add(stateName);
@@ -609,30 +448,6 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          }
       }
       return allValidStateNames;
-   }
-
-   @Override
-   public void clearRuleDefinitionsCache() {
-      ruleDefinitionCache.invalidateAll();
-   }
-
-   @Override
-   public Collection<IAtsRuleDefinition> getAllRuleDefinitions() {
-      if (ruleDefinitionCache.size() == 0) {
-         // If no rules exists then load all rules and put in the cache
-         List<IAtsRuleDefinition> ruleDefinitions =
-            workDefinitionDslService.getRuleDefinitions(workDefinitionStore.loadRuleDefinitionString());
-         for (IAtsRuleDefinition ruleDef : ruleDefinitions) {
-            ruleDefinitionCache.put(ruleDef.getName(), ruleDef);
-         }
-      }
-      Collection<IAtsRuleDefinition> ruleDefs = ruleDefinitionCache.asMap().values();
-      return ruleDefs;
-   }
-
-   @Override
-   public void cache(IAtsWorkDefinition workDef) {
-      getWorkDefIdToWorkDef().put(workDef.getId(), workDef);
    }
 
    @Override
@@ -660,26 +475,8 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    @Override
-   public Collection<IAtsWorkDefinition> getAllWorkDefinitions(XResultData resultData) {
-      List<IAtsWorkDefinition> workDefs = new ArrayList<>();
-      if (workDefinitionStringProvider != null) {
-         for (WorkDefData data : workDefinitionStringProvider.getWorkDefinitionsData()) {
-            IAtsWorkDefinition workDef = workDefinitionDslService.getWorkDefinition(data.getId(), data.getDsl());
-            if (workDef != null) {
-               getWorkDefIdToWorkDef().put(workDef.getId(), workDef);
-               workDef.setStoreObject(data.getStoreObject());
-            }
-         }
-      } else {
-         for (WorkDefData data : workDefinitionStore.getWorkDefinitionsData()) {
-            IAtsWorkDefinition workDef = workDefinitionDslService.getWorkDefinition(data.getId(), data.getDsl());
-            if (workDef != null) {
-               getWorkDefIdToWorkDef().put(workDef.getId(), workDef);
-               workDef.setStoreObject(data.getStoreObject());
-            }
-         }
-      }
-      return workDefs;
+   public Collection<IAtsWorkDefinition> getAllWorkDefinitions() {
+      return atsApi.getWorkDefinitionProviderService().getAll();
    }
 
    @Override
@@ -692,23 +489,23 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       // If work def id is specified by listener, set as attribute
       IAtsWorkDefinition workDefinition = null;
       if (newActionListener != null) {
-         ArtifactToken workDefArt = newActionListener.getOverrideWorkDefinitionId(teamWf);
-         if (workDefArt != null) {
-            workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(workDefArt);
+         AtsWorkDefinitionToken workDefTok = newActionListener.getOverrideWorkDefinitionId(teamWf);
+         if (workDefTok != null) {
+            workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(workDefTok);
          }
       }
       // else if work def is specified by provider, set as attribute
       if (workDefinition == null) {
          for (ITeamWorkflowProvider provider : atsApi.getWorkItemService().getTeamWorkflowProviders().getProviders()) {
-            ArtifactId workDefArt = provider.getOverrideWorkflowDefinitionId(teamWf);
-            if (workDefArt != null) {
-               workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(workDefArt);
+            AtsWorkDefinitionToken workDefT = provider.getOverrideWorkflowDefinitionId(teamWf);
+            if (workDefT != null) {
+               workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(workDefT);
             }
          }
       }
       // else if work def is specified by teamDef
       if (workDefinition == null) {
-         workDefinition = getWorkDefinitionNameForTeamWfFromTeamDef(teamWf.getTeamDefinition());
+         workDefinition = getWorkDefinitionForTeamWfFromTeamDef(teamWf.getTeamDefinition());
       }
       if (workDefinition == null) {
          throw new OseeStateException("Work Definition not computed for %s", teamWf.toStringWithId());
@@ -716,17 +513,11 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       return workDefinition;
    }
 
-   private IAtsWorkDefinition getWorkDefinitionNameForTeamWfFromTeamDef(IAtsTeamDefinition teamDef) {
-      IAtsWorkDefinition workDefinition = null;
-      ArtifactId workDefArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(teamDef,
-         AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.SENTINEL);
-      if (workDefArt.isValid()) {
-         try {
-            IAtsWorkDefinition workDef = getWorkDefIdToWorkDef().get(workDefArt.getId());
-            return workDef;
-         } catch (ExecutionException ex) {
-            // do nothing
-         }
+   private IAtsWorkDefinition getWorkDefinitionForTeamWfFromTeamDef(IAtsTeamDefinition teamDef) {
+      IAtsWorkDefinition workDefinition =
+         getWorkDefinitionFromAsObject(teamDef, AtsAttributeTypes.WorkflowDefinitionReference);
+      if (workDefinition != null && workDefinition.isValid()) {
+         return workDefinition;
       }
       String workDefName = atsApi.getAttributeResolver().getSoleAttributeValueAsString(teamDef,
          ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition, null);
@@ -741,24 +532,9 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
       IAtsTeamDefinition parentTeamDef = teamDef.getParentTeamDef();
       if (parentTeamDef == null) {
-         try {
-            return getWorkDefIdToWorkDef().get(AtsArtifactToken.WorkDef_Team_Default.getId());
-         } catch (ExecutionException ex) {
-            // do nothing
-         }
+         return atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Team_Default);
       }
-      return getWorkDefinitionNameForTeamWfFromTeamDef(parentTeamDef);
-   }
-
-   private LoadingCache<Long, IAtsWorkDefinition> getWorkDefIdToWorkDef() {
-      if (workDefIdToWorkDef == null) {
-         createCaches();
-      }
-      return workDefIdToWorkDef;
-   }
-
-   private void createCaches() {
-      workDefIdToWorkDef = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build(workDefLoader);
+      return getWorkDefinitionForTeamWfFromTeamDef(parentTeamDef);
    }
 
    @Override
@@ -780,36 +556,40 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    @Override
    public void setWorkDefinitionAttrs(IAtsTeamDefinition teamDef, IAtsWorkDefinition workDefinition, IAtsChangeSet changes) {
-      setWorkDefinitionAttrs((IAtsObject) teamDef, workDefinition.getStoreObject(), changes);
-   }
-
-   @Override
-   public void setWorkDefinitionAttrs(IAtsTeamDefinition teamDef, ArtifactToken workDefArt, IAtsChangeSet changes) {
-      setWorkDefinitionAttrs((IAtsObject) teamDef, workDefArt, changes);
+      setWorkDefinitionAttrs((IAtsObject) teamDef, workDefinition, changes);
    }
 
    @Override
    public void setWorkDefinitionAttrs(IAtsWorkItem workItem, IAtsWorkDefinition workDefinition, IAtsChangeSet changes) {
-      ArtifactToken workDefArt = workDefinition.getStoreObject();
-      if (workDefArt == null) {
-         workDefArt = atsApi.getQueryService().getArtifact(workDefinition);
-         workDefinition.setStoreObject(workDefArt);
-      }
-      setWorkDefinitionAttrs((IAtsObject) workItem, workDefinition.getStoreObject(), changes);
+      setWorkDefinitionAttrs((IAtsObject) workItem, workDefinition, changes);
    }
 
-   private void setWorkDefinitionAttrs(IAtsObject atsObject, ArtifactToken workDefArt, IAtsChangeSet changes) {
-      //Can be null or SENTINEL at this point.
-      Conditions.assertNotNull(workDefArt, "workDefArt");
-      Conditions.assertNotSentinel(workDefArt, "workDefArt");
+   private void setWorkDefinitionAttrs(IAtsObject atsObject, IAtsWorkDefinition workDef, IAtsChangeSet changes) {
+      Conditions.assertNotNull(workDef, "workDefArt");
+      Conditions.assertNotSentinel(workDef, "workDefArt");
       changes.setSoleAttributeValue(atsObject, ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition,
-         workDefArt.getName());
-      changes.setSoleAttributeValue(atsObject, AtsAttributeTypes.WorkflowDefinitionReference, workDefArt);
+         workDef.getName());
+      changes.setSoleAttributeValue(atsObject, AtsAttributeTypes.WorkflowDefinitionReference, workDef);
    }
 
    @Override
-   public void setWorkDefinitionAttrs(IAtsWorkItem workItem, ArtifactToken workDefArt, IAtsChangeSet changes) {
-      setWorkDefinitionAttrs((IAtsObject) workItem, workDefArt, changes);
+   public void setWorkDefinitionAttrs(IAtsTeamDefinition topTeam, NamedIdBase id, IAtsChangeSet changes) {
+      Conditions.assertNotNull(topTeam, "topTeam");
+      Conditions.assertNotSentinel(topTeam, "topTeam");
+      Conditions.assertNotNull(id, "id");
+      Conditions.assertNotSentinel(id, "id");
+      changes.setSoleAttributeValue(topTeam, ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition, id.getName());
+      changes.setSoleAttributeValue(topTeam, AtsAttributeTypes.WorkflowDefinitionReference, id);
+   }
+
+   @Override
+   public void setWorkDefinitionAttrs(IAtsTeamWorkflow teamWf, NamedIdBase id, IAtsChangeSet changes) {
+      Conditions.assertNotNull(teamWf, "teamWf");
+      Conditions.assertNotSentinel(teamWf, "teamWf");
+      Conditions.assertNotNull(id, "id");
+      Conditions.assertNotSentinel(id, "id");
+      changes.setSoleAttributeValue(teamWf, ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition, id.getName());
+      changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.WorkflowDefinitionReference, id);
    }
 
    @Override
@@ -820,6 +600,39 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    @Override
    public void internalClearWorkDefinition(IAtsWorkItem workItem) {
       bootstrappingWorkItemToWorkDefCache.remove(workItem);
+   }
+
+   @Override
+   public void addWorkDefinition(IAtsWorkDefinitionBuilder workDefBuilder) {
+      atsApi.getWorkDefinitionProviderService().addWorkDefinition(workDefBuilder.build());
+   }
+
+   @Override
+   public IAtsWorkDefinition getWorkDefinition(Id id) {
+      return getWorkDefinition(id.getId());
+   }
+
+   @Override
+   public Collection<IAtsRuleDefinition> getAllRuleDefinitions() {
+      return ruleDefNameToRuleDef.values();
+   }
+
+   @Override
+   public void addRuleDefinition(IAtsRuleDefinition ruleDef) {
+      if (ruleDefNameToRuleDef.keySet().contains(ruleDef.getName())) {
+         throw new OseeArgumentException("Can't have >1 Rule Defs with same name [%s]", ruleDef.getName());
+      }
+      ruleDefNameToRuleDef.put(ruleDef.getName(), ruleDef);
+   }
+
+   @Override
+   public IAtsRuleDefinition getRuleDefinition(String name) {
+      for (IAtsRuleDefinition ruleDef : getAllRuleDefinitions()) {
+         if (ruleDef.getName().equals(name)) {
+            return ruleDef;
+         }
+      }
+      return null;
    }
 
 }

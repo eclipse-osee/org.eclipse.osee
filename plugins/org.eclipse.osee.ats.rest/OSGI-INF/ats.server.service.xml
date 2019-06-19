@@ -12,6 +12,6 @@
 	<reference bind="setEventAdmin" cardinality="1..1" interface="org.osgi.service.event.EventAdmin" name="EventAdmin" policy="static"/>
    <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
    <reference bind="setAtsUserService" cardinality="1..1" interface="org.eclipse.osee.ats.api.user.IAtsUserService" name="IAtsUserService" policy="static"/>
-   <reference bind="setWorkDefinitionDslService" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionDslService" name="IAtsWorkDefinitionDslService" policy="static"/>
    <reference bind="setExecutorAdmin" cardinality="1..1" interface="org.eclipse.osee.framework.core.executor.ExecutorAdmin" name="ExecutorAdmin" policy="static"/>
+   <reference bind="setWorkDefinitionProviderService" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService" name="IAtsWorkDefinitionProviderService" policy="static"/>
 </scr:component>

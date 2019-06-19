@@ -12,11 +12,12 @@ package org.eclipse.osee.ats.ide.editor.stateItem;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.review.DecisionOption;
-import org.eclipse.osee.ats.api.review.DecisionOptions;
+import org.eclipse.osee.ats.api.review.DecisionReviewOption;
+import org.eclipse.osee.ats.api.review.DecisionReviewOptions;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -56,8 +57,9 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
          if (xWidget.getLabel().equals(AtsAttributeTypes.Decision.getUnqualifiedName())) {
             XComboDam decisionComboDam = (XComboDam) xWidget;
             List<String> options = new ArrayList<>();
-            DecisionOptions xDecOptions = new DecisionOptions((IAtsDecisionReview) art, AtsClientService.get());
-            for (DecisionOption opt : xDecOptions.getDecisionOptions()) {
+            DecisionReviewOptions xDecOptions =
+               new DecisionReviewOptions((IAtsDecisionReview) art, AtsClientService.get());
+            for (DecisionReviewOption opt : xDecOptions.getDecisionOptions()) {
                options.add(opt.getName());
             }
             decisionComboDam.setDataStrings(options.toArray(new String[options.size()]));
@@ -88,7 +90,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    }
 
    public String getOverrideTransitionToStateName(DecisionReviewArtifact decArt, XComboDam decisionComboDam) {
-      DecisionOption decisionOption = getDecisionOption(decArt, decisionComboDam.get());
+      DecisionReviewOption decisionOption = getDecisionOption(decArt, decisionComboDam.get());
       if (decisionOption == null) {
          return null;
       }
@@ -110,11 +112,13 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    }
 
    public Collection<IAtsUser> getOverrideTransitionToAssignees(DecisionReviewArtifact decArt, String decision) {
-      DecisionOption decisionOption = getDecisionOption(decArt, decision);
+      DecisionReviewOption decisionOption = getDecisionOption(decArt, decision);
       if (decisionOption == null) {
          return null;
       }
-      return decisionOption.getAssignees();
+      List<IAtsUser> assignees = new LinkedList<>();
+      assignees.addAll(AtsClientService.get().getUserService().getUsersByUserIds(decisionOption.getAssignees()));
+      return assignees;
    }
 
    private boolean isApplicable(AbstractWorkflowArtifact awa) {
@@ -122,7 +126,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
          DecisionReviewState.Decision.getName());
    }
 
-   private DecisionOption getDecisionOption(DecisionReviewArtifact decRevArt, String decision) {
+   private DecisionReviewOption getDecisionOption(DecisionReviewArtifact decRevArt, String decision) {
       if (decision.equals("")) {
          return null;
       }

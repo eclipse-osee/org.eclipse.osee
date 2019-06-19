@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.config.ImportWorkDefinitions;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.core.config.OrganizePrograms;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -56,15 +56,11 @@ public class AtsDatabaseConfig {
          atsApi.getActionableItemService().getActionableItemById(AtsArtifactToken.TopActionableItem);
 
       IAtsChangeSet changes = atsApi.createChangeSet("Set Top Team Work Definition");
-      atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(topTeam, AtsArtifactToken.WorkDef_Team_Default, changes);
+      atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(topTeam, AtsWorkDefinitionTokens.WorkDef_Team_Default,
+         changes);
       changes.setSoleAttributeValue(topAi, AtsAttributeTypes.Actionable, false);
       changes.execute();
 
-      ImportWorkDefinitions workDefImport = new ImportWorkDefinitions(atsApi);
-      results = workDefImport.importDefaultSheets();
-      if (results.isErrors()) {
-         return results;
-      }
       atsApi.clearCaches();
 
       createUserGroups(atsApi);

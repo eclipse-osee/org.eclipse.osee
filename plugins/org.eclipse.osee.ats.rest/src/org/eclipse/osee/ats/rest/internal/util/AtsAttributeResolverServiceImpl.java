@@ -119,7 +119,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    @Override
    public String getSoleAttributeValueAsString(IAtsObject atsObject, AttributeTypeToken attributeType, String defaultValue) {
-      return getArtifact(atsObject).getSoleAttributeValue(attributeType, defaultValue);
+      return getArtifact(atsObject).getAttributeValuesAsString(attributeType);
    }
 
    @Override

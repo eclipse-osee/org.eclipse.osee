@@ -19,13 +19,13 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
@@ -33,18 +33,12 @@ import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
-import org.eclipse.osee.ats.ide.workdef.AtsWorkDefinitionSheetProviders;
-import org.eclipse.osee.ats.ide.workdef.provider.AtsWorkDefinitionImporter;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -111,9 +105,7 @@ public class AtsConfigOperation extends AbstractOperation {
       teamDef = createTeamDefinition(changes, AtsClientService.get());
 
       // Relate new team def to workflow artifact
-      ArtifactToken workDefArt =
-         AtsClientService.get().getWorkDefinitionService().getWorkDefArt(workDefinition.getName());
-      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamDef, workDefArt, changes);
+      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamDef, workDefinition, changes);
 
       actionableItems = createActionableItems(changes, teamDef, AtsClientService.get());
 
@@ -168,51 +160,8 @@ public class AtsConfigOperation extends AbstractOperation {
    }
 
    private IAtsWorkDefinition createOrGetWorkflowDefinition(XResultData resultData) {
-      IAtsWorkDefinition workDef = null;
-      if (Strings.isValid(workDefName)) {
-         workDef = AtsClientService.get().getWorkDefinitionService().getWorkDefinition(workDefName);
-      } else if (Strings.isValid(name)) {
-         workDef = AtsClientService.get().getWorkDefinitionService().getWorkDefinition(name);
-      }
-      // If can't be found, create a new one
-      if (workDef == null) {
-         IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet(
-            "Create Work Definition - " + name, AtsClientService.get().getUserService().getCurrentUser());
-         workDef = generateDefaultWorkflow(name, resultData, changes);
-         Artifact workDefArt = null;
-         try {
-            String workDefXml = AtsClientService.get().getWorkDefinitionService().getStorageString(workDef, resultData);
-            if (resultData.isErrors()) {
-               throw new OseeStateException("Error getting store string for WorkDef [%s]: Errors %s", workDef.getName(),
-                  resultData.toString());
-            }
-            workDefArt = AtsWorkDefinitionImporter.get().importWorkDefinitionToDb(workDefXml, workDef.getName(), name,
-               resultData, null, null, changes);
-            Artifact folder =
-               AtsClientService.get().getQueryServiceClient().getArtifact(AtsArtifactToken.WorkDefinitionsFolder);
-            folder.addChild(workDefArt);
-            changes.add(folder);
-         } catch (Exception ex) {
-            throw new OseeWrappedException(ex);
-         }
-         TransactionId transactionId = changes.execute();
-         if (transactionId == null || !workDefArt.isInDb()) {
-            throw new OseeStateException("Work Def didn't persist");
-         }
-         AtsClientService.get().getWorkDefinitionService().addWorkDefinition(workDef);
-      }
-      return workDef;
-   }
-
-   private IAtsWorkDefinition generateDefaultWorkflow(String name, XResultData resultData, IAtsChangeSet changes) {
-      IAtsWorkDefinition defaultWorkDef = AtsClientService.get().getWorkDefinitionService().getWorkDefinition(
-         AtsWorkDefinitionSheetProviders.WORK_DEF_TEAM_DEFAULT);
-
-      // Duplicate default team workflow definition w/ namespace changes
-
-      IAtsWorkDefinition newWorkDef =
-         AtsClientService.get().getWorkDefinitionService().copyWorkDefinition(name, defaultWorkDef, resultData);
-      return newWorkDef;
+      return AtsClientService.get().getWorkDefinitionService().getWorkDefinition(
+         AtsWorkDefinitionTokens.WorkDef_Team_Default);
    }
 
    public static final class OpenAtsConfigEditors implements Display {

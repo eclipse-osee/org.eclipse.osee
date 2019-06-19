@@ -11,8 +11,6 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.review;
 
 import java.util.Arrays;
-import org.eclipse.osee.ats.api.config.tx.AtsWorkDefinitionArtifactToken;
-import org.eclipse.osee.ats.api.config.tx.IAtsWorkDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
@@ -23,6 +21,9 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.DemoWorkDefinitionTokens;
+import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamDecisionReviewDefinitionManagerTestPrepare;
+import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamDecisionReviewDefinitionManagerTesttoDecision;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition.MockTransitionHelper;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
@@ -42,16 +43,14 @@ import org.junit.BeforeClass;
  */
 public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitionManager {
 
-   public static IAtsWorkDefinitionArtifactToken DecisionWorkDefToDecisionId =
-      AtsWorkDefinitionArtifactToken.valueOf(913396704L, "WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision");
-
-   public static IAtsWorkDefinitionArtifactToken DecisionWorkDefPrepareId =
-      AtsWorkDefinitionArtifactToken.valueOf(916526903L, "WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare");
-
    @BeforeClass
    @AfterClass
    public static void cleanup() throws Exception {
       AtsTestUtil.cleanup();
+      AtsClientService.get().getWorkDefinitionService().addWorkDefinition(
+         new WorkDefTeamDecisionReviewDefinitionManagerTesttoDecision());
+      AtsClientService.get().getWorkDefinitionService().addWorkDefinition(
+         new WorkDefTeamDecisionReviewDefinitionManagerTestPrepare());
    }
 
    @org.junit.Test
@@ -61,11 +60,9 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
-      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamWf, DecisionWorkDefToDecisionId,
-         changes);
+      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamWf,
+         DemoWorkDefinitionTokens.WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision, changes);
       changes.execute();
-
-      AtsClientService.get().getWorkDefinitionService().clearCaches();
 
       Assert.assertEquals("Implement State should have a single decision review definition", 1,
          teamWf.getWorkDefinition().getStateByName(TeamState.Implement.getName()).getDecisionReviews().size());
@@ -103,11 +100,9 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
 
       IAtsTeamWorkflow teamWf = AtsTestUtil.getTeamWf();
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
-      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamWf, DecisionWorkDefPrepareId,
-         changes);
+      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamWf,
+         DemoWorkDefinitionTokens.WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare, changes);
       changes.execute();
-
-      AtsClientService.get().getWorkDefinitionService().clearCaches();
 
       Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamWf).size());
 

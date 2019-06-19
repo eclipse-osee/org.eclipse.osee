@@ -12,15 +12,11 @@ package org.eclipse.osee.ats.ide.config;
 
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamDefinition;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
-import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -51,29 +47,14 @@ public class AtsConfig2DataExample extends AbstractAtsConfig2Data {
          AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(dtsSoftwareArt);
 
       changes.setSoleAttributeValue(dtsSoftwareTeam, ConvertAtsConfigGuidAttributesOperations.RelatedTaskWorkDefinition,
-         AtsArtifactToken.WorkDef_Task_AtsConfig2Example.getName());
+         AtsWorkDefinitionTokens.WorkDef_Task_AtsConfig2Example);
       changes.setSoleAttributeValue(dtsSoftwareTeam, AtsAttributeTypes.RelatedTaskWorkDefinitionReference,
-         AtsArtifactToken.WorkDef_Task_AtsConfig2Example);
+         AtsWorkDefinitionTokens.WorkDef_Task_AtsConfig2Example);
 
       AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(dtsSoftwareTeam,
-         AtsArtifactToken.WorkDef_Team_AtsConfig2Example, changes);
+         AtsWorkDefinitionTokens.WorkDef_Team_AtsConfig2Example, changes);
 
       changes.add(dtsSoftwareTeam);
-   }
-
-   @Override
-   public Collection<WorkDefinitionSheet> getTeamsAiSheets() {
-      List<WorkDefinitionSheet> sheets = new ArrayList<>();
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_AtsConfig2_AIs_And_Teams", AtsConfig2DataExample.class));
-      return sheets;
-   }
-
-   @Override
-   public Collection<WorkDefinitionSheet> getWorkDefSheets() {
-      List<WorkDefinitionSheet> sheets = new ArrayList<>();
-      sheets.add(new WorkDefinitionSheet(AtsArtifactToken.WorkDef_Team_AtsConfig2Example, AtsConfig2DataExample.class));
-      sheets.add(new WorkDefinitionSheet(AtsArtifactToken.WorkDef_Task_AtsConfig2Example, AtsConfig2DataExample.class));
-      return sheets;
    }
 
 }

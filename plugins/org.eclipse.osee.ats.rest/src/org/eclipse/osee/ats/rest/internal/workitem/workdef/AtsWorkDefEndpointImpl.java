@@ -10,14 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.workitem.workdef;
 
-import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefEndpointApi;
-import org.eclipse.osee.ats.api.workdef.WorkDefData;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.ConvertWorkDefinitionOperations;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -34,13 +32,6 @@ public class AtsWorkDefEndpointImpl implements AtsWorkDefEndpointApi {
    public AtsWorkDefEndpointImpl(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
-   }
-
-   @Override
-   @Produces(MediaType.APPLICATION_JSON)
-   @GET
-   public List<WorkDefData> get() {
-      return atsApi.getConfigService().getConfigurations().getWorkDefinitionsData();
    }
 
    @Override

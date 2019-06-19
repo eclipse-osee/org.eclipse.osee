@@ -27,17 +27,13 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.config.ImportWorkDefinitions;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.core.config.OrganizePrograms;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.search.QueryBuilder;
-import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
 /**
  * Initialization class that will load configuration information for a sample DB.
@@ -47,29 +43,15 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
 public class DemoDatabaseConfig {
 
    private final AtsApi atsApi;
-   private final OrcsApi orcsApi;
-   private final TransactionFactory txFactory;
-   private final QueryBuilder query;
 
-   public DemoDatabaseConfig(AtsApi atsApi, OrcsApi orcsApi) {
+   public DemoDatabaseConfig(AtsApi atsApi) {
       this.atsApi = atsApi;
-      this.orcsApi = orcsApi;
-      this.txFactory = orcsApi.getTransactionFactory();
-      this.query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
    }
 
    public XResultData run() {
 
       configTxDemoAisAndTeams();
       configureForParallelCommit();
-
-      ImportWorkDefinitions workDefImport = new ImportWorkDefinitions(atsApi);
-      XResultData results = workDefImport.importWorkDefinitionSheets(DemoArtifactToken.WorkDef_Team_Demo_Code,
-         DemoArtifactToken.WorkDef_Team_Demo_Req, DemoArtifactToken.WorkDef_Team_Demo_SwDesign,
-         DemoArtifactToken.WorkDef_Team_Demo_Test);
-      if (results.isErrors()) {
-         return results;
-      }
 
       IAtsChangeSet changes = atsApi.createChangeSet("Set ATS Admin");
       changes.relate(AtsUserGroups.AtsTempAdmin, CoreRelationTypes.Users_User, DemoUsers.Joe_Smith);
@@ -86,7 +68,7 @@ public class DemoDatabaseConfig {
       IAtsConfigTx cfgTx = atsApi.getConfigService().createConfigTx("Create Demo Config", AtsCoreUsers.SYSTEM_USER);
       IAtsConfigTxTeamDef topTeam =
          cfgTx.createTeamDef((IAtsTeamDefinition) null, AtsArtifactToken.TopTeamDefinition).andWorkDef(
-            AtsArtifactToken.WorkDef_Team_Default);
+            AtsWorkDefinitionTokens.WorkDef_Team_Default);
       IAtsConfigTxActionableItem topActionableItem =
          cfgTx.createActionableItem(AtsArtifactToken.TopActionableItem).andActionable(false);
 
@@ -110,13 +92,13 @@ public class DemoDatabaseConfig {
             .andLeads(DemoUsers.John_Stevens) //
             .andMembers(DemoUsers.John_Stevens, DemoUsers.Steven_Michael, DemoUsers.Michael_John,
                DemoUsers.Jason_Stevens) //
-            .andWorkDef(AtsArtifactToken.WorkDef_Team_Simple);
+            .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_Simple);
 
       // IT Team
       facilitiesTeam.createChildTeamDef(facilitiesTeam.getTeamDef(), DemoArtifactToken.Facilities_IT_Team) //
          .andLeads(DemoUsers.Kay_Wheeler) //
          .andMembers(DemoUsers.Kay_Wheeler, DemoUsers.Jason_Stevens, DemoUsers.Michael_John, DemoUsers.Jason_Stevens) //
-         .andWorkDef(AtsArtifactToken.WorkDef_Team_Simple);
+         .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_Simple);
 
       // Facilities Actionable Items
       IAtsConfigTxActionableItem facilitiesAI =
@@ -150,13 +132,13 @@ public class DemoDatabaseConfig {
       IAtsConfigTxTeamDef toolsTeamTeam = topTeam.createChildTeamDef(topTeam.getTeamDef(), DemoArtifactToken.Tools_Team) //
          .andLeads(DemoUsers.Jeffery_Kay) //
          .andMembers(DemoUsers.Jeffery_Kay, DemoUsers.Roland_Stevens) //
-         .andWorkDef(AtsArtifactToken.WorkDef_Team_Default);
+         .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_Default);
 
       // Web Team
       toolsTeamTeam.createChildTeamDef(toolsTeamTeam.getTeamDef(), DemoArtifactToken.Website_Team) //
          .andLeads(DemoUsers.Karmen_John) //
          .andMembers(DemoUsers.Karmen_John, DemoUsers.Jeffery_Kay, DemoUsers.Roland_Stevens) //
-         .andWorkDef(AtsArtifactToken.WorkDef_Team_Simple);
+         .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_Simple);
 
       // Tools Actionable Items
       IAtsConfigTxActionableItem toolsTeamAI = topActionableItem.createChildActionableItem(DemoArtifactToken.Tools_Ai) //
@@ -184,7 +166,7 @@ public class DemoDatabaseConfig {
       topTeam.createChildTeamDef(topTeam.getTeamDef(), DemoArtifactToken.System_Safety_Team) //
          .andLeads(DemoUsers.Joe_Smith) //
          .andMembers(DemoUsers.Jeffery_Kay) //
-         .andWorkDef(AtsArtifactToken.WorkDef_Team_Default);
+         .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_Default);
 
       // System Safety Actionable Items
       topActionableItem.createChildActionableItem(DemoArtifactToken.System_Safety_Ai) //
@@ -199,7 +181,7 @@ public class DemoDatabaseConfig {
       topTeam.createChildTeamDef(topTeam.getTeamDef(), DemoArtifactToken.Process_Team) //
          .andLeads(DemoUsers.Alex_Kay) //
          .andMembers(DemoUsers.Keith_Johnson, DemoUsers.Michael_Alex, DemoUsers.Janice_Michael, DemoUsers.Alex_Kay) //
-         .andWorkDef(AtsArtifactToken.WorkDef_Team_Default);
+         .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_Default);
 
       // Process Actionable Items
       IAtsConfigTxActionableItem processesAI = topActionableItem.createChildActionableItem("Processes") //
@@ -225,7 +207,7 @@ public class DemoDatabaseConfig {
       IAtsConfigTxTeamDef sawPlTeam = topTeam.createChildTeamDef(topTeam.getTeamDef(), DemoArtifactToken.SAW_PL) //
          .andLeads(DemoUsers.Kay_Jason) //
          .andMembers(DemoUsers.Kay_Jason, DemoUsers.Michael_John, DemoUsers.Steven_Kohn) //
-         .andWorkDef(AtsArtifactToken.WorkDef_Team_Default) //
+         .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_Default) //
          .andVersion(DemoArtifactToken.SAW_Product_Line, ReleasedOption.Released, DemoBranches.SAW_PL, NextRelease.None) //
          .andVersion(DemoArtifactToken.SAW_Hardening_Branch, ReleasedOption.UnReleased,
             DemoBranches.SAW_PL_Hardening_Branch, NextRelease.Next);
@@ -240,7 +222,7 @@ public class DemoDatabaseConfig {
       sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_HW) //
          .andLeads(DemoUsers.Jason_Michael) //
          .andMembers(DemoUsers.Jason_Michael) //
-         .andWorkDef(AtsArtifactToken.WorkDef_Team_Default) //
+         .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_Default) //
          .andTeamWorkflowArtifactType(DemoArtifactTypes.DemoReqTeamWorkflow);
 
       sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_Requirements) //
@@ -304,7 +286,7 @@ public class DemoDatabaseConfig {
          .and(CoreAttributeTypes.StaticId, "saw.teamDefHoldingVersions") //
          .andLeads(DemoUsers.Kay_Jason) //
          .andMembers(DemoUsers.Steven_Kohn, DemoUsers.Michael_John, DemoUsers.Kay_Jason) //
-         .andWorkDef(AtsArtifactToken.WorkDef_Team_Default) //
+         .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_Default) //
          .andVersion(DemoArtifactToken.SAW_Bld_1, ReleasedOption.Released, DemoBranches.SAW_Bld_1, NextRelease.None) //
          .andVersion(DemoArtifactToken.SAW_Bld_2, ReleasedOption.UnReleased, DemoBranches.SAW_Bld_2, NextRelease.Next) //
          .andVersion(DemoArtifactToken.SAW_Bld_3, ReleasedOption.UnReleased, DemoBranches.SAW_Bld_3, NextRelease.None);
@@ -320,7 +302,7 @@ public class DemoDatabaseConfig {
       sawSwTeam.createChildTeamDef(sawSwTeam.getTeamDef(), DemoArtifactToken.SAW_HW) //
          .andLeads(DemoUsers.Jason_Michael) //
          .andMembers(DemoUsers.Jason_Michael) //
-         .andWorkDef(AtsArtifactToken.WorkDef_Team_Default) //
+         .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_Default) //
          .andTeamWorkflowArtifactType(DemoArtifactTypes.DemoReqTeamWorkflow);
 
       sawSwTeam.createChildTeamDef(sawSwTeam.getTeamDef(), DemoArtifactToken.SAW_Test) //
@@ -387,7 +369,7 @@ public class DemoDatabaseConfig {
          .and(CoreAttributeTypes.StaticId, "cis.teamDefHoldingVersions") //
          .andLeads(DemoUsers.Kay_Jason) //
          .andMembers(DemoUsers.Steven_Kohn, DemoUsers.Michael_John, DemoUsers.Kay_Jason) //
-         .andWorkDef(AtsArtifactToken.WorkDef_Team_Default) //
+         .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_Default) //
          .andVersion("CIS Bld 1", ReleasedOption.Released, DemoBranches.CIS_Bld_1, NextRelease.None) //
          .andVersion("CIS Bld 2", ReleasedOption.UnReleased, null, NextRelease.Next) //
          .andVersion("CIS Bld 3", ReleasedOption.UnReleased, null, NextRelease.None);

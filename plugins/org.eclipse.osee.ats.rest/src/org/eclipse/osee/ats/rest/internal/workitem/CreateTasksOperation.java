@@ -146,11 +146,9 @@ public class CreateTasksOperation {
             IAtsWorkDefinition workDefinition = null;
             if (Strings.isValid(task.getTaskWorkDef())) {
                try {
-                  XResultData rd = new XResultData();
-                  workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(task.getTaskWorkDef(), rd);
-                  if (rd.isErrors()) {
-                     resultData.errorf("Error finding Task Work Def [%s].  Exception: %s", task.getTaskWorkDef(),
-                        rd.toString());
+                  workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(task.getTaskWorkDef());
+                  if (workDefinition == null) {
+                     resultData.errorf("Error finding Task Work Def [%s].  Exception: %s", task.getTaskWorkDef());
                   }
                } catch (Exception ex) {
                   resultData.errorf("Exception finding Task Work Def [%s].  Exception: %s", task.getTaskWorkDef(),

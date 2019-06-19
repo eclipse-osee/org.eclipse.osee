@@ -20,10 +20,6 @@
 		<module>../../plugins/org.eclipse.osee.ats.api</module>
 		<module>../../plugins/org.eclipse.osee.ats.rest.test.db</module>
 
-		<module>../../plugins/org.eclipse.osee.ats.dsl</module>
-		<module>../../plugins/org.eclipse.osee.ats.dsl.integration</module>
-      <module>../../plugins/org.eclipse.osee.ats.dsl.integration.test</module>
-      
 		<module>../../plugins/org.eclipse.osee.ats.core</module>
       <module>../../plugins/org.eclipse.osee.ats.core.test</module>
       

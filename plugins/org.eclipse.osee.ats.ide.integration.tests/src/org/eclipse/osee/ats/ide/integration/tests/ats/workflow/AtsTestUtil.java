@@ -50,7 +50,7 @@ import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
-import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition.TransitionManagerTest;
+import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.DemoWorkDefinitionTokens;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
@@ -290,7 +290,7 @@ public class AtsTestUtil {
 
       // All tests use the same Work Definition so it doesn't have to be re-created and imported each time
       AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamDef,
-         TransitionManagerTest.WorkDefTeamAtsTestUtil, changes);
+         DemoWorkDefinitionTokens.WorkDef_Team_AtsTestUtil, changes);
 
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.Active, true);
       changes.relate(teamDef, AtsRelationTypes.TeamLead_Lead, AtsClientService.get().getUserService().getCurrentUser());

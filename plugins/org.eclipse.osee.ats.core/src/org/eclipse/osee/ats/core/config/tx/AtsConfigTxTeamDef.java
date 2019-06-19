@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.config.tx.IAtsConfigTxTeamDef;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTxVersion;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsVersionArtifactToken;
-import org.eclipse.osee.ats.api.config.tx.IAtsWorkDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.query.NextRelease;
@@ -35,6 +34,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -53,8 +53,8 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
    }
 
    @Override
-   public IAtsConfigTxTeamDef andWorkDef(IAtsWorkDefinitionArtifactToken workDef) {
-      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.WorkflowDefinitionReference, workDef);
+   public IAtsConfigTxTeamDef andWorkDef(NamedId workDefId) {
+      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.WorkflowDefinitionReference, workDefId);
       return this;
    }
 

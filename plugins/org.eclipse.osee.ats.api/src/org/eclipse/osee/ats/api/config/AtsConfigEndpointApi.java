@@ -19,8 +19,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
@@ -92,11 +90,6 @@ public interface AtsConfigEndpointApi {
 
    @POST
    public XResultData createUpdateConfig();
-
-   @PUT
-   @Path("workDef")
-   @Consumes(MediaType.APPLICATION_JSON)
-   public Response storeWorkDef(JaxAtsWorkDef jaxWorkDef);
 
    @GET
    @Path("alive")

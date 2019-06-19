@@ -185,7 +185,6 @@ public final class AtsRuleDefinitionDslRenderer extends FileSystemRenderer {
             String dslStr = Lib.fileToString(file);
             artifact.setSoleAttributeValue(AtsAttributeTypes.DslSheet, dslStr);
             artifact.persist(getName());
-            AtsClientService.get().getWorkDefinitionService().clearCaches();
          }
       }
    }

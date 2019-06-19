@@ -15,13 +15,12 @@ import org.eclipse.osee.ats.api.config.tx.AtsActionableItemArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.AtsProgramArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.AtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.AtsVersionArtifactToken;
-import org.eclipse.osee.ats.api.config.tx.AtsWorkDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsActionableItemArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsProgramArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsVersionArtifactToken;
-import org.eclipse.osee.ats.api.config.tx.IAtsWorkDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
@@ -225,10 +224,10 @@ public final class DemoArtifactToken {
    // Work Definitions
    //////////////////////////////////
 
-   public static final IAtsWorkDefinitionArtifactToken WorkDef_Team_Demo_Code = AtsWorkDefinitionArtifactToken.valueOf(48427403L, "WorkDef_Team_Demo_Code");
-   public static final IAtsWorkDefinitionArtifactToken WorkDef_Team_Demo_Test = AtsWorkDefinitionArtifactToken.valueOf(2892554L, "WorkDef_Team_Demo_Test");
-   public static final IAtsWorkDefinitionArtifactToken WorkDef_Team_Demo_Req = AtsWorkDefinitionArtifactToken.valueOf(46891154L, "WorkDef_Team_Demo_Req");
-   public static final IAtsWorkDefinitionArtifactToken WorkDef_Team_Demo_SwDesign = AtsWorkDefinitionArtifactToken.valueOf(3625963L, "WorkDef_Team_Demo_SwDesign");
+   public static final AtsWorkDefinitionToken WorkDef_Team_Demo_Code = AtsWorkDefinitionToken.valueOf(48427403L, "WorkDef_Team_Demo_Code");
+   public static final AtsWorkDefinitionToken WorkDef_Team_Demo_Test = AtsWorkDefinitionToken.valueOf(2892554L, "WorkDef_Team_Demo_Test");
+   public static final AtsWorkDefinitionToken WorkDef_Team_Demo_Req = AtsWorkDefinitionToken.valueOf(46891154L, "WorkDef_Team_Demo_Req");
+   public static final AtsWorkDefinitionToken WorkDef_Team_Demo_SwDesign = AtsWorkDefinitionToken.valueOf(3625963L, "WorkDef_Team_Demo_SwDesign");
 
    // @formatter:on
 

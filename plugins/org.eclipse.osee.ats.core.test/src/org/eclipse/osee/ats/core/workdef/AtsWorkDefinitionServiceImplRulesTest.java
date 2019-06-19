@@ -11,17 +11,15 @@
 package org.eclipse.osee.ats.core.workdef;
 
 import static org.mockito.Mockito.when;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workdef.IAtsRuleDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionDslService;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStringProvider;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
-import org.eclipse.osee.ats.api.workdef.NullRuleDefinition;
+import org.eclipse.osee.ats.api.workdef.model.RuleDefinition;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.config.TeamDefinition;
@@ -41,10 +39,8 @@ import org.mockito.MockitoAnnotations;
 public class AtsWorkDefinitionServiceImplRulesTest {
 
    // @formatter:off
-   @Mock AtsWorkDefinitionStoreService workDefinitionStore;
-   @Mock IAtsWorkDefinitionDslService workDefinitionDslService;
    @Mock AtsApi atsApi;
-   @Mock IAtsWorkDefinitionStringProvider workDefinitionStringProvider;
+   @Mock IAtsWorkDefinitionService workDefService;
    @Mock IAtsRuleDefinition ruleDef1;
    @Mock IAtsRuleDefinition ruleDef2;
    @Mock IAtsTeamWorkflow teamWf;
@@ -53,47 +49,42 @@ public class AtsWorkDefinitionServiceImplRulesTest {
    @Mock IAtsAbstractReview review;
    @Mock IAttributeResolver attrResolver;
    @Mock Log logger;
-
-   AtsWorkDefinitionServiceImpl workDefService;
-
    // @formatter:on
 
    @Before
    public void setup() throws Exception {
       MockitoAnnotations.initMocks(this);
 
-      when(workDefinitionStore.loadRuleDefinitionString()).thenReturn("");
-      when(workDefinitionDslService.getRuleDefinitions("")).thenReturn(new ArrayList<IAtsRuleDefinition>());
-
-      workDefService = new AtsWorkDefinitionServiceImpl(atsApi, workDefinitionStore, workDefinitionStringProvider,
-         workDefinitionDslService, null);
-
-      when(workDefinitionDslService.getRuleDefinitions("")).thenReturn(Arrays.asList(ruleDef1, ruleDef2));
+      when(workDefService.getAllRuleDefinitions()).thenReturn(Arrays.asList(ruleDef1, ruleDef2));
       when(ruleDef1.getName()).thenReturn("ruleDef1");
       when(ruleDef2.getName()).thenReturn("ruleDef2");
    }
 
    @Test
-   public void getRuleDefinitionkByName() {
+   public void getRuleDefinitionkByNameAndAll() {
+      AtsWorkDefinitionServiceImpl workDefService = new AtsWorkDefinitionServiceImpl(null, null);
+      RuleDefinition ruleDef1 = new RuleDefinition();
+      ruleDef1.setName("ruleDef1");
+      workDefService.addRuleDefinition(ruleDef1);
+
+      RuleDefinition ruleDef2 = new RuleDefinition();
+      ruleDef2.setName("ruleDef2");
+      workDefService.addRuleDefinition(ruleDef2);
 
       IAtsRuleDefinition ruleDefinition = workDefService.getRuleDefinition("asdf");
-      Assert.assertTrue(ruleDefinition instanceof NullRuleDefinition);
+      Assert.assertNull(ruleDefinition);
 
-      IAtsRuleDefinition ruleDefinition2 = workDefService.getRuleDefinition("ruleDef1");
-      Assert.assertNotNull(ruleDefinition2);
+      IAtsRuleDefinition ruleDefinition2 = workDefService.getRuleDefinition("ruleDef2");
+      Assert.assertEquals(ruleDef2, ruleDefinition2);
 
-      ruleDefinition = workDefService.getRuleDefinition("asdf");
-      Assert.assertTrue(ruleDefinition instanceof NullRuleDefinition);
-   }
-
-   @Test
-   public void getAllRuleDefinitions() {
       Collection<IAtsRuleDefinition> ruleDefs = workDefService.getAllRuleDefinitions();
       Assert.assertEquals(2, ruleDefs.size());
    }
 
    @Test
    public void teamDefHasRule() {
+      AtsWorkDefinitionServiceImpl workDefService = new AtsWorkDefinitionServiceImpl(null, null);
+
       when(review.getParentTeamWorkflow()).thenReturn(teamWf);
       TeamDefinition teamDef = new TeamDefinition(logger, atsApi, teamDefArt);
       when(teamWf.getTeamDefinition()).thenReturn(teamDef);

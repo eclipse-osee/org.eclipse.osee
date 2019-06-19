@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.config;
 
-import java.util.Collection;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -35,10 +33,6 @@ public abstract class AbstractAtsConfig2Data {
    public XResultData validate() {
       return getResultData();
    }
-
-   public abstract Collection<WorkDefinitionSheet> getTeamsAiSheets();
-
-   public abstract Collection<WorkDefinitionSheet> getWorkDefSheets();
 
    public XResultData getResultData() {
       if (xResultData == null) {

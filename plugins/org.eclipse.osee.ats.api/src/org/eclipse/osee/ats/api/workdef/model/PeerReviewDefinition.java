@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.workdef.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
 
@@ -28,6 +29,10 @@ public class PeerReviewDefinition implements IAtsPeerReviewDefinition {
    public ReviewBlockType blockingType;
    public StateEventType stateEventType;
    public List<String> assignees = new ArrayList<>();
+
+   public PeerReviewDefinition() {
+      this("");
+   }
 
    public PeerReviewDefinition(String name) {
       this.name = name;
@@ -104,6 +109,14 @@ public class PeerReviewDefinition implements IAtsPeerReviewDefinition {
 
    public void setLocation(String location) {
       this.location = location;
+   }
+
+   public void addAssignee(IAtsUser user) {
+      this.assignees.add(user.getUserId());
+   }
+
+   public void addAssignee(String userid) {
+      this.assignees.add(userid);
    }
 
 }

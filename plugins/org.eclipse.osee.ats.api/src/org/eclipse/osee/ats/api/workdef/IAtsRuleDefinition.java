@@ -30,4 +30,6 @@ public interface IAtsRuleDefinition {
 
    public List<RuleEventType> getRuleEvents();
 
+   void addRuleEvent(RuleEventType ruleEventType);
+
 }

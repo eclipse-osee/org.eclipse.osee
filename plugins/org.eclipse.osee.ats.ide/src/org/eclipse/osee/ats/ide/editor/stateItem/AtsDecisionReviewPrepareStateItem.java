@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.ide.editor.stateItem;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.review.DecisionOptions;
+import org.eclipse.osee.ats.api.review.DecisionReviewOptions;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -40,7 +40,7 @@ public class AtsDecisionReviewPrepareStateItem extends AtsStateItem implements I
    public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) {
       if (workItem instanceof IAtsDecisionReview && fromState.getName().equals(
          DecisionReviewState.Prepare.getName()) && toState.getName().equals(DecisionReviewState.Decision.getName())) {
-         DecisionOptions decOptions = new DecisionOptions((IAtsDecisionReview) workItem, AtsClientService.get());
+         DecisionReviewOptions decOptions = new DecisionReviewOptions((IAtsDecisionReview) workItem, AtsClientService.get());
          decOptions.validateDecisionOptions(results);
       }
    }

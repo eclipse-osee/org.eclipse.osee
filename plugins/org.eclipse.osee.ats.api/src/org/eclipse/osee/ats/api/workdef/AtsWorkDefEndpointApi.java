@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef;
 
-import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -21,10 +20,6 @@ import javax.ws.rs.core.MediaType;
  */
 @Path("workdef")
 public interface AtsWorkDefEndpointApi {
-
-   @GET
-   @Produces(MediaType.APPLICATION_JSON)
-   List<WorkDefData> get();
 
    /**
     * Convert missing work definitions to artifact referenced attriutes

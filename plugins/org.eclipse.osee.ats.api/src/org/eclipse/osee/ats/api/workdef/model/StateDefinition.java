@@ -181,9 +181,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
       return color;
    }
 
-   /**
-    * Rules
-    */
    public void removeRule(String rule) {
       ruleMgr.removeRule(rule);
    }
@@ -200,6 +197,14 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
    @Override
    public boolean hasRule(String rule) {
       return ruleMgr.hasRule(rule);
+   }
+
+   public void addDecisionReview(DecisionReviewDefinition reviewDefinition) {
+      decisionReviews.add(reviewDefinition);
+   }
+
+   public void addPeerReview(PeerReviewDefinition reviewDefinition) {
+      peerReviews.add(reviewDefinition);
    }
 
 }

@@ -18,16 +18,10 @@ import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
  */
 public interface IAtsPeerReviewDefinition {
 
-   /**
-    * Identification
-    */
    String getName();
 
    String getDescription();
 
-   /**
-    * Created review options
-    */
    ReviewBlockType getBlockingType();
 
    StateEventType getStateEventType();

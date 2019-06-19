@@ -18,13 +18,14 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsConfigTxTeamDef {
 
-   IAtsConfigTxTeamDef andWorkDef(IAtsWorkDefinitionArtifactToken workDef);
+   IAtsConfigTxTeamDef andWorkDef(NamedId id);
 
    IAtsConfigTxTeamDef andActive(boolean active);
 

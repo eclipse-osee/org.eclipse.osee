@@ -61,6 +61,11 @@ public class RuleDefinition implements IAtsRuleDefinition {
    }
 
    @Override
+   public void addRuleEvent(RuleEventType ruleEventType) {
+      ruleEvents.add(ruleEventType);
+   }
+
+   @Override
    public List<RuleEventType> getRuleEvents() {
       return ruleEvents;
    }

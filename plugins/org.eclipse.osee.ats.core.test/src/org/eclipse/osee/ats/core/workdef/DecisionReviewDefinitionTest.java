@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef;
 
+import org.eclipse.osee.ats.api.review.DecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
 import org.eclipse.osee.ats.api.workdef.model.DecisionReviewDefinition;
-import org.eclipse.osee.ats.api.workdef.model.DecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.junit.Assert;
 import org.junit.Test;

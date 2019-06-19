@@ -16,7 +16,6 @@ import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Version;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
@@ -163,9 +162,6 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
       if (artifact instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
          awa.clearCaches();
-      }
-      if (artifact != null && artifact.equals(AtsArtifactToken.RuleDefinitions)) {
-         AtsClientService.get().getWorkDefinitionService().clearRuleDefinitionsCache();
       }
    }
 

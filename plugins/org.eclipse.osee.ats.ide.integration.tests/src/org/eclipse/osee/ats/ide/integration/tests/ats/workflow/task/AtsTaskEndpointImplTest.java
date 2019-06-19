@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
@@ -27,6 +26,7 @@ import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
 import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
@@ -184,7 +184,7 @@ public class AtsTaskEndpointImplTest {
          if (attr.getAttrTypeName().equals(AtsAttributeTypes.WorkflowDefinitionReference.getName())) {
             found = true;
             Assert.assertEquals("Expected Attribute WorkDefintiion WorkDef_Task_Default",
-               AtsArtifactToken.WorkDef_Task_Default.getIdString(), attr.getValues().iterator().next());
+               AtsWorkDefinitionTokens.WorkDef_Task_Default.getIdString(), attr.getValues().iterator().next());
          }
       }
       if (!found) {
@@ -206,11 +206,12 @@ public class AtsTaskEndpointImplTest {
       boolean foundById = false;
       for (JaxAttribute attr : attributes) {
          if (attr.getAttrTypeName().equals(ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition.getName())) {
-            Assert.assertEquals(AtsArtifactToken.WorkDef_Task_Default.getName(), attr.getValues().iterator().next());
+            Assert.assertEquals(AtsWorkDefinitionTokens.WorkDef_Task_Default.getName(),
+               attr.getValues().iterator().next());
             foundByName = true;
          }
          if (attr.getAttrTypeName().equals(AtsAttributeTypes.WorkflowDefinitionReference.getName())) {
-            Assert.assertEquals(AtsArtifactToken.WorkDef_Task_Default.getIdString(),
+            Assert.assertEquals(AtsWorkDefinitionTokens.WorkDef_Task_Default.getIdString(),
                attr.getValues().iterator().next());
             foundById = true;
          }

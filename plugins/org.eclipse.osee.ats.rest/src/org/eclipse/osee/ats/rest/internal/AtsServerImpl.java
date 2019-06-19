@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.util.IAtsHealthService;
-import org.eclipse.osee.ats.api.workdef.WorkDefData;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
@@ -38,9 +37,9 @@ import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsApiImpl;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionServiceImpl;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.config.AtsConfigurationsService;
+import org.eclipse.osee.ats.rest.internal.config.ConvertWorkDefinitionsToJava;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertBaselineGuidToBaselineId;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertFavoriteBranchGuidToId;
 import org.eclipse.osee.ats.rest.internal.health.AtsHealthServiceImpl;
@@ -119,10 +118,6 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
 
       super.start();
 
-      // ATS Server loads it Work Definitions from the database
-      workDefinitionService = new AtsWorkDefinitionServiceImpl(this, workDefinitionStore, workDefinitionStore,
-         workDefinitionDslService, teamWorkflowProvidersLazy);
-
       notifyService = new AtsNotifierServiceImpl();
 
       artifactResolver = new ArtifactResolverImpl(this, orcsApi);
@@ -147,6 +142,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
 
       addAtsDatabaseConversion(new ConvertBaselineGuidToBaselineId(logger, jdbcService.getClient(), orcsApi, this));
       addAtsDatabaseConversion(new ConvertFavoriteBranchGuidToId(logger, jdbcService.getClient(), orcsApi, this));
+      addAtsDatabaseConversion(new ConvertWorkDefinitionsToJava());
 
       loadAtsConfigCache();
 
@@ -331,11 +327,6 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    @Override
    public void setNotifactionsEnabled(boolean enabled) {
       throw new UnsupportedOperationException();
-   }
-
-   @Override
-   public List<WorkDefData> getWorkDefinitionsData() {
-      return workDefinitionStore.getWorkDefinitionsData();
    }
 
    @Override

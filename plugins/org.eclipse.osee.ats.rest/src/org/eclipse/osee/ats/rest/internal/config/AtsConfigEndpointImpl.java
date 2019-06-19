@@ -16,7 +16,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
@@ -29,7 +28,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
 import org.eclipse.osee.ats.rest.internal.demo.DemoDatabaseConfig;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
@@ -42,7 +40,6 @@ import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -154,17 +151,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       ArtifactId configArt =
          introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.HeadingFolder, newBranch, null, headingArt);
       introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.ConfigsFolder, newBranch, null, configArt);
-      ArtifactId workDefFolder =
-         introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.WorkDefinitionsFolder, newBranch, null, headingArt);
       introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.Users, newBranch, null, configArt);
-
-      // Introduce default work defs
-      introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.WorkDef_Goal, newBranch, null, workDefFolder);
-      introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.WorkDef_Review_Decision, newBranch, null, workDefFolder);
-      introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.WorkDef_Review_PeerToPeer, newBranch, null, workDefFolder);
-      introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.WorkDef_Task_Default, newBranch, null, workDefFolder);
-      introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.WorkDef_Team_Default, newBranch, null, workDefFolder);
-      introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.WorkDef_Team_Simple, newBranch, null, workDefFolder);
 
       tx.commit();
    }
@@ -229,27 +216,6 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          resultData.log("Nothing to update");
       }
       return resultData;
-   }
-
-   @Override
-   public Response storeWorkDef(JaxAtsWorkDef jaxWorkDef) {
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,
-         SystemUser.OseeSystem, "Store Work Definition " + jaxWorkDef.getName());
-      ArtifactReadable workDefArt =
-         (ArtifactReadable) atsApi.getQueryService().getArtifactByNameOrSentinel(AtsArtifactTypes.WorkDefinition,
-            jaxWorkDef.getName());
-      if (workDefArt.isInvalid()) {
-         workDefArt = (ArtifactReadable) tx.createArtifact(AtsArtifactTypes.WorkDefinition, jaxWorkDef.getName());
-      }
-      tx.setSoleAttributeValue(workDefArt, AtsAttributeTypes.DslSheet, jaxWorkDef.getWorkDefDsl());
-      if (workDefArt.getParent() == null) {
-         ArtifactReadable workDefFolder =
-            (ArtifactReadable) atsApi.getQueryService().getArtifact(AtsArtifactToken.WorkDefinitionsFolder);
-         tx.addChild(workDefFolder, workDefArt);
-      }
-      tx.commit();
-      atsApi.getWorkDefinitionService().clearCaches();
-      return Response.ok().build();
    }
 
    @Override
@@ -338,7 +304,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    public XResultData demoDbInit() {
       XResultData rd = new XResultData();
       try {
-         DemoDatabaseConfig config = new DemoDatabaseConfig(atsApi, orcsApi);
+         DemoDatabaseConfig config = new DemoDatabaseConfig(atsApi);
          config.run();
       } catch (Exception ex) {
          rd.error(Lib.exceptionToString(ex));

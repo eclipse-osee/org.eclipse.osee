@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamAtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -22,6 +23,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 
 /**
  * Test unit for {@link AtsTestUtil}
@@ -29,6 +31,11 @@ import org.junit.Assert;
  * @author Donald G. Dunne
  */
 public class AtsTestUtilTest extends AtsTestUtil {
+
+   @BeforeClass
+   public static void cleanup() {
+      AtsClientService.get().getWorkDefinitionService().addWorkDefinition(new WorkDefTeamAtsTestUtil());
+   }
 
    @org.junit.Test
    public void test() {

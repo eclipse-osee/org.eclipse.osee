@@ -14,6 +14,8 @@ import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetOptionHandler;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetOptionHandler;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * @author Donald G. Dunne
@@ -32,6 +34,26 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
 
    public WidgetDefinition(String name) {
       super(name);
+   }
+
+   public WidgetDefinition(String name, String xWidgetName, WidgetOption... widgetOptions) {
+      this(name, AttributeTypeToken.SENTINEL, xWidgetName, widgetOptions);
+   }
+
+   public WidgetDefinition(String name, AttributeTypeToken attrType, String xWidgetName, WidgetOption... widgetOptions) {
+      this(name);
+      Conditions.assertNotNull(attrType, "attribute type can not be null for WidgetDefinition [%s]", name);
+      if (attrType.isValid()) {
+         attributeName = attrType.getName();
+      }
+      this.xWidgetName = xWidgetName;
+      for (WidgetOption opt : widgetOptions) {
+         options.add(opt);
+      }
+   }
+
+   public WidgetDefinition(AttributeTypeToken attrType, String xWidgetName, WidgetOption... widgetOptions) {
+      this(attrType.getUnqualifiedName(), attrType, xWidgetName, widgetOptions);
    }
 
    @Override

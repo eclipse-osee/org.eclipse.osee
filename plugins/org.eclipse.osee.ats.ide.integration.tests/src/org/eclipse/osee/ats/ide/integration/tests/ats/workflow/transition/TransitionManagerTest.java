@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.ats.api.config.tx.AtsWorkDefinitionArtifactToken;
-import org.eclipse.osee.ats.api.config.tx.IAtsWorkDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
@@ -40,6 +38,10 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.DemoWorkDefinitionTokens;
+import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamTransitionManagerTestTargetedVersion;
+import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamTransitionManagerTestWidgetRequiredCompletion;
+import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamTransitionManagerTestWidgetRequiredTransition;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil.AtsTestUtilState;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -67,18 +69,6 @@ public class TransitionManagerTest {
 
    private static List<AbstractWorkflowArtifact> EMPTY_AWAS = new ArrayList<>();
 
-   public static IAtsWorkDefinitionArtifactToken WorkDefTargetedVersionId =
-      AtsWorkDefinitionArtifactToken.valueOf(340096461L, "WorkDef_Team_TransitionManagerTest_TargetedVersion");
-
-   public static IAtsWorkDefinitionArtifactToken WorkDefWidgetRequiredTransitionId =
-      AtsWorkDefinitionArtifactToken.valueOf(16919464L, "WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition");
-
-   public static IAtsWorkDefinitionArtifactToken WorkDefWidgetRequiredCompletionId =
-      AtsWorkDefinitionArtifactToken.valueOf(7661159L, "WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion");
-
-   public static IAtsWorkDefinitionArtifactToken WorkDefTeamAtsTestUtil =
-      AtsWorkDefinitionArtifactToken.valueOf(946555776L, "WorkDef_Team_AtsTestUtil");
-
    // @formatter:off
    @Mock private IAtsTask task;
    @Mock private IAtsStateDefinition toStateDef;
@@ -96,6 +86,12 @@ public class TransitionManagerTest {
    @AfterClass
    public static void cleanup() {
       AtsTestUtil.cleanup();
+      AtsClientService.get().getWorkDefinitionService().addWorkDefinition(
+         new WorkDefTeamTransitionManagerTestWidgetRequiredTransition());
+      AtsClientService.get().getWorkDefinitionService().addWorkDefinition(
+         new WorkDefTeamTransitionManagerTestWidgetRequiredCompletion());
+      AtsClientService.get().getWorkDefinitionService().addWorkDefinition(
+         new WorkDefTeamTransitionManagerTestTargetedVersion());
    }
 
    @org.junit.Test
@@ -298,11 +294,8 @@ public class TransitionManagerTest {
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamArt,
-         WorkDefWidgetRequiredTransitionId, changes);
+         DemoWorkDefinitionTokens.WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition, changes);
       changes.execute();
-
-      // clear the team workflow to work definition cache, since we just changed the configured work definition for this workflow
-      AtsClientService.get().getWorkDefinitionService().clearCaches();
 
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.toString(), results.contains("[Estimated Hours] is required for transition"));
@@ -343,11 +336,8 @@ public class TransitionManagerTest {
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamArt,
-         WorkDefWidgetRequiredCompletionId, changes);
+         DemoWorkDefinitionTokens.WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion, changes);
       changes.execute();
-
-      // clear the team workflow to work definition cache, since we just changed the configured work definition for this workflow
-      AtsClientService.get().getWorkDefinitionService().clearCaches();
 
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.toString(),
@@ -356,6 +346,7 @@ public class TransitionManagerTest {
 
       // test that neither are required for transition to canceled
       results.clear();
+
       helper.setToStateName(AtsTestUtil.getCancelledStateDef().getName());
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
@@ -460,12 +451,9 @@ public class TransitionManagerTest {
       changes.execute();
 
       changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
-      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamArt, WorkDefTargetedVersionId,
-         changes);
+      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamArt,
+         DemoWorkDefinitionTokens.WorkDef_Team_TransitionManagerTest_TargetedVersion, changes);
       changes.execute();
-
-      // clear the team workflow to work definition cache, since we just changed the configured work definition for this workflow
-      AtsClientService.get().getWorkDefinitionService().clearCaches();
 
       results.clear();
 

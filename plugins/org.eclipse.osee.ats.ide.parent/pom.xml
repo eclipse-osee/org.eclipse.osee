@@ -31,7 +31,6 @@
 
 				<module>../../plugins/org.eclipse.osee.ats.ide.help.ui</module>
 				<module>../../plugins/org.eclipse.osee.ats.ide</module>
-				<module>../../plugins/org.eclipse.osee.ats.dsl.ui</module>
 
 				<module>../../plugins/org.eclipse.osee.ats.ide.demo</module>
 
@@ -55,7 +54,6 @@
 
 				<module>../../plugins/org.eclipse.osee.ats.ide.help.ui</module>
 				<module>../../plugins/org.eclipse.osee.ats.ide</module>
-				<module>../../plugins/org.eclipse.osee.ats.dsl.ui</module>
 
 				<module>../../plugins/org.eclipse.osee.ats.ide.demo</module>
 

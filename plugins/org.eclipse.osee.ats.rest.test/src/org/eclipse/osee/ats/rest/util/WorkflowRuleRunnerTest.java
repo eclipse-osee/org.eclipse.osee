@@ -58,7 +58,7 @@ public class WorkflowRuleRunnerTest {
    @Mock AtsApi atsServices;
    @Mock IAtsStoreService atsStoreService;
    @Mock IAtsWorkDefinition atsWorkDef;
-   @Mock IAtsWorkDefinitionService atsWorkDefAdmin;
+   @Mock IAtsWorkDefinitionService atsWorkDefService;
    @Mock IAtsStateManager atsStateMgr;
 
    List<IAtsWorkItem> workflowsCreated = new ArrayList<>();
@@ -77,11 +77,10 @@ public class WorkflowRuleRunnerTest {
       when(atsStoreService.createAtsChangeSet("ATS Rule Runner", AtsCoreUsers.SYSTEM_USER)).thenReturn(changes);
       when(workItem.isTeamWorkflow()).thenReturn(true);
       when(workItem.getParentTeamWorkflow()).thenReturn(teamWf);
-      when(atsServer.getWorkDefinitionService()).thenReturn(atsWorkDefAdmin);
+      when(atsServer.getWorkDefinitionService()).thenReturn(atsWorkDefService);
       when(workItem.getParentTeamWorkflow()).thenReturn(teamWf);
       when(teamWf.getTeamDefinition()).thenReturn(teamDef);
       when(createTaskRule.getRuleEvents()).thenReturn(eventList);
-      when(workItem.getWorkDefinition()).thenReturn(null);
       when(workItem.getWorkDefinition()).thenReturn(atsWorkDef);
       when(teamDef.getRules()).thenReturn(rules);
       when(workItem.getStateMgr()).thenReturn(atsStateMgr);
@@ -92,7 +91,7 @@ public class WorkflowRuleRunnerTest {
 
    @Test
    public void testRun() {
-      when(atsWorkDefAdmin.getRuleDefinition(teamDefRule)).thenReturn(createTaskRule);
+      when(atsWorkDefService.getRuleDefinition(teamDefRule)).thenReturn(createTaskRule);
 
       workflowsCreated.add(workItem);
       rules.add(teamDefRule);
@@ -118,7 +117,7 @@ public class WorkflowRuleRunnerTest {
 
    @Test
    public void testRunWithNullRule() {
-      when(atsWorkDefAdmin.getRuleDefinition(teamDefRule)).thenReturn(nullRuleDef);
+      when(atsWorkDefService.getRuleDefinition(teamDefRule)).thenReturn(nullRuleDef);
 
       workflowsCreated.add(workItem);
       rules.add(teamDefRule);

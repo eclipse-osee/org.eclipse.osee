@@ -41,7 +41,6 @@ import org.eclipse.osee.ats.api.util.IAtsEventService;
 import org.eclipse.osee.ats.api.util.IAtsHealthService;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
-import org.eclipse.osee.ats.api.workdef.WorkDefData;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
@@ -53,7 +52,6 @@ import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsApiImpl;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionServiceImpl;
 import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.ide.branch.internal.AtsBranchServiceImpl;
 import org.eclipse.osee.ats.ide.config.IAtsUserServiceClient;
@@ -124,10 +122,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
 
       super.start();
 
-      // ATS Client loads it Work Definitions configurations
-      workDefinitionService = new AtsWorkDefinitionServiceImpl(this, workDefinitionStore, this,
-         workDefinitionDslService, teamWorkflowProvidersLazy);
-
       earnedValueService = new AtsEarnedValueImpl(logger, this);
       actionableItemFactory = new ActionableItemFactory();
       teamDefFactory = new TeamDefinitionFactory();
@@ -184,22 +178,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    }
 
    @Override
-   public void reloadWorkDefinitionCache(boolean pend) {
-      Runnable reload = new Runnable() {
-
-         @Override
-         public void run() {
-            getWorkDefinitionService().reloadAll();
-         }
-      };
-      if (pend) {
-         reload.run();
-      } else {
-         new Thread(reload).start();
-      }
-   }
-
-   @Override
    public void reloadUserCache(boolean pend) {
       Runnable reload = new Runnable() {
 
@@ -219,7 +197,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    @Override
    public void reloadAllCaches(boolean pend) {
       reloadUserCache(pend);
-      reloadWorkDefinitionCache(pend);
       reloadConfigCache(pend);
    }
 
@@ -252,7 +229,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
       getConfigService().getConfigurations();
 
       super.clearCaches();
-      getWorkDefinitionService().clearCaches();
 
       if (goalMembersCache != null) {
          goalMembersCache.invalidate();
@@ -416,11 +392,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    @Override
    public IAgileService getAgileService() {
       return agileService;
-   }
-
-   @Override
-   public List<WorkDefData> getWorkDefinitionsData() {
-      return getConfigService().getConfigurations().getWorkDefinitionsData();
    }
 
    @Override

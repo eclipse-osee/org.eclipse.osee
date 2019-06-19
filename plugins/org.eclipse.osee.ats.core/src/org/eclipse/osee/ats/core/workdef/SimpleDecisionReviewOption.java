@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.workdef;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
@@ -50,7 +51,7 @@ public class SimpleDecisionReviewOption implements IAtsDecisionReviewOption {
    }
 
    @Override
-   public List<String> getUserIds() {
+   public Collection<String> getUserIds() {
       return userIds;
    }
 
@@ -75,7 +76,7 @@ public class SimpleDecisionReviewOption implements IAtsDecisionReviewOption {
    }
 
    @Override
-   public List<String> getUserNames() {
+   public Collection<String> getUserNames() {
       return userNames;
    }
 

@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionDslService;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
@@ -52,7 +52,7 @@ public class HoursSpentUtilTest {
    @Mock IAtsWorkItemService workItemService;
    @Mock IAtsTaskService taskService;
    @Mock IAtsUserService userService;
-   @Mock IAtsWorkDefinitionDslService workDefService;
+   @Mock IAtsWorkDefinitionService workDefService;
    @Mock IAtsWorkItemServiceProvider workItemServiceProvider;
    @Mock IAttributeResolver attrResolver;
    @Mock IAtsBranchServiceProvider branchServiceProvider;

@@ -11,8 +11,6 @@
 package org.eclipse.osee.ats.core.workdef;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
@@ -22,17 +20,16 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionDslService;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStringProvider;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
@@ -71,6 +68,7 @@ public class AtsWorkDefinitionServiceImplTest {
    @Mock IAtsTeamDefinition featureTeamDef;
    @Mock IAtsWorkItemService workItemService;
    @Mock IAtsWorkDefinitionService workDefinitionService;
+   @Mock IAtsWorkDefinitionProviderService workDefinitionProviderService;
    @Mock IAtsActionableItem actionableItem;
    @Mock IAtsPeerToPeerReview peerReview;
    @Mock XResultData resultData;
@@ -82,11 +80,7 @@ public class AtsWorkDefinitionServiceImplTest {
    @Mock IAttributeResolver attributeResolver;
    @Mock IAtsTask task;
    @Mock AtsApi atsApi;
-   @Mock IAtsWorkDefinitionStringProvider workDefStringProvider;
-   @Mock IAtsWorkDefinitionDslService workDefDslService;
-
-   private AtsWorkDefinitionStoreService workDefinitionStore;
-   private AtsWorkDefinitionServiceImpl workDefService;
+   @Mock IAtsWorkDefinitionService workDefService;
 
    // @formatter:on
 
@@ -98,20 +92,19 @@ public class AtsWorkDefinitionServiceImplTest {
       when(projTeamDef.getParentTeamDef()).thenReturn(topTeamDef);
       when(featureTeamDef.getParentTeamDef()).thenReturn(projTeamDef);
       // always return default when requested
-      when(workDefinitionService.getWorkDefinition(eq(AtsArtifactToken.WorkDef_Review_PeerToPeer.getName()),
-         any(XResultData.class))).thenReturn(defaultPeerToPeerWorkDef);
+      when(workDefinitionService.getWorkDefinition(
+         eq(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer.getName()))).thenReturn(defaultPeerToPeerWorkDef);
 
-      workDefinitionStore = new AtsWorkDefinitionStoreService(atsApi);
-      workDefService = new AtsWorkDefinitionServiceImpl(atsApi, workDefinitionStore, workDefStringProvider,
-         workDefDslService, teamWorkflowProviders);
+      workDefService = new AtsWorkDefinitionServiceImpl(atsApi, teamWorkflowProviders);
       when(atsApi.getAttributeResolver()).thenReturn(attributeResolver);
+      when(atsApi.getWorkDefinitionProviderService()).thenReturn(workDefinitionProviderService);
 
       // always return myPeerToPeerWorkDef when requested
       workDefService = Mockito.spy(workDefService);
       Mockito.doReturn(defaultPeerToPeerWorkDef).when(workDefService).getWorkDefinition(
-         eq(AtsArtifactToken.WorkDef_Review_PeerToPeer.getName()), any(XResultData.class));
+         eq(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer.getName()));
       Mockito.doReturn(defaultPeerToPeerWorkDef).when(workDefService).getWorkDefinition(
-         eq(AtsArtifactToken.WorkDef_Review_PeerToPeer));
+         eq(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer.getId()));
    }
 
    @Test
@@ -173,20 +166,24 @@ public class AtsWorkDefinitionServiceImplTest {
    @Test
    public void testGetWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone() throws Exception {
       when(teamWf.getTeamDefinition()).thenReturn(featureTeamDef);
-      when(attributeResolver.getSoleArtifactIdReference(topTeamDef,
-         AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
-            MyPeerToPeerWorkDefArt);
+      when(attributeResolver.getSoleAttributeValueAsString(topTeamDef,
+         AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, "")).thenReturn(
+            MyPeerToPeerWorkDefArt.getIdString());
 
       when(actionableItem.getTeamDefinitionInherited()).thenReturn(topTeamDef);
-      when(attributeResolver.getSoleArtifactIdReference(topTeamDef,
-         AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
-            MyPeerToPeerWorkDefArt);
-      Mockito.doReturn(myPeerToPeerWorkDef).when(workDefService).getWorkDefinition(MyPeerToPeerWorkDefArt);
+      when(attributeResolver.getSoleAttributeValueAsString(topTeamDef,
+         AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, "")).thenReturn(
+            MyPeerToPeerWorkDefArt.getIdString());
+
+      when(workDefinitionService.getWorkDefinition(MyPeerToPeerWorkDefArt.getId())).thenReturn(myPeerToPeerWorkDef);
+      when(workDefinitionProviderService.getWorkDefinition(MyPeerToPeerWorkDefArt.getId())).thenReturn(
+         myPeerToPeerWorkDef);
 
       IAtsWorkDefinition workDef =
          workDefService.getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(actionableItem);
 
       assertEquals(myPeerToPeerWorkDef, workDef);
+
    }
 
    /**
@@ -211,15 +208,7 @@ public class AtsWorkDefinitionServiceImplTest {
             ArtifactId.SENTINEL);
 
       // Test that no-match is returned
-      Mockito.doReturn(myPeerToPeerWorkDef).when(workDefService).getWorkDefinition(eq(MyPeerToPeerWorkDefName),
-         any(XResultData.class));
-
-      IAtsWorkDefinition peerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse =
-         workDefService.getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(topTeamDef);
-      Assert.assertNull(peerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse);
-      Assert.assertNull(workDefService.getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(projTeamDef));
-      Assert.assertNull(
-         workDefService.getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(featureTeamDef));
+      Mockito.doReturn(myPeerToPeerWorkDef).when(workDefService).getWorkDefinition(eq(MyPeerToPeerWorkDefName));
 
       // Setup that top team definition has WorkDefinition defined
       when(attributeResolver.getSoleAttributeValue(topTeamDef,
@@ -236,14 +225,6 @@ public class AtsWorkDefinitionServiceImplTest {
          ArtifactId.SENTINEL)).thenReturn(MyPeerToPeerWorkDefArt);
       Mockito.doReturn(myPeerToPeerWorkDef).when(workDefService).getWorkDefinition(MyPeerToPeerWorkDefName);
 
-      // Test that match is returned
-      peerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse =
-         workDefService.getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(topTeamDef);
-      Assert.assertNotNull(peerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse);
-      assertNotNull(workDefService.getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(projTeamDef));
-      assertNotNull(workDefService.getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(featureTeamDef));
-      assertEquals(myPeerToPeerWorkDef,
-         workDefService.getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(featureTeamDef));
    }
 
    @Test
@@ -275,8 +256,7 @@ public class AtsWorkDefinitionServiceImplTest {
 
       when(task.getParentTeamWorkflow()).thenReturn(teamWf);
 
-      Mockito.doReturn(myTaskWorkDef).when(workDefService).getWorkDefinition(eq(MyTaskWorkDefId),
-         any(XResultData.class));
+      Mockito.doReturn(myTaskWorkDef).when(workDefService).getWorkDefinition(eq(MyTaskWorkDefId));
       Mockito.doReturn(myTaskWorkDef).when(workDefService).getWorkDefinition(task);
 
       IAtsWorkDefinition workDef = workDefService.getWorkDefinition(task);
@@ -286,8 +266,7 @@ public class AtsWorkDefinitionServiceImplTest {
    @Test
    public void testHasWidgetNamed() {
       StateDefinition def = new StateDefinition("endorse");
-      Assert.assertFalse(
-         new AtsWorkDefinitionServiceImpl(atsApi, null, null, null, null).hasWidgetNamed(def, "item 2"));
+      Assert.assertFalse(new AtsWorkDefinitionServiceImpl(atsApi, null).hasWidgetNamed(def, "item 2"));
 
       IAtsCompositeLayoutItem stateItem2 = new CompositeLayoutItem(2);
       def.getLayoutItems().add(stateItem2);
@@ -296,9 +275,8 @@ public class AtsWorkDefinitionServiceImplTest {
       IAtsWidgetDefinition widget3 = new WidgetDefinition("item 3");
       stateItem2.getaLayoutItems().add(widget3);
 
-      Assert.assertFalse(
-         new AtsWorkDefinitionServiceImpl(atsApi, null, null, null, null).hasWidgetNamed(def, "item 45"));
-      Assert.assertTrue(new AtsWorkDefinitionServiceImpl(atsApi, null, null, null, null).hasWidgetNamed(def, "item 2"));
+      Assert.assertFalse(new AtsWorkDefinitionServiceImpl(atsApi, null).hasWidgetNamed(def, "item 45"));
+      Assert.assertTrue(new AtsWorkDefinitionServiceImpl(atsApi, null).hasWidgetNamed(def, "item 2"));
    }
 
    @Test
@@ -321,8 +299,7 @@ public class AtsWorkDefinitionServiceImplTest {
       analyze.setOrdinal(2);
       implement.setOrdinal(3);
       Assert.assertEquals(4, def.getStates().size());
-      List<IAtsStateDefinition> states =
-         new AtsWorkDefinitionServiceImpl(atsApi, null, null, null, null).getStatesOrderedByOrdinal(def);
+      List<IAtsStateDefinition> states = new AtsWorkDefinitionServiceImpl(atsApi, null).getStatesOrderedByOrdinal(def);
       Assert.assertEquals(endorse, states.get(0));
       Assert.assertEquals(analyze, states.get(1));
       Assert.assertEquals(implement, states.get(2));
@@ -341,8 +318,7 @@ public class AtsWorkDefinitionServiceImplTest {
       IAtsWorkDefinition def = new WorkDefinition(15L, "this");
       List<IAtsStateDefinition> states = new LinkedList<>();
       states.addAll(Arrays.asList(endorse, analyze));
-      new AtsWorkDefinitionServiceImpl(atsApi, null, null, null, null).getStatesOrderedByDefaultToState(def, endorse,
-         states);
+      new AtsWorkDefinitionServiceImpl(atsApi, null).getStatesOrderedByDefaultToState(def, endorse, states);
       Assert.assertEquals(2, states.size());
    }
 
@@ -359,8 +335,7 @@ public class AtsWorkDefinitionServiceImplTest {
       endorse.setDefaultToState(endorse);
       List<IAtsStateDefinition> states = new LinkedList<>();
       states.addAll(Arrays.asList(analyze, completed));
-      new AtsWorkDefinitionServiceImpl(atsApi, null, null, null, null).getStatesOrderedByDefaultToState(def, endorse,
-         states);
+      new AtsWorkDefinitionServiceImpl(atsApi, null).getStatesOrderedByDefaultToState(def, endorse, states);
       Assert.assertEquals(3, states.size());
    }
 
@@ -369,12 +344,9 @@ public class AtsWorkDefinitionServiceImplTest {
       WorkDefinition def = new WorkDefinition(15L, "this");
       def.addState(new StateDefinition("endorse"));
       def.addState(new StateDefinition("analyze"));
-      Assert.assertEquals(2,
-         new AtsWorkDefinitionServiceImpl(atsApi, null, null, null, null).getStateNames(def).size());
-      Assert.assertTrue(
-         new AtsWorkDefinitionServiceImpl(atsApi, null, null, null, null).getStateNames(def).contains("endorse"));
-      Assert.assertTrue(
-         new AtsWorkDefinitionServiceImpl(atsApi, null, null, null, null).getStateNames(def).contains("analyze"));
+      Assert.assertEquals(2, new AtsWorkDefinitionServiceImpl(atsApi, null).getStateNames(def).size());
+      Assert.assertTrue(new AtsWorkDefinitionServiceImpl(atsApi, null).getStateNames(def).contains("endorse"));
+      Assert.assertTrue(new AtsWorkDefinitionServiceImpl(atsApi, null).getStateNames(def).contains("analyze"));
    }
 
    @Test
@@ -426,14 +398,14 @@ public class AtsWorkDefinitionServiceImplTest {
    @Test
    public void testIsStateWeightingEnabled() {
       WorkDefinition def = new WorkDefinition(15L, "this");
-      Assert.assertFalse(new AtsWorkDefinitionServiceImpl(atsApi, null, null, null, null).isStateWeightingEnabled(def));
+      Assert.assertFalse(new AtsWorkDefinitionServiceImpl(atsApi, null).isStateWeightingEnabled(def));
       StateDefinition endorse = new StateDefinition("endorse");
       def.addState(endorse);
       endorse.setStateWeight(34);
-      Assert.assertTrue(new AtsWorkDefinitionServiceImpl(atsApi, null, null, null, null).isStateWeightingEnabled(def));
+      Assert.assertTrue(new AtsWorkDefinitionServiceImpl(atsApi, null).isStateWeightingEnabled(def));
 
       endorse.setStateWeight(0);
-      Assert.assertFalse(new AtsWorkDefinitionServiceImpl(atsApi, null, null, null, null).isStateWeightingEnabled(def));
+      Assert.assertFalse(new AtsWorkDefinitionServiceImpl(atsApi, null).isStateWeightingEnabled(def));
    }
 
    @Test

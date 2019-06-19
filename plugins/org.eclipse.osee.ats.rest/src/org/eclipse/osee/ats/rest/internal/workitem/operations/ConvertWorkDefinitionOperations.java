@@ -86,7 +86,7 @@ public class ConvertWorkDefinitionOperations {
                   rd.error(String.format("null Work Definition for %s", workItem.toStringWithId()));
                } else {
                   changes.setSoleAttributeValue(workItem, AtsAttributeTypes.WorkflowDefinitionReference,
-                     workDefinition.getStoreObject());
+                     workDefinition);
                   updatedCount++;
                }
             }
@@ -182,7 +182,7 @@ public class ConvertWorkDefinitionOperations {
                rd.error(String.format("null/invalid Work Definition for work def name [%s] and art %s", oldWorkDefName,
                   artifact));
             } else {
-               changes.setSoleAttributeValue(artifact, newAttrType, workDefinition.getStoreObject());
+               changes.setSoleAttributeValue(artifact, newAttrType, workDefinition);
                updatedCount++;
             }
          }

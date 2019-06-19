@@ -14,12 +14,10 @@ import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.ActionableItem;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Configuration;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamDefinition;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Version;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.WorkDefinition;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Active;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.AtsConfiguredBranch;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Default;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Description;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.DslSheet;
 import static org.eclipse.osee.ats.api.data.AtsRelationTypes.TeamActionableItem_ActionableItem;
 import static org.eclipse.osee.ats.api.data.AtsRelationTypes.TeamDefinitionToVersion_Version;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Users_User;
@@ -40,7 +38,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.workdef.WorkDefData;
 import org.eclipse.osee.ats.core.config.AbstractAtsConfigurationService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -170,12 +167,6 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       addActionableItemChildrenWIthRecurse(AtsArtifactToken.TopActionableItem.getId(), idToArtifact, configs, aiIds);
       configs.setTopActionableItem(AtsArtifactToken.TopActionableItem);
 
-      // load work definitions
-      for (ArtifactToken workDefArt : atsApi.getQueryService().getArtifacts(WorkDefinition)) {
-         String workDefStr = atsApi.getAttributeResolver().getSoleAttributeValueAsString(workDefArt, DslSheet, "");
-         configs.getWorkDefinitionsData().add(
-            new WorkDefData(workDefArt.getId(), workDefArt.getName(), workDefStr, workDefArt));
-      }
       return configs;
    }
 

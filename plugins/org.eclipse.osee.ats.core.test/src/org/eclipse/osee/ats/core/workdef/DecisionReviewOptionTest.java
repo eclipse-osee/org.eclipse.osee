@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.core.workdef;
 
 import java.util.Arrays;
+import org.eclipse.osee.ats.api.review.DecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
-import org.eclipse.osee.ats.api.workdef.model.DecisionReviewOption;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -43,7 +43,7 @@ public class DecisionReviewOptionTest {
       option.setFollowupRequired(true);
       Assert.assertTrue(option.isFollowupRequired());
 
-      Assert.assertEquals("opt2 - Followup Required", option.toString());
+      Assert.assertEquals("opt2", option.toString());
 
       Assert.assertTrue(option.getUserNames().isEmpty());
       option.setUserNames(Arrays.asList("joe", "alice"));
@@ -54,6 +54,6 @@ public class DecisionReviewOptionTest {
       Assert.assertTrue(option.getUserIds().isEmpty());
 
       option.setFollowupRequired(false);
-      Assert.assertEquals("opt - No Followup Required", option.toString());
+      Assert.assertEquals("opt", option.toString());
    }
 }

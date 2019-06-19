@@ -11,18 +11,11 @@
 
 package org.eclipse.osee.ats.ide.config;
 
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workdef.AtsWorkDefinitionSheetProviders;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
@@ -51,23 +44,6 @@ public class AtsConfig2Operation extends AbstractOperation {
       try {
          IAtsChangeSet changes = AtsClientService.get().createChangeSet(getName());
 
-         // Import Work Definition sheets
-         data.getResultData().log("Importing Work Definitions");
-         Artifact folder = getWorkDefinitionFolder();
-         Set<String> stateNames = new HashSet<>();
-         AtsWorkDefinitionSheetProviders.importWorkDefinitionSheets(data.getResultData(), changes, folder,
-            data.getWorkDefSheets(), stateNames);
-
-         monitor.worked(calculateWork(0.30));
-         data.getResultData().log("Importing Work Definitions...Complete");
-
-         // Import AI and Team sheets
-         data.getResultData().log("Importing AIs and Teams");
-         for (WorkDefinitionSheet sheet : data.getTeamsAiSheets()) {
-            AtsWorkDefinitionSheetProviders.importAIsAndTeamsToDb(sheet, changes);
-         }
-         monitor.worked(calculateWork(0.40));
-
          // Perform specialized configuration code (eg set extra attributes, create branches, etc)
          data.performPostConfig(changes, data);
 
@@ -83,17 +59,6 @@ public class AtsConfig2Operation extends AbstractOperation {
       }
       XResultDataUI.report(data.getResultData(), getName());
       monitor.worked(calculateWork(0.10));
-   }
-
-   private Artifact getWorkDefinitionFolder() {
-      Artifact result = null;
-      result = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, "Work Definitions",
-         AtsClientService.get().getAtsBranch());
-      if (result == null) {
-         result = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, "Action Tracking System",
-            AtsClientService.get().getAtsBranch());
-      }
-      return result;
    }
 
 }

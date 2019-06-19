@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.api.team;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Donald G. Dunne
@@ -39,15 +39,15 @@ public interface ITeamWorkflowProvider {
 
    public boolean isResponsibleFor(IAtsWorkItem workItem);
 
-   public default ArtifactToken getWorkflowDefinitionId(IAtsWorkItem workItem) {
+   public default AtsWorkDefinitionToken getWorkflowDefinitionId(IAtsWorkItem workItem) {
       return null;
    }
 
-   public default ArtifactToken getRelatedTaskWorkflowDefinitionId(IAtsTeamWorkflow teamWf) {
+   public default AtsWorkDefinitionToken getRelatedTaskWorkflowDefinitionId(IAtsTeamWorkflow teamWf) {
       return null;
    }
 
-   public default ArtifactToken getOverrideWorkflowDefinitionId(IAtsTeamWorkflow teamWf) {
+   public default AtsWorkDefinitionToken getOverrideWorkflowDefinitionId(IAtsTeamWorkflow teamWf) {
       return null;
    }
 }

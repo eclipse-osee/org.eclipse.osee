@@ -36,8 +36,6 @@ public interface IAtsClient extends AtsApi, IAtsNotifier, IAttributeResolverProv
 
    List<Artifact> getConfigArtifacts(Collection<? extends IAtsObject> atsObjects);
 
-   void reloadWorkDefinitionCache(boolean pend);
-
    void reloadAllCaches(boolean pend);
 
    IAtsUserServiceClient getUserServiceClient();

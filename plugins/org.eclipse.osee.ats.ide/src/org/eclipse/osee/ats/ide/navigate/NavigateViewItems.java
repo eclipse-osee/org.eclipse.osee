@@ -66,9 +66,6 @@ import org.eclipse.osee.ats.ide.util.CleanupOseeSystemAssignedWorkflows;
 import org.eclipse.osee.ats.ide.util.CreateActionUsingAllActionableItems;
 import org.eclipse.osee.ats.ide.util.Import.ImportActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.ide.util.Import.ImportAgileActionsViaSpreadsheetBlam;
-import org.eclipse.osee.ats.ide.workdef.config.ImportAIsAndTeamDefinitionsItem;
-import org.eclipse.osee.ats.ide.workdef.config.ImportWorkDefinitionsItem;
-import org.eclipse.osee.ats.ide.workdef.config.ValidateWorkspaceToDatabaseWorkDefinitions;
 import org.eclipse.osee.ats.ide.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.ide.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.ide.world.search.ArtifactTypeSearchItem;
@@ -226,8 +223,6 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          XNavigateItem adminItems = new XNavigateItem(parent, "Admin", PluginUiImage.ADMIN);
 
          XNavigateItem dbConvertItems = new XNavigateItem(adminItems, "Database Conversions", PluginUiImage.ADMIN);
-         new ImportAIsAndTeamDefinitionsItem(dbConvertItems);
-         new ImportWorkDefinitionsItem(dbConvertItems);
          new XNavigateItemBlam(dbConvertItems, new ConvertWorkflowStatesBlam());
 
          new DisplayCurrentOseeEventListeners(adminItems);
@@ -253,7 +248,6 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          XNavigateItem healthItems = new XNavigateItemFolder(adminItems, "Health");
          new ValidateAtsDatabase(healthItems);
          new ValidateAtsConfiguration(healthItems);
-         new ValidateWorkspaceToDatabaseWorkDefinitions(healthItems);
          new CleanupOseeSystemAssignedWorkflows(healthItems);
          new XNavigateItemAction(healthItems, new OpenOrphanedTasks(), AtsImage.TASK);
          new XNavigateItemAction(adminItems, new RevertDuplicateAtsTransitionByIdAction(), AtsImage.TASK);

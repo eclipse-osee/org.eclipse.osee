@@ -41,7 +41,7 @@ import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.version.IVersionFactory;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionDslService;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
@@ -57,7 +57,7 @@ import org.eclipse.osee.ats.core.config.TeamDefinitionServiceImpl;
 import org.eclipse.osee.ats.core.program.AtsProgramService;
 import org.eclipse.osee.ats.core.review.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.core.version.AtsVersionServiceImpl;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionStoreService;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionServiceImpl;
 import org.eclipse.osee.ats.core.workflow.AtsImplementersService;
 import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
@@ -88,9 +88,7 @@ public abstract class AtsApiImpl implements AtsApi {
    private final List<IAtsSearchDataProvider> searchDataProviders;
    protected Log logger;
    protected JdbcService jdbcService;
-   protected AtsWorkDefinitionStoreService workDefinitionStore;
    protected IAtsWorkDefinitionService workDefinitionService;
-   protected IAtsWorkDefinitionDslService workDefinitionDslService;
    protected IAtsUserService userService;
    protected IAtsConfigurationsService configurationsService;
    protected IAtsEarnedValueService earnedValueService;
@@ -117,6 +115,7 @@ public abstract class AtsApiImpl implements AtsApi {
    protected IAtsQueryService queryService;
    protected IAtsStoreService storeService;
    protected IAtsTaskRelatedService taskRelatedService;
+   protected IAtsWorkDefinitionProviderService workDefinitionProviderService;
    Collection<IAgileSprintHtmlOperation> agileSprintHtmlReportOperations = new LinkedList<>();
 
    private EventAdmin eventAdmin;
@@ -137,6 +136,10 @@ public abstract class AtsApiImpl implements AtsApi {
       this.logger = logger;
    }
 
+   public void setWorkDefinitionProviderService(IAtsWorkDefinitionProviderService workDefinitionProviderService) {
+      this.workDefinitionProviderService = workDefinitionProviderService;
+   }
+
    public void setAtsUserService(IAtsUserService userServiceClient) {
       this.userService = userServiceClient;
    }
@@ -149,27 +152,20 @@ public abstract class AtsApiImpl implements AtsApi {
       searchDataProviders.remove(provider);
    }
 
-   public void setWorkDefinitionDslService(IAtsWorkDefinitionDslService workDefinitionDslService) {
-      this.workDefinitionDslService = workDefinitionDslService;
-   }
-
    public void start() {
-      Conditions.checkNotNull(workDefinitionDslService, "IAtsWorkDefinitionService");
 
       teamWorkflowProvidersLazy = new TeamWorkflowProviders();
       workItemService = new AtsWorkItemServiceImpl(this, teamWorkflowProvidersLazy);
 
-      workDefinitionStore = new AtsWorkDefinitionStoreService(this);
       programService = new AtsProgramService(this);
       teamDefinitionService = new TeamDefinitionServiceImpl(this);
       versionService = new AtsVersionServiceImpl(this, eventAdmin);
       reviewService = new AtsReviewServiceImpl(this);
+
+      workDefinitionService = new AtsWorkDefinitionServiceImpl(this, teamWorkflowProvidersLazy);
    }
 
    public void stop() {
-      if (workDefinitionService != null) {
-         workDefinitionService.clearCaches();
-      }
       workDefinitionService = null;
       jdbcService = null;
       versionFactory = null;
@@ -177,7 +173,6 @@ public abstract class AtsApiImpl implements AtsApi {
 
    @Override
    public void clearCaches() {
-      workDefinitionService.clearCaches();
       userService.reloadCache();
    }
 
@@ -483,6 +478,11 @@ public abstract class AtsApiImpl implements AtsApi {
    @Override
    public IUserGroupService getUserGroupService() {
       return org.eclipse.osee.ats.core.access.UserGroupService.get();
+   }
+
+   @Override
+   public IAtsWorkDefinitionProviderService getWorkDefinitionProviderService() {
+      return workDefinitionProviderService;
    }
 
 }

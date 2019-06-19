@@ -38,8 +38,8 @@ import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.version.IVersionFactory;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStringProvider;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -63,7 +63,7 @@ import org.eclipse.osee.logger.Log;
 /**
  * @author Donald G. Dunne
  */
-public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkDefinitionStringProvider, IAtsWorkItemServiceProvider {
+public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkItemServiceProvider {
 
    IOseeBranch getAtsBranch();
 
@@ -178,5 +178,7 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkDefiniti
    IUserGroupService getUserGroupService();
 
    IAtsHealthService getHealthService();
+
+   IAtsWorkDefinitionProviderService getWorkDefinitionProviderService();
 
 }

@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.api.workflow;
 import java.util.List;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
@@ -34,7 +35,7 @@ public interface INewActionListener {
       // for override
    }
 
-   public default ArtifactToken getOverrideWorkDefinitionId(IAtsTeamWorkflow teamWf) {
+   public default AtsWorkDefinitionToken getOverrideWorkDefinitionId(IAtsTeamWorkflow teamWf) {
       // for override
       return null;
    }

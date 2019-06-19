@@ -17,15 +17,13 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.ColorColumns;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStringProvider;
-import org.eclipse.osee.ats.api.workdef.WorkDefData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsConfigurations implements IAtsWorkDefinitionStringProvider {
+public class AtsConfigurations {
 
    private List<AtsConfiguration> configs = new ArrayList<>();
    private AtsViews views = new AtsViews();
@@ -36,7 +34,6 @@ public class AtsConfigurations implements IAtsWorkDefinitionStringProvider {
    ArtifactId topTeamDefinition;
    List<JaxVersion> versions = new ArrayList<>();
    private Collection<String> validStateNames = new ArrayList<>();
-   private List<WorkDefData> workDefinitions = new ArrayList<>();
    private Map<Long, JaxActionableItem> idToAi = new HashMap<>();
    private Map<Long, JaxTeamDefinition> idToTeamDef = new HashMap<>();
    private Map<Long, JaxVersion> idToVersion = new HashMap<>();
@@ -89,15 +86,6 @@ public class AtsConfigurations implements IAtsWorkDefinitionStringProvider {
       this.atsAdmins = Collections.fromString(atsAdmins, ArtifactId::valueOf);
    }
 
-   @Override
-   public List<WorkDefData> getWorkDefinitionsData() {
-      return workDefinitions;
-   }
-
-   public void setWorkDefinitions(List<WorkDefData> workDefinitions) {
-      this.workDefinitions = workDefinitions;
-   }
-
    public Map<Long, JaxActionableItem> getIdToAi() {
       return idToAi;
    }
@@ -148,10 +136,6 @@ public class AtsConfigurations implements IAtsWorkDefinitionStringProvider {
 
    public void addVersion(JaxVersion version) {
       idToVersion.put(version.getId(), version);
-   }
-
-   public void addWorkDefinition(WorkDefData workDef) {
-      workDefinitions.add(workDef);
    }
 
 }

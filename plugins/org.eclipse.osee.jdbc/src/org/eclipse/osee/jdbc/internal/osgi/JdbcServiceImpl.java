@@ -210,11 +210,21 @@ public class JdbcServiceImpl implements JdbcService {
 
       @Override
       public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-         JdbcClient client = clientRef.get();
+         JdbcClient client = null;
+         for (int x = 0; x < 5; x++) {
+            client = clientRef.get();
+            if (client != null) {
+               break;
+            } else {
+               System.err.println("sleeping to get JDBC Client");
+               Thread.sleep(1000);
+            }
+         }
          if (client == null) {
             throw new OseeStateException(
                "JDBC client not available.  If using an embedded database, it may have hung.");
          }
+
          try {
 
             return method.invoke(client, args);

@@ -11,10 +11,9 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.review;
 
 import java.util.Arrays;
-import org.eclipse.osee.ats.api.config.tx.AtsWorkDefinitionArtifactToken;
-import org.eclipse.osee.ats.api.config.tx.IAtsWorkDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
@@ -40,8 +39,8 @@ import org.junit.BeforeClass;
  */
 public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager {
 
-   public static IAtsWorkDefinitionArtifactToken PeerWorkDefId =
-      AtsWorkDefinitionArtifactToken.valueOf(162205335L, "WorkDef_Team_PeerReviewDefinitionManagerTest_Transition");
+   public static AtsWorkDefinitionToken PeerWorkDefId =
+      AtsWorkDefinitionToken.valueOf(162205335L, "WorkDef_Team_PeerReviewDefinitionManagerTest_Transition");
 
    @BeforeClass
    @AfterClass
@@ -60,8 +59,6 @@ public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager
       changes.execute();
 
       teamWf.persist("PeerReviewDefinitionManagerTest");
-
-      AtsClientService.get().getWorkDefinitionService().clearCaches();
 
       Assert.assertEquals("Implement State should have a single peer review definition", 1,
          teamWf.getWorkDefinition().getStateByName(TeamState.Implement.getName()).getPeerReviews().size());

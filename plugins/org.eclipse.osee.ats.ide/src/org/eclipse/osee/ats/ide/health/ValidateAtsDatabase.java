@@ -514,22 +514,23 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                artifact.getSoleAttributeValue(ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition, "");
             if (Strings.isValid(workDefName) && AtsClientService.get().getWorkDefinitionService().getWorkDefinition(
                workDefName) == null) {
-               results.log(artifact, "testAttributeSetWorkDefinitionsExist",
-                  String.format(
-                     "Error: ats.Work Definition attribute value [%s] not valid work definition for " + XResultDataUI.getHyperlink(
-                        artifact),
-                     workDefName));
+               results.log(artifact, "testAttributeSetWorkDefinitionsExist", String.format(
+                  "Error: ats.Work Definition attribute value [%s] not valid work definition for " + XResultDataUI.getHyperlink(
+                     artifact),
+                  workDefName));
             }
 
-            ArtifactId workDefArt =
-               artifact.getSoleAttributeValue(AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.SENTINEL);
-            if (workDefArt.isValid() && AtsClientService.get().getWorkDefinitionService().getWorkDefinition(
-               workDefArt) == null) {
-               results.log(artifact, "testAttributeSetWorkDefinitionsExist",
-                  String.format(
+            String workDefId = AtsClientService.get().getAttributeResolver().getSoleAttributeValueAsString(artifact,
+               AtsAttributeTypes.WorkflowDefinitionReference, "");
+            if (Strings.isNumeric(workDefId)) {
+               IAtsWorkDefinition workDef =
+                  AtsClientService.get().getWorkDefinitionService().getWorkDefinition(Long.valueOf(workDefId));
+               if (workDef == null) {
+                  results.log(artifact, "testAttributeSetWorkDefinitionsExist", String.format(
                      "Error: ats.Work Definition attribute value [%s] not valid work definition for " + XResultDataUI.getHyperlink(
                         artifact),
                      workDefName));
+               }
             }
 
          } catch (Exception ex) {
@@ -550,11 +551,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   String currentStatename = awa.getCurrentStateName();
                   IAtsWorkDefinition workDef = awa.getWorkDefinition();
                   if (workDef.getStateByName(currentStatename) == null) {
-                     results.log(artifact, "testStateInWorkDefinition",
-                        String.format(
-                           "Error: Current State [%s] not valid for Work Definition [%s] for " + XResultDataUI.getHyperlink(
-                              artifact),
-                           currentStatename, workDef.getName()));
+                     results.log(artifact, "testStateInWorkDefinition", String.format(
+                        "Error: Current State [%s] not valid for Work Definition [%s] for " + XResultDataUI.getHyperlink(
+                           artifact),
+                        currentStatename, workDef.getName()));
                   }
                }
             }
@@ -779,10 +779,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                String.format("Error: Config Object %s has Parent Branch Id attribute [%s] set to Archived Branch %s.",
                   configObj.toStringWithId(), parentBranchId, brch.toStringWithId()));
          } else if (!BranchManager.getType(branch).isBaselineBranch()) {
-            results.log("validateBranchId",
-               String.format(
-                  "Error: Config Object %s has Parent Branch Id attribute [%s] that is a [%s] branch; should be a BASELINE branch.",
-                  configObj.toStringWithId(), parentBranchId, BranchManager.getType(branch).getName()));
+            results.log("validateBranchId", String.format(
+               "Error: Config Object %s has Parent Branch Id attribute [%s] that is a [%s] branch; should be a BASELINE branch.",
+               configObj.toStringWithId(), parentBranchId, BranchManager.getType(branch).getName()));
          }
       } catch (BranchDoesNotExist ex) {
          results.log("validateBranchId",

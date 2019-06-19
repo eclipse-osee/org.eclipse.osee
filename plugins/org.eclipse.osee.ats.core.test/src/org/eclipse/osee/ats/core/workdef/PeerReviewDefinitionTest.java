@@ -67,7 +67,7 @@ public class PeerReviewDefinitionTest {
    public void testGetAssignees() {
       PeerReviewDefinition item = new PeerReviewDefinition("review");
       Assert.assertTrue(item.getAssignees().isEmpty());
-      item.getAssignees().add("Joe");
+      item.addAssignee("Joe");
       Assert.assertEquals(1, item.getAssignees().size());
       Assert.assertEquals("Joe", item.getAssignees().iterator().next());
    }
