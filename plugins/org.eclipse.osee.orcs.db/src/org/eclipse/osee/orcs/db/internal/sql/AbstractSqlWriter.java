@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.ObjectType;
 import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -36,8 +37,8 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
  */
 public abstract class AbstractSqlWriter implements HasOptions {
    protected static final String AND_NEW_LINE = " AND\n";
+   protected final StringBuilder output = new StringBuilder();
 
-   private final StringBuilder output = new StringBuilder();
    private final List<String> tableEntries = new ArrayList<>();
    private final List<WithClause> withClauses = new ArrayList<>();
    private final SqlAliasManager aliasManager = new SqlAliasManager();
@@ -209,13 +210,26 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    public abstract String getWithClauseTxBranchFilter(String txsAlias, boolean deletedPredicate);
 
-   public abstract String getTxBranchFilter(String txsAlias);
-
    public void writeTxBranchFilter(String txsAlias) {
-      write(getTxBranchFilter(txsAlias));
+      boolean allowDeleted =
+         OptionsUtil.areDeletedArtifactsIncluded(getOptions()) || OptionsUtil.areDeletedAttributesIncluded(
+            getOptions()) || OptionsUtil.areDeletedRelationsIncluded(getOptions());
+      writeTxBranchFilter(txsAlias, allowDeleted);
    }
 
-   public abstract String getTxBranchFilter(String txsAlias, boolean allowDeleted);
+   public abstract void writeTxBranchFilter(String txsAlias, boolean allowDeleted);
+
+   protected void writeTxCurrentFilter(String txsAlias, StringBuilder sb, boolean allowDeleted) {
+      sb.append(txsAlias);
+      sb.append(".tx_current");
+      if (allowDeleted) {
+         sb.append(" <> ");
+         sb.append(TxCurrent.NOT_CURRENT.getIdString());
+      } else {
+         sb.append(" = ");
+         sb.append(TxCurrent.CURRENT.getIdString());
+      }
+   }
 
    protected abstract void writeGroupAndOrder();
 

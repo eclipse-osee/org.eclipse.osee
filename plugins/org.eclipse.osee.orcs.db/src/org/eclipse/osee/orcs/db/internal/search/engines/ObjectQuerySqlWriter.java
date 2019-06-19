@@ -24,7 +24,6 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.ObjectType;
 import org.eclipse.osee.framework.core.enums.TableEnum;
-import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.QueryType;
@@ -170,20 +169,20 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
          writeTxFilter(txsAlias, sb, allowDeleted);
       } else {
          if (OptionsUtil.isHistorical(getOptions())) {
-            sb.append(txsAlias);
-            sb.append(".transaction_id <= ?");
+            write(txsAlias);
+            write(".transaction_id <= ?");
             addParameter(OptionsUtil.getFromTransaction(getOptions()));
          }
       }
 
       if (withTxFilterClause != null) {
-         sb.append("\n AND \n   ");
-         sb.append(txsAlias);
-         sb.append(".branch_id = ");
+         write("\n AND \n   ");
+         write(txsAlias);
+         write(".branch_id = ");
 
-         sb.append("(");
-         sb.append(withTxFilterClause.getSql());
-         sb.append(")");
+         write("(");
+         write(withTxFilterClause.getSql());
+         write(")");
 
          if (withTxFilterClause.hasParameters()) {
             for (Object param : withTxFilterClause.getParameters()) {
@@ -200,67 +199,43 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public String getTxBranchFilter(String txsAlias) {
-      boolean allowDeleted = //
-         OptionsUtil.areDeletedArtifactsIncluded(getOptions()) || //
-            OptionsUtil.areDeletedAttributesIncluded(getOptions()) || //
-            OptionsUtil.areDeletedRelationsIncluded(getOptions());
-      return getTxBranchFilter(txsAlias, allowDeleted);
-   }
-
-   @Override
-   public String getTxBranchFilter(String txsAlias, boolean allowDeleted) {
-      StringBuilder sb = new StringBuilder();
-      writeTxFilter(txsAlias, sb, allowDeleted);
+   public void writeTxBranchFilter(String txsAlias, boolean allowDeleted) {
+      writeTxFilter(txsAlias, output, allowDeleted);
       if (hasAlias(TableEnum.BRANCH_TABLE)) {
          String alias = getFirstAlias(TableEnum.BRANCH_TABLE);
-         sb.append(" AND ");
-         sb.append(txsAlias);
-         sb.append(".branch_id = ");
-         sb.append(alias);
-         sb.append(".branch_id");
+         write(" AND ");
+         write(txsAlias);
+         write(".branch_id = ");
+         write(alias);
+         write(".branch_id");
       } else if (hasAlias(TableEnum.TX_DETAILS_TABLE)) {
          String alias = getFirstAlias(TableEnum.TX_DETAILS_TABLE);
-         sb.append(" AND ");
-         sb.append(txsAlias);
-         sb.append(".transaction_id = ");
-         sb.append(alias);
-         sb.append(".transaction_id");
-         sb.append(" AND ");
-         sb.append(txsAlias);
-         sb.append(".branch_id = ");
-         sb.append(alias);
-         sb.append(".branch_id");
+         write(" AND ");
+         write(txsAlias);
+         write(".transaction_id = ");
+         write(alias);
+         write(".transaction_id");
+         write(" AND ");
+         write(txsAlias);
+         write(".branch_id = ");
+         write(alias);
+         write(".branch_id");
       }
-      return sb.toString();
    }
 
    private void writeTxFilter(String txsAlias, StringBuilder sb, boolean allowDeleted) {
       if (OptionsUtil.isHistorical(getOptions())) {
-         sb.append(txsAlias);
-         sb.append(".transaction_id <= ?");
+         write(txsAlias);
+         write(".transaction_id <= ?");
          addParameter(OptionsUtil.getFromTransaction(getOptions()));
          if (!allowDeleted) {
             writeAndLn();
-            sb.append(txsAlias);
-            sb.append(".mod_type <> ");
-            sb.append(ModificationType.DELETED.getIdString());
+            write(txsAlias);
+            write(".mod_type <> ");
+            write(ModificationType.DELETED.getIdString());
          }
       } else {
-         sb.append(txsAlias);
-         sb.append(".tx_current");
-         if (allowDeleted) {
-            sb.append(" IN (");
-            sb.append(String.valueOf(TxCurrent.CURRENT));
-            sb.append(", ");
-            sb.append(String.valueOf(TxCurrent.DELETED));
-            sb.append(", ");
-            sb.append(String.valueOf(TxCurrent.ARTIFACT_DELETED));
-            sb.append(")");
-         } else {
-            sb.append(" = ");
-            sb.append(String.valueOf(TxCurrent.CURRENT));
-         }
+         writeTxCurrentFilter(txsAlias, sb, allowDeleted);
       }
    }
 

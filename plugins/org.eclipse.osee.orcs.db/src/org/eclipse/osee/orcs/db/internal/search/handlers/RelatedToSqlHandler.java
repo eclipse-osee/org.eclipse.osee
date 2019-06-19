@@ -147,7 +147,7 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
       }
       writer.writeAndLn();
       boolean includeDeletedRelations = OptionsUtil.areDeletedRelationsIncluded(writer.getOptions());
-      writer.write(writer.getTxBranchFilter(txsAlias, includeDeletedRelations));
+      writer.writeTxBranchFilter(txsAlias, includeDeletedRelations);
    }
 
    @Override

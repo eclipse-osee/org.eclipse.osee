@@ -49,13 +49,7 @@ public class QuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public String getTxBranchFilter(String txsAlias) {
-      return Strings.emptyString();
-   }
-
-   @Override
-   public String getTxBranchFilter(String txsAlias, boolean allowDeleted) {
-      return Strings.emptyString();
+   public void writeTxBranchFilter(String txsAlias, boolean allowDeleted) {
    }
 
    @Override

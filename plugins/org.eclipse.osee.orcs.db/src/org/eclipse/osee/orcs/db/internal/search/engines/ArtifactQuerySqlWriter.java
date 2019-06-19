@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.db.internal.search.engines;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TableEnum;
-import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.QueryType;
@@ -32,6 +31,11 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
    public ArtifactQuerySqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryType queryType, BranchId branch) {
       super(joinFactory, jdbcClient, context, queryType);
       this.branch = branch;
+   }
+
+   public ArtifactQuerySqlWriter(AbstractSqlWriter parent) {
+      super(null, null, parent.getContext(), null);
+      this.branch = ((ArtifactQuerySqlWriter) parent).branch;
    }
 
    @Override
@@ -58,36 +62,16 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public String getTxBranchFilter(String txsAlias) {
-      boolean allowDeleted = //
-         OptionsUtil.areDeletedArtifactsIncluded(getOptions()) || //
-            OptionsUtil.areDeletedAttributesIncluded(getOptions()) || //
-            OptionsUtil.areDeletedRelationsIncluded(getOptions());
-
-      StringBuilder sb = new StringBuilder();
-      writeTxFilter(txsAlias, sb, allowDeleted);
+   public void writeTxBranchFilter(String txsAlias, boolean allowDeleted) {
+      writeTxFilter(txsAlias, output, allowDeleted);
       if (branch.isValid()) {
-         sb.append(" AND ");
-         sb.append(txsAlias);
-         sb.append(".branch_id = ?");
+         write(" AND ");
+         write(txsAlias);
+         write(".branch_id = ?");
          addParameter(branch);
       } else {
          throw new OseeArgumentException("getTxBranchFilter: branch uuid must be > 0");
       }
-      return sb.toString();
-   }
-
-   @Override
-   public String getTxBranchFilter(String txsAlias, boolean allowDeleted) {
-      StringBuilder sb = new StringBuilder();
-      writeTxFilter(txsAlias, sb, allowDeleted);
-      if (branch.isValid()) {
-         sb.append(" AND ");
-         sb.append(txsAlias);
-         sb.append(".branch_id = ?");
-         addParameter(branch);
-      }
-      return sb.toString();
    }
 
    private void writeTxFilter(String txsAlias, StringBuilder sb, boolean allowDeleted) {
@@ -101,15 +85,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
             sb.append(ModificationType.DELETED.getIdString());
          }
       } else {
-         sb.append(txsAlias);
-         sb.append(".tx_current");
-         if (allowDeleted) {
-            sb.append(" <> ");
-            sb.append(String.valueOf(TxCurrent.NOT_CURRENT));
-         } else {
-            sb.append(" = ");
-            sb.append(String.valueOf(TxCurrent.CURRENT));
-         }
+         writeTxCurrentFilter(txsAlias, sb, allowDeleted);
       }
    }
 

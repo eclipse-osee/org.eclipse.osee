@@ -63,25 +63,14 @@ public class LoadSqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public String getTxBranchFilter(String txsAlias) {
-      boolean allowDeletedAtrifacts = OptionsUtil.areDeletedArtifactsIncluded(getOptions());
-      boolean allowDeletedAttributes = OptionsUtil.areDeletedAttributesIncluded(getOptions());
-      boolean allowDeletedRelations = OptionsUtil.areDeletedRelationsIncluded(getOptions());
-      boolean areDeletedIncluded = allowDeletedAtrifacts || allowDeletedAttributes || allowDeletedRelations;
-      return getTxBranchFilter(txsAlias, areDeletedIncluded);
-   }
-
-   @Override
-   public String getTxBranchFilter(String txsAlias, boolean allowDeleted) {
-      StringBuilder sb = new StringBuilder();
+   public void writeTxBranchFilter(String txsAlias, boolean allowDeleted) {
       String artJoinAlias = getLastAlias(TableEnum.JOIN_ID4_TABLE);
-      writeTxFilter(txsAlias, artJoinAlias, sb, allowDeleted);
-      sb.append(" AND ");
-      sb.append(txsAlias);
-      sb.append(".branch_id = ");
-      sb.append(artJoinAlias);
-      sb.append(".id1");
-      return sb.toString();
+      writeTxFilter(txsAlias, artJoinAlias, output, allowDeleted);
+      write(" AND ");
+      write(txsAlias);
+      write(".branch_id = ");
+      write(artJoinAlias);
+      write(".id1");
    }
 
    private void writeTxFilter(String txsAlias, String artJoinAlias, StringBuilder sb, boolean areDeletedIncluded) {
@@ -140,15 +129,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
       } else {
          if (areDeletedIncluded) {
             if (areDeletedSame) {
-               sb.append(txsAlias);
-               sb.append(".tx_current");
-               sb.append(" IN (");
-               sb.append(String.valueOf(TxCurrent.CURRENT));
-               sb.append(", ");
-               sb.append(String.valueOf(TxCurrent.DELETED));
-               sb.append(", ");
-               sb.append(String.valueOf(TxCurrent.ARTIFACT_DELETED));
-               sb.append(")");
+               writeTxCurrentFilter(txsAlias, sb, areDeletedIncluded);
             } else {
                buildDeletedClause(sb, txsAlias);
             }

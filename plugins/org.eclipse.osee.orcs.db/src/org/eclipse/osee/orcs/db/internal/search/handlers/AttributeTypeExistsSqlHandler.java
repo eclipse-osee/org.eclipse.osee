@@ -134,7 +134,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
       writer.write(".gamma_id AND ");
 
       boolean includeDeletedAttributes = OptionsUtil.areDeletedAttributesIncluded(writer.getOptions());
-      writer.write(writer.getTxBranchFilter(txsAlias, includeDeletedAttributes));
+      writer.writeTxBranchFilter(txsAlias, includeDeletedAttributes);
    }
 
    @Override

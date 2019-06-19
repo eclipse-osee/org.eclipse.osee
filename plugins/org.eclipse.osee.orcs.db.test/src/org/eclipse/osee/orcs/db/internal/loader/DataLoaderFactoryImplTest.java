@@ -17,7 +17,7 @@ import static org.eclipse.osee.orcs.db.mock.OseeDatabase.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -58,8 +58,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -113,7 +113,8 @@ public class DataLoaderFactoryImplTest {
       factory = module.createDataLoaderFactory(spyLoader);
 
       when(jdbcClient.getStatement()).thenReturn(chStmt);
-      when(jdbcClient.fetch(eq(TransactionId.SENTINEL), Matchers.anyString(), eq(COMMON))).thenReturn(EXPECTED_HEAD_TX);
+      when(jdbcClient.fetch(eq(TransactionId.SENTINEL), ArgumentMatchers.anyString(), eq(COMMON))).thenReturn(
+         EXPECTED_HEAD_TX);
    }
 
    @Test
@@ -162,7 +163,7 @@ public class DataLoaderFactoryImplTest {
       String expected =
          "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, jart1.id2, jart1.id4, art1.art_type_id, art1.guid\n" + //
             " FROM osee_join_id4 jart1, osee_artifact art1, osee_txs txs1\n" + //
-            " WHERE art1.art_id = jart1.id2 AND jart1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.id1\n" + //
+            " WHERE art1.art_id = jart1.id2 AND jart1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current <> 0 AND txs1.branch_id = jart1.id1\n" + //
             " ORDER BY txs1.branch_id, jart1.id2, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
@@ -391,7 +392,7 @@ public class DataLoaderFactoryImplTest {
          "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, jart1.id2, jart1.id4, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
             " FROM osee_join_id4 jart1, osee_attribute att1, osee_txs txs1\n" + //
             " WHERE att1.art_id = jart1.id2 AND jart1.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
-            " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.id1\n" + //
+            " AND txs1.tx_current <> 0 AND txs1.branch_id = jart1.id1\n" + //
             " ORDER BY txs1.branch_id, jart1.id2, att1.attr_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
@@ -483,7 +484,7 @@ public class DataLoaderFactoryImplTest {
          "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, jart1.id2, jart1.id4, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
             " FROM osee_join_id4 jart1, osee_relation_link rel1, osee_txs txs1\n" + //
             " WHERE (rel1.a_art_id = jart1.id2 OR rel1.b_art_id = jart1.id2) AND jart1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-            " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.id1\n" + //
+            " AND txs1.tx_current <> 0 AND txs1.branch_id = jart1.id1\n" + //
             " ORDER BY txs1.branch_id, jart1.id2, rel1.rel_link_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
@@ -674,7 +675,7 @@ public class DataLoaderFactoryImplTest {
          "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, jart1.id2, jart1.id4, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
             " FROM osee_join_id4 jart1, osee_relation_link rel1, osee_txs txs1\n" + //
             " WHERE (rel1.a_art_id = jart1.id2 OR rel1.b_art_id = jart1.id2) AND jart1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-            " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.id1\n" + //
+            " AND txs1.tx_current <> 0 AND txs1.branch_id = jart1.id1\n" + //
             " ORDER BY txs1.branch_id, jart1.id2, rel1.rel_link_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
@@ -698,7 +699,7 @@ public class DataLoaderFactoryImplTest {
          "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, jart1.id2, jart1.id4, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
             " FROM osee_join_id4 jart1, osee_relation_link rel1, osee_txs txs1\n" + //
             " WHERE (rel1.a_art_id = jart1.id2 OR rel1.b_art_id = jart1.id2) AND jart1.query_id = ? AND rel1.rel_link_type_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-            " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.id1\n" + //
+            " AND txs1.tx_current <> 0 AND txs1.branch_id = jart1.id1\n" + //
             " ORDER BY txs1.branch_id, jart1.id2, rel1.rel_link_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));

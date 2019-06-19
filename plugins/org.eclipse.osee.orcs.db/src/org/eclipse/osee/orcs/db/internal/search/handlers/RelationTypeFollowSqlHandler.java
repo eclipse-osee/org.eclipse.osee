@@ -79,7 +79,7 @@ public class RelationTypeFollowSqlHandler extends SqlHandler<CriteriaRelationTyp
          writer.write(txsAlias0);
          writer.write(".gamma_id");
          writer.write(" AND ");
-         writer.write(writer.getTxBranchFilter(txsAlias0, includeDeletedRelations));
+         writer.writeTxBranchFilter(txsAlias0, includeDeletedRelations);
          writer.write("\n AND \n");
       }
 
@@ -102,7 +102,7 @@ public class RelationTypeFollowSqlHandler extends SqlHandler<CriteriaRelationTyp
       writer.write(txsAlias1);
       writer.write(".gamma_id");
       writer.write(" AND ");
-      writer.write(writer.getTxBranchFilter(txsAlias1, includeDeletedRelations));
+      writer.writeTxBranchFilter(txsAlias1, includeDeletedRelations);
 
       ////////////////////// Destination - Side   /////////////
       String oppositeAOrBartId = typeSide.getSide().isSideA() ? ".a_art_id" : ".b_art_id";
@@ -119,7 +119,7 @@ public class RelationTypeFollowSqlHandler extends SqlHandler<CriteriaRelationTyp
       writer.write(txsAlias2);
       writer.write(".gamma_id");
       writer.write(" AND ");
-      writer.write(writer.getTxBranchFilter(txsAlias2, includeDeletedRelations));
+      writer.writeTxBranchFilter(txsAlias2, includeDeletedRelations);
    }
 
    @Override
