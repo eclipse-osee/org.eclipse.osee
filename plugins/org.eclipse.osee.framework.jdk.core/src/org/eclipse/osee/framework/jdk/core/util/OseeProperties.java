@@ -36,6 +36,7 @@ public class OseeProperties {
    private static final String OSEE_DB_CONNECTION_POOL_SIZE = "osee.db.connection.pool.size";
    private static final String OSEE_DB_CONNECTION_POOL_CONFIG_URI = "osee.db.connection.pool.config.uri";
    public static final String OSEE_SHOW_TOKEN_FOR_CHANGE_NAME = "osee.show.token.for.change.name";
+   public static final String OSEE_DB = "osee.db";
 
    protected OseeProperties() {
       // Utility Class
@@ -219,4 +220,7 @@ public class OseeProperties {
       return org.eclipse.osee.framework.jdk.core.util.Collections.toString("\n", list);
    }
 
+   public static boolean isOseeDb(String db) {
+      return db.equals(System.getProperty(OSEE_DB));
+   }
 }
