@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
+import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -87,7 +88,12 @@ public class WorldXViewerUtil {
       List<XViewerAtsAttributeValueColumn> configColumns = new ArrayList<>();
       for (AtsAttributeValueColumn column : columns) {
          try {
-            AttributeType attrType = AttributeTypeManager.getTypeById(column.getAttrTypeId());
+            AttributeType attrType = null;
+            try {
+               attrType = AttributeTypeManager.getTypeById(column.getAttrTypeId());
+            } catch (OseeTypeDoesNotExist ex) {
+               continue;
+            }
             XViewerAtsAttributeValueColumn valueColumn = new XViewerAtsAttributeValueColumn(attrType, column.getWidth(),
                AtsEditors.getXViewerAlign(column.getAlign()), column.isVisible(),
                SortDataType.valueOf(column.getSortDataType()), column.isColumnMultiEdit(), column.getDescription());
