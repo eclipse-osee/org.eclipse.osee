@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.plugin.util;
 import org.eclipse.swt.graphics.Image;
 
 /**
- * This provides customization for osee.target
+ * This provides customization for osee.db
  *
  * @author Branden W. Phillips
  */

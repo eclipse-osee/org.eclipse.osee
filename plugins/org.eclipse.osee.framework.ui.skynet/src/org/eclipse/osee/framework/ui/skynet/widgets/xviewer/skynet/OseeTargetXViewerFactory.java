@@ -15,7 +15,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 
 /**
- * Provides OSEE XViewerFactories to ability to define their osee.target property
+ * Provides OSEE XViewerFactories to ability to define their user groups
  *
  * @author Donald G. Dunne
  */
