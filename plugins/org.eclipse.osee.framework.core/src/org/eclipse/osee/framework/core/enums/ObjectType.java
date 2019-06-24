@@ -19,5 +19,6 @@ public enum ObjectType {
    TX,
    ARTIFACT,
    ATTRIBUTE,
-   RELATION;
+   RELATION,
+   TUPLE;
 }

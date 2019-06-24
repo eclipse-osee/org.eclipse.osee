@@ -34,10 +34,6 @@ public class SqlAliasManager {
    private final List<AliasSet> usedAliases = new ArrayList<>();
    private int level = 0;
 
-   public int getLevel() {
-      return level;
-   }
-
    private AliasSet getAliasByLevel(int level) {
       AliasSet dataSet = null;
       if (level < usedAliases.size()) {
@@ -70,28 +66,28 @@ public class SqlAliasManager {
       return Iterables.getFirst(aliases, null);
    }
 
-   public String getLastAlias(int level, TableEnum table, ObjectType objectType) {
+   public String getLastAlias(TableEnum table, ObjectType objectType) {
       Collection<String> aliases = getAliases(level, table, objectType);
       return Iterables.getLast(aliases, null);
    }
 
-   public String getNextAlias(int level, String prefix, ObjectType type) {
+   public String getNextAlias(String prefix, ObjectType type) {
       Alias alias = aliasCounter.get(prefix);
       if (alias == null) {
          alias = new Alias(prefix);
          aliasCounter.put(prefix, alias);
       }
       String aliasValue = alias.next();
-      putAlias(level, prefix, type, aliasValue);
+      putAlias(prefix, type, aliasValue);
       return aliasValue;
    }
 
-   public void putAlias(int level, TableEnum table, ObjectType type, String alias) {
+   public void putAlias(TableEnum table, ObjectType type, String alias) {
       String prefix = table.getPrefix();
-      putAlias(level, prefix, type, alias);
+      putAlias(prefix, type, alias);
    }
 
-   private void putAlias(int level, String key, ObjectType type, String alias) {
+   private void putAlias(String key, ObjectType type, String alias) {
       AliasSet dataSet = null;
       if (level < usedAliases.size()) {
          dataSet = usedAliases.get(level);
@@ -103,8 +99,8 @@ public class SqlAliasManager {
       dataSet.putAlias(key, type, alias);
    }
 
-   public int nextLevel() {
-      return ++level;
+   public void nextLevel() {
+      level++;
    }
 
    public void reset() {
@@ -117,8 +113,7 @@ public class SqlAliasManager {
 
    private static final class AliasSet {
 
-      private final Map<String, ListMultimap<ObjectType, String>> used =
-         new HashMap<>();
+      private final Map<String, ListMultimap<ObjectType, String>> used = new HashMap<>();
 
       public List<String> getAliases(String key, ObjectType type) {
          ListMultimap<ObjectType, String> data = used.get(key);

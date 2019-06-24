@@ -28,7 +28,7 @@ public class XtraRelationDataSqlHandler extends AbstractXtraTableSqlHandler {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      itemAlias = writer.addTable(TableEnum.RELATION_TABLE, ObjectType.RELATION);
+      itemAlias = writer.addTable(TableEnum.RELATION_TABLE);
       txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.RELATION);
    }
 

@@ -56,15 +56,14 @@ public class RelationTypeFollowSqlHandler extends SqlHandler<CriteriaRelationTyp
 
       String branchAlias = writer.getFirstAlias(TableEnum.BRANCH_TABLE);
 
-      // Set to next Level
-      int newLevel = writer.nextAliasLevel();
+      SqlAliasManager aliasManager = writer.getAliasManager();
+      aliasManager.nextLevel();
 
       artAlias2 = writer.addTable(TableEnum.ARTIFACT_TABLE);
       txsAlias2 = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
 
       if (Strings.isValid(branchAlias)) {
-         SqlAliasManager aliasManager = writer.getAliasManager();
-         aliasManager.putAlias(newLevel, TableEnum.BRANCH_TABLE, ObjectType.BRANCH, branchAlias);
+         aliasManager.putAlias(TableEnum.BRANCH_TABLE, ObjectType.BRANCH, branchAlias);
       }
    }
 
