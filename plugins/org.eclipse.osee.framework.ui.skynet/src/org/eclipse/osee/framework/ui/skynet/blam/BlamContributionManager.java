@@ -90,7 +90,7 @@ public class BlamContributionManager implements IXNavigateCommonItem {
       Collection<IUserGroupArtifactToken> userGroups = UserGroupService.getUserGrps();
       for (AbstractBlam blamOperation : getBlamOperations()) {
          Collection<IUserGroupArtifactToken> blamUserGroups = blamOperation.getUserGroups();
-         if (!Collections.setIntersection(userGroups, blamUserGroups).isEmpty()) {
+         if (!Collections.setIntersection(blamUserGroups, userGroups).isEmpty()) {
             // Create categories first (so can have them up top)
             for (String category : blamOperation.getCategories()) {
                try {
@@ -107,7 +107,7 @@ public class BlamContributionManager implements IXNavigateCommonItem {
       // Add blams to categories
       for (AbstractBlam blamOperation : BlamContributionManager.getBlamOperations()) {
          Collection<IUserGroupArtifactToken> blamUserGroups = blamOperation.getUserGroups();
-         if (!Collections.setIntersection(userGroups, blamUserGroups).isEmpty()) {
+         if (!Collections.setIntersection(blamUserGroups, userGroups).isEmpty()) {
             // If categories not specified, add to top level
             if (blamOperation.getCategories().isEmpty()) {
                new XNavigateItemBlam(blamOperationItems, blamOperation);
