@@ -29,12 +29,14 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.util.OseeInf;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -54,6 +56,15 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
    public final static String TEAM_WORKFLOW = "Taskable Workflow (drop here)";
    public final static String EMAIL_POCS = "Email POCs";
    private TeamWorkFlowArtifact taskableStateMachineArtifact;
+   public final static String INVALID_BLAM_CAUSE = "Invalid BLAM Spreadsheet";
+   public final static String BLAM_ERROR_TITLE = "BLAM_Errors";
+   private final XResultData ImportBlamErrors;
+
+   public ImportTasksFromSpreadsheet() {
+      super();
+      this.ImportBlamErrors = new XResultData(true);
+      this.ImportBlamErrors.setTitle(BLAM_ERROR_TITLE);
+   }
 
    @Override
    public String getName() {
@@ -85,7 +96,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
    }
 
    public File getSampleSpreadsheetFile() throws Exception {
-      return OseeInf.getResourceAsFile("atsImport/Task Import.xml", getClass());
+      return OseeInf.getResourceAsFile("atsImport/Task_Import.xml", getClass());
    }
 
    @Override
@@ -140,9 +151,20 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
                   return;
                }
                File file = new File(filename);
-               performImport(emailPocs, (TeamWorkFlowArtifact) artifact, file);
+               try {
+                  performImport(emailPocs, (TeamWorkFlowArtifact) artifact, file);
+               } catch (Exception ex) {
+                  //errors logged in ImportBlamErrors
+               }
+               // If spreadsheet has critical errors, display to user
+               // and don't update workflow
+               if (ImportBlamErrors.getNumErrors() == 0) {
+                  WorkflowEditor.editArtifact(artifact);
+               } else {
+                  XResultDataUI.report(ImportBlamErrors, "Unable to Import BLAM Spreadsheet! Please fix these errors.");
+                  ImportBlamErrors.clear();
+               }
 
-               WorkflowEditor.editArtifact(artifact);
             } catch (Exception ex) {
                log(ex);
             }
@@ -159,13 +181,13 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
             AtsClientService.get().getUserService().getCurrentUser(), teamWf);
 
          Job job = Jobs.startJob(new TaskImportJob(file,
-            new ExcelAtsTaskArtifactExtractor((TeamWorkFlowArtifact) teamWf.getStoreObject(), newTaskData)));
+            new ExcelAtsTaskArtifactExtractor((TeamWorkFlowArtifact) teamWf.getStoreObject(), newTaskData),
+            ImportBlamErrors));
          job.join();
-
          AtsClientService.get().getTaskService().createTasks(new NewTaskDatas(newTaskData));
+
       } catch (Exception ex) {
-         log(ex);
-         return;
+         //log(ex);
       } finally {
          AtsUtilClient.setEmailEnabled(true);
       }

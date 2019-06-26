@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.ide.internal.Activator;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -27,11 +28,17 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class TaskImportJob extends Job {
    private final File file;
    private final ExcelAtsTaskArtifactExtractor atsTaskExtractor;
+   private XResultData errorLog;
 
    public TaskImportJob(File file, ExcelAtsTaskArtifactExtractor atsTaskExtractor) {
       super("Importing Tasks");
       this.file = file;
       this.atsTaskExtractor = atsTaskExtractor;
+   }
+
+   public TaskImportJob(File file, ExcelAtsTaskArtifactExtractor atsTaskExtractor, XResultData blamXResultData) {
+      this(file, atsTaskExtractor);
+      this.errorLog = blamXResultData;
    }
 
    @Override
@@ -41,14 +48,22 @@ public class TaskImportJob extends Job {
          atsTaskExtractor.setMonitor(monitor);
          monitor.beginTask("Importing Tasks", 0);
          if (file != null && file.isFile()) {
-            atsTaskExtractor.process(file.toURI());
+            try {
+               atsTaskExtractor.process(file.toURI(), errorLog);
+            } catch (Throwable ex) {
+               throw new Exception(ex.getMessage(), ex.getCause());
+            }
          } else {
             throw new OseeArgumentException("All files passed must be a file");
          }
          toReturn = Status.OK_STATUS;
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-         toReturn = new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getMessage(), ex);
+         if (ex.getCause().getMessage() == ImportTasksFromSpreadsheet.INVALID_BLAM_CAUSE) {
+            // suppress dialog for XReportData
+         } else {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            toReturn = new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getMessage(), ex);
+         }
       } finally {
          monitor.done();
       }

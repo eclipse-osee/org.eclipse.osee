@@ -27,9 +27,8 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
@@ -55,7 +54,7 @@ public class ExcelAtsTaskArtifactExtractor {
       this.sma = artifact;
    }
 
-   public void process(URI source) {
+   public void process(URI source) throws Throwable {
       try {
          XMLReader xmlReader = XMLReaderFactory.createXMLReader();
          IProgressMonitor monitor = getMonitor();
@@ -65,7 +64,22 @@ public class ExcelAtsTaskArtifactExtractor {
          xmlReader.setContentHandler(new ExcelSaxHandler(new InternalRowProcessor(monitor, newTaskData, sma), true));
          xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
       } catch (Exception ex) {
-         OseeCoreException.wrapAndThrow(ex);
+         //do nothing
+      }
+   }
+
+   public void process(URI source, XResultData xResultErrorLog) throws Throwable {
+      try {
+         XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+         IProgressMonitor monitor = getMonitor();
+         if (monitor == null) {
+            monitor = new NullProgressMonitor();
+         }
+         xmlReader.setContentHandler(
+            new ExcelSaxHandler(new InternalRowProcessor(monitor, newTaskData, sma, xResultErrorLog), true));
+         xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
+      } catch (Exception ex) {
+         //do nothing
       }
    }
 
@@ -93,6 +107,7 @@ public class ExcelAtsTaskArtifactExtractor {
       private final Date createdDate;
       private final IAtsUser createdBy;
       private final NewTaskData newTaskData;
+      private XResultData rowErrorLog;
 
       protected InternalRowProcessor(IProgressMonitor monitor, NewTaskData newTaskData, AbstractWorkflowArtifact sma) {
          this.monitor = monitor;
@@ -100,11 +115,17 @@ public class ExcelAtsTaskArtifactExtractor {
          this.sma = sma;
          createdDate = new Date();
          createdBy = AtsClientService.get().getUserService().getCurrentUser();
+         this.rowNum++;
+      }
+
+      protected InternalRowProcessor(IProgressMonitor monitor, NewTaskData newTaskData, AbstractWorkflowArtifact sma, XResultData xErrorLog) {
+         this(monitor, newTaskData, sma);
+         this.rowErrorLog = xErrorLog;
       }
 
       @Override
       public void processEmptyRow() {
-         // do nothing
+         rowNum++;
       }
 
       @Override
@@ -134,6 +155,7 @@ public class ExcelAtsTaskArtifactExtractor {
 
       @Override
       public void processRow(String[] row) {
+
          rowNum++;
          monitor.setTaskName("Processing Row " + rowNum);
          JaxAtsTask task = JaxAtsTaskFactory.get(newTaskData, "", createdBy, createdDate);
@@ -143,24 +165,25 @@ public class ExcelAtsTaskArtifactExtractor {
          if (!valid) {
             return;
          }
+
          for (int i = 0; i < row.length; i++) {
             String header = headerRow[i];
             if (header == null) {
                OseeLog.log(Activator.class, Level.SEVERE, "Null header column => " + i);
+            } else if (header.equalsIgnoreCase("Created By")) {
+               processCreatedBy(row, task, i);
+            } else if (header.equalsIgnoreCase("Title")) {
+               processTitle(row, task, i);
             } else if (header.equalsIgnoreCase("Assignees")) {
                processAssignees(row, task, i);
             } else if (header.equalsIgnoreCase("Resolution")) {
                processResolution(row, task, i);
-            } else if (header.equalsIgnoreCase("Created By")) {
-               processCreatedBy(row, task, i);
             } else if (header.equalsIgnoreCase("Description")) {
                processDescription(row, task, i);
             } else if (header.equalsIgnoreCase("Related to State")) {
                processRelatedToState(row, task, i);
             } else if (header.equalsIgnoreCase("Notes")) {
                processNotes(row, task, i);
-            } else if (header.equalsIgnoreCase("Title")) {
-               processTitle(row, task, i);
             } else if (header.equalsIgnoreCase("Percent Complete")) {
                processPercentComplete(row, i);
             } else if (header.equalsIgnoreCase("Hours Spent")) {
@@ -199,6 +222,7 @@ public class ExcelAtsTaskArtifactExtractor {
                break;
             }
          }
+
          if (!fullRow) {
             OseeLog.log(Activator.class, Level.SEVERE, "Empty Row Found => " + rowNum + " skipping...");
          }
@@ -210,6 +234,8 @@ public class ExcelAtsTaskArtifactExtractor {
          if (Strings.isValid(str)) {
             monitor.subTask(String.format("Title \"%s\"", str));
             taskArt.setName(str);
+         } else {
+            rowErrorLog.errorf("On row: %d, title field cannot be empty.", rowNum);
          }
       }
 
@@ -247,22 +273,27 @@ public class ExcelAtsTaskArtifactExtractor {
             IAtsUser user = null;
             try {
                user = AtsClientService.get().getUserService().getUserById(str);
-            } catch (ArtifactDoesNotExist ex) {
+            } catch (Exception ex) {
                // do nothing
+               rowErrorLog.errorf("On row: %d, the user entered in createdBy does not exist.", rowNum);
+               return;
             }
             if (user == null) {
                try {
                   user = AtsClientService.get().getUserService().getUserByName(str);
-               } catch (ArtifactDoesNotExist ex) {
-                  // do nothing
+               } catch (Exception ex) {
+                  rowErrorLog.errorf("On row: %d, the user entered in createdBy does not exist.", rowNum);
+                  return;
                }
             }
             if (user != null) {
                taskArt.setCreatedByUserId(user.getUserId());
             } else {
-               throw new OseeArgumentException("Invalid Created By \"%s\" for row %d.  Use OSEE user name or id.", str,
-                  rowNum);
+               rowErrorLog.errorf("On row: %d, the user entered in createdBy does not exist.", rowNum);
+               return;
             }
+         } else {
+            rowErrorLog.errorf("On row: %d, createdBy field cannot be empty.", rowNum);
          }
       }
 
@@ -273,7 +304,7 @@ public class ExcelAtsTaskArtifactExtractor {
             try {
                hours = new Double(str);
             } catch (Exception ex) {
-               throw new OseeArgumentException("Invalid Estimated Hours \"%s\" for row %d", str, rowNum);
+               rowErrorLog.errorf("Invalid Estimated Hours \"%s\" for row %d.", str, rowNum);
             }
             taskArt.addAttribute(AtsAttributeTypes.EstimatedHours, hours);
          }
@@ -286,7 +317,7 @@ public class ExcelAtsTaskArtifactExtractor {
             try {
                hours = new Double(str);
             } catch (Exception ex) {
-               throw new OseeArgumentException("Invalid Hours Spent \"%s\" for row %d", str, rowNum);
+               rowErrorLog.errorf("Invalid Hours Spent \"%s\" for row %d.", str, rowNum);
             }
             sma.getStateMgr().updateMetrics(sma.getStateDefinition(), hours,
                sma.getStateMgr().getPercentComplete(sma.getCurrentStateName()), true,
@@ -296,7 +327,7 @@ public class ExcelAtsTaskArtifactExtractor {
 
       private void processPercentComplete(String[] row, int i) {
          String str = row[i];
-         Double percent;
+         Double percent = 0.0;
          if (Strings.isValid(str)) {
             try {
                percent = new Double(str);
@@ -304,7 +335,7 @@ public class ExcelAtsTaskArtifactExtractor {
                   percent = percent * 100;
                }
             } catch (Exception ex) {
-               throw new OseeArgumentException("Invalid Percent Complete \"%s\" for row %d", str, rowNum);
+               rowErrorLog.errorf("Invalid Percent Complete \"%s\" for row %d.", str, rowNum);
             }
             int percentInt = percent.intValue();
             sma.getStateMgr().updateMetrics(sma.getStateDefinition(), 0, percentInt, true,
@@ -330,6 +361,7 @@ public class ExcelAtsTaskArtifactExtractor {
                OseeLog.logf(Activator.class, Level.SEVERE, "Invalid Assignee \"%s\" for row %d.  Using current user.",
                   userName, rowNum);
                user = AtsClientService.get().getUserService().getCurrentUser();
+               rowErrorLog.errorf("Invalid Assignee \"%s\" for row %d.  Using current user.", userName, rowNum);
             }
             taskArt.addAssigneeUserIds(user.getUserId());
          }

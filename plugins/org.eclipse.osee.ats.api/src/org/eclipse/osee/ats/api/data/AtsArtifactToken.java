@@ -55,8 +55,8 @@ public final class AtsArtifactToken {
    public static IAtsWorkDefinitionArtifactToken WorkDef_Team_Default = AtsWorkDefinitionArtifactToken.valueOf(72301L, "WorkDef_Team_Default");
    public static IAtsWorkDefinitionArtifactToken WorkDef_Team_Simple = AtsWorkDefinitionArtifactToken.valueOf(72302L, "WorkDef_Team_Simple");
 
-   public static ArtifactToken WorkDef_Team_AtsConfig2Example = ArtifactToken.valueOf(282846363, "WorkDef_Team_AtsConfig2Example", COMMON, AtsArtifactTypes.WorkDefinition);
-   public static ArtifactToken WorkDef_Task_AtsConfig2Example = ArtifactToken.valueOf(824992064, "WorkDef_Task_AtsConfig2Example", COMMON, AtsArtifactTypes.WorkDefinition);
+   public static IAtsWorkDefinitionArtifactToken WorkDef_Team_AtsConfig2Example = AtsWorkDefinitionArtifactToken.valueOf(282846363L, "WorkDef_Team_AtsConfig2Example");
+   public static IAtsWorkDefinitionArtifactToken WorkDef_Task_AtsConfig2Example = AtsWorkDefinitionArtifactToken.valueOf(824992064L, "WorkDef_Task_AtsConfig2Example");
 
    // Safety Workflow configuration
    public static final ArtifactToken SafetyActionableItem = ArtifactToken.valueOf(7244546, "System Safety", COMMON, AtsArtifactTypes.ActionableItem);
