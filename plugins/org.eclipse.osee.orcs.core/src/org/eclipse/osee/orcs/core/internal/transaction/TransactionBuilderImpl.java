@@ -492,8 +492,15 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public <E1, E2> boolean deleteTuple2(Tuple2Type<E1, E2> tupleType, E1 element1, E2 element2) {
-      return false;
+   public <E1, E2> boolean deleteTuple2(Tuple2Type<E1, E2> tupleType, E1 e1, E2 e2) {
+      List<GammaId> tuples = new ArrayList<>();
+      tupleQuery.getTuple2GammaFromE1E2(tupleType, getBranch(), e1, e2, tuples::add);
+      if (tuples.isEmpty()) {
+         return false;
+      }
+      tuples.forEach(this::deleteTuple2);
+      return true;
+
    }
 
    @Override

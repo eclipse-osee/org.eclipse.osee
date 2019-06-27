@@ -35,7 +35,7 @@ public interface OrcsApplicability {
 
    ArtifactToken getFeaturesFolder(BranchId branch);
 
-   ArtifactToken createUpdateFeatureDefinition(FeatureDefinition featureDef, TransactionBuilder tx, XResultData results);
+   ArtifactToken createUpdateFeatureDefinition(FeatureDefinition featureDef, String action, TransactionBuilder tx, XResultData results);
 
    List<BranchViewToken> getApplicabilityBranches();
 
@@ -45,7 +45,7 @@ public interface OrcsApplicability {
 
    VariantDefinition getVariantDefinition(ArtifactToken artifact);
 
-   XResultData createUpdateFeature(FeatureDefinition feature, BranchId branch, UserId account);
+   XResultData createUpdateFeature(FeatureDefinition feature, String action, BranchId branch, UserId account);
 
    FeatureDefinition getFeature(String feature, BranchId branch);
 
@@ -53,7 +53,7 @@ public interface OrcsApplicability {
 
    VariantDefinition getVariant(String variant, BranchId branch);
 
-   XResultData createUpdateVariant(VariantDefinition variant, BranchId branch, UserId account);
+   XResultData createUpdateVariant(VariantDefinition variant, String action, BranchId branch, UserId account);
 
    XResultData deleteVariant(String variant, BranchId branch, UserId account);
 

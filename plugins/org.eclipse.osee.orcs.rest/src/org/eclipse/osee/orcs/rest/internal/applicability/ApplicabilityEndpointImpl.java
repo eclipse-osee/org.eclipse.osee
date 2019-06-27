@@ -215,12 +215,12 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public XResultData createUpdateFeature(FeatureDefinition feature) {
+   public XResultData createUpdateFeature(FeatureDefinition feature, @PathParam("action") String action) {
       XResultData access = isAccess();
       if (access.isErrors()) {
          return access;
       }
-      return ops.createUpdateFeature(feature, branch, account);
+      return ops.createUpdateFeature(feature, action, branch, account);
    }
 
    @Override
@@ -233,12 +233,12 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public XResultData createUpdateVariant(VariantDefinition variant) {
+   public XResultData createUpdateVariant(VariantDefinition variant, @PathParam("action") String action) {
       XResultData access = isAccess();
       if (access.isErrors()) {
          return access;
       }
-      return ops.createUpdateVariant(variant, branch, account);
+      return ops.createUpdateVariant(variant, action, branch, account);
    }
 
    @Override

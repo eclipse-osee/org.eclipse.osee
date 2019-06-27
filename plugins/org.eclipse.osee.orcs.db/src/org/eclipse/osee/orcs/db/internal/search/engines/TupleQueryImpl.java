@@ -75,6 +75,9 @@ public class TupleQueryImpl implements TupleQuery {
    private static final String SELECT_TUPLE2_BY_TUPLE_TYPE =
       "select distinct e1, e2 from osee_txs txs, osee_tuple2 tp2 where tuple_type = ? and txs.gamma_id = tp2.gamma_id and branch_id = ? and tx_current = 1";
 
+   private static final String SELECT_TUPLE2_GAMMA_FROM_E1_E2 =
+      "select tp2.gamma_id from osee_txs txs, osee_tuple2 tp2 where tuple_type = ? and e1 = ? and e2 = ? and tp2.gamma_id = txs.gamma_id and branch_id = ? and tx_current = " + TxCurrent.CURRENT;
+
    private static final String SELECT_TUPLE4_GAMMA_FROM_E1_E2 =
       "select tp4.gamma_id from osee_txs txs, osee_tuple4 tp4 where tuple_type = ? and e1 = ? and e2 = ? and tp4.gamma_id = txs.gamma_id and branch_id = ? and tx_current = " + TxCurrent.CURRENT;
 
@@ -170,6 +173,12 @@ public class TupleQueryImpl implements TupleQuery {
    @Override
    public <E1, E2, E3, E4> boolean doesTuple4E3Exist(Tuple4Type<E1, E2, E3, E4> tupleType, E3 e3) {
       return jdbcClient.fetch(0, SELECT_TUPLE4_COUNT_FROM_E3, tupleType, toLong(e3)) > 0;
+   }
+
+   @Override
+   public <E1, E2> void getTuple2GammaFromE1E2(Tuple2Type<E1, E2> tupleType, BranchId branchId, E1 e1, E2 e2, Consumer<GammaId> consumer) {
+
+      runQuery(consumer, SELECT_TUPLE2_GAMMA_FROM_E1_E2, tupleType, toLong(e1), toLong(e2), branchId);
    }
 
    @Override

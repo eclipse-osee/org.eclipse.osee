@@ -1,5 +1,41 @@
 .myGrid {
-	width: 500px;
+	width: 'auto';
 	height: 250px;
+	position:relative;
 }
 
+.container {
+	width: 400px;
+	position: relative;
+	z-index:-1;
+}
+
+
+.content {
+    margin-left: auto;
+    margin-right: auto;
+    table-layout: fixed;
+    border-collapse: collapse;
+    z-index: -1;
+    position:relative;
+}
+.td-main {
+    text-align: center;
+    padding: 80px 10px 80px 10px;
+    border: 1px solid #A02422;
+    background: #ABABAB;
+}
+.pure-form input.ng-dirty.ng-invalid {
+  border-color: #e9322d;
+}
+
+.field-message {
+  display: inline-block;
+  color:#e9322d;
+  font-size: 90%;
+  margin-left: 0.5em;
+}
+
+[ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}

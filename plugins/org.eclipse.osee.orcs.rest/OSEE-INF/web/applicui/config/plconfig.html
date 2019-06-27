@@ -15,6 +15,7 @@
 	href="/ajax/libs/ui-grid/4.0.4/ui-grid.min.css"></link>
 
 <script src="/ajax/libs/angularjs/1.3.11/angular.min.js"></script>
+<script src="/ajax/libs/angularjs/1.3.11/angular-messages.min.js"></script>
 <script src="/ajax/libs/angularjs/1.3.11/angular-resource.min.js"></script>
 <script src="/ajax/libs/angularjs/1.3.11/angular-animate.min.js"></script>
 <script src="/ajax/libs/angularjs/1.3.11/angular-touch.min.js"></script>
@@ -41,104 +42,7 @@
 				</div>
 			</div>
 		</nav>
-
 		<div class="container">
-			<table>
-				<tr>
-					<td>
-						<div id="editVariantPane" ng-show="htmlVariantPane"
-							style="height: 100%; width: 350px; border: 3px solid #666; padding: 10px"
-							important>
-
-							<label ng-show="htmlVariantEdit">Edit Variant
-								{{variant.name}}</label><label ng-show="htmlVariantDelete">Delete
-								Variant</label><br />
-
-							<!-- SELECT VARIANT -->
-							<label ng-show="htmlVariantSelect">Variant: </label> <select
-								ng-model="variant" ng-show="htmlVariantSelect"
-								ng-options="variant as variant.name for variant in variants track by variant.id | orderBy : 'name'">
-							</select><br />
-
-							<!-- TITLE -->
-							<label ng-show="htmlVariantTitle">Title: <input
-								type="text" ng-model="variant.name" ng-show="htmlVariantTitle" /></label><br />
-
-							<!-- COPY FROM -->
-							<label ng-show="htmlVariantCopyFrom">Copy From: </label> <select
-								ng-model="edit.variant.copyFrom" ng-show="htmlVariantCopyFrom"
-								ng-options="variant.id as variant.name for variant in variants | orderBy : 'name'">
-							</select><br />
-
-							<button type="button" class="btn btn-primary"
-								ng-click="saveVariantEdit($event)" ng-show="htmlVariantSave">Save</button>
-							<button type="button" class="btn btn-primary"
-								ng-click="saveVariantDelete($event)" ng-show="htmlVariantDelete">Delete</button>
-							<button type="button" class="btn btn-primary"
-								ng-click="cancelVariantEdit($event)">Cancel</button>
-						</div>
-					</td>
-
-					<td>
-						<div id="editFeaturePane" ng-show="htmlFeaturePane"
-							style="height: 100%; width: 350px; border: 3px solid #666; padding: 10px"
-							important>
-							<label ng-show="htmlFeatureEditTitle">Edit Feature
-								{{feature.name}}</label><label ng-show="htmlFeatureDelete">Delete
-								Feature</label><br />
-
-							<!-- SELECT FEATURE -->
-							<label ng-show="htmlFeatureSelect">Feature: </label> <select
-								ng-model="feature" ng-show="htmlFeatureSelect"
-								ng-options="feature as feature.name for feature in features | orderBy : 'name'"
-								ng-change="handleEditFeatureValues()">
-							</select><br />
-
-							<!-- TITLE -->
-							<label ng-show="htmlFeatureEdit">Title: <input
-								type="text" ng-model="feature.name" ng-show="htmlFeatureEdit" /></label><br />
-
-							<!-- DESCRIPTION -->
-							<label for="textarea" ng-show="htmlFeatureEdit">Description:
-								<textarea id="textarea" rows name="Description" cols="30"
-									ng-model="feature.description" rows="5"
-									ng-show="htmlFeatureEdit"></textarea>
-							</label><br />
-
-							<!-- VALUES -->
-							<label ng-show="htmlFeatureEdit">Values:</label> <input
-								type="text" name="valueStr" ng-model="feature.valueStr"
-								ng-show="htmlFeatureEdit"><br />
-
-							<!-- DEFAULT VALUE -->
-							<label ng-show="htmlFeatureEdit">Default Value:</label> <input
-								type="text" name="defaultValue" ng-model="feature.defaultValue"
-								ng-show="htmlFeatureEdit"><br />
-
-							<!-- UN-PLANNED -->
-							<label ng-show="htmlFeatureEdit">Multi-Valued:</label> <input
-								type="checkbox" name="multiValued"
-								ng-model="feature.multiValued" ng-show="htmlFeatureEdit"><br />
-
-							<!-- VALUE TYPE -->
-							<label ng-show="htmlFeatureEdit">Value Type: </label> <select
-								ng-model="feature.valueType" ng-show="htmlFeatureEdit">
-								<option value="String">String</option>
-								<option value="Integer">Integer</option>
-								<option value="Decimal">Decimal</option>
-								<option value="Boolean">Boolean</option>
-							</select><br />
-
-							<button type="button" class="btn btn-primary"
-								ng-click="saveFeatureEdit($event)" ng-show="htmlFeatureSave">Save</button>
-							<button type="button" class="btn btn-primary"
-								ng-click="saveFeatureDelete($event)" ng-show="htmlFeatureDelete">Delete</button>
-							<button type="button" class="btn btn-primary"
-								ng-click="cancelFeatureEdit($event)">Cancel</button>
-						</div>
-					</td>
-
-					<td>
 						<div class="container">
 							<p>
 								<b> ORCS Product Line Configuration provides the ability to
@@ -157,49 +61,154 @@
 								ng-change="handleBranchSelection()">
 							</select>
 							<b>{{accessLevel}}</b>
-						</div>
-						<div class="container">
 							<button type="submit" class="btn btn-default btn-xs"
-								ng-click="handleAddVariant()">
-								<span class="glyphicon glyphicon-th-large"></span> Add Variant
+								ng-click="handleAddVariant()">Add Variant
 							</button>
 							<button type="submit" class="btn btn-default btn-xs"
-								ng-click="handleEditVariant()">
-								<span class="glyphicon glyphicon-th-large"></span> Edit Variant
+								ng-click="handleEditVariant()">Edit Variant
 							</button>
 							<button type="submit" class="btn btn-default btn-xs"
-								ng-click="handleDeleteVariant()">
-								<span class="glyphicon glyphicon-th-large"></span> Delete
+								ng-click="handleDeleteVariant()">Delete
 								Variant
 							</button>
 							<button type="submit" class="btn btn-default btn-xs"
-								ng-click="handleAddFeature()">
-								<span class="glyphicon glyphicon-triangle-top"></span> Add
+								ng-click="handleAddFeature()"> Add Feature</button>
+							<button type="submit" class="btn btn-default btn-xs"
+								ng-click="handleEditFeatureSelect()">Edit
 								Feature
 							</button>
 							<button type="submit" class="btn btn-default btn-xs"
-								ng-click="handleEditFeatureSelect()">
-								<span class="glyphicon glyphicon-triangle-top"></span> Edit
+								ng-click="handleDeleteFeature()">Delete
 								Feature
 							</button>
-							<button type="submit" class="btn btn-default btn-xs"
-								ng-click="handleDeleteFeature()">
-								<span class="glyphicon glyphicon-triangle-top"></span> Delete
-								Feature
-							</button>
-							<button type="submit" class="btn btn-default btn-xs"
-								ng-click="handleShowAllFeatureColumns()">
-								<span class="glyphicon glyphicon-triangle-top"></span> {{showAllLabel}}
-							</button>
+							<button type="submit" class="btn btn-default btn-xs" ng-click="handleShowAllFeatureColumns()">{{showAllLabel}}
+						   </button>
 						</div>
+						<p>
 						<div class="container">
 							<div ui-grid="itemsGridOptions" class="myGrid" ui-grid-selection
-								ui-grid-edit ui-grid-resize-columns></div>
+								ui-grid-edit ui-grid-auto-resize ui-grid-resize-columns ui-grid-pagination></div>
 						</div>
-					</td>
-				</tr>
-			</table>
+			
+					 <div class="container">
+						<form  name="variantPane" id="variantPane" ng-show="htmlVariantPane" 
+						style="background-color: white; position: fixed; margin-top: -20em; margin-left:60em; height: auto; width: auto; border: 3px solid #666; padding: 10px" important>
+
+							<label ng-show="htmlVariantEdit">Edit Variant</label>
+							<label ng-show="htmlVariantAdd">Add Variant</label>
+							<label ng-show="htmlVariantDelete">Delete	Variant</label><br />
+
+							<!-- SELECT VARIANT -->
+							<label ng-show="htmlVariantSelect">Variant: </label>
+							<select
+								ng-model="variant" 
+								ng-show="htmlVariantSelect"
+								ng-options="variant as variant.name for variant in variants  | orderBy : 'name'"
+								ng-change="handleEditVariantSelect()">
+							</select><br />
+
+							<!-- TITLE -->
+							<label ng-show="htmlVariantAdd">Title: </label>
+							<input
+								type="text" name="variantName" pattern="{{validatePatternVariant}}" ng-model="variant.name" ng-show="htmlVariantAdd" /><br />
+                      <div ng-messages="variantPane.variantName.$error" ng-show="variantPane.variantName.$touched">
+  									<div ng-message="required">Title is required </div>
+  									<div ng-message="pattern">Variant title must be alpha-numeric. </div>
+							 </div>
+							<!-- COPY FROM -->
+							<label ng-show="htmlVariantCopyFrom">Copy From: </label> 
+							<select
+								ng-model="variant.copyFrom" 
+								ng-show="htmlVariantCopyFrom"
+								ng-options="variant.id as variant.name for variant in variants | orderBy : 'name'">
+							</select><br />
+
+							<button type="button" class="btn btn-primary"
+								ng-click="saveVariantEdit($event)" ng-show="htmlVariantSave">Save</button>
+							<button type="button" class="btn btn-primary"
+								ng-click="saveVariantDelete($event)" ng-show="htmlVariantDelete">Delete</button>
+							<button type="button" class="btn btn-primary"
+								ng-click="cancelVariantEdit($event)">Cancel</button>
+						</form>
 		</div>
+     <div class="container">
+						<form name="featurePane" id="featurePane" ng-show="htmlFeaturePane"
+							style="background-color: white; position: fixed; margin-top: -20em; margin-left:60em; height: auto; width: auto; border: 3px solid #666; padding: 10px"
+							important novalidate>
+							<label ng-show="htmlFeatureEditTitle">Edit Feature:  {{feature.name}}</label>
+							<label ng-show="htmlFeatureDeleteTitle">Delete Feature</label>
+							<label ng-show="htmlFeatureAddTitle">Add Feature</label><br />
+
+							<!-- SELECT FEATURE -->
+							<label ng-show="htmlFeatureSelect">Feature: </label> 
+							<select
+							   ng-show="htmlFeatureSelect"
+								ng-model="feature" 
+								ng-options="feature as feature.name for feature in features | orderBy : 'name'"
+								ng-change="handleEditFeatureValues()">
+							</select><br />
+
+							<!-- TITLE -->
+							<label ng-show="htmlFeatureEdit">Title: </label>
+							 <input
+								type="text" pattern="{{validatePatternFeature}}" name="featureName" ng-model="feature.name" ng-show="htmlFeatureEdit" required/><br />
+							 <div ng-messages="featurePane.featureName.$error" ng-show="featurePane.featureName.$touched">
+  									<div ng-message="required">Title is required </div>
+  									<div ng-message="pattern">Feature title must be uppercase alpha-numeric. </div>
+							 </div>
+
+							<!-- DESCRIPTION -->
+							<label for="textarea" ng-show="htmlFeatureEdit">Description:</label>
+								<textarea id="textarea" rows name="Description" cols="30"
+									ng-model="feature.description" rows="5"
+									ng-show="htmlFeatureEdit" required></textarea>
+							<br />
+							<div ng-messages="featurePane.Description.$error" ng-show="featurePane.Description.$touched">
+  									<div ng-message="required">Description is required </div>
+							 </div>
+							<!-- VALUES -->
+							<label ng-show="htmlFeatureEdit">Values:</label> 
+							<input
+								type="text" name="valueStr" ng-model="feature.valueStr"
+								ng-show="htmlFeatureEdit" required><br />
+
+							<div ng-messages="featurePane.valueStr.$error" ng-show="featurePane.valueStr.$touched">
+  									<div ng-message="required">Values are required.</div>
+							 </div>
+							<!-- DEFAULT VALUE -->
+							<label ng-show="htmlFeatureEdit">Default Value:</label> <input
+								type="text" name="defaultValue" ng-model="feature.defaultValue"
+								ng-show="htmlFeatureEdit" required><br />
+								
+							<div ng-messages="featurePane.defaultValue.$error" ng-show="featurePane.defaultValue.$touched">
+  									<div ng-message="required">Default Value is required.</div>
+							 </div>
+							 
+							<!-- UN-PLANNED -->
+							<label ng-show="htmlFeatureEdit">Multi-Valued:</label> <input
+								type="checkbox" name="multiValued"
+								ng-model="feature.multiValued" ng-show="htmlFeatureEdit"><br />
+
+							<!-- VALUE TYPE -->
+							<label ng-show="htmlFeatureEdit">Value Type: </label> 
+							<select
+								name="valueType" ng-model="feature.valueType" ng-show="htmlFeatureEdit" required>
+								<option value="String">String</option>
+								<option value="Integer">Integer</option>
+								<option value="Decimal">Decimal</option>
+								<option value="Boolean">Boolean</option>
+							</select><br />
+			            <div ng-messages="featurePane.valueType.$error" ng-show="featurePane.valueType.$touched">
+  									<div ng-message="required">Value type is required.</div>
+							</div>
+							<button type="button" class="btn btn-primary"
+								ng-click="saveFeatureEdit($event)" ng-show="htmlFeatureSave">Save</button>
+							<button type="button" class="btn btn-primary"
+								ng-click="saveFeatureDelete($event)" ng-show="htmlFeatureDelete">Delete</button>
+							<button type="button" class="btn btn-primary"
+								ng-click="cancelFeatureEdit($event)">Cancel</button>
+						</form>
+					</div>
 		<div class="container">
 			&nbsp;&nbsp;&nbsp;<label ng-show="showErrorLabel"><font
 				color="red">Error: {{errorMsg}}</font></label>

@@ -123,16 +123,16 @@ public class CreateDemoBranches {
       XResultData results = new XResultData();
       FeatureDefinition def1 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), DemoFeatures.ROBOT_ARM_LIGHT.name(),
          "String", Arrays.asList("Included", "Excluded"), "Included", false, "A significant capability");
-      ops.createUpdateFeatureDefinition(def1, tx, results);
+      ops.createUpdateFeatureDefinition(def1, "add", tx, results);
       FeatureDefinition def2 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), DemoFeatures.ENGINE_5.name(),
          "String", Arrays.asList("A2543", "B5543"), "", false, "Used select type of engine");
-      ops.createUpdateFeatureDefinition(def2, tx, results);
+      ops.createUpdateFeatureDefinition(def2, "add", tx, results);
       FeatureDefinition def3 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), DemoFeatures.JHU_CONTROLLER.name(),
          "String", Arrays.asList("Included", "Excluded"), "Included", false, "A small point of variation");
-      ops.createUpdateFeatureDefinition(def3, tx, results);
+      ops.createUpdateFeatureDefinition(def3, "add", tx, results);
       FeatureDefinition def4 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), DemoFeatures.ROBOT_SPEAKER.name(),
          "String", Arrays.asList("SPKR_A", "SPKR_B", "SPKR_C"), "SPKR_A", true, "This feature is multi-select.");
-      ops.createUpdateFeatureDefinition(def4, tx, results);
+      ops.createUpdateFeatureDefinition(def4, "add", tx, results);
       orcsApi.getApplicabilityOps();
       Conditions.assertFalse(results.isErrors(), results.toString());
    }

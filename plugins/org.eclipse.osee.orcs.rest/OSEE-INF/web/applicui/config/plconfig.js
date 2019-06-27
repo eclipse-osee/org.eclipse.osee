@@ -1,4 +1,4 @@
-var app = angular.module('app', [ 'checklist-model', 'ngResource', 'ui.grid',
+var app = angular.module('app', [ 'ngMessages', 'checklist-model', 'ngResource', 'ui.grid',
       'ui.grid.resizeColumns', 'ui.grid.selection', 'ui.grid.cellNav', 'ui.grid.edit' ]);
 
 app
@@ -25,32 +25,40 @@ app
                          // ///// VARIANT flags and
                             // vars
                          $scope.variant = {};
+                         $scope.validatePatternVariant = '^[A-Za-z0-9 ]+$';
                          // Main Edit Container
                          $scope.htmlVariantPane = false;
-                         // For Add and Edit
+                         // For Add/Edit/Delete
+                         $scope.htmlVariantAction = null;
                          $scope.htmlVariantEdit = false;
-                         // For Delete
+                         $scope.htmlVariantAdd = false;
                          $scope.htmlVariantDelete = false;
                          // Widgets
                          $scope.htmlVariantSelect = false;
-                         $scope.htmlVariantCopyFrom = false;
-                         $scope.htmlVariantTitle = false;
                          $scope.htmlVariantSave = false;
-                         $scope.htmlVariantDelete = false;
+                         $scope.htmlVariantCopyFrom = false;
+                         $scope.htmlVariantAddTitle = false;
+                         $scope.htmlVariantEditTitle = false;
+                         $scope.htmlVariantDeleteTitle = false;
                          
                          // ///// FEATURE flags and
                             // vars
                          $scope.feature = {};
-                         $scope.deleting = false;
+                         $scope.featureTitle = '';
+                         $scope.validatePatternFeature = '^[A-Z0-9_]+$';
                          // Main Edit Container
                          $scope.htmlFeaturePane = false;
-                         // For Add and Edit
+                         // For Add/EditDelete
+                         $scope.htmlFeatureAction = null;
                          $scope.htmlFeatureEdit = false;
+                         $scope.htmlFeatureAdd = false;
+                         $scope.htmlFeatureDelete = false;
                          // Widgets
                          $scope.htmlFeatureSelect = false;
                          $scope.htmlFeatureSave = false;
-                         $scope.htmlFeatureDelete = false;
                          $scope.htmlFeatureEditTitle = false;
+                         $scope.htmlFeatureAddTitle = false;
+                         $scope.htmlFeatureDeleteTitle = false;
                      }
                      $scope.resetHtmlVarsAndFlags();
 
@@ -124,10 +132,14 @@ app
                      // VARIANT METHODS
                      // /////////////////////////////////////////////////////////////////////
                      
+                      
                      // //////////////////////////////////////
                      // Handle Add Variant
                      // //////////////////////////////////////
                      $scope.handleAddVariant = function() {
+
+                    	 $scope.resetHtmlVarsAndFlags();
+                    	 $scope.htmlVariantAction = "add";
                         $http
                         .get(
                               '/orcs/applicui/branch/'
@@ -136,8 +148,7 @@ app
                               function(response) {
                                  var config = response.data;
                                  $scope.htmlVariantPane = true;
-                                 $scope.htmlVariantEdit = true;
-                                 $scope.htmlVariantTitle = true;
+                                 $scope.htmlVariantAdd = true;
                                  $scope.htmlVariantCopyFrom = true;
                                  $scope.htmlVariantSave = true;
                                  $scope.variants = config.variants;
@@ -148,28 +159,51 @@ app
                      // Handle Edit Variant
                      // //////////////////////////////////////
                      $scope.handleEditVariant = function() {
+
+                    	 $scope.resetHtmlVarsAndFlags();
+                    	 $scope.htmlVariantAction = "edit";
                         $http
                         .get(
                               '/orcs/applicui/branch/'
                                     + $scope.selectedBranch.id)
                         .then(
                               function(response) {
-                                 var config = response.data;
-                                 $scope.htmlVariantPane = true;
-                                 $scope.htmlVariantEdit = true;
-                                 if (!$scope.variant.id) {
-                                    $scope.htmlVariantSelect = true;
-                                 }
-                                 $scope.htmlVariantTitle = true;
-                                 $scope.htmlVariantSave = true;
-                                 $scope.variants = config.variants;
-                              });
+                            	  var config = response.data;
+                            	  $scope.htmlVariantPane = true;
+                            	  $scope.htmlVariantEdit = true;
+                            	  if (!$scope.variant.id) {
+                            		  $scope.htmlVariantSelect = true;
+                            		  }
+                            	  $scope.htmlVariantEditTitle = true;
+                            	  $scope.htmlVariantSave = true;
+                            	  $scope.htmlVariantCopyFrom = true;
+                            	  $scope.variants = config.variants;
+                            	  }
+                              );
+                     }                     
+                     // //////////////////////////////////////
+                     // Handle Edit Variant - Values
+                     //
+                     // Open edit pane 
+                     // //////////////////////////////////////
+                     $scope.handleEditVariantSelect = function() {
+                     	// Same select widget used for both; return if deleting
+                     	if ($scope.htmlVariantAction == "delete") {
+                     		return;
+                     	}
+                     	var variant = $scope.variant;
+                        $scope.htmlVariantPane = true;
+                        $scope.htmlVariantEditTitle = true;
+                        $scope.htmlVariantSelect = true;
+                        $scope.htmlVariantEdit = true;
+                        $scope.htmlVariantSave = true;
+                        $scope.htmlCopyFrom=true;
                      }
-                     
                      // //////////////////////////////////////
                      // Cancel Variant Edit
                      // //////////////////////////////////////
                      $scope.cancelVariantEdit = function() {
+                    	 $scope.htmlVariantAction = null;
                         $scope.resetHtmlVarsAndFlags();
                      }
 
@@ -179,9 +213,11 @@ app
                      // //////////////////////////////////////
                      $scope.saveVariantEdit = function() {
                         var variant = $scope.variant;
+                        var action = $scope.htmlVariantAction;
                         var url = '/orcs/branch/'
                               + $scope.selectedBranch.id
-                              + '/applic/variant/';
+                              + '/applic/variant/'+$scope.htmlVariantAction;
+                        
                         var json = JSON.stringify(variant);
                         $http.put(url, json).then(function(response) {
                            if (response.data.errors) {
@@ -197,6 +233,9 @@ app
                      // Handle Delete Variant
                      // //////////////////////////////////////
                      $scope.handleDeleteVariant = function(variant) {
+
+                    	 $scope.resetHtmlVarsAndFlags();
+                    	 $scope.htmlVariantAction = "delete";
                         $http
                         .get(
                               '/orcs/applicui/branch/'
@@ -210,6 +249,7 @@ app
                                      $scope.htmlVariantPane = true;
                                      $scope.htmlVariantSelect = true;
                                      $scope.htmlVariantDelete = true;
+                                     $scope.htmlVariantAction = "delete";
                                      $scope.variants = config.variants;
                                }
                          });
@@ -231,8 +271,8 @@ app
                               + '/applic/variant/' + variant.id;
                            $http.delete(url).then(
                                  function(response) {
-                                    if (response.errors > 0) {
-                                       $scope.error(response.results.results);
+                                    if (response.data.errors) {
+                                       $scope.error(response.data.results);
                                     } else {
                                        $scope.loadTable();
                                     }
@@ -249,10 +289,21 @@ app
                      // Handle Add Feature
                      // //////////////////////////////////////
                      $scope.handleAddFeature = function() {
-                	 $scope.htmlFeaturePane = true;
-                	 $scope.htmlFeatureEdit = true;
-                	 $scope.htmlFeatureEditTitle = true;
-                	 $scope.htmlFeatureSave = true;
+
+                    	 $scope.resetHtmlVarsAndFlags();
+                    	 $scope.htmlFeatureAction = "add";
+                    	 $http
+                    	 .get(
+                    			 '/orcs/applicui/branch/'+$scope.selectedBranch.id)
+                    	 .then( 
+                    		   function(response) {
+                    		     var config = response.data;
+                        	     $scope.htmlFeaturePane = true;
+                        	     $scope.htmlFeatureEdit = true;
+                        	     $scope.htmlFeatureAddTitle = true;
+                        	     $scope.htmlFeatureSave = true;
+                        	     $scope.htmlFeatureSelect = false;
+                    	 })
                      }
 
                      // //////////////////////////////////////
@@ -260,19 +311,26 @@ app
                      //
                      // Open edit pane with select and populate with features
                      // //////////////////////////////////////
+                     
                      $scope.handleEditFeatureSelect = function() {
 
+                    	 $scope.resetHtmlVarsAndFlags();
+                    	$scope.htmlFeatureAction = "edit";
                         $http
                               .get(
                                     '/orcs/applicui/branch/'
                                           + $scope.selectedBranch.id)
                               .then(
                                     function(response) {
+                                       $scope.config = response.data;
+                                       $scope.features = $scope.config.features;
                                        $scope.htmlFeaturePane = true;
                                        $scope.htmlFeatureSelect = true;
                                        $scope.htmlFeatureEditTitle = true;
-                                       $scope.config = response.data;
-                                       $scope.features = $scope.config.features;
+                                       $scope.htmlFeatureEdit = true;
+                                       $scope.htmlFeatureSave = true;
+                                       $scope.feature.valueStr = feature.values
+                                       .join(";");
                                     });
                      }
                      
@@ -283,11 +341,11 @@ app
                      // //////////////////////////////////////
                      $scope.handleEditFeatureValues = function() {
                      	// Same select widget used for both; return if deleting
-                     	if ($scope.deleting) {
+                     	if ($scope.htmlFeatureAction == "delete") {
                      		return;
                      	}
                      	var feature = $scope.feature;
-                	    $scope.resetHtmlVarsAndFlags();
+                	    //$scope.resetHtmlVarsAndFlags();
                         $http
                               .get(
                                     '/orcs/branch/'
@@ -296,13 +354,16 @@ app
                                           + feature.id)
                               .then(
                                     function(response) {
+
                                        $scope.htmlFeaturePane = true;
-                                       $scope.htmlFeatureEdit = true;
                                        $scope.htmlFeatureEditTitle = true;
+                                       $scope.htmlFeatureSelect = true;
+                                       $scope.htmlFeatureEdit = true;
                                        $scope.htmlFeatureSave = true;
-                                       $scope.feature = response.data;
+                                       //$scope.feature = response.data;
                                        $scope.feature.valueStr = feature.values
                                              .join(";");
+                                       
                                     });
                      }
                      
@@ -314,19 +375,19 @@ app
                         if (feature.valueStr) {
                            feature.values = feature.valueStr
                                  .split(";");
-                           feature.valueStr = "";
+                           //feature.valueStr = "";
                         }
 
                         var url = '/orcs/branch/'
                               + $scope.selectedBranch.id
-                              + '/applic/feature/';
+                              + '/applic/feature/'+$scope.htmlFeatureAction;
                         var json = JSON.stringify(feature);
                         $http.put(url, json).then(function(response) {
-                           if (response.errors > 0) {
-                              $scope.error(response.results.results);
+                           if (response.data.errors) {
+                               $scope.error(response.data.results);
                            } else {
-                              $scope.loadTable();
-                              alert("Saved new Feature.  Add another or press Cancel");
+                               $scope.loadTable();
+                               alert("Saved new Feature.  Add another or press Cancel");
                            }
                         });
                      }
@@ -342,20 +403,21 @@ app
                      // Handle Delete Feature
                      // //////////////////////////////////////
                      $scope.handleDeleteFeature = function(variant) {
+                    	 $scope.resetHtmlVarsAndFlags();
                         $http
                         .get(
                               '/orcs/applicui/branch/'
                                     + $scope.selectedBranch.id)
                         .then(
                               function(response) {
-                                   if (response.errors > 0) {
-                                      $scope.error(response.results.results);
+                                   if (response.data.errors) {
+                                      $scope.error(response.data.results);
                                    } else {
                                          var config = response.data;
                                          $scope.htmlFeaturePane = true;
                                          $scope.htmlFeatureSelect = true;
                                          $scope.htmlFeatureDelete = true;
-                                         $scope.deleting = true;
+                                         $scope.htmlFeatureAction = "delete";
                                          $scope.features = config.features;
                                    }
                               });
@@ -375,8 +437,8 @@ app
                                       + feature.id)
                           .then(
                                 function(response) {
-                                   if (response.errors > 0) {
-                                      $scope.error(response.results.results);
+                                   if (response.data.errors) {
+                                      $scope.error(response.data.results);
                                    } else {
                                       $scope.loadTable();
                                    }
@@ -437,6 +499,8 @@ app
                                          field : 'feature',
                                          displayName : 'Feature',
                                          enableSorting : true,
+                                         enableCellEdit:false,
+                                         enableFiltering: true,
                                          width : 125
                                       } ];
 
@@ -463,6 +527,7 @@ app
                            showTreeExpandNoChildren : false,
                            enableRowHeaderSelection : false,
                            showFilter : true,
+                           enableFiltering: true,
                            multiSelect : false,
                            columnDefs : $scope.columns,
                            onRegisterApi : function(gridApi) {
@@ -497,8 +562,8 @@ app
                          var url = '/orcs/branch/' + $scope.selectedBranch.id  + '/applic/variant/' + variantId + '/feature/' + featureId + '/applic/' + newValue;
                          $http.put(url).then(function(response) {
                    			var result = response.data;
-                            if (result.errors > 0) {
-                               $scope.error(result.results);
+                            if (result.data.errorCount > 0) {
+                               $scope.error(result.data.results);
                             } else {
                                $scope.loadTable();
                             }
@@ -511,6 +576,7 @@ app
                            field : "description",
                            displayName : "Description",
                            enableSorting : false,
+                           enableCellEdit:false,
                            width : 125
                         });
                         if ($scope.showAll) {
@@ -593,7 +659,7 @@ app
                                                   }
                                                 },
                                                 {
-                                                  title: 'Delete Varient',
+                                                  title: 'Delete Variant',
                                                   icon: 'glyphicon glyphicon-remove',
                                                   context: {scope: $scope, variant: variant},
                                                   action: function($event) {

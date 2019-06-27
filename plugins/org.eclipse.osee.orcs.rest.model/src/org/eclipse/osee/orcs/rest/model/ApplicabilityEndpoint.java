@@ -86,10 +86,10 @@ public interface ApplicabilityEndpoint {
    FeatureDefinition getFeature(@PathParam("feature") String feature);
 
    @PUT
-   @Path("feature")
+   @Path("feature/{action}")
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
-   XResultData createUpdateFeature(FeatureDefinition feature);
+   XResultData createUpdateFeature(FeatureDefinition feature, @PathParam("action") String action);
 
    @DELETE
    @Path("feature/{feature}")
@@ -103,10 +103,10 @@ public interface ApplicabilityEndpoint {
    VariantDefinition getVariant(@PathParam("variant") String variant);
 
    @PUT
-   @Path("variant")
+   @Path("variant/{action}")
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
-   XResultData createUpdateVariant(VariantDefinition variant);
+   XResultData createUpdateVariant(VariantDefinition variant, @PathParam("action") String action);
 
    @DELETE
    @Path("variant/{variant}")
