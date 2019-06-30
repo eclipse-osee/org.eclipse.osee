@@ -36,7 +36,7 @@ public class NavigateViewLinksTopicEventHandler implements EventHandler {
 
             @Override
             public void run() {
-               if (NavigateView.getNavigateView() != null) {
+               if (NavigateView.getNavigateView() != null && NavigateView.isAccessible()) {
                   XNavigateItem linkItem = NavigateView.getNavigateView().getItem(TOP_LINK_ID, true);
                   LinksNavigateViewItems.reloadLinks(linkItem);
                   NavigateView.getNavigateView().refresh(linkItem);

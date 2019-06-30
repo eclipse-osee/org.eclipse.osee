@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.ide.actions.MyFavoritesAction;
 import org.eclipse.osee.ats.ide.actions.MyWorldAction;
@@ -65,9 +64,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.UIJob;
 
@@ -79,6 +76,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
    public static final String VIEW_ID = "org.eclipse.osee.navigate.NavigateView";
    private static final String INPUT = "filter";
    private static final String FILTER_STR = "filterStr";
+   private static NavigateView navView;
 
    private String savedFilterStr;
    private AtsNavigateComposite xNavComp;
@@ -88,6 +86,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
    @Override
    public void createPartControl(Composite parent) {
       this.parent = parent;
+      NavigateView.navView = this;
       if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
          loadingComposite = new LoadingComposite(parent);
          refreshData();
@@ -268,16 +267,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
    }
 
    public static NavigateView getNavigateView() {
-      if (PlatformUI.getWorkbench() != null && PlatformUI.getWorkbench().getActiveWorkbenchWindow() != null) {
-         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-         try {
-            return (NavigateView) page.showView(NavigateView.VIEW_ID);
-         } catch (PartInitException e1) {
-            MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-               "Launch Error", "Couldn't Launch OSEE NavigateView " + e1.getMessage());
-         }
-      }
-      return null;
+      return navView;
    }
 
    @Override
@@ -347,6 +337,10 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
    @Override
    public void refreshActionHandler() {
       refreshData();
+   }
+
+   public static boolean isAccessible() {
+      return navView != null && Widgets.isAccessible(navView.parent);
    }
 
 }

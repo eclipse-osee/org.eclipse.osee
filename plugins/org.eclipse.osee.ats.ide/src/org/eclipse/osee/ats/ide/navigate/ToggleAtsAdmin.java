@@ -94,7 +94,9 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
             for (WorkflowEditor editor : WorkflowEditor.getWorkflowEditors()) {
                editor.refreshPages();
             }
-            NavigateView.getNavigateView().refreshData();
+            if (NavigateView.getNavigateView() != null && NavigateView.isAccessible()) {
+               NavigateView.getNavigateView().refreshData();
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

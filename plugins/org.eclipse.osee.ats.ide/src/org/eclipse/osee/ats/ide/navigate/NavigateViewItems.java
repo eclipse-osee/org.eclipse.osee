@@ -480,7 +480,9 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
       if (searchesItem != null) {
          searchesItem.getChildren().clear();
          populateSavedSearchesItem(searchesItem);
-         NavigateView.getNavigateView().refresh(searchesItem);
+         if (NavigateView.getNavigateView() != null && NavigateView.isAccessible()) {
+            NavigateView.getNavigateView().refresh(searchesItem);
+         }
       }
    }
 
