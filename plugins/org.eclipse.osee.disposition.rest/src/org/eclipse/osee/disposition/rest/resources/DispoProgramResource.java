@@ -63,7 +63,7 @@ public class DispoProgramResource {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.TEXT_PLAIN)
    public Response createProgram(DispoProgamDescriptorData programDescriptor, @QueryParam("userName") String userName) {
-      String name = programDescriptor.getName();
+      String name = "(DISPO)" + programDescriptor.getName();
       Response.Status status;
       Response response;
       if (!name.isEmpty()) {
@@ -98,7 +98,7 @@ public class DispoProgramResource {
    @Produces(MediaType.TEXT_PLAIN)
    public Response createDispoProgramByName(@PathParam("name") String name, @QueryParam("userName") String userName) {
       DispoProgamDescriptorData programDescriptor = new DispoProgamDescriptorData();
-      programDescriptor.setName(userName);
+      programDescriptor.setName(name);
       return createProgram(programDescriptor, userName);
    }
 

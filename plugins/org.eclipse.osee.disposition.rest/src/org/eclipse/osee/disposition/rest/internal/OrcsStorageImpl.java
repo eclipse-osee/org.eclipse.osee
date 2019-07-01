@@ -162,16 +162,18 @@ public class OrcsStorageImpl implements Storage {
    public IOseeBranch findDispoProgramIdByName(String branchName) {
       List<IOseeBranch> dispoPrograms = getDispoBranches();
       IOseeBranch branchId = null;
+      String allItems = "";
       int count = 0;
       for (IOseeBranch branch : dispoPrograms) {
          if (branch.getName().equals(branchName)) {
+            allItems += branch.getIdString() + '\n';
             count++;
             branchId = branch;
          }
       }
 
       if (count > 1) {
-         throw new OseeCoreException("Multiple items found - total [%s]", count);
+         throw new OseeCoreException("Multiple items found - total [%s]\n%s", count, allItems);
       } else if (count < 1) {
          throw new OseeCoreException("No item found");
       }
@@ -235,8 +237,7 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public Long createDispoProgram(UserId author, String name) {
-      String normalizedName = "(DISPO)" + name;
-      IOseeBranch branch = IOseeBranch.create(normalizedName);
+      IOseeBranch branch = IOseeBranch.create(name);
 
       getBranchFactory().createWorkingBranch(branch, author, dispoParent, ArtifactId.SENTINEL);
 
@@ -266,13 +267,13 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public boolean deleteDispoItem(UserId author, BranchId branch, String itemId) {
-      return deleteDispoEntityArtifact(author, branch, itemId, DispoConstants.DispoItem);
+   public boolean deleteDispoSet(UserId author, BranchId branch, String setId) {
+      return deleteDispoEntityArtifact(author, branch, setId, DispoConstants.DispoSet);
    }
 
    @Override
-   public boolean deleteDispoSet(UserId author, BranchId branch, String setId) {
-      return deleteDispoEntityArtifact(author, branch, setId, DispoConstants.DispoSet);
+   public boolean deleteDispoItem(UserId author, BranchId branch, String itemId) {
+      return deleteDispoEntityArtifact(author, branch, itemId, DispoConstants.DispoItem);
    }
 
    private boolean deleteDispoEntityArtifact(UserId author, BranchId branch, String entityId, ArtifactTypeToken type) {
