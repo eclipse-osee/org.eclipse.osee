@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.search;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
@@ -19,6 +20,8 @@ import org.eclipse.osee.framework.core.data.BranchId;
 public interface QueryFactory {
 
    QueryBuilder fromBranch(BranchId branch);
+
+   QueryBuilder fromBranch(BranchId branch, ArtifactId view);
 
    BranchQuery branchQuery();
 

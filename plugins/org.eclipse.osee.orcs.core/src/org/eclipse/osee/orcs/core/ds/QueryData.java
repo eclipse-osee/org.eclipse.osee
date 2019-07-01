@@ -78,6 +78,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    private final SelectData selectData;
    private final Options options;
    private final BranchId branch;
+   private final ArtifactId view;
    private final QueryData parentQueryData;
    private final List<QueryData> childrenQueryData = new ArrayList<>(2);
    private AttributeTypeId attributeType = AttributeTypeToken.SENTINEL;
@@ -91,7 +92,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    private QueryType queryType;
    private boolean followCausesChild = true;
 
-   public QueryData(QueryData parentQueryData, QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes, BranchId branch) {
+   public QueryData(QueryData parentQueryData, QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes, BranchId branch, ArtifactId view) {
       this.parentQueryData = parentQueryData;
       this.queryFactory = queryFactory;
       this.queryEngine = queryEngine;
@@ -100,33 +101,41 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       this.selectData = new SelectData();
       this.options = OptionsUtil.createOptions();
       this.branch = branch;
+      this.view = view;
       criterias.add(new ArrayList<>());
       this.orcsTypes = orcsTypes;
       this.artifactTypeCache = orcsTypes.getArtifactTypes();
       this.attributeTypeCache = orcsTypes.getAttributeTypes();
    }
 
-   public QueryData(QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes, BranchId branch) {
-      this(null, queryFactory, queryEngine, artQueryFactory, orcsTypes, branch);
+   public QueryData(QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes, BranchId branch, ArtifactId view) {
+      this(null, queryFactory, queryEngine, artQueryFactory, orcsTypes, branch, view);
    }
 
    public QueryData(QueryData parentQueryData) {
       this(parentQueryData, parentQueryData.queryFactory, parentQueryData.queryEngine, parentQueryData.artQueryFactory,
-         parentQueryData.orcsTypes, parentQueryData.branch);
+         parentQueryData.orcsTypes, parentQueryData.branch, parentQueryData.view);
+   }
 
+   public QueryData(QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes, BranchId branch) {
+      this(queryFactory, queryEngine, artQueryFactory, orcsTypes, branch, ArtifactId.SENTINEL);
    }
 
    public QueryData(QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes) {
-      this(queryFactory, queryEngine, artQueryFactory, orcsTypes, BranchId.SENTINEL);
+      this(queryFactory, queryEngine, artQueryFactory, orcsTypes, BranchId.SENTINEL, ArtifactId.SENTINEL);
+   }
+
+   public QueryData(QueryType queryType, OrcsTypes orcsTypes) {
+      this(null, null, null, orcsTypes);
+      setQueryType(queryType);
    }
 
    public static QueryData mock() {
       return new QueryData(null, null, null, new OrcsTypesImpl(null, null, null, null, null), BranchId.SENTINEL);
    }
 
-   public QueryData(QueryType queryType, OrcsTypes orcsTypes) {
-      this(null, null, null, orcsTypes);
-      setQueryType(queryType);
+   public ArtifactId getView() {
+      return view;
    }
 
    @Override

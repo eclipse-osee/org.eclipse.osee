@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -48,14 +49,16 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    private final HashCollection<RelationTypeToken, ArtifactReadable> relationsSideB = new HashCollection<>();
    private final ArtifactTypeToken artifactType;
    private final BranchId branch;
+   private final ArtifactId view;
    private final QueryFactory queryFactory;
    private final ApplicabilityId applicability;
    private final ArtifactTypes artifactTypes;
 
-   public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchId branch, ApplicabilityId applicability, QueryFactory queryFactory, ArtifactTypes artifactTypes) {
+   public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchId branch, ArtifactId view, ApplicabilityId applicability, QueryFactory queryFactory, ArtifactTypes artifactTypes) {
       super(id);
       this.artifactType = artifactType;
       this.branch = branch;
+      this.view = view;
       this.applicability = applicability;
       this.queryFactory = queryFactory;
       this.artifactTypes = artifactTypes;
@@ -245,7 +248,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
 
    @Override
    public List<ArtifactReadable> getDescendants() {
-      return queryFactory.fromBranch(branch).andRelatedRecursive(CoreRelationTypes.Default_Hierarchical__Child,
+      return queryFactory.fromBranch(branch, view).andRelatedRecursive(CoreRelationTypes.Default_Hierarchical__Child,
          this).asArtifacts();
    }
 
@@ -271,7 +274,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
 
    @Override
    public ResultSet<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide) {
-      return queryFactory.fromBranch(branch).andRelatedTo(relationTypeSide.getOpposite(), this).getResults();
+      return queryFactory.fromBranch(branch, view).andRelatedTo(relationTypeSide.getOpposite(), this).getResults();
    }
 
    @Override
@@ -297,12 +300,12 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
 
    @Override
    public boolean areRelated(RelationTypeSide typeAndSide, ArtifactReadable artifact) {
-      return queryFactory.fromBranch(branch).andId(this).andRelatedTo(typeAndSide, artifact).exists();
+      return queryFactory.fromBranch(branch, view).andId(this).andRelatedTo(typeAndSide, artifact).exists();
    }
 
    @Override
    public int getRelatedCount(RelationTypeSide typeAndSide) {
-      return queryFactory.fromBranch(branch).andRelatedTo(typeAndSide, this).getCount();
+      return queryFactory.fromBranch(branch, view).andRelatedTo(typeAndSide, this).getCount();
    }
 
    @Override

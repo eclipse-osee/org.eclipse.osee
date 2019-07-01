@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeId;
@@ -37,7 +38,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
  */
 public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsReadable {
    ArtifactReadableImpl SENTINEL =
-      new ArtifactReadableImpl(Id.SENTINEL, Artifact, COMMON, ApplicabilityId.BASE, null, null);
+      new ArtifactReadableImpl(Id.SENTINEL, Artifact, COMMON, ArtifactId.SENTINEL, ApplicabilityId.BASE, null, null);
 
    TransactionId getLastModifiedTransaction();
 

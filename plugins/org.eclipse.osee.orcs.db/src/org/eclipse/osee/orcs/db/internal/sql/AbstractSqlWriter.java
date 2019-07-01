@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.ObjectType;
 import org.eclipse.osee.framework.core.enums.TableEnum;
@@ -49,6 +50,8 @@ public abstract class AbstractSqlWriter implements HasOptions {
    private boolean firstField;
    private boolean firstCte = true;
    protected QueryData queryDataCursor;
+   private String tupleAlias;
+   private String tupleTxsAlias;
 
    public AbstractSqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryData rootQueryData) {
       this.joinFactory = joinFactory;
@@ -107,6 +110,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
       write("\n WHERE ");
       writePredicates(handlers);
+
       removeDanglingSeparator("\n WHERE ");
 
       writeGroupAndOrder();
@@ -273,6 +277,10 @@ public abstract class AbstractSqlWriter implements HasOptions {
          setHandlerLevel(handler);
          handler.addTables(this);
       }
+      if (queryDataCursor.getView().isValid()) {
+         tupleAlias = addTable(TableEnum.TUPLE2);
+         tupleTxsAlias = addTable(TableEnum.TXS_TABLE);
+      }
    }
 
    protected void setHandlerLevel(SqlHandler<?> handler) {
@@ -303,6 +311,15 @@ public abstract class AbstractSqlWriter implements HasOptions {
          String mainTxsAlias = getMainTableAlias(TableEnum.TXS_TABLE);
          writeEqualsAnd(mainTableAlias, mainTxsAlias, "gamma_id");
          writeTxBranchFilter(mainTxsAlias);
+
+         if (queryDataCursor.getView().isValid()) {
+            write(" AND ");
+            writeEqualsParameterAnd(tupleAlias, "tuple_type", CoreTupleTypes.ViewApplicability);
+            writeEqualsParameterAnd(tupleAlias, "e1", queryDataCursor.getView());
+            writeEqualsAnd(tupleAlias, tupleTxsAlias, "gamma_id");
+            writeEqualsAnd(tupleAlias, "e2", getMainTableAlias(TableEnum.TXS_TABLE), "app_id");
+            writeTxBranchFilter(tupleTxsAlias);
+         }
       }
    }
 

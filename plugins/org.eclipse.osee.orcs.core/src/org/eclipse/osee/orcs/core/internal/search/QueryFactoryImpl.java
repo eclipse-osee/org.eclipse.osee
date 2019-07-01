@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
@@ -54,6 +55,11 @@ public class QueryFactoryImpl implements QueryFactory {
    @Override
    public QueryBuilder fromBranch(BranchId branch) {
       return new QueryData(this, queryEngine, artQueryFactory, orcsTypes, branch);
+   }
+
+   @Override
+   public QueryBuilder fromBranch(BranchId branch, ArtifactId view) {
+      return new QueryData(this, queryEngine, artQueryFactory, orcsTypes, branch, view);
    }
 
    @Override
