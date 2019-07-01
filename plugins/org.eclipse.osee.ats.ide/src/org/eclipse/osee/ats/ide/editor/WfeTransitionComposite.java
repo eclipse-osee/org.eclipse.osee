@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelperAdapter;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
+import org.eclipse.osee.ats.ide.editor.header.WfeTargetedVersionHeader;
 import org.eclipse.osee.ats.ide.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.ide.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.ide.editor.widget.XTransitionToStateComboWidget;
@@ -92,7 +93,7 @@ public class WfeTransitionComposite extends Composite {
 
       awa = workflowSection.getSma();
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      setLayout(new GridLayout(editor.getWorkFlowTab().isShowTargetedVersion() ? 7 : 5, false));
+      setLayout(new GridLayout(editor.getWorkFlowTab().getHeader().isShowTargetedVersion() ? 7 : 5, false));
       setBackground(ACTIVE_COLOR);
 
       transitionButton = editor.getToolkit().createButton(this, "Transition", SWT.PUSH);
@@ -143,7 +144,7 @@ public class WfeTransitionComposite extends Composite {
          }
       });
 
-      if (editor.getWorkFlowTab().isShowTargetedVersion()) {
+      if (editor.getWorkFlowTab().getHeader().isShowTargetedVersion()) {
          WfeTargetedVersionHeader smaTargetedVersionHeader =
             new WfeTargetedVersionHeader(this, SWT.NONE, (IAtsTeamWorkflow) awa, editor);
          smaTargetedVersionHeader.setBackground(ACTIVE_COLOR);

@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
-import org.eclipse.osee.ats.ide.editor.WfeTargetedVersionHeader;
+import org.eclipse.osee.ats.ide.editor.header.WfeTargetedVersionHeader;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;

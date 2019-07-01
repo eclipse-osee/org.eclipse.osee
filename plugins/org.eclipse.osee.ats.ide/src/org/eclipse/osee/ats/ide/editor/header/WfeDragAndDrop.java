@@ -8,12 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.editor;
+package org.eclipse.osee.ats.ide.editor.header;
 
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.ide.editor.WfeEditorAddSupportingArtifacts;
+import org.eclipse.osee.ats.ide.editor.WfeEditorAddSupportingFiles;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;

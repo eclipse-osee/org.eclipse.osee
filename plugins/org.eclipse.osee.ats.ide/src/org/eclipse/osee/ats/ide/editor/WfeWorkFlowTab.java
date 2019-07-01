@@ -27,10 +27,6 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.note.NoteItem;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.ide.actions.AddNoteAction;
@@ -49,6 +45,7 @@ import org.eclipse.osee.ats.ide.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.ide.actions.ShowChangeReportAction;
 import org.eclipse.osee.ats.ide.actions.ShowMergeManagerAction;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
+import org.eclipse.osee.ats.ide.editor.header.WfeHeaderComposite;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.walker.action.OpenActionViewAction;
@@ -66,12 +63,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
-import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AnnotationComposite;
-import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
@@ -79,24 +72,17 @@ import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
-import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.IMessage;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -113,20 +99,16 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    private final List<WfeWorkflowSection> sections = new ArrayList<>();
    private final List<StateXWidgetPage> statePages = new ArrayList<>();
    private static Map<Long, Integer> idToScrollLocation = new HashMap<>();
-   private WfeRelationsHyperlinkComposite smaRelationsComposite;
    private IManagedForm managedForm;
    private Composite bodyComp;
    private Composite atsBody;
-   private WfeActionableItemHeader actionableItemHeader;
-   private WfeMetricsHeader workflowMetricsHeader;
+   private LoadingComposite loadingComposite;
+   public final static String ID = "ats.workflow.tab";
+   private final WorkflowEditor editor;
+   private final List<WfeUndefinedStateSection> undefinedStateSections = new ArrayList<>();
    private WfeDetailsSection smaDetailsSection;
    private WfeRelationsSection smaRelationsSection;
    private WfeHistorySection smaHistorySection;
-   private LoadingComposite loadingComposite;
-   public final static String ID = "ats.workflow.tab";
-   private static Color LIGHT_GREY;
-   private final WorkflowEditor editor;
-   private final List<WfeUndefinedStateSection> undefinedStateSections = new ArrayList<>();
 
    public WfeWorkFlowTab(WorkflowEditor editor, AbstractWorkflowArtifact awa) {
       super(editor, ID, "Workflow");
@@ -282,7 +264,9 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
             "Can't retrieve current page from current state [%s] of work definition [%s]", awa.getCurrentStateName(),
             awa.getWorkDefinition().getName());
       }
-      createHeaderSection(WorkflowManager.getCurrentAtsWorkPage(awa));
+      headerComp =
+         new WfeHeaderComposite(atsBody, SWT.NONE, editor, WorkflowManager.getCurrentAtsWorkPage(awa), managedForm);
+      headerComp.create();
       createPageSections();
       createUndefinedStateSections();
       createHistorySection();
@@ -386,84 +370,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       }
    }
 
-   private void createHeaderSection(StateXWidgetPage currentStateXWidgetPage) {
-      Composite headerComp = editor.getToolkit().createComposite(atsBody);
-      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-      gd.widthHint = 100;
-      headerComp.setLayoutData(gd);
-      headerComp.setLayout(ALayout.getZeroMarginLayout(1, false));
-
-      // Display relations
-      try {
-         new WfeStateCreatedOrigHeader(headerComp, SWT.NONE, awa, editor);
-         new WfeTeamAndIdsHeader(headerComp, SWT.NONE, awa, editor);
-         createTargetVersionAndAssigneeHeader(headerComp, currentStateXWidgetPage, editor.getToolkit());
-
-         createLatestHeader(headerComp, editor.getToolkit());
-         if (awa.isTeamWorkflow()) {
-            actionableItemHeader = new WfeActionableItemHeader(headerComp, editor.getToolkit(), awa, editor);
-         }
-         workflowMetricsHeader = new WfeMetricsHeader(headerComp, editor.getToolkit(), awa, editor, managedForm);
-         int headerCompColumns = 4;
-         createWorkPacakageHeader(headerComp, editor.getToolkit(), awa, headerCompColumns, editor);
-         createWorkDefHeader(headerComp, editor.getToolkit(), awa, headerCompColumns);
-         new WfeBlockedWorkflowHeader(headerComp, SWT.NONE, awa, editor);
-         createSMANotesHeader(headerComp, editor.getToolkit(), awa, headerCompColumns);
-         createStateNotesHeader(headerComp, editor.getToolkit(), awa, headerCompColumns, null);
-         createAnnotationsHeader(headerComp, editor.getToolkit());
-
-         sections.clear();
-         statePages.clear();
-
-         if (WfeRelationsHyperlinkComposite.relationExists(awa)) {
-            smaRelationsComposite = new WfeRelationsHyperlinkComposite(atsBody, SWT.NONE, editor);
-            smaRelationsComposite.create(awa);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-   }
-
-   protected boolean isShowTargetedVersion() {
-      if (!awa.isTeamWorkflow()) {
-         return false;
-      }
-      return ((TeamWorkFlowArtifact) awa).getTeamDefinition().isTeamUsesVersions();
-   }
-
-   private void createTargetVersionAndAssigneeHeader(Composite parent, StateXWidgetPage page, XFormToolkit toolkit) {
-      boolean isShowTargetedVersion = isShowTargetedVersion();
-      boolean isCurrentNonCompleteCanceledState = page.isCurrentNonCompleteCancelledState(awa);
-      if (!isShowTargetedVersion && !isCurrentNonCompleteCanceledState) {
-         return;
-      }
-
-      Composite comp = toolkit.createContainer(parent, 6);
-      comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      comp.setLayout(ALayout.getZeroMarginLayout(6, false));
-
-      // Targeted Version
-      if (isShowTargetedVersion) {
-         new WfeTargetedVersionHeader(comp, SWT.NONE, (IAtsTeamWorkflow) awa, editor);
-         toolkit.createLabel(comp, "    ");
-      }
-
-      // Create Privileged Edit label
-      if (editor.isPrivilegedEditModeEnabled()) {
-         Label label = toolkit.createLabel(comp, "(Privileged Edit Enabled)");
-         label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-         label.setToolTipText(
-            "Privileged Edit Mode is Enabled.  Editing any field in any state is authorized.  Select icon to disable");
-      }
-
-      // Current Assignees
-      if (isCurrentNonCompleteCanceledState) {
-         boolean editable = WorkflowManager.isAssigneeEditable(awa, editor.isPrivilegedEditModeEnabled());
-
-         new WfeAssigneesHeader(comp, SWT.NONE, awa, editable, editor);
-      }
-   }
-
    private void addMessageDecoration(ScrolledForm form) {
       form.getForm().addMessageHyperlinkListener(new HyperlinkAdapter() {
 
@@ -552,12 +458,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
    @Override
    public void dispose() {
-      if (actionableItemHeader != null) {
-         actionableItemHeader.dispose();
-      }
-      if (workflowMetricsHeader != null) {
-         workflowMetricsHeader.dispose();
-      }
       if (smaDetailsSection != null) {
          smaDetailsSection.dispose();
       }
@@ -580,6 +480,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    }
 
    private Control control = null;
+   private WfeHeaderComposite headerComp;
 
    private void storeScrollLocation() {
       if (managedForm != null && managedForm.getForm() != null) {
@@ -621,91 +522,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          });
          return Status.OK_STATUS;
 
-      }
-   }
-
-   private void createLatestHeader(Composite comp, XFormToolkit toolkit) {
-      if (awa.isHistorical()) {
-         Label label = toolkit.createLabel(comp,
-            "This is a historical version of this " + awa.getArtifactTypeName() + " and can not be edited; Select \"Open Latest\" to view/edit latest version.");
-         label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-      }
-   }
-
-   private void createAnnotationsHeader(Composite comp, XFormToolkit toolkit) {
-      try {
-         if (AttributeAnnotationManager.getAnnotations(awa).size() > 0) {
-            new AnnotationComposite(toolkit, comp, SWT.None, awa);
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, "Exception resolving annotations", ex);
-      }
-   }
-
-   public static void createWorkPacakageHeader(Composite parent, XFormToolkit toolkit, AbstractWorkflowArtifact awa, int horizontalSpan, WorkflowEditor editor) {
-      boolean show =
-         awa.isTeamWorkflow() && !AtsClientService.get().getEarnedValueService().getWorkPackageOptions(awa).isEmpty();
-
-      if (show) {
-         Composite comp = toolkit.createContainer(parent, 6);
-         comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         comp.setLayout(ALayout.getZeroMarginLayout(6, false));
-
-         new WfeWorkPackage(comp, SWT.NONE, awa, editor);
-      }
-   }
-
-   public static void createWorkDefHeader(Composite comp, XFormToolkit toolkit, AbstractWorkflowArtifact workflow, int horizontalSpan) {
-      Composite headerComp = new Composite(comp, SWT.NONE);
-      GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-      gridData.horizontalSpan = horizontalSpan;
-      headerComp.setLayoutData(gridData);
-      headerComp.setLayout(ALayout.getZeroMarginLayout(5, false));
-      toolkit.adapt(headerComp);
-
-      IAtsWorkDefinition workDef = workflow.getWorkDefinition();
-      Label label = FormsUtil.createLabelValue(toolkit, headerComp, "Work Definition: ", workDef.getName());
-      label.addListener(SWT.MouseDoubleClick, new Listener() {
-
-         @Override
-         public void handleEvent(Event event) {
-            IWorkbenchPage page = AWorkbench.getActivePage();
-            try {
-               page.showView("org.eclipse.ui.views.ContentOutline", null, IWorkbenchPage.VIEW_ACTIVATE);
-            } catch (PartInitException ex) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      });
-
-      Label dragDropLabel = new Label(headerComp, SWT.NONE);
-      dragDropLabel.setText("Drag/Drop Related Here: ");
-      FormsUtil.setLabelFonts(dragDropLabel, FontManager.getDefaultLabelFont());
-      dragDropLabel.setLayoutData(new GridData());
-      toolkit.adapt(dragDropLabel, true, true);
-
-      Label dragDropBox = new Label(headerComp, SWT.BORDER);
-      new WfeDragAndDrop(dragDropBox, workflow, WorkflowEditor.EDITOR_ID);
-      dragDropBox.setText("                             ");
-      dragDropBox.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      toolkit.adapt(dragDropBox, true, true);
-      dragDropBox.setBackground(getLightGreyColor());
-   }
-
-   public static void createSMANotesHeader(Composite comp, XFormToolkit toolkit, AbstractWorkflowArtifact sma, int horizontalSpan) {
-      // Display SMA Note
-      String note = sma.getSoleAttributeValue(AtsAttributeTypes.SmaNote, "");
-      if (!note.equals("")) {
-         FormsUtil.createLabelOrHyperlink(comp, toolkit, horizontalSpan, "Note: " + note);
-      }
-   }
-
-   public static void createStateNotesHeader(Composite comp, XFormToolkit toolkit, AbstractWorkflowArtifact sma, int horizontalSpan, String forStateName) {
-      // Display global Notes
-      for (NoteItem noteItem : AtsClientService.get().getWorkItemService().getNotes(sma).getNoteItems()) {
-         if (forStateName == null || noteItem.getState().equals(forStateName)) {
-            FormsUtil.createLabelOrHyperlink(comp, toolkit, horizontalSpan, noteItem.toString());
-         }
       }
    }
 
@@ -767,15 +583,12 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       return editor.isDisposed();
    }
 
-   private static Color getLightGreyColor() {
-      if (LIGHT_GREY == null) {
-         LIGHT_GREY = Displays.getColor(240, 240, 240);
-      }
-      return LIGHT_GREY;
-   }
-
    @Override
    public IAtsWorkItem getWorkItem() {
       return awa;
+   }
+
+   public WfeHeaderComposite getHeader() {
+      return headerComp;
    }
 }

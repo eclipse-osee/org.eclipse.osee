@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.editor;
+package org.eclipse.osee.ats.ide.editor.header;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -17,6 +17,8 @@ import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.ide.column.RemainingHoursColumn;
+import org.eclipse.osee.ats.ide.editor.IWfeEventHandle;
+import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.util.Result;

@@ -8,16 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.editor;
+package org.eclipse.osee.ats.ide.editor.header;
 
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.ide.editor.IWfeEventHandle;
+import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -38,14 +39,14 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public class WfeBlockedWorkflowHeader extends Composite implements IWfeEventHandle {
 
-   private final AbstractWorkflowArtifact workItem;
+   private final IAtsWorkItem workItem;
    private Hyperlink blockedStatusLink;
    private String blockedText;
    private Hyperlink blockedReasonLink;
    private String blockedReason;
    private final static Color BLOCKED_COLOR = new Color(null, 244, 80, 66);
 
-   WfeBlockedWorkflowHeader(Composite parent, int style, final AbstractWorkflowArtifact workItem, final WorkflowEditor editor) {
+   WfeBlockedWorkflowHeader(Composite parent, int style, final IAtsWorkItem workItem, final WorkflowEditor editor) {
       super(parent, style);
       this.workItem = workItem;
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -53,7 +54,7 @@ public class WfeBlockedWorkflowHeader extends Composite implements IWfeEventHand
       editor.getToolkit().adapt(this);
 
       try {
-         blockedReason = AtsClientService.get().getAttributeResolver().getSoleAttributeValue((IAtsWorkItem) workItem,
+         blockedReason = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workItem,
             AtsAttributeTypes.BlockedReason, "");
 
          if (Strings.isValid(blockedReason)) {
@@ -149,8 +150,7 @@ public class WfeBlockedWorkflowHeader extends Composite implements IWfeEventHand
          if (!Strings.isValid(blockedReason)) {
             blockedReason = "No reason given, please enter one";
          }
-         changes.setSoleAttributeValue((IAtsWorkItem) workItem, AtsAttributeTypes.BlockedReason,
-            "Blocked - " + blockedReason);
+         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.BlockedReason, "Blocked - " + blockedReason);
       }
       changes.executeIfNeeded();
    }

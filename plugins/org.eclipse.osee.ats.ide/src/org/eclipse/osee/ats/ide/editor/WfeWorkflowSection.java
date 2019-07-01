@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
+import org.eclipse.osee.ats.ide.editor.header.WfeHeaderComposite;
 import org.eclipse.osee.ats.ide.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.ide.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.ide.editor.widget.ReviewInfoXWidget;
@@ -149,7 +150,8 @@ public class WfeWorkflowSection extends SectionPart {
       // mainComp.setBackground(Displays.getSystemColor(SWT.COLOR_DARK_YELLOW));
       mainComp.layout();
 
-      WfeWorkFlowTab.createStateNotesHeader(mainComp, editor.getToolkit(), sma, 2, statePage.getName());
+      WfeHeaderComposite.createStateNotesHeader(mainComp, editor.getWorkItem(), editor.getToolkit(), 2,
+         statePage.getName());
 
       Composite workComp = createWorkArea(mainComp, statePage, editor.getToolkit());
 
