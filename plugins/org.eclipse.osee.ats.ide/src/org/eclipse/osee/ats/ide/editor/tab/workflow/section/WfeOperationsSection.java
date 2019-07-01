@@ -142,11 +142,10 @@ public class WfeOperationsSection extends SectionPart {
       if (editor.getWorkItem().isTeamWorkflow()) {
          new XButtonViaAction(new EditActionableItemsAction((TeamWorkFlowArtifact) editor.getWorkItem())).createWidgets(
             sectionBody, 2);
+         new XButtonViaAction(new DuplicateWorkflowAction(
+            Collections.singleton((TeamWorkFlowArtifact) editor.getWorkItem()))).createWidgets(sectionBody, 2);
          new XButtonViaAction(
-            new DuplicateWorkflowAction(Collections.singleton((TeamWorkFlowArtifact) editor.getWorkItem()))).createWidgets(
-               sectionBody, 2);
-         new XButtonViaAction(new ModifyActionableItemAction((TeamWorkFlowArtifact) editor.getWorkItem())).createWidgets(
-            sectionBody, 2);
+            new ModifyActionableItemAction((TeamWorkFlowArtifact) editor.getWorkItem())).createWidgets(sectionBody, 2);
          new XButtonViaAction(new AccessControlAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
       }
       if (editor.getWorkItem().isTask()) {

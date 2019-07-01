@@ -279,4 +279,14 @@ public class AtsStoreService implements IAtsStoreService {
    public boolean inheritsFrom(ArtifactTypeToken artType, ArtifactTypeToken... artifactType) {
       return ArtifactTypeManager.inheritsFrom(artType, artifactType);
    }
+
+   @Override
+   public boolean isReadOnly(IAtsWorkItem workItem) {
+      return ((Artifact) workItem.getStoreObject()).isReadOnly();
+   }
+
+   @Override
+   public boolean isAccessControlWrite(IAtsWorkItem workItem) {
+      return ((AbstractWorkflowArtifact) workItem.getStoreObject()).isAccessControlWrite();
+   }
 }

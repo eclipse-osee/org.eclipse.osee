@@ -41,7 +41,7 @@ public class WorkDefTeamDemoReq extends AbstractWorkDef {
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
          .andToDefaultState(StateToken.Analyze) //
          .andToStates(StateToken.Cancelled, StateToken.Analyze) //
-         .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
+         .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition("Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED_FOR_TRANSITION), //
@@ -59,7 +59,7 @@ public class WorkDefTeamDemoReq extends AbstractWorkDef {
          .andToDefaultState(StateToken.Authorize) //
          .andToStates(StateToken.Cancelled, StateToken.Authorize, StateToken.Endorse) //
          .andOverrideValidationStates(StateToken.Endorse) //
-         .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
+         .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
@@ -86,7 +86,7 @@ public class WorkDefTeamDemoReq extends AbstractWorkDef {
          .andToDefaultState(StateToken.Completed) //
          .andToStates(StateToken.Cancelled, StateToken.Completed, StateToken.Analyze, StateToken.Authorize) //
          .andOverrideValidationStates(StateToken.Analyze, StateToken.Authorize) //
-         .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
+         .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             getWorkingBranchWidgetComposite(), //

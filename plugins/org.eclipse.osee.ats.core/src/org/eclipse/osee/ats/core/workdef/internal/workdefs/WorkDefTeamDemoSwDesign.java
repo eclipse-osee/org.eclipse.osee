@@ -43,6 +43,11 @@ public class WorkDefTeamDemoSwDesign extends AbstractWorkDef {
    public WorkDefinition build() {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
+      bld.andHeader() //
+         .isShowWorkPackageHeader(false) //
+         .isShowSiblingLinks(false) //
+         .isShowMetricsHeader(false); //
+
       DecisionReviewDefinitionBuilder analyzeTransitionToDecRev = bld.createDecisionReview("Analyze.None.TransitionTo") //
          .andTitle(
             "Auto-created Decision Review from ruleId: atsAddDecisionReview.test.addDecisionReview.Analyze.None.TransitionTo") //
@@ -85,7 +90,7 @@ public class WorkDefTeamDemoSwDesign extends AbstractWorkDef {
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
          .andToDefaultState(StateToken.Analyze) //
          .andToStates(StateToken.Cancelled, StateToken.Analyze) //
-         .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
+         .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition("Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED_FOR_TRANSITION), //
@@ -103,7 +108,7 @@ public class WorkDefTeamDemoSwDesign extends AbstractWorkDef {
          .andToDefaultState(StateToken.Authorize) //
          .andToStates(StateToken.Cancelled, StateToken.Authorize, StateToken.Endorse) //
          .andOverrideValidationStates(StateToken.Endorse) //
-         .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
+         .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andDecisionReviewBuilder(analyzeTransitionToDecRev) //
          .andLayout( //
@@ -132,7 +137,7 @@ public class WorkDefTeamDemoSwDesign extends AbstractWorkDef {
          .andToDefaultState(StateToken.Completed) //
          .andToStates(StateToken.Cancelled, StateToken.Completed, StateToken.Analyze, StateToken.Authorize) //
          .andOverrideValidationStates(StateToken.Analyze, StateToken.Authorize) //
-         .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
+         .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andDecisionReviewBuilder(implementCreateBranch) //
          .andPeerReviewBuilder(implementCommitBranch) //

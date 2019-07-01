@@ -113,4 +113,8 @@ public interface IAtsStoreService {
    boolean inheritsFrom(ArtifactTypeToken artType, ArtifactTypeToken... artifactType);
 
    boolean isHistorical(ArtifactId artifact);
+
+   boolean isReadOnly(IAtsWorkItem workItem);
+
+   boolean isAccessControlWrite(IAtsWorkItem workItem);
 }

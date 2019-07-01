@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.api.workdef;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
  * @author Donald G. Dunne
@@ -92,7 +93,7 @@ public class StateToken extends NamedIdBase {
    public static StateToken valueOf(Long id, String name) {
       StateToken state = tokens.get(id);
       if (state != null) {
-         System.err.println("No two state tokens can have same id. Named: " + name);
+         throw new OseeArgumentException("No two state tokens can have same id. Named: " + name);
       }
       state = new StateToken(id, name);
       tokens.put(id, state);

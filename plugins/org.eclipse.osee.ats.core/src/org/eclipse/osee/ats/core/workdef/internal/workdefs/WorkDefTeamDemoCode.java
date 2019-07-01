@@ -41,7 +41,7 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
          .andToDefaultState(StateToken.Analyze) //
          .andToStates(StateToken.Cancelled, StateToken.Analyze) //
-         .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
+         .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition("Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED_FOR_TRANSITION), //
@@ -61,7 +61,7 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
          .andToDefaultState(StateToken.Authorize) //
          .andToStates(StateToken.Cancelled, StateToken.Authorize, StateToken.Endorse) //
          .andOverrideValidationStates(StateToken.Endorse) //
-         .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.RequireStateHourSpentPrompt) //
+         .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition("Referenced Applicability", "XHyperlabelWorkflowApplicabilitySelection",
@@ -90,7 +90,7 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
          .andToDefaultState(StateToken.Completed) //
          .andToStates(StateToken.Cancelled, StateToken.Completed, StateToken.Authorize, StateToken.Analyze) //
          .andOverrideValidationStates(StateToken.Authorize, StateToken.Analyze) //
-         .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.RequireStateHourSpentPrompt) //
+         .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition("Referenced Applicability", "XHyperlabelWorkflowApplicabilitySelection",

@@ -10,19 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.note.NoteItem;
+import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsStateItemManager;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.IAtsStateItem;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.WorkflowManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -32,6 +37,9 @@ import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AnnotationComposite;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
+import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
@@ -59,6 +67,8 @@ public class WfeHeaderComposite extends Composite {
    private final StateXWidgetPage currentStateXWidgetPage;
    private static Color LIGHT_GREY;
    private final IManagedForm managedForm;
+   private WfeCustomHeader customHeader;
+   private WfeTitleHeader titleHeader;
 
    public WfeHeaderComposite(Composite parent, int style, WorkflowEditor editor, StateXWidgetPage currentStateXWidgetPage, IManagedForm managedForm) {
       super(parent, style);
@@ -74,8 +84,8 @@ public class WfeHeaderComposite extends Composite {
       this.setLayoutData(gd);
       this.setLayout(ALayout.getZeroMarginLayout(1, false));
 
-      // Display relations
       try {
+         titleHeader = new WfeTitleHeader(this, SWT.NONE, workItem, editor, xModListener);
          new WfeStateCreatedOrigHeader(this, SWT.NONE, workItem, editor);
          new WfeTeamAndIdsHeader(this, SWT.NONE, workItem, editor);
          createTargetVersionAndAssigneeHeader(this, currentStateXWidgetPage, editor.getToolkit());
@@ -84,13 +94,23 @@ public class WfeHeaderComposite extends Composite {
          if (workItem.isTeamWorkflow()) {
             actionableItemHeader = new WfeActionableItemHeader(this, editor.getToolkit(), workItem, editor);
          }
-         workflowMetricsHeader = new WfeMetricsHeader(this, editor.getToolkit(), workItem, editor, managedForm);
-         int thisColumns = 4;
-         createWorkPacakageHeader(this, editor.getToolkit(), thisColumns, editor);
-         createWorkDefHeader(this, editor.getToolkit(), workItem, thisColumns);
+
+         if (workItem.getWorkDefinition().getHeaderDef().isShowMetricsHeader()) {
+            workflowMetricsHeader = new WfeMetricsHeader(this, editor.getToolkit(), workItem, editor, managedForm);
+         }
+
+         int workPackageNumColumns = 2;
+         if (workItem.getWorkDefinition().getHeaderDef().isShowWorkPackageHeader()) {
+            createWorkPacakageHeader(this, editor.getToolkit(), workPackageNumColumns, editor);
+         }
+         int numColumns = 4;
+         createWorkDefHeader(this, editor.getToolkit(), workItem, numColumns);
          new WfeBlockedWorkflowHeader(this, SWT.NONE, workItem, editor);
-         createSMANotesHeader(this, editor.getToolkit(), thisColumns);
-         createStateNotesHeader(this, workItem, editor.getToolkit(), thisColumns, null);
+
+         customHeader = createCustomHeader(this, editor.getToolkit(), workItem, editor, managedForm);
+
+         createSMANotesHeader(this, editor.getToolkit(), numColumns);
+         createStateNotesHeader(this, workItem, editor.getToolkit(), numColumns, null);
          createAnnotationsHeader(this, editor.getToolkit());
 
          if (WfeRelationsHyperlinkComposite.relationExists((AbstractWorkflowArtifact) workItem)) {
@@ -102,12 +122,17 @@ public class WfeHeaderComposite extends Composite {
       }
    }
 
+   private WfeCustomHeader createCustomHeader(Composite comp, XFormToolkit toolkit, IAtsWorkItem workItem, WorkflowEditor editor, IManagedForm managedForm) {
+      return new WfeCustomHeader(comp, SWT.NONE, managedForm, workItem, editor);
+   }
+
    public static void createWorkDefHeader(Composite comp, XFormToolkit toolkit, IAtsWorkItem workItem, int horizontalSpan) {
       Composite headerComp = new Composite(comp, SWT.NONE);
       GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
       gridData.horizontalSpan = horizontalSpan;
       headerComp.setLayoutData(gridData);
-      headerComp.setLayout(ALayout.getZeroMarginLayout(5, false));
+      int numColumns = 5;
+      headerComp.setLayout(ALayout.getZeroMarginLayout(numColumns, false));
       toolkit.adapt(headerComp);
 
       IAtsWorkDefinition workDef = workItem.getWorkDefinition();
@@ -230,6 +255,9 @@ public class WfeHeaderComposite extends Composite {
 
    @Override
    public void dispose() {
+      if (customHeader != null) {
+         customHeader.dispose();
+      }
       if (actionableItemHeader != null) {
          actionableItemHeader.dispose();
       }
@@ -237,5 +265,64 @@ public class WfeHeaderComposite extends Composite {
          workflowMetricsHeader.dispose();
       }
    }
+
+   public Result isXWidgetDirty() {
+      if (titleHeader != null) {
+         Result result = titleHeader.isXWidgetDirty();
+         if (result.isTrue()) {
+            return result;
+         }
+      }
+      if (customHeader != null) {
+         return customHeader.isXWidgetDirty();
+      }
+      return Result.FalseResult;
+   }
+
+   public void getDirtyIArtifactWidgets(List<IArtifactStoredWidget> artWidgets) {
+      if (titleHeader != null) {
+         titleHeader.getDirtyIArtifactWidgets(artWidgets);
+      }
+      if (customHeader != null) {
+         customHeader.getDirtyIArtifactWidgets(artWidgets);
+      }
+   }
+
+   public Result isXWidgetSavable() {
+      if (titleHeader != null) {
+         Result result = titleHeader.isXWidgetSavable();
+         if (result.isTrue()) {
+            return result;
+         }
+      }
+      if (customHeader != null) {
+         return customHeader.isXWidgetSavable();
+      }
+      return Result.FalseResult;
+   }
+
+   final XModifiedListener xModListener = new XModifiedListener() {
+      @Override
+      public void widgetModified(XWidget xWidget) {
+         try {
+            if (AtsClientService.get().getStoreService().isDeleted(workItem)) {
+               return;
+            }
+            // Notify extensions of widget modified
+            for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
+               try {
+                  item.widgetModified(xWidget, editor.getToolkit(), workItem.getStateDefinition(), (Artifact) workItem,
+                     WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), workItem,
+                        workItem.getStateDefinition(), AtsClientService.get().getUserService()));
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
+            }
+            editor.onDirtied();
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
+   };
 
 }

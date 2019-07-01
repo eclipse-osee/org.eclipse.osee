@@ -126,7 +126,6 @@ public class WfeTransitionComposite extends Composite {
          }
 
       });
-      transitionButton.setBackground(ACTIVE_COLOR);
 
       Label label = editor.getToolkit().createLabel(this, "to");
       label.setBackground(ACTIVE_COLOR);

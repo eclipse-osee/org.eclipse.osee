@@ -22,9 +22,12 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
 
    private final List<IAtsStateDefinition> states = new ArrayList<>(5);
    private IAtsStateDefinition startState;
+   private HeaderDefinition headerDef;
+   private boolean showStateMetrics = false;
 
    public WorkDefinition(Long id, String name) {
       super(id, name);
+      headerDef = new HeaderDefinition(this);
    }
 
    @Override
@@ -58,6 +61,41 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
    @Override
    public List<IAtsStateDefinition> getStates() {
       return states;
+   }
+
+   @Override
+   public HeaderDefinition getHeaderDef() {
+      return headerDef;
+   }
+
+   @Override
+   public boolean hasHeaderDefinitionItems() {
+      return headerDef != null && !headerDef.getLayoutItems().isEmpty();
+   }
+
+   @Override
+   public HeaderDefinition getDefaultHeaderDef() {
+
+      HeaderDefinition defaultHeaderDef = new HeaderDefinition(this);
+      defaultHeaderDef.setShowMetricsHeader(true);
+      defaultHeaderDef.setShowWorkPackageHeader(true);
+
+      return defaultHeaderDef;
+   }
+
+   @Override
+   public void setHeaderDefinition(HeaderDefinition headerDef) {
+      this.headerDef = headerDef;
+   }
+
+   @Override
+   public boolean isShowStateMetrics() {
+      return showStateMetrics;
+   }
+
+   @Override
+   public void setShowStateMetrics(boolean showStateMetrics) {
+      this.showStateMetrics = showStateMetrics;
    }
 
 }

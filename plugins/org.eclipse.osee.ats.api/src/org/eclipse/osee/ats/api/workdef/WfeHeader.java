@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Boeing.
+ * Copyright (c) 2019 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,22 +8,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.world;
-
-import java.util.Collection;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+package org.eclipse.osee.ats.api.workdef;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IWorldViewerEventHandler {
+public enum WfeHeader {
 
-   default public WorldXViewer getWorldXViewer() {
-      return null;
+   WorkPackage(1),
+   NoWorkPackage(1),
+   Metrics(2),
+   NoMetrics(2);
+
+   private final int id;
+
+   private WfeHeader(int id) {
+      this.id = id;
    }
 
-   public void relationsModifed(Collection<Artifact> relModifiedArts, Collection<Artifact> goalMemberReordered, Collection<Artifact> sprintMemberReordered);
-
-   public boolean isDisposed();
+   public int getId() {
+      return id;
+   }
 
 }

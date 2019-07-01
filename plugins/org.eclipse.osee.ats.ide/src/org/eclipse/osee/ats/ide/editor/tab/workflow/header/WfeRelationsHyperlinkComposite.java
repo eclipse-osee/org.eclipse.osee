@@ -82,7 +82,7 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
       editor.getToolkit().adapt(this);
 
       // Create all hyperlinks from this artifact to others of interest
-      if (workItem.isTeamWorkflow()) {
+      if (workItem.isTeamWorkflow() && workItem.getWorkDefinition().getHeaderDef().isShowSiblingLinks()) {
          for (IAtsTeamWorkflow teamWf : workItem.getParentAction().getTeamWorkflows()) {
             if (!teamWf.equals(workItem)) {
                createLink("This", AtsClientService.get().getQueryServiceClient().getArtifact(teamWf), " has sibling ",

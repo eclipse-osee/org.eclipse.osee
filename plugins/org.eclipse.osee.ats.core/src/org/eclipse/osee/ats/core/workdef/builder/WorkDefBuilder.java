@@ -100,4 +100,18 @@ public class WorkDefBuilder {
       return peerRevBldr;
    }
 
+   public HeaderDefinitionBuilder andHeader() {
+      HeaderDefinitionBuilder bldr = new HeaderDefinitionBuilder(workDef);
+      workDef.setHeaderDefinition(bldr.getHeaderDefinition());
+      return bldr;
+   }
+
+   public void isShowStateMetrics() {
+      workDef.setShowStateMetrics(true);
+   }
+
+   public void isShowStateMetrics(boolean show) {
+      workDef.setShowStateMetrics(show);
+   }
+
 }

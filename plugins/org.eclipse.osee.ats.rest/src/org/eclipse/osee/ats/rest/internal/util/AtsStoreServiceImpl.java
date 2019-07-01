@@ -263,4 +263,14 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    public boolean inheritsFrom(ArtifactTypeToken artType, ArtifactTypeToken... artifactType) {
       return orcsApi.getOrcsTypes().getArtifactTypes().inheritsFrom(artType, artifactType);
    }
+
+   @Override
+   public boolean isReadOnly(IAtsWorkItem workItem) {
+      throw new UnsupportedOperationException("unsupported on server");
+   }
+
+   @Override
+   public boolean isAccessControlWrite(IAtsWorkItem workItem) {
+      throw new UnsupportedOperationException();
+   }
 }

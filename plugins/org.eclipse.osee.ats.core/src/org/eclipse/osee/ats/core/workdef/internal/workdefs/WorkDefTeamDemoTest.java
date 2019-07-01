@@ -38,6 +38,18 @@ public class WorkDefTeamDemoTest extends AbstractWorkDef {
    public WorkDefinition build() {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
+      bld.isShowStateMetrics(true);
+
+      bld.andHeader() //
+         .isShowMetricsHeader() //
+         .andLayout( //
+            new CompositeLayoutItem(6, //
+               new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(Improvement,Problem,Refinement,Support)"), //
+               new WidgetDefinition(AtsAttributeTypes.Priority, "XComboDam(1,2,3,4,5)"), //
+               new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam") //
+            ) //
+         );
+
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
          .andToDefaultState(StateToken.Analyze) //
          .andToStates(StateToken.Cancelled, StateToken.Analyze) //

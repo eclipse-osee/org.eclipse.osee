@@ -61,11 +61,11 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.WorkflowManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.IWorldViewerEventHandler;
-import org.eclipse.osee.ats.ide.world.WorldXViewer;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -77,14 +77,10 @@ import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -105,7 +101,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    private final AbstractWorkflowArtifact awa;
    private final List<WfeWorkflowSection> sections = new ArrayList<>();
    private final List<StateXWidgetPage> statePages = new ArrayList<>();
-   private static Map<Long, Integer> idToScrollLocation = new HashMap<>();
    private IManagedForm managedForm;
    private Composite bodyComp;
    private Composite atsBody;
@@ -129,14 +124,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
       this.managedForm = managedForm;
       try {
-         managedForm.getForm().getVerticalBar().addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               storeScrollLocation();
-            }
-
-         });
          updateTitleBar();
 
          bodyComp = managedForm.getForm().getBody();
@@ -157,8 +144,13 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
             HelpUtil.setHelp(managedForm.getForm(), AtsHelpContext.WORKFLOW_EDITOR__WORKFLOW_TAB);
          }
 
-         refreshData();
          editor.registerEvent(this, awa);
+
+         List<IOperation> ops = new ArrayList<>();
+         ops.addAll(AtsBulkLoad.getConfigLoadingOperations());
+         IOperation operation = Operations.createBuilder("Load Workflow Tab").addAll(ops).build();
+         Operations.executeAsJob(operation, false, Job.LONG, new ReloadJobChangeAdapter(editor));
+
       } catch (Exception ex) {
          handleException(ex);
       }
@@ -168,7 +160,15 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
          String titleString = editor.getTitleStr();
          String displayableTitle = Strings.escapeAmpersands(titleString);
-         managedForm.getForm().setText(displayableTitle);
+         managedForm.getForm().setToolTipText(displayableTitle);
+         String artifactTypeName = awa.isTeamWorkflow() ? "Team Workflow" : awa.getArtifactTypeName();
+         String formTitle = null;
+         if (awa.getParentTeamWorkflow() != null) {
+            formTitle = String.format("%s - %s", awa.getParentTeamWorkflow().getTeamDefinition(), artifactTypeName);
+         } else {
+            formTitle = String.format("%s", artifactTypeName);
+         }
+         managedForm.getForm().setText(formTitle);
          if (AtsClientService.get().getAgileService().isBacklog(awa)) {
             managedForm.getForm().setImage(
                ImageManager.getImage(AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_BACKLOG)));
@@ -187,12 +187,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       }
    }
 
-   public void refreshData() {
-      List<IOperation> ops = new ArrayList<>();
-      ops.addAll(AtsBulkLoad.getConfigLoadingOperations());
-      IOperation operation = Operations.createBuilder("Load Workflow Tab").addAll(ops).build();
-      Operations.executeAsJob(operation, false, Job.LONG, new ReloadJobChangeAdapter(editor));
-   }
    private final class ReloadJobChangeAdapter extends JobChangeAdapter {
 
       private final WorkflowEditor editor;
@@ -271,9 +265,11 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
             "Can't retrieve current page from current state [%s] of work definition [%s]", awa.getCurrentStateName(),
             awa.getWorkDefinition().getName());
       }
+
       headerComp =
          new WfeHeaderComposite(atsBody, SWT.NONE, editor, WorkflowManager.getCurrentAtsWorkPage(awa), managedForm);
       headerComp.create();
+
       createPageSections();
       createUndefinedStateSections();
       createHistorySection();
@@ -283,13 +279,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
       atsBody.layout();
       atsBody.setFocus();
-      // Jump to scroll location if set
-      Integer selection = idToScrollLocation.get(awa.getId());
-      if (selection != null) {
-         JumpScrollbarJob job = new JumpScrollbarJob("");
-         job.schedule(500);
-      }
-
    }
 
    private void createDetailsSection() {
@@ -345,6 +334,8 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       }
    }
 
+   private final Map<String, Pair<StateXWidgetPage, Composite>> stateNameToPageAndComposite = new HashMap<>();
+
    private void createPageSections() {
       try {
          Composite sectionsComp = editor.getToolkit().createComposite(atsBody);
@@ -352,21 +343,24 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          gd.widthHint = 100;
          sectionsComp.setLayoutData(gd);
          sectionsComp.setLayout(ALayout.getZeroMarginLayout(1, false));
-         for (WfeWorkflowSection section : sections) {
-            section.dispose();
-         }
-         sections.clear();
-         statePages.clear();
 
-         // Only display current or past states
          for (StateXWidgetPage statePage : WorkflowManager.getStatePagesOrderedByOrdinal(awa)) {
             try {
+               // Only display current or past states
                if (awa.isInState(statePage) || awa.getStateMgr().isStateVisited(statePage)) {
-                  WfeWorkflowSection section = new WfeWorkflowSection(sectionsComp, SWT.NONE, statePage, awa, editor);
-                  managedForm.addPart(section);
-                  control = section.getMainComp();
-                  sections.add(section);
-                  statePages.add(statePage);
+                  createStateSection(sectionsComp, statePage);
+               }
+               // Else make placeholder for state transition
+               else {
+                  if (placeHolderComp == null) {
+                     placeHolderComp = editor.getToolkit().createComposite(sectionsComp);
+                     gd = new GridData(GridData.FILL_HORIZONTAL);
+                     gd.widthHint = 100;
+                     placeHolderComp.setLayoutData(gd);
+                     placeHolderComp.setLayout(ALayout.getZeroMarginLayout(1, false));
+                  }
+                  stateNameToPageAndComposite.put(statePage.getName(),
+                     new Pair<StateXWidgetPage, Composite>(statePage, placeHolderComp));
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -375,6 +369,13 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
+   }
+
+   private void createStateSection(Composite sectionsComp, StateXWidgetPage statePage) {
+      WfeWorkflowSection section = new WfeWorkflowSection(sectionsComp, SWT.NONE, statePage, awa, editor);
+      managedForm.addPart(section);
+      sections.add(section);
+      statePages.add(statePage);
    }
 
    private void addMessageDecoration(ScrolledForm form) {
@@ -432,8 +433,15 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    }
 
    public Result isXWidgetDirty() {
+      Result result = null;
+      if (Widgets.isAccessible(headerComp)) {
+         result = headerComp.isXWidgetDirty();
+         if (result != null && result.isTrue()) {
+            return result;
+         }
+      }
       for (WfeWorkflowSection section : sections) {
-         Result result = section.isXWidgetDirty();
+         result = section.isXWidgetDirty();
          if (result.isTrue()) {
             return result;
          }
@@ -442,8 +450,12 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    }
 
    public Result isXWidgetSavable() {
+      Result result = null;
+      if (Widgets.isAccessible(headerComp)) {
+         result = headerComp.isXWidgetSavable();
+      }
       for (WfeWorkflowSection section : sections) {
-         Result result = section.isXWidgetSavable();
+         result = section.isXWidgetSavable();
          if (result.isFalse()) {
             return result;
          }
@@ -453,6 +465,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
    public void saveXWidgetToArtifact() {
       List<IArtifactStoredWidget> artWidgets = new ArrayList<>();
+      headerComp.getDirtyIArtifactWidgets(artWidgets);
       // Collect all dirty widgets first (so same attribute shown on different sections don't colide
       for (WfeWorkflowSection section : sections) {
          section.getDirtyIArtifactWidgets(artWidgets);
@@ -464,6 +477,9 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
    @Override
    public void dispose() {
+      if (Widgets.isAccessible(headerComp)) {
+         headerComp.dispose();
+      }
       if (smaDetailsSection != null) {
          smaDetailsSection.dispose();
       }
@@ -485,96 +501,42 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       }
    }
 
-   private Control control = null;
    private WfeHeaderComposite headerComp;
-
-   private void storeScrollLocation() {
-      if (managedForm != null && managedForm.getForm() != null) {
-         Integer selection = managedForm.getForm().getVerticalBar().getSelection();
-         idToScrollLocation.put(awa.getId(), selection);
-      }
-   }
-
-   private class JumpScrollbarJob extends Job {
-      public JumpScrollbarJob(String name) {
-         super(name);
-      }
-
-      @Override
-      protected IStatus run(IProgressMonitor monitor) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               Integer selection = idToScrollLocation.get(awa.getId());
-
-               // Find the ScrolledComposite operating on the control.
-               ScrolledComposite sComp = null;
-               if (control == null || control.isDisposed()) {
-                  return;
-               }
-               Composite parent = control.getParent();
-               while (parent != null) {
-                  if (parent instanceof ScrolledComposite) {
-                     sComp = (ScrolledComposite) parent;
-                     break;
-                  }
-                  parent = parent.getParent();
-               }
-
-               if (sComp != null) {
-                  sComp.setOrigin(0, selection);
-               }
-            }
-         });
-         return Status.OK_STATUS;
-
-      }
-   }
+   private Composite placeHolderComp;
 
    @Override
    public void refresh() {
       if (editor != null) {
-         // remove all pages
+         String stateName = awa.getCurrentStateName();
+
+         // Determine if state already exists
+         boolean found = false;
          for (WfeWorkflowSection section : sections) {
-            section.dispose();
+            if (section.getPage().getName().equals(stateName)) {
+               found = true;
+            }
          }
-         // add pages back
-         refreshData();
+
+         // Create state if not exist
+         if (!found) {
+            Pair<StateXWidgetPage, Composite> pageAndComp = stateNameToPageAndComposite.get(stateName);
+            StateXWidgetPage statePage = pageAndComp.getFirst();
+            createStateSection(placeHolderComp, statePage);
+         }
+         for (WfeWorkflowSection section : sections) {
+            section.refresh();
+         }
       }
    }
 
-   public void hardRefresh() {
-      if (editor != null) {
-         // remove all pages
-         for (WfeWorkflowSection section : sections) {
-            section.dispose();
-         }
-         // add pages back
-         refreshData();
-      }
-   }
-
-   public List<StateXWidgetPage> getPages() {
-      return statePages;
-   }
-
-   public List<WfeWorkflowSection> getSections() {
-      return sections;
-   }
-
-   public WfeWorkflowSection getSectionForCurrentState() {
+   public boolean refreshExpandStates(String stateName, boolean found) {
       for (WfeWorkflowSection section : sections) {
-         if (section.isCurrentState()) {
-            return section;
+         section.refreshExpandState();
+         if (section.getPage().getName().equals(stateName)) {
+            found = true;
          }
       }
-      return null;
-   }
-
-   @Override
-   public WorldXViewer getWorldXViewer() {
-      // do nothing
-      return null;
+      return found;
    }
 
    @Override

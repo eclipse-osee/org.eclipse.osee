@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.workdef;
 
 import java.util.List;
+import org.eclipse.osee.ats.api.workdef.model.HeaderDefinition;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
@@ -23,5 +24,17 @@ public interface IAtsWorkDefinition extends NamedId {
    IAtsStateDefinition getStateByName(String name);
 
    IAtsStateDefinition getStartState();
+
+   boolean hasHeaderDefinitionItems();
+
+   HeaderDefinition getHeaderDef();
+
+   HeaderDefinition getDefaultHeaderDef();
+
+   void setHeaderDefinition(HeaderDefinition headerDef);
+
+   boolean isShowStateMetrics();
+
+   void setShowStateMetrics(boolean showStateMetrics);
 
 }

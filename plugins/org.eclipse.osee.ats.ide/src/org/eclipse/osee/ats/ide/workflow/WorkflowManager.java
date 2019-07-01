@@ -191,7 +191,8 @@ public class WorkflowManager {
          for (IAtsStateDefinition stateDefinition : AtsClientService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
             definition)) {
             try {
-               StateXWidgetPage statePage = new StateXWidgetPage(definition, stateDefinition, null, optionResolver);
+               StateXWidgetPage statePage = new StateXWidgetPage(definition, stateDefinition, null, optionResolver,
+                  (AbstractWorkflowArtifact) workItem);
                statePages.add(statePage);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

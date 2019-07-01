@@ -175,7 +175,7 @@ public class WfePrint extends Action {
                }
             }
             if (sma.isInState(statePage) || sma.getStateMgr().isStateVisited(statePage)) {
-               statePage.generateLayoutDatas(sma);
+               statePage.generateLayoutDatas();
                rd.addRaw(statePage.getHtml(sma.isInState(statePage) ? activeColor : normalColor, notesSb.toString(),
                   getStateHoursSpentHtml(statePage) + getReviewData(sma, statePage)));
                rd.addRaw(AHTML.newline());

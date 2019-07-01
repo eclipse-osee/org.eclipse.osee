@@ -74,7 +74,7 @@ public class WfeWorkflowSection extends SectionPart {
 
    protected final AbstractWorkflowArtifact sma;
    private final StateXWidgetPage statePage;
-   private final boolean isEditable, isCurrentState, isGlobalEditable;
+   private final boolean isEditable, isGlobalEditable;
    private Composite mainComp;
    private final List<XWidget> allXWidgets = new ArrayList<>();
    private boolean sectionCreated = false;
@@ -91,8 +91,11 @@ public class WfeWorkflowSection extends SectionPart {
       isEditable = WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), sma,
          page.getStateDefinition(), AtsClientService.get().getUserService());
       isGlobalEditable = !sma.isReadOnly() && sma.isAccessControlWrite();
-      isCurrentState = sma.isInState(page);
       // parent.setBackground(Displays.getSystemColor(SWT.COLOR_CYAN));
+   }
+
+   public boolean isCurrentState() {
+      return sma.isInState(statePage);
    }
 
    @Override
@@ -101,12 +104,7 @@ public class WfeWorkflowSection extends SectionPart {
 
       section = getSection();
       try {
-         section.setText(getCurrentStateTitle(sma, statePage.getName(), isEditable, isCurrentState,
-            statePage.getStateType().isCancelledState()));
-         if (sma.isInState(statePage)) {
-            section.setTitleBarForeground(Displays.getSystemColor(SWT.COLOR_DARK_GREEN));
-            section.setBackground(WfeTransitionComposite.ACTIVE_COLOR);
-         }
+         refreshStateTitle();
          section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          // section.setBackground(Displays.getSystemColor(SWT.COLOR_MAGENTA));
 
@@ -135,6 +133,19 @@ public class WfeWorkflowSection extends SectionPart {
       }
    }
 
+   private void refreshStateTitle() {
+      String currentStateTitle =
+         getCurrentStateTitle(sma, statePage.getName(), isCurrentState(), statePage.getStateType().isCancelledState());
+      section.setText(currentStateTitle);
+      if (sma.isInState(statePage)) {
+         section.setTitleBarForeground(Displays.getSystemColor(SWT.COLOR_DARK_GREEN));
+         section.setBackground(WfeTransitionComposite.ACTIVE_COLOR);
+      } else {
+         section.setTitleBarForeground(Displays.getSystemColor(SWT.COLOR_DARK_BLUE));
+         section.setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
+      }
+   }
+
    /**
     * Override to apply different algorithm to current section expansion.
     */
@@ -158,7 +169,7 @@ public class WfeWorkflowSection extends SectionPart {
 
       Composite workComp = createWorkArea(mainComp, statePage, editor.getToolkit());
 
-      if (isCurrentState) {
+      if (isCurrentState()) {
          workflowTransitionComposite = new WfeTransitionComposite(mainComp, this, editor, isEditable);
       }
 
@@ -169,7 +180,7 @@ public class WfeWorkflowSection extends SectionPart {
    }
 
    protected Composite createWorkArea(Composite comp, StateXWidgetPage statePage, XFormToolkit toolkit) {
-      statePage.generateLayoutDatas(sma);
+      statePage.generateLayoutDatas();
 
       if (statePage.getStateDefinition().getDescription() != null) {
          Composite labelComp = toolkit.createContainer(comp, 1);
@@ -188,7 +199,9 @@ public class WfeWorkflowSection extends SectionPart {
       workComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
       // workComp.setBackground(Displays.getSystemColor(SWT.COLOR_GREEN));
 
-      createMetricsHeader(workComp);
+      if (sma.getWorkDefinition().isShowStateMetrics()) {
+         createMetricsHeader(workComp);
+      }
 
       // Add any dynamic XWidgets declared for page by IAtsStateItem extensions
       for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
@@ -206,11 +219,9 @@ public class WfeWorkflowSection extends SectionPart {
          completeComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          boolean useCancelledWidget = true;
          if (statePage.getStateType().isCancelledState()) {
-            for (XWidgetRendererItem item : statePage.getDynamicXWidgetLayout().getLayoutDatas()) {
-               if (item.getXWidgetName().equals("XCancelWidget")) {
-                  useCancelledWidget = false;
-                  break;
-               }
+            XWidgetRendererItem layoutData = statePage.getLayoutData("XCancelWidget");
+            if (layoutData != null) {
+               useCancelledWidget = false;
             }
             createCancelledPageWidgets(completeComp, useCancelledWidget);
          } else if (statePage.getStateType().isCompletedState()) {
@@ -299,13 +310,13 @@ public class WfeWorkflowSection extends SectionPart {
          try {
             if (AtsClientService.get().getWorkDefinitionService().isStateWeightingEnabled(sma.getWorkDefinition())) {
                allXWidgets.add(new StatePercentCompleteXWidget(getManagedForm(), statePage, sma, comp, 2, xModListener,
-                  isCurrentState, editor));
+                  isCurrentState(), editor));
             }
          } catch (OseeStateException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          allXWidgets.add(new StateHoursSpentXWidget(getManagedForm(), statePage, sma, comp, 2, xModListener,
-            isCurrentState, editor));
+            isCurrentState(), editor));
       }
    }
 
@@ -377,9 +388,9 @@ public class WfeWorkflowSection extends SectionPart {
       }
    }
 
-   protected static String getCurrentStateTitle(AbstractWorkflowArtifact sma, String statePageName, boolean isEditable, boolean isCurrentState, boolean isCancelledState) {
+   protected static String getCurrentStateTitle(AbstractWorkflowArtifact sma, String statePageName, boolean isCurrentState, boolean isCancelledState) {
       StringBuffer sb = new StringBuffer(statePageName);
-      if (isEditable && !sma.isCompleted() && !sma.isCancelled()) {
+      if (isCurrentState && !sma.isCompleted() && !sma.isCancelled()) {
          sb.append(" - Current State");
       }
       if (sma.isCancelled()) {
@@ -476,6 +487,11 @@ public class WfeWorkflowSection extends SectionPart {
       }
    };
 
+   public void refreshExpandState() {
+      boolean isCurrentState = isCurrentState();
+      getSection().setExpanded(isCurrentState);
+   }
+
    @Override
    public void refresh() {
       if (!Widgets.isAccessible(mainComp)) {
@@ -486,17 +502,14 @@ public class WfeWorkflowSection extends SectionPart {
          if (workflowTransitionComposite != null) {
             workflowTransitionComposite.refresh();
          }
-         editor.onDirtied();
          for (XWidget xWidget : allXWidgets) {
             xWidget.refresh();
          }
+         refreshStateTitle();
+         editor.onDirtied();
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-   }
-
-   public boolean isCurrentState() {
-      return isCurrentState;
    }
 
    public XComboViewer getTransitionToStateCombo() {

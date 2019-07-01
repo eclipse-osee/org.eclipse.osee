@@ -56,7 +56,7 @@ public class WfeUndefinedStateSection extends SectionPart {
       Section section = getSection();
       try {
          section.setText("Un-Defined State - " + WfeWorkflowSection.getCurrentStateTitle(editor.getWorkItem(), stateName,
-            false, false, false));
+            false, false));
       } catch (OseeCoreException ex) {
          section.setText(stateName + " - Exception:" + ex.getLocalizedMessage());
       }
