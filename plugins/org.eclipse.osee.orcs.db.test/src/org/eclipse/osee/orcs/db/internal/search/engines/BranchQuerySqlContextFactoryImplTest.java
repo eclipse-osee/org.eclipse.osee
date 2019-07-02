@@ -104,7 +104,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testCount() throws Exception {
-      String expected = "SELECT count(*)\n" + //
+      String expected = "SELECT count(*) AS art_count\n" + //
          " FROM osee_branch br1, osee_join_id jid1, osee_join_id jid2\n" + //
          " WHERE br1.branch_id = jid1.id AND jid1.query_id = ? AND\n" + //
          "br1.branch_type = jid2.id AND jid2.query_id = ?";

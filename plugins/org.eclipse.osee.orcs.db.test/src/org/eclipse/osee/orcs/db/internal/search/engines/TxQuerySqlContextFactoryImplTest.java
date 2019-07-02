@@ -105,7 +105,7 @@ public class TxQuerySqlContextFactoryImplTest {
 
    @Test
    public void testCount() throws Exception {
-      String expected = "SELECT count(*)\n" + //
+      String expected = "SELECT count(*) AS art_count\n" + //
          " FROM osee_tx_details txd1, osee_join_id jid1\n" + //
          " WHERE txd1.transaction_id = jid1.id AND jid1.query_id = ?";
       queryData.addCriteria(IDS);

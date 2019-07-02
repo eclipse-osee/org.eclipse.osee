@@ -43,10 +43,10 @@ public abstract class AbstractSqlWriter implements HasOptions {
    private final List<WithClause> withClauses = new ArrayList<>();
    private final SqlAliasManager aliasManager = new SqlAliasManager();
    private final HashMap<TableEnum, String> mainAliases = new HashMap<>();
-   private final SqlJoinFactory joinFactory;
+   protected final SqlJoinFactory joinFactory;
    private final JdbcClient jdbcClient;
    private final SqlContext context;
-   private final QueryType queryType;
+   protected final QueryType queryType;
    private int level;
    private boolean firstField;
 
@@ -55,6 +55,10 @@ public abstract class AbstractSqlWriter implements HasOptions {
       this.jdbcClient = jdbcClient;
       this.context = context;
       this.queryType = queryType;
+   }
+
+   public AbstractSqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, QueryType queryType) {
+      this(joinFactory, jdbcClient, null, queryType);
    }
 
    public void build(SqlHandler<?>... handlers) {
@@ -72,14 +76,19 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    protected void reset() {
       output.delete(0, output.length());
-      context.getJoins().clear();
-      context.getParameters().clear();
+      if (context != null) {
+         context.getJoins().clear();
+         context.getParameters().clear();
+      }
       tableEntries.clear();
       withClauses.clear();
       aliasManager.reset();
       level = 0;
-      firstField = true;
       mainAliases.clear();
+   }
+
+   public boolean isSelectQueryType() {
+      return QueryType.SELECT == queryType;
    }
 
    public boolean isCountQueryType() {
@@ -88,6 +97,10 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    public boolean isTokenQueryType() {
       return QueryType.TOKEN == queryType;
+   }
+
+   public boolean isIdQueryType() {
+      return QueryType.ID == queryType;
    }
 
    protected void write(Iterable<SqlHandler<?>> handlers) {
@@ -135,7 +148,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
     * Add a named query into a recursive WITH statement that is referenced in the main FROM clause
     */
    public String addRecursiveReferencedWithClause(String withClauseName, String parameters, String body) {
-      withClauses.add(new WithClause(withClauseName, parameters, body));
+      addWithClause(new WithClause(withClauseName, parameters, body));
       tableEntries.add(withClauseName);
       return withClauseName;
    }
@@ -145,8 +158,12 @@ public abstract class AbstractSqlWriter implements HasOptions {
     */
    public String addWithClause(String prefix, String body) {
       String withClauseName = getNextAlias(prefix);
-      withClauses.add(new WithClause(withClauseName, body));
+      addWithClause(new WithClause(withClauseName, body));
       return withClauseName;
+   }
+
+   protected void addWithClause(WithClause withClause) {
+      withClauses.add(withClause);
    }
 
    /**
@@ -177,7 +194,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
             writeSelectAndHint();
             write("1");
          } else {
-            write("count(*)");
+            write("count(*) AS art_count");
          }
       } else {
          writeSelectFields();
@@ -417,7 +434,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       write(" AND ");
    }
 
-   private void addJoin(AbstractJoinQuery join) {
+   protected void addJoin(AbstractJoinQuery join) {
       getContext().getJoins().add(join);
    }
 
@@ -453,6 +470,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
          write(OseeSql.Strings.getHintsOrdered(jdbcClient.getConfig().getDbProps()));
       }
       write(" ");
+      firstField = true;
    }
 
    @Override
@@ -463,5 +481,9 @@ public abstract class AbstractSqlWriter implements HasOptions {
    public void writePatternMatch(String field, String expression) {
       String pattern = jdbcClient.getDbType().getRegularExpMatchSql();
       write(pattern, field, expression);
+   }
+
+   public JdbcClient getJdbcClient() {
+      return jdbcClient;
    }
 }

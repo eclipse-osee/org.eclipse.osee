@@ -43,4 +43,8 @@ public class ArtifactQuerySqlContextFactoryImpl implements QuerySqlContextFactor
       writer.build(handlerFactory.createHandlers(queryData));
       return context;
    }
+
+   public SqlHandlerFactory getHandlerFactory() {
+      return handlerFactory;
+   }
 }

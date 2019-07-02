@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
-import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_FETCH_SIZE;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.core.ds.KeyValueStore;
@@ -43,6 +43,8 @@ import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.search.QueryCallableFactory;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContextFactory;
+import org.eclipse.osee.orcs.db.internal.sql.SelectiveArtifactSqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.search.TupleQuery;
 
@@ -56,24 +58,24 @@ public class QueryEngineImpl implements QueryEngine {
    private final QueryCallableFactory allQueryEngineFactory;
    private final JdbcClient jdbcClient;
    private final SqlJoinFactory sqlJoinFactory;
-   private final QuerySqlContextFactory artifactSqlContextFactory;
    private final SqlObjectLoader sqlObjectLoader;
    private final ArtifactTypes artifactTypes;
    private final AttributeTypes attributeTypes;
    private final KeyValueStore keyValue;
+   private final SqlHandlerFactory handlerFactory;
 
-   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QuerySqlContextFactory branchSqlContextFactory, QuerySqlContextFactory txSqlContextFactory, QueryCallableFactory allQueryEngineFactory, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, QuerySqlContextFactory artifactSqlContextFactory, SqlObjectLoader sqlObjectLoader, ArtifactTypes artifactTypes, AttributeTypes attributeTypes, KeyValueStore keyValue) {
+   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QuerySqlContextFactory branchSqlContextFactory, QuerySqlContextFactory txSqlContextFactory, QueryCallableFactory allQueryEngineFactory, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, SqlHandlerFactory handlerFactory, SqlObjectLoader sqlObjectLoader, OrcsTypes orcsTypes, KeyValueStore keyValue) {
       this.artifactQueryEngineFactory = artifactQueryEngineFactory;
       this.branchSqlContextFactory = branchSqlContextFactory;
       this.txSqlContextFactory = txSqlContextFactory;
       this.allQueryEngineFactory = allQueryEngineFactory;
       this.jdbcClient = jdbcClient;
       this.sqlJoinFactory = sqlJoinFactory;
-      this.artifactSqlContextFactory = artifactSqlContextFactory;
       this.sqlObjectLoader = sqlObjectLoader;
-      this.artifactTypes = artifactTypes;
-      this.attributeTypes = attributeTypes;
+      this.artifactTypes = orcsTypes.getArtifactTypes();
+      this.attributeTypes = orcsTypes.getAttributeTypes();
       this.keyValue = keyValue;
+      this.handlerFactory = handlerFactory;
    }
 
    @Override
@@ -81,7 +83,9 @@ public class QueryEngineImpl implements QueryEngine {
       if (isPostProcessRequired(queryData)) {
          return artifactQueryEngineFactory.getArtifactCount(queryData);
       }
-      return getCount(artifactSqlContextFactory, queryData);
+      Long[] count = new Long[1];
+      selectiveArtifactLoad(queryData, QueryType.COUNT, stmt -> count[0] = stmt.getLong("art_count"));
+      return count[0].intValue();
    }
 
    private boolean isPostProcessRequired(QueryData queryData) {
@@ -138,7 +142,7 @@ public class QueryEngineImpl implements QueryEngine {
    @Override
    public List<ArtifactToken> loadArtifactTokens(QueryData queryData) {
       List<ArtifactToken> tokens = new ArrayList<>(100);
-      loadArtifactX(queryData, QueryType.TOKEN, stmt -> tokens.add(ArtifactToken.valueOf(stmt.getLong("art_id"),
+      selectiveArtifactLoad(queryData, QueryType.TOKEN, stmt -> tokens.add(ArtifactToken.valueOf(stmt.getLong("art_id"),
          stmt.getString("value"), queryData.getBranch(), artifactTypes.get(stmt.getLong("art_type_id")))));
       return tokens;
    }
@@ -160,7 +164,7 @@ public class QueryEngineImpl implements QueryEngine {
          }
          attributes.put(attributeTypes.get(stmt.getLong("attr_type_id")), stmt.getString("value"));
       };
-      loadArtifactX(queryData, QueryType.TOKEN, consumer);
+      selectiveArtifactLoad(queryData, QueryType.SELECT, consumer);
       if (!artifactId[0].equals(Id.SENTINEL)) {
          maps.add(createFieldMap(artifactId, attributes));
       }
@@ -194,23 +198,19 @@ public class QueryEngineImpl implements QueryEngine {
          tokens.put(token, token);
       };
 
-      loadArtifactX(queryData, QueryType.TOKEN, consumer);
+      selectiveArtifactLoad(queryData, QueryType.TOKEN, consumer);
       return tokens;
    }
 
    @Override
    public List<ArtifactId> loadArtifactIds(QueryData queryData) {
       List<ArtifactId> ids = new ArrayList<>(100);
-      loadArtifactX(queryData, QueryType.ID, stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))));
+      selectiveArtifactLoad(queryData, QueryType.ID, stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))));
       return ids;
    }
 
-   private void loadArtifactX(QueryData queryData, QueryType queryType, Consumer<JdbcStatement> consumer) {
-      ArtifactQuerySqlContext queryContext =
-         (ArtifactQuerySqlContext) artifactSqlContextFactory.createQueryContext(null, queryData, queryType);
-      jdbcClient.runQuery(consumer, JDBC__MAX_FETCH_SIZE, queryContext.getSql(),
-         queryContext.getParameters().toArray());
-      queryData.reset();
+   private void selectiveArtifactLoad(QueryData queryData, QueryType queryType, Consumer<JdbcStatement> consumer) {
+      new SelectiveArtifactSqlWriter(sqlJoinFactory, jdbcClient, queryData, queryType).runSql(consumer, handlerFactory);
    }
 
    @Override

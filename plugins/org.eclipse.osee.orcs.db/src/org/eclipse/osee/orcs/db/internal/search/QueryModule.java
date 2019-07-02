@@ -18,14 +18,15 @@ import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.KeyValueStore;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
+import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQuerySqlContextFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.engines.QueryEngineImpl;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexerConstants;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
@@ -71,8 +72,9 @@ public class QueryModule {
       return queryIndexer;
    }
 
-   public QueryEngine createQueryEngine(DataLoaderFactory loaderFactory, AttributeTypes attributeTypes, ArtifactTypes artifactTypes, SqlObjectLoader sqlObjectLoader, KeyValueStore keyValue) {
-      QuerySqlContextFactory artifactSqlContextFactory =
+   public QueryEngine createQueryEngine(DataLoaderFactory loaderFactory, OrcsTypes orcsTypes, SqlObjectLoader sqlObjectLoader, KeyValueStore keyValue) {
+      AttributeTypes attributeTypes = orcsTypes.getAttributeTypes();
+      ArtifactQuerySqlContextFactoryImpl artifactSqlContextFactory =
          Engines.createArtifactSqlContext(logger, sqlJoinFactory, idService, jdbcClient, taggingEngine);
       QueryCallableFactory factory1 = newArtifactQueryEngine(artifactSqlContextFactory, logger, taggingEngine,
          executorAdmin, loaderFactory, attributeTypes);
@@ -84,6 +86,6 @@ public class QueryModule {
       QueryCallableFactory factory4 = newQueryEngine(logger, sqlJoinFactory, idService, jdbcClient, taggingEngine,
          executorAdmin, loaderFactory, attributeTypes);
       return new QueryEngineImpl(factory1, branchSqlContextFactory, txSqlContextFactory, factory4, jdbcClient,
-         sqlJoinFactory, artifactSqlContextFactory, sqlObjectLoader, artifactTypes, attributeTypes, keyValue);
+         sqlJoinFactory, artifactSqlContextFactory.getHandlerFactory(), sqlObjectLoader, orcsTypes, keyValue);
    }
 }
