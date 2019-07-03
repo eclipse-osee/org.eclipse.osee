@@ -54,6 +54,7 @@
 							   <plugin id="org.eclipse.jetty.security" />
 							   <plugin id="org.eclipse.jetty.server" />
 							   <plugin id="org.eclipse.jetty.servlet" />
+							   <plugin id="javax.xml.stream" />
 							   <plugin id="org.eclipse.jetty.util" />
 							   <plugin id="org.eclipse.osee.logback.config" />							
 							   <plugin id="org.eclipse.osee.web.ui" />					

@@ -387,14 +387,14 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>  
-
+   
    <plugin
-         id="javax.xml.bind"
+         id="javax.xml.stream"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false" />   
-         
+         unpack="false" />
+                 
    <plugin
          id="com.fasterxml.jackson.core.jackson-core"
          download-size="0"
@@ -800,7 +800,7 @@
          id="org.objectweb.asm"
          download-size="0"
          install-size="0"
-         version="5.0.1"
+         version="6.1.1"
          unpack="false"/>
 
    <plugin

@@ -37,13 +37,27 @@
       <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.9.2" match="greaterOrEqual" />  
     </requires>
                   
-  <plugin
+   <plugin
          id="javax.xml.bind"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false" />  
    
+    <plugin
+         id="javax.xml.stream"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false" />
+   
+   <plugin
+         id="org.objectweb.asm"
+         download-size="0"
+         install-size="0"
+         version="6.1.1"
+         unpack="false"/>     
+            
    <plugin
          id="org.eclipse.jdt.launching"
          download-size="0"
@@ -351,13 +365,6 @@
 
    <plugin
          id="ch.qos.logback.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.objectweb.asm"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -34,7 +34,21 @@
          install-size="0"
          version="0.0.0"
          unpack="false" />
+         
+  <plugin
+         id="javax.xml.stream"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false" />
    
+   <plugin
+         id="org.objectweb.asm"
+         download-size="0"
+         install-size="0"
+         version="6.1.1"
+         unpack="false"/>     
+               
    <plugin
          id="rest.assured"
          download-size="0"
@@ -745,13 +759,6 @@
 
    <plugin
          id="org.eclipse.xtext.common.types"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.objectweb.asm"
          download-size="0"
          install-size="0"
          version="0.0.0"

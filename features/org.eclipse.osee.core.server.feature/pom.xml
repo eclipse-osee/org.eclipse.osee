@@ -29,6 +29,7 @@
 							        <plugin id="org.hamcrest" />
 							        <plugin id="com.jcraft.jsch" />
 							        <plugin id="javax.xml.bind" />
+							        <plugin id="javax.xml.stream" />
 							</excludes>
 						</configuration>
 					</execution>
