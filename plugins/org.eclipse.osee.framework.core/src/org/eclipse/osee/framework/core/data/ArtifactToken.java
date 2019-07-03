@@ -98,6 +98,10 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, Identity<
          this.guid = guid;
       }
 
+      public ArtifactTokenImpl(Long id, String name, IOseeBranch common, ArtifactTypeToken artifactType) {
+         this(id, GUID.create(), name, common, artifactType);
+      }
+
       @Override
       public ArtifactTypeToken getArtifactType() {
          return artifactType;

@@ -140,6 +140,7 @@ public class AtsBranchUtil {
    public static Job createWorkingBranch_Create(final IAtsTeamWorkflow teamWf, final BranchId parentBranch, boolean pend) {
       Conditions.checkNotNull(teamWf, "Parent Team Workflow");
       Conditions.checkNotNull(parentBranch, "Parent Branch");
+      Conditions.checkValid(parentBranch, "Parent Branch");
       TransactionToken parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       return createWorkingBranch(teamWf, parentTransactionId, pend);
    }

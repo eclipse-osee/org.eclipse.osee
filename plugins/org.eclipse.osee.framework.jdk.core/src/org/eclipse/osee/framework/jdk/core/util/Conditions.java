@@ -240,4 +240,8 @@ public final class Conditions {
    public static void assertFalse(boolean value, String message, Object... data) {
       assertTrue(!value, message, data);
    }
+
+   public static void checkValid(Id id, String string, Object... data) {
+      assertTrue(id.isValid(), string);
+   }
 }

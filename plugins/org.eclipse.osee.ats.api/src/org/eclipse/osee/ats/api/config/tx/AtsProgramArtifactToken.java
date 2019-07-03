@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.api.config.tx;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.data.ArtifactToken.ArtifactTokenImpl;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
  * @author Donald G. Dunne
@@ -21,11 +21,19 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 public class AtsProgramArtifactToken extends ArtifactTokenImpl implements IAtsProgramArtifactToken {
 
    public AtsProgramArtifactToken(Long id, String name) {
-      super(id, GUID.create(), name, CoreBranches.COMMON, AtsArtifactTypes.Program);
+      super(id, name, CoreBranches.COMMON, AtsArtifactTypes.Program);
+   }
+
+   public AtsProgramArtifactToken(Long id, String name, ArtifactTypeToken artifactType) {
+      super(id, name, CoreBranches.COMMON, artifactType);
    }
 
    public static IAtsProgramArtifactToken valueOf(Long id, String name) {
       return new AtsProgramArtifactToken(id, name);
+   }
+
+   public static IAtsProgramArtifactToken valueOf(long id, String name, ArtifactTypeToken artifactType) {
+      return new AtsProgramArtifactToken(id, name, artifactType);
    }
 
 }

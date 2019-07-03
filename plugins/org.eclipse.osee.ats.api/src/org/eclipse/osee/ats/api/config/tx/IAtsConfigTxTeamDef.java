@@ -44,7 +44,7 @@ public interface IAtsConfigTxTeamDef {
 
    IAtsConfigTxTeamDef andAccessContextId(String contextId);
 
-   IAtsConfigTxTeamDef andVersion(String name, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease);
+   IAtsConfigTxTeamDef andVersion(String name, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IOseeBranch... parallelVersions);
 
    IAtsConfigTxTeamDef createChildTeamDef(IAtsTeamDefinition parent, IAtsTeamDefinitionArtifactToken teamDef);
 
@@ -52,7 +52,7 @@ public interface IAtsConfigTxTeamDef {
 
    IAtsTeamDefinition getTeamDef();
 
-   IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken version, ReleasedOption released, IOseeBranch branch, NextRelease none);
+   IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken version, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IOseeBranch... parallelVersions);
 
    IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken... verToks);
 }
