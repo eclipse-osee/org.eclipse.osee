@@ -222,7 +222,7 @@ public class ArtifactEventTest {
       DefaultBasicUuidRelationReorder guidReorder = listener.getReorders().iterator().next();
       Assert.assertEquals(RelationOrderModType.Absolute, guidReorder.getModType());
       Assert.assertEquals(newArt.getGuid(), guidReorder.getParentArt().getGuid());
-      Assert.assertEquals(newArt.getArtifactTypeId(), guidReorder.getParentArt().getArtifactType());
+      Assert.assertEquals(newArt.getArtifactType(), guidReorder.getParentArt().getArtifactType());
       Assert.assertTrue(newArt.isOnSameBranch(guidReorder));
       Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidReorder.getRelTypeGuid());
 
@@ -260,7 +260,7 @@ public class ArtifactEventTest {
          Assert.assertTrue(listener.getSender().isLocal());
       }
       Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
-      Assert.assertEquals(newArt.getArtifactTypeId(), guidArt.getArtifactType());
+      Assert.assertEquals(newArt.getArtifactType(), guidArt.getArtifactType());
       Assert.assertTrue(newArt.isOnSameBranch(guidArt));
    }
 
@@ -292,7 +292,7 @@ public class ArtifactEventTest {
          Assert.assertEquals(EventModType.Reloaded, guidArt.getModType());
          Assert.assertTrue(listener.getSender().isLocal());
          Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
-         Assert.assertEquals(newArt.getArtifactTypeId(), guidArt.getArtifactType());
+         Assert.assertEquals(newArt.getArtifactType(), guidArt.getArtifactType());
          Assert.assertTrue(newArt.isOnSameBranch(guidArt));
       }
    }
@@ -399,7 +399,7 @@ public class ArtifactEventTest {
             modifiedFound = true;
          }
          Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
-         Assert.assertEquals(newArt.getArtifactTypeId(), guidArt.getArtifactType());
+         Assert.assertEquals(newArt.getArtifactType(), guidArt.getArtifactType());
          Assert.assertTrue(newArt.isOnSameBranch(guidArt));
       }
       Assert.assertTrue(addedFound);
@@ -450,7 +450,7 @@ public class ArtifactEventTest {
       EventBasicGuidArtifact guidArt = listener.getArtifacts().iterator().next();
       Assert.assertEquals(EventModType.Modified, guidArt.getModType());
       Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
-      Assert.assertEquals(newArt.getArtifactTypeId(), guidArt.getArtifactType());
+      Assert.assertEquals(newArt.getArtifactType(), guidArt.getArtifactType());
       Assert.assertTrue(newArt.isOnSameBranch(guidArt));
       Assert.assertFalse(newArt.isDirty());
    }
@@ -506,7 +506,7 @@ public class ArtifactEventTest {
             modifiedFound = true;
          }
          Assert.assertEquals(newArt.getGuid(), guidArt1.getGuid());
-         Assert.assertEquals(newArt.getArtifactTypeId(), guidArt1.getArtifactType());
+         Assert.assertEquals(newArt.getArtifactType(), guidArt1.getArtifactType());
          Assert.assertTrue(newArt.isOnSameBranch(guidArt1));
       }
       Assert.assertTrue(deletedFound);
@@ -743,7 +743,7 @@ public class ArtifactEventTest {
          (EventModifiedBasicGuidArtifact) listener.getArtifacts().iterator().next();
       Assert.assertEquals(EventModType.Modified, guidArt.getModType());
       Assert.assertEquals(injectArt.getGuid(), guidArt.getGuid());
-      Assert.assertEquals(injectArt.getArtifactTypeId(), guidArt.getArtifactType());
+      Assert.assertEquals(injectArt.getArtifactType(), guidArt.getArtifactType());
       Assert.assertTrue(injectArt.isOnSameBranch(guidArt));
       Assert.assertEquals(1, guidArt.getAttributeChanges().size());
 
@@ -794,7 +794,7 @@ public class ArtifactEventTest {
          (EventModifiedBasicGuidArtifact) listener.getArtifacts().iterator().next();
       Assert.assertEquals(EventModType.Modified, guidArt.getModType());
       Assert.assertEquals(injectArt.getGuid(), guidArt.getGuid());
-      Assert.assertEquals(injectArt.getArtifactTypeId(), guidArt.getArtifactType());
+      Assert.assertEquals(injectArt.getArtifactType(), guidArt.getArtifactType());
       Assert.assertTrue(injectArt.isOnSameBranch(guidArt));
       Assert.assertEquals(1, guidArt.getAttributeChanges().size());
 
@@ -846,7 +846,7 @@ public class ArtifactEventTest {
       // Artifact is modified, attribute id deleted
       Assert.assertEquals(EventModType.Modified, guidArt.getModType());
       Assert.assertEquals(injectArt.getGuid(), guidArt.getGuid());
-      Assert.assertEquals(injectArt.getArtifactTypeId(), guidArt.getArtifactType());
+      Assert.assertEquals(injectArt.getArtifactType(), guidArt.getArtifactType());
       Assert.assertTrue(injectArt.isOnSameBranch(guidArt));
       Assert.assertEquals(1, guidArt.getAttributeChanges().size());
 
@@ -874,8 +874,7 @@ public class ArtifactEventTest {
 
       private final Set<EventBasicGuidArtifact> resultEventArtifacts = new HashSet<>();
       private final Set<EventBasicGuidRelation> resultEventRelations = new HashSet<>();
-      private final Set<DefaultBasicUuidRelationReorder> resultEventReorders =
-         new HashSet<>();
+      private final Set<DefaultBasicUuidRelationReorder> resultEventReorders = new HashSet<>();
 
       private Sender resultSender;
 

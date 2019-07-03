@@ -118,7 +118,7 @@ public class FrameworkEventToRemoteEventListenerTest {
       RemoteBasicGuidArtifact1 remGuidArt = new RemoteBasicGuidArtifact1();
       remGuidArt.setModTypeGuid(EventModType.Modified.getGuid());
       remGuidArt.setBranch(BRANCH);
-      remGuidArt.setArtifactType(modifiedArt.getArtifactTypeId());
+      remGuidArt.setArtifactType(modifiedArt.getArtifactType());
       remGuidArt.setArtGuid(modifiedArt.getGuid());
 
       remoteEvent.getArtifacts().add(remGuidArt);

@@ -25,10 +25,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -147,7 +147,7 @@ public class ChangeArtifactType {
                deleteInvalidRelations(artifact, newArtifactType);
                addTransaction(artifact, txMap);
                artifactChanges.add(new EventChangeTypeBasicGuidArtifact(artifact.getBranch(),
-                  artifact.getArtifactTypeId(), newArtifactType, artifact.getGuid()));
+                  artifact.getArtifactType(), newArtifactType, artifact.getGuid()));
             }
          }
       } finally {

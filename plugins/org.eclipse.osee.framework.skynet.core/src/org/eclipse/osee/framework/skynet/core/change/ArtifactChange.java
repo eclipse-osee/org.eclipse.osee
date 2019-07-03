@@ -40,7 +40,7 @@ public final class ArtifactChange extends Change {
 
    @Override
    public String getItemTypeName() {
-      return getArtifactType().getName();
+      return getChangeArtifact().getArtifactType().getName();
    }
 
    @Override
@@ -60,7 +60,7 @@ public final class ArtifactChange extends Change {
 
    @Override
    public Id getItemTypeId() {
-      return getArtifactType();
+      return getChangeArtifact().getArtifactType();
    }
 
    @Override

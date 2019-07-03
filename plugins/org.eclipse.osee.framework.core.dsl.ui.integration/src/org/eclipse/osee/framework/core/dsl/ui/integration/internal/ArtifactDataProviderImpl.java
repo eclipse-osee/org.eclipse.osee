@@ -15,11 +15,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -70,8 +71,13 @@ public final class ArtifactDataProviderImpl implements ArtifactDataProvider {
       }
 
       @Override
-      public ArtifactType getArtifactType() {
+      public ArtifactTypeToken getArtifactType() {
          return self.getArtifactType();
+      }
+
+      @Override
+      public boolean isOfType(ArtifactTypeId... artifactTypes) {
+         return self.isOfType(artifactTypes);
       }
 
       @Override

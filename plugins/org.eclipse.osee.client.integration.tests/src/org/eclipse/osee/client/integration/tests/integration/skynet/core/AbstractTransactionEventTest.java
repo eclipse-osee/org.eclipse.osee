@@ -127,7 +127,7 @@ public abstract class AbstractTransactionEventTest {
       Assert.assertEquals(newArt.getGuid(),
          transactionChanges.iterator().next().getArtifacts().iterator().next().getGuid());
       Assert.assertTrue(
-         transactionChanges.iterator().next().getArtifacts().iterator().next().isTypeEqual(newArt.getArtifactTypeId()));
+         transactionChanges.iterator().next().getArtifacts().iterator().next().isTypeEqual(newArt.getArtifactType()));
    }
 
    private void assertSender(Sender sender) {

@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
 import org.eclipse.osee.framework.core.model.access.Scope;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 
 /**
  * @author Roberto E. Escobar
@@ -43,13 +42,10 @@ public class ArtifactTypeRestrictionHandler implements RestrictionHandler<Artifa
          XArtifactType artifactTypeRef = restriction.getArtifactTypeRef();
          ArtifactTypeToken typeToMatch = OseeUtil.toToken(artifactTypeRef);
 
-         ArtifactType artifactType = artifactProxy.getArtifactType();
-         boolean isOfType = artifactType != null && artifactType.inheritsFrom(typeToMatch);
-         if (isOfType) {
+         if (artifactProxy.isOfType(typeToMatch)) {
             PermissionEnum permission = OseeUtil.getPermission(restriction);
-            collector.collect(new AccessDetail<ArtifactTypeToken>(artifactType, permission, scope));
+            collector.collect(new AccessDetail<ArtifactTypeToken>(artifactProxy.getArtifactType(), permission, scope));
          }
       }
    }
-
 }

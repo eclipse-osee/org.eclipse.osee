@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.ide.blam.operation;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Requirement;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,11 +18,9 @@ import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.result.Manipulations;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -58,7 +57,7 @@ public class RequirementsTestReport extends AbstractBlam {
    private void processArtifacts(Artifact node) throws IOException {
       Collection<Artifact> children = node.getChildren();
 
-      if (isRequirement(node)) {
+      if (node.isOfType(Requirement)) {
          processRequirement(node);
       } else {
          reportLine(getReqCellOutput(node), "N/A (" + node.getArtifactTypeName() + ")", EMPTY, EMPTY);
@@ -102,15 +101,6 @@ public class RequirementsTestReport extends AbstractBlam {
       String reqName = req.getName();
       String returnValue = paragraphNumber + SPACE + reqName;
       return returnValue;
-   }
-
-   private boolean isRequirement(Artifact src) {
-      ArtifactType temp = src.getArtifactType();
-      if (temp.inheritsFrom(CoreArtifactTypes.Requirement)) {
-         return true;
-      }
-
-      return false;
    }
 
    private void reportLine(String... cells) {

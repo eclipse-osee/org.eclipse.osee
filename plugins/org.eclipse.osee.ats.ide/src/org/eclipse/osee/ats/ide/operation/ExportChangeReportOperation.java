@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.change.CompareData;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
@@ -114,9 +113,8 @@ public final class ExportChangeReportOperation extends AbstractOperation {
                while (it.hasNext()) {
                   ArtifactDelta next = it.next();
                   Artifact endArtifact = next.getEndArtifact();
-                  ArtifactType artifactType = endArtifact.getArtifactType();
-                  if (artifactType.inheritsFrom(
-                     DISALLOW_TYPES) || !artifactType.inheritsFrom(ExportChangeReportUtil.ARTIFACT_ALLOW_TYPES)) {
+                  if (endArtifact.isOfType(
+                     DISALLOW_TYPES) || !endArtifact.isOfType(ExportChangeReportUtil.ARTIFACT_ALLOW_TYPES)) {
                      it.remove();
                      artIds.remove(ArtifactId.valueOf(endArtifact.getArtId()));
                      if (debug) {

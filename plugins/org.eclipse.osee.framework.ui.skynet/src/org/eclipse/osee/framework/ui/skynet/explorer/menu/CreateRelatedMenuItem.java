@@ -18,8 +18,8 @@ import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -115,10 +115,10 @@ public class CreateRelatedMenuItem implements SelectionListener {
 
             List<RelationTypeSide> validRelationTypes = new LinkedList<>();
             for (RelationType relType : RelationTypeManager.getValidTypes(parentArt.getBranch())) {
-               if (relType.isArtifactTypeAllowed(RelationSide.SIDE_A, parentArt.getArtifactType())) {
+               if (relType.isArtifactTypeAllowed(RelationSide.SIDE_A, parentArt.getArtifactTypeFull())) {
                   validRelationTypes.add(new RelationTypeSide(relType, RelationSide.SIDE_B));
                }
-               if (relType.isArtifactTypeAllowed(RelationSide.SIDE_B, parentArt.getArtifactType())) {
+               if (relType.isArtifactTypeAllowed(RelationSide.SIDE_B, parentArt.getArtifactTypeFull())) {
                   validRelationTypes.add(new RelationTypeSide(relType, RelationSide.SIDE_A));
                }
             }

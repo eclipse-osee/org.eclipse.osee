@@ -117,7 +117,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    private ModificationType lastValidModType;
    private EditState objectEditState;
    private boolean useBackingData;
-   private ArtifactTypeToken artifactTypeId;
+   private ArtifactTypeToken artifactType;
    private ApplicabilityId applicabilityId;
 
    private final String guid;
@@ -130,10 +130,10 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       this(id, null, branch, artifactTypeId);
    }
 
-   public Artifact(Long id, String guid, BranchId branch, ArtifactTypeToken artifactTypeId) {
+   public Artifact(Long id, String guid, BranchId branch, ArtifactTypeToken artifactType) {
       super(id, null);
       this.guid = GUID.checkOrCreate(guid);
-      this.artifactTypeId = artifactTypeId;
+      this.artifactType = artifactType;
       objectEditState = EditState.NO_CHANGE;
       internalSetModType(ModificationType.NEW, false);
       internalSetApplicablityId(ApplicabilityId.BASE);
@@ -289,7 +289,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * sub-types included; otherwise us the less expensive isTypeEqual()
     */
    public final boolean isOfType(ArtifactTypeId... artifactTypes) {
-      return getArtifactType().inheritsFrom(artifactTypes);
+      return getArtifactTypeFull().inheritsFrom(artifactTypes);
    }
 
    @Override
@@ -468,7 +468,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    public List<Artifact> getDescendantsWithArtTypes(Collection<ArtifactType> descendantTypes) {
       List<Artifact> descendants = new LinkedList<>();
       for (Artifact child : getChildren()) {
-         ArtifactType childArtType = child.getArtifactType();
+         ArtifactTypeToken childArtType = child.getArtifactType();
          if (descendantTypes.contains(childArtType)) {
             descendants.add(child);
          }
@@ -534,7 +534,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       if (attributeType.equals(CoreAttributeTypes.Name)) {
          return true;
       }
-      return getArtifactType().isValidAttributeType(attributeType, BranchManager.getBranch(branch));
+      return getArtifactTypeFull().isValidAttributeType(attributeType, BranchManager.getBranch(branch));
    }
 
    public final boolean isRelationTypeValid(IRelationType relationType) {
@@ -627,7 +627,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    public final Collection<AttributeTypeToken> getAttributeTypes() {
-      return getArtifactType().getAttributeTypes(BranchManager.getBranch(branch));
+      return getArtifactTypeFull().getAttributeTypes(BranchManager.getBranch(branch));
    }
 
    public final <T> Attribute<T> getSoleAttribute(AttributeTypeId attributeType) {
@@ -1441,13 +1441,13 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return linksLoaded;
    }
 
-   @Override
-   public final ArtifactType getArtifactType() {
-      return ArtifactTypeManager.getType(getArtifactTypeId());
+   public final ArtifactType getArtifactTypeFull() {
+      return ArtifactTypeManager.getType(artifactType);
    }
 
-   public final ArtifactTypeToken getArtifactTypeId() {
-      return artifactTypeId;
+   @Override
+   public final ArtifactTypeToken getArtifactType() {
+      return artifactType;
    }
 
    public final String getVersionedName() {
@@ -1544,8 +1544,8 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    Artifact introduceShallowArtifact(BranchId destinationBranch) {
-      Artifact shallowArt = ArtifactTypeManager.getFactory(getArtifactTypeId()).reflectExisitingArtifact(this,
-         getGuid(), getArtifactType(), gammaId, destinationBranch, modType, applicabilityId);
+      Artifact shallowArt = ArtifactTypeManager.getFactory(artifactType).reflectExisitingArtifact(this, getGuid(),
+         getArtifactType(), gammaId, destinationBranch, modType, applicabilityId);
       return shallowArt;
    }
 
@@ -1588,8 +1588,8 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * Changes the artifact type.
     */
    public final void setArtifactType(ArtifactTypeId artifactTypeId) {
-      if (this.artifactTypeId.notEqual(artifactTypeId)) {
-         this.artifactTypeId = ArtifactTypeManager.getType(artifactTypeId);
+      if (this.artifactType.notEqual(artifactTypeId)) {
+         this.artifactType = ArtifactTypeManager.getType(artifactTypeId);
          objectEditState = EditState.ARTIFACT_TYPE_MODIFIED;
          if (isInDb()) {
             internalSetModType(ModificationType.MODIFIED, false);
@@ -1748,7 +1748,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    public final DefaultBasicGuidArtifact getBasicGuidArtifact() {
-      return new DefaultBasicGuidArtifact(getBranch(), getArtifactTypeId(), this);
+      return new DefaultBasicGuidArtifact(getBranch(), artifactType, this);
    }
 
    public final Set<DefaultBasicUuidRelationReorder> getRelationOrderRecords() {

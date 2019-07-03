@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
 import org.eclipse.osee.framework.core.model.access.Scope;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 
 /**
@@ -75,11 +74,10 @@ public class RelationTypeRestrictionHandler implements RestrictionHandler<Relati
          } else if (predicate instanceof RelationTypeArtifactTypePredicate) {
             RelationTypeArtifactTypePredicate artifactTypePredicate = (RelationTypeArtifactTypePredicate) predicate;
             XArtifactType artifactTypeRef = artifactTypePredicate.getArtifactTypeRef();
-            ArtifactType artifactType = artifactProxy.getArtifactType();
-            if (artifactTypeRef != null && artifactType != null) {
+            if (artifactTypeRef != null) {
                ArtifactTypeToken ruleType =
                   ArtifactTypeToken.valueOf(Long.valueOf(artifactTypeRef.getId()), artifactTypeRef.getName());
-               if (artifactType.inheritsFrom(ruleType)) {
+               if (artifactProxy.isOfType(ruleType)) {
                   toUse = scope.clone().addSubPath(artifactProxy.getName());
                }
             }

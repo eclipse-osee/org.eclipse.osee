@@ -420,7 +420,7 @@ public class RelationManager {
     * side relationSide for relations of type relationType
     */
    private static void ensureSideWillSupport(Artifact artifact, RelationType relationType, RelationSide relationSide, int artifactCount) {
-      if (!relationType.isArtifactTypeAllowed(relationSide, artifact.getArtifactType())) {
+      if (!relationType.isArtifactTypeAllowed(relationSide, artifact.getArtifactTypeFull())) {
          throw new OseeArgumentException(String.format(
             "Artifact [%s] of type [%s] does not belong on side [%s] of relation [%s] - only artifacts of type [%s] are allowed",
             artifact.getName(), artifact.getArtifactTypeName(), relationType.getSideName(relationSide),

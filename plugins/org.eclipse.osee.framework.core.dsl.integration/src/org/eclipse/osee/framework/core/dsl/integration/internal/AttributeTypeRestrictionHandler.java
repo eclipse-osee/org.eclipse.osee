@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration.internal;
 
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AttributeTypeRestriction;
@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
 import org.eclipse.osee.framework.core.model.access.Scope;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 
 /**
  * @author Roberto E. Escobar
@@ -50,8 +49,7 @@ public class AttributeTypeRestrictionHandler implements RestrictionHandler<Attri
             if (artifactTypeRef != null) {
                isApplicable = false;
                ArtifactTypeToken typeToMatch = OseeUtil.toToken(artifactTypeRef);
-               ArtifactType artifactType = artifactProxy.getArtifactType();
-               isApplicable = artifactType.inheritsFrom(typeToMatch);
+               isApplicable = artifactProxy.isOfType(typeToMatch);
             }
          }
 

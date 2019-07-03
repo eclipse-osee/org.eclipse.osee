@@ -22,11 +22,11 @@ import org.apache.commons.io.FilenameUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.JsonUtil;
@@ -366,9 +366,9 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
       return isSame;
    }
 
-   public static IArtifactExtractor getArtifactExtractor(ArtifactType type) {
+   public static IArtifactExtractor getArtifactExtractor(ArtifactTypeToken artifactType) {
       IArtifactExtractor extractor = null;
-      if (type.inheritsFrom(CoreArtifactTypes.GeneralDocument)) {
+      if (ArtifactTypeManager.getType(artifactType).inheritsFrom(CoreArtifactTypes.GeneralDocument)) {
          extractor = new NativeDocumentExtractor();
       } else {
          extractor = new WholeWordDocumentExtractor();
