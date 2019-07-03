@@ -88,13 +88,13 @@ public class RelationManagerImpl implements RelationManager {
    @Override
    public int getMaximumRelationAllowed(RelationTypeId type, Artifact node, RelationSide side) {
       Conditions.checkNotNull(node, "node");
-      return validity.getMaximumRelationsAllowed(type, node.getArtifactTypeId(), side);
+      return validity.getMaximumRelationsAllowed(type, node.getArtifactType(), side);
    }
 
    @Override
    public Collection<RelationTypeId> getValidRelationTypes(Artifact node) {
       Conditions.checkNotNull(node, "node");
-      return validity.getValidRelationTypes(node.getArtifactTypeId());
+      return validity.getValidRelationTypes(node.getArtifactType());
    }
 
    @Override
@@ -256,7 +256,7 @@ public class RelationManagerImpl implements RelationManager {
 
    private void checkMultiplicityCanAdd(RelationTypeId type, Artifact aNode, Artifact bNode) {
       int bSideCount = getRelations(type, aNode, SIDE_A, EXCLUDE_DELETED).size();
-      int bSideMax = validity.getMaximumRelationsAllowed(type, bNode.getArtifactTypeId(), SIDE_B);
+      int bSideMax = validity.getMaximumRelationsAllowed(type, bNode.getArtifactType(), SIDE_B);
 
       if (bSideCount >= bSideMax) {
          throw new OseeStateException("Relation type [%s] on [%s] exceeds max occurrence rule on [%s]", type, SIDE_B,
@@ -264,7 +264,7 @@ public class RelationManagerImpl implements RelationManager {
       }
 
       int aSideCount = getRelations(type, bNode, SIDE_B, EXCLUDE_DELETED).size();
-      int aSideMax = validity.getMaximumRelationsAllowed(type, aNode.getArtifactTypeId(), SIDE_A);
+      int aSideMax = validity.getMaximumRelationsAllowed(type, aNode.getArtifactType(), SIDE_A);
 
       if (aSideCount >= aSideMax) {
          throw new OseeStateException("Relation type [%s] on [%s] exceeds max occurrence rule on [%s]", type, SIDE_A,

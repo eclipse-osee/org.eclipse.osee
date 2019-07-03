@@ -19,8 +19,8 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.rule.validation.AbstractValidationRule;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -34,8 +34,7 @@ public class UniqueNameRule extends AbstractValidationRule {
 
    private final ArtifactTypeToken artifactType;
    private final Collection<IdPair> idPairs = new LinkedList<>();
-   private final Map<ArtifactTypeToken, List<ArtifactToken>> artTypeToArtifacts =
-      new HashMap<>();
+   private final Map<ArtifactTypeToken, List<ArtifactToken>> artTypeToArtifacts = new HashMap<>();
 
    public UniqueNameRule(ArtifactTypeToken artifactType, AtsApi atsApi) {
       super(atsApi);
@@ -50,7 +49,7 @@ public class UniqueNameRule extends AbstractValidationRule {
    public void validate(ArtifactToken artifact, XResultData results) {
       if (hasArtifactType(atsApi.getStoreService().getArtifactType(artifact))) {
          // validate that no other artifact of the given Artifact Type has the same name.
-         List<ArtifactToken> arts = getArtifactsOfType(artifact.getBranch(), artifact.getArtifactTypeId());
+         List<ArtifactToken> arts = getArtifactsOfType(artifact.getBranch(), artifact.getArtifactType());
          for (ArtifactToken art : arts) {
             if (art.getName().equalsIgnoreCase(artifact.getName()) && art.notEqual(
                artifact) && !hasIdPairAlreadyBeenEvaluated(art.getId(), artifact.getId())) {
@@ -59,7 +58,7 @@ public class UniqueNameRule extends AbstractValidationRule {
                 * 1) Artifact name is numeric <br/>
                 * 2) Artifact type is different<br/>
                 */
-               if (Strings.isNumeric(artifact.getName()) && !artifact.isTypeEqual(art.getArtifactTypeId())) {
+               if (Strings.isNumeric(artifact.getName()) && !artifact.isTypeEqual(art.getArtifactType())) {
                   continue;
                }
                /**************************************************************************
@@ -91,7 +90,7 @@ public class UniqueNameRule extends AbstractValidationRule {
    private boolean isImplementationDetailsChild(ArtifactId childArtifact, ArtifactId parentArtifact) {
       return atsApi.getStoreService().isOfType(parentArtifact, CoreArtifactTypes.SoftwareRequirement) && //
          atsApi.getStoreService().isOfType(childArtifact, CoreArtifactTypes.AbstractImplementationDetails) && //
-            atsApi.getRelationResolver().getParent(childArtifact).equals(parentArtifact);
+         atsApi.getRelationResolver().getParent(childArtifact).equals(parentArtifact);
    }
 
    private void addIdPair(Long idA, Long idB) {

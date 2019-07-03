@@ -132,7 +132,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public ArtifactToken createArtifact(ArtifactToken token) {
-      return txManager.createArtifact(txData, token.getArtifactTypeId(), token.getName(), token.getUuid());
+      return txManager.createArtifact(txData, token.getArtifactType(), token.getName(), token.getUuid());
    }
 
    @Override

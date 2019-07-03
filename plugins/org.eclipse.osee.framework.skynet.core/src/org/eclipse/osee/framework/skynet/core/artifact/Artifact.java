@@ -1441,11 +1441,11 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return linksLoaded;
    }
 
+   @Override
    public final ArtifactType getArtifactType() {
       return ArtifactTypeManager.getType(getArtifactTypeId());
    }
 
-   @Override
    public final ArtifactTypeToken getArtifactTypeId() {
       return artifactTypeId;
    }

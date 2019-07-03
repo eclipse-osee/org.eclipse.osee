@@ -55,7 +55,7 @@ public abstract class AbstractValidationRule {
     * @return message with Artifact Editor hyperlink in form "<artifact type name> [art name][art id] <message> open"
     */
    public String getHyperlink(ArtifactToken artifact, String message) {
-      String artTypeName = atsApi.getStoreService().getArtifactTypeName(artifact.getArtifactTypeId());
+      String artTypeName = atsApi.getStoreService().getArtifactTypeName(artifact.getArtifactType());
       String link = getHyperlink("open", artifact.getIdString(), artifact.getBranch());
       return String.format("%s %s %s %s", artTypeName, artifact.toStringWithId(), message, link);
    }

@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.skynet.core;
 
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -44,7 +44,7 @@ public final class OseeSystemArtifacts {
    }
 
    public static Artifact getOrCreateArtifact(ArtifactToken artifactToken, BranchId branch) {
-      return getOrCreateCachedArtifact(artifactToken.getArtifactTypeId(), artifactToken.getName(), branch,
+      return getOrCreateCachedArtifact(artifactToken.getArtifactType(), artifactToken.getName(), branch,
          artifactToken.getGuid(), artifactToken.getUuid(), true);
    }
 

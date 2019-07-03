@@ -58,7 +58,7 @@ public class RelationTypeValidity {
       Conditions.checkNotNull(node, "node");
       Conditions.checkNotNull(side, "relationSide");
 
-      ArtifactTypeId artifactType = node.getArtifactTypeId();
+      ArtifactTypeId artifactType = node.getArtifactType();
       boolean isValid = isRelationTypeValid(type, artifactType, side);
       if (!isValid) {
          throw new OseeArgumentException(

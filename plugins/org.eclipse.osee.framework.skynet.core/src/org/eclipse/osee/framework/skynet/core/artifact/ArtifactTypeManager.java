@@ -23,9 +23,9 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -166,7 +166,7 @@ public class ArtifactTypeManager {
    }
 
    public static Artifact addArtifact(ArtifactToken artifactToken, BranchId branch) {
-      return addArtifact(artifactToken.getArtifactTypeId(), branch, artifactToken.getName(), artifactToken.getGuid(),
+      return addArtifact(artifactToken.getArtifactType(), branch, artifactToken.getName(), artifactToken.getGuid(),
          artifactToken.getId());
    }
 

@@ -86,9 +86,9 @@ public class RelationTransactionData extends BaseTransactionData {
       ArtifactToken artifactA = relation.getArtifactA();
       ArtifactToken artifactB = relation.getArtifactB();
       DefaultBasicGuidArtifact guidArtA =
-         new DefaultBasicGuidArtifact(artifactA.getBranch(), artifactA.getArtifactTypeId(), artifactA);
+         new DefaultBasicGuidArtifact(artifactA.getBranch(), artifactA.getArtifactType(), artifactA);
       DefaultBasicGuidArtifact guidArtB =
-         new DefaultBasicGuidArtifact(artifactB.getBranch(), artifactB.getArtifactTypeId(), artifactB);
+         new DefaultBasicGuidArtifact(artifactB.getBranch(), artifactB.getArtifactType(), artifactB);
 
       DefaultBasicIdRelation defaultBasicGuidRelation = new DefaultBasicIdRelation(relation.getBranch(),
          relation.getRelationType().getId(), relation.getId(), relation.getGammaId(), guidArtA, guidArtB);

@@ -100,11 +100,6 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public ArtifactTypeToken getArtifactTypeId() {
-      return artifactType;
-   }
-
-   @Override
    public boolean isOfType(ArtifactTypeId... otherTypes) {
       return getProxiedObject().isOfType(otherTypes);
    }
@@ -291,8 +286,8 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
 
    @Override
    public ResultSet<RelationReadable> getRelations(RelationTypeSide typeAndSide) {
-      return new ResultSetList<>(Collections.castAll(
-         getRelationManager().getRelations(getProxiedObject(), DeletionFlag.EXCLUDE_DELETED)));
+      return new ResultSetList<>(
+         Collections.castAll(getRelationManager().getRelations(getProxiedObject(), DeletionFlag.EXCLUDE_DELETED)));
    }
 
    @Override

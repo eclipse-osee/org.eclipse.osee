@@ -117,8 +117,8 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
                ArtifactToken artifactB = rel.getArtifactB();
                DefaultBasicIdRelation guidRelation =
                   new DefaultBasicIdRelation(branch, rel.getRelationType().getId(), rel.getId(), rel.getGammaId(),
-                     new DefaultBasicGuidArtifact(branch, artifactA.getArtifactTypeId(), artifactA),
-                     new DefaultBasicGuidArtifact(branch, artifactB.getArtifactTypeId(), artifactB));
+                     new DefaultBasicGuidArtifact(branch, artifactA.getArtifactType(), artifactA),
+                     new DefaultBasicGuidArtifact(branch, artifactB.getArtifactType(), artifactB));
                artifactEvent.addRelation(
                   new EventBasicGuidRelation(RelationEventType.Purged, artifactA, artifactB, guidRelation));
                rel.markAsPurged();

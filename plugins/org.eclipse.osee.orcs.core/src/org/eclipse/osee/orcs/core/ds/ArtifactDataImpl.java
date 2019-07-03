@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 
 /**
@@ -24,6 +24,11 @@ public class ArtifactDataImpl extends OrcsVersionedObjectImpl<ArtifactTypeToken>
 
    public ArtifactDataImpl(VersionData version) {
       super(version);
+   }
+
+   @Override
+   public ArtifactTypeToken getArtifactType() {
+      return getType();
    }
 
    @Override

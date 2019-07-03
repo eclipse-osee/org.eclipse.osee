@@ -14,10 +14,12 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.AbstractUserGroupImpl;
@@ -39,6 +41,11 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
 
    public UserGroupImpl(ArtifactToken userGroupArt) {
       super(userGroupArt);
+   }
+
+   @Override
+   public ArtifactTypeToken getArtifactType() {
+      return CoreArtifactTypes.UserGroup;
    }
 
    @Override

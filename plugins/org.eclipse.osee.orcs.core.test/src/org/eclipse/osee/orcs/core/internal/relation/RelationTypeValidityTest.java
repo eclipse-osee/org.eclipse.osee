@@ -228,7 +228,7 @@ public class RelationTypeValidityTest {
       when(relTypes.isArtifactTypeAllowed(TYPE_1, SIDE_A, artifactType)).thenReturn(true);
       when(relTypes.getArtifactType(TYPE_1, SIDE_B)).thenReturn(artifactType2);
 
-      when(node.getArtifactTypeId()).thenReturn(artifactType);
+      when(node.getArtifactType()).thenReturn(artifactType);
       when(node.getExceptionString()).thenReturn("node message");
 
       thrown.expect(OseeArgumentException.class);
@@ -239,7 +239,7 @@ public class RelationTypeValidityTest {
 
    @Test
    public void testCheckRelationTypeValidNoException() {
-      when(node.getArtifactTypeId()).thenReturn(artifactType);
+      when(node.getArtifactType()).thenReturn(artifactType);
       when(relTypes.isArtifactTypeAllowed(TYPE_1, SIDE_B, artifactType)).thenReturn(true);
       when(relTypes.getMultiplicity(TYPE_1)).thenReturn(ONE_TO_ONE);
 

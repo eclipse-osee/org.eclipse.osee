@@ -162,8 +162,8 @@ public class RelationManagerImplTest {
       node5 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 55L, "v");
       node6 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 66L, "u");
 
-      artifactType1 = node1.getArtifactTypeId();
-      artifactType2 = node2.getArtifactTypeId();
+      artifactType1 = node1.getArtifactType();
+      artifactType2 = node2.getArtifactType();
 
       when(graph.getTransaction()).thenReturn(TransactionId.SENTINEL);
 

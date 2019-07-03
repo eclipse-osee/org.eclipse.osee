@@ -131,7 +131,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
       if (artifact instanceof ArtifactReadable) {
          return ((ArtifactReadable) artifact).getArtifactType();
       }
-      return getQuery().andId(artifact).loadArtifactToken().getArtifactTypeId();
+      return getQuery().andId(artifact).loadArtifactToken().getArtifactType();
    }
 
    @Override

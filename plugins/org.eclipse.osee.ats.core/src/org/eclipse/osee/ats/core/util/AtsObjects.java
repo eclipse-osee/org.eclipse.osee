@@ -180,7 +180,7 @@ public class AtsObjects {
       } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.WorkPackage)) {
          configObject = atsApi.getEarnedValueService().getWorkPackage(artifact);
       } else {
-         throw new OseeArgumentException("Unexpected artifact type [%s]", artifact.getArtifactTypeId());
+         throw new OseeArgumentException("Unexpected artifact type [%s]", artifact.getArtifactType());
       }
       return configObject;
    }

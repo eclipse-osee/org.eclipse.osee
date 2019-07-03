@@ -57,7 +57,7 @@ public class ArtifactEndpointTest {
       ArtifactToken root = CoreArtifactTokens.DefaultHierarchyRoot;
 
       List<String> emptyStringList = Collections.emptyList();
-      List<String> artifactTypeList = Arrays.asList(root.getArtifactTypeId().getIdString());
+      List<String> artifactTypeList = Arrays.asList(root.getArtifactType().getIdString());
       Predicate predicate = new Predicate(SearchMethod.TYPE_EQUALS, emptyStringList, artifactTypeList);
       SearchRequest params = new SearchRequest(COMMON, Arrays.asList(predicate), RequestType.IDS, 0, false);
       SearchResponse response = artifactEndpoint.getSearchWithMatrixParams(params);

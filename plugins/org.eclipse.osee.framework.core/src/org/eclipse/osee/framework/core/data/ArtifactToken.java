@@ -31,12 +31,10 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, Identity<
       throw new UnsupportedOperationException("getGuid() is not supported");
    }
 
-   default ArtifactTypeToken getArtifactTypeId() {
-      return ArtifactTypeToken.SENTINEL;
-   }
+   ArtifactTypeToken getArtifactType();
 
    default boolean isTypeEqual(ArtifactTypeId artifactType) {
-      return artifactType.equals(getArtifactTypeId());
+      return artifactType.equals(getArtifactType());
    }
 
    public static ArtifactToken valueOf(Id id, BranchId branch) {
@@ -61,7 +59,7 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, Identity<
       } catch (UnsupportedOperationException ex) {
          // do nothing
       }
-      return valueOf(token.getId(), useGuid, token.getName(), branch, token.getArtifactTypeId());
+      return valueOf(token.getId(), useGuid, token.getName(), branch, token.getArtifactType());
    }
 
    public static ArtifactToken valueOf(long id, BranchId branch) {
@@ -101,7 +99,7 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, Identity<
       }
 
       @Override
-      public ArtifactTypeToken getArtifactTypeId() {
+      public ArtifactTypeToken getArtifactType() {
          return artifactType;
       }
 

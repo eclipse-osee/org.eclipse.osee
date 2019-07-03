@@ -50,7 +50,7 @@ public class ExternalArtifactManagerImpl implements ExternalArtifactManager {
    @Override
    public ArtifactReadable asExternalArtifact(OrcsSession session, Artifact artifact) {
       return artifact == null ? null : new ArtifactReadOnlyImpl(this, relationManager, session, artifact,
-         artifactTypeCache.get(artifact.getArtifactTypeId()));
+         artifactTypeCache.get(artifact.getArtifactType()));
    }
 
    @Override

@@ -503,7 +503,7 @@ public class AgileService implements IAgileService {
             items.add(atsApi.getWorkItemService().getAgileItem(art));
          } else {
             throw new OseeStateException("Inavlid artifact [%s] in [%s].  Only workflows are allowed, not [%s]",
-               art.toStringWithId(), backlogOrSprint, art.getArtifactTypeId());
+               art.toStringWithId(), backlogOrSprint, art.getArtifactType());
          }
       }
       return items;

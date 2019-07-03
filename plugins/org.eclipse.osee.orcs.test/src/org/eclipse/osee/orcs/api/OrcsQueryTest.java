@@ -209,7 +209,7 @@ public class OrcsQueryTest {
       ArtifactReadable artifact = builder.getResults().getExactlyOne();
 
       assertEquals("User Groups", artifact.getName());
-      assertEquals(CoreArtifactTypes.Folder, artifact.getArtifactTypeId());
+      assertEquals(CoreArtifactTypes.Folder, artifact.getArtifactType());
 
       if (includeMatchLocationTests) {
          Match<ArtifactReadable, AttributeReadable<?>> result = builder.getMatches().getExactlyOne();
@@ -558,7 +558,7 @@ public class OrcsQueryTest {
       List<ArtifactTypeToken> expected = Arrays.asList(types);
       for (ArtifactReadable art : arts) {
          assertTrue(String.format("artifact type [%s] not found", art.getArtifactType()),
-            expected.contains(art.getArtifactTypeId()));
+            expected.contains(art.getArtifactType()));
       }
    }
 

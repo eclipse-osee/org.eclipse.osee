@@ -175,9 +175,9 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
             ArtifactReadable.SENTINEL);
 
       if (introArt.getId().equals(ArtifactReadable.SENTINEL.getId())) {
-         introArt = orcsApi.getQueryFactory().fromBranch(fromBranch).andTypeEquals(
-            introToken.getArtifactTypeId()).andNameEquals(introToken.getName()).getResults().getAtMostOneOrDefault(
-               ArtifactReadable.SENTINEL);
+         introArt =
+            orcsApi.getQueryFactory().fromBranch(fromBranch).andTypeEquals(introToken.getArtifactType()).andNameEquals(
+               introToken.getName()).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
       }
       Conditions.assertNotSentinel(introArt);
 
@@ -188,8 +188,8 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
                ArtifactReadable.SENTINEL);
          if (parentArt.getId().equals(ArtifactReadable.SENTINEL.getId())) {
             parentArt = orcsApi.getQueryFactory().fromBranch(newBranch).andTypeEquals(
-               parentToken.getArtifactTypeId()).andNameEquals(
-                  parentToken.getName()).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+               parentToken.getArtifactType()).andNameEquals(parentToken.getName()).getResults().getAtMostOneOrDefault(
+                  ArtifactReadable.SENTINEL);
          }
       }
       tx.addChild(parentArt, artifact);

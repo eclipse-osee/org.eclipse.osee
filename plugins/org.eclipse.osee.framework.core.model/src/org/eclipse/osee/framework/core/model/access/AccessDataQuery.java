@@ -49,7 +49,7 @@ public class AccessDataQuery {
    }
 
    public void artifactTypeMatches(PermissionEnum permissionToMatch, ArtifactToken artifact, PermissionStatus permissionStatus) {
-      ArtifactTypeId typeToMatch = artifact.getArtifactTypeId();
+      ArtifactTypeId typeToMatch = artifact.getArtifactType();
       BranchId branchToMatch = artifact.getBranch();
       branchArtifactTypeMatches(permissionToMatch, branchToMatch, typeToMatch, permissionStatus);
       if (permissionStatus.matched()) {
@@ -68,7 +68,7 @@ public class AccessDataQuery {
             @Override
             public boolean accept(AccessDetail<?> access) {
                return access.getAccessObject().equals(artifact) || access.getAccessObject().equals(
-                  artifact.getArtifactTypeId());
+                  artifact.getArtifactType());
             }
          });
 

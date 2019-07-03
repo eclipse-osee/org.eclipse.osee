@@ -66,7 +66,7 @@ public interface UserToken extends ArtifactToken, UserId {
       }
 
       @Override
-      public ArtifactTypeToken getArtifactTypeId() {
+      public ArtifactTypeToken getArtifactType() {
          return CoreArtifactTypes.User;
       }
 

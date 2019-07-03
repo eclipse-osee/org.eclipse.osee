@@ -13,9 +13,9 @@ package org.eclipse.osee.orcs.core.internal.artifact;
 import static org.eclipse.osee.framework.core.enums.DirtyState.APPLICABILITY_ONLY;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -102,7 +102,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public ArtifactTypeToken getArtifactTypeId() {
+   public ArtifactTypeToken getArtifactType() {
       return getOrcsData().getType();
    }
 
@@ -124,7 +124,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    @Override
    public boolean isOfType(ArtifactTypeId... otherTypes) {
-      return artifactTypeCache.inheritsFrom(getArtifactTypeId(), otherTypes);
+      return artifactTypeCache.inheritsFrom(getArtifactType(), otherTypes);
    }
 
    @Override
@@ -149,18 +149,18 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    @Override
    public boolean isAttributeTypeValid(AttributeTypeToken attributeType) {
-      return artifactTypeCache.isValidAttributeType(getArtifactTypeId(), getBranch(), attributeType);
+      return artifactTypeCache.isValidAttributeType(getArtifactType(), getBranch(), attributeType);
    }
 
    @Override
    public Collection<AttributeTypeToken> getValidAttributeTypes() {
-      return artifactTypeCache.getAttributeTypes(getArtifactTypeId(), getBranch());
+      return artifactTypeCache.getAttributeTypes(getArtifactType(), getBranch());
    }
 
    @Override
    public String getExceptionString() {
       try {
-         return String.format("artifact type[%s] id[%s] on branch[%s]", getArtifactTypeId(), getId(), getBranch());
+         return String.format("artifact type[%s] id[%s] on branch[%s]", getArtifactType(), getId(), getBranch());
       } catch (OseeCoreException ex) {
          return Lib.exceptionToString(ex);
       }
@@ -213,7 +213,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    @Override
    public String toString() {
       try {
-         return String.format("artifact [type=[%s] artifact id=[%s] branch=[%s]]", getArtifactTypeId(), getId(),
+         return String.format("artifact [type=[%s] artifact id=[%s] branch=[%s]]", getArtifactType(), getId(),
             getBranch());
       } catch (OseeCoreException ex) {
          return Lib.exceptionToString(ex);

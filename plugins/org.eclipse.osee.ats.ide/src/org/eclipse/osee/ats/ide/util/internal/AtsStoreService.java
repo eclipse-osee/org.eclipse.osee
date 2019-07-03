@@ -139,7 +139,7 @@ public class AtsStoreService implements IAtsStoreService {
       if (artifact instanceof Artifact) {
          return AtsClientService.get().getQueryServiceClient().getArtifact(artifact).getArtifactType();
       }
-      return ArtifactQuery.getArtifactTokenFromId(atsApi.getAtsBranch(), artifact).getArtifactTypeId();
+      return ArtifactQuery.getArtifactTokenFromId(atsApi.getAtsBranch(), artifact).getArtifactType();
    }
 
    @Override

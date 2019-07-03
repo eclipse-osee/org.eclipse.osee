@@ -34,8 +34,6 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  * @author Andrew M. Finkbeiner
  */
 public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsReadable {
-   ArtifactTypeToken getArtifactType();
-
    TransactionId getLastModifiedTransaction();
 
    boolean isOfType(ArtifactTypeId... otherTypes);
