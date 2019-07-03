@@ -14,7 +14,7 @@ import org.eclipse.osee.ats.api.query.NextRelease;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinition;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.UserToken;
@@ -36,9 +36,9 @@ public interface IAtsConfigTxTeamDef {
 
    IAtsConfigTxTeamDef andPriviledgedMembers(UserToken... members);
 
-   IAtsConfigTxTeamDef andTeamWorkflowArtifactType(ArtifactTypeId artifactType);
+   IAtsConfigTxTeamDef andTeamWorkflowArtifactType(ArtifactTypeToken artifactType);
 
-   IAtsConfigTxTeamDef andRelatedTaskWorkflowArtifactType(ArtifactTypeId artifactType);
+   IAtsConfigTxTeamDef andRelatedTaskWorkflowArtifactType(ArtifactTypeToken artifactType);
 
    IAtsConfigTxTeamDef andRules(RuleDefinition... rules);
 

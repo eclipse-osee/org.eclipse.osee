@@ -263,15 +263,4 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    public boolean inheritsFrom(ArtifactTypeToken artType, ArtifactTypeToken... artifactType) {
       return orcsApi.getOrcsTypes().getArtifactTypes().inheritsFrom(artType, artifactType);
    }
-
-   @Override
-   public String getArtifactTypeName(ArtifactTypeToken artifactTypeId) {
-      return orcsApi.getOrcsTypes().getArtifactTypes().get(artifactTypeId).getName();
-   }
-
-   @Override
-   public String getArtifactTypeName(ArtifactTypeId artifactType) {
-      return orcsApi.getOrcsTypes().getArtifactTypes().get(artifactType).getName();
-   }
-
 }

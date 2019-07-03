@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.config.tx;
 
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.RelatedTaskWorkDefinitionReference;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.TeamWorkflowArtifactType;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -29,7 +31,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinition;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -131,16 +133,14 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
    }
 
    @Override
-   public IAtsConfigTxTeamDef andTeamWorkflowArtifactType(ArtifactTypeId artifactType) {
-      String artifactTypeName = atsApi.getStoreService().getArtifactTypeName(artifactType);
-      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.TeamWorkflowArtifactType, artifactTypeName);
+   public IAtsConfigTxTeamDef andTeamWorkflowArtifactType(ArtifactTypeToken artifactType) {
+      changes.setSoleAttributeValue(teamDef, TeamWorkflowArtifactType, artifactType.getName());
       return this;
    }
 
    @Override
-   public IAtsConfigTxTeamDef andRelatedTaskWorkflowArtifactType(ArtifactTypeId artifactType) {
-      String artifactTypeName = atsApi.getStoreService().getArtifactTypeName(artifactType);
-      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.RelatedTaskWorkDefinitionReference, artifactTypeName);
+   public IAtsConfigTxTeamDef andRelatedTaskWorkflowArtifactType(ArtifactTypeToken artifactType) {
+      changes.setSoleAttributeValue(teamDef, RelatedTaskWorkDefinitionReference, artifactType.getName());
       return this;
    }
 

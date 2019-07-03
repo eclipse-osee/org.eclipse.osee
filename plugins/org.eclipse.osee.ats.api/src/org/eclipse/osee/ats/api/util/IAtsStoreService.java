@@ -22,9 +22,9 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -112,9 +112,5 @@ public interface IAtsStoreService {
 
    boolean inheritsFrom(ArtifactTypeToken artType, ArtifactTypeToken... artifactType);
 
-   String getArtifactTypeName(ArtifactTypeToken artifactTypeId);
-
    boolean isHistorical(ArtifactId artifact);
-
-   String getArtifactTypeName(ArtifactTypeId artifactType);
 }
