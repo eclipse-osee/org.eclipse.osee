@@ -14,7 +14,6 @@ import org.eclipse.osee.framework.core.data.DataTestSuite;
 import org.eclipse.osee.framework.core.enums.EnumsTestSuite;
 import org.eclipse.osee.framework.core.exception.ExceptionTestSuite;
 import org.eclipse.osee.framework.core.executor.ExecutorAdminTestSuite;
-import org.eclipse.osee.framework.core.internal.InternalCoreTestSuite;
 import org.eclipse.osee.framework.core.operation.OperationTestSuite;
 import org.eclipse.osee.framework.core.ops.OpsTestSuite;
 import org.eclipse.osee.framework.core.util.UtilCoreTestSuite;
@@ -27,7 +26,6 @@ import org.junit.runners.Suite;
    EnumsTestSuite.class,
    ExceptionTestSuite.class,
    ExecutorAdminTestSuite.class,
-   InternalCoreTestSuite.class,
    UtilCoreTestSuite.class,
    OperationTestSuite.class,
    OpsTestSuite.class})
