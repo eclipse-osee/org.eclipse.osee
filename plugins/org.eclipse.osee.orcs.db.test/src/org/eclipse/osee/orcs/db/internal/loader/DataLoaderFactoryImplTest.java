@@ -17,7 +17,7 @@ import static org.eclipse.osee.orcs.db.mock.OseeDatabase.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -58,8 +58,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -113,8 +113,7 @@ public class DataLoaderFactoryImplTest {
       factory = module.createDataLoaderFactory(spyLoader);
 
       when(jdbcClient.getStatement()).thenReturn(chStmt);
-      when(jdbcClient.fetch(eq(TransactionId.SENTINEL), ArgumentMatchers.anyString(), eq(COMMON))).thenReturn(
-         EXPECTED_HEAD_TX);
+      when(jdbcClient.fetch(eq(TransactionId.SENTINEL), Matchers.anyString(), eq(COMMON))).thenReturn(EXPECTED_HEAD_TX);
    }
 
    @Test
