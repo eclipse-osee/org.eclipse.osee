@@ -151,12 +151,8 @@
 <plugin id="org.apache.xml.resolver"/>
 <plugin id="org.apache.xml.serializer"/>
 <plugin id="org.apache.xmlrpc"/>
-<plugin id="org.bouncycastle.bcpg"/>
-<plugin id="org.bouncycastle.bcpkix"/>
-<plugin id="org.bouncycastle.bcprov"/>
 <plugin id="org.codehaus.stax2"/>
 <plugin id="org.codehaus.stax2.source"/>
-<plugin id="org.cyberneko.html"/>
 <plugin id="org.eclipse.aether.api"/>
 <plugin id="org.eclipse.aether.connector.basic"/>
 <plugin id="org.eclipse.aether.impl"/>
