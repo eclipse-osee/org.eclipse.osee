@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
 import java.util.Properties;
@@ -23,7 +24,6 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import javax.script.SimpleScriptContext;
-import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -31,6 +31,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.rest.model.OrcsScriptEndpoint;
@@ -38,7 +39,6 @@ import org.eclipse.osee.orcs.rest.model.OrcsScriptEndpoint;
 /**
  * @author Roberto E. Escobar
  */
-@Path("script")
 public class OrcsScriptEndpointImpl implements OrcsScriptEndpoint {
 
    private final ScriptEngine engine;
@@ -57,8 +57,23 @@ public class OrcsScriptEndpointImpl implements OrcsScriptEndpoint {
       return evaluateScript(httpHeaders, script, parameters, filename, debug);
    }
 
+   @Override
+   public String getScriptResult(String script) {
+      ScriptContext context = new SimpleScriptContext();
+      StringWriter writer = new StringWriter();
+      context.setWriter(writer);
+      context.setErrorWriter(writer);
+      try {
+         engine.eval(script, context);
+      } catch (ScriptException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+      return writer.toString();
+   }
+
    private Response evaluateScript(final @Context HttpHeaders httpHeaders, final String script, final String parameters, final String filename, final boolean debug) {
       final boolean isJsonOutput = isJsonMediaType(httpHeaders.getAcceptableMediaTypes());
+
       final Properties properties = parseParamaters(parameters);
 
       StreamingOutput output = new StreamingOutput() {
@@ -136,5 +151,4 @@ public class OrcsScriptEndpointImpl implements OrcsScriptEndpoint {
       }
       return properties;
    }
-
 }

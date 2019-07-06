@@ -25,6 +25,7 @@ import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
+import org.eclipse.osee.orcs.rest.model.OrcsScriptEndpoint;
 import org.eclipse.osee.orcs.rest.model.OrcsWriterEndpoint;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
@@ -74,4 +75,6 @@ public interface OseeClient {
    ApplicabilityUiEndpoint getApplicabilityUiEndpoint();
 
    DefineBranchEndpointApi getDefineBranchEndpoint();
+
+   OrcsScriptEndpoint getOrcsScriptEndpoint();
 }

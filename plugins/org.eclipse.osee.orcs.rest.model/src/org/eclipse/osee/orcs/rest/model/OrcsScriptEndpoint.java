@@ -22,6 +22,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 @Path("script")
 public interface OrcsScriptEndpoint {
@@ -41,4 +42,18 @@ public interface OrcsScriptEndpoint {
       @DefaultValue("") @FormParam("filename") String filename, //
       @DefaultValue("false") @FormParam("debug") boolean debug);
 
+   @POST
+   @Path("basic")
+   @Consumes(MediaType.TEXT_PLAIN)
+   @Produces(MediaType.APPLICATION_JSON)
+   String getScriptResult(String script);
+
+   default String getScriptResult(String script, Object... data) {
+      for (int i = 0; i < data.length; i++) {
+         if (data[i] instanceof Id) {
+            data[i] = ((Id) data[i]).getIdString();
+         }
+      }
+      return getScriptResult(String.format(script, data));
+   }
 }
