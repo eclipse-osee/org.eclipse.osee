@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.JunitLaunchConfig">
 <setAttribute key="additional_plugins">
-<setEntry value="21.0.0.v20170206-1425:default:false"/>
+<setEntry value="com.google.guava:21.0.0.v20170206-1425:default:false"/>
 <setEntry value="org.eclipse.osee.client.integration.tests:0.26.0.qualifier:default:true"/>
 <setEntry value="org.eclipse.osee.client.test.framework:0.26.0.qualifier:default:true"/>
 </setAttribute>
