@@ -44,13 +44,6 @@
          version="0.0.0"
          unpack="false" />  
    
-    <plugin
-         id="javax.xml.stream"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false" />
-   
    <plugin
          id="org.objectweb.asm"
          download-size="0"
@@ -63,7 +56,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-	 unpack="false"/> 
+	 		unpack="false"/> 
 	
     <plugin
          id="org.eclipse.egit"
@@ -110,13 +103,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>   
-          
-   <plugin
-         id="rest.assured"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>  
+           
          
    <plugin
          id="org.xerial.sqlite"
@@ -132,13 +119,7 @@
          version="0.0.0"
          unpack="false" />      
 
-   <plugin
-	 id="org.mockito"
-         download-size="0"
-         install-size="0"
-	 version="2.13.0"
-         unpack="false"/>
-         
+   
    <plugin
          id="com.jcraft.jsch"
          download-size="0"
@@ -562,13 +543,7 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.junit"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
+  
    <plugin
          id="org.hsqldb"
          download-size="0"

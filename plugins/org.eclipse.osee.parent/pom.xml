@@ -9,8 +9,8 @@
 	<name>OSEE MASTER - Parent (Incubation)</name>
 	<version>0.26.0-SNAPSHOT</version>
  
-<!-- To only test certain modules and not run whole build comment these 3 modules out and activate a profile below -->
- 
+<!-- To only test certain modules run: mvn clean install -Dskiptests, then comment out these 3 modules and activate a profile below -->
+  
       <modules>
 			<module>../../plugins/org.eclipse.osee.dep.target</module>
 			<module>../../plugins/org.eclipse.osee.x.parent</module>

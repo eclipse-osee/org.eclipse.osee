@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="OSEE Client Server Target Platform" sequenceNumber="104">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="OSEE Client Server Target Platform" sequenceNumber="104">
 <locations>
 <location path="${eclipse_home}" type="Profile"/>
 </locations>
@@ -25,7 +24,7 @@
 <plugin id="com.google.gerrit.common"/>
 <plugin id="com.google.gerrit.prettify"/>
 <plugin id="com.google.gerrit.reviewdb"/>
-<plugin id="com.google.guava"/>
+<plugin id="com.google.guava" version="21.0.0.v20170206-1425"/>
 <plugin id="com.google.gwt.servlet"/>
 <plugin id="com.google.gwtjsonrpc"/>
 <plugin id="com.google.gwtorm"/>
@@ -46,15 +45,15 @@
 <plugin id="javaewah"/>
 <plugin id="javax.activation"/>
 <plugin id="javax.activation.source"/>
-<plugin id="javax.annotation"/>
-<plugin id="javax.annotation.source"/>
+<plugin id="javax.annotation" version="1.2.0.v201907081453-DEV"/>
+<plugin id="javax.annotation.source" version="1.2.0.v201907081453-DEV"/>
 <plugin id="javax.el"/>
 <plugin id="javax.el.source"/>
 <plugin id="javax.inject"/>
 <plugin id="javax.inject.source"/>
 <plugin id="javax.mail.glassfish"/>
 <plugin id="javax.mail.glassfish.source"/>
-<plugin id="javax.servlet"/>
+<plugin id="javax.servlet" version="3.1.0.v201410161800"/>
 <plugin id="javax.servlet.jsp"/>
 <plugin id="javax.servlet.jsp.source"/>
 <plugin id="javax.servlet.source"/>
@@ -82,11 +81,7 @@
 <plugin id="org.apache.aries.quiesce.source"/>
 <plugin id="org.apache.aries.util"/>
 <plugin id="org.apache.aries.util.source"/>
-<plugin id="org.apache.batik.css"/>
 <plugin id="org.apache.batik.css.source"/>
-<plugin id="org.apache.batik.util"/>
-<plugin id="org.apache.batik.util.gui"/>
-<plugin id="org.apache.batik.util.gui.source"/>
 <plugin id="org.apache.batik.util.source"/>
 <plugin id="org.apache.commons.cli"/>
 <plugin id="org.apache.commons.codec"/>
@@ -136,10 +131,7 @@
 <plugin id="org.apache.jasper.glassfish"/>
 <plugin id="org.apache.jasper.glassfish.source"/>
 <plugin id="org.apache.log4j"/>
-<plugin id="org.apache.log4j.source"/>
-<plugin id="org.apache.lucene.analysis"/>
-<plugin id="org.apache.lucene.analysis.source"/>
-<plugin id="org.apache.lucene.core"/>
+<plugin id="org.apache.lucene.core" version="7.1.0.v20171214-1510"/>
 <plugin id="org.apache.lucene.core.source"/>
 <plugin id="org.apache.oro"/>
 <plugin id="org.apache.oro.source"/>
@@ -153,14 +145,7 @@
 <plugin id="org.apache.xmlrpc"/>
 <plugin id="org.codehaus.stax2"/>
 <plugin id="org.codehaus.stax2.source"/>
-<plugin id="org.eclipse.aether.api"/>
-<plugin id="org.eclipse.aether.connector.basic"/>
-<plugin id="org.eclipse.aether.impl"/>
 <plugin id="org.eclipse.aether.maven"/>
-<plugin id="org.eclipse.aether.spi"/>
-<plugin id="org.eclipse.aether.transport.file"/>
-<plugin id="org.eclipse.aether.transport.http"/>
-<plugin id="org.eclipse.aether.util"/>
 <plugin id="org.eclipse.ant.core"/>
 <plugin id="org.eclipse.ant.core.source"/>
 <plugin id="org.eclipse.ant.launching"/>
@@ -243,8 +228,6 @@
 <plugin id="org.eclipse.e4.ui.css.swt.source"/>
 <plugin id="org.eclipse.e4.ui.css.swt.theme"/>
 <plugin id="org.eclipse.e4.ui.css.swt.theme.source"/>
-<plugin id="org.eclipse.e4.ui.di"/>
-<plugin id="org.eclipse.e4.ui.di.source"/>
 <plugin id="org.eclipse.e4.ui.dialogs"/>
 <plugin id="org.eclipse.e4.ui.dialogs.source"/>
 <plugin id="org.eclipse.e4.ui.model.workbench"/>
@@ -291,7 +274,6 @@
 <plugin id="org.eclipse.emf.ant"/>
 <plugin id="org.eclipse.emf.ant.source"/>
 <plugin id="org.eclipse.emf.cheatsheets"/>
-<plugin id="org.eclipse.emf.cheatsheets.source"/>
 <plugin id="org.eclipse.emf.codegen"/>
 <plugin id="org.eclipse.emf.codegen.ecore"/>
 <plugin id="org.eclipse.emf.codegen.ecore.source"/>
@@ -490,8 +472,6 @@
 <plugin id="org.eclipse.help.webapp"/>
 <plugin id="org.eclipse.help.webapp.source"/>
 <plugin id="org.eclipse.jdt"/>
-<plugin id="org.eclipse.jdt.annotation"/>
-<plugin id="org.eclipse.jdt.annotation.source"/>
 <plugin id="org.eclipse.jdt.apt.core"/>
 <plugin id="org.eclipse.jdt.apt.core.source"/>
 <plugin id="org.eclipse.jdt.apt.pluggable.core"/>
@@ -666,12 +646,8 @@
 <plugin id="org.eclipse.team.core"/>
 <plugin id="org.eclipse.team.core.source"/>
 <plugin id="org.eclipse.team.cvs.core"/>
-<plugin id="org.eclipse.team.cvs.core.source"/>
 <plugin id="org.eclipse.team.cvs.ssh2"/>
-<plugin id="org.eclipse.team.cvs.ssh2.source"/>
 <plugin id="org.eclipse.team.cvs.ui"/>
-<plugin id="org.eclipse.team.cvs.ui.source"/>
-<plugin id="org.eclipse.team.svn.core"/>
 <plugin id="org.eclipse.team.ui"/>
 <plugin id="org.eclipse.team.ui.source"/>
 <plugin id="org.eclipse.text"/>
@@ -743,8 +719,6 @@
 <plugin id="org.eclipse.xtend.standalone"/>
 <plugin id="org.eclipse.xtend.standalone.source"/>
 <plugin id="org.eclipse.xtend.typesystem.emf"/>
-<plugin id="org.eclipse.xtend2.lib"/>
-<plugin id="org.eclipse.xtend2.lib.source"/>
 <plugin id="org.eclipse.xtext"/>
 <plugin id="org.eclipse.xtext.activities"/>
 <plugin id="org.eclipse.xtext.activities.source"/>
@@ -808,7 +782,6 @@
 <plugin id="org.eclipse.xtext.xtext.generator.source"/>
 <plugin id="org.eclipse.xtext.xtext.ui"/>
 <plugin id="org.eclipse.xtext.xtext.ui.examples"/>
-<plugin id="org.eclipse.xtext.xtext.ui.examples.source"/>
 <plugin id="org.eclipse.xtext.xtext.ui.graph"/>
 <plugin id="org.eclipse.xtext.xtext.ui.graph.source"/>
 <plugin id="org.eclipse.xtext.xtext.ui.source"/>
@@ -828,11 +801,9 @@
 <plugin id="org.jsoup"/>
 <plugin id="org.junit"/>
 <plugin id="org.junit.source"/>
+<plugin id="org.mockito"/>
 <plugin id="org.mozilla.javascript"/>
-<plugin id="org.objectweb.asm" version="5.0.1.v201404251740"/>
 <plugin id="org.objectweb.asm.source"/>
-<plugin id="org.objectweb.asm.tree" version="7.0.0.v20181030-2244"/>
-<plugin id="org.objectweb.asm.tree"/>
 <plugin id="org.objenesis.source"/>
 <plugin id="org.openoffice"/>
 <plugin id="org.osgi.service.blueprint"/>
@@ -840,7 +811,7 @@
 <plugin id="org.postgresql.driver"/>
 <plugin id="org.sat4j.core"/>
 <plugin id="org.sat4j.pb"/>
-<plugin id="org.slf4j.api"/>
+<plugin id="org.slf4j.api" version="1.7.10.v20170428-1633"/>
 <plugin id="org.slf4j.api.source"/>
 <plugin id="org.slf4j.jcl"/>
 <plugin id="org.slf4j.jcl.source"/>
@@ -856,6 +827,32 @@
 <plugin id="org.w3c.dom.svg.source"/>
 <plugin id="rest.assured"/>
 <plugin id="rest.assured.source"/>
+<plugin id="org.eclipse.jdt.annotation" version="2.2.0.v20180417-0931"/>
+<plugin id="org.eclipse.jdt.annotation.source" version="2.2.0.v20180417-0931"/>
+<plugin id="org.objectweb.asm" version="6.1.1.v20180414-0329"/>
+<plugin id="org.objectweb.asm.tree" version="6.1.1.v20180414-0329"/>
+<plugin id="org.objectweb.asm.tree.source"/>
+<plugin id="org.apache.felix.scr"/>
+<plugin id="org.apache.felix.scr.source"/>
+<plugin id="org.objenesis"/>
+<plugin id="org.apache.batik.css" version="1.9.1.v20180313-1559"/>
+<plugin id="org.apache.batik.i18n"/>
+<plugin id="org.apache.batik.i18n.source"/>
+<plugin id="org.apache.xmlgraphics"/>
+<plugin id="org.apache.xmlgraphics.source"/>
+<plugin id="org.apache.batik.constants"/>
+<plugin id="org.apache.batik.constants.source"/>
+<plugin id="org.apache.batik.util" version="1.9.1.v20180227-1645"/>
+<plugin id="org.eclipse.e4.ui.di"/>
+<plugin id="org.eclipse.e4.ui.di.source"/>
+<plugin id="org.eclipse.e4.core.di.extensions.supplier"/>
+<plugin id="org.eclipse.e4.core.di.extensions.supplier.source"/>
+	<plugin id="org.eclipse.xtext.purexbase.ide"/>
+	<plugin id="org.apache.lucene.analyzers-common" version="7.1.0.v20180122-2126"/>
+	<plugin id="org.apache.lucene.analyzers-smartcn"/>
+	<plugin id="org.eclipse.xtext.xtext.ide"/>
+	<plugin id="org.eclipse.xtext.ui.testing"/>
+	<plugin id="org.eclipse.xtext.ui.codetemplates.ide"/>
 </includeBundles>
 <environment>
 <os>win32</os>

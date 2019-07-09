@@ -48,14 +48,7 @@
          install-size="0"
          version="6.1.1"
          unpack="false"/>     
-               
-   <plugin
-         id="rest.assured"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>  
-         
+              
    <plugin
          id="javax.annotation"
          download-size="0"
@@ -1032,27 +1025,5 @@
          version="0.0.0"
          fragment="true"
          unpack="false"/>
-
-   <plugin
-         id="org.mockito"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-   
-    <plugin
-         id="org.hamcrest.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>       
-                  
-    <plugin
-         id="org.hamcrest.library"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>  
-         
+          
 </feature>
