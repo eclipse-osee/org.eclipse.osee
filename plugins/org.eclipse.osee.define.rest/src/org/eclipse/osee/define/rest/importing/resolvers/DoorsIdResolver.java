@@ -74,7 +74,7 @@ public class DoorsIdResolver extends NewArtifactImportResolver {
       }
       List<ArtifactToken> results =
          roughArtifact.getOrcsApi().getQueryFactory().fromBranch(branch).andAttributeIs(CoreAttributeTypes.DoorsID,
-            doorsIDs.iterator().next()).loadArtifactTokens();
+            doorsIDs.iterator().next()).asArtifactTokens();
 
       if (results.size() < 1) {
          return null;
@@ -93,11 +93,11 @@ public class DoorsIdResolver extends NewArtifactImportResolver {
       String reqParent = reqNumber.getParentString();
       reqParent = new ReqNumbering(reqParent, true).getParentString();
       List<ArtifactToken> results = roughArtifact.getOrcsApi().getQueryFactory().fromBranch(branch).andAttributeIs(
-         CoreAttributeTypes.DoorsHierarchy, reqParent).loadArtifactTokens();
+         CoreAttributeTypes.DoorsHierarchy, reqParent).asArtifactTokens();
       while (results.size() == 0 && reqParent.length() > 3) {
          reqParent = new ReqNumbering(reqParent, true).getParentString();
          results = roughArtifact.getOrcsApi().getQueryFactory().fromBranch(branch).andAttributeIs(
-            CoreAttributeTypes.DoorsHierarchy, reqParent).loadArtifactTokens();
+            CoreAttributeTypes.DoorsHierarchy, reqParent).asArtifactTokens();
       }
       for (ArtifactToken artifact : results) {
          ArtifactReadable possibleParent =

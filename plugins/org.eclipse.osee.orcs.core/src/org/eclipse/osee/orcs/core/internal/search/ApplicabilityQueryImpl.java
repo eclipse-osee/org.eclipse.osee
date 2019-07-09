@@ -175,7 +175,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
 
    @Override
    public List<ArtifactToken> getViewForBranch(BranchId branch) {
-      return queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).loadArtifactTokens();
+      return queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).asArtifactTokens();
    }
 
    /*

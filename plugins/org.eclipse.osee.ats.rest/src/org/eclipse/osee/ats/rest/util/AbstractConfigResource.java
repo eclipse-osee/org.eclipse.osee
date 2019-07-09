@@ -45,7 +45,7 @@ public abstract class AbstractConfigResource {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public List<ArtifactToken> get() {
-      return query.andIsOfType(artifactType).loadArtifactTokens();
+      return query.andIsOfType(artifactType).asArtifactTokens();
    }
 
    @GET
@@ -63,7 +63,7 @@ public abstract class AbstractConfigResource {
    @Path("{id}")
    @Produces(MediaType.APPLICATION_JSON)
    public ArtifactToken getObjectJson(@PathParam("id") ArtifactId artifactId) {
-      return query.andId(artifactId).loadArtifactToken();
+      return query.andId(artifactId).asArtifactToken();
    }
 
    @GET

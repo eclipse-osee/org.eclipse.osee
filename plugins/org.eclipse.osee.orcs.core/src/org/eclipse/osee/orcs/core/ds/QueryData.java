@@ -592,30 +592,30 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    @Override
    public ArtifactReadable asArtifact() {
-      return loadArtifact(this::asArtifacts);
+      return asArtifact(this::asArtifacts);
    }
 
    @Override
-   public ArtifactToken loadArtifactToken() {
-      return loadArtifact(this::loadArtifactTokens);
+   public ArtifactToken asArtifactToken() {
+      return asArtifact(this::asArtifactTokens);
    }
 
    @Override
-   public List<ArtifactToken> loadArtifactTokens() {
-      return loadArtifactTokens(Name);
+   public List<ArtifactToken> asArtifactTokens() {
+      return asArtifactTokens(Name);
    }
 
    @Override
-   public Map<ArtifactId, ArtifactToken> loadArtifactTokenMap() {
+   public Map<ArtifactId, ArtifactToken> asArtifactTokenMap() {
       select(Name);
-      return queryEngine.loadArtifactTokenMap(this);
+      return queryEngine.asArtifactTokenMap(this);
    }
 
    @Override
-   public List<ArtifactToken> loadArtifactTokens(AttributeTypeId attributeType) {
+   public List<ArtifactToken> asArtifactTokens(AttributeTypeId attributeType) {
       setQueryType(QueryType.TOKEN);
       select(attributeType);
-      return queryEngine.loadArtifactTokens(this);
+      return queryEngine.asArtifactTokens(this);
    }
 
    @Override
@@ -626,21 +626,21 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public ArtifactId loadArtifactId() {
-      return loadArtifact(this::loadArtifactIds);
+   public ArtifactId asArtifactId() {
+      return asArtifact(this::asArtifactIds);
    }
 
    @Override
-   public ArtifactId loadArtifactIdOrSentinel() {
-      return loadArtifactOrSentinel(this::loadArtifactIds, ArtifactId.SENTINEL);
+   public ArtifactId asArtifactIdOrSentinel() {
+      return asArtifactOrSentinel(this::asArtifactIds, ArtifactId.SENTINEL);
    }
 
    @Override
-   public ArtifactToken loadArtifactTokenOrSentinel() {
-      return loadArtifactOrSentinel(this::loadArtifactTokens, ArtifactToken.SENTINEL);
+   public ArtifactToken asArtifactTokenOrSentinel() {
+      return asArtifactOrSentinel(this::asArtifactTokens, ArtifactToken.SENTINEL);
    }
 
-   private <T> T loadArtifact(Supplier<List<T>> supplier) {
+   private <T> T asArtifact(Supplier<List<T>> supplier) {
       List<T> artifacts = supplier.get();
       if (artifacts.size() != 1) {
          throw new OseeCoreException("Expected exactly 1 artifact not %s", artifacts.size());
@@ -648,7 +648,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       return artifacts.get(0);
    }
 
-   private <T> T loadArtifactOrSentinel(Supplier<List<T>> supplier, T sentinel) {
+   private <T> T asArtifactOrSentinel(Supplier<List<T>> supplier, T sentinel) {
       List<T> artifacts = supplier.get();
       if (artifacts.size() > 1) {
          throw new OseeCoreException("Expected at most 1 artifact not %s", artifacts.size());
@@ -659,9 +659,9 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public List<ArtifactId> loadArtifactIds() {
+   public List<ArtifactId> asArtifactIds() {
       setQueryType(QueryType.ID);
-      return queryEngine.loadArtifactIds(this);
+      return queryEngine.asArtifactIds(this);
    }
 
    @Override

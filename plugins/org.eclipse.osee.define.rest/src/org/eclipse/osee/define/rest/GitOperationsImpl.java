@@ -225,7 +225,7 @@ public final class GitOperationsImpl implements GitOperations {
          }
 
          List<ArtifactToken> currentCommits =
-            queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.CodeUnit).loadArtifactTokens();
+            queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.CodeUnit).asArtifactTokens();
          for (ArtifactToken singleCommit : currentCommits) {
             pathToCodeunitMap.put(singleCommit.getName(), singleCommit);
          }

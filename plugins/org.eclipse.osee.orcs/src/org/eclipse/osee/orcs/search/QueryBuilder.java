@@ -33,15 +33,15 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
  */
 public interface QueryBuilder extends Query {
 
-   ArtifactToken loadArtifactToken();
+   ArtifactToken asArtifactToken();
 
    /**
     * @return a single ArtifactToken if exactly one found. Return ArtifactToken.SENTINEL is none found, else throw
     * exception for finding more than one
     */
-   ArtifactToken loadArtifactTokenOrSentinel();
+   ArtifactToken asArtifactTokenOrSentinel();
 
-   List<ArtifactToken> loadArtifactTokens();
+   List<ArtifactToken> asArtifactTokens();
 
    List<ArtifactReadable> asArtifacts();
 
@@ -49,11 +49,11 @@ public interface QueryBuilder extends Query {
 
    ArtifactReadable asArtifact();
 
-   Map<ArtifactId, ArtifactToken> loadArtifactTokenMap();
+   Map<ArtifactId, ArtifactToken> asArtifactTokenMap();
 
-   List<ArtifactId> loadArtifactIds();
+   List<ArtifactId> asArtifactIds();
 
-   ArtifactId loadArtifactId();
+   ArtifactId asArtifactId();
 
    List<Map<String, Object>> asArtifactMaps();
 
@@ -61,13 +61,13 @@ public interface QueryBuilder extends Query {
     * @return a single ArtifactId if exactly one found. Return ArtifactId.SENTINEL is none found, else throw exception
     * for finding more than one
     */
-   ArtifactId loadArtifactIdOrSentinel();
+   ArtifactId asArtifactIdOrSentinel();
 
    /**
     * @param attributeType is used in place of the natural Name attribute to populate the name fields in the returned
     * artifact tokens
     */
-   List<ArtifactToken> loadArtifactTokens(AttributeTypeId attributeType);
+   List<ArtifactToken> asArtifactTokens(AttributeTypeId attributeType);
 
    Map<ArtifactId, ArtifactReadable> loadArtifactMap();
 

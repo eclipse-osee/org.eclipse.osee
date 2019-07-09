@@ -75,7 +75,7 @@ public class WordMLApplicabilityHandler {
       validConfigurations = getValidConfigurations(query, branch);
 
       viewApplicabilitiesMap = query.applicabilityQuery().getNamedViewApplicabilityMap(branch, view);
-      ArtifactToken viewArtifact = query.fromBranch(branch).andId(view).loadArtifactToken();
+      ArtifactToken viewArtifact = query.fromBranch(branch).andId(view).asArtifactToken();
       configurationToView = viewArtifact.getName();
 
       ArtifactReadable featureDefArt =
@@ -506,7 +506,7 @@ public class WordMLApplicabilityHandler {
    public static HashSet<String> getValidConfigurations(QueryFactory query, BranchId branch) {
       HashSet<String> validConfigurations = new HashSet<>();
 
-      List<ArtifactToken> views = query.fromBranch(branch).andTypeEquals(BranchView).loadArtifactTokens();
+      List<ArtifactToken> views = query.fromBranch(branch).andTypeEquals(BranchView).asArtifactTokens();
       for (ArtifactToken view : views) {
          validConfigurations.add(view.getName().toUpperCase());
       }

@@ -137,7 +137,7 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
       ArtifactId baselineEvent = tx.createArtifact(repoArtifact, CertificationBaselineEvent, baselineData.eventName);
 
       ArtifactId baselinedByUser =
-         queryFactory.fromBranch(COMMON).andAttributeIs(UserId, baselineData.baselinedByUserId).loadArtifactId();
+         queryFactory.fromBranch(COMMON).andAttributeIs(UserId, baselineData.baselinedByUserId).asArtifactId();
 
       ArtifactId baselineCommit = gitOps.getCommitArtifactId(branch, baselineData.changeId);
       if (baselineCommit.isInvalid()) {
@@ -183,7 +183,7 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
 
    private ArtifactId loadCodeUnit(ArtifactId repository, BranchId branch, String path) {
       List<ArtifactToken> codeUnits =
-         queryFactory.fromBranch(branch).andNameEquals(path).andTypeEquals(CodeUnit).loadArtifactTokens();
+         queryFactory.fromBranch(branch).andNameEquals(path).andTypeEquals(CodeUnit).asArtifactTokens();
       for (ArtifactToken codeUnit : codeUnits) {
          //TODO: if CoreTupleTypes.GitCommitFile for this repository and path matches then return this codeUnit
          //tupleQuery.doesTuple3E3Exist(tupleType, e3);
@@ -231,7 +231,7 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
       List<CertFileData> files = new ArrayList<>();
 
       Map<ArtifactId, ArtifactToken> codeUnits =
-         queryFactory.fromBranch(branch).andIsOfType(CodeUnit).loadArtifactTokenMap();
+         queryFactory.fromBranch(branch).andIsOfType(CodeUnit).asArtifactTokenMap();
       Map<ArtifactId, ArtifactReadable> commits =
          queryFactory.fromBranch(branch).andIsOfType(GitCommit).loadArtifactMap(); //TODO: improve performance with selective, one pass loading
 
@@ -275,7 +275,7 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
 
       ArtifactId baselinedByUser = baselineArtifact.getSoleAttributeValue(BaselinedBy);
       String userId =
-         queryFactory.fromBranch(COMMON).andId(baselinedByUser).loadArtifactTokens(UserId).iterator().next().getName();
+         queryFactory.fromBranch(COMMON).andId(baselinedByUser).asArtifactTokens(UserId).iterator().next().getName();
 
       baselineData.baselinedByUserId = userId;
       baselineData.baselinedTimestamp = baselineArtifact.getSoleAttributeValue(BaselinedTimestamp);

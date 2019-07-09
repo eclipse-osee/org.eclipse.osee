@@ -45,13 +45,13 @@ public interface QueryEngine {
 
    CancellableCallable<Integer> createQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler);
 
-   List<ArtifactToken> loadArtifactTokens(QueryData queryData);
+   List<ArtifactToken> asArtifactTokens(QueryData queryData);
 
    List<Map<String, Object>> asArtifactMaps(QueryData queryData);
 
-   Map<ArtifactId, ArtifactToken> loadArtifactTokenMap(QueryData queryData);
+   Map<ArtifactId, ArtifactToken> asArtifactTokenMap(QueryData queryData);
 
-   List<ArtifactId> loadArtifactIds(QueryData queryData);
+   List<ArtifactId> asArtifactIds(QueryData queryData);
 
    Map<ArtifactId, ArtifactReadable> asArtifactMap(QueryData queryData, QueryFactory queryFactory);
 

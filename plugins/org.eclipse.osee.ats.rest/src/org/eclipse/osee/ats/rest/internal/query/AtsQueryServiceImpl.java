@@ -140,7 +140,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public ArtifactToken getArtifactToken(ArtifactId artifactId) {
-      return getQuery().andId(artifactId).loadArtifactToken();
+      return getQuery().andId(artifactId).asArtifactToken();
    }
 
    @Override

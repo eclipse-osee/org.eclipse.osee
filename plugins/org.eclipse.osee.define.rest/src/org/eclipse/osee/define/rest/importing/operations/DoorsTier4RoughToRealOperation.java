@@ -129,11 +129,11 @@ public class DoorsTier4RoughToRealOperation {
    private void setupAllKnownArtifacts() {
       List<ArtifactToken> known =
          orcsApi.getQueryFactory().fromBranch(branch).andRelatedRecursive(Default_Hierarchical__Parent,
-            destinationArtifact).loadArtifactTokens(DoorsHierarchy);
+            destinationArtifact).asArtifactTokens(DoorsHierarchy);
       known.forEach(item -> knownArtsByReqNum.put(item.getName().replace("-", "."), item)); // normalize to match ReqNumber
       List<ArtifactToken> knownIds =
          orcsApi.getQueryFactory().fromBranch(branch).andRelatedRecursive(Default_Hierarchical__Parent,
-            destinationArtifact).loadArtifactTokens(DoorsID);
+            destinationArtifact).asArtifactTokens(DoorsID);
       knownIds.forEach(item -> knownArtsByDoorsID.put(item.getName(), item));
    }
 

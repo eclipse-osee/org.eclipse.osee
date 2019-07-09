@@ -75,7 +75,7 @@ public class ValidateBranchOperation {
    public XResultData getOrphans(ArtifactTypeId artType) {
       List<Long> resultIds = new LinkedList<>();
       for (ArtifactId art : orcsApi.getQueryFactory().fromBranch(branch).andNotExists(
-         CoreRelationTypes.Default_Hierarchical__Child).andIsOfType(artType).loadArtifactIds()) {
+         CoreRelationTypes.Default_Hierarchical__Child).andIsOfType(artType).asArtifactIds()) {
          resultIds.add(art.getId());
       }
       return results;
@@ -84,7 +84,7 @@ public class ValidateBranchOperation {
    private List<Long> filterByArtifactTypeInherited(List<Long> artIds, ArtifactTypeId artType) {
       List<Long> resultIds = new LinkedList<>();
       for (ArtifactId art : orcsApi.getQueryFactory().fromBranch(branch).andIdsL(artIds).andIsOfType(
-         artType).loadArtifactIds()) {
+         artType).asArtifactIds()) {
          resultIds.add(art.getId());
       }
       return resultIds;

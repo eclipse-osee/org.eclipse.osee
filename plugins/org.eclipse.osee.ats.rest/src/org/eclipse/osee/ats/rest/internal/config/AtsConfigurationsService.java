@@ -96,12 +96,12 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
    private AtsConfigurations getAtsConfigurationsFromDb() {
       List<Long> teamDefIds = new LinkedList<>();
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
-      for (ArtifactId art : query.andTypeEquals(TeamDefinition).loadArtifactIds()) {
+      for (ArtifactId art : query.andTypeEquals(TeamDefinition).asArtifactIds()) {
          teamDefIds.add(art.getId());
       }
 
       List<Long> aiIds = new LinkedList<>();
-      for (ArtifactId art : query.andTypeEquals(ActionableItem).loadArtifactIds()) {
+      for (ArtifactId art : query.andTypeEquals(ActionableItem).asArtifactIds()) {
          aiIds.add(art.getId());
       }
 

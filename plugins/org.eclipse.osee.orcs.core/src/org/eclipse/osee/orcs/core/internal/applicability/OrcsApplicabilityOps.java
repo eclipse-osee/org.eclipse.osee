@@ -214,7 +214,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       }
       if (featureFolder.isInvalid()) {
          featureFolder = orcsApi.getQueryFactory().fromBranch(branch).andNameEquals(
-            CoreArtifactTokens.FeaturesFolder.getName()).loadArtifactTokenOrSentinel();
+            CoreArtifactTokens.FeaturesFolder.getName()).asArtifactTokenOrSentinel();
       }
       return featureFolder;
    }
@@ -227,11 +227,11 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       }
       if (variantsFolder.isInvalid()) {
          variantsFolder = orcsApi.getQueryFactory().fromBranch(branch).andNameEquals(
-            CoreArtifactTokens.VariantsFolder.getName()).loadArtifactTokenOrSentinel();
+            CoreArtifactTokens.VariantsFolder.getName()).asArtifactTokenOrSentinel();
       }
       if (variantsFolder.isInvalid()) {
          variantsFolder =
-            orcsApi.getQueryFactory().fromBranch(branch).andNameEquals("Products").loadArtifactTokenOrSentinel();
+            orcsApi.getQueryFactory().fromBranch(branch).andNameEquals("Products").asArtifactTokenOrSentinel();
       }
       return variantsFolder;
    }
@@ -244,7 +244,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       }
       if (plFolder.isInvalid()) {
          plFolder =
-            orcsApi.getQueryFactory().fromBranch(branch).andNameEquals("Product Line").loadArtifactTokenOrSentinel();
+            orcsApi.getQueryFactory().fromBranch(branch).andNameEquals("Product Line").asArtifactTokenOrSentinel();
       }
       return plFolder;
    }

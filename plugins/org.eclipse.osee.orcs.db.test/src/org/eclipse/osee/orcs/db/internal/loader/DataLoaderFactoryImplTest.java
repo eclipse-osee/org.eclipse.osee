@@ -135,7 +135,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadArtifactIds() {
+   public void testasArtifactIds() {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_DATA;
       String expected =
          "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, jart1.id2, jart1.id4, art1.art_type_id, art1.guid\n" + //

@@ -329,7 +329,7 @@ public class OrcsQueryTest {
       builder.and(CoreAttributeTypes.Name, "REQUIREMENTS", QueryOption.CASE__IGNORE,
          QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.TOKEN_COUNT__IGNORE);
 
-      List<ArtifactId> results = builder.loadArtifactIds();
+      List<ArtifactId> results = builder.asArtifactIds();
       assertEquals(7, results.size());
       assertEquals(7, builder.getCount());
    }

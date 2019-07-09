@@ -188,7 +188,7 @@ public class OrcsAdminImpl implements OrcsAdmin {
       }
       List<ArtifactId> defaultGroups =
          orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andAttributeIs(CoreAttributeTypes.DefaultGroup,
-            "true").loadArtifactIds();
+            "true").asArtifactIds();
       setUserInfo(tx, userToken, defaultGroups);
    }
 
