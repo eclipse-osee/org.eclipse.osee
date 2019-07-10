@@ -5,16 +5,17 @@ Bundle-SymbolicName: org.eclipse.osee.jaxrs
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: javax.ws.rs,
- javax.ws.rs.core,
- javax.ws.rs.ext, 
+Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
  com.fasterxml.jackson.databind.module,
- com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.jaxrs.base,
  com.fasterxml.jackson.jaxrs.json,
  com.fasterxml.jackson.jaxrs.json.annotation,
+ javax.ws.rs,
+ javax.ws.rs.core,
+ javax.ws.rs.ext,
+ org.eclipse.jdt.annotation,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.jdk.core.type,
