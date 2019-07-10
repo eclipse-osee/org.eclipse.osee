@@ -66,6 +66,14 @@ attributeType "ats.Requested Hours" extends IntegerAttribute {
 	mediaType "text/plain"
 }
 
+attributeType "ats.Requested Funding" extends IntegerAttribute {
+   id 323824792847329487
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	mediaType "text/plain"
+}
+
 artifactType "Work Definition" extends "Artifact" {
 	id 62
 	attribute "ats.DSL Sheet"
