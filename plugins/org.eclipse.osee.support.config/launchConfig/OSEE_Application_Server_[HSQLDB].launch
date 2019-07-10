@@ -2,6 +2,7 @@
 <launchConfiguration type="org.eclipse.pde.ui.EquinoxLauncher">
 <setAttribute key="additional_plugins">
 <setEntry value="com.google.guava:21.0.0.v20170206-1425:default:false"/>
+<setEntry value="oracle.driver:12.1.0.qualifier:default:true"/>
 </setAttribute>
 <booleanAttribute key="append.args" value="true"/>
 <booleanAttribute key="automaticAdd" value="false"/>
