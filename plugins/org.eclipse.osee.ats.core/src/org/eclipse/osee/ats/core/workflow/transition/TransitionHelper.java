@@ -57,11 +57,6 @@ public class TransitionHelper extends TransitionHelperAdapter {
    }
 
    @Override
-   public boolean isPrivilegedEditEnabled() {
-      return Arrays.asList(transitionOption).contains(TransitionOption.PrivilegedEditEnabled);
-   }
-
-   @Override
    public boolean isOverrideAssigneeCheck() {
       return Arrays.asList(transitionOption).contains(TransitionOption.OverrideAssigneeCheck);
    }

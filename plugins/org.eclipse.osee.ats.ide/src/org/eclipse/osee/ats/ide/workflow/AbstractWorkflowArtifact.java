@@ -19,7 +19,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
@@ -421,16 +420,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public IAtsStateManager getStateMgr() {
       return AtsClientService.get().getStateFactory().getStateManager(this);
-   }
-
-   protected void addPrivilegedUsersUpTeamDefinitionTree(IAtsTeamDefinition tda, Set<IAtsUser> users) {
-      users.addAll(tda.getLeads());
-      users.addAll(tda.getPrivilegedMembers());
-
-      // Walk up tree to get other editors
-      if (tda.getParentTeamDef() != null) {
-         addPrivilegedUsersUpTeamDefinitionTree(tda.getParentTeamDef(), users);
-      }
    }
 
    @Override

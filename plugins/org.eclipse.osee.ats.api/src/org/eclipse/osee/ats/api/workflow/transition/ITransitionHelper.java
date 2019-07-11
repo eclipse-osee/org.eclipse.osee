@@ -25,8 +25,6 @@ public interface ITransitionHelper {
 
    public String getName();
 
-   public boolean isPrivilegedEditEnabled();
-
    public boolean isOverrideTransitionValidityCheck();
 
    public Collection<? extends IAtsWorkItem> getWorkItems();

@@ -33,7 +33,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Unit test for {@link TransitionHelperAdapter}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class TransitionHelperAdapterTest {
@@ -54,11 +54,6 @@ public class TransitionHelperAdapterTest {
       MockitoAnnotations.initMocks(this);
 
       helper = new TestTransitionHelper();
-   }
-
-   @Test
-   public void testIsPrivilegedEditEnabled() {
-      Assert.assertFalse(helper.isPrivilegedEditEnabled());
    }
 
    @Test

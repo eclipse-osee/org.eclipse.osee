@@ -159,28 +159,15 @@ public class TransitionManagerTest {
 
       // Un-Assign Joe Smith
       results.clear();
-      Assert.assertFalse(helper.isPrivilegedEditEnabled());
       Assert.assertFalse(helper.isOverrideAssigneeCheck());
       teamArt.getStateMgr().setAssignee(
          AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Alex_Kay));
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains(AtsTestUtil.getTeamWf(), TransitionResult.MUST_BE_ASSIGNED));
 
-      // Set PrivilegedEditEnabled edit enabled; no errors
-      results.clear();
-      Assert.assertFalse(helper.isOverrideAssigneeCheck());
-      helper.addTransitionOption(TransitionOption.PrivilegedEditEnabled);
-      Assert.assertTrue(helper.isPrivilegedEditEnabled());
-      teamArt.getStateMgr().setAssignee(
-         AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Alex_Kay));
-      transMgr.handleTransitionValidation(results);
-      Assert.assertTrue(results.isEmpty());
-
       // Set OverrideAssigneeCheck
       results.clear();
-      helper.removeTransitionOption(TransitionOption.PrivilegedEditEnabled);
       helper.addTransitionOption(TransitionOption.OverrideAssigneeCheck);
-      Assert.assertFalse(helper.isPrivilegedEditEnabled());
       Assert.assertTrue(helper.isOverrideAssigneeCheck());
       teamArt.getStateMgr().setAssignee(
          AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Alex_Kay));
@@ -190,7 +177,6 @@ public class TransitionManagerTest {
       // Set UnAssigned, should be able to transition cause will be assigned as convenience
       results.clear();
       helper.removeTransitionOption(TransitionOption.OverrideAssigneeCheck);
-      Assert.assertFalse(helper.isPrivilegedEditEnabled());
       Assert.assertFalse(helper.isOverrideAssigneeCheck());
       teamArt.getStateMgr().setAssignee(
          AtsClientService.get().getUserServiceClient().getUserFromToken(SystemUser.UnAssigned));

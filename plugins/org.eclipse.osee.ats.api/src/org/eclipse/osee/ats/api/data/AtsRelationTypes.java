@@ -91,9 +91,6 @@ public final class AtsRelationTypes {
    public static final RelationTypeSide ParallelVersion_Parent = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694324L, "ParallelVersion");
    public static final RelationTypeSide ParallelVersion_Child = ParallelVersion_Parent.getOpposite();
 
-   public static final RelationTypeSide PrivilegedMember_Team = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694315L, "PrivilegedMember");
-   public static final RelationTypeSide PrivilegedMember_Member = PrivilegedMember_Team.getOpposite();
-
    public static final RelationTypeSide TeamWfToTask_TeamWf = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694318L, "TeamWfToTask");
    public static final RelationTypeSide TeamWfToTask_Task = TeamWfToTask_TeamWf.getOpposite();
 

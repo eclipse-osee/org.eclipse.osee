@@ -114,7 +114,7 @@ public class WfeTransitionComposite extends Composite {
                   }
                   IAtsStateDefinition toStateDef = (IAtsStateDefinition) transitionToStateCombo.getSelected();
                   Conditions.assertNotNull(toStateDef, "toStateDef");
-                  handleTransitionButtonSelection(awa, editor.isPrivilegedEditModeEnabled(), isEditable, toStateDef);
+                  handleTransitionButtonSelection(awa, isEditable, toStateDef);
                } finally {
                   transitionButton.setEnabled(true);
                }
@@ -182,7 +182,7 @@ public class WfeTransitionComposite extends Composite {
 
    }
 
-   public static void handleTransitionButtonSelection(AbstractWorkflowArtifact awa, final boolean isPriviledgedEditModeEnabled, final boolean isEditable, IAtsStateDefinition toStateDef) {
+   public static void handleTransitionButtonSelection(AbstractWorkflowArtifact awa, final boolean isEditable, IAtsStateDefinition toStateDef) {
       Conditions.assertNotNull(awa, "awa");
       Conditions.assertNotNull(toStateDef, "toStateDef");
       final List<IAtsWorkItem> workItems = Arrays.asList((IAtsWorkItem) awa);
@@ -191,11 +191,6 @@ public class WfeTransitionComposite extends Composite {
       ITransitionHelper helper = new TransitionHelperAdapter(AtsClientService.get().getServices()) {
 
          private IAtsChangeSet changes;
-
-         @Override
-         public boolean isPrivilegedEditEnabled() {
-            return isPriviledgedEditModeEnabled;
-         }
 
          @Override
          public String getToStateName() {

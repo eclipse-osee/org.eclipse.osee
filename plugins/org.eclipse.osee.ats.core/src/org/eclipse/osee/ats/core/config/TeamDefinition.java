@@ -145,11 +145,6 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    }
 
    @Override
-   public Collection<IAtsUser> getPrivilegedMembers() {
-      return getRelatedUsers(AtsRelationTypes.PrivilegedMember_Member);
-   }
-
-   @Override
    public boolean isAllowCommitBranch() {
       boolean set = false;
       try {

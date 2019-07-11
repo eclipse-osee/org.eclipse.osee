@@ -151,9 +151,6 @@ public class ImportAIsAndTeamDefinitionsToDb {
          for (Artifact user : getUsers(dslTeamDef.getMember())) {
             newTeam.addRelation(AtsRelationTypes.TeamMember_Member, user);
          }
-         for (Artifact user : getUsers(dslTeamDef.getPrivileged())) {
-            newTeam.addRelation(AtsRelationTypes.PrivilegedMember_Member, user);
-         }
          if (Strings.isValid(dslTeamDef.getWorkDefinition())) {
             ArtifactToken workDefArt = sheetNameToArtifactIdMap.get(dslTeamDef.getWorkDefinition());
             if (workDefArt == null) {

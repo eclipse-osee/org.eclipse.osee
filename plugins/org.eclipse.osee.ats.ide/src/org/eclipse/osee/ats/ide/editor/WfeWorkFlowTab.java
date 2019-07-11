@@ -39,7 +39,6 @@ import org.eclipse.osee.ats.ide.actions.OpenInBrowserAction;
 import org.eclipse.osee.ats.ide.actions.OpenParentAction;
 import org.eclipse.osee.ats.ide.actions.OpenTeamDefinitionAction;
 import org.eclipse.osee.ats.ide.actions.OpenVersionArtifactAction;
-import org.eclipse.osee.ats.ide.actions.PrivilegedEditAction;
 import org.eclipse.osee.ats.ide.actions.ReloadAction;
 import org.eclipse.osee.ats.ide.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.ide.actions.ShowChangeReportAction;
@@ -418,7 +417,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       }
       toolBarMgr.add(new CopyActionDetailsAction(awa));
       toolBarMgr.add(new OpenInBrowserAction(awa));
-      toolBarMgr.add(new PrivilegedEditAction(awa, editor));
       toolBarMgr.add(new ResourceHistoryAction(awa));
       toolBarMgr.add(new ReloadAction(awa, editor));
 

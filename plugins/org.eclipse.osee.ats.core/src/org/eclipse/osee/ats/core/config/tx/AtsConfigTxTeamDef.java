@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -71,14 +70,6 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
    public IAtsConfigTxTeamDef andMembers(UserToken... members) {
       for (UserToken member : members) {
          changes.relate(teamDef, AtsRelationTypes.TeamMember_Member, member);
-      }
-      return this;
-   }
-
-   @Override
-   public IAtsConfigTxTeamDef andPriviledgedMembers(UserToken... members) {
-      for (UserToken member : members) {
-         changes.relate(teamDef, AtsRelationTypes.PrivilegedMember_Member, member);
       }
       return this;
    }

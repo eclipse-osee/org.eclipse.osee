@@ -36,11 +36,6 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    }
 
    @Override
-   public boolean isPrivilegedEditEnabled() {
-      return false;
-   }
-
-   @Override
    public boolean isOverrideTransitionValidityCheck() {
       return false;
    }

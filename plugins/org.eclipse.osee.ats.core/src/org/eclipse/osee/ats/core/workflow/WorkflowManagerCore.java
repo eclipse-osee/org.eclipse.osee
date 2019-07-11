@@ -24,15 +24,15 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 public class WorkflowManagerCore {
 
    public static boolean isEditable(IAtsUser user, IAtsWorkItem workItem, IAtsStateDefinition stateDef, boolean privilegedEditEnabled, IAtsUserService userService) {
-      return isEditable(workItem, stateDef, privilegedEditEnabled, user, userService.isAtsAdmin());
+      return isEditable(workItem, stateDef, user, userService.isAtsAdmin());
    }
 
-   public static boolean isEditable(IAtsWorkItem workItem, IAtsStateDefinition stateDef, boolean privilegedEditEnabled, IAtsUser currentUser, boolean isAtsAdmin) {
+   public static boolean isEditable(IAtsWorkItem workItem, IAtsStateDefinition stateDef, IAtsUser currentUser, boolean isAtsAdmin) {
       WorkflowManagerCore wmc = new WorkflowManagerCore();
-      return wmc.isWorkItemEditable(workItem, stateDef, privilegedEditEnabled, currentUser, isAtsAdmin);
+      return wmc.isWorkItemEditable(workItem, stateDef, currentUser, isAtsAdmin);
    }
 
-   protected boolean isWorkItemEditable(IAtsWorkItem workItem, IAtsStateDefinition stateDef, boolean privilegedEditEnabled, IAtsUser currentUser, boolean isAtsAdmin) {
+   protected boolean isWorkItemEditable(IAtsWorkItem workItem, IAtsStateDefinition stateDef, IAtsUser currentUser, boolean isAtsAdmin) {
       // must be current state
       return (stateDef == null || workItem.getStateDefinition().getName().equals(stateDef.getName())) &&
       // and one of these
@@ -41,8 +41,6 @@ public class WorkflowManagerCore {
          (workItem.getStateDefinition().hasRule(RuleDefinitionOption.AllowEditToAll.name()) ||
          // team definition has allowed anyone to edit
             teamDefHasRule(workItem, RuleDefinitionOption.AllowEditToAll) ||
-            // privileged edit mode is on
-            privilegedEditEnabled ||
             // current user is assigned
             workItem.getAssignees().contains(currentUser) ||
             // current user is ats admin

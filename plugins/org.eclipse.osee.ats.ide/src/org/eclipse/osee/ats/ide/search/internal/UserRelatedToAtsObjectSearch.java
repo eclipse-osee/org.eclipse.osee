@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * Return all ATS Objects that a user is related to through logs, review roles, defects and etc.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class UserRelatedToAtsObjectSearch {
@@ -54,7 +54,6 @@ public class UserRelatedToAtsObjectSearch {
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamMember_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.FavoriteUser_Artifact));
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_Artifact));
-      arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.PrivilegedMember_Team));
 
       return arts;
    }

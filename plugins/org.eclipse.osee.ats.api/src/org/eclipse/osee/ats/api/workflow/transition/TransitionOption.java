@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.api.workflow.transition;
  */
 public enum TransitionOption {
    None,
-   PrivilegedEditEnabled,
    // Override check whether workflow allows transition to state
    OverrideTransitionValidityCheck,
    // Allows transition to occur with UnAssigned, OseeSystem or Guest

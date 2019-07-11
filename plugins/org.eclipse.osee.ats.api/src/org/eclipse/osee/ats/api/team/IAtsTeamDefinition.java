@@ -52,8 +52,6 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
 
    Collection<IAtsUser> getSubscribed();
 
-   Collection<IAtsUser> getPrivilegedMembers();
-
    /*****************************
     * Branching Data
     ******************************/
@@ -172,11 +170,6 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
 
          @Override
          public Collection<IAtsUser> getSubscribed() {
-            return null;
-         }
-
-         @Override
-         public Collection<IAtsUser> getPrivilegedMembers() {
             return null;
          }
 

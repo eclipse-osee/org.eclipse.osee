@@ -174,8 +174,7 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
 
                   // Validate Editable
                   boolean stateIsEditable = WorkflowManagerCore.isEditable(workItem, workItem.getStateDefinition(),
-                     helper.isPrivilegedEditEnabled(), helper.getTransitionUser(),
-                     userService.isAtsAdmin(helper.getTransitionUser()));
+                     helper.getTransitionUser(), userService.isAtsAdmin(helper.getTransitionUser()));
                   boolean currentlyUnAssignedOrCompletedOrCancelled =
                      workItem.isCompletedOrCancelled() || workItem.getStateMgr().getAssignees().contains(
                         AtsCoreUsers.UNASSIGNED_USER);

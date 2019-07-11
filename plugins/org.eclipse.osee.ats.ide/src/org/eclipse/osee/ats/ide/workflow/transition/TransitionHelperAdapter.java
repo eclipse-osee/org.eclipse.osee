@@ -25,11 +25,6 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    IAtsUser transitionUser;
 
    @Override
-   public boolean isPrivilegedEditEnabled() {
-      return false;
-   }
-
-   @Override
    public boolean isOverrideTransitionValidityCheck() {
       return false;
    }

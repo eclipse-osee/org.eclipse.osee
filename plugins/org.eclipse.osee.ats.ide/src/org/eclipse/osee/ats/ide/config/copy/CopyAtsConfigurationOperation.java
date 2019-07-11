@@ -44,8 +44,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
    Set<Artifact> existingArtifacts;
    Set<Artifact> processedFromAis;
 
-   private final Map<IAtsTeamDefinition, IAtsTeamDefinition> fromTeamDefToNewTeamDefMap =
-      new HashMap<>();
+   private final Map<IAtsTeamDefinition, IAtsTeamDefinition> fromTeamDefToNewTeamDefMap = new HashMap<>();
 
    public CopyAtsConfigurationOperation(ConfigData data, XResultData resultData) {
       super("Copy ATS Configuration", Activator.PLUGIN_ID);
@@ -206,14 +205,6 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
             changes.add(user);
             newTeamDefArt.addRelation(AtsRelationTypes.TeamMember_Member, user);
             resultData.log("   - Relating team member " + user);
-         }
-      }
-      for (Artifact user : fromTeamDefArt.getRelatedArtifacts(AtsRelationTypes.PrivilegedMember_Member)) {
-         if (!members.contains(user)) {
-            existingArtifacts.add(user);
-            changes.add(user);
-            newTeamDefArt.addRelation(AtsRelationTypes.PrivilegedMember_Member, user);
-            resultData.log("   - Relating privileged member " + user);
          }
       }
    }

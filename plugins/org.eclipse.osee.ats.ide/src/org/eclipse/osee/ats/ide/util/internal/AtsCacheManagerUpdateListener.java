@@ -49,11 +49,10 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
  */
 public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
 
-   private static List<Long> configReloadRelationTypeGuids =
-      Arrays.asList(AtsRelationTypes.ActionableItemLead_Lead.getGuid(),
-         AtsRelationTypes.TeamDefinitionToVersion_Version.getGuid(), AtsRelationTypes.TeamActionableItem_Team.getGuid(),
-         AtsRelationTypes.PrivilegedMember_Team.getGuid(), AtsRelationTypes.TeamLead_Team.getGuid(),
-         AtsRelationTypes.ParallelVersion_Child.getGuid(), AtsRelationTypes.ParallelVersion_Parent.getGuid());
+   private static List<Long> configReloadRelationTypeGuids = Arrays.asList(
+      AtsRelationTypes.ActionableItemLead_Lead.getGuid(), AtsRelationTypes.TeamDefinitionToVersion_Version.getGuid(),
+      AtsRelationTypes.TeamActionableItem_Team.getGuid(), AtsRelationTypes.TeamLead_Team.getGuid(),
+      AtsRelationTypes.ParallelVersion_Child.getGuid(), AtsRelationTypes.ParallelVersion_Parent.getGuid());
    private Boolean singleServerDeployment;
 
    @Override

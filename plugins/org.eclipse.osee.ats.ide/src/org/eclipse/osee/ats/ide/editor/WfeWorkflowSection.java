@@ -264,13 +264,8 @@ public class WfeWorkflowSection extends SectionPart {
       xWidget = new XLabelValue("Cancelled from State", sma.getCancelledFromState());
       xWidget.createWidgets(parent, 1);
       allXWidgets.add(xWidget);
-
-      if (editor.isPrivilegedEditModeEnabled()) {
-         xWidget = new XCancellationReasonTextWidget(sma);
-         xWidget.addXModifiedListener(xModListener);
-      } else {
-         xWidget = new XLabelValue("Cancellation Reason", sma.getCancelledReason());
-      }
+      xWidget = new XCancellationReasonTextWidget(sma);
+      xWidget.addXModifiedListener(xModListener);
       xWidget.createWidgets(parent, 1);
       allXWidgets.add(xWidget);
    }

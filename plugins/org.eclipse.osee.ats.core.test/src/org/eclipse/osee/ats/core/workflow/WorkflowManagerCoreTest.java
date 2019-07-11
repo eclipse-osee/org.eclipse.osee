@@ -77,42 +77,39 @@ public class WorkflowManagerCoreTest {
       WorkflowManagerCore wmc = new WorkflowManagerCore();
 
       // current state equals state
-      Assert.assertFalse(wmc.isWorkItemEditable(teamWf, null, false, Mary, false));
-      Assert.assertFalse(wmc.isWorkItemEditable(teamWf, analyzeState, false, Mary, false));
-      Assert.assertTrue(wmc.isWorkItemEditable(teamWf, analyzeState, false, Mary, true));
-      Assert.assertFalse(wmc.isWorkItemEditable(teamWf, implementState, false, Mary, true));
+      Assert.assertFalse(wmc.isWorkItemEditable(teamWf, null, Mary, false));
+      Assert.assertFalse(wmc.isWorkItemEditable(teamWf, analyzeState, Mary, false));
+      Assert.assertTrue(wmc.isWorkItemEditable(teamWf, analyzeState, Mary, true));
+      Assert.assertFalse(wmc.isWorkItemEditable(teamWf, implementState, Mary, true));
 
       // assignee is current user
       assignees.add(Mary);
-      Assert.assertTrue(wmc.isWorkItemEditable(teamWf, analyzeState, false, Mary, false));
+      Assert.assertTrue(wmc.isWorkItemEditable(teamWf, analyzeState, Mary, false));
       assignees.add(Joe);
-      Assert.assertTrue(wmc.isWorkItemEditable(teamWf, analyzeState, false, Mary, false));
+      Assert.assertTrue(wmc.isWorkItemEditable(teamWf, analyzeState, Mary, false));
       assignees.remove(Mary);
-      Assert.assertFalse(wmc.isWorkItemEditable(teamWf, analyzeState, false, Mary, false));
+      Assert.assertFalse(wmc.isWorkItemEditable(teamWf, analyzeState, Mary, false));
 
       // isAtsAdmin
       assignees.clear();
-      Assert.assertTrue(wmc.isWorkItemEditable(teamWf, analyzeState, false, Mary, true));
-
-      // privilegedEditEnabled
-      assignees.clear();
-      Assert.assertTrue(wmc.isWorkItemEditable(teamWf, analyzeState, true, Mary, false));
+      Assert.assertTrue(wmc.isWorkItemEditable(teamWf, analyzeState, Mary, true));
 
       // state has rule
+      assignees.clear();
       when(analyzeState.hasRule(RuleDefinitionOption.AllowEditToAll.name())).thenReturn(false);
-      Assert.assertFalse(wmc.isWorkItemEditable(teamWf, analyzeState, false, Mary, false));
+      Assert.assertFalse(wmc.isWorkItemEditable(teamWf, analyzeState, Mary, false));
       when(analyzeState.hasRule(RuleDefinitionOption.AllowEditToAll.name())).thenReturn(true);
-      Assert.assertTrue(wmc.isWorkItemEditable(teamWf, analyzeState, false, Mary, false));
+      Assert.assertTrue(wmc.isWorkItemEditable(teamWf, analyzeState, Mary, false));
       when(analyzeState.hasRule(RuleDefinitionOption.AllowEditToAll.name())).thenReturn(false);
 
       // teamDef has rule
       when(teamDef.hasRule(RuleDefinitionOption.AllowEditToAll.name())).thenReturn(true);
-      Assert.assertTrue(wmc.isWorkItemEditable(teamWf, analyzeState, false, Mary, false));
+      Assert.assertTrue(wmc.isWorkItemEditable(teamWf, analyzeState, Mary, false));
       when(teamDef.hasRule(RuleDefinitionOption.AllowEditToAll.name())).thenReturn(false);
-      Assert.assertFalse(wmc.isWorkItemEditable(teamWf, analyzeState, false, Mary, false));
+      Assert.assertFalse(wmc.isWorkItemEditable(teamWf, analyzeState, Mary, false));
 
       // statics
       assignees.add(Mary);
-      Assert.assertTrue(WorkflowManagerCore.isEditable(teamWf, analyzeState, false, Mary, false));
+      Assert.assertTrue(WorkflowManagerCore.isEditable(teamWf, analyzeState, Mary, false));
    }
 }

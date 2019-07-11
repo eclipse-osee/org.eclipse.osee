@@ -34,7 +34,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Unit test for {@link TransitionHelper}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class TransitionHelperTest {
@@ -65,16 +65,6 @@ public class TransitionHelperTest {
 
       helper = new TransitionHelper("test", Arrays.asList(workItem, workItem2), "Completed", Arrays.asList(Joe, Kay),
          "cancel reason", changes, atsApi, TransitionOption.None);
-   }
-
-   @Test
-   public void testIsPrivilegedEditEnabled() {
-      Assert.assertFalse(helper.isPrivilegedEditEnabled());
-
-      TransitionHelper helper = new TransitionHelper("test", Arrays.asList(workItem, workItem2), "Completed",
-         Arrays.asList(Joe, Kay), "cancel reason", changes, atsApi, TransitionOption.PrivilegedEditEnabled);
-
-      Assert.assertTrue(helper.isPrivilegedEditEnabled());
    }
 
    @Test

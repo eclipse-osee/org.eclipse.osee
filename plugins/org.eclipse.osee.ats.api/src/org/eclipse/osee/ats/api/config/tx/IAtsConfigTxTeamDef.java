@@ -34,8 +34,6 @@ public interface IAtsConfigTxTeamDef {
 
    IAtsConfigTxTeamDef andMembers(UserToken... members);
 
-   IAtsConfigTxTeamDef andPriviledgedMembers(UserToken... members);
-
    IAtsConfigTxTeamDef andTeamWorkflowArtifactType(ArtifactTypeToken artifactType);
 
    IAtsConfigTxTeamDef andRelatedTaskWorkflowArtifactType(ArtifactTypeToken artifactType);

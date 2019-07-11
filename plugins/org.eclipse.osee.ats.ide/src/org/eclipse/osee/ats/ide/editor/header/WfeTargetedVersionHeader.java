@@ -56,38 +56,32 @@ public class WfeTargetedVersionHeader extends Composite implements IWfeEventHand
       editor.getToolkit().adapt(this);
 
       try {
-         if (editor.isPrivilegedEditModeEnabled() || !teamWf.isCancelled() && !teamWf.isCompleted()) {
-            link = editor.getToolkit().createHyperlink(this, TARGET_VERSION, SWT.NONE);
-            link.addHyperlinkListener(new IHyperlinkListener() {
+         link = editor.getToolkit().createHyperlink(this, TARGET_VERSION, SWT.NONE);
+         link.addHyperlinkListener(new IHyperlinkListener() {
 
-               @Override
-               public void linkEntered(HyperlinkEvent e) {
-                  // do nothing
+            @Override
+            public void linkEntered(HyperlinkEvent e) {
+               // do nothing
+            }
+
+            @Override
+            public void linkExited(HyperlinkEvent e) {
+               // do nothing
+            }
+
+            @Override
+            public void linkActivated(HyperlinkEvent e) {
+               if (editor.isDirty()) {
+                  editor.doSave(null);
+               }
+               if (chooseVersion(teamWf)) {
+                  refresh();
+
                }
 
-               @Override
-               public void linkExited(HyperlinkEvent e) {
-                  // do nothing
-               }
-
-               @Override
-               public void linkActivated(HyperlinkEvent e) {
-                  if (editor.isDirty()) {
-                     editor.doSave(null);
-                  }
-                  if (chooseVersion(teamWf)) {
-                     refresh();
-
-                  }
-
-                  editor.onDirtied();
-               }
-            });
-
-         } else {
-            origLabel = editor.getToolkit().createLabel(this, TARGET_VERSION);
-            origLabel.setLayoutData(new GridData());
-         }
+               editor.onDirtied();
+            }
+         });
 
          valueLabel = editor.getToolkit().createLabel(this, "Not Set");
          valueLabel.setLayoutData(new GridData());
