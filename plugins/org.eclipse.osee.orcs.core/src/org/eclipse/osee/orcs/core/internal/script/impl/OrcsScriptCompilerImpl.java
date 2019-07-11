@@ -32,6 +32,7 @@ import org.eclipse.osee.orcs.core.internal.script.OrcsScriptException;
 import org.eclipse.osee.orcs.core.internal.script.OrcsScriptExecutor;
 import org.eclipse.osee.orcs.core.internal.script.OrcsScriptInterpreter;
 import org.eclipse.osee.orcs.core.internal.script.OrcsScriptOutputHandler;
+import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.script.dsl.IExpressionResolver;
 import org.eclipse.osee.orcs.script.dsl.IFieldResolver;
 import org.eclipse.osee.orcs.script.dsl.OrcsScriptDslResource;
@@ -45,14 +46,15 @@ public class OrcsScriptCompilerImpl implements OrcsScriptCompiler {
    private final OrcsSession session;
    private final DataModule dataModule;
    private final OrcsTypes orcsTypes;
+   private final QueryModule queryModule;
 
    private OrcsScriptInterpreter interpreter;
 
-   public OrcsScriptCompilerImpl(OrcsSession session, DataModule dataModule, OrcsTypes orcsTypes) {
-      super();
+   public OrcsScriptCompilerImpl(OrcsSession session, DataModule dataModule, OrcsTypes orcsTypes, QueryModule queryModule) {
       this.session = session;
       this.dataModule = dataModule;
       this.orcsTypes = orcsTypes;
+      this.queryModule = queryModule;
    }
 
    private OrcsScriptInterpreter getInterpreter() {
@@ -76,7 +78,7 @@ public class OrcsScriptCompilerImpl implements OrcsScriptCompiler {
    }
 
    private OrcsScriptAssembler getAssembler(OrcsScriptOutputHandler output) {
-      return new OrcsScriptAssemblerImpl(dataModule, orcsTypes, output);
+      return new OrcsScriptAssemblerImpl(dataModule, orcsTypes, output, queryModule);
    }
 
    private OrcsScriptExecutor getExecutor(OrcsScriptAssembler assembler) {

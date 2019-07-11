@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.core.internal.script;
 
 import org.eclipse.osee.orcs.core.ds.DynamicData;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OrcsScript;
-import org.eclipse.osee.orcs.search.ArtifactQueryBuilder;
 import org.eclipse.osee.orcs.search.BranchQueryBuilder;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.TxQueryBuilder;
 
 /**
@@ -43,9 +43,9 @@ public interface OrcsScriptAssembler {
 
    void resetBranchQuery();
 
-   ArtifactQueryBuilder<?> newArtifactQuery();
+   QueryBuilder newArtifactQuery();
 
-   ArtifactQueryBuilder<?> getArtifactQuery();
+   QueryBuilder getArtifactQuery();
 
    void resetArtifactQuery();
 

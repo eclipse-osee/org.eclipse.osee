@@ -62,6 +62,10 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
          tupleQuery, applicabilityDsQuery, queryEngine);
    }
 
+   public CallableQueryFactory getArtQueryFactory() {
+      return artQueryFactory;
+   }
+
    @Override
    public QueryStatistics getStatistics(OrcsSession session) {
       return statistics.clone();

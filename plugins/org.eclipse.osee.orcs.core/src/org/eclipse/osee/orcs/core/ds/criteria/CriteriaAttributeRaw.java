@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
-import org.eclipse.osee.orcs.search.ArtifactQueryBuilder;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Roberto E. Escobar
@@ -59,7 +59,7 @@ public class CriteriaAttributeRaw extends Criteria {
    @Override
    public void checkValid(Options options) {
       Conditions.checkNotNullOrEmptyOrContainNull(getAttributeTypes(), "attributeType");
-      Conditions.checkExpressionFailOnTrue(getAttributeTypes().equals(ArtifactQueryBuilder.ANY_ATTRIBUTE_TYPE),
+      Conditions.checkExpressionFailOnTrue(getAttributeTypes().equals(QueryBuilder.ANY_ATTRIBUTE_TYPE),
          "Any attribute type is not allowed");
 
       List<QueryOption> unsupportedOptions = getUnsupportedOptions();

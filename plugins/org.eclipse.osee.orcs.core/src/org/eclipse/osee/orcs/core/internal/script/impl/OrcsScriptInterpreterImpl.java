@@ -25,9 +25,9 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -106,9 +106,9 @@ import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsTxTypeCriteria;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OseAttributeOpClause;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.ScriptVersion;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.util.OrcsScriptDslSwitch;
-import org.eclipse.osee.orcs.search.ArtifactQueryBuilder;
 import org.eclipse.osee.orcs.search.BranchQueryBuilder;
 import org.eclipse.osee.orcs.search.Operator;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.TxQueryBuilder;
 
 /**
@@ -541,11 +541,11 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       }
 
       //////////////////////////////Artifact Query;
-      private ArtifactQueryBuilder<?> newArtifactQuery() {
+      private QueryBuilder newArtifactQuery() {
          return assembler.newArtifactQuery();
       }
 
-      private ArtifactQueryBuilder<?> getArtifactQuery() {
+      private QueryBuilder getArtifactQuery() {
          return assembler.getArtifactQuery();
       }
 

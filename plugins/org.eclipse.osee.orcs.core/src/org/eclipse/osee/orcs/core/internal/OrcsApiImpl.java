@@ -204,7 +204,7 @@ public class OrcsApiImpl implements OrcsApi {
       indexerModule = new IndexerModule(logger, preferences, executorAdmin, dataStore.getQueryEngineIndexer());
       indexerModule.start(getSystemSession(), orcsTypes.getAttributeTypes());
 
-      OrcsScriptCompiler compiler = new OrcsScriptCompilerImpl(getSystemSession(), module, orcsTypes);
+      OrcsScriptCompiler compiler = new OrcsScriptCompilerImpl(getSystemSession(), module, orcsTypes, queryModule);
       manager = ScriptEngines.newScriptEngineManager(compiler);
 
       applicability = new OrcsApplicabilityOps(this);

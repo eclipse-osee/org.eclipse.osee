@@ -32,7 +32,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideNotExists;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
-import org.eclipse.osee.orcs.search.ArtifactQueryBuilder;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Roberto E. Escobar
@@ -49,7 +49,7 @@ public class CriteriaFactory {
 
    private Collection<AttributeTypeId> checkForAnyType(Collection<AttributeTypeId> attributeTypes) {
       Collection<AttributeTypeId> toReturn;
-      if (attributeTypes.contains(ArtifactQueryBuilder.ANY_ATTRIBUTE_TYPE)) {
+      if (attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE)) {
          Collection<AttributeTypeId> temp = new LinkedList<>();
          temp.addAll(attributeTypeCache.getAll());
          toReturn = temp;
@@ -90,7 +90,7 @@ public class CriteriaFactory {
 
    public Criteria createAttributeCriteria(Collection<AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options) {
       Collection<AttributeTypeId> types = checkForAnyType(attributeTypes);
-      boolean isIncludeAllTypes = attributeTypes.contains(ArtifactQueryBuilder.ANY_ATTRIBUTE_TYPE);
+      boolean isIncludeAllTypes = attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE);
       return new CriteriaAttributeKeywords(isIncludeAllTypes, types, attributeTypeCache, values, options);
    }
 

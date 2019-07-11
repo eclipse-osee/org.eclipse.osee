@@ -108,7 +108,7 @@ public final class QueryData implements HasOptions, HasBranch {
       for (List<Criteria> criteriaSet : criterias) {
          for (Criteria criteria : criteriaSet) {
             if (type.isInstance(criteria)) {
-               matchingCriteria.add((T) criteria);
+               matchingCriteria.add(type.cast(criteria));
             }
          }
       }

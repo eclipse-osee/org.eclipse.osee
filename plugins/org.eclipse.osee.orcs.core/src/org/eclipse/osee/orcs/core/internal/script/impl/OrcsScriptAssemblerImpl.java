@@ -26,15 +26,17 @@ import org.eclipse.osee.orcs.core.ds.SelectSet;
 import org.eclipse.osee.orcs.core.internal.script.OrcsScriptAssembler;
 import org.eclipse.osee.orcs.core.internal.script.OrcsScriptExecutor;
 import org.eclipse.osee.orcs.core.internal.script.OrcsScriptOutputHandler;
-import org.eclipse.osee.orcs.core.internal.search.ArtifactQueryBuilderImpl;
 import org.eclipse.osee.orcs.core.internal.search.BranchCriteriaFactory;
 import org.eclipse.osee.orcs.core.internal.search.BranchQueryBuilderImpl;
+import org.eclipse.osee.orcs.core.internal.search.CallableQueryFactory;
 import org.eclipse.osee.orcs.core.internal.search.CriteriaFactory;
+import org.eclipse.osee.orcs.core.internal.search.QueryBuilderImpl;
+import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.core.internal.search.TransactionCriteriaFactory;
 import org.eclipse.osee.orcs.core.internal.search.TxQueryBuilderImpl;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OrcsScript;
-import org.eclipse.osee.orcs.search.ArtifactQueryBuilder;
 import org.eclipse.osee.orcs.search.BranchQueryBuilder;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.TxQueryBuilder;
 
 /**
@@ -52,18 +54,19 @@ public class OrcsScriptAssemblerImpl implements OrcsScriptAssembler, OrcsScriptE
    private final LinkedList<QueryData> queries = new LinkedList<>();
    private String version;
    private TxQueryBuilderImpl<?> txQuery;
-   private ArtifactQueryBuilderImpl<?> artQuery;
+   private QueryBuilder artQuery;
    private BranchQueryBuilderImpl<?> branchQuery;
 
    private final DataModule dataModule;
    private final OrcsScriptOutputHandler output;
+   private final CallableQueryFactory artQueryFactory;
 
    private boolean errorDetected;
 
-   public OrcsScriptAssemblerImpl(DataModule dataModule, OrcsTypes orcsTypes, OrcsScriptOutputHandler output) {
-      super();
+   public OrcsScriptAssemblerImpl(DataModule dataModule, OrcsTypes orcsTypes, OrcsScriptOutputHandler output, QueryModule queryModule) {
       this.dataModule = dataModule;
       this.output = output;
+      this.artQueryFactory = queryModule.getArtQueryFactory();
       factory1 = new TransactionCriteriaFactory();
       factory2 = new BranchCriteriaFactory();
       factory3 = new CriteriaFactory(orcsTypes.getArtifactTypes(), orcsTypes.getAttributeTypes());
@@ -120,8 +123,8 @@ public class OrcsScriptAssemblerImpl implements OrcsScriptAssembler, OrcsScriptE
    }
 
    @Override
-   public ArtifactQueryBuilder<?> newArtifactQuery() {
-      this.artQuery = new ArtifactQueryBuilderImpl<>(factory3, getLastQuery());
+   public QueryBuilder newArtifactQuery() {
+      this.artQuery = new QueryBuilderImpl(artQueryFactory, factory3, null, getLastQuery());
       return artQuery;
    }
 
@@ -136,7 +139,7 @@ public class OrcsScriptAssemblerImpl implements OrcsScriptAssembler, OrcsScriptE
    }
 
    @Override
-   public ArtifactQueryBuilder<?> getArtifactQuery() {
+   public QueryBuilder getArtifactQuery() {
       if (artQuery == null) {
          newArtifactQuery();
       }
