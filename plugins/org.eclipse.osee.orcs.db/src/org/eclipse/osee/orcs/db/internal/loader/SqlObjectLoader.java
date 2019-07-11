@@ -28,6 +28,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -38,8 +39,6 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.ResultObjectDescription;
-import org.eclipse.osee.orcs.data.AttributeTypes;
-import org.eclipse.osee.orcs.data.RelationTypes;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
@@ -70,17 +69,19 @@ public class SqlObjectLoader {
    private final JdbcClient jdbcClient;
    private final SqlJoinFactory joinFactory;
    private final SqlHandlerFactory handlerFactory;
+   private final OrcsTypes orcsTypes;
 
-   public SqlObjectLoader(Log logger, JdbcClient jdbcClient, SqlJoinFactory joinFactory, SqlHandlerFactory handlerFactory, OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicProcessor, AttributeTypes attributeTypes, RelationTypes relationTypes) {
+   public SqlObjectLoader(Log logger, JdbcClient jdbcClient, SqlJoinFactory joinFactory, SqlHandlerFactory handlerFactory, OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicProcessor, OrcsTypes orcsTypes) {
       this.logger = logger;
       this.jdbcClient = jdbcClient;
       this.joinFactory = joinFactory;
       this.handlerFactory = handlerFactory;
       this.dynamicProcessor = dynamicProcessor;
+      this.orcsTypes = orcsTypes;
 
       artifactProcessor = new ArtifactLoadProcessor(objectFactory);
-      attributeProcessor = new AttributeLoadProcessor(logger, objectFactory, attributeTypes);
-      relationProcessor = new RelationLoadProcessor(logger, objectFactory, relationTypes);
+      attributeProcessor = new AttributeLoadProcessor(logger, objectFactory, orcsTypes.getAttributeTypes());
+      relationProcessor = new RelationLoadProcessor(logger, objectFactory, orcsTypes.getRelationTypes());
    }
 
    public SqlHandlerFactory getFactory() {
@@ -108,7 +109,7 @@ public class SqlObjectLoader {
    private void writeSql(Criteria criteria, LoadSqlContext context) {
       context.clear();
       SqlHandler<?> handler = handlerFactory.createHandler(criteria);
-      AbstractSqlWriter writer = new LoadSqlWriter(joinFactory, jdbcClient, context);
+      AbstractSqlWriter writer = new LoadSqlWriter(joinFactory, jdbcClient, context, orcsTypes);
       writer.build(handler);
    }
 

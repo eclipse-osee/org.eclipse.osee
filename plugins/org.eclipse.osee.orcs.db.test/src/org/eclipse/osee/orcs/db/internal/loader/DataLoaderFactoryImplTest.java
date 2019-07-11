@@ -105,9 +105,7 @@ public class DataLoaderFactoryImplTest {
       when(session.getGuid()).thenReturn(sessionId);
 
       LoaderModule module = new LoaderModule(logger, jdbcClient, identityService, joinFactory, null);
-      AttributeTypes attributeTypes = orcsApi.getOrcsTypes().getAttributeTypes();
-      RelationTypes relationTypes = orcsApi.getOrcsTypes().getRelationTypes();
-      SqlObjectLoader loader = module.createSqlObjectLoader(rowDataFactory, null, attributeTypes, relationTypes);
+      SqlObjectLoader loader = module.createSqlObjectLoader(rowDataFactory, null, orcsApi.getOrcsTypes());
 
       spyLoader = spy(loader);
       factory = module.createDataLoaderFactory(spyLoader);

@@ -15,8 +15,8 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
+import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
@@ -25,12 +25,11 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
  * @author Roberto E. Escobar
  */
 public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
-
    private final BranchId branch;
 
-   public ArtifactQuerySqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryType queryType, BranchId branch) {
-      super(joinFactory, jdbcClient, context, queryType);
-      this.branch = branch;
+   public ArtifactQuerySqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryData queryData) {
+      super(joinFactory, jdbcClient, context, queryData);
+      this.branch = queryData.getBranch();
    }
 
    public ArtifactQuerySqlWriter(AbstractSqlWriter parent) {
@@ -51,7 +50,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
 
    @Override
    public void writeGroupAndOrder() {
-      if (isCountQueryType()) {
+      if (queryData.isCountQueryType()) {
          if (OptionsUtil.isHistorical(getOptions())) {
             write("\n) xTable");
          }

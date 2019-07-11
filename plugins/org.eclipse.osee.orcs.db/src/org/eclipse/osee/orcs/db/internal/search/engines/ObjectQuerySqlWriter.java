@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.enums.ObjectType;
 import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.core.ds.DynamicData;
 import org.eclipse.osee.orcs.core.ds.DynamicObject;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -57,8 +56,8 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
 
    private WithClauseTxFilterData withTxFilterClause;
 
-   public ObjectQuerySqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryType queryType, QueryData queryData) {
-      super(joinFactory, jdbcClient, context, queryType);
+   public ObjectQuerySqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryData queryData) {
+      super(joinFactory, jdbcClient, context, queryData);
       this.fieldResolver = new SqlFieldResolver(getAliasManager(), queryData.getSelectSets());
    }
 
@@ -140,7 +139,7 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
       if (OptionsUtil.isHistorical(getOptions())) {
          throw new UnsupportedOperationException("Historical dynamic query not supported");
       }
-      if (!isCountQueryType()) {
+      if (!queryData.isCountQueryType()) {
          boolean isFirst = true;
          for (String value : fieldResolver.getSortFields()) {
             if (isFirst) {

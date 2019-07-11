@@ -37,9 +37,8 @@ public class ArtifactQuerySqlContextFactoryImpl implements QuerySqlContextFactor
    @Override
    public QuerySqlContext createQueryContext(OrcsSession session, QueryData queryData, QueryType queryType) {
       QuerySqlContext context = new ArtifactQuerySqlContext(session, queryData);
-
-      AbstractSqlWriter writer =
-         new ArtifactQuerySqlWriter(joinFactory, jdbcClient, context, queryType, queryData.getBranch());
+      queryData.setQueryType(queryType);
+      AbstractSqlWriter writer = new ArtifactQuerySqlWriter(joinFactory, jdbcClient, context, queryData);
       writer.build(handlerFactory.createHandlers(queryData));
       return context;
    }

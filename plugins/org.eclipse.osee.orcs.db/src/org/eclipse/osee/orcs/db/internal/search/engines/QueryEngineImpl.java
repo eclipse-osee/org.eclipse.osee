@@ -84,7 +84,7 @@ public class QueryEngineImpl implements QueryEngine {
          return artifactQueryEngineFactory.getArtifactCount(queryData);
       }
       Long[] count = new Long[1];
-      selectiveArtifactLoad(queryData, QueryType.COUNT, stmt -> count[0] = stmt.getLong("art_count"));
+      selectiveArtifactLoad(queryData, stmt -> count[0] = stmt.getLong("art_count"));
       return count[0].intValue();
    }
 
@@ -142,7 +142,7 @@ public class QueryEngineImpl implements QueryEngine {
    @Override
    public List<ArtifactToken> loadArtifactTokens(QueryData queryData) {
       List<ArtifactToken> tokens = new ArrayList<>(100);
-      selectiveArtifactLoad(queryData, QueryType.TOKEN, stmt -> tokens.add(ArtifactToken.valueOf(stmt.getLong("art_id"),
+      selectiveArtifactLoad(queryData, stmt -> tokens.add(ArtifactToken.valueOf(stmt.getLong("art_id"),
          stmt.getString("value"), queryData.getBranch(), artifactTypes.get(stmt.getLong("art_type_id")))));
       return tokens;
    }
@@ -164,7 +164,7 @@ public class QueryEngineImpl implements QueryEngine {
          }
          attributes.put(attributeTypes.get(stmt.getLong("attr_type_id")), stmt.getString("value"));
       };
-      selectiveArtifactLoad(queryData, QueryType.SELECT, consumer);
+      selectiveArtifactLoad(queryData, consumer);
       if (!artifactId[0].equals(Id.SENTINEL)) {
          maps.add(createFieldMap(artifactId, attributes));
       }
@@ -198,19 +198,19 @@ public class QueryEngineImpl implements QueryEngine {
          tokens.put(token, token);
       };
 
-      selectiveArtifactLoad(queryData, QueryType.TOKEN, consumer);
+      selectiveArtifactLoad(queryData, consumer);
       return tokens;
    }
 
    @Override
    public List<ArtifactId> loadArtifactIds(QueryData queryData) {
       List<ArtifactId> ids = new ArrayList<>(100);
-      selectiveArtifactLoad(queryData, QueryType.ID, stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))));
+      selectiveArtifactLoad(queryData, stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))));
       return ids;
    }
 
-   private void selectiveArtifactLoad(QueryData queryData, QueryType queryType, Consumer<JdbcStatement> consumer) {
-      new SelectiveArtifactSqlWriter(sqlJoinFactory, jdbcClient, queryData, queryType).runSql(consumer, handlerFactory);
+   private void selectiveArtifactLoad(QueryData queryData, Consumer<JdbcStatement> consumer) {
+      new SelectiveArtifactSqlWriter(sqlJoinFactory, jdbcClient, queryData).runSql(consumer, handlerFactory);
    }
 
    @Override

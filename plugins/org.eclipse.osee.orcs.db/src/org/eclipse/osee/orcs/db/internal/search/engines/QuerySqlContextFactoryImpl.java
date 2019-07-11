@@ -49,8 +49,9 @@ public class QuerySqlContextFactoryImpl implements QuerySqlContextFactory {
    @Override
    public QuerySqlContext createQueryContext(OrcsSession session, QueryData queryData, QueryType queryType) {
       QuerySqlContext context = new QuerySqlContext(session, queryData.getOptions(), type);
+      queryData.setQueryType(queryType);
       AbstractSqlWriter writer =
-         new QuerySqlWriter(logger, joinFactory, jdbcClient, context, queryType, table, idColumn);
+         new QuerySqlWriter(logger, joinFactory, jdbcClient, context, queryData, table, idColumn);
       writer.build(handlerFactory.createHandlers(queryData));
       return context;
    }

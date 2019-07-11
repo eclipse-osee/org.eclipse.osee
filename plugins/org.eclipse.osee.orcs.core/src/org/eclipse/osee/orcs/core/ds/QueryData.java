@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
@@ -76,6 +77,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    private final Options options;
    private final BranchId branch;
    private final CallableQueryFactory artQueryFactory;
+   private QueryType queryType;
    private final QueryEngine queryEngine;
    private final ArtifactTypes artifactTypeCache;
    private final AttributeTypes attributeTypeCache;
@@ -100,9 +102,30 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       return new QueryData(null, null, new OrcsTypesImpl(null, null, null, null, null), BranchId.SENTINEL);
    }
 
+   public QueryData(QueryType queryType, OrcsTypes orcsTypes) {
+      this(null, null, orcsTypes, BranchId.SENTINEL);
+      setQueryType(queryType);
+   }
+
    @Override
    public Options getOptions() {
       return options;
+   }
+
+   public boolean isSelectQueryType() {
+      return queryType == QueryType.SELECT;
+   }
+
+   public boolean isCountQueryType() {
+      return queryType == QueryType.COUNT;
+   }
+
+   public boolean isTokenQueryType() {
+      return queryType == QueryType.TOKEN;
+   }
+
+   public boolean isIdQueryType() {
+      return queryType == QueryType.ID;
    }
 
    public List<Criteria> getAllCriteria() {
@@ -495,6 +518,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    @Override
    public List<ArtifactToken> loadArtifactTokens(AttributeTypeId attributeType) {
+      setQueryType(QueryType.TOKEN);
       addCriteria(new CriteriaTokenQuery(attributeType));
       return queryEngine.loadArtifactTokens(this);
    }
@@ -541,12 +565,14 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    @Override
    public List<ArtifactId> loadArtifactIds() {
+      setQueryType(QueryType.ID);
       addCriteria(new CriteriaIdQuery());
       return queryEngine.loadArtifactIds(this);
    }
 
    @Override
    public ResultSet<ArtifactReadable> getResults() {
+      setQueryType(QueryType.SELECT);
       try {
          return artQueryFactory.createSearch(null, this).call();
       } catch (Exception ex) {
@@ -575,6 +601,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    @Override
    public int getCount() {
+      setQueryType(QueryType.COUNT);
       return queryEngine.getArtifactCount(this);
    }
 
@@ -610,5 +637,9 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
          throw new OseeStateException(String.format("Expected 0..1, found %s", artifacts.size()));
       }
       return artifacts.iterator().next();
+   }
+
+   public void setQueryType(QueryType queryType) {
+      this.queryType = queryType;
    }
 }

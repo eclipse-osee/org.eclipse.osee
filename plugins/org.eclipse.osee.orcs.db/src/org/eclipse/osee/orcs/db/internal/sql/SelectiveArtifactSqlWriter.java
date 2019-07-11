@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
-import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
@@ -30,24 +29,21 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
  * @author Ryan D. Brooks
  */
 public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
-   private final QueryData queryData;
    private final List<AbstractJoinQuery> joinTables = new ArrayList<>();
    private final AbstractSqlWriter parentWriter;
    private final List<Object> parameters = new ArrayList<>();
 
-   private SelectiveArtifactSqlWriter(AbstractSqlWriter parentWriter, SqlJoinFactory sqlJoinFactory, JdbcClient jdbcClient, QueryData queryData, QueryType queryType) {
-      super(sqlJoinFactory, jdbcClient, queryType);
+   private SelectiveArtifactSqlWriter(AbstractSqlWriter parentWriter, SqlJoinFactory sqlJoinFactory, JdbcClient jdbcClient, QueryData queryData) {
+      super(sqlJoinFactory, jdbcClient, queryData);
       this.parentWriter = parentWriter;
-      this.queryData = queryData;
    }
 
-   public SelectiveArtifactSqlWriter(SqlJoinFactory sqlJoinFactory, JdbcClient jdbcClient, QueryData queryData, QueryType queryType) {
-      this(null, sqlJoinFactory, jdbcClient, queryData, queryType);
+   public SelectiveArtifactSqlWriter(SqlJoinFactory sqlJoinFactory, JdbcClient jdbcClient, QueryData queryData) {
+      this(null, sqlJoinFactory, jdbcClient, queryData);
    }
 
-   public SelectiveArtifactSqlWriter(SelectiveArtifactSqlWriter parentWriter) {
-      this(parentWriter, parentWriter.joinFactory, parentWriter.getJdbcClient(), parentWriter.queryData,
-         parentWriter.queryType);
+   public SelectiveArtifactSqlWriter(AbstractSqlWriter parentWriter) {
+      this(parentWriter, parentWriter.joinFactory, parentWriter.getJdbcClient(), parentWriter.queryData);
    }
 
    @Override
@@ -114,7 +110,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
    @Override
    public void writeGroupAndOrder() {
-      if (parentWriter == null && !isCountQueryType() && !isSelectQueryType()) {
+      if (parentWriter == null && !queryData.isCountQueryType() && !queryData.isSelectQueryType()) {
          write(" ORDER BY art_id");
       }
    }

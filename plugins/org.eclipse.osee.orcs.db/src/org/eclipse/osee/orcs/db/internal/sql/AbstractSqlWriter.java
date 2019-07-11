@@ -23,10 +23,10 @@ import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.core.ds.HasOptions;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
+import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.CharJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
@@ -46,19 +46,19 @@ public abstract class AbstractSqlWriter implements HasOptions {
    protected final SqlJoinFactory joinFactory;
    private final JdbcClient jdbcClient;
    private final SqlContext context;
-   protected final QueryType queryType;
+   protected final QueryData queryData;
    private int level;
    private boolean firstField;
 
-   public AbstractSqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryType queryType) {
+   public AbstractSqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryData queryData) {
       this.joinFactory = joinFactory;
       this.jdbcClient = jdbcClient;
       this.context = context;
-      this.queryType = queryType;
+      this.queryData = queryData;
    }
 
-   public AbstractSqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, QueryType queryType) {
-      this(joinFactory, jdbcClient, null, queryType);
+   public AbstractSqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, QueryData queryData) {
+      this(joinFactory, jdbcClient, null, queryData);
    }
 
    public void build(SqlHandler<?>... handlers) {
@@ -85,22 +85,6 @@ public abstract class AbstractSqlWriter implements HasOptions {
       aliasManager.reset();
       level = 0;
       mainAliases.clear();
-   }
-
-   public boolean isSelectQueryType() {
-      return QueryType.SELECT == queryType;
-   }
-
-   public boolean isCountQueryType() {
-      return QueryType.COUNT == queryType;
-   }
-
-   public boolean isTokenQueryType() {
-      return QueryType.TOKEN == queryType;
-   }
-
-   public boolean isIdQueryType() {
-      return QueryType.ID == queryType;
    }
 
    protected void write(Iterable<SqlHandler<?>> handlers) {
@@ -188,7 +172,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    protected void writeSelect(Iterable<SqlHandler<?>> handlers) {
       writeSelectAndHint();
-      if (isCountQueryType()) {
+      if (queryData.isCountQueryType()) {
          if (OptionsUtil.isHistorical(getOptions())) {
             write("count(xTable.art_id) FROM (");
             writeSelectAndHint();

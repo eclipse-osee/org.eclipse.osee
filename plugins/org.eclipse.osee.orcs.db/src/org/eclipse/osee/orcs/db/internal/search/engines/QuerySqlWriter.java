@@ -14,7 +14,7 @@ import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.QueryType;
+import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
@@ -29,8 +29,8 @@ public class QuerySqlWriter extends AbstractSqlWriter {
    private final TableEnum table;
    private String tableAlias;
 
-   public QuerySqlWriter(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryType queryType, TableEnum table, String idColumn) {
-      super(joinFactory, jdbcClient, context, queryType);
+   public QuerySqlWriter(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryData queryData, TableEnum table, String idColumn) {
+      super(joinFactory, jdbcClient, context, queryData);
       this.idColumn = idColumn;
       this.table = table;
    }
@@ -43,7 +43,7 @@ public class QuerySqlWriter extends AbstractSqlWriter {
 
    @Override
    public void writeGroupAndOrder() {
-      if (!isCountQueryType()) {
+      if (!queryData.isCountQueryType()) {
          write("\n ORDER BY %s.%s", tableAlias, idColumn);
       }
    }
