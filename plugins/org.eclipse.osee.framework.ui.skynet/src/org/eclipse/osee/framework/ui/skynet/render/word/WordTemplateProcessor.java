@@ -18,8 +18,6 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
 import java.io.InputStream;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.nio.charset.CharacterCodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,7 +31,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.ws.rs.core.MediaType;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -83,7 +80,6 @@ import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.swt.program.Program;
 import org.json.JSONArray;
@@ -444,10 +440,7 @@ public class WordTemplateProcessor {
             } else if (Strings.isValid(artifactName)) {
                artifacts = ArtifactQuery.getArtifactListFromName(artifactName, branch);
             } else if (Strings.isValid(orcsQuery)) {
-               Writer writer = new StringWriter();
-               OseeClient oseeClient = ServiceUtil.getOseeClient();
-               oseeClient.executeScript(orcsQuery, null, false, MediaType.APPLICATION_JSON_TYPE, writer);
-               artifacts = parseOrcsQueryResult(writer.toString(), branch);
+               artifacts = parseOrcsQueryResult(ServiceUtil.getOseeClient().runOrcsScript(orcsQuery), branch);
             }
 
             String subDocFileName = subDocName + ".xml";

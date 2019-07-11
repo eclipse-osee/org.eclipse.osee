@@ -40,7 +40,9 @@ public interface OseeClient {
 
    QueryBuilder createQueryBuilder(BranchId branch);
 
-   void executeScript(String script, Properties properties, boolean debug, MediaType media, Writer writer);
+   String runOrcsScript(String script, Object... data);
+
+   void runOrcsScript(String script, Properties properties, boolean debug, MediaType media, Writer writer);
 
    BranchEndpoint getBranchEndpoint();
 

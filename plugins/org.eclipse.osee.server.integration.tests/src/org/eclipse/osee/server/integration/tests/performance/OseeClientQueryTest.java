@@ -146,14 +146,9 @@ public class OseeClientQueryTest {
 
       StringWriter writer = new StringWriter();
       Properties properties = new Properties();
-      oseeClient.executeScript(script, properties, false, MediaType.APPLICATION_JSON_TYPE, writer);
+      oseeClient.runOrcsScript(script, properties, false, MediaType.APPLICATION_JSON_TYPE, writer);
 
-      assertTrue(normalize(writer.toString()).contains("'value' : 'User Groups'"));
-   }
-
-   private String normalize(String value) {
-      value = value.replaceAll("\r\n", "\n");
-      value = value.replaceAll("\"", "'");
-      return value;
+      String results = writer.toString();
+      assertTrue("actual results: " + results, results.contains("value\" : \"User Groups"));
    }
 }

@@ -68,7 +68,7 @@ public class OrcsScriptBlam extends AbstractBlam {
          try {
             OseeClient oseeClient = ServiceUtil.getOseeClient();
             Properties props = getParameters(params);
-            oseeClient.executeScript(script, props, debug, mediaType, writer);
+            oseeClient.runOrcsScript(script, props, debug, mediaType, writer);
             if (excel && outfile != null) {
                log("Excel XML file produced: ");
                log(outfile.getCanonicalPath());

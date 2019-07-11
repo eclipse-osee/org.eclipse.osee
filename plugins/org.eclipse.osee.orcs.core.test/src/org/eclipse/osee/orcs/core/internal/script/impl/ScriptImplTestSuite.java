@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({OrcsScriptInterpreterTest.class, ExcelOutputHandlerTest.class})
+@Suite.SuiteClasses({ExcelOutputHandlerTest.class})
 public class ScriptImplTestSuite {
    // Test Suite
 }

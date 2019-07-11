@@ -30,8 +30,6 @@ import static org.eclipse.osee.framework.core.util.RendererOption.UPDATE_PARAGRA
 import static org.eclipse.osee.framework.core.util.RendererOption.USE_TEMPLATE_ONCE;
 import static org.eclipse.osee.framework.core.util.RendererOption.VIEW;
 import static org.eclipse.osee.framework.core.util.RendererOption.WAS_BRANCH;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,7 +41,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.ws.rs.core.MediaType;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -74,7 +71,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -234,17 +230,13 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    }
 
    private List<Artifact> getArtifactsFromOrcsQuery() {
-      Writer writer = new StringWriter();
-      OseeClient oseeClient = ServiceUtil.getOseeClient();
-
       String orcsQuery = orcsQueryWidget.getText();
-      oseeClient.executeScript(orcsQuery, null, false, MediaType.APPLICATION_JSON_TYPE, writer);
-      String result = writer.toString();
       parseQueryForBranchName(orcsQuery);
 
       //Parse JSON returned from query
       ArrayList<Artifact> artifacts = new ArrayList<>();
       try {
+         String result = ServiceUtil.getOseeClient().runOrcsScript(orcsQuery);
          JSONObject jsonObject = new JSONObject(result);
          JSONArray results = jsonObject.getJSONArray("results");
          if (results.length() >= 1 && branch != null) {

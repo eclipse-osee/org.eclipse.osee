@@ -26,6 +26,7 @@ import org.eclipse.osee.define.api.DataRightsEndpoint;
 import org.eclipse.osee.define.api.DefineBranchEndpointApi;
 import org.eclipse.osee.define.api.MSWordEndpoint;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -143,7 +144,17 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    }
 
    @Override
-   public void executeScript(String script, Properties properties, boolean debug, MediaType mediaType, Writer writer) {
+   public String runOrcsScript(String script, Object... data) {
+      for (int i = 0; i < data.length; i++) {
+         if (data[i] instanceof Id) {
+            data[i] = ((Id) data[i]).getIdString();
+         }
+      }
+      return getOrcsScriptEndpoint().getScriptResult(String.format(script, data));
+   }
+
+   @Override
+   public void runOrcsScript(String script, Properties properties, boolean debug, MediaType mediaType, Writer writer) {
       String props = null;
       try {
          if (properties != null && !properties.isEmpty()) {
