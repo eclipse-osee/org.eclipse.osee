@@ -35,6 +35,7 @@ import org.eclipse.osee.orcs.core.ds.IndexedResource;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Roberto E. Escobar
@@ -90,7 +91,7 @@ public class AttributeDataMatcher {
    private List<MatchLocation> matchTokenizedValue(HasCancellation cancellation, AttributeData<?> data, Iterable<String> valuesToMatch, Collection<AttributeTypeId> typesFilter, QueryOption... options) {
       AttributeIndexedResource source = adapt(data);
       AttributeTypeId attrType = source.getAttributeType();
-      if (typesFilter.contains(attrType)) {
+      if (typesFilter.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE) || typesFilter.contains(attrType)) {
          checkCancelled(cancellation);
          String taggerId = attrTypes.getTaggerId(attrType);
          Tagger tagger = getTagger(taggerId);

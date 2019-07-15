@@ -99,7 +99,7 @@ public class BranchQuerySqlContextFactoryImplTest {
       queryEngine = Engines.newBranchSqlContextFactory(logger, joinFactory, identityService, jdbcClient);
       when(jdbcClient.getDbType()).thenReturn(JdbcDbType.hsql);
 
-      queryData = new QueryData();
+      queryData = QueryData.mock();
    }
 
    @Test

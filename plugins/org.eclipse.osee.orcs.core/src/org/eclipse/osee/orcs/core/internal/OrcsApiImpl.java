@@ -198,8 +198,8 @@ public class OrcsApiImpl implements OrcsApi {
          new TxDataManager(proxyManager, artifactFactory, relationManager, module.getDataFactory(), txDataLoader);
       txCallableFactory = new TxCallableFactory(logger, module.getTxDataStore(), txDataManager);
 
-      queryModule = new QueryModule(logger, module.getQueryEngine(), graphBuilderFactory, graphProvider,
-         orcsTypes.getArtifactTypes(), orcsTypes.getAttributeTypes(), proxyManager);
+      queryModule =
+         new QueryModule(logger, module.getQueryEngine(), graphBuilderFactory, graphProvider, orcsTypes, proxyManager);
 
       indexerModule = new IndexerModule(logger, preferences, executorAdmin, dataStore.getQueryEngineIndexer());
       indexerModule.start(getSystemSession(), orcsTypes.getAttributeTypes());

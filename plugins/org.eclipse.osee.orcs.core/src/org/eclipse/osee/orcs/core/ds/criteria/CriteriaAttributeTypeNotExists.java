@@ -30,6 +30,10 @@ public class CriteriaAttributeTypeNotExists extends Criteria {
       value = null;
    }
 
+   public CriteriaAttributeTypeNotExists(AttributeTypeId attributeType) {
+      this(attributeType, null);
+   }
+
    public CriteriaAttributeTypeNotExists(AttributeTypeId attributeType, String value) {
       this.attributeTypes = Arrays.asList(attributeType);
       this.value = value;

@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
@@ -63,14 +64,14 @@ public class SqlHandlerFactoryUtilTest {
 
    @Test
    public void testQueryModuleFactory() throws Exception {
-      QueryData queryData = new QueryData();
+      QueryData queryData = QueryData.mock();
       queryData.addCriteria(new CriteriaArtifactGuids(null));
       queryData.addCriteria(new CriteriaArtifactIds(Collections.emptyList()));
       queryData.addCriteria(new CriteriaRelationTypeFollow(null));
       queryData.addCriteria(new CriteriaArtifactType(null, null, true));
       queryData.addCriteria(new CriteriaRelationTypeExists(null));
       queryData.addCriteria(new CriteriaAttributeTypeExists(null));
-      queryData.addCriteria(new CriteriaAttributeTypeNotExists(null));
+      queryData.addCriteria(new CriteriaAttributeTypeNotExists((Collection<AttributeTypeId>) null));
       queryData.addCriteria(new CriteriaAttributeRaw(null, null));
       queryData.addCriteria(
          new CriteriaAttributeKeywords(false, null, null, Collections.<String> emptyList(), null, null, null));

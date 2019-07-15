@@ -10,31 +10,94 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
+import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeRaw;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaIdQuery;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedRecursive;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeNotExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideNotExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTokenQuery;
+import org.eclipse.osee.orcs.core.internal.search.CallableQueryFactory;
+import org.eclipse.osee.orcs.core.internal.types.impl.OrcsTypesImpl;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.ArtifactTypes;
+import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.search.Match;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Roberto E. Escobar
+ * @author Ryan D. Brooks
  */
-public final class QueryData implements HasOptions, HasBranch {
+public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    private final List<List<Criteria>> criterias;
    private final SelectData selectData;
    private final Options options;
    private final BranchId branch;
+   private final CallableQueryFactory artQueryFactory;
+   private final QueryEngine queryEngine;
+   private final ArtifactTypes artifactTypeCache;
+   private final AttributeTypes attributeTypeCache;
 
-   public QueryData(BranchId branch) {
+   public QueryData(QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes, BranchId branch) {
+      this.queryEngine = queryEngine;
+      this.artQueryFactory = artQueryFactory;
       this.criterias = new ArrayList<>();
       this.selectData = new SelectData();
       this.options = OptionsUtil.createOptions();
       this.branch = branch;
+      artifactTypeCache = orcsTypes.getArtifactTypes();
+      attributeTypeCache = orcsTypes.getAttributeTypes();
       criterias.add(new ArrayList<>());
    }
 
-   public QueryData() {
-      this(BranchId.SENTINEL);
+   public QueryData(QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes) {
+      this(queryEngine, artQueryFactory, orcsTypes, BranchId.SENTINEL);
+   }
+
+   public static QueryData mock() {
+      return new QueryData(null, null, new OrcsTypesImpl(null, null, null, null, null), BranchId.SENTINEL);
    }
 
    @Override
@@ -134,5 +197,418 @@ public final class QueryData implements HasOptions, HasBranch {
    @Override
    public BranchId getBranch() {
       return branch;
+   }
+
+   @Override
+   public QueryBuilder includeDeletedAttributes() {
+      return includeDeletedAttributes(true);
+   }
+
+   @Override
+   public QueryBuilder includeDeletedAttributes(boolean enabled) {
+      OptionsUtil.setIncludeDeletedAttributes(getOptions(), enabled);
+      return this;
+   }
+
+   @Override
+   public boolean areDeletedAttributesIncluded() {
+      return OptionsUtil.areDeletedAttributesIncluded(getOptions());
+   }
+
+   @Override
+   public QueryBuilder includeDeletedRelations() {
+      return includeDeletedRelations(true);
+   }
+
+   @Override
+   public QueryBuilder includeDeletedRelations(boolean enabled) {
+      OptionsUtil.setIncludeDeletedRelations(getOptions(), enabled);
+      return this;
+   }
+
+   @Override
+   public boolean areDeletedRelationsIncluded() {
+      return OptionsUtil.areDeletedRelationsIncluded(getOptions());
+   }
+
+   @Override
+   public QueryBuilder includeDeletedArtifacts() {
+      return includeDeletedArtifacts(true);
+   }
+
+   @Override
+   public QueryBuilder includeDeletedArtifacts(boolean enabled) {
+      OptionsUtil.setIncludeDeletedArtifacts(getOptions(), enabled);
+      return this;
+   }
+
+   @Override
+   public boolean areDeletedArtifactsIncluded() {
+      return OptionsUtil.areDeletedArtifactsIncluded(getOptions());
+   }
+
+   @Override
+   public QueryBuilder fromTransaction(TransactionId transaction) {
+      OptionsUtil.setFromTransaction(getOptions(), transaction);
+      return this;
+   }
+
+   @Override
+   public TransactionId getFromTransaction() {
+      return OptionsUtil.getFromTransaction(getOptions());
+   }
+
+   @Override
+   public QueryBuilder headTransaction() {
+      OptionsUtil.setHeadTransaction(getOptions());
+      return this;
+   }
+
+   @Override
+   public boolean isHeadTransaction() {
+      return OptionsUtil.isHeadTransaction(getOptions());
+   }
+
+   @Override
+   public QueryBuilder excludeDeleted() {
+      includeDeletedArtifacts(false);
+      return this;
+   }
+
+   @Override
+   public QueryBuilder andUuid(long id) {
+      return andId(ArtifactId.valueOf(id));
+   }
+
+   @Override
+   public QueryBuilder andId(long id) {
+      return andId(ArtifactId.valueOf(id));
+   }
+
+   @Override
+   public QueryBuilder andId(ArtifactId id) {
+      return addAndCheck(new CriteriaArtifactIds(id));
+   }
+
+   @Override
+   public QueryBuilder andIds(Collection<? extends ArtifactId> ids) {
+      return addAndCheck(new CriteriaArtifactIds(ids));
+   }
+
+   @Override
+   public QueryBuilder andUuids(Collection<Long> artifactIds) {
+      return andIds(artifactIds.stream().map(id -> ArtifactId.valueOf(id)).collect(Collectors.toList()));
+   }
+
+   @Override
+   public QueryBuilder andIdsL(Collection<Long> artifactIds) {
+      return andIds(artifactIds.stream().map(id -> ArtifactId.valueOf(id)).collect(Collectors.toList()));
+   }
+
+   @Override
+   public QueryBuilder andGuid(String id) {
+      return andGuids(Collections.singleton(id));
+   }
+
+   @Override
+   public QueryBuilder andGuids(Collection<String> ids) {
+      Set<String> guids = new HashSet<>();
+      Set<String> invalids = new HashSet<>();
+      for (String id : ids) {
+         if (GUID.isValid(id)) {
+            guids.add(id);
+         } else {
+            invalids.add(id);
+         }
+      }
+
+      Conditions.checkExpressionFailOnTrue(!invalids.isEmpty(), "Invalid guids detected - %s", invalids);
+      if (!guids.isEmpty()) {
+         addAndCheck(new CriteriaArtifactGuids(guids));
+      }
+      return this;
+   }
+
+   @Override
+   public QueryBuilder andIsOfType(ArtifactTypeId... artifactType) {
+      return andIsOfType(Arrays.asList(artifactType));
+   }
+
+   @Override
+   public QueryBuilder andIsOfType(Collection<? extends ArtifactTypeId> artifactTypes) {
+      return addAndCheck(new CriteriaArtifactType(artifactTypeCache, artifactTypes, true));
+   }
+
+   @Override
+   public QueryBuilder andTypeEquals(ArtifactTypeId... artifactType) {
+      return andTypeEquals(Arrays.asList(artifactType));
+   }
+
+   @Override
+   public QueryBuilder andTypeEquals(Collection<? extends ArtifactTypeId> artifactTypes) {
+      return addAndCheck(new CriteriaArtifactType(artifactTypeCache, artifactTypes, false));
+   }
+
+   @Override
+   public QueryBuilder andExists(AttributeTypeId... attributeType) {
+      return andExists(Arrays.asList(attributeType));
+   }
+
+   @Override
+   public QueryBuilder andExists(Collection<AttributeTypeId> attributeTypes) {
+      return addAndCheck(new CriteriaAttributeTypeExists(attributeTypes));
+   }
+
+   @Override
+   public QueryBuilder andNotExists(AttributeTypeId attributeType) {
+      return addAndCheck(new CriteriaAttributeTypeNotExists(attributeType));
+   }
+
+   @Override
+   public QueryBuilder andNotExists(AttributeTypeId attributeType, String value) {
+      return addAndCheck(new CriteriaAttributeTypeNotExists(attributeType, value));
+   }
+
+   @Override
+   public QueryBuilder andNotExists(Collection<AttributeTypeId> attributeTypes) {
+      return addAndCheck(new CriteriaAttributeTypeNotExists(attributeTypes));
+   }
+
+   @Override
+   public QueryBuilder andExists(IRelationType relationType) {
+      return addAndCheck(new CriteriaRelationTypeExists(relationType));
+   }
+
+   @Override
+   public QueryBuilder andNotExists(IRelationType relationType) {
+      return addAndCheck(new CriteriaRelationTypeNotExists(relationType));
+   }
+
+   @Override
+   public QueryBuilder andNotExists(RelationTypeSide relationTypeSide) {
+      return addAndCheck(new CriteriaRelationTypeSideNotExists(relationTypeSide));
+   }
+
+   @Override
+   public QueryBuilder andExists(RelationTypeSide relationTypeSide) {
+      return addAndCheck(new CriteriaRelationTypeSideExists(relationTypeSide));
+   }
+
+   @Override
+   public QueryBuilder and(AttributeTypeId attributeType, Collection<String> values, QueryOption... options) {
+      return and(Collections.singleton(attributeType), values, options);
+   }
+
+   @Override
+   public QueryBuilder andAttributeIs(AttributeTypeId attributeType, String value, QueryOption... options) {
+      return addAndCheck(
+         new CriteriaAttributeRaw(Collections.singleton(attributeType), Collections.singleton(value), options));
+   }
+
+   @Override
+   public QueryBuilder and(AttributeTypeId attributeType, String value, QueryOption... options) {
+      return and(Collections.singleton(attributeType), Collections.singleton(value), options);
+   }
+
+   @Override
+   public QueryBuilder and(Collection<AttributeTypeId> attributeTypes, String value, QueryOption... options) {
+      return and(attributeTypes, Collections.singleton(value), options);
+   }
+
+   @Override
+   public QueryBuilder and(Collection<AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options) {
+      boolean isIncludeAllTypes = attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE);
+      return addAndCheck(
+         new CriteriaAttributeKeywords(isIncludeAllTypes, attributeTypes, attributeTypeCache, values, options));
+   }
+
+   @Override
+   public QueryBuilder andNameEquals(String artifactName) {
+      return and(CoreAttributeTypes.Name, artifactName, QueryOption.EXACT_MATCH_OPTIONS);
+   }
+
+   @Override
+   public QueryBuilder andIds(ArtifactId... ids) {
+      return andIds(Arrays.asList(ids));
+   }
+
+   @Override
+   public QueryBuilder andRelatedTo(RelationTypeSide relationTypeSide, ArtifactReadable... artifacts) {
+      return andRelatedTo(relationTypeSide, Arrays.asList(artifacts));
+   }
+
+   @Override
+   public QueryBuilder andRelatedTo(RelationTypeSide relationTypeSide, Collection<? extends ArtifactId> artifacts) {
+      return addAndCheck(new CriteriaRelatedTo(relationTypeSide, artifacts));
+   }
+
+   @Override
+   public QueryBuilder andRelatedTo(RelationTypeSide relationTypeSide, ArtifactId artifactId) {
+      return addAndCheck(new CriteriaRelatedTo(relationTypeSide, artifactId));
+   }
+
+   @Override
+   public QueryBuilder andRelatedRecursive(RelationTypeSide relationTypeSide, ArtifactId artifactId) {
+      return addAndCheck(new CriteriaRelatedRecursive(relationTypeSide, artifactId));
+   }
+
+   @Override
+   public QueryBuilder followRelation(RelationTypeSide relationTypeSide) {
+      addAndCheck(new CriteriaRelationTypeFollow(relationTypeSide));
+      newCriteriaSet();
+      return this;
+   }
+
+   private QueryBuilder addAndCheck(Criteria criteria) {
+      criteria.checkValid(getOptions());
+      addCriteria(criteria);
+      return this;
+   }
+
+   @Override
+   public QueryBuilder andIsHeirarchicalRootArtifact() {
+      andId(CoreArtifactTokens.DefaultHierarchyRoot);
+      return this;
+   }
+
+   @Override
+   public List<Map<String, Object>> asArtifactMaps() {
+      addCriteria(new CriteriaTokenQuery(AttributeTypeToken.SENTINEL));
+      return queryEngine.asArtifactMaps(this);
+   }
+
+   @Override
+   public ArtifactToken loadArtifactToken() {
+      return loadArtifact(this::loadArtifactTokens);
+   }
+
+   @Override
+   public List<ArtifactToken> loadArtifactTokens() {
+      return loadArtifactTokens(Name);
+   }
+
+   @Override
+   public Map<ArtifactId, ArtifactToken> loadArtifactTokenMap() {
+      addCriteria(new CriteriaTokenQuery(Name));
+      return queryEngine.loadArtifactTokenMap(this);
+   }
+
+   @Override
+   public List<ArtifactToken> loadArtifactTokens(AttributeTypeId attributeType) {
+      addCriteria(new CriteriaTokenQuery(attributeType));
+      return queryEngine.loadArtifactTokens(this);
+   }
+
+   @Override
+   public Map<ArtifactId, ArtifactReadable> loadArtifactMap() {
+      Map<ArtifactId, ArtifactReadable> artifacts = new HashMap<>(10000);
+      getResults().forEach(artifact -> artifacts.put(artifact, artifact));
+      return artifacts;
+   }
+
+   @Override
+   public ArtifactId loadArtifactId() {
+      return loadArtifact(this::loadArtifactIds);
+   }
+
+   @Override
+   public ArtifactId loadArtifactIdOrSentinel() {
+      return loadArtifactOrSentinel(this::loadArtifactIds, ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public ArtifactToken loadArtifactTokenOrSentinel() {
+      return loadArtifactOrSentinel(this::loadArtifactTokens, ArtifactToken.SENTINEL);
+   }
+
+   private <T> T loadArtifact(Supplier<List<T>> supplier) {
+      List<T> artifacts = supplier.get();
+      if (artifacts.size() != 1) {
+         throw new OseeCoreException("Expected exactly 1 artifact not %s", artifacts.size());
+      }
+      return artifacts.get(0);
+   }
+
+   private <T> T loadArtifactOrSentinel(Supplier<List<T>> supplier, T sentinel) {
+      List<T> artifacts = supplier.get();
+      if (artifacts.size() > 1) {
+         throw new OseeCoreException("Expected at most 1 artifact not %s", artifacts.size());
+      } else if (artifacts.size() == 1) {
+         return artifacts.get(0);
+      }
+      return sentinel;
+   }
+
+   @Override
+   public List<ArtifactId> loadArtifactIds() {
+      addCriteria(new CriteriaIdQuery());
+      return queryEngine.loadArtifactIds(this);
+   }
+
+   @Override
+   public ResultSet<ArtifactReadable> getResults() {
+      try {
+         return artQueryFactory.createSearch(null, this).call();
+      } catch (Exception ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+   }
+
+   @Override
+   public ArtifactReadable getArtifact() {
+      return getResults().getExactlyOne();
+   }
+
+   @Override
+   public ArtifactReadable getArtifactOrNull() {
+      return getResults().getAtMostOneOrNull();
+   }
+
+   @Override
+   public ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches() {
+      try {
+         return artQueryFactory.createSearchWithMatches(null, this).call();
+      } catch (Exception ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+   }
+
+   @Override
+   public int getCount() {
+      return queryEngine.getArtifactCount(this);
+   }
+
+   @Override
+   public boolean exists() {
+      return getCount() > 0;
+   }
+
+   @Override
+   public ResultSet<? extends ArtifactId> getResultsIds() {
+      try {
+         return artQueryFactory.createLocalIdSearch(null, this).call();
+      } catch (Exception ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+   }
+
+   @Override
+   public ArtifactToken getArtifactOrSentinal() {
+      ArtifactToken art = getArtifactOrNull();
+      if (art == null) {
+         return ArtifactToken.SENTINEL;
+      }
+      return art;
+   }
+
+   @Override
+   public ArtifactToken getAtMostOneOrSentinal() {
+      ResultSet<ArtifactReadable> artifacts = getResults();
+      if (artifacts.isEmpty()) {
+         return ArtifactToken.SENTINEL;
+      } else if (artifacts.size() > 1) {
+         throw new OseeStateException(String.format("Expected 0..1, found %s", artifacts.size()));
+      }
+      return artifacts.iterator().next();
    }
 }

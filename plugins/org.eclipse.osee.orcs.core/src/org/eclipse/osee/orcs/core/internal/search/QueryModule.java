@@ -12,14 +12,13 @@ package org.eclipse.osee.orcs.core.internal.search;
 
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.internal.HasStatistics;
 import org.eclipse.osee.orcs.core.internal.graph.GraphBuilderFactory;
 import org.eclipse.osee.orcs.core.internal.graph.GraphProvider;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.statistics.QueryStatistics;
@@ -31,7 +30,6 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
 
    private final QueryStatisticsImpl statistics = new QueryStatisticsImpl();
 
-   private final CriteriaFactory criteriaFctry;
    private final CallableQueryFactory artQueryFactory;
 
    private final BranchCriteriaFactory branchCriteriaFactory;
@@ -39,27 +37,27 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
    private final TupleQuery tupleQuery;
    private final ApplicabilityDsQuery applicabilityDsQuery;
    private final QueryEngine queryEngine;
+   private final OrcsTypes orcsTypes;
 
    public static interface QueryModuleProvider {
       QueryFactory getQueryFactory(OrcsSession session);
    }
 
-   public QueryModule(Log logger, QueryEngine queryEngine, GraphBuilderFactory builderFactory, GraphProvider provider, ArtifactTypes artifactTypeCache, AttributeTypes attributeTypeCache, ExternalArtifactManager proxyManager) {
+   public QueryModule(Log logger, QueryEngine queryEngine, GraphBuilderFactory builderFactory, GraphProvider provider, OrcsTypes orcsTypes, ExternalArtifactManager proxyManager) {
       this.queryEngine = queryEngine;
       QueryStatsCollectorImpl queryStatsCollector = new QueryStatsCollectorImpl(statistics);
-      criteriaFctry = new CriteriaFactory(artifactTypeCache, attributeTypeCache);
       artQueryFactory =
          new CallableQueryFactory(logger, queryEngine, queryStatsCollector, builderFactory, provider, proxyManager);
-
       branchCriteriaFactory = new BranchCriteriaFactory();
       txCriteriaFactory = new TransactionCriteriaFactory();
       tupleQuery = queryEngine.createTupleQuery();
       applicabilityDsQuery = queryEngine.createApplicabilityDsQuery();
+      this.orcsTypes = orcsTypes;
    }
 
    public QueryFactory createQueryFactory(OrcsSession session) {
-      return new QueryFactoryImpl(session, criteriaFctry, artQueryFactory, branchCriteriaFactory, txCriteriaFactory,
-         tupleQuery, applicabilityDsQuery, queryEngine);
+      return new QueryFactoryImpl(artQueryFactory, branchCriteriaFactory, txCriteriaFactory, tupleQuery,
+         applicabilityDsQuery, queryEngine, orcsTypes);
    }
 
    public CallableQueryFactory getArtQueryFactory() {

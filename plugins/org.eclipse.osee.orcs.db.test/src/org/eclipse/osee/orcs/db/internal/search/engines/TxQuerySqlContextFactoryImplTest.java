@@ -100,7 +100,7 @@ public class TxQuerySqlContextFactoryImplTest {
       when(session.getGuid()).thenReturn(sessionId);
 
       queryEngine = Engines.newTxSqlContextFactory(logger, joinFactory, identityService, null);
-      queryData = new QueryData();
+      queryData = QueryData.mock();
    }
 
    @Test

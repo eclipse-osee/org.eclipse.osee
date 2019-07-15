@@ -540,24 +540,17 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
          return null;
       }
 
-      //////////////////////////////Artifact Query;
-      private QueryBuilder newArtifactQuery() {
-         return assembler.newArtifactQuery();
-      }
-
       private QueryBuilder getArtifactQuery() {
          return assembler.getArtifactQuery();
       }
 
       @Override
       public Void caseOsArtifactQueryAll(OsArtifactQueryAll object) {
-         newArtifactQuery();
          return null;
       }
 
       @Override
       public Void caseOsArtifactQueryByPredicate(OsArtifactQueryByPredicate object) {
-         newArtifactQuery();
          return null;
       }
 

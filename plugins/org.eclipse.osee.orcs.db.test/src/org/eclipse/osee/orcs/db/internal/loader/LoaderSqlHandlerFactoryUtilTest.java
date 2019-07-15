@@ -54,7 +54,7 @@ public class LoaderSqlHandlerFactoryUtilTest {
 
    @Test
    public void testQueryModuleFactory() throws Exception {
-      QueryData queryData = new QueryData();
+      QueryData queryData = QueryData.mock();
       queryData.addCriteria(new CriteriaArtifact());
       queryData.addCriteria(new CriteriaAttribute(null, null));
       queryData.addCriteria(new CriteriaRelation(null, null));

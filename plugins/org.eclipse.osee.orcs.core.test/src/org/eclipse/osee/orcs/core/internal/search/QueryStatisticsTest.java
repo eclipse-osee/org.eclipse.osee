@@ -43,7 +43,7 @@ public class QueryStatisticsTest {
    }
 
    private static QueryData createQueryData(String value) {
-      QueryData queryData = new QueryData();
+      QueryData queryData = QueryData.mock();
       Collection<AttributeTypeId> types = Collections.singleton(CoreAttributeTypes.Name);
       queryData.addCriteria(new CriteriaAttributeKeywords(false, types, null, value, QueryOption.TOKEN_DELIMITER__ANY,
          QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_COUNT__IGNORE, QueryOption.CASE__MATCH));
