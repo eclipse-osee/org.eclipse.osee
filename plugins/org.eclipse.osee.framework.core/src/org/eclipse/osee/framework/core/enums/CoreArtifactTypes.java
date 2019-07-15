@@ -101,7 +101,7 @@ public final class CoreArtifactTypes {
    public static final ArtifactTypeToken UserGroup = ArtifactTypeToken.valueOf(7, "User Group");
    public static final ArtifactTypeToken XViewerGlobalCustomization = ArtifactTypeToken.valueOf(55, "XViewer Global Customization");
    public static final ArtifactTypeToken DocumentDescriptionMSWord = ArtifactTypeToken.valueOf(806, "Document Description - MS Word");
-   public static final ArtifactTypeToken DesignDescriptionMSWord = ArtifactTypeToken.valueOf(807, "Design Description - MS Word");
+   public static final ArtifactTypeToken DesignDescriptionMSWord = ArtifactTypeToken.valueOf(810, "Design Description - MS Word");
    public static final ArtifactTypeToken CustomerRequirementMSWord = ArtifactTypeToken.valueOf(809, "Customer Requirement - MS Word");
    // @formatter:on
 
