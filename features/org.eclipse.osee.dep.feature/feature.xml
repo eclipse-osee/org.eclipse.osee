@@ -1293,6 +1293,13 @@
          version="0.0.0"
          unpack="false"/>
 
+	<plugin
+         id="javax.xml.stream"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false" />
+
    <plugin
          id="org.eclipse.zest.layouts"
          download-size="0"
@@ -1482,6 +1489,13 @@
          version="0.0.0"
          unpack="false"/>
 
+	<plugin
+         id="org.eclipse.ui.genericeditor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false" />  
+         
    <plugin
          id="org.eclipse.ocl.examples.debug.vm.ui"
          download-size="0"

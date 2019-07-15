@@ -20,7 +20,14 @@
    <includes
          id="org.eclipse.egit"
          version="5.0.0"/>
-
+		
+	<plugin
+         id="org.eclipse.ui.genericeditor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false" />
+         
    <plugin
          id="org.xerial.sqlite"
          download-size="0"
@@ -41,7 +48,12 @@
          install-size="0"
          version="0.0.0"
          unpack="false" />
-   
+    <plugin
+         id="oracle.jdbc.driver"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false" /> 
    <plugin
          id="org.objectweb.asm"
          download-size="0"
