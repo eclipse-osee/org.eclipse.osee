@@ -122,10 +122,12 @@ public class BranchViewPresentationPreferences {
          XBranchWidget branchWidget = branchView.getXBranchWidget();
          switch (keyEnum) {
             case FLAT_KEY:
+               branchWidget.setBranchOptions(pref.getBoolean(keyEnum.origKeyName, true), keyEnum);
+               break;
             case SHOW_MERGE_BRANCHES:
             case SHOW_ARCHIVED_BRANCHES:
             case FAVORITE_KEY:
-               branchWidget.setBranchOptions(pref.getBoolean(keyEnum.origKeyName, false), keyEnum);
+               branchWidget.setBranchOptions(pref.getBoolean(keyEnum.origKeyName, true), keyEnum);
                break;
          }
       }
