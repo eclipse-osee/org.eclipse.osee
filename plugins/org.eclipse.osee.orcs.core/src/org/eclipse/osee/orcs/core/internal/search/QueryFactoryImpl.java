@@ -10,17 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -60,24 +54,6 @@ public class QueryFactoryImpl implements QueryFactory {
    @Override
    public QueryBuilder fromBranch(BranchId branch) {
       return new QueryData(queryEngine, artQueryFactory, orcsTypes, branch);
-   }
-
-   @Override
-   public QueryBuilder fromArtifacts(Collection<? extends ArtifactReadable> artifacts) {
-      Conditions.checkNotNullOrEmpty(artifacts, "artifacts");
-      ArtifactReadable artifact = artifacts.iterator().next();
-      Set<String> guids = new HashSet<>();
-      for (ArtifactReadable art : artifacts) {
-         guids.add(art.getGuid());
-      }
-      return fromBranch(artifact.getBranch()).andGuids(guids);
-   }
-
-   @Override
-   public QueryBuilder fromArtifactTypeAllBranches(ArtifactTypeToken artifactType) {
-      QueryBuilder builder = new QueryData(queryEngine, artQueryFactory, orcsTypes);
-      builder.andIsOfType(artifactType);
-      return builder;
    }
 
    @Override
