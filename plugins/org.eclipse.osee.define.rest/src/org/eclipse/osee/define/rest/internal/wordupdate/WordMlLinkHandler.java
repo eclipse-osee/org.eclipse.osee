@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.define.rest.internal.wordupdate;
 
-import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -30,6 +29,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
@@ -189,17 +189,13 @@ public class WordMlLinkHandler {
    }
 
    private static List<ArtifactReadable> findArtifacts(QueryFactory queryFactory, BranchId branch, List<String> guidsFromLinks, TransactionId txId) {
-      List<ArtifactReadable> arts = Lists.newLinkedList();
+      QueryBuilder query =
+         queryFactory.fromBranch(branch).andGuids(guidsFromLinks).includeDeletedArtifacts().includeDeletedAttributes();
 
       if (txId.isValid()) {
-         arts.addAll(queryFactory.fromBranch(branch).fromTransaction(txId).andGuids(
-            guidsFromLinks).includeDeletedArtifacts().includeDeletedAttributes().getResults().getList());
-      } else {
-         arts.addAll(queryFactory.fromBranch(branch).andGuids(
-            guidsFromLinks).includeDeletedArtifacts().includeDeletedAttributes().getResults().getList());
+         query.fromTransaction(txId);
       }
-
-      return arts;
+      return query.getResults().getList();
    }
 
    private static List<String> getGuidsNotFound(List<String> guidsFromLinks, List<ArtifactReadable> artifactsFound) {
