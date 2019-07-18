@@ -18,7 +18,6 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
-import org.eclipse.osee.orcs.db.internal.sql.WithClause;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 
 /**
@@ -30,41 +29,37 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
    private String jIdAlias;
    private String relAlias;
    private String txsAlias;
-
-   private String withClauseName;
-   private WithClause withClause;
+   private String withAlias;
 
    @Override
    public void addWithTables(AbstractSqlWriter writer) {
       if (OptionsUtil.isHistorical(writer.getOptions())) {
-         StringBuilder sb = new StringBuilder();
-         sb.append("SELECT max(txs.transaction_id) as transaction_id, rel.a_art_id as art_id\n");
-         sb.append("    FROM osee_txs txs, osee_relation_link rel");
+         withAlias = writer.startWithClause("relTo");
+
+         writer.write("SELECT max(txs.transaction_id) as transaction_id, rel.a_art_id as art_id\n");
+         writer.write("    FROM osee_txs txs, osee_relation_link rel");
          if (criteria.hasMultipleIds()) {
-            sb.append(", ");
-            sb.append(TableEnum.ID_JOIN_TABLE.getName());
-            sb.append(" ");
-            sb.append(jIdAlias);
+            writer.write(", ");
+            writer.write(TableEnum.ID_JOIN_TABLE.getName());
+            writer.write(" ");
+            writer.write(jIdAlias);
          }
          List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
          if (!aliases.isEmpty()) {
             int aSize = aliases.size();
             for (int index = 0; index < aSize; index++) {
                String artAlias = aliases.get(index);
-               sb.append(", ");
-               sb.append(TableEnum.ARTIFACT_TABLE.getName());
-               sb.append(" ");
-               sb.append(artAlias);
+               writer.write(", ");
+               writer.write(TableEnum.ARTIFACT_TABLE.getName());
+               writer.write(" ");
+               writer.write(artAlias);
             }
          }
-         sb.append("\n    WHERE  txs.gamma_id = rel.gamma_id AND \n");
-         sb.append(getPredicate(writer, "txs", "rel"));
-         sb.append(" AND ");
-         sb.append(writer.getWithClauseTxBranchFilter("txs", false));
-         sb.append("\n    GROUP BY rel.a_art_id\n");
-         String body = sb.toString();
-
-         withClauseName = writer.addReferencedWithClause("relTo", body);
+         writer.write("\n    WHERE  txs.gamma_id = rel.gamma_id AND \n");
+         writePredicate(writer, "txs", "rel");
+         writer.write(" AND ");
+         writer.writeTxBranchFilter("txs");
+         writer.write("\n    GROUP BY rel.a_art_id\n");
       }
    }
 
@@ -75,6 +70,9 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
+      if (withAlias != null) {
+         writer.addTable(withAlias);
+      }
       if (criteria.hasMultipleIds()) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
@@ -82,67 +80,65 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
       txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.RELATION);
    }
 
-   private String getPredicate(AbstractSqlWriter writer, String txsAliasName, String relAliasName) {
-      StringBuilder sb = new StringBuilder();
+   private void writePredicate(AbstractSqlWriter writer, String txsAliasName, String relAliasName) {
       RelationTypeSide typeSide = criteria.getType();
-      sb.append(relAliasName);
-      sb.append(".rel_link_type_id = ?");
+      writer.write(relAliasName);
+      writer.write(".rel_link_type_id = ?");
       writer.addParameter(typeSide.getGuid());
 
-      sb.append(" AND ");
+      writer.write(" AND ");
       String aOrbArtId = typeSide.getSide().isSideA() ? ".a_art_id" : ".b_art_id";
       if (criteria.hasMultipleIds()) {
          AbstractJoinQuery joinQuery = writer.writeJoin(criteria.getIds());
-         sb.append(relAliasName);
-         sb.append(aOrbArtId);
-         sb.append(" = ");
-         sb.append(jIdAlias);
-         sb.append(".id AND ");
-         sb.append(jIdAlias);
-         sb.append(".query_id = ?");
+         writer.write(relAliasName);
+         writer.write(aOrbArtId);
+         writer.write(" = ");
+         writer.write(jIdAlias);
+         writer.write(".id AND ");
+         writer.write(jIdAlias);
+         writer.write(".query_id = ?");
          writer.addParameter(joinQuery.getQueryId());
       } else {
-         sb.append(relAliasName);
-         sb.append(aOrbArtId);
-         sb.append(" = ?");
+         writer.write(relAliasName);
+         writer.write(aOrbArtId);
+         writer.write(" = ?");
          writer.addParameter(criteria.getId());
       }
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       if (!aliases.isEmpty()) {
-         sb.append("\n AND \n");
+         writer.write("\n AND \n");
          String oppositeAOrBartId = typeSide.getSide().isSideA() ? ".b_art_id" : ".a_art_id";
          int aSize = aliases.size();
          for (int index = 0; index < aSize; index++) {
             String artAlias = aliases.get(index);
 
-            sb.append(relAliasName);
-            sb.append(oppositeAOrBartId);
-            sb.append(" = ");
-            sb.append(artAlias);
-            sb.append(".art_id");
+            writer.write(relAliasName);
+            writer.write(oppositeAOrBartId);
+            writer.write(" = ");
+            writer.write(artAlias);
+            writer.write(".art_id");
 
             if (index + 1 < aSize) {
-               sb.append("\n AND \n");
+               writer.write("\n AND \n");
             }
          }
       }
-      sb.append("\n AND \n");
-      sb.append(relAliasName);
-      sb.append(".gamma_id = ");
-      sb.append(txsAliasName);
-      sb.append(".gamma_id");
-      return sb.toString();
+      writer.write("\n AND \n");
+      writer.write(relAliasName);
+      writer.write(".gamma_id = ");
+      writer.write(txsAliasName);
+      writer.write(".gamma_id");
    }
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      writer.write(getPredicate(writer, txsAlias, relAlias));
-      if (withClause != null) {
+      writePredicate(writer, txsAlias, relAlias);
+      if (withAlias != null) {
          writer.writeAndLn();
          writer.write(txsAlias);
          writer.write(".transaction_id = ");
-         writer.write(withClauseName);
+         writer.write(withAlias);
          writer.write(".transaction_id");
       }
       writer.writeAndLn();
@@ -154,5 +150,4 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
    public int getPriority() {
       return SqlHandlerPriority.RELATED_TO_ART_IDS.ordinal();
    }
-
 }

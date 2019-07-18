@@ -14,9 +14,7 @@ import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_FETCH_SIZE;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.TableEnum;
-import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -64,15 +62,6 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       }
    }
 
-   @Override
-   public void addWithClause(WithClause withClause) {
-      if (parentWriter == null) {
-         super.addWithClause(withClause);
-      } else {
-         parentWriter.addWithClause(withClause);
-      }
-   }
-
    public void runSql(Consumer<JdbcStatement> consumer, SqlHandlerFactory handlerFactory) {
       try {
          write(handlerFactory.createHandlers(queryData));
@@ -116,35 +105,11 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeTxBranchFilter(String txsAlias, boolean allowDeleted) {
-      write(txsAlias);
-      write(".tx_current");
-      if (allowDeleted) {
-         write(" <> ");
-         write(TxCurrent.NOT_CURRENT.getIdString());
-      } else {
-         write(" = ");
-         write(TxCurrent.CURRENT.getIdString());
-      }
-
-      BranchId branch = queryData.getBranch();
-      if (branch.isValid()) {
-         write(" AND ");
-         writeEqualsParameter(txsAlias, "branch_id", branch);
-      }
-   }
-
-   @Override
    protected void reset() {
       super.reset();
       parameters.clear();
       joinTables.clear();
       queryData.reset();
-   }
-
-   @Override
-   public String getWithClauseTxBranchFilter(String txsAlias, boolean deletedPredicate) {
-      throw new UnsupportedOperationException();
    }
 
    @Override

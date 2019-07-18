@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import org.eclipse.osee.framework.core.enums.TableEnum;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.QueryData;
@@ -50,10 +49,5 @@ public class QuerySqlWriter extends AbstractSqlWriter {
 
    @Override
    public void writeTxBranchFilter(String txsAlias, boolean allowDeleted) {
-   }
-
-   @Override
-   public String getWithClauseTxBranchFilter(String txsAlias, boolean deletedPredicate) {
-      return Strings.emptyString();
    }
 }

@@ -19,7 +19,6 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
-import org.eclipse.osee.orcs.db.internal.sql.WithClause;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 
 /**
@@ -32,9 +31,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
 
    private String jIdAlias;
    private AbstractJoinQuery joinQuery;
-
-   private String withClauseName;
-   private WithClause withClause;
+   private String withAlias;
 
    @Override
    public void setData(CriteriaAttributeTypeExists criteria) {
@@ -44,34 +41,33 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
    @Override
    public void addWithTables(AbstractSqlWriter writer) {
       if (OptionsUtil.isHistorical(writer.getOptions())) {
-         StringBuilder sb = new StringBuilder();
-         sb.append("SELECT max(txs.transaction_id) as transaction_id, attr.art_id as art_id\n");
+         withAlias = writer.startWithClause("attrExt");
+         writer.write("SELECT max(txs.transaction_id) as transaction_id, attr.art_id as art_id\n");
          Collection<AttributeTypeId> types = criteria.getTypes();
          if (types.size() > 1) {
-            sb.append("    FROM osee_txs txs, osee_attribute attr, osee_join_id id\n");
+            writer.write("    FROM osee_txs txs, osee_attribute attr, osee_join_id id\n");
          } else {
-            sb.append("    FROM osee_txs txs, osee_attribute attr\n");
+            writer.write("    FROM osee_txs txs, osee_attribute attr\n");
          }
-         sb.append("    WHERE txs.gamma_id = attr.gamma_id\n");
+         writer.write("    WHERE txs.gamma_id = attr.gamma_id\n");
          if (types.size() > 1) {
             AbstractJoinQuery joinQuery = writer.writeJoin(types);
-            sb.append("   AND attr.attr_type_id = id.id AND id.query_id = ?");
-            writer.addParameter(joinQuery.getQueryId());
+            writer.write("   AND attr.attr_type_id = id.id AND ");
+            writer.writeEqualsParameterAnd("id", "query_id", joinQuery.getQueryId());
          } else {
-            sb.append("    AND att.attr_type_id = ?");
-            writer.addParameter(types.iterator().next());
+            writer.writeEqualsParameterAnd("att", "attr_type_id", types.iterator().next());
          }
-         sb.append(" AND ");
-         sb.append(writer.getWithClauseTxBranchFilter("txs", false));
-         sb.append("\n    GROUP BY attr.art_id");
-         String body = sb.toString();
 
-         withClauseName = writer.addReferencedWithClause("attrExt", body);
+         writer.writeTxBranchFilter("txs");
+         writer.write("\n    GROUP BY attr.art_id");
       }
    }
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
+      if (withAlias != null) {
+         writer.addTable(withAlias);
+      }
       if (criteria.getTypes().size() > 1) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
@@ -116,13 +112,13 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
             }
          }
       }
-      if (withClause != null) {
+      if (withAlias != null) {
          writer.writeAndLn();
-         writer.write(withClauseName);
+         writer.write(withAlias);
          writer.write(".transaction_id = ");
          writer.write(txsAlias);
          writer.write(".transaction_id AND ");
-         writer.write(withClauseName);
+         writer.write(withAlias);
          writer.write(".art_id = ");
          writer.write(attrAlias);
          writer.write(".art_id");

@@ -31,20 +31,17 @@ public class BranchAncestorOfSqlHandler extends SqlHandler<CriteriaBranchAncesto
 
    @Override
    public void addWithTables(final AbstractSqlWriter writer) {
-      withAlias = writer.getNextAlias("anstrof");
-      final StringBuilder body = new StringBuilder();
-      body.append("  SELECT anch_br1.parent_branch_id, 0 as branch_level FROM osee_branch anch_br1\n");
-      body.append("   WHERE anch_br1.branch_id = ?");
-      body.append("\n  UNION ALL \n");
-      body.append("  SELECT parent_branch_id, branch_level - 1 FROM ").append(withAlias);
-      body.append(" recurse, osee_branch br");
-      body.append(" WHERE br.branch_id = recurse.parent_id");
-      writer.addParameter(criteria.getChild());
-      writer.addRecursiveReferencedWithClause(withAlias, "(parent_id, branch_level)", body.toString());
+      withAlias = writer.startRecursiveWithClause("anstrof", "(parent_id, branch_level)");
+      writer.write("  SELECT anch_br1.parent_branch_id, 0 as branch_level FROM osee_branch anch_br1\n   WHERE ");
+      writer.writeEqualsParameter("anch_br1", "branch_id", criteria.getChild());
+      writer.write("\n  UNION ALL \n");
+      writer.write("  SELECT parent_branch_id, branch_level - 1 FROM " + withAlias);
+      writer.write(", osee_branch br WHERE br.branch_id = parent_id");
    }
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
+      writer.addTable(withAlias);
       brAlias = writer.getMainTableAlias(TableEnum.BRANCH_TABLE);
    }
 

@@ -15,7 +15,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.QueryType;
@@ -67,7 +66,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
    @Override
    public void writeTxBranchFilter(String txsAlias, boolean allowDeleted) {
       String artJoinAlias = getLastAlias(TableEnum.JOIN_ID4_TABLE);
-      writeTxFilter(txsAlias, artJoinAlias, output, allowDeleted);
+      writeTxFilter(txsAlias, artJoinAlias, allowDeleted);
       write(" AND ");
       write(txsAlias);
       write(".branch_id = ");
@@ -75,7 +74,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
       write(".id1");
    }
 
-   private void writeTxFilter(String txsAlias, String artJoinAlias, StringBuilder sb, boolean areDeletedIncluded) {
+   private void writeTxFilter(String txsAlias, String artJoinAlias, boolean areDeletedIncluded) {
       //@formatter:off
       /*********************************************************************
        * The clause handling the inclusion of deleted items changes based on case
@@ -114,31 +113,31 @@ public class LoadSqlWriter extends AbstractSqlWriter {
          }
       }
       if (OptionsUtil.isHistorical(getOptions())) {
-         sb.append(txsAlias);
-         sb.append(".transaction_id <= ");
-         sb.append(artJoinAlias);
-         sb.append(".id3");
+         write(txsAlias);
+         write(".transaction_id <= ");
+         write(artJoinAlias);
+         write(".id3");
          if (!areDeletedIncluded) {
-            sb.append(" AND ");
-            sb.append(txsAlias);
-            sb.append(".mod_type");
-            sb.append(" != ");
-            sb.append(ModificationType.DELETED.getIdString());
+            write(" AND ");
+            write(txsAlias);
+            write(".mod_type");
+            write(" != ");
+            write(ModificationType.DELETED.getIdString());
          } else if (!areDeletedSame) {
-            sb.append(" AND ");
-            buildDeletedClause(sb, txsAlias);
+            write(" AND ");
+            buildDeletedClause(txsAlias);
          }
       } else {
          if (areDeletedIncluded) {
             if (areDeletedSame) {
-               writeTxCurrentFilter(txsAlias, sb, areDeletedIncluded);
+               writeTxCurrentFilter(txsAlias, areDeletedIncluded);
             } else {
-               buildDeletedClause(sb, txsAlias);
+               buildDeletedClause(txsAlias);
             }
          } else {
-            sb.append(txsAlias);
-            sb.append(".tx_current = ");
-            sb.append(String.valueOf(TxCurrent.CURRENT));
+            write(txsAlias);
+            write(".tx_current = ");
+            write(String.valueOf(TxCurrent.CURRENT));
          }
       }
    }
@@ -148,7 +147,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
       return getContext().getOptions();
    }
 
-   private void buildDeletedClause(StringBuilder sb, String txsAlias) {
+   private void buildDeletedClause(String txsAlias) {
       /*****************************************************************
        * It is assumed this is called only if at least one type of deleted is allowed and they differ. These checks are
        * not made
@@ -157,11 +156,11 @@ public class LoadSqlWriter extends AbstractSqlWriter {
       if (hasAlias(TableEnum.ARTIFACT_TABLE)) {
          List<String> artTables = getAliases(TableEnum.ARTIFACT_TABLE);
          if (OptionsUtil.areDeletedArtifactsIncluded(getOptions())) {
-            sb.append("(");
-            buildTableGamma(sb, artTables, txsAlias);
-            sb.append(" AND ");
-            buildTxClause(sb, txsAlias);
-            sb.append(")");
+            write("(");
+            buildTableGamma(artTables, txsAlias);
+            write(" AND ");
+            buildTxClause(txsAlias);
+            write(")");
             count++;
          }
       }
@@ -169,13 +168,13 @@ public class LoadSqlWriter extends AbstractSqlWriter {
          List<String> attrTables = getAliases(TableEnum.ATTRIBUTE_TABLE);
          if (OptionsUtil.areDeletedAttributesIncluded(getOptions())) {
             if (count > 1) {
-               sb.append(" AND ");
+               write(" AND ");
             }
-            sb.append("(");
-            buildTableGamma(sb, attrTables, txsAlias);
-            sb.append(" AND ");
-            buildTxClause(sb, txsAlias);
-            sb.append(")");
+            write("(");
+            buildTableGamma(attrTables, txsAlias);
+            write(" AND ");
+            buildTxClause(txsAlias);
+            write(")");
             count++;
          }
       }
@@ -183,56 +182,49 @@ public class LoadSqlWriter extends AbstractSqlWriter {
          List<String> relationTables = getAliases(TableEnum.RELATION_TABLE);
          if (OptionsUtil.areDeletedAttributesIncluded(getOptions())) {
             if (count > 1) {
-               sb.append(" AND ");
+               write(" AND ");
             }
-            sb.append("(");
-            buildTableGamma(sb, relationTables, txsAlias);
-            sb.append(" AND ");
-            buildTxClause(sb, txsAlias);
-            sb.append(")");
+            write("(");
+            buildTableGamma(relationTables, txsAlias);
+            write(" AND ");
+            buildTxClause(txsAlias);
+            write(")");
             count++;
          }
       }
    }
 
-   private void buildTableGamma(StringBuilder sb, List<String> tableAliases, String txsAlias) {
+   private void buildTableGamma(List<String> tableAliases, String txsAlias) {
       if (tableAliases.size() == 1) {
-         sb.append(tableAliases.get(0));
-         sb.append(".gamma_id = ");
-         sb.append(txsAlias);
-         sb.append(".gamma_id");
+         write(tableAliases.get(0));
+         write(".gamma_id = ");
+         write(txsAlias);
+         write(".gamma_id");
       } else {
          Iterator<String> iter = tableAliases.iterator();
          iter.next();
-         sb.append("(");
-         sb.append(iter);
-         sb.append(".gamma_id = ");
-         sb.append(txsAlias);
-         sb.append(".gamma_id");
+         write("(");
+         write(iter.next());
+         write(".gamma_id = ");
+         write(txsAlias);
+         write(".gamma_id");
          while (iter.hasNext()) {
             iter.next();
-            sb.append(" OR ");
-            sb.append(iter);
-            sb.append(".gamma_id = ");
-            sb.append(txsAlias);
-            sb.append(".gamma_id");
+            write(" OR ");
+            write(iter.next());
+            write(".gamma_id = ");
+            write(txsAlias);
+            write(".gamma_id");
          }
-         sb.append(")");
+         write(")");
       }
    }
 
-   private void buildTxClause(StringBuilder sb, String txsAlias) {
-
-      sb.append(txsAlias);
+   private void buildTxClause(String txsAlias) {
+      write(txsAlias);
       if (!OptionsUtil.isHistorical(getOptions())) {
-         sb.append(".tx_current = ");
-         sb.append(String.valueOf(TxCurrent.CURRENT));
+         write(".tx_current = ");
+         write(TxCurrent.CURRENT.getIdString());
       }
    }
-
-   @Override
-   public String getWithClauseTxBranchFilter(String txsAlias, boolean deletedPredicate) {
-      return Strings.emptyString();
-   }
-
 }

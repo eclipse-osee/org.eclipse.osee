@@ -16,7 +16,6 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
-import org.eclipse.osee.orcs.db.internal.sql.WithClause;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 
 /**
@@ -25,39 +24,36 @@ import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids> {
    private CriteriaArtifactGuids criteria;
    private String jguidAlias;
-   private AbstractJoinQuery joinQuery;
-   private String withClauseName;
-   private WithClause withClause;
+   private String withAlias;
    private String artAlias;
    private String txsAlias;
 
    @Override
    public void addWithTables(AbstractSqlWriter writer) {
       if (OptionsUtil.isHistorical(writer.getOptions())) {
-         StringBuilder sb = new StringBuilder();
-         sb.append("SELECT max(txs.transaction_id) as transaction_id, art.art_id as art_id\n");
+         withAlias = writer.startWithClause("artMax");
+
+         /*
+          * Use max to find the latest txs entry for the artifact regardless of mod_type, so use true for allowDeleted
+          * in call to writeTxBranchFilter. The mod_type must be checked outside the max in case of do not allow deleted
+          * so that filter doesn't force the max back to a prior version when the correct version is deleted.
+          */
+         writer.write("SELECT max(txs.transaction_id) as transaction_id, art.art_id as art_id\n    FROM ");
          Collection<String> ids = criteria.getIds();
          if (ids.size() > 1) {
-            sb.append("    FROM osee_txs txs, osee_artifact art, osee_join_char_id id\n");
-         } else {
-            sb.append("    FROM osee_txs txs, osee_artifact art\n");
+            writer.write("osee_join_char_id jid, ");
          }
-         sb.append("    WHERE txs.gamma_id = art.gamma_id\n");
+         writer.write("osee_artifact art, osee_txs txs\n    WHERE ");
          if (ids.size() > 1) {
             AbstractJoinQuery joinQuery = writer.writeCharJoin(ids);
-            sb.append("    AND art.guid = id.id AND id.query_id = ?");
-
-            writer.addParameter(joinQuery.getQueryId());
+            writer.writeEqualsParameterAnd("jid", "query_id", joinQuery.getQueryId());
+            writer.writeEqualsAnd("jid", "id", "art", "guid");
          } else {
-            sb.append("    AND art.guid = ?");
-            writer.addParameter(ids.iterator().next());
+            writer.writeEqualsParameterAnd("art", "guid", ids.iterator().next());
          }
-         sb.append(" AND ");
-         sb.append(writer.getWithClauseTxBranchFilter("txs", false));
-         sb.append("\n    GROUP BY art.art_id");
-         String body = sb.toString();
-
-         withClauseName = writer.addReferencedWithClause("artUuid", body);
+         writer.writeEqualsAnd("art", "txs", "gamma_id");
+         writer.writeTxBranchFilter("txs", true);
+         writer.write("\n    GROUP BY art.art_id");
       }
    }
 
@@ -68,8 +64,12 @@ public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      if (criteria.getIds().size() > 1) {
-         jguidAlias = writer.addTable(TableEnum.CHAR_JOIN_TABLE);
+      if (withAlias == null) {
+         if (criteria.getIds().size() > 1) {
+            jguidAlias = writer.addTable(TableEnum.CHAR_JOIN_TABLE);
+         }
+      } else {
+         writer.addTable(withAlias);
       }
       artAlias = writer.getMainTableAlias(TableEnum.ARTIFACT_TABLE);
       txsAlias = writer.getMainTableAlias(TableEnum.TXS_TABLE);
@@ -78,18 +78,18 @@ public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids> {
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
       Collection<String> ids = criteria.getIds();
-      if (ids.size() > 1) {
-         joinQuery = writer.writeCharJoin(ids);
-         writer.writeEquals(artAlias, "guid", jguidAlias, "id");
-         writer.write(" AND ");
-         writer.writeEqualsParameter(jguidAlias, "query_id", joinQuery.getQueryId());
+
+      if (withAlias == null) {
+         if (ids.size() > 1) {
+            AbstractJoinQuery joinQuery = writer.writeCharJoin(ids);
+            writer.writeEqualsParameterAnd(jguidAlias, "query_id", joinQuery.getQueryId());
+            writer.writeEquals(jguidAlias, "id", artAlias, "guid");
+         } else {
+            writer.writeEqualsParameter(artAlias, "guid", ids.iterator().next());
+         }
       } else {
-         writer.writeEqualsParameter(artAlias, "guid", ids.iterator().next());
-      }
-      if (withClause != null) {
-         writer.write(" AND ");
-         writer.writeEqualsAnd(withClauseName, txsAlias, "transaction_id");
-         writer.writeEquals(withClauseName, artAlias, "art_id");
+         writer.writeEqualsAnd(withAlias, artAlias, "art_id");
+         writer.writeEquals(withAlias, txsAlias, "transaction_id");
       }
    }
 

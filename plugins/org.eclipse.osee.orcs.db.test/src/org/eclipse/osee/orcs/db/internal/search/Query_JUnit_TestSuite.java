@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search;
 
-import org.eclipse.osee.orcs.db.internal.search.engines.Engines_JUnit_TestSuite;
 import org.eclipse.osee.orcs.db.internal.search.handlers.Handlers_JUnit_TestSuite;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.consumer.IndexingTaskDatabaseTxCallableTest;
 import org.eclipse.osee.orcs.db.internal.search.language.LanguageTestSuite;
@@ -24,7 +23,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   Engines_JUnit_TestSuite.class,
    Handlers_JUnit_TestSuite.class,
    LanguageTestSuite.class,
    Tagger_JUnit_TestSuite.class,

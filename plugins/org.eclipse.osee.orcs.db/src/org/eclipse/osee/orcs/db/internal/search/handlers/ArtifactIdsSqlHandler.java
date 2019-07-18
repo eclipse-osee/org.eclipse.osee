@@ -23,34 +23,35 @@ import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds> {
    private CriteriaArtifactIds criteria;
    private String jIdAlias;
-   private String withClauseName;
+   private String withAlias;
    private String artAlias;
    private String txsAlias;
 
    @Override
    public void addWithTables(AbstractSqlWriter writer) {
       if (OptionsUtil.isHistorical(writer.getOptions())) {
-         StringBuilder sb = new StringBuilder();
-         sb.append(
-            "SELECT max(txs.transaction_id) as transaction_id, art.art_id\n    FROM osee_txs txs, osee_artifact art");
+         withAlias = writer.startWithClause("artMax");
+
+         /*
+          * Use max to find the latest txs entry for the artifact regardless of mod_type, so use true for allowDeleted
+          * in call to writeTxBranchFilter. The mod_type must be checked outside the max in case of do not allow deleted
+          * so that filter doesn't force the max back to a prior version when the correct version is deleted.
+          */
+         writer.write("SELECT max(txs.transaction_id) as transaction_id, art.art_id\n    FROM ");
          if (criteria.hasMultipleIds()) {
-            sb.append(", osee_join_id id");
+            writer.write("osee_join_id jid, ");
          }
-         sb.append("\n    WHERE txs.gamma_id = art.gamma_id\n");
+         writer.write("osee_artifact art, osee_txs txs\n    WHERE ");
          if (criteria.hasMultipleIds()) {
             AbstractJoinQuery joinQuery = writer.writeJoin(criteria.getIds());
-            sb.append("    AND art.art_id = id.id AND id.query_id = ?");
-            writer.addParameter(joinQuery.getQueryId());
+            writer.writeEqualsParameterAnd("jid", "query_id", joinQuery.getQueryId());
+            writer.writeEqualsAnd("jid", "id", "art", "art_id");
          } else {
-            sb.append("    AND art.art_id = ?");
-            writer.addParameter(criteria.getId());
+            writer.writeEqualsParameterAnd("art", "art_id", criteria.getId());
          }
-         sb.append(" AND ");
-         sb.append(writer.getWithClauseTxBranchFilter("txs", false));
-         sb.append("\n    GROUP BY art.art_id");
-         String body = sb.toString();
-
-         withClauseName = writer.addReferencedWithClause("artIdHist", body);
+         writer.writeEqualsAnd("art", "txs", "gamma_id");
+         writer.writeTxBranchFilter("txs", true);
+         writer.write("\n    GROUP BY art.art_id");
       }
    }
 
@@ -61,8 +62,12 @@ public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      if (criteria.hasMultipleIds() && !OptionsUtil.isHistorical(writer.getOptions())) {
-         jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
+      if (withAlias == null) {
+         if (criteria.hasMultipleIds()) {
+            jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
+         }
+      } else {
+         writer.addTable(withAlias);
       }
       artAlias = writer.getMainTableAlias(TableEnum.ARTIFACT_TABLE);
       txsAlias = writer.getMainTableAlias(TableEnum.TXS_TABLE);
@@ -70,23 +75,17 @@ public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds> {
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      if (OptionsUtil.isHistorical(writer.getOptions())) {
-         writer.writeEqualsAnd(withClauseName, txsAlias, "transaction_id");
-         writer.writeEquals(withClauseName, artAlias, "art_id");
-      } else {
-         writer.write(artAlias);
+      if (withAlias == null) {
          if (criteria.hasMultipleIds()) {
             AbstractJoinQuery joinQuery = writer.writeJoin(criteria.getIds());
-            writer.write(".art_id = ");
-            writer.write(jIdAlias);
-            writer.write(".id AND ");
-            writer.write(jIdAlias);
-            writer.write(".query_id = ?");
-            writer.addParameter(joinQuery.getQueryId());
+            writer.writeEqualsParameterAnd(jIdAlias, "query_id", joinQuery.getQueryId());
+            writer.writeEquals(jIdAlias, "id", artAlias, "art_id");
          } else {
-            writer.write(".art_id = ?");
-            writer.addParameter(criteria.getId());
+            writer.writeEqualsParameter(artAlias, "art_id", criteria.getId());
          }
+      } else {
+         writer.writeEqualsAnd(withAlias, artAlias, "art_id");
+         writer.writeEquals(withAlias, txsAlias, "transaction_id");
       }
    }
 

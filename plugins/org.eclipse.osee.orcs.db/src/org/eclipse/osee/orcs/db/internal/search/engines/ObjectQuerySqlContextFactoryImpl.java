@@ -42,7 +42,7 @@ public class ObjectQuerySqlContextFactoryImpl implements QuerySqlContextFactory 
    public QuerySqlContext createQueryContext(OrcsSession session, QueryData queryData, QueryType queryType) {
       QuerySqlContext context = new QuerySqlContext(session, queryData.getOptions(), ObjectQueryType.DYNAMIC_OBJECT);
       queryData.setQueryType(queryType);
-      AbstractSqlWriter writer = new ObjectQuerySqlWriter(joinFactory, jdbcClient, context, queryData);
+      AbstractSqlWriter writer = new OrcsScriptSqlWriter(joinFactory, jdbcClient, context, queryData);
       List<SqlHandler<?>> handlers = handlerFactory.createHandlers(queryData);
       writer.build(handlers);
       return context;

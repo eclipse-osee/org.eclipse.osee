@@ -33,7 +33,6 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    private CriteriaAttributeKeywords criteria;
    private String attrAlias;
    private String artAlias;
-   private String txsAlias;
 
    private TagProcessor tagProcessor;
 
@@ -54,114 +53,107 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
 
    @Override
    public void addWithTables(AbstractSqlWriter writer) {
-      StringBuilder gammaSb = new StringBuilder();
       Collection<AttributeTypeId> types = criteria.getTypes();
       AbstractJoinQuery joinQuery = null;
-      String jIdAlias = null;
       if (!criteria.isIncludeAllTypes() && types.size() > 1) {
          Set<AttributeTypeId> typeIds = new HashSet<>();
          for (AttributeTypeId type : types) {
             typeIds.add(type);
          }
-         jIdAlias = writer.getNextAlias(TableEnum.ID_JOIN_TABLE);
          joinQuery = writer.writeJoin(typeIds);
       }
 
+      String gammaAlias = writer.startWithClause("gamma");
+      writeGammaWith(writer, joinQuery);
+
+      attrAlias = writer.startWithClause("att");
+      writeAttrWith(writer, joinQuery, gammaAlias);
+   }
+
+   private void writeGammaWith(AbstractSqlWriter writer, AbstractJoinQuery joinQuery) {
       Collection<String> values = criteria.getValues();
       int valueCount = values.size();
       int valueIdx = 0;
+      String jIdAlias = null;
       for (String value : values) {
          List<Long> tags = new ArrayList<>();
          tokenize(value, tags);
          int tagsSize = tags.size();
-         gammaSb.append("  ( \n");
+         writer.write("  ( \n");
          if (tagsSize == 0) {
-            gammaSb.append("    SELECT gamma_id FROM osee_attribute");
-            if (Strings.isValid(jIdAlias)) {
-               gammaSb.append(", osee_join_id ");
-               gammaSb.append(jIdAlias);
+            writer.write("    SELECT gamma_id FROM osee_attribute att");
+            if (joinQuery != null) {
+               writer.write(", ");
+               jIdAlias = writer.writeTable(TableEnum.ID_JOIN_TABLE);
             }
-            gammaSb.append(" where value ");
-            if (!Strings.isValid(value)) {
-               gammaSb.append("is null or value = ''");
+            writer.write(" WHERE ");
+            if (Strings.isValid(value)) {
+               writer.writeEqualsParameter("value", value);
             } else {
-               gammaSb.append("= ?");
-               writer.addParameter(value);
+               writer.write("value is null or value = ''");
             }
 
             if (!criteria.isIncludeAllTypes()) {
-               gammaSb.append(" AND attr_type_id = ");
-               if (types.size() == 1) {
-                  gammaSb.append("?");
-                  writer.addParameter(types.iterator().next());
+               writer.write(" AND ");
+               if (joinQuery == null) {
+                  writer.writeEqualsParameter("attr_type_id", criteria.getTypes().iterator().next());
                } else {
-                  gammaSb.append(jIdAlias);
-                  gammaSb.append(".id AND ");
-                  gammaSb.append(jIdAlias);
-                  gammaSb.append(".query_id = ?");
-                  if (joinQuery != null) {
-                     writer.addParameter(joinQuery.getQueryId());
-                  }
-
+                  writer.writeEqualsAnd("att", "attr_type_id", jIdAlias, "id");
+                  writer.writeEqualsParameter(jIdAlias, "query_id", joinQuery.getQueryId());
                }
             }
          } else {
             for (int tagIdx = 0; tagIdx < tagsSize; tagIdx++) {
                Long tag = tags.get(tagIdx);
-               gammaSb.append("    SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?");
-               writer.addParameter(tag);
+               writer.write("    SELECT gamma_id FROM osee_search_tags WHERE ");
+               writer.writeEqualsParameter("coded_tag_id", tag);
                if (tagIdx + 1 < tagsSize) {
-                  gammaSb.append("\n INTERSECT \n");
+                  writer.write("\n INTERSECT \n");
                }
             }
          }
-         gammaSb.append("\n  ) ");
+         writer.write("\n  ) ");
          if (valueIdx + 1 < valueCount) {
-            gammaSb.append("\n UNION ALL \n");
+            writer.write("\n UNION ALL \n");
          }
          valueIdx++;
       }
-      String gammaAlias = writer.addWithClause("gamma", gammaSb.toString());
+   }
 
-      StringBuilder attrSb = new StringBuilder();
-      attrSb.append("   SELECT DISTINCT art_id FROM osee_attribute att, osee_txs txs, ");
-      if (!criteria.isIncludeAllTypes() && types.size() > 1) {
-         attrSb.append("osee_join_id ");
-         attrSb.append(jIdAlias);
-         attrSb.append(", ");
+   private void writeAttrWith(AbstractSqlWriter writer, AbstractJoinQuery joinQuery, String gammaAlias) {
+      writer.write("   SELECT DISTINCT art_id FROM osee_attribute att, osee_txs txs, ");
+
+      String jIdAlias = null;
+      if (joinQuery != null) {
+         jIdAlias = writer.writeTable(TableEnum.ID_JOIN_TABLE);
+         writer.write(", ");
       }
-      attrSb.append(gammaAlias);
-      attrSb.append("\n WHERE \n");
-      attrSb.append("   att.gamma_id = ");
-      attrSb.append(gammaAlias);
-      attrSb.append(".gamma_id");
+
+      writer.write(gammaAlias);
+      writer.write("\n WHERE \n");
+      writer.write("   att.gamma_id = ");
+      writer.write(gammaAlias);
+      writer.write(".gamma_id");
       if (!criteria.isIncludeAllTypes()) {
-         attrSb.append(" AND att.attr_type_id = ");
-         if (types.size() == 1) {
-            attrSb.append("?");
-            writer.addParameter(criteria.getTypes().iterator().next());
+         writer.write(" AND ");
+         if (joinQuery == null) {
+            writer.writeEqualsParameter("attr_type_id", criteria.getTypes().iterator().next());
          } else {
-            attrSb.append(jIdAlias);
-            attrSb.append(".id AND ");
-            attrSb.append(jIdAlias);
-            attrSb.append(".query_id = ?");
-            if (joinQuery != null) {
-               writer.addParameter(joinQuery.getQueryId());
-            }
+            writer.writeEqualsAnd("att", "attr_type_id", jIdAlias, "id");
+            writer.writeEqualsParameter(jIdAlias, "query_id", joinQuery.getQueryId());
          }
       }
-      attrSb.append("\n AND \n");
-      attrSb.append("   att.gamma_id = txs.gamma_id");
-      attrSb.append(" AND ");
-      attrSb.append(writer.getWithClauseTxBranchFilter("txs", true));
-
-      attrAlias = writer.addReferencedWithClause("att", attrSb.toString());
+      writer.write("\n AND \n");
+      writer.write("   att.gamma_id = txs.gamma_id");
+      writer.write(" AND ");
+      writer.writeTxBranchFilter("txs", true);
    }
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
+      writer.addTable(attrAlias);
       artAlias = writer.getMainTableAlias(TableEnum.ARTIFACT_TABLE);
-      txsAlias = writer.getMainTableAlias(TableEnum.TXS_TABLE);
+      writer.getMainTableAlias(TableEnum.TXS_TABLE);
    }
 
    @Override

@@ -16,12 +16,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.ObjectType;
 import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.core.ds.HasOptions;
 import org.eclipse.osee.orcs.core.ds.Options;
@@ -40,7 +42,6 @@ public abstract class AbstractSqlWriter implements HasOptions {
    protected final StringBuilder output = new StringBuilder();
 
    private final List<String> tableEntries = new ArrayList<>();
-   private final List<WithClause> withClauses = new ArrayList<>();
    private final SqlAliasManager aliasManager = new SqlAliasManager();
    private final HashMap<TableEnum, String> mainAliases = new HashMap<>();
    protected final SqlJoinFactory joinFactory;
@@ -49,6 +50,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    protected final QueryData queryData;
    private int level;
    private boolean firstField;
+   private boolean firstWithClause = true;
 
    public AbstractSqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryData queryData) {
       this.joinFactory = joinFactory;
@@ -81,17 +83,16 @@ public abstract class AbstractSqlWriter implements HasOptions {
          context.getParameters().clear();
       }
       tableEntries.clear();
-      withClauses.clear();
       aliasManager.reset();
       level = 0;
       mainAliases.clear();
+      firstWithClause = true;
    }
 
    protected void write(Iterable<SqlHandler<?>> handlers) {
-      computeWithClause(handlers);
+      writeWithClause(handlers);
       computeTables(handlers);
 
-      writeWithClauses();
       writeSelect(handlers);
       write("\n FROM ");
       writeTables();
@@ -102,67 +103,45 @@ public abstract class AbstractSqlWriter implements HasOptions {
       writeGroupAndOrder();
    }
 
-   protected void writeWithClauses() {
-      if (Conditions.hasValues(withClauses)) {
-         write("WITH");
-         int size = withClauses.size();
-         for (int i = 0; i < size; i++) {
-            WithClause clause = withClauses.get(i);
-            if (clause.isRecursive()) {
-               write(jdbcClient.getDbType().getRecursiveWithSql());
-            }
-            write(" ");
-            write(clause.getName());
-            if (clause.hasParameters()) {
-               write(" ");
-               write(clause.getParameters());
-            }
-            write(" AS ( \n");
-            write(clause.getBody());
-            write("\n )");
-            if (i + 1 < size) {
-               write(", \n");
-            }
-         }
-         write("\n");
-      }
-   }
-
    /**
-    * Add a named query into a recursive WITH statement that is referenced in the main FROM clause
+    * Add a named recursive query using a Common Table Expression (WITH statement)
     */
-   public String addRecursiveReferencedWithClause(String withClauseName, String parameters, String body) {
-      addWithClause(new WithClause(withClauseName, parameters, body));
-      tableEntries.add(withClauseName);
-      return withClauseName;
-   }
-
-   /**
-    * Add a named query into a WITH statement that is not referenced in the main FROM clause
-    */
-   public String addWithClause(String prefix, String body) {
+   public String startRecursiveWithClause(String prefix, String parameters) {
+      boolean isRecursive = parameters != null;
       String withClauseName = getNextAlias(prefix);
-      addWithClause(new WithClause(withClauseName, body));
+      if (firstWithClause) {
+         write("WITH");
+         firstWithClause = false;
+      } else {
+         write("), ");
+      }
+      if (isRecursive) {
+         write(jdbcClient.getDbType().getRecursiveWithSql());
+      }
+      write(" ");
+      write(withClauseName);
+      if (isRecursive) {
+         write(" ");
+         write(parameters);
+      }
+      write(" AS (\n");
       return withClauseName;
-   }
-
-   protected void addWithClause(WithClause withClause) {
-      withClauses.add(withClause);
    }
 
    /**
-    * Add a named query into a WITH statement that is referenced in the main FROM clause
+    * Add a named non-recursive query using a Common Table Expression (WITH statement)
     */
-   public String addReferencedWithClause(String prefix, String body) {
-      String withClauseName = addWithClause(prefix, body);
-      tableEntries.add(withClauseName);
-      return withClauseName;
+   public String startWithClause(String prefix) {
+      return startRecursiveWithClause(prefix, null);
    }
 
-   protected void computeWithClause(Iterable<SqlHandler<?>> handlers) {
+   protected void writeWithClause(Iterable<SqlHandler<?>> handlers) {
       for (SqlHandler<?> handler : handlers) {
          setHandlerLevel(handler);
          handler.addWithTables(this);
+      }
+      if (!firstWithClause) {
+         write(")\n");
       }
    }
 
@@ -209,8 +188,6 @@ public abstract class AbstractSqlWriter implements HasOptions {
       }
    }
 
-   public abstract String getWithClauseTxBranchFilter(String txsAlias, boolean deletedPredicate);
-
    public void writeTxBranchFilter(String txsAlias) {
       boolean allowDeleted =
          OptionsUtil.areDeletedArtifactsIncluded(getOptions()) || OptionsUtil.areDeletedAttributesIncluded(
@@ -218,17 +195,43 @@ public abstract class AbstractSqlWriter implements HasOptions {
       writeTxBranchFilter(txsAlias, allowDeleted);
    }
 
-   public abstract void writeTxBranchFilter(String txsAlias, boolean allowDeleted);
+   public void writeTxBranchFilter(String txsAlias, boolean allowDeleted) {
+      writeTxFilter(txsAlias, allowDeleted);
 
-   protected void writeTxCurrentFilter(String txsAlias, StringBuilder sb, boolean allowDeleted) {
-      sb.append(txsAlias);
-      sb.append(".tx_current");
-      if (allowDeleted) {
-         sb.append(" <> ");
-         sb.append(TxCurrent.NOT_CURRENT.getIdString());
+      BranchId branch = queryData.getBranch();
+      if (branch.isValid()) {
+         write(" AND ");
+         writeEqualsParameter(txsAlias, "branch_id", branch);
       } else {
-         sb.append(" = ");
-         sb.append(TxCurrent.CURRENT.getIdString());
+         throw new OseeArgumentException("getTxBranchFilter: branch uuid must be > 0");
+      }
+   }
+
+   protected void writeTxFilter(String txsAlias, boolean allowDeleted) {
+      if (OptionsUtil.isHistorical(getOptions())) {
+         write(txsAlias);
+         write(".transaction_id <= ?");
+         addParameter(OptionsUtil.getFromTransaction(getOptions()));
+         if (!allowDeleted) {
+            write(" AND ");
+            write(txsAlias);
+            write(".mod_type <> ");
+            write(ModificationType.DELETED.getIdString());
+         }
+      } else {
+         writeTxCurrentFilter(txsAlias, allowDeleted);
+      }
+   }
+
+   protected void writeTxCurrentFilter(String txsAlias, boolean allowDeleted) {
+      write(txsAlias);
+      write(".tx_current");
+      if (allowDeleted) {
+         write(" <> ");
+         write(TxCurrent.NOT_CURRENT.getIdString());
+      } else {
+         write(" = ");
+         write(TxCurrent.CURRENT.getIdString());
       }
    }
 
@@ -335,6 +338,10 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    public String addTable(TableEnum table) {
       return addTable(table, table.getObjectType());
+   }
+
+   public void addTable(String tableName) {
+      tableEntries.add(tableName);
    }
 
    public String addTable(TableEnum table, ObjectType objectType) {
@@ -450,7 +457,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    protected void writeSelectAndHint() {
       write("SELECT");
-      if (!Conditions.hasValues(withClauses) && jdbcClient != null && jdbcClient.getConfig() != null) {
+      if (jdbcClient != null && jdbcClient.getConfig() != null) {
          write(OseeSql.Strings.getHintsOrdered(jdbcClient.getConfig().getDbProps()));
       }
       write(" ");

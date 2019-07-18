@@ -31,19 +31,18 @@ public class BranchChildOfSqlHandler extends SqlHandler<CriteriaBranchChildOf> {
 
    @Override
    public void addWithTables(final AbstractSqlWriter writer) {
-      withAlias = writer.getNextAlias("chof");
-      final StringBuilder body = new StringBuilder();
-      body.append("  SELECT anch_br1.branch_id, 0 as branch_level FROM osee_branch anch_br1, osee_branch anch_br2\n");
-      body.append("   WHERE anch_br1.parent_branch_id = anch_br2.branch_id AND anch_br2.branch_id = ?");
-      body.append("\n  UNION ALL \n");
-      body.append("  SELECT branch_id, branch_level + 1 FROM ").append(withAlias).append(" recurse, osee_branch br");
-      body.append(" WHERE recurse.child_id = br.parent_branch_id");
-      writer.addParameter(criteria.getParent());
-      writer.addRecursiveReferencedWithClause(withAlias, "(child_id, branch_level)", body.toString());
+      withAlias = writer.startRecursiveWithClause("chof", "(child_id, branch_level)");
+      writer.write("  SELECT anch_br1.branch_id, 0 as branch_level FROM osee_branch anch_br1, osee_branch anch_br2\n");
+      writer.write("   WHERE anch_br1.parent_branch_id = anch_br2.branch_id AND ");
+      writer.writeEqualsParameter("anch_br2", "branch_id", criteria.getParent());
+      writer.write("\n  UNION ALL \n");
+      writer.write("  SELECT branch_id, branch_level + 1 FROM " + withAlias + ", osee_branch br");
+      writer.write(" WHERE child_id = br.parent_branch_id");
    }
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
+      writer.addTable(withAlias);
       brAlias = writer.getMainTableAlias(TableEnum.BRANCH_TABLE);
    }
 

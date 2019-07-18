@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.ObjectType;
 import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
@@ -49,14 +48,12 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
  *
  * @author Roberto E. Escobar
  */
-public class ObjectQuerySqlWriter extends AbstractSqlWriter {
+public class OrcsScriptSqlWriter extends AbstractSqlWriter {
 
    private static final SqlHandlerComparator HANDLER_COMPARATOR = new SqlHandlerComparator();
    private final SqlFieldResolver fieldResolver;
 
-   private WithClauseTxFilterData withTxFilterClause;
-
-   public ObjectQuerySqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryData queryData) {
+   public OrcsScriptSqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryData queryData) {
       super(joinFactory, jdbcClient, context, queryData);
       this.fieldResolver = new SqlFieldResolver(getAliasManager(), queryData.getSelectSets());
    }
@@ -69,14 +66,13 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
 
    @Override
    protected void write(Iterable<SqlHandler<?>> handlers) {
-      withTxFilterClause = null;
       fieldResolver.reset();
       computeTxFilterClause(handlers);
       computeTables(handlers);
 
       fieldResolver.resolve();
 
-      computeWithClause(handlers);
+      writeWithClause(handlers);
 
       List<SqlHandler<?>> xtraHandlers;
       if (fieldResolver.hasUnresolvedFields()) {
@@ -88,7 +84,6 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
          xtraHandlers = Collections.emptyList();
       }
 
-      writeWithClauses();
       writeSelect(handlers);
       write("\n FROM \n");
       writeTables();
@@ -158,48 +153,8 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public String getWithClauseTxBranchFilter(String txsAlias, boolean deletedPredicate) {
-      StringBuilder sb = new StringBuilder();
-
-      if (deletedPredicate) {
-         boolean allowDeleted =
-            OptionsUtil.areDeletedArtifactsIncluded(getOptions()) || OptionsUtil.areDeletedAttributesIncluded(
-               getOptions()) || OptionsUtil.areDeletedRelationsIncluded(getOptions());
-         writeTxFilter(txsAlias, sb, allowDeleted);
-      } else {
-         if (OptionsUtil.isHistorical(getOptions())) {
-            write(txsAlias);
-            write(".transaction_id <= ?");
-            addParameter(OptionsUtil.getFromTransaction(getOptions()));
-         }
-      }
-
-      if (withTxFilterClause != null) {
-         write("\n AND \n   ");
-         write(txsAlias);
-         write(".branch_id = ");
-
-         write("(");
-         write(withTxFilterClause.getSql());
-         write(")");
-
-         if (withTxFilterClause.hasParameters()) {
-            for (Object param : withTxFilterClause.getParameters()) {
-               addParameter(param);
-            }
-         }
-         if (withTxFilterClause.hasJoins()) {
-            for (AbstractJoinQuery join : withTxFilterClause.getJoins()) {
-               getContext().getJoins().add(join);
-            }
-         }
-      }
-      return sb.toString();
-   }
-
-   @Override
    public void writeTxBranchFilter(String txsAlias, boolean allowDeleted) {
-      writeTxFilter(txsAlias, output, allowDeleted);
+      writeTxFilter(txsAlias, allowDeleted);
       if (hasAlias(TableEnum.BRANCH_TABLE)) {
          String alias = getFirstAlias(TableEnum.BRANCH_TABLE);
          write(" AND ");
@@ -219,22 +174,6 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
          write(".branch_id = ");
          write(alias);
          write(".branch_id");
-      }
-   }
-
-   private void writeTxFilter(String txsAlias, StringBuilder sb, boolean allowDeleted) {
-      if (OptionsUtil.isHistorical(getOptions())) {
-         write(txsAlias);
-         write(".transaction_id <= ?");
-         addParameter(OptionsUtil.getFromTransaction(getOptions()));
-         if (!allowDeleted) {
-            writeAndLn();
-            write(txsAlias);
-            write(".mod_type <> ");
-            write(ModificationType.DELETED.getIdString());
-         }
-      } else {
-         writeTxCurrentFilter(txsAlias, sb, allowDeleted);
       }
    }
 
@@ -266,7 +205,7 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
 
          if (withQueryHandlers != null && table != null) {
             computeTables(withQueryHandlers);
-            computeWithClause(withQueryHandlers);
+            writeWithClause(withQueryHandlers);
 
             write("\n FROM \n");
             writeTables();
@@ -284,8 +223,6 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
             String sql = withBuilder.toString().replaceAll("\\s+", " ");
             List<AbstractJoinQuery> joins = Lists.newArrayList(context.getJoins());
             List<Object> parameters = Lists.newArrayList(context.getParameters());
-
-            withTxFilterClause = new WithClauseTxFilterData(sql, joins, parameters);
             reset();
          }
       }
@@ -364,39 +301,5 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
          }
       }
       return priority;
-   }
-
-   private static final class WithClauseTxFilterData {
-      private final String sql;
-      private final List<AbstractJoinQuery> withJoins;
-      private final List<Object> withParameters;
-
-      public WithClauseTxFilterData(String sql, List<AbstractJoinQuery> withJoins, List<Object> withParameters) {
-         super();
-         this.sql = sql;
-         this.withJoins = withJoins;
-         this.withParameters = withParameters;
-      }
-
-      public boolean hasJoins() {
-         return withJoins != null && !withJoins.isEmpty();
-      }
-
-      public boolean hasParameters() {
-         return withParameters != null && !withParameters.isEmpty();
-      }
-
-      public String getSql() {
-         return sql;
-      }
-
-      public List<AbstractJoinQuery> getJoins() {
-         return withJoins;
-      }
-
-      public List<Object> getParameters() {
-         return withParameters;
-      }
-
    }
 }
