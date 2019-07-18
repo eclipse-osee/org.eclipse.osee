@@ -66,6 +66,7 @@ import org.eclipse.osee.ats.ide.util.CleanupOseeSystemAssignedWorkflows;
 import org.eclipse.osee.ats.ide.util.CreateActionUsingAllActionableItems;
 import org.eclipse.osee.ats.ide.util.Import.ImportActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.ide.util.Import.ImportAgileActionsViaSpreadsheetBlam;
+import org.eclipse.osee.ats.ide.workdef.editor.WorkDefinitionViewer;
 import org.eclipse.osee.ats.ide.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.ide.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.ide.world.search.ArtifactTypeSearchItem;
@@ -184,6 +185,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          items.add(new SearchNavigateItem(item, new AtsSearchTeamWorkflowSearchItem()));
 
          createVersionsSection(item, items);
+         createWorkDefinitionsSection(item, items);
          createAgileSection(item, items);
          EvNavigateItems.createSection(item, items);
          addExtensionPointItems(item, items);
@@ -308,6 +310,16 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          new FilteredCheckboxTreeArtifactDialogExample(exampleItems);
          new FilteredCheckboxTreeDialogSelectAllExample(exampleItems);
          items.add(exampleItems);
+      }
+   }
+
+   private void createWorkDefinitionsSection(XNavigateItem parent, List<XNavigateItem> items) {
+      try {
+         XNavigateItem workDefItems = new XNavigateItem(parent, "Work Definition", FrameworkImage.VERSION);
+         new WorkDefinitionViewer(workDefItems);
+         items.add(workDefItems);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, "Can't create Goals section");
       }
    }
 

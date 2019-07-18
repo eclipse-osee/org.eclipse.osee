@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEdit
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
+import org.eclipse.osee.framework.ui.skynet.results.table.IResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewer;
@@ -48,6 +49,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 /**
  * @author Donald G. Dunne
@@ -72,9 +75,33 @@ public class ResultsEditor extends AbstractArtifactEditor {
             ISelection selection = event.getSelection();
             List<Object> objects = rowsToData(selection);
             getSite().getSelectionProvider().setSelection(new StructuredSelection(objects));
-
          }
       };
+   }
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public <T> T getAdapter(Class<T> type) {
+      if (type != null && type.isAssignableFrom(IContentOutlinePage.class)) {
+         ContentOutlinePage page = getOutlinePage();
+         if (page != null) {
+            return (T) page;
+         }
+      }
+      return super.getAdapter(type);
+   }
+
+   private ContentOutlinePage getOutlinePage() {
+      int pageCount = getActivePage();
+      ResultsEditorInput editorInput = (ResultsEditorInput) getEditorInput();
+      IResultsEditorTab resultsEditorTab = editorInput.getIWorldEditorProvider().getResultsEditorTabs().get(pageCount);
+      if (resultsEditorTab instanceof IResultsEditorTableTab) {
+         IResultsEditorTableTab editorTableTab = (IResultsEditorTableTab) resultsEditorTab;
+         if (editorTableTab.getOutlineProvider() != null) {
+            return editorTableTab.getOutlineProvider().getOutlinePage();
+         }
+      }
+      return null;
    }
 
    List<IResultsEditorTab> getTabs() {
@@ -322,4 +349,5 @@ public class ResultsEditor extends AbstractArtifactEditor {
          }
       });
    }
+
 }

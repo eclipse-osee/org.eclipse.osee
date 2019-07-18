@@ -75,7 +75,7 @@ public interface IAtsWorkDefinitionService {
 
    boolean isInState(IAtsWorkItem workItem, IAtsStateDefinition stateDef);
 
-   Collection<IAtsWorkDefinition> getAllWorkDefinitions() throws Exception;
+   Collection<IAtsWorkDefinition> getAllWorkDefinitions();
 
    IAtsWorkDefinition getWorkDefinition(Long id);
 

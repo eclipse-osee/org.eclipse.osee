@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
@@ -113,6 +114,15 @@ public class ResultsXViewer extends XViewer implements ISelectedArtifacts {
          }
       }
       return selected;
+   }
+
+   @Override
+   public boolean handleLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
+      boolean result = super.handleLeftClick(treeColumn, treeItem);
+      for (IResultsEditorTableListener listener : listeners) {
+         listener.handleSelectionListener(getSelectedRows());
+      }
+      return result;
    }
 
 }

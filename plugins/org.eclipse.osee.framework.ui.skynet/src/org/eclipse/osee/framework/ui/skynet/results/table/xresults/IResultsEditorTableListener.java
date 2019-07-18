@@ -11,10 +11,17 @@
 package org.eclipse.osee.framework.ui.skynet.results.table.xresults;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 
 public interface IResultsEditorTableListener {
 
-   void handleDoubleClick(ArrayList<ResultsXViewerRow> selectedRows);
+   default void handleDoubleClick(ArrayList<ResultsXViewerRow> selectedRows) {
+      // do nothing
+   }
+
+   default void handleSelectionListener(Collection<ResultsXViewerRow> selectedRows) {
+      // do nothing
+   }
 
 }

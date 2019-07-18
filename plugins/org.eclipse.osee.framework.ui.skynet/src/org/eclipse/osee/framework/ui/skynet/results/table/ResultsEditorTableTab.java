@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorOutlineProvider;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.IResultsEditorTableListener;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewer;
@@ -49,12 +50,6 @@ import org.eclipse.swt.widgets.ToolItem;
  */
 public class ResultsEditorTableTab implements IResultsEditorTableTab {
 
-   public interface IResultsEditorLabelProvider {
-
-      XViewerLabelProvider getLabelProvider(ResultsXViewer xViewer);
-
-   }
-
    private final String tabName;
    private final List<XViewerColumn> columns;
    private final Collection<IResultsXViewerRow> rows;
@@ -63,6 +58,8 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
    private final ITreeContentProvider contentProvider;
    private final IResultsEditorLabelProvider labelProvider;
    private final List<IResultsEditorTableListener> listeners;
+   private IResultsEditorOutlineProvider outlineProvider;
+   private IResultsEditorOutlineProvider outlineProvider2;
 
    public ResultsEditorTableTab(String tabName, List<XViewerColumn> columns, Collection<IResultsXViewerRow> rows, ITreeContentProvider contentProvider, IResultsEditorLabelProvider labelProvider) {
       this(tabName, columns, rows, contentProvider, labelProvider, null);
@@ -88,6 +85,11 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
 
    public void addColumn(XViewerColumn xViewerColumn) {
       this.columns.add(xViewerColumn);
+   }
+
+   @Override
+   public void addListener(IResultsEditorTableListener listener) {
+      listeners.add(listener);
    }
 
    public void addRow(IResultsXViewerRow resultsXViewerRow) {
@@ -234,6 +236,19 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
 
    public void setxViewerFactory(XViewerFactory xViewerFactory) {
       this.xViewerFactory = xViewerFactory;
+   }
+
+   public interface IResultsEditorLabelProvider {
+      XViewerLabelProvider getLabelProvider(ResultsXViewer xViewer);
+   }
+
+   @Override
+   public void addOutlineProvider(IResultsEditorOutlineProvider outlineProvider) {
+      this.outlineProvider = outlineProvider;
+   }
+
+   public IResultsEditorOutlineProvider getOutlineProvider() {
+      return outlineProvider;
    }
 
 }
