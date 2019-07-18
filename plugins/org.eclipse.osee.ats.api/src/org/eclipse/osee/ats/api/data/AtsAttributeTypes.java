@@ -34,6 +34,7 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken AllowCreateBranch = createType(1152921504606847161L, "Allow Create Branch");
    public static final AttributeTypeToken AllowUserActionCreation = createType(1322118789779953012L, "Allow User Action Creation");
    public static final AttributeTypeToken AllowWebExport = createType(1244831604424847172L, "Allow Web Export");
+   public static final AttributeTypeToken ArtifactsChanged = createType(1815723890L, "Artifacts Changed");
    public static final AttributeTypeToken ApplicabilityWorkflow = createType(1152922022510067882L, "Applicability Workflow");
    public static final AttributeTypeToken ApplicableToProgram = createType(1152921949227188394L, "Applicable To Program");
    public static final AttributeTypeToken AtsConfiguredBranch = createType(72063456936722683L, "ATS Configured Branch", "ATS Configured Branch");
@@ -70,6 +71,7 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken DslSheet = createType(1152921504606847197L, "DSL Sheet", "XText DSL Sheet for ATS");
    public static final AttributeTypeToken DuplicatedPcrId = createType(1152922093378076842L, "Duplicated PCR Id");
    public static final AttributeTypeToken EndDate = createType(1152921504606847383L, "End Date");
+   public static final AttributeTypeToken EstimateAssumptions = createType(7714952282787917834L, "Estimate Assumptions");
    public static final AttributeTypeToken EstimatedCompletionDate = createType(1152921504606847165L, "Estimated Completion Date", "Date the changes will be completed.");
    public static final AttributeTypeToken EstimatedHours = createType(1152921504606847182L, "Estimated Hours", "Hours estimated to implement the changes associated with this Action.\nIncludes estimated hours for workflows, tasks and reviews.");
    public static final AttributeTypeToken EstimatedReleaseDate = createType(1152921504606847164L, "Estimated Release Date", "Date the changes will be made available to the users.");
@@ -109,6 +111,7 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken Points = createType(1152921504606847178L, "Points", "Abstract value that describes risk, complexity, and size of Actions.");
    public static final AttributeTypeToken PointsAttributeType = createType(1152921573057888257L, "Points Attribute Type", "Used to store the agile points type name (ats.Points or ats.Points Numeric).");
    public static final AttributeTypeToken PointsNumeric = createType(1728793301637070003L, "Points Numeric", "Abstract value that describes risk, complexity, and size of Actions as float.");
+   public static final AttributeTypeToken PrepareHoursSpent = createType(3384497588485147406L, "Prepare Hours Spent");
    public static final AttributeTypeToken PriorityType = createType(1152921504606847179L, "Priority", "1 = High; 5 = Low");
    public static final AttributeTypeToken Problem = createType(1152921504606847193L, "Problem", "Problem found during analysis.");
    public static final AttributeTypeToken ProgramId = createType(1152922093377028266L, "Program Id");
@@ -130,6 +133,7 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken StartDate = createType(1152921504606847382L, "Start Date");
    public static final AttributeTypeToken State = createType(1152921504606847191L, "State", "States of workflow state machine.");
    public static final AttributeTypeToken StateNotes = createType(1152921504606847203L, "State Notes");
+   public static final AttributeTypeToken StateReviews = createType(4857870296805156518L, "State Reviews");
    public static final AttributeTypeToken SwEnhancement = createType(1152921504606847227L, "SW Enhancement");
    public static final AttributeTypeToken TaskToChangedArtifactReference = createType(1153126013769613562L, "Task To Changed Artifact Reference");
    public static final AttributeTypeToken TeamDefinitionReference = createType(4730961339090285773L, "Team Definition Reference");
@@ -142,6 +146,7 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken VerificationCodeInspection = createType(3454966334779726518L, "Verification Code Inspection");
    public static final AttributeTypeToken VersionLocked = createType(1152921504606847156L, "Version Locked", "True if version artifact is locked.");
    public static final AttributeTypeToken WeeklyBenefit = createType(1152921504606847186L, "Weekly Benefit", "Estimated number of hours that will be saved over a single year if this change is completed.");
+   public static final AttributeTypeToken WorkaroundDescription = createType(8968417615996828357L, "Workaround Description.", "Describe a modified method or process where an engineer can get the correct or valid results.");
    public static final AttributeTypeToken WorkPackage = createType(1152921504606847206L, "Work Package", "Designated accounting work package for completing workflow.");
    public static final AttributeTypeToken WorkPackageId = createType(1152921504606847872L, "Work Package ID");
    public static final AttributeTypeToken WorkPackageProgram = createType(1152921504606847873L, "Work Package Program");

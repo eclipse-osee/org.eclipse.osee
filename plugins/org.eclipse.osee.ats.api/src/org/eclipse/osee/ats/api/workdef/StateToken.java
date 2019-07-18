@@ -41,6 +41,8 @@ public class StateToken extends NamedIdBase {
    public static StateToken Deferred = StateToken.valueOf(1034976443L, "Deferred");
    public static StateToken Detail = StateToken.valueOf(2070391728L, "Detail");
    public static StateToken Endorse = StateToken.valueOf(23420230948L, "Endorse");
+   public static StateToken Develop = StateToken.valueOf(463695258L, "Develop");
+   public static StateToken Failed = StateToken.valueOf(1822124311L, "Failed");
    public static StateToken Followup = StateToken.valueOf(88983282387L, "Followup");
    public static StateToken Hold = StateToken.valueOf(1560853708L, "Hold");
    public static StateToken Implement = StateToken.valueOf(43298928340L, "Implement");
@@ -62,6 +64,7 @@ public class StateToken extends NamedIdBase {
    public static StateToken NotRequired = StateToken.valueOf(233223455L, "NotRequired");
    public static StateToken Not_Required = StateToken.valueOf(1364159198L, "Not_Required");
    public static StateToken Open = StateToken.valueOf(244724326L, "Open");
+   public static StateToken Passed = StateToken.valueOf(1102103105L, "Passed");
    public static StateToken Planning = StateToken.valueOf(1806629388L, "Planning");
    public static StateToken PotentialFutureDesignChange =
       StateToken.valueOf(1740186209L, "Potential Future Design Change");
@@ -76,6 +79,7 @@ public class StateToken extends NamedIdBase {
    public static StateToken Review = StateToken.valueOf(98937432L, "Review");
    public static StateToken Superceded = StateToken.valueOf(563282700L, "Superceded");
    public static StateToken Test = StateToken.valueOf(1665675868L, "Test");
+   public static StateToken TaskAttributes = StateToken.valueOf(1974423185L, "Task Attribute");
    public static StateToken Unit_Tested = StateToken.valueOf(484956090L, "Unit_Tested");
    public static StateToken Verification = StateToken.valueOf(1967264839L, "Verification");
    public static StateToken Verify = StateToken.valueOf(1990859957L, "Verify");

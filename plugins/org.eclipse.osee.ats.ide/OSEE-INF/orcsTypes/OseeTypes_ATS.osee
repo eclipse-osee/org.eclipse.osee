@@ -58,6 +58,15 @@ artifactType "Agile Sprint" extends "ats.State Machine" {
 	attribute "ats.kb.Story Name"
 }
 
+attributeType "ats.Estimate Assumptions" extends StringAttribute {
+   id 7714952282787917834
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+   taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
 artifactType "Work Definition" extends "Artifact" {
 	id 62
 	attribute "ats.DSL Sheet"
@@ -281,6 +290,8 @@ artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Cont
 	attribute "ats.Color Team"
 	attribute "ats.IPT"
 	attribute "ats.Commit Override"
+	attribute "ats.Estimate Assumptions"
+	
 }
 
 artifactType "Work Package" extends "Artifact" {
@@ -1039,12 +1050,7 @@ attributeType "ats.End Date" extends DateAttribute {
 	mediaType "text/calendar"
 }
 
-oseeEnumType "enum.ats.review.blocks" {
-	id 3458764513820541322
-	entry "None"
-	entry "Transition"
-	entry "Commit"
-}
+
 
 attributeType "ats.Review Blocks" extends EnumeratedAttribute {
 	id 1152921504606847176
@@ -1054,6 +1060,13 @@ attributeType "ats.Review Blocks" extends EnumeratedAttribute {
 	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.ats.review.blocks"
 	mediaType "text/plain"
+}
+
+oseeEnumType "enum.ats.review.blocks" {
+	id 3458764513820541322
+	entry "None"
+	entry "Transition"
+	entry "Commit"
 }
 
 attributeType "ats.Review Formal Type" extends EnumeratedAttribute {
