@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
@@ -61,15 +62,17 @@ public class WfeStateCreatedOrigHeader extends Composite implements IWfeEventHan
 
    @Override
    public void refresh() {
-      String isBlocked = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workItem,
-         AtsAttributeTypes.BlockedReason, "");
-      if (Strings.isValid(isBlocked)) {
-         stateValueLabel.setText(workItem.getStateMgr().getCurrentStateName() + " (Blocked)");
-         stateValueLabel.setForeground(BLOCKED_COLOR);
-      } else {
-         stateValueLabel.setText(workItem.getStateMgr().getCurrentStateName());
+      if (Widgets.isAccessible(stateValueLabel)) {
+         String isBlocked = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workItem,
+            AtsAttributeTypes.BlockedReason, "");
+         if (Strings.isValid(isBlocked)) {
+            stateValueLabel.setText(workItem.getStateMgr().getCurrentStateName() + " (Blocked)");
+            stateValueLabel.setForeground(BLOCKED_COLOR);
+         } else {
+            stateValueLabel.setText(workItem.getStateMgr().getCurrentStateName());
+         }
+         createdValueLabel.setText(DateUtil.getMMDDYYHHMM(workItem.getCreatedDate()));
       }
-      createdValueLabel.setText(DateUtil.getMMDDYYHHMM(workItem.getCreatedDate()));
    }
 
    @Override

@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -93,21 +94,23 @@ public class WfeAssigneesHeader extends Composite implements IWfeEventHandle {
 
    @Override
    public void refresh() {
-      String value = "";
-      try {
-         if (workItem.getStateMgr().getAssignees().isEmpty()) {
-            value = "Error: State has no assignees";
-         } else {
-            valueLabel.setToolTipText(workItem.getStateMgr().getAssigneesStr());
-            value = workItem.getStateMgr().getAssigneesStr();
+      if (Widgets.isAccessible(valueLabel)) {
+         String value = "";
+         try {
+            if (workItem.getStateMgr().getAssignees().isEmpty()) {
+               value = "Error: State has no assignees";
+            } else {
+               valueLabel.setToolTipText(workItem.getStateMgr().getAssigneesStr());
+               value = workItem.getStateMgr().getAssigneesStr();
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            value = ex.getLocalizedMessage();
+            valueLabel.setToolTipText(value);
          }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         value = ex.getLocalizedMessage();
-         valueLabel.setToolTipText(value);
+         valueLabel.setText(Strings.truncate(value, 150, true));
+         valueLabel.getParent().getParent().layout();
       }
-      valueLabel.setText(Strings.truncate(value, 150, true));
-      valueLabel.getParent().getParent().layout();
    }
 
    @Override
