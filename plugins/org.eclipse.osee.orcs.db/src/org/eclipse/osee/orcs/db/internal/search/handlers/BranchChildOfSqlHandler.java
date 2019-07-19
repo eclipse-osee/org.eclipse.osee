@@ -21,7 +21,7 @@ import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
  */
 public class BranchChildOfSqlHandler extends SqlHandler<CriteriaBranchChildOf> {
    private CriteriaBranchChildOf criteria;
-   private String withAlias;
+   private String cteAlias;
    private String brAlias;
 
    @Override
@@ -30,25 +30,25 @@ public class BranchChildOfSqlHandler extends SqlHandler<CriteriaBranchChildOf> {
    }
 
    @Override
-   public void addWithTables(final AbstractSqlWriter writer) {
-      withAlias = writer.startRecursiveWithClause("chof", "(child_id, branch_level)");
+   public void writeCommonTableExpression(final AbstractSqlWriter writer) {
+      cteAlias = writer.startRecursiveCommonTableExpression("chof", "(child_id, branch_level)");
       writer.write("  SELECT anch_br1.branch_id, 0 as branch_level FROM osee_branch anch_br1, osee_branch anch_br2\n");
       writer.write("   WHERE anch_br1.parent_branch_id = anch_br2.branch_id AND ");
       writer.writeEqualsParameter("anch_br2", "branch_id", criteria.getParent());
       writer.write("\n  UNION ALL \n");
-      writer.write("  SELECT branch_id, branch_level + 1 FROM " + withAlias + ", osee_branch br");
+      writer.write("  SELECT branch_id, branch_level + 1 FROM " + cteAlias + ", osee_branch br");
       writer.write(" WHERE child_id = br.parent_branch_id");
    }
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      writer.addTable(withAlias);
+      writer.addTable(cteAlias);
       brAlias = writer.getMainTableAlias(TableEnum.BRANCH_TABLE);
    }
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      writer.writeEquals(withAlias, "child_id", brAlias, "branch_id");
+      writer.writeEquals(cteAlias, "child_id", brAlias, "branch_id");
    }
 
    @Override

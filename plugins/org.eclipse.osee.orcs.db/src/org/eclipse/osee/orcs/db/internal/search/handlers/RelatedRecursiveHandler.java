@@ -20,17 +20,17 @@ import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
  */
 public class RelatedRecursiveHandler extends SqlHandler<CriteriaRelatedRecursive> {
    private CriteriaRelatedRecursive criteria;
-   private String withAlias;
+   private String cteAlias;
    private String artAlias;
 
    @Override
-   public void addWithTables(AbstractSqlWriter writer) {
-      withAlias = writer.startRecursiveWithClause("recurse", "(id, child_level)");
+   public void writeCommonTableExpression(AbstractSqlWriter writer) {
+      cteAlias = writer.startRecursiveCommonTableExpression("recurse", "(id, child_level)");
       writer.write("  SELECT b_art_id, 1 FROM osee_relation_link WHERE ");
       writer.writeEqualsParameterAnd("a_art_id", criteria.getStartArtifact());
       writer.writeEqualsParameter("rel_link_type_id", criteria.getRelationType());
       writer.write("  UNION ALL\n");
-      writer.write("  SELECT b_art_id, child_level + 1 FROM " + withAlias);
+      writer.write("  SELECT b_art_id, child_level + 1 FROM " + cteAlias);
       writer.write(", osee_relation_link rel, osee_txs txs");
       writer.write(" WHERE a_art_id = id AND rel_link_type_id = ? AND rel.gamma_id = txs.gamma_id AND ");
       writer.addParameter(criteria.getRelationType());
@@ -44,13 +44,13 @@ public class RelatedRecursiveHandler extends SqlHandler<CriteriaRelatedRecursive
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      writer.addTable(withAlias);
+      writer.addTable(cteAlias);
       artAlias = writer.getMainTableAlias(TableEnum.ARTIFACT_TABLE);
    }
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      writer.writeEquals(withAlias, "id", artAlias, "art_id");
+      writer.writeEquals(cteAlias, "id", artAlias, "art_id");
    }
 
    @Override

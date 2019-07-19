@@ -50,7 +50,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    protected final QueryData queryData;
    private int level;
    private boolean firstField;
-   private boolean firstWithClause = true;
+   private boolean firstCte = true;
 
    public AbstractSqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryData queryData) {
       this.joinFactory = joinFactory;
@@ -86,11 +86,21 @@ public abstract class AbstractSqlWriter implements HasOptions {
       aliasManager.reset();
       level = 0;
       mainAliases.clear();
-      firstWithClause = true;
+      firstCte = true;
    }
 
    protected void write(Iterable<SqlHandler<?>> handlers) {
-      writeWithClause(handlers);
+      write(handlers, null);
+   }
+
+   protected String write(Iterable<SqlHandler<?>> handlers, String ctePrefix) {
+      String cteAlias = null;
+      writeToWithClause(handlers);
+      if (ctePrefix == null) {
+         finishWithClause();
+      } else {
+         cteAlias = startCommonTableExpression(ctePrefix);
+      }
       computeTables(handlers);
 
       writeSelect(handlers);
@@ -101,17 +111,18 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
       removeDanglingSeparator("\n WHERE ");
       writeGroupAndOrder();
+      return cteAlias;
    }
 
    /**
     * Add a named recursive query using a Common Table Expression (WITH statement)
     */
-   public String startRecursiveWithClause(String prefix, String parameters) {
+   public String startRecursiveCommonTableExpression(String prefix, String parameters) {
       boolean isRecursive = parameters != null;
-      String withClauseName = getNextAlias(prefix);
-      if (firstWithClause) {
+      String cteAlias = getNextAlias(prefix);
+      if (firstCte) {
          write("WITH");
-         firstWithClause = false;
+         firstCte = false;
       } else {
          write("), ");
       }
@@ -119,28 +130,36 @@ public abstract class AbstractSqlWriter implements HasOptions {
          write(jdbcClient.getDbType().getRecursiveWithSql());
       }
       write(" ");
-      write(withClauseName);
+      write(cteAlias);
       if (isRecursive) {
          write(" ");
          write(parameters);
       }
       write(" AS (\n");
-      return withClauseName;
+      return cteAlias;
    }
 
    /**
     * Add a named non-recursive query using a Common Table Expression (WITH statement)
     */
-   public String startWithClause(String prefix) {
-      return startRecursiveWithClause(prefix, null);
+   public String startCommonTableExpression(String prefix) {
+      return startRecursiveCommonTableExpression(prefix, null);
    }
 
    protected void writeWithClause(Iterable<SqlHandler<?>> handlers) {
+      writeToWithClause(handlers);
+      finishWithClause();
+   }
+
+   private void writeToWithClause(Iterable<SqlHandler<?>> handlers) {
       for (SqlHandler<?> handler : handlers) {
          setHandlerLevel(handler);
-         handler.addWithTables(this);
+         handler.writeCommonTableExpression(this);
       }
-      if (!firstWithClause) {
+   }
+
+   protected void finishWithClause() {
+      if (!firstCte) {
          write(")\n");
       }
    }

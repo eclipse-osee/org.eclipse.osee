@@ -23,14 +23,14 @@ import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds> {
    private CriteriaArtifactIds criteria;
    private String jIdAlias;
-   private String withAlias;
+   private String cteAlias;
    private String artAlias;
    private String txsAlias;
 
    @Override
-   public void addWithTables(AbstractSqlWriter writer) {
+   public void writeCommonTableExpression(AbstractSqlWriter writer) {
       if (OptionsUtil.isHistorical(writer.getOptions())) {
-         withAlias = writer.startWithClause("artMax");
+         cteAlias = writer.startCommonTableExpression("artMax");
 
          /*
           * Use max to find the latest txs entry for the artifact regardless of mod_type, so use true for allowDeleted
@@ -62,12 +62,12 @@ public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      if (withAlias == null) {
+      if (cteAlias == null) {
          if (criteria.hasMultipleIds()) {
             jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
          }
       } else {
-         writer.addTable(withAlias);
+         writer.addTable(cteAlias);
       }
       artAlias = writer.getMainTableAlias(TableEnum.ARTIFACT_TABLE);
       txsAlias = writer.getMainTableAlias(TableEnum.TXS_TABLE);
@@ -75,7 +75,7 @@ public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds> {
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      if (withAlias == null) {
+      if (cteAlias == null) {
          if (criteria.hasMultipleIds()) {
             AbstractJoinQuery joinQuery = writer.writeJoin(criteria.getIds());
             writer.writeEqualsParameterAnd(jIdAlias, "query_id", joinQuery.getQueryId());
@@ -84,8 +84,8 @@ public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds> {
             writer.writeEqualsParameter(artAlias, "art_id", criteria.getId());
          }
       } else {
-         writer.writeEqualsAnd(withAlias, artAlias, "art_id");
-         writer.writeEquals(withAlias, txsAlias, "transaction_id");
+         writer.writeEqualsAnd(cteAlias, artAlias, "art_id");
+         writer.writeEquals(cteAlias, txsAlias, "transaction_id");
       }
    }
 

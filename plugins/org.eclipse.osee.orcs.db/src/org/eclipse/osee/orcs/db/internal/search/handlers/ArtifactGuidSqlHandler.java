@@ -24,14 +24,14 @@ import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids> {
    private CriteriaArtifactGuids criteria;
    private String jguidAlias;
-   private String withAlias;
+   private String cteAlias;
    private String artAlias;
    private String txsAlias;
 
    @Override
-   public void addWithTables(AbstractSqlWriter writer) {
+   public void writeCommonTableExpression(AbstractSqlWriter writer) {
       if (OptionsUtil.isHistorical(writer.getOptions())) {
-         withAlias = writer.startWithClause("artMax");
+         cteAlias = writer.startCommonTableExpression("artMax");
 
          /*
           * Use max to find the latest txs entry for the artifact regardless of mod_type, so use true for allowDeleted
@@ -64,12 +64,12 @@ public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      if (withAlias == null) {
+      if (cteAlias == null) {
          if (criteria.getIds().size() > 1) {
             jguidAlias = writer.addTable(TableEnum.CHAR_JOIN_TABLE);
          }
       } else {
-         writer.addTable(withAlias);
+         writer.addTable(cteAlias);
       }
       artAlias = writer.getMainTableAlias(TableEnum.ARTIFACT_TABLE);
       txsAlias = writer.getMainTableAlias(TableEnum.TXS_TABLE);
@@ -79,7 +79,7 @@ public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids> {
    public void addPredicates(AbstractSqlWriter writer) {
       Collection<String> ids = criteria.getIds();
 
-      if (withAlias == null) {
+      if (cteAlias == null) {
          if (ids.size() > 1) {
             AbstractJoinQuery joinQuery = writer.writeCharJoin(ids);
             writer.writeEqualsParameterAnd(jguidAlias, "query_id", joinQuery.getQueryId());
@@ -88,8 +88,8 @@ public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids> {
             writer.writeEqualsParameter(artAlias, "guid", ids.iterator().next());
          }
       } else {
-         writer.writeEqualsAnd(withAlias, artAlias, "art_id");
-         writer.writeEquals(withAlias, txsAlias, "transaction_id");
+         writer.writeEqualsAnd(cteAlias, artAlias, "art_id");
+         writer.writeEquals(cteAlias, txsAlias, "transaction_id");
       }
    }
 

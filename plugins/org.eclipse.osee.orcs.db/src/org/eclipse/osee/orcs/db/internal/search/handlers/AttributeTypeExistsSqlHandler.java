@@ -31,7 +31,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
 
    private String jIdAlias;
    private AbstractJoinQuery joinQuery;
-   private String withAlias;
+   private String cteAlias;
 
    @Override
    public void setData(CriteriaAttributeTypeExists criteria) {
@@ -39,9 +39,9 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
    }
 
    @Override
-   public void addWithTables(AbstractSqlWriter writer) {
+   public void writeCommonTableExpression(AbstractSqlWriter writer) {
       if (OptionsUtil.isHistorical(writer.getOptions())) {
-         withAlias = writer.startWithClause("attrExt");
+         cteAlias = writer.startCommonTableExpression("attrExt");
          writer.write("SELECT max(txs.transaction_id) as transaction_id, attr.art_id as art_id\n");
          Collection<AttributeTypeId> types = criteria.getTypes();
          if (types.size() > 1) {
@@ -65,8 +65,8 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      if (withAlias != null) {
-         writer.addTable(withAlias);
+      if (cteAlias != null) {
+         writer.addTable(cteAlias);
       }
       if (criteria.getTypes().size() > 1) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
@@ -112,13 +112,13 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
             }
          }
       }
-      if (withAlias != null) {
+      if (cteAlias != null) {
          writer.writeAndLn();
-         writer.write(withAlias);
+         writer.write(cteAlias);
          writer.write(".transaction_id = ");
          writer.write(txsAlias);
          writer.write(".transaction_id AND ");
-         writer.write(withAlias);
+         writer.write(cteAlias);
          writer.write(".art_id = ");
          writer.write(attrAlias);
          writer.write(".art_id");

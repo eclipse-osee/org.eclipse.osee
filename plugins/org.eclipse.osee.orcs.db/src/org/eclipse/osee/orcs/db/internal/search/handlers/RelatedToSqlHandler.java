@@ -29,12 +29,12 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
    private String jIdAlias;
    private String relAlias;
    private String txsAlias;
-   private String withAlias;
+   private String cteAlias;
 
    @Override
-   public void addWithTables(AbstractSqlWriter writer) {
+   public void writeCommonTableExpression(AbstractSqlWriter writer) {
       if (OptionsUtil.isHistorical(writer.getOptions())) {
-         withAlias = writer.startWithClause("relTo");
+         cteAlias = writer.startCommonTableExpression("relTo");
 
          writer.write("SELECT max(txs.transaction_id) as transaction_id, rel.a_art_id as art_id\n");
          writer.write("    FROM osee_txs txs, osee_relation_link rel");
@@ -70,8 +70,8 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      if (withAlias != null) {
-         writer.addTable(withAlias);
+      if (cteAlias != null) {
+         writer.addTable(cteAlias);
       }
       if (criteria.hasMultipleIds()) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
@@ -134,11 +134,11 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
       writePredicate(writer, txsAlias, relAlias);
-      if (withAlias != null) {
+      if (cteAlias != null) {
          writer.writeAndLn();
          writer.write(txsAlias);
          writer.write(".transaction_id = ");
-         writer.write(withAlias);
+         writer.write(cteAlias);
          writer.write(".transaction_id");
       }
       writer.writeAndLn();

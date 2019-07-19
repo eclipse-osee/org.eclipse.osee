@@ -65,7 +65,7 @@ public abstract class SqlHandler<T extends Criteria> {
       return true;
    }
 
-   public void addWithTables(AbstractSqlWriter writer) {
+   public void writeCommonTableExpression(AbstractSqlWriter writer) {
       // Do Nothing
    }
 

@@ -52,7 +52,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    }
 
    @Override
-   public void addWithTables(AbstractSqlWriter writer) {
+   public void writeCommonTableExpression(AbstractSqlWriter writer) {
       Collection<AttributeTypeId> types = criteria.getTypes();
       AbstractJoinQuery joinQuery = null;
       if (!criteria.isIncludeAllTypes() && types.size() > 1) {
@@ -63,10 +63,10 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          joinQuery = writer.writeJoin(typeIds);
       }
 
-      String gammaAlias = writer.startWithClause("gamma");
+      String gammaAlias = writer.startCommonTableExpression("gamma");
       writeGammaWith(writer, joinQuery);
 
-      attrAlias = writer.startWithClause("att");
+      attrAlias = writer.startCommonTableExpression("att");
       writeAttrWith(writer, joinQuery, gammaAlias);
    }
 
