@@ -166,7 +166,7 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
          WorldXViewerEventManager.add(this);
 
          scrolledForm.setText("Team Workflow Tasks");
-         scrolledForm.setImage(ImageManager.getImage(AtsImage.PEER_REVIEW));
+         scrolledForm.setImage(ImageManager.getImage(AtsImage.TASK));
 
          managedForm.reflow(true);
       } catch (Exception ex) {
