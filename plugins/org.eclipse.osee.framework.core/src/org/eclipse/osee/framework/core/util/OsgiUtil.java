@@ -40,6 +40,7 @@ public final class OsgiUtil {
    }
 
    public static <T> T getService(Class<?> classFromBundle, Class<T> clazz) {
+
       BundleContext context = FrameworkUtil.getBundle(classFromBundle).getBundleContext();
       if (context == null) {
          throw new OseeCoreException("BundleContext is null for " + classFromBundle);

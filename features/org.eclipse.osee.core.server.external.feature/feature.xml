@@ -36,9 +36,7 @@
       <import plugin="org.eclipse.osgi.util"/>  
       <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.9.2" match="greaterOrEqual" />  
     </requires>
-      
-	
- 
+      	 
 	<plugin
          id="javax.xml.stream"
          download-size="0"
@@ -59,14 +57,7 @@
          install-size="0"
          version="6.1.1"
          unpack="false"/>     
-            
-   <plugin
-         id="org.eclipse.jdt.launching"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-	 		unpack="false"/> 
-	
+           
     <plugin
          id="org.eclipse.egit"
          download-size="0"

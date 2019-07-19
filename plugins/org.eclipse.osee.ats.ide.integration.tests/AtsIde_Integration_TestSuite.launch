@@ -42,7 +42,6 @@
 <stringAttribute key="product" value="org.eclipse.osee.framework.ui.product.osee"/>
 <booleanAttribute key="run_in_ui_thread" value="true"/>
 <setAttribute key="selected_features">
-<setEntry value="org.eclipse.cvs.source:default"/>
 <setEntry value="org.eclipse.cvs:default"/>
 <setEntry value="org.eclipse.e4.rcp.source:default"/>
 <setEntry value="org.eclipse.e4.rcp:default"/>
@@ -83,13 +82,9 @@
 <setEntry value="org.eclipse.xtext.examples:default"/>
 <setEntry value="org.eclipse.xtext.runtime:default"/>
 <setEntry value="org.eclipse.xtext.sdk:default"/>
-<setEntry value="org.eclipse.xtext.ui.source:default"/>
 <setEntry value="org.eclipse.xtext.ui:default"/>
-<setEntry value="org.eclipse.xtext.xbase.lib.source:default"/>
 <setEntry value="org.eclipse.xtext.xbase.lib:default"/>
-<setEntry value="org.eclipse.xtext.xbase.source:default"/>
 <setEntry value="org.eclipse.xtext.xbase:default"/>
-<setEntry value="org.eclipse.xtext.xtext.ui.source:default"/>
 <setEntry value="org.eclipse.xtext.xtext.ui:default"/>
 </setAttribute>
 <booleanAttribute key="show_selected_only" value="true"/>

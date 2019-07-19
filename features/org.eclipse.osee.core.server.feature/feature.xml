@@ -17,7 +17,7 @@
       %license
    </license>
          
-   <plugin
+   <plugin  
          id="org.objectweb.asm"
          download-size="0"
          install-size="0"
