@@ -99,7 +99,7 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
       SkynetTransaction tx =
          TransactionManager.createTransaction(getArtifact().getBranch(), "Set signed for " + getLabel());
       Artifact storeArt = getArtifact();
-      storeArt.setSoleAttributeValue(signByAttrType, UserManager.getUser().getIdString());
+      storeArt.setSoleAttributeValue(signByAttrType, UserManager.getUser().getId());
       storeArt.setSoleAttributeValue(signDateAttrType, new Date());
       tx.addArtifact(storeArt);
       tx.execute();
