@@ -81,7 +81,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          int tagsSize = tags.size();
          writer.write("  ( \n");
          if (tagsSize == 0) {
-            writer.write("    SELECT gamma_id FROM osee_attribute att");
+            writer.write("SELECT gamma_id FROM osee_attribute att");
             if (joinQuery != null) {
                writer.write(", ");
                jIdAlias = writer.writeTable(TableEnum.ID_JOIN_TABLE);
@@ -105,7 +105,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          } else {
             for (int tagIdx = 0; tagIdx < tagsSize; tagIdx++) {
                Long tag = tags.get(tagIdx);
-               writer.write("    SELECT gamma_id FROM osee_search_tags WHERE ");
+               writer.write(" SELECT gamma_id FROM osee_search_tags WHERE ");
                writer.writeEqualsParameter("coded_tag_id", tag);
                if (tagIdx + 1 < tagsSize) {
                   writer.write("\n INTERSECT \n");
@@ -121,7 +121,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    }
 
    private void writeAttrWith(AbstractSqlWriter writer, AbstractJoinQuery joinQuery, String gammaAlias) {
-      writer.write("   SELECT DISTINCT art_id FROM osee_attribute att, osee_txs txs, ");
+      writer.write(" SELECT DISTINCT art_id FROM osee_attribute att, osee_txs txs, ");
 
       String jIdAlias = null;
       if (joinQuery != null) {
@@ -143,9 +143,8 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
             writer.writeEqualsParameter(jIdAlias, "query_id", joinQuery.getQueryId());
          }
       }
-      writer.write("\n AND \n");
-      writer.write("   att.gamma_id = txs.gamma_id");
       writer.write(" AND ");
+      writer.writeEqualsAnd("att", "txs", "gamma_id");
       writer.writeTxBranchFilter("txs", true);
    }
 

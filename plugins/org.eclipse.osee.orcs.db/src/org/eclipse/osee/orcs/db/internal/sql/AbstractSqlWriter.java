@@ -101,15 +101,16 @@ public abstract class AbstractSqlWriter implements HasOptions {
       } else {
          cteAlias = startCommonTableExpression(ctePrefix);
       }
-      computeTables(handlers);
 
+      computeTables(handlers);
       writeSelect(handlers);
       write("\n FROM ");
       writeTables();
+
       write("\n WHERE ");
       writePredicates(handlers);
-
       removeDanglingSeparator("\n WHERE ");
+
       writeGroupAndOrder();
       return cteAlias;
    }
@@ -121,21 +122,21 @@ public abstract class AbstractSqlWriter implements HasOptions {
       boolean isRecursive = parameters != null;
       String cteAlias = getNextAlias(prefix);
       if (firstCte) {
-         write("WITH");
+         write("WITH ");
          firstCte = false;
       } else {
-         write("), ");
+         write("),\n");
       }
       if (isRecursive) {
          write(jdbcClient.getDbType().getRecursiveWithSql());
+         write(" ");
       }
-      write(" ");
       write(cteAlias);
       if (isRecursive) {
          write(" ");
          write(parameters);
       }
-      write(" AS (\n");
+      write(" AS (\n ");
       return cteAlias;
    }
 
@@ -266,6 +267,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
          }
          write(tableEntry);
       }
+      tableEntries.clear();
    }
 
    protected void computeTables(Iterable<SqlHandler<?>> handlers) {

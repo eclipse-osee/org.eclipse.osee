@@ -37,7 +37,7 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
          cteAlias = writer.startCommonTableExpression("relTo");
 
          writer.write("SELECT max(txs.transaction_id) as transaction_id, rel.a_art_id as art_id\n");
-         writer.write("    FROM osee_txs txs, osee_relation_link rel");
+         writer.write(" FROM osee_txs txs, osee_relation_link rel");
          if (criteria.hasMultipleIds()) {
             writer.write(", ");
             writer.write(TableEnum.ID_JOIN_TABLE.getName());
@@ -55,11 +55,11 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
                writer.write(artAlias);
             }
          }
-         writer.write("\n    WHERE  txs.gamma_id = rel.gamma_id AND \n");
+         writer.write("\n WHERE  txs.gamma_id = rel.gamma_id AND \n");
          writePredicate(writer, "txs", "rel");
          writer.write(" AND ");
          writer.writeTxBranchFilter("txs");
-         writer.write("\n    GROUP BY rel.a_art_id\n");
+         writer.write("\n GROUP BY rel.a_art_id\n");
       }
    }
 

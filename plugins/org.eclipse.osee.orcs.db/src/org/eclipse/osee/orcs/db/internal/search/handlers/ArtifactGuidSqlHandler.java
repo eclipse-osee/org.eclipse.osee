@@ -38,12 +38,12 @@ public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids> {
           * in call to writeTxBranchFilter. The mod_type must be checked outside the max in case of do not allow deleted
           * so that filter doesn't force the max back to a prior version when the correct version is deleted.
           */
-         writer.write("SELECT max(txs.transaction_id) as transaction_id, art.art_id as art_id\n    FROM ");
+         writer.write("SELECT max(txs.transaction_id) as transaction_id, art.art_id as art_id\n FROM ");
          Collection<String> ids = criteria.getIds();
          if (ids.size() > 1) {
             writer.write("osee_join_char_id jid, ");
          }
-         writer.write("osee_artifact art, osee_txs txs\n    WHERE ");
+         writer.write("osee_artifact art, osee_txs txs\n WHERE ");
          if (ids.size() > 1) {
             AbstractJoinQuery joinQuery = writer.writeCharJoin(ids);
             writer.writeEqualsParameterAnd("jid", "query_id", joinQuery.getQueryId());
@@ -53,7 +53,7 @@ public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids> {
          }
          writer.writeEqualsAnd("art", "txs", "gamma_id");
          writer.writeTxBranchFilter("txs", true);
-         writer.write("\n    GROUP BY art.art_id");
+         writer.write("\n GROUP BY art.art_id");
       }
    }
 

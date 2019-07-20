@@ -89,7 +89,7 @@ public class JdbcDbType extends BaseId {
    }
 
    public String getRecursiveWithSql() {
-      return equals(oracle) ? "" : " RECURSIVE";
+      return equals(oracle) ? "" : "RECURSIVE";
    }
 
    public String getComplementSql() {

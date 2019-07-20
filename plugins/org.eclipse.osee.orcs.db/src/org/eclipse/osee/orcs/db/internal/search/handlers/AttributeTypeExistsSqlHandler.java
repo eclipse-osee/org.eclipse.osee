@@ -45,21 +45,21 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
          writer.write("SELECT max(txs.transaction_id) as transaction_id, attr.art_id as art_id\n");
          Collection<AttributeTypeId> types = criteria.getTypes();
          if (types.size() > 1) {
-            writer.write("    FROM osee_txs txs, osee_attribute attr, osee_join_id id\n");
+            writer.write(" FROM osee_txs txs, osee_attribute attr, osee_join_id id\n");
          } else {
-            writer.write("    FROM osee_txs txs, osee_attribute attr\n");
+            writer.write(" FROM osee_txs txs, osee_attribute attr\n");
          }
-         writer.write("    WHERE txs.gamma_id = attr.gamma_id\n");
+         writer.write(" WHERE txs.gamma_id = attr.gamma_id");
          if (types.size() > 1) {
             AbstractJoinQuery joinQuery = writer.writeJoin(types);
-            writer.write("   AND attr.attr_type_id = id.id AND ");
+            writer.write(" AND attr.attr_type_id = id.id AND ");
             writer.writeEqualsParameterAnd("id", "query_id", joinQuery.getQueryId());
          } else {
             writer.writeEqualsParameterAnd("att", "attr_type_id", types.iterator().next());
          }
 
          writer.writeTxBranchFilter("txs");
-         writer.write("\n    GROUP BY attr.art_id");
+         writer.write("\n GROUP BY attr.art_id");
       }
    }
 
