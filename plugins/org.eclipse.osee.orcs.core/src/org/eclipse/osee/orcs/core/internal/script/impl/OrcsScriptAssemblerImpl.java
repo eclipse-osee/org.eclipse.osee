@@ -35,6 +35,7 @@ import org.eclipse.osee.orcs.core.internal.search.TxQueryBuilderImpl;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OrcsScript;
 import org.eclipse.osee.orcs.search.BranchQueryBuilder;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TxQueryBuilder;
 
 /**
@@ -58,6 +59,7 @@ public class OrcsScriptAssemblerImpl implements OrcsScriptAssembler, OrcsScriptE
    private final OrcsScriptOutputHandler output;
    private final CallableQueryFactory artQueryFactory;
    private final OrcsTypes orcsTypes;
+   private final QueryFactory queryFactory;
 
    private boolean errorDetected;
 
@@ -65,6 +67,7 @@ public class OrcsScriptAssemblerImpl implements OrcsScriptAssembler, OrcsScriptE
       this.dataModule = dataModule;
       this.output = output;
       this.artQueryFactory = queryModule.getArtQueryFactory();
+      queryFactory = queryModule.createQueryFactory(null);
       factory1 = new TransactionCriteriaFactory();
       factory2 = new BranchCriteriaFactory();
       this.orcsTypes = orcsTypes;
@@ -122,7 +125,7 @@ public class OrcsScriptAssemblerImpl implements OrcsScriptAssembler, OrcsScriptE
 
    @Override
    public QueryData newArtifactQuery() {
-      return this.artQuery = new QueryData(dataModule.getQueryEngine(), artQueryFactory, orcsTypes);
+      return this.artQuery = new QueryData(queryFactory, dataModule.getQueryEngine(), artQueryFactory, orcsTypes);
    }
 
    @Override

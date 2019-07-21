@@ -43,6 +43,12 @@ public interface QueryBuilder extends Query {
 
    List<ArtifactToken> loadArtifactTokens();
 
+   List<ArtifactReadable> asArtifacts();
+
+   Map<ArtifactId, ArtifactReadable> asArtifactMap();
+
+   ArtifactReadable asArtifact();
+
    Map<ArtifactId, ArtifactToken> loadArtifactTokenMap();
 
    List<ArtifactId> loadArtifactIds();

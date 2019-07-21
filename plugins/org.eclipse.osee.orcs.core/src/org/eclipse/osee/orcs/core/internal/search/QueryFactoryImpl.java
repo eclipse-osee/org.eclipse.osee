@@ -48,18 +48,18 @@ public class QueryFactoryImpl implements QueryFactory {
    @Override
    public BranchQuery branchQuery() {
       return new BranchQueryImpl(queryEngine, branchCriteriaFactory,
-         new QueryData(queryEngine, artQueryFactory, orcsTypes));
+         new QueryData(this, queryEngine, artQueryFactory, orcsTypes));
    }
 
    @Override
    public QueryBuilder fromBranch(BranchId branch) {
-      return new QueryData(queryEngine, artQueryFactory, orcsTypes, branch);
+      return new QueryData(this, queryEngine, artQueryFactory, orcsTypes, branch);
    }
 
    @Override
    public TransactionQuery transactionQuery() {
       return new TransactionQueryImpl(queryEngine, txCriteriaFactory,
-         new QueryData(queryEngine, artQueryFactory, orcsTypes));
+         new QueryData(this, queryEngine, artQueryFactory, orcsTypes));
    }
 
    @Override

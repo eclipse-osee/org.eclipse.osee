@@ -80,28 +80,26 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    }
 
    private int runSqlorFetch(Consumer<JdbcStatement> consumer, SqlHandlerFactory handlerFactory) {
-      if (!rootQueryData.hasNoCriteria()) {
-         try {
-            build(handlerFactory);
-            for (AbstractJoinQuery join : joinTables) {
-               join.store();
-            }
-            if (rootQueryData.isCountQueryType()) {
-               return getJdbcClient().fetch(-1, toSql(), parameters.toArray());
-            } else {
-               getJdbcClient().runQuery(consumer, JDBC__MAX_FETCH_SIZE, toSql(), parameters.toArray());
-            }
-
-         } finally {
-            for (AbstractJoinQuery join : joinTables) {
-               try {
-                  join.close();
-               } catch (Exception ex) {
-                  // Ensure we try to delete all join entries
-               }
-            }
-            reset();
+      try {
+         build(handlerFactory);
+         for (AbstractJoinQuery join : joinTables) {
+            join.store();
          }
+         if (rootQueryData.isCountQueryType()) {
+            return getJdbcClient().fetch(-1, toSql(), parameters.toArray());
+         } else {
+            getJdbcClient().runQuery(consumer, JDBC__MAX_FETCH_SIZE, toSql(), parameters.toArray());
+         }
+
+      } finally {
+         for (AbstractJoinQuery join : joinTables) {
+            try {
+               join.close();
+            } catch (Exception ex) {
+               // Ensure we try to delete all join entries
+            }
+         }
+         reset();
       }
       return 0;
    }
@@ -225,8 +223,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       String attAlias = "att";
       String attTxsAlias = "txs";
 
-      writeSelectFields(artWithAlias, "art_id", artWithAlias, "art_type_id", artWithAlias, "app_id", attAlias,
-         "attr_type_id AS type_id", attAlias, "value");
+      writeSelectFields(artWithAlias, "art_id", artWithAlias, "art_type_id", artWithAlias, "app_id", artWithAlias,
+         "top", attAlias, "attr_type_id AS type_id", attAlias, "value");
       write(", 0 AS other_art_id");
       write("\n FROM %s, osee_attribute att, osee_txs txs", artWithAlias);
       write("\n WHERE ");

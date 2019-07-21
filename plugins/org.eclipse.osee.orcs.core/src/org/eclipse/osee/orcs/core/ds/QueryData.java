@@ -67,6 +67,7 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -81,6 +82,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    private final List<QueryData> childrenQueryData = new ArrayList<>(2);
    private AttributeTypeId attributeType = AttributeTypeToken.SENTINEL;
    private final CallableQueryFactory artQueryFactory;
+   private final QueryFactory queryFactory;
    private final QueryEngine queryEngine;
    private final OrcsTypes orcsTypes;
    private final ArtifactTypes artifactTypeCache;
@@ -89,8 +91,9 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    private QueryType queryType;
    private boolean followCausesChild = true;
 
-   public QueryData(QueryData parentQueryData, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes, BranchId branch) {
+   public QueryData(QueryData parentQueryData, QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes, BranchId branch) {
       this.parentQueryData = parentQueryData;
+      this.queryFactory = queryFactory;
       this.queryEngine = queryEngine;
       this.artQueryFactory = artQueryFactory;
       this.criterias = new ArrayList<>();
@@ -103,26 +106,26 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       this.attributeTypeCache = orcsTypes.getAttributeTypes();
    }
 
-   public QueryData(QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes, BranchId branch) {
-      this(null, queryEngine, artQueryFactory, orcsTypes, branch);
+   public QueryData(QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes, BranchId branch) {
+      this(null, queryFactory, queryEngine, artQueryFactory, orcsTypes, branch);
    }
 
    public QueryData(QueryData parentQueryData) {
-      this(parentQueryData, parentQueryData.queryEngine, parentQueryData.artQueryFactory, parentQueryData.orcsTypes,
-         parentQueryData.branch);
+      this(parentQueryData, parentQueryData.queryFactory, parentQueryData.queryEngine, parentQueryData.artQueryFactory,
+         parentQueryData.orcsTypes, parentQueryData.branch);
 
    }
 
-   public QueryData(QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes) {
-      this(queryEngine, artQueryFactory, orcsTypes, BranchId.SENTINEL);
+   public QueryData(QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes) {
+      this(queryFactory, queryEngine, artQueryFactory, orcsTypes, BranchId.SENTINEL);
    }
 
    public static QueryData mock() {
-      return new QueryData(null, null, new OrcsTypesImpl(null, null, null, null, null), BranchId.SENTINEL);
+      return new QueryData(null, null, null, new OrcsTypesImpl(null, null, null, null, null), BranchId.SENTINEL);
    }
 
    public QueryData(QueryType queryType, OrcsTypes orcsTypes) {
-      this(null, null, orcsTypes, BranchId.SENTINEL);
+      this(null, null, null, orcsTypes);
       setQueryType(queryType);
    }
 
@@ -573,6 +576,23 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    public List<Map<String, Object>> asArtifactMaps() {
       setQueryType(QueryType.ATTRIBUTES_ONLY);
       return queryEngine.asArtifactMaps(this);
+   }
+
+   @Override
+   public Map<ArtifactId, ArtifactReadable> asArtifactMap() {
+      setQueryType(QueryType.SELECT);
+      return queryEngine.asArtifactMap(this, queryFactory);
+   }
+
+   @Override
+   public List<ArtifactReadable> asArtifacts() {
+      setQueryType(QueryType.SELECT);
+      return queryEngine.asArtifacts(this, queryFactory);
+   }
+
+   @Override
+   public ArtifactReadable asArtifact() {
+      return loadArtifact(this::asArtifacts);
    }
 
    @Override

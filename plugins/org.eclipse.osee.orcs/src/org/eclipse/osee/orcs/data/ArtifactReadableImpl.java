@@ -44,8 +44,8 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  */
 public final class ArtifactReadableImpl extends BaseId implements ArtifactReadable {
    private final HashCollection<AttributeTypeToken, Object> attributes = new HashCollection<>();
-   private final HashCollection<RelationTypeToken, ArtifactToken> relationsSideA = new HashCollection<>();
-   private final HashCollection<RelationTypeToken, ArtifactToken> relationsSideB = new HashCollection<>();
+   private final HashCollection<RelationTypeToken, ArtifactReadable> relationsSideA = new HashCollection<>();
+   private final HashCollection<RelationTypeToken, ArtifactReadable> relationsSideB = new HashCollection<>();
    private final ArtifactTypeToken artifactType;
    private final BranchId branch;
    private final QueryFactory queryFactory;
@@ -194,7 +194,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       attributes.put(attributeType, value);
    }
 
-   public void putRelation(RelationTypeToken relationType, RelationSide side, ArtifactToken artifact) {
+   public void putRelation(RelationTypeToken relationType, RelationSide side, ArtifactReadable artifact) {
       (side.isSideA() ? relationsSideA : relationsSideB).put(relationType, artifact);
    }
 
@@ -245,7 +245,8 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
 
    @Override
    public List<ArtifactReadable> getDescendants() {
-      throw new UnsupportedOperationException();
+      return queryFactory.fromBranch(branch).andRelatedRecursive(CoreRelationTypes.Default_Hierarchical__Child,
+         this).asArtifacts();
    }
 
    @Override
@@ -275,14 +276,9 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
 
    @Override
    public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeId artifactType) {
-      return queryFactory.fromBranch(branch).andIsOfType(artifactType).andRelatedTo(relationTypeSide.getOpposite(),
-         this).getResults().getList();
-   }
-
-   @Override
-   public List<ArtifactToken> getRelatedIds(RelationTypeSide relationTypeSide, ArtifactTypeId artifactType) {
-      List<ArtifactToken> related = (relationTypeSide.getSide().isSideA() ? relationsSideA : relationsSideB).getValues(
-         relationTypeSide.getRelationType());
+      List<ArtifactReadable> related =
+         (relationTypeSide.getSide().isSideA() ? relationsSideA : relationsSideB).getValues(
+            relationTypeSide.getRelationType());
       if (related == null) {
          return Collections.emptyList();
       }
