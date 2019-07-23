@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.db.internal.sql;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -38,29 +37,29 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
  * @author Roberto E. Escobar
  */
 public abstract class AbstractSqlWriter implements HasOptions {
-   protected static final String AND_NEW_LINE = " AND\n";
-   protected final StringBuilder output = new StringBuilder();
-
+   private static final String AND_NEW_LINE = " AND\n";
    private final List<String> tableEntries = new ArrayList<>();
    private final SqlAliasManager aliasManager = new SqlAliasManager();
-   private final HashMap<TableEnum, String> mainAliases = new HashMap<>();
-   protected final SqlJoinFactory joinFactory;
    private final JdbcClient jdbcClient;
    private final SqlContext context;
-   protected final QueryData queryData;
+   protected final StringBuilder output = new StringBuilder();
+   protected final QueryData rootQueryData;
+   protected final SqlJoinFactory joinFactory;
    private int level;
    private boolean firstField;
    private boolean firstCte = true;
+   protected QueryData queryDataCursor;
 
-   public AbstractSqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryData queryData) {
+   public AbstractSqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryData rootQueryData) {
       this.joinFactory = joinFactory;
       this.jdbcClient = jdbcClient;
       this.context = context;
-      this.queryData = queryData;
+      this.rootQueryData = rootQueryData;
+      this.queryDataCursor = rootQueryData;
    }
 
-   public AbstractSqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, QueryData queryData) {
-      this(joinFactory, jdbcClient, null, queryData);
+   public AbstractSqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, QueryData rootQueryData) {
+      this(joinFactory, jdbcClient, null, rootQueryData);
    }
 
    public void build(SqlHandler<?>... handlers) {
@@ -85,7 +84,6 @@ public abstract class AbstractSqlWriter implements HasOptions {
       tableEntries.clear();
       aliasManager.reset();
       level = 0;
-      mainAliases.clear();
       firstCte = true;
    }
 
@@ -171,7 +169,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    protected void writeSelect(Iterable<SqlHandler<?>> handlers) {
       writeSelectAndHint();
-      if (queryData.isCountQueryType()) {
+      if (rootQueryData.isCountQueryType()) {
          if (OptionsUtil.isHistorical(getOptions())) {
             write("count(xTable.art_id) FROM (");
             writeSelectAndHint();
@@ -218,7 +216,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    public void writeTxBranchFilter(String txsAlias, boolean allowDeleted) {
       writeTxFilter(txsAlias, allowDeleted);
 
-      BranchId branch = queryData.getBranch();
+      BranchId branch = rootQueryData.getBranch();
       if (branch.isValid()) {
          write(" AND ");
          writeEqualsParameter(txsAlias, "branch_id", branch);
@@ -297,15 +295,19 @@ public abstract class AbstractSqlWriter implements HasOptions {
          }
       }
 
-      String mainTableAlias = mainAliases.get(TableEnum.ARTIFACT_TABLE);
-      if (mainTableAlias != null) {
+      if (mainTableAliasExists(TableEnum.ARTIFACT_TABLE)) {
          if (!first) {
             write(" AND ");
          }
+         String mainTableAlias = getMainTableAlias(TableEnum.ARTIFACT_TABLE);
          String mainTxsAlias = getMainTableAlias(TableEnum.TXS_TABLE);
          writeEqualsAnd(mainTableAlias, mainTxsAlias, "gamma_id");
          writeTxBranchFilter(mainTxsAlias);
       }
+   }
+
+   protected boolean mainTableAliasExists(TableEnum table) {
+      return queryDataCursor.mainTableAliasExists(table);
    }
 
    public void writeAndLn() {
@@ -372,12 +374,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    public String getMainTableAlias(TableEnum table) {
-      String alias = mainAliases.get(table);
-      if (alias == null) {
-         alias = addTable(table);
-         mainAliases.put(table, alias);
-      }
-      return alias;
+      return queryDataCursor.getMainTableAlias(table, this::addTable);
    }
 
    public void writeTableNoAlias(TableEnum table) {

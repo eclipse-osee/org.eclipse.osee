@@ -42,7 +42,7 @@ public class QuerySqlWriter extends AbstractSqlWriter {
 
    @Override
    public void writeGroupAndOrder() {
-      if (!queryData.isCountQueryType()) {
+      if (!rootQueryData.isCountQueryType()) {
          write("\n ORDER BY %s.%s", tableAlias, idColumn);
       }
    }

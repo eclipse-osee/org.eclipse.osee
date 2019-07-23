@@ -408,7 +408,7 @@ public class OrcsQueryTest {
    public void testFollowRelationType1() throws Exception {
       QueryBuilder builder = factory.fromBranch(SAW_Bld_1) //
          .andTypeEquals(CoreArtifactTypes.RootArtifact)//
-         .followRelation(CoreRelationTypes.Default_Hierarchical__Child);
+         .follow(CoreRelationTypes.Default_Hierarchical__Child);
 
       ResultSet<ArtifactReadable> results = builder.getResults();
       assertEquals(9, results.size());
@@ -429,7 +429,7 @@ public class OrcsQueryTest {
    public void testFollowRelationType2() throws Exception {
       QueryBuilder builder = factory.fromBranch(SAW_Bld_1) //
          .andTypeEquals(CoreArtifactTypes.RootArtifact)//
-         .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
+         .follow(CoreRelationTypes.Default_Hierarchical__Child)//
          .andTypeEquals(CoreArtifactTypes.Component);
 
       ResultSet<ArtifactReadable> results = builder.getResults();
@@ -442,7 +442,7 @@ public class OrcsQueryTest {
    public void testFollowRelationType3() throws Exception {
       QueryBuilder builder = factory.fromBranch(SAW_Bld_1) //
          .and(CoreAttributeTypes.Name, "collaboration", QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.CASE__IGNORE)//
-         .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
+         .follow(CoreRelationTypes.Default_Hierarchical__Child)//
          .and(CoreAttributeTypes.Name, "object", QueryOption.CONTAINS_MATCH_OPTIONS);
 
       ResultSet<ArtifactReadable> results = builder.getResults();
@@ -456,7 +456,7 @@ public class OrcsQueryTest {
       QueryBuilder query = factory.fromBranch(SAW_Bld_2) //
          .andNameEquals("Robot API") //
          .andTypeEquals(CoreArtifactTypes.SoftwareRequirement)//
-         .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
+         .follow(CoreRelationTypes.Default_Hierarchical__Child)//
          .and(CoreAttributeTypes.Name, "Robot", QueryOption.CONTAINS_MATCH_OPTIONS);
 
       ResultSet<ArtifactReadable> results = query.getResults();

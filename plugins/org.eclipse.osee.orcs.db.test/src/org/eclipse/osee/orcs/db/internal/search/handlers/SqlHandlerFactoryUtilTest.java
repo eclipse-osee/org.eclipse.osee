@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.QueryData;
@@ -67,7 +68,7 @@ public class SqlHandlerFactoryUtilTest {
       QueryData queryData = QueryData.mock();
       queryData.addCriteria(new CriteriaArtifactGuids(null));
       queryData.addCriteria(new CriteriaArtifactIds(Collections.emptyList()));
-      queryData.addCriteria(new CriteriaRelationTypeFollow(null));
+      queryData.addCriteria(new CriteriaRelationTypeFollow(null, ArtifactTypeToken.SENTINEL, false));
       queryData.addCriteria(new CriteriaArtifactType(null, null, true));
       queryData.addCriteria(new CriteriaRelationTypeExists(null));
       queryData.addCriteria(new CriteriaAttributeTypeExists(null));

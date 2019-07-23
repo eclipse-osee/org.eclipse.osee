@@ -16,6 +16,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,7 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
  * @author Roberto E. Escobar
  */
 public class OrcsScriptSqlWriter extends AbstractSqlWriter {
+   private final HashMap<TableEnum, String> mainAliases = new HashMap<>();
 
    private static final SqlHandlerComparator HANDLER_COMPARATOR = new SqlHandlerComparator();
    private final SqlFieldResolver fieldResolver;
@@ -134,7 +136,7 @@ public class OrcsScriptSqlWriter extends AbstractSqlWriter {
       if (OptionsUtil.isHistorical(getOptions())) {
          throw new UnsupportedOperationException("Historical dynamic query not supported");
       }
-      if (!queryData.isCountQueryType()) {
+      if (!rootQueryData.isCountQueryType()) {
          boolean isFirst = true;
          for (String value : fieldResolver.getSortFields()) {
             if (isFirst) {
@@ -209,7 +211,7 @@ public class OrcsScriptSqlWriter extends AbstractSqlWriter {
 
             write("\n FROM \n");
             writeTables();
-            write("\n WHERE \n");
+            write("\n WHERE ");
             writePredicates(withQueryHandlers);
             String tbAlias = getFirstAlias(table);
 
@@ -224,6 +226,7 @@ public class OrcsScriptSqlWriter extends AbstractSqlWriter {
             List<AbstractJoinQuery> joins = Lists.newArrayList(context.getJoins());
             List<Object> parameters = Lists.newArrayList(context.getParameters());
             reset();
+            mainAliases.clear();
          }
       }
    }
@@ -301,5 +304,20 @@ public class OrcsScriptSqlWriter extends AbstractSqlWriter {
          }
       }
       return priority;
+   }
+
+   @Override
+   public String getMainTableAlias(TableEnum table) {
+      String alias = mainAliases.get(table);
+      if (alias == null) {
+         alias = addTable(table);
+         mainAliases.put(table, alias);
+      }
+      return alias;
+   }
+
+   @Override
+   protected boolean mainTableAliasExists(TableEnum table) {
+      return mainAliases.containsKey(table);
    }
 }

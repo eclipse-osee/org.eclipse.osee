@@ -16,6 +16,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -283,16 +284,27 @@ public interface QueryBuilder extends Query {
    QueryBuilder andRelatedRecursive(RelationTypeSide relationTypeSide, ArtifactId artifactId);
 
    /**
-    * Search related artifacts with specific criteria. Will only follow first level of relations
-    *
-    * @param relationTypeSide the type-side to search on
-    */
-   QueryBuilder followRelation(RelationTypeSide relationTypeSide);
-
-   /**
     * @return DefaultHeirarchicalRootArtifact
     */
    QueryBuilder andIsHeirarchicalRootArtifact();
 
    QueryBuilder andAttributeIs(AttributeTypeId attributeType, String value, QueryOption... options);
+
+   QueryBuilder follow(RelationTypeSide relationTypeSide);
+
+   /**
+    * @param relationTypeSide side of of the relation following to (not starting from)
+    * @param artifacType of the artifacts following to
+    * @return
+    */
+   QueryBuilder follow(RelationTypeSide relationTypeSide, ArtifactTypeToken artifacType);
+
+   QueryBuilder followNoSelect(RelationTypeSide relationTypeSide, ArtifactTypeToken artifacType);
+
+   /**
+    * @deprecated use follow instead, currently still needed only for ORCS script
+    */
+   @Deprecated
+   QueryBuilder followRelation(RelationTypeSide typeSide);
+
 }

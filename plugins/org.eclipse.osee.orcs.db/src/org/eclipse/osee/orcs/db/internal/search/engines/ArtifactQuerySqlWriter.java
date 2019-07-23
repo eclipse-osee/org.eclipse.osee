@@ -39,7 +39,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
 
    @Override
    public void writeGroupAndOrder() {
-      if (queryData.isCountQueryType()) {
+      if (rootQueryData.isCountQueryType()) {
          if (OptionsUtil.isHistorical(getOptions())) {
             write("\n) xTable");
          }

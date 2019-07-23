@@ -31,17 +31,18 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    private final AbstractSqlWriter parentWriter;
    private final List<Object> parameters = new ArrayList<>();
 
-   private SelectiveArtifactSqlWriter(AbstractSqlWriter parentWriter, SqlJoinFactory sqlJoinFactory, JdbcClient jdbcClient, QueryData queryData) {
-      super(sqlJoinFactory, jdbcClient, queryData);
+   private SelectiveArtifactSqlWriter(AbstractSqlWriter parentWriter, SqlJoinFactory sqlJoinFactory, JdbcClient jdbcClient, QueryData rootQueryData) {
+      super(sqlJoinFactory, jdbcClient, rootQueryData);
       this.parentWriter = parentWriter;
    }
 
-   public SelectiveArtifactSqlWriter(SqlJoinFactory sqlJoinFactory, JdbcClient jdbcClient, QueryData queryData) {
-      this(null, sqlJoinFactory, jdbcClient, queryData);
+   public SelectiveArtifactSqlWriter(SqlJoinFactory sqlJoinFactory, JdbcClient jdbcClient, QueryData rootQueryData) {
+      this(null, sqlJoinFactory, jdbcClient, rootQueryData);
    }
 
    public SelectiveArtifactSqlWriter(AbstractSqlWriter parentWriter) {
-      this(parentWriter, parentWriter.joinFactory, parentWriter.getJdbcClient(), parentWriter.queryData);
+      this(parentWriter, parentWriter.joinFactory, parentWriter.getJdbcClient(),
+         new QueryData(parentWriter.rootQueryData));
    }
 
    @Override
@@ -64,7 +65,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
    public void runSql(Consumer<JdbcStatement> consumer, SqlHandlerFactory handlerFactory) {
       try {
-         write(handlerFactory.createHandlers(queryData));
+         write(handlerFactory.createHandlers(queryDataCursor));
          for (AbstractJoinQuery join : joinTables) {
             join.store();
          }
@@ -87,7 +88,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
    @Override
    public Options getOptions() {
-      return queryData.getOptions();
+      return queryDataCursor.getOptions();
    }
 
    @Override
@@ -99,7 +100,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
    @Override
    public void writeGroupAndOrder() {
-      if (parentWriter == null && !queryData.isCountQueryType() && !queryData.isSelectQueryType()) {
+      if (parentWriter == null && !rootQueryData.isCountQueryType() && !rootQueryData.isSelectQueryType()) {
          write(" ORDER BY art_id");
       }
    }
@@ -109,7 +110,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       super.reset();
       parameters.clear();
       joinTables.clear();
-      queryData.reset();
+      rootQueryData.reset();
    }
 
    @Override

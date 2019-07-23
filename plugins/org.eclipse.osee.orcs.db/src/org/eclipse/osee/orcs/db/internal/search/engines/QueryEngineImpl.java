@@ -210,7 +210,8 @@ public class QueryEngineImpl implements QueryEngine {
    }
 
    private void selectiveArtifactLoad(QueryData queryData, Consumer<JdbcStatement> consumer) {
-      new SelectiveArtifactSqlWriter(sqlJoinFactory, jdbcClient, queryData).runSql(consumer, handlerFactory);
+      QueryData rootQueryData = queryData.getRootQueryData();
+      new SelectiveArtifactSqlWriter(sqlJoinFactory, jdbcClient, rootQueryData).runSql(consumer, handlerFactory);
    }
 
    @Override

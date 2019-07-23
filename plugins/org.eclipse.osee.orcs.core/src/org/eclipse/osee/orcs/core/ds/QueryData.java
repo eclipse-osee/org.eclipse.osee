@@ -20,11 +20,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -35,6 +37,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -76,22 +79,39 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    private final SelectData selectData;
    private final Options options;
    private final BranchId branch;
+   private final QueryData parentQueryData;
+   private final List<QueryData> childrenQueryData = new ArrayList<>(2);
    private final CallableQueryFactory artQueryFactory;
-   private QueryType queryType;
    private final QueryEngine queryEngine;
+   private final OrcsTypes orcsTypes;
    private final ArtifactTypes artifactTypeCache;
    private final AttributeTypes attributeTypeCache;
+   private final HashMap<TableEnum, String> mainAliases = new HashMap<>(4);
+   private QueryType queryType;
+   private boolean followCausesChild = true;
 
-   public QueryData(QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes, BranchId branch) {
+   public QueryData(QueryData parentQueryData, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes, BranchId branch) {
+      this.parentQueryData = parentQueryData;
       this.queryEngine = queryEngine;
       this.artQueryFactory = artQueryFactory;
       this.criterias = new ArrayList<>();
       this.selectData = new SelectData();
       this.options = OptionsUtil.createOptions();
       this.branch = branch;
-      artifactTypeCache = orcsTypes.getArtifactTypes();
-      attributeTypeCache = orcsTypes.getAttributeTypes();
       criterias.add(new ArrayList<>());
+      this.orcsTypes = orcsTypes;
+      this.artifactTypeCache = orcsTypes.getArtifactTypes();
+      this.attributeTypeCache = orcsTypes.getAttributeTypes();
+   }
+
+   public QueryData(QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes, BranchId branch) {
+      this(null, queryEngine, artQueryFactory, orcsTypes, branch);
+   }
+
+   public QueryData(QueryData parentQueryData) {
+      this(parentQueryData, parentQueryData.queryEngine, parentQueryData.artQueryFactory, parentQueryData.orcsTypes,
+         parentQueryData.branch);
+
    }
 
    public QueryData(QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes) {
@@ -210,6 +230,9 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       criterias.add(criteriaSet);
 
       selectData.reset();
+      mainAliases.clear();
+      childrenQueryData.clear();
+      followCausesChild = true;
    }
 
    @Override
@@ -477,7 +500,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    @Override
    public QueryBuilder followRelation(RelationTypeSide relationTypeSide) {
-      addAndCheck(new CriteriaRelationTypeFollow(relationTypeSide));
+      addAndCheck(new CriteriaRelationTypeFollow(relationTypeSide, ArtifactTypeToken.SENTINEL, true));
       newCriteriaSet();
       return this;
    }
@@ -491,6 +514,37 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    @Override
    public QueryBuilder andIsHeirarchicalRootArtifact() {
       andId(CoreArtifactTokens.DefaultHierarchyRoot);
+      return this;
+   }
+
+   @Override
+   public QueryBuilder follow(RelationTypeSide relationTypeSide) {
+      return follow(relationTypeSide, ArtifactTypeToken.SENTINEL, true);
+   }
+
+   @Override
+   public QueryBuilder follow(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType) {
+      return follow(relationTypeSide, artifactType, true);
+   }
+
+   @Override
+   public QueryBuilder followNoSelect(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType) {
+      return follow(relationTypeSide, artifactType, false);
+   }
+
+   private QueryBuilder follow(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType, boolean terminalFollow) {
+      QueryData followQueryData = followQueryData();
+      followQueryData.followCausesChild = terminalFollow;
+      followQueryData.addAndCheck(new CriteriaRelationTypeFollow(relationTypeSide, artifactType, terminalFollow));
+      return followQueryData;
+   }
+
+   private QueryData followQueryData() {
+      if (followCausesChild) {
+         QueryData child = new QueryData(this);
+         childrenQueryData.add(child);
+         return child;
+      }
       return this;
    }
 
@@ -641,5 +695,40 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    public void setQueryType(QueryType queryType) {
       this.queryType = queryType;
+      if (parentQueryData != null) {
+         parentQueryData.setQueryType(queryType);
+      }
+   }
+
+   public String getMainTableAlias(TableEnum table, Function<TableEnum, String> addTable) {
+      String alias = mainAliases.get(table);
+      if (alias == null) {
+         alias = addTable.apply(table);
+         mainAliases.put(table, alias);
+      }
+      return alias;
+   }
+
+   public boolean mainTableAliasExists(TableEnum table) {
+      return mainAliases.containsKey(table);
+   }
+
+   public QueryData getRootQueryData() {
+      if (parentQueryData == null) {
+         return this;
+      }
+      return parentQueryData.getRootQueryData();
+   }
+
+   public QueryData getParentQueryData() {
+      return parentQueryData;
+   }
+
+   public List<QueryData> getChildrenQueryData() {
+      return childrenQueryData;
+   }
+
+   public boolean isFollowCausesChild() {
+      return followCausesChild;
    }
 }
