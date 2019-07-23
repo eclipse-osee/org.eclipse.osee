@@ -124,8 +124,6 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken ReviewBlocks = createType(1152921504606847176L, "Review Blocks", "Review Completion will block it's parent workflow in this manner.");
    public static final AttributeTypeToken ReviewDefect = createType(1152921504606847222L, "Review Defect");
    public static final AttributeTypeToken ReviewFormalType = createType(1152921504606847177L, "Review Formal Type");
-   public static final AttributeTypeToken RequestedHours = createType(5708922143198125133L, "Requested Hours");
-   public static final AttributeTypeToken RequestedFunding = createType(323824792847329487L, "Requested Funding");
    public static final AttributeTypeToken Role = createType(1152921504606847226L, "Role");
    public static final AttributeTypeToken RuleDefinition = createType(1152921504606847150L, "Rule Definition");
    public static final AttributeTypeToken SmaNote = createType(1152921504606847205L, "SMA Note", "Notes applicable to ATS object");
