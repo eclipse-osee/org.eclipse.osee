@@ -33,6 +33,10 @@ public final class OseeAppsApplication extends Application {
       singletons.add(new OseeAppResource(orcsApi));
    }
 
+   public void stop() {
+      singletons.clear();
+   }
+
    @Override
    public Set<Object> getSingletons() {
       return singletons;

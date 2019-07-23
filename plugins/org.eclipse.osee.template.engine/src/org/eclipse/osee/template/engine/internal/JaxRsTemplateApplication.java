@@ -22,9 +22,9 @@ import javax.ws.rs.core.Application;
 public class JaxRsTemplateApplication extends Application {
 
    private Set<Object> singletons;
-   private TemplateRegistryImpl registry;
+   private TemplateRegistry registry;
 
-   public void setTemplateRegistry(TemplateRegistryImpl registry) {
+   public void setTemplateRegistry(TemplateRegistry registry) {
       this.registry = registry;
    }
 
@@ -41,5 +41,4 @@ public class JaxRsTemplateApplication extends Application {
    public Set<Object> getSingletons() {
       return singletons;
    }
-
 }
