@@ -179,9 +179,6 @@
       <Renderer
             classname="org.eclipse.osee.ats.ide.world.AtsWorldEditorRenderer">
       </Renderer>
-      <Renderer
-            classname="org.eclipse.osee.ats.ide.workdef.viewer.AtsWorkDefConfigRenderer">
-      </Renderer>
    </extension>
    <extension
          point="org.eclipse.osee.framework.skynet.core.DefaultInitialBranchProvider">
