@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.core.workdef.defaults;
 
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
+import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 
 /**
@@ -31,5 +33,18 @@ public abstract class AbstractWorkDef implements IAtsWorkDefinitionBuilder {
 
    @Override
    abstract public WorkDefinition build();
+
+   protected CompositeLayoutItem getWorkingBranchWidgetComposite() {
+      return new CompositeLayoutItem(16, //
+         new WidgetDefinition("XWorkingBranchButtonCreate", "XWorkingBranchButtonCreate"), //
+         new WidgetDefinition("XWorkingBranchButtonArtifactExplorer", "XWorkingBranchButtonArtifactExplorer"), //
+         new WidgetDefinition("XWorkingBranchButtonChangeReport", "XWorkingBranchButtonChangeReport"), //
+         new WidgetDefinition("XWorkingBranchButtonDelete", "XWorkingBranchButtonDelete"), //
+         new WidgetDefinition("XWorkingBranchButtonFavorites", "XWorkingBranchButtonFavorites"), //
+         new WidgetDefinition("XWorkingBranchButtonLock", "XWorkingBranchButtonLock"), //
+         new WidgetDefinition("XWorkingBranchUpdate", "XWorkingBranchUpdate"), //
+         new WidgetDefinition("XWorkingBranchButtonDeleteMergeBranches", "XWorkingBranchButtonDeleteMergeBranches") //
+      );
+   }
 
 }
