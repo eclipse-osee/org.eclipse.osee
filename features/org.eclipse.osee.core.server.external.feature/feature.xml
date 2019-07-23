@@ -37,12 +37,7 @@
       <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.9.2" match="greaterOrEqual" />  
     </requires>
       
-	<plugin
-         id="org.eclipse.ui.genericeditor"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false" />        
+	
  
 	<plugin
          id="javax.xml.stream"
