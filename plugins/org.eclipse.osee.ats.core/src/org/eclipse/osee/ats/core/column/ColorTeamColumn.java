@@ -31,6 +31,8 @@ public class ColorTeamColumn {
    public static Pair<String, Boolean> getWorkItemColorTeam(IAtsWorkItem workItem, AtsApi atsServices) {
       Pair<String, Boolean> result = new Pair<>(null, false);
       IAttributeResolver attributeResolver = atsServices.getAttributeResolver();
+      String colorTeam = "";
+      result.setFirst("");
       ArtifactId workPackageArt =
          attributeResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageReference, ArtifactId.SENTINEL);
       if (workPackageArt.isInvalid()) {
@@ -44,7 +46,11 @@ public class ColorTeamColumn {
          }
       }
       if (workPackageArt.isValid()) {
-         String colorTeam = attributeResolver.getSoleAttributeValue(workPackageArt, AtsAttributeTypes.ColorTeam, "");
+         colorTeam = attributeResolver.getSoleAttributeValue(workPackageArt, AtsAttributeTypes.ColorTeam, "");
+         result.setFirst(colorTeam);
+      }
+      if (result.getFirst() == null || colorTeam.isEmpty()) {
+         colorTeam = attributeResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.ColorTeam, "");
          result.setFirst(colorTeam);
       }
       if (result.getFirst() == null) {
@@ -68,5 +74,4 @@ public class ColorTeamColumn {
       color.setColor("Plaid Team", BLACK_HEX, "#33CCFF");
       return color;
    }
-
 }

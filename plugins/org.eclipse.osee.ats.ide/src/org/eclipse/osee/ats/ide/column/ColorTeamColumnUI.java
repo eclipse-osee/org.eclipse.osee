@@ -18,9 +18,10 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.column.ColorTeamColumn;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
+import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
@@ -28,7 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 /**
  * @author Donald G. Dunne
  */
-public class ColorTeamColumnUI extends XViewerAtsColumn implements IXViewerPreComputedColumn {
+public class ColorTeamColumnUI extends XViewerAtsAttributeValueColumn implements IXViewerPreComputedColumn {
 
    public static final Integer DEFAULT_WIDTH = 45;
    Map<Long, String> workItemIdToColorTeam = new HashMap<>(100);
@@ -39,8 +40,8 @@ public class ColorTeamColumnUI extends XViewerAtsColumn implements IXViewerPreCo
    }
 
    public ColorTeamColumnUI() {
-      super(ColorTeamColumn.ATS_COLOR_TEAM_COLUMN_ID, "Color Team", 45, XViewerAlign.Left, false, SortDataType.String,
-         true, "Color Team associated by related Work Package");
+      super(AtsAttributeTypes.ColorTeam, ColorTeamColumn.ATS_COLOR_TEAM_COLUMN_ID, "Color Team", 45, XViewerAlign.Left,
+         false, SortDataType.String, true, "Color Team associated by related Work Package");
    }
 
    /**
