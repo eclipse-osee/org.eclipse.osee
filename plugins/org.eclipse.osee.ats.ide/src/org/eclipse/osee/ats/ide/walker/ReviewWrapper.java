@@ -16,10 +16,8 @@ import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -86,11 +84,9 @@ public class ReviewWrapper implements IActionWalkerItem {
    @Override
    public void handleDoubleClick() {
       try {
-         AtsEditors.openInAtsWorldEditor("Reviews",
-            Collections.castAll(Artifact.class, ReviewManager.getReviews(teamArt)));
+         AtsEditors.openInAtsWorldEditor("Reviews", ReviewManager.getReviews(teamArt));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
-
 }

@@ -115,7 +115,7 @@ public class CollectionsTest {
       List<Object> flattened = new ArrayList<>();
       Collections.flatten(deepList, flattened);
 
-      List<Object> expected = Collections.castAll(Object.class, getTestList());
+      List<Object> expected = Collections.cast(getTestList());
 
       Assert.assertTrue(expected.equals(flattened));
    }

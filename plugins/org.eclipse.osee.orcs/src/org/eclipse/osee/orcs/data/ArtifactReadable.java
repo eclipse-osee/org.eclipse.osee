@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -120,7 +119,7 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
    }
 
    default List<ArtifactToken> getRelatedIds(RelationTypeSide relationTypeSide, ArtifactTypeId artifactType) {
-      return Collections.transform(getRelated(relationTypeSide, artifactType), r -> r);
+      return Collections.cast(getRelated(relationTypeSide, artifactType));
    }
 
    ResultSet<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, DeletionFlag deletionFlag);

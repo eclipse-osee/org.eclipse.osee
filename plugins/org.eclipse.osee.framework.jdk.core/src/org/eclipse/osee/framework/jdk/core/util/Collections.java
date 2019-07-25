@@ -275,24 +275,35 @@ public class Collections {
    private static <A extends Object> List<A> cast(Class<A> clazz, Collection<? extends Object> objects, CastOption castOption) {
       List<A> results = new ArrayList<>(objects.size());
       for (Object object : objects) {
-         if (castOption == CastOption.ALL || castOption == CastOption.MATCHING && clazz.isAssignableFrom(
-            object.getClass())) {
-            results.add((A) object);
+         if (object != null) {
+            if (castOption == CastOption.ALL || castOption == CastOption.MATCHING && clazz.isAssignableFrom(
+               object.getClass())) {
+               results.add((A) object);
+            }
          }
       }
       return results;
    }
 
    /**
-    * Cast objects to clazz
+    * @Deprecated Inherently not type safe. Use cast(Collection<F> from) or castMatching() instead
     */
-   @SuppressWarnings("unchecked")
    public static <A> List<A> castAll(Collection<?> objects) {
       List<A> results = new ArrayList<>(objects.size());
       for (Object object : objects) {
          results.add((A) object);
       }
       return results;
+   }
+
+   /**
+    * Type safe method for creating a list of elements of a given type from a collection of elements of a subtype
+    *
+    * @param from
+    * @return
+    */
+   public static <F extends T, T> List<T> cast(Collection<F> from) {
+      return Collections.transform(from, r -> r);
    }
 
    /**

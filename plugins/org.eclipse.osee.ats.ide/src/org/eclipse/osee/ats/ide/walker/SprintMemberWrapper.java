@@ -18,10 +18,8 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -88,12 +86,10 @@ public class SprintMemberWrapper implements IActionWalkerItem {
    @Override
    public void handleDoubleClick() {
       try {
-
-         AtsEditors.openInAtsWorldEditor(String.format("Goal [%s] Members", sprint.getName()), Collections.castAll(
-            Artifact.class, AtsObjects.getArtifacts(AtsClientService.get().getAgileService().getItems(sprint))));
+         AtsEditors.openInAtsWorldEditor(String.format("Goal [%s] Members", sprint.getName()),
+            AtsObjects.getArtifacts(AtsClientService.get().getAgileService().getItems(sprint)));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
-
 }
