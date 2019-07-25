@@ -40,12 +40,18 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
 
    private final AttributeTypeId signDateAttrType;
    private final AttributeTypeId signByAttrType;
+   private boolean isRequiredButton = false;
 
    public XAbstractSignDateAndByButton(String label, String toolTip, AttributeTypeId signDateAttrType, AttributeTypeId signByAttrUser, KeyedImage keyedImage) {
       super(label, toolTip, ImageManager.getImage(keyedImage));
       this.signDateAttrType = signDateAttrType;
       this.signByAttrType = signByAttrUser;
       addListener();
+   }
+
+   public XAbstractSignDateAndByButton(String labelReq, String toolTipReq, AttributeTypeId signDateAttrTypeReq, AttributeTypeId signByAttrUserReq, KeyedImage keyedImageReq, boolean isRequired) {
+      this(labelReq, toolTipReq, signDateAttrTypeReq, signByAttrUserReq, keyedImageReq);
+      this.isRequiredButton = isRequired;
    }
 
    protected void addListener() {
@@ -61,7 +67,11 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
          labelWidget.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
          return String.format("signed by %s on %s", user.getName(), DateUtil.getDateNow(date, DateUtil.MMDDYYHHMM));
       }
-      resultsLabelWidget.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+      if (this.isRequiredButton) {
+         resultsLabelWidget.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+      } else {
+         resultsLabelWidget.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
+      }
       return "Not Yet Signed";
    }
 
