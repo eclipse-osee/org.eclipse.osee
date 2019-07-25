@@ -19,7 +19,6 @@
 	<modules>
 		<module>../../features/org.eclipse.osee.client.all.feature</module>
 
-		<module>../../plugins/org.eclipse.osee.client.all.p2</module>
 	</modules>
 
 	<profiles>
@@ -31,6 +30,7 @@
 				</property>
 			</activation>
 			<modules>
+				<module>../../plugins/org.eclipse.osee.client.all.p2</module>
 				<module>../../plugins/org.eclipse.osee.client.all.product</module>
 			</modules>
 		</profile>
