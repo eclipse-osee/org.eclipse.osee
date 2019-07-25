@@ -146,7 +146,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return allResults;
    }
 
-   public abstract Collection<ArtifactId> runQuery();
+   public abstract Collection<? extends ArtifactToken> runQuery();
 
    @SuppressWarnings("unchecked")
    private <T> Collection<T> collectResults(Set<T> allResults, Set<ArtifactTypeToken> allArtTypes) {
@@ -156,14 +156,11 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
       // filter on original artifact types
       else {
-         Collection<ArtifactId> artifacts = runQuery();
-         for (ArtifactId artifact : artifacts) {
-            if (allArtTypes.isEmpty() || isArtifactTypeMatch(artifact, allArtTypes)) {
-               if (artifact instanceof ArtifactToken) {
-                  IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem((ArtifactToken) artifact);
-                  if (workItem != null) {
-                     workItems.add((T) workItem);
-                  }
+         for (ArtifactToken artifact : runQuery()) {
+            if (isArtifactTypeMatch(artifact, allArtTypes)) {
+               IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(artifact);
+               if (workItem != null) {
+                  workItems.add((T) workItem);
                }
             }
          }

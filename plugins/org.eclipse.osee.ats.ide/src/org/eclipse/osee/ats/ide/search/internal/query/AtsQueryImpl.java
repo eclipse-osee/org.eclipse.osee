@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.ide.search.internal.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -21,13 +20,13 @@ import org.eclipse.osee.ats.core.query.AbstractAtsQueryImpl;
 import org.eclipse.osee.ats.core.query.AtsAttributeQuery;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.QueryBuilderArtifact;
 
@@ -43,13 +42,8 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public Collection<ArtifactId> runQuery() {
-      List<ArtifactId> results = new ArrayList<>();
-      Iterator<Artifact> iterator = query.getResults().iterator();
-      while (iterator.hasNext()) {
-         results.add(iterator.next());
-      }
-      return results;
+   public Collection<? extends ArtifactToken> runQuery() {
+      return query.getResults().getList();
    }
 
    @Override

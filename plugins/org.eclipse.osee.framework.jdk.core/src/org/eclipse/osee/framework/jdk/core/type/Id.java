@@ -59,6 +59,15 @@ public interface Id {
       return false;
    }
 
+   default boolean matches(Iterable<? extends Id> ids) {
+      for (Id id : ids) {
+         if (equals(id)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
    default boolean equals(Long id) {
       return getId().equals(id);
    }
