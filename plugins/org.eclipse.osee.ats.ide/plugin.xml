@@ -171,8 +171,6 @@
          id="ats"
          point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
       <Renderer classname="org.eclipse.osee.ats.ide.editor.renderer.AtsWERenderer"/>
-      <Renderer classname="org.eclipse.osee.ats.ide.workdef.editor.AtsWorkDefinitionDslRenderer"/>
-      <Renderer classname="org.eclipse.osee.ats.ide.workdef.editor.AtsRuleDefinitionDslRenderer"/>
       <Renderer
             classname="org.eclipse.osee.ats.ide.workflow.task.AtsTaskEditorRenderer">
       </Renderer>
