@@ -10,26 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.editor;
 
-import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.ide.AtsImage;
-import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
@@ -94,12 +88,11 @@ public class WfeReloadTab extends FormPage {
             Button reloadButton = new Button(bodyComp, SWT.PUSH);
             reloadButton.setText("Reload");
             reloadButton.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
-            final FormPage page = this;
             reloadButton.addSelectionListener(new SelectionAdapter() {
 
                @Override
                public void widgetSelected(SelectionEvent e) {
-                  loadEditor(page);
+                  loadEditor();
                }
 
             });
@@ -145,31 +138,9 @@ public class WfeReloadTab extends FormPage {
       }
    }
 
-   private void loadEditor(final FormPage page) {
+   private void loadEditor() {
       LoadAndRefreshJob loadAndRefresh = new LoadAndRefreshJob(title);
-      Jobs.startJob(loadAndRefresh, false, new JobChangeAdapter() {
-
-         @Override
-         public void done(IJobChangeEvent event) {
-            final Artifact artifact = ((LoadAndRefreshJob) event.getJob()).getArtifact();
-            Displays.ensureInDisplayThread(new Runnable() {
-
-               @Override
-               public void run() {
-                  if (artifact == null) {
-                     AWorkbench.popup("Saved item is not valid.  Unable to reload.");
-                  } else {
-                     ((WfeInput) editor.getEditorInput()).setArtifact(artifact);
-                     bodyComp.dispose();
-                     page.dispose();
-                     editor.addPages();
-                     editor.removePage(0);
-                  }
-               }
-            });
-         }
-
-      });
+      Jobs.startJob(loadAndRefresh, true);
    }
 
    private class LoadAndRefreshJob extends Job {
@@ -178,26 +149,38 @@ public class WfeReloadTab extends FormPage {
          super(name);
       }
 
-      private Artifact artifact;
-
       @Override
       protected IStatus run(IProgressMonitor monitor) {
-         if (artId.isValid() && AtsClientService.get().getAtsBranch().equals(branch)) {
-            try {
-               artifact = ArtifactQuery.getArtifactFromId(artId, AtsClientService.get().getAtsBranch());
-            } catch (ArtifactDoesNotExist ex) {
-               // do nothing
+         IAtsWorkItem workItem = editor.getWorkItem();
+         if (workItem == null) {
+            workItem =
+               AtsClientService.get().getWorkItemService().getWorkItem(editor.getWfeInput().getSavedArtUuid().getId());
+         }
+         if (workItem == null) {
+            AWorkbench.popup("Can't reload editor.");
+            editor.closeEditor();
+         }
+         final IAtsWorkItem fWorkItem = workItem;
+         Displays.ensureInDisplayThread(new Runnable() {
+
+            @Override
+            public void run() {
+               WorkflowEditor workflowEditor = WorkflowEditor.getWorkflowEditor(fWorkItem);
+               if (workflowEditor != null) {
+                  workflowEditor.closeEditor();
+               }
             }
-         }
-         if (artifact != null) {
-            AtsBulkLoad.bulkLoadArtifacts(Collections.singleton(artifact));
-         }
+         });
+         Displays.ensureInDisplayThread(new Runnable() {
+
+            @Override
+            public void run() {
+               WorkflowEditor.edit(fWorkItem);
+            }
+         });
          return Status.OK_STATUS;
       }
 
-      public Artifact getArtifact() {
-         return artifact;
-      }
    };
 
 }

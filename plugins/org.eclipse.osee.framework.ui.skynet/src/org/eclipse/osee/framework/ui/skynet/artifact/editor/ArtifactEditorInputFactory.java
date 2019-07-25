@@ -41,15 +41,16 @@ public class ArtifactEditorInputFactory implements IElementFactory {
       String branchStr = memento.getString(BRANCH_KEY);
       BranchId branch = branchStr == null ? BranchId.SENTINEL : BranchId.valueOf(branchStr);
 
-      ArtifactId artifactId;
+      ArtifactId artifactId = ArtifactId.SENTINEL;
       String artKeyAsLong = memento.getString(ART_KEY_AS_LONG);
-      if (Strings.isValid(artKeyAsLong)) {
+      if (Strings.isNumeric(artKeyAsLong)) {
          artifactId = ArtifactId.valueOf(artKeyAsLong);
       } else {
          String artKeyAsInt = memento.getString(ART_KEY);
-         artifactId = artKeyAsInt == null ? ArtifactId.SENTINEL : ArtifactId.valueOf(artKeyAsInt);
+         if (Strings.isNumeric(artKeyAsInt)) {
+            artifactId = ArtifactId.valueOf(artKeyAsInt);
+         }
       }
-
       return new ArtifactEditorInput(branch, artifactId, title);
    }
 

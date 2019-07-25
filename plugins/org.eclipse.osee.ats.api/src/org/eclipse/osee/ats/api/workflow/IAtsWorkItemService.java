@@ -103,4 +103,6 @@ public interface IAtsWorkItemService {
 
    boolean isCancelHyperlinkConfigured();
 
+   IAtsWorkItem getWorkItem(Long id);
+
 }

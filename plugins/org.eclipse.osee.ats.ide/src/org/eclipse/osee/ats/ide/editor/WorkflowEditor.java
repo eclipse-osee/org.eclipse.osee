@@ -52,6 +52,7 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.ide.world.IAtsMetricsProvider;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -60,6 +61,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -570,12 +572,24 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       IEditorReference editors[] = page.getEditorReferences();
       for (int j = 0; j < editors.length; j++) {
-         IEditorReference editor = editors[j];
-         if (editor.getPart(
-            false) instanceof WorkflowEditor && ((WorkflowEditor) editor.getPart(false)).getWorkItem().equals(
-               workItem)) {
-            return (WorkflowEditor) editor.getPart(false);
+         try {
+            IEditorReference editor = editors[j];
+            if (editor.getPart(false) instanceof WorkflowEditor) {
+               // Try to get from editor's work item
+               IAtsWorkItem editorWorkItem = ((WorkflowEditor) editor.getPart(false)).getWorkItem();
+               if (workItem.equals(editorWorkItem)) {
+                  return (WorkflowEditor) editor.getPart(false);
+               }
+               // Else, try to load from saved work item id
+               ArtifactId savedArtId = ((WfeInput) editor.getEditorInput()).getSavedArtUuid();
+               if (savedArtId.isValid() && workItem.equals(savedArtId)) {
+                  return (WorkflowEditor) editor.getPart(false);
+               }
+            }
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.WARNING, Lib.exceptionToString(ex));
          }
+
       }
       return null;
    }

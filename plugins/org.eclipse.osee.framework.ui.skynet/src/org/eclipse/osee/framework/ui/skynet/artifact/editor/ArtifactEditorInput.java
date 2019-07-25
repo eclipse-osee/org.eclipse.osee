@@ -29,7 +29,7 @@ import org.eclipse.ui.IPersistableElement;
 public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
    private Artifact artifact;
    private BranchId savedBranchId;
-   private ArtifactId savedArtifactId;
+   private ArtifactId savedArtifactId = ArtifactId.SENTINEL;
    private String savedTitle;
    private boolean attemptedReload = false;
 
@@ -39,7 +39,9 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
 
    public ArtifactEditorInput(BranchId branchId, ArtifactId artifactId, String title) {
       this.savedBranchId = branchId;
-      this.savedArtifactId = artifactId;
+      if (artifactId.isValid()) {
+         this.savedArtifactId = artifactId;
+      }
       this.savedTitle = title;
    }
 

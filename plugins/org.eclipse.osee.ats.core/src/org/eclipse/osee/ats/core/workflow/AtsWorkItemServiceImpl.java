@@ -252,6 +252,12 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
+   public IAtsWorkItem getWorkItem(Long id) {
+      ArtifactToken art = atsApi.getQueryService().getArtifact(id);
+      return getWorkItem(art);
+   }
+
+   @Override
    public IAtsWorkItem getWorkItem(ArtifactToken artifact) {
       IAtsWorkItem workItem = null;
       try {
