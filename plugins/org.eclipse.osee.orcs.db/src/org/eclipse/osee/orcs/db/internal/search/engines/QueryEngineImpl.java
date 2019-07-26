@@ -22,17 +22,22 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
+import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.KeyValueStore;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
+import org.eclipse.osee.orcs.core.ds.LoadDataHandlerAdapter;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
@@ -205,6 +210,23 @@ public class QueryEngineImpl implements QueryEngine {
    @Override
    public List<ArtifactId> loadArtifactIds(QueryData queryData) {
       List<ArtifactId> ids = new ArrayList<>(100);
+
+      if (isPostProcessRequired(queryData)) {
+         LoadDataHandlerAdapter handler = new LoadDataHandlerAdapter() {
+            @Override
+            public void onData(ArtifactData data) {
+               ids.add(data);
+            }
+         };
+         OptionsUtil.setLoadLevel(queryData.getOptions(), LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA);
+         try {
+            runArtifactQuery(queryData, handler);
+            return ids;
+         } catch (Exception ex) {
+            OseeCoreException.wrapAndThrow(ex);
+         }
+      }
+
       selectiveArtifactLoad(queryData, stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))));
       return ids;
    }

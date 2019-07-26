@@ -71,8 +71,8 @@ public class AtsConfigQueryImpl extends AbstractAtsConfigQueryImpl {
    }
 
    @Override
-   public List<? extends ArtifactId> queryGetIds() {
-      return getQuery().getResultsIds().getList();
+   public List<ArtifactId> queryGetIds() {
+      return getQuery().loadArtifactIds();
    }
 
    @Override

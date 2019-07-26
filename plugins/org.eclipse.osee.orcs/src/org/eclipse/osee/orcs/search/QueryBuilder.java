@@ -77,11 +77,6 @@ public interface QueryBuilder extends Query {
     */
    ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches();
 
-   /**
-    * @return ids search results
-    */
-   ResultSet<? extends ArtifactId> getResultsIds();
-
    ArtifactToken getArtifactOrNull();
 
    /**

@@ -187,9 +187,9 @@ public class OrcsAdminImpl implements OrcsAdmin {
       if (tx.getAuthor().notEqual(SystemUser.OseeSystem)) {
          requireRole(tx.getAuthor(), CoreUserGroups.OseeAdmin);
       }
-      List<? extends ArtifactId> defaultGroups =
+      List<ArtifactId> defaultGroups =
          orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.DefaultGroup,
-            "true").getResultsIds().getList();
+            "true").loadArtifactIds();
       setUserInfo(tx, userToken, defaultGroups);
    }
 

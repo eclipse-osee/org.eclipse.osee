@@ -80,31 +80,29 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       SearchResponse result = new SearchResponse();
       RequestType request = params.getRequestType();
       if (request != null) {
-         List<ArtifactId> ids = new LinkedList<>();
          switch (request) {
             case COUNT:
                int total = builder.getCount();
                result.setTotal(total);
                break;
             case IDS:
-               for (ArtifactId art : builder.getResultsIds()) {
-                  ids.add(art);
-               }
+               List<ArtifactId> ids = builder.loadArtifactIds();
                result.setIds(ids);
                result.setTotal(ids.size());
                break;
             case MATCHES:
                ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> matches = builder.getMatches();
                List<SearchMatch> searchMatches = new LinkedList<>();
+               List<ArtifactId> matchIds = new LinkedList<>();
                for (Match<ArtifactReadable, AttributeReadable<?>> match : matches) {
                   ArtifactId artId = match.getItem();
-                  ids.add(artId);
+                  matchIds.add(artId);
                   for (AttributeReadable<?> attribute : match.getElements()) {
                      List<MatchLocation> locations = match.getLocation(attribute);
                      searchMatches.add(new SearchMatch(artId, attribute, locations));
                   }
                }
-               result.setIds(ids);
+               result.setIds(matchIds);
                result.setMatches(searchMatches);
                result.setTotal(searchMatches.size());
                break;

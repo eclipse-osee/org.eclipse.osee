@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.rest.internal.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -67,12 +66,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
 
    @Override
    public List<ArtifactId> queryGetIds() {
-      List<ArtifactId> results = new LinkedList<>();
-      Iterator<? extends ArtifactId> iterator = query.getResultsIds().iterator();
-      while (iterator.hasNext()) {
-         results.add(iterator.next());
-      }
-      return results;
+      return query.loadArtifactIds();
    }
 
    @Override

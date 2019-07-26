@@ -148,7 +148,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
       return onlyIds != null;
    }
 
-   public abstract List<? extends ArtifactId> queryGetIds();
+   public abstract List<ArtifactId> queryGetIds();
 
    @Override
    public IAtsConfigQuery isOfType(ArtifactTypeToken... artifactType) {

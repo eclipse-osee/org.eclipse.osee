@@ -665,15 +665,6 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public ResultSet<? extends ArtifactId> getResultsIds() {
-      try {
-         return artQueryFactory.createLocalIdSearch(null, this).call();
-      } catch (Exception ex) {
-         throw OseeCoreException.wrap(ex);
-      }
-   }
-
-   @Override
    public ArtifactToken getArtifactOrSentinal() {
       ArtifactToken art = getArtifactOrNull();
       if (art == null) {
