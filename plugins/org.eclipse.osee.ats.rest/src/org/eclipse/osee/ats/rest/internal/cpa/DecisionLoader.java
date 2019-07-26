@@ -69,17 +69,16 @@ public class DecisionLoader {
 
    public List<CpaDecision> load() {
       List<CpaDecision> decisions = new ArrayList<>();
-      QueryBuilder queryBuilder =
-         orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andTypeEquals(AtsArtifactTypes.TeamWorkflow).and(
-            AtsAttributeTypes.ApplicabilityWorkflow, "true");
+      QueryBuilder queryBuilder = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andTypeEquals(
+         AtsArtifactTypes.TeamWorkflow).andAttributeIs(AtsAttributeTypes.ApplicabilityWorkflow, "true");
       if (Strings.isValid(programId)) {
-         queryBuilder.and(AtsAttributeTypes.ProgramId, programId);
+         queryBuilder.andAttributeIs(AtsAttributeTypes.ProgramId, programId);
       }
       if (Conditions.hasValues(ids)) {
          queryBuilder.and(AtsAttributeTypes.AtsId, ids);
       }
       if (open != null) {
-         queryBuilder.and(AtsAttributeTypes.CurrentStateType,
+         queryBuilder.andAttributeIs(AtsAttributeTypes.CurrentStateType,
             open ? StateType.Working.name() : StateType.Completed.name());
       }
       HashCollection<String, CpaDecision> origPcrIdToDecision = new HashCollection<>();

@@ -684,9 +684,8 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public UserId findUserByName(String name) {
-      ArtifactId userArtId =
-         getQuery().fromBranch(COMMON).andTypeEquals(CoreArtifactTypes.User).and(CoreAttributeTypes.Name,
-            name).getAtMostOneOrSentinal();
+      ArtifactId userArtId = getQuery().fromBranch(COMMON).andTypeEquals(CoreArtifactTypes.User).andNameEquals(
+         name).getAtMostOneOrSentinal();
       UserId user = UserId.valueOf(userArtId);
       if (user.isInvalid()) {
          user = findUser();

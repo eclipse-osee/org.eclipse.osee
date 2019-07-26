@@ -143,7 +143,7 @@ public class OrcsAdminImpl implements OrcsAdmin {
       // Create users and relate to user groups
       Map<ArtifactToken, ArtifactToken> userGroupToArtifact = new HashMap<>();
       List<ArtifactReadable> defaultGroups =
-         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.DefaultGroup,
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andAttributeIs(CoreAttributeTypes.DefaultGroup,
             "true").getResults().getList();
       List<ArtifactReadable> existingUsers = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(
          CoreArtifactTypes.User).getResults().getList();
@@ -188,7 +188,7 @@ public class OrcsAdminImpl implements OrcsAdmin {
          requireRole(tx.getAuthor(), CoreUserGroups.OseeAdmin);
       }
       List<ArtifactId> defaultGroups =
-         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.DefaultGroup,
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andAttributeIs(CoreAttributeTypes.DefaultGroup,
             "true").loadArtifactIds();
       setUserInfo(tx, userToken, defaultGroups);
    }

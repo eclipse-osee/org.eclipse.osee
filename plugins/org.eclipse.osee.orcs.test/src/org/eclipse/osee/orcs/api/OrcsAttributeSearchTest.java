@@ -84,7 +84,7 @@ public class OrcsAttributeSearchTest {
 
    @Test
    public void testBooleanAttributeSearch() {
-      QueryBuilder builder = queryFactory.fromBranch(COMMON).and(CoreAttributeTypes.DefaultGroup, "true");
+      QueryBuilder builder = queryFactory.fromBranch(COMMON).andAttributeIs(CoreAttributeTypes.DefaultGroup, "true");
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
 
       assertEquals(1, resultSet.size());
@@ -96,15 +96,15 @@ public class OrcsAttributeSearchTest {
 
    @Test
    public void testNullAttributeSearch() {
-      QueryBuilder builder = queryFactory.fromBranch(COMMON).and(CoreAttributeTypes.Email, (String) null);
+      QueryBuilder builder = queryFactory.fromBranch(COMMON).andAttributeIs(CoreAttributeTypes.Email, (String) null);
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
       assertEquals(8, resultSet.size());
 
-      builder = queryFactory.fromBranch(COMMON).and(CoreAttributeTypes.Email, "");
+      builder = queryFactory.fromBranch(COMMON).andAttributeIs(CoreAttributeTypes.Email, "");
       resultSet = builder.getResults();
       assertEquals(8, resultSet.size());
 
-      builder = queryFactory.fromBranch(COMMON).and(CoreAttributeTypes.Email, " ");
+      builder = queryFactory.fromBranch(COMMON).andAttributeIs(CoreAttributeTypes.Email, " ");
       resultSet = builder.getResults();
       assertEquals(0, resultSet.size());
    }

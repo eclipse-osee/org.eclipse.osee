@@ -201,8 +201,7 @@ public class OrcsQueryTest {
 
    @Test
    public void testQueryAttributeValue() {
-      QueryBuilder builder = factory.fromBranch(COMMON);
-      builder.and(CoreAttributeTypes.Name, "User Groups");
+      QueryBuilder builder = factory.fromBranch(COMMON).andNameEquals("User Groups");
 
       assertEquals(1, builder.getCount());
 
@@ -376,7 +375,7 @@ public class OrcsQueryTest {
    @Test
    public void testRelatedToTest() {
       QueryBuilder builder1 = factory.fromBranch(SAW_Bld_1);
-      builder1.and(CoreAttributeTypes.Name, "Frame Synchronization");
+      builder1.andNameEquals("Frame Synchronization");
       assertEquals("Frame Synchronization", builder1.getResults().getExactlyOne().getName());
 
       QueryBuilder builder2 = factory.fromBranch(SAW_Bld_1);

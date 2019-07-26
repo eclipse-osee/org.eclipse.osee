@@ -446,9 +446,8 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public QueryBuilder andAttributeIs(AttributeTypeId attributeType, String value, QueryOption... options) {
-      return addAndCheck(
-         new CriteriaAttributeRaw(Collections.singleton(attributeType), Collections.singleton(value), options));
+   public QueryBuilder andAttributeIs(AttributeTypeId attributeType, String value) {
+      return addAndCheck(new CriteriaAttributeRaw(Collections.singleton(attributeType), Collections.singleton(value)));
    }
 
    @Override
@@ -470,7 +469,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    @Override
    public QueryBuilder andNameEquals(String artifactName) {
-      return and(CoreAttributeTypes.Name, artifactName, QueryOption.EXACT_MATCH_OPTIONS);
+      return andAttributeIs(CoreAttributeTypes.Name, artifactName);
    }
 
    @Override

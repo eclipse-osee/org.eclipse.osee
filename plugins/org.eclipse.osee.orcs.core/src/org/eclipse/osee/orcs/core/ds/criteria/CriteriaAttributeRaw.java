@@ -37,11 +37,18 @@ public class CriteriaAttributeRaw extends Criteria {
    private final Collection<String> values;
    private final List<QueryOption> options;
 
-   public CriteriaAttributeRaw(Collection<AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options) {
-      super();
+   public CriteriaAttributeRaw(Collection<AttributeTypeId> attributeTypes, Collection<String> values, List<QueryOption> options) {
       this.attributeTypes = attributeTypes;
       this.values = values;
-      this.options = Lists.newArrayList(options);
+      this.options = options;
+   }
+
+   public CriteriaAttributeRaw(Collection<AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options) {
+      this(attributeTypes, values, Arrays.asList(options));
+   }
+
+   public CriteriaAttributeRaw(Collection<AttributeTypeId> attributeTypes, Collection<String> values) {
+      this(attributeTypes, values, java.util.Collections.emptyList());
    }
 
    public Collection<AttributeTypeId> getAttributeTypes() {

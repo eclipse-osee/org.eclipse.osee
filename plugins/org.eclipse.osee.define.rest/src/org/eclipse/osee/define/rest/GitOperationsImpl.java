@@ -103,7 +103,8 @@ public final class GitOperationsImpl implements GitOperations {
    @Override
    public ArtifactToken getCommitArtifactId(BranchId branch, String changeId) {
       List<ArtifactReadable> commits =
-         queryFactory.fromBranch(branch).and(GitChangeId, changeId).andTypeEquals(GitCommit).getResults().getList();
+         queryFactory.fromBranch(branch).andAttributeIs(GitChangeId, changeId).andTypeEquals(
+            GitCommit).getResults().getList();
 
       ArtifactToken latestCommit = ArtifactToken.SENTINEL;
       Date lastestAuthorDate = new Date(0);

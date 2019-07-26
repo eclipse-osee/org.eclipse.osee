@@ -50,8 +50,9 @@ public abstract class AbstractAuthenticationProvider implements IAuthenticationP
       UserToken toReturn = null;
       try {
          QueryFactory queryFactory = orcsApi.getQueryFactory();
-         QueryBuilder query = queryFactory.fromBranch(CoreBranches.COMMON).andTypeEquals(CoreArtifactTypes.User).and(
-            CoreAttributeTypes.UserId, userId);
+         QueryBuilder query =
+            queryFactory.fromBranch(CoreBranches.COMMON).andTypeEquals(CoreArtifactTypes.User).andAttributeIs(
+               CoreAttributeTypes.UserId, userId);
 
          ArtifactReadable artifact = query.getResults().getOneOrDefault(ArtifactReadable.SENTINEL);
          if (artifact.isValid()) {

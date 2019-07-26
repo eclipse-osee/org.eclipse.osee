@@ -63,12 +63,13 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
 
    @Override
    public boolean userNameExists(String username) {
-      return newQuery().andTypeEquals(CoreArtifactTypes.User).and(CoreAttributeTypes.UserId, username).exists();
+      return newQuery().andTypeEquals(CoreArtifactTypes.User).andAttributeIs(CoreAttributeTypes.UserId,
+         username).exists();
    }
 
    @Override
    public boolean emailExists(String email) {
-      return newQuery().andTypeEquals(CoreArtifactTypes.User).and(CoreAttributeTypes.Email, email).exists();
+      return newQuery().andTypeEquals(CoreArtifactTypes.User).andAttributeIs(CoreAttributeTypes.Email, email).exists();
    }
 
    @Override
@@ -92,7 +93,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    @Override
    public ResultSet<Account> getAccountByEmail(String email) {
       ResultSet<ArtifactReadable> results =
-         newQuery().andTypeEquals(CoreArtifactTypes.User).and(CoreAttributeTypes.Email, email).getResults();
+         newQuery().andTypeEquals(CoreArtifactTypes.User).andAttributeIs(CoreAttributeTypes.Email, email).getResults();
       return getFactory().newAccountResultSet(results);
    }
 
@@ -235,7 +236,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    @Override
    public ResultSet<Account> getAccountByName(String name) {
       ResultSet<ArtifactReadable> results =
-         newQuery().andTypeEquals(CoreArtifactTypes.User).and(CoreAttributeTypes.UserId, name).getResults();
+         newQuery().andTypeEquals(CoreArtifactTypes.User).andAttributeIs(CoreAttributeTypes.UserId, name).getResults();
       return getFactory().newAccountResultSet(results);
    }
 

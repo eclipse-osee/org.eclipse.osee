@@ -137,7 +137,7 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
       ArtifactId baselineEvent = tx.createArtifact(repoArtifact, CertificationBaselineEvent, baselineData.eventName);
 
       ArtifactId baselinedByUser =
-         queryFactory.fromBranch(COMMON).and(UserId, baselineData.baselinedByUserId).loadArtifactId();
+         queryFactory.fromBranch(COMMON).andAttributeIs(UserId, baselineData.baselinedByUserId).loadArtifactId();
 
       ArtifactId baselineCommit = gitOps.getCommitArtifactId(branch, baselineData.changeId);
       if (baselineCommit.isInvalid()) {

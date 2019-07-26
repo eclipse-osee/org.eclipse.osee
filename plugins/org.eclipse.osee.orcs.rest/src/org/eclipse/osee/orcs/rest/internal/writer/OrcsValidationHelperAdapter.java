@@ -39,8 +39,8 @@ public class OrcsValidationHelperAdapter implements IOrcsValidationHelper {
 
    @Override
    public boolean isUserExists(String userId) {
-      return queryFactory.fromBranch(COMMON).and(CoreAttributeTypes.UserId, userId).getResults().getAtMostOneOrDefault(
-         ArtifactReadable.SENTINEL).isValid();
+      return queryFactory.fromBranch(COMMON).andAttributeIs(CoreAttributeTypes.UserId,
+         userId).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL).isValid();
    }
 
    @Override

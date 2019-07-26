@@ -67,7 +67,7 @@ public class OrcsAttributeLoadingTest {
 
    @Test
    public void testLoadWordTemplateContentAttributes() {
-      QueryBuilder builder = query.fromBranch(SAW_Bld_1).and(CoreAttributeTypes.Name, "Haptic Constraints");
+      QueryBuilder builder = query.fromBranch(SAW_Bld_1).andNameEquals("Haptic Constraints");
 
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
 

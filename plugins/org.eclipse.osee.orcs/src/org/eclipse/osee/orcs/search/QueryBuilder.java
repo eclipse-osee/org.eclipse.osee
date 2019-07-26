@@ -283,7 +283,7 @@ public interface QueryBuilder extends Query {
     */
    QueryBuilder andIsHeirarchicalRootArtifact();
 
-   QueryBuilder andAttributeIs(AttributeTypeId attributeType, String value, QueryOption... options);
+   QueryBuilder andAttributeIs(AttributeTypeId attributeType, String value);
 
    QueryBuilder follow(RelationTypeSide relationTypeSide);
 
