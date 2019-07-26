@@ -51,7 +51,7 @@ import org.eclipse.osee.ats.ide.editor.tab.workflow.WfeWorkFlowTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfeOutlinePage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.navigate.VisitedItems;
+import org.eclipse.osee.ats.ide.navigate.RecentlyVisitedNavigateItems;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalMemberProvider;
@@ -517,7 +517,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
             IWorkbenchPage page = AWorkbench.getActivePage();
             try {
                page.openEditor(new WfeInput(workflow), EDITOR_ID);
-               VisitedItems.addVisited(workflow);
+               RecentlyVisitedNavigateItems.addVisited(workflow);
             } catch (PartInitException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }

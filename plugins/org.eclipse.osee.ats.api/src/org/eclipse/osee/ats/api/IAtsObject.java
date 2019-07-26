@@ -49,4 +49,8 @@ public interface IAtsObject extends NamedId, HasDescription {
    default ArtifactId getArtifactId() {
       return ArtifactId.valueOf(getId());
    }
+
+   default ArtifactToken getArtifactToken() {
+      return ArtifactToken.valueOf(getArtifactId(), getName());
+   }
 }

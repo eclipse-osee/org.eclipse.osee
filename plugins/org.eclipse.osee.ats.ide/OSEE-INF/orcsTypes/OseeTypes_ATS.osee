@@ -315,6 +315,7 @@ artifactType "Work Package" extends "Artifact" {
 overrides artifactType "User" {
 	inheritAll
 	add attribute "ATS Quick Search"
+	add attribute "ATS Config"
 }
 
 attributeType "ats.Commit Override" extends StringAttribute {
@@ -345,6 +346,15 @@ attributeType "ats.kb.Ignore States" extends StringAttribute {
 
 attributeType "ATS Quick Search" extends StringAttribute {
 	id 72063457009467643
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "ATS Config" extends StringAttribute {
+	id 2348752981434455
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited

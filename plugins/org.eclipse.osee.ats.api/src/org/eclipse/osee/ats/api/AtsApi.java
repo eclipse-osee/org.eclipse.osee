@@ -181,4 +181,14 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkItemServ
 
    IAtsWorkDefinitionProviderService getWorkDefinitionProviderService();
 
+   /**
+    * @return current Ats User Config string for key or null
+    */
+   String getUserConfigValue(String key);
+
+   /**
+    * Store current key/value in Ats User Config attribute
+    */
+   void setUserConfigValue(String key, String value);
+
 }

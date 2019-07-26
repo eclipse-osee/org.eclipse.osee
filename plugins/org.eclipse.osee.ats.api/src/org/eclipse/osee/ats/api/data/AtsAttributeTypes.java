@@ -38,6 +38,7 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken ArtifactsChanged = createType(1815723890L, "Artifacts Changed");
    public static final AttributeTypeToken ApplicabilityWorkflow = createType(1152922022510067882L, "Applicability Workflow");
    public static final AttributeTypeToken ApplicableToProgram = createType(1152921949227188394L, "Applicable To Program");
+   public static final AttributeTypeToken AtsConfig = createType(2348752981434455L, "ATS Config", "Saved ATS Configures");
    public static final AttributeTypeToken AtsConfiguredBranch = createType(72063456936722683L, "ATS Configured Branch", "ATS Configured Branch");
    public static final AttributeTypeToken AtsId = createType(1152921504606847877L, "ATS Id", "ATS Generated Id");
    public static final AttributeTypeToken AtsIdPrefix = createType(1162773128791720837L, "ATS Id Prefix", "ATS Id Prefix");

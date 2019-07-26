@@ -214,6 +214,31 @@ public abstract class AtsApiImpl implements AtsApi {
    }
 
    @Override
+   public void setUserConfigValue(String key, String value) {
+      ArtifactId userArt = getUserService().getCurrentUser();
+      IAtsChangeSet changes =
+         getStoreService().createAtsChangeSet("Set User AtsConfig Value", getUserService().getCurrentUser());
+      if (userArt != null) {
+         String keyValue = String.format("%s=%s", key, value);
+         boolean found = false;
+         Collection<IAttribute<String>> attributes =
+            getAttributeResolver().getAttributes(userArt, AtsAttributeTypes.AtsConfig);
+         for (IAttribute<String> attr : attributes) {
+            String str = attr.getValue();
+            if (str.startsWith(key)) {
+               changes.setAttribute(userArt, attr, keyValue);
+               found = true;
+               break;
+            }
+         }
+         if (!found) {
+            changes.addAttribute(userArt, AtsAttributeTypes.AtsConfig, keyValue);
+         }
+         changes.executeIfNeeded();
+      }
+   }
+
+   @Override
    public void setConfigValue(String key, String value) {
       ArtifactId atsConfig = getQueryService().getArtifact(AtsArtifactToken.AtsConfig);
       IAtsChangeSet changes =
@@ -483,6 +508,22 @@ public abstract class AtsApiImpl implements AtsApi {
    @Override
    public IAtsWorkDefinitionProviderService getWorkDefinitionProviderService() {
       return workDefinitionProviderService;
+   }
+
+   @Override
+   public String getUserConfigValue(String key) {
+      String result = null;
+      ArtifactToken userArt = getUserService().getCurrentUser().getStoreObject();
+      if (userArt != null) {
+         for (String configKeyValueStr : getAttributeResolver().getAttributesToStringList(userArt,
+            AtsAttributeTypes.AtsConfig)) {
+            if (configKeyValueStr.startsWith(key)) {
+               result = configKeyValueStr.replaceFirst(key + "=", "");
+               break;
+            }
+         }
+      }
+      return result;
    }
 
 }

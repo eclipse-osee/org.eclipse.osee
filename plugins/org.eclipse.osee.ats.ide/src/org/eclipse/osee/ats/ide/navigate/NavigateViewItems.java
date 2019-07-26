@@ -178,7 +178,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          items.add(
             new XNavigateItemAction(item, new OpenArtifactQuickSearchViewAction(), FrameworkImage.ARTIFACT_SEARCH));
          items.add(new XNavigateItemAction(item, new OpenBranchManagerAction(), FrameworkImage.BRANCH));
-         items.add(new VisitedItems(item));
+         items.add(new RecentlyVisitedNavigateItems(item));
          items.add(new XNavigateItemAction(item, new NewAction(), AtsImage.NEW_ACTION));
          items.add(new SearchNavigateItem(item, new MyWorldSearchItem("User's World")));
 
