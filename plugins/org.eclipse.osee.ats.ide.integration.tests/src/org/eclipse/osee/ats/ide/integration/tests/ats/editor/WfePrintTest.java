@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.editor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.eclipse.osee.ats.ide.editor.WfePrint;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfePrint;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;

@@ -15,7 +15,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
-import org.eclipse.osee.ats.ide.editor.IMemberProvider;
+import org.eclipse.osee.ats.ide.editor.tab.members.IMemberProvider;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.workflow.CollectorArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;

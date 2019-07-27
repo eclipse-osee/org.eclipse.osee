@@ -147,16 +147,16 @@
    </extension>
    <extension
          point="org.eclipse.osee.ats.ide.AtsStateItem">
-      <AtsStateItem classname="org.eclipse.osee.ats.ide.editor.stateItem.AtsDecisionReviewPrepareStateItem"/>
-      <AtsStateItem classname="org.eclipse.osee.ats.ide.editor.stateItem.AtsDecisionReviewDecisionStateItem"/>
+      <AtsStateItem classname="org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsDecisionReviewPrepareStateItem"/>
+      <AtsStateItem classname="org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsDecisionReviewDecisionStateItem"/>
       <AtsStateItem
-            classname="org.eclipse.osee.ats.ide.editor.stateItem.AtsPeerToPeerReviewPrepareStateItem">
+            classname="org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsPeerToPeerReviewPrepareStateItem">
       </AtsStateItem>
       <AtsStateItem
-            classname="org.eclipse.osee.ats.ide.editor.stateItem.AtsPeerToPeerReviewReviewStateItem">
+            classname="org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsPeerToPeerReviewReviewStateItem">
       </AtsStateItem>
       <AtsStateItem
-            classname="org.eclipse.osee.ats.ide.editor.stateItem.AtsForceAssigneesToTeamLeadsStateItem">
+            classname="org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsForceAssigneesToTeamLeadsStateItem">
       </AtsStateItem>
    </extension>
    <extension
@@ -367,16 +367,16 @@
             name="AtsTransitionListener"
             point="org.eclipse.osee.ats.ide.AtsTransitionListener">
          <AtsTransitionListener
-               classname="org.eclipse.osee.ats.ide.editor.stateItem.AtsDecisionReviewPrepareStateItem">
+               classname="org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsDecisionReviewPrepareStateItem">
          </AtsTransitionListener>
          <AtsTransitionListener
-               classname="org.eclipse.osee.ats.ide.editor.stateItem.AtsForceAssigneesToTeamLeadsStateItem">
+               classname="org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsForceAssigneesToTeamLeadsStateItem">
          </AtsTransitionListener>
          <AtsTransitionListener
                classname="org.eclipse.osee.ats.ide.notify.AtsNotificationTransitionListener">
          </AtsTransitionListener>
          <AtsTransitionListener
-               classname="org.eclipse.osee.ats.ide.editor.stateItem.AtsPeerToPeerReviewReviewStateItem">
+               classname="org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsPeerToPeerReviewReviewStateItem">
          </AtsTransitionListener>
       </extension>
       <extension

@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.ide.workflow;
 
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
-import org.eclipse.osee.ats.ide.editor.WfeArtifactEventManager;
+import org.eclipse.osee.ats.ide.editor.event.WfeArtifactEventManager;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

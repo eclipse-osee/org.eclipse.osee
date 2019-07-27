@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
-import org.eclipse.osee.ats.ide.editor.WfePrint;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfePrint;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;

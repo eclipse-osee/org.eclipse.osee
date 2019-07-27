@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.ide.agile.XOpenStoredSprintReportsButton;
 import org.eclipse.osee.ats.ide.agile.XStoreSprintReportsButton;
 import org.eclipse.osee.ats.ide.column.OperationalImpactWithWorkaroundXWidget;
 import org.eclipse.osee.ats.ide.column.OperationalImpactXWidget;
-import org.eclipse.osee.ats.ide.editor.widget.XAssigneesListWidget;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.XAssigneesListWidget;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.XVersionList;

@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.ide.editor.stateItem.AtsDecisionReviewDecisionStateItem;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsDecisionReviewDecisionStateItem;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;

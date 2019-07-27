@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.ide.util.widgets;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
-import org.eclipse.osee.ats.ide.editor.header.WfeTargetedVersionHeader;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeTargetedVersionHeader;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.util.Result;

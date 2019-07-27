@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.editor;
 
 import java.io.File;
 import java.util.Arrays;
-import org.eclipse.osee.ats.ide.editor.WfeEditorAddSupportingFiles;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeEditorAddSupportingFiles;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
