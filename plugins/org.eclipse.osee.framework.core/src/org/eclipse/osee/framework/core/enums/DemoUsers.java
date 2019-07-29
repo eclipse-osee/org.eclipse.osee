@@ -40,7 +40,7 @@ public final class DemoUsers {
    public static final UserToken Kay_Wheeler = UserToken.create(1645633521, "Kay Wheeler", "kayw@boeing.com", "2323", true, false);
    public static final UserToken Inactive_Steve = UserToken.create(5808093, "Inactive Steve", "insactiveSteve@boeing.com", "2424", false, false);
 
-   public static List<UserToken> values = Arrays.asList(Joe_Smith, Kay_Jones, Jason_Michael, Alex_Kay, Kay_Jason, //
+   private static List<UserToken> values = Arrays.asList(Joe_Smith, Kay_Jones, Jason_Michael, Alex_Kay, Kay_Jason, //
       Steven_Kohn, John_Stevens, Keith_Johnson, Michael_Alex, Janice_Michael, Maichael_Johnson, Roland_Stevens, //
       Jeffery_Kay, Karmen_John, Steven_Michael, Jason_Stevens, Michael_John, Kay_Wheeler, Inactive_Steve);
 

@@ -40,7 +40,7 @@ public class UserTokenSerializer extends StdSerializer<UserToken> {
       jgen.writeStringField("email", userToken.getEmail());
       jgen.writeBooleanField("creationRequired", userToken.isCreationRequired());
 
-      jgen.writeArrayFieldStart("groups");
+      jgen.writeArrayFieldStart("roles");
       for (ArtifactToken role : userToken.getRoles()) {
          jgen.writeStartObject();
          jgen.writeStringField("id", role.getIdString());

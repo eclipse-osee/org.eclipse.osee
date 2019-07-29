@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -28,6 +30,7 @@ import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.core.util.OseeInf;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsAdmin;
@@ -142,13 +145,19 @@ public class OrcsAdminImpl implements OrcsAdmin {
       List<ArtifactReadable> defaultGroups =
          orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.DefaultGroup,
             "true").getResults().getList();
+      List<ArtifactReadable> existingUsers = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(
+         CoreArtifactTypes.User).getResults().getList();
       for (UserToken userToken : users) {
+         if (existingUsers.contains(userToken)) {
+            throw new OseeStateException("User %s already exists", userToken);
+         }
          ArtifactId user = tx.createArtifact(userToken);
          tx.setSoleAttributeValue(user, CoreAttributeTypes.Active, userToken.isActive());
          tx.setSoleAttributeValue(user, CoreAttributeTypes.UserId, userToken.getUserId());
          tx.setSoleAttributeValue(user, CoreAttributeTypes.Email, userToken.getEmail());
 
-         for (ArtifactToken userGroup : userToken.getRoles()) {
+         Collection<ArtifactToken> roles = userToken.getRoles();
+         for (ArtifactToken userGroup : roles) {
             ArtifactToken userGroupArt = getOrCreate(userGroup, userGroupToArtifact, tx, userGroupHeader);
             tx.relate(userGroupArt, CoreRelationTypes.Users_User, user);
          }

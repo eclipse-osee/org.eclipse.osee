@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.AbstractUserGroupImpl;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -71,7 +72,8 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    @Override
    public boolean isMember(UserId user) {
       checkGroupExists();
-      return getArtifact().isRelated(CoreRelationTypes.Users_User, (Artifact) user);
+      User userArt = UserManager.getUserByArtId(user);
+      return getArtifact().isRelated(CoreRelationTypes.Users_User, userArt);
    }
 
    @Override

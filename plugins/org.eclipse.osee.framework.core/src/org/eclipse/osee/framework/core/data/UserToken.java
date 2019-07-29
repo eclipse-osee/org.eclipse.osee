@@ -14,10 +14,14 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
@@ -45,7 +49,7 @@ public interface UserToken extends ArtifactToken, UserId {
 
    public boolean isCreationRequired();
 
-   public ArtifactToken[] getRoles();
+   public Collection<ArtifactToken> getRoles();
 
    static final class UserTokenImpl extends NamedIdBase implements UserToken {
       private final String userId;
@@ -53,7 +57,7 @@ public interface UserToken extends ArtifactToken, UserId {
       private final boolean admin;
       private final String email;
       private final boolean creationRequired;
-      private final ArtifactToken[] roles;
+      private final Set<ArtifactToken> roles = new HashSet<>();
 
       public UserTokenImpl(long id, String name, String userId, boolean active, String email, boolean creationRequired, ArtifactToken... roles) {
          super(id, name);
@@ -61,7 +65,7 @@ public interface UserToken extends ArtifactToken, UserId {
          this.active = active;
          this.email = email;
          this.creationRequired = creationRequired;
-         this.roles = roles;
+         this.roles.addAll(Collections.asHashSet(roles));
          this.admin = Arrays.asList(roles).contains(CoreUserGroups.OseeAdmin);
       }
 
@@ -96,7 +100,7 @@ public interface UserToken extends ArtifactToken, UserId {
       }
 
       @Override
-      public ArtifactToken[] getRoles() {
+      public Collection<ArtifactToken> getRoles() {
          return roles;
       }
 
