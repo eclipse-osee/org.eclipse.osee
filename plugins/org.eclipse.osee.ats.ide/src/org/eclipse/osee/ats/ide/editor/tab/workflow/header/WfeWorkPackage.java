@@ -54,7 +54,7 @@ public class WfeWorkPackage extends Composite implements IWfeEventHandle {
 
       try {
          link = editor.getToolkit().createHyperlink(this, WORK_PACKAGE, SWT.NONE);
-         if (editor.isPrivilegedEditModeEnabled() || !workItem.isCancelled() && !workItem.isCompleted()) {
+         if (!workItem.isCancelled() && !workItem.isCompleted()) {
             link.addHyperlinkListener(new IHyperlinkListener() {
 
                @Override

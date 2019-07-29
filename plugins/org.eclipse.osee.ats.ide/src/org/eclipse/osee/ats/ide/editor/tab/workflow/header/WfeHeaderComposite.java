@@ -206,18 +206,9 @@ public class WfeHeaderComposite extends Composite {
          toolkit.createLabel(comp, "    ");
       }
 
-      // Create Privileged Edit label
-      if (editor.isPrivilegedEditModeEnabled()) {
-         Label label = toolkit.createLabel(comp, "(Privileged Edit Enabled)");
-         label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-         label.setToolTipText(
-            "Privileged Edit Mode is Enabled.  Editing any field in any state is authorized.  Select icon to disable");
-      }
-
       // Current Assignees
       if (isCurrentNonCompleteCanceledState) {
-         boolean editable = WorkflowManager.isAssigneeEditable((AbstractWorkflowArtifact) workItem.getStoreObject(),
-            editor.isPrivilegedEditModeEnabled());
+         boolean editable = WorkflowManager.isAssigneeEditable((AbstractWorkflowArtifact) workItem.getStoreObject());
 
          new WfeAssigneesHeader(comp, SWT.NONE, workItem, editable, editor);
       }

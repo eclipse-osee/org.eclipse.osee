@@ -130,7 +130,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    private WfeTasksTab taskTab;
    int attributesPageIndex;
    private AttributesComposite attributesComposite;
-   private boolean privilegedEditModeEnabled = false;
    private final List<IWfeEditorListener> editorListeners = new ArrayList<>();
    WfeOutlinePage outlinePage;
    private final HashCollection<AttributeTypeToken, IWfeEventHandle> attrHandlers = new HashCollection<>();
@@ -165,8 +164,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
          } else {
             WfeArtifactEventManager.add(this);
             WfeBranchEventManager.add(this);
-
-            setContentDescription(privilegedEditModeEnabled ? " PRIVILEGED EDIT MODE ENABLED" : "");
 
             createMembersTab();
             createWorkflowTab();
@@ -637,24 +634,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
          editable = false;
       }
       return editable;
-   }
-
-   public boolean isPrivilegedEditModeEnabled() {
-      return privilegedEditModeEnabled;
-   }
-
-   /**
-    * @param privilegedEditMode the privilegedEditMode to set s
-    */
-   public void setPrivilegedEditMode(boolean enabled) {
-      this.privilegedEditModeEnabled = enabled;
-      doSave(null);
-      if (workFlowTab != null) {
-         workFlowTab.refresh();
-      }
-      if (membersTab != null) {
-         membersTab.refresh();
-      }
    }
 
    public boolean isAccessControlWrite() {

@@ -39,7 +39,7 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
    Collection<IAtsTeamDefinition> getChildrenTeamDefinitions();
 
    /*****************************************************
-    * Team Leads, Members, Priviledged Members
+    * Team Leads, Members
     ******************************************************/
 
    Collection<IAtsUser> getLeads();

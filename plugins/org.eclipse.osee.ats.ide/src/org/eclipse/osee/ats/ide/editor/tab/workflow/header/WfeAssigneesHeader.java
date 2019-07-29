@@ -72,8 +72,7 @@ public class WfeAssigneesHeader extends Composite implements IWfeEventHandle {
                   if (!isEditable && !workItem.getStateMgr().getAssignees().contains(
                      AtsCoreUsers.UNASSIGNED_USER) && !workItem.getStateMgr().getAssignees().contains(
                         AtsClientService.get().getUserService().getCurrentUser())) {
-                     AWorkbench.popup("ERROR",
-                        "You must be assigned to modify assignees.\nContact current Assignee or Select Privileged Edit for Authorized Overriders.");
+                     AWorkbench.popup("ERROR", "You must be assigned to modify assignees.\nContact current Assignee.");
                      return;
                   }
                   if (AssigneeColumnUI.promptChangeAssignees(workItem, false)) {

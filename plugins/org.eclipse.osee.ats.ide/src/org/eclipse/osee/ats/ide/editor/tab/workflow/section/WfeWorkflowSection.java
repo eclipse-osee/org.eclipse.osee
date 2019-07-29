@@ -88,8 +88,8 @@ public class WfeWorkflowSection extends SectionPart {
       this.editor = editor;
 
       isEditable = WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), sma,
-         page.getStateDefinition(), editor.isPrivilegedEditModeEnabled(), AtsClientService.get().getUserService());
-      isGlobalEditable = !sma.isReadOnly() && sma.isAccessControlWrite() && editor.isPrivilegedEditModeEnabled();
+         page.getStateDefinition(), AtsClientService.get().getUserService());
+      isGlobalEditable = !sma.isReadOnly() && sma.isAccessControlWrite();
       isCurrentState = sma.isInState(page);
       // parent.setBackground(Displays.getSystemColor(SWT.COLOR_CYAN));
    }
@@ -450,7 +450,7 @@ public class WfeWorkflowSection extends SectionPart {
                try {
                   item.widgetModified(xWidget, editor.getToolkit(), sma.getStateDefinition(), sma,
                      WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), sma,
-                        sma.getStateDefinition(), false, AtsClientService.get().getUserService()));
+                        sma.getStateDefinition(), AtsClientService.get().getUserService()));
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }

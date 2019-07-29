@@ -14,15 +14,12 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workdef.IAtsRuleDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinition;
-import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.config.TeamDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.logger.Log;
 import org.junit.Assert;
@@ -79,28 +76,6 @@ public class AtsWorkDefinitionServiceImplRulesTest {
 
       Collection<IAtsRuleDefinition> ruleDefs = workDefService.getAllRuleDefinitions();
       Assert.assertEquals(2, ruleDefs.size());
-   }
-
-   @Test
-   public void teamDefHasRule() {
-      AtsWorkDefinitionServiceImpl workDefService = new AtsWorkDefinitionServiceImpl(null, null);
-
-      when(review.getParentTeamWorkflow()).thenReturn(teamWf);
-      TeamDefinition teamDef = new TeamDefinition(logger, atsApi, teamDefArt);
-      when(teamWf.getTeamDefinition()).thenReturn(teamDef);
-      when(atsApi.getAttributeResolver()).thenReturn(attrResolver);
-      when(attrResolver.getAttributesToStringList(teamDef, AtsAttributeTypes.RuleDefinition)).thenReturn(
-         Arrays.asList(RuleDefinitionOption.AllowPrivilegedEditToTeamMember.name(),
-            RuleDefinitionOption.AllowPrivilegedEditToTeamMemberAndOriginator.name()));
-
-      boolean teamDefHasRule = workDefService.teamDefHasRule(teamWf, RuleDefinitionOption.AllowEditToAll);
-      Assert.assertFalse(teamDefHasRule);
-
-      teamDefHasRule = workDefService.teamDefHasRule(teamWf, RuleDefinitionOption.AllowPrivilegedEditToTeamMember);
-      Assert.assertTrue(teamDefHasRule);
-
-      teamDefHasRule = workDefService.teamDefHasRule(review, RuleDefinitionOption.AllowPrivilegedEditToTeamMember);
-      Assert.assertTrue(teamDefHasRule);
    }
 
 }

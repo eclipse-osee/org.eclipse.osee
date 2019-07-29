@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
  */
 public class WorkflowManagerCore {
 
-   public static boolean isEditable(IAtsUser user, IAtsWorkItem workItem, IAtsStateDefinition stateDef, boolean privilegedEditEnabled, IAtsUserService userService) {
+   public static boolean isEditable(IAtsUser user, IAtsWorkItem workItem, IAtsStateDefinition stateDef, IAtsUserService userService) {
       return isEditable(workItem, stateDef, user, userService.isAtsAdmin());
    }
 
