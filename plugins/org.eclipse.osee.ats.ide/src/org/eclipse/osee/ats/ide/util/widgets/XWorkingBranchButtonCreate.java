@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeTargetedVersionHeader;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -57,18 +58,27 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
                return;
             }
             try {
-               String parentBranchName = AtsClientService.get().getBranchService().getBranchName(getTeamArt());
-               // Retrieve parent branch to create working branch from
-               if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Create Working Branch",
-                  "Create a working branch from parent branch\n\n\"" + parentBranchName + "\"?\n\n" + "NOTE: Working branches are necessary when OSEE Artifact changes " + "are made during implementation.")) {
-                  disableAll = false;
-                  refreshEnablement(button);
-                  return;
+               String workingBranchName = AtsClientService.get().getBranchService().getBranchName(getTeamArt());
+               final BranchId parentBranch =
+                  AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(getTeamArt());
+               if (parentBranch.isValid()) {
+                  String pBranchName = AtsClientService.get().getBranchService().getBranchName(parentBranch);
+                  // Retrieve parent branch to create working branch from
+                  if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Create Working Branch",
+                     "Creating working branch:\n\n\"" + workingBranchName + //
+                  "\"\n\nfrom parent branch: \n\n\"" + //
+                  pBranchName + "\"\n\nIs that correct?\n\n" + //
+                  "---\nNOTE: Working branches are necessary when OSEE Artifact changes " + //
+                  "are made during implementation.")) {
+                     disableAll = false;
+                     refreshEnablement(button);
+                     return;
+                  }
+                  button.setText("Creating Branch...");
+                  button.redraw();
+                  button.getParent().layout();
+                  AtsBranchUtil.createWorkingBranch_Create(getTeamArt(), false);
                }
-               button.setText("Creating Branch...");
-               button.redraw();
-               button.getParent().layout();
-               AtsBranchUtil.createWorkingBranch_Create(getTeamArt(), false);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                disableAll = false;

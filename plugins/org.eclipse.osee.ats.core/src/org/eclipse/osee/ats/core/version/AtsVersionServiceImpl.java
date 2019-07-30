@@ -124,7 +124,8 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
             try {
                HashMap<String, Object> properties = new HashMap<>();
                properties.put(AtsTopicEvent.WORK_ITEM_IDS_KEY, teamWf.getIdString());
-               properties.put(AtsTopicEvent.NEW_ATS_VERSION_ID, newVersion.getIdString());
+               properties.put(AtsTopicEvent.NEW_ATS_VERSION_ID,
+                  newVersion == null ? ArtifactId.SENTINEL.getIdString() : newVersion.getIdString());
                properties.put(AtsTopicEvent.PREVIOUS_ATS_VERSION_ID, previousVersion.getIdString());
 
                Event event = new Event(AtsTopicEvent.TARGETED_VERSION_MODIFIED, properties);
