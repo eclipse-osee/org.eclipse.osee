@@ -90,7 +90,7 @@ public class AtsXWidgetValidateManagerTest {
       Assert.assertFalse(results.isEmpty());
       Assert.assertEquals(results.iterator().next().getStatus(), WidgetStatus.Exception);
       Assert.assertEquals(
-         "Exception - Widget Name - Exception retriving validation for widget [AtsExceptionValidator] Exception [problem]",
+         "Exception - Widget Name - Exception retrieving validation for widget [AtsExceptionValidator] Exception [problem]",
          results.iterator().next().toString());
       Assert.assertTrue(results.iterator().next().getException() instanceof OseeStateException);
       manager.removeWidgetValidatorProvider(provider);
