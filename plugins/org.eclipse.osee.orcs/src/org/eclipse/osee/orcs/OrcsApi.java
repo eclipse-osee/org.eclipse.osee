@@ -45,4 +45,6 @@ public interface OrcsApi {
    OrcsApplicability getApplicabilityOps();
 
    IUserGroupService getUserGroupService();
+
+   boolean isTypesValid();
 }

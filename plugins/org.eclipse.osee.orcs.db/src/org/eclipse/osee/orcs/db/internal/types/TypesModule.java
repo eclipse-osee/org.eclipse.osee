@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.db.internal.types;
 
 import java.util.Collection;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -66,6 +66,11 @@ public class TypesModule {
          @Override
          public Callable<Void> purgeRelationsByRelationType(OrcsSession session, Collection<? extends IRelationType> typesToPurge) {
             return new PurgeRelationTypeDatabaseTxCallable(logger, session, jdbcClient, typesToPurge);
+         }
+
+         @Override
+         public boolean isTypesResourcesValid() {
+            return new OrcsTypeLoader(jdbcClient, resourceManager).isTypesResourcesValid();
          }
 
       };

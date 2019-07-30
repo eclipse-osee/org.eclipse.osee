@@ -47,20 +47,51 @@ public class OrcsTypeLoader {
    }
 
    public IResource load() {
-      String resourceUri = String.format("osee:/datastore.orcs.types_%s.osee", Lib.getDateTimeString());
       try {
-         URI uri = new URI(resourceUri);
          Collection<String> uriPaths = new LinkedHashSet<>();
-
-         jdbcClient.runQuery(stmt -> uriPaths.add(stmt.getString("uri")), OrcsTypes.LOAD_OSEE_TYPE_DEF_URIS,
-            CoreTupleTypes.OseeTypeDef, CoreBranches.COMMON, TxCurrent.CURRENT, OrcsTypesData.OSEE_TYPE_VERSION,
-            TxCurrent.CURRENT);
-
+         URI uri = getUriPaths(uriPaths);
          Conditions.checkExpressionFailOnTrue(uriPaths.isEmpty(), "No orcs types found");
          return new OrcsTypesResource(uri, uriPaths);
       } catch (URISyntaxException ex) {
          throw OseeCoreException.wrap(ex);
       }
+   }
+
+   /**
+    * @return false if types resources don't exist or are not in file-system
+    */
+   public boolean isTypesResourcesValid() {
+      boolean valid = true;
+      try {
+         Collection<String> uriPaths = new LinkedHashSet<>();
+         getUriPaths(uriPaths);
+         if (uriPaths.isEmpty()) {
+            return false;
+         }
+
+         for (String path : uriPaths) {
+            PropertyStore options = new PropertyStore();
+            IResourceLocator locator = resourceManager.getResourceLocator(path);
+            IResource resource = resourceManager.acquire(locator, options);
+            if (resource == null) {
+               valid = false;
+               break;
+            }
+         }
+      } catch (URISyntaxException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+      return valid;
+   }
+
+   private URI getUriPaths(Collection<String> uriPaths) throws URISyntaxException {
+      String resourceUri = String.format("osee:/datastore.orcs.types_%s.osee", Lib.getDateTimeString());
+      URI uri = new URI(resourceUri);
+
+      jdbcClient.runQuery(stmt -> uriPaths.add(stmt.getString("uri")), OrcsTypes.LOAD_OSEE_TYPE_DEF_URIS,
+         CoreTupleTypes.OseeTypeDef, CoreBranches.COMMON, TxCurrent.CURRENT, OrcsTypesData.OSEE_TYPE_VERSION,
+         TxCurrent.CURRENT);
+      return uri;
    }
 
    private final class OrcsTypesResource implements IResource {
@@ -128,4 +159,5 @@ public class OrcsTypeLoader {
          return toReturn;
       }
    }
+
 }

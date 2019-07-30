@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Collection;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -22,6 +22,8 @@ import org.eclipse.osee.orcs.OrcsSession;
  * @author Roberto E. Escobar
  */
 public interface OrcsTypesDataStore {
+
+   boolean isTypesResourcesValid();
 
    IResource getOrcsTypesLoader(OrcsSession session);
 

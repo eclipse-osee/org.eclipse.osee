@@ -225,6 +225,11 @@ public class OrcsApiImpl implements OrcsApi {
    }
 
    @Override
+   public boolean isTypesValid() {
+      return dataStore.getTypesDataStore().isTypesResourcesValid();
+   }
+
+   @Override
    public QueryFactory getQueryFactory() {
       OrcsSession session = getSession();
       return queryModule.createQueryFactory(session);

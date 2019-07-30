@@ -104,19 +104,22 @@ public class AdminModule {
 
          @Override
          public boolean isDataStoreInitialized() {
-            boolean initialized = false;
             try {
-               String systemUuid = preferences.getSystemUuid();
-               if (Strings.isValid(systemUuid)) {
-                  IResource resource = typesDataStore.getOrcsTypesLoader(null);
-                  if (resource != null) {
-                     initialized = true;
+               boolean initialized = typesDataStore.isTypesResourcesValid();
+               if (initialized) {
+                  String systemUuid = preferences.getSystemUuid();
+                  if (Strings.isValid(systemUuid)) {
+                     IResource resource = typesDataStore.getOrcsTypesLoader(null);
+                     if (resource != null) {
+                        initialized = true;
+                     }
                   }
                }
+               return initialized;
             } catch (Exception ex) {
                // do nothing;
             }
-            return initialized;
+            return false;
          }
 
          @Override
