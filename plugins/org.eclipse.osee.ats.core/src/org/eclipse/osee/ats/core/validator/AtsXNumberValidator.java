@@ -27,12 +27,19 @@ public class AtsXNumberValidator extends AtsXWidgetValidator {
       WidgetResult result = WidgetResult.Valid;
       String name = widgetDef.getXWidgetName();
 
-      if ("XFloatDam".equals(name) || "XIntegerDam".equals(name)) {
+      if ("XFloatDam".equals(name)) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);
          if (!result.isValid()) {
             return result;
          }
-         return isValid(provider, widgetDef);
+         return isValidFloat(provider, widgetDef);
+      }
+      if ("XIntegerDam".equals(name)) {
+         result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);
+         if (!result.isValid()) {
+            return result;
+         }
+         return isValidInteger(provider, widgetDef);
       }
       return result;
    }

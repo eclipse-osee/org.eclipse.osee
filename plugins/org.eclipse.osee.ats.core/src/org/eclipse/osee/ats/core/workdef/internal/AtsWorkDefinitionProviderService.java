@@ -40,7 +40,7 @@ import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamSimple;
  */
 public class AtsWorkDefinitionProviderService implements IAtsWorkDefinitionProviderService {
 
-   public Map<Long, IAtsWorkDefinition> idToWorkDef = new HashMap<>();
+   public static Map<Long, IAtsWorkDefinition> idToWorkDef = new HashMap<>();
 
    /**
     * Add default ATS Workflow Definitions. Others will be provided via OSGI through addWorkDefinitionProvider

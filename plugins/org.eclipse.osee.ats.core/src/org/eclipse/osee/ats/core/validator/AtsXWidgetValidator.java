@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidator;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -70,17 +71,43 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return WidgetResult.Valid;
    }
 
-   public WidgetResult isValid(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef) {
-      for (String attrStr : valueProvider.getValues()) {
-
-         if (attrStr.matches("[-+]?\\d*\\.?\\d*")) {
-            WidgetResult result = checkValid(widgetDef, Double.parseDouble(attrStr), valueProvider.getName());
-            if (!result.isValid()) {
-               return result;
+   public WidgetResult isValidFloat(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef) {
+      for (Object obj : valueProvider.getValues()) {
+         if (obj instanceof Double) {
+            return WidgetResult.Valid;
+         }
+         if (obj instanceof String) {
+            String attrStr = (String) obj;
+            if (attrStr.matches("[-+]?\\d*\\.?\\d*")) {
+               WidgetResult result = checkValid(widgetDef, Double.parseDouble(attrStr), valueProvider.getName());
+               if (!result.isValid()) {
+                  return result;
+               }
+            } else {
+               return new WidgetResult(WidgetStatus.Invalid_Type, widgetDef, "[%s] value [%s] is not a valid float",
+                  valueProvider.getName(), attrStr);
             }
-         } else {
-            return new WidgetResult(WidgetStatus.Invalid_Type, widgetDef, "[%s] value [%s] is not a valid number",
-               valueProvider.getName(), attrStr);
+         }
+      }
+      return WidgetResult.Valid;
+   }
+
+   public WidgetResult isValidInteger(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef) {
+      for (Object obj : valueProvider.getValues()) {
+         if (obj instanceof Integer) {
+            return WidgetResult.Valid;
+         }
+         if (obj instanceof String) {
+            String attrStr = (String) obj;
+            if (Strings.isValid(attrStr)) {
+               WidgetResult result = checkValid(widgetDef, Integer.parseInt(attrStr), valueProvider.getName());
+               if (!result.isValid()) {
+                  return result;
+               }
+            } else {
+               return new WidgetResult(WidgetStatus.Invalid_Type, widgetDef, "[%s] value [%s] is not a valid integer",
+                  valueProvider.getName(), attrStr);
+            }
          }
       }
       return WidgetResult.Valid;
