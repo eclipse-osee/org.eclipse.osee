@@ -152,14 +152,6 @@ public class CreateSystemBranches {
 
    private void createDataRights(TransactionBuilder tx, ArtifactId documentTemplateFolder) {
       ArtifactId dataRightsArt = tx.createArtifact(documentTemplateFolder, CoreArtifactTokens.DataRightsFooters);
-      try {
-         Thread.sleep(5000);
-         String resourceContents = OseeInf.getResourceContents("Unspecified.xml", getClass());
-         System.out.println("Resource Contents: " + resourceContents);
-      } catch (Exception ex) {
-         System.out.println("Exception: " + ex);
-      }
-
       tx.createAttribute(dataRightsArt, CoreAttributeTypes.GeneralStringData,
          OseeInf.getResourceContents("Unspecified.xml", getClass()));
       tx.createAttribute(dataRightsArt, CoreAttributeTypes.GeneralStringData,
