@@ -37,6 +37,8 @@ public interface IAtsStateDefinition extends IStateToken {
 
    void setWorkDefinition(IAtsWorkDefinition workDefinition);
 
+   void setLayoutItems(List<IAtsLayoutItem> layoutToSet);
+
    List<IAtsStateDefinition> getOverrideAttributeValidationStates();
 
    @Override

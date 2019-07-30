@@ -78,5 +78,8 @@ public class DbInitTest {
 
       OseeProperties.setIsInTest(false);
       System.out.println("End database initialization...\n");
+
+      //Ensure that all workDefs loaded without error
+      AtsClientService.get().getWorkDefinitionService().getAllWorkDefinitions();
    }
 }

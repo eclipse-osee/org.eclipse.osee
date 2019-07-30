@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
@@ -39,8 +40,18 @@ public class WorkDefBuilder {
    }
 
    public WorkDefinition getWorkDefinition() {
+      // Resolve all layouts formatted from getLayoutFromState
       // Resolve all state definitions from state tokens
       for (StateDefBuilder stateDefBuilder : stateDefBuilders) {
+         //getLayoutFromState
+         StateToken fromLayoutStateToken = stateDefBuilder.getAndLayoutFromState();
+         if (fromLayoutStateToken != null) {
+            IAtsStateDefinition copyState = getStateDefinition(fromLayoutStateToken.getName());
+            if (stateDefBuilder.state.getOrdinal() < copyState.getOrdinal()) {
+               throw new OseeStateException("Cannot import layout from undefined state.");
+            }
+            stateDefBuilder.state.setLayoutItems(copyState.getLayoutItems());
+         }
          // defaultToState
          StateToken defaultToStateToken = stateDefBuilder.getToDefaultStateToken();
          if (defaultToStateToken != null) {

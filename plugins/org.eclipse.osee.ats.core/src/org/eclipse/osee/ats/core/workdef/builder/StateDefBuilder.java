@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
  * @author Donald G. Dunne
@@ -34,6 +35,7 @@ public class StateDefBuilder {
    private final List<StateToken> overrideValidationStateTokens = new ArrayList<>();
    private final List<DecisionReviewDefinitionBuilder> decRevBldrs = new LinkedList<>();
    private final List<PeerReviewDefinitionBuilder> peerRevBldrs = new LinkedList<>();
+   private StateToken getLayoutFromState;
 
    public StateDefBuilder(int ordinal, String name, StateType type, WorkDefinition workDef) {
       this.workDef = workDef;
@@ -42,6 +44,7 @@ public class StateDefBuilder {
       state.setOrdinal(ordinal);
       state.setWorkDefinition(workDef);
       workDef.addState(state);
+      this.getLayoutFromState = null;
    }
 
    public StateDefBuilder andDescription(String desc) {
@@ -96,6 +99,9 @@ public class StateDefBuilder {
    }
 
    public StateDefBuilder andLayout(IAtsLayoutItem... items) {
+      if (this.getAndLayoutFromState() != null) {
+         throw new OseeArgumentException("Cannot add layout items when state already gets layout from other state.");
+      }
       for (IAtsLayoutItem item : items) {
          state.getLayoutItems().add(item);
       }
@@ -119,6 +125,22 @@ public class StateDefBuilder {
 
    public List<StateToken> getOverrideValidationStateTokens() {
       return overrideValidationStateTokens;
+   }
+
+   public StateDefBuilder andLayoutFromState(StateToken fromState) {
+      if (state.getOrdinal() == 1) {
+         throw new OseeArgumentException("Cannot import layout from other state if current state is the start state.");
+      }
+      if (!state.getLayoutItems().isEmpty()) {
+         throw new OseeArgumentException(
+            "Cannot import layout from other state if current state has already defined layout items.");
+      }
+      this.getLayoutFromState = fromState;
+      return this;
+   }
+
+   public StateToken getAndLayoutFromState() {
+      return this.getLayoutFromState;
    }
 
    public StateDefBuilder setDefaultToState(IAtsStateDefinition defaultToState) {

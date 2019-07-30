@@ -28,7 +28,7 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
 
    private StateType StateType;
    private int ordinal = 0;
-   private final List<IAtsLayoutItem> stateItems = new ArrayList<>(5);
+   private List<IAtsLayoutItem> stateItems = new ArrayList<>(5);
    private final RuleManager ruleMgr = new RuleManager();
    private final List<IAtsStateDefinition> toStates = new ArrayList<>(5);
    private IAtsStateDefinition defaultToState;
@@ -52,6 +52,11 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
    @Override
    public StateType getStateType() {
       return StateType;
+   }
+
+   @Override
+   public void setLayoutItems(List<IAtsLayoutItem> layoutToSet) {
+      this.stateItems = layoutToSet;
    }
 
    public void setStateType(StateType StateType) {
