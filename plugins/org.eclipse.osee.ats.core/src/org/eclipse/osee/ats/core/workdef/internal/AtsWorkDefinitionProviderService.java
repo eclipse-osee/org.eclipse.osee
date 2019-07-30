@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef.internal;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,19 +18,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefGoal;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefReviewDecision;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefReviewPeerToPeer;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefSprint;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTaskAtsConfig2Example;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTaskDefault;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamAtsConfig2Example;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDefault;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoCode;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoReq;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoSwDesign;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoTest;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamSimple;
 
 /**
  * Service to retrieve all work definitions that have been registered. Should not be used by applications, only by the
@@ -40,50 +27,40 @@ import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamSimple;
  */
 public class AtsWorkDefinitionProviderService implements IAtsWorkDefinitionProviderService {
 
-   public static Map<Long, IAtsWorkDefinition> idToWorkDef = new HashMap<>();
-
-   /**
-    * Add default ATS Workflow Definitions. Others will be provided via OSGI through addWorkDefinitionProvider
-    */
-   public AtsWorkDefinitionProviderService() {
-      // @formatter:off
-      for (IAtsWorkDefinition workDef : Arrays.asList(
-         new WorkDefGoal().build(),
-         new WorkDefReviewDecision().build(),
-         new WorkDefReviewPeerToPeer().build(),
-         new WorkDefSprint().build(),
-         new WorkDefTaskAtsConfig2Example().build(),
-         new WorkDefTaskDefault().build(),
-         new WorkDefTeamAtsConfig2Example().build(),
-         new WorkDefTeamDefault().build(),
-         new WorkDefTeamDemoCode().build(),
-         new WorkDefTeamDemoReq().build(),
-         new WorkDefTeamDemoSwDesign().build(),
-         new WorkDefTeamDemoTest().build(),
-         new WorkDefTeamSimple().build())) {
-         idToWorkDef.put(workDef.getId(), workDef);
-      }
-   }
+   private static Map<Long, IAtsWorkDefinition> idToWorkDef = new HashMap<>();
+   private final Collection<IAtsWorkDefinitionProvider> workDefProviders = new ArrayList<>();
 
    @Override
    public void addWorkDefinitionProvider(IAtsWorkDefinitionProvider workDefProvider) {
-      for (IAtsWorkDefinition workDef : workDefProvider.getWorkDefinitions()) {
-         idToWorkDef.put(workDef.getId(), workDef);
+      this.workDefProviders.add(workDefProvider);
+   }
+
+   public void ensureLoaded() {
+      if (idToWorkDef.isEmpty()) {
+         workDefProviders.add(new AtsWorkDefinitionProvider());
+         for (IAtsWorkDefinitionProvider workDefProvider : workDefProviders) {
+            for (IAtsWorkDefinition workDef : workDefProvider.getWorkDefinitions()) {
+               idToWorkDef.put(workDef.getId(), workDef);
+            }
+         }
       }
    }
 
    @Override
    public IAtsWorkDefinition getWorkDefinition(Long id) {
+      ensureLoaded();
       return idToWorkDef.get(id);
    }
 
    @Override
    public Collection<IAtsWorkDefinition> getAll() {
+      ensureLoaded();
       return idToWorkDef.values();
    }
 
    @Override
    public void addWorkDefinition(WorkDefinition workDef) {
+      ensureLoaded();
       idToWorkDef.put(workDef.getId(), workDef);
    }
 
