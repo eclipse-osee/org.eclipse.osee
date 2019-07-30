@@ -2,7 +2,7 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true">
    <implementation class="org.eclipse.osee.ats.core.workdef.internal.AtsWorkDefinitionProviderService"/>
   
-   <reference bind="addWorkDefinitionProvider" cardinality="0..n" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProvider" name="IAtsWorkDefinitionProvider" policy="static"/>
+   <reference bind="addWorkDefinitionProvider" cardinality="0..n" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProvider" name="IAtsWorkDefinitionProvider" policy="dynamic"/>
    <service>
       <provide interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService"/>
    </service> 

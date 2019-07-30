@@ -29,6 +29,8 @@ public class AtsWorkDefinitionProviderService implements IAtsWorkDefinitionProvi
 
    private static Map<Long, IAtsWorkDefinition> idToWorkDef = new HashMap<>();
    private final Collection<IAtsWorkDefinitionProvider> workDefProviders = new ArrayList<>();
+   private final Collection<IAtsWorkDefinitionProvider> workDefProviderProcessed = new ArrayList<>();
+   private AtsWorkDefinitionProvider atsWorkDefProv;
 
    @Override
    public void addWorkDefinitionProvider(IAtsWorkDefinitionProvider workDefProvider) {
@@ -36,12 +38,18 @@ public class AtsWorkDefinitionProviderService implements IAtsWorkDefinitionProvi
    }
 
    public void ensureLoaded() {
-      if (idToWorkDef.isEmpty()) {
-         workDefProviders.add(new AtsWorkDefinitionProvider());
-         for (IAtsWorkDefinitionProvider workDefProvider : workDefProviders) {
+      // Add default
+      if (!workDefProviderProcessed.contains(atsWorkDefProv)) {
+         atsWorkDefProv = new AtsWorkDefinitionProvider();
+         workDefProviders.add(atsWorkDefProv);
+      }
+      // Add any not processed
+      for (IAtsWorkDefinitionProvider workDefProvider : workDefProviders) {
+         if (!workDefProviderProcessed.contains(workDefProvider)) {
             for (IAtsWorkDefinition workDef : workDefProvider.getWorkDefinitions()) {
                idToWorkDef.put(workDef.getId(), workDef);
             }
+            workDefProviderProcessed.add(workDefProvider);
          }
       }
    }
