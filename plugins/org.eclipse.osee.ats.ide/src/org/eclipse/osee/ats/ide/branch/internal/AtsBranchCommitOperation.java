@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit.CommitHandler;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -72,7 +73,9 @@ public class AtsBranchCommitOperation extends AbstractOperation {
                AbstractReviewArtifact reviewArt =
                   (AbstractReviewArtifact) AtsClientService.get().getQueryService().getArtifact(review);
                if (reviewArt.getReviewBlockType() == ReviewBlockType.Commit && !reviewArt.isCompletedOrCancelled()) {
-                  throw new OseeStateException("Blocking Review must be completed before commit.");
+                  AWorkbench.popup("Commit Branch Error!",
+                     "All blocking reviews must be completed before committing the working branch.  Please complete all blocking reviews in order to continue.");
+                  return;
                }
             }
          }
