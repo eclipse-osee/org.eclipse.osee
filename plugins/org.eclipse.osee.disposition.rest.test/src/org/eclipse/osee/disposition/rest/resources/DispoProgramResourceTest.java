@@ -47,7 +47,7 @@ public class DispoProgramResourceTest {
       Response noProgramsResponse = resource.getAllPrograms();
       String messageActual = (String) noProgramsResponse.getEntity();
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noProgramsResponse.getStatus());
-      assertEquals("[]", messageActual);
+      assertEquals("[ ]", messageActual);
 
       when(dispoApi.getDispoPrograms()).thenReturn(Collections.singletonList(SYSTEM_ROOT));
 

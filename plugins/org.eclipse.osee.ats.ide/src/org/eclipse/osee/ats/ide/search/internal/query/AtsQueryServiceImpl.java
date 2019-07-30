@@ -62,7 +62,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    private final IAtsClient atsClient;
-   private static final Pattern namespacePattern = Pattern.compile("\"namespace\":\"(.*?)\"");
+   private static final Pattern namespacePattern = Pattern.compile("\"namespace\"\\s*:\\s*\"(.*?)\"");
 
    public AtsQueryServiceImpl(IAtsClient atsClient, JdbcService jdbcService) {
       super(jdbcService, atsClient.getServices());
@@ -101,7 +101,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       for (IAttribute<Object> attr : atsClient.getAttributeResolver().getAttributes(userArt,
          AtsAttributeTypes.QuickSearch)) {
          String jsonValue = (String) attr.getValue();
-         if (jsonValue.contains("\"namespace\":\"" + namespace + "\"")) {
+         if (jsonValue.contains("\"" + namespace + "\"")) {
             try {
                AtsSearchData data = fromJson(namespace, jsonValue);
                if (data != null) {

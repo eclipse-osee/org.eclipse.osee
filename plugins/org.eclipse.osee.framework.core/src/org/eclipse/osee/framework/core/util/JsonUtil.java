@@ -12,12 +12,36 @@ package org.eclipse.osee.framework.core.util;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.TransactionTokenDeserializer;
+import org.eclipse.osee.framework.core.data.TransactionTokenSerializer;
+import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.data.UserTokenDeserializer;
+import org.eclipse.osee.framework.core.data.UserTokenSerializer;
+import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.IdDeserializer;
+import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdDeserializer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -38,10 +62,8 @@ public class JsonUtil {
    private static ObjectMapper mapper2;
 
    static {
-      mapper = new ObjectMapper();
-      mapper.setDateFormat(new SimpleDateFormat("MMM d, yyyy h:mm:ss aa"));
-      mapper2 = new ObjectMapper();
-      mapper2.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm a z"));
+      mapper = createObjectMapper().setDateFormat(new SimpleDateFormat("MMM d, yyyy h:mm:ss aa"));
+      mapper2 = createObjectMapper().setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm a z"));
    }
 
    public static synchronized ObjectMapper getMapper() {
@@ -112,5 +134,49 @@ public class JsonUtil {
       } catch (IOException ex) {
          throw OseeCoreException.wrap(ex);
       }
+   }
+
+   private static ObjectMapper createObjectMapper() {
+      ObjectMapper objectMapper = new ObjectMapper();
+
+      objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+      objectMapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, false);
+      objectMapper.configure(DeserializationFeature.USE_JAVA_ARRAY_FOR_JSON_ARRAY, true);
+      objectMapper.configure(MapperFeature.AUTO_DETECT_CREATORS, true);
+      objectMapper.configure(MapperFeature.AUTO_DETECT_FIELDS, true);
+      objectMapper.configure(MapperFeature.AUTO_DETECT_FIELDS, true);
+      objectMapper.configure(MapperFeature.AUTO_DETECT_GETTERS, true);
+      objectMapper.configure(MapperFeature.AUTO_DETECT_IS_GETTERS, true);
+      objectMapper.configure(MapperFeature.AUTO_DETECT_SETTERS, true);
+      objectMapper.configure(MapperFeature.CAN_OVERRIDE_ACCESS_MODIFIERS, true);
+      objectMapper.configure(MapperFeature.USE_ANNOTATIONS, true);
+      objectMapper.configure(MapperFeature.USE_ANNOTATIONS, true);
+      objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+      objectMapper.configure(SerializationFeature.WRAP_EXCEPTIONS, true);
+      objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+      objectMapper.configure(SerializationFeature.WRITE_CHAR_ARRAYS_AS_JSON_ARRAYS, true);
+      objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+
+      DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
+      prettyPrinter.indentObjectsWith(new DefaultIndenter("  ", "\n"));
+      objectMapper.setDefaultPrettyPrinter(prettyPrinter);
+
+      SimpleModule module = new SimpleModule("OSEE", new Version(1, 0, 0, "", "", ""));
+
+      module.addDeserializer(ApplicabilityToken.class, new NamedIdDeserializer<>(ApplicabilityToken::create));
+      module.addDeserializer(ArtifactToken.class, new NamedIdDeserializer<ArtifactToken>(ArtifactToken::valueOf));
+      module.addDeserializer(ArtifactId.class, new IdDeserializer<ArtifactId>(ArtifactId::valueOf));
+      module.addDeserializer(TransactionToken.class, new TransactionTokenDeserializer());
+      module.addSerializer(TransactionToken.class, new TransactionTokenSerializer());
+      module.addDeserializer(UserToken.class, new UserTokenDeserializer());
+      module.addSerializer(UserToken.class, new UserTokenSerializer());
+      JsonSerializer<Id> idSerializer = new IdSerializer();
+      module.addSerializer(TransactionId.class, idSerializer);
+      module.addSerializer(BranchType.class, idSerializer);
+      module.addSerializer(BranchState.class, idSerializer);
+      module.addDeserializer(TransactionId.class, new IdDeserializer<TransactionId>(TransactionId::valueOf));
+
+      objectMapper.registerModule(module);
+      return objectMapper;
    }
 }
