@@ -119,7 +119,6 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testQueryTeam() {
-      System.out.println("TEST QUERY TEAM");
       getFirstAndCount("ats/action/query?Team=30013695", 3);
    }
 
