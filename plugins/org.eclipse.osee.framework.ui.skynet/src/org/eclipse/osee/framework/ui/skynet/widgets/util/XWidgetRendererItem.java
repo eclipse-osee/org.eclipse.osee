@@ -27,6 +27,7 @@ public class XWidgetRendererItem implements Cloneable {
    private String name = "Unknown";
    private String id = "";
    private String storeName = "";
+   private Long storeId = -1L;
    private String xWidgetName = UNKNOWN;
 
    private XWidget xWidget;
@@ -246,6 +247,14 @@ public class XWidgetRendererItem implements Cloneable {
 
    public void setFillVertically(boolean b) {
       xOptionHandler.add(XOption.FILL_VERTICALLY);
+   }
+
+   public Long getStoreId() {
+      return storeId;
+   }
+
+   public void setStoreId(Long storeId) {
+      this.storeId = storeId;
    }
 
 }

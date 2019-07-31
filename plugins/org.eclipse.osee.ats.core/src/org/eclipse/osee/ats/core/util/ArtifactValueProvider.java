@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -27,20 +26,19 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class ArtifactValueProvider implements IValueProvider {
 
    private final ArtifactToken artifact;
-   private final String attributeTypeName;
+   private final AttributeTypeToken attrTypeToken;
    private final AtsApi atsApi;
-   private AttributeTypeToken attributeType;
 
    public ArtifactValueProvider(ArtifactToken artifact, IAtsWidgetDefinition widgetDef, AtsApi atsApi) {
       this.artifact = artifact;
       this.atsApi = atsApi;
-      this.attributeTypeName = widgetDef.getAtrributeName();
+      this.attrTypeToken = widgetDef.getAttributeType();
    }
 
    public ArtifactValueProvider(ArtifactToken artifact, AttributeTypeToken attributeType, AtsApi atsApi) {
       this.artifact = artifact;
       this.atsApi = atsApi;
-      this.attributeTypeName = attributeType.getName();
+      this.attrTypeToken = attributeType;
    }
 
    @Override
@@ -62,10 +60,7 @@ public class ArtifactValueProvider implements IValueProvider {
    }
 
    public AttributeTypeToken getAtributeType() {
-      if (attributeType == null && Strings.isValid(attributeTypeName)) {
-         attributeType = atsApi.getStoreService().getAttributeType(attributeTypeName);
-      }
-      return attributeType;
+      return attrTypeToken;
    }
 
    @Override

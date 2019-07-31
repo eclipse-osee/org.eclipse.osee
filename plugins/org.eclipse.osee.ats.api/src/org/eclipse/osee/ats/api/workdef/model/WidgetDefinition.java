@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  */
 public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition {
 
-   private String attributeName;
+   private AttributeTypeToken attributeType;
    private String toolTip;
    private String description;
    private int height;
@@ -44,7 +44,7 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
       this(name);
       Conditions.assertNotNull(attrType, "attribute type can not be null for WidgetDefinition [%s]", name);
       if (attrType.isValid()) {
-         attributeName = attrType.getName();
+         setAttributeType(attrType);
       }
       this.xWidgetName = xWidgetName;
       for (WidgetOption opt : widgetOptions) {
@@ -54,15 +54,6 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
 
    public WidgetDefinition(AttributeTypeToken attrType, String xWidgetName, WidgetOption... widgetOptions) {
       this(attrType.getUnqualifiedName(), attrType, xWidgetName, widgetOptions);
-   }
-
-   @Override
-   public String getAtrributeName() {
-      return attributeName;
-   }
-
-   public void setAttributeName(String storeName) {
-      this.attributeName = storeName;
    }
 
    @Override
@@ -125,7 +116,8 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
 
    @Override
    public String toString() {
-      return String.format("[%s][%s]", getName(), getAtrributeName());
+      return String.format("[%s][%s]", getName(),
+         getAttributeType() == null ? "" : getAttributeType().toStringWithId());
    }
 
    @Override
@@ -147,6 +139,15 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
    @Override
    public Double getMax() {
       return max;
+   }
+
+   public void setAttributeType(AttributeTypeToken attributeTypeTok) {
+      this.attributeType = attributeTypeTok;
+   }
+
+   @Override
+   public AttributeTypeToken getAttributeType() {
+      return attributeType;
    }
 
 }

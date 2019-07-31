@@ -67,6 +67,8 @@ public class Pdd21CreateUnCommittedAction implements IPopulateDemoDatabase {
          "Problem with the Diagram View", ChangeType.Problem, priority, false, null, aias, createdDate, createdBy,
          new ArtifactTokenActionListener(), changes);
       for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
+         String desc = teamWf.getDescription();
+         String title2 = teamWf.getName();
 
          boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");
 

@@ -254,7 +254,12 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
          if (layoutData.getXWidgetName().equals(XCommitManager.WIDGET_NAME)) {
             description = XCommitManager.DESCRIPTION;
          }
-         AttributeTypeToken type = AtsAttributeTypes.getTypeByName(layoutData.getStoreName());
+         AttributeTypeToken type = null;
+         if (layoutData.getStoreId() > 0) {
+            type = AtsAttributeTypes.getTypeById(layoutData.getStoreId());
+         } else {
+            type = AtsAttributeTypes.getTypeByName(layoutData.getStoreName());
+         }
          if (type != null && Strings.isValid(type.getDescription())) {
             description = type.getDescription();
          }
@@ -324,7 +329,10 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
       XWidgetRendererItem data = new XWidgetRendererItem(getDynamicXWidgetLayout());
       data.setDefaultValue(widgetDef.getDefaultValue());
       data.setHeight(widgetDef.getHeight());
-      data.setStoreName(widgetDef.getAtrributeName());
+      if (widgetDef.getAttributeType() != null) {
+         data.setStoreName(widgetDef.getAttributeType().getName());
+         data.setStoreId(widgetDef.getAttributeType().getId());
+      }
       data.setToolTip(widgetDef.getToolTip());
       data.setId(widgetDef.getName());
       data.setXWidgetName(widgetDef.getXWidgetName());

@@ -113,11 +113,11 @@ public class AtsMockitoTest {
       when(workDef.getStates()).thenReturn(Arrays.asList(cancelled, analyze, completed, implement));
 
       when(estHoursWidgetDef.getName()).thenReturn(AtsAttributeTypes.EstimatedHours.getUnqualifiedName());
-      when(estHoursWidgetDef.getAtrributeName()).thenReturn(AtsAttributeTypes.EstimatedHours.getName());
+      when(estHoursWidgetDef.getAttributeType()).thenReturn(AtsAttributeTypes.EstimatedHours);
       when(estHoursWidgetDef.getXWidgetName()).thenReturn("XFloatDam");
 
       when(workPackageWidgetDef.getName()).thenReturn(AtsAttributeTypes.WorkPackage.getUnqualifiedName());
-      when(workPackageWidgetDef.getAtrributeName()).thenReturn(AtsAttributeTypes.WorkPackage.getName());
+      when(workPackageWidgetDef.getAttributeType()).thenReturn(AtsAttributeTypes.WorkPackage);
       when(workPackageWidgetDef.getXWidgetName()).thenReturn("XTextDam");
 
       initializeAi(testAi, "AI", true, true);

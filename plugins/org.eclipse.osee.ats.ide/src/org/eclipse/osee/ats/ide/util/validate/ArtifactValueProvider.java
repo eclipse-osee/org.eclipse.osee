@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -31,16 +30,16 @@ import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 public class ArtifactValueProvider implements IValueProvider {
 
    private final Artifact artifact;
-   private final String attributeTypeName;
+   private final AttributeTypeToken attributeType;
 
    public ArtifactValueProvider(Artifact artifact, IAtsWidgetDefinition widgetDef) {
       this.artifact = artifact;
-      this.attributeTypeName = widgetDef.getAtrributeName();
+      this.attributeType = widgetDef.getAttributeType();
    }
 
    public ArtifactValueProvider(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
-      this.attributeTypeName = attributeType.getName();
+      this.attributeType = attributeType;
    }
 
    @Override
@@ -62,11 +61,7 @@ public class ArtifactValueProvider implements IValueProvider {
    }
 
    public AttributeType getAtributeType() {
-      if (Strings.isValid(attributeTypeName)) {
-         AttributeType attrType = AttributeTypeManager.getType(attributeTypeName);
-         return attrType;
-      }
-      return null;
+      return AttributeTypeManager.getType(attributeType);
    }
 
    @Override

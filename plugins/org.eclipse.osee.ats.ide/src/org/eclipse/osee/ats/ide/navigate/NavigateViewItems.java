@@ -66,6 +66,7 @@ import org.eclipse.osee.ats.ide.util.CleanupOseeSystemAssignedWorkflows;
 import org.eclipse.osee.ats.ide.util.CreateActionUsingAllActionableItems;
 import org.eclipse.osee.ats.ide.util.Import.ImportActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.ide.util.Import.ImportAgileActionsViaSpreadsheetBlam;
+import org.eclipse.osee.ats.ide.workdef.ValidateWorkDefinitionNavigateItem;
 import org.eclipse.osee.ats.ide.workdef.editor.WorkDefinitionViewer;
 import org.eclipse.osee.ats.ide.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.ide.world.IAtsWorldEditorItem;
@@ -317,6 +318,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
       try {
          XNavigateItem workDefItems = new XNavigateItem(parent, "Work Definition", FrameworkImage.VERSION);
          new WorkDefinitionViewer(workDefItems);
+         new ValidateWorkDefinitionNavigateItem(workDefItems);
          items.add(workDefItems);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create Goals section");

@@ -14,6 +14,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -28,5 +29,13 @@ public interface AtsWorkDefEndpointApi {
    @Path("convert/artrefattr")
    @Produces(MediaType.APPLICATION_JSON)
    public String convertToWorkDefRefs();
+
+   /**
+    * Get all work definitions and ensure all attr types exist
+    */
+   @GET
+   @Path("validate")
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData validate();
 
 }

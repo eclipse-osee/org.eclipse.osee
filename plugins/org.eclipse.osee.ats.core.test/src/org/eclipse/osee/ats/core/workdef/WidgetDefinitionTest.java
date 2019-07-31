@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.workdef;
 
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -33,15 +34,15 @@ public class WidgetDefinitionTest {
    @Test
    public void testToString() {
       WidgetDefinition item = new WidgetDefinition("review");
-      Assert.assertEquals("[review][null]", item.toString());
+      Assert.assertEquals("[review][]", item.toString());
    }
 
    @Test
    public void testGetSetAttribute() {
       WidgetDefinition item = new WidgetDefinition("review");
-      Assert.assertEquals(null, item.getAtrributeName());
-      item.setAttributeName("desc");
-      Assert.assertEquals("desc", item.getAtrributeName());
+      Assert.assertEquals(null, item.getAttributeType());
+      item.setAttributeType(AttributeTypeToken.valueOf(123L, "desc"));
+      Assert.assertEquals("desc", item.getAttributeType().getName());
    }
 
    @Test

@@ -59,14 +59,14 @@ public class AtsMockitoTestTest extends AtsMockitoTest {
    @Test
    public void testGetEstHoursWidgetDef() {
       Assert.assertEquals("Estimated Hours", estHoursWidgetDef.getName());
-      Assert.assertEquals(AtsAttributeTypes.EstimatedHours.getName(), estHoursWidgetDef.getAtrributeName());
+      Assert.assertEquals(AtsAttributeTypes.EstimatedHours, estHoursWidgetDef.getAttributeType());
       Assert.assertEquals("XFloatDam", estHoursWidgetDef.getXWidgetName());
    }
 
    @Test
    public void testGetWorkPackageWidgetDef() {
       Assert.assertEquals("Work Package", workPackageWidgetDef.getName());
-      Assert.assertEquals(AtsAttributeTypes.WorkPackage.getName(), workPackageWidgetDef.getAtrributeName());
+      Assert.assertEquals(AtsAttributeTypes.WorkPackage.getName(), workPackageWidgetDef.getAttributeType());
       Assert.assertEquals("XTextDam", workPackageWidgetDef.getXWidgetName());
    }
 

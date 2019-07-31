@@ -48,6 +48,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
+import org.eclipse.osee.ats.core.workdef.operations.ValidateWorkDefinitionsOperation;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -633,6 +634,12 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          }
       }
       return null;
+   }
+
+   @Override
+   public XResultData validateWorkDefinitions() {
+      ValidateWorkDefinitionsOperation op = new ValidateWorkDefinitionsOperation(atsApi);
+      return op.run();
    }
 
 }

@@ -332,15 +332,15 @@ public class WfeOutlinePage extends ContentOutlinePage {
 
       private void getChildrenFromWidgetDefinition(Object element, List<Object> items) {
          items.add("XWidget: " + ((IAtsWidgetDefinition) element).getXWidgetName());
-         items.add("Attribute Name: " + ((IAtsWidgetDefinition) element).getAtrributeName());
+         items.add("Attribute Name: " + ((IAtsWidgetDefinition) element).getAttributeType().getName());
          if (Strings.isValid(((IAtsWidgetDefinition) element).getDescription())) {
             items.add("Description: " + ((IAtsWidgetDefinition) element).getDescription());
          }
          if (((IAtsWidgetDefinition) element).getHeight() > 0) {
             items.add("Height: " + ((IAtsWidgetDefinition) element).getHeight());
          }
-         if (Strings.isValid(((IAtsWidgetDefinition) element).getAtrributeName())) {
-            items.add("Tooltip: " + ((IAtsWidgetDefinition) element).getAtrributeName());
+         if (((IAtsWidgetDefinition) element).getAttributeType() != null) {
+            items.add("Tooltip: " + ((IAtsWidgetDefinition) element).getAttributeType().getName());
          }
          if (!((IAtsWidgetDefinition) element).getOptions().getXOptions().isEmpty()) {
             items.addAll(((IAtsWidgetDefinition) element).getOptions().getXOptions());

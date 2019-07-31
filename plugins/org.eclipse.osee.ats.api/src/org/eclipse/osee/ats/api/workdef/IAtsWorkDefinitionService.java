@@ -107,4 +107,6 @@ public interface IAtsWorkDefinitionService {
 
    void addRuleDefinition(IAtsRuleDefinition ruleDef);
 
+   XResultData validateWorkDefinitions();
+
 }

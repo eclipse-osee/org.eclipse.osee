@@ -45,4 +45,13 @@ public class AtsWorkDefEndpointImpl implements AtsWorkDefEndpointApi {
       return data.toString();
    }
 
+   @Override
+   @GET
+   @Path("validate")
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData validate() {
+      XResultData results = atsApi.getWorkDefinitionService().validateWorkDefinitions();
+      return results;
+   }
+
 }

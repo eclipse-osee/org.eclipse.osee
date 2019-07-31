@@ -374,13 +374,11 @@ public class ActionPage {
    private void addWidgetDefault(StringBuilder sb, IAtsWorkItem workItem, IAtsWidgetDefinition widget) {
       sb.append(widget.getName());
       try {
-         String widgetAttrName = widget.getAtrributeName();
-         if (widgetAttrName != null) {
+         AttributeTypeToken attrType = widget.getAttributeType();
+         if (attrType != null) {
             sb.append(": <b>");
-            AttributeTypeToken attributeType =
-               atsApi.getAttributeResolver().getAttributeType(widget.getAtrributeName());
             Collection<String> attributesToStringList =
-               atsApi.getAttributeResolver().getAttributesToStringList(workItem, attributeType);
+               atsApi.getAttributeResolver().getAttributesToStringList(workItem, attrType);
             if (attributesToStringList.size() > 1) {
                sb.append(attributesToStringList.toString());
             } else if (attributesToStringList.size() == 1) {

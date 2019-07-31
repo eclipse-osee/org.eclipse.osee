@@ -10,14 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef;
 
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsWidgetDefinition extends IAtsLayoutItem {
 
-   /**
-    * Identification
-    */
    @Override
    public String getName();
 
@@ -25,17 +24,8 @@ public interface IAtsWidgetDefinition extends IAtsLayoutItem {
 
    public String getDescription();
 
-   /**
-    * Storage returns name of the attribute type used for storage, if there is no attribute storage, this will return
-    * null
-    */
-   public String getAtrributeName();
-
    public String getDefaultValue();
 
-   /**
-    * Options
-    */
    public boolean is(WidgetOption widgetOption);
 
    public IAtsWidgetOptionHandler getOptions();
@@ -48,9 +38,6 @@ public interface IAtsWidgetDefinition extends IAtsLayoutItem {
 
    public void set(WidgetOption widgetOption);
 
-   /**
-    * Widget Type
-    */
    public String getXWidgetName();
 
    public void setXWidgetName(String xWidgetName);
@@ -61,5 +48,7 @@ public interface IAtsWidgetDefinition extends IAtsLayoutItem {
 
    @Override
    public String toString();
+
+   public AttributeTypeToken getAttributeType();
 
 }

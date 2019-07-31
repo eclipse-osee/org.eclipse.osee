@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 public final class AtsAttributeTypes {
 
    public static final Map<String, AttributeTypeToken> nameToTypeMap = new HashMap<>();
+   public static final Map<Long, AttributeTypeToken> idToTypeMap = new HashMap<>();
 
    // @formatter:off
    public static final AttributeTypeToken ActionDetailsFormat = createType(1152921504606847199L, "Action Details Format", "Format of string when push Action Details Copy button on SMA Workflow Editor.");
@@ -159,13 +160,19 @@ public final class AtsAttributeTypes {
    public static AttributeTypeToken createType(Long id, String name) {
       AttributeTypeToken type = AttributeTypeToken.valueOf(id, "ats." + name);
       nameToTypeMap.put(type.getName(), type);
+      idToTypeMap.put(type.getId(), type);
       return type;
    }
 
    public static AttributeTypeToken createType(Long id, String name, String description) {
       AttributeTypeToken type = AttributeTypeToken.valueOf(id, "ats." + name, description);
       nameToTypeMap.put(type.getName(), type);
+      idToTypeMap.put(type.getId(), type);
       return type;
+   }
+
+   public static AttributeTypeToken getTypeById(Long id) {
+      return idToTypeMap.get(id);
    }
 
    public static AttributeTypeToken getTypeByName(String name) {
