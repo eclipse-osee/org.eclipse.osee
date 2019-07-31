@@ -24,7 +24,7 @@ public class TaskAddActionTest extends AbstractAtsActionRunTest {
 
          @Override
          public void taskAddActionHandler() {
-            System.out.println(" ");
+            // do nothing
          }
       });
    }

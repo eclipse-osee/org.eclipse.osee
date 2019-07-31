@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.navigate;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -21,14 +19,5 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({SubscribeUtilityTest.class})
 public class AtsTest_Navigate_Suite {
-
-   @BeforeClass
-   public static void setUp() throws Exception {
-      System.out.println("\n\nBegin " + AtsTest_Navigate_Suite.class.getSimpleName());
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      System.out.println("End " + AtsTest_Navigate_Suite.class.getSimpleName());
-   }
+   // do nothing
 }

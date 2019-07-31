@@ -24,7 +24,7 @@ public class RefreshDirtyActionTest extends AbstractAtsActionRunTest {
 
          @Override
          public void onDirtied() {
-            System.out.println(" ");
+            // do nothing
          }
       });
    }

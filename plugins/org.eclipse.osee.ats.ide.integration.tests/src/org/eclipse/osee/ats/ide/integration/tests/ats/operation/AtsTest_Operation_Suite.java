@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.operation;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -21,14 +19,5 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ModifyActionableItemsBlamTest.class, MoveTeamWorkflowsOperationTest.class})
 public class AtsTest_Operation_Suite {
-
-   @BeforeClass
-   public static void setUp() throws Exception {
-      System.out.println("\n\nBegin " + AtsTest_Operation_Suite.class.getSimpleName());
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      System.out.println("End " + AtsTest_Operation_Suite.class.getSimpleName());
-   }
+   // do nothing
 }

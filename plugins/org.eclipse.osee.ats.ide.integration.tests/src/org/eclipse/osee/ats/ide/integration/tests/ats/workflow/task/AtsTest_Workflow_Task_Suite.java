@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.task;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -22,14 +20,5 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({TaskRelatedToChangedArtifactTest.class, AtsTaskEndpointImplTest.class //
 })
 public class AtsTest_Workflow_Task_Suite {
-
-   @BeforeClass
-   public static void setUp() throws Exception {
-      System.out.println("\n\nBegin " + AtsTest_Workflow_Task_Suite.class.getSimpleName());
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      System.out.println("End " + AtsTest_Workflow_Task_Suite.class.getSimpleName());
-   }
+   // do nothing
 }

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -40,13 +38,5 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 public class AtsTest_Column_Suite {
-   @BeforeClass
-   public static void setUp() throws Exception {
-      System.out.println("\n\nBegin " + AtsTest_Column_Suite.class.getSimpleName());
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      System.out.println("End " + AtsTest_Column_Suite.class.getSimpleName());
-   }
+   // do nothing
 }

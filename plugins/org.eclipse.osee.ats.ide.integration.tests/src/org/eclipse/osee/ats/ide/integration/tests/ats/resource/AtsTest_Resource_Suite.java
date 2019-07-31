@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.resource;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -33,13 +31,5 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 public class AtsTest_Resource_Suite {
-   @BeforeClass
-   public static void setUp() throws Exception {
-      System.out.println("\n\nBegin " + AtsTest_Resource_Suite.class.getSimpleName());
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      System.out.println("End " + AtsTest_Resource_Suite.class.getSimpleName());
-   }
+   // do nothing
 }

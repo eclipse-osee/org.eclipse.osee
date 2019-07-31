@@ -128,7 +128,6 @@ public class AtsTest_DemoPopulateAndTest_Suite {
          assertTrue(
             "Authenticated user should be \"3333\" and is not.  Check that Demo Application Server is being run.",
             AtsClientService.get().getUserService().getCurrentUser().getUserId().equals("3333"));
-         System.out.println("End Populate Demo DB...\n");
       } catch (Exception ex) {
          Assert.fail(Lib.exceptionToString(ex));
       }

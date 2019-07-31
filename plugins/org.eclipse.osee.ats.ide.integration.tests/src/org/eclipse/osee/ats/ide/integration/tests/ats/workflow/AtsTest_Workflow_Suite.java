@@ -15,8 +15,6 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.review.AtsTest_Wo
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.task.AtsTest_Workflow_Task_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition.AtsTest_Workflow_Transition_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.util.AtsTest_Workflow_Util_Suite;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -41,14 +39,4 @@ import org.junit.runners.Suite;
    //
 })
 public class AtsTest_Workflow_Suite {
-
-   @BeforeClass
-   public static void setUp() throws Exception {
-      System.out.println("\n\nBegin " + AtsTest_Workflow_Suite.class.getSimpleName());
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      System.out.println("End " + AtsTest_Workflow_Suite.class.getSimpleName());
-   }
 }

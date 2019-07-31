@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.ide.integration.tests.framework.skynet.core.artifact;
 
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -24,15 +23,8 @@ import org.junit.runners.Suite;
    ArtifactTypeManagerTest.class, //
 })
 public class SkyentCoreArtifact_Suite {
-
    @BeforeClass
    public static void setUp() throws Exception {
       DemoUtil.checkDbInitAndPopulateSuccess();
-      System.out.println("\n\nBegin " + SkyentCoreArtifact_Suite.class.getSimpleName());
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      System.out.println("End " + SkyentCoreArtifact_Suite.class.getSimpleName());
    }
 }

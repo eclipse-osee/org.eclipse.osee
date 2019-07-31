@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.ide.integration.tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.eclipse.osee.ats.ide.integration.AtsClientIntegrationTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.AtsTest_Ats_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.actions.AtsTest_Action_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition.TransitionManagerTest;
@@ -24,7 +23,6 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -40,12 +38,12 @@ import org.junit.runners.Suite;
    TransitionManagerTest.class,
    AtsTest_Action_Suite.class //
 })
-public class AtsTest_AllAts_Suite {
 
+public class AtsTest_AllAts_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
+      System.out.println("Begin Integration Tests");
       DemoUtil.checkDbInitAndPopulateSuccess();
-      System.out.println("\nBegin " + AtsTest_AllAts_Suite.class.getSimpleName());
       OseeProperties.setIsInTest(true);
       assertTrue("Demo Application Server must be running.",
          ClientSessionManager.getAuthenticationProtocols().contains("demo"));
@@ -59,10 +57,5 @@ public class AtsTest_AllAts_Suite {
          UserManager.getUser().getUserId());
 
       RenderingUtil.setPopupsAllowed(false);
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      System.out.println("End " + AtsClientIntegrationTestSuite.class.getSimpleName() + "\n\n");
    }
 }

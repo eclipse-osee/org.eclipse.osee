@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet;
 
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -26,15 +25,8 @@ import org.junit.runners.Suite;
    WordTemplateProcessorTest.class //
 })
 public class FrameworkUiSkynetTest_Suite {
-
    @BeforeClass
    public static void setUp() throws Exception {
       DemoUtil.checkDbInitAndPopulateSuccess();
-      System.out.println("\n\nBegin " + FrameworkUiSkynetTest_Suite.class.getSimpleName());
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      System.out.println("End " + FrameworkUiSkynetTest_Suite.class.getSimpleName());
    }
 }

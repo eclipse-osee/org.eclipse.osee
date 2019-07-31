@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.util;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -24,14 +22,4 @@ import org.junit.runners.Suite;
    DuplicateWorkflowAsIsOperationTest.class //
 })
 public class AtsTest_Workflow_Util_Suite {
-
-   @BeforeClass
-   public static void setUp() throws Exception {
-      System.out.println("\n\nBegin " + AtsTest_Workflow_Util_Suite.class.getSimpleName());
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      System.out.println("End " + AtsTest_Workflow_Util_Suite.class.getSimpleName());
-   }
 }

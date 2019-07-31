@@ -35,7 +35,6 @@ public class ClientEndpointTest {
    @BeforeClass
    public static void setUp() throws Exception {
       DemoUtil.checkDbInitAndPopulateSuccess();
-      System.out.println("\n\nBegin " + ClientEndpointTest.class.getSimpleName());
    }
 
    @Test

@@ -11,8 +11,6 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.config;
 
 import org.eclipse.osee.ats.ide.integration.tests.ats.config.copy.AtsTest_Demo_Copy_Suite;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -36,13 +34,5 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 public class AtsTest_Config_Suite {
-   @BeforeClass
-   public static void setUp() throws Exception {
-      System.out.println("\n\nBegin " + AtsTest_Config_Suite.class.getSimpleName());
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      System.out.println("End " + AtsTest_Config_Suite.class.getSimpleName());
-   }
+   // do nothing
 }

@@ -102,12 +102,10 @@ public class DatabaseInitializationOperation extends AbstractOperation {
       }
       if (line.equalsIgnoreCase("Y")) {
          isConfigured = true;
-         System.out.println("Begin Database Initialization...");
 
          OseeClientProperties.setInDbInit(true);
          try {
             processTasks();
-            System.out.println("Database Initialization Complete");
          } catch (Exception ex) {
             OseeLog.log(DatabaseInitializationOperation.class, Level.SEVERE, ex);
             OseeCoreException.wrapAndThrow(ex);

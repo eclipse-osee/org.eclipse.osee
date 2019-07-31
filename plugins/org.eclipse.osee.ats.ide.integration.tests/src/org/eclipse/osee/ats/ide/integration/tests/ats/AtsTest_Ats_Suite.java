@@ -28,8 +28,6 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.util.AtsTest_Util_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.version.AtsTest_Version_Search_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTest_Workflow_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.world.search.AtsTest_World_Search_Suite;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -58,13 +56,4 @@ import org.junit.runners.Suite;
    AtsTest_World_Search_Suite.class,
    AtsTest_Version_Search_Suite.class,})
 public class AtsTest_Ats_Suite {
-   @BeforeClass
-   public static void setUp() throws Exception {
-      System.out.println("\n\nBegin " + AtsTest_Ats_Suite.class.getSimpleName());
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      System.out.println("End " + AtsTest_Ats_Suite.class.getSimpleName());
-   }
 }

@@ -35,8 +35,8 @@ import org.junit.runners.Suite;
 public class DemoDbPopulateSuite {
    @BeforeClass
    public static void setUp() throws Exception {
+      System.out.println("Begin Database Populate");
       DemoUtil.checkDbInitSuccess();
-      System.out.println("\nBegin " + DemoDbPopulateSuite.class.getSimpleName());
       OseeProperties.setIsInTest(true);
       assertTrue("Demo Application Server must be running.",
          ClientSessionManager.getAuthenticationProtocols().contains("demo"));
@@ -48,7 +48,7 @@ public class DemoDbPopulateSuite {
    }
 
    @AfterClass
-   public static void tearDown() throws Exception {
-      System.out.println("End " + DemoDbPopulateSuite.class.getSimpleName() + "\n\n");
+   public static void cleanup() throws Exception {
+      System.out.println("End Database Populate\n");
    }
 }

@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition;
 
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -28,11 +27,5 @@ public class AtsTest_Workflow_Transition_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
       OseeProperties.setIsInTest(true);
-      System.out.println("\n\nBegin " + AtsTest_Workflow_Transition_Suite.class.getSimpleName());
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      System.out.println("End " + AtsTest_Workflow_Transition_Suite.class.getSimpleName());
    }
 }

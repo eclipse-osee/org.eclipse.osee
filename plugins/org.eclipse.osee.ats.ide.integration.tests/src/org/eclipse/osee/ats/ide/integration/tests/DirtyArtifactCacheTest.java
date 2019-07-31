@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 
@@ -30,6 +31,11 @@ public class DirtyArtifactCacheTest {
    @BeforeClass
    public static void setUp() throws Exception {
       DemoUtil.checkDbInitAndPopulateSuccess();
+   }
+
+   @AfterClass
+   public static void cleanup() throws Exception {
+      System.out.println("End Integration Tests");
    }
 
    @org.junit.Test

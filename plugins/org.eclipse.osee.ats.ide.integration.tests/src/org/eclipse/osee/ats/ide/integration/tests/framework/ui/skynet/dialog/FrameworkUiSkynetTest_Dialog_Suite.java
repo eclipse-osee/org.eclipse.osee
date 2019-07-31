@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.dialog;
 
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -26,15 +25,8 @@ import org.junit.runners.Suite;
    FilteredTreeArtifactTypeDialogTest.class, //
 })
 public class FrameworkUiSkynetTest_Dialog_Suite {
-
    @BeforeClass
    public static void setUp() throws Exception {
       DemoUtil.checkDbInitAndPopulateSuccess();
-      System.out.println("\n\nBegin " + FrameworkUiSkynetTest_Dialog_Suite.class.getSimpleName());
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      System.out.println("End " + FrameworkUiSkynetTest_Dialog_Suite.class.getSimpleName());
    }
 }

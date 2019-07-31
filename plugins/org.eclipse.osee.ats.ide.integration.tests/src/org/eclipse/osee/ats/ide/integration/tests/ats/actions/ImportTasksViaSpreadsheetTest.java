@@ -30,7 +30,7 @@ public class ImportTasksViaSpreadsheetTest {
 
          @Override
          public void importCompleted() {
-            System.out.println(" ");
+            // do nothing
          }
 
       });

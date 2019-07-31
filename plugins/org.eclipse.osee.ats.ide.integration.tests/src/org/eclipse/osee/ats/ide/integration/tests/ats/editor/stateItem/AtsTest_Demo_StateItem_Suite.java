@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.editor.stateItem;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -28,13 +26,5 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 public class AtsTest_Demo_StateItem_Suite {
-   @BeforeClass
-   public static void setUp() throws Exception {
-      System.out.println("\n\nBegin " + AtsTest_Demo_StateItem_Suite.class.getSimpleName());
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      System.out.println("End " + AtsTest_Demo_StateItem_Suite.class.getSimpleName());
-   }
+   // do nothing
 }

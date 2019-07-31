@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.config.copy;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -25,14 +23,5 @@ import org.junit.runners.Suite;
    CopyAtsUtilTest.class,
    CopyAtsValidationTest.class})
 public class AtsTest_Demo_Copy_Suite {
-
-   @BeforeClass
-   public static void setUp() throws Exception {
-      System.out.println("\n\nBegin " + AtsTest_Demo_Copy_Suite.class.getSimpleName());
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      System.out.println("End " + AtsTest_Demo_Copy_Suite.class.getSimpleName());
-   }
+   // do nothing
 }

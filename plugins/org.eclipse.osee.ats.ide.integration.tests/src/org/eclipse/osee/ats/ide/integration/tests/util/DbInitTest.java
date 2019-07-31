@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.ide.integration.tests.util;
 
 import static org.junit.Assert.assertTrue;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.ide.demo.DemoChoice;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -47,7 +46,7 @@ public class DbInitTest {
       List<String> protocols = ClientSessionManager.getAuthenticationProtocols();
       Assert.assertTrue("Application Server must be running." + protocols, protocols.contains("demo"));
 
-      OseeLog.log(DbInitTest.class, Level.INFO, "Begin Database Initialization...");
+      System.out.println("\nBegin Database Initialization");
 
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       OseeLog.registerLoggerListener(monitorLog);
@@ -55,7 +54,6 @@ public class DbInitTest {
       DatabaseInitOpFactory.executeWithoutPrompting(DemoChoice.ATS_CLIENT_DEMO);
 
       TestUtil.severeLoggingEnd(monitorLog);
-      OseeLog.log(DbInitTest.class, Level.INFO, "Completed database initialization");
       wasDbInitSuccessful = true;
 
       if (wasDbInitSuccessful) {
@@ -77,9 +75,11 @@ public class DbInitTest {
       }
 
       OseeProperties.setIsInTest(false);
-      System.out.println("End database initialization...\n");
 
       //Ensure that all workDefs loaded without error
       AtsClientService.get().getWorkDefinitionService().getAllWorkDefinitions();
+
+      System.out.println("End Database Initialization\n");
+
    }
 }

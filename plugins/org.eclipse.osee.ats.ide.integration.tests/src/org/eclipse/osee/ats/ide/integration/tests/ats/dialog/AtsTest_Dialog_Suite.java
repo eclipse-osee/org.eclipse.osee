@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.dialog;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -29,14 +27,5 @@ import org.junit.runners.Suite;
    TeamDefinitionTreeWithChildrenDialogTest.class //
 })
 public class AtsTest_Dialog_Suite {
-
-   @BeforeClass
-   public static void setUp() throws Exception {
-      System.out.println("\n\nBegin " + AtsTest_Dialog_Suite.class.getSimpleName());
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      System.out.println("End " + AtsTest_Dialog_Suite.class.getSimpleName());
-   }
+   // do nothing
 }

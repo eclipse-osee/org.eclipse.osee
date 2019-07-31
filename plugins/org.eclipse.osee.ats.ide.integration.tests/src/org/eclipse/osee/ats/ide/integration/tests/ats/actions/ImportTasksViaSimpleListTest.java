@@ -30,7 +30,7 @@ public class ImportTasksViaSimpleListTest {
 
          @Override
          public void importCompleted() {
-            System.out.println(" ");
+            // do nothing
          }
 
       });
