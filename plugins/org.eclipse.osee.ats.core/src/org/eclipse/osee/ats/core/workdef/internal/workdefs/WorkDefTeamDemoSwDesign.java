@@ -137,8 +137,7 @@ public class WorkDefTeamDemoSwDesign extends AbstractWorkDef {
          .andDecisionReviewBuilder(implementCreateBranch) //
          .andPeerReviewBuilder(implementCommitBranch) //
          .andLayout( //
-            new WidgetDefinition("Working Branch", "XWorkingBranch"), //
-            new WidgetDefinition("Commit Manager", "XCommitManager"), //
+            getWorkingBranchWidgetComposite(), new WidgetDefinition("Commit Manager", "XCommitManager"), //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
             new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
             new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));

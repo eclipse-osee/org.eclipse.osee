@@ -35,15 +35,18 @@ public abstract class AbstractWorkDef implements IAtsWorkDefinitionBuilder {
    abstract public WorkDefinition build();
 
    protected CompositeLayoutItem getWorkingBranchWidgetComposite() {
-      return new CompositeLayoutItem(16, //
-         new WidgetDefinition("XWorkingBranchButtonCreate", "XWorkingBranchButtonCreate"), //
-         new WidgetDefinition("XWorkingBranchButtonArtifactExplorer", "XWorkingBranchButtonArtifactExplorer"), //
-         new WidgetDefinition("XWorkingBranchButtonChangeReport", "XWorkingBranchButtonChangeReport"), //
-         new WidgetDefinition("XWorkingBranchButtonDelete", "XWorkingBranchButtonDelete"), //
-         new WidgetDefinition("XWorkingBranchButtonFavorites", "XWorkingBranchButtonFavorites"), //
-         new WidgetDefinition("XWorkingBranchButtonLock", "XWorkingBranchButtonLock"), //
-         new WidgetDefinition("XWorkingBranchUpdate", "XWorkingBranchUpdate"), //
-         new WidgetDefinition("XWorkingBranchButtonDeleteMergeBranches", "XWorkingBranchButtonDeleteMergeBranches") //
+      return new CompositeLayoutItem(2, //
+         new WidgetDefinition("XWorkingBranchLabel", "XWorkingBranchLabel"), //
+         new CompositeLayoutItem(16, //
+            new WidgetDefinition("XWorkingBranchButtonCreate", "XWorkingBranchButtonCreate"), //
+            new WidgetDefinition("XWorkingBranchButtonArtifactExplorer", "XWorkingBranchButtonArtifactExplorer"), //
+            new WidgetDefinition("XWorkingBranchButtonChangeReport", "XWorkingBranchButtonChangeReport"), //
+            new WidgetDefinition("XWorkingBranchButtonDelete", "XWorkingBranchButtonDelete"), //
+            new WidgetDefinition("XWorkingBranchButtonFavorites", "XWorkingBranchButtonFavorites"), //
+            new WidgetDefinition("XWorkingBranchButtonLock", "XWorkingBranchButtonLock"), //
+            new WidgetDefinition("XWorkingBranchUpdate", "XWorkingBranchUpdate"), //
+            new WidgetDefinition("XWorkingBranchButtonDeleteMergeBranches", "XWorkingBranchButtonDeleteMergeBranches") //
+         ) //
       );
    }
 
