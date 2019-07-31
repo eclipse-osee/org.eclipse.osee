@@ -216,9 +216,11 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
          Displays.pendInDisplayThread(new Runnable() {
             @Override
             public void run() {
-               StructuredSelection newSelection = new StructuredSelection(Arrays.asList(expandToArtifact));
-               worldXViewer.expandToLevel(expandToArtifact, 1);
-               worldXViewer.setSelection(newSelection);
+               if (Widgets.isAccessible(worldXViewer.getTree())) {
+                  StructuredSelection newSelection = new StructuredSelection(Arrays.asList(expandToArtifact));
+                  worldXViewer.expandToLevel(expandToArtifact, 1);
+                  worldXViewer.setSelection(newSelection);
+               }
             }
          });
       }
