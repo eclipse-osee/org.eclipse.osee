@@ -59,7 +59,7 @@ public class UserNavigateViewItems implements XNavigateViewItems, IXNavigateComm
          this.ensurePopulatedRanOnce = true;
 
          try {
-            addOseePeerSectionChildren(null);
+            addOseeUserSectionChildren(null);
 
             XNavigateCommonItems.addCommonNavigateItems(items, Arrays.asList(getSectionId()));
          } catch (OseeCoreException ex) {
@@ -68,7 +68,7 @@ public class UserNavigateViewItems implements XNavigateViewItems, IXNavigateComm
       }
    }
 
-   public void addOseePeerSectionChildren(XNavigateItem parentItem) {
+   public void addOseeUserSectionChildren(XNavigateItem parentItem) {
       try {
          items.add(new XNavigateItemAction(parentItem, new OpenUsersInMassEditor("Open Active Users", Active.Active),
             FrameworkImage.USER));
@@ -99,7 +99,7 @@ public class UserNavigateViewItems implements XNavigateViewItems, IXNavigateComm
          boolean admin = UserGroupService.getOseeAdmin().isCurrentUserMember();
          if (UserGroupService.isInUserGrp(CoreUserGroups.Everyone) || admin) {
             XNavigateItem reviewItem = new XNavigateItem(null, "User Management", FrameworkImage.USER);
-            addOseePeerSectionChildren(reviewItem);
+            addOseeUserSectionChildren(reviewItem);
             items.add(reviewItem);
          }
       } catch (OseeCoreException ex) {

@@ -60,7 +60,7 @@ public class XResultDataTest {
    public void testLogErrorWithFormat() {
       XResultData rd = new XResultData();
       rd.errorf("log %s string", "this");
-      Assert.assertEquals("Error: log this string\n", rd.toString());
+      Assert.assertEquals("Error: log this string", rd.toString());
    }
 
    @Test
@@ -74,7 +74,7 @@ public class XResultDataTest {
    public void testLogWarningWithFormat() {
       XResultData rd = new XResultData();
       rd.warningf("log %s string", "this");
-      Assert.assertEquals("Warning: log this string\n", rd.toString());
+      Assert.assertEquals("Warning: log this string", rd.toString());
    }
 
    @Test

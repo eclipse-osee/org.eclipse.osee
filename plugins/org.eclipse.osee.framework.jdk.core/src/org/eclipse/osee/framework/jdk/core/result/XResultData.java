@@ -113,7 +113,7 @@ public class XResultData {
    }
 
    public void errorf(String formatStr, Object... objs) {
-      logStr(Type.Severe, String.format(formatStr + "\n", objs));
+      logStr(Type.Severe, String.format(formatStr, objs));
    }
 
    /**
@@ -124,7 +124,7 @@ public class XResultData {
    }
 
    public void warningf(String formatStr, Object... objs) {
-      logStr(Type.Warning, String.format(formatStr + "\n", objs));
+      logStr(Type.Warning, String.format(formatStr, objs));
    }
 
    public boolean isEmpty() {
