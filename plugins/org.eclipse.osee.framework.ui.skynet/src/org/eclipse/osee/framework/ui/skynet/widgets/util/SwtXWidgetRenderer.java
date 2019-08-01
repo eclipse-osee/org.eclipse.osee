@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -30,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IAttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDslEditorWidgetDam;
@@ -39,7 +41,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -237,6 +242,19 @@ public class SwtXWidgetRenderer {
          }
 
          xWidget.addXModifiedListener(refreshRequiredModListener);
+
+         if (Strings.isValid(xWidgetLayoutData.getDoubleClickText())) {
+            if (Widgets.isAccessible(xWidget.getLabelWidget())) {
+               xWidget.getLabelWidget().addMouseListener(new MouseAdapter() {
+                  @Override
+                  public void mouseDoubleClick(MouseEvent e) {
+                     super.mouseDoubleClick(e);
+                     ResultsEditor.open("Error", "Error: " + xWidget.getLabel(),
+                        AHTML.simplePage(xWidgetLayoutData.getDoubleClickText()));
+                  }
+               });
+            }
+         }
 
          if (dynamicWidgetLayoutListener != null) {
             dynamicWidgetLayoutListener.widgetCreated(xWidget, toolkit, artifact, this, xModListener, isEditable);

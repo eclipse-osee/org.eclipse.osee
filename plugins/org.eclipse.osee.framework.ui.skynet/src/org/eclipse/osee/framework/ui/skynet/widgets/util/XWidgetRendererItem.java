@@ -42,6 +42,7 @@ public class XWidgetRendererItem implements Cloneable {
    private final XOptionHandler xOptionHandler = new XOptionHandler();
    private Artifact artifact;
    private Object object;
+   private String doubleClickText;
 
    public XWidgetRendererItem(SwtXWidgetRenderer dynamicXWidgetLayout, XOption... xOption) {
       this.dynamicXWidgetLayout = dynamicXWidgetLayout;
@@ -255,6 +256,14 @@ public class XWidgetRendererItem implements Cloneable {
 
    public void setStoreId(Long storeId) {
       this.storeId = storeId;
+   }
+
+   public void setDoubleClickText(String doubleClickText) {
+      this.doubleClickText = doubleClickText;
+   }
+
+   public String getDoubleClickText() {
+      return doubleClickText;
    }
 
 }

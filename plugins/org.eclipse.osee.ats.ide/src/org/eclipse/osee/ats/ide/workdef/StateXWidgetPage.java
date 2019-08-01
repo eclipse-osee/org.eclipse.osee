@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -326,36 +327,50 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
     * TODO This will eventually go away and ATS pages will be generated straight from WidgetDefinitions.
     */
    private XWidgetRendererItem processWidgetDefinition(IAtsWidgetDefinition widgetDef, AbstractWorkflowArtifact sma) {
-      XWidgetRendererItem data = new XWidgetRendererItem(getDynamicXWidgetLayout());
-      data.setDefaultValue(widgetDef.getDefaultValue());
-      data.setHeight(widgetDef.getHeight());
-      if (widgetDef.getAttributeType() != null) {
-         data.setStoreName(widgetDef.getAttributeType().getName());
-         data.setStoreId(widgetDef.getAttributeType().getId());
-      }
-      data.setToolTip(widgetDef.getToolTip());
-      data.setId(widgetDef.getName());
-      data.setXWidgetName(widgetDef.getXWidgetName());
-      data.setArtifact(sma);
-      data.setName(widgetDef.getName());
-      data.setObject(widgetDef);
-      if (widgetDef.is(WidgetOption.REQUIRED_FOR_TRANSITION)) {
-         data.getXOptionHandler().add(XOption.REQUIRED);
-      } else if (widgetDef.is(WidgetOption.REQUIRED_FOR_COMPLETION)) {
-         data.getXOptionHandler().add(XOption.REQUIRED_FOR_COMPLETION);
-      }
-      for (WidgetOption widgetOpt : widgetDef.getOptions().getXOptions()) {
-         XOption option = null;
-         try {
-            option = XOption.valueOf(widgetOpt.name());
-         } catch (IllegalArgumentException ex) {
-            // do nothing
+      XWidgetRendererItem data = null;
+      try {
+         data = new XWidgetRendererItem(getDynamicXWidgetLayout());
+         data.setDefaultValue(widgetDef.getDefaultValue());
+         data.setHeight(widgetDef.getHeight());
+         if (widgetDef.getAttributeType() != null) {
+            data.setStoreName(widgetDef.getAttributeType().getName());
+            data.setStoreId(widgetDef.getAttributeType().getId());
          }
-         if (option != null) {
-            data.getXOptionHandler().add(option);
+         data.setToolTip(widgetDef.getToolTip());
+         data.setId(widgetDef.getName());
+         data.setXWidgetName(widgetDef.getXWidgetName());
+         data.setArtifact(sma);
+         data.setName(widgetDef.getName());
+         data.setObject(widgetDef);
+         if (widgetDef.is(WidgetOption.REQUIRED_FOR_TRANSITION)) {
+            data.getXOptionHandler().add(XOption.REQUIRED);
+         } else if (widgetDef.is(WidgetOption.REQUIRED_FOR_COMPLETION)) {
+            data.getXOptionHandler().add(XOption.REQUIRED_FOR_COMPLETION);
          }
+         for (WidgetOption widgetOpt : widgetDef.getOptions().getXOptions()) {
+            XOption option = null;
+            try {
+               option = XOption.valueOf(widgetOpt.name());
+            } catch (IllegalArgumentException ex) {
+               // do nothing
+            }
+            if (option != null) {
+               data.getXOptionHandler().add(option);
+            }
+         }
+         addLayoutData(data);
+      } catch (Exception ex) {
+         data = new XWidgetRendererItem(getDynamicXWidgetLayout());
+         data.setId(Lib.generateArtifactIdAsInt().toString());
+         data.setXWidgetName("XLabel");
+         data.setName("Error: " + widgetDef.getName() + " (double-click to view error)");
+         data.setToolTip("Double-click to see error.");
+         data.setDoubleClickText(Lib.exceptionToString(ex));
+         OseeLog.logf(StateXWidgetPage.class, Level.SEVERE, ex, "Exception processing widget [%s]",
+            widgetDef.getName());
+         data.setObject(widgetDef);
+         addLayoutData(data);
       }
-      addLayoutData(data);
       return data;
    }
 
