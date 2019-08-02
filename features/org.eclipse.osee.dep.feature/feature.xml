@@ -28,7 +28,15 @@
    <includes
          id="org.eclipse.graphiti.feature.source"
          version="0.0.0"/>
-
+ 
+   <includes
+         id="org.eclipse.jgit.lfs"
+         version="5.0.0"/>
+   
+   <includes
+         id="org.eclipse.jgit.http.apache"
+         version="5.0.0"/>
+         
    <includes
          id="org.eclipse.gef"
          version="0.0.0"/>

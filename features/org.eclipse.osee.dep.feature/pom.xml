@@ -85,6 +85,8 @@
 								<feature id="org.eclipse.xtext.runtime" />
 								<feature id="org.eclipse.xtext.xbase" />
 								<feature id="org.eclipse.xtext.ui" />
+								<feature id="org.eclipse.jgit.lfs" />
+							  	<feature id="org.eclipse.jgit.http.apache" />
 								<plugin id="org.eclipse.uml2.codegen.ecore" />
 								<feature id="org.eclipse.core.runtime.feature" />
 								<feature id="org.eclipse.xtext.sdk" />

@@ -33,6 +33,8 @@
 							   <plugin id="org.eclipse.egit" />
 							   <feature id="org.eclipse.sdk" />
 							   <feature id="org.eclipse.sdk" />
+							   <feature id="org.eclipse.jgit.lfs" />
+							   <feature id="org.eclipse.jgit.http.apache" />
 							   <plugin id="org.eclipse.sdk" />
 							   <plugin id="javax.xml.bind" />
 							   <plugin id="javax.xml.stream" />
