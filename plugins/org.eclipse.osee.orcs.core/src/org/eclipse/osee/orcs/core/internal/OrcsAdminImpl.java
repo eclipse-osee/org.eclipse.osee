@@ -71,10 +71,10 @@ public class OrcsAdminImpl implements OrcsAdmin {
       dataStoreAdmin.createDataStore();
       orcsApi.getOrcsTypes().loadTypes(typeModel);
       new CreateSystemBranches(orcsApi, eventAdmin).create(typeModel);
-      createSynonymsAndGrants();
    }
 
-   private void createSynonymsAndGrants() {
+   @Override
+   public void createSynonymsAndGrants() {
       JdbcClient jdbcClient = dataStoreAdmin.getJdbcClient();
       for (String table : Arrays.asList("OSEE_ACCOUNT_SESSION", "OSEE_ACTIVITY", "OSEE_ACTIVITY_TYPE", "OSEE_ARTIFACT",
          "OSEE_ARTIFACT_ACL", "OSEE_ATTRIBUTE", "OSEE_BRANCH", "OSEE_BRANCH_ACL", "OSEE_CONFLICT",
@@ -83,8 +83,7 @@ public class OrcsAdminImpl implements OrcsAdmin {
          "OSEE_JOIN_ID4", "OSEE_JOIN_TRANSACTION", "OSEE_KEY_VALUE", "OSEE_MERGE", "OSEE_OAUTH_AUTHORIZATION",
          "OSEE_OAUTH_CLIENT_CREDENTIAL", "OSEE_OAUTH_TOKEN", "OSEE_PERMISSION", "OSEE_RELATION_LINK",
          "OSEE_SCHEMA_VERSION", "OSEE_SEARCH_TAGS", "OSEE_SEQUENCE", "OSEE_SERVER_LOOKUP", "OSEE_SESSION",
-         "OSEE_TAG_GAMMA_QUEUE", "OSEE_TTE_CLASSROOMS", "OSEE_TTE_COURSE", "OSEE_TTE_SESSION", "OSEE_TTE_USER",
-         "OSEE_TTE_USERSESSIONS", "OSEE_TUPLE2", "OSEE_TUPLE3", "OSEE_TUPLE4", "OSEE_TXS", "OSEE_TXS_ARCHIVED",
+         "OSEE_TAG_GAMMA_QUEUE", "OSEE_TUPLE2", "OSEE_TUPLE3", "OSEE_TUPLE4", "OSEE_TXS", "OSEE_TXS_ARCHIVED",
          "OSEE_TX_DETAILS")) {
          try {
             jdbcClient.runCall("create public synonym " + table + " for " + table);

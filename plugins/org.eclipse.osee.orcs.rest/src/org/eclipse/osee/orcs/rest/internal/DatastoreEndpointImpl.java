@@ -59,6 +59,13 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    }
 
    @Override
+   public void synonyms() {
+      activityLog.setEnabled(false);
+      orcsApi.getAdminOps().createSynonymsAndGrants();
+      activityLog.setEnabled(true);
+   }
+
+   @Override
    public Response migrate() {
       activityLog.setEnabled(false);
 

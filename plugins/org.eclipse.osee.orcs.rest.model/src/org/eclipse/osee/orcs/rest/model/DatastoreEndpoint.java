@@ -37,6 +37,11 @@ public interface DatastoreEndpoint {
    void initialize(String typeModel);
 
    @POST
+   @Path("synonyms")
+   @Consumes(MediaType.TEXT_PLAIN)
+   void synonyms();
+
+   @POST
    @Path("migrate")
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
    Response migrate();

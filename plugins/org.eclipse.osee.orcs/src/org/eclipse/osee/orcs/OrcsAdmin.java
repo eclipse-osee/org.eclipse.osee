@@ -36,4 +36,6 @@ public interface OrcsAdmin {
    void createUsers(TransactionBuilder tx, Iterable<UserToken> users);
 
    void createUser(TransactionBuilder tx, UserToken userToken);
+
+   void createSynonymsAndGrants();
 }
