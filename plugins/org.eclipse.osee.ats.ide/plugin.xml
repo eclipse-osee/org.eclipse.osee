@@ -28,7 +28,7 @@
             class="org.eclipse.osee.ats.ide.editor.WorkflowEditor"
             icon="OSEE-INF/images/workflow.gif"
             default="false"            
-            contributorClass="org.eclipse.osee.ats.ide.editor.WfeContributor"
+            contributorClass="org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfeContributor"
             id="org.eclipse.osee.ats.ide.editor.WorkflowEditor"
             name="ATS Workflow Editor"/>
          <editor
