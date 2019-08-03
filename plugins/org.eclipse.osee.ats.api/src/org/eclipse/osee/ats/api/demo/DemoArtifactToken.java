@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.config.tx.IAtsProgramArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsVersionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
@@ -219,16 +218,6 @@ public final class DemoArtifactToken {
    public static final ArtifactToken ProblemInDiagramTree_TeamWf = ArtifactToken.valueOf(789987789, DemoWorkflowTitles.PROBLEM_IN_DIAGRAM_TREE, COMMON, DemoArtifactTypes.DemoTestTeamWorkflow);
    public static final ArtifactToken ProblemWithTheGraphView_TeamWf = ArtifactToken.valueOf(431354978, DemoWorkflowTitles.PROBLEM_WITH_THE_GRAPH_VIEW_ACTION, COMMON, DemoArtifactTypes.DemoReqTeamWorkflow);
    public static final ArtifactToken ProblemWithTheUserWindow_TeamWf = ArtifactToken.valueOf(456794312, DemoWorkflowTitles.PROBLEM_WITH_THE_USER_WINDOW, COMMON, AtsArtifactTypes.TeamWorkflow);
-
-   //////////////////////////////////
-   // Work Definitions
-   //////////////////////////////////
-
-   public static final AtsWorkDefinitionToken WorkDef_Team_Demo_Code = AtsWorkDefinitionToken.valueOf(48427403L, "WorkDef_Team_Demo_Code");
-   public static final AtsWorkDefinitionToken WorkDef_Team_Demo_Test = AtsWorkDefinitionToken.valueOf(2892554L, "WorkDef_Team_Demo_Test");
-   public static final AtsWorkDefinitionToken WorkDef_Team_Demo_Req = AtsWorkDefinitionToken.valueOf(46891154L, "WorkDef_Team_Demo_Req");
-   public static final AtsWorkDefinitionToken WorkDef_Team_Demo_SwDesign = AtsWorkDefinitionToken.valueOf(3625963L, "WorkDef_Team_Demo_SwDesign");
-
    // @formatter:on
 
    private DemoArtifactToken() {

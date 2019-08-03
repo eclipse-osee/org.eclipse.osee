@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -28,6 +29,7 @@ import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
@@ -254,8 +256,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public boolean isStandAloneReview(IAtsAbstractReview review) {
-      return atsApi.getAttributeResolver().getAttributeCount(review, AtsAttributeTypes.ActionableItemReference) > 0;
+   public boolean isStandAloneReview(IAtsPeerToPeerReview peerRev) {
+      return atsApi.getAttributeResolver().getAttributeCount(peerRev, AtsAttributeTypes.ActionableItemReference) > 0;
    }
 
    @Override
@@ -289,6 +291,71 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
          }
       }
       return reviews;
+   }
+
+   @Override
+   public String getDefaultPeerReviewTitle(IAtsTeamWorkflow teamWf) {
+      return "Review \"" + teamWf.getArtifactTypeName() + "\" titled \"" + teamWf.getName() + "\"";
+   }
+
+   @Override
+   public IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsTeamWorkflow teamWf, String reviewTitle, String againstState, IAtsChangeSet changes) {
+      return createNewPeerToPeerReview(teamWf, reviewTitle, againstState, new Date(),
+         atsApi.getUserService().getCurrentUser(), changes);
+   }
+
+   @Override
+   public IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsWorkDefinition workDefinition, IAtsTeamWorkflow teamWf, String reviewTitle, String againstState, IAtsChangeSet changes) {
+      return createNewPeerToPeerReview(workDefinition, teamWf, teamWf.getTeamDefinition(), reviewTitle, againstState,
+         new Date(), atsApi.getUserService().getCurrentUser(), changes);
+   }
+
+   @Override
+   public IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsTeamWorkflow teamWF, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
+      return createNewPeerToPeerReview(
+         atsApi.getWorkDefinitionService().getWorkDefinitionForPeerToPeerReviewNotYetCreated(teamWF), teamWF,
+         teamWF.getTeamDefinition(), reviewTitle, againstState, createdDate, createdBy, changes);
+   }
+
+   @Override
+   public IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsActionableItem actionableItem, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
+      IAtsTeamDefinition teamDef = actionableItem.getTeamDefinitionInherited();
+      IAtsWorkDefinition workDefinition =
+         atsApi.getWorkDefinitionService().getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(
+            actionableItem);
+      Conditions.assertNotNull(workDefinition, "WorkDefinition");
+      IAtsPeerToPeerReview peerArt = createNewPeerToPeerReview(workDefinition, null, teamDef, reviewTitle, againstState,
+         createdDate, createdBy, changes);
+      atsApi.getWorkItemService().getActionableItemService().addActionableItem(peerArt, actionableItem, changes);
+      return peerArt;
+   }
+
+   private IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsWorkDefinition workDefinition, IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
+      IAtsPeerToPeerReview peerRev = (IAtsPeerToPeerReview) changes.createArtifact(AtsArtifactTypes.PeerToPeerReview,
+         reviewTitle == null ? "Peer to Peer Review" : reviewTitle);
+
+      if (teamWf != null) {
+         changes.relate(teamWf, AtsRelationTypes.TeamWorkflowToReview_Review, peerRev);
+      }
+
+      atsApi.getActionFactory().setAtsId(peerRev, teamDef, changes);
+
+      if (workDefinition == null) {
+         workDefinition = atsApi.getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(peerRev, null, changes);
+      } else {
+         atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(peerRev, workDefinition, changes);
+      }
+
+      atsApi.getActionFactory().initializeNewStateMachine(peerRev, null, createdDate, createdBy, workDefinition,
+         changes);
+
+      if (teamWf != null && againstState != null) {
+         changes.setSoleAttributeValue(peerRev, AtsAttributeTypes.RelatedToState, againstState);
+      }
+
+      changes.setSoleAttributeValue(peerRev, AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());
+      changes.add(peerRev);
+      return peerRev;
    }
 
 }

@@ -37,7 +37,7 @@ public interface IAtsConfigTxTeamDef {
 
    IAtsConfigTxTeamDef andTeamWorkflowArtifactType(ArtifactTypeToken artifactType);
 
-   IAtsConfigTxTeamDef andRelatedTaskWorkflowArtifactType(ArtifactTypeToken artifactType);
+   IAtsConfigTxTeamDef andRelatedTaskWorkflowDefinition(NamedId taskWorkDef);
 
    IAtsConfigTxTeamDef andRules(RuleDefinition... rules);
 
@@ -54,4 +54,6 @@ public interface IAtsConfigTxTeamDef {
    IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken version, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IOseeBranch... parallelVersions);
 
    IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken... verToks);
+
+   IAtsConfigTxTeamDef andRelatedPeerWorkflowDefinition(NamedId peerWorkDef);
 }

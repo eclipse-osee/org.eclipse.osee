@@ -14,9 +14,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -37,10 +39,6 @@ public interface IAtsReviewService {
 
    Collection<IAtsAbstractReview> getReviewsFromCurrentState(IAtsTeamWorkflow teamWf);
 
-   ReviewBlockType getReviewBlockType(IAtsAbstractReview reviewArt);
-
-   boolean isStandAloneReview(IAtsAbstractReview review);
-
    Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf);
 
    IAtsPeerReviewRoleManager createPeerReviewRoleManager(IAtsPeerToPeerReview peerRev);
@@ -58,5 +56,19 @@ public interface IAtsReviewService {
    boolean hasReviews(IAtsTeamWorkflow teamWf);
 
    Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf, IStateToken relatedToState);
+
+   boolean isStandAloneReview(IAtsPeerToPeerReview peerRev);
+
+   IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsActionableItem actionableItem, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes);
+
+   IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsTeamWorkflow teamWf, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes);
+
+   IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsWorkDefinition workDefinition, IAtsTeamWorkflow teamWf, String reviewTitle, String againstState, IAtsChangeSet changes);
+
+   IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsTeamWorkflow teamWf, String reviewTitle, String againstState, IAtsChangeSet changes);
+
+   String getDefaultPeerReviewTitle(IAtsTeamWorkflow teamWf);
+
+   ReviewBlockType getReviewBlockType(IAtsAbstractReview review);
 
 }

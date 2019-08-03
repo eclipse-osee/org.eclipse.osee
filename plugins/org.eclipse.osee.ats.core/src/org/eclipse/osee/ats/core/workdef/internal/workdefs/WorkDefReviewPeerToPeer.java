@@ -14,6 +14,7 @@ import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.HORIZONTAL_LABEL;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
@@ -33,6 +34,10 @@ public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
 
    public WorkDefReviewPeerToPeer() {
       super(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer);
+   }
+
+   public WorkDefReviewPeerToPeer(AtsWorkDefinitionToken workDefToken) {
+      super(workDefToken);
    }
 
    @Override

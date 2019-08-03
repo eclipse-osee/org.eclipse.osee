@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -38,7 +37,6 @@ public class ReviewDefectItem {
    private Disposition disposition = Disposition.None;
    private InjectionActivity injectionActivity = InjectionActivity.None;
    private boolean closed = false;
-   private AtsApi atsApi;
    public static enum Severity {
       None,
       Major,
@@ -53,11 +51,6 @@ public class ReviewDefectItem {
       }
 
    };
-
-   public ReviewDefectItem(AtsApi atsApi) {
-      this.atsApi = atsApi;
-      userId = atsApi.getUserService().getCurrentUser().getUserId();
-   }
 
    public ReviewDefectItem(IAtsUser user, Severity severity, Disposition disposition, InjectionActivity injectionActivity, String description, String resolution, String location, Date date) {
       this(user.getUserId(), severity, disposition, injectionActivity, description, resolution, location, date);
@@ -90,6 +83,9 @@ public class ReviewDefectItem {
 
    public ReviewDefectItem(String xml) {
       fromXml(xml);
+   }
+
+   public ReviewDefectItem() {
    }
 
    public void update(ReviewDefectItem dItem) {
@@ -201,16 +197,12 @@ public class ReviewDefectItem {
          date) + "\n";
    }
 
-   public IAtsUser getUser() {
-      return atsApi.getUserService().getUserById(userId);
-   }
-
    public String getUserId() {
       return userId;
    }
 
    public String toHTML(String labelFont) {
-      return "DEFECT (" + severity + "): " + description + " (" + getUser().getName() + ")";
+      return "DEFECT (" + severity + "): " + description + " (" + userId + ")";
    }
 
    public void setUserId(String userId) {

@@ -88,7 +88,7 @@ public class ReviewDefectManager {
    public int getNumMajor(IAtsUser user) {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
-         if (dItem.getSeverity() == Severity.Major && dItem.getUser().equals(user)) {
+         if (dItem.getSeverity() == Severity.Major && dItem.getUserId().equals(user.getUserId())) {
             x++;
          }
       }
@@ -98,7 +98,7 @@ public class ReviewDefectManager {
    public int getNumMinor(IAtsUser user) {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
-         if (dItem.getSeverity() == Severity.Minor && dItem.getUser().equals(user)) {
+         if (dItem.getSeverity() == Severity.Minor && dItem.getUserId().equals(user.getUserId())) {
             x++;
          }
       }
@@ -108,7 +108,7 @@ public class ReviewDefectManager {
    public int getNumIssues(IAtsUser user) {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
-         if (dItem.getSeverity() == Severity.Issue && dItem.getUser().equals(user)) {
+         if (dItem.getSeverity() == Severity.Issue && dItem.getUserId().equals(user.getUserId())) {
             x++;
          }
       }
@@ -206,7 +206,8 @@ public class ReviewDefectManager {
    }
 
    public void addDefectItem(String description, boolean persist, SkynetTransaction transaction) {
-      ReviewDefectItem item = new ReviewDefectItem(AtsClientService.get());
+      ReviewDefectItem item = new ReviewDefectItem();
+      item.setUserId(AtsClientService.get().getUserService().getCurrentUserId());
       item.setDescription(description);
       addOrUpdateDefectItem(item);
    }
@@ -216,7 +217,8 @@ public class ReviewDefectManager {
       builder.append(
          "<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Severity</TH>" + "<TH>Disposition</TH><TH>Injection</TH><TH>User</TH><TH>Date</TH><TH>Description</TH><TH>Location</TH>" + "<TH>Resolution</TH><TH>Id</TH><TH>Completed</TH></THEAD></TR>");
       for (ReviewDefectItem item : getDefectItems()) {
-         IAtsUser user = item.getUser();
+         String userId = item.getUserId();
+         IAtsUser user = AtsClientService.get().getUserService().getUserById(userId);
          builder.append("<TR>");
          builder.append("<TD>" + item.getSeverity() + "</TD>");
          builder.append("<TD>" + item.getDisposition() + "</TD>");

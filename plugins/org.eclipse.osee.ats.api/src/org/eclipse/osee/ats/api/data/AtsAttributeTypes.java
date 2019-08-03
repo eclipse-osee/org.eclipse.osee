@@ -119,7 +119,7 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken ProposedResolution = createType(1152921504606847194L, "Proposed Resolution", "Recommended resolution.");
    public static final AttributeTypeToken QuickSearch = createType(72063457009467643L, "ATS Quick Search", "Saved ATS Quick Searches.");
    public static final AttributeTypeToken Rationale = createType(1152922093379715242L, "Rationale");
-   public static final AttributeTypeToken RelatedPeerWorkflowDefinitionReference = createType(6245695017677665082L, "Related Peer Workflow Definition", "Specific work flow definition id used by Peer To Peer Reviews for this Team");
+   public static final AttributeTypeToken RelatedPeerWorkDefinitionReference = createType(6245695017677665082L, "Related Peer Workflow Definition", "Specific work flow definition id used by Peer To Peer Reviews for this Team");
    public static final AttributeTypeToken RelatedTaskWorkDefinitionReference = createType(2492475839748929444L, "Related Task Workflow Definition Reference", "Specific work flow definition id used by Tasks related to this Workflow");
    public static final AttributeTypeToken RelatedToState = createType(1152921504606847204L, "Related To State", "State of parent workflow this object is related to.");
    public static final AttributeTypeToken ReleaseDate = createType(1152921504606847175L, "Release Date", "Date the changes were made available to the users.");

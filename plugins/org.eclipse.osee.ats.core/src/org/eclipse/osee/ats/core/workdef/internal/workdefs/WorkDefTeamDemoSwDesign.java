@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
 import org.eclipse.osee.ats.api.workdef.StateToken;
@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 public class WorkDefTeamDemoSwDesign extends AbstractWorkDef {
 
    public WorkDefTeamDemoSwDesign() {
-      super(AtsWorkDefinitionTokens.WorkDef_Team_Demo_SwDesign);
+      super(DemoWorkDefinitions.WorkDef_Team_Demo_SwDesign);
    }
 
    @Override

@@ -133,7 +133,7 @@ public class AtsWorkDefinitionServiceImplTest {
    public void testGetWorkDefinitionForPeerToPeerReviewNotYetCreated() throws Exception {
       when(teamWf.getTeamDefinition()).thenReturn(topTeamDef);
       when(attributeResolver.getSoleArtifactIdReference(topTeamDef,
-         AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
+         AtsAttributeTypes.RelatedPeerWorkDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
             ArtifactId.SENTINEL);
 
       IAtsWorkDefinition workDef = workDefService.getWorkDefinitionForPeerToPeerReviewNotYetCreated(teamWf);
@@ -167,12 +167,12 @@ public class AtsWorkDefinitionServiceImplTest {
    public void testGetWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone() throws Exception {
       when(teamWf.getTeamDefinition()).thenReturn(featureTeamDef);
       when(attributeResolver.getSoleAttributeValueAsString(topTeamDef,
-         AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, "")).thenReturn(
+         AtsAttributeTypes.RelatedPeerWorkDefinitionReference, "")).thenReturn(
             MyPeerToPeerWorkDefArt.getIdString());
 
       when(actionableItem.getTeamDefinitionInherited()).thenReturn(topTeamDef);
       when(attributeResolver.getSoleAttributeValueAsString(topTeamDef,
-         AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, "")).thenReturn(
+         AtsAttributeTypes.RelatedPeerWorkDefinitionReference, "")).thenReturn(
             MyPeerToPeerWorkDefArt.getIdString());
 
       when(workDefinitionService.getWorkDefinition(MyPeerToPeerWorkDefArt.getId())).thenReturn(myPeerToPeerWorkDef);
@@ -194,17 +194,17 @@ public class AtsWorkDefinitionServiceImplTest {
    public void testGetPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse() throws Exception {
       // Setup all teamDefinitions to not have values defined
       when(attributeResolver.getSoleArtifactIdReference(topTeamDef,
-         AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
+         AtsAttributeTypes.RelatedPeerWorkDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
             ArtifactId.SENTINEL);
       when(attributeResolver.getSoleArtifactIdReference(projTeamDef,
-         AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
+         AtsAttributeTypes.RelatedPeerWorkDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
             ArtifactId.SENTINEL);
 
       when(attributeResolver.getSoleArtifactIdReference(featureTeamDef,
-         AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
+         AtsAttributeTypes.RelatedPeerWorkDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
             ArtifactId.SENTINEL);
       when(attributeResolver.getSoleArtifactIdReference(featureTeamDef,
-         AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
+         AtsAttributeTypes.RelatedPeerWorkDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
             ArtifactId.SENTINEL);
 
       // Test that no-match is returned

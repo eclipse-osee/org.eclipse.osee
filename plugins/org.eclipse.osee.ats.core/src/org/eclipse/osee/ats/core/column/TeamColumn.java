@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -39,11 +39,11 @@ public class TeamColumn extends AbstractServicesColumn {
       } else if (atsObject instanceof IAtsWorkItem) {
          result = getColumnText(((IAtsWorkItem) atsObject).getParentTeamWorkflow());
       }
-      if (!Strings.isValid(result) && atsObject instanceof IAtsAbstractReview) {
-         IAtsAbstractReview review = (IAtsAbstractReview) atsObject;
-         if (atsApi.getReviewService().isStandAloneReview(review)) {
+      if (!Strings.isValid(result) && atsObject instanceof IAtsPeerToPeerReview) {
+         IAtsPeerToPeerReview peerRev = (IAtsPeerToPeerReview) atsObject;
+         if (atsApi.getReviewService().isStandAloneReview(peerRev)) {
             List<IAtsTeamDefinition> teams = new ArrayList<>();
-            for (IAtsActionableItem ai : review.getActionableItems()) {
+            for (IAtsActionableItem ai : peerRev.getActionableItems()) {
                if (ai.getTeamDefinitionInherited() != null) {
                   teams.add(ai.getTeamDefinition());
                }

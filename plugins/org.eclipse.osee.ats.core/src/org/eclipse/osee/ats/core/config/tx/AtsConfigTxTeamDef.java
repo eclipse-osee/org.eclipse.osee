@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.config.tx;
 
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.RelatedPeerWorkDefinitionReference;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.RelatedTaskWorkDefinitionReference;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.TeamWorkflowArtifactType;
 import java.util.ArrayList;
@@ -131,8 +132,14 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
    }
 
    @Override
-   public IAtsConfigTxTeamDef andRelatedTaskWorkflowArtifactType(ArtifactTypeToken artifactType) {
-      changes.setSoleAttributeValue(teamDef, RelatedTaskWorkDefinitionReference, artifactType.getName());
+   public IAtsConfigTxTeamDef andRelatedTaskWorkflowDefinition(NamedId taskWorkDef) {
+      changes.setSoleAttributeValue(teamDef, RelatedTaskWorkDefinitionReference, taskWorkDef);
+      return this;
+   }
+
+   @Override
+   public IAtsConfigTxTeamDef andRelatedPeerWorkflowDefinition(NamedId peerWorkDef) {
+      changes.setSoleAttributeValue(teamDef, RelatedPeerWorkDefinitionReference, peerWorkDef);
       return this;
    }
 

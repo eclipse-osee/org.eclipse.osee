@@ -279,8 +279,6 @@ artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Cont
 	attribute "ats.Operational Impact Description"
 	attribute "ats.Operational Impact Workaround"
 	attribute "ats.Operational Impact Workaround Description"
-	attribute "ats.Related Task Workflow Definition"
-	attribute "ats.Related Task Workflow Definition Reference"
 	attribute "ats.Program Uuid"
 	attribute "ats.Applicability Workflow"
 	attribute "ats.Applicable to Program"

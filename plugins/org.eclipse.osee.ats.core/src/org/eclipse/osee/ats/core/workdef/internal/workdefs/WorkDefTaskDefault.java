@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
@@ -32,6 +33,10 @@ public class WorkDefTaskDefault extends AbstractWorkDef {
 
    public WorkDefTaskDefault() {
       super(AtsWorkDefinitionTokens.WorkDef_Task_Default);
+   }
+
+   public WorkDefTaskDefault(AtsWorkDefinitionToken workDefToken) {
+      super(workDefToken);
    }
 
    @Override

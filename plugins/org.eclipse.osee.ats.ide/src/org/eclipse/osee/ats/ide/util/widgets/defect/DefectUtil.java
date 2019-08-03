@@ -52,7 +52,8 @@ public class DefectUtil {
          try {
             SkynetTransaction transaction =
                TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Add Review Defect");
-            ReviewDefectItem item = new ReviewDefectItem(AtsClientService.get());
+            ReviewDefectItem item = new ReviewDefectItem();
+            item.setUserId(AtsClientService.get().getUserService().getCurrentUserId());
             item.setDescription(ed.getEntry());
             if (ed.getSeverity() != null) {
                item.setSeverity(ed.getSeverity());

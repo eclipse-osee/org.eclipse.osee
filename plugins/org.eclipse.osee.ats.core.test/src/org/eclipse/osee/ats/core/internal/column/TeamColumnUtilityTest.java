@@ -15,6 +15,7 @@ import java.util.Collections;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -37,7 +38,7 @@ public class TeamColumnUtilityTest {
    @Mock private IAtsTeamWorkflow teamWf;
    @Mock private IAtsTeamDefinition teamDef;
    @Mock private IAtsAbstractReview review;
-   @Mock private IAtsAbstractReview standAloneReview;
+   @Mock private IAtsPeerToPeerReview standAloneReview;
    @Mock private IAtsActionableItem ai;
    @Mock private IAtsWorkItemService workItemService;
    @Mock private IAtsReviewService reviewService;

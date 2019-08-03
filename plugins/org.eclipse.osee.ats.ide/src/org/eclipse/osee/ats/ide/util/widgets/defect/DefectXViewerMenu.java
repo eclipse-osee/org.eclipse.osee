@@ -359,7 +359,7 @@ public class DefectXViewerMenu {
    private boolean setUser(Collection<ReviewDefectItem> defectItems, User user) {
       boolean modified = false;
       for (ReviewDefectItem defectItem : defectItems) {
-         if (!defectItem.getUser().getId().equals(user.getId())) {
+         if (!defectItem.getUserId().equals(user.getUserId())) {
             IAtsUser atsUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(user);
             defectItem.setUser(atsUser);
             // at least one in the list has been changed.

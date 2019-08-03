@@ -6,10 +6,12 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProvider;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefGoal;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefReviewDecision;
+import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefReviewPeerDemoSwDesign;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefReviewPeerToPeer;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefSprint;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTaskAtsConfig2Example;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTaskDefault;
+import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTaskDemoSwDesign;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamAtsConfig2Example;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDefault;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoCode;
@@ -35,12 +37,13 @@ public class AtsWorkDefinitionProvider implements IAtsWorkDefinitionProvider {
             new WorkDefTaskDefault().build(),
             new WorkDefTeamAtsConfig2Example().build(),
             new WorkDefTeamDefault().build(),
+            new WorkDefTeamSimple().build(),
             new WorkDefTeamDemoCode().build(),
             new WorkDefTeamDemoReq().build(),
             new WorkDefTeamDemoSwDesign().build(),
             new WorkDefTeamDemoTest().build(),
-            new WorkDefTeamSimple().build());
-
+            new WorkDefTaskDemoSwDesign().build(),
+            new WorkDefReviewPeerDemoSwDesign().build());
       // @formatter:on
 
    }

@@ -140,7 +140,7 @@ public class ConvertWorkDefinitionOperations {
       oldAttrTypeToNewTypeMap.put(ConvertAtsConfigGuidAttributesOperations.RelatedTaskWorkDefinition,
          AtsAttributeTypes.RelatedTaskWorkDefinitionReference);
       oldAttrTypeToNewTypeMap.put(ConvertAtsConfigGuidAttributesOperations.RelatedPeerWorkflowDefinition,
-         AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference);
+         AtsAttributeTypes.RelatedPeerWorkDefinitionReference);
 
       Set<ArtifactToken> artifacts = new HashSet<>();
       for (Entry<AttributeTypeToken, AttributeTypeToken> entry : oldAttrTypeToNewTypeMap.entrySet()) {

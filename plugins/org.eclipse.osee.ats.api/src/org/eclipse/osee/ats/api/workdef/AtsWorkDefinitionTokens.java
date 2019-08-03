@@ -30,12 +30,6 @@ public class AtsWorkDefinitionTokens {
    public static AtsWorkDefinitionToken WorkDef_Team_Default = new AtsWorkDefinitionToken(72301L, "WorkDef_Team_Default");
 
    public static AtsWorkDefinitionToken WorkDef_Team_AtsConfig2Example = new AtsWorkDefinitionToken(282846363L, "WorkDef_Team_AtsConfig2Example");
-
-   public static AtsWorkDefinitionToken WorkDef_Team_Demo_Code = new AtsWorkDefinitionToken(48427403L, "WorkDef_Team_Demo_Code");
-   public static AtsWorkDefinitionToken WorkDef_Team_Demo_SwDesign = new AtsWorkDefinitionToken(3625963L, "WorkDef_Team_Demo_SwDesign");
-   public static AtsWorkDefinitionToken WorkDef_Team_Demo_Test = new AtsWorkDefinitionToken(2892554L, "WorkDef_Team_Demo_Test");
-   public static AtsWorkDefinitionToken WorkDef_Team_Demo_Req = new AtsWorkDefinitionToken(46891154L, "WorkDef_Team_Demo_Req");
-
    // @formatter:on
 
 }

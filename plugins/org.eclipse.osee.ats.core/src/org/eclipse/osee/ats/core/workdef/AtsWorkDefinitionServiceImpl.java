@@ -317,7 +317,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    public IAtsWorkDefinition getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(IAtsTeamDefinition teamDefinition) {
       Conditions.notNull(teamDefinition, AtsWorkDefinitionServiceImpl.class.getSimpleName());
       IAtsWorkDefinition workDefinition =
-         getWorkDefinitionFromAsObject(teamDefinition, AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference);
+         getWorkDefinitionFromAsObject(teamDefinition, AtsAttributeTypes.RelatedPeerWorkDefinitionReference);
       if (workDefinition == null || workDefinition.isInvalid()) {
          IAtsTeamDefinition parentTeamDef = teamDefinition.getParentTeamDef();
          if (parentTeamDef != null) {
@@ -570,7 +570,8 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       Conditions.assertNotSentinel(workDef, "workDefArt");
       changes.setSoleAttributeValue(atsObject, ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition,
          workDef.getName());
-      changes.setSoleAttributeValue(atsObject, AtsAttributeTypes.WorkflowDefinitionReference, workDef);
+      changes.setSoleAttributeValue(atsObject, AtsAttributeTypes.WorkflowDefinitionReference,
+         Id.valueOf(workDef.getId()));
    }
 
    @Override

@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
+import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.query.NextRelease;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -216,7 +217,7 @@ public class DemoDatabaseConfig {
       sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_Code) //
          .andLeads(DemoUsers.Joe_Smith) //
          .andMembers(DemoUsers.Joe_Smith) //
-         .andWorkDef(DemoArtifactToken.WorkDef_Team_Demo_Code) //
+         .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Code) //
          .andTeamWorkflowArtifactType(DemoArtifactTypes.DemoCodeTeamWorkflow);
 
       sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_HW) //
@@ -228,18 +229,18 @@ public class DemoDatabaseConfig {
       sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_Requirements) //
          .andLeads(DemoUsers.Joe_Smith) //
          .andMembers(DemoUsers.Joe_Smith) //
-         .andWorkDef(DemoArtifactToken.WorkDef_Team_Demo_Req) //
+         .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Req) //
          .andTeamWorkflowArtifactType(DemoArtifactTypes.DemoReqTeamWorkflow);
 
       sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_SW_Design) //
          .andLeads(DemoUsers.Kay_Jones) //
          .andMembers(DemoUsers.Kay_Jones) //
-         .andWorkDef(DemoArtifactToken.WorkDef_Team_Demo_SwDesign);
+         .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_SwDesign);
 
       sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_Test) //
          .andLeads(DemoUsers.Kay_Jones) //
          .andMembers(DemoUsers.Kay_Jones) //
-         .andWorkDef(DemoArtifactToken.WorkDef_Team_Demo_Test) //
+         .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Test) //
          .andTeamWorkflowArtifactType(DemoArtifactTypes.DemoTestTeamWorkflow);
 
       // SAW SW Actionable Items
@@ -296,7 +297,7 @@ public class DemoDatabaseConfig {
          .and(CoreAttributeTypes.StaticId, "saw.code") //
          .andLeads(DemoUsers.Joe_Smith) //
          .andMembers(DemoUsers.Joe_Smith) //
-         .andWorkDef(DemoArtifactToken.WorkDef_Team_Demo_Code) //
+         .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Code) //
          .andTeamWorkflowArtifactType(DemoArtifactTypes.DemoCodeTeamWorkflow);
 
       sawSwTeam.createChildTeamDef(sawSwTeam.getTeamDef(), DemoArtifactToken.SAW_HW) //
@@ -309,20 +310,22 @@ public class DemoDatabaseConfig {
          .and(CoreAttributeTypes.StaticId, "saw.test") //
          .andLeads(DemoUsers.Kay_Jones) //
          .andMembers(DemoUsers.Kay_Jones) //
-         .andWorkDef(DemoArtifactToken.WorkDef_Team_Demo_Test) //
+         .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Test) //
          .andTeamWorkflowArtifactType(DemoArtifactTypes.DemoTestTeamWorkflow);
 
       sawSwTeam.createChildTeamDef(sawSwTeam.getTeamDef(), DemoArtifactToken.SAW_SW_Design) //
          .and(CoreAttributeTypes.StaticId, "saw.sw.design") //
          .andLeads(DemoUsers.Kay_Jones) //
          .andMembers(DemoUsers.Kay_Jones) //
-         .andWorkDef(DemoArtifactToken.WorkDef_Team_Demo_SwDesign);
+         .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_SwDesign) //
+         .andRelatedPeerWorkflowDefinition(DemoWorkDefinitions.WorkDef_Review_Demo_Peer_SwDesign) //
+         .andRelatedTaskWorkflowDefinition(DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign);
 
       sawSwTeam.createChildTeamDef(sawSwTeam.getTeamDef(), DemoArtifactToken.SAW_Requirements) //
          .and(CoreAttributeTypes.StaticId, "saw.reqirements") //
          .andLeads(DemoUsers.Joe_Smith) //
          .andMembers(DemoUsers.Joe_Smith) //
-         .andWorkDef(DemoArtifactToken.WorkDef_Team_Demo_Req) //
+         .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Req) //
          .andTeamWorkflowArtifactType(DemoArtifactTypes.DemoReqTeamWorkflow);
 
       // SAW SW Actionable Items
@@ -379,27 +382,27 @@ public class DemoDatabaseConfig {
          .and(CoreAttributeTypes.StaticId, "cis.code") //
          .andLeads(DemoUsers.Jason_Michael) //
          .andMembers(DemoUsers.Jason_Michael) //
-         .andWorkDef(DemoArtifactToken.WorkDef_Team_Demo_Code) //
+         .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Code) //
          .andTeamWorkflowArtifactType(DemoArtifactTypes.DemoCodeTeamWorkflow);
 
       cisSwTeam.createChildTeamDef(cisSwTeam.getTeamDef(), DemoArtifactToken.CIS_Test) //
          .and(CoreAttributeTypes.StaticId, "cis.test") //
          .andLeads(DemoUsers.Kay_Jones) //
          .andMembers(DemoUsers.Kay_Jones) //
-         .andWorkDef(DemoArtifactToken.WorkDef_Team_Demo_Test) //
+         .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Test) //
          .andTeamWorkflowArtifactType(DemoArtifactTypes.DemoTestTeamWorkflow);
 
       cisSwTeam.createChildTeamDef("CIS SW Design") //
          .and(CoreAttributeTypes.StaticId, "cis.sw.design") //
          .andLeads(DemoUsers.Kay_Jones) //
          .andMembers(DemoUsers.Kay_Jones) //
-         .andWorkDef(DemoArtifactToken.WorkDef_Team_Demo_SwDesign);
+         .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_SwDesign);
 
       cisSwTeam.createChildTeamDef("CIS Requirements") //
          .and(CoreAttributeTypes.StaticId, "cis.reqirements") //
          .andLeads(DemoUsers.Joe_Smith) //
          .andMembers(DemoUsers.Joe_Smith) //
-         .andWorkDef(DemoArtifactToken.WorkDef_Team_Demo_Req) //
+         .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Req) //
          .andTeamWorkflowArtifactType(DemoArtifactTypes.DemoReqTeamWorkflow);
 
       // CIS SW Actionable Items
