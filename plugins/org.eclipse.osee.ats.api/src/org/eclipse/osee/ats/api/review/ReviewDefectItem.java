@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow.review;
+package org.eclipse.osee.ats.api.review;
 
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -17,12 +17,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.skynet.core.User;
 
 /**
  * @author Donald G. Dunne
@@ -39,6 +38,7 @@ public class ReviewDefectItem {
    private Disposition disposition = Disposition.None;
    private InjectionActivity injectionActivity = InjectionActivity.None;
    private boolean closed = false;
+   private AtsApi atsApi;
    public static enum Severity {
       None,
       Major,
@@ -54,8 +54,9 @@ public class ReviewDefectItem {
 
    };
 
-   public ReviewDefectItem() {
-      userId = AtsClientService.get().getUserService().getCurrentUser().getUserId();
+   public ReviewDefectItem(AtsApi atsApi) {
+      this.atsApi = atsApi;
+      userId = atsApi.getUserService().getCurrentUser().getUserId();
    }
 
    public ReviewDefectItem(IAtsUser user, Severity severity, Disposition disposition, InjectionActivity injectionActivity, String description, String resolution, String location, Date date) {
@@ -201,7 +202,7 @@ public class ReviewDefectItem {
    }
 
    public IAtsUser getUser() {
-      return AtsClientService.get().getUserService().getUserById(userId);
+      return atsApi.getUserService().getUserById(userId);
    }
 
    public String getUserId() {
@@ -280,7 +281,7 @@ public class ReviewDefectItem {
       this.id = id;
    }
 
-   public void setUser(User user) {
+   public void setUser(IAtsUser user) {
       this.userId = user.getUserId();
    }
 

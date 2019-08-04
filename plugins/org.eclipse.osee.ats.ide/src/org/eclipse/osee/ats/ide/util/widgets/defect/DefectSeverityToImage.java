@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.util.widgets.defect;
 
+import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.ide.AtsImage;
-import org.eclipse.osee.ats.ide.workflow.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 

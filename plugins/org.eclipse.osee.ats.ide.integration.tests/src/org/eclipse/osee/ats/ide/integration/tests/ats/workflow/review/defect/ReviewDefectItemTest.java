@@ -11,10 +11,10 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.review.defect;
 
 import java.util.Date;
-import org.eclipse.osee.ats.ide.workflow.review.ReviewDefectItem;
-import org.eclipse.osee.ats.ide.workflow.review.ReviewDefectItem.Disposition;
-import org.eclipse.osee.ats.ide.workflow.review.ReviewDefectItem.InjectionActivity;
-import org.eclipse.osee.ats.ide.workflow.review.ReviewDefectItem.Severity;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem.Disposition;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem.InjectionActivity;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 

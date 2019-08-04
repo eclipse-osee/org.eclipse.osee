@@ -12,11 +12,11 @@ package org.eclipse.osee.ats.ide.workflow.review.defect;
 
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem.Disposition;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.ReviewDefectItem;
-import org.eclipse.osee.ats.ide.workflow.review.ReviewDefectItem.Disposition;
-import org.eclipse.osee.ats.ide.workflow.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

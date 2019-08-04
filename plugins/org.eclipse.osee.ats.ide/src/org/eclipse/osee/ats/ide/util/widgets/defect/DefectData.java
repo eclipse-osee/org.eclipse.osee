@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.ide.util.widgets.defect;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.ide.workflow.review.ReviewDefectItem;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem;
 import org.eclipse.osee.ats.ide.workflow.review.defect.ReviewDefectError;
 
 /**

@@ -17,12 +17,12 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.validate.ArtifactValueProvider;
-import org.eclipse.osee.ats.ide.workflow.review.ReviewDefectItem;
-import org.eclipse.osee.ats.ide.workflow.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
@@ -206,7 +206,7 @@ public class ReviewDefectManager {
    }
 
    public void addDefectItem(String description, boolean persist, SkynetTransaction transaction) {
-      ReviewDefectItem item = new ReviewDefectItem();
+      ReviewDefectItem item = new ReviewDefectItem(AtsClientService.get());
       item.setDescription(description);
       addOrUpdateDefectItem(item);
    }

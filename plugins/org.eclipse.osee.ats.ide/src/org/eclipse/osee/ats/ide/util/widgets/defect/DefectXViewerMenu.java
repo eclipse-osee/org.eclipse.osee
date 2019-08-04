@@ -22,11 +22,12 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.EnumStringSingleSelectionDialog;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem.Disposition;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem.InjectionActivity;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.review.ReviewDefectItem;
-import org.eclipse.osee.ats.ide.workflow.review.ReviewDefectItem.Disposition;
-import org.eclipse.osee.ats.ide.workflow.review.ReviewDefectItem.InjectionActivity;
-import org.eclipse.osee.ats.ide.workflow.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.ide.workflow.review.defect.ReviewDefectManager;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -358,8 +359,9 @@ public class DefectXViewerMenu {
    private boolean setUser(Collection<ReviewDefectItem> defectItems, User user) {
       boolean modified = false;
       for (ReviewDefectItem defectItem : defectItems) {
-         if (!defectItem.getUser().equals(user)) {
-            defectItem.setUser(user);
+         if (!defectItem.getUser().getId().equals(user.getId())) {
+            IAtsUser atsUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(user);
+            defectItem.setUser(atsUser);
             // at least one in the list has been changed.
             if (!modified) {
                modified = true;

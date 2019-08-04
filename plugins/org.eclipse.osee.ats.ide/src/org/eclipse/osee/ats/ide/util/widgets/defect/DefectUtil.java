@@ -13,10 +13,10 @@ package org.eclipse.osee.ats.ide.util.widgets.defect;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.ReviewDefectItem;
 import org.eclipse.osee.ats.ide.workflow.review.defect.ReviewDefectManager;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -52,7 +52,7 @@ public class DefectUtil {
          try {
             SkynetTransaction transaction =
                TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Add Review Defect");
-            ReviewDefectItem item = new ReviewDefectItem();
+            ReviewDefectItem item = new ReviewDefectItem(AtsClientService.get());
             item.setDescription(ed.getEntry());
             if (ed.getSeverity() != null) {
                item.setSeverity(ed.getSeverity());
