@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.transaction;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -47,7 +48,7 @@ public interface TransactionFactory {
 
    boolean setTxComment(TransactionId txId, String comment);
 
-   boolean replaceWithBaselineTxVersion(UserId userId, BranchId branchId, TransactionId txId, int artId, String comment);
+   boolean replaceWithBaselineTxVersion(UserId userId, BranchId branchId, TransactionId txId, ArtifactId artId, String comment);
 
    boolean purgeTxs(String txIds);
 

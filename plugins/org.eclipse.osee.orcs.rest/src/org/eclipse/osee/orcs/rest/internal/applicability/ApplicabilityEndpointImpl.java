@@ -224,7 +224,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public XResultData deleteFeature(@PathParam("feature") String feature) {
+   public XResultData deleteFeature(ArtifactId feature) {
       XResultData access = isAccess();
       if (access.isErrors()) {
          return access;

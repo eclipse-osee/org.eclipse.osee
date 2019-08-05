@@ -343,7 +343,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       if (Strings.isNumeric(feature)) {
          ArtifactToken featureArt =
             orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Feature).andId(
-               Long.valueOf(feature)).getResults().getAtMostOneOrNull();
+               ArtifactId.valueOf(feature)).getResults().getAtMostOneOrNull();
          if (featureArt != null) {
             return getFeatureDefinition(featureArt);
          }
@@ -359,14 +359,14 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public XResultData deleteFeature(String feature, BranchId branch, UserId account) {
+   public XResultData deleteFeature(ArtifactId feature, BranchId branch, UserId account) {
       XResultData results = new XResultData();
       try {
          UserId user = account;
          if (user == null) {
             user = SystemUser.OseeSystem;
          }
-         ArtifactToken featureArt = (ArtifactToken) getFeature(feature, branch).getData();
+         ArtifactToken featureArt = (ArtifactToken) getFeature(feature.getIdString(), branch).getData();
          TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, user,
             "Update Feature " + featureArt.toStringWithId());
          List<ArtifactReadable> branchViews = orcsApi.getQueryFactory().fromBranch(tx.getBranch()).andIsOfType(
@@ -394,7 +394,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       if (Strings.isNumeric(variant)) {
          ArtifactToken variantArt =
             orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).andId(
-               Long.valueOf(variant)).getResults().getAtMostOneOrNull();
+               ArtifactId.valueOf(variant)).getResults().getAtMostOneOrNull();
          if (variantArt != null) {
             return getVariantDefinition(variantArt);
          }
@@ -466,7 +466,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       tx.setName(vDefArt, variant.getName());
       // reload artifact to return
 
-      return orcsApi.getQueryFactory().fromBranch(vDefArt.getBranch()).andId(vDefArt.getId()).getArtifactOrSentinal();
+      return orcsApi.getQueryFactory().fromBranch(vDefArt.getBranch()).andId(vDefArt).getArtifactOrSentinal();
    }
 
    @Override

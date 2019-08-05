@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -122,7 +123,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public boolean replaceWithBaselineTxVersion(UserId userId, BranchId branchId, TransactionId txId, int artId, String comment) {
+   public boolean replaceWithBaselineTxVersion(UserId userId, BranchId branchId, TransactionId txId, ArtifactId artId, String comment) {
       boolean introduced = false;
       ArtifactReadable baselineArtifact =
          queryFactory.fromBranch(branchId).fromTransaction(txId).andId(artId).getResults().getOneOrDefault(
@@ -131,7 +132,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
       if (userId.isValid() && baselineArtifact.isValid()) {
          TransactionBuilder tx = createTransaction(branchId, userId, comment);
          ArtifactReadable destination =
-            queryFactory.fromBranch(branchId).includeDeletedArtifacts().andUuid(artId).getResults().getOneOrDefault(
+            queryFactory.fromBranch(branchId).includeDeletedArtifacts().andId(artId).getResults().getOneOrDefault(
                ArtifactReadable.SENTINEL);
          tx.replaceWithVersion(baselineArtifact, destination);
          tx.commit();

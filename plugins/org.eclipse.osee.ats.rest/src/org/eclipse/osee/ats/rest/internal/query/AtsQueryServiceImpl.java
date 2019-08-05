@@ -196,7 +196,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public ArtifactReadable getArtifact(Long id) {
-      return getQuery().andId(id).getResults().getAtMostOneOrNull();
+      return getQuery().andUuid(id).getResults().getAtMostOneOrNull();
    }
 
    @Override

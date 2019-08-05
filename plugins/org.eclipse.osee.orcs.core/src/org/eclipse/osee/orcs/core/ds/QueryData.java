@@ -361,11 +361,6 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public QueryBuilder andId(long id) {
-      return andId(ArtifactId.valueOf(id));
-   }
-
-   @Override
    public QueryBuilder andId(ArtifactId id) {
       return addAndCheck(new CriteriaArtifactIds(id));
    }

@@ -138,11 +138,6 @@ public interface QueryBuilder extends Query {
    QueryBuilder andUuid(long id);
 
    /**
-    * Search criteria that finds the artifact with given artifact id
-    */
-   QueryBuilder andId(long id);
-
-   /**
     * Search criteria that finds the artifacts of given uuids (artifact ids)
     */
    QueryBuilder andUuids(Collection<Long> uuids);

@@ -49,7 +49,7 @@ public interface OrcsApplicability {
 
    FeatureDefinition getFeature(String feature, BranchId branch);
 
-   XResultData deleteFeature(String feature, BranchId branch, UserId account);
+   XResultData deleteFeature(ArtifactId feature, BranchId branch, UserId account);
 
    VariantDefinition getVariant(String variant, BranchId branch);
 

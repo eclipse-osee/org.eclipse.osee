@@ -95,7 +95,7 @@ public interface ApplicabilityEndpoint {
    @Path("feature/{feature}")
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
-   XResultData deleteFeature(@PathParam("feature") String feature);
+   XResultData deleteFeature(@PathParam("feature") ArtifactId feature);
 
    @GET
    @Path("variant/{variant}")

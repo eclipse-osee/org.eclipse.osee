@@ -85,7 +85,7 @@ public class ClientStorage {
    }
 
    public boolean exists(Long id) {
-      return newQuery().andId(id).exists();
+      return newQuery().andUuid(id).exists();
    }
 
    public ArtifactId insert(OseePrincipal principal, OAuthClient data) {
