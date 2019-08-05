@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactReferenceAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.LongAttribute;
@@ -88,6 +89,8 @@ public class StringHandlePromptChange implements IHandlePromptChange {
       if (format != null) {
          try {
             if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
+               toReturn = String.valueOf(format.parse(value).intValue());
+            } else if (AttributeTypeManager.isBaseTypeCompatible(ArtifactReferenceAttribute.class, attributeType)) {
                toReturn = String.valueOf(format.parse(value).intValue());
             } else if (AttributeTypeManager.isBaseTypeCompatible(LongAttribute.class, attributeType)) {
                toReturn = String.valueOf(format.parse(value).intValue());

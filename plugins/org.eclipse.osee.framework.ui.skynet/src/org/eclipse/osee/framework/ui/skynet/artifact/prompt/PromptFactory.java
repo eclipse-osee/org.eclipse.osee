@@ -15,6 +15,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactReferenceAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
@@ -50,6 +51,9 @@ public final class PromptFactory implements IPromptFactory {
          promptChange = new EnumeratedHandlePromptChange(artifacts, attributeType, displayName, persist);
       } else if (AttributeTypeManager.isBaseTypeCompatible(StringAttribute.class, attributeType)) {
          promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts, null, multiLine);
+      } else if (AttributeTypeManager.isBaseTypeCompatible(ArtifactReferenceAttribute.class, attributeType)) {
+         promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
+            NumberFormat.getIntegerInstance(), false);
       } else {
          throw new OseeStateException("Unhandled attribute type.  Can't edit through this view");
       }
