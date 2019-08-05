@@ -43,7 +43,6 @@ import org.eclipse.osee.ats.rest.internal.util.health.AtsHealthEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.ActionUiResource;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsActionEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsAttributeEndpointImpl;
-import org.eclipse.osee.ats.rest.internal.workitem.AtsRuleEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTeamWfEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsWorkPackageEndpointImpl;
@@ -126,7 +125,6 @@ public class AtsApplication extends Application {
       singletons.add(new InsertionActivityResource(atsServer, orcsApi));
 
       singletons.add(new AtsActionEndpointImpl(atsServer, orcsApi, jsonFactory));
-      singletons.add(new AtsRuleEndpointImpl(atsServer));
       singletons.add(new StateResource(atsServer));
       singletons.add(new ConvertResource(atsServer));
       singletons.add(new CpaResource(orcsApi, atsServer, cpaRegistry));

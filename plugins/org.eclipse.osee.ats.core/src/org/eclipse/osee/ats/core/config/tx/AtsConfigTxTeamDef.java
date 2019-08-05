@@ -13,8 +13,6 @@ package org.eclipse.osee.ats.core.config.tx;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.RelatedPeerWorkDefinitionReference;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.RelatedTaskWorkDefinitionReference;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.TeamWorkflowArtifactType;
-import java.util.ArrayList;
-import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.config.tx.AtsTeamDefinitionArtifactToken;
@@ -30,7 +28,6 @@ import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workdef.model.RuleDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.UserToken;
@@ -140,16 +137,6 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
    @Override
    public IAtsConfigTxTeamDef andRelatedPeerWorkflowDefinition(NamedId peerWorkDef) {
       changes.setSoleAttributeValue(teamDef, RelatedPeerWorkDefinitionReference, peerWorkDef);
-      return this;
-   }
-
-   @Override
-   public IAtsConfigTxTeamDef andRules(RuleDefinition... rules) {
-      List<Object> ruleStrs = new ArrayList<>();
-      for (RuleDefinition rule : rules) {
-         ruleStrs.add(rule.getName());
-      }
-      changes.setAttributeValues(teamDef, AtsAttributeTypes.RuleDefinition, ruleStrs);
       return this;
    }
 

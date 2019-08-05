@@ -65,8 +65,6 @@ public interface IAtsWorkDefinitionService {
 
    Collection<String> getAllValidStateNames(XResultData resultData) throws Exception;
 
-   Collection<IAtsRuleDefinition> getAllRuleDefinitions();
-
    void getStatesOrderedByDefaultToState(IAtsWorkDefinition workDef, IAtsStateDefinition stateDefinition, List<IAtsStateDefinition> pages);
 
    boolean hasWidgetNamed(IAtsStateDefinition stateDef, String name);
@@ -102,10 +100,6 @@ public interface IAtsWorkDefinitionService {
    IAtsWorkDefinition getWorkDefinition(Id id);
 
    IAtsWorkDefinition getWorkDefinitionFromAsObject(IAtsObject atsObject, AttributeTypeToken workDefAttrTypeId);
-
-   IAtsRuleDefinition getRuleDefinition(String name);
-
-   void addRuleDefinition(IAtsRuleDefinition ruleDef);
 
    XResultData validateWorkDefinitions();
 

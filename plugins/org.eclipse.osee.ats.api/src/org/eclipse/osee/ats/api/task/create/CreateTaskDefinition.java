@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Boeing.
+ * Copyright (c) 2019 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,27 +8,48 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.workdef.model;
+package org.eclipse.osee.ats.api.task.create;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.workdef.IAtsRuleDefinition;
 import org.eclipse.osee.ats.api.workdef.RuleEventType;
 import org.eclipse.osee.ats.api.workdef.RuleLocations;
 
 /**
- * @author Mark Joy
+ * @author Donald G. Dunne
  */
-public class RuleDefinition implements IAtsRuleDefinition {
+public class CreateTaskDefinition {
+
+   private String teamWf;
+   private String relatedToState;
    public String name = "";
    public String title = "";
    public String description = "";
    public List<RuleLocations> ruleLocs = new ArrayList<>();
-   public List<RuleEventType> ruleEvents = new ArrayList<>();
    public final List<IAtsUser> assignees = new ArrayList<>();
+   private List<RuleEventType> ruleEvents;
 
-   @Override
+   public void setRuleEvents(List<RuleEventType> ruleEvents) {
+      this.ruleEvents = ruleEvents;
+   }
+
+   public String getTeamWf() {
+      return teamWf;
+   }
+
+   public void setTeamWf(String teamWf) {
+      this.teamWf = teamWf;
+   }
+
+   public String getRelatedToState() {
+      return relatedToState;
+   }
+
+   public void setRelatedToState(String relatedToState) {
+      this.relatedToState = relatedToState;
+   }
+
    public String getName() {
       return name;
    }
@@ -37,7 +58,14 @@ public class RuleDefinition implements IAtsRuleDefinition {
       this.name = name;
    }
 
-   @Override
+   public String getTitle() {
+      return title;
+   }
+
+   public void setTitle(String title) {
+      this.title = title;
+   }
+
    public String getDescription() {
       return description;
    }
@@ -46,12 +74,6 @@ public class RuleDefinition implements IAtsRuleDefinition {
       this.description = description;
    }
 
-   @Override
-   public List<IAtsUser> getAssignees() {
-      return assignees;
-   }
-
-   @Override
    public List<RuleLocations> getRuleLocs() {
       return ruleLocs;
    }
@@ -60,23 +82,12 @@ public class RuleDefinition implements IAtsRuleDefinition {
       this.ruleLocs = ruleLocs;
    }
 
-   @Override
-   public void addRuleEvent(RuleEventType ruleEventType) {
-      ruleEvents.add(ruleEventType);
-   }
-
-   @Override
    public List<RuleEventType> getRuleEvents() {
       return ruleEvents;
    }
 
-   @Override
-   public String getTitle() {
-      return title;
-   }
-
-   public void setTitle(String title) {
-      this.title = title;
+   public List<IAtsUser> getAssignees() {
+      return assignees;
    }
 
 }

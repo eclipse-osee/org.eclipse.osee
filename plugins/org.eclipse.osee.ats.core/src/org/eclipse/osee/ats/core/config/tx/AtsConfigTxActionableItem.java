@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.config.tx;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -24,7 +22,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.model.RuleDefinition;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -58,16 +55,6 @@ public class AtsConfigTxActionableItem extends AbstractAtsConfigTxObject<IAtsCon
    @Override
    public IAtsConfigTxActionableItem andActive(boolean active) {
       changes.setSoleAttributeValue(ai, AtsAttributeTypes.Active, active);
-      return this;
-   }
-
-   @Override
-   public IAtsConfigTxActionableItem andRules(RuleDefinition... rules) {
-      List<Object> ruleStrs = new ArrayList<>();
-      for (RuleDefinition rule : rules) {
-         ruleStrs.add(rule.getName());
-      }
-      changes.setAttributeValues(ai, AtsAttributeTypes.RuleDefinition, ruleStrs);
       return this;
    }
 

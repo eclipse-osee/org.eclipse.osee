@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.api.config.tx;
 
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.workdef.model.RuleDefinition;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
@@ -32,8 +31,6 @@ public interface IAtsConfigTxActionableItem {
    IAtsConfigTxActionableItem andTeamDef(String name);
 
    IAtsConfigTxActionableItem andActive(boolean active);
-
-   IAtsConfigTxActionableItem andRules(RuleDefinition... rules);
 
    IAtsConfigTxActionableItem andAccessContextId(String contextId);
 

@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
-import org.eclipse.osee.ats.api.workdef.IAtsRuleDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -56,7 +55,6 @@ import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -70,7 +68,6 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
    private final Map<String, IAtsWorkDefinition> workDefNameToWorkDef = new HashMap<>();
    private final Map<IAtsWorkItem, IAtsWorkDefinition> bootstrappingWorkItemToWorkDefCache = new HashMap<>();
-   private final Map<String, IAtsRuleDefinition> ruleDefNameToRuleDef = new HashMap<>();
 
    public AtsWorkDefinitionServiceImpl(AtsApi atsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       this.atsApi = atsApi;
@@ -612,29 +609,6 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    @Override
    public IAtsWorkDefinition getWorkDefinition(Id id) {
       return getWorkDefinition(id.getId());
-   }
-
-   @Override
-   public Collection<IAtsRuleDefinition> getAllRuleDefinitions() {
-      return ruleDefNameToRuleDef.values();
-   }
-
-   @Override
-   public void addRuleDefinition(IAtsRuleDefinition ruleDef) {
-      if (ruleDefNameToRuleDef.keySet().contains(ruleDef.getName())) {
-         throw new OseeArgumentException("Can't have >1 Rule Defs with same name [%s]", ruleDef.getName());
-      }
-      ruleDefNameToRuleDef.put(ruleDef.getName(), ruleDef);
-   }
-
-   @Override
-   public IAtsRuleDefinition getRuleDefinition(String name) {
-      for (IAtsRuleDefinition ruleDef : getAllRuleDefinitions()) {
-         if (ruleDef.getName().equals(name)) {
-            return ruleDef;
-         }
-      }
-      return null;
    }
 
    @Override

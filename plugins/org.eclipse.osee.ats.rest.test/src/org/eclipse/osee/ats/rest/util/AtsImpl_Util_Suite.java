@@ -21,7 +21,7 @@ import org.junit.runners.Suite;
  * @author Mark Joy
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({WorkflowRuleRunnerTest.class, AtsImpl_Util_Health_Suite.class})
+@Suite.SuiteClasses({AtsImpl_Util_Health_Suite.class})
 public class AtsImpl_Util_Suite {
    @BeforeClass
    public static void setUp() throws Exception {

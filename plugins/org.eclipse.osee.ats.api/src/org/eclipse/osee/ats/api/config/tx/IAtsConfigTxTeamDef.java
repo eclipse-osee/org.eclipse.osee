@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.api.config.tx;
 import org.eclipse.osee.ats.api.query.NextRelease;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.workdef.model.RuleDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -38,8 +37,6 @@ public interface IAtsConfigTxTeamDef {
    IAtsConfigTxTeamDef andTeamWorkflowArtifactType(ArtifactTypeToken artifactType);
 
    IAtsConfigTxTeamDef andRelatedTaskWorkflowDefinition(NamedId taskWorkDef);
-
-   IAtsConfigTxTeamDef andRules(RuleDefinition... rules);
 
    IAtsConfigTxTeamDef andAccessContextId(String contextId);
 
