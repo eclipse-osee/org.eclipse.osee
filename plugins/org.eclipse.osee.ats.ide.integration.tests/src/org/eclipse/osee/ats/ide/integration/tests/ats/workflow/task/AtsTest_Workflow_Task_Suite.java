@@ -17,7 +17,10 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({TaskRelatedToChangedArtifactTest.class, AtsTaskEndpointImplTest.class //
+@Suite.SuiteClasses({
+   TaskRelatedToChangedArtifactTest.class,
+   AtsTaskEndpointImplTest.class,
+   CreateTasksDefinitionTransitionToTest.class //
 })
 public class AtsTest_Workflow_Task_Suite {
    // do nothing

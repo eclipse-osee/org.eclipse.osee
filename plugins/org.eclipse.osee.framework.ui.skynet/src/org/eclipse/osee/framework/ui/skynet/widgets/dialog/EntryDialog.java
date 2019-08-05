@@ -61,7 +61,7 @@ public class EntryDialog extends MessageDialog {
    private NumberFormat numberFormat;
    private String errorString = "";
    protected Button ok;
-   private Label errorLabel;
+   protected Label errorLabel;
    protected boolean fillVertically = false;
    private Button fontButton;
    private String label;
@@ -404,6 +404,22 @@ public class EntryDialog extends MessageDialog {
       });
 
       control.setMenu(menu);
+   }
+
+   protected void updateErrorLabel(boolean error, String text) {
+      if (error) {
+         getButton(getDefaultButtonIndex()).setEnabled(false);
+         errorLabel.setText(text);
+         errorLabel.update();
+         areaComposite.layout();
+         errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+      } else {
+         getButton(getDefaultButtonIndex()).setEnabled(true);
+         errorLabel.setText(text);
+         errorLabel.update();
+         errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
+         areaComposite.layout();
+      }
    }
 
 }

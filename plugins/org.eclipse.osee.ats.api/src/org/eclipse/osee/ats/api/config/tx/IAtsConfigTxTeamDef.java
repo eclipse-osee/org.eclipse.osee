@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.config.tx;
 
+import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.query.NextRelease;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -36,7 +37,11 @@ public interface IAtsConfigTxTeamDef {
 
    IAtsConfigTxTeamDef andTeamWorkflowArtifactType(ArtifactTypeToken artifactType);
 
-   IAtsConfigTxTeamDef andRelatedTaskWorkflowDefinition(NamedId taskWorkDef);
+   /**
+    * @param taskWorkDef One or more task work definitions. If 0, default will be used. If 1, it will be used. If > 1,
+    * user will be given a choice when creating tasks.
+    */
+   IAtsConfigTxTeamDef andRelatedTaskWorkflowDefinition(NamedId... taskWorkDefs);
 
    IAtsConfigTxTeamDef andAccessContextId(String contextId);
 
@@ -52,5 +57,11 @@ public interface IAtsConfigTxTeamDef {
 
    IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken... verToks);
 
-   IAtsConfigTxTeamDef andRelatedPeerWorkflowDefinition(NamedId peerWorkDef);
+   /**
+    * @param peerWorkDefs One or more peer work definitions. If 0, default will be used. If 1, it will be used. If > 1,
+    * user will be given a choice when creating reviews.
+    */
+   IAtsConfigTxTeamDef andRelatedPeerWorkflowDefinition(NamedId... peerWorkDefs);
+
+   IAtsConfigTxTeamDef andTaskSet(AtsTaskDefToken... taskDefs);
 }

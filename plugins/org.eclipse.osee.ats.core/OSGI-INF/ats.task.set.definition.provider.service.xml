@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true">
+   <implementation class="org.eclipse.osee.ats.core.task.internal.AtsTaskSetDefinitionProviderService"/>
+  
+   <service>
+      <provide interface="org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProviderService"/>
+   </service>
+   <reference bind="addTaskSetDefinitionProvider" cardinality="0..n" interface="org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProvider" name="IAtsTaskSetDefinitionProvider" policy="dynamic"/>
+</scr:component>

@@ -12,50 +12,34 @@ package org.eclipse.osee.ats.api.task.create;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.workdef.RuleEventType;
-import org.eclipse.osee.ats.api.workdef.RuleLocations;
+import org.eclipse.osee.ats.api.workdef.StateToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
  * @author Donald G. Dunne
  */
 public class CreateTaskDefinition {
 
-   private String teamWf;
    private String relatedToState;
-   public String name = "";
-   public String title = "";
-   public String description = "";
-   public List<RuleLocations> ruleLocs = new ArrayList<>();
-   public final List<IAtsUser> assignees = new ArrayList<>();
-   private List<RuleEventType> ruleEvents;
-
-   public void setRuleEvents(List<RuleEventType> ruleEvents) {
-      this.ruleEvents = ruleEvents;
-   }
-
-   public String getTeamWf() {
-      return teamWf;
-   }
-
-   public void setTeamWf(String teamWf) {
-      this.teamWf = teamWf;
-   }
+   private String title;
+   public List<Long> assigneeAccountIds = new ArrayList<>();
+   private String description;
+   private ArtifactId sourceTeamWfAi = ArtifactId.SENTINEL;
+   private ArtifactId destTeamWfAi = ArtifactId.SENTINEL;
+   private NamedId workDefId = NamedId.SENTINEL;
 
    public String getRelatedToState() {
       return relatedToState;
    }
 
+   public CreateTaskDefinition andRelatedToState(StateToken state) {
+      setRelatedToState(state.getName());
+      return this;
+   }
+
    public void setRelatedToState(String relatedToState) {
       this.relatedToState = relatedToState;
-   }
-
-   public String getName() {
-      return name;
-   }
-
-   public void setName(String name) {
-      this.name = name;
    }
 
    public String getTitle() {
@@ -74,20 +58,36 @@ public class CreateTaskDefinition {
       this.description = description;
    }
 
-   public List<RuleLocations> getRuleLocs() {
-      return ruleLocs;
+   public List<Long> getAssigneeAccountIds() {
+      return assigneeAccountIds;
    }
 
-   public void setRuleLocs(List<RuleLocations> ruleLocs) {
-      this.ruleLocs = ruleLocs;
+   public void setAssigneeAccountIds(List<Long> assigneeAccountIds) {
+      this.assigneeAccountIds = assigneeAccountIds;
    }
 
-   public List<RuleEventType> getRuleEvents() {
-      return ruleEvents;
+   public ArtifactId getSourceTeamWfAi() {
+      return sourceTeamWfAi;
    }
 
-   public List<IAtsUser> getAssignees() {
-      return assignees;
+   public void setSourceTeamWfAi(ArtifactId sourceTeamWfAi) {
+      this.sourceTeamWfAi = sourceTeamWfAi;
+   }
+
+   public ArtifactId getDestTeamWfAi() {
+      return destTeamWfAi;
+   }
+
+   public void setDestTeamWfAi(ArtifactId destTeamWfAi) {
+      this.destTeamWfAi = destTeamWfAi;
+   }
+
+   public NamedId getWorkDefId() {
+      return workDefId;
+   }
+
+   public void setWorkDefId(NamedId workDefId) {
+      this.workDefId = workDefId;
    }
 
 }

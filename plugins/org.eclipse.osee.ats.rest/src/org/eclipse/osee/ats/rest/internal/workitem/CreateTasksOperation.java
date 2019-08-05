@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -146,7 +147,8 @@ public class CreateTasksOperation {
             IAtsWorkDefinition workDefinition = null;
             if (Strings.isValid(task.getTaskWorkDef())) {
                try {
-                  workDefinition = atsApi.getWorkDefinitionService().getWorkDefinitionByName(task.getTaskWorkDef());
+                  workDefinition =
+                     atsApi.getWorkDefinitionService().getWorkDefinition(ArtifactId.valueOf(task.getTaskWorkDef()));
                   if (workDefinition == null) {
                      resultData.errorf("Error finding Task Work Def [%s].", task.getTaskWorkDef());
                   }
@@ -162,7 +164,9 @@ public class CreateTasksOperation {
 
             for (JaxAttribute attribute : task.getAttributes()) {
                AttributeTypeId attrType = atsApi.getStoreService().getAttributeType(attribute.getAttrTypeName());
-
+               if (attrType == null) {
+                  resultData.errorf("Attribute Type [%s] not valid for Task creation in %s", attrType, task);
+               }
             }
 
             for (JaxRelation relation : task.getRelations()) {
@@ -175,12 +179,16 @@ public class CreateTasksOperation {
                   resultData.errorf("Relation [%s] Ids must be suplied Task creation in %s",
                      relation.getRelationTypeName(), task);
                }
-               Collection<ArtifactId> foundIds = atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andIds(
-                  relation.getRelatedIds().toArray(new Long[relation.getRelatedIds().size()])).getItemIds();
-               List<Long> notFoundIds = relation.getRelatedIds();
-               notFoundIds.removeAll(foundIds);
-               if (foundIds.size() != relation.getRelatedIds().size()) {
-                  resultData.errorf("Relation [%s] Ids [%s] do not match Work Items in task %s",
+               List<Long> foundWorkItemIds = new ArrayList<>();
+               for (ArtifactId foundId : atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andIds(
+                  relation.getRelatedIds().toArray(new Long[relation.getRelatedIds().size()])).getItemIds()) {
+                  foundWorkItemIds.add(foundId.getId());
+               }
+               if (foundWorkItemIds.size() != relation.getRelatedIds().size()) {
+                  List<Long> notFoundIds = new ArrayList<>();
+                  notFoundIds.addAll(relation.getRelatedIds());
+                  notFoundIds.removeAll(foundWorkItemIds);
+                  resultData.errorf("Relation [%s] Work Item Ids [%s] has unfound Work Item(s) in db for task %s",
                      relation.getRelationTypeName(), notFoundIds, task);
                }
             }
@@ -211,15 +219,17 @@ public class CreateTasksOperation {
       IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet(
          newTaskDatas.getTaskDatas().iterator().next().getCommitComment(), asUser);
       run(changes);
-      changes.execute();
+      TransactionId trans = changes.executeIfNeeded();
 
-      for (NewTaskData newTaskData : newTaskDatas.getTaskDatas()) {
-         for (JaxAtsTask jaxTask : newTaskData.getNewTasks()) {
-            JaxAtsTask newJaxTask = createNewJaxTask(jaxTask.getId(), atsApi);
-            if (newJaxTask == null) {
-               throw new OseeStateException("Unable to create return New Task for id " + jaxTask.getId());
+      if (trans != null && trans.isValid()) {
+         for (NewTaskData newTaskData : newTaskDatas.getTaskDatas()) {
+            for (JaxAtsTask jaxTask : newTaskData.getNewTasks()) {
+               JaxAtsTask newJaxTask = createNewJaxTask(jaxTask.getId(), atsApi);
+               if (newJaxTask == null) {
+                  throw new OseeStateException("Unable to create return New Task for id " + jaxTask.getId());
+               }
+               this.tasks.add(newJaxTask);
             }
-            this.tasks.add(newJaxTask);
          }
       }
    }
@@ -227,7 +237,7 @@ public class CreateTasksOperation {
    public void run(IAtsChangeSet changes) {
       createTasks(changes);
       if (changes.isEmpty()) {
-         throw new OseeStateException(getClass().getSimpleName() + " Error - No Tasks to Create");
+         resultData.log(getClass().getSimpleName() + " Error - No Tasks to Create");
       }
    }
 
@@ -255,9 +265,19 @@ public class CreateTasksOperation {
                assignees.add(AtsCoreUsers.UNASSIGNED_USER);
             }
 
-            IAtsWorkDefinition workDefinition =
-               atsApi.getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(task, null, changes);
-            Conditions.assertNotNull(workDefinition, "Work Definition can not be null for [%s]", task);
+            IAtsWorkDefinition workDefinition = null;
+            // If task work def already specified, use it
+            if (Strings.isNumeric(jaxTask.getTaskWorkDef())) {
+               workDefinition =
+                  atsApi.getWorkDefinitionService().getWorkDefinition(Long.valueOf(jaxTask.getTaskWorkDef()));
+               Conditions.assertNotNull(workDefinition, "Work Definition can not be null for [%s]", task);
+               atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(task, workDefinition, changes);
+            }
+            // Else compute and set
+            else {
+               workDefinition = atsApi.getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(task, null, changes);
+               Conditions.assertNotNull(workDefinition, "Work Definition can not be null for [%s]", task);
+            }
 
             if (Strings.isValid(jaxTask.getDescription())) {
                changes.setSoleAttributeValue(task, AtsAttributeTypes.Description, jaxTask.getDescription());
@@ -274,7 +294,6 @@ public class CreateTasksOperation {
             for (JaxAttribute attribute : jaxTask.getAttributes()) {
                AttributeTypeToken attrType =
                   orcsApi.getOrcsTypes().getAttributeTypes().getByName(attribute.getAttrTypeName());
-
                changes.setAttributeValues(task, attrType, attribute.getValues());
             }
 

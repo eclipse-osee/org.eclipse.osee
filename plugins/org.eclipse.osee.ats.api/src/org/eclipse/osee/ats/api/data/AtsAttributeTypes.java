@@ -137,6 +137,7 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken State = createType(1152921504606847191L, "State", "States of workflow state machine.");
    public static final AttributeTypeToken StateNotes = createType(1152921504606847203L, "State Notes");
    public static final AttributeTypeToken SwEnhancement = createType(1152921504606847227L, "SW Enhancement");
+   public static final AttributeTypeToken TaskSetId = createType(2412431655932432L, "Task Set Id");
    public static final AttributeTypeToken TaskToChangedArtifactReference = createType(1153126013769613562L, "Task To Changed Artifact Reference");
    public static final AttributeTypeToken TeamDefinitionReference = createType(4730961339090285773L, "Team Definition Reference");
    public static final AttributeTypeToken TeamWorkflowArtifactType = createType(1152921504606847148L, "Team Workflow Artifact Type", "Specific Artifact Type to use in creation of Team Workflow");

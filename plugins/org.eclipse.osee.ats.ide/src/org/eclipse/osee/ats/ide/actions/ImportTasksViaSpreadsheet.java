@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.ide.actions;
 
 import org.eclipse.osee.ats.ide.util.Import.ImportTasksFromSpreadsheet;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -38,7 +39,7 @@ public class ImportTasksViaSpreadsheet extends AbstractAtsAction {
       blamOperation.setTaskableStateMachineArtifact(taskableArt);
       BlamEditor.edit(blamOperation);
       if (listener != null) {
-         listener.importCompleted();
+         listener.importCompleted(new XResultData());
       }
    }
 }

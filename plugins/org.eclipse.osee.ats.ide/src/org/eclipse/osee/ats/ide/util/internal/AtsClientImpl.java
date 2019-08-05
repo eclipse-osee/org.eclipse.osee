@@ -66,6 +66,7 @@ import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.internal.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.ide.workflow.internal.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
+import org.eclipse.osee.ats.ide.workflow.task.IAtsTaskServiceClient;
 import org.eclipse.osee.ats.ide.workflow.task.internal.AtsTaskService;
 import org.eclipse.osee.ats.ide.workflow.task.related.AtsTaskRelatedService;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionListeners;
@@ -392,6 +393,11 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    @Override
    public IAtsHealthService getHealthService() {
       return new AtsHealthServiceImpl(this);
+   }
+
+   @Override
+   public IAtsTaskServiceClient getTaskServiceClient() {
+      return (IAtsTaskServiceClient) taskService;
    }
 
 }

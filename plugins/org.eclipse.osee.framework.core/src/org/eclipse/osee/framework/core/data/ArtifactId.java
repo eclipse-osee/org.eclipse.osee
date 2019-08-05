@@ -30,7 +30,7 @@ public interface ArtifactId extends Id {
    }
 
    public static ArtifactId valueOf(String id) {
-      Conditions.assertTrue(Strings.isNumeric(id), "id is not numberic [%s]", id);
+      Conditions.assertTrue(Strings.isNumeric(id), "id is not numeric [%s]", id);
       return Id.valueOf(id, ArtifactId::valueOf);
    }
 

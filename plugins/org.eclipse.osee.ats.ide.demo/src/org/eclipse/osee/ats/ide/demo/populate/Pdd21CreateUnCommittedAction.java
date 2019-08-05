@@ -67,8 +67,6 @@ public class Pdd21CreateUnCommittedAction implements IPopulateDemoDatabase {
          "Problem with the Diagram View", ChangeType.Problem, priority, false, null, aias, createdDate, createdBy,
          new ArtifactTokenActionListener(), changes);
       for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
-         String desc = teamWf.getDescription();
-         String title2 = teamWf.getName();
 
          boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");
 
@@ -109,6 +107,12 @@ public class Pdd21CreateUnCommittedAction implements IPopulateDemoDatabase {
             for (IAtsAbstractReview review : AtsClientService.get().getReviewService().getReviews(teamWf)) {
                changes.setSoleAttributeValue(review, AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());
             }
+         }
+
+         if (isSwDesign) {
+            // Need to persist so CreateTasksDefinitionBuilder can find workflow to create tasks
+            changes.execute();
+            changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + "- 2");
          }
 
          // Transition to final state

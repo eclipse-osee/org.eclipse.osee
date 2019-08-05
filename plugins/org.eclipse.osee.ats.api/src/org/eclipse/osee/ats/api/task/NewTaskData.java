@@ -69,4 +69,5 @@ public class NewTaskData {
    public boolean isEmpty() {
       return newTasks == null || newTasks.isEmpty();
    }
+
 }

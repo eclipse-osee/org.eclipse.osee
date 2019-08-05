@@ -184,7 +184,7 @@ public class TeamDefinitions {
    public static Collection<JaxTeamDefinition> getTeamTopLevelJaxDefinitions(Active active, AtsApi atsApi) {
       List<JaxTeamDefinition> teamDefs = new LinkedList<>();
       JaxTeamDefinition topTeam = atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(
-         atsApi.getConfigService().getConfigurations().getTopTeamDefinition());
+         atsApi.getConfigService().getConfigurations().getTopTeamDefinition().getId());
       for (Long id : topTeam.getChildren()) {
          teamDefs.add(atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(id));
       }

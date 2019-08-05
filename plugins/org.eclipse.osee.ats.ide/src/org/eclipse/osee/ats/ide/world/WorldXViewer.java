@@ -387,7 +387,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, addTaskAction);
-      addTaskAction.updateEnablement(getSelectedTeamWorkflowArtifacts());
+      addTaskAction.updateEnablement();
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, deleteTasksAction);
       deleteTasksAction.updateEnablement(getSelectedArtifacts());
@@ -482,7 +482,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
     * @return all selected Workflow and any workflow that have Actions with single workflow
     */
    @Override
-   public Set<TeamWorkFlowArtifact> getSelectedTeamWorkflowArtifacts() {
+   public Collection<TeamWorkFlowArtifact> getSelectedTeamWorkflowArtifacts() {
       Set<TeamWorkFlowArtifact> teamArts = new HashSet<>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {

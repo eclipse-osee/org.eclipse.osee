@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.query.NextRelease;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
+import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -177,6 +178,12 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
          }
       }
       return null;
+   }
+
+   @Override
+   public CreateTasksDefinitionBuilder createTaskDefinitionBuilder(Long id, String name) {
+      CreateTasksDefinitionBuilder txTasks = new CreateTasksDefinitionBuilder(id, name);
+      return txTasks;
    }
 
 }

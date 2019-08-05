@@ -35,11 +35,11 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
+import org.eclipse.osee.ats.ide.actions.ISelectedTeamWorkflowArtifacts;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsTaskEditorAction.IOpenNewAtsTaskEditorHandler;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsTaskEditorSelected.IOpenNewAtsTaskEditorSelectedHandler;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorAction.IOpenNewAtsWorldEditorHandler;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorSelectedAction.IOpenNewAtsWorldEditorSelectedHandler;
-import org.eclipse.osee.ats.ide.actions.TaskAddAction.ITaskAddActionHandler;
 import org.eclipse.osee.ats.ide.agile.SprintOrderColumn;
 import org.eclipse.osee.ats.ide.column.GoalOrderColumn;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
@@ -48,7 +48,7 @@ import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.ITaskEditorProvider;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
-import org.eclipse.osee.ats.ide.workflow.task.TaskXViewer;
+import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -76,7 +76,7 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class WorldComposite extends Composite implements IOseeTreeReportProvider, ISelectedAtsArtifacts, IWorldViewerEventHandler, IOpenNewAtsWorldEditorHandler, IOpenNewAtsWorldEditorSelectedHandler, IOpenNewAtsTaskEditorHandler, IOpenNewAtsTaskEditorSelectedHandler, IRefreshActionHandler, ITaskAddActionHandler {
+public class WorldComposite extends Composite implements IOseeTreeReportProvider, ISelectedTeamWorkflowArtifacts, ISelectedAtsArtifacts, IWorldViewerEventHandler, IOpenNewAtsWorldEditorHandler, IOpenNewAtsWorldEditorSelectedHandler, IOpenNewAtsTaskEditorHandler, IOpenNewAtsTaskEditorSelectedHandler, IRefreshActionHandler {
 
    private final WorldXViewer worldXViewer;
    protected IWorldEditor iWorldEditor;
@@ -406,11 +406,6 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
    }
 
    @Override
-   public void taskAddActionHandler() {
-      ((TaskXViewer) worldXViewer).handleNewTask();
-   }
-
-   @Override
    public String getEditorTitle() {
       try {
          return String.format("Table Report - %s", iWorldEditor.getCurrentTitleLabel());
@@ -434,6 +429,17 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
       if (worldXViewer != null) {
          worldXViewer.setShowRemoveMenuItems(showRemoveMenuItems);
       }
+   }
+
+   @Override
+   public Collection<TeamWorkFlowArtifact> getSelectedTeamWorkflowArtifacts() {
+      Set<TeamWorkFlowArtifact> teamWfs = new HashSet<>();
+      for (Artifact art : getSelectedArtifacts()) {
+         if (art instanceof TeamWorkFlowArtifact) {
+            teamWfs.add((TeamWorkFlowArtifact) art);
+         }
+      }
+      return teamWfs;
    }
 
 }

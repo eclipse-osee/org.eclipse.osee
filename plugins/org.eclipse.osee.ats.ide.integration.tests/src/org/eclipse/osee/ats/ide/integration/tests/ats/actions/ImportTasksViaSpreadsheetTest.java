@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.actions;
 import org.eclipse.osee.ats.ide.actions.ImportListener;
 import org.eclipse.osee.ats.ide.actions.ImportTasksViaSpreadsheet;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Test;
@@ -29,7 +30,7 @@ public class ImportTasksViaSpreadsheetTest {
       ImportTasksViaSpreadsheet action = new ImportTasksViaSpreadsheet(AtsTestUtil.getTeamWf(), new ImportListener() {
 
          @Override
-         public void importCompleted() {
+         public void importCompleted(XResultData results) {
             // do nothing
          }
 

@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.actions;
 
-import java.util.Set;
+import java.util.Collection;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.osee.ats.ide.AtsImage;
-import org.eclipse.osee.ats.ide.workflow.task.TaskXViewer;
+import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -26,17 +26,19 @@ public class AddTaskAction extends AbstractAtsAction {
    public AddTaskAction(ISelectedTeamWorkflowArtifacts selectedTeamWfs) {
       super("Add Task", IAction.AS_PUSH_BUTTON);
       this.selectedTeamWfs = selectedTeamWfs;
-      setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.TEAM_WORKFLOW));
+      setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.NEW_TASK));
       setToolTipText(getText());
    }
 
-   public void updateEnablement(Set<TeamWorkFlowArtifact> set) {
-      setEnabled(set.size() == 1 && set.iterator().next().isInWork());
+   public void updateEnablement() {
+      Collection<TeamWorkFlowArtifact> teamWfs = selectedTeamWfs.getSelectedTeamWorkflowArtifacts();
+      setEnabled(teamWfs.size() == 1 && teamWfs.iterator().next().isInWork());
    }
 
    @Override
    public void run() {
-      TaskXViewer.handleNewTask(selectedTeamWfs.getSelectedTeamWorkflowArtifacts().iterator().next());
+      AtsClientService.get().getTaskServiceClient().createNewTaskWithDialog(
+         selectedTeamWfs.getSelectedTeamWorkflowArtifacts().iterator().next());
    }
 
 }

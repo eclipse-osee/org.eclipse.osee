@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -26,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 public class JaxAtsTask extends JaxAtsObject {
 
    private List<String> assigneeUserIds = new LinkedList<>();
+   private List<ArtifactId> assigneeAccountIds = new LinkedList<>();
    private Date createdDate;
    private String createdByUserId;
    private String relatedToState;
@@ -134,6 +136,14 @@ public class JaxAtsTask extends JaxAtsObject {
 
    public void setRelations(List<JaxRelation> relations) {
       this.relations = relations;
+   }
+
+   public List<ArtifactId> getAssigneeAccountIds() {
+      return assigneeAccountIds;
+   }
+
+   public void setAssigneeAccountIds(List<ArtifactId> assigneeAccountIds) {
+      this.assigneeAccountIds = assigneeAccountIds;
    }
 
 }

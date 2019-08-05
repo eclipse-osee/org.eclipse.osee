@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.actions;
 
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
+
 /**
  * @author Donald G. Dunne
  */
 public interface ImportListener {
 
-   public void importCompleted();
+   public void importCompleted(XResultData result);
 }

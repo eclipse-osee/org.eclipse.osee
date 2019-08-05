@@ -12,40 +12,22 @@ package org.eclipse.osee.ats.ide.workflow.task;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.osee.ats.api.task.JaxAtsTask;
-import org.eclipse.osee.ats.api.task.JaxAtsTaskFactory;
-import org.eclipse.osee.ats.api.task.NewTaskData;
-import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
-import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.ide.actions.AddTaskAction;
 import org.eclipse.osee.ats.ide.actions.EditAssigneeAction;
 import org.eclipse.osee.ats.ide.actions.EditBlockedStatusAction;
 import org.eclipse.osee.ats.ide.actions.EditStatusAction;
-import org.eclipse.osee.ats.ide.column.RelatedToStateColumn;
-import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.task.internal.AtsTaskCache;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionToMenu;
 import org.eclipse.osee.ats.ide.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.ide.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.ide.world.WorldXViewer;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryComboDialog;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -61,8 +43,9 @@ public class TaskXViewer extends WorldXViewer {
    private boolean tasksEditable = true;
    private IAtsTeamWorkflow teamWf;
 
-   public TaskXViewer(Composite parent, int style, IXViewerFactory xViewerFactory, IDirtiableEditor editor) {
+   public TaskXViewer(Composite parent, int style, IXViewerFactory xViewerFactory, IDirtiableEditor editor, IAtsTeamWorkflow teamWf) {
       super(parent, style, xViewerFactory, editor);
+      this.teamWf = teamWf;
    }
 
    @Override
@@ -72,14 +55,7 @@ public class TaskXViewer extends WorldXViewer {
       editStatusAction = new EditStatusAction(this, this, this);
       editAssigneeAction = new EditAssigneeAction(this, this);
       editBlockedStatusAction = new EditBlockedStatusAction(this);
-
-      addNewTaskAction = new Action("New Task", IAction.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            handleNewTask();
-         }
-      };
-      addNewTaskAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.NEW_TASK));
+      addNewTaskAction = new AddTaskAction(this);
    }
 
    @Override
@@ -111,17 +87,6 @@ public class TaskXViewer extends WorldXViewer {
 
    }
 
-   @Override
-   public void updateMenuActionsForTable() {
-      super.updateMenuActionsForTable();
-      MenuManager mm = getMenuManager();
-
-      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_OPEN, new Separator());
-      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_OPEN, addNewTaskAction);
-      addNewTaskAction.setEnabled(isTasksEditable() && newTaskSelectionEnabled);
-
-   }
-
    public boolean isTasksEditable() {
       return tasksEditable;
    }
@@ -134,40 +99,12 @@ public class TaskXViewer extends WorldXViewer {
       this.newTaskSelectionEnabled = newTaskSelectionEnabled;
    }
 
-   public TaskArtifact handleNewTask() {
-      return handleNewTask(teamWf);
-   }
-
-   public static TaskArtifact handleNewTask(IAtsTeamWorkflow teamWf) {
-      TaskArtifact taskArt = null;
-      try {
-         EntryComboDialog ed = new EntryComboDialog("Create New Task", "Enter Task Title",
-            RelatedToStateColumn.RELATED_TO_STATE_SELECTION);
-         List<String> validStates =
-            RelatedToStateColumn.getValidInWorkStates((TeamWorkFlowArtifact) teamWf.getStoreObject());
-         ed.setOptions(validStates);
-         if (ed.open() == 0) {
-            NewTaskData newTaskData = NewTaskDataFactory.get("Create New Task",
-               AtsClientService.get().getUserService().getCurrentUser().getUserId(), teamWf.getId());
-            JaxAtsTask task = JaxAtsTaskFactory.get(newTaskData, ed.getEntry(),
-               AtsClientService.get().getUserService().getCurrentUser(), new Date());
-            task.setId(Lib.generateArtifactIdAsInt());
-            if (Strings.isValid(ed.getSelection())) {
-               task.setRelatedToState(ed.getSelection());
-            }
-            AtsClientService.get().getTaskService().createTasks(new NewTaskDatas(newTaskData));
-
-            taskArt = (TaskArtifact) AtsClientService.get().getQueryService().getArtifact(task.getId());
-            AtsTaskCache.decache((TeamWorkFlowArtifact) teamWf.getStoreObject());
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      return taskArt;
-   }
-
    public void setTeamWf(IAtsTeamWorkflow teamWf) {
       this.teamWf = teamWf;
    }
 
+   @Override
+   public Collection<TeamWorkFlowArtifact> getSelectedTeamWorkflowArtifacts() {
+      return Arrays.asList((TeamWorkFlowArtifact) this.teamWf);
+   }
 }

@@ -15,12 +15,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
+import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -29,13 +33,11 @@ public interface IAtsTaskService {
 
    Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<Object>> attributes, String commitComment);
 
-   Collection<IAtsTask> createTasks(NewTaskData newTaskData);
+   Collection<IAtsTask> createTasks(NewTaskData newTaskData, XResultData results);
 
    Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<Object>> attributes, IAtsChangeSet changes);
 
    NewTaskData getNewTaskData(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<Object>> attributes, String commitComment);
-
-   Collection<IAtsTask> createTasks(NewTaskData newTaskData, IAtsChangeSet changes);
 
    Collection<IAtsTask> createTasks(NewTaskDatas newTaskDatas);
 
@@ -69,5 +71,15 @@ public interface IAtsTaskService {
    default boolean hasNoTasks(IAtsTeamWorkflow teamWf) {
       return !hasTasks(teamWf);
    }
+
+   Collection<IAtsWorkDefinition> calculateTaskWorkDefs(IAtsTeamWorkflow teamWf);
+
+   default CreateTasksDefinitionBuilder createTasksSetDefinitionBuilder(AtsTaskDefToken taskSetToken) {
+      return new CreateTasksDefinitionBuilder(taskSetToken);
+   }
+
+   Collection<CreateTasksDefinitionBuilder> getTaskSets(IAtsTeamWorkflow teamWf);
+
+   Collection<IAtsTask> createTasks(NewTaskData newTaskData, IAtsChangeSet changes, XResultData results);
 
 }

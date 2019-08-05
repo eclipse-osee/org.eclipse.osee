@@ -203,6 +203,7 @@ artifactType "Team Definition" extends "Responsible Team" , "Abstract Access Con
 	attribute "ats.Work Type"
 	attribute "ats.CSCI"
 	attribute "ats.Program Uuid"
+   attribute "ats.Task Set Id"
 }
 
 artifactType "Actionable Item" extends "ats.Ats Team Definition or AI" , "Abstract Access Controlled" {
@@ -350,6 +351,15 @@ overrides artifactType "User" {
 	inheritAll
 	add attribute "ATS Quick Search"
 	add attribute "ATS User Config"
+}
+
+attributeType "ats.Task Set Id" extends LongAttribute {
+	id 2412431655932432
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Approve Requested Hours Date" extends DateAttribute {
@@ -863,7 +873,7 @@ attributeType "ats.Related Task Workflow Definition" extends StringAttribute {
 	id 1152921504606847152
 	dataProvider DefaultAttributeDataProvider
 	min 0
-	max 1
+	max unlimited
 	mediaType "text/plain"
 }
 
@@ -871,7 +881,7 @@ attributeType "ats.Related Task Workflow Definition Reference" extends ArtifactR
 	id 2492475839748929444
 	dataProvider DefaultAttributeDataProvider
 	min 0
-	max 1
+	max unlimited
 	taggerId DefaultAttributeTaggerProvider
 	mediaType "text/plain"
 }
@@ -881,7 +891,7 @@ attributeType "ats.Related Peer Workflow Definition" extends StringAttribute {
    id 1152921504606847870
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1
+   max unlimited
 	mediaType "text/plain"
 }
 
@@ -889,7 +899,7 @@ attributeType "ats.Related Peer Workflow Definition Reference" extends ArtifactR
 	id 6245695017677665082
 	dataProvider DefaultAttributeDataProvider
 	min 0
-	max 1
+	max unlimited
 	taggerId DefaultAttributeTaggerProvider
 	mediaType "text/plain"
 }

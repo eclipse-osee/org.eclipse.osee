@@ -54,7 +54,7 @@ public interface IAttributeResolver {
 
    <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem);
 
-   <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, AttributeTypeToken attributeType);
+   <T> Collection<IAttribute<T>> getAttributes(IAtsObject atsObject, AttributeTypeToken attributeType);
 
    <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact, AttributeTypeToken attributeType);
 

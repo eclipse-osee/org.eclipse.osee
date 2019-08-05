@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
+import org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProviderService;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -121,6 +122,8 @@ public abstract class AtsApiImpl implements AtsApi {
    protected IAtsEventService eventService;
    protected EventAdmin eventAdmin;
    protected IAtsLogFactory logFactory;
+   protected IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService;
+
    Collection<IAgileSprintHtmlOperation> agileSprintHtmlReportOperations = new LinkedList<>();
 
    public AtsApiImpl() {
@@ -533,6 +536,15 @@ public abstract class AtsApiImpl implements AtsApi {
    @Override
    public IAtsEventService getEventService() {
       return eventService;
+   }
+
+   @Override
+   public IAtsTaskSetDefinitionProviderService getTaskSetDefinitionProviderService() {
+      return taskSetDefinitionProviderService;
+   }
+
+   public void setTaskSetDefinitionProviderService(IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService) {
+      this.taskSetDefinitionProviderService = taskSetDefinitionProviderService;
    }
 
 }

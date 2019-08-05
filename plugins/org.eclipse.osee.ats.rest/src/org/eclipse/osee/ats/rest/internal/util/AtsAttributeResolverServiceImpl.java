@@ -157,9 +157,9 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, AttributeTypeToken attributeType) {
+   public <T> Collection<IAttribute<T>> getAttributes(IAtsObject atsObject, AttributeTypeToken attributeType) {
       Collection<IAttribute<T>> attrs = new ArrayList<>();
-      for (AttributeReadable<Object> attr : getArtifact(workItem).getAttributes(attributeType)) {
+      for (AttributeReadable<Object> attr : getArtifact(atsObject).getAttributes(attributeType)) {
          attrs.add((IAttribute<T>) attr);
       }
       return attrs;

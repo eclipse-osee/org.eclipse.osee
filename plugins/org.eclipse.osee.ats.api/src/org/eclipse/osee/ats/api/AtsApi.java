@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
+import org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProviderService;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
@@ -193,5 +194,7 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkItemServ
    EventAdmin getEventAdmin();
 
    IAtsEventService getEventService();
+
+   IAtsTaskSetDefinitionProviderService getTaskSetDefinitionProviderService();
 
 }

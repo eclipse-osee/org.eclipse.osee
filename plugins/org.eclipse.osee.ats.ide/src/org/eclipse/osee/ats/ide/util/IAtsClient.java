@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.ide.config.IAtsUserServiceClient;
 import org.eclipse.osee.ats.ide.query.AtsQueryServiceClient;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
+import org.eclipse.osee.ats.ide.workflow.task.IAtsTaskServiceClient;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 
@@ -54,5 +55,7 @@ public interface IAtsClient extends AtsApi, IAtsNotifier, IAttributeResolverProv
    IAtsClientUtil getClientUtils();
 
    AtsQueryServiceClient getQueryServiceClient();
+
+   IAtsTaskServiceClient getTaskServiceClient();
 
 }

@@ -13,4 +13,5 @@
    <reference bind="setConfigurationsService" cardinality="1..1" interface="org.eclipse.osee.ats.api.config.IAtsConfigurationsService" name="IAtsConfigurationsService" policy="static"/>
    <reference bind="setWorkDefinitionProviderService" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService" name="IAtsWorkDefinitionProviderService" policy="static"/>
    <reference bind="setAtsEventService" cardinality="1..1" interface="org.eclipse.osee.ats.api.event.IAtsEventService" name="IAtsEventService" policy="static"/>
+   <reference bind="setTaskSetDefinitionProviderService" cardinality="1..1" interface="org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProviderService" name="IAtsTaskSetDefinitionProviderService" policy="static"/>
 </scr:component>

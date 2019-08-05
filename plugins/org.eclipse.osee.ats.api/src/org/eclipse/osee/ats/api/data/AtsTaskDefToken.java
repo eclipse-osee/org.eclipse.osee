@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2019 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,25 +8,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.integration.tests.ats.actions;
+package org.eclipse.osee.ats.api.data;
 
-import org.eclipse.osee.ats.ide.actions.TaskAddAction;
-import org.eclipse.osee.ats.ide.actions.TaskAddAction.ITaskAddActionHandler;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Donald G. Dunne
  */
-public class TaskAddActionTest extends AbstractAtsActionRunTest {
+public class AtsTaskDefToken extends NamedIdBase {
 
-   @Override
-   public TaskAddAction createAction() {
-      return new TaskAddAction(new ITaskAddActionHandler() {
-
-         @Override
-         public void taskAddActionHandler() {
-            // do nothing
-         }
-      });
+   private AtsTaskDefToken(Long id, String name) {
+      super(id, name);
    }
 
+   public static AtsTaskDefToken valueOf(Long id, String name) {
+      return new AtsTaskDefToken(id, name);
+   }
 }

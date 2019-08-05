@@ -13,4 +13,5 @@
    <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
    <reference bind="setAtsUserService" cardinality="1..1" interface="org.eclipse.osee.ats.api.user.IAtsUserService" name="IAtsUserService" policy="static"/>
    <reference bind="setWorkDefinitionProviderService" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService" name="IAtsWorkDefinitionProviderService" policy="static"/>
+   <reference bind="setTaskSetDefinitionProviderServicve" cardinality="1..1" interface="org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProviderService" name="IAtsTaskSetDefinitionProviderService" policy="static"/>
 </scr:component>

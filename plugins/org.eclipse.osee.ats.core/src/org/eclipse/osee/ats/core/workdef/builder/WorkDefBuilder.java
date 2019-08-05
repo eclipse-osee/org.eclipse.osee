@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.workdef.builder;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateToken;
@@ -112,6 +113,11 @@ public class WorkDefBuilder {
 
    public void isShowStateMetrics(boolean show) {
       workDef.setShowStateMetrics(show);
+   }
+
+   public CreateTasksDefinitionBuilder createTasksSetDefinitionBuilder(Long id, String name) {
+      CreateTasksDefinitionBuilder taskSetDef = new CreateTasksDefinitionBuilder(id, name);
+      return taskSetDef;
    }
 
 }

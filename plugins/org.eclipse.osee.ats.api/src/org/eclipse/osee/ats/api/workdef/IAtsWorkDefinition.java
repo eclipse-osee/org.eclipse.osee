@@ -11,6 +11,8 @@
 package org.eclipse.osee.ats.api.workdef;
 
 import java.util.List;
+import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
+import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.model.HeaderDefinition;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
@@ -36,5 +38,11 @@ public interface IAtsWorkDefinition extends NamedId {
    boolean isShowStateMetrics();
 
    void setShowStateMetrics(boolean showStateMetrics);
+
+   default void addCreateTasksDefinition(CreateTasksDefinitionBuilder createTasksDefBldr) {
+      getCreateTasksDefs().add(createTasksDefBldr.getCreateTasksDef());
+   }
+
+   List<CreateTasksDefinition> getCreateTasksDefs();
 
 }

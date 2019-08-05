@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.core.config.OrganizePrograms;
+import org.eclipse.osee.ats.core.task.DemoTaskSetDefinitionTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
@@ -44,6 +45,7 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 public class DemoDatabaseConfig {
 
    private final AtsApi atsApi;
+   private IAtsConfigTx cfgTx;
 
    public DemoDatabaseConfig(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -66,7 +68,7 @@ public class DemoDatabaseConfig {
 
    private void configTxDemoAisAndTeams() {
 
-      IAtsConfigTx cfgTx = atsApi.getConfigService().createConfigTx("Create Demo Config", AtsCoreUsers.SYSTEM_USER);
+      cfgTx = atsApi.getConfigService().createConfigTx("Create Demo Config", AtsCoreUsers.SYSTEM_USER);
       IAtsConfigTxTeamDef topTeam =
          cfgTx.createTeamDef((IAtsTeamDefinition) null, AtsArtifactToken.TopTeamDefinition).andWorkDef(
             AtsWorkDefinitionTokens.WorkDef_Team_Default);
@@ -319,7 +321,10 @@ public class DemoDatabaseConfig {
          .andMembers(DemoUsers.Kay_Jones) //
          .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_SwDesign) //
          .andRelatedPeerWorkflowDefinition(DemoWorkDefinitions.WorkDef_Review_Demo_Peer_SwDesign) //
-         .andRelatedTaskWorkflowDefinition(DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign);
+         .andRelatedTaskWorkflowDefinition(DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign,
+            AtsWorkDefinitionTokens.WorkDef_Task_Default) //
+         .andTaskSet(DemoTaskSetDefinitionTokens.SawSwDesignTestingChecklist,
+            DemoTaskSetDefinitionTokens.SawSwDesignProcessChecklist);
 
       sawSwTeam.createChildTeamDef(sawSwTeam.getTeamDef(), DemoArtifactToken.SAW_Requirements) //
          .and(CoreAttributeTypes.StaticId, "saw.reqirements") //

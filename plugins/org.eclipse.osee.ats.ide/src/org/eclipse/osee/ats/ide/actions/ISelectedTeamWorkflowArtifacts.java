@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.actions;
 
-import java.util.Set;
+import java.util.Collection;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 
 /**
@@ -18,6 +18,6 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
  */
 public interface ISelectedTeamWorkflowArtifacts {
 
-   Set<? extends TeamWorkFlowArtifact> getSelectedTeamWorkflowArtifacts();
+   Collection<TeamWorkFlowArtifact> getSelectedTeamWorkflowArtifacts();
 
 }

@@ -35,10 +35,12 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.ide.actions.AddTaskAction;
 import org.eclipse.osee.ats.ide.actions.DeleteTasksAction;
 import org.eclipse.osee.ats.ide.actions.DeleteTasksAction.TaskArtifactProvider;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
@@ -48,11 +50,11 @@ import org.eclipse.osee.ats.ide.actions.NewAction;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsTaskEditorAction;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsTaskEditorSelected;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorSelectedAction;
-import org.eclipse.osee.ats.ide.actions.TaskAddAction;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.export.AtsExportAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
+import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.util.IAtsClient;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -406,7 +408,7 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
       toolBarMgr.removeAll();
       try {
          if (taskComposite.getIXTaskViewer().isTasksEditable()) {
-            toolBarMgr.add(new TaskAddAction(taskComposite));
+            toolBarMgr.add(new AddTaskAction(taskComposite));
             TaskArtifactProvider taskProvider = new TaskArtifactProvider() {
 
                @Override
@@ -510,6 +512,17 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
                addActionToMenu(fMenu, new ImportTasksViaSpreadsheet(taskComposite.getTeamArt(), null));
                addActionToMenu(fMenu, new ImportTasksViaSimpleList(taskComposite.getTeamArt(), null));
 
+               Collection<CreateTasksDefinitionBuilder> taskSets =
+                  AtsClientService.get().getTaskService().getTaskSets(teamWf);
+               new MenuItem(fMenu, SWT.SEPARATOR);
+               addActionToMenu(fMenu, new CreateManualTaskPlaceholder("Create Task Set - Instructions"));
+               if (!taskSets.isEmpty()) {
+                  for (CreateTasksDefinitionBuilder taskSet : taskSets) {
+                     addActionToMenu(fMenu,
+                        new CreateManualTaskSet(String.format("Create from Task Set [%s]", taskSet.getName()),
+                           taskComposite.getTeamArt(), taskSet, null));
+                  }
+               }
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

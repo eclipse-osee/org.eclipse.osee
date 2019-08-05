@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.api.config.tx;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.query.NextRelease;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
+import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -45,5 +46,7 @@ public interface IAtsConfigTx {
    IAtsActionableItem getActionableItem(ArtifactId artifact);
 
    IAtsChangeSet getChanges();
+
+   CreateTasksDefinitionBuilder createTaskDefinitionBuilder(Long id, String name);
 
 }

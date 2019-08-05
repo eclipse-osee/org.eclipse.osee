@@ -50,8 +50,7 @@ import org.junit.runners.Suite;
    ShowChangeReportActionTest.class,
    ShowMergeManagerActionTest.class,
    ShowWorkDefinitionActionTest.class,
-   SubscribedActionTest.class,
-   TaskAddActionTest.class,})
+   SubscribedActionTest.class})
 /**
  * @author Donald G. Dunne
  */

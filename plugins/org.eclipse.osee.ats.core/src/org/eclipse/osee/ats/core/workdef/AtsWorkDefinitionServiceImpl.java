@@ -120,6 +120,9 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
             return workDef;
          }
       }
+      if (Strings.isNumeric(name)) {
+         System.err.println(String.format("Can't get work def, but is numeric [%s], probably wrong method", name));
+      }
       return null;
    }
 

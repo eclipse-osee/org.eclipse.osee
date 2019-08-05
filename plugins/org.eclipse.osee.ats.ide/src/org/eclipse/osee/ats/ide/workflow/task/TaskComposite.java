@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.workflow.task;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,22 +51,19 @@ public class TaskComposite extends WorldComposite {
 
    private final IXTaskViewer iXTaskViewer;
    private TaskXViewer taskXViewer;
-   boolean tasksEditable;
    private final IAtsTeamWorkflow teamWf;
 
    public TaskComposite(IXTaskViewer iXTaskViewer, IWorldEditor worldEditor, IXViewerFactory xViewerFactory, Composite parent, int style, IDirtiableEditor dirtiableEditor, boolean tasksEditable, IAtsTeamWorkflow teamWf) {
       super(worldEditor, xViewerFactory, parent, style, false);
       this.iXTaskViewer = iXTaskViewer;
-      this.tasksEditable = tasksEditable;
       this.teamWf = teamWf;
-      taskXViewer.setTasksEditable(tasksEditable);
-      taskXViewer.setNewTaskSelectionEnabled(tasksEditable);
       taskXViewer.setTeamWf(teamWf);
    }
 
    @Override
    protected WorldXViewer createXViewer(IXViewerFactory xViewerFactory, Composite mainComp) {
-      taskXViewer = new TaskXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, xViewerFactory, null);
+      taskXViewer =
+         new TaskXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, xViewerFactory, null, teamWf);
       return taskXViewer;
    }
 
@@ -157,4 +155,8 @@ public class TaskComposite extends WorldComposite {
       return (TeamWorkFlowArtifact) teamWf.getStoreObject();
    }
 
+   @Override
+   public Collection<TeamWorkFlowArtifact> getSelectedTeamWorkflowArtifacts() {
+      return Arrays.asList((TeamWorkFlowArtifact) getIXTaskViewer().getTeamWf());
+   }
 }

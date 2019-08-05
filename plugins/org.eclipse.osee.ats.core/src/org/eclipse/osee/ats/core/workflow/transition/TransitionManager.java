@@ -49,9 +49,11 @@ import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.task.CreateTasksRuleRunner;
 import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -160,7 +162,7 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
                   continue;
                }
 
-               //Ignore transitions to the same state
+               // Ignore transitions to the same state
                if (!fromStateDef.equals(toStateDef)) {
                   // Validate transition from fromState and toState
                   if (!helper.isOverrideTransitionValidityCheck() && !fromStateDef.getToStates().contains(
@@ -342,6 +344,18 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
                         transitionDate, transitionUser, helper.getChangeSet());
                      if (review != null) {
                         helper.getChangeSet().add(review);
+                     }
+                  }
+
+                  // Create tasks from CreateTasksDefinition(s); call to service persists itself
+                  if (workItem.isTeamWorkflow()) {
+                     CreateTasksRuleRunner taskRunner = new CreateTasksRuleRunner((IAtsTeamWorkflow) workItem,
+                        workItem.getWorkDefinition().getCreateTasksDefs(), helper.getServices());
+                     XResultData result = taskRunner.run();
+                     if (result.isErrors()) {
+                        results.addResult(new TransitionResult(results.getResultString()));
+                     } else if (!result.getIds().isEmpty()) {
+                        // reload team wfs?
                      }
                   }
 

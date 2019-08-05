@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.workdef.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 
@@ -24,6 +25,7 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
    private IAtsStateDefinition startState;
    private HeaderDefinition headerDef;
    private boolean showStateMetrics = false;
+   private final List<CreateTasksDefinition> createTasksDefs = new ArrayList<>();
 
    public WorkDefinition(Long id, String name) {
       super(id, name);
@@ -96,6 +98,15 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
    @Override
    public void setShowStateMetrics(boolean showStateMetrics) {
       this.showStateMetrics = showStateMetrics;
+   }
+
+   public void addTaskSetDef(CreateTasksDefinition createTasksDef) {
+      createTasksDefs.add(createTasksDef);
+   }
+
+   @Override
+   public List<CreateTasksDefinition> getCreateTasksDefs() {
+      return createTasksDefs;
    }
 
 }

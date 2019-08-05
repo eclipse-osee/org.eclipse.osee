@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.task;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
@@ -20,17 +21,21 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -49,7 +54,7 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
    public Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<Object>> attributes, String commitComment) {
       NewTaskData newTaskData = getNewTaskData(teamWf, titles, assignees, createdDate, createdBy, relatedToState,
          taskWorkDef, attributes, commitComment);
-      return createTasks(newTaskData);
+      return createTasks(newTaskData, new XResultData());
    }
 
    @Override
@@ -59,7 +64,7 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
    }
 
    @Override
-   public Collection<IAtsTask> createTasks(NewTaskData newTaskData) {
+   public Collection<IAtsTask> createTasks(NewTaskData newTaskData, XResultData results) {
       return createTasks(new NewTaskDatas(newTaskData));
    }
 
@@ -179,4 +184,34 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
       }
       return relatedArt;
    }
+
+   @Override
+   public Collection<IAtsWorkDefinition> calculateTaskWorkDefs(IAtsTeamWorkflow teamWf) {
+      Collection<IAttribute<Object>> workDefIds = atsApi.getAttributeResolver().getAttributes(
+         teamWf.getTeamDefinition(), AtsAttributeTypes.RelatedTaskWorkDefinitionReference);
+      List<IAtsWorkDefinition> workDefs = new ArrayList<IAtsWorkDefinition>();
+      for (IAttribute<Object> attr : workDefIds) {
+         ArtifactId id = (ArtifactId) attr.getValue();
+         IAtsWorkDefinition workDef = atsApi.getWorkDefinitionService().getWorkDefinition(id);
+         workDefs.add(workDef);
+      }
+      return workDefs;
+   }
+
+   @Override
+   public Collection<CreateTasksDefinitionBuilder> getTaskSets(IAtsTeamWorkflow teamWf) {
+      List<CreateTasksDefinitionBuilder> taskSets = new LinkedList<>();
+      for (String idStr : atsApi.getAttributeResolver().getAttributesToStringList(teamWf.getTeamDefinition(),
+         AtsAttributeTypes.TaskSetId)) {
+         if (Strings.isValid(idStr)) {
+            CreateTasksDefinitionBuilder taskSet =
+               atsApi.getTaskSetDefinitionProviderService().getTaskSetDefinition(Long.valueOf(idStr));
+            if (taskSet != null) {
+               taskSets.add(taskSet);
+            }
+         }
+      }
+      return taskSets;
+   }
+
 }

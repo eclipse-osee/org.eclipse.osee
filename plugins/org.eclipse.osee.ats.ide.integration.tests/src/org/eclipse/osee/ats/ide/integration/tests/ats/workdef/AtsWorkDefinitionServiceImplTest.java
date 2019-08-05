@@ -80,6 +80,7 @@ public class AtsWorkDefinitionServiceImplTest {
       jTask.setDescription("description");
       jTask.setCreatedByUserId(AtsClientService.get().getUserService().getCurrentUserId());
       jTask.setCreatedDate(new Date());
+      jTask.setTaskWorkDef(DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign.getIdString());
       taskData.getNewTasks().add(jTask);
 
       NewTaskDatas datas = new NewTaskDatas();

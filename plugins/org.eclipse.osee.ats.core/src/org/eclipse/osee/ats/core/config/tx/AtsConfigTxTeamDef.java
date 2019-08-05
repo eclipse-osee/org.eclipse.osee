@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsVersionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.query.NextRelease;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -129,14 +130,18 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
    }
 
    @Override
-   public IAtsConfigTxTeamDef andRelatedTaskWorkflowDefinition(NamedId taskWorkDef) {
-      changes.setSoleAttributeValue(teamDef, RelatedTaskWorkDefinitionReference, taskWorkDef);
+   public IAtsConfigTxTeamDef andRelatedTaskWorkflowDefinition(NamedId... taskWorkDefs) {
+      for (NamedId id : taskWorkDefs) {
+         changes.addAttribute(teamDef, RelatedTaskWorkDefinitionReference, id);
+      }
       return this;
    }
 
    @Override
-   public IAtsConfigTxTeamDef andRelatedPeerWorkflowDefinition(NamedId peerWorkDef) {
-      changes.setSoleAttributeValue(teamDef, RelatedPeerWorkDefinitionReference, peerWorkDef);
+   public IAtsConfigTxTeamDef andRelatedPeerWorkflowDefinition(NamedId... peerWorkDefs) {
+      for (NamedId id : peerWorkDefs) {
+         changes.addAttribute(teamDef, RelatedPeerWorkDefinitionReference, id);
+      }
       return this;
    }
 
@@ -149,6 +154,14 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
    @Override
    public IAtsTeamDefinition getTeamDef() {
       return teamDef;
+   }
+
+   @Override
+   public IAtsConfigTxTeamDef andTaskSet(AtsTaskDefToken... taskSets) {
+      for (AtsTaskDefToken taskSet : taskSets) {
+         changes.addAttribute(teamDef, AtsAttributeTypes.TaskSetId, taskSet.getId());
+      }
+      return this;
    }
 
 }
