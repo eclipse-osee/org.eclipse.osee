@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.ObjectType;
 import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
@@ -35,10 +34,9 @@ public class RelationTypeExistsSqlHandler extends AbstractRelationSqlHandler<Cri
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
       super.addPredicates(writer);
-      IRelationType type = criteria.getType();
       writer.write(relAlias);
       writer.write(".rel_link_type_id = ?");
-      writer.addParameter(type.getId());
+      writer.addParameter(criteria.getType());
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       if (!aliases.isEmpty()) {

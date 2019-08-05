@@ -20,9 +20,11 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -207,28 +209,28 @@ public interface QueryBuilder extends Query {
     *
     * @param relationType the type to start following the link from
     */
-   QueryBuilder andExists(IRelationType relationType);
+   QueryBuilder andRelationExists(RelationTypeId relationType);
 
    /**
     * Search criteria that checks for non-existence of a relation type
     *
     * @param relationTypeSide the type to check for non-existence
     */
-   QueryBuilder andNotExists(RelationTypeSide relationTypeSide);
+   QueryBuilder andRelationNotExists(RelationTypeId relationType, RelationSide side);
 
    /**
     * Search criteria that follows the relation link ending on the given side
     *
-    * @param relationTypeSide the type to start following the link from
+    * @param relationType the type to start following the link from
     */
-   QueryBuilder andExists(RelationTypeSide relationTypeSide);
+   QueryBuilder andRelationExists(RelationTypeId relationType, RelationSide side);
 
    /**
     * Search criteria that checks for non-existence of a relation type
     *
     * @param relationType the type to check for non-existence
     */
-   QueryBuilder andNotExists(IRelationType relationType);
+   QueryBuilder andRelationNotExists(IRelationType relationType);
 
    /**
     * Artifact name exactly equals value
@@ -255,13 +257,6 @@ public interface QueryBuilder extends Query {
    QueryBuilder and(Collection<AttributeTypeId> attributeTypes, String value, QueryOption... options);
 
    QueryBuilder and(Collection<AttributeTypeId> attributeTypes, Collection<String> value, QueryOption... options);
-
-   /**
-    * Search for related artifacts
-    *
-    * @param relationTypeSide the type-side to search on
-    */
-   QueryBuilder andRelatedTo(RelationTypeSide relationTypeSide, ArtifactReadable... artifacts);
 
    /**
     * Search for related artifacts

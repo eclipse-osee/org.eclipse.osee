@@ -32,11 +32,13 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -450,23 +452,23 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public QueryBuilder andExists(IRelationType relationType) {
+   public QueryBuilder andRelationExists(RelationTypeId relationType) {
       return addAndCheck(new CriteriaRelationTypeExists(relationType));
    }
 
    @Override
-   public QueryBuilder andNotExists(IRelationType relationType) {
+   public QueryBuilder andRelationNotExists(IRelationType relationType) {
       return addAndCheck(new CriteriaRelationTypeNotExists(relationType));
    }
 
    @Override
-   public QueryBuilder andNotExists(RelationTypeSide relationTypeSide) {
-      return addAndCheck(new CriteriaRelationTypeSideNotExists(relationTypeSide));
+   public QueryBuilder andRelationNotExists(RelationTypeId relationType, RelationSide side) {
+      return addAndCheck(new CriteriaRelationTypeSideNotExists(relationType, side));
    }
 
    @Override
-   public QueryBuilder andExists(RelationTypeSide relationTypeSide) {
-      return addAndCheck(new CriteriaRelationTypeSideExists(relationTypeSide));
+   public QueryBuilder andRelationExists(RelationTypeId relationType, RelationSide side) {
+      return addAndCheck(new CriteriaRelationTypeSideExists(relationType, side));
    }
 
    @Override
@@ -504,11 +506,6 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    @Override
    public QueryBuilder andIds(ArtifactId... ids) {
       return andIds(Arrays.asList(ids));
-   }
-
-   @Override
-   public QueryBuilder andRelatedTo(RelationTypeSide relationTypeSide, ArtifactReadable... artifacts) {
-      return andRelatedTo(relationTypeSide, Arrays.asList(artifacts));
    }
 
    @Override

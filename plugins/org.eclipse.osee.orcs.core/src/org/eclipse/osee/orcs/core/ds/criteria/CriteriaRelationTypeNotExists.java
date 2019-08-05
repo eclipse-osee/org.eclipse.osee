@@ -18,11 +18,10 @@ import org.eclipse.osee.orcs.core.ds.Options;
 /**
  * @author John Misinco
  */
-public class CriteriaRelationTypeNotExists extends Criteria {
+public final class CriteriaRelationTypeNotExists extends Criteria {
    private final IRelationType relationType;
 
    public CriteriaRelationTypeNotExists(IRelationType relationType) {
-      super();
       this.relationType = relationType;
    }
 
@@ -32,12 +31,11 @@ public class CriteriaRelationTypeNotExists extends Criteria {
 
    @Override
    public void checkValid(Options options) {
-      Conditions.checkNotNull(getType(), "relation type");
+      Conditions.checkValid(relationType, "relation type");
    }
 
    @Override
    public String toString() {
       return "CriteriaRelationTypeNotExists [relationType=" + relationType + "]";
    }
-
 }

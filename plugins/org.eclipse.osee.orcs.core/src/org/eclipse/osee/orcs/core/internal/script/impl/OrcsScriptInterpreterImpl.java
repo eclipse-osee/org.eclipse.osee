@@ -601,16 +601,16 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
          if (object.getSide() == null) {
             IRelationType type = asRelationType(object.getType());
             if (OsExistenceOperator.EXISTS == op) {
-               getArtifactQuery().andExists(type);
+               getArtifactQuery().andRelationExists(type);
             } else {
-               getArtifactQuery().andNotExists(type);
+               getArtifactQuery().andRelationNotExists(type);
             }
          } else {
             RelationTypeSide typeSide = asRelationTypeSide(object.getType(), object.getSide());
             if (OsExistenceOperator.EXISTS == op) {
-               getArtifactQuery().andExists(typeSide);
+               getArtifactQuery().andRelationExists(typeSide, typeSide.getSide());
             } else {
-               getArtifactQuery().andNotExists(typeSide);
+               getArtifactQuery().andRelationNotExists(typeSide, typeSide.getSide());
             }
          }
          return null;

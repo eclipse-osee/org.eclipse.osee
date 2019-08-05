@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -56,19 +55,18 @@ public class ExistenceTypePredicateHandler implements PredicateHandler {
             Collection<IRelationType> iRelationTypes = PredicateHandlerUtil.getIRelationTypes(values);
             for (IRelationType rt : iRelationTypes) {
                if (checkExists(predicate.getType())) {
-                  builder.andExists(rt);
+                  builder.andRelationExists(rt);
                } else {
-                  builder.andNotExists(rt);
+                  builder.andRelationNotExists(rt);
                }
             }
          } else if ("relTypeSide".equals(existsType)) {
             RelationSide side = typeParameters.get(1).equals("A") ? RelationSide.SIDE_A : RelationSide.SIDE_B;
             for (IRelationType rt : PredicateHandlerUtil.getIRelationTypes(values)) {
-               RelationTypeSide rts = RelationTypeSide.create(side, rt.getId(), "SearchRelTypeSide");
                if (checkExists(predicate.getType())) {
-                  builder.andExists(rts);
+                  builder.andRelationExists(rt, side);
                } else {
-                  builder.andNotExists(rts);
+                  builder.andRelationNotExists(rt, side);
                }
             }
          }

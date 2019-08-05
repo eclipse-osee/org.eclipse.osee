@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeNotExists;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -25,14 +24,12 @@ public class RelationTypeNotExistsSqlHandler extends AbstractRelationSqlHandler<
    public void addPredicates(AbstractSqlWriter writer) {
       super.addPredicates(writer);
 
-      IRelationType type = criteria.getType();
-
       writer.write("NOT EXISTS (SELECT 1 FROM ");
       String relAlias = writer.writeTable(TableEnum.RELATION_TABLE);
       writer.write(", ");
       String txsAlias = writer.writeTable(TableEnum.TXS_TABLE);
       writer.write(" WHERE ");
-      writer.writeEqualsParameterAnd(relAlias, "rel_link_type_id", type);
+      writer.writeEqualsParameterAnd(relAlias, "rel_link_type_id", criteria.getType());
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       int aSize = aliases.size();

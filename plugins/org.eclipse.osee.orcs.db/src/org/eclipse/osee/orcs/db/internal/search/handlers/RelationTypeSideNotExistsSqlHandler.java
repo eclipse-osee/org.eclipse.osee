@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideNotExists;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -24,17 +23,16 @@ public class RelationTypeSideNotExistsSqlHandler extends AbstractRelationSqlHand
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
       super.addPredicates(writer);
-      RelationTypeSide type = criteria.getType();
 
       writer.write("NOT EXISTS (SELECT 1 FROM ");
       String relAlias = writer.writeTable(TableEnum.RELATION_TABLE);
       writer.write(", ");
       String txsAlias = writer.writeTable(TableEnum.TXS_TABLE);
       writer.write(" WHERE ");
-      writer.writeEqualsParameterAnd(relAlias, "rel_link_type_id", type);
+      writer.writeEqualsParameterAnd(relAlias, "rel_link_type_id", criteria.getType());
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
-      String side = type.getSide().isSideA() ? "a" : "b";
+      String side = criteria.getSide().isSideA() ? "a" : "b";
       int aSize = aliases.size();
       for (int index = 0; index < aSize; index++) {
          String artAlias = aliases.get(index);

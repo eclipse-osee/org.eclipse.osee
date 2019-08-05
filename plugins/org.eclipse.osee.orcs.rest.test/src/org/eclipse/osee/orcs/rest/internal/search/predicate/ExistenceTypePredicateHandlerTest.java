@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.ExistenceTypePredicateHandler;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
@@ -65,7 +66,7 @@ public class ExistenceTypePredicateHandlerTest {
       List<String> values = Collections.singletonList(relationValue);
       Predicate testPredicate = new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, values);
       handler.handle(builder, testPredicate);
-      verify(builder).andExists(relationTypeCaptor.capture());
+      verify(builder).andRelationExists(relationTypeCaptor.capture());
       Assert.assertEquals(1, relationTypeCaptor.getAllValues().size());
       Assert.assertTrue(12345L == relationTypeCaptor.getValue().getId());
    }
@@ -80,7 +81,7 @@ public class ExistenceTypePredicateHandlerTest {
       Predicate testPredicate = new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, values);
       handler.handle(builder, testPredicate);
 
-      verify(builder).andExists(relationTypeCaptor.capture());
+      verify(builder).andRelationExists(relationTypeCaptor.capture());
       Assert.assertEquals(1, relationTypeCaptor.getAllValues().size());
       Assert.assertTrue(12345L == relationTypeCaptor.getValue().getId());
    }
@@ -96,7 +97,7 @@ public class ExistenceTypePredicateHandlerTest {
       Predicate testPredicate = new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, values);
 
       handler.handle(builder, testPredicate);
-      verify(builder, times(2)).andExists(relationTypeCaptor.capture());
+      verify(builder, times(2)).andRelationExists(relationTypeCaptor.capture());
 
       Assert.assertEquals(2, relationTypeCaptor.getAllValues().size());
       IRelationType type = relationTypeCaptor.getAllValues().get(0);
@@ -155,7 +156,7 @@ public class ExistenceTypePredicateHandlerTest {
       values = Collections.singletonList(value);
       testPredicate = new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, values, QueryOption.TOKEN_DELIMITER__ANY);
       handler.handle(builder, testPredicate);
-      verify(builder, never()).andExists(any(RelationTypeSide.class));
+      verify(builder, never()).andRelationExists(any(RelationTypeSide.class), any(RelationSide.class));
    }
 
    @Test(expected = OseeCoreException.class)
