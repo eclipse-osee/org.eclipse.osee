@@ -165,7 +165,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       }
 
       FeatureDefinition lFeature = getFeature(featureDef.getName(), tx.getBranch());
-      if (action.equals("add") && !(lFeature == null)) {
+      if (action != null && action.equals("add") && !(lFeature == null)) {
          results.error("Feature: " + lFeature.getName() + " already exists.");
          return null;
       }
