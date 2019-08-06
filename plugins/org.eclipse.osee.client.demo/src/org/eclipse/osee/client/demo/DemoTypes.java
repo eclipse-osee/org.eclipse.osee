@@ -22,7 +22,7 @@ public final class DemoTypes {
    public static final ArtifactTypeToken DemoTestRequirement = ArtifactTypeToken.valueOf(86, "Demo Artifact With Selective Partition");
 
    public static final ArtifactTypeToken DemoDslArtifact = ArtifactTypeToken.valueOf(204526342635554L, "Demo DSL Artifact");
-   public static final AttributeTypeToken DemoDslAttribute = AttributeTypeToken.valueOf(1153126013769613775L, "AxRbLlj+c2ZHjBeumfgA");
+   public static final AttributeTypeToken DemoDslAttribute = AttributeTypeToken.valueOf(1153126013769613777L, "AxRbLlj+c2ZHjBeumfgA");
    // @formatter:on
 
    private DemoTypes() {

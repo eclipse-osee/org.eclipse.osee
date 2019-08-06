@@ -9,8 +9,6 @@ import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -62,23 +60,18 @@ public class DoorsCreator {
 
          if (parentArtifact != null) {
 
-            Artifact artifact =
-               ArtifactQuery.checkArtifactFromTypeAndName(DoorsArtifactType.Doors_Artifact, reqName, branch);
+            Artifact artifact = ArtifactQuery.checkArtifactFromTypeAndName(DoorsTypes.Doors_Artifact, reqName, branch);
             if (artifact == null) {
-               newArtifact = parentArtifact.addNewChild(PREEXISTING,
-                  ArtifactTypeToken.valueOf(5764607523034243073L, "DoorsRequirement"), reqName);
-               newArtifact.setSoleAttributeFromString(AttributeTypeToken.valueOf(5764607523034243075L, "Door Req Name"),
-                  reqName);
-               newArtifact.setSoleAttributeFromString(AttributeTypeToken.valueOf(0x0000000000002006, "Door Req URL"),
-                  url);
+               newArtifact = parentArtifact.addNewChild(PREEXISTING, DoorsTypes.Doors_Artifact, reqName);
+               newArtifact.setSoleAttributeFromString(DoorsTypes.DoorReqName, reqName);
+               newArtifact.setSoleAttributeFromString(DoorsTypes.DoorReqUrl, url);
 
                newArtifact.setName(reqName);
                newArtifact.persist(trans);
                trans.execute();
             } else {
-               artifact.setSoleAttributeFromString(AttributeTypeToken.valueOf(5764607523034243075L, "Door Req Name"),
-                  reqName);
-               artifact.setSoleAttributeFromString(AttributeTypeToken.valueOf(0x0000000000002006, "Door Req URL"), url);
+               artifact.setSoleAttributeFromString(DoorsTypes.DoorReqName, reqName);
+               artifact.setSoleAttributeFromString(DoorsTypes.DoorReqUrl, url);
 
                artifact.setName(reqName);
                artifact.persist(trans);

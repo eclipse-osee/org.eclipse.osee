@@ -12,7 +12,7 @@ artifactType "Demo DSL Artifact" extends "Artifact" {
 }
 
 attributeType "Demo DSL Attribute" extends StringAttribute {
-	id 1153126013769613775
+	id 1153126013769613777
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited

@@ -108,11 +108,11 @@ public class ArtifactTestRunOperator implements TestRunOperator {
    }
 
    public String getOutfileExtension() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.EXTENSION, "");
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.Extension, "");
    }
 
    public void setOutfileExtension(String outfile) {
-      artifact.setSoleAttributeValue(OteAttributeTypes.EXTENSION, outfile);
+      artifact.setSoleAttributeValue(CoreAttributeTypes.Extension, outfile);
    }
 
    public boolean isFromLocalWorkspace() {

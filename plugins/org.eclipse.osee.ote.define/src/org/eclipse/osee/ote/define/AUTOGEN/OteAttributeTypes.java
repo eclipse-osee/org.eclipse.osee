@@ -19,7 +19,6 @@ public final class OteAttributeTypes {
    public static final AttributeTypeToken CHECKSUM = AttributeTypeToken.valueOf(1152921504606847307L, "Checksum");
    public static final AttributeTypeToken ELAPSED_DATE = AttributeTypeToken.valueOf(1152921504606847296L, "Elapsed Date");
    public static final AttributeTypeToken END_DATE = AttributeTypeToken.valueOf(1152921504606847295L, "End Date");
-   public static final AttributeTypeToken EXTENSION = AttributeTypeToken.valueOf(1152921504606847064L, "Extension");
    public static final AttributeTypeToken FAILED = AttributeTypeToken.valueOf(1152921504606847298L, "Failed");
    public static final AttributeTypeToken IS_BATCH_MODE_ALLOWED = AttributeTypeToken.valueOf(1152921504606847303L, "Is Batch Mode Allowed");
    public static final AttributeTypeToken LAST_AUTHOR = AttributeTypeToken.valueOf(1152921504606847285L, "Last Author");
