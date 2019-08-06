@@ -620,13 +620,6 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public Map<ArtifactId, ArtifactReadable> loadArtifactMap() {
-      Map<ArtifactId, ArtifactReadable> artifacts = new HashMap<>(10000);
-      getResults().forEach(artifact -> artifacts.put(artifact, artifact));
-      return artifacts;
-   }
-
-   @Override
    public ArtifactId asArtifactId() {
       return asArtifact(this::asArtifactIds);
    }

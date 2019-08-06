@@ -233,7 +233,7 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
       Map<ArtifactId, ArtifactToken> codeUnits =
          queryFactory.fromBranch(branch).andIsOfType(CodeUnit).asArtifactTokenMap();
       Map<ArtifactId, ArtifactReadable> commits =
-         queryFactory.fromBranch(branch).andIsOfType(GitCommit).loadArtifactMap(); //TODO: improve performance with selective, one pass loading
+         queryFactory.fromBranch(branch).andIsOfType(GitCommit).asArtifactMap();
 
       TriConsumer<ArtifactId, ArtifactId, ArtifactId> consumer = (codeUnit, lastestCommitId, baselinedCommitId) -> {
          CertFileData file = new CertFileData();

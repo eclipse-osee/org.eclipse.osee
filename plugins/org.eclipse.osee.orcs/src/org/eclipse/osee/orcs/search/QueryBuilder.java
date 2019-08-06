@@ -71,8 +71,6 @@ public interface QueryBuilder extends Query {
     */
    List<ArtifactToken> asArtifactTokens(AttributeTypeId attributeType);
 
-   Map<ArtifactId, ArtifactReadable> loadArtifactMap();
-
    /**
     * @return artifact search results
     */
