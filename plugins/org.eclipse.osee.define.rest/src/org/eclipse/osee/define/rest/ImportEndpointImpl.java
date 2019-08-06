@@ -32,7 +32,7 @@ public class ImportEndpointImpl implements ImportEndpoint {
    }
 
    @Override
-   public XResultData importSetup(BranchId branch, String baseDir) {
-      return defineApi.getImportOperations().importSetup(branch, baseDir);
+   public XResultData importSetup(BranchId branch, String baseDir, Integer startBranch, boolean handleRelations, boolean singleBranch) {
+      return defineApi.getImportOperations().importSetup(branch, baseDir, startBranch, handleRelations, singleBranch);
    }
 }

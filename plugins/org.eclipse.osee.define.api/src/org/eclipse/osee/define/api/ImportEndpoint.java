@@ -38,5 +38,5 @@ public interface ImportEndpoint {
    @Path("{branch}/all")
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
-   XResultData importSetup(@PathParam("branch") BranchId branch, @QueryParam("baseDir") String baseDir);
+   XResultData importSetup(@PathParam("branch") BranchId branch, @QueryParam("baseDir") String baseDir, @QueryParam("startBranch") Integer startBranch, @QueryParam("handleRelations") boolean handleRelations, @QueryParam("singleBranch") boolean singleBranch);
 }

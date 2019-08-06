@@ -77,7 +77,7 @@ public class ImportOperationsImpl implements ImportOperations {
    }
 
    @Override
-   public XResultData importSetup(BranchId branch, String baseDir) {
+   public XResultData importSetup(BranchId branch, String baseDir, Integer startBranch, boolean handleRelations, boolean singleBranch) {
       return null;
    }
 
