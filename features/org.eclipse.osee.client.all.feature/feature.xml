@@ -20,7 +20,11 @@
    <includes
          id="org.eclipse.osee.client.feature"
          version="0.0.0"/>
-
+   
+   <includes
+         id="org.eclipse.osee.dep.feature"
+         version="0.0.0"/>
+         
    <includes
          id="org.eclipse.osee.core.runtime.feature"
          version="0.0.0"/>

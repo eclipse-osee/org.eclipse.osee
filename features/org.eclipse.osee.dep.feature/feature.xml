@@ -19,19 +19,62 @@
  
     <includes
          id="org.eclipse.egit.mylyn"
-         version="5.0.0"/>   
+         version="5.0.0"/>  
   
    <includes
+         id="org.eclipse.wst.server_userdoc.feature"
+         version="0.0.0"/>      
+    
+    <includes
+         id="org.eclipse.wst.xml.xpath2.processor.feature"
+         version="0.0.0"/>         
+          
+   <includes
+         id="org.eclipse.wst.common_core.feature"
+         version="0.0.0"/> 
+   
+   <includes
+         id="org.eclipse.wst.common_ui.feature"
+         version="0.0.0"/>  
+           
+   <includes
+         id="org.eclipse.wst.server_core.feature"
+         version="0.0.0"/> 
+   
+   <includes
+         id="org.eclipse.wst.server_adapters.feature"
+         version="0.0.0"/> 
+      
+    <includes
+         id="org.eclipse.wst.server_ui.feature"
+         version="0.0.0"/>         
+    <includes
+         id="org.eclipse.wst.ws_core.feature"
+         version="0.0.0"/>         
+      
+    <includes
          id="org.eclipse.graphiti.feature"
          version="0.0.0"/>
 
-   <includes
+    <includes
          id="org.eclipse.graphiti.feature.source"
          version="0.0.0"/>
- 
-   <includes
+
+    <includes
          id="org.eclipse.jgit.lfs"
          version="5.0.0"/>
+         
+    <includes
+         id="org.eclipse.m2e.feature"
+        version="0.0.0"/>
+     
+     <includes
+         id="org.eclipse.m2e.logback.feature"
+        version="0.0.0"/>
+    
+    <includes
+         id="org.eclipse.m2e.sdk.feature"
+        version="0.0.0"/> 
    
    <includes
          id="org.eclipse.jgit.http.apache"
@@ -53,10 +96,6 @@
          id="org.eclipse.egit"
          version="5.0.0"/>
          
-   <includes
-         id="org.eclipse.m2e.feature"
-         version="0.0.0"/>
-
    <includes
          id="org.eclipse.emf"
          version="0.0.0"/>
@@ -336,7 +375,7 @@
       <import plugin="org.apache.sshd.core"/>
       <import plugin="org.apache.mina.core"/>
       <import plugin="javax.xml"/>
-      <import plugin="javax.servlet" version="3.0.0" match="equivalent"/>
+      <import plugin="javax.servlet" />
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.jobs"/>
@@ -1229,7 +1268,7 @@
          download-size="0"
          install-size="0"
          version="2.13.0"
-	 unpack="false"/>
+	 		unpack="false"/>
 			
   <plugin
          id="org.eclipse.jsch.core"
@@ -2021,14 +2060,152 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+   
    <plugin
+         id="org.eclipse.m2e.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+       
+   <plugin
+         id="org.eclipse.m2e.maven.runtime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+   <plugin
+         id="org.eclipse.m2e.maven.runtime.slf4j.simple"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>         
+   <plugin
+         id="org.eclipse.m2e.archetype.common"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>    
+                  
+                
+   <plugin
+         id="org.eclipse.m2e.maven.indexer"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>      
+ 
+   <plugin
+         id="org.eclipse.m2e.workspace.cli"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>  
+                            
+	<plugin
+         id="com.thoughtworks.qdox"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>     
+	
+	<plugin
+         id="org.eclipse.wst.xml.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+	
+	<plugin
+         id="org.eclipse.wst.sse.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+	<plugin
          id="org.eclipse.wst.common.emf"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+                                    
+	<plugin
+         id="org.eclipse.emf.mwe.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+   	
+    <plugin
+         id="org.eclipse.jem.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.wst.xsd.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+   <plugin
+         id="javax.xml.soap"
+         download-size="0"
+         install-size="0"
+         version="1.2.0"
+         unpack="false"/> 
+         
+   <plugin
+         id="org.apache.wsil4j"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>      
+   
+   <plugin
+         id="org.uddi4j"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>   
+         
+  <plugin
+         id="org.eclipse.wst.internet.monitor.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>          
+  
+  <plugin
+         id="org.eclipse.wst.common.project.facet.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>      
+         
+   <plugin
+         id="org.eclipse.jetty.webapp"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>    
+         
+   <plugin
+         id="java_cup.runtime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/> 
+         
+   <plugin
+         id="org.eclipse.jetty.xml"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>    
+         
    <plugin
          id="org.apache.commons.lang3"
          download-size="0"
