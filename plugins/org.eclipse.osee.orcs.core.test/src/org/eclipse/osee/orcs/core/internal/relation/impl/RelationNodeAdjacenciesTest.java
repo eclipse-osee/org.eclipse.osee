@@ -20,7 +20,6 @@ import com.google.common.collect.Iterables;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -43,10 +42,6 @@ import org.mockito.MockitoAnnotations;
  */
 public class RelationNodeAdjacenciesTest {
 
-   private static final IRelationType TYPE_1 = RelationTypeToken.create(123456789L, "TYPE_1");
-   private static final IRelationType TYPE_2 = RelationTypeToken.create(987654321L, "TYPE_2");
-   private static final IRelationType TYPE_3 = RelationTypeToken.create(678912345L, "TYPE_3");
-
    // @formatter:off
    @Mock Relation dirty;
    @Mock Relation clean;
@@ -59,9 +54,9 @@ public class RelationNodeAdjacenciesTest {
    @Before
    public void init() {
       MockitoAnnotations.initMocks(this);
-      collection.add(TYPE_1, dirty);
-      collection.add(TYPE_2, clean);
-      collection.add(TYPE_3, deleted);
+      collection.add(CoreRelationTypes.Allocation__Requirement, dirty);
+      collection.add(CoreRelationTypes.CodeRequirement_CodeUnit, clean);
+      collection.add(CoreRelationTypes.Default_Hierarchical__Parent, deleted);
 
       when(dirty.isDirty()).thenReturn(true);
       when(dirty.getModificationType()).thenReturn(ModificationType.NEW);
@@ -81,7 +76,7 @@ public class RelationNodeAdjacenciesTest {
       boolean actual1 = collection.hasDirty();
       assertTrue(actual1);
 
-      collection.remove(TYPE_1, dirty);
+      collection.remove(CoreRelationTypes.Allocation__Requirement, dirty);
 
       boolean actual2 = collection.hasDirty();
       assertFalse(actual2);
@@ -167,22 +162,26 @@ public class RelationNodeAdjacenciesTest {
 
    @Test
    public void testGetListTypeAndDelete() {
-      List<Relation> list1 = collection.getList(TYPE_3, DeletionFlag.INCLUDE_DELETED);
+      List<Relation> list1 =
+         collection.getList(CoreRelationTypes.Default_Hierarchical__Parent, DeletionFlag.INCLUDE_DELETED);
       assertEquals(1, list1.size());
       assertTrue(list1.contains(deleted));
 
-      List<Relation> list2 = collection.getList(TYPE_3, DeletionFlag.EXCLUDE_DELETED);
+      List<Relation> list2 =
+         collection.getList(CoreRelationTypes.Default_Hierarchical__Parent, DeletionFlag.EXCLUDE_DELETED);
       assertEquals(0, list2.size());
    }
 
    @Test
    public void testGetSetTypeAndDelete() {
-      ResultSet<Relation> set1 = collection.getResultSet(TYPE_3, DeletionFlag.INCLUDE_DELETED);
+      ResultSet<Relation> set1 =
+         collection.getResultSet(CoreRelationTypes.Default_Hierarchical__Parent, DeletionFlag.INCLUDE_DELETED);
 
       assertEquals(1, set1.size());
       checkContains(set1, deleted, true);
 
-      ResultSet<Relation> set2 = collection.getResultSet(TYPE_3, DeletionFlag.EXCLUDE_DELETED);
+      ResultSet<Relation> set2 =
+         collection.getResultSet(CoreRelationTypes.Default_Hierarchical__Parent, DeletionFlag.EXCLUDE_DELETED);
       assertEquals(0, set2.size());
    }
 
@@ -204,17 +203,20 @@ public class RelationNodeAdjacenciesTest {
       when(relation.getIdForSide(RelationSide.SIDE_A)).thenReturn(id1);
       when(relation.getIdForSide(RelationSide.SIDE_B)).thenReturn(id2);
 
-      collection.add(TYPE_1, relation);
+      collection.add(CoreRelationTypes.Allocation__Requirement, relation);
 
-      Relation actual =
-         collection.getResultSet(TYPE_1, DeletionFlag.EXCLUDE_DELETED, id2, RelationSide.SIDE_A).getOneOrNull();
+      Relation actual = collection.getResultSet(CoreRelationTypes.Allocation__Requirement, DeletionFlag.EXCLUDE_DELETED,
+         id2, RelationSide.SIDE_A).getOneOrNull();
       assertNull(actual);
-      actual = collection.getResultSet(TYPE_1, DeletionFlag.EXCLUDE_DELETED, id2, RelationSide.SIDE_B).getOneOrNull();
+      actual = collection.getResultSet(CoreRelationTypes.Allocation__Requirement, DeletionFlag.EXCLUDE_DELETED, id2,
+         RelationSide.SIDE_B).getOneOrNull();
       assertEquals(relation, actual);
 
-      actual = collection.getResultSet(TYPE_1, DeletionFlag.EXCLUDE_DELETED, id1, RelationSide.SIDE_A).getOneOrNull();
+      actual = collection.getResultSet(CoreRelationTypes.Allocation__Requirement, DeletionFlag.EXCLUDE_DELETED, id1,
+         RelationSide.SIDE_A).getOneOrNull();
       assertEquals(relation, actual);
-      actual = collection.getResultSet(TYPE_1, DeletionFlag.EXCLUDE_DELETED, id1, RelationSide.SIDE_B).getOneOrNull();
+      actual = collection.getResultSet(CoreRelationTypes.Allocation__Requirement, DeletionFlag.EXCLUDE_DELETED, id1,
+         RelationSide.SIDE_B).getOneOrNull();
       assertNull(actual);
    }
 

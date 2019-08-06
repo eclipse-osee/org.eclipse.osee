@@ -27,7 +27,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
@@ -48,8 +48,6 @@ import org.mockito.stubbing.Answer;
  * @author Megumi Telles
  */
 public class RelationTypeValidityTest {
-
-   private static final RelationTypeToken TYPE_1 = RelationTypeToken.create(123456789L, "TYPE_1");
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();
@@ -72,14 +70,14 @@ public class RelationTypeValidityTest {
    public void init() {
       initMocks(this);
       validity = new RelationTypeValidity(relTypes);
-      when(relTypes.exists(TYPE_1)).thenReturn(true);
+      when(relTypes.exists(CoreRelationTypes.Allocation__Requirement)).thenReturn(true);
    }
 
    @Test
    public void testMaximumRelationAllowedNullArtifactType() {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("artifactType cannot be null");
-      validity.getMaximumRelationsAllowed(TYPE_1, null, SIDE_A);
+      validity.getMaximumRelationsAllowed(CoreRelationTypes.Allocation__Requirement, null, SIDE_A);
    }
 
    @Test
@@ -93,16 +91,17 @@ public class RelationTypeValidityTest {
    public void testMaximumRelationAllowedNullRelationSide() {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("relationSide cannot be null");
-      validity.getMaximumRelationsAllowed(TYPE_1, artifactType, null);
+      validity.getMaximumRelationsAllowed(CoreRelationTypes.Allocation__Requirement, artifactType, null);
    }
 
    @Test
    public void testMaximumRelationAllowedTypeDoesNotExist() {
-      when(relTypes.exists(TYPE_1)).thenReturn(false);
+      when(relTypes.exists(CoreRelationTypes.Allocation__Requirement)).thenReturn(false);
 
       thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage(String.format("relationType [%s] does not exist", TYPE_1));
-      validity.getMaximumRelationsAllowed(TYPE_1, artifactType, SIDE_A);
+      thrown.expectMessage(
+         String.format("relationType [%s] does not exist", CoreRelationTypes.Allocation__Requirement));
+      validity.getMaximumRelationsAllowed(CoreRelationTypes.Allocation__Requirement, artifactType, SIDE_A);
    }
 
    @Test
@@ -114,19 +113,21 @@ public class RelationTypeValidityTest {
 
    @Test
    public void testMaximumRelationAllowed1() {
-      when(relTypes.isArtifactTypeAllowed(TYPE_1, SIDE_B, artifactType)).thenReturn(true);
-      when(relTypes.getMultiplicity(TYPE_1)).thenReturn(MANY_TO_MANY);
+      when(relTypes.isArtifactTypeAllowed(CoreRelationTypes.Allocation__Requirement, SIDE_B, artifactType)).thenReturn(
+         true);
+      when(relTypes.getMultiplicity(CoreRelationTypes.Allocation__Requirement)).thenReturn(MANY_TO_MANY);
 
-      int actual = validity.getMaximumRelationsAllowed(TYPE_1, artifactType, SIDE_B);
+      int actual = validity.getMaximumRelationsAllowed(CoreRelationTypes.Allocation__Requirement, artifactType, SIDE_B);
       assertEquals(Integer.MAX_VALUE, actual);
    }
 
    @Test
    public void testMaximumRelationAllowed2() {
-      when(relTypes.isArtifactTypeAllowed(TYPE_1, SIDE_B, artifactType)).thenReturn(true);
-      when(relTypes.getMultiplicity(TYPE_1)).thenReturn(MANY_TO_ONE);
+      when(relTypes.isArtifactTypeAllowed(CoreRelationTypes.Allocation__Requirement, SIDE_B, artifactType)).thenReturn(
+         true);
+      when(relTypes.getMultiplicity(CoreRelationTypes.Allocation__Requirement)).thenReturn(MANY_TO_ONE);
 
-      int actual = validity.getMaximumRelationsAllowed(TYPE_1, artifactType, SIDE_B);
+      int actual = validity.getMaximumRelationsAllowed(CoreRelationTypes.Allocation__Requirement, artifactType, SIDE_B);
       assertEquals(1, actual);
    }
 
@@ -134,7 +135,7 @@ public class RelationTypeValidityTest {
    public void testMaximumRelationAllowed3() {
       when(relTypes.isArtifactTypeAllowed(relationType1, SIDE_A, artifactType)).thenReturn(true);
 
-      int actual = validity.getMaximumRelationsAllowed(TYPE_1, artifactType, SIDE_B);
+      int actual = validity.getMaximumRelationsAllowed(CoreRelationTypes.Allocation__Requirement, artifactType, SIDE_B);
       assertEquals(0, actual);
    }
 
@@ -173,50 +174,53 @@ public class RelationTypeValidityTest {
 
    @Test
    public void testGetRelationMultiplicityState() {
-      when(relTypes.getMultiplicity(TYPE_1)).thenReturn(ONE_TO_ONE);
+      when(relTypes.getMultiplicity(CoreRelationTypes.Allocation__Requirement)).thenReturn(ONE_TO_ONE);
 
-      MultiplicityState state = validity.getRelationMultiplicityState(TYPE_1, SIDE_B, 0);
+      MultiplicityState state =
+         validity.getRelationMultiplicityState(CoreRelationTypes.Allocation__Requirement, SIDE_B, 0);
       assertEquals(MultiplicityState.IS_VALID, state);
 
-      state = validity.getRelationMultiplicityState(TYPE_1, SIDE_B, 1);
+      state = validity.getRelationMultiplicityState(CoreRelationTypes.Allocation__Requirement, SIDE_B, 1);
       assertEquals(MultiplicityState.IS_VALID, state);
 
-      state = validity.getRelationMultiplicityState(TYPE_1, SIDE_B, 2);
+      state = validity.getRelationMultiplicityState(CoreRelationTypes.Allocation__Requirement, SIDE_B, 2);
       assertEquals(MultiplicityState.MAX_VIOLATION, state);
    }
 
    @Test
    public void testCheckRelationTypeMultiplicity() {
-      when(relTypes.getMultiplicity(TYPE_1)).thenReturn(ONE_TO_ONE);
+      when(relTypes.getMultiplicity(CoreRelationTypes.Allocation__Requirement)).thenReturn(ONE_TO_ONE);
       when(node.getExceptionString()).thenReturn("node message");
 
       thrown.expect(OseeStateException.class);
-      thrown.expectMessage(String.format("Relation type [%s] on [%s] exceeds max occurrence rule on [%s]", TYPE_1,
-         SIDE_A, node.getExceptionString()));
+      thrown.expectMessage(String.format("Relation type [%s] on [%s] exceeds max occurrence rule on [%s]",
+         CoreRelationTypes.Allocation__Requirement, SIDE_A, node.getExceptionString()));
 
-      validity.checkRelationTypeMultiplicity(TYPE_1, node, SIDE_A, 2);
+      validity.checkRelationTypeMultiplicity(CoreRelationTypes.Allocation__Requirement, node, SIDE_A, 2);
    }
 
    @Test
    public void testCheckRelationTypeMultiplicityNoException() {
-      when(relTypes.getMultiplicity(TYPE_1)).thenReturn(ONE_TO_ONE);
+      when(relTypes.getMultiplicity(CoreRelationTypes.Allocation__Requirement)).thenReturn(ONE_TO_ONE);
       when(node.getExceptionString()).thenReturn("node message");
 
       ExpectedException.none();
-      validity.checkRelationTypeMultiplicity(TYPE_1, node, SIDE_A, 0);
+      validity.checkRelationTypeMultiplicity(CoreRelationTypes.Allocation__Requirement, node, SIDE_A, 0);
    }
 
    @Test
    public void testIsRelationTypeValid() {
-      when(relTypes.isArtifactTypeAllowed(TYPE_1, SIDE_A, artifactType)).thenReturn(true);
+      when(relTypes.isArtifactTypeAllowed(CoreRelationTypes.Allocation__Requirement, SIDE_A, artifactType)).thenReturn(
+         true);
 
-      boolean actual = validity.isRelationTypeValid(TYPE_1, artifactType, SIDE_B);
+      boolean actual = validity.isRelationTypeValid(CoreRelationTypes.Allocation__Requirement, artifactType, SIDE_B);
       assertEquals(false, actual);
 
-      when(relTypes.isArtifactTypeAllowed(TYPE_1, SIDE_B, artifactType)).thenReturn(true);
-      when(relTypes.getMultiplicity(TYPE_1)).thenReturn(ONE_TO_ONE);
+      when(relTypes.isArtifactTypeAllowed(CoreRelationTypes.Allocation__Requirement, SIDE_B, artifactType)).thenReturn(
+         true);
+      when(relTypes.getMultiplicity(CoreRelationTypes.Allocation__Requirement)).thenReturn(ONE_TO_ONE);
 
-      actual = validity.isRelationTypeValid(TYPE_1, artifactType, SIDE_B);
+      actual = validity.isRelationTypeValid(CoreRelationTypes.Allocation__Requirement, artifactType, SIDE_B);
       assertEquals(true, actual);
    }
 
@@ -225,26 +229,28 @@ public class RelationTypeValidityTest {
       when(artifactType.toString()).thenReturn("artType1");
       when(artifactType2.toString()).thenReturn("artType2");
 
-      when(relTypes.isArtifactTypeAllowed(TYPE_1, SIDE_A, artifactType)).thenReturn(true);
-      when(relTypes.getArtifactType(TYPE_1, SIDE_B)).thenReturn(artifactType2);
+      when(relTypes.isArtifactTypeAllowed(CoreRelationTypes.Allocation__Requirement, SIDE_A, artifactType)).thenReturn(
+         true);
+      when(relTypes.getArtifactType(CoreRelationTypes.Allocation__Requirement, SIDE_B)).thenReturn(artifactType2);
 
       when(node.getArtifactType()).thenReturn(artifactType);
       when(node.getExceptionString()).thenReturn("node message");
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage(
-         "Relation validity error for [node message] - ArtifactType [artType1] does not belong on side [SIDE_B] of relation [TYPE_1] - only items of type [artType2] are allowed");
-      validity.checkRelationTypeValid(TYPE_1, node, SIDE_B);
+         "Relation validity error for [node message] - ArtifactType [artType1] does not belong on side [SIDE_B] of relation [Allocation] - only items of type [artType2] are allowed");
+      validity.checkRelationTypeValid(CoreRelationTypes.Allocation__Requirement, node, SIDE_B);
    }
 
    @Test
    public void testCheckRelationTypeValidNoException() {
       when(node.getArtifactType()).thenReturn(artifactType);
-      when(relTypes.isArtifactTypeAllowed(TYPE_1, SIDE_B, artifactType)).thenReturn(true);
-      when(relTypes.getMultiplicity(TYPE_1)).thenReturn(ONE_TO_ONE);
+      when(relTypes.isArtifactTypeAllowed(CoreRelationTypes.Allocation__Requirement, SIDE_B, artifactType)).thenReturn(
+         true);
+      when(relTypes.getMultiplicity(CoreRelationTypes.Allocation__Requirement)).thenReturn(ONE_TO_ONE);
 
       ExpectedException.none();
-      validity.checkRelationTypeValid(TYPE_1, node, SIDE_B);
+      validity.checkRelationTypeValid(CoreRelationTypes.Allocation__Requirement, node, SIDE_B);
    }
 
 }

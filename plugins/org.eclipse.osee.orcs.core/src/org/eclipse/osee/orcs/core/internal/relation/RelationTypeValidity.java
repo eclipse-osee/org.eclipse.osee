@@ -53,7 +53,7 @@ public class RelationTypeValidity {
       }
    }
 
-   public void checkRelationTypeValid(RelationTypeId type, Artifact node, RelationSide side) {
+   public void checkRelationTypeValid(RelationTypeToken type, Artifact node, RelationSide side) {
       Conditions.checkNotNull(type, "type");
       Conditions.checkNotNull(node, "node");
       Conditions.checkNotNull(side, "relationSide");
@@ -63,7 +63,8 @@ public class RelationTypeValidity {
       if (!isValid) {
          throw new OseeArgumentException(
             "Relation validity error for [%s] - ArtifactType [%s] does not belong on side [%s] of relation [%s] - only items of type [%s] are allowed",
-            node.getExceptionString(), artifactType, side.name(), type, relationTypes.getArtifactType(type, side));
+            node.getExceptionString(), artifactType, side.name(), type.getName(),
+            relationTypes.getArtifactType(type, side));
       }
    }
 

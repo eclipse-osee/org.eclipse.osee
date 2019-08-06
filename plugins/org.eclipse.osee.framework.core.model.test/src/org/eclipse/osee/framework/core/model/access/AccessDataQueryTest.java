@@ -147,7 +147,7 @@ public class AccessDataQueryTest {
       ArtifactToken accessArtifact = ArtifactToken.valueOf(45, "test1", branch, Folder);
       ArtifactToken typeAccessArtifact = ArtifactToken.valueOf(46, "test2", branch, Folder);
       ArtifactToken noAccessArtifact = ArtifactToken.valueOf(47, "test3", branch, Folder);
-      ArtifactTypeToken artType = ArtifactTypeToken.valueOf(1, "Folder");
+      ArtifactTypeToken artType = CoreArtifactTypes.Folder;
 
       AccessDetail<?> specificArtDetail = MockDataFactory.createAccessDetails(accessArtifact, PermissionEnum.DENY, "",
          new Scope().add("very").add("specific"));

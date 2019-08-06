@@ -38,9 +38,9 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -71,7 +71,6 @@ import org.mockito.Mockito;
  */
 public class TransactionBuilderImplTest {
 
-   private static final RelationTypeToken TYPE_1 = RelationTypeToken.create(123456789L, "TYPE_1");
    @Rule
    public ExpectedException thrown = ExpectedException.none();
 
@@ -377,15 +376,15 @@ public class TransactionBuilderImplTest {
 
    @Test
    public void testUnrelateWithAandB() {
-      factory.unrelate(node1, TYPE_1, node2);
-      verify(txDataManager).unrelate(txData, node1, TYPE_1, node2);
+      factory.unrelate(node1, CoreRelationTypes.Allocation__Requirement, node2);
+      verify(txDataManager).unrelate(txData, node1, CoreRelationTypes.Allocation__Requirement, node2);
    }
 
    @Test
    public void testUnrelateFromAllWithSide() {
-      RelationTypeSide asTypeSide = RelationTypeSide.create(TYPE_1, SIDE_B);
+      RelationTypeSide asTypeSide = RelationTypeSide.create(CoreRelationTypes.Allocation__Requirement, SIDE_B);
       factory.unrelateFromAll(asTypeSide, expectedAuthor);
-      verify(txDataManager).unrelateFromAll(txData, TYPE_1, expectedAuthor, SIDE_B);
+      verify(txDataManager).unrelateFromAll(txData, CoreRelationTypes.Allocation__Requirement, expectedAuthor, SIDE_B);
    }
 
    @Test
