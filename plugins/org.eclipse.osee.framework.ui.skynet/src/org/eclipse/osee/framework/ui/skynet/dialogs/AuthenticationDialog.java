@@ -100,8 +100,8 @@ public class AuthenticationDialog extends OseeMessageDialog {
       authenticationComposite.setStorageAllowed(isStorageAllowed);
    }
 
-   private void setGuestLogin(boolean isGuestLogin) {
-      authenticationComposite.setGuestLogin(isGuestLogin);
+   private void setAnonymousLogin(boolean isAnonymousLogin) {
+      authenticationComposite.setAnonymousLogin(isAnonymousLogin);
    }
 
    private String getUserName() {
@@ -112,8 +112,8 @@ public class AuthenticationDialog extends OseeMessageDialog {
       return authenticationComposite.isStorageAllowed();
    }
 
-   private boolean isGuestLogin() {
-      return authenticationComposite.isGuestLogin();
+   private boolean isAnonymousLogin() {
+      return authenticationComposite.isAnonymousLogin();
    }
 
    public static void openDialog() {
@@ -149,7 +149,7 @@ public class AuthenticationDialog extends OseeMessageDialog {
             String user = "";
             String message = "";
             boolean isStorageAllowed = false;
-            boolean isGuestLogin = false;
+            boolean isAnonymousLogin = false;
             boolean shutdown = false;
             Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 
@@ -159,13 +159,13 @@ public class AuthenticationDialog extends OseeMessageDialog {
                   dialog.setUserName(user);
                   dialog.setPassword("");
                   dialog.setStorageAllowed(isStorageAllowed);
-                  dialog.setGuestLogin(isGuestLogin);
+                  dialog.setAnonymousLogin(isAnonymousLogin);
                }
                int result = dialog.open();
 
                user = dialog.getUserName();
                isStorageAllowed = dialog.isStorageAllowed();
-               isGuestLogin = dialog.isGuestLogin();
+               isAnonymousLogin = dialog.isAnonymousLogin();
 
                if (result == Window.CANCEL) {
                   // TODO This was added because ATS requires a user to be logged in
@@ -175,7 +175,7 @@ public class AuthenticationDialog extends OseeMessageDialog {
                      shutdown = true;
                   } else {
                      message =
-                        "Please log in as Guest or with your credentials.\n" + "A Log-in account is required to continue.";
+                        "Please log in as Anonymous or with your credentials.\n" + "A Log-in account is required to continue.";
                   }
 
                   MessageDialog.openError(shell, "Authentication Cancelled", message);

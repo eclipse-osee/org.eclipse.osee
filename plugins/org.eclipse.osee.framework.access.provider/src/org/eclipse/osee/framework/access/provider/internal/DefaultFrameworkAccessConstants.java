@@ -22,7 +22,7 @@ public final class DefaultFrameworkAccessConstants {
    }
 
    public static final IAccessContextId DEFAULT_FRAMEWORK_CONTEXT =
-      IAccessContextId.valueOf(7441402941554657282L, "guest.context");
+      IAccessContextId.valueOf(7441402941554657282L, "anonymous.context");
 
    public final static IAccessContextId INVALID_ASSOC_ART_ID =
       IAccessContextId.valueOf(8528534420990278776L, "famework.invalidAssocArtId");

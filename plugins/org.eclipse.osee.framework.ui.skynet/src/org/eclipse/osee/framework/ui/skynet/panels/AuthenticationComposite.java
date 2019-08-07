@@ -84,10 +84,10 @@ public class AuthenticationComposite extends Composite {
    private SelectionListener listener;
    private boolean allValid;
    private Button memoButton;
-   private Button guestButton;
+   private Button anonymousButton;
    private Button userButton;
    private Composite mainComposite;
-   private boolean isGuestLogin;
+   private boolean isAnonymousLogin;
 
    public AuthenticationComposite(Composite parent, int style, boolean buildSubmitButton) {
       super(parent, style);
@@ -127,11 +127,11 @@ public class AuthenticationComposite extends Composite {
       composite.setLayout(new GridLayout());
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      guestButton = new Button(composite, SWT.RADIO);
-      guestButton.setText("Guest");
-      guestButton.setSelection(isGuestLogin);
-      guestButton.setToolTipText("Allows users to log into the system with guest priviledges.\n");
-      guestButton.addSelectionListener(new SelectionAdapter() {
+      anonymousButton = new Button(composite, SWT.RADIO);
+      anonymousButton.setText("Anonymous");
+      anonymousButton.setSelection(isAnonymousLogin);
+      anonymousButton.setToolTipText("Allows users to log into the system with anonymous priviledges.\n");
+      anonymousButton.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -142,7 +142,7 @@ public class AuthenticationComposite extends Composite {
       });
 
       userButton = new Button(composite, SWT.RADIO);
-      userButton.setSelection(!isGuestLogin);
+      userButton.setSelection(!isAnonymousLogin);
       userButton.setText("User Login");
       userButton.setToolTipText("Enables User to login");
       userButton.addSelectionListener(new SelectionAdapter() {
@@ -158,8 +158,8 @@ public class AuthenticationComposite extends Composite {
 
    private void handleLoginTypeSelection() {
       boolean allowUserLogin = false;
-      if (isWidgetAccessible(guestButton)) {
-         if (guestButton.getSelection()) {
+      if (isWidgetAccessible(anonymousButton)) {
+         if (anonymousButton.getSelection()) {
             allowUserLogin = false;
          }
       }
@@ -170,7 +170,7 @@ public class AuthenticationComposite extends Composite {
          }
       }
 
-      isGuestLogin = !allowUserLogin;
+      isAnonymousLogin = !allowUserLogin;
       if (isWidgetAccessible(mainComposite)) {
          setEnabledHelper(mainComposite, allowUserLogin);
       }
@@ -254,8 +254,8 @@ public class AuthenticationComposite extends Composite {
          @Override
          public void widgetSelected(SelectionEvent e) {
             try {
-               if (isGuestLogin()) {
-                  ClientSessionManager.authenticateAsGuest();
+               if (isAnonymousLogin()) {
+                  ClientSessionManager.authenticateAsAnonymous();
                } else {
                   ClientSessionManager.authenticate(new BaseCredentialProvider() {
                      @Override
@@ -353,12 +353,12 @@ public class AuthenticationComposite extends Composite {
       return dataMap.get(LabelEnum.Password);
    }
 
-   public boolean isGuestLogin() {
-      return isGuestLogin;
+   public boolean isAnonymousLogin() {
+      return isAnonymousLogin;
    }
 
-   public void setGuestLogin(boolean isGuestLogin) {
-      this.isGuestLogin = isGuestLogin;
+   public void setAnonymousLogin(boolean isAnonymousLogin) {
+      this.isAnonymousLogin = isAnonymousLogin;
    }
 
    public boolean isStorageAllowed() {
@@ -384,7 +384,7 @@ public class AuthenticationComposite extends Composite {
    private void updateDefaultButtonStatus() {
       allValid = true;
 
-      if (!isGuestLogin) {
+      if (!isAnonymousLogin) {
          for (LabelEnum key : LabelEnum.values()) {
             Label label = statusMap.get(key);
             if (isWidgetAccessible(label)) {

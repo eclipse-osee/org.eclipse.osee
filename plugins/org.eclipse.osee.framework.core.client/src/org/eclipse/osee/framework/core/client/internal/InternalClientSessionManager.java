@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.logging.Level;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.eclipse.osee.framework.core.client.AnonymousCredentialProvider;
 import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
-import org.eclipse.osee.framework.core.client.GuestCredentialProvider;
 import org.eclipse.osee.framework.core.client.ICredentialProvider;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.client.server.HttpServer;
@@ -88,8 +88,8 @@ public class InternalClientSessionManager {
       throw new OseeAuthenticationRequiredException("Session is invalid - authentication is required");
    }
 
-   public void authenticateAsGuest() {
-      authenticate(new GuestCredentialProvider());
+   public void authenticateAsAnonymous() {
+      authenticate(new AnonymousCredentialProvider());
    }
 
    public IdeClientSession getSafeSession() {
@@ -154,7 +154,7 @@ public class InternalClientSessionManager {
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             try {
-               authenticateAsGuest();
+               authenticateAsAnonymous();
             } catch (Exception ex1) {
                OseeLog.log(Activator.class, Level.SEVERE, ex1);
             }

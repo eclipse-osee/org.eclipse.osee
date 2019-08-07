@@ -244,7 +244,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public IAtsWorkDefinition getWorkDefinition() {
       try {
-         return AtsClientService.get().getWorkDefinitionService().getWorkDefinition((IAtsWorkItem) this);
+         return AtsClientService.get().getWorkDefinitionService().getWorkDefinition(this);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -385,7 +385,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public void setTransitionAssignees(Collection<IAtsUser> assignees) {
       if (assignees.contains(AtsCoreUsers.SYSTEM_USER) || assignees.contains(AtsCoreUsers.ANONYMOUS_USER)) {
-         throw new OseeArgumentException("Can not assign workflow to OseeSystem or Guest");
+         throw new OseeArgumentException("Can not assign workflow to OseeSystem or Anonymous");
       }
       if (assignees.size() > 1 && assignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {
          throw new OseeArgumentException("Can not assign to user and UnAssigned");

@@ -283,10 +283,10 @@ public class OrcsTransactionTest {
       tx.setSoleAttributeFromString(oseeSystem, CoreAttributeTypes.Name, "Test");
       tx.commit();
 
-      ArtifactReadable newGuest = queryBuilder.getResults().getExactlyOne();
+      ArtifactReadable newAnonymous = queryBuilder.getResults().getExactlyOne();
 
       assertEquals(OseeSystem.getName(), oseeSystem.getName());
-      assertEquals("Test", newGuest.getName());
+      assertEquals("Test", newAnonymous.getName());
    }
 
    @Test

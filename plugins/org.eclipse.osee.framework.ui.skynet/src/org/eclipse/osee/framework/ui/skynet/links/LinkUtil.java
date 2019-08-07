@@ -57,7 +57,7 @@ public class LinkUtil {
     */
    public static void deleteLink(ArtifactId accountId, Link deleteLink) throws Exception {
       Artifact golbalArtifact = getStoreArtifact(true);
-      Conditions.checkNotNull(golbalArtifact, "Guest accountId: " + SystemUser.Anonymous.getIdString());
+      Conditions.checkNotNull(golbalArtifact, "Anonymous accountId: " + SystemUser.Anonymous.getIdString());
       deleteLink(deleteLink, true, golbalArtifact);
 
       Artifact userArt = ArtifactQuery.getArtifactFromId(accountId, CoreBranches.COMMON);
@@ -183,7 +183,7 @@ public class LinkUtil {
          link.setId(GUID.create());
       }
       if (global) {
-         link.setTeam("Guest");
+         link.setTeam("Anonymous");
       } else {
          User user = UserManager.getUser();
          link.setTeam(user.getName());

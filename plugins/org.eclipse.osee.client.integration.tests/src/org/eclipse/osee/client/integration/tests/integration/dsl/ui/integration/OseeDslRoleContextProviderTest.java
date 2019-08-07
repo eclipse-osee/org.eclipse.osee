@@ -95,7 +95,7 @@ public class OseeDslRoleContextProviderTest {
    public void testDbInitCreationOfAccessModel() throws Exception {
       Artifact model = ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.FrameworkAccessModel);
       String xtext = model.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData);
-      Assert.assertTrue(xtext.contains("guest.context"));
+      Assert.assertTrue(xtext.contains("anonymous.context"));
    }
 
    private String getTestSheet1(Long contextId, Long role1Id) {

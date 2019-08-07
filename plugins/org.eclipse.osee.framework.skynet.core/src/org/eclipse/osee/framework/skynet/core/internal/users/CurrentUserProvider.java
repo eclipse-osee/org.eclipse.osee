@@ -41,8 +41,8 @@ public class CurrentUserProvider extends LazyObject<User> {
    private final UserDataWriter writer;
 
    private final AtomicBoolean duringCreateUser = new AtomicBoolean(false);
-   private final AtomicBoolean isGuestAuthenticationAllowed = new AtomicBoolean(true);
-   private final AtomicBoolean isGuestNotificationAllowed = new AtomicBoolean(true);
+   private final AtomicBoolean isAnonymousAuthenticationAllowed = new AtomicBoolean(true);
+   private final AtomicBoolean isAnonymousNotificationAllowed = new AtomicBoolean(true);
 
    public CurrentUserProvider(LazyObject<Cache<String, User>> cacheProvider, UserDataWriter writer) {
       this.cacheProvider = cacheProvider;
@@ -80,16 +80,16 @@ public class CurrentUserProvider extends LazyObject<User> {
                   try {
                      currentUser = getUser(currentUserToken);
                   } catch (UserNotInDatabase ex) {
-                     if (isGuestAuthenticationAllowed.compareAndSet(true, false)) {
-                        ClientSessionManager.authenticateAsGuest();
+                     if (isAnonymousAuthenticationAllowed.compareAndSet(true, false)) {
+                        ClientSessionManager.authenticateAsAnonymous();
                         currentUser = getUser(SystemUser.Anonymous);
                      }
                   }
                }
             }
          } else {
-            if (isGuestAuthenticationAllowed.compareAndSet(true, false)) {
-               ClientSessionManager.authenticateAsGuest();
+            if (isAnonymousAuthenticationAllowed.compareAndSet(true, false)) {
+               ClientSessionManager.authenticateAsAnonymous();
                currentUser = getUser(SystemUser.Anonymous);
             }
          }
@@ -98,9 +98,9 @@ public class CurrentUserProvider extends LazyObject<User> {
             throw new OseeStateException("Setting current user to null.");
          } else {
             if (currentUser.equals(SystemUser.Anonymous)) {
-               if (isGuestNotificationAllowed.compareAndSet(true, false)) {
+               if (isAnonymousNotificationAllowed.compareAndSet(true, false)) {
                   OseeLog.log(Activator.class, Level.INFO,
-                     "You are logged into OSEE as \"Guest\".  If this is unexpected notify your OSEE admin");
+                     "You are logged into OSEE as \"Anonymous\".  If this is unexpected notify your OSEE admin");
                }
             }
             IdeClientSession session = ClientSessionManager.getSession();

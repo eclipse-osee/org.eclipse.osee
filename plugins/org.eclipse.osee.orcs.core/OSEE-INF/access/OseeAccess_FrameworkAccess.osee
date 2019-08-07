@@ -7,12 +7,12 @@
  * 
  */
 
-role "Guest" {
+role "Anonymous" {
 	id 2570943913641503844;
-	accessContext "guest.context";
+	accessContext "anonymous.context";
 }
 
-accessContext "guest.context" {
+accessContext "anonymous.context" {
 	id 7441402941554657282;
 	DENY edit artifactType "Artifact";
 	DENY edit relationType ALL BOTH;

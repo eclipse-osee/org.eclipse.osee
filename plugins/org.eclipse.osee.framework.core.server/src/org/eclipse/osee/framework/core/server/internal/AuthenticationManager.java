@@ -61,7 +61,7 @@ public class AuthenticationManager implements IAuthenticationManager {
    @Override
    public UserToken asUserToken(OseeCredential credential) {
       UserToken toReturn = null;
-      if (isGuestLogin(credential)) {
+      if (isAnonymousLogin(credential)) {
          toReturn = SystemUser.Anonymous;
       } else if (isBootStrap(credential)) {
          toReturn = SystemUser.BootStrap;
@@ -85,7 +85,7 @@ public class AuthenticationManager implements IAuthenticationManager {
       throw new OseeAuthenticationException("Invalid authentication protocol [%s]", key);
    }
 
-   private boolean isGuestLogin(OseeCredential credential) {
+   private boolean isAnonymousLogin(OseeCredential credential) {
       return credential.getUserName().equals(SystemUser.Anonymous.getName());
    }
 
@@ -94,7 +94,7 @@ public class AuthenticationManager implements IAuthenticationManager {
    }
 
    private boolean isSafeUser(OseeCredential credential) {
-      return isGuestLogin(credential) || isBootStrap(credential);
+      return isAnonymousLogin(credential) || isBootStrap(credential);
    }
 
    @Override

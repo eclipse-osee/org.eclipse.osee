@@ -17,7 +17,7 @@ public enum TransitionOption {
    None,
    // Override check whether workflow allows transition to state
    OverrideTransitionValidityCheck,
-   // Allows transition to occur with UnAssigned, OseeSystem or Guest
+   // Allows transition to occur with UnAssigned, OseeSystem or Anonymous
    OverrideAssigneeCheck,
    // Skip reloading workflow prior to transition
    OverrideReload,

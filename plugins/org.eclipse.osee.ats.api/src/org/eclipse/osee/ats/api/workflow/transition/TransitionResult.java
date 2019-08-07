@@ -34,9 +34,9 @@ public class TransitionResult implements ITransitionResult {
    public static TransitionResult WORKING_BRANCH_EXISTS =
       new TransitionResult("Working Branch exists.\n\nPlease commit or delete working branch before transition.");
    public static TransitionResult CAN_NOT_TRANSITION_WITH_SYSTEM_USER_ASSIGNED =
-      new TransitionResult("Can not transition with \"Guest\", or \"OseeSystem\" user as assignee.");
+      new TransitionResult("Can not transition with \"Anonymous\", or \"OseeSystem\" user as assignee.");
    public static TransitionResult CAN_NOT_TRANSITION_AS_SYSTEM_USER =
-      new TransitionResult("Can not transition as \"Guest\", or \"OseeSystem\".");
+      new TransitionResult("Can not transition as \"Anonymous\", or \"OseeSystem\".");
    public static TransitionResult COMPLETE_BLOCKING_REVIEWS =
       new TransitionResult("All Blocking Reviews must be completed before transition.");
    public static TransitionResult CANCEL_REVIEWS_BEFORE_CANCEL =

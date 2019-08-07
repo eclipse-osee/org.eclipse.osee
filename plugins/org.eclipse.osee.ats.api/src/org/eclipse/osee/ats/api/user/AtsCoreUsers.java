@@ -30,7 +30,7 @@ public final class AtsCoreUsers {
       return SYSTEM_USER.equals(user);
    }
 
-   public static boolean isGuestUser(IAtsUser user) {
+   public static boolean isAnonymousUser(IAtsUser user) {
       return ANONYMOUS_USER.equals(user);
    }
 

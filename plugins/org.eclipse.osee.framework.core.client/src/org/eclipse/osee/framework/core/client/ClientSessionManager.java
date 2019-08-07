@@ -96,8 +96,8 @@ public class ClientSessionManager {
       return InternalClientSessionManager.getInstance().getAuthenticationProtocols();
    }
 
-   public static void authenticateAsGuest() {
-      InternalClientSessionManager.getInstance().authenticateAsGuest();
+   public static void authenticateAsAnonymous() {
+      InternalClientSessionManager.getInstance().authenticateAsAnonymous();
    }
 
    public static void authenticate(ICredentialProvider credentialProvider) {

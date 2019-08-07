@@ -9,7 +9,7 @@
  <Config machineName="station01">
   <ScriptName>part.foo.bar.blah_blah
   </ScriptName>
-  <User name="Guest" email="" id="99999998">
+  <User name="Anonymous" email="" id="99999998">
   </User>
   <ScriptVersion revision="alot" repositoryType="tmg" lastAuthor="mptest" lastModified="Jun 25, 2013 9:30:50 PM" modifiedFlag="N/A" url="somepath/part.foo.bar.blah_blah.java">
   </ScriptVersion>

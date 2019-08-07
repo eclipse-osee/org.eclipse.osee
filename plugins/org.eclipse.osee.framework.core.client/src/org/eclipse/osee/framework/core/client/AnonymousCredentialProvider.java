@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 /**
  * @author Roberto E. Escobar
  */
-public class GuestCredentialProvider extends BaseCredentialProvider {
+public class AnonymousCredentialProvider extends BaseCredentialProvider {
 
    @Override
    public OseeCredential getCredential() {
