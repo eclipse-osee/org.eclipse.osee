@@ -178,7 +178,9 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          write("SELECT * FROM %s", fieldAlias);
       }
 
-      writeGroupAndOrder();
+      if (parentWriter == null && !rootQueryData.isCountQueryType() && !rootQueryData.isSelectQueryType()) {
+         write(" ORDER BY art_id");
+      }
    }
 
    private void writeFieldsCommonTableExpression(String artWithAlias, String attsAlias) {
@@ -223,8 +225,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       String attAlias = "att";
       String attTxsAlias = "txs";
 
-      writeSelectFields(artWithAlias, "art_id", artWithAlias, "art_type_id", artWithAlias, "app_id", artWithAlias,
-         "top", attAlias, "attr_type_id AS type_id", attAlias, "value");
+      writeSelectFields(artWithAlias, "*", attAlias, "attr_type_id AS type_id", attAlias, "value");
       write(", 0 AS other_art_id");
       write("\n FROM %s, osee_attribute att, osee_txs txs", artWithAlias);
       write("\n WHERE ");
@@ -245,8 +246,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       String relAlias = "rel";
       String relTxsAlias = "txs";
 
-      writeSelectFields(artWithAlias, "art_id", artWithAlias, "art_type_id", artWithAlias, "app_id", artWithAlias,
-         "top", relAlias, "rel_link_type_id AS type_id");
+      writeSelectFields(artWithAlias, "*", relAlias, "rel_link_type_id AS type_id");
       write(
          ", CASE art_id WHEN a_art_id THEN 'B' ELSE 'A' END as value, CASE art_id WHEN a_art_id THEN b_art_id ELSE a_art_id END AS other_art_id");
       write("\n FROM %s, osee_relation_link rel, osee_txs txs", artWithAlias);
@@ -262,7 +262,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       String artAlias = getMainTableAlias(TableEnum.ARTIFACT_TABLE);
       String txAlias = getMainTableAlias(TableEnum.TXS_TABLE);
       if (relsAlias == null) {
-         writeSelectFields(artAlias, "art_id", artAlias, "art_type_id", txAlias, "app_id");
+         writeSelectFields(artAlias, "art_id", artAlias, "art_type_id", txAlias, "app_id", txAlias, "transaction_id",
+            txAlias, "mod_type");
          write(", ");
          write(queryDataCursor.getParentQueryData() == null ? "1" : "0");
          write(" AS top");
@@ -287,9 +288,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
    @Override
    public void writeGroupAndOrder() {
-      if (parentWriter == null && !rootQueryData.isCountQueryType() && !rootQueryData.isSelectQueryType()) {
-         write(" ORDER BY art_id");
-      }
+      // only add ordering on the outer query in build()
    }
 
    @Override

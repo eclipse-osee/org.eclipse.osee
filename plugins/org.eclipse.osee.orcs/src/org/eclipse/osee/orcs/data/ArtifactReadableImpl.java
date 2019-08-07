@@ -53,13 +53,17 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    private final QueryFactory queryFactory;
    private final ApplicabilityId applicability;
    private final ArtifactTypes artifactTypes;
+   private final TransactionId txId;
+   private final ModificationType modType;
 
-   public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchId branch, ArtifactId view, ApplicabilityId applicability, QueryFactory queryFactory, ArtifactTypes artifactTypes) {
+   public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchId branch, ArtifactId view, ApplicabilityId applicability, TransactionId txId, ModificationType modType, QueryFactory queryFactory, ArtifactTypes artifactTypes) {
       super(id);
       this.artifactType = artifactType;
       this.branch = branch;
       this.view = view;
       this.applicability = applicability;
+      this.txId = txId;
+      this.modType = modType;
       this.queryFactory = queryFactory;
       this.artifactTypes = artifactTypes;
    }
@@ -76,12 +80,12 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
 
    @Override
    public TransactionId getTransaction() {
-      return TransactionId.SENTINEL;
+      return txId;
    }
 
    @Override
    public ModificationType getModificationType() {
-      return ModificationType.SENTINEL;
+      return modType;
    }
 
    @Override

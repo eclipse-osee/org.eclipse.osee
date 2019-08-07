@@ -21,9 +21,12 @@ import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -181,9 +184,7 @@ public class QueryEngineImpl implements QueryEngine {
 
          ArtifactReadableImpl artifact = (ArtifactReadableImpl) artifactMap.get(ArtifactId.valueOf(artId));
          if (artifact == null) {
-            artifact =
-               new ArtifactReadableImpl(artId, artifactTypes.get(stmt.getLong("art_type_id")), queryData.getBranch(),
-                  queryData.getView(), ApplicabilityId.valueOf(stmt.getLong("app_id")), queryFactory, artifactTypes);
+            artifact = createArtifact(stmt, artId, stmt.getLong("art_type_id"), queryData, queryFactory);
             artifactMap.put(artifact, artifact);
             if (stmt.getLong("top") == 1) {
                artifactConsumer.accept(artifact);
@@ -201,9 +202,7 @@ public class QueryEngineImpl implements QueryEngine {
 
             ArtifactReadableImpl otherArtifact = (ArtifactReadableImpl) artifactMap.get(ArtifactId.valueOf(otherArtId));
             if (otherArtifact == null) {
-               otherArtifact =
-                  new ArtifactReadableImpl(otherArtId, artifactTypes.get(otherArtType), queryData.getBranch(),
-                     queryData.getView(), ApplicabilityId.valueOf(stmt.getLong("app_id")), queryFactory, artifactTypes);
+               otherArtifact = createArtifact(stmt, otherArtId, otherArtType, queryData, queryFactory);
                artifactMap.put(otherArtifact, otherArtifact);
             }
 
@@ -212,6 +211,15 @@ public class QueryEngineImpl implements QueryEngine {
       };
 
       selectiveArtifactLoad(queryData, jdbcConsumer);
+   }
+
+   private ArtifactReadableImpl createArtifact(JdbcStatement stmt, Long artId, Long artifactTypeId, QueryData queryData, QueryFactory queryFactory) {
+      TransactionId txId = TransactionId.valueOf(stmt.getLong("transaction_id"));
+      ModificationType modType = ModificationType.valueOf(stmt.getInt("mod_type"));
+      ArtifactTypeToken artifactType = artifactTypes.get(artifactTypeId);
+      ApplicabilityId applic = ApplicabilityId.valueOf(stmt.getLong("app_id"));
+      return new ArtifactReadableImpl(artId, artifactType, queryData.getBranch(), queryData.getView(), applic, txId,
+         modType, queryFactory, artifactTypes);
    }
 
    @Override

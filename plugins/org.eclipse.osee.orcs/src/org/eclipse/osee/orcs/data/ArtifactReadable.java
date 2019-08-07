@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -37,8 +38,8 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
  * @author Andrew M. Finkbeiner
  */
 public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsReadable {
-   ArtifactReadableImpl SENTINEL =
-      new ArtifactReadableImpl(Id.SENTINEL, Artifact, COMMON, ArtifactId.SENTINEL, ApplicabilityId.BASE, null, null);
+   ArtifactReadableImpl SENTINEL = new ArtifactReadableImpl(Id.SENTINEL, Artifact, COMMON, ArtifactId.SENTINEL,
+      ApplicabilityId.BASE, TransactionId.SENTINEL, ModificationType.SENTINEL, null, null);
 
    TransactionId getLastModifiedTransaction();
 
