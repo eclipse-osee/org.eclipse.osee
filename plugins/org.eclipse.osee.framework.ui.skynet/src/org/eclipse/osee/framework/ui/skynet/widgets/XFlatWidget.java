@@ -228,7 +228,7 @@ public abstract class XFlatWidget<T> extends XLabel {
       flatControl.addPage(value);
    }
 
-   private void setMessage(final int severity, final String message) {
+   protected void setMessage(final int severity, final String message) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {

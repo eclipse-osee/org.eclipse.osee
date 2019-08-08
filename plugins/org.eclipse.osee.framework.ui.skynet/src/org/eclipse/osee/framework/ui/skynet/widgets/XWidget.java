@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -63,6 +64,7 @@ public abstract class XWidget {
    protected FormToolkit toolkit;
    private Object object;
    private ILabelProvider labelProvider;
+   private ArtifactTypeId artifactType;
 
    public XWidget(String label) {
       this.label = label;
@@ -397,5 +399,21 @@ public abstract class XWidget {
 
    public void setToolkit(FormToolkit toolkit) {
       this.toolkit = toolkit;
+   }
+
+   /**
+    * @return artifactType that may or may not be the storage artifact type. Can be used by any widget and only the
+    * widget knows what to do with this value.
+    */
+   public ArtifactTypeId getArtifactType() {
+      return artifactType;
+   }
+
+   /**
+    * @param artifactType that may or may not be the storage artifact type. Can be used by any widget and only the
+    * widget knows what to do with this value.
+    */
+   public void setArtifactType(ArtifactTypeId artifactType) {
+      this.artifactType = artifactType;
    }
 }

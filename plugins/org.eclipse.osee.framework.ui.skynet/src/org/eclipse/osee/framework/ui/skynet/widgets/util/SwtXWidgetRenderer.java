@@ -122,6 +122,7 @@ public class SwtXWidgetRenderer {
 
       xWidget.setRequiredEntry(xWidgetLayoutData.isRequired());
       xWidget.setEditable(xWidgetLayoutData.getXOptionHandler().contains(XOption.EDITABLE) && isEditable);
+      xWidget.setArtifactType(xWidgetLayoutData.getArtifactType());
 
       return xWidget;
    }

@@ -23,8 +23,12 @@ import org.eclipse.osee.framework.skynet.core.attribute.BranchReferenceAttribute
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.utility.AttributeTypeToXWidgetName;
 import org.eclipse.osee.framework.ui.skynet.internal.DslGrammarManager;
+import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDslEditorWidgetDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XIntegerDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.XStackedDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 
 /**
  * @author Donald G. Dunne
@@ -61,16 +65,16 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
          xWidgetName = AttributeTypeToXWidgetName.getXWidgetName(attributeType);
          if (attributeType.getName().equals("Relation Order")) {
             defaultData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
-            xWidgetName = "XTextDam";
+            xWidgetName = XTextDam.WIDGET_ID;
          } else if (DslGrammarManager.isDslAttributeType(attributeType)) {
             xWidgetName = XDslEditorWidgetDam.WIDGET_ID;
          } else if (useMultiLineWidget(attributeType)) {
-            xWidgetName = "XStackedDam";
+            xWidgetName = XStackedDam.WIDGET_ID;
             defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);
          } else if (AttributeTypeManager.isBaseTypeCompatible(BranchReferenceAttribute.class, attributeType)) {
-            xWidgetName = "XBranchSelectWidgetWithSave";
+            xWidgetName = XBranchSelectWidget.WIDGET_ID;
          } else if (AttributeTypeManager.isBaseTypeCompatible(ArtifactReferenceAttribute.class, attributeType)) {
-            xWidgetName = "XListDropViewerWithSave";
+            xWidgetName = XIntegerDam.WIDGET_ID;
          }
       } catch (OseeCoreException ex) {
          xWidgetName = "XTextDam";

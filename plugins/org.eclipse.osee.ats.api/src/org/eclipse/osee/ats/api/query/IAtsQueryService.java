@@ -25,8 +25,8 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -71,6 +71,8 @@ public interface IAtsQueryService {
    List<ArtifactId> getArtifactIdsFromQuery(String query, Object... data);
 
    ArtifactToken getArtifactToken(ArtifactId artifactId);
+
+   ArtifactToken getArtifactTokenOrSentinal(ArtifactId valueOf);
 
    List<ArtifactToken> getArtifactTokensFromQuery(String query, Object... data);
 

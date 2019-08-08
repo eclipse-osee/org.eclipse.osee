@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.util;
 
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOptionHandler;
@@ -43,6 +44,7 @@ public class XWidgetRendererItem implements Cloneable {
    private Artifact artifact;
    private Object object;
    private String doubleClickText;
+   private ArtifactTypeId artifactType;
 
    public XWidgetRendererItem(SwtXWidgetRenderer dynamicXWidgetLayout, XOption... xOption) {
       this.dynamicXWidgetLayout = dynamicXWidgetLayout;
@@ -264,6 +266,22 @@ public class XWidgetRendererItem implements Cloneable {
 
    public String getDoubleClickText() {
       return doubleClickText;
+   }
+
+   /**
+    * @return artifactType that may or may not be the storage artifact type. Can be used by any widget and only the
+    * widget knows what to do with this value.
+    */
+   public ArtifactTypeId getArtifactType() {
+      return artifactType;
+   }
+
+   /**
+    * @param artifactType that may or may not be the storage artifact type. Can be used by any widget and only the
+    * widget knows what to do with this value.
+    */
+   public void setArtifactType(ArtifactTypeId artifactType) {
+      this.artifactType = artifactType;
    }
 
 }

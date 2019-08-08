@@ -164,6 +164,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XHyperlabelWorkflowApplicabilitySelection();
       } else if (widgetName.equals(XAssigneesListWidget.WIDGET_ID)) {
          return new XAssigneesListWidget();
+      } else if (widgetName.equals(XArtifactReferencedAtsObjectAttributeWidget.WIDGET_ID)) {
+         return new XArtifactReferencedAtsObjectAttributeWidget(name);
       }
 
       return toReturn;

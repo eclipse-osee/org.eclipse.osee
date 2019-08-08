@@ -12,12 +12,18 @@ package org.eclipse.osee.ats.ide.util.widgets;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidgetDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextFlatDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultAttributeXWidgetProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 
@@ -28,13 +34,20 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
  */
 public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider {
 
-   private static final Collection<AttributeTypeId> XFLAT_ATTRIBUTE_TYPES = new ArrayList<>();
+   private static final Collection<AttributeTypeId> xFlatAttributeTypes = new ArrayList<>();
+   private static final Map<AttributeTypeId, ArtifactTypeId> artRefAttrTypeToValidArtType =
+      new HashMap<AttributeTypeId, ArtifactTypeId>();
+   private static final Collection<AttributeTypeId> artRefAttributeTypes;
 
    static {
-      XFLAT_ATTRIBUTE_TYPES.add(CoreAttributeTypes.WorkTransition);
-      XFLAT_ATTRIBUTE_TYPES.add(CoreAttributeTypes.WorkData);
-      XFLAT_ATTRIBUTE_TYPES.add(AtsAttributeTypes.State);
-      XFLAT_ATTRIBUTE_TYPES.add(AtsAttributeTypes.ActionableItemReference);
+      xFlatAttributeTypes.add(CoreAttributeTypes.WorkTransition);
+      xFlatAttributeTypes.add(CoreAttributeTypes.WorkData);
+      xFlatAttributeTypes.add(AtsAttributeTypes.State);
+      artRefAttrTypeToValidArtType.put(AtsAttributeTypes.ActionableItemReference, AtsArtifactTypes.ActionableItem);
+      artRefAttrTypeToValidArtType.put(AtsAttributeTypes.TeamDefinitionReference, AtsArtifactTypes.TeamDefinition);
+      artRefAttrTypeToValidArtType.put(AtsAttributeTypes.WorkflowDefinitionReference, ArtifactTypeId.SENTINEL);
+      artRefAttrTypeToValidArtType.put(AtsAttributeTypes.WorkPackageReference, AtsArtifactTypes.WorkPackage);
+      artRefAttributeTypes = artRefAttrTypeToValidArtType.keySet();
    }
 
    @Override
@@ -43,11 +56,11 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
       if (attributeType.equals(AtsAttributeTypes.BaselineBranchId)) {
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
-         layoutData.setXWidgetName("XBranchSelectWidgetDam");
-      } else if (XFLAT_ATTRIBUTE_TYPES.contains(attributeType)) {
+         layoutData.setXWidgetName(XBranchSelectWidgetDam.WIDGET_ID);
+      } else if (xFlatAttributeTypes.contains(attributeType)) {
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
-         layoutData.setXWidgetName("XTextFlatDam");
+         layoutData.setXWidgetName(XTextFlatDam.WIDGET_ID);
       } else if (attributeType.matches(AtsAttributeTypes.DslSheet, AtsAttributeTypes.TestToSourceLocator)) {
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
@@ -55,7 +68,15 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
       } else if (attributeType.equals(AtsAttributeTypes.ProgramId)) {
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
-         layoutData.setXWidgetName("XProgramSelectionWidget");
+         layoutData.setXWidgetName(XProgramSelectionWidget.WIDGET_ID);
+      } else if (artRefAttributeTypes.contains(attributeType)) {
+         layouts = super.getDynamicXWidgetLayoutData(attributeType);
+         XWidgetRendererItem layoutData = layouts.get(0);
+         ArtifactTypeId artType = artRefAttrTypeToValidArtType.get(attributeType);
+         if (artType.isValid()) {
+            layoutData.setArtifactType(artType);
+         }
+         layoutData.setXWidgetName(XArtifactReferencedAtsObjectAttributeWidget.WIDGET_ID);
       }
       return layouts;
    }

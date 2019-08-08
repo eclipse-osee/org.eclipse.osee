@@ -137,24 +137,25 @@ public class ArtifactEditorReloadTab extends FormPage {
 
          @Override
          public void done(IJobChangeEvent event) {
-            final Artifact artifact = ((LoadAndRefreshJob) event.getJob()).getArtifact();
-            Displays.ensureInDisplayThread(new Runnable() {
+            if (editor != null && editor.getToolkit() != null) {
+               final Artifact artifact = ((LoadAndRefreshJob) event.getJob()).getArtifact();
+               Displays.ensureInDisplayThread(new Runnable() {
 
-               @Override
-               public void run() {
-                  if (artifact == null) {
-                     AWorkbench.popup("Saved item is not valid.  Unable to reload.");
-                  } else {
-                     editor.getEditorInput().setArtifact(artifact);
-                     bodyComp.dispose();
-                     page.dispose();
-                     editor.performLoad();
-                     editor.removePage(0);
+                  @Override
+                  public void run() {
+                     if (artifact == null) {
+                        AWorkbench.popup("Saved item is not valid.  Unable to reload.");
+                     } else {
+                        editor.getEditorInput().setArtifact(artifact);
+                        bodyComp.dispose();
+                        page.dispose();
+                        editor.performLoad();
+                        editor.removePage(0);
+                     }
                   }
-               }
-            });
+               });
+            }
          }
-
       });
    }
 

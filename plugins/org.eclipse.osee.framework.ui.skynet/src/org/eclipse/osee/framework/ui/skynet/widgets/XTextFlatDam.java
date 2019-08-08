@@ -120,10 +120,11 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
             Iterator<XWidget> widgetIterator = xWidgets.values().iterator();
             while (dataIterator.hasNext() && widgetIterator.hasNext()) {
                XWidget widget = widgetIterator.next();
+               String value = dataIterator.next();
                if (widget instanceof XText) {
-                  ((XText) widget).set(dataIterator.next());
+                  ((XText) widget).set(getDisplayValue(value));
                } else if (widget instanceof XDate) {
-                  ((XDate) widget).setDate(toDate(dataIterator.next()));
+                  ((XDate) widget).setDate(toDate(getDisplayValue(value)));
                }
             }
             values.clear();
@@ -131,8 +132,13 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
             refresh();
             return Status.OK_STATUS;
          }
+
       };
       Jobs.startJob(job);
+   }
+
+   protected String getDisplayValue(String value) {
+      return value;
    }
 
    public List<String> getInput() {

@@ -56,7 +56,7 @@ public class ArtifactTokenColumn extends XViewerValueColumn {
             artifact = ((Change) element).getChangeArtifact();
          }
          if (artifact != null) {
-            return String.format("[%s]-[%d]", artifact.getName(), artifact.getUuid());
+            return artifact.toStringWithId();
          }
       } catch (OseeCoreException ex) {
          return XViewerCells.getCellExceptionString(ex);

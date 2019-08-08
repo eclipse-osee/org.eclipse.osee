@@ -95,6 +95,11 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    }
 
    @Override
+   public ArtifactToken getArtifactTokenOrSentinal(ArtifactId artifactId) {
+      return getArtifactToken(artifactId);
+   }
+
+   @Override
    public void runUpdate(String query, Object... data) {
       jdbcService.getClient().runPreparedUpdate(query, data);
    }

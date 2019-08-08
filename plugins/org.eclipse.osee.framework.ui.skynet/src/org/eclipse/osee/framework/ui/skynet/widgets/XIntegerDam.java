@@ -26,6 +26,7 @@ public class XIntegerDam extends XInteger implements IAttributeWidget {
 
    private Artifact artifact;
    private AttributeTypeToken attributeType;
+   public static final String WIDGET_ID = XIntegerDam.class.getSimpleName();
 
    public XIntegerDam(String displayLabel) {
       super(displayLabel);

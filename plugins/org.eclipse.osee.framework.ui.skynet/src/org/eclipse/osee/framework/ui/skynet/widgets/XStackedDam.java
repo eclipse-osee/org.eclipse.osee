@@ -53,6 +53,7 @@ import org.eclipse.swt.widgets.Composite;
  * @author Roberto E. Escobar
  */
 public class XStackedDam extends XStackedWidget<String> implements IAttributeWidget, IArtifactEventListener {
+   public static final String WIDGET_ID = XStackedDam.class.getSimpleName();
    private Artifact artifact;
    private AttributeTypeToken attributeType;
    private final XModifiedListener xModifiedListener;
