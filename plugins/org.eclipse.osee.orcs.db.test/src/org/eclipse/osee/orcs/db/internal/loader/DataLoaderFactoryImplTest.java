@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.executor.HasCancellation;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -44,8 +45,6 @@ import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadDescription;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
-import org.eclipse.osee.orcs.data.AttributeTypes;
-import org.eclipse.osee.orcs.data.RelationTypes;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
@@ -112,6 +111,8 @@ public class DataLoaderFactoryImplTest {
 
       when(jdbcClient.getStatement()).thenReturn(chStmt);
       when(jdbcClient.fetch(eq(TransactionId.SENTINEL), Matchers.anyString(), eq(COMMON))).thenReturn(EXPECTED_HEAD_TX);
+
+      when(jdbcClient.getDbType()).thenReturn(JdbcDbType.h2);
    }
 
    @Test

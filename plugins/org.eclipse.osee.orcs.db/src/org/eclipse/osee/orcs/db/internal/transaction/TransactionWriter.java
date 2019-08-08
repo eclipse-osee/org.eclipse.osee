@@ -23,6 +23,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;
+import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 
 /**
@@ -58,22 +59,22 @@ public class TransactionWriter {
       "INSERT INTO osee_tx_details (transaction_id, osee_comment, time, author, branch_id, tx_type, build_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
    private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS =
-      "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_artifact art, osee_txs txs WHERE jid.query_id = ? AND art.art_id = jid.id AND art.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
+      "SELECT%s txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_artifact art, osee_txs txs WHERE jid.query_id = ? AND art.art_id = jid.id AND art.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
 
    private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_ATTRIBUTES =
-      "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_attribute attr, osee_txs txs WHERE jid.query_id = ? AND attr.attr_id = jid.id AND attr.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
+      "SELECT%s txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_attribute attr, osee_txs txs WHERE jid.query_id = ? AND attr.attr_id = jid.id AND attr.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
 
    private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS =
-      "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_relation_link rel, osee_txs txs WHERE jid.query_id = ? AND rel.rel_link_id = jid.id AND rel.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
+      "SELECT%s txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_relation_link rel, osee_txs txs WHERE jid.query_id = ? AND rel.rel_link_id = jid.id AND rel.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
 
    private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_TUPLE2 =
-      "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_tuple2 tp1, osee_txs txs, osee_tuple2 tp2 WHERE jid.query_id = ? AND jid.id = tp1.gamma_id AND tp1.tuple_type = tp2.tuple_type AND tp1.e1 = tp2.e1 AND tp1.e2 = tp2.e2 AND tp2.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
+      "SELECT%s txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_tuple2 tp1, osee_txs txs, osee_tuple2 tp2 WHERE jid.query_id = ? AND jid.id = tp1.gamma_id AND tp1.tuple_type = tp2.tuple_type AND tp1.e1 = tp2.e1 AND tp1.e2 = tp2.e2 AND tp2.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
 
    private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_TUPLE3 =
-      "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_tuple3 tp1, osee_txs txs, osee_tuple3 tp2 WHERE jid.query_id = ? AND jid.id = tp1.gamma_id AND tp1.tuple_type = tp2.tuple_type AND tp1.e1 = tp2.e1 AND tp1.e2 = tp2.e2 AND tp1.e3 = tp2.e3 AND tp2.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
+      "SELECT%s txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_tuple3 tp1, osee_txs txs, osee_tuple3 tp2 WHERE jid.query_id = ? AND jid.id = tp1.gamma_id AND tp1.tuple_type = tp2.tuple_type AND tp1.e1 = tp2.e1 AND tp1.e2 = tp2.e2 AND tp1.e3 = tp2.e3 AND tp2.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
 
    private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_TUPLE4 =
-      "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_tuple4 tp1, osee_txs txs, osee_tuple4 tp2 WHERE jid.query_id = ? AND jid.id = tp1.gamma_id AND tp1.tuple_type = tp2.tuple_type AND tp1.e1 = tp2.e1 AND tp1.e2 = tp2.e2 AND tp1.e3 = tp2.e3 AND tp1.e4 = tp2.e4 AND tp2.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
+      "SELECT%s txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_tuple4 tp1, osee_txs txs, osee_tuple4 tp2 WHERE jid.query_id = ? AND jid.id = tp1.gamma_id AND tp1.tuple_type = tp2.tuple_type AND tp1.e1 = tp2.e1 AND tp1.e2 = tp2.e2 AND tp1.e3 = tp2.e3 AND tp1.e4 = tp2.e4 AND tp2.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
 
    public static enum SqlOrderEnum {
       ARTIFACTS(INSERT_ARTIFACT, TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS),
@@ -149,7 +150,8 @@ public class TransactionWriter {
 
          List<Object[]> txNotCurrentData = new ArrayList<>();
          for (Entry<SqlOrderEnum, ? extends AbstractJoinQuery> entry : sqlBuilder.getTxNotCurrents()) {
-            fetchTxNotCurrent(connection, tx.getBranch(), txNotCurrentData, entry.getKey().getTxsNotCurrentQuery(),
+            fetchTxNotCurrent(connection, tx.getBranch(), txNotCurrentData,
+               AbstractSqlWriter.injectOrderedHint(jdbcClient, entry.getKey().getTxsNotCurrentQuery()),
                entry.getValue());
          }
 

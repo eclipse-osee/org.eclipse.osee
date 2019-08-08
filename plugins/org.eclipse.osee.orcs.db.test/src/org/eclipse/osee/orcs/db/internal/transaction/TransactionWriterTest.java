@@ -26,11 +26,13 @@ import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;
+import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter.SqlOrderEnum;
 import org.junit.Assert;
@@ -113,6 +115,7 @@ public class TransactionWriterTest {
       when(chStmt.next()).thenReturn(true).thenReturn(true).thenReturn(false);
       when(chStmt.getLong("transaction_id")).thenReturn(TX_1).thenReturn(TX_2);
       when(chStmt.getLong("gamma_id")).thenReturn(GAMMA_1).thenReturn(GAMMA_2);
+      when(jdbcClient.getDbType()).thenReturn(JdbcDbType.h2);
    }
 
    @Test
@@ -146,11 +149,15 @@ public class TransactionWriterTest {
       inOrder.verify(builder).getTxNotCurrents();
 
       inOrder.verify(join1).store();
-      inOrder.verify(chStmt).runPreparedQuery(SqlOrderEnum.ARTIFACTS.getTxsNotCurrentQuery(), QUERY_ID_1, COMMON);
+
+      String sql = AbstractSqlWriter.injectOrderedHint(jdbcClient, SqlOrderEnum.ARTIFACTS.getTxsNotCurrentQuery());
+
+      inOrder.verify(chStmt).runPreparedQuery(sql, QUERY_ID_1, COMMON);
       inOrder.verify(join1).close();
 
       inOrder.verify(join2).store();
-      inOrder.verify(chStmt).runPreparedQuery(SqlOrderEnum.ATTRIBUTES.getTxsNotCurrentQuery(), QUERY_ID_2, COMMON);
+      sql = AbstractSqlWriter.injectOrderedHint(jdbcClient, SqlOrderEnum.ATTRIBUTES.getTxsNotCurrentQuery());
+      inOrder.verify(chStmt).runPreparedQuery(sql, QUERY_ID_2, COMMON);
       inOrder.verify(join2).close();
 
       inOrder.verify(builder).getInsertData(SqlOrderEnum.ARTIFACTS);

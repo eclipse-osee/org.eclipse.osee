@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.ObjectType;
 import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
-import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -38,6 +37,7 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
  * @author Roberto E. Escobar
  */
 public abstract class AbstractSqlWriter implements HasOptions {
+   private static final String HintsOrdered = "/*+ ordered */";
    private static final String AND_NEW_LINE = " AND\n";
    private final List<String> tableEntries = new ArrayList<>();
    private final SqlAliasManager aliasManager = new SqlAliasManager();
@@ -492,11 +492,16 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    protected void writeSelectAndHint() {
       write("SELECT");
-      if (jdbcClient != null && jdbcClient.getConfig() != null) {
-         write(OseeSql.Strings.getHintsOrdered(jdbcClient.getConfig().getDbProps()));
+      if (jdbcClient.getDbType().areHintsSupported()) {
+         write(HintsOrdered);
       }
       write(" ");
       firstField = true;
+   }
+
+   public static String injectOrderedHint(JdbcClient jdbcClient, String sql) {
+      String hint = jdbcClient.getDbType().areHintsSupported() ? HintsOrdered : "";
+      return String.format(sql, hint);
    }
 
    @Override
