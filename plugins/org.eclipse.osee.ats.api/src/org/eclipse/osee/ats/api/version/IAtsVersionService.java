@@ -28,6 +28,8 @@ public interface IAtsVersionService {
 
    IAtsVersion getTargetedVersion(IAtsWorkItem workItem);
 
+   IAtsVersion getFoundInVersion(IAtsWorkItem workItem);
+
    Collection<IAtsTeamWorkflow> getTargetedForTeamWorkflows(IAtsVersion version);
 
    IAtsTeamDefinition getTeamDefinition(IAtsVersion version);

@@ -79,6 +79,21 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
+   public IAtsVersion getFoundInVersion(IAtsWorkItem workItem) {
+      try {
+         ArtifactId artId = atsApi.getRelationResolver().getRelatedOrNull(workItem,
+            AtsRelationTypes.TeamWorkflowToFoundInVersion_Version);
+         if (artId != null && artId.isValid()) {
+            IAtsVersion foundInVersion = atsApi.getVersionService().getVersion(artId);
+            return foundInVersion;
+         }
+         return null;
+      } catch (Exception e) {
+         return null;
+      }
+   }
+
+   @Override
    public IAtsVersion getTargetedVersionByTeamWf(IAtsTeamWorkflow team) {
       if (team == null) {
          throw new OseeArgumentException("Team Workflow can not be null %s", team);

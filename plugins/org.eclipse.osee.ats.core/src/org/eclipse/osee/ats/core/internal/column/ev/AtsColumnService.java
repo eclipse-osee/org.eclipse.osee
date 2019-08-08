@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.core.column.CompletedCancelledByColumn;
 import org.eclipse.osee.ats.core.column.CompletedCancelledDateColumn;
 import org.eclipse.osee.ats.core.column.CompletedDateColumn;
 import org.eclipse.osee.ats.core.column.CreatedDateColumn;
+import org.eclipse.osee.ats.core.column.FoundInVersionColumn;
 import org.eclipse.osee.ats.core.column.IAtsColumnProvider;
 import org.eclipse.osee.ats.core.column.IdColumn;
 import org.eclipse.osee.ats.core.column.ImplementerColumn;
@@ -153,6 +154,8 @@ public class AtsColumnService implements IAtsColumnService {
             column = new InsertionActivityColumn(atsApi);
          } else if (id.equals(AtsColumnId.TargetedVersion.getId())) {
             column = new TargetedVersionColumn(atsApi);
+         } else if (id.equals(AtsColumnId.FoundInVersion.getId())) {
+            column = new FoundInVersionColumn(atsApi);
          } else if (id.equals(AtsColumnId.UnPlannedWork.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnToken.UnPlannedWorkColumn, atsApi);
          } else if (id.equals(AtsColumnId.SprintOrder.getId())) {

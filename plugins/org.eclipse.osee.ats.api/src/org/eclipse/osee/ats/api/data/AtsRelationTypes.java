@@ -125,6 +125,9 @@ public final class AtsRelationTypes {
    public static final RelationTypeSide TeamWorkflowTargetedForVersion_Workflow = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694319L, "TeamWorkflowTargetedForVersion");
    public static final RelationTypeSide TeamWorkflowTargetedForVersion_Version = TeamWorkflowTargetedForVersion_Workflow.getOpposite();
 
+   public static final RelationTypeSide TeamWorkflowToFoundInVersion_Workflow = RelationTypeSide.create(RelationSide.SIDE_A, 8432547963397826929L, "TeamWorkflowToFoundVersion");
+   public static final RelationTypeSide TeamWorkflowToFoundInVersion_Version = TeamWorkflowToFoundInVersion_Workflow.getOpposite();
+
    public static final RelationTypeSide TeamWorkflowToReview_Team = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694321L, "TeamWorkflowToReview");
    public static final RelationTypeSide TeamWorkflowToReview_Review = TeamWorkflowToReview_Team.getOpposite();
 

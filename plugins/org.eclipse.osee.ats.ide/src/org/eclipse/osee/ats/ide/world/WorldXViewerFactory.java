@@ -45,6 +45,7 @@ import org.eclipse.osee.ats.ide.column.EndDateColumn;
 import org.eclipse.osee.ats.ide.column.EstimatedCompletionDateColumn;
 import org.eclipse.osee.ats.ide.column.EstimatedHoursColumn;
 import org.eclipse.osee.ats.ide.column.EstimatedReleaseDateColumn;
+import org.eclipse.osee.ats.ide.column.FoundInVersionColumnUI;
 import org.eclipse.osee.ats.ide.column.GoalOrderColumn;
 import org.eclipse.osee.ats.ide.column.GoalOrderVoteColumn;
 import org.eclipse.osee.ats.ide.column.GoalsColumn;
@@ -168,6 +169,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          getColumnServiceColumn(AtsColumnToken.WorkDefinitionColumn),
          CreatedDateColumnUI.getInstance(),
          TargetedVersionColumnUI.getInstance(),
+         FoundInVersionColumnUI.getInstance(),
          getColumnServiceColumn(AtsColumnToken.TeamColumn),
          getAttriubuteConfigColumn(AtsColumnToken.NotesColumn),
          DeadlineColumn.getInstance(),

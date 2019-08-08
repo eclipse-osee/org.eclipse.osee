@@ -47,6 +47,7 @@ public enum AtsColumnId implements IAtsColumnId {
    TaskToRelatedArtifactType("ats.column.taskToRelArtType"),
    Team("ats.column.team"),
    TargetedVersion("ats.column.versionTarget"),
+   FoundInVersion("ats.column.foundInVersion"),
    Title("framework.artifact.name.Title"),
    Type("ats.column.type"),
    Id("framework.id"),

@@ -1865,6 +1865,16 @@ relationType "TeamWorkflowTargetedForVersion" {
 	multiplicity MANY_TO_ONE
 }
 
+relationType "TeamWorkflowToFoundInVersion" {
+	id 8432547963397826929
+	sideAName "Team Workflow"
+	sideAArtifactType "Team Workflow"
+	sideBName "Version"
+	sideBArtifactType "Version"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_ONE
+}
+
 relationType "TeamDefinitionToVersion" {
 	id 2305843009213694320
 	sideAName "Team Definition"

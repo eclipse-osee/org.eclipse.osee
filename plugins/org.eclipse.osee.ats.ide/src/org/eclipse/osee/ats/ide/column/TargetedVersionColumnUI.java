@@ -50,12 +50,13 @@ import org.eclipse.swt.widgets.TreeItem;
 public class TargetedVersionColumnUI extends XViewerAtsColumnIdColumn implements IAltLeftClickProvider, IMultiColumnEditProvider {
 
    public static TargetedVersionColumnUI instance = new TargetedVersionColumnUI();
+   private static IAtsVersion selectedVersion;
 
    public static TargetedVersionColumnUI getInstance() {
       return instance;
    }
 
-   private TargetedVersionColumnUI() {
+   public TargetedVersionColumnUI() {
       super(AtsColumnToken.TargtedVersionColumn);
    }
 
@@ -110,7 +111,23 @@ public class TargetedVersionColumnUI extends XViewerAtsColumnIdColumn implements
          AWorkbench.popup("ERROR ", "Cannot set version for: \n\n" + sma.getName());
          return false;
       }
-      return promptChangeVersion(Arrays.asList((TeamWorkFlowArtifact) sma), versionReleaseType, versionLockType);
+      if (promptChangeVersion(Arrays.asList((TeamWorkFlowArtifact) sma), versionReleaseType, versionLockType)) {
+         IAtsChangeSet changes = AtsClientService.get().createChangeSet("ATS Prompt Change Version");
+         AtsClientService.get().getVersionService().setTargetedVersion((TeamWorkFlowArtifact) sma, getSelectedVersion(),
+            changes);
+         changes.executeIfNeeded();
+         ArtifactQuery.reloadArtifacts(Arrays.asList((TeamWorkFlowArtifact) sma));
+         return true;
+      }
+      return false;
+   }
+
+   protected static IAtsVersion getSelectedVersion() {
+      return TargetedVersionColumnUI.selectedVersion;
+   }
+
+   private static void setSelectedVersion(IAtsVersion ver) {
+      TargetedVersionColumnUI.selectedVersion = ver;
    }
 
    public static boolean promptChangeVersion(final Collection<? extends TeamWorkFlowArtifact> awas, VersionReleaseType versionReleaseType, VersionLockedType versionLockType) {
@@ -146,8 +163,13 @@ public class TargetedVersionColumnUI extends XViewerAtsColumnIdColumn implements
          return false;
       }
       TeamWorkFlowArtifact teamArt = awas.iterator().next();
-      final VersionListDialog dialog = new VersionListDialog("Select Version", "Select Version",
-         teamDefHoldingVersions.getVersions(versionReleaseType, versionLockType));
+      final VersionListDialog dialog;
+      if (versionReleaseType == null || versionLockType == null) {
+         dialog = new VersionListDialog("Select Version", "Select Version", teamDefHoldingVersions.getVersions());
+      } else {
+         dialog = new VersionListDialog("Select Version", "Select Version",
+            teamDefHoldingVersions.getVersions(versionReleaseType, versionLockType));
+      }
       if (awas.size() == 1 && AtsClientService.get().getVersionService().hasTargetedVersion(teamArt)) {
          dialog.setInitialSelections(
             Arrays.asList(AtsClientService.get().getVersionService().getTargetedVersion(teamArt)));
@@ -158,6 +180,7 @@ public class TargetedVersionColumnUI extends XViewerAtsColumnIdColumn implements
       }
       Object obj = dialog.getSelectedFirst();
       IAtsVersion newVersion = (IAtsVersion) obj;
+      setSelectedVersion(newVersion);
       //now check selected version
       if (newVersion != null && newVersion.isVersionLocked()) {
          String error = "Version \"" + newVersion.getCommitFullDisplayName() + "\" is locked or already released.";
@@ -168,16 +191,6 @@ public class TargetedVersionColumnUI extends XViewerAtsColumnIdColumn implements
             AWorkbench.popup("ERROR", error);
          }
       }
-
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("ATS Prompt Change Version");
-
-      for (TeamWorkFlowArtifact teamArt1 : awas) {
-         AtsClientService.get().getVersionService().setTargetedVersion(teamArt1, newVersion, changes);
-      }
-      changes.execute();
-
-      ArtifactQuery.reloadArtifacts(awas);
-
       return true;
    }
 

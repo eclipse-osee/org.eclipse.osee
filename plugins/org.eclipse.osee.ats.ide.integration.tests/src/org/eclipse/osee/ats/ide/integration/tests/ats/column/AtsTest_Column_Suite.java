@@ -20,6 +20,7 @@ import org.junit.runners.Suite;
    EstimatedHoursColumnTest.class,
    PriorityColumnTest.class,
    TargetedVersionColumnTest.class,
+   FoundInVersionColumnTest.class,
    TypeColumnTest.class,
    ParentStateAndIdColumnTest.class,
    StateColumnTest.class,
