@@ -14,7 +14,10 @@ import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.define.api.importing.IArtifactExtractor;
 import org.eclipse.define.api.importing.RoughArtifact;
 import org.eclipse.define.api.importing.RoughArtifactCollector;
@@ -25,6 +28,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -47,6 +51,9 @@ public class RoughToRealArtifactOperation {
    private final IArtifactExtractor extractor;
    private final TransactionBuilder transaction;
    private boolean addRelation = true;
+   private final List<Pair<ArtifactId, String>> artifactWordContent;
+   private final HashMap<String, HashMap<ArtifactReadable, ArtifactId>> doorsIdArtIdMap;
+   private static final Pattern referencePattern = Pattern.compile("\\[[^\\[]*\\]");
 
    public RoughToRealArtifactOperation(OrcsApi orcsApi, XResultData results, TransactionBuilder transaction, ArtifactReadable destinationArtifact, RoughArtifactCollector rawData, IArtifactImportResolver artifactResolver, boolean deleteUnmatchedArtifacts, IArtifactExtractor extractor) {
       this.results = results;
@@ -61,13 +68,15 @@ public class RoughToRealArtifactOperation {
       this.deleteUnmatchedArtifacts = deleteUnmatchedArtifacts;
       this.extractor = extractor;
       roughToRealArtifacts.put(rawData.getParentRoughArtifact(), this.destinationArtifact);
+      this.artifactWordContent = new LinkedList<>();
+      this.doorsIdArtIdMap = new HashMap<>();
    }
 
    public void doWork() {
       if (deleteUnmatchedArtifacts) {
          this.unmatchedArtifacts = destinationArtifact.getDescendants();
       }
-
+      int count = 0;
       for (RoughArtifact roughArtifact : rawData.getParentRoughArtifact().getChildren()) {
          ArtifactId child = createArtifact(roughArtifact, destinationArtifact);
          createdArtifacts.add(child);
@@ -86,6 +95,7 @@ public class RoughToRealArtifactOperation {
             transaction.deleteArtifact(toDelete);
          }
       }
+
    }
 
    private boolean noParent(ArtifactId artifact) {
@@ -102,14 +112,41 @@ public class RoughToRealArtifactOperation {
 
    private ArtifactId createArtifact(RoughArtifact roughArtifact, ArtifactId realParent) {
       ArtifactReadable realArtifact = roughToRealArtifacts.get(roughArtifact);
+
       if (realArtifact != null) {
          return realArtifact;
       }
       ArtifactId realArtifactId =
          artifactResolver.resolve(roughArtifact, transaction.getBranch(), realParent, destinationArtifact);
+
+      //creates list of artifacts and their word template content
+      String roughWTC = roughArtifact.getRoughAttribute("Word Template Content");
+      if (roughWTC != null) {
+         Matcher matcher = referencePattern.matcher(roughWTC);
+         if (matcher.find()) {
+            artifactWordContent.add(new Pair<>(realArtifactId, roughWTC));
+         }
+      }
+
+      //creates map of object ids to the artifacts that contain them and each destination folder
+      Collection<String> objIds = roughArtifact.getRoughAttributeAsList("Doors Id");
+      for (String objId : objIds) {
+         if (!doorsIdArtIdMap.containsKey(objId)) {
+            HashMap<ArtifactReadable, ArtifactId> artMap = new HashMap<>();
+            artMap.put(destinationArtifact, realArtifactId);
+            doorsIdArtIdMap.put(objId, artMap);
+         } else {
+            HashMap<ArtifactReadable, ArtifactId> artMap = doorsIdArtIdMap.get(objId);
+            if (!artMap.containsKey(destinationArtifact)) {
+               doorsIdArtIdMap.get(objId).put(destinationArtifact, realArtifactId);
+            }
+         }
+      }
+
       if (deleteUnmatchedArtifacts) {
          unmatchedArtifacts.remove(realArtifactId);
       }
+
       for (RoughArtifact childRoughArtifact : roughArtifact.getDescendants()) {
          ArtifactId childArtifact = createArtifact(childRoughArtifact, realArtifactId);
          if (areValid(realArtifactId, childArtifact)) {
@@ -209,5 +246,13 @@ public class RoughToRealArtifactOperation {
 
    public Collection<ArtifactId> getCreatedArtifacts() {
       return createdArtifacts;
+   }
+
+   public List<Pair<ArtifactId, String>> getArtifactWordContent() {
+      return artifactWordContent;
+   }
+
+   public HashMap<String, HashMap<ArtifactReadable, ArtifactId>> getDoorsIdArtIdMap() {
+      return doorsIdArtIdMap;
    }
 }

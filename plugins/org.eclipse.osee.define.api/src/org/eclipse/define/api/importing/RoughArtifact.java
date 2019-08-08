@@ -238,6 +238,10 @@ public class RoughArtifact {
       return attributes.getSoleAttributeValue(attributeName);
    }
 
+   public Collection<String> getRoughAttributeAsList(String attributeName) {
+      return attributes.getAttributeValueList(attributeName);
+   }
+
    public ArtifactTypeToken getPrimaryArtifactType() {
       return primaryArtifactType;
    }

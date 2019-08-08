@@ -123,6 +123,28 @@ public abstract class ImportBlock implements Named {
       }
    }
 
+   public void addAdditionalAttribute(BlockFieldToken token, String text) {
+      BlockField addAttr = token.getNewParser();
+      addAttr.setData(text);
+      attrs.add(addAttr);
+   }
+
+   public void replaceReference(String objectID, String reference) {
+      BlockField textAttr = null;
+      for (BlockField attr : attrs) {
+         if (attr.getId().equals(DoorsImportFieldTokens.blockAttrText.getId())) {
+            textAttr = attr;
+            break;
+         }
+      }
+      if (textAttr == null) {
+         System.out.println("textAttribute was null");
+      } else {
+         String newContent = textAttr.getData().replaceAll(objectID, reference);
+         textAttr.setData(newContent);
+      }
+   }
+
    public void addAttribute(BlockFieldToken token, String text) {
       BlockField addAttr = null;
       for (BlockField attr : attrs) {
