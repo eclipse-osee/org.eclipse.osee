@@ -140,9 +140,9 @@ public class WfeHeaderComposite extends Composite {
    }
 
    public void createSMANotesHeader(Composite comp, XFormToolkit toolkit, int horizontalSpan) {
-      // Display SMA Note
-      String note =
-         AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.SmaNote, "");
+      // Display Workflow Note
+      String note = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workItem,
+         AtsAttributeTypes.WorkflowNotes, "");
       if (!note.equals("")) {
          FormsUtil.createLabelOrHyperlink(comp, toolkit, horizontalSpan, "Note: " + note);
       }

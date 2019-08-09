@@ -55,7 +55,7 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
                new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XStateCombo", FILL_VERTICALLY) //
             ), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.SmaNote, "XTextDam"), //
+               new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, "XTextDam"), //
                new WidgetDefinition(AtsAttributeTypes.Category1, "XTextDam") //
             ));
 
@@ -76,7 +76,7 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
                new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XStateCombo", FILL_VERTICALLY) //
             ), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.SmaNote, "XTextDam"), //
+               new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, "XTextDam"), //
                new WidgetDefinition(AtsAttributeTypes.Category1, "XTextDam") //
             ));
 
@@ -97,7 +97,7 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
                new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XStateCombo", FILL_VERTICALLY) //
             ), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.SmaNote, "XTextDam"), //
+               new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, "XTextDam"), //
                new WidgetDefinition(AtsAttributeTypes.Category1, "XTextDam") //
             ));
 
@@ -117,7 +117,7 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
                new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XStateCombo", FILL_VERTICALLY) //
             ), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.SmaNote, "XTextDam"), //
+               new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, "XTextDam"), //
                new WidgetDefinition(AtsAttributeTypes.Category1, "XTextDam") //
             ));
 
@@ -136,7 +136,7 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
                new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XStateCombo", FILL_VERTICALLY) //
             ), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.SmaNote, "XTextDam"), //
+               new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, "XTextDam"), //
                new WidgetDefinition(AtsAttributeTypes.Category1, "XTextDam") //
             ));
 

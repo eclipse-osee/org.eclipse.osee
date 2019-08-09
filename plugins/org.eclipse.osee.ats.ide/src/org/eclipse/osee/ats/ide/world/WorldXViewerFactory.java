@@ -163,7 +163,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          PriorityColumnUI.getInstance(),
          ChangeTypeColumnUI.getInstance(),
          AssigneeColumnUI.getInstance(),
-         getAttriubuteConfigColumn(AtsColumnToken.TitleColumn),
+         getAttributeConfigColumn(AtsColumnToken.TitleColumn),
          getColumnServiceColumn(AtsColumnToken.ActionableItemsColumn),
          getColumnServiceColumn(AtsColumnToken.AtsIdColumnShow),
          getColumnServiceColumn(AtsColumnToken.WorkDefinitionColumn),
@@ -171,11 +171,11 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          TargetedVersionColumnUI.getInstance(),
          FoundInVersionColumnUI.getInstance(),
          getColumnServiceColumn(AtsColumnToken.TeamColumn),
-         getAttriubuteConfigColumn(AtsColumnToken.NotesColumn),
+         getAttributeConfigColumn(AtsColumnToken.NotesColumn),
          DeadlineColumn.getInstance(),
          AnnualCostAvoidanceColumn.getInstance(),
          DescriptionColumn.getInstance(),
-         getAttriubuteConfigColumn(AtsColumnToken.LegacyPcrIdColumn),
+         getAttributeConfigColumn(AtsColumnToken.LegacyPcrIdColumn),
          DecisionColumn.getInstance(),
          ResolutionColumn.getInstance(),
          GroupsColumn.getInstance(),
@@ -209,7 +209,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          PercentCompleteStateTasksColumn.getInstance(),
          PercentCompleteStateReviewColumn.getInstance(),
          PercentCompleteTotalColumn.getInstance(),
-         getAttriubuteConfigColumn(AtsColumnToken.PercentCompleteWorkflowColumn),
+         getAttributeConfigColumn(AtsColumnToken.PercentCompleteWorkflowColumn),
          HoursSpentSMAStateColumn.getInstance(),
          HoursSpentStateTasksColumn.getInstance(),
          HoursSpentStateReviewColumn.getInstance(),
@@ -300,7 +300,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
     * Provides XViewerColumn for attribute based columns like Legacy PCR Id and Change Type. These columns can be
     * overridden (or defined) by entries in the AtsConfig views.attrColumns entry.
     */
-   private static XViewerColumn getAttriubuteConfigColumn(AtsAttributeValueColumn attrValueColumn) {
+   public static XViewerColumn getAttributeConfigColumn(AtsAttributeValueColumn attrValueColumn) {
       XViewerColumn result = null;
       for (AtsAttributeValueColumn column : AtsClientService.get().getConfigService().getConfigurations().getViews().getAttrColumns()) {
          if (column.getNamespace().equals(NAMESPACE) && column.getId().equals(attrValueColumn.getId())) {

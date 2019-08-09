@@ -242,7 +242,7 @@ public class ExcelAtsTaskArtifactExtractor {
       private void processNotes(String[] row, JaxAtsTask taskArt, int i) {
          String str = row[i];
          if (Strings.isValid(str)) {
-            taskArt.addAttribute(AtsAttributeTypes.SmaNote, str);
+            taskArt.addAttribute(AtsAttributeTypes.WorkflowNotes, str);
          }
       }
 

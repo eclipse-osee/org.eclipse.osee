@@ -41,11 +41,17 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
 public class TaskXViewerFactory extends SkynetXViewerFactory {
 
    public static final List<XViewerColumn> TaskViewerVisibleColumns =
-      Arrays.asList(new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn),
-         WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.StateColumn), AssigneeColumnUI.getInstance(),
-         PercentCompleteTotalColumn.getInstance(), HoursSpentTotalColumn.getInstance(), ResolutionColumn.getInstance(),
-         EstimatedHoursColumn.getInstance(), RemainingHoursColumn.getInstance(), RelatedToStateColumn.getInstance(),
-         WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.StateColumn));
+      Arrays.asList(new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn), //
+         WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.StateColumn), //
+         AssigneeColumnUI.getInstance(), //
+         PercentCompleteTotalColumn.getInstance(), //
+         HoursSpentTotalColumn.getInstance(), //
+         ResolutionColumn.getInstance(), //
+         EstimatedHoursColumn.getInstance(), //
+         RemainingHoursColumn.getInstance(), //
+         RelatedToStateColumn.getInstance(), //
+         WorldXViewerFactory.getAttributeConfigColumn(AtsColumnToken.NotesColumn) //
+      );
    public static Integer[] widths = new Integer[] {450, 60, 150, 40, 40, 100, 50, 50, 50, 80, 80};
 
    public TaskXViewerFactory(IOseeTreeReportProvider reportProvider) {

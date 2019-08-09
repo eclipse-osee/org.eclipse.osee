@@ -131,7 +131,6 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken ReviewFormalType = createType(1152921504606847177L, "Review Formal Type");
    public static final AttributeTypeToken Role = createType(1152921504606847226L, "Role");
    public static final AttributeTypeToken RuleDefinition = createType(1152921504606847150L, "Rule Definition");
-   public static final AttributeTypeToken SmaNote = createType(1152921504606847205L, "SMA Note", "Notes applicable to ATS object");
    public static final AttributeTypeToken StartDate = createType(1152921504606847382L, "Start Date");
    public static final AttributeTypeToken State = createType(1152921504606847191L, "State", "States of workflow state machine.");
    public static final AttributeTypeToken StateNotes = createType(1152921504606847203L, "State Notes");
@@ -156,6 +155,7 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken WorkPackageType = createType(72057594037928065L, "Work Package Type");
    public static final AttributeTypeToken WorkType = createType(72063456955810043L, "Work Type", "Work Type of this Team.");
    public static final AttributeTypeToken WorkflowDefinitionReference = createType(53049621055799825L, "Workflow Definition Reference", "Specific work flow definition id used by this Workflow artifact");
+   public static final AttributeTypeToken WorkflowNotes = createType(1152921504606847205L, "Workflow Notes", "Notes applicable to ATS Workflow");
    // @formatter:on
 
    public static AttributeTypeToken createType(Long id, String name) {

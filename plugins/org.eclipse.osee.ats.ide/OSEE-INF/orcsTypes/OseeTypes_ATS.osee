@@ -225,7 +225,7 @@ abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
 	attribute "ats.Percent Complete"
 	attribute "ats.Release Date"
 	attribute "ats.Resolution"
-	attribute "ats.SMA Note"
+	attribute "ats.Workflow Notes"
 	attribute "ats.State Notes"
 	attribute "ats.State"
 	attribute "ats.Start Date"
@@ -1380,7 +1380,7 @@ attributeType "ats.Related To State" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "ats.SMA Note" extends StringAttribute {
+attributeType "ats.Workflow Notes" extends StringAttribute {
 	id 1152921504606847205
 	dataProvider DefaultAttributeDataProvider
 	min 0

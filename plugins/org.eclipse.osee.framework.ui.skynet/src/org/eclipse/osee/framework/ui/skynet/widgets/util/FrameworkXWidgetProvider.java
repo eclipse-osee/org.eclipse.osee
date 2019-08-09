@@ -469,10 +469,17 @@ public final class FrameworkXWidgetProvider {
       }
       Artifact artifact = xWidgetLayoutData.getArtifact();
       if (artifact != null) {
-         if (xWidget instanceof IAttributeWidget) {
-            AttributeTypeToken attributeType = AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());
+         AttributeTypeToken attributeType = null;
+         if (xWidget instanceof IAttributeWidget && xWidgetLayoutData.getStoreId() > 0) {
+            attributeType = AttributeTypeManager.getTypeById(xWidgetLayoutData.getStoreId());
+         }
+         if (attributeType == null && Strings.isValid(xWidgetLayoutData.getStoreName())) {
+            attributeType = AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());
+         }
+         if (attributeType != null && xWidget instanceof IAttributeWidget) {
             ((IAttributeWidget) xWidget).setAttributeType(artifact, attributeType);
-         } else if (xWidget instanceof IArtifactWidget) {
+         }
+         if (xWidget instanceof IArtifactWidget) {
             ((IArtifactWidget) xWidget).setArtifact(artifact);
          }
       }

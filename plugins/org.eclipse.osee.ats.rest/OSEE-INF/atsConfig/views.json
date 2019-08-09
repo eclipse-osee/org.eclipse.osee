@@ -30,21 +30,6 @@
 		"description": "Numeric Point Value",
 		"color": null,
 		"actionRollup": false
-	},
-	{
-		"id": "framework.artifact.name.Title",
-		"name": "Title",
-		"namespace": "org.eclipse.osee.ats.WorldXViewer",
-		"attrTypeId": 1152921504606847088,
-		"attrTypeName": "Name",
-		"width": 150,
-		"align": "Left",
-		"visible": true,
-		"sortDataType": "String",
-		"columnMultiEdit": true,
-		"description": "",
-		"color": null,
-		"actionRollup": true
 	}, {
 		"align": "Left",
 		"attrTypeId": 1728793301637070003,
