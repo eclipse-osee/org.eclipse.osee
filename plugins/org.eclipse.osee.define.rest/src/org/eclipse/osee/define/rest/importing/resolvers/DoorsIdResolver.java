@@ -39,11 +39,11 @@ public class DoorsIdResolver extends NewArtifactImportResolver {
    public ArtifactToken resolve(RoughArtifact roughArtifact, BranchId branch, ArtifactId realParentId, ArtifactId rootId) {
       ArtifactToken realArtifact = findExistingArtifact(roughArtifact, branch);
 
-      if (realArtifact != null) {
+      if (realArtifact.isValid()) {
          getTranslator().translate(transaction, roughArtifact, realArtifact);
       }
 
-      if (realArtifact == null && createNewIfNotExist) {
+      if (realArtifact.isInvalid() && createNewIfNotExist) {
          ArtifactReadable rootArtifact =
             roughArtifact.getOrcsApi().getQueryFactory().fromBranch(branch).andId(rootId).getArtifact();
          ArtifactToken parentArtifact = findParentArtifact(roughArtifact, branch, rootArtifact);
@@ -72,19 +72,8 @@ public class DoorsIdResolver extends NewArtifactImportResolver {
          // when creating, there will only be the one ID in the list, this is a create case
          return null;
       }
-      List<ArtifactToken> results =
-         roughArtifact.getOrcsApi().getQueryFactory().fromBranch(branch).andAttributeIs(CoreAttributeTypes.DoorsID,
-            doorsIDs.iterator().next()).asArtifactTokens();
-
-      if (results.size() < 1) {
-         return null;
-      }
-      ArtifactToken art = results.iterator().next();
-      if (results.size() > 1) {
-         roughArtifact.getResults().warningf("DoorsId attribute resolution found multiple items, using: %s",
-            art.getName());
-      }
-      return art;
+      return roughArtifact.getOrcsApi().getQueryFactory().fromBranch(branch).andAttributeIs(CoreAttributeTypes.DoorsID,
+         doorsIDs.iterator().next()).asArtifactTokenOrSentinel();
    }
 
    private ArtifactToken findParentArtifact(RoughArtifact roughArtifact, BranchId branch, ArtifactReadable rootId) {

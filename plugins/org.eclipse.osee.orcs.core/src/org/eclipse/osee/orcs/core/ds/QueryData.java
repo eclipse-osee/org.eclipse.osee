@@ -11,6 +11,8 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
+import static org.eclipse.osee.framework.jdk.core.util.Collections.exactlyOne;
+import static org.eclipse.osee.framework.jdk.core.util.Collections.oneOrSentinel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -593,12 +594,12 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    @Override
    public ArtifactReadable asArtifact() {
-      return asArtifact(this::asArtifacts);
+      return exactlyOne(asArtifacts());
    }
 
    @Override
    public ArtifactToken asArtifactToken() {
-      return asArtifact(this::asArtifactTokens);
+      return exactlyOne(asArtifactTokens());
    }
 
    @Override
@@ -621,35 +622,17 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    @Override
    public ArtifactId asArtifactId() {
-      return asArtifact(this::asArtifactIds);
+      return exactlyOne(asArtifactIds());
    }
 
    @Override
    public ArtifactId asArtifactIdOrSentinel() {
-      return asArtifactOrSentinel(this::asArtifactIds, ArtifactId.SENTINEL);
+      return oneOrSentinel(asArtifactIds(), ArtifactId.SENTINEL);
    }
 
    @Override
    public ArtifactToken asArtifactTokenOrSentinel() {
-      return asArtifactOrSentinel(this::asArtifactTokens, ArtifactToken.SENTINEL);
-   }
-
-   private <T> T asArtifact(Supplier<List<T>> supplier) {
-      List<T> artifacts = supplier.get();
-      if (artifacts.size() != 1) {
-         throw new OseeCoreException("Expected exactly 1 artifact not %s", artifacts.size());
-      }
-      return artifacts.get(0);
-   }
-
-   private <T> T asArtifactOrSentinel(Supplier<List<T>> supplier, T sentinel) {
-      List<T> artifacts = supplier.get();
-      if (artifacts.size() > 1) {
-         throw new OseeCoreException("Expected at most 1 artifact not %s", artifacts.size());
-      } else if (artifacts.size() == 1) {
-         return artifacts.get(0);
-      }
-      return sentinel;
+      return oneOrSentinel(asArtifactTokens(), ArtifactToken.SENTINEL);
    }
 
    @Override
@@ -705,17 +688,6 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
          return ArtifactToken.SENTINEL;
       }
       return art;
-   }
-
-   @Override
-   public ArtifactToken getAtMostOneOrSentinal() {
-      ResultSet<ArtifactReadable> artifacts = getResults();
-      if (artifacts.isEmpty()) {
-         return ArtifactToken.SENTINEL;
-      } else if (artifacts.size() > 1) {
-         throw new OseeStateException(String.format("Expected 0..1, found %s", artifacts.size()));
-      }
-      return artifacts.iterator().next();
    }
 
    public void setQueryType(QueryType queryType) {

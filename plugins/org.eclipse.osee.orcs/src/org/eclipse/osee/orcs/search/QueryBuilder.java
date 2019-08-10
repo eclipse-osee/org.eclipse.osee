@@ -90,11 +90,6 @@ public interface QueryBuilder extends Query {
     */
    ArtifactToken getArtifactOrSentinal();
 
-   /**
-    * @return sole artifact or sentinal or exception if > 1
-    */
-   ArtifactToken getAtMostOneOrSentinal();
-
    public static AttributeTypeToken ANY_ATTRIBUTE_TYPE =
       AttributeTypeToken.valueOf(Long.MIN_VALUE, "Any Attribute Type");
 

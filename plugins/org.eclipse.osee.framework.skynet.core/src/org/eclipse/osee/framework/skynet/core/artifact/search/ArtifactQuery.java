@@ -32,10 +32,10 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -896,10 +896,10 @@ public class ArtifactQuery {
     */
    public static boolean isArtifactChangedViaEntries(Artifact artifact) {
       JdbcClient jdbcClient = ConnectionHandler.getJdbcClient();
-      int attrCount = jdbcClient.fetch(-1,
-         "select count(*) from OSEE_ATTRIBUTE attr, osee_txs txs where attr.art_id = ? and " //
-            + "txs.GAMMA_ID = ATTR.GAMMA_ID and txs.BRANCH_ID = ? and txs.TX_CURRENT = 1",
-         artifact, artifact.getBranch());
+      int attrCount =
+         jdbcClient.fetch(-1, "select count(*) from OSEE_ATTRIBUTE attr, osee_txs txs where attr.art_id = ? and " //
+            + "txs.GAMMA_ID = ATTR.GAMMA_ID and txs.BRANCH_ID = ? and txs.TX_CURRENT = 1", artifact,
+            artifact.getBranch());
       if (artifact.getAttributes().size() != attrCount) {
          return true;
       }
@@ -943,16 +943,9 @@ public class ArtifactQuery {
    }
 
    private static Artifact getOrCheckArtifact(QueryType queryType, Collection<Artifact> artifacts) {
-      if (artifacts.isEmpty()) {
-         if (queryType.equals(QueryType.CHECK)) {
-            return null;
-         }
-         throw new ArtifactDoesNotExist("No artifact found matching query");
+      if (queryType.equals(QueryType.CHECK)) {
+         return org.eclipse.osee.framework.jdk.core.util.Collections.oneOrSentinel(artifacts, null);
       }
-      if (artifacts.size() > 1) {
-         throw new MultipleArtifactsExist("%s artifacts found matching when expecting 1", artifacts.size());
-      }
-      return artifacts.iterator().next();
+      return org.eclipse.osee.framework.jdk.core.util.Collections.exactlyOne(artifacts);
    }
-
 }

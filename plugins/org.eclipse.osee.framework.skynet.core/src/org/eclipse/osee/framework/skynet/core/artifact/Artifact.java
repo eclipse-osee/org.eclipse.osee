@@ -632,15 +632,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
 
    public final <T> Attribute<T> getSoleAttribute(AttributeTypeId attributeType) {
       ensureAttributesLoaded();
-      List<Attribute<T>> soleAttributes = getAttributes(attributeType);
-      if (soleAttributes.isEmpty()) {
-         return null;
-      } else if (soleAttributes.size() > 1) {
-         throw new MultipleAttributesExist(String.format(
-            "The attribute \'%s\' can have no more than one instance for sole attribute operations; guid \'%s\'",
-            attributeType, getGuid()));
-      }
-      return soleAttributes.iterator().next();
+      return Collections.oneOrSentinel(getAttributes(attributeType), null);
    }
 
    private <T> Attribute<T> getOrCreateSoleAttribute(AttributeTypeId attributeType) {

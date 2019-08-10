@@ -18,9 +18,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author David Diepenbrock
+ * @author Ryan D. Brooks
  */
 public class Collections {
    public static Object[] EMPTY_ARRAY = new Object[0];
@@ -386,5 +388,27 @@ public class Collections {
          }
          return toReturn;
       }
+   }
+
+   public static <T> T exactlyOne(Collection<T> items) {
+      if (items.size() != 1) {
+         throw new OseeCoreException("Expected exactly 1, but found %s", items.size());
+      }
+      if (items instanceof List) {
+         return ((List<T>) items).get(0);
+      }
+      return items.iterator().next();
+   }
+
+   public static <T> T oneOrSentinel(Collection<T> items, T sentinel) {
+      if (items.size() > 1) {
+         throw new OseeCoreException("Expected at most 1, but found %s", items.size());
+      } else if (items.size() == 1) {
+         if (items instanceof List) {
+            return ((List<T>) items).get(0);
+         }
+         return items.iterator().next();
+      }
+      return sentinel;
    }
 }
