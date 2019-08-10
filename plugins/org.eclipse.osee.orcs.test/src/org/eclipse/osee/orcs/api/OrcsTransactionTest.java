@@ -31,6 +31,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -186,7 +187,7 @@ public class OrcsTransactionTest {
 
       ArtifactReadable folderArt = query.fromBranch(SAW_Bld_2).andId(folder).getResults().getExactlyOne();
       Assert.assertEquals(null, folderArt.getParent());
-      Assert.assertEquals(subfolder, folderArt.getChildren().getExactlyOne());
+      Assert.assertEquals(subfolder, folderArt.getChild());
    }
 
    @Test
@@ -636,7 +637,7 @@ public class OrcsTransactionTest {
       assertEquals("A component", artifact.getName());
       assertEquals(tx1Id, artifact.getTransaction());
 
-      ResultSet<ArtifactReadable> children = artifact.getChildren();
+      List<ArtifactReadable> children = artifact.getChildren();
       assertEquals(2, children.size());
 
       Iterator<ArtifactReadable> iterator = children.iterator();
@@ -652,7 +653,7 @@ public class OrcsTransactionTest {
       assertEquals("A component", artifact21.getName());
       assertEquals(tx2Id, artifact21.getTransaction());
 
-      ResultSet<ArtifactReadable> children2 = artifact21.getChildren();
+      List<ArtifactReadable> children2 = artifact21.getChildren();
       assertEquals(3, children2.size());
 
       Iterator<ArtifactReadable> iterator2 = children2.iterator();
@@ -673,7 +674,7 @@ public class OrcsTransactionTest {
       ArtifactReadable artifact1 = query.fromBranch(COMMON).andId(art1).getResults().getExactlyOne();
       assertEquals("A component", artifact1.getName());
 
-      ResultSet<ArtifactReadable> children = artifact1.getChildren();
+      List<ArtifactReadable> children = artifact1.getChildren();
       assertEquals(1, children.size());
 
       Iterator<ArtifactReadable> iterator = children.iterator();
@@ -728,7 +729,7 @@ public class OrcsTransactionTest {
       ArtifactReadable artifact1 = query.fromBranch(COMMON).andId(art1).getResults().getExactlyOne();
       assertEquals("A component", artifact1.getName());
 
-      ResultSet<ArtifactReadable> children = artifact1.getChildren();
+      List<ArtifactReadable> children = artifact1.getChildren();
       assertEquals(2, children.size());
 
       Iterator<ArtifactReadable> iterator = children.iterator();
@@ -761,10 +762,7 @@ public class OrcsTransactionTest {
       ArtifactReadable artifact = query.fromBranch(COMMON).andId(art1).getResults().getExactlyOne();
       assertEquals("A component", artifact.getName());
 
-      ResultSet<ArtifactReadable> children = artifact.getChildren();
-      assertEquals(1, children.size());
-
-      ArtifactReadable otherArtifact = children.getExactlyOne();
+      ArtifactReadable otherArtifact = artifact.getChild();
       assertEquals("B component", otherArtifact.getName());
 
       String actual1 = artifact.getRationale(Default_Hierarchical__Child, otherArtifact);
@@ -805,7 +803,7 @@ public class OrcsTransactionTest {
       artifact1 = artifact4.getRelated(CoreRelationTypes.Dependency__Artifact).getExactlyOne();
       assertEquals(art1, artifact1);
 
-      assertEquals(art3, artifact1.getChildren().getExactlyOne());
+      assertEquals(art3, artifact1.getChild());
    }
 
    @Test

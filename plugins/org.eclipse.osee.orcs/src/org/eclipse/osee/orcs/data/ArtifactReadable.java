@@ -95,7 +95,8 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
    Collection<RelationTypeId> getExistingRelationTypes();
 
    default ArtifactReadable getParent() {
-      return getRelated(CoreRelationTypes.Default_Hierarchical__Parent).getExactlyOne();
+      return org.eclipse.osee.framework.jdk.core.util.Collections.exactlyOne(
+         getRelated(CoreRelationTypes.Default_Hierarchical__Parent, ArtifactTypeId.SENTINEL));
    }
 
    List<ArtifactReadable> getDescendants();
@@ -104,9 +105,19 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    boolean isDescendantOf(ArtifactToken parent);
 
-   List<ArtifactReadable> getAncestors();
+   default List<ArtifactReadable> getAncestors() {
+      List<ArtifactReadable> ancestors = new ArrayList<>();
+      for (ArtifactReadable parent = getParent(); parent != null; parent = parent.getParent()) {
+         ancestors.add(parent);
+      }
+      return ancestors;
+   }
 
-   ResultSet<ArtifactReadable> getChildren();
+   List<ArtifactReadable> getChildren();
+
+   default ArtifactReadable getChild() {
+      return Collections.exactlyOne(getChildren());
+   }
 
    ResultSet<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide);
 
@@ -124,7 +135,9 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
       return Collections.cast(getRelated(relationTypeSide, artifactType));
    }
 
-   ResultSet<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, DeletionFlag deletionFlag);
+   List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, DeletionFlag deletionFlag);
+
+   List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeId artifactType, DeletionFlag deletionFlag);
 
    boolean areRelated(RelationTypeSide typeAndSide, ArtifactReadable artifact);
 

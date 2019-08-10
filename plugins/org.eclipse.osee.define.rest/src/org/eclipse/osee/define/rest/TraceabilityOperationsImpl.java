@@ -207,8 +207,7 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
 
    @Override
    public List<CertBaselineData> getBaselineData(BranchId branch, ArtifactReadable repoArtifact) {
-      List<CertBaselineData> certEvents =
-         Collections.transform(repoArtifact.getChildren().getList(), this::getBaselineData);
+      List<CertBaselineData> certEvents = Collections.transform(repoArtifact.getChildren(), this::getBaselineData);
       java.util.Collections.sort(certEvents);
       return certEvents;
    }

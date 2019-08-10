@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -38,6 +39,7 @@ import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ResultSetList;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
@@ -70,6 +72,9 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
 
    @Override
    public String getName() {
+      if (attributes.isEmpty()) {
+         return "Name not loaded";
+      }
       return getSoleAttributeValue(Name);
    }
 
@@ -267,22 +272,23 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    }
 
    @Override
-   public List<ArtifactReadable> getAncestors() {
-      throw new UnsupportedOperationException();
-   }
-
-   @Override
-   public ResultSet<ArtifactReadable> getChildren() {
-      return getRelated(CoreRelationTypes.Default_Hierarchical__Child);
+   public List<ArtifactReadable> getChildren() {
+      return getRelated(CoreRelationTypes.Default_Hierarchical__Child, ArtifactTypeId.SENTINEL);
    }
 
    @Override
    public ResultSet<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide) {
-      return queryFactory.fromBranch(branch, view).andRelatedTo(relationTypeSide.getOpposite(), this).getResults();
+      return new ResultSetList<>(getRelated(relationTypeSide, ArtifactTypeId.SENTINEL));
    }
 
    @Override
    public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeId artifactType) {
+      return getRelated(relationTypeSide, artifactType, DeletionFlag.EXCLUDE_DELETED);
+   }
+
+   @Override
+   public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeId artifactType, DeletionFlag deletionFlag) {
+
       List<ArtifactReadable> related =
          (relationTypeSide.getSide().isSideA() ? relationsSideA : relationsSideB).getValues(
             relationTypeSide.getRelationType());
@@ -290,26 +296,30 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
          return Collections.emptyList();
       }
 
-      if (artifactType.isValid()) {
-         return related.stream().filter(a -> artifactTypes.inheritsFrom(a.getArtifactType(), artifactType)).collect(
-            Collectors.toList());
+      Predicate<ArtifactReadable> filter = artifact -> {
+         return modType.isIncluded(deletionFlag) && (artifactType.isInvalid() || artifactTypes.inheritsFrom(
+            artifact.getArtifactType(), artifactType));
+      };
+
+      if (artifactType.isValid() || deletionFlag.equals(DeletionFlag.EXCLUDE_DELETED)) {
+         return related.stream().filter(filter).collect(Collectors.toList());
       }
       return related;
    }
 
    @Override
-   public ResultSet<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, DeletionFlag deletionFlag) {
-      throw new UnsupportedOperationException();
+   public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, DeletionFlag deletionFlag) {
+      return getRelated(relationTypeSide, ArtifactTypeId.SENTINEL, deletionFlag);
    }
 
    @Override
    public boolean areRelated(RelationTypeSide typeAndSide, ArtifactReadable artifact) {
-      return queryFactory.fromBranch(branch, view).andId(this).andRelatedTo(typeAndSide, artifact).exists();
+      return getRelated(typeAndSide, ArtifactTypeId.SENTINEL).contains(artifact);
    }
 
    @Override
    public int getRelatedCount(RelationTypeSide typeAndSide) {
-      return queryFactory.fromBranch(branch, view).andRelatedTo(typeAndSide, this).getCount();
+      return getRelated(typeAndSide, ArtifactTypeId.SENTINEL).size();
    }
 
    @Override

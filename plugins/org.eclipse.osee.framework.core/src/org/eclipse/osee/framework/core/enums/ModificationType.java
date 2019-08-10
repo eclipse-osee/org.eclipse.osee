@@ -93,6 +93,10 @@ public interface ModificationType extends NamedId {
       return Id.valueOf(id, ModificationType::valueOf);
    }
 
+   default boolean isIncluded(DeletionFlag deletionFlag) {
+      return !deletionFlag.equals(DeletionFlag.EXCLUDE_DELETED) || !isDeleted();
+   }
+
    /**
     * @param value The value of the ModificationType to get.
     * @return The ModificationType that has the value passed.

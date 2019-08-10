@@ -223,9 +223,9 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public ResultSet<ArtifactReadable> getChildren() {
+   public List<ArtifactReadable> getChildren() {
       ResultSet<Artifact> children = getRelationManager().getChildren(getSession(), getProxiedObject());
-      return getProxyManager().asExternalArtifacts(getSession(), children);
+      return getProxyManager().asExternalArtifacts(getSession(), children).getList();
    }
 
    @Override
@@ -254,17 +254,8 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public List<ArtifactReadable> getAncestors() {
-      List<ArtifactReadable> ancestors = new ArrayList<>();
-      for (ArtifactReadable parent = getParent(); parent != null; parent = parent.getParent()) {
-         ancestors.add(parent);
-      }
-      return ancestors;
-   }
-
-   @Override
    public ResultSet<ArtifactReadable> getRelated(RelationTypeSide typeAndSide) {
-      return getRelated(typeAndSide, EXCLUDE_DELETED);
+      return getRelatedResultSet(typeAndSide, EXCLUDE_DELETED);
    }
 
    @Override
@@ -274,7 +265,11 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public ResultSet<ArtifactReadable> getRelated(RelationTypeSide typeAndSide, DeletionFlag deletionFlag) {
+   public List<ArtifactReadable> getRelated(RelationTypeSide typeAndSide, DeletionFlag deletionFlag) {
+      return getRelatedResultSet(typeAndSide, deletionFlag).getList();
+   }
+
+   private ResultSet<ArtifactReadable> getRelatedResultSet(RelationTypeSide typeAndSide, DeletionFlag deletionFlag) {
       IRelationType type = typeAndSide.getRelationType();
       RelationSide side = whichSideAmIOn(typeAndSide);
       ResultSet<Artifact> related =
@@ -371,5 +366,10 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    @Override
    public ApplicabilityId getApplicability() {
       return getProxiedObject().getOrcsData().getApplicabilityId();
+   }
+
+   @Override
+   public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeId artifactType, DeletionFlag deletionFlag) {
+      throw new UnsupportedOperationException();
    }
 }

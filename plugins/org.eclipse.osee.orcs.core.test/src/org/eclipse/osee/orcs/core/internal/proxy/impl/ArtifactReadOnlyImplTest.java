@@ -298,8 +298,7 @@ public class ArtifactReadOnlyImplTest {
    @Test
    public void testGetMaximumRelationAllowed() {
       RelationTypeSide typeAndSide = Default_Hierarchical__Child;
-      when(relationManager.getMaximumRelationAllowed(DEFAULT_HIERARCHY, proxiedObject, IS_PARENT)).thenReturn(
-         6);
+      when(relationManager.getMaximumRelationAllowed(DEFAULT_HIERARCHY, proxiedObject, IS_PARENT)).thenReturn(6);
 
       int actual = readOnly.getMaximumRelationAllowed(typeAndSide);
 
@@ -345,21 +344,6 @@ public class ArtifactReadOnlyImplTest {
       assertEquals(expected, actual);
       verify(relationManager).getRelated(session, DEFAULT_HIERARCHY, proxiedObject, IS_CHILD,
          DeletionFlag.EXCLUDE_DELETED);
-      verify(proxyManager).asExternalArtifacts(session, resultSet1);
-   }
-
-   @Test
-   public void testGetChildren() {
-      ResultSet<ArtifactReadable> expected = ResultSets.singleton(readable1);
-
-      ResultSet<Artifact> resultSet1 = ResultSets.singleton(artifact1);
-      when(relationManager.getChildren(session, proxiedObject)).thenAnswer(answer(resultSet1));
-      when(proxyManager.asExternalArtifacts(session, resultSet1)).thenReturn(expected);
-
-      ResultSet<ArtifactReadable> actual = readOnly.getChildren();
-
-      assertEquals(expected, actual);
-      verify(relationManager).getChildren(session, proxiedObject);
       verify(proxyManager).asExternalArtifacts(session, resultSet1);
    }
 

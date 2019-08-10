@@ -224,10 +224,9 @@ public class OrcsStorageImpl implements Storage {
    @Override
    public List<DispoItem> findDipoItems(BranchId branch, String setId, boolean isDetailed) {
       ArtifactReadable setArt = findDispoArtifact(branch, setId);
-      ResultSet<ArtifactReadable> results = setArt.getChildren();
 
       List<DispoItem> toReturn = new ArrayList<>();
-      for (ArtifactReadable art : results) {
+      for (ArtifactReadable art : setArt.getChildren()) {
          DispoItemArtifact dispoItemArtifact = new DispoItemArtifact(art);
          dispoItemArtifact.setIsIncludeDetails(isDetailed);
          toReturn.add(dispoItemArtifact);
