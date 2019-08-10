@@ -335,7 +335,7 @@ artifactType "Work Package" extends "Artifact" {
 overrides artifactType "User" {
 	inheritAll
 	add attribute "ATS Quick Search"
-	add attribute "ATS Config"
+	add attribute "ATS User Config"
 }
 
 attributeType "ats.Commit Override" extends StringAttribute {
@@ -373,7 +373,7 @@ attributeType "ATS Quick Search" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "ATS Config" extends StringAttribute {
+attributeType "ATS User Config" extends StringAttribute {
 	id 2348752981434455
 	dataProvider DefaultAttributeDataProvider
 	min 0
