@@ -25,6 +25,7 @@
          id="org.eclipse.osee.disposition.feature"
          version="0.0.0"/>
     
+
    <includes
          id="org.eclipse.jgit"
          version="5.0.0"/>
