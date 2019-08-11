@@ -146,7 +146,7 @@ public class CreateTasksOperation {
             IAtsWorkDefinition workDefinition = null;
             if (Strings.isValid(task.getTaskWorkDef())) {
                try {
-                  workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(task.getTaskWorkDef());
+                  workDefinition = atsApi.getWorkDefinitionService().getWorkDefinitionByName(task.getTaskWorkDef());
                   if (workDefinition == null) {
                      resultData.errorf("Error finding Task Work Def [%s].", task.getTaskWorkDef());
                   }

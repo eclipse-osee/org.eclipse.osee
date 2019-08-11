@@ -177,7 +177,7 @@ public class ConvertWorkDefinitionOperations {
             atsApi.getAttributeResolver().getSoleAttributeValue(artifact, newAttrType, ArtifactId.SENTINEL);
 
          if (newWorkDefArt.isInvalid()) {
-            IAtsWorkDefinition workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(oldWorkDefName);
+            IAtsWorkDefinition workDefinition = atsApi.getWorkDefinitionService().getWorkDefinitionByName(oldWorkDefName);
             if (workDefinition == null || workDefinition.isInvalid()) {
                rd.error(String.format("null/invalid Work Definition for work def name [%s] and art %s", oldWorkDefName,
                   artifact));

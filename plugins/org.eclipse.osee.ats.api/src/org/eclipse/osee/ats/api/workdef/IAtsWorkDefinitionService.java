@@ -36,7 +36,7 @@ public interface IAtsWorkDefinitionService {
 
    IAtsWorkDefinition getWorkDefinition(IAtsWorkItem workItem);
 
-   IAtsWorkDefinition getWorkDefinition(String name);
+   IAtsWorkDefinition getWorkDefinitionByName(String name);
 
    IAtsWorkDefinition getDefaultPeerToPeerWorkflowDefinition();
 

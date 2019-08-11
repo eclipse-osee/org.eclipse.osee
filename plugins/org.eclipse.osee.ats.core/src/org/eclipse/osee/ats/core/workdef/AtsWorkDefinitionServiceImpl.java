@@ -114,7 +114,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    @Override
-   public IAtsWorkDefinition getWorkDefinition(String name) {
+   public IAtsWorkDefinition getWorkDefinitionByName(String name) {
       for (IAtsWorkDefinition workDef : atsApi.getWorkDefinitionProviderService().getAll()) {
          if (workDef.getName().equals(name)) {
             return workDef;
@@ -127,14 +127,14 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       IAtsWorkDefinition workDefinition = getWorkDefinitionFromAsObject(workItem);
       if (workDefinition == null && atsApi.isWorkDefAsName()) {
          // If this artifact specifies it's own workflow definition, use it
-         String workFlowDefId = null;
+         String workFlowDefName = null;
          Collection<Object> attributeValues = atsApi.getAttributeResolver().getAttributeValues(workItem,
             ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition);
          if (!attributeValues.isEmpty()) {
-            workFlowDefId = (String) attributeValues.iterator().next();
+            workFlowDefName = (String) attributeValues.iterator().next();
          }
-         if (Strings.isValid(workFlowDefId)) {
-            workDefinition = getWorkDefinition(workFlowDefId);
+         if (Strings.isValid(workFlowDefName)) {
+            workDefinition = getWorkDefinitionByName(workFlowDefName);
          }
       }
       return workDefinition;
@@ -143,10 +143,10 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    private IAtsWorkDefinition getWorkDefinitionFromArtifactsAttributeValue(IAtsTeamDefinition teamDef) {
       IAtsWorkDefinition workDefinition = getWorkDefinitionFromAsObject(teamDef);
       if (workDefinition == null && atsApi.isWorkDefAsName()) {
-         String workFlowDefId = atsApi.getAttributeResolver().getSoleAttributeValue(teamDef,
+         String workFlowDefName = atsApi.getAttributeResolver().getSoleAttributeValue(teamDef,
             ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition, "");
-         if (Strings.isValid(workFlowDefId)) {
-            workDefinition = getWorkDefinition(workFlowDefId);
+         if (Strings.isValid(workFlowDefName)) {
+            workDefinition = getWorkDefinitionByName(workFlowDefName);
          }
       }
       return workDefinition;
@@ -157,10 +157,10 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          getWorkDefinitionFromAsObject(teamDef, AtsAttributeTypes.RelatedTaskWorkDefinitionReference);
       if (workDefinition == null && atsApi.isWorkDefAsName()) {
          // If this artifact specifies it's own workflow definition, use it
-         String workFlowDefId = atsApi.getAttributeResolver().getSoleAttributeValueAsString(teamDef,
+         String workFlowDefName = atsApi.getAttributeResolver().getSoleAttributeValueAsString(teamDef,
             ConvertAtsConfigGuidAttributesOperations.RelatedTaskWorkDefinition, "");
-         if (Strings.isValid(workFlowDefId)) {
-            workDefinition = getWorkDefinition(workFlowDefId);
+         if (Strings.isValid(workFlowDefName)) {
+            workDefinition = getWorkDefinitionByName(workFlowDefName);
          }
       }
       return workDefinition;
@@ -324,13 +324,13 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       if (workDefinition == null && atsApi.isWorkDefAsName()) {
          String workDefId = atsApi.getAttributeResolver().getSoleAttributeValue(teamDefinition,
             ConvertAtsConfigGuidAttributesOperations.RelatedPeerWorkflowDefinition, "");
-         if (!Strings.isValid(workDefId)) {
+         if (Strings.isNumeric(workDefId)) {
+            workDefinition = getWorkDefinition(Long.valueOf(workDefId));
+         } else {
             IAtsTeamDefinition parentTeamDef = teamDefinition.getParentTeamDef();
             if (parentTeamDef != null) {
                workDefinition = getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(parentTeamDef);
             }
-         } else {
-            workDefinition = getWorkDefinition(workDefId);
          }
       }
       return workDefinition;
@@ -522,7 +522,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       if (Strings.isValid(workDefName)) {
          workDefinition = workDefNameToWorkDef.get(workDefName);
          if (workDefinition == null) {
-            workDefinition = getWorkDefinition(workDefName);
+            workDefinition = getWorkDefinitionByName(workDefName);
             workDefNameToWorkDef.put(workDefName, workDefinition);
          }
          return workDefinition;

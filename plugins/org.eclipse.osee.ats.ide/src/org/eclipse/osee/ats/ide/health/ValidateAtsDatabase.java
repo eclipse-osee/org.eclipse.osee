@@ -512,7 +512,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             // delete after 26.0
             String workDefName =
                artifact.getSoleAttributeValue(ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition, "");
-            if (Strings.isValid(workDefName) && AtsClientService.get().getWorkDefinitionService().getWorkDefinition(
+            if (Strings.isValid(workDefName) && AtsClientService.get().getWorkDefinitionService().getWorkDefinitionByName(
                workDefName) == null) {
                results.log(artifact, "testAttributeSetWorkDefinitionsExist", String.format(
                   "Error: ats.Work Definition attribute value [%s] not valid work definition for " + XResultDataUI.getHyperlink(
