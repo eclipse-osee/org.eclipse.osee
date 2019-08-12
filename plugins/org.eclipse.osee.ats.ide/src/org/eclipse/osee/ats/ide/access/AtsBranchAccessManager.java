@@ -87,7 +87,10 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
       boolean result = false;
       try {
          if (AtsClientService.get().getAtsBranch().notEqual(objectBranch)) {
-            result = BranchManager.getAssociatedArtifact(objectBranch).isOfType(AtsArtifactTypes.AtsArtifact);
+            Artifact associatedArtifact = BranchManager.getAssociatedArtifact(objectBranch);
+            if (associatedArtifact.isValid()) {
+               result = associatedArtifact.isOfType(AtsArtifactTypes.AtsArtifact);
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.INFO, "Error determining access applicibility", ex);
