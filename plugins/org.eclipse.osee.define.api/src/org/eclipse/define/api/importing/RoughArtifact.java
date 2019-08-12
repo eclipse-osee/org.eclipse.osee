@@ -36,6 +36,7 @@ public class RoughArtifact {
    private RoughArtifactKind roughArtifactKind;
    private final RoughAttributeSet attributes;
    private final Collection<RoughArtifact> children;
+   private final Collection<RoughRelation> directRelations;
    private ArtifactTypeToken primaryArtifactType;
    private ArtifactTypeToken type = ArtifactTypeToken.SENTINEL;
    private final XResultData results;
@@ -44,6 +45,7 @@ public class RoughArtifact {
    public RoughArtifact(OrcsApi orcsApi, XResultData results, RoughArtifactKind roughArtifactKind, String name) {
       this.attributes = new RoughAttributeSet();
       this.children = new ArrayList<>();
+      this.directRelations = new ArrayList<>();
       this.roughArtifactKind = roughArtifactKind;
       this.results = results;
       this.orcsApi = orcsApi;
@@ -53,6 +55,7 @@ public class RoughArtifact {
    public RoughArtifact(OrcsApi orcsApi, XResultData results, ArtifactTypeToken type, String name) {
       this.attributes = new RoughAttributeSet();
       this.children = new ArrayList<>();
+      this.directRelations = new ArrayList<>();
       this.roughArtifactKind = RoughArtifactKind.TYPESET;
       this.type = type;
       this.results = results;
@@ -88,6 +91,17 @@ public class RoughArtifact {
    public void addChild(RoughArtifact child) {
       child.roughParent = this;
       children.add(child);
+   }
+
+   public void addDirectRelation(RoughRelation relation) {
+      // direct relations are relations to be created between this RoughArtifact and some
+      // existing artifact. The Rough Relation is used, but stored on the RoughArtifac instead
+      // of the RoughArtifacCollector
+      directRelations.add(relation);
+   }
+
+   public Collection<RoughRelation> getDirectRelations() {
+      return directRelations;
    }
 
    public boolean hasParent() {

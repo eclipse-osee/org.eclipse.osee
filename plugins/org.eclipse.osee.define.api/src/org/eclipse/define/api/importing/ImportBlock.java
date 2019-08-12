@@ -99,6 +99,13 @@ public abstract class ImportBlock implements Named {
       return roughArt;
    }
 
+   public void addRelationsToRoughArtifact(RoughArtifact roughArt) {
+      if (!isComplete()) {
+         throw new OseeCoreException("Imported Block not complete");
+      }
+      // none of the attributes collected at this level are needed for creating relations
+   }
+
    public void addText(String text) {
       BlockField textAttr = null;
       for (BlockField attr : attrs) {

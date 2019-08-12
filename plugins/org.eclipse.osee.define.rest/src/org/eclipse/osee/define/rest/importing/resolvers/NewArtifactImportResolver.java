@@ -26,7 +26,7 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public class NewArtifactImportResolver implements IArtifactImportResolver {
 
    protected final TransactionBuilder transaction;
-   private final IRoughArtifactTranslator translator;
+   protected final IRoughArtifactTranslator translator;
    private final ArtifactTypeToken primaryArtifactType;
    private final ArtifactTypeToken secondaryArtifactType;
    private final ArtifactTypeToken tertiaryArtifactType;
