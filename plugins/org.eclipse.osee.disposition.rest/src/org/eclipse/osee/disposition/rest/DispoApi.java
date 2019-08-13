@@ -48,7 +48,11 @@ public interface DispoApi {
 
    DispoItem getDispoItemById(BranchId branch, String itemId);
 
+   String getDispoItemIdByName(BranchId branchId, String setId, String itemName);
+
    List<DispoAnnotationData> getDispoAnnotations(BranchId branch, String itemId);
+
+   List<DispoAnnotationData> getDispoAnnotationsByType(Iterable<DispoAnnotationData> annotationData, String resolutionType);
 
    DispoAnnotationData getDispoAnnotationById(BranchId branch, String itemId, String annotationId);
 

@@ -180,7 +180,7 @@ public class DispoApiTest {
    @Test
    public void testGetDispoItems() {
       List<DispoItem> dispoItemArts = Collections.singletonList(dispoItem);
-      when(storage.findDipoItems(branch, setId.getGuid(), true)).thenReturn(dispoItemArts);
+      when(storage.findDispoItems(branch, setId.getGuid(), true)).thenReturn(dispoItemArts);
       when(dispoItem.getName()).thenReturn("name");
       when(dispoItem.getGuid()).thenReturn("itemGuid");
       when(dispoItem.getCreationDate()).thenReturn(mockDate);

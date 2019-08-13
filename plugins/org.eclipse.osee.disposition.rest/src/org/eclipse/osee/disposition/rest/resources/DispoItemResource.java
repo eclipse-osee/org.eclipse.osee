@@ -13,6 +13,7 @@ package org.eclipse.osee.disposition.rest.resources;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -61,6 +62,19 @@ public class DispoItemResource {
    @Produces(MediaType.APPLICATION_JSON)
    public DispoItem getDispoItemsById(@PathParam("itemId") String itemId) {
       return dispoApi.getDispoItemById(branch, itemId);
+   }
+
+   /**
+    * @return The found setId if successful. Error Code otherwise
+    * @response.representation.200.doc OK, Found branchId
+    * @response.representation.404.doc Not Found, Could not find any branchId
+    */
+   @Path("getDispoItemId")
+   @GET
+   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+   @Produces(MediaType.APPLICATION_JSON)
+   public String getDispoItemId(@FormParam("name") String itemName) {
+      return dispoApi.getDispoItemIdByName(branch, setId, itemName);
    }
 
    /**

@@ -222,7 +222,7 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public List<DispoItem> findDipoItems(BranchId branch, String setId, boolean isDetailed) {
+   public List<DispoItem> findDispoItems(BranchId branch, String setId, boolean isDetailed) {
       ArtifactReadable setArt = findDispoArtifact(branch, setId);
 
       List<DispoItem> toReturn = new ArrayList<>();
@@ -532,6 +532,17 @@ public class OrcsStorageImpl implements Storage {
       }
 
       return toReturn;
+   }
+
+   @Override
+   public String findDispoItemIdByName(BranchId branchId, String setId, String itemName) {
+      List<DispoItem> dispoItems = findDispoItems(branchId, setId, false);
+      for (DispoItem item : dispoItems) {
+         if (item.getName().equals(itemName)) {
+            return item.getGuid();
+         }
+      }
+      return null;
    }
 
    @Override

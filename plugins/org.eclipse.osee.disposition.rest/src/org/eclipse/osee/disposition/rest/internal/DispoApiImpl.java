@@ -489,7 +489,7 @@ public class DispoApiImpl implements DispoApi {
 
    @Override
    public List<DispoItem> getDispoItems(BranchId branch, String setArtId, boolean isDetailed) {
-      return getQuery().findDipoItems(branch, setArtId, isDetailed);
+      return getQuery().findDispoItems(branch, setArtId, isDetailed);
    }
 
    private List<DispoItem> getDispoItems(BranchId branch, String setArtId) {
@@ -502,6 +502,11 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
+   public String getDispoItemIdByName(BranchId branchId, String setId, String itemName) {
+      return getQuery().findDispoItemIdByName(branchId, setId, itemName);
+   }
+
+   @Override
    public Collection<DispoItem> getDispoItemByAnnotationText(BranchId branch, String setId, String keyword, boolean isDetailed) {
       return getQuery().findDispoItemByAnnoationText(branch, setId, keyword, isDetailed);
    }
@@ -510,6 +515,17 @@ public class DispoApiImpl implements DispoApi {
    public List<DispoAnnotationData> getDispoAnnotations(BranchId branch, String itemId) {
       DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
       return dispoItem.getAnnotationsList();
+   }
+
+   @Override
+   public List<DispoAnnotationData> getDispoAnnotationsByType(Iterable<DispoAnnotationData> annotationData, String resolutionType) {
+      List<DispoAnnotationData> resolutionTypeAnnotations = new ArrayList<>();
+      for (DispoAnnotationData dad : annotationData) {
+         if (dad.getResolutionType().equals(resolutionType)) {
+            resolutionTypeAnnotations.add(dad);
+         }
+      }
+      return resolutionTypeAnnotations;
    }
 
    @Override

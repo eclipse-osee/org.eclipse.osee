@@ -86,6 +86,21 @@ public class AnnotationResource {
    }
 
    /**
+    * Get all Annotations for a specific resolution Type the DisposionableItem
+    *
+    * @return The Annotation found for the DisposionableItem
+    * @response.representation.200.doc OK, Found Annotations
+    * @response.representation.404.doc Not Found, Could not find any Annotations
+    */
+   @Path("resolutionType/{resolutionType}")
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   public Iterable<DispoAnnotationData> getAllDispoAnnotationsByType(@PathParam("resolutionType") String resolutionType) {
+      Iterable<DispoAnnotationData> annotationData = dispoApi.getDispoAnnotations(branch, itemId);
+      return dispoApi.getDispoAnnotationsByType(annotationData, resolutionType);
+   }
+
+   /**
     * Get a specific Annotation given an Id
     *
     * @param id The Id of the Annotation to search for

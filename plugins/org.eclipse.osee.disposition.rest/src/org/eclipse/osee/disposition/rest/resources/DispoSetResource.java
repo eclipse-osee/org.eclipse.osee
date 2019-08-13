@@ -164,7 +164,7 @@ public class DispoSetResource {
    @GET
    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
    @Produces(MediaType.APPLICATION_JSON)
-   public String getDispoBranchId(@FormParam("name") String setName) {
+   public String getDispoSetId(@FormParam("name") String setName) {
       return dispoApi.getDispoSetIdByName(branch, setName);
    }
 

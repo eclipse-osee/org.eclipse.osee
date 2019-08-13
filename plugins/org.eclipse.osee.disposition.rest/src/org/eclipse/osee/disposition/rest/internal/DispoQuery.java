@@ -50,9 +50,11 @@ public interface DispoQuery {
 
    DispoSet findDispoSetsById(BranchId branch, String id);
 
-   List<DispoItem> findDipoItems(BranchId branch, String setId, boolean isDetailed);
+   List<DispoItem> findDispoItems(BranchId branch, String setId, boolean isDetailed);
 
    DispoItem findDispoItemById(BranchId branch, String itemId);
+
+   String findDispoItemIdByName(BranchId branchId, String setId, String itemName);
 
    List<String> getCheckedReruns(HashMap<String, DispoItem> items, String setId);
 
