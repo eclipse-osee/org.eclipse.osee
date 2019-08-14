@@ -72,6 +72,9 @@ public class LisFileParser implements DispoImporterApi {
    private static final String WHEN_CASE = "(.*\\bWHEN\\b\\s*[^:]*$)";
    private static final String CASE_STATEMENT = "(.*(\\bCASE|case|default|\\s+.+[:].*))";
    private static final String WHILE_ONE = "(.*\\bWHILE|while\\s*\\(1\\).*)";
+   private static final String NAME_WITH_LINE_NUMBER = ".*(\\.)(\\d)+(\\.2\\.ada).*";
+   private static final String TO_REMOVE_LINE_NUMBER = "\\.(\\d)+(\\.2\\.ada)";
+   private static final String REMOVED_LINE_NUMBER = "\\.2\\.ada";
 
    private final DispoDataFactory dataFactory;
 
@@ -142,7 +145,7 @@ public class LisFileParser implements DispoImporterApi {
       File[] lisFiles = vcastDir.listFiles(filter);
       if (lisFiles != null) {
          for (File file : lisFiles) {
-            String fileNameLowerCase = normalizeLisFileLame(file.getName());
+            String fileNameLowerCase = normalizeLisFileName(file.getName());
             if (fileNameToFileMap.containsKey(fileNameLowerCase)) {
                report.addEntry("DIRECTORY", String.format("Collision with file name: %s", fileNameLowerCase), ERROR);
             } else {
@@ -283,7 +286,7 @@ public class LisFileParser implements DispoImporterApi {
                   "Error: instrumented_file has invalid LIS_file value.  ID:(" + instrumentedFile.getId() + ")"),
                ERROR);
          }
-         String normalizedName = normalizeLisFileLame(lisFileNameFullPath);
+         String normalizedName = normalizeLisFileName(lisFileNameFullPath);
          File file = nameToFileMap.get(normalizedName);
          if (file != null) {
             VCastLisFileParser lisFileParser = new VCastLisFileParser(file);
@@ -315,10 +318,15 @@ public class LisFileParser implements DispoImporterApi {
 
    private void processFunction(VCastInstrumentedFile lisFile, VCastLisFileParser lisFileParser, int fileNum, VCastDataStore dataStore, VCastInstrumentedFile instrumentedFile, VCastFunction function, boolean isMCDCFile, OperationReport report) {
       int functionNum = function.getFindex();
+      String itemName = "";
       DispoItemData newItem = new DispoItemData();
       newItem.setAnnotationsList(new ArrayList<DispoAnnotationData>());
       VCastSourceFileJoin sourceFileJoin = dataStore.getSourceFileJoin(lisFile);
-      newItem.setName(sourceFileJoin.getDisplayName() + "." + function.getName());
+      itemName = sourceFileJoin.getDisplayName() + "." + function.getName();
+      if (itemName.matches(NAME_WITH_LINE_NUMBER)) {
+         itemName = itemName.replaceAll(TO_REMOVE_LINE_NUMBER, REMOVED_LINE_NUMBER);
+      }
+      newItem.setName(itemName);
       newItem.setFileNumber(Integer.toString(fileNum));
       newItem.setMethodNumber(Integer.toString(functionNum));
 
@@ -344,11 +352,9 @@ public class LisFileParser implements DispoImporterApi {
       try {
          statementCoverageItems = dataStore.getStatementCoverageLines(function);
       } catch (OseeCoreException ex) {
-         report.addEntry("SQL",
-            String.format(
-               "SQL error while reading statement_coverages for instrumented_file id: [%s] and function id: [%s]. Error Message: [%s]",
-               instrumentedFile.getId(), function.getId(), ex.getMessage()),
-            ERROR);
+         report.addEntry("SQL", String.format(
+            "SQL error while reading statement_coverages for instrumented_file id: [%s] and function id: [%s]. Error Message: [%s]",
+            instrumentedFile.getId(), function.getId(), ex.getMessage()), ERROR);
       }
       Map<String, Discrepancy> discrepancies = new HashMap<>();
 
@@ -736,7 +742,7 @@ public class LisFileParser implements DispoImporterApi {
       return results;
    }
 
-   private String normalizeLisFileLame(String fileName) {
+   private String normalizeLisFileName(String fileName) {
       return fileName.replaceAll("^.*(\\\\|\\/)", "").toLowerCase();
    }
 }
