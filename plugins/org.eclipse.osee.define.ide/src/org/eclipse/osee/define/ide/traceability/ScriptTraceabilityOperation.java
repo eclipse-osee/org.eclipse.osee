@@ -29,8 +29,8 @@ import org.eclipse.osee.define.ide.traceability.TraceUnitExtensionManager.TraceH
 import org.eclipse.osee.define.ide.traceability.data.RequirementData;
 import org.eclipse.osee.define.ide.traceability.data.TraceMark;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
