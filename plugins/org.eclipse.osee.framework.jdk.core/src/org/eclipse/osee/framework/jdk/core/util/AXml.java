@@ -33,7 +33,7 @@ public class AXml {
 
    /**
     * Returns <elementName>data</elementName> NOTE: data is not sent through AXml.textToXml
-    * 
+    *
     * @return String <elementName>data</elementName>
     */
    public static String addTagData(String elementName, String data) {
@@ -55,7 +55,7 @@ public class AXml {
 
    /**
     * Parse <xmlRoot name="this.is.name" value="this.is.value"> and return name, value
-    * 
+    *
     * @param xmlRoot xml tag name
     * @param xmlStr string containing xml
     * @return String[]{name, value}
@@ -102,7 +102,7 @@ public class AXml {
 
    /**
     * Returns data between <xmlRoot> and </xmlRoot> from xmlStr
-    * 
+    *
     * @return Return tag string
     */
    public static String getTagData(String xmlStr, String xmlRoot) {
@@ -143,7 +143,7 @@ public class AXml {
    /**
     * Given text strings containing xml reserved characters, replace with valid xml representation characters > => & gt;
     * < => & lt; & => & amp; ' => & apos; " => & quot;
-    * 
+    *
     * @param text text to be converted to valid XML representation characters
     * @return String valid xml string
     */
@@ -157,7 +157,7 @@ public class AXml {
    /**
     * Given xml strings containing xml reserved characters, replace with displayable characters > <= & gt; < <= & lt; &
     * <= & amp; ' <= & apos; " <= & quot;
-    * 
+    *
     * @return displayable string
     */
    //TODO: remove this and use {@link ReservedCharacters}
@@ -172,6 +172,10 @@ public class AXml {
       str = str.replaceAll("&quot;", "\"");
       str = str.replaceAll("&amp;", "&");
       return str;
+   }
+
+   public static String removeXmlTags(String str) {
+      return str.replaceAll("<[^>]+>", "");
    }
 
 }

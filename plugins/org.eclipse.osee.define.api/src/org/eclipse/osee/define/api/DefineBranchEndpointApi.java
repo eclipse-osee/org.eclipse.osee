@@ -44,4 +44,16 @@ public interface DefineBranchEndpointApi {
    @Consumes(MediaType.APPLICATION_JSON)
    XResultData getOrphans(@PathParam("branch") BranchId branch, @PathParam("artType") ArtifactTypeId artType);
 
+   @GET
+   @Path("{branch}/validate/proc")
+   @Produces(MediaType.APPLICATION_JSON)
+   @Consumes(MediaType.APPLICATION_JSON)
+   XResultData getProcFuncTrace(@PathParam("branch") BranchId branch);
+
+   @GET
+   @Path("conv")
+   @Produces(MediaType.TEXT_HTML)
+   @Consumes(MediaType.APPLICATION_JSON)
+   public String convertSrs();
+
 }

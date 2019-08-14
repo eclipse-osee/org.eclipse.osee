@@ -18,9 +18,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.define.api.DefineBranchEndpointApi;
 import org.eclipse.osee.define.rest.operations.ValidateBranchOperation;
+import org.eclipse.osee.define.rest.operations.ValidateProcFuncCalls;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -65,5 +67,26 @@ public final class DefineBranchEndpointImpl implements DefineBranchEndpointApi {
    public XResultData getOrphans(@PathParam("branch") BranchId branch, @PathParam("artType") ArtifactTypeId artType) {
       ValidateBranchOperation op = new ValidateBranchOperation(jdbcClient, branch, orcsApi);
       return op.getOrphans(artType);
+   }
+
+   @Override
+   @GET
+   @Path("{branch}/validate/proc")
+   @Produces(MediaType.APPLICATION_JSON)
+   @Consumes(MediaType.APPLICATION_JSON)
+   public XResultData getProcFuncTrace(@PathParam("branch") BranchId branch) {
+      ValidateProcFuncCalls op = new ValidateProcFuncCalls(jdbcClient, branch, orcsApi);
+      return op.get();
+   }
+
+   @Override
+   @GET
+   @Path("conv")
+   @Produces(MediaType.TEXT_HTML)
+   @Consumes(MediaType.APPLICATION_JSON)
+   public String convertSrs() {
+      ValidateProcFuncCalls op = new ValidateProcFuncCalls(jdbcClient, null, orcsApi);
+      op.searchAndReplace();
+      return AHTML.simplePage("Done");
    }
 }
