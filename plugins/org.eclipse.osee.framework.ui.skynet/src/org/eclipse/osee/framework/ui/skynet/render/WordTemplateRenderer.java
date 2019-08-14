@@ -52,7 +52,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactUrlClient;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.httpRequests.HttpWordUpdateRequest;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
@@ -190,7 +190,7 @@ public class WordTemplateRenderer extends WordRenderer {
          wtcData.setPresentationType(presentationType);
          ArtifactId view = (ArtifactId) getRendererOptionValue(RendererOption.VIEW);
          wtcData.setViewId(view == null ? ArtifactId.SENTINEL : view);
-         wtcData.setPermanentLinkUrl(ArtifactURL.getSelectedPermanenrLinkUrl());
+         wtcData.setPermanentLinkUrl(new ArtifactUrlClient().getSelectedPermanentLinkUrl());
 
          Pair<String, Set<String>> content = null;
          try {

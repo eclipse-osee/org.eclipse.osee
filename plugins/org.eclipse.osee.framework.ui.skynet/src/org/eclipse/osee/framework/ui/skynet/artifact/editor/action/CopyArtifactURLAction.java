@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactUrlClient;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -47,9 +47,9 @@ public final class CopyArtifactURLAction extends Action {
    public void run() {
       Clipboard clipboard = null;
       try {
-         String urlString =
-            String.format("%sorcs/branch/%s/artifact/%s/attribute/type/%s", ArtifactURL.getSelectedPermanenrLinkUrl(),
-               artifact.getBranch().getIdString(), artifact.getIdString(), getAttributeTypeId().getIdString());
+         String urlString = String.format("%sorcs/branch/%s/artifact/%s/attribute/type/%s",
+            new ArtifactUrlClient().getSelectedPermanentLinkUrl(), artifact.getBranch().getIdString(),
+            artifact.getIdString(), getAttributeTypeId().getIdString());
          URL url = new URL(urlString);
          clipboard = new Clipboard(null);
          clipboard.setContents(new Object[] {url.toString()}, new Transfer[] {TextTransfer.getInstance()});

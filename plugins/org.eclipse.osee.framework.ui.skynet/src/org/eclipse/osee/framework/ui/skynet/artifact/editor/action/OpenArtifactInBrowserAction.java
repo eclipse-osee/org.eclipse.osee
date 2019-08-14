@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactUrlClient;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.program.Program;
@@ -38,8 +38,9 @@ public final class OpenArtifactInBrowserAction extends Action {
    @Override
    public void run() {
       try {
-         String urlString = String.format("%sorcs/branch/%s/artifact/%s", ArtifactURL.getSelectedPermanenrLinkUrl(),
-            artifact.getBranch().getIdString(), artifact.getIdString());
+         String urlString =
+            String.format("%sorcs/branch/%s/artifact/%s", new ArtifactUrlClient().getSelectedPermanentLinkUrl(),
+               artifact.getBranch().getIdString(), artifact.getIdString());
          Program.launch(urlString);
       } catch (Exception ex) {
          OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error obtaining url for - guid: [%s] branch:[%s]",

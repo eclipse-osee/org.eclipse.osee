@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactUrlClient;
 import org.eclipse.osee.framework.skynet.core.preferences.PreferenceConstants;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
@@ -62,7 +62,7 @@ public class HTMLTransferFormatter {
          for (Artifact artifact : artifacts) {
             String link = null;
             try {
-               link = ArtifactURL.getOpenInOseeLink(artifact, PresentationType.SPECIALIZED_EDIT).toString();
+               link = new ArtifactUrlClient().getOpenInOseeLink(artifact, PresentationType.SPECIALIZED_EDIT).toString();
             } catch (OseeCoreException ex) {
                link = String.format("artifactId:[%s] branch:[%s] gammaId:[%s]", artifact.getId(), artifact.getBranch(),
                   artifact.getGammaId());

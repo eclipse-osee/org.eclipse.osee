@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.type.LinkType;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactUrlClient;
 
 /**
  * @author Roberto E. Escobar
@@ -195,7 +195,7 @@ public class OseeLinkBuilder {
    private String getLinkId(LinkType destLinkType, Artifact artifact, PresentationType presentationType) {
       String toReturn;
       if (destLinkType == LinkType.OSEE_SERVER_LINK) {
-         toReturn = escapeXml(ArtifactURL.getOpenInOseeLink(artifact, presentationType).toString());
+         toReturn = escapeXml(new ArtifactUrlClient().getOpenInOseeLink(artifact, presentationType).toString());
       } else {
          toReturn = artifact.getGuid();
       }
