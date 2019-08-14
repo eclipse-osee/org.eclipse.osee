@@ -12,6 +12,7 @@ package org.eclipse.osee.define.rest.importing.parsers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
@@ -29,12 +30,15 @@ public class RequirementTraceTableParser {
    private static Pattern wtPattern = Pattern.compile("<w:t>(.*?)</w:t>");
    private final XResultData results;
 
-   @SuppressWarnings("unchecked")
-   LinkedList<String>[] reqtsArray = new LinkedList[4];
+   private final LinkedList<String>[] reqtsArray;
+   private final Integer numColumns;
    LinkedList<Pair<String, String>> reqtsTraces = new LinkedList<>();
 
-   public RequirementTraceTableParser(XResultData results) {
-      for (int i = 0; i < 4; i++) {
+   @SuppressWarnings("unchecked")
+   public RequirementTraceTableParser(Integer numColumns, XResultData results) {
+      this.numColumns = numColumns;
+      this.reqtsArray = new LinkedList[numColumns];
+      for (int i = 0; i < numColumns; i++) {
          reqtsArray[i] = new LinkedList<String>();
       }
       this.results = results;
@@ -56,6 +60,10 @@ public class RequirementTraceTableParser {
          fileLocation = output.getPath();
       }
       return fileLocation;
+   }
+
+   public Collection<Pair<String, String>> getTraces() {
+      return reqtsTraces;
    }
 
    public void handleAppendixATable(String content) {
@@ -101,25 +109,37 @@ public class RequirementTraceTableParser {
    }
 
    private void addToLevel(String item, int level) {
-      if (level > -1 && level < 4) {
+      if (level > -1 && level < numColumns) {
          reqtsArray[level].add(item);
          return;
       }
-      throw new OseeCoreException("trace level in MSOFD trace table is invald");
+      throw new OseeCoreException("trace level in trace table is invald");
    }
 
    private void buildRelations() {
-      for (int i = 0; i < 3; ++i) {
+      for (int i = 0; i < numColumns - 1; ++i) {
          for (String parent : reqtsArray[i]) {
             for (String child : reqtsArray[i + 1]) {
-               reqtsTraces.add(new Pair<String, String>(parent, child));
+               if (Strings.isValid(parent) && Strings.isValid(child)) {
+                  // some tables contain all of the reqts separated by commas
+                  if (child.contains(",")) {
+                     String[] elements = child.split("\\s*,\\s*");
+                     for (String element : elements) {
+                        if (Strings.isValid(element)) {
+                           reqtsTraces.add(new Pair<String, String>(parent, element));
+                        }
+                     }
+                  } else {
+                     reqtsTraces.add(new Pair<String, String>(parent, child));
+                  }
+               }
             }
          }
       }
    }
 
    private void clearValues() {
-      for (int i = 0; i < 4; ++i) {
+      for (int i = 0; i < numColumns; ++i) {
          reqtsArray[i].clear();
       }
    }

@@ -825,7 +825,7 @@ artifactType "Software Requirement Plain Text" extends "Plain Text" , "Direct So
 	id 792
 }
 
-artifactType "Software Test Procedure Plain Text" extends "Plain Text"  {
+artifactType "Software Test Procedure Plain Text" extends "Plain Text", "Test Unit"  {
 	id 564397212436322878
 	attribute "Doors ID"
 	attribute "Doors Hierarchy"
