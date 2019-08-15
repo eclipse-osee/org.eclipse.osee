@@ -66,4 +66,6 @@ public interface AttributeTypes extends IdCollection<AttributeTypeToken> {
 
    boolean typeExists(String attrTypeName);
 
+   boolean typeExists(AttributeTypeId attrTypeId);
+
 }

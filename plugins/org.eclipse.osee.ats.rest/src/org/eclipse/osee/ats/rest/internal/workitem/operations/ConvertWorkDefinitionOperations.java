@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -44,6 +45,8 @@ public class ConvertWorkDefinitionOperations {
 
    private final AtsApi atsApi;
    private final OrcsApi orcsApi;
+   public static final AttributeTypeToken WorkflowDefinition = AtsAttributeTypes.createType(1152921504606847149L,
+      "Workflow Definition", "Specific work flow definition id used by this Workflow artifact");
 
    public ConvertWorkDefinitionOperations(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
@@ -51,9 +54,105 @@ public class ConvertWorkDefinitionOperations {
    }
 
    public void convert(XResultData rd) {
-      convertMissingWorkItemWorkDefRefAttribute(rd);
-      convertMissingTeamDefinitionWorkDefAttributes(rd);
-      convertMissingTeamWorkFlowWorkDefAttributes(rd);
+      //      convertMissingWorkItemWorkDefRefAttribute(rd);
+      convertMissingWorkItemWorkDefNameAttribute(rd);
+      //      convertMissingTeamDefinitionWorkDefAttributes(rd);
+      //      convertMissingTeamWorkFlowWorkDefAttributes(rd);
+   }
+
+   private void convertMissingWorkItemWorkDefNameAttribute(XResultData rd) {
+      if (!orcsApi.getOrcsTypes().getAttributeTypes().typeExists(WorkflowDefinition)) {
+         return;
+      }
+
+      List<ArtifactId> artIdList = new LinkedList<>();
+      artIdList.addAll(
+         atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andAttr(AtsAttributeTypes.CurrentStateType,
+            StateType.Working.name()).andNotExists(WorkflowDefinition).getItemIds());
+      List<Collection<ArtifactId>> subDivide = Collections.subDivide(artIdList, 500);
+      int size = subDivide.size();
+      int count = 1;
+      int updatedCount = 0;
+      for (Collection<ArtifactId> artIds : subDivide) {
+         System.err.println(String.format("WorkItem Set: Processing %s / %s\n", count, size));
+         rd.logf(String.format("WorkItem Set: Processing %s / %s\n", count++, size));
+         List<Long> ids = new LinkedList<>();
+         for (ArtifactId art : artIds) {
+            ids.add(art.getId());
+         }
+         Collection<ArtifactToken> allArtifacts = atsApi.getQueryService().getArtifacts(ids);
+         IAtsChangeSet changes = atsApi.createChangeSet("Update Workflow Definition Name");
+         for (ArtifactToken art : allArtifacts) {
+            IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(art);
+            boolean deleted = atsApi.getStoreService().isDeleted(workItem);
+            if (deleted) {
+               continue;
+            }
+            ArtifactId workDefArt = atsApi.getAttributeResolver().getSoleAttributeValue(art,
+               AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.SENTINEL);
+            if (workDefArt.isValid()) {
+               IAtsWorkDefinition workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(workDefArt);
+               if (workDefinition == null || workDefinition.isInvalid()) {
+                  rd.error(String.format("null Work Definition for %s", workItem.toStringWithId()));
+               } else {
+                  changes.setSoleAttributeValue(workItem, WorkflowDefinition, workDefinition.getName());
+                  updatedCount++;
+               }
+            }
+         }
+         changes.executeIfNeeded();
+         try {
+            Thread.sleep(5 * 1000);
+         } catch (InterruptedException ex) {
+            // do nothing
+         }
+      }
+      rd.logf("Updtated %s Work Items\n", updatedCount);
+   }
+
+   private void convertMissingWorkItemWorkDefAttribute(XResultData rd) {
+      List<ArtifactId> artIdList = new LinkedList<>();
+      artIdList.addAll(atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andNotExists(
+         AtsAttributeTypes.WorkflowDefinitionReference).getItemIds());
+      List<Collection<ArtifactId>> subDivide = Collections.subDivide(artIdList, 500);
+      int size = subDivide.size();
+      int count = 1;
+      int updatedCount = 0;
+      for (Collection<ArtifactId> artIds : subDivide) {
+         rd.logf(String.format("WorkItem Set: Processing %s / %s\n", count++, size));
+         List<Long> ids = new LinkedList<>();
+         for (ArtifactId art : artIds) {
+            ids.add(art.getId());
+         }
+         Collection<ArtifactToken> allArtifacts = atsApi.getQueryService().getArtifacts(ids);
+         IAtsChangeSet changes = atsApi.createChangeSet("Update Workflow Definition Ref");
+         for (ArtifactToken art : allArtifacts) {
+            IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(art);
+            boolean deleted = atsApi.getStoreService().isDeleted(workItem);
+            if (deleted) {
+               continue;
+            }
+            ArtifactId workDefArt = atsApi.getAttributeResolver().getSoleAttributeValue(art,
+               AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.SENTINEL);
+            if (workDefArt.isInvalid()) {
+               IAtsWorkDefinition workDefinition = workItem.getWorkDefinition();
+               if (workDefinition == null) {
+                  rd.error(String.format("null Work Definition for %s", workItem.toStringWithId()));
+               } else {
+                  changes.setSoleAttributeValue(workItem, AtsAttributeTypes.WorkflowDefinitionReference,
+                     workDefinition);
+                  updatedCount++;
+               }
+            }
+         }
+         changes.executeIfNeeded();
+         try {
+            Thread.sleep(5 * 1000);
+         } catch (InterruptedException ex) {
+            // do nothing
+         }
+      }
+      rd.logf("Updtated %s Work Items\n", updatedCount);
    }
 
    private void convertMissingWorkItemWorkDefRefAttribute(XResultData rd) {
@@ -97,7 +196,6 @@ public class ConvertWorkDefinitionOperations {
          } catch (InterruptedException ex) {
             // do nothing
          }
-         System.gc();
       }
       rd.logf("Updtated %s Work Items\n", updatedCount);
    }

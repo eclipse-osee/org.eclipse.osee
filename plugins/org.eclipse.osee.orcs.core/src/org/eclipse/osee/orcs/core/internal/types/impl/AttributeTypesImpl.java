@@ -245,9 +245,18 @@ public class AttributeTypesImpl implements AttributeTypes {
 
    @Override
    public boolean typeExists(String attrTypeName) {
-
       for (AttributeTypeToken type : getAll()) {
          if (type.getName().equals(attrTypeName)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   @Override
+   public boolean typeExists(AttributeTypeId attrTypeId) {
+      for (AttributeTypeToken type : getAll()) {
+         if (type.equals(attrTypeId)) {
             return true;
          }
       }
