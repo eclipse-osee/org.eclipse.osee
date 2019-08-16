@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.jdk.core.type.HasDescription;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
-import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdDescription;
 
 /**
  * @author Ryan D. Brooks
@@ -36,17 +36,9 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
    }
 
    public static AttributeTypeToken valueOf(Long id, String name, String description) {
-      final class AttributeTypeImpl extends NamedIdBase implements AttributeTypeToken {
-         private final String description;
-
+      final class AttributeTypeImpl extends NamedIdDescription implements AttributeTypeToken {
          public AttributeTypeImpl(Long txId, String name, String description) {
-            super(txId, name);
-            this.description = description;
-         }
-
-         @Override
-         public String getDescription() {
-            return description;
+            super(txId, name, description);
          }
       }
       return new AttributeTypeImpl(id, name, description);

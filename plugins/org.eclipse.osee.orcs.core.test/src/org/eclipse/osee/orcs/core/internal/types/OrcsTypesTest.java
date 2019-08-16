@@ -638,7 +638,7 @@ public class OrcsTypesTest {
 
    private void assertEnumEntry(EnumEntry actual, String name, int ordinal, String description) {
       assertEquals(name, actual.getName());
-      assertEquals(ordinal, actual.ordinal());
+      assertEquals(Long.valueOf(ordinal), actual.getId());
       assertEquals(description, actual.getDescription());
    }
 

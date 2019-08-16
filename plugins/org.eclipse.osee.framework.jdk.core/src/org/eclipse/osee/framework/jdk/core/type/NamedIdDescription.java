@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2019 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,14 +8,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.data;
 
-import org.eclipse.osee.framework.jdk.core.type.HasDescription;
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
+package org.eclipse.osee.framework.jdk.core.type;
 
 /**
- * @author Roberto E. Escobar
+ * @author Ryan D. Brooks
  */
-public interface EnumEntry extends NamedId, HasDescription {
+public class NamedIdDescription extends NamedIdBase implements HasDescription {
+   private final String description;
 
+   public NamedIdDescription(Long id, String name, String description) {
+      super(id, name);
+      this.description = description;
+   }
+
+   @Override
+   public String getDescription() {
+      return description;
+   }
 }

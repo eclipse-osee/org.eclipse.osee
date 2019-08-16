@@ -10,42 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.types.impl;
 
-import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdDescription;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.EnumEntry;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class EnumEntryImpl extends FullyNamedIdentity<String> implements EnumEntry {
-
-   private final int ordinal;
+public final class EnumEntryImpl extends NamedIdDescription implements EnumEntry {
 
    public EnumEntryImpl(String name, int ordinal, String description) {
-      super(name, name, description);
-      this.ordinal = ordinal;
-   }
-
-   @Override
-   public int ordinal() {
-      return ordinal;
-   }
-
-   @Override
-   public boolean equals(Object object) {
-      if (object instanceof EnumEntry) {
-         EnumEntry other = (EnumEntry) object;
-         return super.equals(other) && ordinal() == other.ordinal();
-      }
-      return false;
-   }
-
-   @Override
-   public int hashCode() {
-      final int prime = 37;
-      int result = super.hashCode();
-      result = prime * result + ordinal();
-      return result;
+      super(Long.valueOf(ordinal), name, description);
    }
 
    @Override
@@ -53,7 +28,7 @@ public final class EnumEntryImpl extends FullyNamedIdentity<String> implements E
       StringBuilder builder = new StringBuilder();
       builder.append(getName());
       builder.append(":");
-      builder.append(ordinal());
+      builder.append(getIdString());
       String description = getDescription();
       if (Strings.isValid(description)) {
          builder.append(" - ");
@@ -61,5 +36,4 @@ public final class EnumEntryImpl extends FullyNamedIdentity<String> implements E
       }
       return builder.toString();
    }
-
 }

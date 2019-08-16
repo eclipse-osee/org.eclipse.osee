@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsTypes;
@@ -114,14 +113,7 @@ public class TypesEndpointImpl implements TypesEndpoint {
       for (EnumEntry enumEntry : enumType.values()) {
          JaxEnumEntry entry = new JaxEnumEntry();
          entry.setName(enumEntry.getName());
-         String guid = enumEntry.getGuid();
-         Long uuid = null;
-         if (Strings.isNumeric(guid)) {
-            uuid = Long.valueOf(guid);
-         }
-         if (uuid != null) {
-            entry.setUuid(uuid);
-         }
+         entry.setUuid(enumEntry.getId());
          enumAttr.getEntries().add(entry);
       }
       return enumAttr;
