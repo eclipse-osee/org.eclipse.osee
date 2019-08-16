@@ -50,6 +50,8 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken CancelledDate = createType(1152921504606847169L, "Cancelled Date", "Date the workflow was cancelled.");
    public static final AttributeTypeToken CancelledFromState = createType(1152921504606847172L, "Cancelled From State", "State workflow was in when cancelled.");
    public static final AttributeTypeToken CancelledReason = createType(1152921504606847171L, "Cancelled Reason", "Explanation of why worklfow was cancelled.");
+   public static final AttributeTypeToken CancelReason = createType(5718762723487704057L, "Cancel Reason");
+   public static final AttributeTypeToken CancelledReasonDetails = createType(8279626026752029322L, "Cancelled Reason Details", "Explanation of why worklfow was cancelled.");
    public static final AttributeTypeToken Category1 = createType(1152921504606847212L, "Category", "Open field for user to be able to enter text to use for categorizing/sorting.");
    public static final AttributeTypeToken Category2 = createType(1152921504606847217L, "Category2", Category1.getDescription());
    public static final AttributeTypeToken Category3 = createType(1152921504606847218L, "Category3", Category1.getDescription());

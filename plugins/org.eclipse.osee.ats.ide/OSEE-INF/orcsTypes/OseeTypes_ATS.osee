@@ -67,6 +67,24 @@ attributeType "ats.Estimate Assumptions" extends StringAttribute {
 	mediaType "text/plain"
 }
 
+attributeType "ats.Cancel Reason" extends EnumeratedAttribute {
+	id 5718762723487704057
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	enumType "enum.ats.CancelReason"
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+oseeEnumType "enum.ats.CancelReason" {
+	id 571876272454604057
+	entry "Can Not Duplicate"
+	entry "Duplicate"
+	entry "Not a Problem"
+	entry "Other (Must enter cancelled details)"
+}
+
 artifactType "Work Definition" extends "Artifact" {
 	id 62
 	attribute "ats.DSL Sheet"
@@ -240,6 +258,8 @@ abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
 	attribute "ats.Cancelled Date"
 	attribute "ats.Cancelled From State"
 	attribute "ats.Cancelled Reason"
+	attribute "ats.Cancel Reason"
+	attribute "ats.Cancelled Reason Details"
 	attribute "ats.Workflow Definition"
 	attribute "ats.Workflow Definition Reference"
 	attribute "ats.Work Package Guid"
@@ -994,6 +1014,14 @@ attributeType "ats.Cancelled By" extends StringAttribute {
 
 attributeType "ats.Cancelled Reason" extends StringAttribute {
 	id 1152921504606847171
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	mediaType "text/plain"
+}
+
+attributeType "ats.Cancelled Reason Details" extends StringAttribute {
+	id 8279626026752029322
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1

@@ -56,16 +56,16 @@ import org.eclipse.swt.widgets.Shell;
 public class EntryDialog extends MessageDialog {
 
    protected XText text;
-   private Composite areaComposite;
-   private String entryText = "";
+   protected Composite areaComposite;
+   protected String entryText = "";
    private NumberFormat numberFormat;
    private String errorString = "";
-   private Button ok;
+   protected Button ok;
    private Label errorLabel;
-   private boolean fillVertically = false;
+   protected boolean fillVertically = false;
    private Button fontButton;
    private String label;
-   private Integer textHeight = null;
+   protected Integer textHeight = null;
 
    private final List<IShellCloseEvent> closeEventListeners = new ArrayList<>();
    private final String dialogTitle;
@@ -88,7 +88,7 @@ public class EntryDialog extends MessageDialog {
       }
    };
 
-   private final MouseMoveListener compListener = new MouseMoveListener() {
+   protected final MouseMoveListener compListener = new MouseMoveListener() {
       @Override
       public void mouseMove(MouseEvent e) {
          setInitialButtonState();
@@ -133,7 +133,7 @@ public class EntryDialog extends MessageDialog {
       }
    }
 
-   private void createErrorLabel(Composite parent) {
+   protected void createErrorLabel(Composite parent) {
       Composite composite = new Composite(parent, SWT.NONE);
       composite.setLayout(new GridLayout(3, false));
       GridData gd1 = new GridData(GridData.FILL_HORIZONTAL);
@@ -196,7 +196,7 @@ public class EntryDialog extends MessageDialog {
       return FontManager.getFont("Courier New", 8, SWT.NORMAL);
    }
 
-   private void createTextBox() {
+   protected void createTextBox() {
       text = new XText(Strings.isValid(label) ? label : "");
       text.setFillHorizontally(true);
       text.setFocus();
@@ -356,7 +356,7 @@ public class EntryDialog extends MessageDialog {
    /**
     * Since adding new menu replaces the default menu, we must re-create the default copy/paste options
     */
-   private void addContextMenu(final StyledText control) {
+   protected void addContextMenu(final StyledText control) {
       Menu menu = new Menu(control);
       MenuItem item = new MenuItem(menu, SWT.PUSH);
       item.setText("Cut");

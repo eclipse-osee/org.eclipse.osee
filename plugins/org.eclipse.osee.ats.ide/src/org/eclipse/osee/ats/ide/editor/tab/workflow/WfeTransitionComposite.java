@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -59,6 +60,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench.MessageType;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCancelWidgetDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -248,12 +250,32 @@ public class WfeTransitionComposite extends Composite {
                      toStateDef = AtsClientService.get().getWorkDefinitionService().getStateDefinitionByName(awa,
                         getToStateName());
                      if (toStateDef.getStateType().isCancelledState()) {
-                        EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
+                        EntryDialog cancelDialog;
+                        boolean useEntryCancelWidgetDialog = false;
+                        for (IAtsLayoutItem layoutItem : toStateDef.getLayoutItems()) {
+                           if (layoutItem.getName().contains("Cancel")) {
+                              useEntryCancelWidgetDialog = true;
+                              break;
+                           }
+                        }
+                        if (useEntryCancelWidgetDialog) {
+                           cancelDialog = new EntryCancelWidgetDialog("Cancellation Reason",
+                              "Select cancellation reason.  If other, please specify with details in the text entry.");
+                        } else {
+                           cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
+                        }
                         if (cancelDialog.open() != 0) {
                            result.setCancelled(true);
                         }
                         result.set(true);
-                        result.setText(cancelDialog.getEntry());
+                        if (useEntryCancelWidgetDialog) {
+                           awa.setSoleAttributeFromString(EntryCancelWidgetDialog.CancelReason,
+                              ((EntryCancelWidgetDialog) cancelDialog).getEntry());
+                           awa.setSoleAttributeFromString(EntryCancelWidgetDialog.CancelledReasonDetails,
+                              ((EntryCancelWidgetDialog) cancelDialog).getCancelledDetails());
+                        } else {
+                           result.setText(cancelDialog.getEntry());
+                        }
                      }
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, Level.SEVERE, ex);

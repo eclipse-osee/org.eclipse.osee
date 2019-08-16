@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
@@ -203,8 +204,15 @@ public class WfeWorkflowSection extends SectionPart {
          GridLayout layout = new GridLayout(1, false);
          completeComp.setLayout(layout);
          completeComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+         boolean useCancelledWidget = true;
          if (statePage.getStateType().isCancelledState()) {
-            createCancelledPageWidgets(completeComp);
+            for (XWidgetRendererItem item : statePage.getDynamicXWidgetLayout().getLayoutDatas()) {
+               if (item.getXWidgetName().equals("XCancelWidget")) {
+                  useCancelledWidget = false;
+                  break;
+               }
+            }
+            createCancelledPageWidgets(completeComp, useCancelledWidget);
          } else if (statePage.getStateType().isCompletedState()) {
             createCompletedPageWidgets(completeComp);
          }
@@ -261,15 +269,17 @@ public class WfeWorkflowSection extends SectionPart {
       getManagedForm().reflow(true);
    }
 
-   private void createCancelledPageWidgets(Composite parent) {
+   private void createCancelledPageWidgets(Composite parent, boolean useBothWidgets) {
       XWidget xWidget = null;
       xWidget = new XLabelValue("Cancelled from State", sma.getCancelledFromState());
       xWidget.createWidgets(parent, 1);
       allXWidgets.add(xWidget);
-      xWidget = new XCancellationReasonTextWidget(sma);
-      xWidget.addXModifiedListener(xModListener);
-      xWidget.createWidgets(parent, 1);
-      allXWidgets.add(xWidget);
+      if (useBothWidgets) {
+         xWidget = new XCancellationReasonTextWidget(sma);
+         xWidget.addXModifiedListener(xModListener);
+         xWidget.createWidgets(parent, 1);
+         allXWidgets.add(xWidget);
+      }
    }
 
    private void createCompletedPageWidgets(Composite parent) {
