@@ -37,35 +37,14 @@
       <import plugin="org.eclipse.osgi.util"/>  
       <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.9.2" match="greaterOrEqual" />  
     </requires>
-      	 
-	<plugin
-         id="javax.xml.stream"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false" /> 
-                  
-   <plugin
-         id="javax.xml.bind"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false" />  
-            
+      
    <plugin
          id="org.objectweb.asm"
          download-size="0"
          install-size="0"
          version="6.1.1"
-         unpack="false"/>     
-           
-    <plugin
-         id="org.eclipse.egit"
-         download-size="0"
-         install-size="0"
-         version="5.0.0"
-         unpack="false"/>
-                
+         unpack="false"/>                
+        
    <plugin
          id="org.eclipse.jdt.debug"
          download-size="0"
@@ -83,14 +62,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"/> 
-         
-   <plugin
-         id="org.eclipse.jgit"
-         download-size="0"
-         install-size="0"
-         version="5.0.0"
-         unpack="false"/>
-     
+              
   <plugin
          id="org.eclipse.osgi.util"
          download-size="0"
@@ -104,37 +76,14 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>   
-           
-         
-   <plugin
-         id="org.xerial.sqlite"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/> 
-         
-   <plugin
-         id="org.objenesis"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false" />      
 
-   
    <plugin
          id="com.jcraft.jsch"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
-    <plugin
-         id="javaewah"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-    
+
     <plugin
          id="com.fasterxml.jackson.core.jackson-core"
          download-size="0"
@@ -297,13 +246,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.xerces"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="javax.mail.glassfish"
          download-size="0"
          install-size="0"
@@ -426,20 +368,6 @@
 
    <plugin
          id="org.eclipse.equinox.http.servlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.xml.resolver"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.xml.serializer"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -850,13 +778,6 @@
          unpack="false"/>
 
    <plugin
-         id="javax.validation"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="com.ctc.wstx"
          download-size="0"
          install-size="0"
@@ -932,19 +853,6 @@
          install-size="0"
          version="0.0.0"
          fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.oss.ajax"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="com.lowagie.text"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -1136,6 +1044,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+         
    <plugin
          id="org.eclipse.nebula.widgets.xviewer.core"
          download-size="0"

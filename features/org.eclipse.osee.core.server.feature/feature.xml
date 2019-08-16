@@ -236,13 +236,6 @@
          unpack="false"/>
 
    <plugin
-         id="javax.validation"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="javax.ws.rs"
          download-size="0"
          install-size="0"
@@ -768,12 +761,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.oss.ajax"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="org.eclipse.jetty.http"
          download-size="0"
          install-size="0"
@@ -907,13 +894,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.slf4j.jcl"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osee.server.application"
          download-size="0"
          install-size="0"
@@ -935,24 +915,8 @@
          version="0.0.0"
          unpack="false"/>
 
-   
-     
-    <plugin
-         id="org.objenesis"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false" />      
-         
    <plugin
          id="com.jcraft.jsch"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javaewah"
          download-size="0"
          install-size="0"
          version="0.0.0"
