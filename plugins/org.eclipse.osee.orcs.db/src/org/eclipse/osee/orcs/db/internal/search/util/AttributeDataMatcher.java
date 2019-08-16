@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.executor.HasCancellation;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
@@ -50,14 +51,6 @@ public class AttributeDataMatcher {
       this.logger = logger;
       this.engine = engine;
       this.attrTypes = attrTypes;
-   }
-
-   protected Tagger getTagger(String taggerId) {
-      Tagger toReturn = null;
-      if (Strings.isValid(taggerId)) {
-         toReturn = engine.getTagger(taggerId);
-      }
-      return toReturn;
    }
 
    public List<MatchLocation> process(HasCancellation cancellation, AttributeData<?> data, Collection<String> valuesToMatch, Collection<AttributeTypeId> typesFilter, QueryOption... options) throws Exception {
@@ -93,9 +86,9 @@ public class AttributeDataMatcher {
       AttributeTypeId attrType = source.getAttributeType();
       if (typesFilter.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE) || typesFilter.contains(attrType)) {
          checkCancelled(cancellation);
-         String taggerId = attrTypes.getTaggerId(attrType);
-         Tagger tagger = getTagger(taggerId);
-         if (tagger != null) {
+         TaggerTypeToken taggerType = attrTypes.getTaggerId(attrType);
+         if (taggerType.isValid()) {
+            Tagger tagger = engine.getTagger(taggerType);
             checkCancelled(cancellation);
             try {
                List<MatchLocation> matched = Lists.newLinkedList();

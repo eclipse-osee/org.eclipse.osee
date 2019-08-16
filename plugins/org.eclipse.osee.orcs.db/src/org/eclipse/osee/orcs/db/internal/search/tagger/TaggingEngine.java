@@ -10,51 +10,36 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.tagger;
 
-import java.util.Map;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.core.data.TaggerTypeToken;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.orcs.db.internal.search.util.MatcherFactory;
 
 /**
  * @author Roberto E. Escobar
  */
 public class TaggingEngine {
-
-   private final Map<String, Tagger> taggers;
    private final TagProcessor tagProcessor;
+   private final Tagger plainTextTagger;
+   private final Tagger xmlTagger;
 
-   public TaggingEngine(Map<String, Tagger> taggers, TagProcessor tagProcessor) {
-      this.taggers = taggers;
+   public TaggingEngine(TagProcessor tagProcessor) {
       this.tagProcessor = tagProcessor;
+      StreamMatcher matcher = MatcherFactory.createMatcher();
+      plainTextTagger = new TextStreamTagger(tagProcessor, matcher);
+      xmlTagger = new XmlTagger(tagProcessor, matcher);
    }
 
    public TagProcessor getTagProcessor() {
       return tagProcessor;
    }
 
-   public Tagger getDefaultTagger() {
-      return getTagger("DefaultAttributeTaggerProvider");
-   }
-
-   private String normalize(String alias) {
-      String key = alias;
-      if (Strings.isValid(key) && key.contains(".")) {
-         key = Lib.getExtension(key);
+   public Tagger getTagger(TaggerTypeToken taggerType) {
+      if (taggerType.equals(TaggerTypeToken.PlainTextTagger)) {
+         return plainTextTagger;
       }
-      return key;
+      if (taggerType.equals(TaggerTypeToken.XmlTagger)) {
+         return xmlTagger;
+      }
+      throw new OseeArgumentException("No tagger found for %s", taggerType);
    }
-
-   public boolean hasTagger(String taggerId) {
-      String key = normalize(taggerId);
-      Tagger tagger = taggers.get(key);
-      return tagger != null;
-   }
-
-   public Tagger getTagger(String taggerId) {
-      String key = normalize(taggerId);
-      Tagger tagger = taggers.get(key);
-      Conditions.checkNotNull(tagger, "tagger", "Unable to find tagger for [%s]", taggerId);
-      return tagger;
-   }
-
 }

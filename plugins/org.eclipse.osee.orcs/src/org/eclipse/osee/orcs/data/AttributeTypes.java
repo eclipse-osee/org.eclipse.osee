@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.data;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 
 /**
  * @author Roberto E. Escobar
@@ -37,7 +38,7 @@ public interface AttributeTypes extends IdCollection<AttributeTypeToken> {
 
    String getFileTypeExtension(AttributeTypeId attrType);
 
-   String getTaggerId(AttributeTypeId attrType);
+   TaggerTypeToken getTaggerId(AttributeTypeId attrType);
 
    boolean isTaggable(AttributeTypeId attrType);
 

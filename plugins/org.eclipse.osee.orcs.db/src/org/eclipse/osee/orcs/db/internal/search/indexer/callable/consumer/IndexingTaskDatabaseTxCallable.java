@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 import org.eclipse.osee.framework.core.enums.JoinItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -125,9 +126,9 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
             toStore.put(gamma.getId(), tags);
             tagCollector.setCurrentTag(gamma.getId(), tags);
             try {
-               String taggerId = attributeTypes.getTaggerId(source.getAttributeType());
-               if (taggingEngine.hasTagger(taggerId)) {
-                  Tagger tagger = taggingEngine.getTagger(taggerId);
+               TaggerTypeToken taggerType = attributeTypes.getTaggerId(source.getAttributeType());
+               if (taggerType.isValid()) {
+                  Tagger tagger = taggingEngine.getTagger(taggerType);
                   tagger.tagIt(source.getResourceInput(), tagCollector);
                   if (isStorageAllowed(toStore)) {
                      getLogger().debug("Stored a - [%s] - connectionId[%s] - [%s]", getTagQueueQueryId(), connection,
@@ -136,7 +137,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
                   }
                } else {
                   getLogger().error("Field has invalid tagger[%s] provider and cannot be tagged - [Gamma: %s]",
-                     taggerId, gamma);
+                     taggerType, gamma);
                }
             } catch (Exception ex) {
                getLogger().error(ex, "Unable to tag - [%s]", gamma);

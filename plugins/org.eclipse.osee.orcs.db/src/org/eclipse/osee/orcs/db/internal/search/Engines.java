@@ -14,8 +14,6 @@ import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactor
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createBranchSqlHandlerFactory;
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createObjectSqlHandlerFactory;
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createTxSqlHandlerFactory;
-import java.util.HashMap;
-import java.util.Map;
 import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -39,15 +37,10 @@ import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumerImpl
 import org.eclipse.osee.orcs.db.internal.search.indexer.QueryEngineIndexerImpl;
 import org.eclipse.osee.orcs.db.internal.search.indexer.data.GammaQueueIndexerDataSourceLoader;
 import org.eclipse.osee.orcs.db.internal.search.language.EnglishLanguage;
-import org.eclipse.osee.orcs.db.internal.search.tagger.StreamMatcher;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagEncoder;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
-import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
-import org.eclipse.osee.orcs.db.internal.search.tagger.TextStreamTagger;
-import org.eclipse.osee.orcs.db.internal.search.tagger.XmlTagger;
 import org.eclipse.osee.orcs.db.internal.search.util.AttributeDataMatcher;
-import org.eclipse.osee.orcs.db.internal.search.util.MatcherFactory;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
@@ -87,13 +80,7 @@ public final class Engines {
 
    public static TaggingEngine newTaggingEngine(Log logger) {
       TagProcessor tagProcessor = new TagProcessor(new EnglishLanguage(logger), new TagEncoder());
-      Map<String, Tagger> taggers = new HashMap<>();
-
-      StreamMatcher matcher = MatcherFactory.createMatcher();
-      taggers.put("DefaultAttributeTaggerProvider", new TextStreamTagger(tagProcessor, matcher));
-      taggers.put("XmlAttributeTaggerProvider", new XmlTagger(tagProcessor, matcher));
-
-      return new TaggingEngine(taggers, tagProcessor);
+      return new TaggingEngine(tagProcessor);
    }
 
    public static QuerySqlContextFactory newSqlContextFactory(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, TableEnum table, String idColumn, SqlHandlerFactory handlerFactory, ObjectQueryType type) {

@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -573,11 +574,11 @@ public class OrcsTypesTest {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       //@formatter:off
-      assertEquals("DefaultAttributeTaggerProvider", attrTypes.getTaggerId(NAME));
-      assertEquals("DefaultAttributeTaggerProvider", attrTypes.getTaggerId(ANNOTATION));
-      assertEquals("XmlAttributeTaggerProvider", attrTypes.getTaggerId(WORDML));
-      assertEquals("", attrTypes.getTaggerId(FIELD_1));
-      assertEquals("SomeOtherTagger", attrTypes.getTaggerId(FIELD_2));
+      assertEquals(TaggerTypeToken.PlainTextTagger, attrTypes.getTaggerId(NAME));
+      assertEquals(TaggerTypeToken.PlainTextTagger, attrTypes.getTaggerId(ANNOTATION));
+      assertEquals(TaggerTypeToken.XmlTagger, attrTypes.getTaggerId(WORDML));
+      assertEquals(TaggerTypeToken.SENTINEL, attrTypes.getTaggerId(FIELD_1));
+      assertEquals(TaggerTypeToken.SENTINEL, attrTypes.getTaggerId(FIELD_2));
       //@formatter:on
    }
 
@@ -716,10 +717,10 @@ public class OrcsTypesTest {
       assertEquals("", attrTypes.getFileTypeExtension(attrType));
       assertEquals(1, attrTypes.getMinOccurrences(attrType));
       assertEquals(1, attrTypes.getMaxOccurrences(attrType));
-      assertEquals("AnotherTagger", attrTypes.getTaggerId(attrType));
+      assertEquals(TaggerTypeToken.SENTINEL, attrTypes.getTaggerId(attrType));
       assertEquals(null, attrTypes.getEnumType(attrType));
       assertEquals(false, attrTypes.isEnumerated(attrType));
-      assertEquals(true, attrTypes.isTaggable(attrType));
+      assertEquals(false, attrTypes.isTaggable(attrType));
       assertEquals(true, attrTypes.exists(attrType));
    }
 

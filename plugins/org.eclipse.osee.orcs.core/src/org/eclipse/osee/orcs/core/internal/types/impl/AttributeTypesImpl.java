@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.types.impl;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -111,20 +112,20 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public String getTaggerId(AttributeTypeId attributeType) {
-      XAttributeType type = getType(attributeType);
-      String value = type.getTaggerId();
-      return Strings.isValid(value) ? value : Strings.emptyString();
+   public TaggerTypeToken getTaggerId(AttributeTypeId attributeType) {
+      String taggerId = getType(attributeType).getTaggerId();
+      if ("DefaultAttributeTaggerProvider".equals(taggerId)) {
+         return TaggerTypeToken.PlainTextTagger;
+      }
+      if ("XmlAttributeTaggerProvider".equals(taggerId)) {
+         return TaggerTypeToken.XmlTagger;
+      }
+      return TaggerTypeToken.SENTINEL;
    }
 
    @Override
    public boolean isTaggable(AttributeTypeId attributeType) {
-      boolean toReturn = false;
-      String taggerId = getTaggerId(attributeType);
-      if (taggerId != null) {
-         toReturn = Strings.isValid(taggerId.trim());
-      }
-      return toReturn;
+      return getTaggerId(attributeType).isValid();
    }
 
    @Override

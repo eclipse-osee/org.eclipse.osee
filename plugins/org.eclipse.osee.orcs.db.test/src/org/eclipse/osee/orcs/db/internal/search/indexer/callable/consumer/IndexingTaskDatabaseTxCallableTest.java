@@ -19,6 +19,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;
@@ -81,20 +82,18 @@ public class IndexingTaskDatabaseTxCallableTest {
       when(resource2.getAttributeType()).thenReturn(QualificationMethod);
       when(resource1.getGammaId()).thenReturn(GammaId.valueOf(1L));
       when(resource2.getGammaId()).thenReturn(GammaId.valueOf(2L));
-      when(engine.hasTagger("")).thenReturn(false);
-      when(engine.hasTagger("Tag")).thenReturn(true);
-      when(engine.getTagger("Tag")).thenReturn(tagger);
+      when(engine.getTagger(TaggerTypeToken.XmlTagger)).thenReturn(tagger);
 
       when(metaData.getDatabaseProductName()).thenReturn("h2");
       when(types.get(Name.getId())).thenReturn(Name);
       when(types.get(QualificationMethod.getId())).thenReturn(QualificationMethod);
-      when(types.getTaggerId(Name)).thenReturn("Tag");
-      when(types.getTaggerId(QualificationMethod)).thenReturn(null);
+      when(types.getTaggerId(Name)).thenReturn(TaggerTypeToken.XmlTagger);
+      when(types.getTaggerId(QualificationMethod)).thenReturn(TaggerTypeToken.SENTINEL);
 
       txCallable.handleTxWork(connection);
 
-      verify(logger, times(1)).error("Field has invalid tagger[%s] provider and cannot be tagged - [Gamma: %s]", null,
-         GammaId.valueOf(2L));
+      verify(logger, times(1)).error("Field has invalid tagger[%s] provider and cannot be tagged - [Gamma: %s]",
+         TaggerTypeToken.SENTINEL, GammaId.valueOf(2L));
       verify(tagger, times(1)).tagIt(Matchers.eq(resource1.getResourceInput()), Matchers.any(TagCollector.class));
    }
 
