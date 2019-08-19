@@ -28,8 +28,11 @@ import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.core.column.AtsIdColumn;
 import org.eclipse.osee.ats.core.column.AttributeColumn;
+import org.eclipse.osee.ats.core.column.CancelReasonColumn;
 import org.eclipse.osee.ats.core.column.CancelledByColumn;
 import org.eclipse.osee.ats.core.column.CancelledDateColumn;
+import org.eclipse.osee.ats.core.column.CancelledReasonColumn;
+import org.eclipse.osee.ats.core.column.CancelledReasonDetailsColumn;
 import org.eclipse.osee.ats.core.column.CompletedByColumn;
 import org.eclipse.osee.ats.core.column.CompletedCancelledByColumn;
 import org.eclipse.osee.ats.core.column.CompletedCancelledDateColumn;
@@ -112,6 +115,12 @@ public class AtsColumnService implements IAtsColumnService {
             column = new CancelledDateColumn(atsApi);
          } else if (id.equals(AtsColumnId.CancelledBy.getId())) {
             column = new CancelledByColumn(atsApi);
+         } else if (id.equals(AtsColumnId.CancelledReason.getId())) {
+            column = new CancelledReasonColumn(atsApi);
+         } else if (id.equals(AtsColumnId.CancelReason.getId())) {
+            column = new CancelReasonColumn(atsApi);
+         } else if (id.equals(AtsColumnId.CancelledReasonDetails.getId())) {
+            column = new CancelledReasonDetailsColumn(atsApi);
          } else if (id.equals(AtsColumnId.CompletedBy.getId())) {
             column = new CompletedByColumn(atsApi);
          } else if (id.equals(AtsColumnId.CompletedCancelledBy.getId())) {
