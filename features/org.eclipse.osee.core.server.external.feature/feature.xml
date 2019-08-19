@@ -25,32 +25,22 @@
          id="org.eclipse.osee.disposition.feature"
          version="0.0.0"/>
     
-
    <includes
          id="org.eclipse.jgit"
          version="5.0.0"/>
-         
-    <requires>
-      <import plugin="com.fasterxml.jackson.core.jackson-core" version="2.9.2" match="greaterOrEqual"/>
-      <import plugin="com.fasterxml.jackson.core.jackson-annotations" version="2.9.2" match="greaterOrEqual" />
-      <import plugin="com.fasterxml.jackson.core.jackson-databind" version="2.9.2" match="greaterOrEqual" />  
-      <import plugin="org.eclipse.osgi.util"/>  
-      <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.9.2" match="greaterOrEqual" />  
-    </requires>
-      
+            
    <plugin
          id="org.objectweb.asm"
          download-size="0"
          install-size="0"
          version="6.1.1"
          unpack="false"/>                
-        
+       
    <plugin
          id="org.eclipse.jdt.debug"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
- 
    <plugin
          id="org.eclipse.oss.ajax"
          download-size="0"
@@ -69,7 +59,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"/> 
-              
+             
   <plugin
          id="org.eclipse.osgi.util"
          download-size="0"
@@ -119,7 +109,7 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
+	<plugin
          id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base"
          download-size="0"
          install-size="0"
@@ -132,7 +122,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+         
    <plugin
          id="org.eclipse.osee.orcs"
          download-size="0"
@@ -350,8 +340,6 @@
          version="0.0.0"
          unpack="false"/>
 
-
-
    <plugin
          id="org.apache.commons.pool"
          download-size="0"
@@ -486,7 +474,6 @@
          version="0.0.0"
          unpack="false"/>
 
-  
    <plugin
          id="org.hsqldb"
          download-size="0"
@@ -494,9 +481,6 @@
          version="0.0.0"
          unpack="false"/>
          
-
-         
-
    <plugin
          id="org.eclipse.jetty.http"
          download-size="0"
@@ -537,14 +521,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
- 
-   <plugin
-         id="org.eclipse.jdt.annotation"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         unpack="false"/>   
 
    <plugin
          id="org.apache.felix.gogo.command"
@@ -820,13 +797,13 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.aries.blueprint.annotation"
+         id="org.osgi.service.blueprint"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
+ 
+ <plugin
          id="org.apache.aries.proxy"
          download-size="0"
          install-size="0"
@@ -834,21 +811,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.aries.quiesce"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.apache.aries.util"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.osgi.service.blueprint"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1058,7 +1021,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+       
    <plugin
          id="org.eclipse.nebula.widgets.xviewer.core"
          download-size="0"

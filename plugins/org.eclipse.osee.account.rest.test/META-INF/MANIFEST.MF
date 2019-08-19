@@ -8,8 +8,7 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.account.rest
 Require-Bundle: org.hamcrest.core,
  org.mockito;visibility:=reexport
-Import-Package: org.apache.aries.blueprint;version="1.3.0",
- org.apache.commons.lang.math,
+Import-Package: org.apache.commons.lang.math,
  org.apache.cxf.jaxrs.impl,
  org.junit,
  org.junit.rules,

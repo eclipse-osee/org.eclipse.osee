@@ -36,20 +36,12 @@
       <import feature="org.eclipse.nebula.widgets.ganttchart.feature" version="0.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.graphiti.feature" version="0.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.graphiti.feature.source" version="0.0.0" match="greaterOrEqual"/>
-      <import feature="org.eclipse.papyrus.sdk.feature" version="0.0.0" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.dbcp" version="1.4.0" match="compatible"/>
       <import plugin="org.apache.commons.pool" version="1.6.0" match="compatible"/>
       <import plugin="com.jcraft.jsch" version="0.1.44" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.logging" version="1.1.1" match="equivalent"/>
-      <import plugin="com.google.guava" version="21.0.0" match="greaterOrEqual"/>
       <import plugin="org.slf4j.api" version="1.6.1" match="greaterOrEqual"/>
       <import plugin="javax.wsdl"/>
-      <import plugin="org.mockito" version="2.13.0" match="greaterOrEqual"/>            
-      <import plugin="com.fasterxml.jackson.core.jackson-core" version="2.9.2" match="greaterOrEqual" />
-      <import plugin="com.fasterxml.jackson.core.jackson-annotations" version="2.9.2" match="greaterOrEqual" />
-      <import plugin="com.fasterxml.jackson.core.jackson-databind" version="2.9.2" match="greaterOrEqual" />   
-      <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.9.2" match="greaterOrEqual" />     
-      <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" version="2.9.2" match="greaterOrEqual" />
       <import plugin="javax.ws.rs" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="javax.annotation" version="1.2.0" match="greaterOrEqual"/>
    </requires>
@@ -163,13 +155,6 @@
          version="0.0.0"
          unpack="false"/>
          
-   <plugin
-         id="org.mockito"
-         download-size="0"
-         install-size="0"
-         version="2.13.0" 
-	 unpack="false"/>
- 
    <plugin
          id="org.apache.commons.logging"
          download-size="0"
@@ -401,12 +386,7 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="com.google.guava"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+
 
    <plugin
          id="org.hsqldb"
@@ -436,28 +416,7 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.apache.aries.proxy"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.aries.quiesce"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.aries.util"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
+     <plugin
          id="org.osgi.service.blueprint"
          download-size="0"
          install-size="0"
@@ -562,14 +521,6 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="javax.validation"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
 
    <plugin
          id="com.sun.xml.fastinfoset"

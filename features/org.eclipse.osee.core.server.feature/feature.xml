@@ -948,20 +948,6 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
          
    <plugin
          id="org.apache.cxf.core.config"

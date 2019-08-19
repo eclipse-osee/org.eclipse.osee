@@ -20,7 +20,6 @@
 
 
    <requires>
-      <import plugin="org.mockito" version="2.13.0" match="greaterOrEqual"/>  
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.osee.framework.ui.ws"/>
@@ -74,16 +73,17 @@
       <import plugin="org.eclipse.osee.framework.core.dsl.integration"/>
       <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.osgi"/>
-      <import plugin="com.google.guava" version="21.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.hamcrest.core" version="1.3.0" match="greaterOrEqual" />		      
       <import plugin="org.apache.commons.io" version="2.2.0" match="compatible"/>
-      <import plugin="com.fasterxml.jackson.core.jackson-core" version="2.9.2" match="greaterOrEqual"/>
-      <import plugin="com.fasterxml.jackson.core.jackson-annotations" version="2.9.2" match="greaterOrEqual" />
-      <import plugin="com.fasterxml.jackson.core.jackson-databind" version="2.9.2" match="greaterOrEqual" />     
-      <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.9.2" match="greaterOrEqual" />     
-      <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" version="2.9.2" match="greaterOrEqual" />
    </requires>
+
+   <plugin
+         id="com.fasterxml.jackson.core.jackson-core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
       
    <plugin
          id="org.eclipse.sdk"
