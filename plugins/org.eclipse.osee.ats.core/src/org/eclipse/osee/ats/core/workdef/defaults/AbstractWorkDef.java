@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.workdef.defaults;
 
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
+import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
@@ -29,6 +30,24 @@ public abstract class AbstractWorkDef implements IAtsWorkDefinitionBuilder {
       if (workDef == null) {
          workDef = build();
       }
+   }
+
+   //should be Overriden in sub-classes
+   public IAtsLayoutItem[] getLayout() {
+      return null;
+   }
+
+   protected IAtsLayoutItem[] getCancelledLayout() {
+      IAtsLayoutItem[] layout = getLayout();
+      if (layout == null) {
+         return null;
+      }
+      IAtsLayoutItem[] layoutWithCancel = new IAtsLayoutItem[layout.length + 1];
+      for (int i = 0; i < layout.length; i++) {
+         layoutWithCancel[i] = layout[i];
+      }
+      layoutWithCancel[layout.length] = (new WidgetDefinition("CancelBox", "XCancelWidget"));
+      return layoutWithCancel;
    }
 
    @Override
