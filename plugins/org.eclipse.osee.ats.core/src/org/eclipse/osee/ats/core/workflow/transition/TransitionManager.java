@@ -372,11 +372,9 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
       if (workItem.isTeamWorkflow() && helper.isWorkingBranchInWork((IAtsTeamWorkflow) workItem)) {
          if (toStateDef.getName().equals(TeamState.Cancelled.getName())) {
             results.addResult(workItem, TransitionResult.DELETE_WORKING_BRANCH_BEFORE_CANCEL);
-         }
-         if (helper.isBranchInCommit((IAtsTeamWorkflow) workItem)) {
+         } else if (helper.isBranchInCommit((IAtsTeamWorkflow) workItem)) {
             results.addResult(workItem, TransitionResult.WORKING_BRANCH_BEING_COMMITTED);
-         }
-         if (!toStateDef.hasRule(RuleDefinitionOption.AllowTransitionWithWorkingBranch.name())) {
+         } else if (!toStateDef.hasRule(RuleDefinitionOption.AllowTransitionWithWorkingBranch.name())) {
             results.addResult(workItem, TransitionResult.WORKING_BRANCH_EXISTS);
          }
       }
