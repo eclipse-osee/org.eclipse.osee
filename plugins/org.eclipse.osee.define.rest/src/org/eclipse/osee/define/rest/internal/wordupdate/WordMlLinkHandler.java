@@ -13,11 +13,13 @@ package org.eclipse.osee.define.rest.internal.wordupdate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.define.api.OseeLinkBuilder;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -85,6 +87,7 @@ public class WordMlLinkHandler {
    private static final Matcher HYPERLINK_PATTERN = Pattern.compile(
       "<w:r[^>]*><w:instrText>\\s*HYPERLINK\\s+\"(.+?)\"\\s*</w:instrText></w:r>(.*?</w:t>.+?</w:fldChar></w:r>)?",
       Pattern.DOTALL).matcher("");
+   private static final Pattern IS_GUID = Pattern.compile("\\D");
 
    public static final String WORDML_KEY = "wordml";
    public static final String UNKNOWNGUIDS_KEY = "unknownguids";
@@ -189,8 +192,19 @@ public class WordMlLinkHandler {
    }
 
    private static List<ArtifactReadable> findArtifacts(QueryFactory queryFactory, BranchId branch, List<String> guidsFromLinks, TransactionId txId) {
-      QueryBuilder query =
-         queryFactory.fromBranch(branch).andGuids(guidsFromLinks).includeDeletedArtifacts().includeDeletedAttributes();
+      QueryBuilder query;
+      Matcher matcher = IS_GUID.matcher(guidsFromLinks.get(0));
+      if (matcher.find()) {
+         query = queryFactory.fromBranch(branch).andGuids(
+            guidsFromLinks).includeDeletedArtifacts().includeDeletedAttributes();
+      } else {
+         List<ArtifactId> artIdsFromLinks = new LinkedList<>();
+         for (String link : guidsFromLinks) {
+            artIdsFromLinks.add(ArtifactId.valueOf(link));
+         }
+         query = queryFactory.fromBranch(branch).andIds(
+            artIdsFromLinks).includeDeletedArtifacts().includeDeletedAttributes();
+      }
 
       if (txId.isValid()) {
          query.fromTransaction(txId);
@@ -206,7 +220,7 @@ public class WordMlLinkHandler {
       return Collections.setComplement(guidsFromLinks, artGuids);
    }
 
-   private static String modifiedContent(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnliking, TransactionId txId, String sessionId, Set<String> unknown, PresentationType presentationType, String permanentUrl) {
+   private static String modifiedContent(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnlinking, TransactionId txId, String sessionId, Set<String> unknown, PresentationType presentationType, String permanentUrl) {
       BranchId branch = source.getBranch();
       ChangeSet changeSet = new ChangeSet(original);
       List<ArtifactReadable> artifactsFromSearch = null;
@@ -226,7 +240,7 @@ public class WordMlLinkHandler {
 
       if (guidsFromLinks.size() != artifactsFromSearch.size()) {
          List<String> unknownGuids = getGuidsNotFound(guidsFromLinks, artifactsFromSearch);
-         if (isUnliking) {
+         if (isUnlinking) {
             // Ignore not found items and replace with osee marker
             for (String guid : unknownGuids) {
                Collection<MatchRange> matches = matchMap.getValues(guid);
@@ -249,16 +263,32 @@ public class WordMlLinkHandler {
          }
       }
       // Items found in branch
-      for (ArtifactReadable artifact : artifactsFromSearch) {
-         for (MatchRange match : matchMap.getValues(artifact.getGuid())) {
-            String replaceWith = null;
-            if (isUnliking) {
-               replaceWith = linkBuilder.getOseeLinkMarker(artifact.getGuid());
-            } else {
-               replaceWith =
-                  linkBuilder.getWordMlLink(destLinkType, artifact, txId, sessionId, presentationType, permanentUrl);
+      Matcher matcher = IS_GUID.matcher(matchMap.keySet().iterator().next());
+      if (matcher.find()) {
+         for (ArtifactReadable artifact : artifactsFromSearch) {
+            for (MatchRange match : matchMap.getValues(artifact.getGuid())) {
+               String replaceWith = null;
+               if (isUnlinking) {
+                  replaceWith = linkBuilder.getOseeLinkMarker(artifact.getGuid());
+               } else {
+                  replaceWith =
+                     linkBuilder.getWordMlLink(destLinkType, artifact, txId, sessionId, presentationType, permanentUrl);
+               }
+               changeSet.replace(match.start(), match.end(), replaceWith);
             }
-            changeSet.replace(match.start(), match.end(), replaceWith);
+         }
+      } else {
+         for (ArtifactReadable artifact : artifactsFromSearch) {
+            for (MatchRange match : matchMap.getValues(artifact.getIdString())) {
+               String replaceWith = null;
+               if (isUnlinking) {
+                  replaceWith = linkBuilder.getOseeLinkMarker(artifact.getIdString());
+               } else {
+                  replaceWith =
+                     linkBuilder.getWordMlLink(destLinkType, artifact, txId, sessionId, presentationType, permanentUrl);
+               }
+               changeSet.replace(match.start(), match.end(), replaceWith);
+            }
          }
       }
 
