@@ -65,14 +65,15 @@ public class DoorsIdResolver extends NewArtifactImportResolver {
    }
 
    private ArtifactToken findExistingArtifact(RoughArtifact roughArtifact, BranchId branch) {
-      Collection<String> doorsIDs = roughArtifact.getAttributes().getAttributeValueList("Doors ID");
+      Collection<String> doorsIDs =
+         roughArtifact.getAttributes().getAttributeValueList(CoreAttributeTypes.DoorsId.getName());
       doorsIDs.remove(roughArtifact.getName());
 
       if (doorsIDs.size() < 1) {
          // when creating, there will only be the one ID in the list, this is a create case
          return null;
       }
-      return roughArtifact.getOrcsApi().getQueryFactory().fromBranch(branch).andAttributeIs(CoreAttributeTypes.DoorsID,
+      return roughArtifact.getOrcsApi().getQueryFactory().fromBranch(branch).andAttributeIs(CoreAttributeTypes.DoorsId,
          doorsIDs.iterator().next()).asArtifactTokenOrSentinel();
    }
 

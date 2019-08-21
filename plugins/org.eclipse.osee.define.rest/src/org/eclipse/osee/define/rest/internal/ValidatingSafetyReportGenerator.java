@@ -132,10 +132,9 @@ public class ValidatingSafetyReportGenerator {
 
             writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.SoftwareSafetyImpact, ""),
                currentRowValues, 4);
-            writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDAL, ""), currentRowValues,
-               5);
-            writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDALRationale, ""),
-               currentRowValues, 6);
+            writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.FDAL, ""), currentRowValues, 5);
+            writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.FdalRationale, ""), currentRowValues,
+               6);
 
             StringBuilder paraNums = new StringBuilder();
             StringBuilder reqNames = new StringBuilder();
@@ -193,7 +192,7 @@ public class ValidatingSafetyReportGenerator {
          sb.append(" ");
          sb.append(assessment.getSoleAttributeAsString(CoreAttributeTypes.Name, ""));
          sb.append(" ");
-         sb.append(assessment.getSoleAttributeValue(CoreAttributeTypes.Sfha, ""));
+         sb.append(assessment.getSoleAttributeValue(CoreAttributeTypes.SFHA, ""));
       }
       return sb.toString();
    }
@@ -207,7 +206,7 @@ public class ValidatingSafetyReportGenerator {
          Integer sfhaSevCatLevel;
 
          for (ArtifactReadable assessment : results) {
-            String sfha = assessment.getSoleAttributeAsString(CoreAttributeTypes.Sfha);
+            String sfha = assessment.getSoleAttributeAsString(CoreAttributeTypes.SFHA);
             if (Strings.isValid(sfha)) {
                String[] sfhaSevCat = sfha.split(" ");
                sfhaSevCatLevel = SafetyCriticalityLookup.getSeverityLevel(sfhaSevCat[2]);

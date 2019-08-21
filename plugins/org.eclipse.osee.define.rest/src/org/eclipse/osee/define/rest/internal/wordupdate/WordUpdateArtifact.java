@@ -187,7 +187,7 @@ public class WordUpdateArtifact {
                }
                if (artChange.isChanged()) {
                   artChange.setSafetyRelated(checkIfSafetyRelated(artifact,
-                     CoreAttributeTypes.LegacyDAL) || checkIfSafetyRelated(artifact, CoreAttributeTypes.ItemDAL));
+                     CoreAttributeTypes.LegacyDal) || checkIfSafetyRelated(artifact, CoreAttributeTypes.IDAL));
                   updateChange.addChangedArt(artChange);
                   artChange.addChangedAttributeType(WordTemplateContent);
                }

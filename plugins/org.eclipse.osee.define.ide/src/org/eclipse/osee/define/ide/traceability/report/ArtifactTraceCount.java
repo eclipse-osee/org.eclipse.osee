@@ -43,8 +43,8 @@ public class ArtifactTraceCount extends AbstractArtifactRelationReport {
       for (AttributeTypeId attributeType : artifact.getAttributeTypes()) {
          if (attributeType.equals(CoreAttributeTypes.Partition)) {
             return CoreAttributeTypes.Partition;
-         } else if (attributeType.equals(CoreAttributeTypes.Csci)) {
-            return CoreAttributeTypes.Csci;
+         } else if (attributeType.equals(CoreAttributeTypes.CSCI)) {
+            return CoreAttributeTypes.CSCI;
          }
       }
       return null;

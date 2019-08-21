@@ -217,7 +217,7 @@ public final class GitOperationsImpl implements GitOperations {
          ArtifactReadable latestCommit =
             repoArtifact.getRelated(Git_Repository_Commit).getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
          if (latestCommit.isValid()) {
-            String latestImportedSHA = latestCommit.getSoleAttributeValue(CoreAttributeTypes.GitCommitSHA);
+            String latestImportedSHA = latestCommit.getSoleAttributeValue(CoreAttributeTypes.GitCommitSha);
             to = ObjectId.fromString(latestImportedSHA);
             if (to == null) {
                throw new OseeStateException("Failed to resolve commit [%s]", latestImportedSHA);
@@ -352,7 +352,7 @@ public final class GitOperationsImpl implements GitOperations {
          }
 
          ArtifactId commitArtifact = tx.createArtifact(GitCommit, revCommit.getShortMessage());
-         tx.setSoleAttributeValue(commitArtifact, CoreAttributeTypes.GitCommitSHA, commitSHA);
+         tx.setSoleAttributeValue(commitArtifact, CoreAttributeTypes.GitCommitSha, commitSHA);
          tx.setSoleAttributeValue(commitArtifact, CoreAttributeTypes.UserArtifactId, SystemUser.OseeSystem); //TODO: this must convert author to the corresponding user artifact
          tx.setSoleAttributeValue(commitArtifact, CoreAttributeTypes.GitCommitAuthorDate,
             revCommit.getAuthorIdent().getWhen());

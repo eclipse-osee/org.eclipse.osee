@@ -294,6 +294,7 @@ attributeType "XViewer Customization" extends StringAttribute {
 	max unlimited
 	taggerId DefaultAttributeTaggerProvider
 	fileExtension "xml"
+	mediaType "text/xml"
 }
 
 attributeType "XViewer Defaults" extends StringAttribute {
@@ -690,6 +691,7 @@ attributeType "Content URL" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "Paragraph Number" extends OutlineNumberAttribute {
@@ -1339,6 +1341,7 @@ attributeType "FDAL Rationale" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	description "Functional Development Assurance Level Rationale"
 	mediaType "text/plain"
 }
 
@@ -1358,6 +1361,7 @@ attributeType "IDAL Rationale" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	description "Item Development Assurance Level Rationale"
 	mediaType "text/plain"
 }
 
@@ -1560,7 +1564,7 @@ artifactType "Work Page Definition" extends "Work Item Definition" {
 artifactType "Work Flow Definition" extends "Work Item Definition" {
 	id 52
 	attribute "osee.wi.Start Page"
-	attribute "osee.wi.Transition"
+	attribute "osee.wi.Work Transition"
 }
 
 artifactType "Work Rule Definition" extends "Work Item Definition" {
@@ -1633,7 +1637,7 @@ attributeType "osee.wi.Work Page Ordinal" extends IntegerAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "osee.wi.Transition" extends StringAttribute {
+attributeType "osee.wi.Work Transition" extends StringAttribute {
 	id 1152921504606847133
 	dataProvider DefaultAttributeDataProvider
 	min 0
@@ -2001,7 +2005,7 @@ attributeType "Osee App Definition" extends StringAttribute {
 artifactType "Breaker" extends "Artifact" {
    id 188458869981236
    attribute "Display Text"
-   attribute "Circuit Breaker ID"
+   attribute "Circuit Breaker Id"
    attribute "Require Confirmation"
 }
 
@@ -2015,7 +2019,7 @@ attributeType "Display Text" extends StringAttribute {
 }
 
 
-attributeType "Circuit Breaker ID" extends IntegerAttribute {
+attributeType "Circuit Breaker Id" extends IntegerAttribute {
 	id 188458869981238
    dataProvider DefaultAttributeDataProvider
 	min 1
@@ -2047,6 +2051,7 @@ attributeType "Repository URL" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "File System Path" extends StringAttribute {

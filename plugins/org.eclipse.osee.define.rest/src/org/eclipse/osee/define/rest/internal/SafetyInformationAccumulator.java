@@ -156,8 +156,8 @@ public final class SafetyInformationAccumulator {
       String sevCat =
          subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.SeverityCategory, "Error: not available");
       writer.writeCell(sevCat);
-      writer.writeCell(subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDAL, ""));
-      writer.writeCell(subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDALRationale, ""));
+      writer.writeCell(subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.FDAL, ""));
+      writer.writeCell(subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.FdalRationale, ""));
 
       for (ArtifactReadable subsystemRequirement : subsystemRequirements.get(subsystemFunction)) {
          processSubsystemRequirement(subsystemRequirement, convertSafetyCriticalityToDAL(sevCat));
@@ -170,8 +170,8 @@ public final class SafetyInformationAccumulator {
          SafetyReportGenerator.SUBSYSTEM_INDEX);
       writer.writeCell(subsystemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
       writer.writeCell(subsystemRequirement.getName());
-      writer.writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.ItemDAL, ""));
-      writer.writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.ItemDALRationale, ""));
+      writer.writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.IDAL, ""));
+      writer.writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.IdalRationale, ""));
 
       for (ArtifactReadable softwareRequirement : softwareRequirements.get(subsystemRequirement)) {
          processSoftwareRequirement(softwareRequirement);
@@ -191,8 +191,8 @@ public final class SafetyInformationAccumulator {
 
    private void processSoftwareRequirement(ArtifactReadable softwareRequirement) throws IOException {
       writer.writeCell(softwareRequirement.getName(), SafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX);
-      String softwareRequirementDAL = writeCriticality(softwareRequirement, CoreAttributeTypes.ItemDAL);
-      writer.writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.ItemDALRationale, ""));
+      String softwareRequirementDAL = writeCriticality(softwareRequirement, CoreAttributeTypes.IDAL);
+      writer.writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.IdalRationale, ""));
 
       writer.writeCell(calculateBoeingEquivalentSWQualLevel(softwareRequirementDAL,
          softwareRequirement.getAttributeCount(CoreAttributeTypes.Partition)));

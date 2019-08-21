@@ -253,8 +253,8 @@ public class ArtifactTest {
 
    @Test
    public void testIsAttributeTypeValid() {
-      artifact.isAttributeTypeValid(CoreAttributeTypes.Afha);
-      verify(types).isValidAttributeType(eq(artifactType), any(), eq(CoreAttributeTypes.Afha));
+      artifact.isAttributeTypeValid(CoreAttributeTypes.AFHA);
+      verify(types).isValidAttributeType(eq(artifactType), any(), eq(CoreAttributeTypes.AFHA));
    }
 
    @Test

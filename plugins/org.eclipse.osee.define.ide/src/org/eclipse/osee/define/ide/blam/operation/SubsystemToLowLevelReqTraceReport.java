@@ -68,7 +68,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
    private XCombo branchViewWidget;
    private XListDropViewer lowerLevel;
-   private AttributeTypeId safetyAttribute = CoreAttributeTypes.ItemDAL;
+   private AttributeTypeId safetyAttribute = CoreAttributeTypes.IDAL;
    private static final String LEGACY_DAL = "Use Legacy DAL";
 
    @Override
@@ -103,7 +103,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       setViewId(view);
       Object isLegacy = variableMap.getValue(LEGACY_DAL);
       if (isLegacy.equals(true)) {
-         safetyAttribute = CoreAttributeTypes.LegacyDAL;
+         safetyAttribute = CoreAttributeTypes.LegacyDal;
       }
       excludedArtifactIdMap = ViewIdUtility.findExcludedArtifactsByView(viewId, branch);
 

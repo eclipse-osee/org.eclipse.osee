@@ -36,12 +36,12 @@ public class HTMLDiffRenderer implements IComparator {
       String was = " ", is = " ", artifactName = null;
       Artifact startArtifact = artifactDelta.getStartArtifact();
       if (startArtifact != null) {
-         was = startArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.HTMLContent, "");
+         was = startArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.HtmlContent, "");
          artifactName = startArtifact.getName();
       }
       Artifact endArtifact = artifactDelta.getEndArtifact();
       if (endArtifact != null) {
-         is = endArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.HTMLContent, "");
+         is = endArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.HtmlContent, "");
       }
       if (Strings.isValid(is) && Strings.isValid(was)) {
          final CompareHandler compareHandler =

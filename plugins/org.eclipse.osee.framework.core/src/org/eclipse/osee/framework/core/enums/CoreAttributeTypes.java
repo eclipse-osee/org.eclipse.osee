@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 public final class CoreAttributeTypes {
 
    // @formatter:off
-   public static final AttributeTypeToken Afha = AttributeTypeToken.valueOf(1152921504606847139L, "AFHA");
+   public static final AttributeTypeToken AFHA = AttributeTypeToken.valueOf(1152921504606847139L, "AFHA");
    public static final AttributeTypeToken AccessContextId = AttributeTypeToken.valueOf(1152921504606847102L, "Access Context Id");
    public static final AttributeTypeToken Active = AttributeTypeToken.valueOf(1152921504606847065L, "Active");
    public static final AttributeTypeToken Annotation = AttributeTypeToken.valueOf(1152921504606847094L, "Annotation");
@@ -28,7 +28,7 @@ public final class CoreAttributeTypes {
    public static final AttributeTypeToken BaselinedTimestamp = AttributeTypeToken.valueOf(1152921504606847244L, "Baselined Timestamp");
    public static final AttributeTypeToken BranchReference = AttributeTypeToken.valueOf(1153126013769613563L, "Branch Reference");
    public static final AttributeTypeToken Category = AttributeTypeToken.valueOf(1152921504606847121L, "Category");
-   public static final AttributeTypeToken CircuitBreakerId = AttributeTypeToken.valueOf(188458869981238L, "Circuit Breaker ID");
+   public static final AttributeTypeToken CircuitBreakerId = AttributeTypeToken.valueOf(188458869981238L, "Circuit Breaker Id");
    public static final AttributeTypeToken City = AttributeTypeToken.valueOf(1152921504606847068L, "City");
    public static final AttributeTypeToken CommonNalRequirement = AttributeTypeToken.valueOf(1152921504606847105L, "Common NAL Requirement");
    public static final AttributeTypeToken Company = AttributeTypeToken.valueOf(1152921504606847066L, "Company");
@@ -37,7 +37,7 @@ public final class CoreAttributeTypes {
    public static final AttributeTypeToken ContentUrl = AttributeTypeToken.valueOf(1152921504606847100L, "Content URL");
    public static final AttributeTypeToken Country = AttributeTypeToken.valueOf(1152921504606847072L, "Country");
    public static final AttributeTypeToken CrewInterfaceRequirement = AttributeTypeToken.valueOf(1152921504606847106L, "Crew Interface Requirement");
-   public static final AttributeTypeToken Csci = AttributeTypeToken.valueOf(1152921504606847136L, "CSCI");
+   public static final AttributeTypeToken CSCI = AttributeTypeToken.valueOf(1152921504606847136L, "CSCI");
    public static final AttributeTypeToken DataRightsClassification = AttributeTypeToken.valueOf(1152921504606847317L, "Data Rights Classification");
    public static final AttributeTypeToken DataRightsBasis = AttributeTypeToken.valueOf(72057594037928276L, "Data Rights Basis");
    public static final AttributeTypeToken SubjectMatterExpert = AttributeTypeToken.valueOf(72057594037928275L, "Subject Matter Expert");
@@ -46,8 +46,8 @@ public final class CoreAttributeTypes {
    public static final AttributeTypeToken DefaultTrackingBranch = AttributeTypeToken.valueOf(1152921504606847709L, "Default Tracking Branch");
    public static final AttributeTypeToken Description = AttributeTypeToken.valueOf(1152921504606847090L, "Description");
    public static final AttributeTypeToken Dictionary = AttributeTypeToken.valueOf(1152921504606847083L, "Dictionary");
-   public static final AttributeTypeToken DoorsID = AttributeTypeToken.valueOf(8243262488122393232L, "Doors ID");
-   public static final AttributeTypeToken DoorsModID = AttributeTypeToken.valueOf(5326122488147393161L, "Doors Mod ID");
+   public static final AttributeTypeToken DoorsId = AttributeTypeToken.valueOf(8243262488122393232L, "Doors ID");
+   public static final AttributeTypeToken DoorsModId = AttributeTypeToken.valueOf(5326122488147393161L, "Doors Mod ID");
    public static final AttributeTypeToken DoorsHierarchy = AttributeTypeToken.valueOf(1873562488122323009L, "Doors Hierarchy");
    public static final AttributeTypeToken Effectivity = AttributeTypeToken.valueOf(1152921504606847108L, "Effectivity");
    public static final AttributeTypeToken Email = AttributeTypeToken.valueOf(1152921504606847082L, "Email");
@@ -59,24 +59,24 @@ public final class CoreAttributeTypes {
    public static final AttributeTypeToken FeatureValueType = AttributeTypeToken.valueOf(31669009535111027L, "Feature Value Type");
    public static final AttributeTypeToken FileSystemPath = AttributeTypeToken.valueOf(1152921504606847707L, "File System Path");
    public static final AttributeTypeToken FunctionalCategory = AttributeTypeToken.valueOf(1152921504606847871L, "Functional Category");
-   public static final AttributeTypeToken FunctionalDAL = AttributeTypeToken.valueOf(8007959514939954596L, "Functional Development Assurance Level");
-   public static final AttributeTypeToken FunctionalDALRationale = AttributeTypeToken.valueOf(926274413268034710L, "Functional Development Assurance Level Rationale");
+   public static final AttributeTypeToken FDAL = AttributeTypeToken.valueOf(8007959514939954596L, "FDAL", "Functional Development Assurance Level");
+   public static final AttributeTypeToken FdalRationale = AttributeTypeToken.valueOf(926274413268034710L, "FDAL Rationale", "Functional Development Assurance Level Rationale");
    public static final AttributeTypeToken GeneralStringData = AttributeTypeToken.valueOf(1152921504606847096L, "General String Data");
    public static final AttributeTypeToken GfeCfe = AttributeTypeToken.valueOf(1152921504606847144L, "GFE / CFE");
    public static final AttributeTypeToken GitChangeId = AttributeTypeToken.valueOf(1152921504606847702L, "Git Change-Id");
-   public static final AttributeTypeToken GitCommitSHA = AttributeTypeToken.valueOf(1152921504606847703L, "Git Commit SHA");
+   public static final AttributeTypeToken GitCommitSha = AttributeTypeToken.valueOf(1152921504606847703L, "Git Commit SHA");
    public static final AttributeTypeToken GitCommitAuthorDate = AttributeTypeToken.valueOf(1152921504606847704L, "Git Commit Author Date");
    public static final AttributeTypeToken GitCommitMessage = AttributeTypeToken.valueOf(1152921504606847705L, "Git Commit Message");
    public static final AttributeTypeToken GitRepositoryReference = AttributeTypeToken.valueOf(1152921504606847706L, "Git Repository Reference");
    public static final AttributeTypeToken GraphitiDiagram = AttributeTypeToken.valueOf(1152921504606847319L, "Graphiti Diagram");
    public static final AttributeTypeToken Hazard = AttributeTypeToken.valueOf(1152921504606847138L, "Hazard");
    public static final AttributeTypeToken HazardSeverity = AttributeTypeToken.valueOf(1152921504606847141L, "Hazard Severity");
-   public static final AttributeTypeToken HTMLContent = AttributeTypeToken.valueOf(1152921504606847869L, "HTML Content");
+   public static final AttributeTypeToken HtmlContent = AttributeTypeToken.valueOf(1152921504606847869L, "HTML Content");
    public static final AttributeTypeToken ImageContent = AttributeTypeToken.valueOf(1152921504606847868L, "Image Content");
-   public static final AttributeTypeToken IdValue = AttributeTypeToken.valueOf(72057896045641815L, "ID Value");
-   public static final AttributeTypeToken ItemDAL = AttributeTypeToken.valueOf(2612838829556295211L, "Item Development Assurance Level");
-   public static final AttributeTypeToken ItemDALRationale = AttributeTypeToken.valueOf(2517743638468399405L, "Item Development Assurance Level Rationale");
-   public static final AttributeTypeToken LegacyDAL = AttributeTypeToken.valueOf(1152921504606847120L, "Legacy Development Assurance Level");
+   public static final AttributeTypeToken IdValue = AttributeTypeToken.valueOf(72057896045641815L, "Id Value");
+   public static final AttributeTypeToken IDAL = AttributeTypeToken.valueOf(2612838829556295211L, "Item Development Assurance Level");
+   public static final AttributeTypeToken IdalRationale = AttributeTypeToken.valueOf(2517743638468399405L, "IDAL Rationale", "Item Development Assurance Level Rationale");
+   public static final AttributeTypeToken LegacyDal = AttributeTypeToken.valueOf(1152921504606847120L, "Legacy DAL", "Legacy Development Assurance Level");
    public static final AttributeTypeToken LegacyId = AttributeTypeToken.valueOf(1152921504606847107L, "Legacy Id");
    public static final AttributeTypeToken MobilePhone = AttributeTypeToken.valueOf(1152921504606847080L, "Mobile Phone");
    public static final AttributeTypeToken Name = AttributeTypeToken.valueOf(1152921504606847088L, "Name");
@@ -95,7 +95,7 @@ public final class CoreAttributeTypes {
    public static final AttributeTypeToken ReviewId = AttributeTypeToken.valueOf(1152921504606847245L, "Review Id");
    public static final AttributeTypeToken ReviewStoryId = AttributeTypeToken.valueOf(1152921504606847246L, "Review Story Id");
    public static final AttributeTypeToken RequireConfirmation = AttributeTypeToken.valueOf(188458869981239L, "Require Confirmation");
-   public static final AttributeTypeToken Sfha = AttributeTypeToken.valueOf(1152921504606847140L, "SFHA");
+   public static final AttributeTypeToken SFHA = AttributeTypeToken.valueOf(1152921504606847140L, "SFHA");
    public static final AttributeTypeToken SafetySeverity = AttributeTypeToken.valueOf(846763346271224762L, "Safety Severity");
    public static final AttributeTypeToken SeverityCategory = AttributeTypeToken.valueOf(1152921504606847114L, "Severity Category");
    public static final AttributeTypeToken SoftwareControlCategory = AttributeTypeToken.valueOf(1958401980089733639L, "Software Control Category");
@@ -123,7 +123,7 @@ public final class CoreAttributeTypes {
    public static final AttributeTypeToken WordOleData = AttributeTypeToken.valueOf(1152921504606847092L, "Word Ole Data");
    public static final AttributeTypeToken WordTemplateContent = AttributeTypeToken.valueOf(1152921504606847098L, "Word Template Content");
    public static final AttributeTypeToken WorkData = AttributeTypeToken.valueOf(1152921504606847126L, "osee.wi.Work Data");
-   public static final AttributeTypeToken WorkTransition = AttributeTypeToken.valueOf(1152921504606847133L, "osee.wi.Transition");
+   public static final AttributeTypeToken WorkTransition = AttributeTypeToken.valueOf(1152921504606847133L, "osee.wi.Work Transition");
    public static final AttributeTypeToken XViewerCustomization = AttributeTypeToken.valueOf(1152921504606847077L, "XViewer Customization");
    public static final AttributeTypeToken XViewerDefaults = AttributeTypeToken.valueOf(1152921504606847078L, "XViewer Defaults");
    public static final AttributeTypeToken Zip = AttributeTypeToken.valueOf(1152921504606847071L, "Zip");

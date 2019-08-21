@@ -127,7 +127,7 @@ public class DoorsArtifactExtractorTest {
       String image = new String("String to represent binary image data");
       imageList.add(Lib.stringToInputStream(image));
       theArtifact.setAttributeFromValues(CoreAttributeTypes.ImageContent, imageList);
-      theArtifact.setAttributeValues(CoreAttributeTypes.HTMLContent, content);
+      theArtifact.setAttributeValues(CoreAttributeTypes.HtmlContent, content);
    }
 
    @After
@@ -212,7 +212,7 @@ public class DoorsArtifactExtractorTest {
           * verify only the Document 1 text exists here
           */
          if (COMPANY_DOCUMENTS.equals(actualName)) {
-            String theHtml = artifact.getRoughAttribute(CoreAttributeTypes.HTMLContent.getName());
+            String theHtml = artifact.getRoughAttribute(CoreAttributeTypes.HtmlContent.getName());
             assertEquals("Document Applicability filter failed", theHtml.indexOf("XYZ-ABC"), -1);
          }
       }

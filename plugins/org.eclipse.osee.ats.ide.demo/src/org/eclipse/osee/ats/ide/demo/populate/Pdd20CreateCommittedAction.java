@@ -121,7 +121,7 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
 
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(false, SoftwareRequirementStrs.Robot,
          reqTeamArt.getWorkingBranch())) {
-         art.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Navigation.name());
+         art.setSoleAttributeValue(CoreAttributeTypes.CSCI, DemoCscis.Navigation.name());
          art.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Navigation.name());
          Artifact navArt = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component,
             DemoSubsystems.Navigation.name(), reqTeamArt.getWorkingBranch());
@@ -131,7 +131,7 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
 
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(false, SoftwareRequirementStrs.Event,
          reqTeamArt.getWorkingBranch())) {
-         art.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Interface.name());
+         art.setSoleAttributeValue(CoreAttributeTypes.CSCI, DemoCscis.Interface.name());
          art.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
          Artifact robotArt = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component,
             DemoSubsystems.Robot_API.name(), reqTeamArt.getWorkingBranch());

@@ -11,7 +11,7 @@
 package org.eclipse.osee.define.rest.importing.operations;
 
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.DoorsHierarchy;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.DoorsID;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.DoorsId;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.HashMap;
@@ -78,8 +78,10 @@ public class DoorsTier4RoughToRealOperation {
 
       if (realArtifact != null) {
          getTranslator().translate(transaction, roughArtifact, realArtifact);
-         knownArtsByDoorsID.put(roughArtifact.getRoughAttribute("Doors ID"), realArtifact);
-         knownArtsByReqNum.put(roughArtifact.getRoughAttribute("Doors Hierarchy").replace("-", "."), realArtifact);
+         knownArtsByDoorsID.put(roughArtifact.getRoughAttribute(CoreAttributeTypes.DoorsId.getName()), realArtifact);
+         knownArtsByReqNum.put(
+            roughArtifact.getRoughAttribute(CoreAttributeTypes.DoorsHierarchy.getName()).replace("-", "."),
+            realArtifact);
       }
 
       if (realArtifact == null) {
@@ -93,8 +95,10 @@ public class DoorsTier4RoughToRealOperation {
                transaction.createArtifact(artifactType, roughArtifact.getName(), roughArtifact.getGuid());
             getTranslator().translate(transaction, roughArtifact, createdArt);
             transaction.relate(parentArtifact, CoreRelationTypes.Default_Hierarchical__Child, createdArt, USER_DEFINED);
-            knownArtsByDoorsID.put(roughArtifact.getRoughAttribute("Doors ID"), createdArt);
-            knownArtsByReqNum.put(roughArtifact.getRoughAttribute("Doors Hierarchy").replace("-", "."), createdArt);
+            knownArtsByDoorsID.put(roughArtifact.getRoughAttribute(CoreAttributeTypes.DoorsId.getName()), createdArt);
+            knownArtsByReqNum.put(
+               roughArtifact.getRoughAttribute(CoreAttributeTypes.DoorsHierarchy.getName()).replace("-", "."),
+               createdArt);
          } else {
             results.logf("Doors ID resolver cant find parent. roughArtifactifact: [%s]. Doors Hierarchy: [%s]",
                roughArtifact.getName(), roughArtifact.getAttributes().getSoleAttributeValue("Doors Hierarchy"));
@@ -103,7 +107,7 @@ public class DoorsTier4RoughToRealOperation {
    }
 
    private ArtifactToken findExistingArtifact(RoughArtifact roughArtifact, BranchId branch) {
-      String modDoorsID = roughArtifact.getRoughAttribute("Doors Mod ID");
+      String modDoorsID = roughArtifact.getRoughAttribute(CoreAttributeTypes.DoorsModId.getName());
       if (Strings.isInValid(modDoorsID)) {
          // if there is no mod Id, we are creating a new artifact
          return null;
@@ -119,8 +123,8 @@ public class DoorsTier4RoughToRealOperation {
       ArtifactToken currentParent = knownArtsByReqNum.get(reqNumber.getParentString());
 
       if (currentParent == null) {
-         results.errorf("Couldn't find parent for %s with number %s", roughArtifact.getRoughAttribute("Doors ID"),
-            doorsHierarchy);
+         results.errorf("Couldn't find parent for %s with number %s",
+            roughArtifact.getRoughAttribute(CoreAttributeTypes.DoorsId.getName()), doorsHierarchy);
       }
 
       return currentParent;
@@ -133,7 +137,7 @@ public class DoorsTier4RoughToRealOperation {
       known.forEach(item -> knownArtsByReqNum.put(item.getName().replace("-", "."), item)); // normalize to match ReqNumber
       List<ArtifactToken> knownIds =
          orcsApi.getQueryFactory().fromBranch(branch).andRelatedRecursive(Default_Hierarchical__Parent,
-            destinationArtifact).asArtifactTokens(DoorsID);
+            destinationArtifact).asArtifactTokens(DoorsId);
       knownIds.forEach(item -> knownArtsByDoorsID.put(item.getName(), item));
    }
 

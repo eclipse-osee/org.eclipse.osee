@@ -19,7 +19,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Baselined
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.BaselinedTimestamp;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChangeId;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitCommitAuthorDate;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitCommitSHA;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitCommitSha;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ReviewId;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ReviewStoryId;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.UserId;
@@ -247,7 +247,7 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
             file.latestChangeId = "commit artifact missing: " + latestCommit;
             file.latestTimestamp = null;
          } else {
-            latestSha = latestCommit.getSoleAttributeValue(GitCommitSHA);
+            latestSha = latestCommit.getSoleAttributeValue(GitCommitSha);
             file.latestChangeId = latestCommit.getSoleAttributeValue(GitChangeId, latestSha);
             file.latestTimestamp = latestCommit.getSoleAttributeValue(GitCommitAuthorDate);
          }

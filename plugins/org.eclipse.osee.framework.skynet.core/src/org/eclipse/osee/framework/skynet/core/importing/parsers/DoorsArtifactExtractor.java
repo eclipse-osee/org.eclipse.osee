@@ -172,8 +172,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
              **************************************/
             try {
                List<Integer> Ids = theArtifact.getAttributeIds(CoreAttributeTypes.ImageContent);
-               List<String> HTML = theArtifact.getAttributeValues(CoreAttributeTypes.HTMLContent);
-               theArtifact.deleteAttributes(CoreAttributeTypes.HTMLContent);
+               List<String> HTML = theArtifact.getAttributeValues(CoreAttributeTypes.HtmlContent);
+               theArtifact.deleteAttributes(CoreAttributeTypes.HtmlContent);
                for (String htmlVal : HTML) {
                   int iCount = 0;
                   for (Integer imageNumber : Ids) {
@@ -181,7 +181,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                      iCount++;
                      toReturn = true;
                   }
-                  theArtifact.addAttribute(CoreAttributeTypes.HTMLContent, htmlVal);
+                  theArtifact.addAttribute(CoreAttributeTypes.HtmlContent, htmlVal);
                }
             } catch (OseeCoreException e) {
                if (logger != null) {
@@ -632,7 +632,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
          } while (comma != -1);
       }
       if (Strings.isValid(rowValue)) {
-         roughArtifact.addAttribute(CoreAttributeTypes.HTMLContent, rowValue);
+         roughArtifact.addAttribute(CoreAttributeTypes.HtmlContent, rowValue);
       }
    }
 

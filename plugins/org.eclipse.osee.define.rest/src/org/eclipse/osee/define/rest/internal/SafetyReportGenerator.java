@@ -122,8 +122,8 @@ public class SafetyReportGenerator {
             writer.writeCell(sevCat);
             writeSFHAInfo(systemFunction, sevCat, writer);
 
-            writer.writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDAL, ""));
-            writer.writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDALRationale, ""));
+            writer.writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.FDAL, ""));
+            writer.writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.FdalRationale, ""));
 
             StringBuilder paraNums = new StringBuilder();
             StringBuilder reqNames = new StringBuilder();
@@ -168,7 +168,7 @@ public class SafetyReportGenerator {
          sb.append(" ");
          sb.append(assessment.getSoleAttributeAsString(CoreAttributeTypes.Name, ""));
          sb.append(" ");
-         sb.append(assessment.getSoleAttributeValue(CoreAttributeTypes.Sfha, ""));
+         sb.append(assessment.getSoleAttributeValue(CoreAttributeTypes.SFHA, ""));
       }
       return sb.toString();
    }

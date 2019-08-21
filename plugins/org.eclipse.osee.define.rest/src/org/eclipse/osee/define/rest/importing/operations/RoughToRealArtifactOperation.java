@@ -25,6 +25,7 @@ import org.eclipse.define.api.importing.RoughRelation;
 import org.eclipse.osee.define.rest.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -120,7 +121,7 @@ public class RoughToRealArtifactOperation {
          artifactResolver.resolve(roughArtifact, transaction.getBranch(), realParent, destinationArtifact);
 
       //creates list of artifacts and their word template content
-      String roughWTC = roughArtifact.getRoughAttribute("Word Template Content");
+      String roughWTC = roughArtifact.getRoughAttribute(CoreAttributeTypes.WordTemplateContent.getName());
       if (roughWTC != null) {
          Matcher matcher = referencePattern.matcher(roughWTC);
          if (matcher.find()) {
@@ -129,7 +130,7 @@ public class RoughToRealArtifactOperation {
       }
 
       //creates map of object ids to the artifacts that contain them and each destination folder
-      Collection<String> objIds = roughArtifact.getRoughAttributeAsList("Doors Id");
+      Collection<String> objIds = roughArtifact.getRoughAttributeAsList(CoreAttributeTypes.DoorsId.getName());
       for (String objId : objIds) {
          if (!doorsIdArtIdMap.containsKey(objId)) {
             HashMap<ArtifactReadable, ArtifactId> artMap = new HashMap<>();

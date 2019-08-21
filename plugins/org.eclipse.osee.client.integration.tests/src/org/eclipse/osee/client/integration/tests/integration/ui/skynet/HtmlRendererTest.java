@@ -99,7 +99,7 @@ public class HtmlRendererTest {
       htmlArtifact.addAttributeFromString(CoreAttributeTypes.LegacyId, LEGACY_ID);
       htmlArtifact.addAttributeFromString(CoreAttributeTypes.ParagraphNumber, PARAGRAPH_NUMBER);
 
-      htmlArtifact.addAttributeFromString(CoreAttributeTypes.HTMLContent, INPUT_HTML);
+      htmlArtifact.addAttributeFromString(CoreAttributeTypes.HtmlContent, INPUT_HTML);
 
       htmlArtifact.persist("create sample artifact");
       theArtifacts.add(htmlArtifact);

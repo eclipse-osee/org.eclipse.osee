@@ -176,8 +176,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                List<?> Ids = getAttributes(source.getOrcsApi(), transaction.getBranch(), theArtifact,
                   CoreAttributeTypes.ImageContent).getList();
                List<?> HTML = getAttributes(source.getOrcsApi(), transaction.getBranch(), theArtifact,
-                  CoreAttributeTypes.HTMLContent).getList();
-               transaction.deleteAttributes(theArtifact, CoreAttributeTypes.HTMLContent);
+                  CoreAttributeTypes.HtmlContent).getList();
+               transaction.deleteAttributes(theArtifact, CoreAttributeTypes.HtmlContent);
                for (Object htmlValObj : HTML) {
                   if (htmlValObj instanceof String) {
                      String htmlVal = (String) htmlValObj;
@@ -191,7 +191,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                            toReturn = true;
                         }
                      }
-                     transaction.createAttribute(theArtifact, CoreAttributeTypes.HTMLContent, htmlVal);
+                     transaction.createAttribute(theArtifact, CoreAttributeTypes.HtmlContent, htmlVal);
                   }
                }
             } catch (OseeCoreException ex) {
@@ -648,7 +648,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
          } while (comma != -1);
       }
       if (Strings.isValid(rowValue) && roughArtifact != null) {
-         roughArtifact.addAttribute(CoreAttributeTypes.HTMLContent, rowValue);
+         roughArtifact.addAttribute(CoreAttributeTypes.HtmlContent, rowValue);
       }
    }
 

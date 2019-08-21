@@ -106,7 +106,7 @@ public class HTMLRenderer extends FileSystemRenderer {
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
       int toReturn = NO_MATCH;
-      if (artifact.isAttributeTypeValid(CoreAttributeTypes.HTMLContent)) {
+      if (artifact.isAttributeTypeValid(CoreAttributeTypes.HtmlContent)) {
          if (presentationType.matches(PresentationType.PREVIEW, PresentationType.DIFF)) {
             toReturn = PRESENTATION_SUBTYPE_MATCH;
          }
@@ -153,7 +153,7 @@ public class HTMLRenderer extends FileSystemRenderer {
       String underlineEnd = "</span>";
       Collection<AttributeType> types = artifact.getAttributeTypesUsed();
       for (AttributeType type : types) {
-         if (type.equals(CoreAttributeTypes.HTMLContent)) {
+         if (type.equals(CoreAttributeTypes.HtmlContent)) {
             htmlContent = artifact.getAttributesToString(type);
          } else if (type.equals(CoreAttributeTypes.ImageContent)) {
             List<Attribute<Object>> attrs = artifact.getAttributes((AttributeTypeId) type);

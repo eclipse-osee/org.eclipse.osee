@@ -137,7 +137,7 @@ public class DoorsArtifactBuilder {
       mergeArtifactKind(combined, add);
       mergeImages(combined, add);
       mergeAttribute(combined, add, CoreAttributeTypes.LegacyId.getName(), ",");
-      mergeAttribute(combined, add, CoreAttributeTypes.HTMLContent.getName(), "<br>");
+      mergeAttribute(combined, add, CoreAttributeTypes.HtmlContent.getName(), "<br>");
       mergeAttribute(combined, add, CoreAttributeTypes.QualificationMethod.getName(), ",");
       mergeAttribute(combined, add, CoreAttributeTypes.VerificationEvent.getName(), ",");
       mergeAttribute(combined, add, CoreAttributeTypes.VerificationLevel.getName(), ",");

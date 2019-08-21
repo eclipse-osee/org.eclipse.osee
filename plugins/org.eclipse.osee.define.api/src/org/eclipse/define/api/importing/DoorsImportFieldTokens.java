@@ -35,7 +35,7 @@ public final class DoorsImportFieldTokens {
    private static final String OBJECT_TEXT_REGEX = "(.*?)<w:r>(.*?)</w:r>(.*)";
 
    // @formatter:off
-   public static final BlockFieldToken blockAttrIdentifier =  BlockFieldToken.valueOf(1, "Identifier", IDEN_REGEX, BLOCK_ATTR_REGEX, BlockField::new, CoreAttributeTypes.DoorsID);
+   public static final BlockFieldToken blockAttrIdentifier =  BlockFieldToken.valueOf(1, "Identifier", IDEN_REGEX, BLOCK_ATTR_REGEX, BlockField::new, CoreAttributeTypes.DoorsId);
    public static final BlockFieldToken blockAttrLevel =       BlockFieldToken.valueOf(2, "Level", LEVE_REGEX, BLOCK_ATTR_REGEX, BlockField::new);
    public static final BlockFieldToken blockAttrHeading =     BlockFieldToken.valueOf(3, "Heading", HEAD_REGEX, BLOCK_ATTR_REGEX, BlockField::new);
    public static final BlockFieldToken blockAttrNumber =      BlockFieldToken.valueOf(4, "Number", NUMB_REGEX, BLOCK_ATTR_REGEX, BlockField::new, CoreAttributeTypes.DoorsHierarchy);

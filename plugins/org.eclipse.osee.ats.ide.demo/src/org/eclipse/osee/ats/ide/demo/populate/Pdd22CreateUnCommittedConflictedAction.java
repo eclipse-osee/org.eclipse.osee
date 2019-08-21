@@ -100,7 +100,7 @@ public class Pdd22CreateUnCommittedConflictedAction implements IPopulateDemoData
 
       Artifact branchArtifact = DemoDbUtil.getArtTypeRequirements(isDebug(), CoreArtifactTypes.SoftwareRequirement,
          DemoDbUtil.HAPTIC_CONSTRAINTS_REQ, reqTeamArt.getWorkingBranch()).iterator().next();
-      branchArtifact.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Interface.name());
+      branchArtifact.setSoleAttributeValue(CoreAttributeTypes.CSCI, DemoCscis.Interface.name());
       branchArtifact.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
       Artifact comArt = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component,
          DemoSubsystems.Robot_API.name(), reqTeamArt.getWorkingBranch());
@@ -109,7 +109,7 @@ public class Pdd22CreateUnCommittedConflictedAction implements IPopulateDemoData
 
       Artifact parentArtifact = DemoDbUtil.getArtTypeRequirements(isDebug(), CoreArtifactTypes.SoftwareRequirement,
          DemoDbUtil.HAPTIC_CONSTRAINTS_REQ, reqTeamArt.getWorkingBranch()).iterator().next();
-      parentArtifact.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Navigation.name());
+      parentArtifact.setSoleAttributeValue(CoreAttributeTypes.CSCI, DemoCscis.Navigation.name());
       parentArtifact.setSoleAttributeValue(CoreAttributeTypes.Subsystem,
          DemoSubsystems.Cognitive_Decision_Aiding.name());
       parentArtifact.persist(getClass().getSimpleName());

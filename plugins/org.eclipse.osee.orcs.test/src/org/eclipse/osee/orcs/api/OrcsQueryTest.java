@@ -115,7 +115,7 @@ public class OrcsQueryTest {
    @Test
    public void testAttributeNotExists() {
       QueryBuilder builder = factory.fromBranch(COMMON);
-      builder.andNotExists(CoreAttributeTypes.Afha);
+      builder.andNotExists(CoreAttributeTypes.AFHA);
       assertTrue(builder.getCount() >= 245);
    }
 

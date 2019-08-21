@@ -156,10 +156,10 @@ public final class ValidatingSafetyInformationAccumulator {
       String sevCat =
          subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.SeverityCategory, "Error: not available");
       writeCell(sevCat, currentRowValues, ValidatingSafetyReportGenerator.SUBSYSTEM_FUNCTION_INDEX + 1);
-      writeCell(subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDAL, ""), currentRowValues,
+      writeCell(subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.FDAL, ""), currentRowValues,
          ValidatingSafetyReportGenerator.SUBSYSTEM_FUNCTION_INDEX + 2);
-      writeCell(subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDALRationale, ""),
-         currentRowValues, ValidatingSafetyReportGenerator.SUBSYSTEM_FUNCTION_INDEX + 3);
+      writeCell(subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.FdalRationale, ""), currentRowValues,
+         ValidatingSafetyReportGenerator.SUBSYSTEM_FUNCTION_INDEX + 3);
 
       for (ArtifactReadable subsystemRequirement : subsystemRequirements.get(subsystemFunction)) {
          processSubsystemRequirement(subsystemRequirement, convertSafetyCriticalityToDAL(sevCat), currentRowValues);
@@ -177,13 +177,13 @@ public final class ValidatingSafetyInformationAccumulator {
       writeCell(subsystemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""), currentRowValues,
          ValidatingSafetyReportGenerator.SUBSYSTEM_INDEX + 1);
       writeCell(subsystemRequirement.getName(), currentRowValues, ValidatingSafetyReportGenerator.SUBSYSTEM_INDEX + 2);
-      writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.ItemDAL, ""), currentRowValues,
+      writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.IDAL, ""), currentRowValues,
          ValidatingSafetyReportGenerator.SUBSYSTEM_INDEX + 3);
-      writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.ItemDALRationale, ""),
-         currentRowValues, ValidatingSafetyReportGenerator.SUBSYSTEM_INDEX + 4);
+      writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.IdalRationale, ""), currentRowValues,
+         ValidatingSafetyReportGenerator.SUBSYSTEM_INDEX + 4);
 
       String currentCriticality = writeCriticalityWithDesignCheck(subsystemRequirement, criticality,
-         CoreAttributeTypes.ItemDAL, CoreRelationTypes.Design__Design, CoreAttributeTypes.SeverityCategory,
+         CoreAttributeTypes.IDAL, CoreRelationTypes.Design__Design, CoreAttributeTypes.SeverityCategory,
          currentRowValues, ValidatingSafetyReportGenerator.SUBSYSTEM_INDEX + 5);
       for (ArtifactReadable softwareRequirement : softwareRequirements.get(subsystemRequirement)) {
          processSoftwareRequirement(softwareRequirement, currentCriticality, currentRowValues);
@@ -237,7 +237,7 @@ public final class ValidatingSafetyInformationAccumulator {
                intermediate = "NH";
             }
             parentCritVal = SafetyCriticalityLookup.getSeverityLevel(intermediate);
-         } else if (otherType.equals(CoreAttributeTypes.ItemDAL)) {
+         } else if (otherType.equals(CoreAttributeTypes.IDAL)) {
             String intermediate = parent.getSoleAttributeAsString(otherType, "E");
             if (AttributeId.UNSPECIFIED.equals(intermediate)) {
                intermediate = "E";
@@ -261,9 +261,9 @@ public final class ValidatingSafetyInformationAccumulator {
       writeCell(softwareRequirement.getName(), currentRowValues,
          ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX);
       String softwareRequirementDAL = writeCriticalityWithDesignCheck(softwareRequirement, sevCat,
-         CoreAttributeTypes.ItemDAL, CoreRelationTypes.Requirement_Trace__Higher_Level, CoreAttributeTypes.ItemDAL,
+         CoreAttributeTypes.IDAL, CoreRelationTypes.Requirement_Trace__Higher_Level, CoreAttributeTypes.IDAL,
          currentRowValues, ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 1);
-      writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.ItemDALRationale, ""), currentRowValues,
+      writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.IdalRationale, ""), currentRowValues,
          ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 2);
       writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.SoftwareControlCategory, ""),
          currentRowValues, ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 3);
