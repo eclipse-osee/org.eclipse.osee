@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.util;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -46,7 +47,8 @@ public class OseeInf {
    public static File getResourceAsFile(String path, Class<?> clazz) {
       try {
          URL url = getResourceAsUrl(path, clazz);
-         return new File(url.toURI().getPath());
+         String uri = new URI(url.toString().replace(" ", "%20")).getPath();
+         return new File(uri);
       } catch (Exception ex) {
          throw new OseeCoreException(ex, "Error getting resource [%s] as file", path);
       }
