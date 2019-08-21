@@ -124,20 +124,20 @@ public class ActionArtifactRollup {
       String priorityType = null;
       Collection<TeamWorkFlowArtifact> teamArts = action.getTeams();
       if (teamArts.size() == 1) {
-         priorityType = teamArts.iterator().next().getSoleAttributeValue(AtsAttributeTypes.PriorityType, "");
+         priorityType = teamArts.iterator().next().getSoleAttributeValue(AtsAttributeTypes.Priority, "");
       } else {
          for (TeamWorkFlowArtifact team : teamArts) {
             if (!team.isCancelled()) {
                if (priorityType == null) {
-                  priorityType = team.getSoleAttributeValue(AtsAttributeTypes.PriorityType, "");
-               } else if (!priorityType.equals(team.getSoleAttributeValue(AtsAttributeTypes.PriorityType, ""))) {
+                  priorityType = team.getSoleAttributeValue(AtsAttributeTypes.Priority, "");
+               } else if (!priorityType.equals(team.getSoleAttributeValue(AtsAttributeTypes.Priority, ""))) {
                   return;
                }
             }
          }
       }
       if (Strings.isValid(priorityType)) {
-         action.setSoleAttributeValue(AtsAttributeTypes.PriorityType, priorityType);
+         action.setSoleAttributeValue(AtsAttributeTypes.Priority, priorityType);
       }
    }
 

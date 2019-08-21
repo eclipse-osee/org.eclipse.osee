@@ -70,7 +70,7 @@ public class SprintDataBuilder {
 
          // retrieve and store unPlanned points
          Integer unPlannedPoints =
-            atsApi.getAttributeResolver().getSoleAttributeValue(sprintArt, AtsAttributeTypes.UnPlannedPoints, 0);
+            atsApi.getAttributeResolver().getSoleAttributeValue(sprintArt, AtsAttributeTypes.UnplannedPoints, 0);
          sprintData.setUnPlannedPoints(unPlannedPoints);
 
          // retrieve and store planned points
@@ -108,7 +108,7 @@ public class SprintDataBuilder {
       for (IAgileItem item : items) {
          boolean completed = item.isCompletedOrCancelled();
          boolean unPlanned =
-            atsApi.getAttributeResolver().getSoleAttributeValue(item, AtsAttributeTypes.UnPlannedWork, false);
+            atsApi.getAttributeResolver().getSoleAttributeValue(item, AtsAttributeTypes.UnplannedWork, false);
          Date completedCancelledDate = item.isCompleted() ? item.getCompletedDate() : item.getCancelledDate();
          // loop through all dates and add points for dates after item was completed/cancelled
          for (AgileSprintDateData dateBucket : sprintData.getDates()) {

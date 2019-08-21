@@ -179,7 +179,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
          //
          "<XWidget displayName=\"" + PRIORITY + "\" xwidgetType=\"XCombo(" + Collections.toString(",",
             AttributeTypeManager.getEnumerationValues(
-               AtsAttributeTypes.PriorityType)) + ")\" required=\"true\" horizontalLabel=\"true\"/>" +
+               AtsAttributeTypes.Priority)) + ")\" required=\"true\" horizontalLabel=\"true\"/>" +
          //
          "</xWidgets>";
    }

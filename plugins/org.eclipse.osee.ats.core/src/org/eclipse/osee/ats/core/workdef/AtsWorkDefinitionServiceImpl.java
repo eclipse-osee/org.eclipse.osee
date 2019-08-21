@@ -158,7 +158,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       if (workDefinition == null && atsApi.isWorkDefAsName()) {
          // If this artifact specifies it's own workflow definition, use it
          String workFlowDefName = atsApi.getAttributeResolver().getSoleAttributeValueAsString(teamDef,
-            ConvertAtsConfigGuidAttributesOperations.RelatedTaskWorkDefinition, "");
+            ConvertAtsConfigGuidAttributesOperations.RelatedTaskWorkflowDefinition, "");
          if (Strings.isValid(workFlowDefName)) {
             workDefinition = getWorkDefinitionByName(workFlowDefName);
          }

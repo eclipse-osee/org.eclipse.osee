@@ -461,7 +461,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testSetActionPriorityByKey() {
-      testSetActionByKey("", "5", AtsAttributeTypes.PriorityType, AttributeKey.Priority);
+      testSetActionByKey("", "5", AtsAttributeTypes.Priority, AttributeKey.Priority);
    }
 
    @Test
@@ -595,8 +595,8 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
          AtsClientService.get().getQueryServiceClient().getArtifact(teamWf).getLastModifiedBy());
       Assert.assertEquals(ChangeType.Improvement.name(),
          AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.ChangeType, ""));
-      Assert.assertEquals("3", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf,
-         AtsAttributeTypes.PriorityType, ""));
+      Assert.assertEquals("3",
+         AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, ""));
       Assert.assertEquals(ai, teamWf.getActionableItems().iterator().next());
       Assert.assertEquals(needBy,
          AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.NeedBy, ""));

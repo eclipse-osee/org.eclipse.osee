@@ -411,7 +411,7 @@ public class Pdd93CreateDemoAgile {
          }
       }
       changes.setSoleAttributeValue(sprint, AtsAttributeTypes.EndDate, cal.getTime());
-      changes.setSoleAttributeValue(sprint, AtsAttributeTypes.UnPlannedPoints, 45);
+      changes.setSoleAttributeValue(sprint, AtsAttributeTypes.UnplannedPoints, 45);
       changes.setSoleAttributeValue(sprint, AtsAttributeTypes.PlannedPoints, 200);
       changes.addAttribute(sprint, AtsAttributeTypes.Holiday, holiday1);
       changes.addAttribute(sprint, AtsAttributeTypes.Holiday, holiday2);

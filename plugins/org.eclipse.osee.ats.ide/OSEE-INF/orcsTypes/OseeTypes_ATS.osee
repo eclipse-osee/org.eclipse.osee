@@ -66,7 +66,7 @@ artifactType "Agile Sprint" extends "ats.State Machine" {
 	id 9088615648290692675
 	attribute "ats.Holiday"
 	attribute "ats.Planned Points"
-	attribute "ats.Un-Planned Points"
+	attribute "ats.Unplanned Points"
 	attribute "ats.kb.Story Name"
 }
 
@@ -193,7 +193,7 @@ artifactType "Team Definition" extends "Responsible Team" , "Abstract Access Con
 	attribute "ats.Team Uses Versions"
 	attribute "ats.Require Targeted Version"
 	attribute "ats.Baseline Branch Guid"
-	attribute "ats.Baseline Branch Uuid"
+	attribute "ats.Baseline Branch Id"
 	attribute "ats.Action Details Format"
 	attribute "ats.Allow Create Branch"
 	attribute "ats.Allow Commit Branch"
@@ -204,10 +204,10 @@ artifactType "Team Definition" extends "Responsible Team" , "Abstract Access Con
 	attribute "ats.Related Peer Workflow Definition Reference"
 	attribute "ats.Workflow Definition"
 	attribute "ats.Workflow Definition Reference"
-	attribute "ats.Id Prefix"
-	attribute "ats.Id Sequence Name"
+	attribute "ats.ATS Id Prefix"
+	attribute "ats.ATS Id Sequence Name"
 	attribute "ats.Team Workflow Artifact Type"
-	attribute "ats.closure.Active"
+	attribute "ats.Closure Active"
 	attribute "ats.Work Type"
 	attribute "ats.CSCI"
 	attribute "ats.Program Uuid"
@@ -229,11 +229,11 @@ artifactType "Version" extends "ats.Ats Artifact" {
 	attribute "ats.Full Name"
 	attribute "ats.Next Version"
 	attribute "ats.Baseline Branch Guid"
-	attribute "ats.Baseline Branch Uuid"
+	attribute "ats.Baseline Branch Id"
 	attribute "ats.Release Date"
 	attribute "ats.Released"
 	attribute "ats.Version Locked"
-	attribute "ats.TestRunToSourceLocator"
+	attribute "ats.Test Run To Source Locator"
 	attribute "ats.closure.Closure State"
 	attribute "ats.Allow Web Export"
 }
@@ -241,7 +241,7 @@ artifactType "Version" extends "ats.Ats Artifact" {
 abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
 	id 71
 	attribute "ats.Work Package"
-	attribute "ats.Category"
+	attribute "ats.Category1"
 	attribute "ats.Category2"
 	attribute "ats.Category3"
 	attribute "ats.Points"
@@ -297,7 +297,7 @@ artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Cont
 	attribute "ats.Actionable Item Reference"
 	attribute "ats.Branch Metrics"
 	attribute "ats.Baseline Branch Guid"
-	attribute "ats.Baseline Branch Uuid"
+	attribute "ats.Baseline Branch Id"
 	attribute "ats.Validation Required"
 	attribute "ats.Weekly Benefit"
 	attribute "ats.Change Type"
@@ -493,7 +493,7 @@ attributeType "ats.Planned Points" extends IntegerAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "ats.Un-Planned Points" extends IntegerAttribute {
+attributeType "ats.Unplanned Points" extends IntegerAttribute {
 	id 284254492767020802
 	dataProvider DefaultAttributeDataProvider
 	min 0
@@ -779,7 +779,7 @@ attributeType "ats.Baseline Branch Guid" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "ats.Baseline Branch Uuid" extends StringAttribute {
+attributeType "ats.Baseline Branch Id" extends StringAttribute {
 	id 1152932018686787753
 	dataProvider DefaultAttributeDataProvider
 	min 0
@@ -1519,7 +1519,7 @@ attributeType "ats.Goal Order Vote" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "ats.Category" extends StringAttribute {
+attributeType "ats.Category1" extends StringAttribute {
 	id 1152921504606847212
 	dataProvider DefaultAttributeDataProvider
 	min 0
@@ -2046,7 +2046,7 @@ attributeType "ats.Id" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "ats.Id Prefix" extends StringAttribute {
+attributeType "ats.ATS Id Prefix" extends StringAttribute {
 	id 1162773128791720837
 	dataProvider DefaultAttributeDataProvider
 	min 0
@@ -2055,7 +2055,7 @@ attributeType "ats.Id Prefix" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "ats.Id Sequence Name" extends StringAttribute {
+attributeType "ats.ATS Id Sequence Name" extends StringAttribute {
 	id 1163054603768431493
 	dataProvider DefaultAttributeDataProvider
 	min 0
@@ -2064,7 +2064,7 @@ attributeType "ats.Id Sequence Name" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "ats.TestRunToSourceLocator" extends StringAttribute {
+attributeType "ats.Test Run To Source Locator" extends StringAttribute {
 	id 130595201919637916
 	dataProvider DefaultAttributeDataProvider
 	min 0
@@ -2072,7 +2072,7 @@ attributeType "ats.TestRunToSourceLocator" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "ats.closure.Active" extends BooleanAttribute {
+attributeType "ats.Closure Active" extends BooleanAttribute {
 	id 1152921875139002555
 	dataProvider DefaultAttributeDataProvider
 	min 0

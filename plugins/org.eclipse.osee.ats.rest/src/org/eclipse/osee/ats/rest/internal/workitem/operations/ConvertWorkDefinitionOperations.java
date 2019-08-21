@@ -110,7 +110,7 @@ public class ConvertWorkDefinitionOperations {
       int count = 0;
       IAtsChangeSet changes = atsApi.createChangeSet("Update Team Workflow Related Task WorkDef");
       Collection<IAtsWorkItem> workItems = atsApi.getQueryService().createQuery(WorkItemType.TeamWorkflow).andExists(
-         ConvertAtsConfigGuidAttributesOperations.RelatedTaskWorkDefinition).getItems();
+         ConvertAtsConfigGuidAttributesOperations.RelatedTaskWorkflowDefinition).getItems();
       int size = workItems.size();
       for (IAtsWorkItem workItem : workItems) {
          boolean deleted = atsApi.getStoreService().isDeleted(workItem);
@@ -119,7 +119,7 @@ public class ConvertWorkDefinitionOperations {
          }
          rd.logf(String.format("TeamWfs TaskRel: Processing WorkItem WorkDef Set %s / %s", count++, size));
          updatedCount = setNewWorkDefRefIfNecessary(rd, updatedCount, changes, workItem.getStoreObject(),
-            ConvertAtsConfigGuidAttributesOperations.RelatedTaskWorkDefinition,
+            ConvertAtsConfigGuidAttributesOperations.RelatedTaskWorkflowDefinition,
             AtsAttributeTypes.RelatedTaskWorkDefinitionReference);
       }
       changes.executeIfNeeded();
@@ -137,7 +137,7 @@ public class ConvertWorkDefinitionOperations {
       Map<AttributeTypeToken, AttributeTypeToken> oldAttrTypeToNewTypeMap = new HashMap<>();
       oldAttrTypeToNewTypeMap.put(ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition,
          AtsAttributeTypes.WorkflowDefinitionReference);
-      oldAttrTypeToNewTypeMap.put(ConvertAtsConfigGuidAttributesOperations.RelatedTaskWorkDefinition,
+      oldAttrTypeToNewTypeMap.put(ConvertAtsConfigGuidAttributesOperations.RelatedTaskWorkflowDefinition,
          AtsAttributeTypes.RelatedTaskWorkDefinitionReference);
       oldAttrTypeToNewTypeMap.put(ConvertAtsConfigGuidAttributesOperations.RelatedPeerWorkflowDefinition,
          AtsAttributeTypes.RelatedPeerWorkDefinitionReference);
@@ -177,7 +177,8 @@ public class ConvertWorkDefinitionOperations {
             atsApi.getAttributeResolver().getSoleAttributeValue(artifact, newAttrType, ArtifactId.SENTINEL);
 
          if (newWorkDefArt.isInvalid()) {
-            IAtsWorkDefinition workDefinition = atsApi.getWorkDefinitionService().getWorkDefinitionByName(oldWorkDefName);
+            IAtsWorkDefinition workDefinition =
+               atsApi.getWorkDefinitionService().getWorkDefinitionByName(oldWorkDefName);
             if (workDefinition == null || workDefinition.isInvalid()) {
                rd.error(String.format("null/invalid Work Definition for work def name [%s] and art %s", oldWorkDefName,
                   artifact));

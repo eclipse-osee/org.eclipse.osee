@@ -99,7 +99,7 @@ public class ActionPage {
       page.param("id", workItem.getId());
       page.param("atsId", workItem.getAtsId());
       page.param("originator", getCreatedByStr(workItem, action));
-      page.param("priority", action.getSoleAttributeAsString(AtsAttributeTypes.PriorityType, ""));
+      page.param("priority", action.getSoleAttributeAsString(AtsAttributeTypes.Priority, ""));
       page.param("changeType", action.getSoleAttributeAsString(AtsAttributeTypes.ChangeType, ""));
       page.param("needBy", action.getSoleAttributeAsString(AtsAttributeTypes.NeedBy, ""));
       page.param("workflow", action.getArtifactType().toString());

@@ -98,8 +98,8 @@ import org.eclipse.osee.ats.rest.internal.query.TokenSearchOperations;
 import org.eclipse.osee.ats.rest.internal.world.WorldResource;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.JsonUtil;
@@ -1129,7 +1129,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       Conditions.assertNotNull(itemArt, "Work Item not found with id %s", itemId);
       IAgileItem item = atsApi.getWorkItemService().getAgileItem(itemArt);
       IAtsChangeSet changes = atsApi.createChangeSet("Set Agile UnPlanned", AtsCoreUsers.SYSTEM_USER);
-      changes.setSoleAttributeValue(item, AtsAttributeTypes.UnPlannedWork, unPlanned);
+      changes.setSoleAttributeValue(item, AtsAttributeTypes.UnplannedWork, unPlanned);
       changes.execute();
       return Response.ok().build();
    }

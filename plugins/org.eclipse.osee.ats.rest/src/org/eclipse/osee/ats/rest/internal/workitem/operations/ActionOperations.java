@@ -65,8 +65,8 @@ public class ActionOperations {
          changes.setSoleAttributeValue(workItem, CoreAttributeTypes.Name, values.iterator().next());
          attrTypeId = CoreAttributeTypes.Name;
       } else if (attrTypeIdOrKey.equals(AttributeKey.Priority.name())) {
-         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.PriorityType, values.iterator().next());
-         attrTypeId = AtsAttributeTypes.PriorityType;
+         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.Priority, values.iterator().next());
+         attrTypeId = AtsAttributeTypes.Priority;
       } else if (attrTypeIdOrKey.equals(AttributeKey.ColorTeam.name())) {
          changes.setSoleAttributeValue(workItem, AtsAttributeTypes.ColorTeam, values.iterator().next());
          attrTypeId = AtsAttributeTypes.ColorTeam;

@@ -144,7 +144,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
             writer.writeEndArray();
          }
          writer.writeStringField("ChangeType", workItemArt.getSoleAttributeAsString(AtsAttributeTypes.ChangeType, ""));
-         writer.writeStringField("Priority", workItemArt.getSoleAttributeAsString(AtsAttributeTypes.PriorityType, ""));
+         writer.writeStringField("Priority", workItemArt.getSoleAttributeAsString(AtsAttributeTypes.Priority, ""));
          writer.writeStringField("State", workItem.getStateMgr().getCurrentStateName());
          if (options.contains(WorkItemWriterOptions.DatesAsLong)) {
             writer.writeStringField("CreatedDate", String.valueOf(workItem.getCreatedDate().getTime()));
@@ -183,7 +183,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
          writer.writeStringField("TeamName", ActionPage.getTeamStr(atsApi, workItemArt));
          writeAssignees(writer, workItemArt, workItem);
          writeType(writer, workItemArt, workItem, "ChangeType", AtsAttributeTypes.ChangeType);
-         writeType(writer, workItemArt, workItem, "Priority", AtsAttributeTypes.PriorityType);
+         writeType(writer, workItemArt, workItem, "Priority", AtsAttributeTypes.Priority);
          writeState(writer, workItemArt, workItem);
          if (options.contains(WorkItemWriterOptions.DatesAsLong)) {
             writer.writeStringField("CreatedDate", String.valueOf(workItem.getCreatedDate().getTime()));

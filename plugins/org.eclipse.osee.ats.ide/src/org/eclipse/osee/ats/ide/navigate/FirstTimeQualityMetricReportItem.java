@@ -151,7 +151,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
             Collection<TeamWorkFlowArtifact> arts =
                teamMet.getWorkflowsOriginatedBetween(nextReleaseStartDate, nextReleaseEndDate);
             for (TeamWorkFlowArtifact team : arts) {
-               String priorityStr = team.getSoleAttributeValue(AtsAttributeTypes.PriorityType, "");
+               String priorityStr = team.getSoleAttributeValue(AtsAttributeTypes.Priority, "");
                if (!team.isCancelled() && ChangeTypeUtil.getChangeType(
                   team) == ChangeType.Problem && (priorityStr.equals("1") || priorityStr.equals("2"))) {
                   numOrigDurningNextReleaseCycle++;

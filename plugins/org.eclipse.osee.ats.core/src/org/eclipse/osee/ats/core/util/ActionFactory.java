@@ -156,7 +156,7 @@ public class ActionFactory implements IAtsActionFactory {
 
       if (data.isUnplanned()) {
          for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
-            changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.UnPlannedWork, true);
+            changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.UnplannedWork, true);
          }
       }
 
@@ -551,7 +551,7 @@ public class ActionFactory implements IAtsActionFactory {
       setArtifactIdentifyData(toTeam, fromAction.getName(),
          attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.Description, ""),
          atsApi.getChangeType(fromAction),
-         attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.PriorityType, ""),
+         attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.Priority, ""),
          attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.ValidationRequired, false),
          attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.NeedBy, (Date) null), changes);
    }
@@ -568,7 +568,7 @@ public class ActionFactory implements IAtsActionFactory {
          atsApi.setChangeType(atsObject, changeType, changes);
       }
       if (Strings.isValid(priority)) {
-         changes.addAttribute(atsObject, AtsAttributeTypes.PriorityType, priority);
+         changes.addAttribute(atsObject, AtsAttributeTypes.Priority, priority);
       }
       if (needByDate != null) {
          changes.addAttribute(atsObject, AtsAttributeTypes.NeedBy, needByDate);

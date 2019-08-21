@@ -51,7 +51,7 @@ public class WorkDefTeamDefault extends AbstractWorkDef {
             new CompositeLayoutItem(6, //
                new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)",
                   REQUIRED_FOR_TRANSITION), //
-               new WidgetDefinition(AtsAttributeTypes.PriorityType, "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)",
+               new WidgetDefinition(AtsAttributeTypes.Priority, "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)",
                   REQUIRED_FOR_TRANSITION), //
                new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam", HORIZONTAL_LABEL) //
             ), //
@@ -72,7 +72,7 @@ public class WorkDefTeamDefault extends AbstractWorkDef {
             new CompositeLayoutItem(6, //
                new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)",
                   REQUIRED_FOR_TRANSITION), //
-               new WidgetDefinition(AtsAttributeTypes.PriorityType, "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)",
+               new WidgetDefinition(AtsAttributeTypes.Priority, "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)",
                   REQUIRED_FOR_TRANSITION), //
                new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam", HORIZONTAL_LABEL) //
             ), //

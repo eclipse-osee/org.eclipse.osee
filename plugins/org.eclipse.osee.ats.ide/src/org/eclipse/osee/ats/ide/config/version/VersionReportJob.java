@@ -163,15 +163,13 @@ public class VersionReportJob extends Job {
                if (monitor != null) {
                   monitor.subTask(str);
                }
-               sb.append(AHTML.addRowMultiColumnTable(
-                  new String[] {
-                     "Action",
-                     teamWf.getTeamName(),
-                     teamWf.getSoleAttributeValue(AtsAttributeTypes.PriorityType, ""),
-                     ChangeTypeUtil.getChangeTypeStr(teamWf),
-                     teamWf.getName(),
-                     teamWf.getAtsId()},
-                  null, x % 2 == 0 ? null : "#cccccc"));
+               sb.append(AHTML.addRowMultiColumnTable(new String[] {
+                  "Action",
+                  teamWf.getTeamName(),
+                  teamWf.getSoleAttributeValue(AtsAttributeTypes.Priority, ""),
+                  ChangeTypeUtil.getChangeTypeStr(teamWf),
+                  teamWf.getName(),
+                  teamWf.getAtsId()}, null, x % 2 == 0 ? null : "#cccccc"));
 
                for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(teamWf)) {
                   sb.append(

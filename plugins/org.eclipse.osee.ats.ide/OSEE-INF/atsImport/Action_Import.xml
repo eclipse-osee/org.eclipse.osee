@@ -47,7 +47,7 @@
     <Cell><Data ss:Type="String">Priority</Data></Cell>
     <Cell><Data ss:Type="String">Version</Data></Cell>
     <Cell><Data ss:Type="String">EstimatedHours</Data></Cell>
-    <Cell><Data ss:Type="String">ats.Category</Data></Cell>
+    <Cell><Data ss:Type="String">ats.Category1</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">Fix the SAW Editor</Data></Cell>

@@ -49,7 +49,7 @@
     <Cell><Data ss:Type="String">Estimated Hours</Data></Cell>
     <Cell><Data ss:Type="String">Percent Complete</Data></Cell>
     <Cell><Data ss:Type="String">Notes</Data></Cell>
-    <Cell><Data ss:Type="String">ats.Category</Data></Cell>
+    <Cell><Data ss:Type="String">ats.Category1</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">1st Task</Data></Cell>

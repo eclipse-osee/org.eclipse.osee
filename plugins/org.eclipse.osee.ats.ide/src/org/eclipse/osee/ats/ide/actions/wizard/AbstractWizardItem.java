@@ -355,7 +355,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
       XCheckBox unPlanedCheckBox = (XCheckBox) teamDefFieldToWidget.get(teamDef, WizardFields.UnPlannedWork);
       if (unPlanedCheckBox != null) {
          boolean unplanned = unPlanedCheckBox.isChecked();
-         changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.UnPlannedWork, unplanned);
+         changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.UnplannedWork, unplanned);
       }
    }
 

@@ -49,7 +49,7 @@ public class SprintConfigOperations {
       configs.setPlannedPoints(
          atsApi.getAttributeResolver().getSoleAttributeValue(sprint, AtsAttributeTypes.PlannedPoints, 0).toString());
       configs.setUnPlannedPoints(
-         atsApi.getAttributeResolver().getSoleAttributeValue(sprint, AtsAttributeTypes.UnPlannedPoints, 0).toString());
+         atsApi.getAttributeResolver().getSoleAttributeValue(sprint, AtsAttributeTypes.UnplannedPoints, 0).toString());
       for (Object holiday : atsApi.getAttributeResolver().getAttributeValues(sprint, AtsAttributeTypes.Holiday)) {
          if (holiday instanceof Date) {
             configs.addHoliday(AgileUtil.getDateStr((Date) holiday));
@@ -79,7 +79,7 @@ public class SprintConfigOperations {
          return sprintConfig;
       }
       updatePointsIfNecessary(sprintConfig.getUnPlannedPoints(), sprintConfig, sprint,
-         AtsAttributeTypes.UnPlannedPoints, changes);
+         AtsAttributeTypes.UnplannedPoints, changes);
       if (sprintConfig.getResults().isErrors()) {
          return sprintConfig;
       }

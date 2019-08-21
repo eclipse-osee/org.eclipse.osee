@@ -80,7 +80,7 @@ public class SprintUtil {
          }
       }
       if (sprintData.getUnPlannedPoints() != null) {
-         changes.setSoleAttributeValue(sprint, AtsAttributeTypes.UnPlannedPoints, sprintData.getUnPlannedPoints());
+         changes.setSoleAttributeValue(sprint, AtsAttributeTypes.UnplannedPoints, sprintData.getUnPlannedPoints());
       }
       if (sprintData.getPlannedPoints() != null) {
          changes.setSoleAttributeValue(sprint, AtsAttributeTypes.PlannedPoints, sprintData.getPlannedPoints());
@@ -136,7 +136,7 @@ public class SprintUtil {
       IAtsVersion ver = atsApi.getVersionService().getTargetedVersion(workItem);
       item.setVersion(ver == null ? "" : ver.getName());
       Boolean unplanned =
-         atsApi.getAttributeResolver().getSoleAttributeValue(aItem, AtsAttributeTypes.UnPlannedWork, false);
+         atsApi.getAttributeResolver().getSoleAttributeValue(aItem, AtsAttributeTypes.UnplannedWork, false);
       item.setUnPlannedWork(unplanned ? "U" : "");
       item.setNotes(atsApi.getAttributeResolver().getSoleAttributeValue(aItem, AtsAttributeTypes.WorkflowNotes, ""));
       item.setCreateDate(CreatedDateColumn.getDateStr(workItem));

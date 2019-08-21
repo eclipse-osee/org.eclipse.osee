@@ -70,7 +70,7 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
                return false;
             }
          }
-         PromptChangeUtil.promptChangeAttribute(teams, AtsAttributeTypes.PriorityType, persist, false);
+         PromptChangeUtil.promptChangeAttribute(teams, AtsAttributeTypes.Priority, persist, false);
          return true;
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't change priority", ex);

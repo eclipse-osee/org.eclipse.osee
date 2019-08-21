@@ -97,7 +97,7 @@ public class WfePrint extends Action {
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Change Type: ", ChangeTypeUtil.getChangeTypeStr(sma)),
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Priority: ",
-            sma.getSoleAttributeValue(AtsAttributeTypes.PriorityType, "")),
+            sma.getSoleAttributeValue(AtsAttributeTypes.Priority, "")),
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Need By: ", DeadlineColumn.getDateStr(sma))}));
 
       String computedId = AtsClientService.get().getWorkItemService().getCombinedPcrId(sma);

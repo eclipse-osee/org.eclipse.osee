@@ -46,7 +46,8 @@ public class AtsConfig2DataExample extends AbstractAtsConfig2Data {
       IAtsTeamDefinition dtsSoftwareTeam =
          AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(dtsSoftwareArt);
 
-      changes.setSoleAttributeValue(dtsSoftwareTeam, ConvertAtsConfigGuidAttributesOperations.RelatedTaskWorkDefinition,
+      changes.setSoleAttributeValue(dtsSoftwareTeam,
+         ConvertAtsConfigGuidAttributesOperations.RelatedTaskWorkflowDefinition,
          AtsWorkDefinitionTokens.WorkDef_Task_AtsConfig2Example);
       changes.setSoleAttributeValue(dtsSoftwareTeam, AtsAttributeTypes.RelatedTaskWorkDefinitionReference,
          AtsWorkDefinitionTokens.WorkDef_Task_AtsConfig2Example);

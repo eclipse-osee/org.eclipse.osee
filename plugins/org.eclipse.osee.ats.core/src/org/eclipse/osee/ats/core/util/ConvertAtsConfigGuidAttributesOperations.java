@@ -37,8 +37,9 @@ public class ConvertAtsConfigGuidAttributesOperations {
    // Remove static after 26.0
    public static final AttributeTypeToken WorkflowDefinition = AtsAttributeTypes.createType(1152921504606847149L,
       "Workflow Definition", "Specific work flow definition id used by this Workflow artifact");
-   public static final AttributeTypeToken RelatedTaskWorkDefinition = AtsAttributeTypes.createType(1152921504606847152L,
-      "Related Task Workflow Definition", "Specific work flow definition id used by Tasks related to this Workflow");
+   public static final AttributeTypeToken RelatedTaskWorkflowDefinition =
+      AtsAttributeTypes.createType(1152921504606847152L, "Related Task Workflow Definition",
+         "Specific work flow definition id used by Tasks related to this Workflow");
    public static final AttributeTypeToken RelatedPeerWorkflowDefinition =
       AtsAttributeTypes.createType(1152921504606847870L, "Related Peer Workflow Definition",
          "Specific work flow definition id used by Peer To Peer Reviews for this Team");

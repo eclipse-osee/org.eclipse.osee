@@ -278,8 +278,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          changes.setSoleAttributeValue(workItem, CoreAttributeTypes.Name, values.iterator().next());
          attrTypeId = CoreAttributeTypes.Name;
       } else if (attrTypeIdOrKey.equals(AttributeKey.Priority.name())) {
-         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.PriorityType, values.iterator().next());
-         attrTypeId = AtsAttributeTypes.PriorityType;
+         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.Priority, values.iterator().next());
+         attrTypeId = AtsAttributeTypes.Priority;
       } else if (attrTypeIdOrKey.equals(AttributeKey.ColorTeam.name())) {
          changes.setSoleAttributeValue(workItem, AtsAttributeTypes.ColorTeam, values.iterator().next());
          attrTypeId = AtsAttributeTypes.ColorTeam;
@@ -477,7 +477,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          if (entry.getKey().equals("Title")) {
             query.andName(entry.getValue().iterator().next(), QueryOption.CONTAINS_MATCH_OPTIONS);
          } else if (entry.getKey().equals("Priority")) {
-            query.andAttr(AtsAttributeTypes.PriorityType, entry.getValue());
+            query.andAttr(AtsAttributeTypes.Priority, entry.getValue());
          } else if (entry.getKey().equals("ColorTeam")) {
             query.andColorTeam(entry.getValue().iterator().next());
          } else if (entry.getKey().equals("Assignee")) {

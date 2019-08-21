@@ -253,7 +253,7 @@ public class ExcelAtsActionArtifactExtractor {
                      createdBy, null, CreateTeamOption.Duplicate_If_Exists);
                   changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.Description, aData.desc);
                   if (Strings.isValid(aData.priorityStr) && !aData.priorityStr.equals("<Select>")) {
-                     changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.PriorityType, aData.priorityStr);
+                     changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, aData.priorityStr);
                   }
                   changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.ChangeType, aData.changeType);
 
@@ -390,8 +390,7 @@ public class ExcelAtsActionArtifactExtractor {
    }
 
    public Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> getTeamDefToAias(Collection<IAtsActionableItem> aias) {
-      Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> teamDefToAias =
-         new HashMap<>();
+      Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> teamDefToAias = new HashMap<>();
       for (IAtsActionableItem aia : aias) {
          IAtsTeamDefinition teamDef = TeamDefinitions.getImpactedTeamDefs(Arrays.asList(aia)).iterator().next();
          if (teamDefToAias.containsKey(teamDef)) {

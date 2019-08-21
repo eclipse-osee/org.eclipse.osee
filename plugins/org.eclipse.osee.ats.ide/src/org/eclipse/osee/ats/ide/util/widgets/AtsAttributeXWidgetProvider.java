@@ -61,7 +61,7 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.setXWidgetName(XTextFlatDam.WIDGET_ID);
-      } else if (attributeType.matches(AtsAttributeTypes.DslSheet, AtsAttributeTypes.TestToSourceLocator)) {
+      } else if (attributeType.matches(AtsAttributeTypes.DslSheet, AtsAttributeTypes.TestRunToSourceLocator)) {
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.getXOptionHandler().add(XOption.FILL_VERTICALLY);

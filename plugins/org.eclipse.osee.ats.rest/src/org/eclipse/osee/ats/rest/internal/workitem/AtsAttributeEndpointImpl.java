@@ -85,7 +85,7 @@ public final class AtsAttributeEndpointImpl implements AtsAttributeEndpointApi {
       } else if (id.equals(AttributeKey.IPT.name())) {
          getEnumValues(values, AtsAttributeTypes.IPT.getId());
       } else if (id.equals(AttributeKey.Priority.name())) {
-         getEnumValues(values, AtsAttributeTypes.PriorityType.getId());
+         getEnumValues(values, AtsAttributeTypes.Priority.getId());
       } else if (Strings.isNumeric(id)) {
          getEnumValues(values, Long.valueOf(id));
       }

@@ -99,7 +99,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       ArrayList<AtsSearchData> searches = new ArrayList<>();
       ArtifactId userArt = atsUser.getStoreObject();
       for (IAttribute<Object> attr : atsClient.getAttributeResolver().getAttributes(userArt,
-         AtsAttributeTypes.QuickSearch)) {
+         AtsAttributeTypes.AtsQuickSearch)) {
          String jsonValue = (String) attr.getValue();
          if (jsonValue.contains("\"" + namespace + "\"")) {
             try {
@@ -124,7 +124,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       try {
          IAttribute<Object> attr = getAttrById(userArt, data.getId());
          if (attr == null) {
-            changes.addAttribute((IAtsObject) atsUser, AtsAttributeTypes.QuickSearch, getStoreString(data));
+            changes.addAttribute((IAtsObject) atsUser, AtsAttributeTypes.AtsQuickSearch, getStoreString(data));
          } else {
             changes.setAttribute(userArt, attr, getStoreString(data));
          }
@@ -139,7 +139,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    private IAttribute<Object> getAttrById(ArtifactId artifact, Long attrId) {
       for (IAttribute<Object> attr : atsClient.getAttributeResolver().getAttributes(artifact,
-         AtsAttributeTypes.QuickSearch)) {
+         AtsAttributeTypes.AtsQuickSearch)) {
          String jsonValue = (String) attr.getValue();
          try {
             AtsSearchData data = fromJson(jsonValue);

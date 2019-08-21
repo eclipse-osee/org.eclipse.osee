@@ -101,7 +101,7 @@ public class ImportActionsViaSpreadsheetTest {
 
       Assert.assertNotNull(testWf);
       Assert.assertEquals("What needs to be done by Test team", testWf.getDescription());
-      Assert.assertEquals("5", testWf.getSoleAttributeValue(AtsAttributeTypes.PriorityType, ""));
+      Assert.assertEquals("5", testWf.getSoleAttributeValue(AtsAttributeTypes.Priority, ""));
       Assert.assertTrue(testWf.getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0) == 4.0);
       Assert.assertEquals("Improvement", testWf.getSoleAttributeValue(AtsAttributeTypes.ChangeType, null));
       Assert.assertEquals("SAW_Bld_3", AtsClientService.get().getVersionService().getTargetedVersion(testWf).getName());

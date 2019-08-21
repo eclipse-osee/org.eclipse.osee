@@ -54,7 +54,7 @@ public class WorkDefSprint extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.KanbanStoryName, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(4, //
                new WidgetDefinition(AtsAttributeTypes.PlannedPoints, "XIntegerDam"), //
-               new WidgetDefinition(AtsAttributeTypes.UnPlannedPoints, "XIntegerDam") //
+               new WidgetDefinition(AtsAttributeTypes.UnplannedPoints, "XIntegerDam") //
             ), //
             new CompositeLayoutItem(4, //
                new WidgetDefinition("Open Sprint Summary", "XOpenSprintSummaryButton"), //

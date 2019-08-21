@@ -61,8 +61,8 @@ public interface IPopulateDemoDatabaseTest {
 
    default void testTeamContents(IAtsTeamWorkflow teamWf, String title, String priority, String versionName, String currentStateName, String actionableItemStr, String assigneeStr, ArtifactTypeToken artifactType, IAtsTeamDefinition teamDef) {
       Assert.assertEquals(currentStateName, teamWf.getStateMgr().getCurrentStateName());
-      Assert.assertEquals(priority, AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf,
-         AtsAttributeTypes.PriorityType, ""));
+      Assert.assertEquals(priority,
+         AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, ""));
       // want targeted version, not error/exception
       String targetedVerStr = "";
       IAtsVersion version = AtsClientService.get().getVersionService().getTargetedVersion(teamWf);

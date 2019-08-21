@@ -93,7 +93,7 @@ public class WorkDefTeamDemoSwDesign extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(6, //
                new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(Improvement,Problem,Refinement,Support)"), //
-               new WidgetDefinition(AtsAttributeTypes.PriorityType, "XComboDam(1,2,3,4,5)"), //
+               new WidgetDefinition(AtsAttributeTypes.Priority, "XComboDam(1,2,3,4,5)"), //
                new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam") //
             ), //
             new WidgetDefinition(AtsAttributeTypes.ValidationRequired, "XComboBooleanDam"), //
@@ -112,7 +112,7 @@ public class WorkDefTeamDemoSwDesign extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(6, //
                new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(Improvement,Problem,Refinement,Support)"), //
-               new WidgetDefinition(AtsAttributeTypes.PriorityType, "XComboDam(1,2,3,4,5)"), //
+               new WidgetDefinition(AtsAttributeTypes.Priority, "XComboDam(1,2,3,4,5)"), //
                new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam") //
             ), //
             new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"));

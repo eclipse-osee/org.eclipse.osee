@@ -214,7 +214,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       changes.deleteAttributes(teamWf, AtsAttributeTypes.Resolution);
       changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.Description, "description 4");
       ChangeTypeUtil.setChangeType(teamWf, ChangeType.Support);
-      changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.PriorityType, "3");
+      changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.Priority, "3");
       AtsClientService.get().getVersionService().setTargetedVersion(teamWf, getSawBld3(), changes);
       changes.execute();
    }
@@ -240,7 +240,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes1");
       changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.Description, "description 2");
       changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.ChangeType, ChangeType.Problem.name());
-      changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.PriorityType, "2");
+      changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.Priority, "2");
       changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.ValidationRequired, "true");
       AtsClientService.get().getVersionService().setTargetedVersion(teamWf, getSawBld1(), changes);
       changes.execute();
@@ -271,8 +271,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       testEquals("Description", "description", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
          teamWf, AtsAttributeTypes.Description, null));
       testEquals("Change Type", ChangeType.Improvement, ChangeTypeUtil.getChangeType(teamWf));
-      testEquals("Priority", "1", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf,
-         AtsAttributeTypes.PriorityType, null));
+      testEquals("Priority", "1",
+         AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, null));
    }
 
    private void validateActionAtEnd(IAtsTeamWorkflow teamWf) {
@@ -288,8 +288,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       testEquals("Description", "description 4", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
          teamWf, AtsAttributeTypes.Description, null));
       testEquals("Change Type", ChangeType.Support, ChangeTypeUtil.getChangeType(teamWf));
-      testEquals("Priority", "3", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf,
-         AtsAttributeTypes.PriorityType, null));
+      testEquals("Priority", "3",
+         AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, null));
       testEquals("Validation Required", false, AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
          teamWf, AtsAttributeTypes.ValidationRequired, null));
 
