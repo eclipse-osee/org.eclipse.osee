@@ -19,6 +19,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Attribute;
@@ -47,10 +48,6 @@ public class ExternalArtifactManagerTest {
    @Mock private ArtifactTypes artifactTypeCache;
    @Mock private OrcsSession session;
 
-   @Mock private ArtifactReadOnlyImpl readable1;
-   @Mock private ArtifactReadOnlyImpl readable2;
-   @Mock private ArtifactReadOnlyImpl readable3;
-
    @Mock private Artifact artifact1;
    @Mock private Artifact artifact2;
    @Mock private Artifact artifact3;
@@ -65,12 +62,26 @@ public class ExternalArtifactManagerTest {
    // @formatter:on
 
    private ExternalArtifactManager proxyManager;
+   private ArtifactReadOnlyImpl readable1;
+   private ArtifactReadOnlyImpl readable2;
+   private ArtifactReadOnlyImpl readable3;
 
    @Before
    public void setUp() throws Exception {
       initMocks(this);
 
       proxyManager = new ExternalArtifactManagerImpl(relationManager, artifactTypeCache);
+
+      when(artifact1.getLocalId()).thenReturn(1);
+      when(artifact2.getLocalId()).thenReturn(2);
+      when(artifact3.getLocalId()).thenReturn(3);
+
+      readable1 =
+         new ArtifactReadOnlyImpl(proxyManager, relationManager, session, artifact1, CoreArtifactTypes.Artifact);
+      readable2 =
+         new ArtifactReadOnlyImpl(proxyManager, relationManager, session, artifact2, CoreArtifactTypes.Artifact);
+      readable3 =
+         new ArtifactReadOnlyImpl(proxyManager, relationManager, session, artifact3, CoreArtifactTypes.Artifact);
    }
 
    @Test
@@ -107,10 +118,6 @@ public class ExternalArtifactManagerTest {
 
    @Test
    public void testAsArtifacts() {
-      when(readable1.getProxiedObject()).thenReturn(artifact1);
-      when(readable2.getProxiedObject()).thenReturn(artifact2);
-      when(readable3.getProxiedObject()).thenReturn(artifact3);
-
       List<? extends ArtifactReadable> expected = Arrays.asList(readable1, readable2, readable3);
 
       ResultSet<? extends Artifact> actuals = proxyManager.asInternalArtifacts(expected);

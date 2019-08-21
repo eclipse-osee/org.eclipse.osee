@@ -27,8 +27,6 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
  * @author Megumi Telles
  */
 public class ExternalArtifactManagerImpl implements ExternalArtifactManager {
-
-   private final Function<ArtifactReadable, Artifact> readableToArtifact;
    private final RelationManager relationManager;
    private final ArtifactTypes artifactTypeCache;
 
@@ -38,13 +36,12 @@ public class ExternalArtifactManagerImpl implements ExternalArtifactManager {
 
    public ExternalArtifactManagerImpl(RelationManager relationManager, ArtifactTypes artifactTypeCache) {
       this.relationManager = relationManager;
-      this.readableToArtifact = new ReadableToArtifactFunction();
       this.artifactTypeCache = artifactTypeCache;
    }
 
    @Override
    public Artifact asInternalArtifact(ArtifactReadable external) {
-      return external == null || external.isInvalid() ? null : ((ArtifactReadOnlyImpl) external).getProxiedObject();
+      return external instanceof ArtifactReadOnlyImpl && external.isValid() ? ((ArtifactReadOnlyImpl) external).getProxiedObject() : null;
    }
 
    @Override
@@ -60,7 +57,7 @@ public class ExternalArtifactManagerImpl implements ExternalArtifactManager {
 
    @Override
    public ResultSet<? extends Artifact> asInternalArtifacts(Iterable<? extends ArtifactReadable> externals) {
-      Iterable<Artifact> transformed = Iterables.transform(externals, readableToArtifact);
+      Iterable<Artifact> transformed = Iterables.transform(externals, this::asInternalArtifact);
       return ResultSets.newResultSet(transformed);
    }
 
@@ -89,12 +86,4 @@ public class ExternalArtifactManagerImpl implements ExternalArtifactManager {
          });
       return ResultSets.newResultSet(transformed);
    }
-
-   private final class ReadableToArtifactFunction implements Function<ArtifactReadable, Artifact> {
-
-      @Override
-      public Artifact apply(ArtifactReadable external) {
-         return asInternalArtifact(external);
-      }
-   };
 }
