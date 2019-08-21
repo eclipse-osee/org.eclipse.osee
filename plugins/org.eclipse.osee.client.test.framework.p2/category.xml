@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.osee.client.test.framework.feature_0.26.0.qualifier.jar" id="org.eclipse.osee.client.test.framework.feature" version="0.26.0.qualifier">
+   <bundle id="org.eclipse.osee.client.test.framework" version="0.26.0.qualifier">
       <category name="org.eclipse.osee.test.framework"/>
-   </feature>
-   <feature url="features/org.eclipse.osee.client.test.framework.feature.source_0.26.0.qualifier.jar" id="org.eclipse.osee.client.test.framework.feature.source" version="0.26.0.qualifier">
-      <category name="org.eclipse.osee.test.framework"/>
-   </feature>
+   </bundle>
    <category-def name="org.eclipse.osee.test.framework" label="OSEE Test Framework - (Incubation)">
       <description>
          Eclipse OSEE Test Framwork - (Incubation)

@@ -79,7 +79,6 @@
 
 				<module>../../features/org.eclipse.osee.framework.ui.feature</module>
 
-				<module>../../features/org.eclipse.osee.define.feature</module>
 				
 				<module>../../features/org.eclipse.osee.doors.feature</module>
 
@@ -87,11 +86,8 @@
 
 				<module>../../plugins/org.eclipse.osee.client.test.framework</module>
 
-				<module>../../features/org.eclipse.osee.client.test.framework.feature</module>
 				
 				<module>../../plugins/org.eclipse.osee.client.test.framework.p2</module>
-
-				<module>../../features/org.eclipse.osee.client.demo.feature</module>
 
 				<module>../../features/org.eclipse.osee.client.feature</module>
 
@@ -158,7 +154,6 @@
 				<module>../../plugins/org.eclipse.osee.doors.connector.core</module>
 				<module>../../plugins/org.eclipse.osee.doors.connector.ui</module>
 
-				<module>../../features/org.eclipse.osee.define.feature</module>
 				
 				<module>../../features/org.eclipse.osee.doors.feature</module>
 
@@ -166,9 +161,7 @@
 
 				<module>../../plugins/org.eclipse.osee.client.test.framework</module>
 				<module>../../plugins/org.eclipse.osee.client.test.framework.p2</module>
-				<module>../../features/org.eclipse.osee.client.test.framework.feature</module>
 
-				<module>../../features/org.eclipse.osee.client.demo.feature</module>
 
 				<module>../../features/org.eclipse.osee.client.feature</module>
 

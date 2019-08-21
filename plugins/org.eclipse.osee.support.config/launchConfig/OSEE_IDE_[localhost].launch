@@ -82,7 +82,7 @@
 <setEntry value="org.eclipse.osee.core.server.external.feature:default"/>
 <setEntry value="org.eclipse.osee.core.runtime.feature:default"/>
 <setEntry value="org.eclipse.osee.core.ui.feature:default"/>
-<setEntry value="org.eclipse.osee.define.feature:default"/>
+<setEntry value="org.eclipse.osee.define.ide:default"/>
 <setEntry value="org.eclipse.osee.doors.feature:default"/>
 <setEntry value="org.eclipse.osee.external.feature:default"/>
 <setEntry value="org.eclipse.osee.framework.feature:default"/>

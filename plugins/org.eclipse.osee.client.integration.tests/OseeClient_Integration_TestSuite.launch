@@ -41,8 +41,6 @@
 <stringAttribute key="product" value="org.eclipse.osee.framework.ui.product.osee"/>
 <booleanAttribute key="run_in_ui_thread" value="true"/>
 <setAttribute key="selected_features">
-<setEntry value="org.eclipse.osee.client.demo.feature:default"/>
-<setEntry value="org.eclipse.osee.client.feature:default"/>
 <setEntry value="org.eclipse.osee.core.runtime.feature:default"/>
 <setEntry value="org.eclipse.osee.core.ui.feature:default"/>
 <setEntry value="org.eclipse.osee.external.feature:default"/>

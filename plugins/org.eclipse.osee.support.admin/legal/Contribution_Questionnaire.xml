@@ -585,7 +585,7 @@
     <Cell><Data ss:Type="Number">4957</Data></Cell>
    </Row>
    <Row>
-    <Cell><Data ss:Type="String">org.eclipse.osee.define.feature</Data></Cell>
+    <Cell><Data ss:Type="String">org.eclipse.osee.define.ide</Data></Cell>
     <Cell><Data ss:Type="Number">26</Data></Cell>
    </Row>
    <Row ss:Index="80">

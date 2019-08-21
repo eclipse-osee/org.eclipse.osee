@@ -6,9 +6,6 @@
    <feature url="features/org.eclipse.osee.client.all.feature.source_0.26.0.qualifier.jar" id="org.eclipse.osee.client.all.feature.source" version="0.26.0.qualifier">
       <category name="org.eclipse.osee.client.all"/>
    </feature>
-   <feature url="features/org.eclipse.osee.client.feature.source_0.26.0.qualifier.jar" id="org.eclipse.osee.client.feature.source" version="0.26.0.qualifier">
-      <category name="org.eclipse.osee.client.all"/>
-   </feature>
    <feature url="features/org.eclipse.osee.core.runtime.feature.source_0.26.0.qualifier.jar" id="org.eclipse.osee.core.runtime.feature.source" version="0.26.0.qualifier">
       <category name="org.eclipse.osee.client.all"/>
    </feature>
