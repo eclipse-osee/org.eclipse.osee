@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
@@ -437,7 +438,11 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       if (plFolder == null) {
          plFolder = CoreArtifactTokens.VariantsFolder;
       }
-      return createArtifact(plFolder, CoreArtifactTypes.BranchView, viewName);
+      ArtifactToken view = createArtifact(plFolder, CoreArtifactTypes.BranchView, viewName);
+      addTuple2(CoreTupleTypes.ViewApplicability, view, ApplicabilityToken.BASE.getName());
+      addTuple2(CoreTupleTypes.ViewApplicability, view, "Config = " + viewName);
+
+      return view;
    }
 
    @Override

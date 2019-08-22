@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
-import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.CIS_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
@@ -79,13 +78,6 @@ public class CreateDemoBranches {
       createProductLineConfig(DemoBranches.SAW_PL, account);
    }
 
-   private void configureProducts(TransactionBuilder tx, ArtifactToken[] products) {
-      for (int i = 0; i < products.length; i++) {
-         tx.addTuple2(CoreTupleTypes.ViewApplicability, products[i], "Config = " + products[i].getName());
-         tx.addTuple2(CoreTupleTypes.ViewApplicability, products[i], BASE.getName());
-      }
-   }
-
    private void createProductLineConfig(BranchId branch, UserId account) {
 
       TransactionBuilder tx = txFactory.createTransaction(branch, OseeSystem, "Create Product Line folders");
@@ -101,8 +93,6 @@ public class CreateDemoBranches {
       ArtifactToken productC = tx.createView(branch, "Product C");
       ArtifactToken productD = tx.createView(branch, "Product D");
       ArtifactToken[] products = new ArtifactToken[] {productA, productB, productC, productD};
-
-      configureProducts(tx, products);
 
       createFeatureConfigs(featuresFolder, tx);
 
