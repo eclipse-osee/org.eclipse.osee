@@ -9,13 +9,13 @@ artifactType "Disposition Set" extends "Artifact" {
    attribute "dispo.Date Created"
    attribute "dispo.Import State"
    attribute "dispo.Summary Count"
-   attribute "dispo.Dispo Config"
+   attribute "dispo.Config"
    attribute "dispo.Operation Summary"
    attribute "dispo.CI Set"
    attribute "dispo.Rerun List"
    attribute "dispo.Time"
-   attribute "dispo.isMultiEnv"
-   attribute "dispo.multiEnvSettings"
+   attribute "dispo.Is Multi-Env"
+   attribute "dispo.Multi-Env Settings"
 }
 
 artifactType "dispo.Dispositionable Item" extends "Artifact" {
@@ -24,21 +24,21 @@ artifactType "dispo.Dispositionable Item" extends "Artifact" {
    attribute "dispo.Annotations JSON"
    attribute "dispo.Discrepancies JSON"
    attribute "dispo.Date Created"
-   attribute "dispo.Item Status"
-   attribute "dispo.Total Points"
-   attribute "dispo.Needs Rerun"
-   attribute "dispo.Item Version"
-   attribute "dispo.Last Updated"
-   attribute "dispo.Assignee"
-   attribute "dispo.Machine"
-   attribute "dispo.Category"
-   attribute "dispo.Elapsed Time"
-   attribute "dispo.Aborted"
-   attribute "dispo.Percent Complete"
-   attribute "dispo.Item Notes"
-   attribute "dispo.Needs Review"
-   attribute "dispo.File Number"
-   attribute "dispo.Method Number"
+   attribute "dispo.item.Status"
+   attribute "dispo.item.Total Points"
+   attribute "dispo.item.Needs Rerun"
+   attribute "dispo.item.Version"
+   attribute "dispo.item.Last Updated"
+   attribute "dispo.item.Assignee"
+   attribute "dispo.item.Machine"
+   attribute "dispo.item.Category"
+   attribute "dispo.item.Elapsed Time"
+   attribute "dispo.item.Aborted"
+   attribute "dispo.item.Percent Complete"
+   attribute "dispo.item.Notes"
+   attribute "dispo.item.Needs Review"
+   attribute "dispo.item.File Number"
+   attribute "dispo.item.Method Number"
 }
 
 attributeType "dispo.Annotations JSON" extends StringAttribute {
@@ -75,7 +75,7 @@ attributeType "dispo.Notes JSON" extends StringAttribute {
 }
 
 
-attributeType "dispo.Dispo Config" extends StringAttribute {
+attributeType "dispo.Config" extends StringAttribute {
 	id 1152921504606847893
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -134,18 +134,18 @@ oseeEnumType "enum.dispo.imported state" {
 	entry "Unspecified"
 }
 
-attributeType "dispo.Item Status" extends EnumeratedAttribute {
+attributeType "dispo.item.Status" extends EnumeratedAttribute {
 	id 3458764513820541336
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
-   enumType "enum.dispo.item status"
+   enumType "enum.dispo.item.status"
    defaultValue "Unspecified"
 	mediaType "text/plain"
 }
 
-attributeType "dispo.Total Points" extends StringAttribute {
+attributeType "dispo.item.Total Points" extends StringAttribute {
 	id 3458764513820541443
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -155,7 +155,7 @@ attributeType "dispo.Total Points" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "dispo.Needs Rerun" extends BooleanAttribute {
+attributeType "dispo.item.Needs Rerun" extends BooleanAttribute {
 	id 3458764513820541444
 	dataProvider DefaultAttributeDataProvider
 	min 1
@@ -164,7 +164,7 @@ attributeType "dispo.Needs Rerun" extends BooleanAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "dispo.Item Version" extends StringAttribute {
+attributeType "dispo.item.Version" extends StringAttribute {
 	id 3458764513820541440
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -174,7 +174,7 @@ attributeType "dispo.Item Version" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "dispo.Assignee" extends StringAttribute {
+attributeType "dispo.item.Assignee" extends StringAttribute {
 	id 3458764513820541441
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -184,7 +184,7 @@ attributeType "dispo.Assignee" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "dispo.Category" extends StringAttribute {
+attributeType "dispo.item.Category" extends StringAttribute {
 	id 3458764513820541442
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -194,7 +194,7 @@ attributeType "dispo.Category" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "dispo.Machine" extends StringAttribute {
+attributeType "dispo.item.Machine" extends StringAttribute {
 	id 3458764513820541446
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -204,7 +204,7 @@ attributeType "dispo.Machine" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "dispo.Elapsed Time" extends StringAttribute {
+attributeType "dispo.item.Elapsed Time" extends StringAttribute {
 	id 3458764513820541447
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -214,7 +214,7 @@ attributeType "dispo.Elapsed Time" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "dispo.Aborted" extends BooleanAttribute {
+attributeType "dispo.item.Aborted" extends BooleanAttribute {
    id 3458764513820541448
    dataProvider DefaultAttributeDataProvider
    min 1
@@ -224,7 +224,7 @@ attributeType "dispo.Aborted" extends BooleanAttribute {
    mediaType "text/plain"
 }
 
-attributeType "dispo.Percent Complete" extends StringAttribute {
+attributeType "dispo.item.Percent Complete" extends StringAttribute {
    id 3458764513820541449
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -234,7 +234,7 @@ attributeType "dispo.Percent Complete" extends StringAttribute {
    mediaType "text/plain"
 }
 
-attributeType "dispo.Item Notes" extends StringAttribute {
+attributeType "dispo.item.Notes" extends StringAttribute {
    id 3458764513820541456
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -244,7 +244,7 @@ attributeType "dispo.Item Notes" extends StringAttribute {
    mediaType "text/plain"
 }
 
-attributeType "dispo.Needs Review" extends BooleanAttribute {
+attributeType "dispo.item.Needs Review" extends BooleanAttribute {
 	id 2903020690286924090
 	dataProvider DefaultAttributeDataProvider
 	min 1
@@ -253,7 +253,7 @@ attributeType "dispo.Needs Review" extends BooleanAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "dispo.File Number" extends StringAttribute {
+attributeType "dispo.item.File Number" extends StringAttribute {
 	id 3458764513820541715
 	dataProvider DefaultAttributeDataProvider
 	min 0
@@ -262,7 +262,7 @@ attributeType "dispo.File Number" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "dispo.Method Number" extends StringAttribute {
+attributeType "dispo.item.Method Number" extends StringAttribute {
 	id 3458764513820541460
 	dataProvider DefaultAttributeDataProvider
 	min 0
@@ -271,7 +271,7 @@ attributeType "dispo.Method Number" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-oseeEnumType "enum.dispo.item status" {
+oseeEnumType "enum.dispo.item.status" {
 	id 3458764513820541337
 	entry "PASS"
 	entry "INCOMPLETE"
@@ -289,7 +289,7 @@ attributeType "dispo.Date Created" extends DateAttribute {
    mediaType "text/calendar"
 }
 
-attributeType "dispo.Last Updated" extends DateAttribute {
+attributeType "dispo.item.Last Updated" extends DateAttribute {
 	id 1152921504606847890
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -324,7 +324,7 @@ attributeType "dispo.Time" extends DateAttribute {
 	mediaType "text/calendar"
 }
 
-attributeType "dispo.multiEnvSettings" extends StringAttribute {
+attributeType "dispo.Multi-Env Settings" extends StringAttribute {
 	id 3587660131047940387
 	dataProvider DefaultAttributeDataProvider
 	min 0
@@ -333,7 +333,7 @@ attributeType "dispo.multiEnvSettings" extends StringAttribute {
 	mediaType "application/json"
 }
 
-attributeType "dispo.isMultiEnv" extends BooleanAttribute {
+attributeType "dispo.Is Multi-Env" extends BooleanAttribute {
 	id 3587620131443940337
 	dataProvider DefaultAttributeDataProvider
 	min 0

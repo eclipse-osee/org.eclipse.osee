@@ -78,7 +78,7 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
 
    @Override
    public Date getLastUpdate() {
-      return artifact.getSoleAttributeValue(DispoConstants.DispoLastUpdated);
+      return artifact.getSoleAttributeValue(DispoConstants.DispoItemLastUpdated);
    }
 
    @Override
@@ -123,7 +123,7 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
 
    @Override
    public String getItemNotes() {
-      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemItemNotes, "");
+      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemNotes, "");
    }
 
    @Override

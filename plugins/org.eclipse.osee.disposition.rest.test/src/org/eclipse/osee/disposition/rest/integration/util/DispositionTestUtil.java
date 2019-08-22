@@ -19,10 +19,10 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
  */
 public class DispositionTestUtil {
    // @formatter:off
-   public static final ArtifactToken DISPO_SET_DEMO = ArtifactToken.valueOf(663199, "Dispo Set Demo", DispoConstants.DispoSet);
-   public static final ArtifactToken DISPO_SET_DEV = ArtifactToken.valueOf(433652, "Dispo Set Dev", DispoConstants.DispoSet);
-   public static final ArtifactToken DISPO_ITEM_DEV_ONE = ArtifactToken.valueOf(8702337, "Dispo Item Dev One", DispoConstants.DispoItem);
-   public static final ArtifactToken DISPO_ITEM_DEMO_ONE = ArtifactToken.valueOf(4132534, "Dispo Item Demo One", DispoConstants.DispoItem);
+   public static final ArtifactToken DISPO_SET_DEMO = ArtifactToken.valueOf(663199L, "Dispo Set Demo", DispoConstants.DispositionSet);
+   public static final ArtifactToken DISPO_SET_DEV = ArtifactToken.valueOf(433652L, "Dispo Set Dev", DispoConstants.DispositionSet);
+   public static final ArtifactToken DISPO_ITEM_DEV_ONE = ArtifactToken.valueOf(8702337L, "Dispo Item Dev One", DispoConstants.DispositionableItem);
+   public static final ArtifactToken DISPO_ITEM_DEMO_ONE = ArtifactToken.valueOf(4132534L, "Dispo Item Demo One", DispoConstants.DispositionableItem);
    public static final IOseeBranch SAW_Bld_1_FOR_DISPO = IOseeBranch.create("SAW_Bld_1 - FOR_DISPOSITION");
    // @formatter:on
 }

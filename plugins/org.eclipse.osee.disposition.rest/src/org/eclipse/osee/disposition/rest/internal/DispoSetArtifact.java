@@ -39,7 +39,7 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
 
    @Override
    public String getImportPath() {
-      return artifact.getSoleAttributeAsString(DispoConstants.ImportPath);
+      return artifact.getSoleAttributeAsString(DispoConstants.DispoImportPath);
    }
 
    @Override
@@ -50,7 +50,7 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
 
    @Override
    public OperationReport getOperationSummary() {
-      String operationSummaryJson = artifact.getSoleAttributeAsString(DispoConstants.OperationSummary, "{}");
+      String operationSummaryJson = artifact.getSoleAttributeAsString(DispoConstants.DispoOperationSummary, "{}");
       return DispoUtil.jsonObjToOperationSummary(operationSummaryJson);
    }
 
@@ -61,12 +61,12 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
 
    @Override
    public String getImportState() {
-      return artifact.getSoleAttributeAsString(DispoConstants.ImportState, "None");
+      return artifact.getSoleAttributeAsString(DispoConstants.DispoImportState, "None");
    }
 
    @Override
    public String getDispoType() {
-      return artifact.getSoleAttributeAsString(DispoConstants.DispoType, "");
+      return artifact.getSoleAttributeAsString(DispoConstants.DispoConfig, "");
    }
 
    @Override
