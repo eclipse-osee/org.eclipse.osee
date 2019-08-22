@@ -148,8 +148,14 @@ public class AtsStoreService implements IAtsStoreService {
    }
 
    @Override
-   public boolean isOfType(ArtifactId artifact, ArtifactTypeId... artifactType) {
-      return AtsClientService.get().getQueryServiceClient().getArtifact(artifact).isOfType(artifactType);
+   public boolean isOfType(ArtifactId artifact, ArtifactTypeId... artifactTypes) {
+      Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(artifact);
+      if (art != null && art.isValid() && !art.isDeleted()) {
+         for (ArtifactTypeId artType : artifactTypes) {
+            return art.isOfType(artType);
+         }
+      }
+      return false;
    }
 
    @Override
