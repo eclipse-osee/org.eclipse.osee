@@ -10,7 +10,7 @@ artifactType "Test Support" extends "Test Unit" {
 
 artifactType "Test Run Disposition" extends "Artifact" {
    id 84
-   attribute "Disposition"
+   attribute "Test Disposition"
 }
 
 artifactType "Test Run" extends "Abstract Test Result" {
@@ -50,8 +50,10 @@ attributeType "Outfile URL" extends StringAttribute {
    id 1152921504606847281
    dataProvider org.eclipse.osee.ote.define.MappedAttributeDataProvider
    min 1
-   max 1 description "Test Run Content"
-   defaultValue "\"\"" fileExtension "tmo"
+   max 1
+   description "Test Run Content"
+   defaultValue "\"\""
+   fileExtension "tmo"
    mediaType "text/plain"
 }
 
@@ -59,7 +61,8 @@ attributeType "Test Script URL" extends StringAttribute {
    id 1152921504606847282
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Url of the test script used"
+   max 1
+   description "Url of the test script used"
    mediaType "text/plain"
 }
 
@@ -67,7 +70,8 @@ attributeType "Revision" extends StringAttribute {
    id 1152921504606847283
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Version"
+   max 1
+   description "Version"
    mediaType "text/plain"
 }
 
@@ -75,7 +79,8 @@ attributeType "Modified Flag" extends StringAttribute {
    id 1152921504606847284
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "File Modification Flag from Repository"
+   max 1
+   description "File Modification Flag from Repository"
    mediaType "text/plain"
 }
 
@@ -84,7 +89,8 @@ attributeType "Last Author" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   taggerId DefaultAttributeTaggerProvider description "Last Author"
+   taggerId DefaultAttributeTaggerProvider
+   description "Last Author"
    mediaType "text/plain"
 }
 
@@ -92,7 +98,8 @@ attributeType "Last Modified Date" extends DateAttribute {
    id 1152921504606847286
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Last Modified"
+   max 1
+   description "Last Modified"
    mediaType "text/calendar"
 }
 
@@ -101,7 +108,8 @@ attributeType "OS Architecture" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   taggerId DefaultAttributeTaggerProvider description "OS Architecture"
+   taggerId DefaultAttributeTaggerProvider
+   description "OS Architecture"
    mediaType "text/plain"
 }
 
@@ -109,7 +117,8 @@ attributeType "OS Name" extends StringAttribute {
    id 1152921504606847288
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "OS Name"
+   max 1
+   description "OS Name"
    mediaType "text/plain"
 }
 
@@ -117,7 +126,8 @@ attributeType "OS Version" extends StringAttribute {
    id 1152921504606847289
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "OS Version"
+   max 1
+   description "OS Version"
    mediaType "text/plain"
 }
 
@@ -125,7 +135,8 @@ attributeType "OSEE Version" extends StringAttribute {
    id 1152921504606847290
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "OSEE Version"
+   max 1
+   description "OSEE Version"
    mediaType "text/plain"
 }
 
@@ -133,7 +144,8 @@ attributeType "OSEE Server Title" extends StringAttribute {
    id 1152921504606847291
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "OSEE Server Title"
+   max 1
+   description "OSEE Server Title"
    mediaType "text/plain"
 }
 
@@ -141,7 +153,8 @@ attributeType "OSEE Server Jar Version" extends StringAttribute {
    id 1152921504606847292
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "OSEE Server Jar Version"
+   max 1
+   description "OSEE Server Jar Version"
    mediaType "text/plain"
 }
 
@@ -149,7 +162,8 @@ attributeType "Processor ID" extends StringAttribute {
    id 1152921504606847293
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Processor ID"
+   max 1
+   description "Processor ID"
    mediaType "text/plain"
 }
 
@@ -157,7 +171,8 @@ attributeType "Start Date" extends DateAttribute {
    id 1152921504606847294
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Start Date"
+   max 1
+   description "Start Date"
    mediaType "text/calendar"
 }
 
@@ -165,7 +180,8 @@ attributeType "End Date" extends DateAttribute {
    id 1152921504606847295
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Stop Date"
+   max 1
+   description "Stop Date"
    mediaType "text/calendar"
 }
 
@@ -173,7 +189,8 @@ attributeType "Elapsed Date" extends StringAttribute {
    id 1152921504606847296
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Time Elapsed from the start to the end of the script"
+   max 1
+   description "Time Elapsed from the start to the end of the script"
    mediaType "text/plain"
 }
 
@@ -190,7 +207,8 @@ attributeType "Failed" extends IntegerAttribute {
    id 1152921504606847298
    dataProvider DefaultAttributeDataProvider
    min 1
-   max 1 description "Number of test points that failed"
+   max 1
+   description "Number of test points that failed"
    defaultValue "0"
    mediaType "text/plain"
 }
@@ -199,7 +217,8 @@ attributeType "Total Test Points" extends IntegerAttribute {
    id 1152921504606847299
    dataProvider DefaultAttributeDataProvider
    min 1
-   max 1 description "Total test points"
+   max 1
+   description "Total test points"
    defaultValue "0"
    mediaType "text/plain"
 }
@@ -209,7 +228,8 @@ attributeType "Script Aborted" extends BooleanAttribute {
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1
-   taggerId DefaultAttributeTaggerProvider description "Test Abort status"
+   taggerId DefaultAttributeTaggerProvider
+   description "Test Abort status"
    defaultValue "true"
    mediaType "text/plain"
 }
@@ -218,7 +238,8 @@ attributeType "Test Script GUID" extends StringAttribute {
    id 1152921504606847301
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Test Case GUID"
+   max 1
+   description "Test Case GUID"
    mediaType "text/plain"
 }
 
@@ -226,7 +247,8 @@ attributeType "Ran In Batch Mode" extends BooleanAttribute {
    id 1152921504606847302
    dataProvider DefaultAttributeDataProvider
    min 1
-   max 1 description "Run was performed as part of a batch"
+   max 1
+   description "Run was performed as part of a batch"
    defaultValue "false"
    mediaType "text/plain"
 }
@@ -235,7 +257,8 @@ attributeType "Is Batch Mode Allowed" extends BooleanAttribute {
    id 1152921504606847303
    dataProvider DefaultAttributeDataProvider
    min 1
-   max 1 description "Whether Test Script is allowed to run as part of a batch"
+   max 1
+   description "Whether Test Script is allowed to run as part of a batch"
    defaultValue "true"
    mediaType "text/plain"
 }
@@ -244,7 +267,8 @@ attributeType "Last Date Uploaded" extends DateAttribute {
    id 1152921504606847304
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Last time outfile was uploaded"
+   max 1
+   description "Last time outfile was uploaded"
    mediaType "text/calendar"
 }
 
@@ -253,7 +277,8 @@ attributeType "Qualification Level" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   taggerId DefaultAttributeTaggerProvider description "Qualification level"
+   taggerId DefaultAttributeTaggerProvider
+   description "Qualification level"
    defaultValue "DEVELOPMENT"
    mediaType "text/plain"
 }
@@ -263,7 +288,8 @@ attributeType "Build Id" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   taggerId DefaultAttributeTaggerProvider description "Build Id"
+   taggerId DefaultAttributeTaggerProvider
+	description "Build Id"
    defaultValue "unknown"
    mediaType "text/plain"
 }
@@ -272,15 +298,17 @@ attributeType "Checksum" extends StringAttribute {
    id 1152921504606847307
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Test Case Checksum"
+   max 1
+   description "Test Case Checksum"
    mediaType "text/plain"
 }
 
-attributeType "Disposition" extends StringAttribute {
+attributeType "Test Disposition" extends StringAttribute {
    id 1152921504606847308
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Disposition"
+   max 1
+   description "Disposition"
    mediaType "text/plain"
 }
 
@@ -324,7 +352,8 @@ attributeType "Version" extends StringAttribute {
    id 1152921504606847312
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Version"
+   max 1
+   description "Version"
    mediaType "text/plain"
 }
 
@@ -332,7 +361,8 @@ attributeType "Repository Type" extends StringAttribute {
    id 1152921504606847313
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Repository Type"
+   max 1
+   description "Repository Type"
    mediaType "text/plain"
 }
 
@@ -340,7 +370,8 @@ attributeType "Modification Flag" extends StringAttribute {
    id 1152921504606847314
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "File Modification Flag from Repository"
+   max 1
+   description "File Modification Flag from Repository"
    mediaType "text/plain"
 }
 
@@ -348,7 +379,9 @@ attributeType "Test Log" extends CompressedContentAttribute {
    id 1152921504606847315
    dataProvider UriAttributeDataProvider
    min 0
-   max 1 description "Compressed Data" fileExtension "txt"
+   max 1
+   description "Compressed Data"
+   fileExtension "txt"
    mediaType "application/zip"
 }
 

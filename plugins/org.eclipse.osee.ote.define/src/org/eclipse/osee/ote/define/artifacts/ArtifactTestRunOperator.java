@@ -82,29 +82,29 @@ public class ArtifactTestRunOperator implements TestRunOperator {
 
    @Override
    public String getScriptRevision() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.REVISION, "");
+      return artifact.getSoleAttributeValue(OteAttributeTypes.Revision, "");
    }
 
    public String getScriptUrl() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.TEST_SCRIPT_URL, "");
+      return artifact.getSoleAttributeValue(OteAttributeTypes.TestScriptUrl, "");
    }
 
    public void setLastDateUploaded(Date value) {
-      artifact.setSoleAttributeValue(OteAttributeTypes.LAST_DATE_UPLOADED, value);
+      artifact.setSoleAttributeValue(OteAttributeTypes.LastDateUploaded, value);
    }
 
    @Override
    public Date getLastDateUploaded() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.LAST_DATE_UPLOADED, null);
+      return artifact.getSoleAttributeValue(OteAttributeTypes.LastDateUploaded, null);
    }
 
    public void setChecksum(String value) {
-      artifact.setSoleAttributeValue(OteAttributeTypes.CHECKSUM, value);
+      artifact.setSoleAttributeValue(OteAttributeTypes.Checksum, value);
    }
 
    @Override
    public String getChecksum() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.CHECKSUM, "");
+      return artifact.getSoleAttributeValue(OteAttributeTypes.Checksum, "");
    }
 
    public String getOutfileExtension() {
@@ -128,7 +128,7 @@ public class ArtifactTestRunOperator implements TestRunOperator {
 
    @Override
    public String getOutfileUrl() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.OUTFILE_URL);
+      return artifact.getSoleAttributeValue(OteAttributeTypes.OutfileUrl);
    }
 
    public String getOutfileContents() {
@@ -141,7 +141,7 @@ public class ArtifactTestRunOperator implements TestRunOperator {
 
    @SuppressWarnings("deprecation")
    public Attribute<InputStream> getOutfileAttribute() {
-      List<Attribute<InputStream>> attributes = artifact.getAttributes(OteAttributeTypes.OUTFILE_URL);
+      List<Attribute<InputStream>> attributes = artifact.getAttributes(OteAttributeTypes.OutfileUrl);
       return attributes != null && attributes.size() > 0 ? attributes.get(0) : null;
    }
 
@@ -162,7 +162,7 @@ public class ArtifactTestRunOperator implements TestRunOperator {
    public boolean hasNotBeenCommitted() {
       Artifact fetched = null;
       try {
-         fetched = getTestRunFetcher().searchForUniqueArtifactMatching(OteAttributeTypes.CHECKSUM, getChecksum(),
+         fetched = getTestRunFetcher().searchForUniqueArtifactMatching(OteAttributeTypes.Checksum, getChecksum(),
             artifact.getBranch());
       } catch (Exception ex) {
          // do nothing
@@ -208,32 +208,32 @@ public class ArtifactTestRunOperator implements TestRunOperator {
 
    @Override
    public int getTestPointsPassed() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.PASSED);
+      return artifact.getSoleAttributeValue(OteAttributeTypes.Passed);
    }
 
    @Override
    public int getTestPointsFailed() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.FAILED);
+      return artifact.getSoleAttributeValue(OteAttributeTypes.Failed);
    }
 
    @Override
    public int getTotalTestPoints() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.TOTAL_TEST_POINTS);
+      return artifact.getSoleAttributeValue(OteAttributeTypes.TotalTestPoints);
    }
 
    @Override
    public Date getEndDate() {
-      return processDateAttribute(OteAttributeTypes.END_DATE);
+      return processDateAttribute(OteAttributeTypes.EndDate);
    }
 
    @Override
    public Date getLastModifiedDate() {
-      return processDateAttribute(OteAttributeTypes.LAST_MODIFIED_DATE);
+      return processDateAttribute(OteAttributeTypes.LastModifiedDate);
    }
 
    @Override
    public Date getTestStartDate() {
-      return processDateAttribute(OteAttributeTypes.START_DATE);
+      return processDateAttribute(OteAttributeTypes.StartDate);
    }
 
    private Date processDateAttribute(AttributeTypeId attributeType) {
@@ -248,7 +248,7 @@ public class ArtifactTestRunOperator implements TestRunOperator {
    public boolean wasAborted() {
       boolean toReturn = true;
       try {
-         toReturn = artifact.getSoleAttributeValue(OteAttributeTypes.SCRIPT_ABORTED, false);
+         toReturn = artifact.getSoleAttributeValue(OteAttributeTypes.ScriptAborted, false);
       } catch (Exception ex) {
          // do nothing
       }
@@ -276,7 +276,7 @@ public class ArtifactTestRunOperator implements TestRunOperator {
    public boolean isBatchModeAllowed() {
       boolean toReturn = false;
       try {
-         toReturn = artifact.getSoleAttributeValue(OteAttributeTypes.IS_BATCH_MODE_ALLOWED, false);
+         toReturn = artifact.getSoleAttributeValue(OteAttributeTypes.IsBatchModeAllowed, false);
       } catch (Exception ex) {
          // do nothing
       }
@@ -285,47 +285,47 @@ public class ArtifactTestRunOperator implements TestRunOperator {
 
    @Override
    public String getOseeVersion() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.OSEE_VERSION, "").trim();
+      return artifact.getSoleAttributeValue(OteAttributeTypes.OseeVersion, "").trim();
    }
 
    @Override
    public String getOseeServerTitle() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.OSEE_SERVER_TITLE, "").trim();
+      return artifact.getSoleAttributeValue(OteAttributeTypes.OseeServerTitle, "").trim();
    }
 
    @Override
    public String getOseeServerVersion() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.OSEE_SERVER_JAR_VERSION, "").trim();
+      return artifact.getSoleAttributeValue(OteAttributeTypes.OseeServerJarVersion, "").trim();
    }
 
    @Override
    public String getProcessorId() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.PROCESSOR_ID, "");
+      return artifact.getSoleAttributeValue(OteAttributeTypes.ProcessorId, "");
    }
 
    @Override
    public String getRunDuration() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.ELAPSED_DATE, "");
+      return artifact.getSoleAttributeValue(OteAttributeTypes.ElapsedDate, "");
    }
 
    @Override
    public String getQualificationLevel() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.QUALIFICATION_LEVEL, "");
+      return artifact.getSoleAttributeValue(OteAttributeTypes.QualificationLevel, "");
    }
 
    @Override
    public String getBuildId() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.BUILD_ID, "");
+      return artifact.getSoleAttributeValue(OteAttributeTypes.BuildId, "");
    }
 
    @Override
    public String getRanOnOperatingSystem() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.OS_NAME, "");
+      return artifact.getSoleAttributeValue(OteAttributeTypes.OsName, "");
    }
 
    @Override
    public String getLastAuthor() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.LAST_AUTHOR, null);
+      return artifact.getSoleAttributeValue(OteAttributeTypes.LastAuthor, null);
    }
 
    @Override

@@ -35,7 +35,7 @@ artifactType "Demo Code Team Workflow" extends "Team Workflow" {
    attribute "demo.code.Dup CPCR No"
    attribute "demo.code.Dup CSCI"
    attribute "demo.code.Dup CPCR Type"
-   attribute "demo.code.Dup of CPCR no seq"
+   attribute "demo.code.Dup Of CPCR No Seq"
    attribute "demo.code.Librarian"
    attribute "demo.code.Promote Date"
    attribute "demo.code.Authorization Notes"
@@ -403,7 +403,7 @@ attributeType "demo.code.Dup CPCR Type" extends StringAttribute {
    mediaType "text/plain"
 }
 
-attributeType "demo.code.Dup of CPCR no seq" extends StringAttribute {
+attributeType "demo.code.Dup Of CPCR No Seq" extends StringAttribute {
    id 1152921504606847272
    dataProvider DefaultAttributeDataProvider
    min 0

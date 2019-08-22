@@ -18,11 +18,11 @@ public class DoorsTypes {
    /**
     * Doors Artifact type
     */
-   public static final ArtifactTypeToken Doors_Artifact =
-      ArtifactTypeToken.valueOf(5764607523034243073L, "DoorsArtifact");
+   public static final ArtifactTypeToken DoorsRequirement =
+      ArtifactTypeToken.valueOf(5764607523034243073L, "Doors Requirement");
 
    public static final AttributeTypeToken DoorReqName =
       AttributeTypeToken.valueOf(5764607523034243075L, "Door Req Name");
-   public static final AttributeTypeToken DoorReqUrl = AttributeTypeToken.valueOf(0x0000000000002006, "Door Req URL");
+   public static final AttributeTypeToken DoorReqUrl = AttributeTypeToken.valueOf(8198L, "Door Req URL");
 
 }

@@ -76,22 +76,22 @@ public class OrcsTypesTest {
 
    private static final String TEST_TYPE_MODEL = "testTypeModel.osee";
 
-   private static final ArtifactTypeToken ARTIFACT = ArtifactTypeToken.valueOf(1, "Artifact");
-   private static final ArtifactTypeToken REQUIREMENT = ArtifactTypeToken.valueOf(21, "Requirement");
-   private static final ArtifactTypeToken SOFTWARE_REQUIREMENT = ArtifactTypeToken.valueOf(24, "Software Requirement");
-   private static final ArtifactTypeToken SYSTEM_REQUIREMENT = ArtifactTypeToken.valueOf(30, "System Requirement");
-   private static final ArtifactTypeToken SUBSYSTEM_REQUIREMENT = ArtifactTypeToken.valueOf(29, "SubSystem Requirement");
-   private static final ArtifactTypeToken OTHER_ARTIFACT = ArtifactTypeToken.valueOf(32, "Other Artifact");
-   private static final ArtifactTypeToken LAST_ARTIFACT = ArtifactTypeToken.valueOf(33, "Last Artifact");
+   private static final ArtifactTypeToken Artifact = ArtifactTypeToken.valueOf(1152921504606957083L, "Artifact");
+   private static final ArtifactTypeToken Requirement = ArtifactTypeToken.valueOf(1152921504606957084L, "Requirement");
+   private static final ArtifactTypeToken SoftwareRequirement = ArtifactTypeToken.valueOf(1152921504606957085L, "Software Requirement");
+   private static final ArtifactTypeToken SystemRequirement = ArtifactTypeToken.valueOf(1152921504606957086L, "System Requirement");
+   private static final ArtifactTypeToken SubsystemRequirement = ArtifactTypeToken.valueOf(1152921504606957087L, "SubSystem Requirement");
+   private static final ArtifactTypeToken OtherArtifact = ArtifactTypeToken.valueOf(1152921504606957088L, "Other Artifact");
+   private static final ArtifactTypeToken LastArtifact = ArtifactTypeToken.valueOf(1152921504606957089L, "Last Artifact");
 
-   private static final AttributeTypeId NAME = AttributeTypeToken.valueOf(1152921504606847088L, "Name");
-   private static final AttributeTypeId ANNOTATION = AttributeTypeToken.valueOf(1152921504606847094L, "Annotation");
-   private static final AttributeTypeId WORDML = AttributeTypeToken.valueOf(1152921504606847098L, "WordML");
-   private static final AttributeTypeId FIELD_1 = AttributeTypeToken.valueOf(1152921504606847104L, "Field 1");
-   private static final AttributeTypeId FIELD_2 = AttributeTypeToken.valueOf(1152921504606847105L, "Field 2");
+   private static final AttributeTypeId Name = AttributeTypeToken.valueOf(1152921504606957090L, "Name");
+   private static final AttributeTypeId Annotation = AttributeTypeToken.valueOf(1152921504606957091L, "Annotation");
+   private static final AttributeTypeId Wordml = AttributeTypeToken.valueOf(1152921504606957092L, "WordML");
+   private static final AttributeTypeId Field1 = AttributeTypeToken.valueOf(1152921504606957093L, "Field 1");
+   private static final AttributeTypeId Field2 = AttributeTypeToken.valueOf(1152921504606957094L, "Field 2");
 
-   private static final IRelationType REQUIREMENT_REL = RelationTypeToken.create(2305843009213694295L, "Requirement Relation");
-   private static final IRelationType ANOTHER_REL = RelationTypeToken.create(2305843009213694296L, "Another Relation");
+   private static final IRelationType RequirementRelation = RelationTypeToken.create(2305843009213695295L, "Requirement Relation");
+   private static final IRelationType AnotherRelation = RelationTypeToken.create(2305843009213695296L, "Another Relation");
 
    private static final BranchId BRANCH_A = IOseeBranch.create(3458234234L, "Branch A");
    private static final BranchId BRANCH_B = IOseeBranch.create(9993245332L, "Branch B");
@@ -167,7 +167,7 @@ public class OrcsTypesTest {
       assertEquals(false, artTypes.isEmpty());
 
       //@formatter:off
-      assertContains(artTypes.getAll(), ARTIFACT, REQUIREMENT, SOFTWARE_REQUIREMENT, SYSTEM_REQUIREMENT, SUBSYSTEM_REQUIREMENT, OTHER_ARTIFACT, LAST_ARTIFACT);
+      assertContains(artTypes.getAll(), Artifact, Requirement, SoftwareRequirement, SystemRequirement, SubsystemRequirement, OtherArtifact, LastArtifact);
       //@formatter:on
    }
 
@@ -175,104 +175,104 @@ public class OrcsTypesTest {
    public void testGetArtifactTypesByUuid() {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
-      assertEquals(ARTIFACT, artTypes.get(ARTIFACT));
-      assertEquals(REQUIREMENT, artTypes.get(REQUIREMENT));
-      assertEquals(SOFTWARE_REQUIREMENT, artTypes.get(SOFTWARE_REQUIREMENT));
-      assertEquals(SYSTEM_REQUIREMENT, artTypes.get(SYSTEM_REQUIREMENT));
-      assertEquals(SUBSYSTEM_REQUIREMENT, artTypes.get(SUBSYSTEM_REQUIREMENT));
-      assertEquals(OTHER_ARTIFACT, artTypes.get(OTHER_ARTIFACT));
-      assertEquals(LAST_ARTIFACT, artTypes.get(LAST_ARTIFACT));
+      assertEquals(Artifact, artTypes.get(Artifact));
+      assertEquals(Requirement, artTypes.get(Requirement));
+      assertEquals(SoftwareRequirement, artTypes.get(SoftwareRequirement));
+      assertEquals(SystemRequirement, artTypes.get(SystemRequirement));
+      assertEquals(SubsystemRequirement, artTypes.get(SubsystemRequirement));
+      assertEquals(OtherArtifact, artTypes.get(OtherArtifact));
+      assertEquals(LastArtifact, artTypes.get(LastArtifact));
    }
 
    @Test
    public void testExistsArtifactType() {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
-      assertEquals(true, artTypes.exists(ARTIFACT));
-      assertEquals(true, artTypes.exists(REQUIREMENT));
-      assertEquals(true, artTypes.exists(SOFTWARE_REQUIREMENT));
-      assertEquals(true, artTypes.exists(SYSTEM_REQUIREMENT));
-      assertEquals(true, artTypes.exists(SUBSYSTEM_REQUIREMENT));
-      assertEquals(true, artTypes.exists(OTHER_ARTIFACT));
-      assertEquals(true, artTypes.exists(LAST_ARTIFACT));
+      assertEquals(true, artTypes.exists(Artifact));
+      assertEquals(true, artTypes.exists(Requirement));
+      assertEquals(true, artTypes.exists(SoftwareRequirement));
+      assertEquals(true, artTypes.exists(SystemRequirement));
+      assertEquals(true, artTypes.exists(SubsystemRequirement));
+      assertEquals(true, artTypes.exists(OtherArtifact));
+      assertEquals(true, artTypes.exists(LastArtifact));
    }
 
    @Test
    public void testIsAbstract() {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
-      assertEquals(false, artTypes.isAbstract(ARTIFACT));
-      assertEquals(true, artTypes.isAbstract(REQUIREMENT));
-      assertEquals(false, artTypes.isAbstract(SOFTWARE_REQUIREMENT));
-      assertEquals(false, artTypes.isAbstract(SYSTEM_REQUIREMENT));
-      assertEquals(false, artTypes.isAbstract(SUBSYSTEM_REQUIREMENT));
-      assertEquals(false, artTypes.isAbstract(OTHER_ARTIFACT));
-      assertEquals(true, artTypes.isAbstract(LAST_ARTIFACT));
+      assertEquals(false, artTypes.isAbstract(Artifact));
+      assertEquals(true, artTypes.isAbstract(Requirement));
+      assertEquals(false, artTypes.isAbstract(SoftwareRequirement));
+      assertEquals(false, artTypes.isAbstract(SystemRequirement));
+      assertEquals(false, artTypes.isAbstract(SubsystemRequirement));
+      assertEquals(false, artTypes.isAbstract(OtherArtifact));
+      assertEquals(true, artTypes.isAbstract(LastArtifact));
    }
 
    @Test
    public void testHasSuperArtifactTypes() {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
-      assertEquals(false, artTypes.hasSuperArtifactTypes(ARTIFACT));
-      assertEquals(true, artTypes.hasSuperArtifactTypes(REQUIREMENT));
-      assertEquals(true, artTypes.hasSuperArtifactTypes(SOFTWARE_REQUIREMENT));
-      assertEquals(true, artTypes.hasSuperArtifactTypes(SYSTEM_REQUIREMENT));
-      assertEquals(true, artTypes.hasSuperArtifactTypes(SUBSYSTEM_REQUIREMENT));
-      assertEquals(true, artTypes.hasSuperArtifactTypes(OTHER_ARTIFACT));
-      assertEquals(true, artTypes.hasSuperArtifactTypes(LAST_ARTIFACT));
+      assertEquals(false, artTypes.hasSuperArtifactTypes(Artifact));
+      assertEquals(true, artTypes.hasSuperArtifactTypes(Requirement));
+      assertEquals(true, artTypes.hasSuperArtifactTypes(SoftwareRequirement));
+      assertEquals(true, artTypes.hasSuperArtifactTypes(SystemRequirement));
+      assertEquals(true, artTypes.hasSuperArtifactTypes(SubsystemRequirement));
+      assertEquals(true, artTypes.hasSuperArtifactTypes(OtherArtifact));
+      assertEquals(true, artTypes.hasSuperArtifactTypes(LastArtifact));
    }
 
    @Test
    public void testGetSuperTypes() {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
-      assertEquals(true, artTypes.getSuperArtifactTypes(ARTIFACT).isEmpty());
+      assertEquals(true, artTypes.getSuperArtifactTypes(Artifact).isEmpty());
 
-      assertContains(artTypes.getSuperArtifactTypes(REQUIREMENT), ARTIFACT);
-      assertContains(artTypes.getSuperArtifactTypes(SOFTWARE_REQUIREMENT), REQUIREMENT);
-      assertContains(artTypes.getSuperArtifactTypes(SYSTEM_REQUIREMENT), REQUIREMENT);
-      assertContains(artTypes.getSuperArtifactTypes(SUBSYSTEM_REQUIREMENT), REQUIREMENT, OTHER_ARTIFACT);
-      assertContains(artTypes.getSuperArtifactTypes(OTHER_ARTIFACT), ARTIFACT);
-      assertContains(artTypes.getSuperArtifactTypes(LAST_ARTIFACT), SUBSYSTEM_REQUIREMENT);
+      assertContains(artTypes.getSuperArtifactTypes(Requirement), Artifact);
+      assertContains(artTypes.getSuperArtifactTypes(SoftwareRequirement), Requirement);
+      assertContains(artTypes.getSuperArtifactTypes(SystemRequirement), Requirement);
+      assertContains(artTypes.getSuperArtifactTypes(SubsystemRequirement), Requirement, OtherArtifact);
+      assertContains(artTypes.getSuperArtifactTypes(OtherArtifact), Artifact);
+      assertContains(artTypes.getSuperArtifactTypes(LastArtifact), SubsystemRequirement);
    }
 
    @Test
    public void testInheritsFrom() {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
-      assertEquals(false, artTypes.inheritsFrom(ARTIFACT, REQUIREMENT));
-      assertEquals(true, artTypes.inheritsFrom(REQUIREMENT, ARTIFACT));
+      assertEquals(false, artTypes.inheritsFrom(Artifact, Requirement));
+      assertEquals(true, artTypes.inheritsFrom(Requirement, Artifact));
 
-      assertEquals(false, artTypes.inheritsFrom(ARTIFACT, OTHER_ARTIFACT));
-      assertEquals(false, artTypes.inheritsFrom(OTHER_ARTIFACT, REQUIREMENT));
-      assertEquals(true, artTypes.inheritsFrom(OTHER_ARTIFACT, ARTIFACT));
+      assertEquals(false, artTypes.inheritsFrom(Artifact, OtherArtifact));
+      assertEquals(false, artTypes.inheritsFrom(OtherArtifact, Requirement));
+      assertEquals(true, artTypes.inheritsFrom(OtherArtifact, Artifact));
 
-      assertEquals(false, artTypes.inheritsFrom(ARTIFACT, SOFTWARE_REQUIREMENT));
-      assertEquals(false, artTypes.inheritsFrom(REQUIREMENT, SOFTWARE_REQUIREMENT));
-      assertEquals(true, artTypes.inheritsFrom(SOFTWARE_REQUIREMENT, ARTIFACT));
-      assertEquals(true, artTypes.inheritsFrom(SOFTWARE_REQUIREMENT, REQUIREMENT));
-      assertEquals(false, artTypes.inheritsFrom(SOFTWARE_REQUIREMENT, OTHER_ARTIFACT));
+      assertEquals(false, artTypes.inheritsFrom(Artifact, SoftwareRequirement));
+      assertEquals(false, artTypes.inheritsFrom(Requirement, SoftwareRequirement));
+      assertEquals(true, artTypes.inheritsFrom(SoftwareRequirement, Artifact));
+      assertEquals(true, artTypes.inheritsFrom(SoftwareRequirement, Requirement));
+      assertEquals(false, artTypes.inheritsFrom(SoftwareRequirement, OtherArtifact));
 
-      assertEquals(false, artTypes.inheritsFrom(ARTIFACT, SYSTEM_REQUIREMENT));
-      assertEquals(false, artTypes.inheritsFrom(REQUIREMENT, SYSTEM_REQUIREMENT));
-      assertEquals(true, artTypes.inheritsFrom(SYSTEM_REQUIREMENT, ARTIFACT));
-      assertEquals(true, artTypes.inheritsFrom(SYSTEM_REQUIREMENT, REQUIREMENT));
-      assertEquals(false, artTypes.inheritsFrom(SYSTEM_REQUIREMENT, OTHER_ARTIFACT));
+      assertEquals(false, artTypes.inheritsFrom(Artifact, SystemRequirement));
+      assertEquals(false, artTypes.inheritsFrom(Requirement, SystemRequirement));
+      assertEquals(true, artTypes.inheritsFrom(SystemRequirement, Artifact));
+      assertEquals(true, artTypes.inheritsFrom(SystemRequirement, Requirement));
+      assertEquals(false, artTypes.inheritsFrom(SystemRequirement, OtherArtifact));
 
-      assertEquals(false, artTypes.inheritsFrom(ARTIFACT, SUBSYSTEM_REQUIREMENT));
-      assertEquals(false, artTypes.inheritsFrom(REQUIREMENT, SUBSYSTEM_REQUIREMENT));
-      assertEquals(true, artTypes.inheritsFrom(SUBSYSTEM_REQUIREMENT, ARTIFACT));
-      assertEquals(true, artTypes.inheritsFrom(SUBSYSTEM_REQUIREMENT, REQUIREMENT));
-      assertEquals(true, artTypes.inheritsFrom(SUBSYSTEM_REQUIREMENT, OTHER_ARTIFACT));
+      assertEquals(false, artTypes.inheritsFrom(Artifact, SubsystemRequirement));
+      assertEquals(false, artTypes.inheritsFrom(Requirement, SubsystemRequirement));
+      assertEquals(true, artTypes.inheritsFrom(SubsystemRequirement, Artifact));
+      assertEquals(true, artTypes.inheritsFrom(SubsystemRequirement, Requirement));
+      assertEquals(true, artTypes.inheritsFrom(SubsystemRequirement, OtherArtifact));
 
-      assertEquals(false, artTypes.inheritsFrom(ARTIFACT, LAST_ARTIFACT));
-      assertEquals(false, artTypes.inheritsFrom(REQUIREMENT, LAST_ARTIFACT));
-      assertEquals(false, artTypes.inheritsFrom(SUBSYSTEM_REQUIREMENT, LAST_ARTIFACT));
-      assertEquals(true, artTypes.inheritsFrom(LAST_ARTIFACT, ARTIFACT));
-      assertEquals(true, artTypes.inheritsFrom(LAST_ARTIFACT, REQUIREMENT));
-      assertEquals(true, artTypes.inheritsFrom(LAST_ARTIFACT, OTHER_ARTIFACT));
-      assertEquals(true, artTypes.inheritsFrom(LAST_ARTIFACT, SUBSYSTEM_REQUIREMENT));
+      assertEquals(false, artTypes.inheritsFrom(Artifact, LastArtifact));
+      assertEquals(false, artTypes.inheritsFrom(Requirement, LastArtifact));
+      assertEquals(false, artTypes.inheritsFrom(SubsystemRequirement, LastArtifact));
+      assertEquals(true, artTypes.inheritsFrom(LastArtifact, Artifact));
+      assertEquals(true, artTypes.inheritsFrom(LastArtifact, Requirement));
+      assertEquals(true, artTypes.inheritsFrom(LastArtifact, OtherArtifact));
+      assertEquals(true, artTypes.inheritsFrom(LastArtifact, SubsystemRequirement));
    }
 
    @Test
@@ -280,14 +280,14 @@ public class OrcsTypesTest {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
       //@formatter:off
-      assertContains(artTypes.getAllDescendantTypes(ARTIFACT), REQUIREMENT, SOFTWARE_REQUIREMENT, SYSTEM_REQUIREMENT, SUBSYSTEM_REQUIREMENT, OTHER_ARTIFACT, LAST_ARTIFACT);
-      assertContains(artTypes.getAllDescendantTypes(REQUIREMENT), SOFTWARE_REQUIREMENT, SYSTEM_REQUIREMENT, SUBSYSTEM_REQUIREMENT, LAST_ARTIFACT);
-      assertEquals(true, artTypes.getAllDescendantTypes(SOFTWARE_REQUIREMENT).isEmpty());
-      assertEquals(true, artTypes.getAllDescendantTypes(SYSTEM_REQUIREMENT).isEmpty());
-      assertEquals(true, artTypes.getAllDescendantTypes(SYSTEM_REQUIREMENT).isEmpty());
-      assertEquals(true, artTypes.getAllDescendantTypes(LAST_ARTIFACT).isEmpty());
-      assertContains(artTypes.getAllDescendantTypes(SUBSYSTEM_REQUIREMENT), LAST_ARTIFACT);
-      assertContains(artTypes.getAllDescendantTypes(OTHER_ARTIFACT), SUBSYSTEM_REQUIREMENT, LAST_ARTIFACT);
+      assertContains(artTypes.getAllDescendantTypes(Artifact), Requirement, SoftwareRequirement, SystemRequirement, SubsystemRequirement, OtherArtifact, LastArtifact);
+      assertContains(artTypes.getAllDescendantTypes(Requirement), SoftwareRequirement, SystemRequirement, SubsystemRequirement, LastArtifact);
+      assertEquals(true, artTypes.getAllDescendantTypes(SoftwareRequirement).isEmpty());
+      assertEquals(true, artTypes.getAllDescendantTypes(SystemRequirement).isEmpty());
+      assertEquals(true, artTypes.getAllDescendantTypes(SystemRequirement).isEmpty());
+      assertEquals(true, artTypes.getAllDescendantTypes(LastArtifact).isEmpty());
+      assertContains(artTypes.getAllDescendantTypes(SubsystemRequirement), LastArtifact);
+      assertContains(artTypes.getAllDescendantTypes(OtherArtifact), SubsystemRequirement, LastArtifact);
       //@formatter:on
    }
 
@@ -298,69 +298,69 @@ public class OrcsTypesTest {
 
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
-      assertEquals(true, artTypes.isValidAttributeType(OTHER_ARTIFACT, CoreBranches.SYSTEM_ROOT, NAME));
-      assertEquals(true, artTypes.isValidAttributeType(OTHER_ARTIFACT, CoreBranches.SYSTEM_ROOT, ANNOTATION));
-      assertEquals(false, artTypes.isValidAttributeType(OTHER_ARTIFACT, CoreBranches.SYSTEM_ROOT, WORDML));
+      assertEquals(true, artTypes.isValidAttributeType(OtherArtifact, CoreBranches.SYSTEM_ROOT, Name));
+      assertEquals(true, artTypes.isValidAttributeType(OtherArtifact, CoreBranches.SYSTEM_ROOT, Annotation));
+      assertEquals(false, artTypes.isValidAttributeType(OtherArtifact, CoreBranches.SYSTEM_ROOT, Wordml));
 
-      assertEquals(true, artTypes.isValidAttributeType(SUBSYSTEM_REQUIREMENT, CoreBranches.SYSTEM_ROOT, NAME));
-      assertEquals(true, artTypes.isValidAttributeType(SUBSYSTEM_REQUIREMENT, CoreBranches.SYSTEM_ROOT, ANNOTATION));
-      assertEquals(true, artTypes.isValidAttributeType(SUBSYSTEM_REQUIREMENT, CoreBranches.SYSTEM_ROOT, WORDML));
-      assertEquals(false, artTypes.isValidAttributeType(SUBSYSTEM_REQUIREMENT, CoreBranches.SYSTEM_ROOT, FIELD_1));
-      assertEquals(true, artTypes.isValidAttributeType(SUBSYSTEM_REQUIREMENT, BRANCH_A, FIELD_1));
-      assertEquals(false, artTypes.isValidAttributeType(SUBSYSTEM_REQUIREMENT, BRANCH_B, FIELD_1));
-      assertEquals(false, artTypes.isValidAttributeType(SUBSYSTEM_REQUIREMENT, BRANCH_C, FIELD_1));
-      assertEquals(true, artTypes.isValidAttributeType(SUBSYSTEM_REQUIREMENT, BRANCH_D, FIELD_1));
-      assertEquals(false, artTypes.isValidAttributeType(SUBSYSTEM_REQUIREMENT, BRANCH_E, FIELD_1));
-      assertEquals(false, artTypes.isValidAttributeType(SUBSYSTEM_REQUIREMENT, CoreBranches.SYSTEM_ROOT, FIELD_2));
-      assertEquals(false, artTypes.isValidAttributeType(SUBSYSTEM_REQUIREMENT, BRANCH_A, FIELD_2));
-      assertEquals(false, artTypes.isValidAttributeType(SUBSYSTEM_REQUIREMENT, BRANCH_B, FIELD_2));
-      assertEquals(false, artTypes.isValidAttributeType(SUBSYSTEM_REQUIREMENT, BRANCH_C, FIELD_2));
-      assertEquals(false, artTypes.isValidAttributeType(SUBSYSTEM_REQUIREMENT, BRANCH_D, FIELD_2));
-      assertEquals(false, artTypes.isValidAttributeType(SUBSYSTEM_REQUIREMENT, BRANCH_E, FIELD_2));
+      assertEquals(true, artTypes.isValidAttributeType(SubsystemRequirement, CoreBranches.SYSTEM_ROOT, Name));
+      assertEquals(true, artTypes.isValidAttributeType(SubsystemRequirement, CoreBranches.SYSTEM_ROOT, Annotation));
+      assertEquals(true, artTypes.isValidAttributeType(SubsystemRequirement, CoreBranches.SYSTEM_ROOT, Wordml));
+      assertEquals(false, artTypes.isValidAttributeType(SubsystemRequirement, CoreBranches.SYSTEM_ROOT, Field1));
+      assertEquals(true, artTypes.isValidAttributeType(SubsystemRequirement, BRANCH_A, Field1));
+      assertEquals(false, artTypes.isValidAttributeType(SubsystemRequirement, BRANCH_B, Field1));
+      assertEquals(false, artTypes.isValidAttributeType(SubsystemRequirement, BRANCH_C, Field1));
+      assertEquals(true, artTypes.isValidAttributeType(SubsystemRequirement, BRANCH_D, Field1));
+      assertEquals(false, artTypes.isValidAttributeType(SubsystemRequirement, BRANCH_E, Field1));
+      assertEquals(false, artTypes.isValidAttributeType(SubsystemRequirement, CoreBranches.SYSTEM_ROOT, Field2));
+      assertEquals(false, artTypes.isValidAttributeType(SubsystemRequirement, BRANCH_A, Field2));
+      assertEquals(false, artTypes.isValidAttributeType(SubsystemRequirement, BRANCH_B, Field2));
+      assertEquals(false, artTypes.isValidAttributeType(SubsystemRequirement, BRANCH_C, Field2));
+      assertEquals(false, artTypes.isValidAttributeType(SubsystemRequirement, BRANCH_D, Field2));
+      assertEquals(false, artTypes.isValidAttributeType(SubsystemRequirement, BRANCH_E, Field2));
 
-      assertEquals(true, artTypes.isValidAttributeType(SUBSYSTEM_REQUIREMENT, BRANCH_E, NAME));
-      assertEquals(true, artTypes.isValidAttributeType(SUBSYSTEM_REQUIREMENT, BRANCH_E, ANNOTATION));
-      assertEquals(true, artTypes.isValidAttributeType(SUBSYSTEM_REQUIREMENT, BRANCH_E, WORDML));
+      assertEquals(true, artTypes.isValidAttributeType(SubsystemRequirement, BRANCH_E, Name));
+      assertEquals(true, artTypes.isValidAttributeType(SubsystemRequirement, BRANCH_E, Annotation));
+      assertEquals(true, artTypes.isValidAttributeType(SubsystemRequirement, BRANCH_E, Wordml));
 
-      assertEquals(true, artTypes.isValidAttributeType(LAST_ARTIFACT, CoreBranches.SYSTEM_ROOT, NAME));
-      assertEquals(true, artTypes.isValidAttributeType(LAST_ARTIFACT, CoreBranches.SYSTEM_ROOT, ANNOTATION));
-      assertEquals(true, artTypes.isValidAttributeType(LAST_ARTIFACT, CoreBranches.SYSTEM_ROOT, WORDML));
-      assertEquals(false, artTypes.isValidAttributeType(LAST_ARTIFACT, CoreBranches.SYSTEM_ROOT, FIELD_1));
-      assertEquals(true, artTypes.isValidAttributeType(LAST_ARTIFACT, BRANCH_A, FIELD_1));
-      assertEquals(false, artTypes.isValidAttributeType(LAST_ARTIFACT, BRANCH_B, FIELD_1));
-      assertEquals(false, artTypes.isValidAttributeType(LAST_ARTIFACT, BRANCH_C, FIELD_1));
-      assertEquals(true, artTypes.isValidAttributeType(LAST_ARTIFACT, BRANCH_D, FIELD_1));
-      assertEquals(false, artTypes.isValidAttributeType(LAST_ARTIFACT, BRANCH_E, FIELD_1));
+      assertEquals(true, artTypes.isValidAttributeType(LastArtifact, CoreBranches.SYSTEM_ROOT, Name));
+      assertEquals(true, artTypes.isValidAttributeType(LastArtifact, CoreBranches.SYSTEM_ROOT, Annotation));
+      assertEquals(true, artTypes.isValidAttributeType(LastArtifact, CoreBranches.SYSTEM_ROOT, Wordml));
+      assertEquals(false, artTypes.isValidAttributeType(LastArtifact, CoreBranches.SYSTEM_ROOT, Field1));
+      assertEquals(true, artTypes.isValidAttributeType(LastArtifact, BRANCH_A, Field1));
+      assertEquals(false, artTypes.isValidAttributeType(LastArtifact, BRANCH_B, Field1));
+      assertEquals(false, artTypes.isValidAttributeType(LastArtifact, BRANCH_C, Field1));
+      assertEquals(true, artTypes.isValidAttributeType(LastArtifact, BRANCH_D, Field1));
+      assertEquals(false, artTypes.isValidAttributeType(LastArtifact, BRANCH_E, Field1));
 
-      assertEquals(false, artTypes.isValidAttributeType(LAST_ARTIFACT, CoreBranches.SYSTEM_ROOT, FIELD_2));
-      assertEquals(false, artTypes.isValidAttributeType(LAST_ARTIFACT, BRANCH_A, FIELD_2));
-      assertEquals(true, artTypes.isValidAttributeType(LAST_ARTIFACT, BRANCH_B, FIELD_2));
-      assertEquals(false, artTypes.isValidAttributeType(LAST_ARTIFACT, BRANCH_C, FIELD_2));
-      assertEquals(false, artTypes.isValidAttributeType(LAST_ARTIFACT, BRANCH_D, FIELD_2));
-      assertEquals(true, artTypes.isValidAttributeType(LAST_ARTIFACT, BRANCH_E, FIELD_2));
+      assertEquals(false, artTypes.isValidAttributeType(LastArtifact, CoreBranches.SYSTEM_ROOT, Field2));
+      assertEquals(false, artTypes.isValidAttributeType(LastArtifact, BRANCH_A, Field2));
+      assertEquals(true, artTypes.isValidAttributeType(LastArtifact, BRANCH_B, Field2));
+      assertEquals(false, artTypes.isValidAttributeType(LastArtifact, BRANCH_C, Field2));
+      assertEquals(false, artTypes.isValidAttributeType(LastArtifact, BRANCH_D, Field2));
+      assertEquals(true, artTypes.isValidAttributeType(LastArtifact, BRANCH_E, Field2));
    }
 
    @Test
    public void testGetAttributeTypes() {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
-      assertContains(artTypes.getAttributeTypes(OTHER_ARTIFACT, CoreBranches.SYSTEM_ROOT), NAME, ANNOTATION);
-      assertContains(artTypes.getAttributeTypes(LAST_ARTIFACT, CoreBranches.SYSTEM_ROOT), NAME, ANNOTATION, WORDML);
+      assertContains(artTypes.getAttributeTypes(OtherArtifact, CoreBranches.SYSTEM_ROOT), Name, Annotation);
+      assertContains(artTypes.getAttributeTypes(LastArtifact, CoreBranches.SYSTEM_ROOT), Name, Annotation, Wordml);
 
       //@formatter:off
-      assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, CoreBranches.SYSTEM_ROOT), NAME, ANNOTATION, WORDML);
-      assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, BRANCH_A), NAME, ANNOTATION, WORDML, FIELD_1);
-      assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, BRANCH_B), NAME, ANNOTATION, WORDML);
-      assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, BRANCH_C), NAME, ANNOTATION, WORDML);
-      assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, BRANCH_D), NAME, ANNOTATION, WORDML, FIELD_1);
-      assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, BRANCH_E), NAME, ANNOTATION, WORDML);
+      assertContains(artTypes.getAttributeTypes(SubsystemRequirement, CoreBranches.SYSTEM_ROOT), Name, Annotation, Wordml);
+      assertContains(artTypes.getAttributeTypes(SubsystemRequirement, BRANCH_A), Name, Annotation, Wordml, Field1);
+      assertContains(artTypes.getAttributeTypes(SubsystemRequirement, BRANCH_B), Name, Annotation, Wordml);
+      assertContains(artTypes.getAttributeTypes(SubsystemRequirement, BRANCH_C), Name, Annotation, Wordml);
+      assertContains(artTypes.getAttributeTypes(SubsystemRequirement, BRANCH_D), Name, Annotation, Wordml, Field1);
+      assertContains(artTypes.getAttributeTypes(SubsystemRequirement, BRANCH_E), Name, Annotation, Wordml);
 
-      assertContains(artTypes.getAttributeTypes(LAST_ARTIFACT, CoreBranches.SYSTEM_ROOT), NAME, ANNOTATION, WORDML);
-      assertContains(artTypes.getAttributeTypes(LAST_ARTIFACT, BRANCH_A), NAME, ANNOTATION, WORDML, FIELD_1);
-      assertContains(artTypes.getAttributeTypes(LAST_ARTIFACT, BRANCH_B), NAME, ANNOTATION, WORDML, FIELD_2);
-      assertContains(artTypes.getAttributeTypes(LAST_ARTIFACT, BRANCH_C), NAME, ANNOTATION, WORDML);
-      assertContains(artTypes.getAttributeTypes(LAST_ARTIFACT, BRANCH_D), NAME, ANNOTATION, WORDML, FIELD_1);
-      assertContains(artTypes.getAttributeTypes(LAST_ARTIFACT, BRANCH_E), NAME, ANNOTATION, WORDML, FIELD_2);
+      assertContains(artTypes.getAttributeTypes(LastArtifact, CoreBranches.SYSTEM_ROOT), Name, Annotation, Wordml);
+      assertContains(artTypes.getAttributeTypes(LastArtifact, BRANCH_A), Name, Annotation, Wordml, Field1);
+      assertContains(artTypes.getAttributeTypes(LastArtifact, BRANCH_B), Name, Annotation, Wordml, Field2);
+      assertContains(artTypes.getAttributeTypes(LastArtifact, BRANCH_C), Name, Annotation, Wordml);
+      assertContains(artTypes.getAttributeTypes(LastArtifact, BRANCH_D), Name, Annotation, Wordml, Field1);
+      assertContains(artTypes.getAttributeTypes(LastArtifact, BRANCH_E), Name, Annotation, Wordml, Field2);
       //@formatter:on
    }
 
@@ -385,9 +385,9 @@ public class OrcsTypesTest {
       assertEquals(Long.valueOf(35), artifactType.getId());
 
       assertEquals(false, artTypes.isAbstract(artifactType));
-      assertEquals(true, artTypes.inheritsFrom(artifactType, OTHER_ARTIFACT));
-      assertEquals(true, artTypes.inheritsFrom(artifactType, ARTIFACT));
-      assertEquals(false, artTypes.inheritsFrom(artifactType, REQUIREMENT));
+      assertEquals(true, artTypes.inheritsFrom(artifactType, OtherArtifact));
+      assertEquals(true, artTypes.inheritsFrom(artifactType, Artifact));
+      assertEquals(false, artTypes.inheritsFrom(artifactType, Requirement));
 
       assertEquals(true, artTypes.exists(artifactType));
    }
@@ -398,15 +398,15 @@ public class OrcsTypesTest {
 
       assertEquals(7, artTypes.size());
 
-      assertContains(artTypes.getAttributeTypes(OTHER_ARTIFACT, CoreBranches.SYSTEM_ROOT), NAME, ANNOTATION);
+      assertContains(artTypes.getAttributeTypes(OtherArtifact, CoreBranches.SYSTEM_ROOT), Name, Annotation);
 
       //@formatter:off
-      assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, CoreBranches.SYSTEM_ROOT), NAME, ANNOTATION, WORDML);
-      assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, BRANCH_A), NAME, ANNOTATION, WORDML, FIELD_1);
-      assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, BRANCH_B), NAME, ANNOTATION, WORDML);
-      assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, BRANCH_C), NAME, ANNOTATION, WORDML);
-      assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, BRANCH_D), NAME, ANNOTATION, WORDML, FIELD_1);
-      assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, BRANCH_E), NAME, ANNOTATION, WORDML);
+      assertContains(artTypes.getAttributeTypes(SubsystemRequirement, CoreBranches.SYSTEM_ROOT), Name, Annotation, Wordml);
+      assertContains(artTypes.getAttributeTypes(SubsystemRequirement, BRANCH_A), Name, Annotation, Wordml, Field1);
+      assertContains(artTypes.getAttributeTypes(SubsystemRequirement, BRANCH_B), Name, Annotation, Wordml);
+      assertContains(artTypes.getAttributeTypes(SubsystemRequirement, BRANCH_C), Name, Annotation, Wordml);
+      assertContains(artTypes.getAttributeTypes(SubsystemRequirement, BRANCH_D), Name, Annotation, Wordml, Field1);
+      assertContains(artTypes.getAttributeTypes(SubsystemRequirement, BRANCH_E), Name, Annotation, Wordml);
       //@formatter:on
 
       //@formatter:off
@@ -431,20 +431,19 @@ public class OrcsTypesTest {
 
       assertEquals(7, artTypes.size());
 
-      assertContains(artTypes.getAttributeTypes(OTHER_ARTIFACT, CoreBranches.SYSTEM_ROOT), NAME, FIELD_2);
-      assertContains(artTypes.getAttributeTypes(OTHER_ARTIFACT, BRANCH_A), NAME, ANNOTATION, FIELD_2);
-      assertContains(artTypes.getAttributeTypes(OTHER_ARTIFACT, BRANCH_B), NAME, FIELD_2);
-      assertContains(artTypes.getAttributeTypes(OTHER_ARTIFACT, BRANCH_C), NAME, FIELD_2);
-      assertContains(artTypes.getAttributeTypes(OTHER_ARTIFACT, BRANCH_D), NAME, ANNOTATION, FIELD_2);
-      assertContains(artTypes.getAttributeTypes(OTHER_ARTIFACT, BRANCH_E), NAME, FIELD_2);
+      assertContains(artTypes.getAttributeTypes(OtherArtifact, CoreBranches.SYSTEM_ROOT), Name, Field2);
+      assertContains(artTypes.getAttributeTypes(OtherArtifact, BRANCH_A), Name, Annotation, Field2);
+      assertContains(artTypes.getAttributeTypes(OtherArtifact, BRANCH_B), Name, Field2);
+      assertContains(artTypes.getAttributeTypes(OtherArtifact, BRANCH_C), Name, Field2);
+      assertContains(artTypes.getAttributeTypes(OtherArtifact, BRANCH_D), Name, Annotation, Field2);
+      assertContains(artTypes.getAttributeTypes(OtherArtifact, BRANCH_E), Name, Field2);
 
-      assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, CoreBranches.SYSTEM_ROOT), NAME, WORDML,
-         FIELD_2);
-      assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, BRANCH_A), NAME, ANNOTATION, WORDML, FIELD_2);
-      assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, BRANCH_B), NAME, WORDML, FIELD_2);
-      assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, BRANCH_C), NAME, WORDML, FIELD_2);
-      assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, BRANCH_D), NAME, ANNOTATION, WORDML, FIELD_2);
-      assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, BRANCH_E), NAME, WORDML, FIELD_2);
+      assertContains(artTypes.getAttributeTypes(SubsystemRequirement, CoreBranches.SYSTEM_ROOT), Name, Wordml, Field2);
+      assertContains(artTypes.getAttributeTypes(SubsystemRequirement, BRANCH_A), Name, Annotation, Wordml, Field2);
+      assertContains(artTypes.getAttributeTypes(SubsystemRequirement, BRANCH_B), Name, Wordml, Field2);
+      assertContains(artTypes.getAttributeTypes(SubsystemRequirement, BRANCH_C), Name, Wordml, Field2);
+      assertContains(artTypes.getAttributeTypes(SubsystemRequirement, BRANCH_D), Name, Annotation, Wordml, Field2);
+      assertContains(artTypes.getAttributeTypes(SubsystemRequirement, BRANCH_E), Name, Wordml, Field2);
    }
 
    @Test
@@ -455,7 +454,7 @@ public class OrcsTypesTest {
       assertEquals(false, attrTypes.isEmpty());
 
       //@formatter:off
-      assertContains(attrTypes.getAll(), NAME, ANNOTATION, WORDML, FIELD_1, FIELD_2);
+      assertContains(attrTypes.getAll(), Name, Annotation, Wordml, Field1, Field2);
       //@formatter:on
    }
 
@@ -463,32 +462,32 @@ public class OrcsTypesTest {
    public void testGetAttributeTypesByUuid() {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
-      assertEquals(NAME, attrTypes.get(NAME));
-      assertEquals(ANNOTATION, attrTypes.get(ANNOTATION));
-      assertEquals(WORDML, attrTypes.get(WORDML));
-      assertEquals(FIELD_1, attrTypes.get(FIELD_1));
-      assertEquals(FIELD_2, attrTypes.get(FIELD_2));
+      assertEquals(Name, attrTypes.get(Name));
+      assertEquals(Annotation, attrTypes.get(Annotation));
+      assertEquals(Wordml, attrTypes.get(Wordml));
+      assertEquals(Field1, attrTypes.get(Field1));
+      assertEquals(Field2, attrTypes.get(Field2));
    }
 
    @Test
    public void testExistsAttributeTypes() {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
-      assertEquals(true, attrTypes.exists(NAME));
-      assertEquals(true, attrTypes.exists(ANNOTATION));
-      assertEquals(true, attrTypes.exists(WORDML));
-      assertEquals(true, attrTypes.exists(FIELD_1));
-      assertEquals(true, attrTypes.exists(FIELD_2));
+      assertEquals(true, attrTypes.exists(Name));
+      assertEquals(true, attrTypes.exists(Annotation));
+      assertEquals(true, attrTypes.exists(Wordml));
+      assertEquals(true, attrTypes.exists(Field1));
+      assertEquals(true, attrTypes.exists(Field2));
    }
 
    @Test
    public void testGetAttributeProviderId() {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
-      assertEquals("DefaultAttributeDataProvider", attrTypes.getAttributeProviderId(NAME));
-      assertEquals("UriAttributeDataProvider", attrTypes.getAttributeProviderId(ANNOTATION));
-      assertEquals("UriAttributeDataProvider", attrTypes.getAttributeProviderId(WORDML));
-      assertEquals("DefaultAttributeDataProvider", attrTypes.getAttributeProviderId(FIELD_1));
-      assertEquals("UriAttributeDataProvider", attrTypes.getAttributeProviderId(FIELD_2));
+      assertEquals("DefaultAttributeDataProvider", attrTypes.getAttributeProviderId(Name));
+      assertEquals("UriAttributeDataProvider", attrTypes.getAttributeProviderId(Annotation));
+      assertEquals("UriAttributeDataProvider", attrTypes.getAttributeProviderId(Wordml));
+      assertEquals("DefaultAttributeDataProvider", attrTypes.getAttributeProviderId(Field1));
+      assertEquals("UriAttributeDataProvider", attrTypes.getAttributeProviderId(Field2));
    }
 
    @Test
@@ -496,11 +495,11 @@ public class OrcsTypesTest {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       //@formatter:off
-      assertEquals("StringAttribute", attrTypes.getBaseAttributeTypeId(NAME));
-      assertEquals("CompressedContentAttribute", attrTypes.getBaseAttributeTypeId(ANNOTATION));
-      assertEquals("WordAttribute", attrTypes.getBaseAttributeTypeId(WORDML));
-      assertEquals("EnumeratedAttribute", attrTypes.getBaseAttributeTypeId(FIELD_1));
-      assertEquals("DateAttribute", attrTypes.getBaseAttributeTypeId(FIELD_2));
+      assertEquals("StringAttribute", attrTypes.getBaseAttributeTypeId(Name));
+      assertEquals("CompressedContentAttribute", attrTypes.getBaseAttributeTypeId(Annotation));
+      assertEquals("WordAttribute", attrTypes.getBaseAttributeTypeId(Wordml));
+      assertEquals("EnumeratedAttribute", attrTypes.getBaseAttributeTypeId(Field1));
+      assertEquals("DateAttribute", attrTypes.getBaseAttributeTypeId(Field2));
       //@formatter:on
    }
 
@@ -509,11 +508,11 @@ public class OrcsTypesTest {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       //@formatter:off
-      assertEquals("unnamed", attrTypes.getDefaultValue(NAME));
-      assertEquals(null, attrTypes.getDefaultValue(ANNOTATION));
-      assertEquals("<w:p xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\"><w:r><w:t></w:t></w:r></w:p>", attrTypes.getDefaultValue(WORDML));
-      assertEquals("this is a field", attrTypes.getDefaultValue(FIELD_1));
-      assertEquals("field2", attrTypes.getDefaultValue(FIELD_2));
+      assertEquals("unnamed", attrTypes.getDefaultValue(Name));
+      assertEquals(null, attrTypes.getDefaultValue(Annotation));
+      assertEquals("<w:p xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\"><w:r><w:t></w:t></w:r></w:p>", attrTypes.getDefaultValue(Wordml));
+      assertEquals("this is a field", attrTypes.getDefaultValue(Field1));
+      assertEquals("field2", attrTypes.getDefaultValue(Field2));
       //@formatter:on
    }
 
@@ -522,11 +521,11 @@ public class OrcsTypesTest {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       //@formatter:off
-      assertEquals("Descriptive Name", attrTypes.getDescription(NAME));
-      assertEquals("the version \'1.0\' is this \"1.2.0\"", attrTypes.getDescription(ANNOTATION));
-      assertEquals("value must comply with WordML xml schema", attrTypes.getDescription(WORDML));
-      assertEquals("", attrTypes.getDescription(FIELD_1));
-      assertEquals("field 2 description", attrTypes.getDescription(FIELD_2));
+      assertEquals("Descriptive Name", attrTypes.getDescription(Name));
+      assertEquals("the version \'1.0\' is this \"1.2.0\"", attrTypes.getDescription(Annotation));
+      assertEquals("value must comply with WordML xml schema", attrTypes.getDescription(Wordml));
+      assertEquals("", attrTypes.getDescription(Field1));
+      assertEquals("field 2 description", attrTypes.getDescription(Field2));
       //@formatter:on
    }
 
@@ -535,11 +534,11 @@ public class OrcsTypesTest {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       //@formatter:off
-      assertEquals("", attrTypes.getFileTypeExtension(NAME));
-      assertEquals("", attrTypes.getFileTypeExtension(ANNOTATION));
-      assertEquals("xml", attrTypes.getFileTypeExtension(WORDML));
-      assertEquals("", attrTypes.getFileTypeExtension(FIELD_1));
-      assertEquals("hello", attrTypes.getFileTypeExtension(FIELD_2));
+      assertEquals("", attrTypes.getFileTypeExtension(Name));
+      assertEquals("", attrTypes.getFileTypeExtension(Annotation));
+      assertEquals("xml", attrTypes.getFileTypeExtension(Wordml));
+      assertEquals("", attrTypes.getFileTypeExtension(Field1));
+      assertEquals("hello", attrTypes.getFileTypeExtension(Field2));
       //@formatter:on
    }
 
@@ -548,11 +547,11 @@ public class OrcsTypesTest {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       //@formatter:off
-      assertEquals(1, attrTypes.getMinOccurrences(NAME));
-      assertEquals(0, attrTypes.getMinOccurrences(ANNOTATION));
-      assertEquals(0, attrTypes.getMinOccurrences(WORDML));
-      assertEquals(2, attrTypes.getMinOccurrences(FIELD_1));
-      assertEquals(1, attrTypes.getMinOccurrences(FIELD_2));
+      assertEquals(1, attrTypes.getMinOccurrences(Name));
+      assertEquals(0, attrTypes.getMinOccurrences(Annotation));
+      assertEquals(0, attrTypes.getMinOccurrences(Wordml));
+      assertEquals(2, attrTypes.getMinOccurrences(Field1));
+      assertEquals(1, attrTypes.getMinOccurrences(Field2));
       //@formatter:on
    }
 
@@ -561,11 +560,11 @@ public class OrcsTypesTest {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       //@formatter:off
-      assertEquals(1, attrTypes.getMaxOccurrences(NAME));
-      assertEquals(Integer.MAX_VALUE, attrTypes.getMaxOccurrences(ANNOTATION));
-      assertEquals(1, attrTypes.getMaxOccurrences(WORDML));
-      assertEquals(3, attrTypes.getMaxOccurrences(FIELD_1));
-      assertEquals(1, attrTypes.getMaxOccurrences(FIELD_2));
+      assertEquals(1, attrTypes.getMaxOccurrences(Name));
+      assertEquals(Integer.MAX_VALUE, attrTypes.getMaxOccurrences(Annotation));
+      assertEquals(1, attrTypes.getMaxOccurrences(Wordml));
+      assertEquals(3, attrTypes.getMaxOccurrences(Field1));
+      assertEquals(1, attrTypes.getMaxOccurrences(Field2));
       //@formatter:on
    }
 
@@ -574,11 +573,11 @@ public class OrcsTypesTest {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       //@formatter:off
-      assertEquals(TaggerTypeToken.PlainTextTagger, attrTypes.getTaggerId(NAME));
-      assertEquals(TaggerTypeToken.PlainTextTagger, attrTypes.getTaggerId(ANNOTATION));
-      assertEquals(TaggerTypeToken.XmlTagger, attrTypes.getTaggerId(WORDML));
-      assertEquals(TaggerTypeToken.SENTINEL, attrTypes.getTaggerId(FIELD_1));
-      assertEquals(TaggerTypeToken.SENTINEL, attrTypes.getTaggerId(FIELD_2));
+      assertEquals(TaggerTypeToken.PlainTextTagger, attrTypes.getTaggerId(Name));
+      assertEquals(TaggerTypeToken.PlainTextTagger, attrTypes.getTaggerId(Annotation));
+      assertEquals(TaggerTypeToken.XmlTagger, attrTypes.getTaggerId(Wordml));
+      assertEquals(TaggerTypeToken.SENTINEL, attrTypes.getTaggerId(Field1));
+      assertEquals(TaggerTypeToken.SENTINEL, attrTypes.getTaggerId(Field2));
       //@formatter:on
    }
 
@@ -587,25 +586,25 @@ public class OrcsTypesTest {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       //@formatter:off
-      assertEquals("plan/text", attrTypes.getMediaType(NAME));
-      assertEquals("plan/text", attrTypes.getMediaType(ANNOTATION));
-      assertEquals("application/xml", attrTypes.getMediaType(WORDML));
-      assertEquals("application/custom", attrTypes.getMediaType(FIELD_1));
-      assertEquals("**", attrTypes.getMediaType(FIELD_2));
+      assertEquals("plan/text", attrTypes.getMediaType(Name));
+      assertEquals("plan/text", attrTypes.getMediaType(Annotation));
+      assertEquals("application/xml", attrTypes.getMediaType(Wordml));
+      assertEquals("application/custom", attrTypes.getMediaType(Field1));
+      assertEquals("**", attrTypes.getMediaType(Field2));
       //@formatter:on
    }
 
    @Test
    public void testGetAllTaggable() {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
-      assertContains(attrTypes.getAllTaggable(), NAME, ANNOTATION, WORDML, FIELD_2);
+      assertContains(attrTypes.getAllTaggable(), Name, Annotation, Wordml, Field2);
    }
 
    @Test
    public void testGetOseeEnum() {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
-      EnumType enumType = attrTypes.getEnumType(FIELD_1);
+      EnumType enumType = attrTypes.getEnumType(Field1);
 
       assertEquals("enum.test.proc.status", enumType.getName());
       assertEquals(Long.valueOf(3458764513820541304L), enumType.getId());
@@ -658,7 +657,7 @@ public class OrcsTypesTest {
 
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
-      EnumType enumType = attrTypes.getEnumType(FIELD_1);
+      EnumType enumType = attrTypes.getEnumType(Field1);
 
       assertEquals("enum.test.proc.status", enumType.getName());
       assertEquals(Long.valueOf(3458764513820541304L), enumType.getId());
@@ -732,7 +731,7 @@ public class OrcsTypesTest {
       assertEquals(false, relTypes.isEmpty());
 
       //@formatter:off
-      assertContains(relTypes.getAll(), REQUIREMENT_REL, ANOTHER_REL);
+      assertContains(relTypes.getAll(), RequirementRelation, AnotherRelation);
       //@formatter:on
    }
 
@@ -740,43 +739,43 @@ public class OrcsTypesTest {
    public void testGetRelationTypesByUuid() {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
-      assertEquals(REQUIREMENT_REL, relTypes.get(REQUIREMENT_REL));
-      assertEquals(ANOTHER_REL, relTypes.get(ANOTHER_REL));
+      assertEquals(RequirementRelation, relTypes.get(RequirementRelation));
+      assertEquals(AnotherRelation, relTypes.get(AnotherRelation));
    }
 
    @Test
    public void testExistsRelationTypes() {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
-      assertTrue(relTypes.exists(REQUIREMENT_REL));
-      assertTrue(relTypes.exists(ANOTHER_REL));
+      assertTrue(relTypes.exists(RequirementRelation));
+      assertTrue(relTypes.exists(AnotherRelation));
    }
 
    @Test
    public void testGetArtifactType() {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
-      assertEquals(REQUIREMENT, relTypes.getArtifactType(REQUIREMENT_REL, SIDE_A));
-      assertEquals(SUBSYSTEM_REQUIREMENT, relTypes.getArtifactType(REQUIREMENT_REL, SIDE_B));
+      assertEquals(Requirement, relTypes.getArtifactType(RequirementRelation, SIDE_A));
+      assertEquals(SubsystemRequirement, relTypes.getArtifactType(RequirementRelation, SIDE_B));
 
-      assertEquals(OTHER_ARTIFACT, relTypes.getArtifactType(ANOTHER_REL, SIDE_A));
-      assertEquals(LAST_ARTIFACT, relTypes.getArtifactType(ANOTHER_REL, SIDE_B));
+      assertEquals(OtherArtifact, relTypes.getArtifactType(AnotherRelation, SIDE_A));
+      assertEquals(LastArtifact, relTypes.getArtifactType(AnotherRelation, SIDE_B));
    }
 
    @Test
    public void testGetArtifactTypeSideA() {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
-      assertEquals(REQUIREMENT, relTypes.getArtifactTypeSideA(REQUIREMENT_REL));
-      assertEquals(OTHER_ARTIFACT, relTypes.getArtifactTypeSideA(ANOTHER_REL));
+      assertEquals(Requirement, relTypes.getArtifactTypeSideA(RequirementRelation));
+      assertEquals(OtherArtifact, relTypes.getArtifactTypeSideA(AnotherRelation));
    }
 
    @Test
    public void testGetArtifactTypeSideB() {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
-      assertEquals(SUBSYSTEM_REQUIREMENT, relTypes.getArtifactTypeSideB(REQUIREMENT_REL));
-      assertEquals(LAST_ARTIFACT, relTypes.getArtifactTypeSideB(ANOTHER_REL));
+      assertEquals(SubsystemRequirement, relTypes.getArtifactTypeSideB(RequirementRelation));
+      assertEquals(LastArtifact, relTypes.getArtifactTypeSideB(AnotherRelation));
    }
 
    @Test
@@ -784,8 +783,8 @@ public class OrcsTypesTest {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
       //@formatter:off
-      assertEquals(LEXICOGRAPHICAL_ASC, relTypes.getDefaultOrderTypeGuid(REQUIREMENT_REL));
-      assertEquals(UNORDERED, relTypes.getDefaultOrderTypeGuid(ANOTHER_REL));
+      assertEquals(LEXICOGRAPHICAL_ASC, relTypes.getDefaultOrderTypeGuid(RequirementRelation));
+      assertEquals(UNORDERED, relTypes.getDefaultOrderTypeGuid(AnotherRelation));
       //@formatter:on
    }
 
@@ -793,91 +792,91 @@ public class OrcsTypesTest {
    public void testGetMultiplicity() {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
-      assertEquals(RelationTypeMultiplicity.ONE_TO_MANY, relTypes.getMultiplicity(REQUIREMENT_REL));
-      assertEquals(RelationTypeMultiplicity.MANY_TO_MANY, relTypes.getMultiplicity(ANOTHER_REL));
+      assertEquals(RelationTypeMultiplicity.ONE_TO_MANY, relTypes.getMultiplicity(RequirementRelation));
+      assertEquals(RelationTypeMultiplicity.MANY_TO_MANY, relTypes.getMultiplicity(AnotherRelation));
    }
 
    @Test
    public void testGetSideNameA() {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
-      assertEquals("requirement-sideA", relTypes.getSideAName(REQUIREMENT_REL));
-      assertEquals("other-sideA", relTypes.getSideAName(ANOTHER_REL));
+      assertEquals("requirement-sideA", relTypes.getSideAName(RequirementRelation));
+      assertEquals("other-sideA", relTypes.getSideAName(AnotherRelation));
    }
 
    @Test
    public void testGetSideNameB() {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
-      assertEquals("subsystem-sideB", relTypes.getSideBName(REQUIREMENT_REL));
-      assertEquals("last-sideB", relTypes.getSideBName(ANOTHER_REL));
+      assertEquals("subsystem-sideB", relTypes.getSideBName(RequirementRelation));
+      assertEquals("last-sideB", relTypes.getSideBName(AnotherRelation));
    }
 
    @Test
    public void testGetSideName() {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
-      assertEquals("requirement-sideA", relTypes.getSideName(REQUIREMENT_REL, SIDE_A));
-      assertEquals("subsystem-sideB", relTypes.getSideName(REQUIREMENT_REL, SIDE_B));
+      assertEquals("requirement-sideA", relTypes.getSideName(RequirementRelation, SIDE_A));
+      assertEquals("subsystem-sideB", relTypes.getSideName(RequirementRelation, SIDE_B));
 
-      assertEquals("other-sideA", relTypes.getSideName(ANOTHER_REL, SIDE_A));
-      assertEquals("last-sideB", relTypes.getSideName(ANOTHER_REL, SIDE_B));
+      assertEquals("other-sideA", relTypes.getSideName(AnotherRelation, SIDE_A));
+      assertEquals("last-sideB", relTypes.getSideName(AnotherRelation, SIDE_B));
    }
 
    @Test
    public void testIsSideName() {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
-      assertEquals(true, relTypes.isSideAName(REQUIREMENT_REL, "requirement-sideA"));
-      assertEquals(false, relTypes.isSideAName(REQUIREMENT_REL, "subsystem-sideB"));
+      assertEquals(true, relTypes.isSideAName(RequirementRelation, "requirement-sideA"));
+      assertEquals(false, relTypes.isSideAName(RequirementRelation, "subsystem-sideB"));
 
-      assertEquals(true, relTypes.isSideAName(ANOTHER_REL, "other-sideA"));
-      assertEquals(false, relTypes.isSideAName(ANOTHER_REL, "last-sideB"));
+      assertEquals(true, relTypes.isSideAName(AnotherRelation, "other-sideA"));
+      assertEquals(false, relTypes.isSideAName(AnotherRelation, "last-sideB"));
    }
 
    @Test
    public void testIsOrdered() {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
-      assertEquals(true, relTypes.isOrdered(REQUIREMENT_REL));
-      assertEquals(false, relTypes.isOrdered(ANOTHER_REL));
+      assertEquals(true, relTypes.isOrdered(RequirementRelation));
+      assertEquals(false, relTypes.isOrdered(AnotherRelation));
    }
 
    @Test
    public void testIsArtifactTypeAllowed() {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
-      assertEquals(false, relTypes.isArtifactTypeAllowed(REQUIREMENT_REL, SIDE_A, ARTIFACT));
-      assertEquals(true, relTypes.isArtifactTypeAllowed(REQUIREMENT_REL, SIDE_A, REQUIREMENT));
-      assertEquals(true, relTypes.isArtifactTypeAllowed(REQUIREMENT_REL, SIDE_A, SOFTWARE_REQUIREMENT));
-      assertEquals(true, relTypes.isArtifactTypeAllowed(REQUIREMENT_REL, SIDE_A, SYSTEM_REQUIREMENT));
-      assertEquals(true, relTypes.isArtifactTypeAllowed(REQUIREMENT_REL, SIDE_A, SUBSYSTEM_REQUIREMENT));
-      assertEquals(false, relTypes.isArtifactTypeAllowed(REQUIREMENT_REL, SIDE_A, OTHER_ARTIFACT));
-      assertEquals(true, relTypes.isArtifactTypeAllowed(REQUIREMENT_REL, SIDE_A, LAST_ARTIFACT));
+      assertEquals(false, relTypes.isArtifactTypeAllowed(RequirementRelation, SIDE_A, Artifact));
+      assertEquals(true, relTypes.isArtifactTypeAllowed(RequirementRelation, SIDE_A, Requirement));
+      assertEquals(true, relTypes.isArtifactTypeAllowed(RequirementRelation, SIDE_A, SoftwareRequirement));
+      assertEquals(true, relTypes.isArtifactTypeAllowed(RequirementRelation, SIDE_A, SystemRequirement));
+      assertEquals(true, relTypes.isArtifactTypeAllowed(RequirementRelation, SIDE_A, SubsystemRequirement));
+      assertEquals(false, relTypes.isArtifactTypeAllowed(RequirementRelation, SIDE_A, OtherArtifact));
+      assertEquals(true, relTypes.isArtifactTypeAllowed(RequirementRelation, SIDE_A, LastArtifact));
 
-      assertEquals(false, relTypes.isArtifactTypeAllowed(REQUIREMENT_REL, SIDE_B, ARTIFACT));
-      assertEquals(false, relTypes.isArtifactTypeAllowed(REQUIREMENT_REL, SIDE_B, REQUIREMENT));
-      assertEquals(false, relTypes.isArtifactTypeAllowed(REQUIREMENT_REL, SIDE_B, SOFTWARE_REQUIREMENT));
-      assertEquals(false, relTypes.isArtifactTypeAllowed(REQUIREMENT_REL, SIDE_B, SYSTEM_REQUIREMENT));
-      assertEquals(true, relTypes.isArtifactTypeAllowed(REQUIREMENT_REL, SIDE_B, SUBSYSTEM_REQUIREMENT));
-      assertEquals(false, relTypes.isArtifactTypeAllowed(REQUIREMENT_REL, SIDE_B, OTHER_ARTIFACT));
-      assertEquals(true, relTypes.isArtifactTypeAllowed(REQUIREMENT_REL, SIDE_B, LAST_ARTIFACT));
+      assertEquals(false, relTypes.isArtifactTypeAllowed(RequirementRelation, SIDE_B, Artifact));
+      assertEquals(false, relTypes.isArtifactTypeAllowed(RequirementRelation, SIDE_B, Requirement));
+      assertEquals(false, relTypes.isArtifactTypeAllowed(RequirementRelation, SIDE_B, SoftwareRequirement));
+      assertEquals(false, relTypes.isArtifactTypeAllowed(RequirementRelation, SIDE_B, SystemRequirement));
+      assertEquals(true, relTypes.isArtifactTypeAllowed(RequirementRelation, SIDE_B, SubsystemRequirement));
+      assertEquals(false, relTypes.isArtifactTypeAllowed(RequirementRelation, SIDE_B, OtherArtifact));
+      assertEquals(true, relTypes.isArtifactTypeAllowed(RequirementRelation, SIDE_B, LastArtifact));
 
-      assertEquals(false, relTypes.isArtifactTypeAllowed(ANOTHER_REL, SIDE_A, ARTIFACT));
-      assertEquals(false, relTypes.isArtifactTypeAllowed(ANOTHER_REL, SIDE_A, REQUIREMENT));
-      assertEquals(false, relTypes.isArtifactTypeAllowed(ANOTHER_REL, SIDE_A, SOFTWARE_REQUIREMENT));
-      assertEquals(false, relTypes.isArtifactTypeAllowed(ANOTHER_REL, SIDE_A, SYSTEM_REQUIREMENT));
-      assertEquals(true, relTypes.isArtifactTypeAllowed(ANOTHER_REL, SIDE_A, SUBSYSTEM_REQUIREMENT));
-      assertEquals(true, relTypes.isArtifactTypeAllowed(ANOTHER_REL, SIDE_A, OTHER_ARTIFACT));
-      assertEquals(true, relTypes.isArtifactTypeAllowed(ANOTHER_REL, SIDE_A, LAST_ARTIFACT));
+      assertEquals(false, relTypes.isArtifactTypeAllowed(AnotherRelation, SIDE_A, Artifact));
+      assertEquals(false, relTypes.isArtifactTypeAllowed(AnotherRelation, SIDE_A, Requirement));
+      assertEquals(false, relTypes.isArtifactTypeAllowed(AnotherRelation, SIDE_A, SoftwareRequirement));
+      assertEquals(false, relTypes.isArtifactTypeAllowed(AnotherRelation, SIDE_A, SystemRequirement));
+      assertEquals(true, relTypes.isArtifactTypeAllowed(AnotherRelation, SIDE_A, SubsystemRequirement));
+      assertEquals(true, relTypes.isArtifactTypeAllowed(AnotherRelation, SIDE_A, OtherArtifact));
+      assertEquals(true, relTypes.isArtifactTypeAllowed(AnotherRelation, SIDE_A, LastArtifact));
 
-      assertEquals(false, relTypes.isArtifactTypeAllowed(ANOTHER_REL, SIDE_B, ARTIFACT));
-      assertEquals(false, relTypes.isArtifactTypeAllowed(ANOTHER_REL, SIDE_B, REQUIREMENT));
-      assertEquals(false, relTypes.isArtifactTypeAllowed(ANOTHER_REL, SIDE_B, SOFTWARE_REQUIREMENT));
-      assertEquals(false, relTypes.isArtifactTypeAllowed(ANOTHER_REL, SIDE_B, SYSTEM_REQUIREMENT));
-      assertEquals(false, relTypes.isArtifactTypeAllowed(ANOTHER_REL, SIDE_B, SUBSYSTEM_REQUIREMENT));
-      assertEquals(false, relTypes.isArtifactTypeAllowed(ANOTHER_REL, SIDE_B, OTHER_ARTIFACT));
-      assertEquals(true, relTypes.isArtifactTypeAllowed(ANOTHER_REL, SIDE_B, LAST_ARTIFACT));
+      assertEquals(false, relTypes.isArtifactTypeAllowed(AnotherRelation, SIDE_B, Artifact));
+      assertEquals(false, relTypes.isArtifactTypeAllowed(AnotherRelation, SIDE_B, Requirement));
+      assertEquals(false, relTypes.isArtifactTypeAllowed(AnotherRelation, SIDE_B, SoftwareRequirement));
+      assertEquals(false, relTypes.isArtifactTypeAllowed(AnotherRelation, SIDE_B, SystemRequirement));
+      assertEquals(false, relTypes.isArtifactTypeAllowed(AnotherRelation, SIDE_B, SubsystemRequirement));
+      assertEquals(false, relTypes.isArtifactTypeAllowed(AnotherRelation, SIDE_B, OtherArtifact));
+      assertEquals(true, relTypes.isArtifactTypeAllowed(AnotherRelation, SIDE_B, LastArtifact));
    }
 
    @Test
@@ -908,10 +907,10 @@ public class OrcsTypesTest {
       assertEquals("Dynamic Relation", relation.getName());
       assertEquals(Long.valueOf(2305843009213694297L), relation.getId());
 
-      assertEquals(ARTIFACT, relTypes.getArtifactType(relation, SIDE_A));
-      assertEquals(OTHER_ARTIFACT, relTypes.getArtifactType(relation, SIDE_B));
-      assertEquals(ARTIFACT, relTypes.getArtifactTypeSideA(relation));
-      assertEquals(OTHER_ARTIFACT, relTypes.getArtifactTypeSideB(relation));
+      assertEquals(Artifact, relTypes.getArtifactType(relation, SIDE_A));
+      assertEquals(OtherArtifact, relTypes.getArtifactType(relation, SIDE_B));
+      assertEquals(Artifact, relTypes.getArtifactTypeSideA(relation));
+      assertEquals(OtherArtifact, relTypes.getArtifactTypeSideB(relation));
       assertEquals(LEXICOGRAPHICAL_DESC, relTypes.getDefaultOrderTypeGuid(relation));
       assertEquals(RelationTypeMultiplicity.MANY_TO_ONE, relTypes.getMultiplicity(relation));
       assertEquals("dynamic-sideA", relTypes.getSideName(relation, SIDE_A));
@@ -921,10 +920,10 @@ public class OrcsTypesTest {
       assertEquals(true, relTypes.isOrdered(relation));
       assertEquals(true, relTypes.isSideAName(relation, "dynamic-sideA"));
       assertEquals(false, relTypes.isSideAName(relation, "dynamic-sideB"));
-      assertEquals(true, relTypes.isArtifactTypeAllowed(relation, SIDE_A, LAST_ARTIFACT));
-      assertEquals(false, relTypes.isArtifactTypeAllowed(relation, SIDE_B, REQUIREMENT));
-      assertEquals(true, relTypes.isArtifactTypeAllowed(relation, SIDE_B, OTHER_ARTIFACT));
-      assertEquals(true, relTypes.isArtifactTypeAllowed(relation, SIDE_B, LAST_ARTIFACT));
+      assertEquals(true, relTypes.isArtifactTypeAllowed(relation, SIDE_A, LastArtifact));
+      assertEquals(false, relTypes.isArtifactTypeAllowed(relation, SIDE_B, Requirement));
+      assertEquals(true, relTypes.isArtifactTypeAllowed(relation, SIDE_B, OtherArtifact));
+      assertEquals(true, relTypes.isArtifactTypeAllowed(relation, SIDE_B, LastArtifact));
 
       assertEquals(true, relTypes.exists(relation));
    }

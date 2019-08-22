@@ -2,34 +2,36 @@ import "platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeType
 
 artifactType "OAuth Client" extends "Artifact" {
 	id 756912961500447526
-	attribute "Website URI"
-	attribute "Logo URI"
-	attribute "Is Confidential"
-	attribute "Authorized Grant Type"
-	attribute "Authorized Redirect URI"
-	attribute "Authorized Scope"
-	attribute "Authorized Audience"
-	attribute "Properties"
+	attribute "oauth.client.Website URI"
+	attribute "oauth.client.Logo URI"
+	attribute "oauth.client.Is Confidential"
+	attribute "oauth.client.Authorized Grant Type"
+	attribute "oauth.client.Authorized Redirect URI"
+	attribute "oauth.client.Authorized Scope"
+	attribute "oauth.client.Authorized Audience"
+	attribute "oauth.client.Properties"
 	attribute "Image Content"
 }
 
-attributeType "Website URI" extends StringAttribute {
+attributeType "oauth.client.Website URI" extends StringAttribute {
 	id 7824657901879283800
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
-attributeType "Logo URI" extends StringAttribute {
+attributeType "oauth.client.Logo URI" extends StringAttribute {
 	id 7843963586445815729
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
-attributeType "Is Confidential" extends BooleanAttribute {
+attributeType "oauth.client.Is Confidential" extends BooleanAttribute {
 	id 537327028164749105
 	dataProvider DefaultAttributeDataProvider
 	min 1
@@ -38,7 +40,7 @@ attributeType "Is Confidential" extends BooleanAttribute {
 	defaultValue "true"
 }
 
-attributeType "Authorized Grant Type" extends EnumeratedAttribute {
+attributeType "oauth.client.Authorized Grant Type" extends EnumeratedAttribute {
 	id 1935002343589638144
 	dataProvider DefaultAttributeDataProvider
 	min 0
@@ -56,15 +58,16 @@ oseeEnumType "oauth.grant.type" {
 	entry "Client Credentials Grant"
 }
 
-attributeType "Authorized Redirect URI" extends StringAttribute {
+attributeType "oauth.client.Authorized Redirect URI" extends StringAttribute {
 	id 5424134645937614632
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
-attributeType "Authorized Scope" extends StringAttribute {
+attributeType "oauth.client.Authorized Scope" extends StringAttribute {
 	id 3555983643778551674
 	dataProvider DefaultAttributeDataProvider
 	min 0
@@ -73,7 +76,7 @@ attributeType "Authorized Scope" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "Authorized Audience" extends StringAttribute {
+attributeType "oauth.client.Authorized Audience" extends StringAttribute {
 	id 7160371155049131554
 	dataProvider DefaultAttributeDataProvider
 	min 0
@@ -82,7 +85,7 @@ attributeType "Authorized Audience" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "Properties" extends StringAttribute {
+attributeType "oauth.client.Properties" extends StringAttribute {
 	id 5633616462036881674
 	dataProvider DefaultAttributeDataProvider
 	min 0

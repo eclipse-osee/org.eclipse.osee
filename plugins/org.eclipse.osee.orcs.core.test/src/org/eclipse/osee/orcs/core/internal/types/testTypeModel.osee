@@ -1,5 +1,5 @@
 attributeType "Name" extends StringAttribute {
-	id 1152921504606847088
+	id 1152921504606957090
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
@@ -10,7 +10,7 @@ attributeType "Name" extends StringAttribute {
 }
 
 attributeType "Annotation" extends CompressedContentAttribute {
-	id 1152921504606847094
+	id 1152921504606957091
 	dataProvider UriAttributeDataProvider
 	min 0
 	max unlimited
@@ -20,7 +20,7 @@ attributeType "Annotation" extends CompressedContentAttribute {
 }
 
 attributeType "WordML" extends WordAttribute {
-	id 1152921504606847098
+	id 1152921504606957092
 	dataProvider UriAttributeDataProvider
 	min 0
 	max 1
@@ -32,7 +32,7 @@ attributeType "WordML" extends WordAttribute {
 }
 
 attributeType "Field 1" extends EnumeratedAttribute {
-	id 1152921504606847104
+	id 1152921504606957093
 	dataProvider DefaultAttributeDataProvider
 	min 2
 	max 3
@@ -53,7 +53,7 @@ oseeEnumType "enum.test.proc.status" {
 }
 
 attributeType "Field 2" extends DateAttribute {
-	id 1152921504606847105
+	id 1152921504606957094
 	dataProvider UriAttributeDataProvider
 	min 1
 	max 1
@@ -65,7 +65,7 @@ attributeType "Field 2" extends DateAttribute {
 }
 
 relationType "Requirement Relation" {
-	id 2305843009213694295
+	id 2305843009213695295
 	sideAName "requirement-sideA"
 	sideAArtifactType "Requirement"
 	sideBName "subsystem-sideB"
@@ -75,7 +75,7 @@ relationType "Requirement Relation" {
 }
 
 relationType "Another Relation" {
-	id 2305843009213694296
+	id 2305843009213695296
 	sideAName "other-sideA"
 	sideAArtifactType "Other Artifact"
 	sideBName "last-sideB"
@@ -85,34 +85,34 @@ relationType "Another Relation" {
 }
 
 artifactType "Artifact" {
-	id 1
+	id 1152921504606957083
 	attribute "Name"
 	attribute "Annotation"
 }
 
 abstract artifactType "Requirement" extends "Artifact" {
-	id 21
+	id 1152921504606957084
 	attribute "WordML"
 }
 
 artifactType "Software Requirement" extends "Requirement" {
-	id 24
+	id 1152921504606957085
 }
 
 artifactType "System Requirement" extends "Requirement" {
-	id 30
-}
-
-artifactType "Other Artifact" extends "Artifact" {
-	id 32
+	id 1152921504606957086
 }
 
 artifactType "SubSystem Requirement" extends "Requirement" , "Other Artifact" {
-	id 29
+	id 1152921504606957087
 	attribute "Field 1" branchUuid 3458234234
 }
 
+artifactType "Other Artifact" extends "Artifact" {
+	id 1152921504606957088
+}
+
 abstract artifactType "Last Artifact" extends "SubSystem Requirement" {
-	id 33
+	id 1152921504606957089
 	attribute "Field 2" branchUuid 9993245332
 }

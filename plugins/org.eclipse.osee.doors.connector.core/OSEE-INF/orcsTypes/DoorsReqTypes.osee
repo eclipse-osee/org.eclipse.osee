@@ -2,7 +2,7 @@ import
 "platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
 
 /* Artifact Type */
-artifactType "DoorsRequirement" extends "Requirement" {
+artifactType "Doors Requirement" extends "Requirement" {
    id 5764607523034243073
    attribute "Door Req ID"
    attribute "Door Req Name"

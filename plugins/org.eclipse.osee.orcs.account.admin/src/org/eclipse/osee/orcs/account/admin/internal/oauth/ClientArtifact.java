@@ -60,42 +60,42 @@ public class ClientArtifact extends BaseIdentity<String> implements OAuthClient 
 
    @Override
    public String getApplicationWebUri() {
-      return artifact.getSoleAttributeAsString(OAuthTypes.OAUTH_CLIENT_WEBSITE_URI);
+      return artifact.getSoleAttributeAsString(OAuthTypes.OAuthClientWebsiteUri);
    }
 
    @Override
    public String getApplicationLogoUri() {
-      return artifact.getSoleAttributeAsString(OAuthTypes.OAUTH_CLIENT_LOGO_URI);
+      return artifact.getSoleAttributeAsString(OAuthTypes.OAuthClientLogoUri);
    }
 
    @Override
    public boolean isConfidential() {
-      return artifact.getSoleAttributeValue(OAuthTypes.OAUTH_CLIENT_IS_CONFIDENTIAL);
+      return artifact.getSoleAttributeValue(OAuthTypes.OAuthClientIsConfidential);
    }
 
    @Override
    public List<String> getAllowedGrantTypes() {
-      return artifact.getAttributeValues(OAuthTypes.OAUTH_CLIENT_AUTHORIZED_GRANT_TYPE);
+      return artifact.getAttributeValues(OAuthTypes.OAuthClientAuthorizedGrantType);
    }
 
    @Override
    public List<String> getRedirectUris() {
-      return artifact.getAttributeValues(OAuthTypes.OAUTH_CLIENT_AUTHORIZED_REDIRECT_URI);
+      return artifact.getAttributeValues(OAuthTypes.OAuthClientAuthorizedRedirectUri);
    }
 
    @Override
    public List<String> getRegisteredScopes() {
-      return artifact.getAttributeValues(OAuthTypes.OAUTH_CLIENT_AUTHORIZED_SCOPE);
+      return artifact.getAttributeValues(OAuthTypes.OAuthClientAuthorizedScope);
    }
 
    @Override
    public List<String> getRegisteredAudiences() {
-      return artifact.getAttributeValues(OAuthTypes.OAUTH_CLIENT_AUTHORIZED_AUDIENCE);
+      return artifact.getAttributeValues(OAuthTypes.OAuthClientAuthorizedAudience);
    }
 
    @Override
    public Map<String, String> getProperties() {
-      String data = artifact.getSoleAttributeValue(OAuthTypes.OAUTH_CLIENT_PROPERTIES, null);
+      String data = artifact.getSoleAttributeValue(OAuthTypes.OAuthClientProperties, null);
       if (Strings.isValid(data)) {
          return JsonUtil.readValue(data, new TypeReference<Map<String, String>>() {// used to avoid type erasure
          });

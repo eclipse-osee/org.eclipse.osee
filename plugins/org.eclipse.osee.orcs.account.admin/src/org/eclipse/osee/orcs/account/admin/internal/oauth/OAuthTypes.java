@@ -28,16 +28,16 @@ public final class OAuthTypes {
    // @formatter:off
    public static final ArtifactTypeToken OAUTH_CLIENT = ArtifactTypeToken.valueOf(756912961500447526L, "OAuth Client");
 
-   public static final AttributeTypeToken OAUTH_CLIENT_WEBSITE_URI = AttributeTypeToken.valueOf(7824657901879283800L, "Website URL");
-   public static final AttributeTypeToken OAUTH_CLIENT_LOGO_URI = AttributeTypeToken.valueOf(7843963586445815729L, "Logo URL");
+   public static final AttributeTypeToken OAuthClientWebsiteUri = AttributeTypeToken.valueOf(7824657901879283800L, "oauth.client.Website URI");
+   public static final AttributeTypeToken OAuthClientLogoUri = AttributeTypeToken.valueOf(7843963586445815729L, "oauth.client.Logo URI");
 
-   public static final AttributeTypeToken OAUTH_CLIENT_IS_CONFIDENTIAL = AttributeTypeToken.valueOf(537327028164749105L, "Is Confidential");
-   public static final AttributeTypeToken OAUTH_CLIENT_PROPERTIES = AttributeTypeToken.valueOf(5633616462036881674L, "Properties");
+   public static final AttributeTypeToken OAuthClientIsConfidential = AttributeTypeToken.valueOf(537327028164749105L, "oauth.client.Is Confidential");
+   public static final AttributeTypeToken OAuthClientProperties = AttributeTypeToken.valueOf(5633616462036881674L, "oauth.client.Properties");
 
-   public static final AttributeTypeToken OAUTH_CLIENT_AUTHORIZED_GRANT_TYPE = AttributeTypeToken.valueOf(1935002343589638144L, "Authorized Grant Type");
-   public static final AttributeTypeToken OAUTH_CLIENT_AUTHORIZED_REDIRECT_URI = AttributeTypeToken.valueOf(5424134645937614632L, "Authorized Redirect URI");
-   public static final AttributeTypeToken OAUTH_CLIENT_AUTHORIZED_SCOPE = AttributeTypeToken.valueOf(3555983643778551674L, "Authorized Scope");
-   public static final AttributeTypeToken OAUTH_CLIENT_AUTHORIZED_AUDIENCE = AttributeTypeToken.valueOf(7160371155049131554L, "Authorized Audience");
+   public static final AttributeTypeToken OAuthClientAuthorizedGrantType = AttributeTypeToken.valueOf(1935002343589638144L, "oauth.client.Authorized Grant Type");
+   public static final AttributeTypeToken OAuthClientAuthorizedRedirectUri = AttributeTypeToken.valueOf(5424134645937614632L, "oauth.client.Authorized Redirect URI");
+   public static final AttributeTypeToken OAuthClientAuthorizedScope = AttributeTypeToken.valueOf(3555983643778551674L, "oauth.client.Authorized Scope");
+   public static final AttributeTypeToken OAuthClientAuthorizedAudience = AttributeTypeToken.valueOf(7160371155049131554L, "oauth.client.Authorized Audience");
 
    public static final ArtifactToken OAUTH_TYPES = ArtifactToken.valueOf(7067755, "OAuthTypes", COMMON, CoreArtifactTypes.OseeTypeDefinition);
 
