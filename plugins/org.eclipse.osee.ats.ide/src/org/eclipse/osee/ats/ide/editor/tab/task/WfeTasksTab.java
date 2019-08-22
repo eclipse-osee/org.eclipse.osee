@@ -705,6 +705,9 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
+            if (editor.isDisposed()) {
+               return;
+            }
             String tabName = "Tasks";
             try {
                tabName = String.format("Tasks (%d)", getTasks().size());

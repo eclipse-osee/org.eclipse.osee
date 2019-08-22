@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
 import org.eclipse.osee.ats.api.task.NewTaskDatas;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
@@ -30,6 +31,7 @@ import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -55,15 +57,16 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
    public final static String TASK_IMPORT_SPREADSHEET = "Task Import Spreadsheet";
    public final static String TEAM_WORKFLOW = "Taskable Workflow (drop here)";
    public final static String EMAIL_POCS = "Email POCs";
+   public final static String FIX_TITLES = "Fix Titles (remove non-printable chars and truncate)";
    private TeamWorkFlowArtifact taskableStateMachineArtifact;
    public final static String INVALID_BLAM_CAUSE = "Invalid BLAM Spreadsheet";
    public final static String BLAM_ERROR_TITLE = "BLAM_Errors";
-   private final XResultData ImportBlamErrors;
+   private final XResultData rd;
 
    public ImportTasksFromSpreadsheet() {
       super();
-      this.ImportBlamErrors = new XResultData(true);
-      this.ImportBlamErrors.setTitle(BLAM_ERROR_TITLE);
+      this.rd = new XResultData();
+      this.rd.setTitle(BLAM_ERROR_TITLE);
    }
 
    @Override
@@ -107,6 +110,8 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
       buffer.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />");
       buffer.append("<XWidget xwidgetType=\"XFileSelectionDialog\" displayName=\"" + TASK_IMPORT_SPREADSHEET + "\" />");
       buffer.append(
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + FIX_TITLES + "\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+      buffer.append(
          "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + EMAIL_POCS + "\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
       buffer.append("</xWidgets>");
       return buffer.toString();
@@ -132,6 +137,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
                List<Artifact> artifacts = variableMap.getArtifacts(TEAM_WORKFLOW);
                String filename = variableMap.getString(TASK_IMPORT_SPREADSHEET);
                boolean emailPocs = variableMap.getBoolean(EMAIL_POCS);
+               boolean fixTitles = variableMap.getBoolean(FIX_TITLES);
 
                if (artifacts.isEmpty()) {
                   AWorkbench.popup("ERROR", "Must drag in Team Workflow to add tasks.");
@@ -152,17 +158,29 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
                }
                File file = new File(filename);
                try {
-                  performImport(emailPocs, (TeamWorkFlowArtifact) artifact, file);
+                  // close editor
+                  WorkflowEditor editor = WorkflowEditor.getWorkflowEditor((TeamWorkFlowArtifact) artifact);
+                  if (editor != null) {
+                     editor.close(true);
+                  }
+
+                  performImport(fixTitles, emailPocs, (TeamWorkFlowArtifact) artifact, file);
+
+                  Thread.sleep(2000);
+
+                  // re-open editor
+                  WorkflowEditor.edit((TeamWorkFlowArtifact) artifact);
+                  editor = WorkflowEditor.getWorkflowEditor((TeamWorkFlowArtifact) artifact);
+                  editor.setPage(1);
                } catch (Exception ex) {
-                  //errors logged in ImportBlamErrors
+                  log(ex);
                }
-               // If spreadsheet has critical errors, display to user
-               // and don't update workflow
-               if (ImportBlamErrors.getNumErrors() == 0) {
-                  WorkflowEditor.editArtifact(artifact);
-               } else {
-                  XResultDataUI.report(ImportBlamErrors, "Unable to Import BLAM Spreadsheet! Please fix these errors.");
-                  ImportBlamErrors.clear();
+               /**
+                * If spreadsheet has critical errors, display to user and don't update workflow
+                */
+               if (rd.isErrors()) {
+                  XResultDataUI.report(rd, "Error: " + getName());
+                  rd.clear();
                }
 
             } catch (Exception ex) {
@@ -173,24 +191,29 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
       });
    }
 
-   public void performImport(boolean emailPocs, IAtsTeamWorkflow teamWf, File file) {
+   public Collection<IAtsTask> performImport(boolean fixTitles, boolean emailPocs, IAtsTeamWorkflow teamWf, File file) {
       try {
 
          AtsUtilClient.setEmailEnabled(emailPocs);
          NewTaskData newTaskData = NewTaskDataFactory.get("Import Tasks from Spreadsheet",
             AtsClientService.get().getUserService().getCurrentUser(), teamWf);
+         newTaskData.setFixTitles(fixTitles);
 
          Job job = Jobs.startJob(new TaskImportJob(file,
-            new ExcelAtsTaskArtifactExtractor((TeamWorkFlowArtifact) teamWf.getStoreObject(), newTaskData),
-            ImportBlamErrors));
+            new ExcelAtsTaskArtifactExtractor((TeamWorkFlowArtifact) teamWf.getStoreObject(), newTaskData), rd));
          job.join();
-         AtsClientService.get().getTaskService().createTasks(new NewTaskDatas(newTaskData));
+
+         if (rd.isSuccess()) {
+            NewTaskDatas tasks = new NewTaskDatas(newTaskData);
+            return AtsClientService.get().getTaskService().createTasks(tasks);
+         }
 
       } catch (Exception ex) {
-         //log(ex);
+         rd.errorf("Exception in %s: %s\n", getName(), Lib.exceptionToString(ex));
       } finally {
          AtsUtilClient.setEmailEnabled(true);
       }
+      return Collections.emptyList();
    }
 
    @Override

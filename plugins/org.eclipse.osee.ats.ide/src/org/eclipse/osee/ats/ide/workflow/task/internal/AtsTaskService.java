@@ -71,10 +71,14 @@ public class AtsTaskService extends AbstractAtsTaskService implements IAtsTaskSe
 
    @Override
    public Collection<IAtsTask> createTasks(NewTaskDatas newTaskDatas) {
+      List<IAtsTask> tasks = new LinkedList<>();
+
       AtsTaskEndpointApi taskEp = AtsClientService.getTaskEp();
       JaxAtsTasks jaxTasks = taskEp.create(newTaskDatas);
-
-      List<IAtsTask> tasks = new LinkedList<>();
+      newTaskDatas.setResults(jaxTasks.getResults());
+      if (newTaskDatas.getResults().isErrors()) {
+         return tasks;
+      }
 
       ArtifactEvent artifactEvent = new ArtifactEvent(AtsClientService.get().getAtsBranch());
       for (NewTaskData newTaskData : newTaskDatas.getTaskDatas()) {

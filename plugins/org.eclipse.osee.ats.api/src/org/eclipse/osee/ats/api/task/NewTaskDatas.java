@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.task;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -19,6 +20,7 @@ import java.util.List;
 public class NewTaskDatas {
 
    private List<NewTaskData> taskDatas = new LinkedList<>();
+   private XResultData results;
 
    public NewTaskDatas() {
       // for jax-rs instantiation
@@ -43,6 +45,14 @@ public class NewTaskDatas {
    @Override
    public String toString() {
       return "NewTaskDatas [datas=" + taskDatas + "]";
+   }
+
+   public XResultData getResults() {
+      return results;
+   }
+
+   public void setResults(XResultData results) {
+      this.results = results;
    }
 
 }

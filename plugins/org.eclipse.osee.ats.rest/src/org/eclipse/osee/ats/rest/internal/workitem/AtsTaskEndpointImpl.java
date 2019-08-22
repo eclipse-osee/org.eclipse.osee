@@ -52,8 +52,10 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
       XResultData results = operation.validate();
 
       if (results.isErrors()) {
-         throw new OseeArgumentException(results.toString());
+         JaxAtsTasks tasks = new JaxAtsTasks();
+         tasks.setResults(results);
       }
+
       operation.run();
       JaxAtsTasks tasks = new JaxAtsTasks();
       tasks.getTasks().addAll(operation.getTasks());

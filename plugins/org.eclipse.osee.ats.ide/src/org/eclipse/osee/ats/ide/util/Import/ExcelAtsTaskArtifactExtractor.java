@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
@@ -48,6 +49,7 @@ public class ExcelAtsTaskArtifactExtractor {
    private final AbstractWorkflowArtifact sma;
    private IProgressMonitor monitor;
    private final NewTaskData newTaskData;
+   private InputStreamReader inputStream;
 
    public ExcelAtsTaskArtifactExtractor(TeamWorkFlowArtifact artifact, NewTaskData newTaskData) {
       this.newTaskData = newTaskData;
@@ -62,13 +64,16 @@ public class ExcelAtsTaskArtifactExtractor {
             monitor = new NullProgressMonitor();
          }
          xmlReader.setContentHandler(new ExcelSaxHandler(new InternalRowProcessor(monitor, newTaskData, sma), true));
-         xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
+         inputStream = new InputStreamReader(source.toURL().openStream(), "UTF-8");
+         xmlReader.parse(new InputSource(inputStream));
       } catch (Exception ex) {
-         //do nothing
+         if (inputStream != null) {
+            inputStream.close();
+         }
       }
    }
 
-   public void process(URI source, XResultData xResultErrorLog) throws Throwable {
+   public void process(URI source, XResultData rd) throws Throwable {
       try {
          XMLReader xmlReader = XMLReaderFactory.createXMLReader();
          IProgressMonitor monitor = getMonitor();
@@ -76,10 +81,14 @@ public class ExcelAtsTaskArtifactExtractor {
             monitor = new NullProgressMonitor();
          }
          xmlReader.setContentHandler(
-            new ExcelSaxHandler(new InternalRowProcessor(monitor, newTaskData, sma, xResultErrorLog), true));
-         xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
+            new ExcelSaxHandler(new InternalRowProcessor(monitor, newTaskData, sma, rd), true));
+         InputStreamReader inputStream = new InputStreamReader(source.toURL().openStream(), "UTF-8");
+         xmlReader.parse(new InputSource(inputStream));
       } catch (Exception ex) {
-         //do nothing
+         if (inputStream != null) {
+            inputStream.close();
+         }
+         rd.errorf("Exception processing Excel input %s\n", Lib.exceptionToString(ex));
       }
    }
 
@@ -107,7 +116,9 @@ public class ExcelAtsTaskArtifactExtractor {
       private final Date createdDate;
       private final IAtsUser createdBy;
       private final NewTaskData newTaskData;
-      private XResultData rowErrorLog;
+      private XResultData rd;
+      private Integer badColumn;
+      private boolean skipRestOfRows;
 
       protected InternalRowProcessor(IProgressMonitor monitor, NewTaskData newTaskData, AbstractWorkflowArtifact sma) {
          this.monitor = monitor;
@@ -118,14 +129,15 @@ public class ExcelAtsTaskArtifactExtractor {
          this.rowNum++;
       }
 
-      protected InternalRowProcessor(IProgressMonitor monitor, NewTaskData newTaskData, AbstractWorkflowArtifact sma, XResultData xErrorLog) {
+      protected InternalRowProcessor(IProgressMonitor monitor, NewTaskData newTaskData, AbstractWorkflowArtifact sma, XResultData rd) {
          this(monitor, newTaskData, sma);
-         this.rowErrorLog = xErrorLog;
+         this.rd = rd;
+         this.rd.setEnableOseeLog(true);
       }
 
       @Override
       public void processEmptyRow() {
-         rowNum++;
+         // do nothing
       }
 
       @Override
@@ -151,91 +163,156 @@ public class ExcelAtsTaskArtifactExtractor {
       @Override
       public void processHeaderRow(String[] headerRow) {
          this.headerRow = headerRow.clone();
+         rowNum++;
       }
 
       @Override
       public void processRow(String[] row) {
-
+         if (skipRestOfRows) {
+            return;
+         }
          rowNum++;
          monitor.setTaskName("Processing Row " + rowNum);
          JaxAtsTask task = JaxAtsTaskFactory.get(newTaskData, "", createdBy, createdDate);
 
          monitor.subTask("Validating...");
-         boolean valid = validateRow(row);
-         if (!valid) {
+         if (!"Title".equals(headerRow[0])) {
+            rd.errorf("Title column must be first\n", rowNum);
+            skipRestOfRows = true;
             return;
          }
 
          for (int i = 0; i < row.length; i++) {
+            if (badColumn != null && i >= badColumn) {
+               break;
+            }
             String header = headerRow[i];
             if (header == null) {
-               OseeLog.log(Activator.class, Level.SEVERE, "Null header column => " + i);
+               badColumn = i;
+               // if header is null, rest of spreadsheet is N/A
+               break;
             } else if (header.equalsIgnoreCase("Created By")) {
-               processCreatedBy(row, task, i);
+               if (validRow(task)) {
+                  processCreatedBy(row, task, i);
+               }
             } else if (header.equalsIgnoreCase("Title")) {
-               processTitle(row, task, i);
+               boolean validTitle = processTitle(row, task, i);
+               if (!validTitle) {
+                  newTaskData.getNewTasks().remove(task);
+                  skipRestOfRows = true;
+               }
             } else if (header.equalsIgnoreCase("Assignees")) {
-               processAssignees(row, task, i);
+               if (validRow(task)) {
+                  processAssignees(row, task, i);
+               }
             } else if (header.equalsIgnoreCase("Resolution")) {
-               processResolution(row, task, i);
+               if (validRow(task)) {
+                  processResolution(row, task, i);
+               }
             } else if (header.equalsIgnoreCase("Description")) {
-               processDescription(row, task, i);
+               if (validRow(task)) {
+                  processDescription(row, task, i);
+               }
             } else if (header.equalsIgnoreCase("Related to State")) {
-               processRelatedToState(row, task, i);
+               if (validRow(task)) {
+                  processRelatedToState(row, task, i);
+               }
             } else if (header.equalsIgnoreCase("Notes")) {
-               processNotes(row, task, i);
+               if (validRow(task)) {
+                  processNotes(row, task, i);
+               }
             } else if (header.equalsIgnoreCase("Percent Complete")) {
-               processPercentComplete(row, i);
+               if (validRow(task)) {
+                  processPercentComplete(row, i);
+               }
             } else if (header.equalsIgnoreCase("Hours Spent")) {
-               processHoursSpent(row, i);
+               if (validRow(task)) {
+                  processHoursSpent(row, i);
+               }
             } else if (header.equalsIgnoreCase("Estimated Hours")) {
-               processEstimatedHours(row, task, i);
+               if (validRow(task)) {
+                  processEstimatedHours(row, task, i);
+               }
             } else {
-               String attrTypeName = header;
-               if (Strings.isValid(attrTypeName)) {
-                  AttributeType attributeType = AttributeTypeManager.getType(attrTypeName);
-                  if (attributeType == null) {
-                     OseeLog.log(Activator.class, Level.SEVERE, "Invalid Attribute Type Name => " + header);
-                  } else {
-                     if (!ArtifactTypeManager.getArtifactTypesFromAttributeType(attributeType,
-                        AtsClientService.get().getAtsBranch()).contains(AtsArtifactTypes.Task)) {
-                        OseeLog.log(Activator.class, Level.SEVERE, "Invalid Attribute Type for Task => " + header);
+               if (validRow(task)) {
+                  String attrTypeName = header;
+                  if (Strings.isValid(attrTypeName)) {
+                     AttributeType attributeType = AttributeTypeManager.getType(attrTypeName);
+                     if (attributeType == null) {
+                        rd.error("Invalid Attribute Type Name => " + header);
                      } else {
-                        String value = row[i];
-                        if (Strings.isValid(value)) {
-                           task.addAttribute(attributeType, value);
+                        if (!ArtifactTypeManager.getArtifactTypesFromAttributeType(attributeType,
+                           AtsClientService.get().getAtsBranch()).contains(AtsArtifactTypes.Task)) {
+                           rd.error("Invalid Attribute Type for Task => " + header);
+                        } else {
+                           String value = row[i];
+                           if (Strings.isValid(value)) {
+                              task.addAttribute(attributeType, value);
+                           }
                         }
                      }
+                  } else {
+                     rd.error("Unhandled column => " + header);
                   }
-               } else {
-                  OseeLog.log(Activator.class, Level.SEVERE, "Unhandled column => " + header);
                }
             }
          }
       }
 
-      private boolean validateRow(String[] row) {
-         boolean fullRow = false;
-         for (int i = 0; i < row.length; i++) {
-            if (Strings.isValid(row[i])) {
-               fullRow = true;
-               break;
-            }
+      /**
+       * Use title cell to validate row. This enables extractor to ignore remainder of file in case it has corrupted
+       * cells elsewhere in spreadsheet.
+       */
+      private boolean validRow(JaxAtsTask task) {
+         boolean valid = Strings.isValid(task.getName());
+         if (!valid) {
+            newTaskData.getNewTasks().remove(task);
+            skipRestOfRows = true;
          }
-
-         if (!fullRow) {
-            OseeLog.log(Activator.class, Level.SEVERE, "Empty Row Found => " + rowNum + " skipping...");
-         }
-         return fullRow;
+         return valid;
       }
 
-      private void processTitle(String[] row, JaxAtsTask taskArt, int i) {
+      private boolean processTitle(String[] row, JaxAtsTask taskArt, int i) {
          String str = row[i];
          if (Strings.isValid(str)) {
             monitor.subTask(String.format("Title \"%s\"", str));
+            if (newTaskData.isFixTitles()) {
+               if (!Strings.isPrintable(str)) {
+                  str = Strings.removeNonPrintableCharacters(str);
+                  rd.logf("On row: %d, removed non-printable title characters\n", rowNum);
+               }
+               if (str.contains("[\r\n]+")) {
+                  str = taskArt.getName().replaceAll("[\r\n]+", "");
+                  rd.logf("On row: %d, removed title newlines\n", rowNum);
+               }
+               if (str.length() > 250) {
+                  String desc = row[i];
+                  str = Strings.truncate(str, 250, true);
+                  taskArt.setDescription(desc);
+                  rd.logf("On row: %d, truncated title and put full in description\n", rowNum);
+               }
+            } else {
+               if (!Strings.isPrintable(str)) {
+                  rd.errorf("On row: %d, title field has non-printable characters\n", rowNum);
+                  return false;
+               }
+               if (str.contains("[\r\n]+")) {
+                  rd.errorf("On row: %d, title field cannot have new line characters\n", rowNum);
+                  return false;
+               }
+               if (str.length() > 250) {
+                  rd.errorf("On row: %d, title field cannot be longer than 250\n", rowNum);
+                  return false;
+               }
+            }
+            if (Strings.isInValid(str)) {
+               rd.errorf("On row: %d, title is invalid\n", rowNum);
+            }
             taskArt.setName(str);
+            return true;
          } else {
-            rowErrorLog.errorf("On row: %d, title field cannot be empty.", rowNum);
+            rd.errorf("On row: %d, title field cannot be empty\n", rowNum);
+            return false;
          }
       }
 
@@ -275,25 +352,25 @@ public class ExcelAtsTaskArtifactExtractor {
                user = AtsClientService.get().getUserService().getUserById(str);
             } catch (Exception ex) {
                // do nothing
-               rowErrorLog.errorf("On row: %d, the user entered in createdBy does not exist.", rowNum);
+               rd.errorf("On row: %d, the user entered in createdBy does not exist\n", rowNum);
                return;
             }
             if (user == null) {
                try {
                   user = AtsClientService.get().getUserService().getUserByName(str);
                } catch (Exception ex) {
-                  rowErrorLog.errorf("On row: %d, the user entered in createdBy does not exist.", rowNum);
+                  rd.errorf("On row: %d, the user entered in createdBy does not exist\n", rowNum);
                   return;
                }
             }
             if (user != null) {
                taskArt.setCreatedByUserId(user.getUserId());
             } else {
-               rowErrorLog.errorf("On row: %d, the user entered in createdBy does not exist.", rowNum);
+               rd.errorf("On row: %d, the user entered in createdBy does not exist\n", rowNum);
                return;
             }
          } else {
-            rowErrorLog.errorf("On row: %d, createdBy field cannot be empty.", rowNum);
+            rd.errorf("On row: %d, createdBy field cannot be empty\n", rowNum);
          }
       }
 
@@ -304,7 +381,7 @@ public class ExcelAtsTaskArtifactExtractor {
             try {
                hours = new Double(str);
             } catch (Exception ex) {
-               rowErrorLog.errorf("Invalid Estimated Hours \"%s\" for row %d.", str, rowNum);
+               rd.errorf("Invalid Estimated Hours \"%s\" for row %d\n", str, rowNum);
             }
             taskArt.addAttribute(AtsAttributeTypes.EstimatedHours, hours);
          }
@@ -317,7 +394,7 @@ public class ExcelAtsTaskArtifactExtractor {
             try {
                hours = new Double(str);
             } catch (Exception ex) {
-               rowErrorLog.errorf("Invalid Hours Spent \"%s\" for row %d.", str, rowNum);
+               rd.errorf("Invalid Hours Spent \"%s\" for row %d\n", str, rowNum);
             }
             sma.getStateMgr().updateMetrics(sma.getStateDefinition(), hours,
                sma.getStateMgr().getPercentComplete(sma.getCurrentStateName()), true,
@@ -335,7 +412,7 @@ public class ExcelAtsTaskArtifactExtractor {
                   percent = percent * 100;
                }
             } catch (Exception ex) {
-               rowErrorLog.errorf("Invalid Percent Complete \"%s\" for row %d.", str, rowNum);
+               rd.errorf("Invalid Percent Complete \"%s\" for row %d\n", str, rowNum);
             }
             int percentInt = percent.intValue();
             sma.getStateMgr().updateMetrics(sma.getStateDefinition(), 0, percentInt, true,
@@ -358,10 +435,8 @@ public class ExcelAtsTaskArtifactExtractor {
                }
             }
             if (user == null) {
-               OseeLog.logf(Activator.class, Level.SEVERE, "Invalid Assignee \"%s\" for row %d.  Using current user.",
-                  userName, rowNum);
                user = AtsClientService.get().getUserService().getCurrentUser();
-               rowErrorLog.errorf("Invalid Assignee \"%s\" for row %d.  Using current user.", userName, rowNum);
+               rd.errorf("Invalid Assignee \"%s\" for row %d.  Using current user\n", userName, rowNum);
             }
             taskArt.addAssigneeUserIds(user.getUserId());
          }

@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.task;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -19,6 +20,7 @@ import java.util.List;
 public class JaxAtsTasks {
 
    public List<JaxAtsTask> tasks = new ArrayList<>();
+   public XResultData results = new XResultData();
 
    public List<JaxAtsTask> getTasks() {
       return tasks;
@@ -26,6 +28,14 @@ public class JaxAtsTasks {
 
    public void setTasks(List<JaxAtsTask> tasks) {
       this.tasks = tasks;
+   }
+
+   public XResultData getResults() {
+      return results;
+   }
+
+   public void setResults(XResultData rd) {
+      this.results = rd;
    }
 
 }

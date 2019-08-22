@@ -542,6 +542,12 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
+   public IAtsQuery andIds(Collection<ArtifactId> ids) {
+      artifactIds.addAll(ids);
+      return this;
+   }
+
+   @Override
    public IAtsQuery andAtsIds(Collection<String> atsIds) {
       return andAttr(AtsAttributeTypes.AtsId, atsIds);
    }

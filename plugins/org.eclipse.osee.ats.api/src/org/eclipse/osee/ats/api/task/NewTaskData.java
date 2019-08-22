@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -25,6 +26,8 @@ public class NewTaskData {
    List<JaxAtsTask> newTasks;
    String asUserId;
    String commitComment;
+   XResultData results;
+   Boolean fixTitles = false;
 
    public Long getTeamWfId() {
       return teamWfId;
@@ -70,4 +73,23 @@ public class NewTaskData {
       return newTasks == null || newTasks.isEmpty();
    }
 
+   public XResultData getResults() {
+      return results;
+   }
+
+   public void setResults(XResultData results) {
+      this.results = results;
+   }
+
+   public Boolean getFixTitles() {
+      return fixTitles;
+   }
+
+   public Boolean isFixTitles() {
+      return fixTitles;
+   }
+
+   public void setFixTitles(Boolean fixTitles) {
+      this.fixTitles = fixTitles;
+   }
 }

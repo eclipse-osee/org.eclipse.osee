@@ -51,7 +51,7 @@ public class XResultData {
    private boolean enableOseeLog;
 
    public XResultData() {
-      this(true);
+      this(false);
    }
 
    public XResultData(boolean enableOseeLog) {
@@ -156,6 +156,9 @@ public class XResultData {
          for (IResultDataListener listener : listeners) {
             listener.log(type, resultStr);
          }
+      }
+      if (isEnableOseeLog()) {
+         System.err.println(resultStr);
       }
    }
 
@@ -290,5 +293,9 @@ public class XResultData {
 
    public void setIds(List<String> ids) {
       this.ids = ids;
+   }
+
+   public boolean isSuccess() {
+      return !isErrors();
    }
 }

@@ -88,7 +88,8 @@ public class AtsTaskEndpointImplTest {
       data.getNewTasks().add(newTask);
       newTask.addRelation(CoreRelationTypes.SupportingInfo_SupportedBy, codeTeamWfId);
 
-      JaxAtsTasks tasks = taskEp.create(new NewTaskDatas(data));
+      NewTaskDatas newTaskDatas = new NewTaskDatas(data);
+      JaxAtsTasks tasks = taskEp.create(newTaskDatas);
       Assert.assertEquals(1, tasks.getTasks().size());
 
       IAtsTask task = (IAtsTask) client.getQueryService().createQuery(WorkItemType.Task).andIds(
@@ -115,7 +116,8 @@ public class AtsTaskEndpointImplTest {
       data.getNewTasks().add(newTask);
       newTask.addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, codeTeamWfId);
 
-      tasks = taskEp.create(new NewTaskDatas(data));
+      newTaskDatas = new NewTaskDatas(data);
+      tasks = taskEp.create(newTaskDatas);
       Assert.assertEquals(1, tasks.getTasks().size());
 
       task = (IAtsTask) client.getQueryService().createQuery(WorkItemType.Task).andIds(

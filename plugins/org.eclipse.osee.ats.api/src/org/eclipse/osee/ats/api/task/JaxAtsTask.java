@@ -117,12 +117,12 @@ public class JaxAtsTask extends JaxAtsObject {
       addAttribute(attrType.getName(), value);
    }
 
-   public void addRelation(RelationTypeSide relationSide, long... relatedId) {
+   public void addRelation(RelationTypeSide relationSide, long... relatedIds) {
       JaxRelation relation = new JaxRelation();
       relation.setRelationTypeName(relationSide.getName());
       relation.setSideA(relationSide.getSide().isSideA());
-      for (long relationId : relatedId) {
-         relation.getRelatedIds().add(relationId);
+      for (long relatedId : relatedIds) {
+         relation.getRelatedIds().add(relatedId);
       }
       getRelations().add(relation);
    }

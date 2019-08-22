@@ -253,4 +253,26 @@ public class Strings {
       removed = removed.replaceAll("&quot;", "\"");
       return removed;
    }
+
+   public static boolean isPrintable(String str) {
+      return str.equals(removeNonPrintableCharacters(str));
+   }
+
+   public static String removeNonPrintableCharacters(String str) {
+      // strips off all non-ASCII characters
+      str = str.replaceAll("[^\\x00-\\x7F]", "");
+
+      // erases all the ASCII control characters
+      str = str.replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", "");
+
+      // removes non-printable characters from Unicode
+      str = str.replaceAll("\\p{C}", "");
+
+      return str.trim();
+   }
+
+   public static boolean isPrintable(char c) {
+      Character.UnicodeBlock block = Character.UnicodeBlock.of(c);
+      return (!Character.isISOControl(c)) && block != null && block != Character.UnicodeBlock.SPECIALS;
+   }
 }

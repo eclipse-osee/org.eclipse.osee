@@ -46,7 +46,7 @@ public class ImportTasksFromSpreadsheetTest {
 
       // Import files live in deployed ATS bundle cause they are used as examples for users
       File file = OseeInf.getResourceAsFile("atsImport/Task_Import.xml", NavigateView.class);
-      importTasks.performImport(false, AtsTestUtil.getTeamWf(), file);
+      importTasks.performImport(false, false, AtsTestUtil.getTeamWf(), file);
 
       Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(AtsTestUtil.getTeamWf());
       Assert.assertEquals(3, tasks.size());

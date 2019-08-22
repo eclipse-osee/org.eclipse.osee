@@ -898,4 +898,8 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       }
    }
 
+   public void setPage(int pageId) {
+      setActivePage(pageId);
+   }
+
 }

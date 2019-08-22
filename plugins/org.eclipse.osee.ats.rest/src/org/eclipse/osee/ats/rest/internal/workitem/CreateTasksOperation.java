@@ -90,7 +90,7 @@ public class CreateTasksOperation {
          }
          ArtifactReadable teamWfArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(teamWfId);
          if (teamWfArt == null) {
-            resultData.errorf("Team Workflow id %d does not exist", teamWfId);
+            resultData.errorf("Team Workflow id %d does not exist\n", teamWfId);
          }
          IAtsTeamWorkflow teamWf = idToTeamWf.get(teamWfId);
          if (teamWf == null) {
@@ -103,10 +103,10 @@ public class CreateTasksOperation {
          }
          asUser = atsApi.getUserService().getUserById(asUserId);
          if (asUser == null) {
-            resultData.errorf("As User Id id %d does not exist", asUserId);
+            resultData.errorf("As User Id id %d does not exist\n", asUserId);
          }
          if (!Strings.isValid(newTaskData.getCommitComment())) {
-            resultData.errorf("Inavlidate Commit Comment [%s]", newTaskData.getCommitComment());
+            resultData.errorf("Inavlidate Commit Comment [%s]\n", newTaskData.getCommitComment());
          }
 
          for (JaxAtsTask task : newTaskData.getNewTasks()) {
@@ -114,25 +114,26 @@ public class CreateTasksOperation {
             if (taskId != null && taskId > 0L) {
                ArtifactReadable taskArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(taskId);
                if (taskArt != null) {
-                  resultData.errorf("Task with id %d already exists for %s", taskId, task);
+                  resultData.errorf("Task with id %d already exists for %s\n", taskId, task);
                }
             }
             if (!Strings.isValid(task.getName())) {
-               resultData.errorf("Task name [%s] is invalid for %s", task.getName(), task);
+               resultData.errorf("Task name [%s] is invalid for %s\n", task.getName(), task);
             }
             IAtsUser createdBy = atsApi.getUserService().getUserById(task.getCreatedByUserId());
             if (createdBy == null) {
-               resultData.errorf("Task Created By user id %d does not exist in %s", createdBy, task);
+               resultData.errorf("Task Created By user id %d does not exist in %s\n", createdBy, task);
             }
             createdByDate = task.getCreatedDate();
             if (createdByDate == null) {
-               resultData.errorf("Task Created By Date %s does not exist in %s", createdByDate, task);
+               resultData.errorf("Task Created By Date %s does not exist in %s\n", createdByDate, task);
             }
             IAtsTeamWorkflow teamWorkflow = atsApi.getWorkItemService().getTeamWf(teamWfArt);
             String relatedToState = task.getRelatedToState();
             if (Strings.isValid(relatedToState)) {
                if (teamWorkflow.getWorkDefinition().getStateByName(relatedToState) == null) {
-                  resultData.errorf("Task Related To State %s invalid for Team Workflow %d", relatedToState, teamWfId);
+                  resultData.errorf("Task Related To State %s invalid for Team Workflow %d\n", relatedToState,
+                     teamWfId);
                }
             }
 
@@ -140,7 +141,7 @@ public class CreateTasksOperation {
             if (!assigneeUserIds.isEmpty()) {
                Collection<IAtsUser> assignees = atsApi.getUserService().getUsersByUserIds(assigneeUserIds);
                if (assigneeUserIds.size() != assignees.size()) {
-                  resultData.errorf("Task Assignees [%s] not all valid in %s", String.valueOf(assigneeUserIds), task);
+                  resultData.errorf("Task Assignees [%s] not all valid in %s\n", String.valueOf(assigneeUserIds), task);
                }
             }
 
@@ -150,10 +151,10 @@ public class CreateTasksOperation {
                   workDefinition =
                      atsApi.getWorkDefinitionService().getWorkDefinition(ArtifactId.valueOf(task.getTaskWorkDef()));
                   if (workDefinition == null) {
-                     resultData.errorf("Error finding Task Work Def [%s].", task.getTaskWorkDef());
+                     resultData.errorf("Error finding Task Work Def [%s].\n", task.getTaskWorkDef());
                   }
                } catch (Exception ex) {
-                  resultData.errorf("Exception finding Task Work Def [%s].  Exception: %s", task.getTaskWorkDef(),
+                  resultData.errorf("Exception finding Task Work Def [%s].  Exception: %s\n", task.getTaskWorkDef(),
                      ex.getMessage());
                }
             }
@@ -164,32 +165,34 @@ public class CreateTasksOperation {
 
             for (JaxAttribute attribute : task.getAttributes()) {
                AttributeTypeId attrType = atsApi.getStoreService().getAttributeType(attribute.getAttrTypeName());
-               if (attrType == null) {
+               if (attrType == null || attrType.isInvalid()) {
                   resultData.errorf("Attribute Type [%s] not valid for Task creation in %s", attrType, task);
                }
-            }
 
-            for (JaxRelation relation : task.getRelations()) {
-               IRelationType relationType = getRelationType(atsApi, relation.getRelationTypeName());
-               if (relationType == null) {
-                  resultData.errorf("Relation Type [%s] not valid for Task creation in %s",
-                     relation.getRelationTypeName(), task);
-               }
-               if (relation.getRelatedIds().isEmpty()) {
-                  resultData.errorf("Relation [%s] Ids must be suplied Task creation in %s",
-                     relation.getRelationTypeName(), task);
-               }
-               List<Long> foundWorkItemIds = new ArrayList<>();
-               for (ArtifactId foundId : atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andIds(
-                  relation.getRelatedIds().toArray(new Long[relation.getRelatedIds().size()])).getItemIds()) {
-                  foundWorkItemIds.add(foundId.getId());
-               }
-               if (foundWorkItemIds.size() != relation.getRelatedIds().size()) {
-                  List<Long> notFoundIds = new ArrayList<>();
-                  notFoundIds.addAll(relation.getRelatedIds());
-                  notFoundIds.removeAll(foundWorkItemIds);
-                  resultData.errorf("Relation [%s] Work Item Ids [%s] has unfound Work Item(s) in db for task %s",
-                     relation.getRelationTypeName(), notFoundIds, task);
+               for (JaxRelation relation : task.getRelations()) {
+                  IRelationType relationType = getRelationType(atsApi, relation.getRelationTypeName());
+                  if (relationType == null) {
+                     resultData.errorf("Relation Type [%s] not valid for Task creation in %s\n",
+                        relation.getRelationTypeName(), task);
+                  }
+                  if (relation.getRelatedIds().isEmpty()) {
+                     resultData.errorf("Relation [%s] Ids must be suplied Task creation in %s\n",
+                        relation.getRelationTypeName(), task);
+                  }
+                  List<Long> foundWorkItemIds = new ArrayList<>();
+                  for (ArtifactId foundId : atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andIds(
+                     relation.getRelatedIds().toArray(new Long[relation.getRelatedIds().size()])).getItemIds()) {
+                     foundWorkItemIds.add(foundId.getId());
+                  }
+                  if (foundWorkItemIds.size() != relation.getRelatedIds().size()) {
+                     List<Long> notFoundIds = new ArrayList<>();
+                     for (Long art : relation.getRelatedIds()) {
+                        notFoundIds.addAll(relation.getRelatedIds());
+                        notFoundIds.removeAll(foundWorkItemIds);
+                        resultData.errorf("Relation [%s] Work Item Ids [%s] has unfound Work Item(s) in db for task %s",
+                           relation.getRelationTypeName(), notFoundIds, task);
+                     }
+                  }
                }
             }
          }
@@ -300,7 +303,7 @@ public class CreateTasksOperation {
             for (JaxRelation relation : jaxTask.getRelations()) {
                RelationTypeToken relationType = getRelationType(atsApi, relation.getRelationTypeName());
                if (relationType == null) {
-                  resultData.errorf("Relation Type [%s] not valid for Task creation in %s",
+                  resultData.errorf("Relation Type [%s] not valid for Task creation in %s\n",
                      relation.getRelationTypeName(), task);
                }
                Collection<IAtsWorkItem> items = atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andIds(
