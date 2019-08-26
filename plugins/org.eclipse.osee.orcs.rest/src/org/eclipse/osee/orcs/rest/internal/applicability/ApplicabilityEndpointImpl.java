@@ -188,8 +188,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (access.isErrors()) {
          return TransactionToken.SENTINEL;
       }
-      TransactionBuilder tx =
-         orcsApi.getTransactionFactory().createTransaction(branch, account, "Create new applicability");
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account,
+         "Apply " + applicability + " applicability");
       tx.createApplicabilityForView(viewId, applicability);
       return tx.commit();
    }

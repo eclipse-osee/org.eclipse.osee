@@ -26,6 +26,7 @@ public class TupleDataImpl extends OrcsVersionedObjectImpl<TupleTypeToken> imple
    private Long element2;
    private Long element3;
    private Long element4;
+   private boolean useBackingData = false;
 
    public TupleDataImpl(VersionData version) {
       super(version);
@@ -83,12 +84,12 @@ public class TupleDataImpl extends OrcsVersionedObjectImpl<TupleTypeToken> imple
 
    @Override
    public boolean isExistingVersionUsed() {
-      return false;
+      return useBackingData;
    }
 
    @Override
    public void setUseBackingData(boolean useBackingData) {
-      //
+      this.useBackingData = useBackingData;
    }
 
    @Override

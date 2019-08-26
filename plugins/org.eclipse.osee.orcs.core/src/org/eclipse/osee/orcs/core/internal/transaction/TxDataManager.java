@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
+import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -239,6 +240,11 @@ public class TxDataManager {
    public void setAuthor(TxData txData, UserId author) {
       checkChangesAllowed(txData);
       txData.setAuthor(author);
+   }
+
+   public TupleData introduceTuple(TupleTypeId tupleType, GammaId tupleGamma) {
+      return tupleFactory.introduceTupleData(tupleType, tupleGamma);
+
    }
 
    public GammaId createTuple2(TxData txData, Tuple2Type<?, ?> tupleType, Long e1, Long e2) {

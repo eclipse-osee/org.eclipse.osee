@@ -22,7 +22,10 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
-import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.Tuple2Type;
+import org.eclipse.osee.framework.core.data.Tuple3Type;
+import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
@@ -54,7 +57,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    private final IdentityManager idManager;
    private final JdbcClient jdbcClient;
 
-   private TransactionId txId;
+   private TransactionToken txId;
    private List<DataProxy<?>> binaryStores;
    private HashCollection<SqlOrderEnum, Object[]> dataItemInserts;
    private Map<SqlOrderEnum, IdJoinQuery> txNotCurrentsJoin;
@@ -87,7 +90,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
 
    @Override
    public void clear() {
-      txId = TransactionId.SENTINEL;
+      txId = TransactionToken.SENTINEL;
       dataItemInserts = null;
       txNotCurrentsJoin = null;
       binaryStores = null;
@@ -151,18 +154,25 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    @Override
    public void visit(TupleData data) {
       updateTxValues(data);
+      TupleTypeId tupleType = data.getTupleType();
 
-      if (data.getElement3() == null) {
-         addRow(SqlOrderEnum.TUPLES2, data.getTupleType(), data.getElement1(), data.getElement2(),
-            data.getVersion().getGammaId());
+      if (tupleType instanceof Tuple2Type) {
+         if (!data.isExistingVersionUsed()) {
+            addRow(SqlOrderEnum.TUPLES2, tupleType, data.getElement1(), data.getElement2(),
+               data.getVersion().getGammaId());
+         }
          addTxs(SqlOrderEnum.TUPLES2, data);
-      } else if (data.getElement4() == null) {
-         addRow(SqlOrderEnum.TUPLES3, data.getTupleType(), data.getElement1(), data.getElement2(), data.getElement3(),
-            data.getVersion().getGammaId());
+      } else if (tupleType instanceof Tuple3Type) {
+         if (!data.isExistingVersionUsed()) {
+            addRow(SqlOrderEnum.TUPLES3, tupleType, data.getElement1(), data.getElement2(), data.getElement3(),
+               data.getVersion().getGammaId());
+         }
          addTxs(SqlOrderEnum.TUPLES3, data);
       } else {
-         addRow(SqlOrderEnum.TUPLES4, data.getTupleType(), data.getElement1(), data.getElement2(), data.getElement3(),
-            data.getElement4(), data.getVersion().getGammaId());
+         if (!data.isExistingVersionUsed()) {
+            addRow(SqlOrderEnum.TUPLES4, tupleType, data.getElement1(), data.getElement2(), data.getElement3(),
+               data.getElement4(), data.getVersion().getGammaId());
+         }
          addTxs(SqlOrderEnum.TUPLES4, data);
       }
    }
@@ -233,8 +243,8 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
       VersionData data = orcsData.getVersion();
       ModificationType modType = orcsData.getModType();
 
-      addRow(SqlOrderEnum.TXS, data.getTransactionId(), data.getGammaId(), modType, TxCurrent.getCurrent(modType),
-         data.getBranch(), orcsData.getApplicabilityId());
+      addRow(SqlOrderEnum.TXS, txId, data.getGammaId(), modType, TxCurrent.getCurrent(modType), txId.getBranch(),
+         orcsData.getApplicabilityId());
 
       if (key.hasTxNotCurrentQuery()) {
          IdJoinQuery join = txNotCurrentsJoin.get(key);

@@ -12,16 +12,17 @@ package org.eclipse.osee.orcs.db.internal.loader;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
+import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -36,6 +37,7 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
+import org.eclipse.osee.orcs.db.internal.loader.data.TupleDataImpl;
 
 /**
  * @author Roberto E. Escobar
@@ -132,6 +134,19 @@ public class DataFactoryImpl implements DataFactory {
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
       return objectFactory.createRelationData(version, idFactory.getNextRelationId(), relationType, modType, aArtifact,
          bArtifact, rationale, ApplicabilityId.BASE);
+   }
+
+   @Override
+   public TupleData introduceTupleData(TupleTypeId tupleType, GammaId tupleGamma) {
+      VersionData version = objectFactory.createDefaultVersionData();
+      version.setGammaId(tupleGamma);
+      TupleData tupleData = new TupleDataImpl(version);
+      tupleData.setTupleType(tupleType);
+      tupleData.setApplicabilityId(ApplicabilityId.BASE);
+      tupleData.setUseBackingData(true);
+
+      tupleData.setModType(ModificationType.INTRODUCED);
+      return tupleData;
    }
 
    @Override

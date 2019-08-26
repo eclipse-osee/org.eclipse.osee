@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
+import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -198,6 +199,11 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       ArtifactReadable destination =
          getArtifactReadable(txData.getSession(), queryFactory, txData.getBranch(), sourceArtifact);
       return txManager.introduceArtifact(txData, fromBranch, source, destination);
+   }
+
+   @Override
+   public void introduceTuple(TupleTypeId tupleType, GammaId tupleGamma) {
+      txData.add(txManager.introduceTuple(tupleType, tupleGamma));
    }
 
    @Override
@@ -447,8 +453,12 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void createApplicabilityForView(ArtifactId viewId, String applicability) {
-      addTuple2(CoreTupleTypes.ViewApplicability, viewId, applicability);
-
+      GammaId tupleGamma = tupleQuery.getTuple2GammaFromE1E2(CoreTupleTypes.ViewApplicability, viewId, applicability);
+      if (tupleGamma.isValid()) {
+         introduceTuple(CoreTupleTypes.ViewApplicability, tupleGamma);
+      } else {
+         addTuple2(CoreTupleTypes.ViewApplicability, viewId, applicability);
+      }
    }
 
    private Long insertValue(String value) {
