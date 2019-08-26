@@ -48,7 +48,11 @@ public class XIntegerDam extends XInteger implements IAttributeWidget {
       this.attributeType = attrName;
       try {
          Integer value = artifact.getSoleAttributeValue(getAttributeType());
-         super.set(value.toString());
+         if (value != null) {
+            super.set(value.toString());
+         } else {
+            super.set("");
+         }
       } catch (AttributeDoesNotExist ex) {
          super.set("");
       }
