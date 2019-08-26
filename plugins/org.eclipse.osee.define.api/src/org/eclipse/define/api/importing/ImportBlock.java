@@ -140,7 +140,7 @@ public abstract class ImportBlock implements Named {
       if (textAttr == null) {
          System.out.println("textAttribute was null");
       } else {
-         String newContent = textAttr.getData().replaceAll(objectID, reference);
+         String newContent = textAttr.getData().replaceAll("\\[" + objectID + "\\]", reference);
          textAttr.setData(newContent);
       }
    }
