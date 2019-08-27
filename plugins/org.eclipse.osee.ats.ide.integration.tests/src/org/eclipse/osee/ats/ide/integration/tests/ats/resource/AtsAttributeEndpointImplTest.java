@@ -64,8 +64,8 @@ public class AtsAttributeEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testGetValidIPT() throws Exception {
-      getFirstAndCount(AttributeKey.IPT.getUrl(), 8);
-      Object object = getFirstAndCount("ats/attr/IPT", 8);
+      getFirstAndCount(AttributeKey.IPT.getUrl(), 9);
+      Object object = getFirstAndCount("ats/attr/IPT", 9);
       Assert.assertEquals("AH-6", object);
    }
 

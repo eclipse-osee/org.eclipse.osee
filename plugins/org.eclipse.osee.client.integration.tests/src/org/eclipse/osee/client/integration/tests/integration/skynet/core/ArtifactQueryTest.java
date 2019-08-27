@@ -158,8 +158,8 @@ public class ArtifactQueryTest {
       }
 
       try {
-         ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Active, "true",
-            COMMON);
+         ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.FavoriteBranch,
+            "common", COMMON);
          Assert.fail("Should have thrown an exception as the attribute type are not taggable");
       } catch (OseeCoreException e) {
          Assert.assertTrue(e.getMessage(), Boolean.TRUE);

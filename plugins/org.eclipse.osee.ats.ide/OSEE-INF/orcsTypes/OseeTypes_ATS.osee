@@ -7,6 +7,10 @@ abstract artifactType "ats.Release Artifact" extends "Artifact" {
 artifactType "Insertion" extends "ats.Ats Config Artifact" {
 	id 1735587136604728792
 	attribute "ats.Description"
+	attribute "ats.Color Team"
+	attribute "ats.End Date"
+	attribute "ats.Start Date"
+	attribute "ats.Points Numeric"
 }
 
 artifactType "Insertion Activity" extends "ats.Ats Config Artifact" {
@@ -48,6 +52,14 @@ artifactType "Agile Backlog" extends "Goal" {
 artifactType "Agile Feature Group" extends "ats.Ats Config Artifact" {
 	id 560322181883393633
 	attribute "ats.Description"
+}
+
+attributeType "ats.Requested Hours" extends IntegerAttribute {
+   id 5708922143198125133
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	mediaType "text/plain"
 }
 
 artifactType "Agile Sprint" extends "ats.State Machine" {
@@ -185,6 +197,7 @@ artifactType "Team Definition" extends "Responsible Team" , "Abstract Access Con
 	attribute "ats.Action Details Format"
 	attribute "ats.Allow Create Branch"
 	attribute "ats.Allow Commit Branch"
+	attribute "ats.Related Task Workflow Definition Old"
 	attribute "ats.Related Task Workflow Definition"
 	attribute "ats.Related Task Workflow Definition Reference"
 	attribute "ats.Related Peer Workflow Definition"
@@ -236,6 +249,7 @@ abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
 	attribute "ats.Numeric1"
 	attribute "ats.Numeric2"
 	attribute "ats.Current State"
+	attribute "ats.End Date"
 	attribute "ats.Estimated Completion Date"
 	attribute "ats.Estimated Hours"
 	attribute "ats.Estimated Release Date"
@@ -299,16 +313,21 @@ artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Cont
 	attribute "ats.Operational Impact Description"
 	attribute "ats.Operational Impact Workaround"
 	attribute "ats.Operational Impact Workaround Description"
+	attribute "ats.Related Task Workflow Definition Old"
+	attribute "ats.Related Task Workflow Definition"
+	attribute "ats.Related Task Workflow Definition Reference"
 	attribute "ats.Program Uuid"
 	attribute "ats.Applicability Workflow"
 	attribute "ats.Applicable to Program"
 	attribute "ats.Duplicated PCR Id"
 	attribute "ats.Originating PCR Id"
 	attribute "ats.PCR Tool Id"   
+	attribute "ats.Rationale"
 	attribute "ats.Color Team"
 	attribute "ats.IPT"
 	attribute "ats.Commit Override"
 	attribute "ats.Estimate Assumptions"
+	attribute "ats.Requested Hours"
 	
 }
 
@@ -318,6 +337,7 @@ artifactType "Work Package" extends "Artifact" {
 	attribute "ats.Work Package Type"
 	attribute "ats.Work Package Program"
 	attribute "ats.Activity Id"
+	attribute "ats.Control Account"
 	attribute "ats.Activity Name"
 	attribute "ats.Active"
 	attribute "ats.Start Date"
@@ -330,6 +350,7 @@ artifactType "Work Package" extends "Artifact" {
 	attribute "ats.IPT"
 	attribute "ats.CAM"
    attribute "ats.Color Team"
+   attribute "ats.Cognos Unique Id"
 }
 
 overrides artifactType "User" {
@@ -361,6 +382,15 @@ attributeType "ats.kb.Ignore States" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
+}
+
+attributeType "ats.Cognos Unique Id" extends StringAttribute {
+	id 72063457009467630
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 	mediaType "text/plain"
 }
 
@@ -659,6 +689,8 @@ oseeEnumType "enum.ats.work.package.type" {
 	entry "Discrete - 50-50"
 	entry "Discrete - 0-100"
 	entry "LOE"	
+	entry "LOE_Planning"
+	entry "Planning"
 }
 
 attributeType "ats.Work Package Type" extends EnumeratedAttribute {
@@ -681,6 +713,7 @@ oseeEnumType "enum.ats.ipt" {
 	entry "Weapons/Sights"
 	entry "Processors/Displays"
 	entry "AH-6"
+	entry "NCO"
 }
 
 attributeType "ats.IPT" extends EnumeratedAttribute {
@@ -690,6 +723,15 @@ attributeType "ats.IPT" extends EnumeratedAttribute {
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.ats.ipt"
+	mediaType "text/plain"
+}
+
+attributeType "ats.Control Account" extends StringAttribute {
+	id 3475568422796552185
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 	mediaType "text/plain"
 }
 
@@ -794,6 +836,16 @@ attributeType "ats.Rule Definition" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "ats.Related Task Workflow Definition Old" extends StringAttribute {
+	id 1152921504606847151
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 	mediaType "text/plain"
 }
 
@@ -1447,6 +1499,7 @@ attributeType "ats.Pages Changed" extends IntegerAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "ats.Pages Reviewed" extends IntegerAttribute {
@@ -2030,9 +2083,10 @@ attributeType "ats.closure.Active" extends BooleanAttribute {
 
 oseeEnumType "ats.closure.states" {
 	id 3458764513820541340
-	entry "Closed"
-	entry "Closing"
 	entry "Open"
+	entry "Prepare to Close"
+	entry "Close Out"
+	entry "Closed"
 }
 
 attributeType "ats.closure.Closure State" extends EnumeratedAttribute {

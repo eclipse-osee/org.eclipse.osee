@@ -34,6 +34,7 @@ artifactType "Global Preferences" extends "Artifact" {
 	attribute "Dictionary"
 	attribute "osee.config.Default Mail Server"
 	attribute "General String Data"
+	attribute "Web Preferences"
 }
 
 attributeType "Id Value" extends StringAttribute {
@@ -166,6 +167,7 @@ attributeType "Active" extends BooleanAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
+	taggerId DefaultAttributeTaggerProvider
 	defaultValue "true"
 	mediaType "text/plain"
 }
@@ -282,6 +284,7 @@ attributeType "Web Preferences" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	taggerId DefaultAttributeTaggerProvider
 	fileExtension "xml"
 	mediaType "text/plain"
 }
@@ -810,6 +813,8 @@ artifactType "Software Requirement" extends "MS Word Template" , "Direct Softwar
 	id 24
 	attribute "IDAL"
 	attribute "IDAL Rationale"
+	attribute "Software Control Category"
+	attribute "Software Control Category Rationale"
 	attribute "IA Plan"
 }
 
@@ -889,6 +894,7 @@ artifactType "Software Requirement Data Definition" extends "Indirect Software R
 
 abstract artifactType "Abstract System Requirement" extends "Abstract Spec Requirement" {
 	id 796
+	attribute "Legacy Id"
 	attribute "Verification Level"
 	attribute "Effectivity"
 	attribute "Verification Acceptance Criteria"
@@ -910,6 +916,7 @@ artifactType "System Requirement - HTML" extends "Abstract System Requirement" ,
 
 abstract artifactType "Abstract Subsystem Requirement" extends "Abstract Spec Requirement" {
 	id 797
+	attribute "Legacy Id"
 	attribute "Verification Level"
 	attribute "Verification Event"
 	attribute "Effectivity"
@@ -1319,6 +1326,7 @@ attributeType "Legacy DAL" extends EnumeratedAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.req.development.assurance.level"
 	description "Legacy Development Assurance Level (original DAL)"
 	defaultValue "Unspecified"
@@ -1353,6 +1361,7 @@ attributeType "IDAL" extends EnumeratedAttribute {
 	enumType "enum.req.development.assurance.level"
 	description "Item Development Assurance Level"
 	defaultValue "Unspecified"
+	taggerId DefaultAttributeTaggerProvider
 	mediaType "text/plain"
 }
 
@@ -1403,6 +1412,7 @@ attributeType "Verification Event" extends EnumeratedAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max unlimited
+	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.req.verification.event"
 	defaultValue "Unspecified"
 	mediaType "text/plain"
@@ -1671,6 +1681,16 @@ relationType "Work Item" {
 	multiplicity MANY_TO_MANY
 }
 
+relationType "User Grouping" {
+	id 2305843009213694307
+	sideAName "group"
+	sideAArtifactType "User Group"
+	sideBName "users"
+	sideBArtifactType "User"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
+}
+
 relationType "Users" {
 	id 2305843009213694308
 	sideAName "Artifact"
@@ -1744,6 +1764,8 @@ relationType "Supporting Requirement" {
 
 artifactType "Heading - MS Word" extends "Abstract Heading", "MS Word Template" {
 	id 56
+	attribute "Data Rights Classification"
+	attribute "Data Rights Basis"
 }
 
 artifactType "Document Description - MS Word" extends "Abstract Heading", "MS Word Template" {
@@ -2007,6 +2029,26 @@ artifactType "Breaker" extends "Artifact" {
    attribute "Display Text"
    attribute "Circuit Breaker Id"
    attribute "Require Confirmation"
+   attribute "Maintainer Text"
+	attribute "Functional Grouping"
+}
+
+attributeType "Functional Grouping" extends EnumeratedAttribute {
+	id 1741310787702764470
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	enumType "enum.functional.grouping"
+	mediaType "text/plain"
+}
+
+oseeEnumType "enum.functional.grouping" {
+	id 3458969036723847402
+	entry "Avionics"
+	entry "VMS/Flight Control"
+	entry "Engine/Fuel/Hydraulics"
+	entry "Electrical"
 }
 
 attributeType "Display Text" extends StringAttribute {
@@ -2018,6 +2060,14 @@ attributeType "Display Text" extends StringAttribute {
 	mediaType "text/plain"
 }
 
+attributeType "Maintainer Text" extends StringAttribute {
+	id 188458874335285
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	defaultValue "unset"
+	mediaType "text/plain"
+}
 
 attributeType "Circuit Breaker Id" extends IntegerAttribute {
 	id 188458869981238
