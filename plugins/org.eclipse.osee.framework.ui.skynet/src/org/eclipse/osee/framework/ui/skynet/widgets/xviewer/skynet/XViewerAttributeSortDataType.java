@@ -27,18 +27,22 @@ public class XViewerAttributeSortDataType {
 
    public static SortDataType get(AttributeTypeId attributeType) {
       SortDataType sortType = SortDataType.String;
-      if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
-         sortType = SortDataType.Date;
-      } else if (AttributeTypeManager.isBaseTypeCompatible(FloatingPointAttribute.class, attributeType)) {
-         sortType = SortDataType.Float;
-      } else if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
-         sortType = SortDataType.Integer;
-      } else if (AttributeTypeManager.isBaseTypeCompatible(LongAttribute.class, attributeType)) {
-         sortType = SortDataType.Long;
-      } else if (AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType)) {
-         sortType = SortDataType.Boolean;
-      } else if (AttributeTypeManager.isBaseTypeCompatible(OutlineNumberAttribute.class, attributeType)) {
-         sortType = SortDataType.Paragraph_Number;
+      try {
+         if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
+            sortType = SortDataType.Date;
+         } else if (AttributeTypeManager.isBaseTypeCompatible(FloatingPointAttribute.class, attributeType)) {
+            sortType = SortDataType.Float;
+         } else if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
+            sortType = SortDataType.Integer;
+         } else if (AttributeTypeManager.isBaseTypeCompatible(LongAttribute.class, attributeType)) {
+            sortType = SortDataType.Long;
+         } else if (AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType)) {
+            sortType = SortDataType.Boolean;
+         } else if (AttributeTypeManager.isBaseTypeCompatible(OutlineNumberAttribute.class, attributeType)) {
+            sortType = SortDataType.Paragraph_Number;
+         }
+      } catch (Exception ex) {
+         //do nothing
       }
       return sortType;
    }
