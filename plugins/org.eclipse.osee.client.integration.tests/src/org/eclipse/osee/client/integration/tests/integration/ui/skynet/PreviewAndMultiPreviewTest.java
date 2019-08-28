@@ -175,7 +175,7 @@ public class PreviewAndMultiPreviewTest {
     */
    @Test
    public void testWholeWordPreview() throws Exception {
-      Artifact art = createArtifact(CoreArtifactTypes.TestProcedureWML, SAW_Bld_1, addPrefix("4g"));
+      Artifact art = createArtifact(CoreArtifactTypes.TestProcedureWml, SAW_Bld_1, addPrefix("4g"));
       art.persist(String.format("%s, persist on %s", PreviewAndMultiPreviewTest.class.getSimpleName(), SAW_Bld_1));
       WholeWordRenderer renderer = new WholeWordRenderer();
       renderer.open(Arrays.asList(art), PresentationType.PREVIEW);
@@ -183,7 +183,7 @@ public class PreviewAndMultiPreviewTest {
 
    @Test
    public void testWholeWordPreviewUsingRendererManager() throws Exception {
-      Artifact art = createArtifact(CoreArtifactTypes.TestProcedureWML, SAW_Bld_1, addPrefix("4h"));
+      Artifact art = createArtifact(CoreArtifactTypes.TestProcedureWml, SAW_Bld_1, addPrefix("4h"));
       art.persist(String.format("%s, persist on %s", PreviewAndMultiPreviewTest.class.getSimpleName(), SAW_Bld_1));
       RendererManager.openInJob(art, PresentationType.PREVIEW);
    }

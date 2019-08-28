@@ -145,7 +145,7 @@ public class ActionPage {
       ArtifactReadable teamWf = null;
       if (action.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          teamWf = action;
-      } else if (action.isOfType(AtsArtifactTypes.ReviewArtifact)) {
+      } else if (action.isOfType(AtsArtifactTypes.AbstractReview)) {
          teamWf =
             action.getRelated(AtsRelationTypes.TeamWorkflowToReview_Team).getOneOrDefault(ArtifactReadable.SENTINEL);
       } else if (action.isOfType(AtsArtifactTypes.Task)) {

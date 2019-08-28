@@ -204,7 +204,7 @@ public class OrcsTransactionTest {
 
       TransactionBuilder tx = txFactory.createTransaction(COMMON, userArtifact, comment);
 
-      ArtifactToken artifact = tx.createArtifact(CoreArtifactTypes.SubsystemRequirementHTML, expectedName);
+      ArtifactToken artifact = tx.createArtifact(CoreArtifactTypes.SubsystemRequirementHtml, expectedName);
 
       tx.setAttributesFromStrings(artifact, CoreAttributeTypes.Annotation, expectedAnnotation);
       tx.setAttributesFromStrings(artifact, CoreAttributeTypes.QualificationMethod, expectedQualifaction);

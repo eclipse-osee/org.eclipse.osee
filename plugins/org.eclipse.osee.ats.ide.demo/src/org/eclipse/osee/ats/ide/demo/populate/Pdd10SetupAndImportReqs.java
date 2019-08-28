@@ -207,7 +207,7 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
    private void demoDbTraceabilityTx(SkynetTransaction transaction, BranchId branch) {
       try {
          Collection<Artifact> systemArts =
-            DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SystemRequirementMSWord, "Robot", branch);
+            DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SystemRequirementMsWord, "Robot", branch);
 
          Collection<Artifact> component =
             DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.Component, "API", branch);
@@ -215,10 +215,10 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
          component.addAll(DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.Component, "Sensor", branch));
 
          Collection<Artifact> subSystemArts =
-            DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SubsystemRequirementMSWord, "Robot", branch);
+            DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SubsystemRequirementMsWord, "Robot", branch);
          subSystemArts.addAll(
-            DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SubsystemRequirementMSWord, "Video", branch));
-         subSystemArts.addAll(DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SubsystemRequirementMSWord,
+            DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SubsystemRequirementMsWord, "Video", branch));
+         subSystemArts.addAll(DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SubsystemRequirementMsWord,
             "Interface", branch));
 
          Collection<Artifact> softArts =
@@ -355,8 +355,8 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
       try {
          //@formatter:off
          importRequirements(SAW_Bld_1, CoreArtifactTypes.SoftwareRequirement, "Software Requirements", OseeInf.getResourceAsFile("requirements/SAW-SoftwareRequirements.xml", getClass()));
-         importRequirements(SAW_Bld_1, CoreArtifactTypes.SystemRequirementMSWord, "System Requirements", OseeInf.getResourceAsFile("requirements/SAW-SystemRequirements.xml", getClass()));
-         importRequirements(SAW_Bld_1, CoreArtifactTypes.SubsystemRequirementMSWord, "Subsystem Requirements", OseeInf.getResourceAsFile("requirements/SAW-SubsystemRequirements.xml", getClass()));
+         importRequirements(SAW_Bld_1, CoreArtifactTypes.SystemRequirementMsWord, "System Requirements", OseeInf.getResourceAsFile("requirements/SAW-SystemRequirements.xml", getClass()));
+         importRequirements(SAW_Bld_1, CoreArtifactTypes.SubsystemRequirementMsWord, "Subsystem Requirements", OseeInf.getResourceAsFile("requirements/SAW-SubsystemRequirements.xml", getClass()));
          //@formatter:on
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));

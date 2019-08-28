@@ -41,10 +41,10 @@ public final class ArtifactResolverFactory {
    }
 
    public static IArtifactImportResolver createAlwaysNewArtifacts(ArtifactTypeToken primaryArtifactType) {
-      ArtifactTypeToken secondaryArtifactType = CoreArtifactTypes.HeadingMSWord;
-      if (primaryArtifactType.equals(CoreArtifactTypes.SubsystemRequirementHTML) || primaryArtifactType.equals(
-         CoreArtifactTypes.SystemRequirementHTML)) {
-         secondaryArtifactType = CoreArtifactTypes.HeadingHTML;
+      ArtifactTypeToken secondaryArtifactType = CoreArtifactTypes.HeadingMsWord;
+      if (primaryArtifactType.equals(CoreArtifactTypes.SubsystemRequirementHtml) || primaryArtifactType.equals(
+         CoreArtifactTypes.SystemRequirementHtml)) {
+         secondaryArtifactType = CoreArtifactTypes.HeadingHtml;
       }
       return createAlwaysNewArtifacts(primaryArtifactType, secondaryArtifactType);
    }
@@ -52,7 +52,7 @@ public final class ArtifactResolverFactory {
    public static IArtifactImportResolver createAlwaysNewArtifacts(ArtifactTypeToken primaryArtifactType, ArtifactTypeToken secondaryArtifactType) {
       IRoughArtifactTranslator translator = new RoughArtifactTranslatorImpl();
       return new NewArtifactImportResolver(translator, primaryArtifactType, secondaryArtifactType,
-         CoreArtifactTypes.DocumentDescriptionMSWord, CoreArtifactTypes.DesignDescriptionMSWord);
+         CoreArtifactTypes.DocumentDescriptionMsWord, CoreArtifactTypes.DesignDescriptionMsWord);
    }
 
    public static IArtifactImportResolver createResolver(ArtifactCreationStrategy strategy, ArtifactTypeToken primaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
@@ -60,15 +60,15 @@ public final class ArtifactResolverFactory {
       switch (strategy) {
          case CREATE_ON_DIFFERENT_ATTRIBUTES:
             toReturn = new AttributeBasedArtifactResolver(new RoughArtifactTranslatorImpl(), primaryArtifactType,
-               CoreArtifactTypes.HeadingMSWord, nonChangingAttributes, createNewIfNotExist, deleteUnmatchedArtifacts);
+               CoreArtifactTypes.HeadingMsWord, nonChangingAttributes, createNewIfNotExist, deleteUnmatchedArtifacts);
             break;
          case CREATE_ON_NEW_ART_GUID:
             toReturn = new GuidBasedArtifactResolver(new RoughArtifactTranslatorImpl(), primaryArtifactType,
-               CoreArtifactTypes.HeadingMSWord, createNewIfNotExist, deleteUnmatchedArtifacts);
+               CoreArtifactTypes.HeadingMsWord, createNewIfNotExist, deleteUnmatchedArtifacts);
             break;
          case CREATE_ON_DOORS_BEST_FIT:
             toReturn = new DoorsBestFitArtifactResolver(new RoughArtifactTranslatorImpl(), primaryArtifactType,
-               CoreArtifactTypes.HeadingHTML, createNewIfNotExist, deleteUnmatchedArtifacts);
+               CoreArtifactTypes.HeadingHtml, createNewIfNotExist, deleteUnmatchedArtifacts);
             break;
          case CREATE_NEW_ALWAYS:
          default:
@@ -81,7 +81,7 @@ public final class ArtifactResolverFactory {
    public static IArtifactImportResolver createResolver(ArtifactCreationStrategy strategy, ArtifactTypeToken primaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts, Artifact dropTarget) {
 
       return new DropTargetAttributeBasedResolver(new RoughArtifactTranslatorImpl(), primaryArtifactType,
-         CoreArtifactTypes.HeadingMSWord, nonChangingAttributes, createNewIfNotExist, deleteUnmatchedArtifacts,
+         CoreArtifactTypes.HeadingMsWord, nonChangingAttributes, createNewIfNotExist, deleteUnmatchedArtifacts,
          dropTarget);
 
    }

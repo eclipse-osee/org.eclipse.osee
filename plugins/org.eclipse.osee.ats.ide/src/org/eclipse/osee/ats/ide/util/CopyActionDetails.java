@@ -88,7 +88,7 @@ public class CopyActionDetails {
          }
       } else if (awa instanceof TaskArtifact) {
          result = "Task";
-      } else if (awa.isOfType(AtsArtifactTypes.ReviewArtifact)) {
+      } else if (awa.isOfType(AtsArtifactTypes.AbstractReview)) {
          result = "Review";
       } else if (awa.isTypeEqual(AtsArtifactTypes.Goal)) {
          result = "Goal";

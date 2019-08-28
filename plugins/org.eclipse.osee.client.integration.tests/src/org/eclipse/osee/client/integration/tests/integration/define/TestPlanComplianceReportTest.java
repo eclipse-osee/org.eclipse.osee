@@ -136,7 +136,7 @@ public final class TestPlanComplianceReportTest {
 
          for (int j = 0; j < testResultsAmount; j++) {
             Artifact testResult =
-               ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestResultWML, SAW_Bld_1, "Sample_Test_Result_" + j);
+               ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestResultWml, SAW_Bld_1, "Sample_Test_Result_" + j);
             testProcedure.addRelation(CoreRelationTypes.Test_Unit_Result__Test_Result, testResult);
             testProcedure.persist(getClass().getSimpleName());
          }

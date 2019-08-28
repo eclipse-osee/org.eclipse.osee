@@ -33,7 +33,7 @@ public abstract class ImportBlock implements Named {
    }
 
    public Boolean isParentBlock() {
-      if (type.isValid() && type.equals(CoreArtifactTypes.HeadingMSWord)) {
+      if (type.isValid() && type.equals(CoreArtifactTypes.HeadingMsWord)) {
          return true;
       } else {
          return false;

@@ -55,7 +55,7 @@ public class WordTemplateProcessorTest {
    public void getEmptyHeadersTest_case1() {
 
       Artifact eventDetailHeading =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.HeadingMSWord, "Events Detail Header", SAW_Bld_1);
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.HeadingMsWord, "Events Detail Header", SAW_Bld_1);
 
       Assert.assertTrue(results.contains(eventDetailHeading));
 
@@ -65,7 +65,7 @@ public class WordTemplateProcessorTest {
    public void getEmptyHeadersTest_case2() {
 
       Artifact virtualFixDetailHeader =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.HeadingMSWord, "VirtualFixDetailHeader", SAW_Bld_1);
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.HeadingMsWord, "VirtualFixDetailHeader", SAW_Bld_1);
       Artifact virtualFixDetailRequirements = ArtifactQuery.getArtifactFromTypeAndName(
          CoreArtifactTypes.SoftwareRequirement, "Virtual Fix Detail Requirements", SAW_Bld_1);
 
@@ -90,7 +90,7 @@ public class WordTemplateProcessorTest {
    @Test
    public void getEmptyHeadersTest_case4() {
 
-      Artifact robotInterfaceHeading = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.HeadingMSWord,
+      Artifact robotInterfaceHeading = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.HeadingMsWord,
          "Robot Interface Heading", SAW_Bld_1);
 
       Assert.assertTrue(results.contains(robotInterfaceHeading));
@@ -101,11 +101,11 @@ public class WordTemplateProcessorTest {
    public void getEmptyHeadersTest_case5() {
 
       Artifact robotUserInterfacesHeading =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.HeadingMSWord, "Robot User Interfaces", SAW_Bld_1);
-      Artifact robotAdminUIHeading = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.HeadingMSWord,
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.HeadingMsWord, "Robot User Interfaces", SAW_Bld_1);
+      Artifact robotAdminUIHeading = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.HeadingMsWord,
          "Robot Admin User Interface", SAW_Bld_1);
       Artifact robotUIHeading =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.HeadingMSWord, "Robot User Interface", SAW_Bld_1);
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.HeadingMsWord, "Robot User Interface", SAW_Bld_1);
 
       Assert.assertTrue(results.contains(robotUserInterfacesHeading));
       Assert.assertTrue(results.contains(robotAdminUIHeading));

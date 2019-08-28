@@ -64,7 +64,7 @@ public class DoorsArtifactBuilder {
       toReturn.setSectionNumber(paragraph);
       toReturn.addAttribute(CoreAttributeTypes.ParagraphNumber, paragraph);
       if (rk == RoughArtifactKind.SECONDARY) {
-         toReturn.setPrimaryArtifactType(CoreArtifactTypes.HeadingHTML);
+         toReturn.setPrimaryArtifactType(CoreArtifactTypes.HeadingHtml);
       }
       String guidString = rowCollector.getSimpleText(dr, DoorsColumnType.GUID);
 
@@ -146,7 +146,7 @@ public class DoorsArtifactBuilder {
 
    private void mergeArtifactKind(RoughArtifact combined, RoughArtifact add) {
       if (add.getRoughArtifactKind().equals(RoughArtifactKind.PRIMARY)) {
-         combined.setPrimaryArtifactType(CoreArtifactTypes.HTMLArtifact);
+         combined.setPrimaryArtifactType(CoreArtifactTypes.HtmlArtifact);
          combined.setRoughArtifactKind(RoughArtifactKind.PRIMARY);
       }
    }

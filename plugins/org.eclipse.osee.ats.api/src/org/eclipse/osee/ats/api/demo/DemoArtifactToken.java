@@ -34,16 +34,16 @@ public final class DemoArtifactToken {
    //////////////////////////////////
    // Impl Details Configuration
    //////////////////////////////////
-   public static final ArtifactToken RobotInterfaceHeading = ArtifactToken.valueOf(659132, "Robot Interface Heading", DemoBranches.SAW_Bld_1, CoreArtifactTypes.HeadingMSWord);
-   public static final ArtifactToken RobotUserInterfaceHeading = ArtifactToken.valueOf(54212, "Robot User Interfaces", DemoBranches.SAW_Bld_1, CoreArtifactTypes.HeadingMSWord);
-   public static final ArtifactToken RobotAdminUserInterface = ArtifactToken.valueOf(789134, "Robot Admin User Interface", DemoBranches.SAW_Bld_1, CoreArtifactTypes.HeadingMSWord);
+   public static final ArtifactToken RobotInterfaceHeading = ArtifactToken.valueOf(659132, "Robot Interface Heading", DemoBranches.SAW_Bld_1, CoreArtifactTypes.HeadingMsWord);
+   public static final ArtifactToken RobotUserInterfaceHeading = ArtifactToken.valueOf(54212, "Robot User Interfaces", DemoBranches.SAW_Bld_1, CoreArtifactTypes.HeadingMsWord);
+   public static final ArtifactToken RobotAdminUserInterface = ArtifactToken.valueOf(789134, "Robot Admin User Interface", DemoBranches.SAW_Bld_1, CoreArtifactTypes.HeadingMsWord);
    public static final ArtifactToken RobotAdminUserInterfaceImpl = ArtifactToken.valueOf(1235445, "Robot Admin UI Impl Details", DemoBranches.SAW_Bld_1, CoreArtifactTypes.ImplementationDetails);
-   public static final ArtifactToken RobotUserInterface = ArtifactToken.valueOf(9798614, "Robot User Interface", DemoBranches.SAW_Bld_1, CoreArtifactTypes.HeadingMSWord);
+   public static final ArtifactToken RobotUserInterface = ArtifactToken.valueOf(9798614, "Robot User Interface", DemoBranches.SAW_Bld_1, CoreArtifactTypes.HeadingMsWord);
    public static final ArtifactToken RobotUserInterfaceImpl = ArtifactToken.valueOf(654969, "Robot UI Impl Details", DemoBranches.SAW_Bld_1, CoreArtifactTypes.ImplementationDetails);
    public static final ArtifactToken RobotCollabDetails = ArtifactToken.valueOf(324516, "Robot Collaberation Details", DemoBranches.SAW_Bld_1, CoreArtifactTypes.ImplementationDetails);
-   public static final ArtifactToken EventsDetailHeader = ArtifactToken.valueOf(165416, "Events Detail Header", DemoBranches.SAW_Bld_1, CoreArtifactTypes.HeadingMSWord);
+   public static final ArtifactToken EventsDetailHeader = ArtifactToken.valueOf(165416, "Events Detail Header", DemoBranches.SAW_Bld_1, CoreArtifactTypes.HeadingMsWord);
    public static final ArtifactToken EventsDetails = ArtifactToken.valueOf(165131, "Events Details", DemoBranches.SAW_Bld_1, CoreArtifactTypes.ImplementationDetails);
-   public static final ArtifactToken VirtualFixDetailHeader = ArtifactToken.valueOf(456135, "VirtualFixDetailHeader", DemoBranches.SAW_Bld_1, CoreArtifactTypes.HeadingMSWord);
+   public static final ArtifactToken VirtualFixDetailHeader = ArtifactToken.valueOf(456135, "VirtualFixDetailHeader", DemoBranches.SAW_Bld_1, CoreArtifactTypes.HeadingMsWord);
    public static final ArtifactToken VirtualFixDetails = ArtifactToken.valueOf(847323, "Virtual Fix Details", DemoBranches.SAW_Bld_1, CoreArtifactTypes.ImplementationDetails);
    public static final ArtifactToken VirtualFixDetailReq = ArtifactToken.valueOf(789216, "Virtual Fix Detail Requirements", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirement);
    public static final ArtifactToken VirtualFixDetailReqImplementation = ArtifactToken.valueOf(963692, "Virtual Fix Detail Requirements Implementation", DemoBranches.SAW_Bld_1, CoreArtifactTypes.ImplementationDetails);

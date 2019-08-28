@@ -64,7 +64,7 @@ public class ImportOperationsImpl implements ImportOperations {
          orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem, "Server word import");
       ArtifactReadable parentArtifact = orcsApi.getQueryFactory().fromBranch(branch).andId(parent).getArtifact();
       IArtifactImportResolver resolver = ArtifactResolverFactory.createResolver(transaction,
-         ArtifactCreationStrategy.CREATE_NEW_ALWAYS, CoreArtifactTypes.SubsystemRequirementMSWord, null, true, false);
+         ArtifactCreationStrategy.CREATE_NEW_ALWAYS, CoreArtifactTypes.SubsystemRequirementMsWord, null, true, false);
       RoughToRealArtifactOperation roughToReal = new RoughToRealArtifactOperation(orcsApi, results, transaction,
          parentArtifact, collector, resolver, false, extractor);
       roughToReal.doWork();

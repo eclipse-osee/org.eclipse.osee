@@ -225,7 +225,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    public <T> T getConfigItem(Long id) {
       T atsObject = null;
       ArtifactToken artifact = getArtifact(id);
-      if (artifact != null && atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AtsConfigObject)) {
+      if (artifact != null && atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AtsConfigArtifact)) {
          atsObject = (T) AtsObjects.getConfigObject(artifact, atsApi);
       }
       return atsObject;

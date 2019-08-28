@@ -112,7 +112,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
       monitor.subTask("Loading Higher Level Requirements"); // bulk load to improve performance
       monitor.worked(1);
-      ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemRequirementMSWord, branch);
+      ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemRequirementMsWord, branch);
       monitor.worked(30);
 
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);

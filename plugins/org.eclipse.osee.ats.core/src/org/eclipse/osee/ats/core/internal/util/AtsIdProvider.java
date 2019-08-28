@@ -62,7 +62,7 @@ public final class AtsIdProvider {
             seqName = DEFAULT_WORKFLOW_SEQ_NAME;
          } else if (newObject.isTypeEqual(AtsArtifactTypes.Action)) {
             seqName = DEFAULT_ACTION_SEQ_NAME;
-         } else if (newObject.isTypeEqual(AtsArtifactTypes.ReviewArtifact)) {
+         } else if (newObject.isTypeEqual(AtsArtifactTypes.AbstractReview)) {
             seqName = DEFAULT_REVIEW_SEQ_NAME;
          } else if (newObject.isTypeEqual(AtsArtifactTypes.Task)) {
             seqName = DEFAULT_TASK_SEQ_NAME;
@@ -76,7 +76,7 @@ public final class AtsIdProvider {
             prefixName = DEFAULT_WORKFLOW_ID_PREFIX;
          } else if (newObject.isTypeEqual(AtsArtifactTypes.Action)) {
             prefixName = DEFAULT_ACTION_ID_PREFIX;
-         } else if (newObject.isTypeEqual(AtsArtifactTypes.ReviewArtifact)) {
+         } else if (newObject.isTypeEqual(AtsArtifactTypes.AbstractReview)) {
             prefixName = DEFAULT_REVIEW_ID_PREFIX;
          } else if (newObject.isTypeEqual(AtsArtifactTypes.Task)) {
             prefixName = DEFAULT_TASK_ID_PREFIX;

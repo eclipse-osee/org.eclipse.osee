@@ -40,9 +40,9 @@ public final class CoreArtifactTypes {
    public static final ArtifactTypeToken GitRepository = ArtifactTypeToken.valueOf(97, "Git Repository");
    public static final ArtifactTypeToken GlobalPreferences = ArtifactTypeToken.valueOf(3, "Global Preferences");
    public static final ArtifactTypeToken HardwareRequirement = ArtifactTypeToken.valueOf(33, "Hardware Requirement");
-   public static final ArtifactTypeToken HeadingMSWord = ArtifactTypeToken.valueOf(56, "Heading - MS Word");
-   public static final ArtifactTypeToken HeadingHTML = ArtifactTypeToken.valueOf(804, "Heading - HTML");
-   public static final ArtifactTypeToken HTMLArtifact = ArtifactTypeToken.valueOf(798, "HTML Artifact");
+   public static final ArtifactTypeToken HeadingMsWord = ArtifactTypeToken.valueOf(56, "Heading - MS Word");
+   public static final ArtifactTypeToken HeadingHtml = ArtifactTypeToken.valueOf(804, "Heading - HTML");
+   public static final ArtifactTypeToken HtmlArtifact = ArtifactTypeToken.valueOf(798, "HTML Artifact");
    public static final ArtifactTypeToken ImageArtifact = ArtifactTypeToken.valueOf(800, "Image Artifact");
    public static final ArtifactTypeToken IndirectSoftwareRequirement = ArtifactTypeToken.valueOf(25, "Indirect Software Requirement");
    public static final ArtifactTypeToken InterfaceRequirement = ArtifactTypeToken.valueOf(32, "Interface Requirement");
@@ -55,7 +55,7 @@ public final class CoreArtifactTypes {
    public static final ArtifactTypeToken ImplementationDetailsPlainText = ArtifactTypeToken.valueOf(638269899, "Implementation Details Plain Text");
    public static final ArtifactTypeToken ModelDiagram = ArtifactTypeToken.valueOf(98, "Model Diagram");
    public static final ArtifactTypeToken NativeArtifact = ArtifactTypeToken.valueOf(20, "Native Artifact");
-   public static final ArtifactTypeToken WholeWord = ArtifactTypeToken.valueOf(18, "MS Word Whole Document");
+   public static final ArtifactTypeToken MsWholeWordDocument = ArtifactTypeToken.valueOf(18, "MS Word Whole Document");
    public static final ArtifactTypeToken OseeApp = ArtifactTypeToken.valueOf(89, "OSEE App");
    public static final ArtifactTypeToken OseeTypeDefinition = ArtifactTypeToken.valueOf(60, "Osee Type Definition");
 
@@ -76,21 +76,21 @@ public final class CoreArtifactTypes {
    public static final ArtifactTypeToken SubscriptionGroup = ArtifactTypeToken.valueOf(6753071794573299176L, "Subscription Group");
    public static final ArtifactTypeToken SubsystemDesign = ArtifactTypeToken.valueOf(43, "Subsystem Design");
    public static final ArtifactTypeToken SubsystemFunction = ArtifactTypeToken.valueOf(36, "Subsystem Function");
-   public static final ArtifactTypeToken SubsystemRequirementMSWord = ArtifactTypeToken.valueOf(31, "Subsystem Requirement - MS Word");
-   public static final ArtifactTypeToken SubsystemRequirementHTML = ArtifactTypeToken.valueOf(795, "Subsystem Requirement - HTML");
+   public static final ArtifactTypeToken SubsystemRequirementMsWord = ArtifactTypeToken.valueOf(31, "Subsystem Requirement - MS Word");
+   public static final ArtifactTypeToken SubsystemRequirementHtml = ArtifactTypeToken.valueOf(795, "Subsystem Requirement - HTML");
    public static final ArtifactTypeToken SupportingContent = ArtifactTypeToken.valueOf(49, "Supporting Content");
    public static final ArtifactTypeToken SupportDocument = ArtifactTypeToken.valueOf(13, "Support Document");;
    public static final ArtifactTypeToken SystemDesign = ArtifactTypeToken.valueOf(44, "System Design");
    public static final ArtifactTypeToken SystemFunction = ArtifactTypeToken.valueOf(35, "System Function");
-   public static final ArtifactTypeToken SystemRequirementMSWord = ArtifactTypeToken.valueOf(30, "System Requirement - MS Word");
-   public static final ArtifactTypeToken SystemRequirementHTML = ArtifactTypeToken.valueOf(794, "System Requirement - HTML");
+   public static final ArtifactTypeToken SystemRequirementMsWord = ArtifactTypeToken.valueOf(30, "System Requirement - MS Word");
+   public static final ArtifactTypeToken SystemRequirementHtml = ArtifactTypeToken.valueOf(794, "System Requirement - HTML");
    public static final ArtifactTypeToken TestCase = ArtifactTypeToken.valueOf(82, "Test Case");
    public static final ArtifactTypeToken TestInformationSheet = ArtifactTypeToken.valueOf(41, "Test Information Sheet");
    public static final ArtifactTypeToken TestPlanElement = ArtifactTypeToken.valueOf(37, "Test Plan Element");
    public static final ArtifactTypeToken TestProcedure = ArtifactTypeToken.valueOf(46, "Test Procedure");
-   public static final ArtifactTypeToken TestProcedureWML = ArtifactTypeToken.valueOf(47, "Test Procedure WML");
+   public static final ArtifactTypeToken TestProcedureWml = ArtifactTypeToken.valueOf(47, "Test Procedure WML");
    public static final ArtifactTypeToken TestResultNative = ArtifactTypeToken.valueOf(39, "Test Result Native");
-   public static final ArtifactTypeToken TestResultWML = ArtifactTypeToken.valueOf(40, "Test Result WML");
+   public static final ArtifactTypeToken TestResultWml = ArtifactTypeToken.valueOf(40, "Test Result WML");
    public static final ArtifactTypeToken TestRun = ArtifactTypeToken.valueOf(85, "Test Run");
    public static final ArtifactTypeToken TestRunDisposition = ArtifactTypeToken.valueOf(84, "Test Run Disposition");
    public static final ArtifactTypeToken TestSupport = ArtifactTypeToken.valueOf(83, "Test Support");
@@ -100,9 +100,9 @@ public final class CoreArtifactTypes {
    public static final ArtifactTypeToken User = ArtifactTypeToken.valueOf(5, "User");
    public static final ArtifactTypeToken UserGroup = ArtifactTypeToken.valueOf(7, "User Group");
    public static final ArtifactTypeToken XViewerGlobalCustomization = ArtifactTypeToken.valueOf(55, "XViewer Global Customization");
-   public static final ArtifactTypeToken DocumentDescriptionMSWord = ArtifactTypeToken.valueOf(806, "Document Description - MS Word");
-   public static final ArtifactTypeToken DesignDescriptionMSWord = ArtifactTypeToken.valueOf(810, "Design Description - MS Word");
-   public static final ArtifactTypeToken CustomerRequirementMSWord = ArtifactTypeToken.valueOf(809, "Customer Requirement - MS Word");
+   public static final ArtifactTypeToken DocumentDescriptionMsWord = ArtifactTypeToken.valueOf(806, "Document Description - MS Word");
+   public static final ArtifactTypeToken DesignDescriptionMsWord = ArtifactTypeToken.valueOf(810, "Design Description - MS Word");
+   public static final ArtifactTypeToken CustomerRequirementMsWord = ArtifactTypeToken.valueOf(809, "Customer Requirement - MS Word");
    // @formatter:on
 
    private CoreArtifactTypes() {

@@ -64,8 +64,8 @@ public class AddRequirementData implements IDbInitializationTask {
 
          //@formatter:off
          importRequirements(branch, CoreArtifactTypes.SoftwareRequirement, "Software Requirements", OseeInf.getResourceAsFile("requirements/SAW-SoftwareRequirements.xml", getClass()));
-         importRequirements(branch, CoreArtifactTypes.SystemRequirementMSWord, "System Requirements", OseeInf.getResourceAsFile("requirements/SAW-SystemRequirements.xml", getClass()));
-         importRequirements(branch, CoreArtifactTypes.SubsystemRequirementMSWord, "Subsystem Requirements", OseeInf.getResourceAsFile("requirements/SAW-SubsystemRequirements.xml", getClass()));
+         importRequirements(branch, CoreArtifactTypes.SystemRequirementMsWord, "System Requirements", OseeInf.getResourceAsFile("requirements/SAW-SystemRequirements.xml", getClass()));
+         importRequirements(branch, CoreArtifactTypes.SubsystemRequirementMsWord, "Subsystem Requirements", OseeInf.getResourceAsFile("requirements/SAW-SubsystemRequirements.xml", getClass()));
          //@formatter:on
 
          SkynetTransaction demoDbTraceability =
@@ -120,18 +120,18 @@ public class AddRequirementData implements IDbInitializationTask {
 
    private void demoDbTraceabilityTx(SkynetTransaction transaction, BranchId branch) throws Exception {
       Collection<Artifact> systemArts =
-         getArtTypeRequirements(DEBUG, CoreArtifactTypes.SystemRequirementMSWord, "Robot", branch);
+         getArtTypeRequirements(DEBUG, CoreArtifactTypes.SystemRequirementMsWord, "Robot", branch);
 
       Collection<Artifact> component = getArtTypeRequirements(DEBUG, CoreArtifactTypes.Component, "API", branch);
       component.addAll(getArtTypeRequirements(DEBUG, CoreArtifactTypes.Component, "Hardware", branch));
       component.addAll(getArtTypeRequirements(DEBUG, CoreArtifactTypes.Component, "Sensor", branch));
 
       Collection<Artifact> subSystemArts =
-         getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord, "Robot", branch);
+         getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMsWord, "Robot", branch);
       subSystemArts.addAll(
-         getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord, "Video", branch));
+         getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMsWord, "Video", branch));
       subSystemArts.addAll(
-         getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord, "Interface", branch));
+         getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMsWord, "Interface", branch));
 
       Collection<Artifact> softArts =
          getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement, "Robot", branch);

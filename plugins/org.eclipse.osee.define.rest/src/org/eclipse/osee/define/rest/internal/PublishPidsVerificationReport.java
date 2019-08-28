@@ -65,7 +65,7 @@ public final class PublishPidsVerificationReport implements StreamingOutput {
          newCol(null, 320));
 
       QueryBuilder query =
-         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.SubsystemRequirementMSWord);
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.SubsystemRequirementMsWord);
 
       String[] row = {"Subsystem Requirement", "Subsystem", "Verification Trace", "Results Trace"};
       writer.writeRow((Object[]) row);

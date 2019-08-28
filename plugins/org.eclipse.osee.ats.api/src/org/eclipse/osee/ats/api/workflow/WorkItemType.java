@@ -21,7 +21,7 @@ public enum WorkItemType {
    WorkItem("Work Item", AtsArtifactTypes.AbstractWorkflowArtifact),
    TeamWorkflow("Team Workflow", AtsArtifactTypes.TeamWorkflow),
    Task("Task", AtsArtifactTypes.Task),
-   Review("Review", AtsArtifactTypes.ReviewArtifact),
+   Review("Review", AtsArtifactTypes.AbstractReview),
    Goal("Goal", AtsArtifactTypes.Goal),
    PeerReview("Peer Review", AtsArtifactTypes.PeerToPeerReview),
    DecisionReview("Decision Review", AtsArtifactTypes.DecisionReview),

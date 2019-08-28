@@ -44,13 +44,13 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
 
    private static List<ArtifactTypeToken> laserArtifactTypes =
       Arrays.asList(CoreArtifactTypes.SystemDesign, CoreArtifactTypes.SupportingContent,
-         CoreArtifactTypes.IndirectSoftwareRequirement, CoreArtifactTypes.TestProcedureWML,
+         CoreArtifactTypes.IndirectSoftwareRequirement, CoreArtifactTypes.TestProcedureWml,
          CoreArtifactTypes.InterfaceRequirement, CoreArtifactTypes.SystemFunction, CoreArtifactTypes.SubsystemFunction);
 
    @Override
    public void init() {
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.RootArtifact, FrameworkImage.ROOT_HIERARCHY, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.HeadingMSWord, FrameworkImage.HEADING, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.HeadingMsWord, FrameworkImage.HEADING, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.Folder, PluginUiImage.FOLDER, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.User, FrameworkImage.USER, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.GlobalPreferences, FrameworkImage.GEAR, this);
@@ -84,9 +84,9 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareRequirement, FrameworkImage.software_requirement,
          this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SubsystemDesign, FrameworkImage.subsystem_design, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SubsystemRequirementMSWord,
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SubsystemRequirementMsWord,
          FrameworkImage.subsystem_requirement, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SystemRequirementMSWord,
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SystemRequirementMsWord,
          FrameworkImage.system_requirement, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.PlainText, new ProgramImage("txt"), this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.Url, new ProgramImage("html"), this);

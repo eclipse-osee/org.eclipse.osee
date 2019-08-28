@@ -134,7 +134,7 @@ public class WorldContentProvider implements ITreeContentProvider {
             if (artifact.isOfType(AtsArtifactTypes.Task)) {
                return ((TaskArtifact) artifact).getParentAWA();
             }
-            if (artifact.isOfType(AtsArtifactTypes.ReviewArtifact)) {
+            if (artifact.isOfType(AtsArtifactTypes.AbstractReview)) {
                return ReviewManager.cast(artifact).getParentAWA();
             }
             if (artifact.isOfType(AtsArtifactTypes.Goal)) {

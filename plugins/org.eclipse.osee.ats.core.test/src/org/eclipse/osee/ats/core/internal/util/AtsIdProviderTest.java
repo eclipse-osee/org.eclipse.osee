@@ -114,13 +114,13 @@ public class AtsIdProviderTest {
       when(sequenceProvider.getNext(AtsIdProvider.DEFAULT_REVIEW_SEQ_NAME)).thenReturn(333L);
       when(newObject.isTypeEqual(AtsArtifactTypes.TeamWorkflow)).thenReturn(false);
       when(newObject.isTypeEqual(AtsArtifactTypes.Action)).thenReturn(false);
-      when(newObject.isTypeEqual(AtsArtifactTypes.ReviewArtifact)).thenReturn(true);
+      when(newObject.isTypeEqual(AtsArtifactTypes.AbstractReview)).thenReturn(true);
       Assert.assertEquals(AtsIdProvider.DEFAULT_REVIEW_ID_PREFIX + "333", atsIdProvider.getNextAtsId());
 
       when(sequenceProvider.getNext(AtsIdProvider.DEFAULT_TASK_SEQ_NAME)).thenReturn(333L);
       when(newObject.isTypeEqual(AtsArtifactTypes.TeamWorkflow)).thenReturn(false);
       when(newObject.isTypeEqual(AtsArtifactTypes.Action)).thenReturn(false);
-      when(newObject.isTypeEqual(AtsArtifactTypes.ReviewArtifact)).thenReturn(false);
+      when(newObject.isTypeEqual(AtsArtifactTypes.AbstractReview)).thenReturn(false);
       when(newObject.isTypeEqual(AtsArtifactTypes.Task)).thenReturn(true);
       Assert.assertEquals(AtsIdProvider.DEFAULT_TASK_ID_PREFIX + "333", atsIdProvider.getNextAtsId());
    }

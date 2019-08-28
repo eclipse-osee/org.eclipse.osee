@@ -186,7 +186,7 @@ public class AtsObjects {
    }
 
    public static boolean isAtsConfigArtifact(ArtifactToken artifact, AtsApi atsApi) {
-      return atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AtsConfigObject);
+      return atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AtsConfigArtifact);
    }
 
    public static IAtsObject getAtsObject(ArtifactToken artifact, AtsApi atsApi) {

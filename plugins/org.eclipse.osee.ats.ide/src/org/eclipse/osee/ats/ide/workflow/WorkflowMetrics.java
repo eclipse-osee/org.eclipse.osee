@@ -79,7 +79,7 @@ public class WorkflowMetrics {
             teamArts.add((TeamWorkFlowArtifact) art);
          } else if (art.isOfType(AtsArtifactTypes.Task)) {
             taskArts.add((TaskArtifact) art);
-         } else if (art.isOfType(AtsArtifactTypes.ReviewArtifact)) {
+         } else if (art.isOfType(AtsArtifactTypes.AbstractReview)) {
             reviewArts.add((AbstractReviewArtifact) art);
          } else if (art.isOfType(AtsArtifactTypes.Goal)) {
             goalArts.add((GoalArtifact) art);

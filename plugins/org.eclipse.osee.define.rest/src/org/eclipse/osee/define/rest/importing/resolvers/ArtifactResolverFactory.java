@@ -34,10 +34,10 @@ public final class ArtifactResolverFactory {
    }
 
    public static IArtifactImportResolver createAlwaysNewArtifacts(TransactionBuilder transaction, ArtifactTypeToken primaryArtifactType) {
-      ArtifactTypeToken secondaryArtifactType = CoreArtifactTypes.HeadingMSWord;
-      if (primaryArtifactType.equals(CoreArtifactTypes.SubsystemRequirementHTML) || primaryArtifactType.equals(
-         CoreArtifactTypes.SystemRequirementHTML)) {
-         secondaryArtifactType = CoreArtifactTypes.HeadingHTML;
+      ArtifactTypeToken secondaryArtifactType = CoreArtifactTypes.HeadingMsWord;
+      if (primaryArtifactType.equals(CoreArtifactTypes.SubsystemRequirementHtml) || primaryArtifactType.equals(
+         CoreArtifactTypes.SystemRequirementHtml)) {
+         secondaryArtifactType = CoreArtifactTypes.HeadingHtml;
       }
       return createAlwaysNewArtifacts(transaction, primaryArtifactType, secondaryArtifactType);
    }
@@ -45,7 +45,7 @@ public final class ArtifactResolverFactory {
    public static IArtifactImportResolver createAlwaysNewArtifacts(TransactionBuilder transaction, ArtifactTypeToken primaryArtifactType, ArtifactTypeToken secondaryArtifactType) {
       IRoughArtifactTranslator translator = new RoughArtifactTranslatorImpl();
       return new NewArtifactImportResolver(transaction, translator, primaryArtifactType, secondaryArtifactType,
-         CoreArtifactTypes.DocumentDescriptionMSWord, CoreArtifactTypes.DesignDescriptionMSWord);
+         CoreArtifactTypes.DocumentDescriptionMsWord, CoreArtifactTypes.DesignDescriptionMsWord);
    }
 
    public static IArtifactImportResolver createResolver(TransactionBuilder transaction, ArtifactCreationStrategy strategy, ArtifactTypeToken primaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
@@ -53,20 +53,20 @@ public final class ArtifactResolverFactory {
       switch (strategy) {
          case CREATE_ON_DIFFERENT_ATTRIBUTES:
             toReturn = new AttributeBasedArtifactResolver(transaction, new RoughArtifactTranslatorImpl(),
-               primaryArtifactType, CoreArtifactTypes.HeadingMSWord, nonChangingAttributes, createNewIfNotExist,
+               primaryArtifactType, CoreArtifactTypes.HeadingMsWord, nonChangingAttributes, createNewIfNotExist,
                deleteUnmatchedArtifacts);
             break;
          case CREATE_ON_NEW_ART_GUID:
             toReturn = new GuidBasedArtifactResolver(transaction, new RoughArtifactTranslatorImpl(),
-               primaryArtifactType, CoreArtifactTypes.HeadingMSWord, createNewIfNotExist, deleteUnmatchedArtifacts);
+               primaryArtifactType, CoreArtifactTypes.HeadingMsWord, createNewIfNotExist, deleteUnmatchedArtifacts);
             break;
          case CREATE_ON_DOORS_BEST_FIT:
             toReturn = new DoorsBestFitArtifactResolver(transaction, new RoughArtifactTranslatorImpl(),
-               primaryArtifactType, CoreArtifactTypes.HeadingHTML, createNewIfNotExist, deleteUnmatchedArtifacts);
+               primaryArtifactType, CoreArtifactTypes.HeadingHtml, createNewIfNotExist, deleteUnmatchedArtifacts);
             break;
          case INSERT_OR_OVERLAY:
             toReturn = new DoorsIdResolver(transaction, new RoughArtifactTranslatorImpl(), primaryArtifactType,
-               CoreArtifactTypes.HeadingHTML, createNewIfNotExist, deleteUnmatchedArtifacts);
+               CoreArtifactTypes.HeadingHtml, createNewIfNotExist, deleteUnmatchedArtifacts);
             break;
          case CREATE_NEW_ALWAYS:
          default:

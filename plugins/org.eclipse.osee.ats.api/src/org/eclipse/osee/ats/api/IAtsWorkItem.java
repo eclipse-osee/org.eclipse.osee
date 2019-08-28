@@ -85,7 +85,7 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
    }
 
    default boolean isReview() {
-      return isOfType(AtsArtifactTypes.ReviewArtifact);
+      return isOfType(AtsArtifactTypes.AbstractReview);
    }
 
    default boolean isGoal() {

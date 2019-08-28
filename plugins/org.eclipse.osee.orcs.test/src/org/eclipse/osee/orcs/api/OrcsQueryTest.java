@@ -282,8 +282,8 @@ public class OrcsQueryTest {
       assertEquals(7, builder.getCount());
       ResultSet<ArtifactReadable> artifacts = builder.getResults();
       assertEquals(7, artifacts.size());
-      checkContainsTypes(artifacts, CoreArtifactTypes.Folder, CoreArtifactTypes.SubsystemRequirementMSWord,
-         CoreArtifactTypes.SystemRequirementMSWord);
+      checkContainsTypes(artifacts, CoreArtifactTypes.Folder, CoreArtifactTypes.SubsystemRequirementMsWord,
+         CoreArtifactTypes.SystemRequirementMsWord);
 
       builder.andTypeEquals(CoreArtifactTypes.Folder);
       assertEquals(4, builder.getCount());
@@ -300,12 +300,12 @@ public class OrcsQueryTest {
       //////////////////////
       QueryBuilder builder1 = factory.fromBranch(SAW_Bld_1);
       builder1.and(CoreAttributeTypes.Name, "Requirements", QueryOption.TOKEN_COUNT__IGNORE);
-      builder1.andTypeEquals(CoreArtifactTypes.SubsystemRequirementMSWord);
+      builder1.andTypeEquals(CoreArtifactTypes.SubsystemRequirementMsWord);
       assertEquals(1, builder1.getCount());
       ResultSet<ArtifactReadable> subSystemReqs = builder1.getResults();
       assertEquals(1, subSystemReqs.size());
       assertEquals("Subsystem Requirements", subSystemReqs.iterator().next().getName());
-      checkContainsTypes(subSystemReqs, CoreArtifactTypes.SubsystemRequirementMSWord);
+      checkContainsTypes(subSystemReqs, CoreArtifactTypes.SubsystemRequirementMsWord);
 
       //////////////////////
       QueryBuilder builder2 = factory.fromBranch(SAW_Bld_1);
@@ -319,8 +319,8 @@ public class OrcsQueryTest {
       assertEquals("Performance Requirements", reqIterator.next().getName());
       assertEquals("Safety Requirements", reqIterator.next().getName());
       assertEquals("Subsystem Requirements", reqIterator.next().getName());
-      checkContainsTypes(subSystemReqs, CoreArtifactTypes.SubsystemRequirementMSWord,
-         CoreArtifactTypes.SystemRequirementMSWord);
+      checkContainsTypes(subSystemReqs, CoreArtifactTypes.SubsystemRequirementMsWord,
+         CoreArtifactTypes.SystemRequirementMsWord);
    }
 
    @Test
@@ -342,8 +342,8 @@ public class OrcsQueryTest {
       assertEquals(7, builder.getCount());
       ResultSet<ArtifactReadable> requirements = builder.getResults();
       assertEquals(7, requirements.size());
-      checkContainsTypes(requirements, CoreArtifactTypes.Folder, CoreArtifactTypes.SubsystemRequirementMSWord,
-         CoreArtifactTypes.SystemRequirementMSWord);
+      checkContainsTypes(requirements, CoreArtifactTypes.Folder, CoreArtifactTypes.SubsystemRequirementMsWord,
+         CoreArtifactTypes.SystemRequirementMsWord);
       Iterator<ArtifactReadable> reqIterator = sort(requirements);
       assertEquals("Hardware Requirements", reqIterator.next().getName());
       assertEquals("Performance Requirements", reqIterator.next().getName());

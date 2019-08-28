@@ -18,15 +18,15 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 public final class AtsArtifactTypes {
 
    // @formatter:off
-   public static final ArtifactTypeToken AtsConfigObject = ArtifactTypeToken.valueOf(801, "ats.Ats Config Artifact");
+   public static final ArtifactTypeToken AtsConfigArtifact = ArtifactTypeToken.valueOf(801, "ats.Ats Config Artifact");
    public static final ArtifactTypeToken Action = ArtifactTypeToken.valueOf(67, "Action");
    public static final ArtifactTypeToken ActionableItem = ArtifactTypeToken.valueOf(69, "Actionable Item");
-   public static final ArtifactTypeToken Configuration = ArtifactTypeToken.valueOf(93802085744703L, "ATS Configuration");
+   public static final ArtifactTypeToken Configuration = ArtifactTypeToken.valueOf(93802085744703L, "Configuration");
    public static final ArtifactTypeToken DecisionReview = ArtifactTypeToken.valueOf(66, "Decision Review");
    public static final ArtifactTypeToken PeerToPeerReview = ArtifactTypeToken.valueOf(65, "PeerToPeer Review");
    public static final ArtifactTypeToken Task = ArtifactTypeToken.valueOf(74, "Task");
-   public static final ArtifactTypeToken AbstractWorkflowArtifact = ArtifactTypeToken.valueOf(71, "Abstract State Machine Artifact");
-   public static final ArtifactTypeToken ReviewArtifact = ArtifactTypeToken.valueOf(64, "Abstract Review Artifact");
+   public static final ArtifactTypeToken AbstractWorkflowArtifact = ArtifactTypeToken.valueOf(71, "State Machine");
+   public static final ArtifactTypeToken AbstractReview = ArtifactTypeToken.valueOf(64, "Review");
    public static final ArtifactTypeToken TeamDefinition = ArtifactTypeToken.valueOf(68, "Team Definition");
    public static final ArtifactTypeToken ResponsibleTeam = ArtifactTypeToken.valueOf(8943243743202487405L, "Responsible Team");
    public static final ArtifactTypeToken TeamWorkflow = ArtifactTypeToken.valueOf(73, "Team Workflow");

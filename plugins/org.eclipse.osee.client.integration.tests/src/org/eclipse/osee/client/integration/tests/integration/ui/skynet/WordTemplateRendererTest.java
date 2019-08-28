@@ -211,10 +211,10 @@ public class WordTemplateRendererTest {
 
       SkynetTransaction tx =
          TransactionManager.createTransaction(rootBr, String.format("%s", method.getQualifiedTestName()));
-      Artifact vol4 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMSWord, rootBr, "Volume 4");
+      Artifact vol4 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, rootBr, "Volume 4");
       vol4.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "1");
       vol4.persist(tx);
-      Artifact introArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMSWord, rootBr, "Intro");
+      Artifact introArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, rootBr, "Intro");
       introArt.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent, "blah");
 
       vol4.addChild(introArt);
@@ -695,15 +695,15 @@ public class WordTemplateRendererTest {
    //@formatter:on
    private void setUpSWReq(Artifact swReqFolder, BranchId branch) {
       Artifact crewReq =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMSWord, branch, "Crew Station Requirements");
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch, "Crew Station Requirements");
       Artifact commReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
          "Communication Subsystem Crew Interface");
       Artifact navReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
          "Navigation Subsystem Crew Interface");
-      Artifact airReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMSWord, branch,
+      Artifact airReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch,
          "Aircraft Systems Management Subsystem Crew Interface");
       Artifact airDrawReq =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMSWord, branch, "Aircraft Drawing");
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch, "Aircraft Drawing");
       Artifact ventReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch, "Ventilation");
 
       swReqFolder.addChild(crewReq);
@@ -743,18 +743,18 @@ public class WordTemplateRendererTest {
     */
    //@formatter:on
    private void setUpDocFolder(Artifact docFolder, BranchId branch) {
-      Artifact intro = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMSWord, branch, "Introduction");
+      Artifact intro = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch, "Introduction");
       Artifact background = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SubsystemDesign, branch, "Background");
       Artifact scope = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SubsystemDesign, branch, "Scope");
       Artifact subSystem = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SubsystemDesign, branch, "Subsystem");
-      Artifact hardware = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMSWord, branch, "Hardware");
+      Artifact hardware = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch, "Hardware");
       Artifact hardwareFunc =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.HardwareRequirement, branch, "Hardware Functions");
-      Artifact software = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMSWord, branch, "Software");
+      Artifact software = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch, "Software");
       Artifact softwareFunc =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareDesign, branch, "Software Functions");
-      Artifact notes = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMSWord, branch, "Notes");
-      Artifact morenotes = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMSWord, branch, "More Notes");
+      Artifact notes = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch, "Notes");
+      Artifact morenotes = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch, "More Notes");
 
       docFolder.addChild(intro);
       intro.addChild(background);

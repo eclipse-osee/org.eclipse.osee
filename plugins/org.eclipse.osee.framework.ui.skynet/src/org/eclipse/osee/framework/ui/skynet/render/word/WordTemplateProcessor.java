@@ -270,14 +270,14 @@ public class WordTemplateProcessor {
          if (!children.isEmpty()) {
             hasIncludedChildren = isEmptyHeaders(children);
             if (!hasIncludedChildren) {
-               if (artifact.isOfType(CoreArtifactTypes.HeadingMSWord)) {
+               if (artifact.isOfType(CoreArtifactTypes.HeadingMsWord)) {
                   emptyFolders.add(artifact);
                }
             }
-         } else if (children.isEmpty() && artifact.isOfType(CoreArtifactTypes.HeadingMSWord)) {
+         } else if (children.isEmpty() && artifact.isOfType(CoreArtifactTypes.HeadingMsWord)) {
             emptyFolders.add(artifact);
          }
-         if (!isOfType(artifact, excludeArtifactTypes) && !artifact.isOfType(CoreArtifactTypes.HeadingMSWord)) {
+         if (!isOfType(artifact, excludeArtifactTypes) && !artifact.isOfType(CoreArtifactTypes.HeadingMsWord)) {
             includeParent = true;
          }
          if (hasIncludedChildren) {

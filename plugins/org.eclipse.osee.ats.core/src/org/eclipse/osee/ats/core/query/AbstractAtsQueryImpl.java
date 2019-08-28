@@ -312,7 +312,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private List<ArtifactTypeToken> getReviewArtifactTypes(Set<ArtifactTypeToken> allArtTypes) {
       List<ArtifactTypeToken> artTypes = new LinkedList<>();
       boolean isReviewSpecified =
-         workItemTypes.contains(WorkItemType.Review) || typeIsSpecified(AtsArtifactTypes.ReviewArtifact, allArtTypes);
+         workItemTypes.contains(WorkItemType.Review) || typeIsSpecified(AtsArtifactTypes.AbstractReview, allArtTypes);
       boolean isPeerSpecified =
          workItemTypes.contains(WorkItemType.PeerReview) || typeIsSpecified(AtsArtifactTypes.PeerToPeerReview,
             allArtTypes);
@@ -320,7 +320,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
          workItemTypes.contains(WorkItemType.DecisionReview) || typeIsSpecified(AtsArtifactTypes.DecisionReview,
             allArtTypes);
       for (ArtifactTypeToken artType : allArtTypes) {
-         if (isReviewSpecified && atsApi.getArtifactResolver().inheritsFrom(artType, AtsArtifactTypes.ReviewArtifact)) {
+         if (isReviewSpecified && atsApi.getArtifactResolver().inheritsFrom(artType, AtsArtifactTypes.AbstractReview)) {
             artTypes.add(artType);
          } else if (isPeerSpecified && atsApi.getArtifactResolver().inheritsFrom(artType,
             AtsArtifactTypes.PeerToPeerReview)) {

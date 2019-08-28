@@ -65,7 +65,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
    private void loadFields(VariableMap variableMap) {
       branch = variableMap.getBranch("Branch");
       subsystemRequirements =
-         ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemRequirementMSWord, branch);
+         ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemRequirementMsWord, branch);
       bulkRequirements = RelationManager.getRelatedArtifacts(subsystemRequirements, 1,
          CoreRelationTypes.Requirement_Trace__Lower_Level);
       report = new StringBuilder(AHTML.beginMultiColumnTable(100, 1));

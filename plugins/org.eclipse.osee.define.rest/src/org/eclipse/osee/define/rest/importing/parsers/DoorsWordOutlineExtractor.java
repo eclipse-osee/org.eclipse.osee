@@ -84,7 +84,7 @@ public class DoorsWordOutlineExtractor extends WordOutlineExtractorDelegate {
       RoughArtifactKind setType = art.getRoughArtifactKind();
       if (setType.equals(RoughArtifactKind.PRIMARY)) {
          if (number.startsWith("3.")) {
-            art.setType(CoreArtifactTypes.SystemRequirementMSWord);
+            art.setType(CoreArtifactTypes.SystemRequirementMsWord);
          }
       }
    }

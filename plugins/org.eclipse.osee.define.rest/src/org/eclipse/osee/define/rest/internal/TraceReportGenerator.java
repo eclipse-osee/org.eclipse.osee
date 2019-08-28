@@ -138,7 +138,7 @@ public class TraceReportGenerator {
       writer.writeRow((Object[]) columnHeadings);
 
       for (ArtifactReadable systemReqt : systemRequirements) {
-         if (systemReqt.isOfType(CoreArtifactTypes.SystemRequirementHTML)) {
+         if (systemReqt.isOfType(CoreArtifactTypes.SystemRequirementHtml)) {
             outputCommonCells(systemReqt, writer);
             writer.writeCell(systemReqt.getAttributeValuesAsString(CoreAttributeTypes.QualificationMethod));
             accumulator.outputSubsystemsRequirementsMap(systemReqt, writer);
@@ -152,7 +152,7 @@ public class TraceReportGenerator {
       writer.writeRow((Object[]) columnHeadingsComponent);
 
       for (ArtifactReadable systemReqt : systemRequirements) {
-         if (systemReqt.isOfType(CoreArtifactTypes.SystemRequirementHTML)) {
+         if (systemReqt.isOfType(CoreArtifactTypes.SystemRequirementHtml)) {
             outputCommonCells(systemReqt, writer);
             accumulator.outputSubsystemsComponentsMap(systemReqt, writer);
          }
@@ -165,7 +165,7 @@ public class TraceReportGenerator {
       writer.writeRow((Object[]) columnHeadingsTest);
 
       for (ArtifactReadable systemReqt : systemRequirements) {
-         if (systemReqt.isOfType(CoreArtifactTypes.SystemRequirementHTML)) {
+         if (systemReqt.isOfType(CoreArtifactTypes.SystemRequirementHtml)) {
             outputCommonCells(systemReqt, writer);
             accumulator.outputSubsystemsTestsMap(systemReqt, writer);
          }
@@ -178,7 +178,7 @@ public class TraceReportGenerator {
       writer.writeRow((Object[]) columnHeadingsTest);
 
       for (ArtifactReadable systemReqt : systemRequirements) {
-         if (systemReqt.isOfType(CoreArtifactTypes.SystemRequirementHTML)) {
+         if (systemReqt.isOfType(CoreArtifactTypes.SystemRequirementHtml)) {
             outputCommonCells(systemReqt, writer);
             accumulator.outputSubsystemsTestPlansMap(systemReqt, writer);
          }

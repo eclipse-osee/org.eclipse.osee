@@ -19,7 +19,7 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GeneralDoc
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirement;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirementPlainText;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestCase;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestProcedureWML;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestProcedureWml;
 import static org.eclipse.osee.framework.core.enums.PresentationType.DEFAULT_OPEN;
 import static org.eclipse.osee.framework.core.enums.PresentationType.DIFF;
 import static org.eclipse.osee.framework.core.enums.PresentationType.GENERALIZED_EDIT;
@@ -144,14 +144,14 @@ public class RendererManagerTest {
       addTest(data, Action, DEFAULT_OPEN, AtsWERenderer.class, On);
       addTest(data, Action, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both);
 
-      addTest(data, TestProcedureWML, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
-      addTest(data, TestProcedureWML, SPECIALIZED_EDIT, WholeWordRenderer.class, Both);
-      addTest(data, TestProcedureWML, DIFF, WholeWordRenderer.class, Both);
-      addTest(data, TestProcedureWML, PREVIEW, WholeWordRenderer.class, Both);
-      addTest(data, TestProcedureWML, MERGE, WholeWordRenderer.class, Both);
-      addTest(data, TestProcedureWML, DEFAULT_OPEN, WholeWordRenderer.class, Off);
-      addTest(data, TestProcedureWML, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
-      addTest(data, TestProcedureWML, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both);
+      addTest(data, TestProcedureWml, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
+      addTest(data, TestProcedureWml, SPECIALIZED_EDIT, WholeWordRenderer.class, Both);
+      addTest(data, TestProcedureWml, DIFF, WholeWordRenderer.class, Both);
+      addTest(data, TestProcedureWml, PREVIEW, WholeWordRenderer.class, Both);
+      addTest(data, TestProcedureWml, MERGE, WholeWordRenderer.class, Both);
+      addTest(data, TestProcedureWml, DEFAULT_OPEN, WholeWordRenderer.class, Off);
+      addTest(data, TestProcedureWml, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
+      addTest(data, TestProcedureWml, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both);
 
       addTest(data, GeneralDocument, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
       addTest(data, GeneralDocument, SPECIALIZED_EDIT, NativeRenderer.class, Both);

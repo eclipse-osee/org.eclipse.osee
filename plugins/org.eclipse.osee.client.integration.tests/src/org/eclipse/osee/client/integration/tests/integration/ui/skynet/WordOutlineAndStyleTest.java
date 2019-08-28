@@ -163,7 +163,7 @@ public final class WordOutlineAndStyleTest {
 
       try {
          IArtifactImportResolver resolver = ArtifactResolverFactory.createResolver(
-            ArtifactCreationStrategy.CREATE_ON_NEW_ART_GUID, CoreArtifactTypes.HeadingMSWord, null, true, true);
+            ArtifactCreationStrategy.CREATE_ON_NEW_ART_GUID, CoreArtifactTypes.HeadingMsWord, null, true, true);
 
          RoughArtifactCollector collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
          collector.reset();
@@ -172,7 +172,7 @@ public final class WordOutlineAndStyleTest {
          extractor.setDelegate(new WordOutlineExtractorDelegate());
 
          List<ArtifactTypeToken> list = new ArrayList<>();
-         list.add(CoreArtifactTypes.HeadingMSWord);
+         list.add(CoreArtifactTypes.HeadingMsWord);
 
          IOperation operation = ArtifactImportOperationFactory.createOperation(inputTestCase, folder,
             NullOperationLogger.getSingleton(), extractor, resolver, collector, list, true, false, true);

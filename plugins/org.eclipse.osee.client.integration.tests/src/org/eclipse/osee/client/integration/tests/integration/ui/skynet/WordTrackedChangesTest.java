@@ -59,7 +59,7 @@ public class WordTrackedChangesTest {
       Artifact newArt = null;
       try {
          newArt =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedureWML, SAW_Bld_1, getClass().getSimpleName());
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedureWml, SAW_Bld_1, getClass().getSimpleName());
          newArt.persist(getClass().getSimpleName());
          String unlinkedContent = WordMlLinkHandler.unlink(linkType, newArt, content);
          assertTrue(WordCoreUtil.containsWordAnnotations(unlinkedContent));

@@ -85,7 +85,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
       monitor.worked(10);
 
       monitor.subTask("Aquiring Subsystem Requirements"); // bulk load for performance reasons
-      ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemRequirementMSWord, branch);
+      ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemRequirementMsWord, branch);
       monitor.worked(60);
 
       int workIncrement = 30 / subsystems.size();
@@ -119,7 +119,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
             excelWriter.writeCell(subsystemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
             excelWriter.writeCell(subsystemRequirement.getName());
 
-            if (subsystemRequirement.isOfType(CoreArtifactTypes.SubsystemRequirementMSWord)) {
+            if (subsystemRequirement.isOfType(CoreArtifactTypes.SubsystemRequirementMsWord)) {
                boolean loopNeverRan = true;
                List<Artifact> relatedArtifacts =
                   subsystemRequirement.getRelatedArtifacts(CoreRelationTypes.Design__Design);

@@ -95,7 +95,7 @@ public class HtmlRendererTest {
       programRoot.addChild(Folder);
       Folder.persist("FOLDER SETUP");
 
-      htmlArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HTMLArtifact, rootBranch, "Html Artifact");
+      htmlArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HtmlArtifact, rootBranch, "Html Artifact");
       htmlArtifact.addAttributeFromString(CoreAttributeTypes.LegacyId, LEGACY_ID);
       htmlArtifact.addAttributeFromString(CoreAttributeTypes.ParagraphNumber, PARAGRAPH_NUMBER);
 

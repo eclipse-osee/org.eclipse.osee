@@ -183,13 +183,13 @@ public final class ArtifactImportWizardTest {
       try {
          IArtifactImportResolver resolver =
             ArtifactResolverFactory.createResolver(ArtifactCreationStrategy.CREATE_ON_NEW_ART_GUID,
-               CoreArtifactTypes.SystemRequirementMSWord, null, true, true);
+               CoreArtifactTypes.SystemRequirementMsWord, null, true, true);
 
          RoughArtifactCollector collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
          collector.reset();
 
          IOperation operation = ArtifactImportOperationFactory.createOperation(inputExcelFile, myRootArtifact, null,
-            new ExcelArtifactExtractor(), resolver, collector, Arrays.asList(CoreArtifactTypes.SystemRequirementMSWord),
+            new ExcelArtifactExtractor(), resolver, collector, Arrays.asList(CoreArtifactTypes.SystemRequirementMsWord),
             true, true, false);
          Operations.executeWorkAndCheckStatus(operation);
 

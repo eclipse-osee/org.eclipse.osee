@@ -178,7 +178,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
          public void run() {
             try {
                // load artifacts to ensure they're in ArtifactCache prior to ATS chaching
-               ArtifactQuery.getArtifactListFromTypeWithInheritence(AtsArtifactTypes.AtsConfigObject, getAtsBranch(),
+               ArtifactQuery.getArtifactListFromTypeWithInheritence(AtsArtifactTypes.AtsConfigArtifact, getAtsBranch(),
                   DeletionFlag.EXCLUDE_DELETED);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

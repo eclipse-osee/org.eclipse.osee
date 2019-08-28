@@ -35,16 +35,16 @@ public class BlockAttrType extends BlockAttr {
          if (contentMatcher.find()) {
             data = matcher.group(1);
             if (data.equals("Requirement")) {
-               data = CoreArtifactTypes.CustomerRequirementMSWord.getName();
+               data = CoreArtifactTypes.CustomerRequirementMsWord.getName();
             } else if (data.equals("Heading")) {
-               data = CoreArtifactTypes.HeadingMSWord.getName();
+               data = CoreArtifactTypes.HeadingMsWord.getName();
             } else if (data.equals("Design Description")) {
-               data = CoreArtifactTypes.DesignDescriptionMSWord.getName();
+               data = CoreArtifactTypes.DesignDescriptionMsWord.getName();
             } else {
-               data = CoreArtifactTypes.SystemRequirementMSWord.getName(); // default
+               data = CoreArtifactTypes.SystemRequirementMsWord.getName(); // default
             }
          } else {
-            data = CoreArtifactTypes.SystemRequirementMSWord.getName();
+            data = CoreArtifactTypes.SystemRequirementMsWord.getName();
          }
          match = true;
       }
