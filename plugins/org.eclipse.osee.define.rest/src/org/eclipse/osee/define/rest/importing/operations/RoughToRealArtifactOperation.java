@@ -131,19 +131,20 @@ public class RoughToRealArtifactOperation {
 
       //creates map of object ids to the artifacts that contain them and each destination folder
       Collection<String> objIds = roughArtifact.getRoughAttributeAsList(CoreAttributeTypes.DoorsId.getName());
-      for (String objId : objIds) {
-         if (!doorsIdArtIdMap.containsKey(objId)) {
-            HashMap<ArtifactReadable, ArtifactId> artMap = new HashMap<>();
-            artMap.put(destinationArtifact, realArtifactId);
-            doorsIdArtIdMap.put(objId, artMap);
-         } else {
-            HashMap<ArtifactReadable, ArtifactId> artMap = doorsIdArtIdMap.get(objId);
-            if (!artMap.containsKey(destinationArtifact)) {
-               doorsIdArtIdMap.get(objId).put(destinationArtifact, realArtifactId);
+      if (objIds != null) {
+         for (String objId : objIds) {
+            if (!doorsIdArtIdMap.containsKey(objId)) {
+               HashMap<ArtifactReadable, ArtifactId> artMap = new HashMap<>();
+               artMap.put(destinationArtifact, realArtifactId);
+               doorsIdArtIdMap.put(objId, artMap);
+            } else {
+               HashMap<ArtifactReadable, ArtifactId> artMap = doorsIdArtIdMap.get(objId);
+               if (!artMap.containsKey(destinationArtifact)) {
+                  doorsIdArtIdMap.get(objId).put(destinationArtifact, realArtifactId);
+               }
             }
          }
       }
-
       if (deleteUnmatchedArtifacts) {
          unmatchedArtifacts.remove(realArtifactId);
       }

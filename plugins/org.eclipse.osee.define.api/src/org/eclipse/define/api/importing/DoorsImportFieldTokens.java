@@ -31,6 +31,7 @@ public final class DoorsImportFieldTokens {
    private static final String DELETED_REGEX = "^Object Del.*";
    private static final String COMMENTS_REGEX = "^Comments.*";
    private static final String EXT_LINK_REGEX = "^Ext Doc Link.*";
+   private static final String DESCRIPTION_REGEX = "^Description.*";
 
    private static final String OBJECT_TEXT_REGEX = "(.*?)<w:r>(.*?)</w:r>(.*)";
 
@@ -49,5 +50,6 @@ public final class DoorsImportFieldTokens {
    public static final BlockFieldToken blockAttrComments =    BlockFieldToken.valueOf(12, "Comments", COMMENTS_REGEX, OBJECT_TEXT_REGEX, BlockField::new, CoreAttributeTypes.Annotation);
    public static final BlockFieldToken blockAttrExtLink =     BlockFieldToken.valueOf(14, "ExternalLink", EXT_LINK_REGEX, BLOCK_ATTR_REGEX, BlockField::new, CoreAttributeTypes.ContentUrl);
    public static final BlockFieldToken blockAttrPlainText =   BlockFieldToken.valueOf(15, "Plain Text", PLAIN_TEXT_REGEX, OBJECT_TEXT_REGEX, BlockField::new, CoreAttributeTypes.PlainTextContent); // TODO write a plain text converter - see BlockFieldText. Use that constructor here
+   public static final BlockFieldToken blockAttrDescription = BlockFieldToken.valueOf(16, "Description", DESCRIPTION_REGEX, BLOCK_ATTR_REGEX, BlockField::new, CoreAttributeTypes.Description);
    // @formatter:on
 }
