@@ -245,4 +245,8 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    public void resetViewId() {
       viewId = ArtifactToken.SENTINEL;
    }
+
+   public boolean showBlam() {
+      return true;
+   }
 }

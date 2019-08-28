@@ -223,4 +223,8 @@ public class OseeProperties {
    public static boolean isOseeDb(String db) {
       return db.equals(System.getProperty(OSEE_DB));
    }
+
+   public static boolean isOseeDbDefined() {
+      return Strings.isValid(System.getProperty(OSEE_DB));
+   }
 }
