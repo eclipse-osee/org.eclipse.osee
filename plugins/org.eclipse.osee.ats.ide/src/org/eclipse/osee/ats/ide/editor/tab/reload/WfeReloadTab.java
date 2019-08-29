@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -55,13 +54,11 @@ public class WfeReloadTab extends FormPage {
    public final static String ID = "ats.reload.tab";
    private final WorkflowEditor editor;
    private final String title;
-   private final ArtifactId artId;
    private final BranchId branch;
 
    public WfeReloadTab(WorkflowEditor editor) {
       super(editor, ID, "Reload");
       this.editor = editor;
-      this.artId = editor.getWfeInput().getArtId();
       this.title = editor.getWfeInput().getSavedTitle();
       this.branch = editor.getWfeInput().getBranchId();
    }
@@ -160,6 +157,7 @@ public class WfeReloadTab extends FormPage {
          if (workItem == null) {
             AWorkbench.popup("Can't reload editor.");
             editor.closeEditor();
+            return Status.CANCEL_STATUS;
          }
          final IAtsWorkItem fWorkItem = workItem;
          Displays.ensureInDisplayThread(new Runnable() {
