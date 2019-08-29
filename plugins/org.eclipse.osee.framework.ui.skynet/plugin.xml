@@ -128,15 +128,6 @@
         id="org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView"
         name="Branch Manager">
   </view>
-  <view
-        allowMultiple="false"
-        category="osee.jdk.core.category"
-        class="org.eclipse.osee.framework.ui.skynet.user.perspective.UserNavigateView"
-        icon="OSEE-INF/images/userPurple.gif"
-        id="org.eclipse.osee.framework.ui.skynet.UserNavigateView"
-        name="User Navigator"
-        restorable="true">
-  </view>
 	</extension>
 	<extension point="org.eclipse.search.searchPages">
 		<page canSearchEnclosingProjects="true" class="org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchPage" enabled="true" extensions="&quot;*:1&quot;" icon="OSEE-INF/images/artifact_search.gif" id="org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchPage" label="Artifact Search" showScopeSection="false" sizeHint="&quot;250,250&quot;" tabPosition="1"/>
