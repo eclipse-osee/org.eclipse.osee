@@ -54,14 +54,6 @@ artifactType "Agile Feature Group" extends "ats.Ats Config Artifact" {
 	attribute "ats.Description"
 }
 
-attributeType "ats.Requested Hours" extends IntegerAttribute {
-   id 5708922143198125133
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	mediaType "text/plain"
-}
-
 artifactType "Agile Sprint" extends "ats.State Machine" {
 	id 9088615648290692675
 	attribute "ats.Holiday"
@@ -326,9 +318,7 @@ artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Cont
 	attribute "ats.Color Team"
 	attribute "ats.IPT"
 	attribute "ats.Commit Override"
-	attribute "ats.Estimate Assumptions"
-	attribute "ats.Requested Hours"
-	
+	attribute "ats.Estimate Assumptions"	
 }
 
 artifactType "Work Package" extends "Artifact" {
