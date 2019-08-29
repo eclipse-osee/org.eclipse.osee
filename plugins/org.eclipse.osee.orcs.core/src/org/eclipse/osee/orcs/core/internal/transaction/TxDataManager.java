@@ -142,9 +142,13 @@ public class TxDataManager {
       checkChangesAllowed(txData);
       Artifact node = findArtifactLocallyForWrite(txData, artifactId);
       if (node == null) {
-         ResultSet<Artifact> result =
-            loader.loadArtifacts(txData.getSession(), txData.getGraph(), singleton(artifactId));
-         node = result.getExactlyOne();
+         if (txData.getGraph().getNode(artifactId) != null) {
+            node = txData.getGraph().getNode(artifactId);
+         } else {
+            ResultSet<Artifact> result =
+               loader.loadArtifacts(txData.getSession(), txData.getGraph(), singleton(artifactId));
+            node = result.getExactlyOne();
+         }
       }
       checkAndAdd(txData, node);
       return node;
