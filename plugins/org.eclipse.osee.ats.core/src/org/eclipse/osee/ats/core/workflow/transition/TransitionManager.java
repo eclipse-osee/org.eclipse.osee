@@ -369,13 +369,17 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
    }
 
    private void isWorkingBranchTransitionable(TransitionResults results, IAtsWorkItem workItem, IAtsStateDefinition toStateDef) {
-      if (workItem.isTeamWorkflow() && helper.isWorkingBranchInWork((IAtsTeamWorkflow) workItem)) {
-         if (toStateDef.getName().equals(TeamState.Cancelled.getName())) {
-            results.addResult(workItem, TransitionResult.DELETE_WORKING_BRANCH_BEFORE_CANCEL);
-         } else if (helper.isBranchInCommit((IAtsTeamWorkflow) workItem)) {
-            results.addResult(workItem, TransitionResult.WORKING_BRANCH_BEING_COMMITTED);
-         } else if (!toStateDef.hasRule(RuleDefinitionOption.AllowTransitionWithWorkingBranch.name())) {
-            results.addResult(workItem, TransitionResult.WORKING_BRANCH_EXISTS);
+      if (workItem.isTeamWorkflow()) {
+         if (helper.isWorkingBranchInWork((IAtsTeamWorkflow) workItem)) {
+            if (toStateDef.getName().equals(TeamState.Cancelled.getName())) {
+               results.addResult(workItem, TransitionResult.DELETE_WORKING_BRANCH_BEFORE_CANCEL);
+            } else if (helper.isBranchInCommit((IAtsTeamWorkflow) workItem)) {
+               results.addResult(workItem, TransitionResult.WORKING_BRANCH_BEING_COMMITTED);
+            } else if (!toStateDef.hasRule(RuleDefinitionOption.AllowTransitionWithWorkingBranch.name())) {
+               results.addResult(workItem, TransitionResult.WORKING_BRANCH_EXISTS);
+            }
+         } else if (helper.hasWorkingBranchesLeftToCommit((IAtsTeamWorkflow) workItem)) {
+            results.addResult(workItem, TransitionResult.NOT_ALL_BRANCHES_COMMITTED);
          }
       }
    }

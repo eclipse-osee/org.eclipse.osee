@@ -61,6 +61,11 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    }
 
    @Override
+   public boolean hasWorkingBranchesLeftToCommit(IAtsTeamWorkflow teamWf) {
+      return !atsApi.getBranchService().getBranchesLeftToCommit(teamWf).isEmpty();
+   }
+
+   @Override
    public boolean isBranchInCommit(IAtsTeamWorkflow teamWf) {
       return atsApi.getBranchService().isBranchInCommit(teamWf);
    }

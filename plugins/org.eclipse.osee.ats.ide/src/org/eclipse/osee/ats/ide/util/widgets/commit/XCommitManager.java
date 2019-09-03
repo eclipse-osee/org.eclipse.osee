@@ -304,7 +304,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
             boolean workingBranchInWork = AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt);
             if (workingBranchInWork && !AtsClientService.get().getBranchService().isAllObjectsToCommitToConfigured(
                xCommitManager.getXCommitViewer().getTeamArt())) {
-               infoStr = "All branches must be configured - Double-click item to perform Action";
+               infoStr = "All branches must be committed, configured, or overridden before transitioning";
                backgroundColor = SWT.COLOR_RED;
                returnStatus = new Status(IStatus.ERROR, getClass().getSimpleName(),
                   "All branches must be configured and committed.");

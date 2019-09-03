@@ -54,6 +54,8 @@ public interface ITransitionHelper {
 
    boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf);
 
+   boolean hasWorkingBranchesLeftToCommit(IAtsTeamWorkflow teamWf);
+
    boolean isBranchInCommit(IAtsTeamWorkflow teamWf);
 
    public boolean isSystemUser();
