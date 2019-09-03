@@ -165,6 +165,9 @@ public class DispoItemData implements DispoItem {
    }
 
    public void setName(String name) {
+      if (name != null) {
+         name = name.replaceAll("\\.(\\d)+\\.2\\.ada", ".2.ada");
+      }
       this.name = name;
    }
 

@@ -72,8 +72,6 @@ public class LisFileParser implements DispoImporterApi {
    private static final String WHEN_CASE = "(.*\\bWHEN\\b\\s*[^:]*$)";
    private static final String CASE_STATEMENT = "(.*(\\bCASE|case|default|\\s+.+[:].*))";
    private static final String WHILE_ONE = "(.*\\bWHILE|while\\s*\\(1\\).*)";
-   private static final String TO_REMOVE_LINE_NUMBER = "\\.(\\d)+\\.2\\.ada";
-   private static final String REMOVED_LINE_NUMBER = "\\.2\\.ada";
 
    private final DispoDataFactory dataFactory;
 
@@ -322,9 +320,6 @@ public class LisFileParser implements DispoImporterApi {
       newItem.setAnnotationsList(new ArrayList<DispoAnnotationData>());
       VCastSourceFileJoin sourceFileJoin = dataStore.getSourceFileJoin(lisFile);
       itemName = sourceFileJoin.getDisplayName() + "." + function.getName();
-      if (itemName.contains(".2.ada")) {
-         itemName = itemName.replaceFirst(TO_REMOVE_LINE_NUMBER, REMOVED_LINE_NUMBER);
-      }
       newItem.setName(itemName);
       newItem.setFileNumber(Integer.toString(fileNum));
       newItem.setMethodNumber(Integer.toString(functionNum));
