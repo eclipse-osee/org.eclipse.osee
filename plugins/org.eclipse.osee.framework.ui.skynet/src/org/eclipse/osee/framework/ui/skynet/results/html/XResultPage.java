@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.util.result.XResultPageBase;
 import org.eclipse.osee.framework.jdk.core.result.HyperType;
 import org.eclipse.osee.framework.jdk.core.result.Manipulations;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -90,7 +91,8 @@ public class XResultPage extends XResultPageBase {
    }
 
    public void handleExportExcel() {
-      Dialogs.exportHtmlExcelTableDialog(title, html, true);
+      String cleanTitle = Strings.removeAllButAlphaNumeric(title);
+      Dialogs.exportHtmlExcelTableDialog(cleanTitle, html, true);
    }
 
    public void saveToFile() {

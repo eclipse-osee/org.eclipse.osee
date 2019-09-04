@@ -275,4 +275,14 @@ public class Strings {
       Character.UnicodeBlock block = Character.UnicodeBlock.of(c);
       return (!Character.isISOControl(c)) && block != null && block != Character.UnicodeBlock.SPECIALS;
    }
+
+   /**
+    * @return all but alpha numeric and replace spaces underscores
+    */
+   public static String removeAllButAlphaNumeric(String str) {
+      str = str.replaceAll(" ", "_");
+      // Remove all characters except alpha-numeric and underscores
+      str = str.replaceAll("[^a-zA-Z0-9_]", "");
+      return str;
+   }
 }
