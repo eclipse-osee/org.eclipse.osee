@@ -155,7 +155,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
                public void handleEvent(Event event) {
                   try {
                      BranchId selectedBranch = branchSelect.getData();
-                     if (selectedBranch != null) {
+                     if (selectedBranch != null && !BranchId.SENTINEL.equals(selectedBranch)) {
                         branch = selectedBranch;
                         dragAndDropWorker.updateBranch(branch);
                         explore(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch));
