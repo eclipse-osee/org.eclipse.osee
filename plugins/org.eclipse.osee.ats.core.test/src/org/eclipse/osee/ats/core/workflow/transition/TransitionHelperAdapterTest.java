@@ -102,7 +102,7 @@ public class TransitionHelperAdapterTest {
       }
 
       @Override
-      public Collection<? extends IAtsWorkItem> getWorkItems() {
+      public Collection<IAtsWorkItem> getWorkItems() {
          return null;
       }
 

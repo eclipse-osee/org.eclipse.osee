@@ -12,4 +12,5 @@
    <reference bind="addSearchDataProvider" cardinality="0..n" interface="org.eclipse.osee.ats.api.query.IAtsSearchDataProvider" name="IAtsSearchDataProvider" policy="dynamic" unbind="removeSearchDataProvider"/>
    <reference bind="setConfigurationsService" cardinality="1..1" interface="org.eclipse.osee.ats.api.config.IAtsConfigurationsService" name="IAtsConfigurationsService" policy="static"/>
    <reference bind="setWorkDefinitionProviderService" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService" name="IAtsWorkDefinitionProviderService" policy="static"/>
+   <reference bind="setAtsEventService" cardinality="1..1" interface="org.eclipse.osee.ats.api.event.IAtsEventService" name="IAtsEventService" policy="static"/>
 </scr:component>

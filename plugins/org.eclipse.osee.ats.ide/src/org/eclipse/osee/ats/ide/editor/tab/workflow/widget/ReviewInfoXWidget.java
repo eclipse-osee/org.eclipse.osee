@@ -317,7 +317,8 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                         }
                      }
                      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Admin Auto-Complete Reviews");
-                     TransitionHelper helper = new TransitionHelper("ATS Auto Complete Reviews", awas,
+                     TransitionHelper helper = new TransitionHelper("ATS Auto Complete Reviews",
+                        org.eclipse.osee.framework.jdk.core.util.Collections.castAll(awas),
                         TeamState.Completed.getName(), null, null, changes, AtsClientService.get().getServices(),
                         TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
                      IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);

@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
@@ -219,6 +220,9 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
 
                   if (helper.isExecuteChanges()) {
                      helper.getChangeSet().execute();
+
+                     helper.getServices().getEventService().postAtsWorkItemTopicEvent(
+                        AtsTopicEvent.WORK_ITEM_TRANSITIONED, helper.getWorkItems());
                   }
                }
             }
@@ -360,6 +364,9 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
          }
          if (results.isEmpty() && helper.isExecuteChanges()) {
             helper.getChangeSet().execute();
+
+            helper.getServices().getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITIONED,
+               helper.getWorkItems());
          }
       } catch (Exception ex) {
          results.addResult(
@@ -602,6 +609,9 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
       TransitionResults result = handleAll();
       if (result.isEmpty()) {
          helper.getChangeSet().execute();
+
+         helper.getServices().getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITIONED,
+            helper.getWorkItems());
       }
       return result;
    }

@@ -96,7 +96,7 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    }
 
    @Override
-   public abstract Collection<? extends IAtsWorkItem> getWorkItems();
+   public abstract Collection<IAtsWorkItem> getWorkItems();
 
    @Override
    public void handleWorkflowReload(TransitionResults results) {

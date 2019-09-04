@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
+import org.eclipse.osee.ats.api.event.IAtsEventService;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
@@ -116,12 +117,16 @@ public abstract class AtsApiImpl implements AtsApi {
    protected IAtsStoreService storeService;
    protected IAtsTaskRelatedService taskRelatedService;
    protected IAtsWorkDefinitionProviderService workDefinitionProviderService;
+   protected IAtsEventService eventService;
+   protected EventAdmin eventAdmin;
    Collection<IAgileSprintHtmlOperation> agileSprintHtmlReportOperations = new LinkedList<>();
-
-   private EventAdmin eventAdmin;
 
    public AtsApiImpl() {
       searchDataProviders = new ArrayList<>();
+   }
+
+   public void setAtsEventService(IAtsEventService eventService) {
+      this.eventService = eventService;
    }
 
    public void setJdbcService(JdbcService jdbcService) {
@@ -524,6 +529,16 @@ public abstract class AtsApiImpl implements AtsApi {
          }
       }
       return result;
+   }
+
+   @Override
+   public EventAdmin getEventAdmin() {
+      return eventAdmin;
+   }
+
+   @Override
+   public IAtsEventService getEventService() {
+      return eventService;
    }
 
 }

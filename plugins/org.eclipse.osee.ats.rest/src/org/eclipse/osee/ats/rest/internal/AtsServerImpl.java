@@ -62,7 +62,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -83,15 +82,10 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    private final List<IAtsNotifierServer> notifiers = new CopyOnWriteArrayList<>();
    private final Map<String, IAtsDatabaseConversion> externalConversions = new ConcurrentHashMap<>();
    private AtsActionEndpointApi actionEndpoint;
-   private ExecutorAdmin executorAdmin;
    private IAtsHealthService healthService;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
-   }
-
-   public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
-      this.executorAdmin = executorAdmin;
    }
 
    @Override

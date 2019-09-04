@@ -8,8 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.util;
+package org.eclipse.osee.ats.api.event;
 
+import java.util.Collection;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
@@ -22,7 +25,7 @@ public interface IAtsEventService {
    /**
     * Used to post and send OSGI events. Can use postEvent and sendEvent methods directly.
     */
-   EventAdmin getEventAdmin(String pluginId);
+   EventAdmin getEventAdmin();
 
    /**
     * Initiate asynchronous, ordered delivery of an event. This method returns to the caller before delivery of the
@@ -32,7 +35,7 @@ public interface IAtsEventService {
     * @throws SecurityException If the caller does not have {@code TopicPermission[topic,PUBLISH]} for the topic
     * specified in the event.
     */
-   void postEvent(Event event, String pluginId);
+   void postEvent(Event event);
 
    /**
     * Initiate synchronous delivery of an event. This method does not return to the caller until delivery of the event
@@ -42,11 +45,19 @@ public interface IAtsEventService {
     * @throws SecurityException If the caller does not have {@code TopicPermission[topic,PUBLISH]} for the topic
     * specified in the event.
     */
-   void sendEvent(Event event, String pluginId);
+   void sendEvent(Event event);
 
    /**
     * Used to register for osgi events
     */
    BundleContext getBundleContext(String pluginId);
 
+   /**
+    * Post the simplest AtsTopicEvent with only work item ids as the payload
+    */
+   void postAtsWorkItemTopicEvent(AtsTopicEvent event, Collection<IAtsWorkItem> workItems);
+
+   void registerAtsWorkItemTopicEvent(AtsTopicEvent event, IAtsWorkItemTopicEventListener listener);
+
+   void deRegisterAtsWorkItemTopicEvent(IAtsWorkItemTopicEventListener listener);
 }

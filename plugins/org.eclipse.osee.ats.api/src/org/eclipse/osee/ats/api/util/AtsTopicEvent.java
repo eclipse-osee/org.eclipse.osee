@@ -20,6 +20,10 @@ public class AtsTopicEvent extends AbstractTopicEvent {
 
    public static final AtsTopicEvent WORK_ITEM_MODIFIED =
       new AtsTopicEvent(EventType.LocalAndRemote, "ats/workitem/modified");
+   public static final AtsTopicEvent WORK_ITEM_TRANSITIONED =
+      new AtsTopicEvent(EventType.LocalAndRemote, "ats/workitem/transitioned");
+
+   // semi-colon delimited long ids
    public static final String WORK_ITEM_IDS_KEY = "workItemIds";
    public static final String WORK_ITEM_ATTR_TYPE_IDS_KEY = "workItemAttrTypeIds";
 

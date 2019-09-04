@@ -133,6 +133,11 @@ public class WfeWorkflowSection extends SectionPart {
       }
    }
 
+   public void expand() {
+      section.setExpanded(true);
+      createSection(section);
+   }
+
    private void refreshStateTitle() {
       String currentStateTitle =
          getCurrentStateTitle(sma, statePage.getName(), isCurrentState(), statePage.getStateType().isCancelledState());
@@ -487,9 +492,15 @@ public class WfeWorkflowSection extends SectionPart {
       }
    };
 
-   public void refreshExpandState() {
+   public boolean refreshExpandState() {
       boolean isCurrentState = isCurrentState();
+      System.err.println("state " + section.getText() + " current " + isCurrentState);
       getSection().setExpanded(isCurrentState);
+      //      if (isCurrentState) {
+      computeTextSizesAndReflow();
+      //      }
+      refreshStateTitle();
+      return isCurrentState;
    }
 
    @Override

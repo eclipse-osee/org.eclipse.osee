@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
@@ -44,7 +45,6 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamTransit
 import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamTransitionManagerTestWidgetRequiredTransition;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil.AtsTestUtilState;
-import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewManager;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewState;
@@ -67,7 +67,7 @@ import org.mockito.MockitoAnnotations;
  */
 public class TransitionManagerTest {
 
-   private static List<AbstractWorkflowArtifact> EMPTY_AWAS = new ArrayList<>();
+   private static List<IAtsWorkItem> EMPTY_AWAS = new ArrayList<>();
 
    // @formatter:off
    @Mock private IAtsTask task;

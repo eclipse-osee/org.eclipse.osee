@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.config.AtsConfigKey;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
+import org.eclipse.osee.ats.api.event.IAtsEventService;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
@@ -59,6 +60,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IUserGroupService;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
+import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Donald G. Dunne
@@ -190,5 +192,9 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkItemServ
     * Store current key/value in Ats User Config attribute
     */
    void setUserConfigValue(String key, String value);
+
+   EventAdmin getEventAdmin();
+
+   IAtsEventService getEventService();
 
 }

@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class TransitionHelper extends TransitionHelperAdapter {
 
    private final String cancellationReason;
-   private final Collection<? extends IAtsWorkItem> workItems;
+   private final Collection<IAtsWorkItem> workItems;
    private final String name;
    private TransitionOption[] transitionOption;
    private final Collection<? extends IAtsUser> toAssignees;
@@ -43,7 +43,7 @@ public class TransitionHelper extends TransitionHelperAdapter {
    private final IAtsWorkItemService workItemService;
    private final AtsApi atsApi;
 
-   public TransitionHelper(String name, Collection<? extends IAtsWorkItem> workItems, String toStateName, Collection<? extends IAtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, AtsApi atsApi, TransitionOption... transitionOption) {
+   public TransitionHelper(String name, Collection<IAtsWorkItem> workItems, String toStateName, Collection<? extends IAtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, AtsApi atsApi, TransitionOption... transitionOption) {
       super(atsApi);
       this.atsApi = atsApi;
       this.workItemService = atsApi.getWorkItemService();
@@ -77,7 +77,7 @@ public class TransitionHelper extends TransitionHelperAdapter {
    }
 
    @Override
-   public Collection<? extends IAtsWorkItem> getWorkItems() {
+   public Collection<IAtsWorkItem> getWorkItems() {
       return workItems;
    }
 

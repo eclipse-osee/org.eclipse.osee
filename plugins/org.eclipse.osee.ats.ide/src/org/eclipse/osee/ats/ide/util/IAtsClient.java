@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
-import org.eclipse.osee.ats.api.util.IAtsEventService;
 import org.eclipse.osee.ats.api.version.IAtsVersionServiceProvider;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolverProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
@@ -45,8 +44,6 @@ public interface IAtsClient extends AtsApi, IAtsNotifier, IAttributeResolverProv
    IArtifactMembersCache<GoalArtifact> getGoalMembersCache();
 
    IArtifactMembersCache<SprintArtifact> getSprintItemsCache();
-
-   IAtsEventService getEventService();
 
    void reloadConfigCache(boolean pend);
 

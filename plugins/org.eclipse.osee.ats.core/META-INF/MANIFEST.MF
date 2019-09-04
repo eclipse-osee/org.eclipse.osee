@@ -15,8 +15,10 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.core.runtime;version="3.5.0",
  org.eclipse.jdt.annotation,
  org.eclipse.nebula.widgets.xviewer.core.model,
+ org.eclipse.osee.ats.core.event,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.core.event,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.model,
  org.eclipse.osee.framework.core.model.change,
@@ -41,6 +43,7 @@ Export-Package: org.eclipse.osee.ats.core.access,
  org.eclipse.osee.ats.core.config,
  org.eclipse.osee.ats.core.config.tx,
  org.eclipse.osee.ats.core.cpa,
+ org.eclipse.osee.ats.core.event,
  org.eclipse.osee.ats.core.health,
  org.eclipse.osee.ats.core.insertion,
  org.eclipse.osee.ats.core.internal.state,
@@ -68,5 +71,6 @@ Export-Package: org.eclipse.osee.ats.core.access,
  org.eclipse.osee.ats.core.workflow.util
 Service-Component: OSGI-INF/*.xml
 Require-Bundle: org.eclipse.osee.ats.api,
- org.eclipse.osee.logger
+ org.eclipse.osee.logger,
+ org.eclipse.osee.framework.core
 

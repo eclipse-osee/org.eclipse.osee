@@ -24,7 +24,9 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.event.IAtsWorkItemTopicEventListener;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
@@ -49,6 +51,7 @@ import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionToOperation;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -80,7 +83,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class WfeTransitionComposite extends Composite {
+public class WfeTransitionComposite extends Composite implements IAtsWorkItemTopicEventListener {
 
    private final XTransitionToStateComboWidget transitionToStateCombo;
    private final Label transitionAssigneesLabel;
@@ -89,11 +92,16 @@ public class WfeTransitionComposite extends Composite {
    private final WorkflowEditor editor;
    private final Button transitionButton;
    public final static Color ACTIVE_COLOR = new Color(null, 206, 212, 239);
+   private final Composite parent;
 
    public WfeTransitionComposite(Composite parent, WfeWorkflowSection workflowSection, final WorkflowEditor editor, final boolean isEditable) {
       super(parent, SWT.NONE);
+      this.parent = parent;
       this.workflowSection = workflowSection;
       this.editor = editor;
+
+      AtsClientService.get().getEventService().registerAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITIONED,
+         this);
 
       awa = workflowSection.getSma();
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -464,6 +472,26 @@ public class WfeTransitionComposite extends Composite {
 
    public XComboViewer getTransitionToStateCombo() {
       return transitionToStateCombo;
+   }
+
+   @Override
+   public void handleEvent(AtsTopicEvent topicEvent, Collection<ArtifactId> workItems) {
+      if (this.isDisposed()) {
+         AtsClientService.get().getEventService().deRegisterAtsWorkItemTopicEvent(this);
+         return;
+      }
+      final Composite fComp = this;
+      Displays.ensureInDisplayThread(new Runnable() {
+
+         @Override
+         public void run() {
+            fComp.dispose();
+            if (Widgets.isAccessible(parent)) {
+               parent.redraw();
+            }
+            editor.getWorkFlowTab().refreshExpandStates();
+         }
+      });
    }
 
 }

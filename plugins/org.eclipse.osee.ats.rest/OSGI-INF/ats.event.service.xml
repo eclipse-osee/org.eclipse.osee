@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
+   <implementation class="org.eclipse.osee.ats.rest.internal.event.AtsEventServiceServerImpl"/>
+   <reference bind="setEventAdmin" cardinality="1..1" interface="org.osgi.service.event.EventAdmin" name="EventAdmin" policy="static"/>
+   <service>
+      <provide interface="org.osgi.service.event.EventHandler"/>
+      <provide interface="org.eclipse.osee.ats.api.event.IAtsEventService"/>
+   </service>
+   <property name="event.topics" type="String" value="ats/workitem/transitioned"/>
+</scr:component>

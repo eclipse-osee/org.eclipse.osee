@@ -529,14 +529,17 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       }
    }
 
-   public boolean refreshExpandStates(String stateName, boolean found) {
+   public void refreshExpandStates() {
       for (WfeWorkflowSection section : sections) {
-         section.refreshExpandState();
-         if (section.getPage().getName().equals(stateName)) {
-            found = true;
+         boolean isCurrentState = section.isCurrentState();
+         if (isCurrentState) {
+            section.expand();
+         } else {
+            section.getSection().setExpanded(false);
          }
       }
-      return found;
+      bodyComp.layout(true, true);
+      bodyComp.getParent().layout(true, true);
    }
 
    @Override

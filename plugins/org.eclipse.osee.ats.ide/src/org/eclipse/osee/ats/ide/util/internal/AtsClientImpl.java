@@ -37,7 +37,6 @@ import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.util.IAtsEventService;
 import org.eclipse.osee.ats.api.util.IAtsHealthService;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -102,7 +101,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
 
    private ArtifactCollectorsCache<GoalArtifact> goalMembersCache;
    private ArtifactCollectorsCache<SprintArtifact> sprintItemsCache;
-   private IAtsEventService eventService;
    private IAgileService agileService;
    private IAtsClientUtil clientUtils;
    private AtsQueryServiceClient queryServiceClient;
@@ -143,7 +141,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
       actionFactory = new ActionFactory(attributeResolverService, this);
       taskService = new AtsTaskService(this);
 
-      eventService = new AtsEventServiceImpl();
       agileService = new AgileService(logger, this);
 
    }
@@ -372,11 +369,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
       if (awa != null) {
          awa.clearImplementersCache();
       }
-   }
-
-   @Override
-   public IAtsEventService getEventService() {
-      return eventService;
    }
 
    @Override

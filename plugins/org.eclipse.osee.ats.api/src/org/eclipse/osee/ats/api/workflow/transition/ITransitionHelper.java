@@ -27,7 +27,7 @@ public interface ITransitionHelper {
 
    public boolean isOverrideTransitionValidityCheck();
 
-   public Collection<? extends IAtsWorkItem> getWorkItems();
+   public Collection<IAtsWorkItem> getWorkItems();
 
    /**
     * @return Result.isTrue with text if reason provided
