@@ -156,7 +156,6 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
 
             if (split.length == 2) {
                String name = split[0].trim();
-               //String name = split[0].trim().toUpperCase();//Why was this uppercase??
                String value = split[1].trim();
 
                if (toReturn.containsKey(name)) {
@@ -172,6 +171,38 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       }
 
       return toReturn;
+   }
+
+   @Override
+   public String getExistingFeatureApplicability(BranchId branch, ArtifactId viewId, String featureName) {
+      String existingAppl = "";
+      for (String appl : queryFactory.tupleQuery().getTuple2(CoreTupleTypes.ViewApplicability, branch, viewId)) {
+
+         if (appl.startsWith(featureName + " =")) {
+            existingAppl = appl;
+         }
+      }
+      return existingAppl;
+   }
+
+   @Override
+   public boolean getFeatureExistsOnBranch(BranchId branch, String featureName) {
+      boolean returnValue;
+      ArtifactReadable jsonArtifact =
+         queryFactory.fromBranch(branch).andTypeEquals(CoreArtifactTypes.FeatureDefinition).andExists(
+            CoreAttributeTypes.GeneralStringData).getResults().getAtMostOneOrNull();
+      String json = jsonArtifact.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
+      if (json.contains("\"name\": \"" + featureName + "\"")) {
+         returnValue = true;
+      } else {
+         returnValue = false;
+      }
+      return returnValue;
+   }
+
+   @Override
+   public boolean getFeatureValueIsValid(BranchId branch, String featureName, String featureValue) {
+      return true;
    }
 
    @Override

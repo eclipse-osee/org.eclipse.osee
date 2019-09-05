@@ -453,6 +453,10 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void createApplicabilityForView(ArtifactId viewId, String applicability) {
+      /**
+       * If the view/applicability combo exists (b/c it was created on another branch), update current branch to
+       * reference associated gamma_id
+       */
       GammaId tupleGamma = tupleQuery.getTuple2GammaFromE1E2(CoreTupleTypes.ViewApplicability, viewId, applicability);
       if (tupleGamma.isValid()) {
          introduceTuple(CoreTupleTypes.ViewApplicability, tupleGamma);

@@ -183,15 +183,33 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public TransactionToken createApplicabilityForView(ArtifactId viewId, String applicability) {
-      XResultData access = isAccess();
-      if (access.isErrors()) {
-         return TransactionToken.SENTINEL;
+   public XResultData createApplicabilityForView(ArtifactId viewId, String applicability) {
+      XResultData results = isAccess();
+      if (results.isErrors()) {
+         return results;
       }
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account,
-         "Apply " + applicability + " applicability");
-      tx.createApplicabilityForView(viewId, applicability);
-      return tx.commit();
+      String featureName = applicability.substring(0, applicability.indexOf("=") - 1);
+      String featureValue = applicability.substring(applicability.indexOf("=") + 2);
+
+      if (applicabilityQuery.getFeatureExistsOnBranch(branch,
+         featureName) && applicabilityQuery.getFeatureValueIsValid(branch, featureName, featureValue)) {
+         String existingAppl = applicabilityQuery.getExistingFeatureApplicability(branch, viewId, featureName);
+         if (existingAppl.equals(applicability)) {
+            results.error("Applicability already exists.");
+         } else {
+            TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account,
+               "Apply " + applicability + " applicability");
+            if (!existingAppl.isEmpty()) {
+               tx.deleteTuple2(CoreTupleTypes.ViewApplicability, viewId, existingAppl);
+            }
+            tx.createApplicabilityForView(viewId, applicability);
+            tx.commit();
+         }
+      } else {
+         results.error("Feature not defined.");
+      }
+
+      return results;
    }
 
    @Override

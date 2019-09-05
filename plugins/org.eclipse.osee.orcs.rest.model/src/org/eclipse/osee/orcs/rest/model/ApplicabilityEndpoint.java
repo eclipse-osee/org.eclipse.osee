@@ -193,7 +193,7 @@ public interface ApplicabilityEndpoint {
    @Path("view/{viewId}/applic")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   TransactionToken createApplicabilityForView(@PathParam("viewId") ArtifactId viewId, String applicability);
+   XResultData createApplicabilityForView(@PathParam("viewId") ArtifactId viewId, String applicability);
 
    /**
     * Copy missing tuples of type CoreTupleTypes.ViewApplicability from parent branch onto this branch

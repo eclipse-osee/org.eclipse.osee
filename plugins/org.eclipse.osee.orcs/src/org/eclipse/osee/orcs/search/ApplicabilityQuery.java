@@ -57,4 +57,10 @@ public interface ApplicabilityQuery {
    List<BranchId> getAffectedBranches(TransactionId injectionTx, TransactionId removalTx, List<ApplicabilityId> applicabilityIds, BranchId branch);
 
    Set<ArtifactId> getExcludedArtifacts(BranchId branch, ArtifactId view);
+
+   String getExistingFeatureApplicability(BranchId branch, ArtifactId viewId, String featureName);
+
+   boolean getFeatureExistsOnBranch(BranchId branch, String featureName);
+
+   boolean getFeatureValueIsValid(BranchId branch, String featureName, String featureValue);
 }
