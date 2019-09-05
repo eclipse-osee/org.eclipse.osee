@@ -378,8 +378,6 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
             } else if (!toStateDef.hasRule(RuleDefinitionOption.AllowTransitionWithWorkingBranch.name())) {
                results.addResult(workItem, TransitionResult.WORKING_BRANCH_EXISTS);
             }
-         } else if (helper.hasWorkingBranchesLeftToCommit((IAtsTeamWorkflow) workItem)) {
-            results.addResult(workItem, TransitionResult.NOT_ALL_BRANCHES_COMMITTED);
          }
       }
    }
