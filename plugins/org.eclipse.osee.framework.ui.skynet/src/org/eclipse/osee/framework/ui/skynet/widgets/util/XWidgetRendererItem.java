@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.util;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
@@ -45,6 +47,7 @@ public class XWidgetRendererItem implements Cloneable {
    private Object object;
    private String doubleClickText;
    private ArtifactTypeId artifactType;
+   private final Map<String, Object> parameters = new HashMap<String, Object>();
 
    public XWidgetRendererItem(SwtXWidgetRenderer dynamicXWidgetLayout, XOption... xOption) {
       this.dynamicXWidgetLayout = dynamicXWidgetLayout;
@@ -284,4 +287,11 @@ public class XWidgetRendererItem implements Cloneable {
       this.artifactType = artifactType;
    }
 
+   public void addParameter(String key, Object value) {
+      parameters.put(key, value);
+   }
+
+   public Map<String, Object> getParameters() {
+      return parameters;
+   }
 }

@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.RuleEventType;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -80,6 +81,21 @@ public class CreateTasksDefinitionBuilder extends NamedIdBase {
 
    public CreateTasksDefinitionBuilder andTask(String title, AtsWorkDefinitionToken taskWorkDef) {
       return andTask(title, null, null, taskWorkDef);
+   }
+
+   public CreateChangeReportTasksDefinitionBuilder andChgRptBuilder() {
+      if (this instanceof CreateChangeReportTasksDefinitionBuilder) {
+         return (CreateChangeReportTasksDefinitionBuilder) this;
+      }
+      throw new OseeArgumentException("andChgReportBuilder only valid for CreateChangeReportTasksDefinitionBuilder");
+   }
+
+   public ChangeReportOptions getChgRptOptions() {
+      return createTasksDef.getChgRptOptions();
+   }
+
+   public void setChgRptOptions(ChangeReportOptions chgRptOptions) {
+      createTasksDef.setChgRptOptions(chgRptOptions);
    }
 
 }

@@ -8,20 +8,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.task;
+package org.eclipse.osee.ats.api.workdef.model;
 
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 
 /**
  * @author Donald G. Dunne
  */
-public class DemoTaskSetDefinitionTokens {
+public class CreateChangeReportTasksWidgetDefinition extends WidgetDefinition {
 
-   public static AtsTaskDefToken SawSwDesignTestingChecklist =
-      AtsTaskDefToken.valueOf(23492840234L, "Testing Checklist");
-   public static AtsTaskDefToken SawSwDesignProcessChecklist =
-      AtsTaskDefToken.valueOf(234965685392L, "Process Checklist");
-   public static AtsTaskDefToken SawCreateTasksFromReqChanges =
-      AtsTaskDefToken.valueOf(32948900200L, "SAW Create Tasks from Req Changes");
+   private final AtsTaskDefToken atsTaskDefToken;
+
+   public CreateChangeReportTasksWidgetDefinition(String name, AtsTaskDefToken atsTaskDefToken) {
+      super(name, "XCreateChangeReportTasksXButton");
+      this.atsTaskDefToken = atsTaskDefToken;
+      addParameter(AtsTaskDefToken.ID, atsTaskDefToken);
+   }
+
+   public AtsTaskDefToken getAtsTaskDefToken() {
+      return atsTaskDefToken;
+   }
 
 }

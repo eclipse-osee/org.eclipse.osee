@@ -27,6 +27,7 @@ public class CreateTasksDefinition extends NamedIdBase {
    protected RuleEventType ruleEvent;
    private String toState;
    protected List<CreateTaskDefinition> tasksDef = new ArrayList<CreateTaskDefinition>();
+   private ChangeReportOptions chgRptOptions;
 
    public CreateTasksDefinition(Long id, String name) {
       super(id, name);
@@ -73,6 +74,17 @@ public class CreateTasksDefinition extends NamedIdBase {
 
    public void setToState(String toState) {
       this.toState = toState;
+   }
+
+   public ChangeReportOptions getChgRptOptions() {
+      if (chgRptOptions == null) {
+         chgRptOptions = new ChangeReportOptions();
+      }
+      return chgRptOptions;
+   }
+
+   public void setChgRptOptions(ChangeReportOptions chgRptOptions) {
+      this.chgRptOptions = chgRptOptions;
    }
 
 }

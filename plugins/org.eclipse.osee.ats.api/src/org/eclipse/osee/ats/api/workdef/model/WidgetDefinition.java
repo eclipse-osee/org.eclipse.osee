@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef.model;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetOptionHandler;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
@@ -31,6 +33,7 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
    private final WidgetOptionHandler options = new WidgetOptionHandler();
    private Double min;
    private Double max;
+   private final Map<String, Object> parameters = new HashMap<String, Object>();
 
    public WidgetDefinition(String name) {
       super(name);
@@ -150,4 +153,18 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
       return attributeType;
    }
 
+   @Override
+   public void addParameter(String key, Object obj) {
+      parameters.put(key, obj);
+   }
+
+   @Override
+   public Object getParameter(String key) {
+      return parameters.get(key);
+   }
+
+   @Override
+   public Map<String, Object> getParameters() {
+      return parameters;
+   }
 }

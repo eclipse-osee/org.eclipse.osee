@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.workflow;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
+import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -422,6 +424,18 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    @Override
    public boolean isCancelHyperlinkConfigured() {
       return Strings.isValid(atsApi.getConfigValue(CANCEL_HYPERLINK_URL_CONFIG_KEY));
+   }
+
+   @Override
+   public Collection<IAtsTeamWorkflow> getSiblings(IAtsTeamWorkflow teamWf, IAtsTeamDefinitionArtifactToken fromTeamDef) {
+      List<IAtsTeamWorkflow> siblings = new ArrayList<IAtsTeamWorkflow>();
+      IAtsAction action = teamWf.getParentAction();
+      for (IAtsTeamWorkflow child : action.getTeamWorkflows()) {
+         if (child.getTeamDefinition().equals(fromTeamDef)) {
+            siblings.add(child);
+         }
+      }
+      return siblings;
    }
 
 }

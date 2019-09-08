@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.KindType;
@@ -110,7 +109,7 @@ public class ChangeData {
    /**
     * Return artifacts of kind and modType.
     */
-   public Collection<Artifact> getArtifacts(KindType kindType, List<AttributeTypeId> artifactTypesToIgnore, ModificationType... modificationType) {
+   public Collection<Artifact> getArtifacts(KindType kindType, Collection<AttributeTypeId> artifactTypesToIgnore, ModificationType... modificationType) {
       if (kindType == KindType.RelationOnly) {
          return getArtifactsRelationOnly(modificationType);
       }

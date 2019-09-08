@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.task.create;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 
 public interface IAtsTaskSetDefinitionProviderService {
 
@@ -21,5 +22,7 @@ public interface IAtsTaskSetDefinitionProviderService {
    Collection<CreateTasksDefinitionBuilder> getAll();
 
    void addTaskSetDefinition(CreateTasksDefinitionBuilder taskDef);
+
+   CreateTasksDefinitionBuilder getTaskSetDefinition(AtsTaskDefToken taskDefToken);
 
 }

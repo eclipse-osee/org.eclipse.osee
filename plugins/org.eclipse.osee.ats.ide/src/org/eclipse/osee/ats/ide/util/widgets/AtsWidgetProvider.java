@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.ide.util.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.ide.agile.XOpenSprintBurndownButton;
 import org.eclipse.osee.ats.ide.agile.XOpenSprintBurnupButton;
@@ -36,6 +37,7 @@ import org.eclipse.osee.ats.ide.util.widgets.dialog.AtsObjectMultiChoiceSelect;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.ClosureStateMultiChoiceSelect;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.VersionMultiChoiceSelect;
 import org.eclipse.osee.ats.ide.util.widgets.role.XUserRoleViewer;
+import org.eclipse.osee.ats.ide.util.widgets.task.XCreateChangeReportTasksXButton;
 import org.eclipse.osee.ats.ide.workflow.review.defect.AtsXDefectValidator;
 import org.eclipse.osee.ats.ide.workflow.review.role.AtsXUserRoleValidator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -53,19 +55,19 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 public class AtsWidgetProvider implements IXWidgetProvider {
 
    @Override
-   public XWidget createXWidget(String widgetName, String name, XWidgetRendererItem widgetLayoutData) {
+   public XWidget createXWidget(String widgetName, String name, XWidgetRendererItem widgetRendererItem) {
       XWidget toReturn = null;
       if (widgetName.equals(XHyperlabelTeamDefinitionSelection.WIDGET_ID)) {
          XHyperlabelTeamDefinitionSelection widget = new XHyperlabelTeamDefinitionSelection(name);
-         widget.setToolTip(widgetLayoutData.getToolTip());
+         widget.setToolTip(widgetRendererItem.getToolTip());
          toReturn = widget;
       } else if (widgetName.equals(XHyperlabelActionableItemSelection.WIDGET_ID)) {
          XHyperlabelActionableItemSelection widget = new XHyperlabelActionableItemSelection(name);
-         widget.setToolTip(widgetLayoutData.getToolTip());
+         widget.setToolTip(widgetRendererItem.getToolTip());
          toReturn = widget;
       } else if (widgetName.equals(XHyperlabelGroupSelection.WIDGET_ID)) {
          XHyperlabelGroupSelection widget = new XHyperlabelGroupSelection(name);
-         widget.setToolTip(widgetLayoutData.getToolTip());
+         widget.setToolTip(widgetRendererItem.getToolTip());
          toReturn = widget;
       } else if (widgetName.equals(AtsObjectMultiChoiceSelect.WIDGET_ID)) {
          toReturn = new AtsObjectMultiChoiceSelect();
@@ -78,7 +80,7 @@ public class AtsWidgetProvider implements IXWidgetProvider {
       } else if (widgetName.equals(XFoundInVersionWidget.WIDGET_ID)) {
          toReturn = new XFoundInVersionWidget(name);
       } else if (widgetName.equals(XCancelWidget.WIDGET_ID)) {
-         toReturn = new XCancelWidget(widgetLayoutData.getArtifact());
+         toReturn = new XCancelWidget(widgetRendererItem.getArtifact());
       } else if (widgetName.equals(XCommitManager.WIDGET_NAME)) {
          toReturn = new XCommitManager();
       } else if (widgetName.equals(XWorkingBranchLabel.WIDGET_NAME)) {
@@ -133,7 +135,7 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          }
       } else if (widgetName.equals(XVersionList.WIDGET_ID)) {
          XVersionList versionList = new XVersionList();
-         if (widgetLayoutData.getXOptionHandler().contains(XOption.MULTI_SELECT)) {
+         if (widgetRendererItem.getXOptionHandler().contains(XOption.MULTI_SELECT)) {
             versionList.setMultiSelect(true);
          }
          return versionList;
@@ -170,11 +172,14 @@ public class AtsWidgetProvider implements IXWidgetProvider {
       } else if (widgetName.equals(XArtifactReferencedAtsObjectAttributeWidget.WIDGET_ID)) {
          return new XArtifactReferencedAtsObjectAttributeWidget(name);
       } else if (widgetName.equals(XRequestedHoursApprovalWidget.ID)) {
-         if (widgetLayoutData.isRequired()) {
+         if (widgetRendererItem.isRequired()) {
             return new XRequestedHoursApprovalWidget(true);
          } else {
             return new XRequestedHoursApprovalWidget();
          }
+      } else if (widgetName.equals(XCreateChangeReportTasksXButton.WIDGET_ID)) {
+         AtsTaskDefToken atsTaskDefToken = (AtsTaskDefToken) widgetRendererItem.getParameters().get(AtsTaskDefToken.ID);
+         return new XCreateChangeReportTasksXButton(name, atsTaskDefToken);
       }
 
       return toReturn;

@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProvider;
 import org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProviderService;
+import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 
 /**
@@ -69,6 +70,11 @@ public class AtsTaskSetDefinitionProviderService implements IAtsTaskSetDefinitio
    public void addTaskSetDefinition(CreateTasksDefinitionBuilder workDef) {
       ensureLoaded();
       idToTaskSetDef.put(workDef.getId(), workDef);
+   }
+
+   @Override
+   public CreateTasksDefinitionBuilder getTaskSetDefinition(AtsTaskDefToken taskDefToken) {
+      return getTaskSetDefinition(taskDefToken.getId());
    }
 
 }

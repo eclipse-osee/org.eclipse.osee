@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef;
 
+import java.util.Map;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
@@ -50,5 +51,11 @@ public interface IAtsWidgetDefinition extends IAtsLayoutItem {
    public String toString();
 
    public AttributeTypeToken getAttributeType();
+
+   public void addParameter(String key, Object obj);
+
+   public Object getParameter(String key);
+
+   Map<String, Object> getParameters();
 
 }

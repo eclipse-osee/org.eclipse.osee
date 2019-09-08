@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.ide.workdef;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
@@ -168,6 +169,9 @@ public class WidgetPageUtil {
             if (option != null) {
                data.getXOptionHandler().add(option);
             }
+         }
+         for (Entry<String, Object> pair : widgetDef.getParameters().entrySet()) {
+            data.getParameters().put(pair.getKey(), pair.getValue());
          }
          dynamicXWidgetLayout.addWorkLayoutData(data);
       } catch (Exception ex) {

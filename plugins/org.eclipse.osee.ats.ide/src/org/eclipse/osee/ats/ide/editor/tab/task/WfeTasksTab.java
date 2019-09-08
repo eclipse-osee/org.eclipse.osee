@@ -36,6 +36,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
+import org.eclipse.osee.ats.api.workdef.RuleEventType;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -518,9 +519,11 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
                addActionToMenu(fMenu, new CreateManualTaskPlaceholder("Create Task Set - Instructions"));
                if (!taskSets.isEmpty()) {
                   for (CreateTasksDefinitionBuilder taskSet : taskSets) {
-                     addActionToMenu(fMenu,
-                        new CreateManualTaskSet(String.format("Create from Task Set [%s]", taskSet.getName()),
-                           taskComposite.getTeamArt(), taskSet, null));
+                     if (taskSet.getCreateTasksDef().getRuleEvent() == RuleEventType.Manual) {
+                        addActionToMenu(fMenu,
+                           new CreateManualTaskSet(String.format("Create from Task Set [%s]", taskSet.getName()),
+                              taskComposite.getTeamArt(), taskSet, null));
+                     }
                   }
                }
             }

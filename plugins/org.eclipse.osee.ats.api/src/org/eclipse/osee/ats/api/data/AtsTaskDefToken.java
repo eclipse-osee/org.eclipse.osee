@@ -17,6 +17,8 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
  */
 public class AtsTaskDefToken extends NamedIdBase {
 
+   public static String ID = AtsTaskDefToken.class.getSimpleName();
+
    private AtsTaskDefToken(Long id, String name) {
       super(id, name);
    }
