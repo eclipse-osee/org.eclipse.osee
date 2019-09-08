@@ -61,6 +61,7 @@ import org.eclipse.osee.ats.core.internal.state.AtsStateFactory;
 import org.eclipse.osee.ats.core.internal.state.AtsWorkStateFactory;
 import org.eclipse.osee.ats.core.program.AtsProgramService;
 import org.eclipse.osee.ats.core.review.AtsReviewServiceImpl;
+import org.eclipse.osee.ats.core.task.internal.AtsTaskSetDefinitionProviderService;
 import org.eclipse.osee.ats.core.version.AtsVersionServiceImpl;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionServiceImpl;
 import org.eclipse.osee.ats.core.workflow.AtsImplementersService;
@@ -540,6 +541,9 @@ public abstract class AtsApiImpl implements AtsApi {
 
    @Override
    public IAtsTaskSetDefinitionProviderService getTaskSetDefinitionProviderService() {
+      if (taskSetDefinitionProviderService == null) {
+         taskSetDefinitionProviderService = new AtsTaskSetDefinitionProviderService();
+      }
       return taskSetDefinitionProviderService;
    }
 

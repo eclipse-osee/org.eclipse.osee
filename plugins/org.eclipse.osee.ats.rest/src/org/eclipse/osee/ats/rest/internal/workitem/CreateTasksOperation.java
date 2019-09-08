@@ -64,7 +64,7 @@ public class CreateTasksOperation {
    private IAtsUser asUser;
    private XResultData resultData;
    private Date createdByDate;
-   private Map<Long, IAtsTeamWorkflow> idToTeamWf;
+   private final Map<Long, IAtsTeamWorkflow> idToTeamWf = new HashMap<>();
 
    public CreateTasksOperation(NewTaskData newTaskData, AtsApi atsApi, OrcsApi orcsApi, XResultData resultData) {
       this(new NewTaskDatas(newTaskData), atsApi, orcsApi, resultData);
@@ -81,7 +81,6 @@ public class CreateTasksOperation {
       if (resultData == null) {
          resultData = new XResultData(false);
       }
-      idToTeamWf = new HashMap<>();
       for (NewTaskData newTaskData : newTaskDatas.getTaskDatas()) {
          Long teamWfId = newTaskData.getTeamWfId();
          if (teamWfId == null) {
@@ -91,22 +90,25 @@ public class CreateTasksOperation {
          ArtifactReadable teamWfArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(teamWfId);
          if (teamWfArt == null) {
             resultData.errorf("Team Workflow id %d does not exist\n", teamWfId);
+            continue;
          }
-         IAtsTeamWorkflow teamWf = idToTeamWf.get(teamWfId);
+         IAtsTeamWorkflow teamWf = getTeamWorkflow(teamWfId);
          if (teamWf == null) {
             teamWf = atsApi.getWorkItemService().getTeamWf(teamWfArt);
-            idToTeamWf.put(teamWfId, teamWf);
          }
          String asUserId = newTaskData.getAsUserId();
          if (asUserId == null) {
             resultData.error("As User Id id not specified");
+            continue;
          }
          asUser = atsApi.getUserService().getUserById(asUserId);
          if (asUser == null) {
             resultData.errorf("As User Id id %d does not exist\n", asUserId);
+            continue;
          }
          if (!Strings.isValid(newTaskData.getCommitComment())) {
             resultData.errorf("Inavlidate Commit Comment [%s]\n", newTaskData.getCommitComment());
+            continue;
          }
 
          for (JaxAtsTask task : newTaskData.getNewTasks()) {
@@ -198,6 +200,20 @@ public class CreateTasksOperation {
          }
       }
       return resultData;
+   }
+
+   private IAtsTeamWorkflow getTeamWorkflow(Long teamWfId) {
+      IAtsTeamWorkflow teamWf = idToTeamWf.get(teamWfId);
+      if (teamWf == null) {
+         ArtifactToken art = atsApi.getQueryService().getArtifact(teamWfId);
+         if (art != null) {
+            teamWf = atsApi.getWorkItemService().getTeamWf(art);
+            if (teamWf != null) {
+               idToTeamWf.put(Long.valueOf(teamWfId), teamWf);
+            }
+         }
+      }
+      return teamWf;
    }
 
    private RelationTypeToken getRelationType(AtsApi atsApi, String relationTypeName) {

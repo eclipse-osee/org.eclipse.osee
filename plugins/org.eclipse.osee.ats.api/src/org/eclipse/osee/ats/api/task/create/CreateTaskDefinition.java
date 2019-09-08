@@ -12,9 +12,9 @@ package org.eclipse.osee.ats.api.task.create;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
  * @author Donald G. Dunne
@@ -27,15 +27,19 @@ public class CreateTaskDefinition {
    private String description;
    private ArtifactId sourceTeamWfAi = ArtifactId.SENTINEL;
    private ArtifactId destTeamWfAi = ArtifactId.SENTINEL;
-   private NamedId workDefId = NamedId.SENTINEL;
+   private AtsWorkDefinitionToken workDefTok = AtsWorkDefinitionToken.SENTINEL;
 
-   public String getRelatedToState() {
-      return relatedToState;
+   public CreateTaskDefinition() {
+      // for jax-rs
    }
 
    public CreateTaskDefinition andRelatedToState(StateToken state) {
       setRelatedToState(state.getName());
       return this;
+   }
+
+   public String getRelatedToState() {
+      return relatedToState;
    }
 
    public void setRelatedToState(String relatedToState) {
@@ -82,12 +86,12 @@ public class CreateTaskDefinition {
       this.destTeamWfAi = destTeamWfAi;
    }
 
-   public NamedId getWorkDefId() {
-      return workDefId;
+   public AtsWorkDefinitionToken getWorkDefTok() {
+      return workDefTok;
    }
 
-   public void setWorkDefId(NamedId workDefId) {
-      this.workDefId = workDefId;
+   public void setWorkDefTok(AtsWorkDefinitionToken workDefTok) {
+      this.workDefTok = workDefTok;
    }
 
 }

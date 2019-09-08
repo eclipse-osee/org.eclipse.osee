@@ -54,4 +54,6 @@ public interface IAtsActionableItemService {
 
    IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, AtsApi atsApi);
 
+   IAtsActionableItem getActionableItem(String value);
+
 }

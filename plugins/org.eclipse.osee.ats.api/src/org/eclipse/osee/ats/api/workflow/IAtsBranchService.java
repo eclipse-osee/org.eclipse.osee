@@ -164,4 +164,6 @@ public interface IAtsBranchService {
 
    boolean isWorkingBranchCommitInProgress(IAtsTeamWorkflow teamWf);
 
+   IOseeBranch getBranch(BranchId branch);
+
 }

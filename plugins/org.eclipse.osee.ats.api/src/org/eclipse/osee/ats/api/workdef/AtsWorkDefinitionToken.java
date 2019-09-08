@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef;
 
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -18,6 +19,11 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 public class AtsWorkDefinitionToken extends NamedIdBase {
 
    public static final AtsWorkDefinitionToken SENTINEL = new AtsWorkDefinitionToken(-1L, "");
+
+   public AtsWorkDefinitionToken() {
+      super(Id.SENTINEL, "");
+
+   }
 
    public AtsWorkDefinitionToken(Long id, String name) {
       super(id, name);

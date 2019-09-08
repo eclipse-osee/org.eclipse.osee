@@ -201,12 +201,12 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public ArtifactReadable getArtifact(ArtifactId artifact, BranchId branch) {
-      throw new UnsupportedOperationException();
+      return (ArtifactReadable) query.fromBranch(branch).andId(artifact).getArtifactOrNull();
    }
 
    @Override
    public ArtifactReadable getArtifact(ArtifactId artifact, BranchId branch, DeletionFlag deletionFlag) {
-      throw new UnsupportedOperationException();
+      return (ArtifactReadable) query.fromBranch(branch).andId(artifact).includeDeletedArtifacts().getArtifactOrNull();
    }
 
    @Override

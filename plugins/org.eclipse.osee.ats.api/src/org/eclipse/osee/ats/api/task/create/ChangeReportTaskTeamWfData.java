@@ -17,27 +17,29 @@ import java.util.Map;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
  */
-public class ChangeReportData {
+public class ChangeReportTaskTeamWfData {
 
    HashMap<String, ArtifactId> taskNamesToReqId = new HashMap<>();
    Collection<ArtifactId> addedModifiedArts = new HashSet<>();
    Collection<ArtifactId> deletedArts = new HashSet<>();
    WorkType workType;
-   IAtsTeamWorkflow sourceTeamWf;
+   ArtifactToken chgRptTeamWf;
+   ArtifactToken destTeamWf;
    XResultData rd;
    Map<ArtifactId, String> taskedArtToName = new HashMap<>();
    Map<ArtifactId, IAtsTask> referencedArtsToTasks = new HashMap<ArtifactId, IAtsTask>();
    boolean reportOnly;
    NewTaskData newTaskData = new NewTaskData();
 
-   public ChangeReportData() {
+   public ChangeReportTaskTeamWfData() {
+      // for jax-rs
    }
 
    public HashMap<String, ArtifactId> getTaskNamesToReqId() {
@@ -72,12 +74,12 @@ public class ChangeReportData {
       this.workType = workType;
    }
 
-   public IAtsTeamWorkflow getSourceTeamWf() {
-      return sourceTeamWf;
+   public ArtifactToken getChgRptTeamWf() {
+      return chgRptTeamWf;
    }
 
-   public void setSourceTeamWf(IAtsTeamWorkflow sourceTeamWf) {
-      this.sourceTeamWf = sourceTeamWf;
+   public void setChgRptTeamWf(ArtifactToken chgRptTeamWf) {
+      this.chgRptTeamWf = chgRptTeamWf;
    }
 
    public XResultData getRd() {
@@ -126,6 +128,14 @@ public class ChangeReportData {
 
    public void setNewTaskData(NewTaskData newTaskData) {
       this.newTaskData = newTaskData;
+   }
+
+   public ArtifactToken getDestTeamWf() {
+      return destTeamWf;
+   }
+
+   public void setDestTeamWf(ArtifactToken destTeamWf) {
+      this.destTeamWf = destTeamWf;
    }
 
 }

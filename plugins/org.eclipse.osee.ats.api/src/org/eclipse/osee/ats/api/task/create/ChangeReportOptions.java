@@ -12,8 +12,10 @@ package org.eclipse.osee.ats.api.task.create;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.osee.ats.api.task.CreateTasksOption;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
@@ -22,8 +24,8 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
  */
 public class ChangeReportOptions {
 
-   IAtsTeamDefinitionArtifactToken fromSiblingTeam;
-   Collection<IAtsTeamDefinitionArtifactToken> toSiblingTeams = new ArrayList<>();
+   ArtifactToken fromSiblingTeamDef;
+   Map<String, String> toSiblingTeamAi = new HashMap<String, String>();
    Collection<ArtifactTypeToken> artifactTypes = new ArrayList<>();
    Collection<ArtifactTypeToken> notArtifactTypes = new ArrayList<>();
    Collection<AttributeTypeToken> attributeTypes = new ArrayList<>();
@@ -82,20 +84,12 @@ public class ChangeReportOptions {
       this.notAttributeTypes.add(attrType);
    }
 
-   public IAtsTeamDefinitionArtifactToken getFromSiblingTeam() {
-      return fromSiblingTeam;
+   public Map<String, String> getToSiblingTeamAiMap() {
+      return toSiblingTeamAi;
    }
 
-   public void setFromSiblingTeam(IAtsTeamDefinitionArtifactToken fromSiblingTeam) {
-      this.fromSiblingTeam = fromSiblingTeam;
-   }
-
-   public Collection<IAtsTeamDefinitionArtifactToken> getToSiblingTeams() {
-      return toSiblingTeams;
-   }
-
-   public void setToSiblingTeams(Collection<IAtsTeamDefinitionArtifactToken> toSiblingTeams) {
-      this.toSiblingTeams = toSiblingTeams;
+   public void andToSiblingTeamAi(ArtifactToken toSiblingTeam, ArtifactToken toAi) {
+      this.toSiblingTeamAi.put(toSiblingTeam.getIdString(), toAi.getIdString());
    }
 
    public Collection<CreateTasksOption> getCreateOptions() {
@@ -104,6 +98,22 @@ public class ChangeReportOptions {
 
    public void setCreateOptions(Collection<CreateTasksOption> createOptions) {
       this.createOptions = createOptions;
+   }
+
+   public Map<String, String> getToSiblingTeamAi() {
+      return toSiblingTeamAi;
+   }
+
+   public void setToSiblingTeamAi(Map<String, String> toSiblingTeamAi) {
+      this.toSiblingTeamAi = toSiblingTeamAi;
+   }
+
+   public ArtifactToken getFromSiblingTeamDef() {
+      return fromSiblingTeamDef;
+   }
+
+   public void setFromSiblingTeamDef(ArtifactToken fromSiblingTeamDef) {
+      this.fromSiblingTeamDef = fromSiblingTeamDef;
    }
 
 }

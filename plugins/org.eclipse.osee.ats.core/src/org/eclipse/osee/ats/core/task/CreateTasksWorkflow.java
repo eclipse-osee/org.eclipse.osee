@@ -50,6 +50,7 @@ public class CreateTasksWorkflow {
    protected IAtsTeamWorkflow destTeam;
    protected final String pcrNumber;
    protected final AtsApi atsApi;
+   protected IAtsActionableItem actionableItem;
 
    public CreateTasksWorkflow(String pcrNumber, Collection<CreateTasksOption> createTasksOptions, Collection<String> taskNamesMissingTaskArtifact, //
       boolean reportOnly, XResultData resultData, IAtsChangeSet changes, Date createdDate, IAtsUser createdBy, IAtsTeamWorkflow sourceTeamWf, //
@@ -84,8 +85,7 @@ public class CreateTasksWorkflow {
    }
 
    public IAtsActionableItem getActionableItem() {
-      // TBD
-      return null;
+      return actionableItem;
    }
 
    public Collection<INewActionListener> getNewActionListeners() {
@@ -146,6 +146,10 @@ public class CreateTasksWorkflow {
          }
       }
 
+   }
+
+   public void setActionableItem(IAtsActionableItem ai) {
+      this.actionableItem = ai;
    }
 
 }

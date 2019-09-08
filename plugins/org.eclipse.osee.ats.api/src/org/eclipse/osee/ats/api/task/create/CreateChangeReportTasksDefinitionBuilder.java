@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.task.create;
 
+import org.eclipse.osee.ats.api.config.tx.IAtsActionableItemArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -30,15 +31,8 @@ public class CreateChangeReportTasksDefinitionBuilder extends CreateTasksDefinit
       super(taskSetToken);
    }
 
-   public CreateChangeReportTasksDefinitionBuilder andToSiblingTeam(IAtsTeamDefinitionArtifactToken... siblingTeams) {
-      for (IAtsTeamDefinitionArtifactToken teamDef : siblingTeams) {
-         createTasksDef.getChgRptOptions().getToSiblingTeams().add(teamDef);
-      }
-      return this;
-   }
-
    public CreateChangeReportTasksDefinitionBuilder andFromSiblingTeam(IAtsTeamDefinitionArtifactToken siblingTeam) {
-      createTasksDef.getChgRptOptions().setFromSiblingTeam(siblingTeam);
+      createTasksDef.getChgRptOptions().setFromSiblingTeamDef(siblingTeam);
       return this;
    }
 
@@ -67,6 +61,11 @@ public class CreateChangeReportTasksDefinitionBuilder extends CreateTasksDefinit
       for (AttributeTypeToken attrType : attributeTypeTokens) {
          createTasksDef.getChgRptOptions().andNotAttributeType(attrType);
       }
+      return this;
+   }
+
+   public CreateChangeReportTasksDefinitionBuilder andToSiblingTeamAi(IAtsTeamDefinitionArtifactToken teamDef, IAtsActionableItemArtifactToken ai) {
+      createTasksDef.getChgRptOptions().andToSiblingTeamAi(teamDef, ai);
       return this;
    }
 

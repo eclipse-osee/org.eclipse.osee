@@ -49,7 +49,7 @@ public class CreateTasksRuleRunner {
    public XResultData run() {
       results = new XResultData();
       for (CreateTasksDefinition tasksDef : createTasksDefs) {
-         if (tasksDef.getTaskDefs().isEmpty()) {
+         if (tasksDef.getTasksDef().isEmpty()) {
             results.error("TaskDefs can not be empty");
             return results;
          }
@@ -80,9 +80,9 @@ public class CreateTasksRuleRunner {
          for (Long accountId : createTaskDef.getAssigneeAccountIds()) {
             jTask.getAssigneeAccountIds().add(ArtifactId.valueOf(accountId));
          }
-         if (createTaskDef.getWorkDefId().isValid()) {
+         if (createTaskDef.getWorkDefTok().isValid()) {
             IAtsWorkDefinition workDef =
-               atsApi.getWorkDefinitionService().getWorkDefinition(createTaskDef.getWorkDefId());
+               atsApi.getWorkDefinitionService().getWorkDefinition(createTaskDef.getWorkDefTok());
             if (workDef != null) {
                jTask.setTaskWorkDef(workDef.getIdString());
             }
@@ -96,7 +96,7 @@ public class CreateTasksRuleRunner {
 
    private List<CreateTaskDefinition> getMissingTasks(CreateTasksDefinition tasksDef, List<String> existingTaskNames) {
       List<CreateTaskDefinition> missingTasks = new ArrayList<>();
-      for (CreateTaskDefinition createTaskDef : tasksDef.getTaskDefs()) {
+      for (CreateTaskDefinition createTaskDef : tasksDef.getTasksDef()) {
          if (!existingTaskNames.contains(createTaskDef.getTitle())) {
             missingTasks.add(createTaskDef);
          }

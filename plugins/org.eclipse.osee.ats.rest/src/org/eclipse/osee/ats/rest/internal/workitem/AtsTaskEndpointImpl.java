@@ -24,9 +24,11 @@ import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.JaxAtsTasks;
 import org.eclipse.osee.ats.api.task.NewTaskDatas;
+import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.rest.internal.task.CreateChangeReportTasksOperation;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -41,6 +43,16 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
    public AtsTaskEndpointImpl(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
+   }
+
+   @PUT
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   @Override
+   @Path("chgRpt")
+   public ChangeReportTaskData create(ChangeReportTaskData changeReportTaskData) {
+      CreateChangeReportTasksOperation operation = new CreateChangeReportTasksOperation(changeReportTaskData, atsApi);
+      return operation.run();
    }
 
    @PUT

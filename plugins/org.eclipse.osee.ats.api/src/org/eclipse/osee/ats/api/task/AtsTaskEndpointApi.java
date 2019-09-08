@@ -18,6 +18,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 
 /**
  * @author Donald G. Dunne
@@ -38,5 +39,11 @@ public interface AtsTaskEndpointApi {
    @DELETE
    @Path("{taskId}")
    public void delete(@PathParam("taskId") long taskId);
+
+   @PUT
+   @Path("chgRpt")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public ChangeReportTaskData create(ChangeReportTaskData data);
 
 }

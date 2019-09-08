@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.workdef.RuleEventType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -29,16 +30,12 @@ public class CreateTasksDefinition extends NamedIdBase {
    protected List<CreateTaskDefinition> tasksDef = new ArrayList<CreateTaskDefinition>();
    private ChangeReportOptions chgRptOptions;
 
+   public CreateTasksDefinition() {
+      super(Id.SENTINEL, "");
+   }
+
    public CreateTasksDefinition(Long id, String name) {
       super(id, name);
-   }
-
-   public List<CreateTaskDefinition> getTaskDefs() {
-      return tasksDef;
-   }
-
-   public void setTaskDefs(List<CreateTaskDefinition> taskDefs) {
-      this.tasksDef = taskDefs;
    }
 
    public ArtifactId getAsUser() {
@@ -85,6 +82,14 @@ public class CreateTasksDefinition extends NamedIdBase {
 
    public void setChgRptOptions(ChangeReportOptions chgRptOptions) {
       this.chgRptOptions = chgRptOptions;
+   }
+
+   public List<CreateTaskDefinition> getTasksDef() {
+      return tasksDef;
+   }
+
+   public void setTasksDef(List<CreateTaskDefinition> tasksDef) {
+      this.tasksDef = tasksDef;
    }
 
 }

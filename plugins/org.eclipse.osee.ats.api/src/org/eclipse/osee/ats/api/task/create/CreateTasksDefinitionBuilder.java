@@ -70,8 +70,8 @@ public class CreateTasksDefinitionBuilder extends NamedIdBase {
       for (Long assigneAccountId : assigneeAccountId) {
          taskDef.getAssigneeAccountIds().add(assigneAccountId);
       }
-      taskDef.setWorkDefId(workDef);
-      createTasksDef.getTaskDefs().add(taskDef);
+      taskDef.setWorkDefTok(workDef);
+      createTasksDef.getTasksDef().add(taskDef);
       return this;
    }
 

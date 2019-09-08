@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.config.tx;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken.ArtifactTokenImpl;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -26,6 +27,10 @@ public class AtsTeamDefinitionArtifactToken extends ArtifactTokenImpl implements
 
    public static IAtsTeamDefinitionArtifactToken valueOf(Long id, String name) {
       return new AtsTeamDefinitionArtifactToken(id, name);
+   }
+
+   public static IAtsTeamDefinitionArtifactToken valueOf(ArtifactToken artTok) {
+      return new AtsTeamDefinitionArtifactToken(artTok.getId(), artTok.getName());
    }
 
 }

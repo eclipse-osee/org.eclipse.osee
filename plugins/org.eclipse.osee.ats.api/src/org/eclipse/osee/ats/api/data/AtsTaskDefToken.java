@@ -19,6 +19,10 @@ public class AtsTaskDefToken extends NamedIdBase {
 
    public static String ID = AtsTaskDefToken.class.getSimpleName();
 
+   public AtsTaskDefToken() {
+      // for jax-rs
+   }
+
    private AtsTaskDefToken(Long id, String name) {
       super(id, name);
    }

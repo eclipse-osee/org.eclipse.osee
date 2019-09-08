@@ -192,4 +192,9 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
       return createActionableItem(name, Lib.generateArtifactIdAsInt(), changes, atsApi);
    }
 
+   @Override
+   public IAtsActionableItem getActionableItem(String value) {
+      return getActionableItemById(ArtifactId.valueOf(value));
+   }
+
 }

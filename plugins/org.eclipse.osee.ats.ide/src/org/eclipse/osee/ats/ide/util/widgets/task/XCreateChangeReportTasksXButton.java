@@ -5,16 +5,14 @@
  */
 package org.eclipse.osee.ats.ide.util.widgets.task;
 
-import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
-import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -22,13 +20,11 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButton;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.framework.ui.swt.Widgets;
 
 /**
  * Generic task creation off change report from sibling or self workflow based on ATS Task Set definition.
@@ -58,16 +54,6 @@ public class XCreateChangeReportTasksXButton extends XButton implements IArtifac
 
       @Override
       public void widgetModified(org.eclipse.osee.framework.ui.skynet.widgets.XWidget widget) {
-         if (!isEditable()) {
-            IAtsTeamWorkflow sourceTeamWf = getSourceTeamWf();
-            if (sourceTeamWf == null) {
-               AWorkbench.popup("No single from Team Workflow can be found.");
-            } else if (AtsClientService.get().getBranchService().isWorkingBranchInWork(
-               sourceTeamWf) || AtsClientService.get().getBranchService().isCommittedBranchExists(hostTeamWf)) {
-               AWorkbench.popupf("No working branch or commit found for workflow %s", sourceTeamWf.toStringWithId());
-            }
-            return;
-         }
          createUpdateTasks(fName);
       }
 
@@ -75,14 +61,19 @@ public class XCreateChangeReportTasksXButton extends XButton implements IArtifac
 
    protected void createUpdateTasks(String name) {
 
-      Job job = new Job("Preparing to " + name) {
+      Job job = new Job(name) {
 
          @Override
          protected IStatus run(IProgressMonitor monitor) {
 
-            CreateChangeReportTasksOperation op = new CreateChangeReportTasksOperation(getSourceTeamWf(), taskDefToken);
-            XResultData rd = op.run();
-            XResultDataUI.report(rd, getName());
+            ChangeReportTaskData data = new ChangeReportTaskData();
+            data.setTaskDefToken(taskDefToken);
+            data.setHostTeamWf(hostTeamWf);
+            data.setAsUser((AtsUser) AtsClientService.get().getUserService().getCurrentUser());
+            data = AtsClientService.getTaskEp().create(data);
+            XResultDataUI.report(data.getResults(), getName());
+
+            // Reload team wfs if tasks created
 
             return Status.OK_STATUS;
          }
@@ -110,36 +101,12 @@ public class XCreateChangeReportTasksXButton extends XButton implements IArtifac
       // do nothing
    }
 
-   // Team Workflow owning branch/commit.  May or may not be host Team Workflow
-   private IAtsTeamWorkflow getSourceTeamWf() {
-      CreateTasksDefinitionBuilder setDef =
-         AtsClientService.get().getTaskSetDefinitionProviderService().getTaskSetDefinition(taskDefToken.getId());
-      if (setDef == null) {
-         AWorkbench.popup("Task Set Definition %s can not be found", taskDefToken.toStringWithId());
-         return null;
-      }
-      IAtsTeamDefinitionArtifactToken fromTeamDef = setDef.getChgRptOptions().getFromSiblingTeam();
-      Collection<IAtsTeamWorkflow> siblings =
-         AtsClientService.get().getWorkItemService().getSiblings(hostTeamWf, fromTeamDef);
-      if (siblings.size() == 1) {
-         return siblings.iterator().next();
-      }
-      return null;
-   }
-
    @Override
    public void setArtifact(Artifact artifact) {
-      if (!Widgets.isAccessible(getbutton())) {
-         return;
-      }
       if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          this.hostTeamWf = (TeamWorkFlowArtifact) artifact;
       }
-      IAtsTeamWorkflow sourceTeamWf = getSourceTeamWf();
-      boolean workingBranchInWork = AtsClientService.get().getBranchService().isWorkingBranchInWork(sourceTeamWf);
-      boolean committedBranchExists = AtsClientService.get().getBranchService().isCommittedBranchExists(sourceTeamWf);
-      boolean editable = sourceTeamWf != null && (workingBranchInWork || committedBranchExists);
-      super.setEditable(editable);
+      super.setEditable(true);
    }
 
 }

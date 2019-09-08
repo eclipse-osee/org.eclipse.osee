@@ -111,7 +111,8 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       return query.exists();
    }
 
-   private Branch getBranch(BranchId branch) {
+   @Override
+   public Branch getBranch(BranchId branch) {
       return orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getExactlyOne();
    }
 

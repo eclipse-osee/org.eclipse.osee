@@ -42,8 +42,8 @@ public class AtsTaskSetDefinitionProvider implements IAtsTaskSetDefinitionProvid
             .andEventType(RuleEventType.ChangeReportTasks) //
             .andChgRptBuilder() //
             .andFromSiblingTeam(DemoArtifactToken.SAW_Requirements) //
-            .andToSiblingTeam(DemoArtifactToken.SAW_Test) //
-            .andToSiblingTeam(DemoArtifactToken.SAW_Code) //
+            .andToSiblingTeamAi(DemoArtifactToken.SAW_Test, DemoArtifactToken.SAW_Test_AI) //
+            .andToSiblingTeamAi(DemoArtifactToken.SAW_Code, DemoArtifactToken.SAW_Code_AI) //
             .andArtifactType(CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.PlainText) //
             .andNotArtifactType(CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.PlainText) //
             .andAttribute(CoreAttributeTypes.WordTemplateContent, CoreAttributeTypes.Name) //
