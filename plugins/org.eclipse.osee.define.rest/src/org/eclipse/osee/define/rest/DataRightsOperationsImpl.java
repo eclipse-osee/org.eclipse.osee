@@ -87,7 +87,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
             classification = overrideClassification.getDataRightsClassification();
          } else if (art.isValid()) {
             classification = art.getSoleAttributeAsString(CoreAttributeTypes.DataRightsClassification, "");
-            orientation = art.getSoleAttributeValue(CoreAttributeTypes.PageType, "Portrait");
+            orientation = art.getSoleAttributeValue(CoreAttributeTypes.PageOrientation, "Portrait");
          }
 
          request.addData(artifact, classification, PageOrientation.fromString(orientation), index);

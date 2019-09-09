@@ -83,7 +83,7 @@ public final class CoreAttributeTypes {
    public static final AttributeTypeToken NativeContent = AttributeTypeToken.valueOf(1152921504606847097L, "Native Content");
    public static final AttributeTypeToken Notes = AttributeTypeToken.valueOf(1152921504606847085L, "Notes");
    public static final AttributeTypeToken OseeAppDefinition = AttributeTypeToken.valueOf(1152921504606847380L, "Osee App Definition");
-   public static final AttributeTypeToken PageType = AttributeTypeToken.valueOf(1152921504606847091L, "Page Type");
+   public static final AttributeTypeToken PageOrientation = AttributeTypeToken.valueOf(1152921504606847091L, "Page Orientation");
    public static final AttributeTypeToken ParagraphNumber = AttributeTypeToken.valueOf(1152921504606847101L, "Paragraph Number");
    public static final AttributeTypeToken Partition = AttributeTypeToken.valueOf(1152921504606847111L, "Partition");
    public static final AttributeTypeToken Phone = AttributeTypeToken.valueOf(1152921504606847079L, "Phone");
@@ -116,7 +116,7 @@ public final class CoreAttributeTypes {
    public static final AttributeTypeToken UserSettings = AttributeTypeToken.valueOf(1152921504606847076L, "User Settings");
    public static final AttributeTypeToken VerificationEvent = AttributeTypeToken.valueOf(1152921504606847124L, "Verification Event");
    public static final AttributeTypeToken VerificationLevel = AttributeTypeToken.valueOf(1152921504606847115L, "Verification Level");
-   public static final AttributeTypeToken VerificationCriteria = AttributeTypeToken.valueOf(1152921504606847117L, "Verification Acceptance Criteria");
+   public static final AttributeTypeToken VerificationAcceptanceCriteria = AttributeTypeToken.valueOf(1152921504606847117L, "Verification Acceptance Criteria");
    public static final AttributeTypeToken Website = AttributeTypeToken.valueOf(1152921504606847084L, "Website");
    public static final AttributeTypeToken WebPreferences = AttributeTypeToken.valueOf(1152921504606847386L, "Web Preferences");
    public static final AttributeTypeToken WholeWordContent = AttributeTypeToken.valueOf(1152921504606847099L, "Whole Word Content");

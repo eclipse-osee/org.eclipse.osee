@@ -25,8 +25,8 @@ public class WordRendererUtil {
 
    public static PageOrientation getPageOrientation(Artifact artifact) {
       String pageTypeValue = null;
-      if (artifact.isAttributeTypeValid(CoreAttributeTypes.PageType)) {
-         pageTypeValue = artifact.getSoleAttributeValue(CoreAttributeTypes.PageType, "Portrait");
+      if (artifact.isAttributeTypeValid(CoreAttributeTypes.PageOrientation)) {
+         pageTypeValue = artifact.getSoleAttributeValue(CoreAttributeTypes.PageOrientation, "Portrait");
       }
       return PageOrientation.fromString(pageTypeValue);
    }

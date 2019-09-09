@@ -147,7 +147,7 @@ public class DoorsArtifactBuilder {
       mergeAttribute(combined, add, CoreAttributeTypes.QualificationMethod.getName(), ",");
       mergeAttribute(combined, add, CoreAttributeTypes.VerificationEvent.getName(), ",");
       mergeAttribute(combined, add, CoreAttributeTypes.VerificationLevel.getName(), ",");
-      mergeAttribute(combined, add, CoreAttributeTypes.VerificationCriteria.getName(), ",");
+      mergeAttribute(combined, add, CoreAttributeTypes.VerificationAcceptanceCriteria.getName(), ",");
    }
 
    private void mergeArtifactKind(RoughArtifact combined, RoughArtifact add) {
