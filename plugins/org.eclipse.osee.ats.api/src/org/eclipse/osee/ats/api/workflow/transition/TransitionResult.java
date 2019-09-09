@@ -29,6 +29,8 @@ public class TransitionResult implements ITransitionResult {
       "You can not transition a task that belongs to a completed Workflow.  Un-complete workflow first.");
    public static TransitionResult DELETE_WORKING_BRANCH_BEFORE_CANCEL =
       new TransitionResult("Working Branch exists.\n\nPlease delete working branch before transition to cancel.");
+   public static TransitionResult NOT_ALL_BRANCHES_COMMITTED =
+      new TransitionResult("All branches must be configured, committed, or overridden before transitioning.");
    public static TransitionResult WORKING_BRANCH_BEING_COMMITTED =
       new TransitionResult("Working Branch is being Committed.\n\nPlease wait till commit completes to transition.");
    public static TransitionResult WORKING_BRANCH_EXISTS =
