@@ -53,6 +53,8 @@ public interface IAtsConfigTxTeamDef {
 
    IAtsTeamDefinition getTeamDef();
 
+   IAtsConfigTxVersion andVersionTx(IAtsVersionArtifactToken version, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IOseeBranch... parallelVersions);
+
    IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken version, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IOseeBranch... parallelVersions);
 
    IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken... verToks);

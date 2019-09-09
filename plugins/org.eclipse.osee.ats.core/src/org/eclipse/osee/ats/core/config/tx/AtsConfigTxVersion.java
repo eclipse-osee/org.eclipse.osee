@@ -14,6 +14,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTx;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTxVersion;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -34,6 +35,18 @@ public class AtsConfigTxVersion extends AbstractAtsConfigTxObject<IAtsConfigTxVe
    @Override
    public IAtsVersion getVersion() {
       return version;
+   }
+
+   @Override
+   public IAtsConfigTxVersion andAllowCreate() {
+      changes.setSoleAttributeValue(version, AtsAttributeTypes.AllowCreateBranch, true);
+      return this;
+   }
+
+   @Override
+   public IAtsConfigTxVersion andAllowCommit() {
+      changes.setSoleAttributeValue(version, AtsAttributeTypes.AllowCommitBranch, true);
+      return this;
    }
 
 }

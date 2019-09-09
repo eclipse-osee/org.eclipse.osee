@@ -19,4 +19,8 @@ public interface IAtsConfigTxVersion {
 
    IAtsVersion getVersion();
 
+   IAtsConfigTxVersion andAllowCreate();
+
+   IAtsConfigTxVersion andAllowCommit();
+
 }
