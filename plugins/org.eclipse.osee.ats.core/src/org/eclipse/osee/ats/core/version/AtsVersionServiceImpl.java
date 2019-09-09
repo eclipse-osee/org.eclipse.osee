@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
@@ -251,17 +252,28 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
 
    @Override
    public IAtsVersion createVersion(String title, long id, IAtsChangeSet changes) {
-      return atsApi.getVersionFactory().createVersion(title, id, changes, atsApi);
+      return createVersion(title, id, changes, atsApi);
    }
 
    @Override
    public IAtsVersion createVersion(String name, IAtsChangeSet changes) {
-      return atsApi.getVersionFactory().createVersion(name, changes, atsApi);
+      return createVersion(name, changes, atsApi);
    }
 
    @Override
    public Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef) {
       return atsApi.getTeamDefinitionService().getVersions(teamDef);
+   }
+
+   @Override
+   public IAtsVersion createVersion(String title, IAtsChangeSet changes, AtsApi atsApi) {
+      return createVersion(title, Lib.generateArtifactIdAsInt(), changes, atsApi);
+   }
+
+   @Override
+   public IAtsVersion createVersion(String name, long id, IAtsChangeSet changes, AtsApi atsApi) {
+      ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.Version, name, id);
+      return new Version(atsApi.getLogger(), atsApi, artifact);
    }
 
 }

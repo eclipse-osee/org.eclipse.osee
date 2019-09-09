@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.version;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -61,5 +62,9 @@ public interface IAtsVersionService {
    Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef);
 
    IAtsVersion getVersion(ArtifactId versionId);
+
+   IAtsVersion createVersion(String title, long id, IAtsChangeSet changes, AtsApi atsApi);
+
+   IAtsVersion createVersion(String name, IAtsChangeSet changes, AtsApi atsApi);
 
 }

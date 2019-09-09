@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.api.ai;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -48,5 +49,9 @@ public interface IAtsActionableItemService {
    IAtsActionableItem getActionableItemById(ArtifactId aiId);
 
    IAtsActionableItem getActionableItem(IAtsTeamDefinition teamDef);
+
+   IAtsActionableItem createActionableItem(String name, long id, IAtsChangeSet changes, AtsApi atsApi);
+
+   IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, AtsApi atsApi);
 
 }

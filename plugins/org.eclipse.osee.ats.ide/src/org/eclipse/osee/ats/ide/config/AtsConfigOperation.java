@@ -116,7 +116,8 @@ public class AtsConfigOperation extends AbstractOperation {
    }
 
    private IAtsTeamDefinition createTeamDefinition(IAtsChangeSet changes, AtsApi atsApi) {
-      IAtsTeamDefinition teamDef = AtsClientService.get().createTeamDefinition(teamDefName, changes, atsApi);
+      IAtsTeamDefinition teamDef =
+         AtsClientService.get().getTeamDefinitionService().createTeamDefinition(teamDefName, changes, atsApi);
       changes.relate(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()),
          AtsRelationTypes.TeamMember_Member, AtsClientService.get().getUserService().getCurrentUser());
       changes.relate(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()),
@@ -130,7 +131,8 @@ public class AtsConfigOperation extends AbstractOperation {
       Collection<IAtsActionableItem> aias = new ArrayList<>();
 
       // Create top actionable item
-      IAtsActionableItem parentAi = AtsClientService.get().createActionableItem(teamDefName, changes, atsApi);
+      IAtsActionableItem parentAi =
+         AtsClientService.get().getActionableItemService().createActionableItem(teamDefName, changes, atsApi);
       changes.setSoleAttributeValue(parentAi, AtsAttributeTypes.Actionable, false);
       changes.relate(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, parentAi);
       changes.relate(ActionableItems.getTopActionableItem(AtsClientService.get()),
@@ -140,7 +142,8 @@ public class AtsConfigOperation extends AbstractOperation {
 
       // Create children actionable item
       for (String name : actionableItemsNames) {
-         IAtsActionableItem childAi = AtsClientService.get().createActionableItem(name, changes, atsApi);
+         IAtsActionableItem childAi =
+            AtsClientService.get().getActionableItemService().createActionableItem(name, changes, atsApi);
          changes.setSoleAttributeValue(childAi, AtsAttributeTypes.Actionable, true);
          changes.addChild(parentAi.getStoreObject(), childAi.getStoreObject());
          aias.add(childAi);

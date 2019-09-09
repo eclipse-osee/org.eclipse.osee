@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
-import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttribute;
@@ -99,7 +98,7 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
       if (workItem.isTeamWorkflow()) {
          changes.relate(newWorkItemArt, AtsRelationTypes.ActionToWorkflow_Action, workItem.getParentAction());
       }
-      IAtsLog atsLog = AtsCoreFactory.getLogFactory().getLogLoaded(workItem, atsApi.getAttributeResolver());
+      IAtsLog atsLog = atsApi.getLogFactory().getLogLoaded(workItem, atsApi.getAttributeResolver());
       atsLog.addLog(LogType.Note, null, "Workflow duplicated from " + workItem.getAtsId(), asUser.getUserId());
 
       // assignees == add in existing assignees, leads and originator (current user)

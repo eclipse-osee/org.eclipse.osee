@@ -23,9 +23,11 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Donald G. Dunne
@@ -102,6 +104,17 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
          teamDefs.add(atsApi.getTeamDefinitionService().getTeamDefinitionById(atsTeamArt));
       }
       return teamDefs;
+   }
+
+   @Override
+   public IAtsTeamDefinition createTeamDefinition(String name, long id, IAtsChangeSet changes, AtsApi atsApi) {
+      ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.TeamDefinition, name, id);
+      return new TeamDefinition(atsApi.getLogger(), atsApi, artifact);
+   }
+
+   @Override
+   public IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, AtsApi atsApi) {
+      return createTeamDefinition(name, Lib.generateArtifactIdAsInt(), changes, atsApi);
    }
 
 }

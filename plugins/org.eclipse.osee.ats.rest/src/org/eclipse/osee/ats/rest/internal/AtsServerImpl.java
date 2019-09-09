@@ -36,7 +36,6 @@ import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsApiImpl;
-import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.config.AtsConfigurationsService;
 import org.eclipse.osee.ats.rest.internal.config.ConvertWorkDefinitionsToJava;
@@ -121,8 +120,6 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
       ((AtsAttributeResolverServiceImpl) attributeResolverService).setOrcsApi(orcsApi);
       ((AtsAttributeResolverServiceImpl) attributeResolverService).setServices(this);
 
-      logFactory = AtsCoreFactory.newLogFactory();
-      stateFactory = AtsCoreFactory.newStateFactory(this, logFactory);
       storeService =
          new AtsStoreServiceImpl(attributeResolverService, this, orcsApi, stateFactory, logFactory, this, jdbcService);
 

@@ -38,7 +38,6 @@ import org.eclipse.osee.ats.api.util.IAtsHealthService;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
-import org.eclipse.osee.ats.api.version.IVersionFactory;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -142,8 +141,6 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkItemServ
    void clearCaches();
 
    ITeamWorkflowProvidersLazy getTeamWorkflowProviders();
-
-   IVersionFactory getVersionFactory();
 
    IAtsStateFactory getStateFactory();
 

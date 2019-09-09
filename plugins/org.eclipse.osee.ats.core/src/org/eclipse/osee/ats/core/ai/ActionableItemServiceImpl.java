@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -181,6 +182,17 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
          ai = atsApi.getActionableItemService().getActionableItemById(related.iterator().next());
       }
       return ai;
+   }
+
+   @Override
+   public IAtsActionableItem createActionableItem(String name, long id, IAtsChangeSet changes, AtsApi atsApi) {
+      ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.ActionableItem, name, id);
+      return new ActionableItem(atsApi.getLogger(), atsApi, artifact);
+   }
+
+   @Override
+   public IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, AtsApi atsApi) {
+      return createActionableItem(name, Lib.generateArtifactIdAsInt(), changes, atsApi);
    }
 
 }

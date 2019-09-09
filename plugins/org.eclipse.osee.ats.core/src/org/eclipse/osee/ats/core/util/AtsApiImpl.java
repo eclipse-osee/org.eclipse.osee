@@ -41,7 +41,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
-import org.eclipse.osee.ats.api.version.IVersionFactory;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -55,6 +54,10 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.config.TeamDefinitionServiceImpl;
+import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
+import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
+import org.eclipse.osee.ats.core.internal.state.AtsStateFactory;
+import org.eclipse.osee.ats.core.internal.state.AtsWorkStateFactory;
 import org.eclipse.osee.ats.core.program.AtsProgramService;
 import org.eclipse.osee.ats.core.review.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.core.version.AtsVersionServiceImpl;
@@ -102,11 +105,9 @@ public abstract class AtsApiImpl implements AtsApi {
    protected IAtsProgramService programService;
    protected IAtsStateFactory stateFactory;
    protected IArtifactResolver artifactResolver;
-   protected IVersionFactory versionFactory;
    protected IAtsBranchService branchService;
    protected IAtsReviewService reviewService;
    protected IAtsWorkStateFactory workStateFactory;
-   protected IAtsLogFactory logFactory;
    protected IAtsColumnService columnServices;
    protected IAtsActionableItemService actionableItemManager;
    protected IRelationResolver relationResolver;
@@ -119,6 +120,7 @@ public abstract class AtsApiImpl implements AtsApi {
    protected IAtsWorkDefinitionProviderService workDefinitionProviderService;
    protected IAtsEventService eventService;
    protected EventAdmin eventAdmin;
+   protected IAtsLogFactory logFactory;
    Collection<IAgileSprintHtmlOperation> agileSprintHtmlReportOperations = new LinkedList<>();
 
    public AtsApiImpl() {
@@ -168,12 +170,12 @@ public abstract class AtsApiImpl implements AtsApi {
       reviewService = new AtsReviewServiceImpl(this);
 
       workDefinitionService = new AtsWorkDefinitionServiceImpl(this, teamWorkflowProvidersLazy);
+      logFactory = new AtsLogFactory();
    }
 
    public void stop() {
       workDefinitionService = null;
       jdbcService = null;
-      versionFactory = null;
    }
 
    @Override
@@ -402,7 +404,7 @@ public abstract class AtsApiImpl implements AtsApi {
    @Override
    public IAtsStateFactory getStateFactory() {
       if (stateFactory == null) {
-         stateFactory = AtsCoreFactory.newStateFactory(this, getLogFactory());
+         stateFactory = new AtsStateFactory(this, new AtsWorkStateFactory(userService), new AtsLogFactory());
       }
       return stateFactory;
    }
@@ -410,16 +412,13 @@ public abstract class AtsApiImpl implements AtsApi {
    @Override
    public IAtsWorkStateFactory getWorkStateFactory() {
       if (workStateFactory == null) {
-         workStateFactory = AtsCoreFactory.getWorkStateFactory(getUserService());
+         workStateFactory = new AtsWorkStateFactory(userService);
       }
       return workStateFactory;
    }
 
    @Override
    public IAtsLogFactory getLogFactory() {
-      if (logFactory == null) {
-         logFactory = AtsCoreFactory.getLogFactory();
-      }
       return logFactory;
    }
 
@@ -439,14 +438,9 @@ public abstract class AtsApiImpl implements AtsApi {
    }
 
    @Override
-   public IVersionFactory getVersionFactory() {
-      return versionFactory;
-   }
-
-   @Override
    public IAtsColumnService getColumnService() {
       if (columnServices == null) {
-         columnServices = AtsCoreFactory.getColumnService(this);
+         columnServices = new AtsColumnService(this);
       }
       return columnServices;
    }

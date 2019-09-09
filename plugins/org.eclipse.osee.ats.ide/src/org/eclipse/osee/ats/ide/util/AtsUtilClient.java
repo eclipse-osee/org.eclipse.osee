@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.workdef.ITransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
@@ -47,16 +46,6 @@ public class AtsUtilClient {
 
    public static boolean isEmailEnabled() {
       return emailEnabled;
-   }
-
-   /**
-    * This is necessary for ATS Config object's id so they can be persisted. Can be removed once artifact ids go to
-    * random longs
-    *
-    * @return id for ATS Config Object creation
-    */
-   public static long createConfigObjectId() {
-      return Lib.generateArtifactIdAsInt();
    }
 
    public static void setEmailEnabled(boolean enabled) {

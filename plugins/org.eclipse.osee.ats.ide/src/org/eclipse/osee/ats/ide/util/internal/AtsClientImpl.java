@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
@@ -35,7 +34,6 @@ import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.team.ChangeType;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsHealthService;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
@@ -45,11 +43,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
-import org.eclipse.osee.ats.core.config.IActionableItemFactory;
-import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsApiImpl;
-import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.ide.branch.internal.AtsBranchServiceImpl;
@@ -65,9 +60,6 @@ import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.util.IArtifactMembersCache;
 import org.eclipse.osee.ats.ide.util.IAtsClient;
 import org.eclipse.osee.ats.ide.util.IAtsClientUtil;
-import org.eclipse.osee.ats.ide.workdef.config.internal.ActionableItemFactory;
-import org.eclipse.osee.ats.ide.workdef.config.internal.TeamDefinitionFactory;
-import org.eclipse.osee.ats.ide.workdef.config.internal.VersionFactory;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
@@ -96,9 +88,6 @@ import org.eclipse.osee.orcs.rest.client.OseeClient;
  */
 public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
 
-   private IActionableItemFactory actionableItemFactory;
-   private ITeamDefinitionFactory teamDefFactory;
-
    private ArtifactCollectorsCache<GoalArtifact> goalMembersCache;
    private ArtifactCollectorsCache<SprintArtifact> sprintItemsCache;
    private IAgileService agileService;
@@ -121,17 +110,12 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
       super.start();
 
       earnedValueService = new AtsEarnedValueImpl(logger, this);
-      actionableItemFactory = new ActionableItemFactory();
-      teamDefFactory = new TeamDefinitionFactory();
-      versionFactory = new VersionFactory();
 
       artifactResolver = new ArtifactResolverImpl(this);
       relationResolver = new AtsRelationResolverServiceImpl(this);
 
       branchService = new AtsBranchServiceImpl(this, teamWorkflowProvidersLazy);
 
-      logFactory = AtsCoreFactory.newLogFactory();
-      stateFactory = AtsCoreFactory.newStateFactory(this, logFactory);
       storeService = new AtsStoreService(this, getUserServiceClient(), jdbcService);
 
       queryService = new AtsQueryServiceImpl(this, jdbcService);
@@ -143,15 +127,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
 
       agileService = new AgileService(logger, this);
 
-   }
-
-   @Override
-   public void stop() {
-      super.stop();
-
-      versionService = null;
-      actionableItemFactory = null;
-      teamDefFactory = null;
    }
 
    public void setAttributeResolverService(IAttributeResolver attributeResolverService) {
@@ -235,28 +210,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
       }
 
       AtsBranchAccessManager.clearCaches();
-   }
-
-   @Override
-   public IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, AtsApi atsApi) {
-      return createTeamDefinition(name, AtsUtilClient.createConfigObjectId(), changes, atsApi);
-   }
-
-   @Override
-   public IAtsTeamDefinition createTeamDefinition(String name, long id, IAtsChangeSet changes, AtsApi atsApi) {
-      IAtsTeamDefinition item = teamDefFactory.createTeamDefinition(name, id, changes, atsApi);
-      return item;
-   }
-
-   @Override
-   public IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, AtsApi atsApi) {
-      return createActionableItem(name, AtsUtilClient.createConfigObjectId(), changes, atsApi);
-   }
-
-   @Override
-   public IAtsActionableItem createActionableItem(String name, long id, IAtsChangeSet changes, AtsApi atsApi) {
-      IAtsActionableItem item = actionableItemFactory.createActionableItem(name, id, changes, atsApi);
-      return item;
    }
 
    @Override

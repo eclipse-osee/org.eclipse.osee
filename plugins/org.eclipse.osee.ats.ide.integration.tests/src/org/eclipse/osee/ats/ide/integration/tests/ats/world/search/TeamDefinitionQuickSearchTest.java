@@ -46,8 +46,8 @@ public class TeamDefinitionQuickSearchTest {
 
       IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName(),
          AtsClientService.get().getUserService().getCurrentUser());
-      IAtsTeamDefinition randomTeamDef =
-         AtsClientService.get().createTeamDefinition(getClass().getSimpleName(), changes, AtsClientService.get());
+      IAtsTeamDefinition randomTeamDef = AtsClientService.get().getTeamDefinitionService().createTeamDefinition(
+         getClass().getSimpleName(), changes, AtsClientService.get());
       changes.execute();
 
       TeamDefinitionQuickSearch srch = new TeamDefinitionQuickSearch(Arrays.asList(randomTeamDef));

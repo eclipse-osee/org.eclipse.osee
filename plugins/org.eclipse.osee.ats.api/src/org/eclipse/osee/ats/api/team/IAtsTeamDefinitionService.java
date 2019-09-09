@@ -11,9 +11,11 @@
 package org.eclipse.osee.ats.api.team;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 
@@ -38,5 +40,9 @@ public interface IAtsTeamDefinitionService {
     * @return this object casted, else if hard artifact constructed, else load and construct
     */
    IAtsTeamDefinition getTeamDefinitionById(ArtifactId teamDefId);
+
+   IAtsTeamDefinition createTeamDefinition(String name, long id, IAtsChangeSet changes, AtsApi atsApi);
+
+   IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, AtsApi atsApi);
 
 }
