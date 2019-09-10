@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -386,5 +387,9 @@ public class RelationLink implements HasBranch {
 
    public String getIdString() {
       return String.valueOf(getId());
+   }
+
+   public RelationId getRelationId() {
+      return RelationId.valueOf(getId());
    }
 }

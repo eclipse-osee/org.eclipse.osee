@@ -115,7 +115,7 @@ public class WfeHeaderComposite extends Composite {
 
          if (WfeRelationsHyperlinkComposite.relationExists((AbstractWorkflowArtifact) workItem)) {
             smaRelationsComposite = new WfeRelationsHyperlinkComposite(this, SWT.NONE, editor);
-            smaRelationsComposite.create((AbstractWorkflowArtifact) workItem);
+            smaRelationsComposite.create();
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
