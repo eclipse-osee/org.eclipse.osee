@@ -11,7 +11,7 @@
  
 <!-- To only test certain modules run: mvn clean install -Dskiptests, then comment out these 3 modules and activate a profile below -->
   
-      <modules>
+      		<modules>
 			<module>../../plugins/org.eclipse.osee.dep.target</module>
 			<module>../../plugins/org.eclipse.osee.x.parent</module>
 			<module>../../plugins/org.eclipse.osee.ide.parent</module>
@@ -90,14 +90,20 @@
 		<url>http://www.eclipse.org/osee</url>
 	</organization>
 
- 	<repositories>
- 		
+ 	<repositories> 		
 	
-				<repository>
+		<repository>
 			<id>mylyn</id>
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/mylyn/releases/3.5/</url>
-			</repository>
+		</repository>
+			
+		<repository>
+			<id>findbugs</id>
+			<layout>p2</layout>
+			<url>http://findbugs.cs.umd.edu/eclipse</url>
+		</repository>
+		
 		<!--  <repository>
 			<id>orbit</id>
 			<layout>p2</layout>
