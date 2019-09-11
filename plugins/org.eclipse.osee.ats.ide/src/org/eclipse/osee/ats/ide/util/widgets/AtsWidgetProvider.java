@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.ide.agile.XStoreSprintReportsButton;
 import org.eclipse.osee.ats.ide.column.OperationalImpactWithWorkaroundXWidget;
 import org.eclipse.osee.ats.ide.column.OperationalImpactXWidget;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.XAssigneesListWidget;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.XRequestedHoursApprovalWidget;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.XVersionList;
@@ -168,6 +169,12 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XAssigneesListWidget();
       } else if (widgetName.equals(XArtifactReferencedAtsObjectAttributeWidget.WIDGET_ID)) {
          return new XArtifactReferencedAtsObjectAttributeWidget(name);
+      } else if (widgetName.equals(XRequestedHoursApprovalWidget.ID)) {
+         if (widgetLayoutData.isRequired()) {
+            return new XRequestedHoursApprovalWidget(true);
+         } else {
+            return new XRequestedHoursApprovalWidget();
+         }
       }
 
       return toReturn;

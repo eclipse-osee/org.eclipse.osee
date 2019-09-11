@@ -113,6 +113,7 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
       storeArt.setSoleAttributeValue(signDateAttrType, new Date());
       tx.addArtifact(storeArt);
       tx.execute();
+      refreshLabel();
    }
 
    @Override

@@ -319,6 +319,9 @@ artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Cont
 	attribute "ats.IPT"
 	attribute "ats.Commit Override"
 	attribute "ats.Estimate Assumptions"	
+	attribute "ats.Approve Requested Hours Date"
+	attribute "ats.Approve Requested Hours By"
+	
 }
 
 artifactType "Work Package" extends "Artifact" {
@@ -347,6 +350,23 @@ overrides artifactType "User" {
 	inheritAll
 	add attribute "ATS Quick Search"
 	add attribute "ATS User Config"
+}
+
+attributeType "ats.Approve Requested Hours Date" extends DateAttribute {
+	id 83388338833828
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	mediaType "text/calendar"
+}
+
+attributeType "ats.Approve Requested Hours By" extends LongAttribute {
+	id 224884848210198
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Commit Override" extends StringAttribute {

@@ -84,7 +84,9 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"));
+            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
+            new WidgetDefinition("Manager Approval", "XRequestedHoursApprovalWidget") //
+         );
 
       bld.andState(4, "Implement", StateType.Working) //
          .andToDefaultState(StateToken.Completed) //
