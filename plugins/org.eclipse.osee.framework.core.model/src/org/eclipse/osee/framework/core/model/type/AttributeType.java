@@ -120,11 +120,7 @@ public class AttributeType extends AbstractOseeType implements AttributeTypeToke
       return getFieldValueLogException("", ATTRIBUTE_TAGGER_ID_FIELD_KEY);
    }
 
-   /**
-    * Get the media type for this attribute type
-    *
-    * @return format id
-    */
+   @Override
    public String getMediaType() {
       return getFieldValueLogException("", ATTRIBUTE_MEDIA_TYPE_FIELD_KEY);
    }
