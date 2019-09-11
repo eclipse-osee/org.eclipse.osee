@@ -455,37 +455,30 @@ public class LisFileParser implements DispoImporterApi {
    }
 
    private void processResults(VCastResult result, OperationReport report) throws Exception {
+      boolean fileExists = false;
+      String pathExt = ".PATH";
       String resultPath = result.getPath();
       String resultPathAbs = vCastDir + File.separator + resultPath;
-      File resultsFile = new File(resultPathAbs);
-      if (!resultsFile.exists()) {
-         boolean fileExists = findAndProcessResultFile(resultsFile, resultPath, report);
-         if (!fileExists) {
-            if (!onProcessResultsFail(result, report, "PATH")) {
-               report.addEntry("SQL", String.format("Could not find DAT file [%s]", resultPathAbs), WARNING);
+      for (int i = 0; i <= pathExt.length(); i++) {
+         File resultsFile = new File(resultPathAbs);
+         if (!resultsFile.exists()) {
+            fileExists = findAndProcessResultFile(resultsFile, resultPath, report);
+            if (fileExists) {
+               break;
+            } else if (i < pathExt.length()) {
+               resultPath += pathExt.charAt(i);
+               resultPathAbs += pathExt.charAt(i);
             }
+         } else {
+            fileExists = true;
+            process(report, resultPath, resultsFile);
+            break;
          }
-      } else {
-         process(report, resultPath, resultsFile);
       }
-   }
-
-   private boolean onProcessResultsFail(VCastResult result, OperationReport report, String pathExtension) throws Exception {
-      String resultPath = result.getPath() + "." + pathExtension;
-      String resultPathAbs = vCastDir + File.separator + resultPath;
-      File resultsFile = new File(resultPathAbs);
-      boolean fileExists = false;
-      if (!resultsFile.exists()) {
-         fileExists = findAndProcessResultFile(resultsFile, resultPath, report);
-         if (pathExtension.length() > 1 && !fileExists) {
-            fileExists = onProcessResultsFail(result, report, pathExtension.substring(0, pathExtension.length() - 1));
-         }
-      } else {
-         process(report, resultPath, resultsFile);
-         fileExists = true;
+      if (!fileExists) {
+         String resultPathAbsFail = vCastDir + File.separator + result.getPath();
+         report.addEntry("SQL", String.format("Could not find DAT file [%s]", resultPathAbsFail), WARNING);
       }
-
-      return fileExists;
    }
 
    private boolean findAndProcessResultFile(File resultsFile, String resultPath, OperationReport report) {
