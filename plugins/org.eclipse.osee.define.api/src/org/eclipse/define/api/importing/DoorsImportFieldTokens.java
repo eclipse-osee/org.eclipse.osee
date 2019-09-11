@@ -31,7 +31,7 @@ public final class DoorsImportFieldTokens {
    private static final String DELETED_REGEX = "^Object Del.*";
    private static final String COMMENTS_REGEX = "^Comments.*";
    private static final String EXT_LINK_REGEX = "^Ext Doc Link.*";
-   private static final String DESCRIPTION_REGEX = "^Description.*";
+   private static final String DESCRIPTION_REGEX = "^Functional Description.*";
 
    private static final String OBJECT_TEXT_REGEX = "(.*?)<w:r>(.*?)</w:r>(.*)";
 
