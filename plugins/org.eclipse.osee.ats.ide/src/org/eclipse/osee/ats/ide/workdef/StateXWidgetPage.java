@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
@@ -190,25 +191,15 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
 
    @Override
    public void createXWidgetLayoutData(XWidgetRendererItem layoutData, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) {
-
       // If no tool tip, add global tool tip
       if (!Strings.isValid(xWidget.getToolTip())) {
          String description = "";
          if (layoutData.getXWidgetName().equals(XCommitManager.WIDGET_NAME)) {
             description = XCommitManager.DESCRIPTION;
-         }
-         AttributeTypeToken type = null;
-         if (layoutData.getStoreId() > 0) {
-            type = AtsAttributeTypes.getTypeById(layoutData.getStoreId());
-         } else {
-            type = AtsAttributeTypes.getTypeByName(layoutData.getStoreName());
-         }
-         if (type != null && Strings.isValid(type.getDescription())) {
-            description = type.getDescription();
-         }
-         if (Strings.isValid(description)) {
             xWidget.setToolTip(description);
             layoutData.setToolTip(description);
+         } else {
+            setAttrToolTip(xWidget, layoutData);
          }
       }
       // Store workAttr in control for use by help
@@ -216,6 +207,38 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
          xWidget.getControl().setData(layoutData);
       }
 
+   }
+
+   protected void setAttrToolTip(XWidget xWidget, XWidgetRendererItem layoutData) {
+      String description = "";
+      if (AttributeTypeManager.typeExists(layoutData.getStoreName())) {
+         try {
+            AttributeTypeToken type = null;
+            if (layoutData.getStoreId() > 0) {
+               type = AtsAttributeTypes.getTypeById(layoutData.getStoreId());
+            } else {
+               type = AtsAttributeTypes.getTypeByName(layoutData.getStoreName());
+            }
+            if (type == null) {
+               if (layoutData.getStoreId() > 0) {
+                  type = AttributeTypeManager.getTypeById(layoutData.getStoreId());
+               } else {
+                  type = AttributeTypeManager.getType(layoutData.getStoreName());
+               }
+            }
+            if (type != null && Strings.isValid(type.getDescription())) {
+               description = type.getDescription();
+            }
+            if (Strings.isValid(description)) {
+               xWidget.setToolTip(description);
+               layoutData.setToolTip(description);
+            }
+         } catch (Exception ex) {
+            String msg = String.format("Error setting tooltip for widget [%s].  Error %s (see log for details)",
+               xWidget.getLabel(), ex.getLocalizedMessage());
+            OseeLog.log(Activator.class, Level.SEVERE, msg, ex);
+         }
+      }
    }
 
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, IAtsStateDefinition stateDefinition, XModifiedListener xModListener, boolean isEditable) {

@@ -18,6 +18,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -237,11 +238,11 @@ public class SwtXWidgetRenderer {
          }
 
          xWidget.createWidgets(managedForm, currentComp, 2);
+         setAttrToolTip(xWidget, xWidgetLayoutData);
 
          if (xModListener != null) {
             xWidget.addXModifiedListener(xModListener);
          }
-
          xWidget.addXModifiedListener(refreshRequiredModListener);
 
          if (Strings.isValid(xWidgetLayoutData.getDoubleClickText())) {
@@ -266,6 +267,7 @@ public class SwtXWidgetRenderer {
       topLevelComp.layout();
 
       Displays.ensureInDisplayThread(new Runnable() {
+
          @Override
          public void run() {
             try {
@@ -278,6 +280,32 @@ public class SwtXWidgetRenderer {
             }
          }
       });
+   }
+
+   protected void setAttrToolTip(XWidget xWidget, XWidgetRendererItem layoutData) {
+      String description = "";
+      if (AttributeTypeManager.typeExists(layoutData.getStoreName())) {
+         try {
+            AttributeTypeToken type = null;
+            if (layoutData.getStoreId() > 0) {
+               type = AttributeTypeManager.getTypeById(layoutData.getStoreId());
+            } else {
+               type = AttributeTypeManager.getType(layoutData.getStoreName());
+            }
+
+            if (type != null && Strings.isValid(type.getDescription())) {
+               description = type.getDescription();
+            }
+            if (Strings.isValid(description)) {
+               xWidget.setToolTip(description);
+               layoutData.setToolTip(description);
+            }
+         } catch (Exception ex) {
+            String msg = String.format("Error setting tooltip for widget [%s].  Error %s (see log for details)",
+               xWidget.getLabel(), ex.getLocalizedMessage());
+            OseeLog.log(Activator.class, Level.SEVERE, msg, ex);
+         }
+      }
    }
 
    private void setupArtifactInfo(Artifact artifact, XWidgetRendererItem xWidgetLayoutData, XWidget xWidget) {
