@@ -459,25 +459,30 @@ public class LisFileParser implements DispoImporterApi {
       String pathExt = ".PATH";
       String resultPath = result.getPath();
       String resultPathAbs = vCastDir + File.separator + resultPath;
+      String errorLogging = "DAT file ";
       for (int i = 0; i <= pathExt.length(); i++) {
          File resultsFile = new File(resultPathAbs);
-         if (!resultsFile.exists()) {
+         fileExists = resultsFile.exists();
+         if (!fileExists) {
             fileExists = findAndProcessResultFile(resultsFile, resultPath, report);
             if (fileExists) {
+               errorLogging += String.format("{[%s]  [%s]} ", resultPathAbs, resultsFile);
                break;
             } else if (i < pathExt.length()) {
                resultPath += pathExt.charAt(i);
                resultPathAbs += pathExt.charAt(i);
             }
+            errorLogging += String.format("{[%s]  [%s]} ", resultPathAbs, resultsFile);
          } else {
-            fileExists = true;
+            errorLogging += String.format("{[%s]  [%s]} ", resultPathAbs, resultsFile);
             process(report, resultPath, resultsFile);
             break;
          }
       }
       if (!fileExists) {
-         String resultPathAbsFail = vCastDir + File.separator + result.getPath();
-         report.addEntry("SQL", String.format("Could not find DAT file [%s]", resultPathAbsFail), WARNING);
+         report.addEntry("SQL", String.format("Could not find %s", errorLogging), WARNING);
+      } else {
+         report.addEntry("SQL", String.format("Found %s", errorLogging), DispoSummarySeverity.IGNORE);
       }
    }
 
