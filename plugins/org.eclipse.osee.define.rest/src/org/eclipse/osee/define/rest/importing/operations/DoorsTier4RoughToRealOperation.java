@@ -15,6 +15,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.DoorsId;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.define.api.importing.ReqNumbering;
@@ -45,6 +46,7 @@ public class DoorsTier4RoughToRealOperation {
    private final BranchId branch;
    private final Map<String, ArtifactToken> knownArtsByReqNum = new HashMap<>();
    private final Map<String, ArtifactToken> knownArtsByDoorsID = new HashMap<>();
+   private final List<ArtifactToken> modifiedParents = new LinkedList<>();
    private final XResultData results;
 
    public DoorsTier4RoughToRealOperation(OrcsApi orcsApi, XResultData results, BranchId branch, ArtifactReadable destinationArtifact, RoughArtifactCollector rawData) {
@@ -70,7 +72,50 @@ public class DoorsTier4RoughToRealOperation {
          results.logf("%s resolved", roughArtifact.getName());
       }
       transaction.commit();
+
+      sortModifiedArtifacts();
+
       return results;
+   }
+
+   private void sortModifiedArtifacts() {
+      TransactionBuilder transaction =
+         orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem, "Sort Modified Artifacts");
+      for (ArtifactToken parentArtifact : modifiedParents) {
+         sortChildren(parentArtifact, transaction);
+      }
+      transaction.commit();
+   }
+
+   private void sortChildren(ArtifactToken parentArtifact, TransactionBuilder transaction) {
+      boolean firstChild = true;
+      List<ArtifactReadable> sortedChildren = new LinkedList<>();
+      List<ArtifactReadable> children =
+         orcsApi.getQueryFactory().fromBranch(branch).andId(parentArtifact).getArtifact().getChildren();
+      for (ArtifactReadable child : children) {
+         ReqNumbering childReqNum = new ReqNumbering(child.getSoleAttributeAsString(CoreAttributeTypes.DoorsHierarchy));
+         if (firstChild) {
+            sortedChildren.add(child);
+            firstChild = false;
+         } else {
+            boolean added = false;
+            //Starting at the end of sortedChildren because of an assumption that un-modified artifacts are already in order, but not guaranteed.
+            for (int i = sortedChildren.size(); i > 0; i--) {
+               ReqNumbering sortedChildReqNum = new ReqNumbering(
+                  sortedChildren.get(i - 1).getSoleAttributeAsString(CoreAttributeTypes.DoorsHierarchy));
+               //if the child currently being sorted is greater than the sorted child being compared, gets put into the list at current index
+               if (childReqNum.compareTo(sortedChildReqNum) == 1) {
+                  sortedChildren.add(i, child);
+                  added = true;
+                  break;
+               }
+            }
+            if (!added) {
+               sortedChildren.add(0, child);
+            }
+         }
+      }
+      transaction.setRelationsAndOrder(parentArtifact, CoreRelationTypes.Default_Hierarchical__Child, sortedChildren);
    }
 
    public void resolve(TransactionBuilder transaction, RoughArtifact roughArtifact, BranchId branch, ArtifactId realParentId, ArtifactId rootId) {
@@ -95,6 +140,9 @@ public class DoorsTier4RoughToRealOperation {
                transaction.createArtifact(artifactType, roughArtifact.getName(), roughArtifact.getGuid());
             getTranslator().translate(transaction, roughArtifact, createdArt);
             transaction.relate(parentArtifact, CoreRelationTypes.Default_Hierarchical__Child, createdArt, USER_DEFINED);
+            if (!modifiedParents.contains(parentArtifact)) {
+               modifiedParents.add(parentArtifact);
+            }
             knownArtsByDoorsID.put(roughArtifact.getRoughAttribute(CoreAttributeTypes.DoorsId.getName()), createdArt);
             knownArtsByReqNum.put(
                roughArtifact.getRoughAttribute(CoreAttributeTypes.DoorsHierarchy.getName()).replace("-", "."),
