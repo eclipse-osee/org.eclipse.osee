@@ -71,8 +71,16 @@ public class AtsXWidgetValidateManager {
 
    public static Collection<WidgetResult> validateTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef, AtsApi atsApi) {
       List<WidgetResult> results = new ArrayList<>();
-      for (IAtsWidgetDefinition widgetDef : atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(
-         workItem.getStateDefinition())) {
+      List<IAtsWidgetDefinition> widgetItems =
+         atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(workItem.getStateDefinition());
+      List<IAtsWidgetDefinition> headerWidgetItems = atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(
+         workItem.getStateDefinition(), workItem.getWorkDefinition().getHeaderDef().getLayoutItems());
+      if (!headerWidgetItems.isEmpty()) {
+         for (IAtsWidgetDefinition item : headerWidgetItems) {
+            widgetItems.add(item);
+         }
+      }
+      for (IAtsWidgetDefinition widgetDef : widgetItems) {
          ArtifactValueProvider provider = new ArtifactValueProvider(workItem.getStoreObject(), widgetDef, atsApi);
          AtsXWidgetValidateManager.validateTransition(workItem, results, provider, widgetDef,
             workItem.getStateDefinition(), toStateDef, atsApi);

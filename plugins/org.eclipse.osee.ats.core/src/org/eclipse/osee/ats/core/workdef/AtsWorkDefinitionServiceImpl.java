@@ -388,6 +388,13 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       return widgets;
    }
 
+   @Override
+   public List<IAtsWidgetDefinition> getWidgetsFromLayoutItems(IAtsStateDefinition stateDef, List<IAtsLayoutItem> layoutItems) {
+      List<IAtsWidgetDefinition> widgets = new ArrayList<>();
+      getWidgets(stateDef, widgets, layoutItems);
+      return widgets;
+   }
+
    private static void getWidgets(IAtsStateDefinition stateDef, List<IAtsWidgetDefinition> widgets, List<IAtsLayoutItem> stateItems) {
       for (IAtsLayoutItem stateItem : stateItems) {
          if (stateItem instanceof IAtsCompositeLayoutItem) {

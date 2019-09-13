@@ -59,6 +59,8 @@ public interface IAtsWorkDefinitionService {
     */
    List<IAtsWidgetDefinition> getWidgetsFromLayoutItems(IAtsStateDefinition stateDef);
 
+   List<IAtsWidgetDefinition> getWidgetsFromLayoutItems(IAtsStateDefinition stateDef, List<IAtsLayoutItem> layoutItems);
+
    IAtsWorkDefinition getWorkDefinitionForPeerToPeerReview(IAtsPeerToPeerReview review);
 
    IAtsStateDefinition getStateDefinitionByName(IAtsWorkItem workItem, String stateName);
