@@ -10,12 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration;
 
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.AtsTest_AllAts_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.DemoDbPopulateSuite;
 import org.eclipse.osee.ats.ide.integration.tests.DirtyArtifactCacheTest;
-import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.AtsIntegrationTestsWorkDefinitionProvider;
 import org.eclipse.osee.ats.ide.integration.tests.framework.skynet.core.artifact.SkyentCoreArtifact_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.FrameworkUiSkynetTest_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.dialog.FrameworkUiSkynetTest_Dialog_Suite;
@@ -51,9 +48,6 @@ public class AtsClientIntegrationTestSuite {
    public static void setup() {
       time = new ElapsedTime("AtsClientIntegrationTestSuite", true);
       OseeProperties.setIsInTest(true);
-      for (IAtsWorkDefinitionBuilder workDefBldr : (new AtsIntegrationTestsWorkDefinitionProvider()).getWorkDefinitionBuilders()) {
-         AtsClientService.get().getWorkDefinitionService().addWorkDefinition(workDefBldr);
-      }
    }
 
    @AfterClass

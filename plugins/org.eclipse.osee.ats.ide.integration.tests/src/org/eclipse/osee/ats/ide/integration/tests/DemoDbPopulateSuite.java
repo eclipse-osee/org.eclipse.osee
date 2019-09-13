@@ -11,8 +11,10 @@
 package org.eclipse.osee.ats.ide.integration.tests;
 
 import static org.junit.Assert.assertTrue;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.demo.AtsTest_DemoPopulateAndTest_Suite;
+import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.AtsIntegrationTestsWorkDefinitionProvider;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtilTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -45,6 +47,11 @@ public class DemoDbPopulateSuite {
       assertTrue("Should be run on demo database.", TestUtil.isDemoDb());
 
       RenderingUtil.setPopupsAllowed(false);
+
+      for (IAtsWorkDefinitionBuilder workDefBldr : (new AtsIntegrationTestsWorkDefinitionProvider()).getWorkDefinitionBuilders()) {
+         AtsClientService.get().getWorkDefinitionService().addWorkDefinition(workDefBldr);
+      }
+
    }
 
    @AfterClass
