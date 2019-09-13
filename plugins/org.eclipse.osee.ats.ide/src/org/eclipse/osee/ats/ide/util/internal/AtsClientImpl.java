@@ -33,12 +33,10 @@ import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
-import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsHealthService;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.agile.AgileService;
@@ -61,7 +59,6 @@ import org.eclipse.osee.ats.ide.util.IArtifactMembersCache;
 import org.eclipse.osee.ats.ide.util.IAtsClient;
 import org.eclipse.osee.ats.ide.util.IAtsClientUtil;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.internal.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.ide.workflow.internal.AtsRelationResolverServiceImpl;
@@ -275,20 +272,10 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    }
 
    @Override
-   public ChangeType getChangeType(IAtsAction fromAction) {
-      return ChangeTypeUtil.getChangeType(fromAction);
-   }
-
-   @Override
    public Collection<ArtifactTypeToken> getArtifactTypes() {
       List<ArtifactTypeToken> types = new ArrayList<>();
       types.addAll(ArtifactTypeManager.getAllTypes());
       return types;
-   }
-
-   @Override
-   public void setChangeType(IAtsObject atsObject, ChangeType changeType, IAtsChangeSet changes) {
-      ChangeTypeUtil.setChangeType(atsObject, changeType);
    }
 
    @Override

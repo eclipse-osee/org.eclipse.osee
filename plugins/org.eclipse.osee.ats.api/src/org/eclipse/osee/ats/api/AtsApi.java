@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProviderService;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
-import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
@@ -43,7 +42,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
@@ -82,10 +80,6 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkItemServ
    IAtsWorkDefinitionService getWorkDefinitionService();
 
    IAtsVersionService getVersionService();
-
-   void setChangeType(IAtsObject atsObject, ChangeType changeType, IAtsChangeSet changes);
-
-   ChangeType getChangeType(IAtsAction fromAction);
 
    String getAtsId(ArtifactToken artifact);
 

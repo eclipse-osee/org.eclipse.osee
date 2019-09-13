@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -83,28 +84,60 @@ public class ImportActionsViaSpreadsheetTest {
       List<Artifact> arts =
          ArtifactQuery.getArtifactListFromName(FIRST_ACTION_TITLE, AtsClientService.get().getAtsBranch());
       Assert.assertEquals("One Action and 3 Team Workflows should be created", 4, arts.size());
-      int codeCount = 0, testCount = 0;
-      TeamWorkFlowArtifact testWf = null;
+      TeamWorkFlowArtifact testWf = null, code1Wf = null, code2Wf = null;
       for (Artifact art : arts) {
          if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
-            if (teamArt.getTeamDefinition().getName().contains("Code")) {
-               codeCount++;
+            if (teamArt.getDescription().startsWith("Phase 1")) {
+               code1Wf = teamArt;
+            } else if (teamArt.getDescription().startsWith("Phase 2")) {
+               code2Wf = teamArt;
             } else if (teamArt.getTeamDefinition().getName().contains("Test")) {
-               testCount++;
                testWf = teamArt;
             }
          }
       }
-      Assert.assertEquals(2, codeCount);
-      Assert.assertEquals(1, testCount);
 
       Assert.assertNotNull(testWf);
+      Assert.assertEquals("Fix the SAW Editor", testWf.getName());
       Assert.assertEquals("What needs to be done by Test team", testWf.getDescription());
       Assert.assertEquals("5", testWf.getSoleAttributeValue(AtsAttributeTypes.Priority, ""));
+      Assert.assertEquals("Category", testWf.getSoleAttributeValue(AtsAttributeTypes.Category1, ""));
+      Assert.assertEquals("3", testWf.getSoleAttributeValue(AtsAttributeTypes.Points, ""));
       Assert.assertTrue(testWf.getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0) == 4.0);
       Assert.assertEquals("Improvement", testWf.getSoleAttributeValue(AtsAttributeTypes.ChangeType, null));
       Assert.assertEquals("SAW_Bld_3", AtsClientService.get().getVersionService().getTargetedVersion(testWf).getName());
+      Assert.assertEquals(DemoUsers.Joe_Smith, testWf.getAssignees().iterator().next());
+      Assert.assertEquals(DemoUsers.Kay_Jones.getUserId(),
+         testWf.getSoleAttributeValue(AtsAttributeTypes.CreatedBy, ""));
+
+      Assert.assertNotNull(code1Wf);
+      Assert.assertEquals("Fix the SAW Editor", code1Wf.getName());
+      Assert.assertEquals("Phase 1 of what needs to be fixed", code1Wf.getDescription());
+      Assert.assertEquals("2", code1Wf.getSoleAttributeValue(AtsAttributeTypes.Priority, ""));
+      Assert.assertEquals("", code1Wf.getSoleAttributeValue(AtsAttributeTypes.Category1, ""));
+      Assert.assertEquals("3", code1Wf.getSoleAttributeValue(AtsAttributeTypes.Points, ""));
+      Assert.assertTrue(code1Wf.getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0) == 23.0);
+      Assert.assertEquals("Improvement", code1Wf.getSoleAttributeValue(AtsAttributeTypes.ChangeType, null));
+      Assert.assertEquals("SAW_Bld_2",
+         AtsClientService.get().getVersionService().getTargetedVersion(code1Wf).getName());
+      Assert.assertEquals(DemoUsers.Joe_Smith, code1Wf.getAssignees().iterator().next());
+      Assert.assertEquals(DemoUsers.Kay_Jones.getUserId(),
+         code1Wf.getSoleAttributeValue(AtsAttributeTypes.CreatedBy, ""));
+
+      Assert.assertNotNull(code2Wf);
+      Assert.assertEquals("Fix the SAW Editor", code2Wf.getName());
+      Assert.assertEquals("Phase 2 targeted for different version", code2Wf.getDescription());
+      Assert.assertEquals("3", code2Wf.getSoleAttributeValue(AtsAttributeTypes.Priority, ""));
+      Assert.assertEquals("", code2Wf.getSoleAttributeValue(AtsAttributeTypes.Category1, ""));
+      Assert.assertEquals("3", code2Wf.getSoleAttributeValue(AtsAttributeTypes.Points, ""));
+      Assert.assertTrue(code2Wf.getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0) == 3.0);
+      Assert.assertEquals("Improvement", code2Wf.getSoleAttributeValue(AtsAttributeTypes.ChangeType, null));
+      Assert.assertEquals("SAW_Bld_2",
+         AtsClientService.get().getVersionService().getTargetedVersion(code2Wf).getName());
+      Assert.assertEquals(DemoUsers.Joe_Smith, code2Wf.getAssignees().iterator().next());
+      Assert.assertEquals(DemoUsers.Joe_Smith.getUserId(),
+         code2Wf.getSoleAttributeValue(AtsAttributeTypes.CreatedBy, ""));
    }
 
    @org.junit.Test

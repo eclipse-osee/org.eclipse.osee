@@ -31,7 +31,7 @@ public class ChangeTypeUtil {
    public static ChangeType getChangeType(IAtsObject atsObject) {
       return ChangeType.getChangeType(
          AtsClientService.get().getQueryServiceClient().getArtifact(atsObject).getSoleAttributeValue(
-            AtsAttributeTypes.ChangeType, ""));
+            AtsAttributeTypes.ChangeType, "None"));
    }
 
    public static void setChangeType(IAtsObject atsObject, ChangeType changeType) {

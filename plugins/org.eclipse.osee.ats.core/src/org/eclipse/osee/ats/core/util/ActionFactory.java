@@ -556,9 +556,10 @@ public class ActionFactory implements IAtsActionFactory {
       Conditions.checkNotNull(fromAction, "fromAction");
       Conditions.checkNotNull(toTeam, "toTeam");
       Conditions.checkNotNull(changes, "changes");
+      ChangeType changeType =
+         ChangeType.valueOf(attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.ChangeType, "None"));
       setArtifactIdentifyData(toTeam, fromAction.getName(),
-         attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.Description, ""),
-         atsApi.getChangeType(fromAction),
+         attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.Description, ""), changeType,
          attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.Priority, ""),
          attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.ValidationRequired, false),
          attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.NeedBy, (Date) null), changes);
@@ -573,7 +574,7 @@ public class ActionFactory implements IAtsActionFactory {
          changes.addAttribute(atsObject, AtsAttributeTypes.Description, desc);
       }
       if (changeType != null) {
-         atsApi.setChangeType(atsObject, changeType, changes);
+         changes.setSoleAttributeValue(atsObject, AtsAttributeTypes.ChangeType, changeType.name());
       }
       if (Strings.isValid(priority)) {
          changes.addAttribute(atsObject, AtsAttributeTypes.Priority, priority);

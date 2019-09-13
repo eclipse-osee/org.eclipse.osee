@@ -18,19 +18,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
-import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.util.IAtsHealthService;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
@@ -54,7 +51,6 @@ import org.eclipse.osee.ats.rest.internal.util.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsStoreServiceImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsActionEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskService;
-import org.eclipse.osee.ats.rest.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.rest.util.IAtsNotifierServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -218,16 +214,6 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
 
    public AtsNotifierServiceImpl getNotifyService() {
       return notifyService;
-   }
-
-   @Override
-   public void setChangeType(IAtsObject atsObject, ChangeType changeType, IAtsChangeSet changes) {
-      ChangeTypeUtil.setChangeType(atsObject, changeType, changes);
-   }
-
-   @Override
-   public ChangeType getChangeType(IAtsAction fromAction) {
-      return ChangeTypeUtil.getChangeType(fromAction);
    }
 
    @Override
