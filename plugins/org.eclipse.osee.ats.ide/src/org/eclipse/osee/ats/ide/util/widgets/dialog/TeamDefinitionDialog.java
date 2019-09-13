@@ -58,7 +58,7 @@ public class TeamDefinitionDialog extends FilteredTreeDialog {
       super.setInput(input);
       if (input instanceof Collection<?>) {
          Collection<?> coll = (Collection<?>) input;
-         if (coll.size() == 1) {
+         if (coll.size() == 1 && getTreeViewer() != null) {
             getTreeViewer().getViewer().expandToLevel(coll.iterator().next(), 1);
          }
       } else if (input instanceof IAtsTeamDefinition) {
