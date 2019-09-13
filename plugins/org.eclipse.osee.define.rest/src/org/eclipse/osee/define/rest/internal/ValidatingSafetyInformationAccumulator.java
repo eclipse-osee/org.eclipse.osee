@@ -19,9 +19,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -31,6 +33,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author David W. Miller
@@ -40,6 +43,9 @@ public final class ValidatingSafetyInformationAccumulator {
    private final ValidatingSafetyReportGenerator safetyReport;
    private String functionalCategory;
    private List<ArtifactReadable> subsystemFunctions;
+   private List<ArtifactToken> tokensA;
+   private List<ArtifactToken> tokensB;
+   private List<ArtifactToken> tokensC;
    private final HashMap<ArtifactReadable, List<ArtifactReadable>> subsystemRequirements = Maps.newHashMap();
    private final HashMap<ArtifactReadable, List<ArtifactReadable>> softwareRequirements = Maps.newHashMap();
    private static final Predicate<ArtifactReadable> notSoftwareRequirement = new Predicate<ArtifactReadable>() {
@@ -61,16 +67,25 @@ public final class ValidatingSafetyInformationAccumulator {
       writer = providedWriter;
    }
 
-   public String calculateBoeingEquivalentSWQualLevel(String softwareReqDAL, int partitionCount) {
+   public void setupPartitions(QueryFactory qf, BranchId branch) {
+      tokensA = qf.fromBranch(branch).andIsOfType(CoreArtifactTypes.Component).andAttributeIs(CoreAttributeTypes.IDAL,
+         "A").asArtifactTokens();
+      tokensB = qf.fromBranch(branch).andIsOfType(CoreArtifactTypes.Component).andAttributeIs(CoreAttributeTypes.IDAL,
+         "B").asArtifactTokens();
+      tokensC = qf.fromBranch(branch).andIsOfType(CoreArtifactTypes.Component).andAttributeIs(CoreAttributeTypes.IDAL,
+         "C").asArtifactTokens();
+   }
+
+   public String calculateLevelForPartition(List<String> partitions) {
       String toReturn = "";
 
       if (functionalCategory.equals("IFR/IMC")) {
-         if (checkLevel(softwareReqDAL)) {
-            if (partitionCount > 1) {
-               toReturn = "C*";
-            } else {
-               toReturn = "C";
-            }
+         if (contains(partitions, tokensA)) {
+            toReturn = "A";
+         } else if (contains(partitions, tokensB)) {
+            toReturn = "B";
+         } else if (contains(partitions, tokensC)) {
+            toReturn = "C";
          } else {
             toReturn = "BP";
          }
@@ -78,6 +93,17 @@ public final class ValidatingSafetyInformationAccumulator {
          toReturn = "BP";
       }
       return toReturn;
+   }
+
+   private boolean contains(List<String> container, List<ArtifactToken> checkItems) {
+      for (String element : container) {
+         for (ArtifactToken art : checkItems) {
+            if (element.equals(art.getName())) {
+               return true;
+            }
+         }
+      }
+      return false;
    }
 
    public void reset(ArtifactReadable systemFunction) {
@@ -133,14 +159,6 @@ public final class ValidatingSafetyInformationAccumulator {
       for (ArtifactReadable subsystemFunction : subsystemFunctions) {
          processSubsystemFunction(subsystemFunction, currentRowValues);
       }
-   }
-
-   private boolean checkLevel(String input) {
-      boolean toReturn = false;
-      if (input.equals("A") || input.equals("B") || input.equals("C")) {
-         toReturn = true;
-      }
-      return toReturn;
    }
 
    private String convertSafetyCriticalityToDAL(String inputSafetyCriticality) {
@@ -210,14 +228,16 @@ public final class ValidatingSafetyInformationAccumulator {
       /**
        * check to see if the safety criticality of the child at least equal to the parent
        */
-      int parentValue = SafetyCriticalityLookup.getDALLevel(criticality);
-      int childValue = SafetyCriticalityLookup.getDALLevel(current);
-
-      if (parentValue < childValue) {
-         writeCell(String.format("%s [Error:<%s]", current, criticality), currentRowValues, col);
-      } else {
-         checkBackTrace(art, childValue, thisType, relType, otherType, currentRowValues, col);
-      }
+      // error check removed at users request, print value instead
+      writeCell(current, currentRowValues, col);
+      //      int parentValue = SafetyCriticalityLookup.getDALLevel(criticality);
+      //      int childValue = SafetyCriticalityLookup.getDALLevel(current);
+      //
+      //      if (parentValue < childValue) {
+      //         writeCell(String.format("%s [Error:<%s]", current, criticality), currentRowValues, col);
+      //      } else {
+      //         checkBackTrace(art, childValue, thisType, relType, otherType, currentRowValues, col);
+      //      }
       return current;
    }
 
@@ -269,11 +289,10 @@ public final class ValidatingSafetyInformationAccumulator {
          currentRowValues, ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 3);
       writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.SoftwareControlCategoryRationale, ""),
          currentRowValues, ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 4);
+      List<String> partitions = softwareRequirement.getAttributeValues(CoreAttributeTypes.Partition);
 
-      writeCell(
-         calculateBoeingEquivalentSWQualLevel(softwareRequirementDAL,
-            softwareRequirement.getAttributeCount(CoreAttributeTypes.Partition)),
-         currentRowValues, ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 5);
+      writeCell(calculateLevelForPartition(partitions), currentRowValues,
+         ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 5);
       writeCell(functionalCategory, currentRowValues, ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 6);
 
       writeCell(softwareRequirement.getAttributeValuesAsString(CoreAttributeTypes.Partition), currentRowValues,

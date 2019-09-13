@@ -81,8 +81,9 @@ public class ValidatingSafetyReportGenerator {
    }
 
    private void init(OrcsApi orcsApi, BranchId branchId, ISheetWriter writer) {
-      accumulator = new ValidatingSafetyInformationAccumulator(this, writer);
       queryFactory = orcsApi.getQueryFactory();
+      accumulator = new ValidatingSafetyInformationAccumulator(this, writer);
+      accumulator.setupPartitions(queryFactory, branchId);
       componentUtil = new ComponentUtil(branchId, orcsApi);
    }
 

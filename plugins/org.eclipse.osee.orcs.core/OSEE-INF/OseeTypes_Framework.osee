@@ -1791,6 +1791,7 @@ artifactType "Component" extends "Artifact" {
 	id 57
 	attribute "Developmental"
 	attribute "GFE / CFE"
+	attribute "IDAL"
 }
 
 artifactType "Code Unit" extends "Artifact" {
