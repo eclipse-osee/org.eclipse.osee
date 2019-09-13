@@ -53,7 +53,7 @@ public class AtsXCommitManagerValidator extends AtsXWidgetValidator {
                   boolean hasBranchesLeftToCommit = !branchService.getBranchesLeftToCommit(teamWf).isEmpty();
 
                   boolean changesExistToCommit =
-                     workingBranchInWork || committedBranchExists || hasBranchesLeftToCommit;
+                     (workingBranchInWork || committedBranchExists) && hasBranchesLeftToCommit;
 
                   if (changesExistToCommit) {
                      boolean allObjectsToCommitToConfigured = branchService.isAllObjectsToCommitToConfigured(teamWf);
