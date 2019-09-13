@@ -125,6 +125,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
 
       // unassigned is not useful in the selection choice dialog
       users.remove(SystemUser.UnAssigned);
+      users.remove(SystemUser.BootStrap);
       UserCheckTreeDialog uld =
          new UserCheckTreeDialog("Select Assignees", "Select to assign.\nDeSelect to un-assign.", users);
       uld.setIncludeAutoSelectButtons(true);
