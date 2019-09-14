@@ -126,7 +126,8 @@ public class ActionFactory implements IAtsActionFactory {
          createdDate = new Date();
       }
       ActionResult result = createAction(asUser, data.getTitle(), data.getDescription(), data.getChangeType(),
-         data.getPriority(), data.isValidationRequired(), needByDate, ais, createdDate, createdBy, null, changes);
+         data.getPriority(), data.isValidationRequired(), needByDate, ais, createdDate, createdBy,
+         java.util.Collections.emptyList(), changes);
 
       if (Strings.isValid(data.getPoints())) {
          for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
@@ -295,7 +296,7 @@ public class ActionFactory implements IAtsActionFactory {
    }
 
    @Override
-   public ActionResult createAction(IAtsUser user, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, IAtsChangeSet changes) {
+   public ActionResult createAction(IAtsUser user, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate, IAtsUser createdBy, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes) {
       Conditions.checkNotNullOrEmptyOrContainNull(actionableItems, "actionableItems");
       Conditions.assertNotNullOrEmpty(title, "Title must be specified");
       // if "tt" is title, this is an action created for development. To
@@ -326,14 +327,16 @@ public class ActionFactory implements IAtsActionFactory {
             leads.add(AtsCoreUsers.UNASSIGNED_USER);
          }
          IAtsTeamWorkflow teamWf = createTeamWorkflow(action, teamDef, actionableItems, leads, changes, createdDate,
-            createdBy, newActionListener);
+            createdBy, newActionListeners);
          teamWfs.add(teamWf);
          changes.add(teamWf);
       }
 
       // Notify listener of action creation
-      if (newActionListener != null) {
-         newActionListener.actionCreated(action);
+      if (newActionListeners != null) {
+         for (INewActionListener listener : newActionListeners) {
+            listener.actionCreated(action);
+         }
       }
 
       changes.add(action);
@@ -349,12 +352,12 @@ public class ActionFactory implements IAtsActionFactory {
    }
 
    @Override
-   public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<IAtsUser> assignees, IAtsChangeSet changes, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, CreateTeamOption... createTeamOption) {
+   public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<IAtsUser> assignees, IAtsChangeSet changes, Date createdDate, IAtsUser createdBy, Collection<INewActionListener> newActionListeners, CreateTeamOption... createTeamOption) {
       ArtifactTypeToken teamWorkflowArtifactType = getTeamWorkflowArtifactType(teamDef);
 
       // NOTE: The persist of the workflow will auto-email the assignees
       IAtsTeamWorkflow teamWf = createTeamWorkflow(action, teamDef, actionableItems, assignees, createdDate, createdBy,
-         teamWorkflowArtifactType, newActionListener, changes, createTeamOption);
+         teamWorkflowArtifactType, newActionListeners, changes, createTeamOption);
       return teamWf;
    }
 
@@ -388,7 +391,7 @@ public class ActionFactory implements IAtsActionFactory {
    }
 
    @Override
-   public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, ArtifactTypeToken artifactType, INewActionListener newActionListener, IAtsChangeSet changes, CreateTeamOption... createTeamOption) {
+   public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, ArtifactTypeToken artifactType, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes, CreateTeamOption... createTeamOption) {
 
       if (!Arrays.asList(createTeamOption).contains(CreateTeamOption.Duplicate_If_Exists)) {
          // Make sure team doesn't already exist
@@ -410,8 +413,10 @@ public class ActionFactory implements IAtsActionFactory {
 
       IAtsTeamWorkflow teamWf = null;
       ArtifactToken artToken = null;
-      if (newActionListener != null) {
-         artToken = newActionListener.getArtifactToken(applicableAis);
+      if (newActionListeners != null) {
+         for (INewActionListener listener : newActionListeners) {
+            artToken = listener.getArtifactToken(applicableAis);
+         }
       }
       if (artToken == null) {
          teamWf = atsApi.getWorkItemService().getTeamWf(changes.createArtifact(artifactType, ""));
@@ -434,14 +439,16 @@ public class ActionFactory implements IAtsActionFactory {
       setAtsId(teamWf, teamWf.getTeamDefinition(), changes);
 
       IAtsWorkDefinition workDefinition =
-         atsApi.getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(teamWf, newActionListener, changes);
+         atsApi.getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(teamWf, newActionListeners, changes);
 
       // Initialize state machine
       initializeNewStateMachine(teamWf, assignees, createdDate, createdBy, workDefinition, changes);
 
       // Notify listener of team creation
-      if (newActionListener != null) {
-         newActionListener.teamCreated(action, teamWf, changes);
+      if (newActionListeners != null) {
+         for (INewActionListener listener : newActionListeners) {
+            listener.teamCreated(action, teamWf, changes);
+         }
       }
 
       // Relate Action to WorkFlow
@@ -620,4 +627,5 @@ public class ActionFactory implements IAtsActionFactory {
       }
       return jsonFactory;
    }
+
 }

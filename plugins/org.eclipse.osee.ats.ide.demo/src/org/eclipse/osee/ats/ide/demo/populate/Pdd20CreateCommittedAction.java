@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.demo.populate;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -63,8 +64,8 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
 
       ActionResult actionResult = AtsClientService.get().getActionFactory().createAction(null,
          DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "Problem with the Diagram View",
-         ChangeType.Problem, priority, false, null, aias, createdDate, createdBy, new ArtifactTokenActionListener(),
-         changes);
+         ChangeType.Problem, priority, false, null, aias, createdDate, createdBy,
+         Arrays.asList(new ArtifactTokenActionListener()), changes);
       for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
 
          if (teamWf.getTeamDefinition().getName().contains(

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.demo.populate;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -57,8 +58,8 @@ public class Pdd22CreateUnCommittedConflictedAction implements IPopulateDemoData
 
       actionResult = AtsClientService.get().getActionFactory().createAction(null,
          DemoArtifactToken.SAW_UnCommitedConflicted_Req_TeamWf.getName(), "Problem with the Diagram View",
-         ChangeType.Problem, priority, false, null, aias, createdDate, createdBy, new ArtifactTokenActionListener(),
-         changes);
+         ChangeType.Problem, priority, false, null, aias, createdDate, createdBy,
+         Arrays.asList(new ArtifactTokenActionListener()), changes);
       for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
 
          TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices(),

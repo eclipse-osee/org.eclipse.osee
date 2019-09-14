@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.demo.populate;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +39,8 @@ public class Pdd86CreateProblemWithTheUserWindowAction implements IPopulateDemoD
       ActionResult actionResult = AtsClientService.get().getActionFactory().createAction(null,
          DemoArtifactToken.ProblemWithTheUserWindow_TeamWf.getName(), "Problem with the user window",
          ChangeType.Problem, "4", false, null, aias, new Date(),
-         AtsClientService.get().getUserService().getCurrentUser(), new ArtifactTokenActionListener(), changes);
+         AtsClientService.get().getUserService().getCurrentUser(), Arrays.asList(new ArtifactTokenActionListener()),
+         changes);
 
       transitionTo(actionResult.getFirstTeam(), TeamState.Implement, changes);
 

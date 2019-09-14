@@ -493,13 +493,15 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    @Override
-   public IAtsWorkDefinition computeWorkDefinitionForTeamWfNotYetCreated(IAtsTeamWorkflow teamWf, INewActionListener newActionListener) {
+   public IAtsWorkDefinition computeWorkDefinitionForTeamWfNotYetCreated(IAtsTeamWorkflow teamWf, Collection<INewActionListener> newActionListeners) {
       // If work def id is specified by listener, set as attribute
       IAtsWorkDefinition workDefinition = null;
-      if (newActionListener != null) {
-         AtsWorkDefinitionToken workDefTok = newActionListener.getOverrideWorkDefinitionId(teamWf);
-         if (workDefTok != null) {
-            workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(workDefTok);
+      if (newActionListeners != null) {
+         for (INewActionListener listener : newActionListeners) {
+            AtsWorkDefinitionToken workDefTok = listener.getOverrideWorkDefinitionId(teamWf);
+            if (workDefTok != null) {
+               workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(workDefTok);
+            }
          }
       }
       // else if work def is specified by provider, set as attribute
@@ -546,10 +548,10 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    @Override
-   public IAtsWorkDefinition computeAndSetWorkDefinitionAttrs(IAtsWorkItem workItem, INewActionListener newActionListener, IAtsChangeSet changes) {
+   public IAtsWorkDefinition computeAndSetWorkDefinitionAttrs(IAtsWorkItem workItem, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes) {
       IAtsWorkDefinition workDefinition = null;
       if (workItem.isTeamWorkflow()) {
-         workDefinition = computeWorkDefinitionForTeamWfNotYetCreated((IAtsTeamWorkflow) workItem, newActionListener);
+         workDefinition = computeWorkDefinitionForTeamWfNotYetCreated((IAtsTeamWorkflow) workItem, newActionListeners);
       } else if (workItem.isTask()) {
          workDefinition = computedWorkDefinitionForTaskNotYetCreated(workItem.getParentTeamWorkflow());
       } else {

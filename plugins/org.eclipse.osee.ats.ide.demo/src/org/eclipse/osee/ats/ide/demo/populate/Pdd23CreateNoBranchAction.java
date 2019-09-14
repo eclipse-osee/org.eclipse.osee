@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.demo.populate;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -51,7 +52,7 @@ public class Pdd23CreateNoBranchAction implements IPopulateDemoDatabase {
 
       ActionResult actionResult = AtsClientService.get().getActionFactory().createAction(null, title,
          "Problem with the Diagram View", ChangeType.Problem, priority, false, null, aias, createdDate, createdBy,
-         new ArtifactTokenActionListener(), changes);
+         Arrays.asList(new ArtifactTokenActionListener()), changes);
       for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
 
          boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");

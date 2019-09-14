@@ -12,7 +12,6 @@ package org.eclipse.osee.define.rest.internal.wordupdate;
 
 import java.util.Arrays;
 import java.util.Date;
-
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
@@ -137,17 +136,17 @@ public class SafetyWorkflowEventHandler implements EventHandler {
          IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Create System Safety Workflow",
             atsApi.getUserService().getUserByArtifactId(userArt));
          IAtsAction action = atsApi.getActionFactory().getAction(teamWf);
-         teamWorkflow =
-            atsApi.getActionFactory().createTeamWorkflow(action, teamDef, java.util.Collections.singleton(ai),
-               Arrays.asList(AtsCoreUsers.UNASSIGNED_USER), changes, new Date(), createdBy, new INewActionListener() {
+         teamWorkflow = atsApi.getActionFactory().createTeamWorkflow(action, teamDef,
+            java.util.Collections.singleton(ai), Arrays.asList(AtsCoreUsers.UNASSIGNED_USER), changes, new Date(),
+            createdBy, Arrays.asList(new INewActionListener() {
 
-                  @Override
-                  public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) {
-                     changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.Description,
-                        "Review System Safety Changes for the associated RPCR to Complete the Workflow");
-                  }
+               @Override
+               public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) {
+                  changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.Description,
+                     "Review System Safety Changes for the associated RPCR to Complete the Workflow");
+               }
 
-               });
+            }));
          changes.setSoleAttributeValue(teamWorkflow, CoreAttributeTypes.Name,
             "Safety Workflow for " + teamWf.getAtsId());
          changes.execute();

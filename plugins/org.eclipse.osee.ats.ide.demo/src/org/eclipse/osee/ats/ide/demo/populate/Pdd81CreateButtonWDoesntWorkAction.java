@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.demo.populate;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +39,8 @@ public class Pdd81CreateButtonWDoesntWorkAction implements IPopulateDemoDatabase
       ActionResult actionResult = AtsClientService.get().getActionFactory().createAction(null,
          DemoArtifactToken.ButtonWDoesntWorkOnSituationPage_TeamWf.getName(), "Problem with the Situation Page",
          ChangeType.Problem, "3", false, null, aias, new Date(),
-         AtsClientService.get().getUserService().getCurrentUser(), new ArtifactTokenActionListener(), changes);
+         AtsClientService.get().getUserService().getCurrentUser(), Arrays.asList(new ArtifactTokenActionListener()),
+         changes);
 
       setValidationRequired(changes, actionResult.getFirstTeam());
 

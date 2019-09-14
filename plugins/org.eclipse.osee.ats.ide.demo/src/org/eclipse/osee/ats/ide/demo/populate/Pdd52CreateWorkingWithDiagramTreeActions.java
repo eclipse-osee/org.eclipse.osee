@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.demo.populate;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -58,10 +59,10 @@ public class Pdd52CreateWorkingWithDiagramTreeActions implements IPopulateDemoDa
       for (ArtifactToken version : getVersionToWorkflowToken().keySet()) {
          currentVersion = version;
          ArtifactToken teamWfArtToken = getVersionToWorkflowToken().get(version);
-         ActionResult actionResult =
-            AtsClientService.get().getActionFactory().createAction(null, teamWfArtToken.getName(),
-               "Problem with the Diagram Tree", ChangeType.Problem, "3", false, null, aias, createdDate,
-               AtsClientService.get().getUserService().getCurrentUser(), new ArtifactTokenActionListener(), changes);
+         ActionResult actionResult = AtsClientService.get().getActionFactory().createAction(null,
+            teamWfArtToken.getName(), "Problem with the Diagram Tree", ChangeType.Problem, "3", false, null, aias,
+            createdDate, AtsClientService.get().getUserService().getCurrentUser(),
+            Arrays.asList(new ArtifactTokenActionListener()), changes);
 
          transitionTo(actionResult.getFirstTeam(), getState(version), changes);
 

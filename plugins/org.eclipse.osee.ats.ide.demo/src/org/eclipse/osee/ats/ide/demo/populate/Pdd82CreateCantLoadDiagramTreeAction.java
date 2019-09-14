@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.demo.populate;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -36,7 +37,7 @@ public class Pdd82CreateCantLoadDiagramTreeAction implements IPopulateDemoDataba
       AtsClientService.get().getActionFactory().createAction(null,
          DemoArtifactToken.CantLoadDiagramTree_TeamWf.getName(), "Problem with the Diagram Tree", ChangeType.Problem,
          "3", false, null, aias, new Date(), AtsClientService.get().getUserService().getCurrentUser(),
-         new ArtifactTokenActionListener(), changes);
+         Arrays.asList(new ArtifactTokenActionListener()), changes);
 
       changes.execute();
    }
