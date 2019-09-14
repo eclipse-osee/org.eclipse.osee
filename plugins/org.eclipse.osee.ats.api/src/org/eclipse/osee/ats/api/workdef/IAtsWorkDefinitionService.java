@@ -105,4 +105,6 @@ public interface IAtsWorkDefinitionService {
 
    XResultData validateWorkDefinitions();
 
+   IAtsWorkDefinition computeWorkDefinition(IAtsWorkItem workItem, boolean useAttr);
+
 }

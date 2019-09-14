@@ -219,8 +219,16 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    @Override
    public IAtsWorkDefinition computeWorkDefinition(IAtsWorkItem workItem) {
+      return computeWorkDefinition(workItem, true);
+   }
+
+   @Override
+   public IAtsWorkDefinition computeWorkDefinition(IAtsWorkItem workItem, boolean useAttr) {
       // If this artifact specifies it's own workflow definition, use it
-      IAtsWorkDefinition workDef = getWorkDefinitionFromArtifactsAttributeValue(workItem);
+      IAtsWorkDefinition workDef = null;
+      if (useAttr) {
+         workDef = getWorkDefinitionFromArtifactsAttributeValue(workItem);
+      }
       if (workDef == null) {
          // Tasks should never be needed once a database is converted to store work def as attribute
          if (workItem instanceof IAtsTask && ((IAtsTask) workItem).getParentTeamWorkflow() != null) {

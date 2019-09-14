@@ -48,6 +48,7 @@ import org.eclipse.osee.ats.rest.internal.workitem.AtsTeamWfEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsWorkPackageEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.StateResource;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.ConvertWorkDefinitionToAttributes;
+import org.eclipse.osee.ats.rest.internal.workitem.operations.FixWorkDefinitionToAttributeConversion;
 import org.eclipse.osee.ats.rest.internal.workitem.workdef.AtsWorkDefEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.world.WorldResource;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
@@ -109,6 +110,7 @@ public class AtsApplication extends Application {
       atsServer.addAtsDatabaseConversion(atsConfgConversion);
       atsServer.addAtsDatabaseConversion(new ConvertAtsConfigGuidAttributes());
       atsServer.addAtsDatabaseConversion(new ConvertWorkDefinitionToAttributes());
+      atsServer.addAtsDatabaseConversion(new FixWorkDefinitionToAttributeConversion());
 
       // Register agile html report operations
       atsServer.getAgileSprintHtmlReportOperations().add(new SprintSummaryOperation(atsServer, registry));
