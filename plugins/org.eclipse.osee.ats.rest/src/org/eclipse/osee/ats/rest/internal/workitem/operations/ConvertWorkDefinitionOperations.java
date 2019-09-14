@@ -54,10 +54,10 @@ public class ConvertWorkDefinitionOperations {
    }
 
    public void convert(XResultData rd) {
-      //      convertMissingWorkItemWorkDefRefAttribute(rd);
+      convertMissingWorkItemWorkDefRefAttribute(rd);
       convertMissingWorkItemWorkDefNameAttribute(rd);
-      //      convertMissingTeamDefinitionWorkDefAttributes(rd);
-      //      convertMissingTeamWorkFlowWorkDefAttributes(rd);
+      convertMissingTeamDefinitionWorkDefAttributes(rd);
+      convertMissingTeamWorkFlowWorkDefAttributes(rd);
    }
 
    private void convertMissingWorkItemWorkDefNameAttribute(XResultData rd) {
