@@ -169,15 +169,16 @@ public class NewActionPage3 extends WizardPage {
       return page.getLayoutData(attrName).getXWidget();
    }
 
-   private static void getWizardXWidgetExtensions() {
+   public static Set<IAtsWizardItem> getWizardXWidgetExtensions() {
       if (!wizardExtensionItems.isEmpty()) {
-         return;
+         return wizardExtensionItems;
       }
 
-      IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.ide.AtsWizardItem");
+      IExtensionPoint point =
+         Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.ide.AtsWizardItem");
       if (point == null) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't access AtsWizardItem extension point");
-         return;
+         return wizardExtensionItems;
       }
       IExtension[] extensions = point.getExtensions();
       for (IExtension extension : extensions) {
@@ -202,6 +203,7 @@ public class NewActionPage3 extends WizardPage {
             }
          }
       }
+      return wizardExtensionItems;
    }
 
    public static boolean isPage3Necesary(Collection<IAtsActionableItem> aias) {

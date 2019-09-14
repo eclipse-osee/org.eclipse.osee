@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.ats.ide.actions.wizard;
 
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
@@ -46,11 +46,11 @@ public class NewActionJob extends Job {
    private final boolean validationRequired;
    private final Set<IAtsActionableItem> actionableItems;
    private final NewActionWizard wizard;
-   private final INewActionListener newActionListener;
+   private final Collection<INewActionListener> newActionListeners;
    private boolean openOnComplete = true;
    private ActionResult result;
 
-   public NewActionJob(String title, String desc, ChangeType changeType, String priority, Date needByDate, boolean validationRequired, Set<IAtsActionableItem> actionableItems, NewActionWizard wizard, INewActionListener newActionListener) {
+   public NewActionJob(String title, String desc, ChangeType changeType, String priority, Date needByDate, boolean validationRequired, Set<IAtsActionableItem> actionableItems, NewActionWizard wizard, Collection<INewActionListener> newActionListeners) {
       super("Creating New Action");
       this.title = title;
       this.desc = desc;
@@ -60,7 +60,7 @@ public class NewActionJob extends Job {
       this.validationRequired = validationRequired;
       this.actionableItems = actionableItems;
       this.wizard = wizard;
-      this.newActionListener = newActionListener;
+      this.newActionListeners = newActionListeners;
    }
 
    @Override
@@ -77,7 +77,7 @@ public class NewActionJob extends Job {
             AtsClientService.get().getUserService().getCurrentUser(), title, desc, changeType, priority,
             validationRequired, needByDate, actionableItems, new Date(),
             AtsClientService.get().getUserService().getCurrentUser(),
-            newActionListener == null ? Collections.emptyList() : Arrays.asList(newActionListener), changes);
+            newActionListeners == null ? Collections.emptyList() : newActionListeners, changes);
 
          if (wizard != null) {
             wizard.notifyAtsWizardItemExtensions(result, changes);

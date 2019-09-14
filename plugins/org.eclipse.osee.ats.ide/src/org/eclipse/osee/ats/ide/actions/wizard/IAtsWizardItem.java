@@ -36,7 +36,9 @@ public interface IAtsWizardItem {
    /**
     * @return true if widgets will be added based on selected aias
     */
-   boolean hasWizardXWidgetExtensions(Collection<IAtsActionableItem> aias);
+   default boolean hasWizardXWidgetExtensions(Collection<IAtsActionableItem> aias) {
+      return false;
+   }
 
    /**
     * Determine if Action is valid to create based on wizard data entered. hasWizardXWidgetExtenstions will be called to
@@ -79,6 +81,13 @@ public interface IAtsWizardItem {
     */
    public default void getWizardXWidgetExtensions(Collection<IAtsActionableItem> selectedIAtsActionableItems, Composite comp) {
       // do nothing
+   }
+
+   /**
+    * @return Overriden NewActionPage2 if needed
+    */
+   default NewActionPage2 getNewActionPage2(NewActionWizard newActionWizard) {
+      return null;
    }
 
 }

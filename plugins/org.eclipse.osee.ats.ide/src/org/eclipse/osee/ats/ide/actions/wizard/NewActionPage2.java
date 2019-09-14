@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.ide.actions.wizard;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.workflow.ATSXWidgetOptionResolver;
@@ -46,6 +47,7 @@ public class NewActionPage2 extends WizardPage {
    protected static final String PRIORITY = "Priority";
    protected static final String DEADLINE = "Deadline";
    protected static final String VALIDATION_REQUIRED = "Validation Required";
+   protected INewActionListener newActionListener;
 
    public NewActionPage2(NewActionWizard wizard) {
       super("Create new ATS Action", "Create ATS Action", null);
@@ -120,20 +122,26 @@ public class NewActionPage2 extends WizardPage {
                }
             }
          });
-         ((XCheckBox) getXWidget(VALIDATION_REQUIRED)).getLabelWidget().addListener(SWT.MouseUp, new Listener() {
-            @Override
-            public void handleEvent(Event event) {
-               if (event.button == 3) {
-                  handlePopulateWithDebugInfo();
+         if (addValidation()) {
+            ((XCheckBox) getXWidget(VALIDATION_REQUIRED)).getLabelWidget().addListener(SWT.MouseUp, new Listener() {
+               @Override
+               public void handleEvent(Event event) {
+                  if (event.button == 3) {
+                     handlePopulateWithDebugInfo();
+                  }
                }
-            }
-         });
+            });
+         }
 
          setControl(comp);
          setHelpContexts();
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
+   }
+
+   protected boolean addValidation() {
+      return true;
    }
 
    protected boolean addValidation() {
@@ -155,12 +163,16 @@ public class NewActionPage2 extends WizardPage {
       try {
          ((XText) getXWidget(DESCRIPTION)).set("See title");
          // Must use skynet attribute name cause these widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
-         ((XCombo) getXWidget(PRIORITY)).set("4");
+         ((XCombo) getXWidget(PRIORITY)).set(getDefaultPriority());
          ((XCombo) getXWidget(CHANGE_TYPE)).set("Improvement");
          debugPopulated = true;
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
+   }
+
+   protected String getDefaultPriority() {
+      return "4";
    }
 
    @Override
@@ -174,6 +186,10 @@ public class NewActionPage2 extends WizardPage {
    protected XWidget getXWidget(String displayName) {
       Conditions.checkNotNull(page, "WorkPage");
       return page.getLayoutData(displayName).getXWidget();
+   }
+
+   public INewActionListener getNewActionListener() {
+      return newActionListener;
    }
 
 }

@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.actions.wizard;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -56,8 +59,15 @@ public class NewActionWizard extends Wizard implements INewWizard {
             AWorkbench.popup(result);
             return false;
          }
+         List<INewActionListener> listeners = new ArrayList<INewActionListener>();
+         if (newActionListener != null) {
+            listeners.add(newActionListener);
+         }
+         if (page2.getNewActionListener() != null) {
+            listeners.add(page2.getNewActionListener());
+         }
          job = new NewActionJob(getTitle(), getDescription(), getChangeType(), getPriority(), getNeedBy(),
-            getValidation(), getSelectedIAtsActionableItems(), this, newActionListener);
+            getValidation(), getSelectedIAtsActionableItems(), this, listeners);
          job.setUser(true);
          job.setOpenOnComplete(openOnComplete);
          job.setPriority(Job.LONG);
@@ -78,8 +88,22 @@ public class NewActionWizard extends Wizard implements INewWizard {
    public void addPages() {
       page1 = new NewActionPage1(this);
       addPage(page1);
-      page2 = new NewActionPage2(this);
+      page2 = createNewActionPage2();
       addPage(page2);
+   }
+
+   public NewActionPage2 createNewActionPage2() {
+      for (IAtsWizardItem item : NewActionPage3.getWizardXWidgetExtensions()) {
+         try {
+            NewActionPage2 page2 = item.getNewActionPage2(this);
+            if (page2 != null) {
+               return page2;
+            }
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
+      return new NewActionPage2(this);
    }
 
    @Override
@@ -121,7 +145,10 @@ public class NewActionWizard extends Wizard implements INewWizard {
    }
 
    public boolean getValidation() {
-      return ((XCheckBox) page2.getXWidget(NewActionPage2.VALIDATION_REQUIRED)).isChecked();
+      if (page2.addValidation()) {
+         return ((XCheckBox) page2.getXWidget(NewActionPage2.VALIDATION_REQUIRED)).isChecked();
+      }
+      return false;
    }
 
    public Date getNeedBy() {

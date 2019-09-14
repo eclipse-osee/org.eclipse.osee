@@ -120,7 +120,9 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
       }
    }
 
-   protected abstract boolean hasWizardXWidgetExtensions(IAtsTeamDefinition teamDef);
+   protected boolean hasWizardXWidgetExtensions(IAtsTeamDefinition teamDef) {
+      return false;
+   }
 
    private void createWorkPackageWidget(IAtsTeamDefinition teamDef, Composite teamComp) {
       XWorkPackageHyperlinkWidget wpComp = new XWorkPackageHyperlinkWidget(teamDef);
