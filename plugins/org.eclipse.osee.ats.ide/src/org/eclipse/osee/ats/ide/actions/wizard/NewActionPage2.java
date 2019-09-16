@@ -136,6 +136,14 @@ public class NewActionPage2 extends WizardPage {
       }
    }
 
+   protected boolean addValidation() {
+      return true;
+   }
+
+   protected boolean hasNeedByDate() {
+      return true;
+   }
+
    private void setHelpContexts() {
       HelpUtil.setHelp(this.getControl(), AtsHelpContext.NEW_ACTION_PAGE_2);
    }

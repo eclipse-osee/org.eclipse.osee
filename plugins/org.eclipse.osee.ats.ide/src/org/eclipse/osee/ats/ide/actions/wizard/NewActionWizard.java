@@ -125,7 +125,10 @@ public class NewActionWizard extends Wizard implements INewWizard {
    }
 
    public Date getNeedBy() {
-      return ((XDate) page2.getXWidget(NewActionPage2.DEADLINE)).getDate();
+      if (page2.hasNeedByDate()) {
+         return ((XDate) page2.getXWidget(NewActionPage2.DEADLINE)).getDate();
+      }
+      return null;
    }
 
    public void notifyAtsWizardItemExtensions(ActionResult actionResult, IAtsChangeSet changes) {
