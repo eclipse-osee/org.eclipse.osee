@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 
 /**
@@ -22,6 +23,8 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 public final class DispoConstants {
 
    // @formatter:off
+   public static final NamespaceToken DISPO = NamespaceToken.valueOf(8, "dispo", "Namespace for dispo system and content management types");
+
    public static final ArtifactTypeToken DispositionSet = ArtifactTypeToken.valueOf(807, "Disposition Set");
    public static final ArtifactTypeToken DispositionableItem = ArtifactTypeToken.valueOf(808, "Dispositionable Item");
 

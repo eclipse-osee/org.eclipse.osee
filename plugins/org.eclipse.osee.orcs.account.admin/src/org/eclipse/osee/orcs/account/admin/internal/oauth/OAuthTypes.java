@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 
 /**
@@ -26,6 +27,8 @@ public final class OAuthTypes {
    }
 
    // @formatter:off
+   public static final NamespaceToken OAUTH = NamespaceToken.valueOf(10, "oauth", "Namespace for oauth system and content management types");
+
    public static final ArtifactTypeToken OAUTH_CLIENT = ArtifactTypeToken.valueOf(756912961500447526L, "OAuth Client");
 
    public static final AttributeTypeToken OAuthClientWebsiteUri = AttributeTypeToken.valueOf(7824657901879283800L, "oauth.client.Website URI");

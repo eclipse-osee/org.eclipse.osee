@@ -11,10 +11,13 @@
 package org.eclipse.osee.ote.define.AUTOGEN;
 
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.NamespaceToken;
 
 public final class OteAttributeTypes {
 
    // @formatter:off
+   public static final NamespaceToken OTE = NamespaceToken.valueOf(11, "ote", "Namespace for ote system and content management types");
+
    public static final AttributeTypeToken BuildId = AttributeTypeToken.valueOf(1152921504606847306L, "Build Id");
    public static final AttributeTypeToken Checksum = AttributeTypeToken.valueOf(1152921504606847307L, "Checksum");
    public static final AttributeTypeToken ElapsedDate = AttributeTypeToken.valueOf(1152921504606847296L, "Elapsed Date");

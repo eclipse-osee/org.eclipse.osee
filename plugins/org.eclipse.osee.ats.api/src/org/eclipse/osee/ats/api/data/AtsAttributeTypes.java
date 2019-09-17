@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.api.data;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
 /**
@@ -25,6 +26,8 @@ public final class AtsAttributeTypes {
    public static final Map<Long, AttributeTypeToken> idToTypeMap = new HashMap<>();
 
    // @formatter:off
+   public static final NamespaceToken ATS = NamespaceToken.valueOf(2, "ats", "Namespace for ats system and content management types");
+
    public static final AttributeTypeToken ActionDetailsFormat = createType(1152921504606847199L, "Action Details Format", "Format of string when push Action Details Copy button on SMA Workflow Editor.");
    public static final AttributeTypeToken Actionable = createType(1152921504606847160L, "Actionable", "True if item can have Action written against or assigned to.");
    public static final AttributeTypeToken ActionableItemReference = createType(6780739363553225476L, "Actionable Item Reference", "Actionable Items that are impacted by this change.");
