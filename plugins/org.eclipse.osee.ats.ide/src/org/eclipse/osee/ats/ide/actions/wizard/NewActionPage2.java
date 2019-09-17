@@ -144,10 +144,6 @@ public class NewActionPage2 extends WizardPage {
       return true;
    }
 
-   protected boolean addValidation() {
-      return true;
-   }
-
    protected boolean hasNeedByDate() {
       return true;
    }
