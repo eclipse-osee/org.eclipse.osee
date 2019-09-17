@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats.ide.actions.wizard;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 import java.util.logging.Level;
@@ -75,7 +76,8 @@ public class NewActionJob extends Job {
          result = AtsClientService.get().getActionFactory().createAction(
             AtsClientService.get().getUserService().getCurrentUser(), title, desc, changeType, priority,
             validationRequired, needByDate, actionableItems, new Date(),
-            AtsClientService.get().getUserService().getCurrentUser(), Arrays.asList(newActionListener), changes);
+            AtsClientService.get().getUserService().getCurrentUser(),
+            newActionListener == null ? Collections.emptyList() : Arrays.asList(newActionListener), changes);
 
          if (wizard != null) {
             wizard.notifyAtsWizardItemExtensions(result, changes);
