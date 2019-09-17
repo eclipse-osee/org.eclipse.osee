@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -42,6 +43,7 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -83,6 +85,7 @@ public class ValidateProcFuncCalls {
       this(jdbcClient, branch, new XResultData(false), orcsApi);
    }
 
+   // http://localhost:8092/define/branch/8203443705848388493/validate/proc
    public XResultData get() {
       ElapsedTime time = new ElapsedTime("run");
 
@@ -228,7 +231,8 @@ public class ValidateProcFuncCalls {
    private List<Long> getSoftwareReqIds(BranchId branch) {
       List<Long> resultIds = new LinkedList<>();
       for (ArtifactId art : orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(
-         CoreArtifactTypes.SoftwareRequirement).asArtifactIds()) {
+         CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.SoftwareRequirementFunction,
+         CoreArtifactTypes.SoftwareRequirementProcedure).asArtifactIds()) {
          resultIds.add(art.getId());
       }
       return resultIds;
@@ -292,11 +296,16 @@ public class ValidateProcFuncCalls {
       }
    }
 
-   // RPCR 23418
+   // http://localhost:8092/define/branch/conv
+   boolean reportOnly = true;
+
    public void searchAndReplace() {
-      //      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem,
-      //         "Fix UI names in SoftReq word content.");
-      BranchId branch = BranchId.valueOf(4792973526268274318L);
+      BranchId branch = BranchId.valueOf(8203443705848388493L);
+      TransactionBuilder tx = null;
+      if (!reportOnly) {
+         tx = orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem,
+            "Fix UI names in SoftReq word content.");
+      }
       String wasPath = "C:/UserData/SrsConversion/was/";
       String isPath = "C:/UserData/SrsConversion/is/";
 
@@ -319,20 +328,19 @@ public class ValidateProcFuncCalls {
                   continue;
                }
 
-               for (Pair<String, String> srchReplStr : getSrchReplStrs()) {
-                  String srch = srchReplStr.getFirst();
-                  String repl = srchReplStr.getSecond();
-                  reqXmlStr = reqXmlStr.replace(srch, repl);
-               }
+               reqXmlStr = performSearchAndReplace(reqXmlStr);
+               reqXmlStr = fixXmlInUiNameAndUppercase(reqXmlStrOrig, reqXmlStr);
 
                if (!reqXmlStr.equals(reqXmlStrOrig)) {
                   Lib.writeStringToFile(reqXmlStrOrig, new File(wasPath + "id" + swArt.getIdString() + ".txt"));
                   Lib.writeStringToFile(reqXmlStr, new File(isPath + "id" + swArt.getIdString() + ".txt"));
                }
 
-               //               if (!reqXmlStr.equals(reqXmlStrOrig)) {
-               //                  tx.setSoleAttributeValue(swArt, CoreAttributeTypes.WordTemplateContent, reqXmlStr);
-               //               }
+               if (!reportOnly && tx != null) {
+                  if (!reqXmlStr.equals(reqXmlStrOrig)) {
+                     tx.setSoleAttributeValue(swArt, CoreAttributeTypes.WordTemplateContent, reqXmlStr);
+                  }
+               }
 
             } catch (Exception ex) {
                String msg = String.format("Exception processing art %s - ex: %s", swArt.toStringWithId(),
@@ -342,8 +350,37 @@ public class ValidateProcFuncCalls {
             }
          }
       }
-      //      tx.commit();
+      if (!reportOnly && tx != null) {
+         tx.commit();
+      }
       System.err.println("Complete");
+   }
+
+   private String performSearchAndReplace(String reqXmlStr) {
+      for (Pair<String, String> srchReplStr : getSrchReplStrs()) {
+         String srch = srchReplStr.getFirst();
+         String repl = srchReplStr.getSecond();
+         reqXmlStr = reqXmlStr.replace(srch, repl);
+      }
+      return reqXmlStr;
+   }
+
+   private final Pattern curlBracePattern = Pattern.compile("(\\{.*?\\})");
+
+   private String fixXmlInUiNameAndUppercase(String reqXmlStrOrig, String reqXmlStr) {
+      Matcher m = curlBracePattern.matcher(reqXmlStrOrig);
+      while (m.find()) {
+         String name = m.group(1);
+         String fixedName = Strings.xmlToText(name);
+         fixedName = fixedName.toUpperCase();
+         fixedName = fixedName.replaceAll(" ", "_");
+         if (!name.equals(fixedName)) {
+            System.out.println(String.format("now [%s] was [%s]", fixedName, name));
+            String escapeForRegex = Lib.escapeForRegex(name);
+            reqXmlStr = reqXmlStr.replaceFirst(escapeForRegex, fixedName);
+         }
+      }
+      return reqXmlStr;
    }
 
    private List<Pair<String, String>> getSrchReplStrs() {
