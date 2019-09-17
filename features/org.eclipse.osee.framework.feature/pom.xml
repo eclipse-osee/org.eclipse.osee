@@ -39,6 +39,7 @@
 							   <plugin id="javax.xml.bind" />
 							   <plugin id="javax.xml.stream" />
 							   <feature id="org.eclipse.wtp.capabilities.feature" />
+							   <feature id="edu.umd.cs.findbugs.plugin.eclipse" />
 							</excludes>
 						</configuration>
 					</execution>

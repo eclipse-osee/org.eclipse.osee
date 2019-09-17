@@ -17,6 +17,9 @@
       %license
    </license>
 
+ <includes
+         id="edu.umd.cs.findbugs.plugin.eclipse"
+         version="0.0.0"/>
    <includes
          id="org.eclipse.egit"
          version="5.0.0"/>
@@ -62,7 +65,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false" />
-         
+  
    <plugin
          id="org.eclipse.sdk"
          download-size="0"
