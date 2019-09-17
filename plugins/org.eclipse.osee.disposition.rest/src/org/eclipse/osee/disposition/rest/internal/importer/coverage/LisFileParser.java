@@ -455,34 +455,17 @@ public class LisFileParser implements DispoImporterApi {
    }
 
    private void processResults(VCastResult result, OperationReport report) throws Exception {
-      boolean fileExists = false;
-      String pathExt = ".PATH";
       String resultPath = result.getPath();
       String resultPathAbs = vCastDir + File.separator + resultPath;
-      String errorLogging = "DAT file ";
-      for (int i = 0; i <= pathExt.length(); i++) {
-         File resultsFile = new File(resultPathAbs);
-         fileExists = resultsFile.exists();
+      File resultsFile = new File(resultPathAbs);
+      if (!resultsFile.exists()) {
+         boolean fileExists = findAndProcessResultFile(resultsFile, resultPath, report);
+
          if (!fileExists) {
-            fileExists = findAndProcessResultFile(resultsFile, resultPath, report);
-            if (fileExists) {
-               errorLogging += String.format("{[%s]  [%s]} ", resultPathAbs, resultsFile);
-               break;
-            } else if (i < pathExt.length()) {
-               resultPath += pathExt.charAt(i);
-               resultPathAbs += pathExt.charAt(i);
-            }
-            errorLogging += String.format("{[%s]  [%s]} ", resultPathAbs, resultsFile);
-         } else {
-            errorLogging += String.format("{[%s]  [%s]} ", resultPathAbs, resultsFile);
-            process(report, resultPath, resultsFile);
-            break;
+            report.addEntry("SQL", String.format("Could not find DAT file [%s]", resultPathAbs), WARNING);
          }
-      }
-      if (!fileExists) {
-         report.addEntry("SQL", String.format("Could not find %s", errorLogging), WARNING);
       } else {
-         report.addEntry("SQL", String.format("Found %s", errorLogging), DispoSummarySeverity.IGNORE);
+         process(report, resultPath, resultsFile);
       }
    }
 
