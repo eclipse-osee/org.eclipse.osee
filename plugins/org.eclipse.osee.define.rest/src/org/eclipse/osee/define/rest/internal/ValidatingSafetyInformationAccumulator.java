@@ -79,19 +79,16 @@ public final class ValidatingSafetyInformationAccumulator {
    public String calculateLevelForPartition(List<String> partitions) {
       String toReturn = "";
 
-      if (functionalCategory.equals("IFR/IMC")) {
-         if (contains(partitions, tokensA)) {
-            toReturn = "A";
-         } else if (contains(partitions, tokensB)) {
-            toReturn = "B";
-         } else if (contains(partitions, tokensC)) {
-            toReturn = "C";
-         } else {
-            toReturn = "BP";
-         }
-      } else if (functionalCategory.equals("Tactical")) {
+      if (contains(partitions, tokensA)) {
+         toReturn = "A";
+      } else if (contains(partitions, tokensB)) {
+         toReturn = "B";
+      } else if (contains(partitions, tokensC)) {
+         toReturn = "C";
+      } else {
          toReturn = "BP";
       }
+
       return toReturn;
    }
 
