@@ -105,6 +105,17 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
       return "Sign " + getLabel() + "?";
    }
 
+   @Override
+   protected void refreshLabel() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            resultsLabelWidget.setText(getResultsText());
+            resultsLabelWidget.getParent().getParent().layout(true);
+         }
+      });
+   }
+
    protected void setSigned() {
       SkynetTransaction tx =
          TransactionManager.createTransaction(getArtifact().getBranch(), "Set signed for " + getLabel());
