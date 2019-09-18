@@ -57,8 +57,6 @@
 <plugin id="javax.servlet.jsp"/>
 <plugin id="javax.servlet.jsp.source"/>
 <plugin id="javax.servlet.source"/>
-<plugin id="javax.validation"/>
-<plugin id="javax.validation.source"/>
 <plugin id="javax.ws.rs"/>
 <plugin id="javax.wsdl"/>
 <plugin id="javax.xml"/>
