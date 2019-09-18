@@ -174,4 +174,8 @@ public interface IAgileService {
     */
    List<ArtifactToken> getOtherMembersOrdered(IAgileTeam aTeam);
 
+   String getAgileFeatureGroupStr(IAtsWorkItem workItem);
+
+   Collection<IAgileFeatureGroup> getFeatureGroups(IAtsWorkItem workItem);
+
 }

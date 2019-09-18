@@ -55,6 +55,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.agile.operations.AgileProgramOperations;
 import org.eclipse.osee.ats.core.agile.operations.SprintBurndownOperations;
 import org.eclipse.osee.ats.core.agile.operations.SprintBurnupOperations;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -526,6 +527,17 @@ public class AgileService implements IAgileService {
    }
 
    @Override
+   public Collection<IAgileFeatureGroup> getFeatureGroups(IAtsWorkItem workItem) {
+      List<IAgileFeatureGroup> groups = new LinkedList<>();
+      ArtifactId itemArt = atsApi.getQueryService().getArtifact(workItem);
+      for (ArtifactId featureGroup : atsApi.getRelationResolver().getRelated(itemArt,
+         AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
+         groups.add(atsApi.getAgileService().getAgileFeatureGroup(featureGroup));
+      }
+      return groups;
+   }
+
+   @Override
    public IAgileSprint getSprint(IAgileItem item) {
       IAgileSprint sprint = null;
       ArtifactToken itemArt = atsApi.getQueryService().getArtifact(item);
@@ -805,6 +817,11 @@ public class AgileService implements IAgileService {
       }
       Collections.sort(results, new NamedComparator(SortOrder.ASCENDING));
       return results;
+   }
+
+   @Override
+   public String getAgileFeatureGroupStr(IAtsWorkItem workItem) {
+      return AtsObjects.toString(",", getFeatureGroups(workItem));
    }
 
 }
