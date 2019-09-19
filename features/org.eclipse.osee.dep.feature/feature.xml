@@ -16,7 +16,11 @@
    <license url="%licenseURL">
       %license
    </license>
- 
+    
+     <includes
+         id="org.eclipse.m2e.feature"
+        version="0.0.0"/>
+    
     <includes
          id="org.eclipse.egit.mylyn"
          version="5.0.0"/>  

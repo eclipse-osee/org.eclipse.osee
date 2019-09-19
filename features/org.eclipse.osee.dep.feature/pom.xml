@@ -111,6 +111,7 @@
 							   	<plugin id="java_cup.runtime" />
 								<feature id="org.eclipse.wst.server_core.feature" />		
 							   	<feature id="org.eclipse.wst.server_adapters.feature" />	
+							   	<feature id="org.eclipse.m2e.feature" />	
 							   	<feature id="org.eclipse.wst.server_ui.feature" />																					
 								<feature id="org.eclipse.jgit.lfs" />
 							   	<feature id="org.eclipse.wst.common_ui.feature" />
