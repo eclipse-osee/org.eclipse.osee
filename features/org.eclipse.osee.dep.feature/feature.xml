@@ -64,18 +64,6 @@
          id="org.eclipse.jgit.lfs"
          version="5.0.0"/>
          
-    <includes
-         id="org.eclipse.m2e.feature"
-        version="0.0.0"/>
-     
-     <includes
-         id="org.eclipse.m2e.logback.feature"
-        version="0.0.0"/>
-    
-    <includes
-         id="org.eclipse.m2e.sdk.feature"
-        version="0.0.0"/> 
-   
    <includes
          id="org.eclipse.jgit.http.apache"
          version="5.0.0"/>
