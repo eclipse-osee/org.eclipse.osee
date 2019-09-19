@@ -39,7 +39,7 @@ public class WordUpdateData {
    }
 
    public void setUserArtId(UserId userArtId) {
-      this.userArtId = userArtId;
+      this.userArtId = UserId.valueOf(userArtId.getId());
    }
 
    public List<Long> getArtifacts() {

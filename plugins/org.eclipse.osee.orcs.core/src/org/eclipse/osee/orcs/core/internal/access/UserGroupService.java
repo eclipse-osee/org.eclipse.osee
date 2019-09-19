@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroupService;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -97,6 +98,11 @@ public class UserGroupService implements IUserGroupService {
          return false;
       }
       return getUserGroup(userGroup).isMember(id);
+   }
+
+   @Override
+   public Collection<UserToken> getUsers(IUserGroupArtifactToken userGroup) {
+      throw new UnsupportedOperationException();
    }
 
 }

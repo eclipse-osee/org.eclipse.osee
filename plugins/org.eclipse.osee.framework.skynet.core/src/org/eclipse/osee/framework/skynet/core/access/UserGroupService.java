@@ -17,10 +17,12 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroupService;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -91,6 +93,22 @@ public class UserGroupService implements IUserGroupService {
          }
       }
       return isInGroup;
+   }
+
+   @Override
+   public Collection<UserToken> getUsers(IUserGroupArtifactToken userGroup) {
+
+      List<UserToken> users = new ArrayList<>();
+      Artifact userGrpArt = ArtifactQuery.getArtifactFromToken(userGroup);
+      if (userGrpArt.isValid() && userGrpArt != null) {
+         List<Artifact> list = userGrpArt.getRelatedArtifacts(CoreRelationTypes.Users_User);
+         for (Artifact art : list) {
+            User user = (User) art;
+            users.add(user);
+         }
+      }
+
+      return users;
    }
 
    public static boolean isInUserGrp(IUserGroupArtifactToken... userGroups) {

@@ -15,8 +15,9 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashSet;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -24,7 +25,9 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -33,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 /**
  * @author Donald G. Dunne
  */
-public class User extends Artifact implements UserId {
+public class User extends Artifact implements UserToken {
    private PropertyStore userSettings;
 
    public User(Long id, String guid, BranchId branch) {
@@ -52,6 +55,7 @@ public class User extends Artifact implements UserId {
       setActive(u.isActive());
    }
 
+   @Override
    public String getUserId() {
       return getSoleAttributeValue(CoreAttributeTypes.UserId, "");
    }
@@ -60,6 +64,7 @@ public class User extends Artifact implements UserId {
       setSoleAttributeValue(CoreAttributeTypes.UserId, userId);
    }
 
+   @Override
    public String getEmail() {
       return getSoleAttributeValue(CoreAttributeTypes.Email, "");
    }
@@ -76,6 +81,7 @@ public class User extends Artifact implements UserId {
       setSoleAttributeValue(CoreAttributeTypes.Phone, phone);
    }
 
+   @Override
    public boolean isActive() {
       return getSoleAttributeValue(CoreAttributeTypes.Active);
    }
@@ -194,6 +200,21 @@ public class User extends Artifact implements UserId {
 
    public void setBooleanSetting(String key, boolean value) {
       setSetting(key, String.valueOf(value));
+   }
+
+   @Override
+   public boolean isOseeAdmin() {
+      return UserGroupService.getOseeAdmin().isCurrentUserMember();
+   }
+
+   @Override
+   public boolean isCreationRequired() {
+      return true;
+   }
+
+   @Override
+   public Collection<ArtifactToken> getRoles() {
+      return Collections.castAll(UserGroupService.getUserGrps());
    }
 
 }

@@ -28,4 +28,5 @@ public interface IUserGroupService {
     */
    public boolean isUserMember(IUserGroupArtifactToken amsUsers, Long id);
 
+   public Collection<UserToken> getUsers(IUserGroupArtifactToken userGroup);
 }
