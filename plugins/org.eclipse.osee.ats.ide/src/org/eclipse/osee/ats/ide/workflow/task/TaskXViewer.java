@@ -83,7 +83,7 @@ public class TaskXViewer extends WorldXViewer {
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
 
       mm.insertBefore(MENU_GROUP_PRE, editBlockedStatusAction);
-      editBlockedStatusAction.setEnabled(getSelectedWorkflowArtifacts().size() == 1);
+      editBlockedStatusAction.setEnabled(getSelectedWorkflowArtifacts().size() >= 1);
 
    }
 

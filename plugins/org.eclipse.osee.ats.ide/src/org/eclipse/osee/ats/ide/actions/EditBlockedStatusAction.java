@@ -37,27 +37,42 @@ public class EditBlockedStatusAction extends AbstractAtsAction {
 
    @Override
    public void runWithException() {
+      boolean doBlocking = false;
+      boolean promptUnBlock = false;
+      boolean fetchedBlockedStatus = false;
+      String blockedReason = "";
       for (Artifact workItem : selectedAtsArtifacts.getSelectedWorkflowArtifacts()) {
-         String blockedReason = workItem.getSoleAttributeValue(AtsAttributeTypes.BlockedReason, "");
          IAtsChangeSet changes = AtsClientService.get().createChangeSet("Set blocked status");
-         if (!Strings.isValid(blockedReason)) {
-            EntryDialog ed =
-               new EntryDialog("Setting Workflow to Blocked", "Enter the reason for this workflow being blocked");
-            if (ed.open() == 0) {
-               blockedReason = ed.getEntry();
-               if (!Strings.isValid(blockedReason)) {
-                  blockedReason = "No reason given, please enter one";
+         if (!fetchedBlockedStatus) {
+            blockedReason = workItem.getSoleAttributeValue(AtsAttributeTypes.BlockedReason, "");
+            if (blockedReason.equals("")) {
+               doBlocking = true;
+               EntryDialog ed =
+                  new EntryDialog("Setting Workflow to Blocked", "Enter the reason for this workflow being blocked");
+               if (ed.open() == 0) {
+                  blockedReason = ed.getEntry();
+                  if (!Strings.isValid(blockedReason)) {
+                     blockedReason = "No reason given, please enter one";
+                  }
                }
-               changes.setSoleAttributeValue(workItem, AtsAttributeTypes.BlockedReason, "Blocked - " + blockedReason);
             }
-         } else {
-            boolean unblock =
-               MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                  "Unblock Workflow", "Are you sure you wish to set this workflow to unblocked?");
-            if (unblock) {
-               changes.deleteAttributes(workItem, AtsAttributeTypes.BlockedReason);
-            }
+            fetchedBlockedStatus = true;
          }
+         if (doBlocking) {
+            changes.setSoleAttributeValue(workItem, AtsAttributeTypes.BlockedReason, "Blocked - " + blockedReason);
+         } else {
+            if (!promptUnBlock) {
+               boolean doBlock =
+                  MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                     "Unblock Workflow", "Are you sure you wish to set this workflow to unblocked?");
+               if (!doBlock) {
+                  return;
+               }
+               promptUnBlock = true;
+            }
+            changes.deleteAttributes(workItem, AtsAttributeTypes.BlockedReason);
+         }
+
          changes.executeIfNeeded();
       }
    }
