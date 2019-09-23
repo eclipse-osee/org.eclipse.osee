@@ -55,8 +55,7 @@ import org.eclipse.ui.progress.UIJob;
  */
 public class ArtifactDecorator implements IArtifactDecoratorPreferences {
 
-   private static final Collection<WeakReference<ArtifactDecorator>> DECORATOR_INSTANCES =
-      new CopyOnWriteArrayList<>();
+   private static final Collection<WeakReference<ArtifactDecorator>> DECORATOR_INSTANCES = new CopyOnWriteArrayList<>();
 
    private DecoratorAction showArtIds;
    private DecoratorAction showArtType;
@@ -91,7 +90,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          saveAction(showArtVersion, "artifact.decorator.show.artVersion");
          saveAction(showRelations, "artifact.decorator.show.relations");
          if (attributesAction != null) {
-            Collection<AttributeTypeId> items = attributesAction.getSelected();
+            Collection<AttributeTypeToken> items = attributesAction.getSelected();
             saveSetting("artifact.decorator.attrTypes", Collections.toString(",", items));
             saveAction(attributesAction, "artifact.decorator.show.attrTypes");
          }
@@ -218,7 +217,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
       String toReturn = null;
       if (attributesAction != null) {
          Conditions.checkNotNull(artifact, "artifact");
-         Collection<AttributeTypeId> selectedItems = attributesAction.getSelected();
+         Collection<AttributeTypeToken> selectedItems = attributesAction.getSelected();
 
          List<String> info = new ArrayList<>();
          for (AttributeTypeId attributeType : artifact.getAttributeTypes()) {
@@ -326,7 +325,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
 
    private final class ShowAttributeAction extends Action {
 
-      private final Set<AttributeTypeId> selectedTypes;
+      private final Set<AttributeTypeToken> selectedTypes;
       private final IBranchProvider branchProvider;
 
       public ShowAttributeAction(IBranchProvider branchProvider, KeyedImage image) {
@@ -357,9 +356,9 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
                            "Select Attribute Types", "Select attribute types to display.");
                         dialog.setSelectable(selectableTypes);
 
-                        List<AttributeTypeId> initSelection = new ArrayList<>();
-                        for (AttributeTypeId entry : selectedTypes) {
-                           for (AttributeTypeId type : selectableTypes) {
+                        List<AttributeTypeToken> initSelection = new ArrayList<>();
+                        for (AttributeTypeToken entry : selectedTypes) {
+                           for (AttributeTypeToken type : selectableTypes) {
                               if (type.equals(entry)) {
                                  initSelection.add(type);
                               }
@@ -371,8 +370,8 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
                         if (result == Window.OK) {
                            selectedTypes.clear();
                            for (Object object : dialog.getResult()) {
-                              if (object instanceof AttributeTypeId) {
-                                 selectedTypes.add((AttributeTypeId) object);
+                              if (object instanceof AttributeTypeToken) {
+                                 selectedTypes.add((AttributeTypeToken) object);
                               }
                            }
                            refreshView();
@@ -389,7 +388,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          }
       }
 
-      public Collection<AttributeTypeId> getSelected() {
+      public Collection<AttributeTypeToken> getSelected() {
          return selectedTypes;
       }
 

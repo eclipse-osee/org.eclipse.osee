@@ -25,7 +25,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -231,7 +230,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
          return;
       }
       // get attributes that can be deleted (from artifact and validity)
-      Set<AttributeTypeId> attrTypesUsed = new HashSet<>();
+      Set<AttributeTypeToken> attrTypesUsed = new HashSet<>();
       for (Artifact art : artifacts) {
          // include attribute types that are used even if invalid
          for (Attribute<?> attr : art.getAttributes()) {

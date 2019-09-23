@@ -50,7 +50,7 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
    private boolean expandChecked = false;
    private boolean multiSelect = true;
    private PatternFilter patternFilter;
-   private Collection<T> selectables;
+   protected Collection<T> selectables = new ArrayList<>();
 
    public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider) {
       this(dialogTitle, dialogMessage, contentProvider, labelProvider, null);

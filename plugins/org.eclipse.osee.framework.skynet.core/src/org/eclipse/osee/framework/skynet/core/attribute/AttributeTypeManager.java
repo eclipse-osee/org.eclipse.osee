@@ -65,8 +65,8 @@ public class AttributeTypeManager {
       return getCache().getAll();
    }
 
-   public static Collection<AttributeTypeId> getTaggableTypes() {
-      Collection<AttributeTypeId> taggableTypes = new ArrayList<>();
+   public static Collection<AttributeTypeToken> getTaggableTypes() {
+      Collection<AttributeTypeToken> taggableTypes = new ArrayList<>();
       for (AttributeType type : getAllTypes()) {
          if (type.isTaggable()) {
             taggableTypes.add(type);

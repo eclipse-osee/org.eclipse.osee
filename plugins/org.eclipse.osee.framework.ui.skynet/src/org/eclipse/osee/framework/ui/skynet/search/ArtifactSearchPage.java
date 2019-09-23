@@ -25,7 +25,6 @@ import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -290,7 +289,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       valueLabel.setText("Attribute Value:");
       Text attributeValue = new Text(attributeTypeControls, SWT.BORDER);
       attributeValue.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      Collection<AttributeTypeId> taggableTypes = AttributeTypeManager.getTaggableTypes();
+      Collection<AttributeTypeToken> taggableTypes = AttributeTypeManager.getTaggableTypes();
       attributeValueList.getViewer().setInput(taggableTypes);
       attributeValue.addModifyListener(new ModifyListener() {
 
@@ -458,8 +457,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       clearAllLabel.addListener(SWT.MouseUp, new Listener() {
          @Override
          public void handleEvent(Event event) {
-            for (FilterModel filterModel : new CopyOnWriteArrayList<>(
-               filterviewer.getFilterList().getFilters())) {
+            for (FilterModel filterModel : new CopyOnWriteArrayList<>(filterviewer.getFilterList().getFilters())) {
                filterviewer.removeFilter(filterModel);
             }
             filterviewer.refresh();
