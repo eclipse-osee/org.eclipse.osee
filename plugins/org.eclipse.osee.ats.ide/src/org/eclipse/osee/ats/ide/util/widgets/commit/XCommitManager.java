@@ -286,7 +286,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
                if (infoStr == null && currentString != null || //
                infoStr != null && currentString == null || //
                infoStr != null && currentString != null && !infoStr.equals(currentString)) {
-                  extraInfoLabel.setText("Double-click item to perform Action; Right-click for mor options.");
+                  extraInfoLabel.setText("Double-click item to perform Action; Right-click for more options.");
                }
                extraInfoLabel.setForeground(Displays.getSystemColor(color));
             }
