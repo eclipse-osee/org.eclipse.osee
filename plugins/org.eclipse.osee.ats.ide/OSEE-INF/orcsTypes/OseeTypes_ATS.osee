@@ -91,12 +91,10 @@ oseeEnumType "enum.ats.CancelReason" {
 
 artifactType "Work Definition" extends "Artifact" {
 	id 62
-	attribute "ats.DSL Sheet"
 }
 
 artifactType "Rule Definition" extends "Artifact" {
 	id 6370402109038303278
-	attribute "ats.DSL Sheet"
 }
 
 abstract artifactType "ats.Ats Artifact" extends "Artifact" {
@@ -203,7 +201,7 @@ artifactType "Team Definition" extends "Responsible Team" , "Abstract Access Con
 	attribute "ats.Closure Active"
 	attribute "ats.Work Type"
 	attribute "ats.CSCI"
-	attribute "ats.Program Uuid"
+	attribute "ats.Program Id"
    attribute "ats.Task Set Id"
 }
 
@@ -212,7 +210,7 @@ artifactType "Actionable Item" extends "ats.Ats Team Definition or AI" , "Abstra
 	attribute "ats.Allow User Action Creation"
 	attribute "ats.Work Type"
 	attribute "ats.CSCI"
-	attribute "ats.Program Uuid"
+	attribute "ats.Program Id"
 }
 
 artifactType "Version" extends "ats.Ats Artifact" {
@@ -310,7 +308,7 @@ artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Cont
 	attribute "ats.Related Task Workflow Definition Old"
 	attribute "ats.Related Task Workflow Definition"
 	attribute "ats.Related Task Workflow Definition Reference"
-	attribute "ats.Program Uuid"
+	attribute "ats.Program Id"
 	attribute "ats.Applicability Workflow"
 	attribute "ats.Applicable to Program"
 	attribute "ats.Duplicated PCR Id"
@@ -601,7 +599,7 @@ attributeType "ats.Peer Review Id" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "ats.Program Uuid" extends ArtifactReferenceAttribute {
+attributeType "ats.Program Id" extends ArtifactReferenceAttribute {
 	id 1152922093377028266
 	dataProvider DefaultAttributeDataProvider
 	min 0
@@ -1407,16 +1405,6 @@ attributeType "ats.Description" extends StringAttribute {
 	taggerId DefaultAttributeTaggerProvider
 	fileExtension "txt"
 	mediaType "text/plain"
-}
-
-attributeType "ats.DSL Sheet" extends StringAttribute {
-	id 1152921504606847197
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	fileExtension "txt"
-	taggerId DefaultAttributeTaggerProvider
-	mediaType "application/ats+dsl"
 }
 
 attributeType "ats.Full Name" extends StringAttribute {
