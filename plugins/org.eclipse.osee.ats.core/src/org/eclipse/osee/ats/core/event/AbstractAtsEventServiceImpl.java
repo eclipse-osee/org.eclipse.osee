@@ -73,6 +73,11 @@ public abstract class AbstractAtsEventServiceImpl implements IAtsEventService, E
 
    @Override
    public void registerAtsWorkItemTopicEvent(AtsTopicEvent event, IAtsWorkItemTopicEventListener listener) {
+      if (workItemEventListeners.contains(listener)) {
+         System.err.println(
+            getClass().getSimpleName() + " - duplicate listener register: " + listener.getClass().getSimpleName());
+         return;
+      }
       workItemEventListeners.add(listener);
    }
 

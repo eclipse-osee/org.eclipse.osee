@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButton;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 
 /**
  * Generic task creation off change report from sibling or self workflow based on ATS Task Set definition.
@@ -128,6 +129,9 @@ public class XCreateChangeReportTasksXButton extends XButton implements IArtifac
 
    @Override
    public void setArtifact(Artifact artifact) {
+      if (!Widgets.isAccessible(getbutton())) {
+         return;
+      }
       if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          this.hostTeamWf = (TeamWorkFlowArtifact) artifact;
       }

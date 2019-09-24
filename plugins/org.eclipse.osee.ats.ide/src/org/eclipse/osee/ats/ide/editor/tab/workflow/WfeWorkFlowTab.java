@@ -504,6 +504,15 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    private WfeHeaderComposite headerComp;
    private Composite placeHolderComp;
 
+   public WfeWorkflowSection getCurrentStateSection() {
+      for (WfeWorkflowSection section : sections) {
+         if (section.getPage().getName().equals(editor.getWorkItem().getCurrentStateName())) {
+            return section;
+         }
+      }
+      return null;
+   }
+
    @Override
    public void refresh() {
       if (editor != null) {
@@ -562,4 +571,5 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    public WfeHeaderComposite getHeader() {
       return headerComp;
    }
+
 }

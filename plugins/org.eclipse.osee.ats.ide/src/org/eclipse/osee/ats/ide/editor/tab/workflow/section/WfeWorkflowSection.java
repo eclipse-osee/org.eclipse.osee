@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.WfeTransitionComposite;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeHeaderComposite;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsStateItemManager;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.IAtsStateItem;
@@ -44,7 +43,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.AttributeFormPart;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -59,9 +57,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -80,7 +76,6 @@ public class WfeWorkflowSection extends SectionPart {
    private boolean sectionCreated = false;
    private Section section;
    private final WorkflowEditor editor;
-   private WfeTransitionComposite workflowTransitionComposite;
 
    public WfeWorkflowSection(Composite parent, int style, StateXWidgetPage page, AbstractWorkflowArtifact sma, final WorkflowEditor editor) {
       super(parent, editor.getToolkit(), style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
@@ -95,7 +90,8 @@ public class WfeWorkflowSection extends SectionPart {
    }
 
    public boolean isCurrentState() {
-      return sma.isInState(statePage);
+      boolean isCurrent = sma.isInState(statePage);
+      return isCurrent;
    }
 
    @Override
@@ -109,23 +105,7 @@ public class WfeWorkflowSection extends SectionPart {
          // section.setBackground(Displays.getSystemColor(SWT.COLOR_MAGENTA));
 
          boolean isCurrentSectionExpanded = isCurrentSectionExpanded(statePage);
-
-         if (isCurrentSectionExpanded) {
-            createSection(section);
-         }
-         // Only load when users selects section
-         section.addListener(SWT.Activate, new Listener() {
-
-            @Override
-            public void handleEvent(Event e) {
-               try {
-                  createSection(section);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-               }
-            }
-         });
-
+         createSection(section);
          section.layout();
          section.setExpanded(isCurrentSectionExpanded);
       } catch (OseeCoreException ex) {
@@ -144,7 +124,6 @@ public class WfeWorkflowSection extends SectionPart {
       section.setText(currentStateTitle);
       if (sma.isInState(statePage)) {
          section.setTitleBarForeground(Displays.getSystemColor(SWT.COLOR_DARK_GREEN));
-         section.setBackground(WfeTransitionComposite.ACTIVE_COLOR);
       } else {
          section.setTitleBarForeground(Displays.getSystemColor(SWT.COLOR_DARK_BLUE));
          section.setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
@@ -173,11 +152,6 @@ public class WfeWorkflowSection extends SectionPart {
          statePage.getName());
 
       Composite workComp = createWorkArea(mainComp, statePage, editor.getToolkit());
-
-      if (isCurrentState()) {
-         workflowTransitionComposite = new WfeTransitionComposite(mainComp, this, editor, isEditable);
-      }
-
       GridData gridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
       gridData.widthHint = 400;
       workComp.setLayoutData(gridData);
@@ -195,7 +169,6 @@ public class WfeWorkflowSection extends SectionPart {
          Label descLabel = editor.getToolkit().createLabel(labelComp,
             " State Description: " + statePage.getStateDefinition().getDescription());
          GridData gd = new GridData(SWT.FILL, SWT.NONE, true, false);
-         descLabel.setBackground(WfeTransitionComposite.ACTIVE_COLOR);
          descLabel.setLayoutData(gd);
       }
 
@@ -481,27 +454,12 @@ public class WfeWorkflowSection extends SectionPart {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
-            if (workflowTransitionComposite != null) {
-               workflowTransitionComposite.updateTransitionToState();
-               workflowTransitionComposite.updateTransitionToAssignees();
-            }
             editor.onDirtied();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    };
-
-   public boolean refreshExpandState() {
-      boolean isCurrentState = isCurrentState();
-      System.err.println("state " + section.getText() + " current " + isCurrentState);
-      getSection().setExpanded(isCurrentState);
-      //      if (isCurrentState) {
-      computeTextSizesAndReflow();
-      //      }
-      refreshStateTitle();
-      return isCurrentState;
-   }
 
    @Override
    public void refresh() {
@@ -510,9 +468,6 @@ public class WfeWorkflowSection extends SectionPart {
       }
       super.refresh();
       try {
-         if (workflowTransitionComposite != null) {
-            workflowTransitionComposite.refresh();
-         }
          for (XWidget xWidget : allXWidgets) {
             xWidget.refresh();
          }
@@ -521,13 +476,6 @@ public class WfeWorkflowSection extends SectionPart {
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-   }
-
-   public XComboViewer getTransitionToStateCombo() {
-      if (workflowTransitionComposite != null) {
-         return workflowTransitionComposite.getTransitionToStateCombo();
-      }
-      return null;
    }
 
    public AbstractWorkflowArtifact getSma() {

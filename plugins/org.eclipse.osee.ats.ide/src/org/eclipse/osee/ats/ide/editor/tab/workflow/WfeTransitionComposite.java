@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.editor.tab.workflow;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -18,8 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -40,10 +38,8 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionHelperAdapter;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeTargetedVersionHeader;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeWorkflowSection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsStateItemManager;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.IAtsStateItem;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.XTransitionToStateComboWidget;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
@@ -55,29 +51,27 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench.MessageType;
+import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
+import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
-import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCancelWidgetDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
-import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
@@ -85,95 +79,67 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public class WfeTransitionComposite extends Composite implements IAtsWorkItemTopicEventListener {
 
-   private final XTransitionToStateComboWidget transitionToStateCombo;
-   private final Label transitionAssigneesLabel;
+   private final Label transitionAssigneesLabel, transitionToStateLabel;
    private final AbstractWorkflowArtifact awa;
-   private final WfeWorkflowSection workflowSection;
    private final WorkflowEditor editor;
-   private final Button transitionButton;
-   public final static Color ACTIVE_COLOR = new Color(null, 206, 212, 239);
-   private final Composite parent;
+   private IAtsStateDefinition userSelectedTransitionToState;
+   private final boolean isEditable;
 
-   public WfeTransitionComposite(Composite parent, WfeWorkflowSection workflowSection, final WorkflowEditor editor, final boolean isEditable) {
+   public WfeTransitionComposite(Composite parent, final WorkflowEditor editor, final boolean isEditable) {
       super(parent, SWT.NONE);
-      this.parent = parent;
-      this.workflowSection = workflowSection;
       this.editor = editor;
+      this.isEditable = isEditable;
 
       AtsClientService.get().getEventService().registerAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITIONED,
          this);
 
-      awa = workflowSection.getSma();
+      awa = editor.getWorkItem();
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      setLayout(new GridLayout(editor.getWorkFlowTab().getHeader().isShowTargetedVersion() ? 7 : 5, false));
-      setBackground(ACTIVE_COLOR);
+      GridLayout layout = new GridLayout(editor.getWorkFlowTab().getHeader().isShowTargetedVersion() ? 7 : 5, false);
+      layout.verticalSpacing = 0;
+      layout.marginWidth = 0;
+      layout.marginHeight = 0;
+      setLayout(layout);
+      editor.getWorkFlowTab().getManagedForm().getToolkit().adapt(this);
 
-      transitionButton = editor.getToolkit().createButton(this, "Transition", SWT.PUSH);
-      transitionButton.addMouseListener(new MouseAdapter() {
-
+      Hyperlink transitionLabelLink = editor.getToolkit().createHyperlink(this, "Transition", SWT.NONE);
+      transitionLabelLink.addHyperlinkListener(new HyperlinkAdapter() {
          @Override
-         public void mouseUp(MouseEvent e) {
-            super.mouseUp(e);
-            /**
-             * Only respond to first click and not to double click. After system configured time, count will return to
-             * 1.
-             */
-            if (e.count == 1) {
-               transitionButton.setEnabled(false);
-               try {
-                  if (editor.isDirty()) {
-                     editor.doSave(null);
-                  }
-                  IAtsStateDefinition toStateDef = (IAtsStateDefinition) transitionToStateCombo.getSelected();
-                  Conditions.assertNotNull(toStateDef, "toStateDef");
-                  handleTransitionButtonSelection(awa, isEditable, toStateDef);
-               } finally {
-                  transitionButton.setEnabled(true);
-               }
+         public void linkActivated(HyperlinkEvent e) {
+            if (editor.isDirty()) {
+               editor.doSave(null);
             }
+            handleTransitionButtonSelection();
          }
-
       });
+      transitionLabelLink.setFont(FontManager.getCourierNew12Bold());
+      transitionLabelLink.setToolTipText("Select to transition workflow to the default or selected state");
 
-      Label label = editor.getToolkit().createLabel(this, "to");
-      label.setBackground(ACTIVE_COLOR);
-
-      transitionToStateCombo = new XTransitionToStateComboWidget();
-      transitionToStateCombo.setArtifact(awa);
-      transitionToStateCombo.createWidgets(this, 1);
-
-      updateTransitionToState();
-
-      transitionToStateCombo.addSelectionChangedListener(new ISelectionChangedListener() {
+      Hyperlink toStateLabelLink = editor.getToolkit().createHyperlink(this, "To State", SWT.NONE);
+      toStateLabelLink.addHyperlinkListener(new HyperlinkAdapter() {
          @Override
-         public void selectionChanged(SelectionChangedEvent event) {
+         public void linkActivated(HyperlinkEvent e) {
             try {
-               updateTransitionToAssignees();
+               IAtsStateDefinition selState = handleChangeTransitionToState(awa, isEditable, getToState());
+               if (selState != null) {
+                  userSelectedTransitionToState = selState;
+                  refresh();
+               }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       });
+      transitionToStateLabel = editor.getToolkit().createLabel(this, getToState().getName());
+      transitionToStateLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      transitionToStateLabel.setToolTipText("Select to change state to transition to");
 
       if (editor.getWorkFlowTab().getHeader().isShowTargetedVersion()) {
-         WfeTargetedVersionHeader smaTargetedVersionHeader =
-            new WfeTargetedVersionHeader(this, SWT.NONE, (IAtsTeamWorkflow) awa, editor);
-         smaTargetedVersionHeader.setBackground(ACTIVE_COLOR);
+         new WfeTargetedVersionHeader(this, SWT.NONE, (IAtsTeamWorkflow) awa, editor);
       }
 
       Hyperlink assigneesLabelLink = editor.getToolkit().createHyperlink(this, "Next State Assignee(s)", SWT.NONE);
-      assigneesLabelLink.addHyperlinkListener(new IHyperlinkListener() {
-
-         @Override
-         public void linkEntered(HyperlinkEvent e) {
-            // do nothing
-         }
-
-         @Override
-         public void linkExited(HyperlinkEvent e) {
-            // do nothing
-         }
-
+      assigneesLabelLink.addHyperlinkListener(new HyperlinkAdapter() {
          @Override
          public void linkActivated(HyperlinkEvent e) {
             try {
@@ -182,21 +148,31 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
-
       });
-      assigneesLabelLink.setBackground(ACTIVE_COLOR);
-
       transitionAssigneesLabel =
          editor.getToolkit().createLabel(this, Strings.truncate(awa.getTransitionAssigneesStr(), 100, true));
       transitionAssigneesLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      transitionAssigneesLabel.setBackground(ACTIVE_COLOR);
+      transitionAssigneesLabel.setToolTipText("Select to change assignee(s) upon transition to next state.");
 
    }
 
+   public static IAtsStateDefinition handleChangeTransitionToState(AbstractWorkflowArtifact awa, final boolean isEditable, IAtsStateDefinition toStateDef) {
+      List<IAtsStateDefinition> states = awa.getToStatesWithCompleteCancelReturnStates();
+      FilteredTreeDialog dialog = new FilteredTreeDialog("Transition To", "Select State to Transition To",
+         new ArrayTreeContentProvider(), new StringLabelProvider());
+      dialog.setInput(states);
+      if (dialog.open() == Window.OK) {
+         return (IAtsStateDefinition) dialog.getSelectedFirst();
+      }
+      return null;
+   }
+
+   public void handleTransitionButtonSelection() {
+      final IAtsStateDefinition toStateDef = getToState();
+      handleTransitionButtonSelection(awa, isEditable, toStateDef);
+   }
+
    public static void handleTransitionButtonSelection(AbstractWorkflowArtifact awa, final boolean isEditable, IAtsStateDefinition toStateDef) {
-      Conditions.assertNotNull(awa, "awa");
-      Conditions.assertNotNull(toStateDef, "toStateDef");
-      final List<IAtsWorkItem> workItems = Arrays.asList((IAtsWorkItem) awa);
       final IAtsStateDefinition fromStateDef = awa.getStateDefinition();
 
       ITransitionHelper helper = new TransitionHelperAdapter(AtsClientService.get().getServices()) {
@@ -233,8 +209,7 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                      result.set(false);
-                     result.setText(String.format("Error processing extra hours spent for [%s]",
-                        workItems.iterator().next().toStringWithId()));
+                     result.setText(String.format("Error processing extra hours spent for [%s]", awa.toStringWithId()));
                   }
                   if (!resultBool) {
                      result.setCancelled(true);
@@ -294,7 +269,7 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
 
          @Override
          public Collection<IAtsWorkItem> getWorkItems() {
-            return workItems;
+            return Arrays.asList(awa);
          }
 
          @Override
@@ -382,15 +357,16 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
       // Determine if the is an override set of assigness
       for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
          String decisionValueIfApplicable = "";
-         if (awa.isOfType(AtsArtifactTypes.DecisionReview) && workflowSection.getPage().getLayoutData(
-            AtsAttributeTypes.Decision.getName()) != null) {
-            XComboDam xWidget =
-               (XComboDam) workflowSection.getPage().getLayoutData(AtsAttributeTypes.Decision.getName()).getXWidget();
+         if (awa.isOfType(
+            AtsArtifactTypes.DecisionReview) && editor.getWorkFlowTab().getCurrentStateSection().getPage().getLayoutData(
+               AtsAttributeTypes.Decision.getName()) != null) {
+            XComboDam xWidget = (XComboDam) editor.getWorkFlowTab().getCurrentStateSection().getPage().getLayoutData(
+               AtsAttributeTypes.Decision.getName()).getXWidget();
             if (xWidget != null) {
                decisionValueIfApplicable = xWidget.get();
             }
          }
-         assignees = item.getOverrideTransitionToAssignees(workflowSection.getSma(), decisionValueIfApplicable);
+         assignees = item.getOverrideTransitionToAssignees(awa, decisionValueIfApplicable);
          if (assignees != null) {
             break;
          }
@@ -403,52 +379,54 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
       refresh();
    }
 
-   public void updateTransitionToState() {
+   public IAtsStateDefinition getToState() {
+      if (userSelectedTransitionToState != null) {
+         return userSelectedTransitionToState;
+      }
       // Determine if there is a transitionToStateOverride for this page
       String transitionStateOverride = null;
       for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
-         transitionStateOverride = item.getOverrideTransitionToStateName(workflowSection);
+         transitionStateOverride = item.getOverrideTransitionToStateName(editor);
          if (transitionStateOverride != null) {
             break;
          }
       }
       if (transitionStateOverride != null) {
          // Return if override state is same as selected
-         if (((IAtsStateDefinition) transitionToStateCombo.getSelected()).getName().equals(transitionStateOverride)) {
-            return;
+         if (awa.getStateDefinition().getDefaultToState().getName().equals(transitionStateOverride)) {
+            return awa.getStateDefinition().getDefaultToState();
          }
          // Find page corresponding to override state name
          for (IAtsStateDefinition toState : awa.getStateDefinition().getToStates()) {
             if (toState.getName().equals(transitionStateOverride)) {
-               // Reset selection
-               ArrayList<Object> defaultPage = new ArrayList<>();
-               defaultPage.add(toState);
-               transitionToStateCombo.setSelected(defaultPage);
-               return;
+               return toState;
             }
          }
       }
+      return awa.getStateDefinition().getDefaultToState();
    }
 
    public void refresh() {
       if (Widgets.isAccessible(transitionAssigneesLabel)) {
-         IAtsStateDefinition toWorkPage = (IAtsStateDefinition) transitionToStateCombo.getSelected();
-         if (toWorkPage == null) {
-            transitionAssigneesLabel.setText("");
-         } else {
-            transitionAssigneesLabel.setText(workflowSection.getPage().getSma().getTransitionAssigneesStr());
+         IAtsStateDefinition toState = userSelectedTransitionToState;
+         if (toState == null) {
+            toState = awa.getStateDefinition().getDefaultToState();
          }
+         transitionToStateLabel.setText(toState.getName());
+         transitionToStateLabel.getParent().layout();
+
+         transitionAssigneesLabel.setText(
+            editor.getWorkFlowTab().getCurrentStateSection().getPage().getSma().getTransitionAssigneesStr());
          transitionAssigneesLabel.getParent().layout();
       }
    }
 
    private void handleChangeTransitionAssignees(AbstractWorkflowArtifact aba) {
-      IAtsStateDefinition toWorkPage = (IAtsStateDefinition) transitionToStateCombo.getSelected();
-      if (toWorkPage == null) {
+      if (userSelectedTransitionToState == null) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "No Transition State Selected");
          return;
       }
-      if (toWorkPage.getStateType().isCompletedOrCancelledState()) {
+      if (userSelectedTransitionToState.getStateType().isCompletedOrCancelledState()) {
          AWorkbench.popup("ERROR", "No Assignees in Completed and Cancelled states");
          return;
       }
@@ -470,28 +448,25 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
       editor.onDirtied();
    }
 
-   public XComboViewer getTransitionToStateCombo() {
-      return transitionToStateCombo;
-   }
-
    @Override
    public void handleEvent(AtsTopicEvent topicEvent, Collection<ArtifactId> workItems) {
+      System.err.println(getClass().getSimpleName() + " - " + topicEvent);
       if (this.isDisposed()) {
          AtsClientService.get().getEventService().deRegisterAtsWorkItemTopicEvent(this);
          return;
       }
-      final Composite fComp = this;
       Displays.ensureInDisplayThread(new Runnable() {
 
          @Override
          public void run() {
-            fComp.dispose();
-            if (Widgets.isAccessible(parent)) {
-               parent.redraw();
-            }
+            refresh();
             editor.getWorkFlowTab().refreshExpandStates();
          }
       });
+   }
+
+   public boolean isSelected() {
+      return userSelectedTransitionToState != null;
    }
 
 }

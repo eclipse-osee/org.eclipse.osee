@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.note.NoteItem;
 import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.WfeTransitionComposite;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsStateItemManager;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.IAtsStateItem;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -69,6 +70,11 @@ public class WfeHeaderComposite extends Composite {
    private final IManagedForm managedForm;
    private WfeCustomHeader customHeader;
    private WfeTitleHeader titleHeader;
+   private WfeTransitionComposite wfeTransitionComposite;
+
+   public WfeTransitionComposite getWfeTransitionComposite() {
+      return wfeTransitionComposite;
+   }
 
    public WfeHeaderComposite(Composite parent, int style, WorkflowEditor editor, StateXWidgetPage currentStateXWidgetPage, IManagedForm managedForm) {
       super(parent, style);
@@ -117,6 +123,11 @@ public class WfeHeaderComposite extends Composite {
             smaRelationsComposite = new WfeRelationsHyperlinkComposite(this, SWT.NONE, editor);
             smaRelationsComposite.create();
          }
+
+         boolean isEditable = WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(),
+            workItem, workItem.getStateDefinition(), AtsClientService.get().getUserService());
+         wfeTransitionComposite = new WfeTransitionComposite(this, editor, isEditable);
+
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

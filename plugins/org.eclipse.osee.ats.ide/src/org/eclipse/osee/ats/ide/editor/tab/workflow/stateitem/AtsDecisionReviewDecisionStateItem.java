@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.review.DecisionReviewOptions;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeWorkflowSection;
+import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
@@ -69,23 +69,23 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    }
 
    @Override
-   public String getOverrideTransitionToStateName(WfeWorkflowSection section) {
-      if (isApplicable(section)) {
-         if (section.getTransitionToStateCombo() == null || section.getTransitionToStateCombo().getSelected() == null) {
+   public String getOverrideTransitionToStateName(WorkflowEditor editor) {
+      if (isApplicable(editor)) {
+         if (editor.getWorkFlowTab().getHeader().getWfeTransitionComposite().isSelected()) {
             return null;
          }
-         XWidget xWidget =
-            section.getPage().getLayoutData(AtsAttributeTypes.Decision.getUnqualifiedName()).getXWidget();
+         XWidget xWidget = editor.getWorkFlowTab().getCurrentStateSection().getPage().getLayoutData(
+            AtsAttributeTypes.Decision.getUnqualifiedName()).getXWidget();
          XComboDam decisionComboDam = (XComboDam) xWidget;
-         DecisionReviewArtifact decArt = (DecisionReviewArtifact) section.getSma();
+         DecisionReviewArtifact decArt = (DecisionReviewArtifact) editor.getWorkItem();
          return getOverrideTransitionToStateName(decArt, decisionComboDam);
       }
       return null;
    }
 
-   private boolean isApplicable(WfeWorkflowSection section) {
-      return section.getSma().isTypeEqual(
-         AtsArtifactTypes.DecisionReview) && section.getSma().getCurrentStateName().equals(
+   private boolean isApplicable(WorkflowEditor editor) {
+      return editor.getWorkItem().isTypeEqual(
+         AtsArtifactTypes.DecisionReview) && editor.getWorkItem().getCurrentStateName().equals(
             DecisionReviewState.Decision.getName());
    }
 
