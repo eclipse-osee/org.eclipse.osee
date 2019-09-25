@@ -98,6 +98,12 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
    }
 
    @Override
+   public IAtsConfigTxTeamDef andParallelVersion(IAtsVersion ver1, IAtsVersion ver2) {
+      changes.relate(ver1, AtsRelationTypes.ParallelVersion_Child, ver2);
+      return this;
+   }
+
+   @Override
    public IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken versionTok, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IOseeBranch... parallelVersions) {
       IAtsConfigTxVersion version = cfgTx.createVersion(versionTok, released, branch, nextRelease, teamDef);
       handleParallelVersions(version, parallelVersions);
