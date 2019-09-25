@@ -111,6 +111,7 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
          @Override
          public void run() {
             resultsLabelWidget.setText(getResultsText());
+            resultsLabelWidget.getParent().layout(true);
             resultsLabelWidget.getParent().getParent().layout(true);
          }
       });
