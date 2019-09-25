@@ -1917,7 +1917,7 @@ attributeType "Doors Mod ID" extends EnumeratedAttribute {
    id 5326122488147393161
 	dataProvider DefaultAttributeDataProvider
 	min 0
-	max 1
+	max unlimited
 	taggerId DefaultAttributeTaggerProvider
 	description "Modified External doors id for import support"
 	mediaType "text/plain"

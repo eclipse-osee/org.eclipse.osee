@@ -35,4 +35,9 @@ public class ImportEndpointImpl implements ImportEndpoint {
    public XResultData importSetup(BranchId branch, String baseDir, Integer startBranch, boolean handleRelations, boolean singleBranch) {
       return defineApi.getImportOperations().importSetup(branch, baseDir, startBranch, handleRelations, singleBranch);
    }
+
+   @Override
+   public XResultData postProcess(Integer startBranch, boolean singleBranch) {
+      return null;
+   }
 }
