@@ -838,6 +838,12 @@ artifactType "Software Test Procedure Plain Text" extends "Plain Text", "Test Un
 	attribute "Doors Hierarchy"
 }
 
+artifactType "Software Test Procedure - MS Word" extends "MS Word Template", "Test Unit"  {
+	id 554486323432951758
+	attribute "Doors ID"
+	attribute "Doors Hierarchy"
+}
+
 artifactType "Indirect Software Requirement" extends "Abstract Software Requirement" , "MS Word Template" {
 	id 25
 }
