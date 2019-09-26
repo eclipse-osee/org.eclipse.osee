@@ -60,7 +60,11 @@ public interface ApplicabilityQuery {
 
    String getExistingFeatureApplicability(BranchId branch, ArtifactId viewId, String featureName);
 
-   boolean getFeatureExistsOnBranch(BranchId branch, String featureName);
+   boolean featureExistsOnBranch(BranchId branch, String featureName);
 
-   boolean getFeatureValueIsValid(BranchId branch, String featureName, String featureValue);
+   boolean featureValueIsValid(BranchId branch, String featureName, String featureValue);
+
+   boolean viewExistsOnBranch(BranchId branch, ArtifactId viewId);
+
+   boolean applicabilityExistsOnBranchView(BranchId branch, ArtifactId viewId, String applicability);
 }

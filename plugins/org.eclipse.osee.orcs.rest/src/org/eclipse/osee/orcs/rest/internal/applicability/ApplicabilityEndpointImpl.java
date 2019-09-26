@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.rest.internal.applicability;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.PathParam;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
@@ -194,25 +195,69 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (results.isErrors()) {
          return results;
       }
-      String featureName = applicability.substring(0, applicability.indexOf("=") - 1);
-      String featureValue = applicability.substring(applicability.indexOf("=") + 2);
+      if (!applicabilityQuery.viewExistsOnBranch(branch, viewId)) {
+         results.error("View is invalid.");
+         return results;
+      }
+      if (!applicabilityQuery.applicabilityExistsOnBranchView(branch, viewId, applicability)) {
+         results.error("Applicability already exists.");
 
-      if (applicabilityQuery.getFeatureExistsOnBranch(branch,
-         featureName) && applicabilityQuery.getFeatureValueIsValid(branch, featureName, featureValue)) {
-         String existingAppl = applicabilityQuery.getExistingFeatureApplicability(branch, viewId, featureName);
-         if (existingAppl.equals(applicability)) {
-            results.error("Applicability already exists.");
-         } else {
+      }
+      if (applicability.startsWith("Config =")) {
+         TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account,
+            "Create " + applicability + " applicability");
+         tx.createApplicabilityForView(viewId, applicability);
+         tx.commit();
+         return results;
+      }
+      if (applicability.contains("|")) {
+         boolean validApplicability = true;
+         for (String value : applicability.split("|")) {
+            /**
+             * loop through existing applicabilities for view and see if new applicability exists if so, stop else check
+             * that at least one of the | separated applicability exists
+             **/
+            Iterable<String> existingApps =
+               orcsApi.getQueryFactory().tupleQuery().getTuple2(CoreTupleTypes.ViewApplicability, branch, viewId);
+            for (String appl : existingApps) {
+               if (appl.equals(value)) {
+                  validApplicability = true;
+               }
+            }
+         }
+         if (validApplicability) {
             TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account,
                "Apply " + applicability + " applicability");
-            if (!existingAppl.isEmpty()) {
-               tx.deleteTuple2(CoreTupleTypes.ViewApplicability, viewId, existingAppl);
-            }
             tx.createApplicabilityForView(viewId, applicability);
             tx.commit();
          }
+
       } else {
-         results.error("Feature not defined.");
+         String featureName = applicability.substring(0, applicability.indexOf("=") - 1);
+         String featureValue = applicability.substring(applicability.indexOf("=") + 2);
+         if (applicabilityQuery.featureExistsOnBranch(branch,
+            featureName) && applicabilityQuery.featureValueIsValid(branch, featureName, featureValue)) {
+            List<String> existingValues = new LinkedList<>();
+            Iterable<String> existingApps =
+               orcsApi.getQueryFactory().tupleQuery().getTuple2(CoreTupleTypes.ViewApplicability, branch, viewId);
+            for (String appl : existingApps) {
+               if (appl.startsWith(featureName + " = ") || appl.contains("| " + featureName + "=")) {
+                  existingValues.add(appl);
+               }
+            }
+            TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account,
+               "Apply " + applicability + " applicability");
+
+            for (String existingValue : existingValues) {
+               tx.deleteTuple2(CoreTupleTypes.ViewApplicability, viewId, existingValue);
+            }
+            tx.createApplicabilityForView(viewId, applicability);
+            tx.commit();
+
+         } else {
+            results.error("Feature is not defined or Value is invalid.");
+         }
+
       }
 
       return results;

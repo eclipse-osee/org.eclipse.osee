@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -97,8 +98,9 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    @Override
    public List<ApplicabilityId> getApplicabilitiesReferenced(ArtifactId artifact, BranchId branch) {
       List<ApplicabilityId> appIds = new LinkedList<>();
-      for (ApplicabilityId tuple2 : tupleQuery.getTuple2(CoreTupleTypes.ArtifactReferenceApplicabilityType, branch,
-         artifact)) {
+      Iterable<ApplicabilityId> existingAppIds =
+         tupleQuery.getTuple2(CoreTupleTypes.ArtifactReferenceApplicabilityType, branch, artifact);
+      for (ApplicabilityId tuple2 : existingAppIds) {
          appIds.add(tuple2);
       }
       return appIds;
@@ -174,6 +176,14 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
+   public boolean applicabilityExistsOnBranchView(BranchId branch, ArtifactId viewId, String applicability) {
+      List<GammaId> tuples = new ArrayList<>();
+      queryFactory.tupleQuery().getTuple2GammaFromE1E2(CoreTupleTypes.ViewApplicability, branch, viewId, applicability,
+         tuples::add);
+      return tuples.isEmpty();
+   }
+
+   @Override
    public String getExistingFeatureApplicability(BranchId branch, ArtifactId viewId, String featureName) {
       String existingAppl = "";
       for (String appl : queryFactory.tupleQuery().getTuple2(CoreTupleTypes.ViewApplicability, branch, viewId)) {
@@ -186,7 +196,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
-   public boolean getFeatureExistsOnBranch(BranchId branch, String featureName) {
+   public boolean featureExistsOnBranch(BranchId branch, String featureName) {
       boolean returnValue;
       ArtifactReadable jsonArtifact =
          queryFactory.fromBranch(branch).andTypeEquals(CoreArtifactTypes.FeatureDefinition).andExists(
@@ -201,13 +211,25 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
-   public boolean getFeatureValueIsValid(BranchId branch, String featureName, String featureValue) {
+   public boolean featureValueIsValid(BranchId branch, String featureName, String featureValue) {
       return true;
    }
 
    @Override
    public List<ArtifactToken> getViewForBranch(BranchId branch) {
       return queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).asArtifactTokens();
+   }
+
+   @Override
+   public boolean viewExistsOnBranch(BranchId branch, ArtifactId viewId) {
+      Boolean returnValue = false;
+      for (ArtifactToken view : getViewForBranch(branch)) {
+         if (view.equals(viewId)) {
+            returnValue = true;
+         }
+      }
+
+      return returnValue;
    }
 
    /*
