@@ -18,12 +18,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.NamespaceToken;
+import org.eclipse.osee.framework.core.data.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -78,8 +81,9 @@ public class QueryEngineImpl implements QueryEngine {
    private final RelationTypes relationTypes;
    private final KeyValueStore keyValue;
    private final SqlHandlerFactory handlerFactory;
+   private final OrcsTokenService tokenService;
 
-   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QuerySqlContextFactory branchSqlContextFactory, QuerySqlContextFactory txSqlContextFactory, QueryCallableFactory allQueryEngineFactory, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, SqlHandlerFactory handlerFactory, SqlObjectLoader sqlObjectLoader, OrcsTypes orcsTypes, KeyValueStore keyValue) {
+   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QuerySqlContextFactory branchSqlContextFactory, QuerySqlContextFactory txSqlContextFactory, QueryCallableFactory allQueryEngineFactory, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, SqlHandlerFactory handlerFactory, SqlObjectLoader sqlObjectLoader, OrcsTypes orcsTypes, OrcsTokenService tokenService, KeyValueStore keyValue) {
       this.artifactQueryEngineFactory = artifactQueryEngineFactory;
       this.branchSqlContextFactory = branchSqlContextFactory;
       this.txSqlContextFactory = txSqlContextFactory;
@@ -90,6 +94,7 @@ public class QueryEngineImpl implements QueryEngine {
       this.artifactTypes = orcsTypes.getArtifactTypes();
       this.attributeTypes = orcsTypes.getAttributeTypes();
       this.relationTypes = orcsTypes.getRelationTypes();
+      this.tokenService = tokenService;
       this.keyValue = keyValue;
       this.handlerFactory = handlerFactory;
    }
@@ -176,6 +181,22 @@ public class QueryEngineImpl implements QueryEngine {
       return artifacts;
    }
 
+   private AttributeTypeToken getAttributeType(Long typeId) {
+      AttributeTypeToken attributeType;
+      boolean usingFullTokens = true;
+      if (usingFullTokens) {
+         // this will be used when the full attribute type tokens are committed (and this temporary if statement will be removed)
+         attributeType = tokenService.getAttributeTypeOrSentinel(typeId);
+      } else {
+         attributeType = attributeTypes.get(typeId);
+      }
+      if (attributeType.isInvalid()) {
+         attributeType = AttributeTypeToken.createString(typeId, NamespaceToken.SENTINEL,
+            "Mising Attribute Type " + typeId, MediaType.TEXT_PLAIN, "");
+      }
+      return attributeType;
+   }
+
    private void loadArtifactsInto(QueryData queryData, QueryFactory queryFactory, Consumer<ArtifactReadable> artifactConsumer) {
       HashMap<ArtifactId, ArtifactReadable> artifactMap = new HashMap<>(500);
 
@@ -195,7 +216,7 @@ public class QueryEngineImpl implements QueryEngine {
          Long otherArtId = stmt.getLong("other_art_id");
          String value = stmt.getString("value");
          if (otherArtId == 0) {
-            artifact.putAttributeValue(attributeTypes.get(typeId), value);
+            artifact.putAttributeValue(getAttributeType(typeId), value);
          } else {
             Long otherArtType = stmt.getLong("other_art_type_id");
             RelationSide side = value.equals("A") ? RelationSide.SIDE_A : RelationSide.SIDE_B;
@@ -240,7 +261,8 @@ public class QueryEngineImpl implements QueryEngine {
             artifactId[0] = newArtId;
             applicability[0] = stmt.getLong("app_id");
          }
-         attributes.put(attributeTypes.get(stmt.getLong("type_id")), stmt.getString("value"));
+
+         attributes.put(getAttributeType(stmt.getLong("type_id")), stmt.getString("value"));
       };
       selectiveArtifactLoad(queryData, consumer);
       if (!artifactId[0].equals(Id.SENTINEL)) {

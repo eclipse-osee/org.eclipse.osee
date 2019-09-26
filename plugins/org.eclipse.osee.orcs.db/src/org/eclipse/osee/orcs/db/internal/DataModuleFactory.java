@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal;
 
+import org.eclipse.osee.framework.core.data.OrcsTokenService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
@@ -58,7 +59,7 @@ public class DataModuleFactory {
       this.adminModule = adminModule;
    }
 
-   public DataModule createDataModule(OrcsTypes orcsTypes) {
+   public DataModule createDataModule(OrcsTypes orcsTypes, OrcsTokenService tokenService) {
       logger.debug("Creating DataModule");
 
       ArtifactTypes artifactTypes = orcsTypes.getArtifactTypes();
@@ -74,7 +75,7 @@ public class DataModuleFactory {
       final DataLoaderFactory dataLoaderFactory = loaderModule.createDataLoaderFactory(sqlObjectLoader);
       final KeyValueStore keyValueStore = keyValueModule.createKeyValueStore();
       final QueryEngine queryEngine =
-         queryModule.createQueryEngine(dataLoaderFactory, orcsTypes, sqlObjectLoader, keyValueStore);
+         queryModule.createQueryEngine(dataLoaderFactory, orcsTypes, tokenService, sqlObjectLoader, keyValueStore);
       final BranchDataStore branchDataStore = branchModule.createBranchDataStore(dataLoaderFactory);
       final TxDataStore txDataStore = txModule.createTransactionStore(dataLoaderFactory, indexer, attributeTypes);
       final DataStoreAdmin dataStoreAdmin = adminModule.createDataStoreAdmin();

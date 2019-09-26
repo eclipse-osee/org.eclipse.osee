@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal;
 
+import org.eclipse.osee.framework.core.data.OrcsTokenService;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -109,8 +110,8 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
    }
 
    @Override
-   public DataModule createDataModule(OrcsTypes orcsTypes) {
-      return dataModuleFactory.createDataModule(orcsTypes);
+   public DataModule createDataModule(OrcsTypes orcsTypes, OrcsTokenService tokenService) {
+      return dataModuleFactory.createDataModule(orcsTypes, tokenService);
    }
 
    @Override

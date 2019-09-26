@@ -16,6 +16,7 @@ import java.util.Set;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -78,6 +79,7 @@ public class OrcsApiImpl implements OrcsApi {
    private ExecutorAdmin executorAdmin;
    private SystemPreferences preferences;
    private EventAdmin eventAdmin;
+   private OrcsTokenService tokenService;
 
    private QueryModule queryModule;
    private IndexerModule indexerModule;
@@ -111,6 +113,10 @@ public class OrcsApiImpl implements OrcsApi {
 
    public void setEventAdmin(EventAdmin eventAdmin) {
       this.eventAdmin = eventAdmin;
+   }
+
+   public void setOrcsTokenService(OrcsTokenService tokenService) {
+      this.tokenService = tokenService;
    }
 
    public void start() {
@@ -147,7 +153,7 @@ public class OrcsApiImpl implements OrcsApi {
 
       OrcsTypes orcsTypes = typesModule.createOrcsTypes(getSystemSession());
 
-      module = dataStore.createDataModule(orcsTypes);
+      module = dataStore.createDataModule(orcsTypes, tokenService);
 
       AttributeFactory attributeFactory = new AttributeFactory(module.getDataFactory(), orcsTypes.getAttributeTypes());
 

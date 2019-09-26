@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.eclipse.osee.framework.core.data.OrcsTokenServiceImpl">
+   <implementation class="org.eclipse.osee.framework.core.data.OrcsTokenServiceImpl"/>
+   <service>
+      <provide interface="org.eclipse.osee.framework.core.data.OrcsTokenService"/>
+   </service>
+   <reference bind="addTypeTokenProvider" cardinality="0..n" interface="org.eclipse.osee.framework.core.data.OrcsTypeTokenProvider" name="OrcsTypeTokenProvider" policy="dynamic"/>
+</scr:component>

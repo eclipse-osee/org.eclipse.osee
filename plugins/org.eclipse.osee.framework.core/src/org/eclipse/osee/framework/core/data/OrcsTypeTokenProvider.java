@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Boeing.
+ * Copyright (c) 2019 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,20 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.ds;
-
-import org.eclipse.osee.framework.core.data.OrcsTokenService;
-import org.eclipse.osee.orcs.OrcsTypes;
+package org.eclipse.osee.framework.core.data;
 
 /**
- * @author Roberto E. Escobar
+ * This interface is used to cause its implementations to be class loaded by OSGi before the start of the
+ * OrcsTokenService.
+ *
+ * @author Ryan D. Brooks
  */
-public interface OrcsDataStore {
+public interface OrcsTypeTokenProvider {
 
-   OrcsTypesDataStore getTypesDataStore();
-
-   DataModule createDataModule(OrcsTypes orcsTypes, OrcsTokenService tokenService);
-
-   QueryEngineIndexer getQueryEngineIndexer();
-
+   /**
+    * Upon binding of this OrcsTypeTokenProvider, its registerTypes method will be invoked
+    */
+   void registerTypes(OrcsTokenService tokenService);
 }

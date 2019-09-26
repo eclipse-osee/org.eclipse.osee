@@ -10,15 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.NamespaceToken;
+import org.eclipse.osee.framework.core.data.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.OrcsTypeTokenProvider;
+import org.eclipse.osee.framework.core.data.OrcsTypeTokens;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class CoreAttributeTypes {
+public final class CoreAttributeTypes implements OrcsTypeTokenProvider {
+   private static final OrcsTypeTokens tokens = new OrcsTypeTokens();
 
    // @formatter:off
-   public static final AttributeTypeToken AFHA = AttributeTypeToken.valueOf(1152921504606847139L, "AFHA");
+   public static final AttributeTypeString AFHA = tokens.add(AttributeTypeToken.createString(1152921504606847139L, NamespaceToken.OSEE, "AFHA", MediaType.TEXT_PLAIN, ""));
    public static final AttributeTypeToken AccessContextId = AttributeTypeToken.valueOf(1152921504606847102L, "Access Context Id");
    public static final AttributeTypeToken Active = AttributeTypeToken.valueOf(1152921504606847065L, "Active");
    public static final AttributeTypeToken Annotation = AttributeTypeToken.valueOf(1152921504606847094L, "Annotation");
@@ -129,10 +136,10 @@ public final class CoreAttributeTypes {
    public static final AttributeTypeToken Zip = AttributeTypeToken.valueOf(1152921504606847071L, "Zip");
    public static final AttributeTypeToken DefaultValue = AttributeTypeToken.valueOf(2221435335730390044L, "Default Value");
    public static final AttributeTypeToken Value = AttributeTypeToken.valueOf(861995499338466438L, "Value");
-
    // @formatter:on
 
-   private CoreAttributeTypes() {
-      // Constants
+   @Override
+   public void registerTypes(OrcsTokenService tokenService) {
+      tokens.registerTypes(tokenService);
    }
 }

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.data;
 
 import javax.ws.rs.core.MediaType;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
 import org.eclipse.osee.framework.jdk.core.type.HasDescription;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -20,6 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedId;
 /**
  * @author Ryan D. Brooks
  */
+
 public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDescription, NamedId {
    static final AttributeTypeToken SENTINEL = valueOf(Id.SENTINEL, Named.SENTINEL);
    static final String APPLICATION_ZIP = "application/zip";
@@ -51,116 +53,128 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
       return valueOf(id, name, "");
    }
 
-   static AttributeTypeToken valueOf(Long id, String name, String description) {
+   static @NonNull AttributeTypeToken valueOf(Long id, String name, String description) {
       return new AttributeTypeObject(id, NamespaceToken.SENTINEL, name, "mediaType", description,
          TaggerTypeToken.SENTINEL);
    }
 
-   static AttributeTypeArtifactId createArtifactId(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+   static @NonNull AttributeTypeArtifactId createArtifactId(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       return new AttributeTypeArtifactId(id, namespace, name, mediaType, description, taggerType);
    }
 
-   static AttributeTypeArtifactId createArtifactId(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+   static @NonNull AttributeTypeArtifactId createArtifactId(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
       return createArtifactId(id, namespace, name, mediaType, description, determineTaggerType(mediaType));
    }
 
-   static AttributeTypeArtifactId createArtifactIdNoTag(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+   static @NonNull AttributeTypeArtifactId createArtifactIdNoTag(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
       return createArtifactId(id, namespace, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 
-   static AttributeTypeBoolean createBoolean(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+   static @NonNull AttributeTypeBoolean createBoolean(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       return new AttributeTypeBoolean(id, namespace, name, mediaType, description, taggerType);
    }
 
-   static AttributeTypeBoolean createBoolean(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+   static @NonNull AttributeTypeBoolean createBoolean(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
       return createBoolean(id, namespace, name, mediaType, description, determineTaggerType(mediaType));
    }
 
-   static AttributeTypeBoolean createBooleanNoTag(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+   static @NonNull AttributeTypeBoolean createBooleanNoTag(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
       return createBoolean(id, namespace, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 
-   static AttributeTypeBranchId createBranchId(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+   static @NonNull AttributeTypeBranchId createBranchId(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       return new AttributeTypeBranchId(id, namespace, name, mediaType, description, taggerType);
    }
 
-   static AttributeTypeBranchId createBranchId(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+   static @NonNull AttributeTypeBranchId createBranchId(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
       return createBranchId(id, namespace, name, mediaType, description, determineTaggerType(mediaType));
    }
 
-   static AttributeTypeBranchId createBranchIdNoTag(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+   static @NonNull AttributeTypeBranchId createBranchIdNoTag(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
       return createBranchId(id, namespace, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 
-   static AttributeTypeDate createDate(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+   static @NonNull AttributeTypeDate createDate(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       return new AttributeTypeDate(id, namespace, name, mediaType, description, taggerType);
    }
 
-   static AttributeTypeDate createDate(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+   static @NonNull AttributeTypeDate createDate(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
       return createDate(id, namespace, name, mediaType, description, determineTaggerType(mediaType));
    }
 
-   static AttributeTypeDate createDateNoTag(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+   static @NonNull AttributeTypeDate createDateNoTag(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
       return createDate(id, namespace, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 
-   static AttributeTypeDouble createDouble(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+   static @NonNull AttributeTypeDouble createDouble(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       return new AttributeTypeDouble(id, namespace, name, mediaType, description, taggerType);
    }
 
-   static AttributeTypeDouble createDouble(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+   static @NonNull AttributeTypeDouble createDouble(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
       return createDouble(id, namespace, name, mediaType, description, determineTaggerType(mediaType));
    }
 
-   static AttributeTypeDouble createDoubleNoTag(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+   static @NonNull AttributeTypeDouble createDoubleNoTag(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
       return createDouble(id, namespace, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 
-   static AttributeTypeEnum createEnum(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+   static @NonNull AttributeTypeEnum createEnum(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       return new AttributeTypeEnum(id, namespace, name, mediaType, description, taggerType);
    }
 
-   static AttributeTypeEnum createEnum(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+   static @NonNull AttributeTypeEnum createEnum(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
       return createEnum(id, namespace, name, mediaType, description, determineTaggerType(mediaType));
    }
 
-   static AttributeTypeEnum createEnumNoTag(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+   static @NonNull AttributeTypeEnum createEnumNoTag(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
       return createEnum(id, namespace, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 
-   static AttributeTypeInputStream createInputStream(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+   static @NonNull AttributeTypeInputStream createInputStream(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       return new AttributeTypeInputStream(id, namespace, name, mediaType, description, taggerType);
    }
 
-   static AttributeTypeInputStream createInputStream(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+   static @NonNull AttributeTypeInputStream createInputStream(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
       return createInputStream(id, namespace, name, mediaType, description, determineTaggerType(mediaType));
    }
 
-   static AttributeTypeInputStream createInputStreamNoTag(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+   static @NonNull AttributeTypeInputStream createInputStreamNoTag(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
       return createInputStream(id, namespace, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 
-   static AttributeTypeInteger createInteger(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+   static @NonNull AttributeTypeInteger createInteger(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       return new AttributeTypeInteger(id, namespace, name, mediaType, description, taggerType);
    }
 
-   static AttributeTypeInteger createInteger(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+   static @NonNull AttributeTypeInteger createInteger(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
       return createInteger(id, namespace, name, mediaType, description, determineTaggerType(mediaType));
    }
 
-   static AttributeTypeInteger createIntegerNoTag(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+   static @NonNull AttributeTypeInteger createIntegerNoTag(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
       return createInteger(id, namespace, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 
-   static AttributeTypeString createString(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+   static @NonNull AttributeTypeLong createLong(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+      return new AttributeTypeLong(id, namespace, name, mediaType, description, taggerType);
+   }
+
+   static @NonNull AttributeTypeLong createLong(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+      return createLong(id, namespace, name, mediaType, description, determineTaggerType(mediaType));
+   }
+
+   static @NonNull AttributeTypeLong createLongNoTag(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+      return createLong(id, namespace, name, mediaType, description, TaggerTypeToken.SENTINEL);
+   }
+
+   static @NonNull AttributeTypeString createString(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       return new AttributeTypeString(id, namespace, name, mediaType, description, taggerType);
    }
 
-   static AttributeTypeString createString(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+   static @NonNull AttributeTypeString createString(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
       return createString(id, namespace, name, mediaType, description, determineTaggerType(mediaType));
    }
 
-   static AttributeTypeString createStringNoTag(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+   static @NonNull AttributeTypeString createStringNoTag(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
       return createString(id, namespace, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 
