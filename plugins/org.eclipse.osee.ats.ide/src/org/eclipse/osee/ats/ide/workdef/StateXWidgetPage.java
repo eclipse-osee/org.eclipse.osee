@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.ide.workdef;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -215,9 +214,9 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
          try {
             AttributeTypeToken type = null;
             if (layoutData.getStoreId() > 0) {
-               type = AtsAttributeTypes.getTypeById(layoutData.getStoreId());
+               type = AttributeTypeManager.getTypeById(layoutData.getStoreId());
             } else {
-               type = AtsAttributeTypes.getTypeByName(layoutData.getStoreName());
+               type = AttributeTypeManager.getType(layoutData.getStoreName());
             }
             if (type == null) {
                if (layoutData.getStoreId() > 0) {

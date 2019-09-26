@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.data;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -21,10 +19,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
  * @author Donald G. Dunne
  */
 public final class AtsAttributeTypes {
-
-   public static final Map<String, AttributeTypeToken> nameToTypeMap = new HashMap<>();
-   public static final Map<Long, AttributeTypeToken> idToTypeMap = new HashMap<>();
-
    // @formatter:off
    public static final NamespaceToken ATS = NamespaceToken.valueOf(2, "ats", "Namespace for ats system and content management types");
 
@@ -163,24 +157,10 @@ public final class AtsAttributeTypes {
    // @formatter:on
 
    public static AttributeTypeToken createType(Long id, String name) {
-      AttributeTypeToken type = AttributeTypeToken.valueOf(id, "ats." + name);
-      nameToTypeMap.put(type.getName(), type);
-      idToTypeMap.put(type.getId(), type);
-      return type;
+      return AttributeTypeToken.valueOf(id, "ats." + name);
    }
 
    public static AttributeTypeToken createType(Long id, String name, String description) {
-      AttributeTypeToken type = AttributeTypeToken.valueOf(id, "ats." + name, description);
-      nameToTypeMap.put(type.getName(), type);
-      idToTypeMap.put(type.getId(), type);
-      return type;
-   }
-
-   public static AttributeTypeToken getTypeById(Long id) {
-      return idToTypeMap.get(id);
-   }
-
-   public static AttributeTypeToken getTypeByName(String name) {
-      return nameToTypeMap.get(name);
+      return AttributeTypeToken.valueOf(id, "ats." + name, description);
    }
 }

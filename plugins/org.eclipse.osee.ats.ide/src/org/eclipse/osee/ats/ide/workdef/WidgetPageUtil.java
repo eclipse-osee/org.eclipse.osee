@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
@@ -30,6 +29,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
@@ -83,7 +83,7 @@ public class WidgetPageUtil {
          if (layoutData.getXWidgetName().equals(XCommitManager.WIDGET_NAME)) {
             description = XCommitManager.DESCRIPTION;
          }
-         AttributeTypeToken type = AtsAttributeTypes.getTypeByName(layoutData.getStoreName());
+         AttributeTypeToken type = AttributeTypeManager.getType(layoutData.getStoreName());
          if (type != null && Strings.isValid(type.getDescription())) {
             description = type.getDescription();
          }
