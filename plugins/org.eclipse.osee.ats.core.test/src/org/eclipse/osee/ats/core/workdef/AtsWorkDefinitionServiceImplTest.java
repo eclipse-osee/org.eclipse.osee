@@ -40,7 +40,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
-import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.junit.Assert;
@@ -117,10 +116,11 @@ public class AtsWorkDefinitionServiceImplTest {
     */
    @Test
    public void testGetWorkDefinitionForPeerToPeerReview_deafault() throws Exception {
-      when(attributeResolver.getAttributeValues(peerReview,
-         ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition)).thenReturn(Collections.emptyList());
-      when(attributeResolver.getAttributeValues(peerReview,
-         ConvertAtsConfigGuidAttributesOperations.RelatedPeerWorkflowDefinition)).thenReturn(Collections.emptyList());
+      when(attributeResolver.getAttributeValues(peerReview, AtsAttributeTypes.WorkflowDefinition)).thenReturn(
+         Collections.emptyList());
+      when(
+         attributeResolver.getAttributeValues(peerReview, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
+            Collections.emptyList());
 
       IAtsWorkDefinition workDef = workDefService.getWorkDefinitionForPeerToPeerReview(peerReview);
       assertEquals(defaultPeerToPeerWorkDef, workDef);
@@ -133,7 +133,7 @@ public class AtsWorkDefinitionServiceImplTest {
    public void testGetWorkDefinitionForPeerToPeerReviewNotYetCreated() throws Exception {
       when(teamWf.getTeamDefinition()).thenReturn(topTeamDef);
       when(attributeResolver.getSoleArtifactIdReference(topTeamDef,
-         AtsAttributeTypes.RelatedPeerWorkDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
+         AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
             ArtifactId.SENTINEL);
 
       IAtsWorkDefinition workDef = workDefService.getWorkDefinitionForPeerToPeerReviewNotYetCreated(teamWf);
@@ -147,12 +147,13 @@ public class AtsWorkDefinitionServiceImplTest {
    public void testGetWorkDefinitionForPeerToPeerReviewIAtsTeamWorkflowIAtsPeerToPeerReview__fromReview() throws Exception {
       List<Object> attrValues = new ArrayList<>();
       attrValues.add(MyPeerToPeerWorkDefName);
-      when(attributeResolver.getAttributeValues(peerReview,
-         ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition)).thenReturn(attrValues);
+      when(attributeResolver.getAttributeValues(peerReview, AtsAttributeTypes.WorkflowDefinition)).thenReturn(
+         attrValues);
       List<Object> attrValues2 = new ArrayList<>();
       attrValues2.add(MyPeerToPeerWorkDefArt);
-      when(attributeResolver.getAttributeValues(peerReview,
-         ConvertAtsConfigGuidAttributesOperations.RelatedPeerWorkflowDefinition)).thenReturn(attrValues2);
+      when(
+         attributeResolver.getAttributeValues(peerReview, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
+            attrValues2);
 
       Mockito.doReturn(myPeerToPeerWorkDef).when(workDefService).getWorkDefinitionByName(MyPeerToPeerWorkDefName);
 
@@ -167,12 +168,12 @@ public class AtsWorkDefinitionServiceImplTest {
    public void testGetWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone() throws Exception {
       when(teamWf.getTeamDefinition()).thenReturn(featureTeamDef);
       when(attributeResolver.getSoleAttributeValueAsString(topTeamDef,
-         AtsAttributeTypes.RelatedPeerWorkDefinitionReference, "")).thenReturn(
+         AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, "")).thenReturn(
             MyPeerToPeerWorkDefArt.getIdString());
 
       when(actionableItem.getTeamDefinitionInherited()).thenReturn(topTeamDef);
       when(attributeResolver.getSoleAttributeValueAsString(topTeamDef,
-         AtsAttributeTypes.RelatedPeerWorkDefinitionReference, "")).thenReturn(
+         AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, "")).thenReturn(
             MyPeerToPeerWorkDefArt.getIdString());
 
       when(workDefinitionService.getWorkDefinition(MyPeerToPeerWorkDefArt.getId())).thenReturn(myPeerToPeerWorkDef);
@@ -194,33 +195,31 @@ public class AtsWorkDefinitionServiceImplTest {
    public void testGetPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse() throws Exception {
       // Setup all teamDefinitions to not have values defined
       when(attributeResolver.getSoleArtifactIdReference(topTeamDef,
-         AtsAttributeTypes.RelatedPeerWorkDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
+         AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
             ArtifactId.SENTINEL);
       when(attributeResolver.getSoleArtifactIdReference(projTeamDef,
-         AtsAttributeTypes.RelatedPeerWorkDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
+         AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
             ArtifactId.SENTINEL);
 
       when(attributeResolver.getSoleArtifactIdReference(featureTeamDef,
-         AtsAttributeTypes.RelatedPeerWorkDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
+         AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
             ArtifactId.SENTINEL);
       when(attributeResolver.getSoleArtifactIdReference(featureTeamDef,
-         AtsAttributeTypes.RelatedPeerWorkDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
+         AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
             ArtifactId.SENTINEL);
 
       // Test that no-match is returned
       Mockito.doReturn(myPeerToPeerWorkDef).when(workDefService).getWorkDefinitionByName(eq(MyPeerToPeerWorkDefName));
 
       // Setup that top team definition has WorkDefinition defined
-      when(attributeResolver.getSoleAttributeValue(topTeamDef,
-         ConvertAtsConfigGuidAttributesOperations.RelatedPeerWorkflowDefinition, "")).thenReturn(
-            MyPeerToPeerWorkDefName);
+      when(attributeResolver.getSoleAttributeValue(topTeamDef, AtsAttributeTypes.RelatedPeerWorkflowDefinition,
+         "")).thenReturn(MyPeerToPeerWorkDefName);
 
-      when(attributeResolver.getSoleArtifactIdReference(peerReview,
-         ConvertAtsConfigGuidAttributesOperations.RelatedPeerWorkflowDefinition, ArtifactId.SENTINEL)).thenReturn(
-            MyPeerToPeerWorkDefArt);
+      when(attributeResolver.getSoleArtifactIdReference(peerReview, AtsAttributeTypes.RelatedPeerWorkflowDefinition,
+         ArtifactId.SENTINEL)).thenReturn(MyPeerToPeerWorkDefArt);
 
-      when(attributeResolver.getSoleAttributeValue(topTeamDef,
-         ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition, "")).thenReturn(MyPeerToPeerWorkDefName);
+      when(attributeResolver.getSoleAttributeValue(topTeamDef, AtsAttributeTypes.WorkflowDefinition, "")).thenReturn(
+         MyPeerToPeerWorkDefName);
       when(attributeResolver.getSoleArtifactIdReference(topTeamDef, AtsAttributeTypes.WorkflowDefinitionReference,
          ArtifactId.SENTINEL)).thenReturn(MyPeerToPeerWorkDefArt);
       Mockito.doReturn(myPeerToPeerWorkDef).when(workDefService).getWorkDefinitionByName(MyPeerToPeerWorkDefName);
@@ -231,10 +230,12 @@ public class AtsWorkDefinitionServiceImplTest {
    public void testGetWorkDefinitionIAtsWorkItem() throws Exception {
       when(peerReview.getParentTeamWorkflow()).thenReturn(teamWf);
       when(teamWf.getTeamDefinition()).thenReturn(topTeamDef);
-      when(attributeResolver.getAttributeValues(topTeamDef,
-         ConvertAtsConfigGuidAttributesOperations.RelatedPeerWorkflowDefinition)).thenReturn(Collections.emptyList());
-      when(attributeResolver.getAttributeValues(peerReview,
-         ConvertAtsConfigGuidAttributesOperations.RelatedPeerWorkflowDefinition)).thenReturn(Collections.emptyList());
+      when(
+         attributeResolver.getAttributeValues(topTeamDef, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
+            Collections.emptyList());
+      when(
+         attributeResolver.getAttributeValues(peerReview, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
+            Collections.emptyList());
 
       Mockito.doReturn(defaultPeerToPeerWorkDef).when(workDefService).getWorkDefinition(peerReview);
 
@@ -246,8 +247,7 @@ public class AtsWorkDefinitionServiceImplTest {
    public void testGetWorkDefinitionForTaskWithSpecifiedId() throws Exception {
       List<Object> attrValues = new ArrayList<>();
       attrValues.add(MyTaskWorkDefId);
-      when(attributeResolver.getAttributeValues(task,
-         ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition)).thenReturn(attrValues);
+      when(attributeResolver.getAttributeValues(task, AtsAttributeTypes.WorkflowDefinition)).thenReturn(attrValues);
 
       List<Object> attrValues2 = new ArrayList<>();
       attrValues2.add(MyTaskWorkDefArt);

@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.config.tx;
 
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.RelatedPeerWorkDefinitionReference;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.RelatedTaskWorkDefinitionReference;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.RelatedTaskWorkflowDefinitionReference;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.TeamWorkflowArtifactType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -138,7 +138,7 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
    @Override
    public IAtsConfigTxTeamDef andRelatedTaskWorkflowDefinition(NamedId... taskWorkDefs) {
       for (NamedId id : taskWorkDefs) {
-         changes.addAttribute(teamDef, RelatedTaskWorkDefinitionReference, id);
+         changes.addAttribute(teamDef, RelatedTaskWorkflowDefinitionReference, id);
       }
       return this;
    }
@@ -146,7 +146,7 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
    @Override
    public IAtsConfigTxTeamDef andRelatedPeerWorkflowDefinition(NamedId... peerWorkDefs) {
       for (NamedId id : peerWorkDefs) {
-         changes.addAttribute(teamDef, RelatedPeerWorkDefinitionReference, id);
+         changes.addAttribute(teamDef, RelatedPeerWorkflowDefinitionReference, id);
       }
       return this;
    }

@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
-import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -46,10 +45,9 @@ public class AtsConfig2DataExample extends AbstractAtsConfig2Data {
       IAtsTeamDefinition dtsSoftwareTeam =
          AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(dtsSoftwareArt);
 
-      changes.setSoleAttributeValue(dtsSoftwareTeam,
-         ConvertAtsConfigGuidAttributesOperations.RelatedTaskWorkflowDefinition,
+      changes.setSoleAttributeValue(dtsSoftwareTeam, AtsAttributeTypes.RelatedTaskWorkflowDefinition,
          AtsWorkDefinitionTokens.WorkDef_Task_AtsConfig2Example);
-      changes.setSoleAttributeValue(dtsSoftwareTeam, AtsAttributeTypes.RelatedTaskWorkDefinitionReference,
+      changes.setSoleAttributeValue(dtsSoftwareTeam, AtsAttributeTypes.RelatedTaskWorkflowDefinitionReference,
          AtsWorkDefinitionTokens.WorkDef_Task_AtsConfig2Example);
 
       AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(dtsSoftwareTeam,

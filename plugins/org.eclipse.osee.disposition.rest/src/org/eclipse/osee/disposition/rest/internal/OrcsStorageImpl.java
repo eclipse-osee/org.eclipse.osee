@@ -603,7 +603,7 @@ public class OrcsStorageImpl implements Storage {
       Map<String, ArtifactReadable> toReturn = new HashMap<>();
 
       for (ArtifactReadable descendant : descendants) {
-         if (!descendant.getAttributeValues(CoverageUtil.Item).isEmpty()) {
+         if (!descendant.getAttributeValues(CoverageUtil.CoverageItem).isEmpty()) {
             ArtifactReadable parent = descendant.getParent();
             String fullName = String.format("%s.%s", parent.getName(), descendant.getName());
             toReturn.put(fullName, descendant);

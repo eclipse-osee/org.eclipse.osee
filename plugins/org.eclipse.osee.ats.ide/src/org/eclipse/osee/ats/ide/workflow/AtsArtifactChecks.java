@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.search.internal.UserRelatedToAtsObjectSearch;
@@ -237,9 +236,9 @@ public class AtsArtifactChecks extends ArtifactCheck {
       for (Artifact art : artifacts) {
          // legacy work definition check (remove after 26.0)
          if (art.isOfType(AtsArtifactTypes.WorkDefinition)) {
-            List<Artifact> artifactListFromTypeAndAttribute = ArtifactQuery.getArtifactListFromTypeAndAttribute(
-               AtsArtifactTypes.WorkDefinition, ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition,
-               art.getName(), AtsClientService.get().getAtsBranch());
+            List<Artifact> artifactListFromTypeAndAttribute =
+               ArtifactQuery.getArtifactListFromTypeAndAttribute(AtsArtifactTypes.WorkDefinition,
+                  AtsAttributeTypes.WorkflowDefinition, art.getName(), AtsClientService.get().getAtsBranch());
             if (artifactListFromTypeAndAttribute.size() > 0) {
                return createStatus(String.format(
                   "ATS WorkDefinition [%s] selected to delete has ats.WorkDefinition attributes set to it's name in %d artifact.  These must be changed first.",

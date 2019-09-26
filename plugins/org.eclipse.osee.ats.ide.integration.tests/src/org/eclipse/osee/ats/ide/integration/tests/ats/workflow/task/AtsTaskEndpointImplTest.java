@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.util.IAtsClient;
@@ -178,7 +177,7 @@ public class AtsTaskEndpointImplTest {
       // Work Definition should be set
       boolean found = false;
       for (JaxAttribute attr : attributes) {
-         if (attr.getAttrTypeName().equals(ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition.getName())) {
+         if (attr.getAttrTypeName().equals(AtsAttributeTypes.WorkflowDefinition.getName())) {
             found = true;
             Assert.assertEquals("Expected Attribute WorkDefintiion WorkDef_Task_Default", "WorkDef_Task_Default",
                attr.getValues().iterator().next());
@@ -207,7 +206,7 @@ public class AtsTaskEndpointImplTest {
       boolean foundByName = false;
       boolean foundById = false;
       for (JaxAttribute attr : attributes) {
-         if (attr.getAttrTypeName().equals(ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition.getName())) {
+         if (attr.getAttrTypeName().equals(AtsAttributeTypes.WorkflowDefinition.getName())) {
             Assert.assertEquals(AtsWorkDefinitionTokens.WorkDef_Task_Default.getName(),
                attr.getValues().iterator().next());
             foundByName = true;

@@ -5,24 +5,39 @@
  */
 package org.eclipse.osee.doors.connector.ui.handler;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.NamespaceToken;
+import org.eclipse.osee.framework.core.data.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.OrcsTypeTokenProvider;
+import org.eclipse.osee.framework.core.data.OrcsTypeTokens;
 
 /**
  * Class to create Doors Artifact type
  *
  * @author Chandan Bandemutt
  */
-public class DoorsTypes {
+public final class DoorsTypes implements OrcsTypeTokenProvider {
+   private static final OrcsTypeTokens tokens = new OrcsTypeTokens();
 
    /**
     * Doors Artifact type
     */
-   public static final ArtifactTypeToken DoorsRequirement =
-      ArtifactTypeToken.valueOf(5764607523034243073L, "Doors Requirement");
 
-   public static final AttributeTypeToken DoorReqName =
-      AttributeTypeToken.valueOf(5764607523034243075L, "Door Req Name");
-   public static final AttributeTypeToken DoorReqUrl = AttributeTypeToken.valueOf(8198L, "Door Req URL");
+   // @formatter:off
+   public static final NamespaceToken DOORS = NamespaceToken.valueOf(13, "doors", "Namespace for doors system and content management types");
+
+   public static final ArtifactTypeToken DoorsRequirement = ArtifactTypeToken.valueOf(5764607523034243073L, "Doors Requirement");
+
+   public static final AttributeTypeString DoorReqName = tokens.add(AttributeTypeToken.createString(5764607523034243075L, DOORS, "Door Req Name", MediaType.TEXT_PLAIN, ""));
+   public static final AttributeTypeString DoorReqUrl = tokens.add(AttributeTypeToken.createString(8198L, DOORS, "Door Req URL", MediaType.TEXT_PLAIN, ""));
+   // @formatter:on
+
+   @Override
+   public void registerTypes(OrcsTokenService tokenService) {
+      tokens.registerTypes(tokenService);
+   }
 
 }

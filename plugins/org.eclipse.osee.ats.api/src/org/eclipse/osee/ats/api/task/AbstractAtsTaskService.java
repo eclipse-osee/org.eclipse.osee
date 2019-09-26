@@ -188,7 +188,7 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
    @Override
    public Collection<IAtsWorkDefinition> calculateTaskWorkDefs(IAtsTeamWorkflow teamWf) {
       Collection<IAttribute<Object>> workDefIds = atsApi.getAttributeResolver().getAttributes(
-         teamWf.getTeamDefinition(), AtsAttributeTypes.RelatedTaskWorkDefinitionReference);
+         teamWf.getTeamDefinition(), AtsAttributeTypes.RelatedTaskWorkflowDefinitionReference);
       List<IAtsWorkDefinition> workDefs = new ArrayList<IAtsWorkDefinition>();
       for (IAttribute<Object> attr : workDefIds) {
          ArtifactId id = (ArtifactId) attr.getValue();

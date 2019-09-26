@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import java.util.Arrays;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
@@ -33,12 +33,6 @@ public class EntryCancelWidgetDialog extends EntryDialog {
 
    private String selection = "";
    private XComboDam reasonCombo;
-   public static final AttributeTypeToken CancelledReason = AttributeTypeToken.valueOf(1152921504606847171L,
-      "ats.Cancelled Reason", "Explanation of why worklfow was cancelled.");
-   public static final AttributeTypeToken CancelReason =
-      AttributeTypeToken.valueOf(5718762723487704057L, "ats.Cancel Reason");
-   public static final AttributeTypeToken CancelledReasonDetails = AttributeTypeToken.valueOf(8279626026752029322L,
-      "ats.Cancelled Reason Details", "Explanation of why worklfow was cancelled.");
 
    public EntryCancelWidgetDialog(String dialogTitle, String dialogMessage) {
       super(dialogTitle, dialogMessage);
@@ -68,7 +62,7 @@ public class EntryCancelWidgetDialog extends EntryDialog {
    }
 
    private String[] getCancelledReasonValues() {
-      Set<String> valuesSet = AttributeTypeManager.getEnumerationValues(CancelReason.getName());
+      Set<String> valuesSet = AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.CancelReason.getName());
       String[] values = valuesSet.toArray(new String[valuesSet.size()]);
       Arrays.sort(values);
       return values;

@@ -74,7 +74,7 @@ public class CoverageAdapter {
 
    private List<DispoAnnotationData> copyCoverageData(ArtifactReadable source, DispoItem dest, OperationReport report) {
       boolean madeChange = false;
-      List<String> covearageItems = source.getAttributeValues(CoverageUtil.Item);
+      List<String> covearageItems = source.getAttributeValues(CoverageUtil.CoverageItem);
       Map<String, Discrepancy> textToDiscrepancyMap = getTextToDiscrepancyMap(dest);
       List<DispoAnnotationData> annotations = dest.getAnnotationsList();
 

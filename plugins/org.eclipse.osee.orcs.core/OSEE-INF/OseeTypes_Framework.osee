@@ -32,7 +32,7 @@ artifactType "Osee Type Enum" extends "Enumerated Artifact" {
 artifactType "Global Preferences" extends "Artifact" {
 	id 3
 	attribute "Dictionary"
-	attribute "osee.config.Default Mail Server"
+	attribute "osee.Default Mail Server"
 	attribute "General String Data"
 	attribute "Web Preferences"
 }
@@ -67,7 +67,7 @@ attributeType "Branch Reference" extends BranchReferenceAttribute {
 	mediaType "application/http"
 }
 
-attributeType "osee.config.Default Mail Server" extends StringAttribute {
+attributeType "osee.Default Mail Server" extends StringAttribute {
 	id 1152921504606847063
 	dataProvider DefaultAttributeDataProvider
 	min 0

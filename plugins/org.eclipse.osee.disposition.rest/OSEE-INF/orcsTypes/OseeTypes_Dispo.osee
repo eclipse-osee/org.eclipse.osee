@@ -39,7 +39,7 @@ artifactType "dispo.Dispositionable Item" extends "Artifact" {
    attribute "dispo.item.Needs Review"
    attribute "dispo.item.File Number"
    attribute "dispo.item.Method Number"
-   attribute "dispo.Team"
+   attribute "dispo.item.Team"
 }
 
 attributeType "dispo.Annotations JSON" extends StringAttribute {
@@ -272,7 +272,7 @@ attributeType "dispo.item.Method Number" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "dispo.Team" extends StringAttribute {
+attributeType "dispo.item.Team" extends StringAttribute {
 	id 3160880792426011047
 	dataProvider DefaultAttributeDataProvider
 	min 1

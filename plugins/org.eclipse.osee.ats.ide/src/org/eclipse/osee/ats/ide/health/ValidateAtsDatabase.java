@@ -43,7 +43,6 @@ import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
@@ -510,10 +509,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       for (Artifact artifact : artifacts) {
          try {
             // delete after 26.0
-            String workDefName =
-               artifact.getSoleAttributeValue(ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition, "");
-            if (Strings.isValid(workDefName) && AtsClientService.get().getWorkDefinitionService().getWorkDefinitionByName(
-               workDefName) == null) {
+            String workDefName = artifact.getSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, "");
+            if (Strings.isValid(
+               workDefName) && AtsClientService.get().getWorkDefinitionService().getWorkDefinitionByName(
+                  workDefName) == null) {
                results.log(artifact, "testAttributeSetWorkDefinitionsExist", String.format(
                   "Error: ats.Work Definition attribute value [%s] not valid work definition for " + XResultDataUI.getHyperlink(
                      artifact),

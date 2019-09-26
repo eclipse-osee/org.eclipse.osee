@@ -36,7 +36,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
-import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -131,8 +130,8 @@ public class AtsMockitoTest {
       when(teamDef.isActive()).thenReturn(true);
       when(teamDef.getLeads()).thenReturn(Arrays.asList(currentUser));
       when(teamDef.getActionableItems()).thenReturn(aias);
-      when(attrResolver.getSoleAttributeValue(teamDef, ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition,
-         "")).thenReturn(WORK_DEF_NAME);
+      when(attrResolver.getSoleAttributeValue(teamDef, AtsAttributeTypes.WorkflowDefinition, "")).thenReturn(
+         WORK_DEF_NAME);
       when(attrResolver.getSoleArtifactIdReference(teamDef, AtsAttributeTypes.WorkflowDefinitionReference,
          ArtifactId.SENTINEL)).thenReturn(WORK_DEF_ART);
 

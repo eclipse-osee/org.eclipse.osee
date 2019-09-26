@@ -33,12 +33,19 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeDate;
+import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeInputStream;
+import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.NamespaceToken;
+import org.eclipse.osee.framework.core.data.OrcsTypeTokens;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -69,9 +76,11 @@ import org.mockito.stubbing.Answer;
  *
  * @author Roberto E. Escobar
  */
-public class OrcsTypesTest {
-
+public final class OrcsTypesTest {
+   private static final OrcsTypeTokens tokens = new OrcsTypeTokens();
    //@formatter:off
+   public static final NamespaceToken TEST = NamespaceToken.valueOf(16, "ats", "Namespace for ats system and content management types");
+
    private static final String SESSION_ID = "Test Session";
 
    private static final String TEST_TYPE_MODEL = "testTypeModel.osee";
@@ -84,11 +93,11 @@ public class OrcsTypesTest {
    private static final ArtifactTypeToken OtherArtifact = ArtifactTypeToken.valueOf(1152921504606957088L, "Other Artifact");
    private static final ArtifactTypeToken LastArtifact = ArtifactTypeToken.valueOf(1152921504606957089L, "Last Artifact");
 
-   private static final AttributeTypeId Name = AttributeTypeToken.valueOf(1152921504606957090L, "Name");
-   private static final AttributeTypeId Annotation = AttributeTypeToken.valueOf(1152921504606957091L, "Annotation");
-   private static final AttributeTypeId Wordml = AttributeTypeToken.valueOf(1152921504606957092L, "WordML");
-   private static final AttributeTypeId Field1 = AttributeTypeToken.valueOf(1152921504606957093L, "Field 1");
-   private static final AttributeTypeId Field2 = AttributeTypeToken.valueOf(1152921504606957094L, "Field 2");
+   private static final AttributeTypeString Name = tokens.add(AttributeTypeToken.createString(1152921504606957090L, TEST, "Name", MediaType.TEXT_PLAIN, ""));
+   private static final AttributeTypeInputStream Annotation = tokens.add(AttributeTypeToken.createInputStream(1152921504606957091L, TEST, "Annotation", MediaType.TEXT_PLAIN, ""));
+   private static final AttributeTypeId Wordml = tokens.add(AttributeTypeToken.createString(1152921504606957092L, TEST, "WordML", MediaType.APPLICATION_XML, ""));
+   private static final AttributeTypeEnum Field1 = tokens.add(AttributeTypeToken.createEnumNoTag(1152921504606957093L, TEST, "Field 1", MediaType.TEXT_PLAIN, ""));
+   private static final AttributeTypeDate Field2 = tokens.add(AttributeTypeToken.createDate(1152921504606957094L, TEST, "Field 2", MediaType.TEXT_PLAIN, ""));
 
    private static final IRelationType RequirementRelation = RelationTypeToken.create(2305843009213695295L, "Requirement Relation");
    private static final IRelationType AnotherRelation = RelationTypeToken.create(2305843009213695296L, "Another Relation");

@@ -25,6 +25,10 @@ public class OrcsTypeTokens {
    private final List<AttributeTypeToken> attributeTypes = new ArrayList<>();
    private final List<RelationTypeToken> relationTypes = new ArrayList<>();
 
+   public List<AttributeTypeToken> getAttributeTypes() {
+      return attributeTypes;
+   }
+
    public ArtifactTypeToken add(ArtifactTypeToken artifactType) {
       artifactTypes.add(artifactType);
       return artifactType;

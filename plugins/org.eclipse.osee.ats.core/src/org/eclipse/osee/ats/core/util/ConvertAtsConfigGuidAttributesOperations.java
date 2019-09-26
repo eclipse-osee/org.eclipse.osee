@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -29,28 +28,13 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class ConvertAtsConfigGuidAttributesOperations {
 
-   // Remove static after 25.0
-   public static final AttributeTypeToken TeamDefinition =
-      AtsAttributeTypes.createType(1152921504606847201L, "Team Definition");
-   public static final AttributeTypeToken ActionableItem = AtsAttributeTypes.createType(1152921504606847200L,
-      "Actionable Item", "Actionable Items that are impacted by this change.");
-   // Remove static after 26.0
-   public static final AttributeTypeToken WorkflowDefinition = AtsAttributeTypes.createType(1152921504606847149L,
-      "Workflow Definition", "Specific work flow definition id used by this Workflow artifact");
-   public static final AttributeTypeToken RelatedTaskWorkflowDefinition =
-      AtsAttributeTypes.createType(1152921504606847152L, "Related Task Workflow Definition",
-         "Specific work flow definition id used by Tasks related to this Workflow");
-   public static final AttributeTypeToken RelatedPeerWorkflowDefinition =
-      AtsAttributeTypes.createType(1152921504606847870L, "Related Peer Workflow Definition",
-         "Specific work flow definition id used by Peer To Peer Reviews for this Team");
-
    public static void convertActionableItemsIfNeeded(IAtsChangeSet changes, ArtifactToken art, AtsApi atsApi) {
       // convert guids to id
       Collection<ArtifactId> currentAiRefIds =
          atsApi.getAttributeResolver().getAttributeValues(art, AtsAttributeTypes.ActionableItemReference);
 
       List<ArtifactId> neededAiRefIds = new LinkedList<>();
-      for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(art, ActionableItem)) {
+      for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(art, AtsAttributeTypes.ActionableItem)) {
          String aiArtGuid = (String) attr.getValue();
          ArtifactToken ai = atsApi.getQueryService().getArtifactByGuidOrSentinel(aiArtGuid);
          if (ai.isInvalid()) {
@@ -65,7 +49,8 @@ public class ConvertAtsConfigGuidAttributesOperations {
       }
 
       // convert id to guid
-      List<String> currentAiGuidIds = atsApi.getAttributeResolver().getAttributesToStringList(art, ActionableItem);
+      List<String> currentAiGuidIds =
+         atsApi.getAttributeResolver().getAttributesToStringList(art, AtsAttributeTypes.ActionableItem);
 
       List<String> neededAiGuidIds = new LinkedList<>();
       Collection<ArtifactId> aiArts =
@@ -80,7 +65,7 @@ public class ConvertAtsConfigGuidAttributesOperations {
       }
 
       for (String guid : neededAiGuidIds) {
-         changes.addAttribute(art, ActionableItem, guid);
+         changes.addAttribute(art, AtsAttributeTypes.ActionableItem, guid);
       }
    }
 
@@ -89,7 +74,8 @@ public class ConvertAtsConfigGuidAttributesOperations {
       ArtifactId teamDefId = atsApi.getAttributeResolver().getSoleArtifactIdReference(art,
          AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
       if (teamDefId.isInvalid()) {
-         String teamDefGuid = atsApi.getAttributeResolver().getSoleAttributeValue(art, TeamDefinition, "");
+         String teamDefGuid =
+            atsApi.getAttributeResolver().getSoleAttributeValue(art, AtsAttributeTypes.TeamDefinition, "");
          if (Strings.isValid(teamDefGuid)) {
             ArtifactToken artifact = atsApi.getQueryService().getArtifactByGuidOrSentinel(teamDefGuid);
             IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(artifact);
@@ -97,13 +83,14 @@ public class ConvertAtsConfigGuidAttributesOperations {
          }
       }
       // convert id to guid
-      String teamDefGuid = atsApi.getAttributeResolver().getSoleAttributeValue(art, TeamDefinition, "");
+      String teamDefGuid =
+         atsApi.getAttributeResolver().getSoleAttributeValue(art, AtsAttributeTypes.TeamDefinition, "");
       if (!Strings.isValid(teamDefGuid)) {
          ArtifactId teamDefArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(art,
             AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
          ArtifactToken artifact = atsApi.getQueryService().getArtifact(teamDefArt);
          if (artifact != null) {
-            changes.setSoleAttributeValue(art, TeamDefinition, artifact.getGuid());
+            changes.setSoleAttributeValue(art, AtsAttributeTypes.TeamDefinition, artifact.getGuid());
          }
       }
    }

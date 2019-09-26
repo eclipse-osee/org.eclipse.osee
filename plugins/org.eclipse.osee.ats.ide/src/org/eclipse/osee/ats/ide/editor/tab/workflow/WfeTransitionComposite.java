@@ -276,9 +276,9 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
                         }
                         result.set(true);
                         if (useEntryCancelWidgetDialog) {
-                           awa.setSoleAttributeFromString(EntryCancelWidgetDialog.CancelReason,
+                           awa.setSoleAttributeFromString(AtsAttributeTypes.CancelReason,
                               ((EntryCancelWidgetDialog) cancelDialog).getEntry());
-                           awa.setSoleAttributeFromString(EntryCancelWidgetDialog.CancelledReasonDetails,
+                           awa.setSoleAttributeFromString(AtsAttributeTypes.CancelledReasonDetails,
                               ((EntryCancelWidgetDialog) cancelDialog).getCancelledDetails());
                         } else {
                            result.setText(cancelDialog.getEntry());

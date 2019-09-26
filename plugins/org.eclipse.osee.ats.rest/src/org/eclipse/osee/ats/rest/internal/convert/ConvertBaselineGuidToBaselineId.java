@@ -14,7 +14,6 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -30,10 +29,6 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  * @author Donald G Dunne
  */
 public class ConvertBaselineGuidToBaselineId extends AbstractConvertGuidToId {
-
-   // Leave this attribute definition and conversion for other OSEE sites to convert
-   private static final AttributeTypeToken BaselineBranchGuid =
-      AttributeTypeToken.valueOf(1152921504606847145L, "ats.Baseline Branch Guid");
 
    public ConvertBaselineGuidToBaselineId(Log logger, JdbcClient jdbcClient, OrcsApi orcsApi, AtsApi atsApi) {
       super(logger, jdbcClient, orcsApi, atsApi);
@@ -51,8 +46,9 @@ public class ConvertBaselineGuidToBaselineId extends AbstractConvertGuidToId {
       TransactionBuilder tx = createTransactionBuilder();
       int numChanges = 0;
       for (ArtifactReadable art : orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andTypeEquals(
-         AtsArtifactTypes.Version, AtsArtifactTypes.TeamDefinition).andExists(BaselineBranchGuid).getResults()) {
-         List<String> attributeValues = art.getAttributeValues(BaselineBranchGuid);
+         AtsArtifactTypes.Version, AtsArtifactTypes.TeamDefinition).andExists(
+            AtsAttributeTypes.BaselineBranchGuid).getResults()) {
+         List<String> attributeValues = art.getAttributeValues(AtsAttributeTypes.BaselineBranchGuid);
          for (String guid : attributeValues) {
             if (!guid.isEmpty()) {
                BranchId branch = null;

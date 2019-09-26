@@ -232,7 +232,7 @@ public abstract class AtsApiImpl implements AtsApi {
          String keyValue = String.format("%s=%s", key, value);
          boolean found = false;
          Collection<IAttribute<String>> attributes =
-            getAttributeResolver().getAttributes(userArt, AtsAttributeTypes.AtsConfig);
+            getAttributeResolver().getAttributes(userArt, AtsAttributeTypes.AtsUserConfig);
          for (IAttribute<String> attr : attributes) {
             String str = attr.getValue();
             if (str.startsWith(key)) {
@@ -242,7 +242,7 @@ public abstract class AtsApiImpl implements AtsApi {
             }
          }
          if (!found) {
-            changes.addAttribute(userArt, AtsAttributeTypes.AtsConfig, keyValue);
+            changes.addAttribute(userArt, AtsAttributeTypes.AtsUserConfig, keyValue);
          }
          changes.executeIfNeeded();
       }
@@ -518,7 +518,7 @@ public abstract class AtsApiImpl implements AtsApi {
       ArtifactToken userArt = getUserService().getCurrentUser().getStoreObject();
       if (userArt != null) {
          for (String configKeyValueStr : getAttributeResolver().getAttributesToStringList(userArt,
-            AtsAttributeTypes.AtsConfig)) {
+            AtsAttributeTypes.AtsUserConfig)) {
             if (configKeyValueStr.startsWith(key)) {
                result = configKeyValueStr.replaceFirst(key + "=", "");
                break;

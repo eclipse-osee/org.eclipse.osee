@@ -6,8 +6,9 @@ Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Bosch GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Import-Package: com.fasterxml.jackson.databind,
- com.fasterxml.jackson.core,
+Import-Package: com.fasterxml.jackson.core,
+ com.fasterxml.jackson.databind,
+ javax.ws.rs.core,
  org.apache.commons.httpclient,
  org.eclipse.core.commands,
  org.eclipse.core.resources,

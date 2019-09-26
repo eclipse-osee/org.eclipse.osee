@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -35,8 +36,7 @@ public class FixWorkDefinitionToAttributeConversion implements IAtsDatabaseConve
    public void run(XResultData rd, boolean reportOnly, AtsApi atsApi) {
       List<ArtifactId> artIdList = new LinkedList<>();
       artIdList.addAll(atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andAttr(
-         ConvertWorkDefinitionOperations.WorkflowDefinition,
-         AtsWorkDefinitionTokens.WorkDef_Team_Default.getName()).getItemIds());
+         AtsAttributeTypes.WorkflowDefinition, AtsWorkDefinitionTokens.WorkDef_Team_Default.getName()).getItemIds());
       List<Collection<ArtifactId>> subDivide = Collections.subDivide(artIdList, 500);
       int size = subDivide.size();
       int count = 1;
