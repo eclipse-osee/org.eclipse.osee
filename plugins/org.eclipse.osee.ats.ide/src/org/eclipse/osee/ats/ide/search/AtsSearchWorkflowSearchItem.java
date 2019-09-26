@@ -94,8 +94,6 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       getStateName().addWidget();
       getUser().addWidget(6);
       getUserType().addWidget();
-      getColorTeam().addWidget();
-
       if (showWorkPackageWidgets()) {
          getProgram().addWidget(8);
          getInsertion().addWidget();
