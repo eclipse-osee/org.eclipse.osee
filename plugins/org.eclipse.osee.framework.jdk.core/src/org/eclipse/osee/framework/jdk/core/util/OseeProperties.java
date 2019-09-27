@@ -227,4 +227,5 @@ public class OseeProperties {
    public static boolean isOseeDbDefined() {
       return Strings.isValid(System.getProperty(OSEE_DB));
    }
+
 }

@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenuPermissions;
 import org.eclipse.osee.framework.ui.skynet.menu.IGlobalMenuHelper;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
@@ -78,7 +79,7 @@ public class ArtifactExplorerUtil {
          @Override
          public void run() {
             try {
-               if (treeViewer == null) {
+               if (treeViewer == null || !Widgets.isAccessible(treeViewer.getTree())) {
                   return;
                }
 

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.data;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -36,7 +37,11 @@ public interface UserToken extends ArtifactToken, UserId {
    }
 
    public static UserToken create(long id, String name, String email, String userId, boolean active, IUserGroupArtifactToken... roles) {
-      return new UserTokenImpl(id, name, userId, active, email, roles);
+      return new UserTokenImpl(id, name, userId, active, email, java.util.Collections.singleton(userId), roles);
+   }
+
+   public static UserToken create(long id, String name, String email, String userId, boolean active, Collection<String> loginIds, IUserGroupArtifactToken... roles) {
+      return new UserTokenImpl(id, name, userId, active, email, loginIds, roles);
    }
 
    public String getUserId();
@@ -49,18 +54,22 @@ public interface UserToken extends ArtifactToken, UserId {
 
    public Collection<ArtifactToken> getRoles();
 
+   public Collection<String> getLoginIds();
+
    static final class UserTokenImpl extends NamedIdBase implements UserToken {
       private final String userId;
       private final boolean active;
       private final boolean admin;
       private final String email;
       private final Set<ArtifactToken> roles = new HashSet<>();
+      private final Collection<String> loginIds = new ArrayList<String>();
 
-      public UserTokenImpl(long id, String name, String userId, boolean active, String email, ArtifactToken... roles) {
+      public UserTokenImpl(long id, String name, String userId, boolean active, String email, Collection<String> loginIds, ArtifactToken... roles) {
          super(id, name);
          this.userId = userId;
          this.active = active;
          this.email = email;
+         this.loginIds.addAll(loginIds);
          this.roles.addAll(Collections.asHashSet(roles));
          this.admin = Arrays.asList(roles).contains(CoreUserGroups.OseeAdmin);
       }
@@ -97,13 +106,20 @@ public interface UserToken extends ArtifactToken, UserId {
 
       @Override
       public String toString() {
-         return String.format("UserToken [name [%s], userId=[%s], active=[%s], email=[%s], roles=[%s]", getName(),
-            userId, active, email, getRoles());
+         return String.format("UserToken [name [%s], userId=[%s], active=[%s], email=[%s], loginIds=[%s], roles=[%s]",
+            getName(), userId, active, email, getLoginIds(), getRoles());
       }
 
       @Override
       public BranchId getBranch() {
          return CoreBranches.COMMON;
       }
+
+      @Override
+      public Collection<String> getLoginIds() {
+         return loginIds;
+      }
+
    }
+
 }

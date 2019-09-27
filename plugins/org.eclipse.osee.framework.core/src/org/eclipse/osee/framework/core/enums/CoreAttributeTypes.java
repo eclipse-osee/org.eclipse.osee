@@ -96,6 +96,7 @@ public final class CoreAttributeTypes implements OrcsTypeTokenProvider {
    public static final AttributeTypeInputStream ImageContent = tokens.add(AttributeTypeToken.createInputStream(1152921504606847868L, NamespaceToken.OSEE, "Image Content", AttributeTypeToken.IMAGE, "Binary Image content"));
    public static final AttributeTypeEnum LegacyDal = tokens.add(AttributeTypeToken.createEnum(1152921504606847120L, NamespaceToken.OSEE, "Legacy DAL", MediaType.TEXT_PLAIN, "Legacy Development Assurance Level (original DAL)"));
    public static final AttributeTypeString LegacyId = tokens.add(AttributeTypeToken.createString(1152921504606847107L, NamespaceToken.OSEE, "Legacy Id", MediaType.TEXT_PLAIN, "unique identifier from an external system"));
+   public static final AttributeTypeString LoginId = AttributeTypeToken.createString(239475839435799L, NamespaceToken.OSEE, "Login Id", MediaType.TEXT_PLAIN, "");
    public static final AttributeTypeString MaintainerText = tokens.add(AttributeTypeToken.createString(188458874335285L, NamespaceToken.OSEE, "Maintainer Text", MediaType.TEXT_PLAIN, ""));
    public static final AttributeTypeString MobilePhone = tokens.add(AttributeTypeToken.createString(1152921504606847080L, NamespaceToken.OSEE, "Mobile Phone", MediaType.TEXT_PLAIN, ""));
    public static final AttributeTypeString Name = tokens.add(AttributeTypeToken.createString(1152921504606847088L, NamespaceToken.OSEE, "Name", MediaType.TEXT_PLAIN, "Descriptive Name"));

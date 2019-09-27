@@ -12,7 +12,9 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -29,11 +31,18 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XIntegerDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XStackedDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextFlatDam;
 
 /**
  * @author Donald G. Dunne
  */
 public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvider {
+
+   private static final Collection<AttributeTypeId> xFlatAttributeTypes = new ArrayList<>();
+
+   static {
+      xFlatAttributeTypes.add(CoreAttributeTypes.LoginId);
+   }
 
    private XWidgetRendererItem createDynamicXWidgetLayout(AttributeTypeToken attributeType, int minOccurrence) {
       XWidgetRendererItem defaultData = new XWidgetRendererItem(null);
@@ -75,6 +84,8 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
             xWidgetName = XBranchSelectWidget.WIDGET_ID;
          } else if (AttributeTypeManager.isBaseTypeCompatible(ArtifactReferenceAttribute.class, attributeType)) {
             xWidgetName = XIntegerDam.WIDGET_ID;
+         } else if (xFlatAttributeTypes.contains(attributeType)) {
+            xWidgetName = XTextFlatDam.WIDGET_ID;
          }
       } catch (OseeCoreException ex) {
          xWidgetName = "XTextDam";

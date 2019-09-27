@@ -43,9 +43,13 @@ public class UserTokenDeserializer extends StdDeserializer<UserToken> {
             UserGroupArtifactToken.valueOf(artToken.get("id").asLong(), artToken.get("name").textValue());
          userGroups.add(roleToken);
       }
+      List<String> loginIds = new ArrayList<String>();
+      for (JsonNode loginId : readTree.get("loginIds")) {
+         loginIds.add(loginId.asText());
+      }
       ArtifactToken.valueOf(readTree.get("id").asLong(), readTree.get("name").textValue());
       return UserToken.create(readTree.get("id").asLong(), readTree.get("name").textValue(),
          readTree.get("email").textValue(), readTree.get("userId").textValue(), readTree.get("active").asBoolean(),
-         userGroups.toArray(new IUserGroupArtifactToken[userGroups.size()]));
+         loginIds, userGroups.toArray(new IUserGroupArtifactToken[userGroups.size()]));
    }
 }

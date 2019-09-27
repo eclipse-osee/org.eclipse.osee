@@ -212,4 +212,9 @@ public class User extends Artifact implements UserToken {
       return Collections.castAll(UserGroupService.getUserGrps());
    }
 
+   @Override
+   public Collection<String> getLoginIds() {
+      return getAttributeValues(CoreAttributeTypes.LoginId);
+   }
+
 }

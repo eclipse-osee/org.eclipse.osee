@@ -148,6 +148,7 @@ artifactType "User" extends "Artifact" {
 	attribute "Email"
 	attribute "Favorite Branch"
 	attribute "Fax Phone"
+	attribute "Login Id"
 	attribute "Mobile Phone"
 	attribute "Notes"
 	attribute "Phone"
@@ -160,6 +161,15 @@ artifactType "User" extends "Artifact" {
 	attribute "XViewer Defaults"
 	attribute "Zip"
 	attribute "Web Preferences"
+}
+
+attributeType "Login Id" extends StringAttribute {
+	id 239475839435799
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "Active" extends BooleanAttribute {

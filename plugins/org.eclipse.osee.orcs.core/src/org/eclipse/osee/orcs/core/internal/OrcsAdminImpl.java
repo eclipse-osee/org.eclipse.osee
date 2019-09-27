@@ -206,6 +206,9 @@ public class OrcsAdminImpl implements OrcsAdmin {
       for (ArtifactId userGroup : defaultGroups) {
          tx.relate(userGroup, CoreRelationTypes.Users_User, userId);
       }
+      for (String loginId : userToken.getLoginIds()) {
+         tx.createAttribute(userToken, CoreAttributeTypes.LoginId, loginId);
+      }
    }
 
    @Override

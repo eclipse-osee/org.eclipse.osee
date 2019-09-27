@@ -59,8 +59,6 @@ public class SessionEndpointImpl implements SessionEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    public Response createIdeClientSession(OseeCredential credential) {
-      System.err.println(getClass().getSimpleName() + " - " + credential.toString());
-
       OseeSessionGrant sessionGrant = sessionManager.createSession(credential);
       if (sessionGrant != null) {
          logSessionCreation(credential, sessionGrant);

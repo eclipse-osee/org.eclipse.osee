@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.ide.actions.OpenWorldByIdAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.search.AtsQuickSearchComposite;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -185,6 +186,8 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
                   userLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
                }
                userLabel.setText(str);
+               str += " - [" + System.getProperty(
+                  "user.name") + "] - [" + ClientSessionManager.getSession().getAuthenticationProtocol() + "]";
                userLabel.setToolTipText(str);
             }
          };

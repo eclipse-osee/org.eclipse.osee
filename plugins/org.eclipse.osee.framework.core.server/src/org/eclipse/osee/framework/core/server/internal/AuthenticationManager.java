@@ -76,8 +76,10 @@ public class AuthenticationManager implements IAuthenticationManager {
 
    private IAuthenticationProvider getAuthenticationProvider() {
       String key = getProtocol();
+      System.err.println(String.format("Authentication Provider key [%s]", key));
       if (Strings.isValid(key)) {
          IAuthenticationProvider provider = authenticationProviders.get(key);
+         System.err.println(String.format("Authentication Provider [%s]", provider));
          if (provider != null) {
             return provider;
          }
