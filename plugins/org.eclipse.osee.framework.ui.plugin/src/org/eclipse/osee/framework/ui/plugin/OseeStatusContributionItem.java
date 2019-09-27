@@ -47,10 +47,6 @@ public abstract class OseeStatusContributionItem extends StatusLineContributionI
       return isDisposed;
    }
 
-   public boolean isCreationAllowed() {
-      return true;
-   }
-
    public void updateStatus(final boolean isActive) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override

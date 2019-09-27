@@ -154,7 +154,7 @@ public class ClientJdbcServiceImpl implements JdbcService {
             .dbDriver(sessionGrant.getDbDriver())//
             .dbUri(sessionGrant.getDbUrl())//
             .dbUsername(sessionGrant.getDbLogin())//
-            .production(sessionGrant.isCreationRequired());
+            .production(sessionGrant.isDbIsProduction());
 
          Properties properties = sessionGrant.getDbConnectionProperties();
          if (properties != null && !properties.isEmpty()) {

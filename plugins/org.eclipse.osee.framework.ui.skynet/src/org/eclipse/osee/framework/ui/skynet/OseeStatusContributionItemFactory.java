@@ -47,11 +47,7 @@ public final class OseeStatusContributionItemFactory {
       if (!wasFound) {
          try {
             OseeStatusContributionItem object = contribClazz.newInstance();
-            if (object.isCreationAllowed()) {
-               manager.add(object);
-            } else {
-               object.dispose();
-            }
+            manager.add(object);
          } catch (Exception ex) {
             OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error creating status line contribution item [%s]",
                contribClazz);

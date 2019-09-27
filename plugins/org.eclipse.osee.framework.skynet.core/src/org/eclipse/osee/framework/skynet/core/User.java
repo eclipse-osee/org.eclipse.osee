@@ -208,11 +208,6 @@ public class User extends Artifact implements UserToken {
    }
 
    @Override
-   public boolean isCreationRequired() {
-      return true;
-   }
-
-   @Override
    public Collection<ArtifactToken> getRoles() {
       return Collections.castAll(UserGroupService.getUserGrps());
    }

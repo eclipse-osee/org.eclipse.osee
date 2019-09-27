@@ -46,7 +46,6 @@ public class UserTokenDeserializer extends StdDeserializer<UserToken> {
       ArtifactToken.valueOf(readTree.get("id").asLong(), readTree.get("name").textValue());
       return UserToken.create(readTree.get("id").asLong(), readTree.get("name").textValue(),
          readTree.get("email").textValue(), readTree.get("userId").textValue(), readTree.get("active").asBoolean(),
-         readTree.get("creationRequired").asBoolean(),
          userGroups.toArray(new IUserGroupArtifactToken[userGroups.size()]));
    }
 }

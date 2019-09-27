@@ -68,22 +68,12 @@ public class CurrentUserProvider extends LazyObject<User> {
                currentUser = BootStrapUser.getInstance();
             } else {
                UserToken currentUserToken = ClientSessionManager.getCurrentUserToken();
-               if (ClientSessionManager.isUserCreationRequired()) {
-                  try {
-                     duringCreateUser.set(true);
-                     currentUser = writer.createUser(currentUserToken, "Populate current user");
-                     ClientSessionManager.clearUserCreationRequired();
-                  } finally {
-                     duringCreateUser.set(false);
-                  }
-               } else {
-                  try {
-                     currentUser = getUser(currentUserToken);
-                  } catch (UserNotInDatabase ex) {
-                     if (isAnonymousAuthenticationAllowed.compareAndSet(true, false)) {
-                        ClientSessionManager.authenticateAsAnonymous();
-                        currentUser = getUser(SystemUser.Anonymous);
-                     }
+               try {
+                  currentUser = getUser(currentUserToken);
+               } catch (UserNotInDatabase ex) {
+                  if (isAnonymousAuthenticationAllowed.compareAndSet(true, false)) {
+                     ClientSessionManager.authenticateAsAnonymous();
+                     currentUser = getUser(SystemUser.Anonymous);
                   }
                }
             }

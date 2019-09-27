@@ -38,7 +38,7 @@ public class LDAPAuthenticationProvider extends AbstractAuthenticationProvider {
    public UserToken asOseeUserId(final OseeCredential credential) {
       String userName = credential.getUserName();
       UserToken userToken = getUserTokenFromOseeDb(userName);
-      return userToken != null ? userToken : createUserToken(true, userName, userName, "", true);
+      return userToken != null ? userToken : createUserToken(userName, userName, "", true);
    }
 
    /**

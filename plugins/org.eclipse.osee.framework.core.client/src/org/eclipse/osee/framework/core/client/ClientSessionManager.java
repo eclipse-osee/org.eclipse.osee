@@ -47,14 +47,6 @@ public class ClientSessionManager {
       return InternalClientSessionManager.getInstance().getOseeSession();
    }
 
-   public static boolean isUserCreationRequired() {
-      return getSessionGrant().isCreationRequired();
-   }
-
-   public static void clearUserCreationRequired() {
-      getSessionGrant().setCreationRequired(false);
-   }
-
    public static UserToken getCurrentUserToken() {
       return getSessionGrant().getUserToken();
    }

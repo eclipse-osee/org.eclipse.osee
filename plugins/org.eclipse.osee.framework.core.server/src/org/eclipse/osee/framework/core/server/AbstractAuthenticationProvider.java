@@ -57,7 +57,7 @@ public abstract class AbstractAuthenticationProvider implements IAuthenticationP
          ArtifactReadable artifact = query.getResults().getOneOrDefault(ArtifactReadable.SENTINEL);
          if (artifact.isValid()) {
             toReturn = UserToken.create(artifact.getUuid(), artifact.getName(),
-               artifact.getSoleAttributeAsString(CoreAttributeTypes.Email, ""), userId, true, false);
+               artifact.getSoleAttributeAsString(CoreAttributeTypes.Email, ""), userId, true);
          } else {
             getLogger().info("Unable to find userId:[%s] on [%s]", userId, CoreBranches.COMMON);
          }
@@ -67,7 +67,7 @@ public abstract class AbstractAuthenticationProvider implements IAuthenticationP
       return toReturn;
    }
 
-   protected UserToken createUserToken(boolean isCreationRequired, String userName, String userId, String userEmail, boolean isActive) {
-      return UserToken.create(Lib.generateArtifactIdAsInt(), userName, userEmail, userId, isActive, isCreationRequired);
+   protected UserToken createUserToken(String userName, String userId, String userEmail, boolean isActive) {
+      return UserToken.create(Lib.generateArtifactIdAsInt(), userName, userEmail, userId, isActive);
    }
 }

@@ -32,11 +32,11 @@ public interface UserToken extends ArtifactToken, UserId {
 
    @JsonCreator
    public static UserToken create(@JsonProperty("name") String name, @JsonProperty("email") String email, @JsonProperty("userId") String userId) {
-      return create(Lib.generateArtifactIdAsInt(), name, email, userId, true, true);
+      return create(Lib.generateArtifactIdAsInt(), name, email, userId, true);
    }
 
-   public static UserToken create(long id, String name, String email, String userId, boolean active, boolean creationRequired, IUserGroupArtifactToken... roles) {
-      return new UserTokenImpl(id, name, userId, active, email, creationRequired, roles);
+   public static UserToken create(long id, String name, String email, String userId, boolean active, IUserGroupArtifactToken... roles) {
+      return new UserTokenImpl(id, name, userId, active, email, roles);
    }
 
    public String getUserId();
@@ -47,8 +47,6 @@ public interface UserToken extends ArtifactToken, UserId {
 
    public String getEmail();
 
-   public boolean isCreationRequired();
-
    public Collection<ArtifactToken> getRoles();
 
    static final class UserTokenImpl extends NamedIdBase implements UserToken {
@@ -56,15 +54,13 @@ public interface UserToken extends ArtifactToken, UserId {
       private final boolean active;
       private final boolean admin;
       private final String email;
-      private final boolean creationRequired;
       private final Set<ArtifactToken> roles = new HashSet<>();
 
-      public UserTokenImpl(long id, String name, String userId, boolean active, String email, boolean creationRequired, ArtifactToken... roles) {
+      public UserTokenImpl(long id, String name, String userId, boolean active, String email, ArtifactToken... roles) {
          super(id, name);
          this.userId = userId;
          this.active = active;
          this.email = email;
-         this.creationRequired = creationRequired;
          this.roles.addAll(Collections.asHashSet(roles));
          this.admin = Arrays.asList(roles).contains(CoreUserGroups.OseeAdmin);
       }
@@ -95,20 +91,14 @@ public interface UserToken extends ArtifactToken, UserId {
       }
 
       @Override
-      public boolean isCreationRequired() {
-         return creationRequired;
-      }
-
-      @Override
       public Collection<ArtifactToken> getRoles() {
          return roles;
       }
 
       @Override
       public String toString() {
-         return String.format(
-            "UserToken [name [%s], userId=[%s], active=[%s], email=[%s], creationRequired=[%s], roles=[%s]", getName(),
-            userId, active, email, creationRequired, getRoles());
+         return String.format("UserToken [name [%s], userId=[%s], active=[%s], email=[%s], roles=[%s]", getName(),
+            userId, active, email, getRoles());
       }
 
       @Override

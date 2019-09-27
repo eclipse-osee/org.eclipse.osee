@@ -38,7 +38,7 @@ public class TrustAllAuthenticationProvider extends AbstractAuthenticationProvid
       if (Strings.isValid(userName)) {
          userToken = getUserTokenFromOseeDb(userName);
          if (userToken == null) {
-            userToken = createUserToken(true, userName, userName, "", true);
+            userToken = createUserToken(userName, userName, "", true);
          }
       }
       return userToken;

@@ -29,12 +29,11 @@ public class DemoAuthenticationProvider extends AbstractAuthenticationProvider {
             if (userToken != null) {
                return userToken;
             } else {
-               return createUserToken(true, token.getName(), token.getUserId(), "", true);
+               return createUserToken(token.getName(), token.getUserId(), "", true);
             }
          }
       }
-      return createUserToken(true, DemoUsers.Joe_Smith.getName(), DemoUsers.Joe_Smith.getUserId(), "joe@boeing.com",
-         true);
+      return createUserToken(DemoUsers.Joe_Smith.getName(), DemoUsers.Joe_Smith.getUserId(), "joe@boeing.com", true);
    }
 
    @Override

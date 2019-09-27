@@ -28,7 +28,6 @@ public class OseeSessionGrant {
    private String dbDatabasePath;
    private String dbId;
 
-   private boolean oseeUserNeedsCreation;
    private String oseeUserEmail;
    private String oseeUserName;
    private String oseeUserId;
@@ -61,14 +60,6 @@ public class OseeSessionGrant {
       return this.sqlProperties;
    }
 
-   public boolean isCreationRequired() {
-      return oseeUserNeedsCreation;
-   }
-
-   public void setCreationRequired(boolean value) {
-      this.oseeUserNeedsCreation = value;
-   }
-
    public void setDataStorePath(String oseeApplicationServerData) {
       this.oseeApplicationServerDataPath = oseeApplicationServerData;
    }
@@ -90,8 +81,7 @@ public class OseeSessionGrant {
    }
 
    private UserToken getGrantedUserToken() {
-      return UserToken.create(Lib.generateArtifactIdAsInt(), oseeUserName, oseeUserEmail, oseeUserId, isOseeUserActive,
-         false);
+      return UserToken.create(Lib.generateArtifactIdAsInt(), oseeUserName, oseeUserEmail, oseeUserId, isOseeUserActive);
    }
 
    public String getDbDriver() {

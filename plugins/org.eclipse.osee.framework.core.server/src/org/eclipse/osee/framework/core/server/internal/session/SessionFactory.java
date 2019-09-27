@@ -54,7 +54,6 @@ public final class SessionFactory implements IOseeTypeFactory {
 
       OseeSessionGrant sessionGrant = new OseeSessionGrant(session.getGuid());
       sessionGrant.setAuthenticationProtocol(authenticationType);
-      sessionGrant.setCreationRequired(userToken.isCreationRequired());
       sessionGrant.setOseeUserName(userToken.getName());
       sessionGrant.setOseeUserEmail(userToken.getEmail());
       sessionGrant.setOseeUserActive(userToken.isActive());
