@@ -285,4 +285,8 @@ public class Strings {
       str = str.replaceAll("[^a-zA-Z0-9_]", "");
       return str;
    }
+
+   public static boolean isNotNumeric(String idStr) {
+      return !isNumeric(idStr);
+   }
 }

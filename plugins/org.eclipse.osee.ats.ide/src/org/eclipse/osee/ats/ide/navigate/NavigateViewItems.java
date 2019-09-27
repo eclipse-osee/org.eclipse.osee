@@ -142,6 +142,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          new XNavigateItemBlam(utilItems, new ImportAgileActionsViaSpreadsheetBlam());
          new XNavigateItemAction(utilItems, new AtsExportAction(), FrameworkImage.EXPORT_DATA);
          new GenerateIdsAndArtId(utilItems);
+         new CommaDelimitLines(utilItems);
          new ClearAtsConfigCache(utilItems);
          new XNavigateItemBlam(utilItems, new MoveTeamWorkflowsBlam(), AtsImage.TEAM_WORKFLOW);
          new AtsConfigResultsEditorNavigateItem(utilItems);
@@ -247,7 +248,6 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          new XNavigateItemAction(adminItems, new OpenChangeReportByTransactionIdAction(), FrameworkImage.BRANCH_CHANGE);
          new XNavigateItemAction(adminItems, new OpenArtifactEditorById(), FrameworkImage.ARTIFACT_EDITOR);
          new XNavigateItemAction(adminItems, new PurgeTransactionAction(), FrameworkImage.PURGE);
-
          XNavigateItem healthItems = new XNavigateItemFolder(adminItems, "Health");
          new ValidateAtsDatabase(healthItems);
          new ValidateAtsConfiguration(healthItems);
