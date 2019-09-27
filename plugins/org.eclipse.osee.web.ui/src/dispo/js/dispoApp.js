@@ -240,7 +240,7 @@ app.provider('Config', function() {
 app.provider('SourceFile', function() {
     this.$get = ['$resource',
         function($resource) {
-            var SourceFile = $resource('/dispo/program/:programId/set/:setId/file/:fileName', {}, {});
+            var SourceFile = $resource('/dispo/program/:programId/set/:setId/file/:fileName/:fileNumber', {}, {});
             return SourceFile;
         }
     ];

@@ -171,7 +171,9 @@ app.controller('userController', [
                 "/set/",
                 $scope.setSelection,
                 "/file/",
-                $scope.selectedItem.name
+           	    $scope.selectedItem.name,
+         	    "/",
+         	    $scope.selectedItem.fileNumber
             );
             var url = requst.join("");
 
@@ -725,7 +727,9 @@ app.controller('userController', [
          	  "/set/",
          	  $scope.setSelection,
          	  "/file/",
-         	  $scope.selectedItem.name
+         	  $scope.selectedItem.name,
+         	  "/",
+         	  $scope.selectedItem.fileNumber
          	  );
          	  var url = requst.join("");
              
