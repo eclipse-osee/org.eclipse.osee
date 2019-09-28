@@ -70,9 +70,9 @@ public abstract class CommitHandler extends CommandHandler {
                   public void run() {
                      String message = String.format("Commit branch\n\n\"[%s]\" onto destination\n\n\"[%s]\"",
                         conflictManager.getSourceBranch(), conflictManager.getDestinationBranch());
-                     CheckBoxDialog diag =
-                        new CheckBoxDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                           "Commit Branch", null, message, "Archive Branch(es)", MessageDialog.QUESTION, 0);
+                     CheckBoxDialog diag = new CheckBoxDialog(
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Commit Branch", null, message,
+                        "Archive Working Branch? (not normally selected)", MessageDialog.QUESTION, 0);
 
                      if (diag.open() == Window.OK) {
                         if (diag.isChecked()) {
