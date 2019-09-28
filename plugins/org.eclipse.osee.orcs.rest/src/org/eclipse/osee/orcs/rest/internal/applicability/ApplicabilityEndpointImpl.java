@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import javax.ws.rs.PathParam;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
+import org.eclipse.osee.framework.core.data.ApplicabilityData;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -31,6 +32,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
@@ -131,13 +133,17 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
     * TBD: Need to delete tuples that are not in the set. Update this when tx.removeTuple2 is implemented.
     */
    @Override
-   public TransactionToken setApplicabilityReference(HashMap<ArtifactId, List<ApplicabilityId>> artToApplMap) {
+   public TransactionToken setApplicabilityReference(List<ApplicabilityData> appDatas) {
       XResultData access = isAccess();
       if (access.isErrors()) {
          return TransactionToken.SENTINEL;
       }
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account,
          "Set Reference Applicability Ids for Artifacts");
+      HashMap<ArtifactId, List<ApplicabilityId>> artToApplMap = new HashMap<ArtifactId, List<ApplicabilityId>>();
+      for (ApplicabilityData data : appDatas) {
+         artToApplMap.put(data.getArtifact(), Collections.castAll(data.getApplIds()));
+      }
       tx.setApplicabilityReference(artToApplMap);
       return tx.commit();
    }

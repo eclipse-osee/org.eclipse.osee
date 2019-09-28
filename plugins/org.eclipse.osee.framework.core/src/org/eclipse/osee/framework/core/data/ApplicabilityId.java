@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -19,6 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
  * @author Ryan D. Brooks
  */
 @JsonSerialize(using = IdSerializer.class)
+@JsonDeserialize(using = ApplicabilityTokenDeserializer.class)
 public interface ApplicabilityId extends Id {
    public static final ApplicabilityId BASE = ApplicabilityId.valueOf(1L);
    public static final ApplicabilityId SENTINEL = valueOf(Id.SENTINEL);

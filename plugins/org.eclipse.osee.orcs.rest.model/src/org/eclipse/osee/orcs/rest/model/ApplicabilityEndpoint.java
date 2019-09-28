@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.rest.model;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -25,6 +24,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
+import org.eclipse.osee.framework.core.data.ApplicabilityData;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -169,7 +169,7 @@ public interface ApplicabilityEndpoint {
    @Path("artifact/reference")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   TransactionToken setApplicabilityReference(HashMap<ArtifactId, List<ApplicabilityId>> artifacts);
+   TransactionToken setApplicabilityReference(List<ApplicabilityData> appDatas);
 
    @GET
    @Path("versionConfig/{version}")

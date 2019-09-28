@@ -108,7 +108,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    public List<ApplicabilityToken> getApplicabilityReferenceTokens(ArtifactId artifact, BranchId branch) {
       List<ApplicabilityToken> tokens = new LinkedList<>();
       tupleQuery.getTuple2NamedId(CoreTupleTypes.ArtifactReferenceApplicabilityType, branch, artifact,
-         (e2, value) -> tokens.add(ApplicabilityToken.create(e2, value)));
+         (e2, value) -> tokens.add(ApplicabilityToken.valueOf(e2, value)));
       return tokens;
    }
 

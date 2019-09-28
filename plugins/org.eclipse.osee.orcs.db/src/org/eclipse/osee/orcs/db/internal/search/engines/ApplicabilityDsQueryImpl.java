@@ -61,7 +61,7 @@ public class ApplicabilityDsQueryImpl implements ApplicabilityDsQuery {
 
          jdbcClient.runQuery(
             stmt -> result.add(new Pair<>(ArtifactId.valueOf(stmt.getLong("art_id")),
-               ApplicabilityToken.create(stmt.getLong("key"), stmt.getString("value")))),
+               ApplicabilityToken.valueOf(stmt.getLong("key"), stmt.getString("value")))),
             SELECT_APPLIC_FOR_ARTS, idJoin.getQueryId(), branch, NOT_CURRENT);
       }
       return result;

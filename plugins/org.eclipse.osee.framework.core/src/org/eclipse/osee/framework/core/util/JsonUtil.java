@@ -163,7 +163,7 @@ public class JsonUtil {
 
       SimpleModule module = new SimpleModule("OSEE", new Version(1, 0, 0, "", "", ""));
 
-      module.addDeserializer(ApplicabilityToken.class, new NamedIdDeserializer<>(ApplicabilityToken::create));
+      module.addDeserializer(ApplicabilityToken.class, new NamedIdDeserializer<>(ApplicabilityToken::valueOf));
       module.addDeserializer(ArtifactToken.class, new NamedIdDeserializer<ArtifactToken>(ArtifactToken::valueOf));
       module.addDeserializer(ArtifactId.class, new IdDeserializer<ArtifactId>(ArtifactId::valueOf));
       module.addDeserializer(TransactionToken.class, new TransactionTokenDeserializer());

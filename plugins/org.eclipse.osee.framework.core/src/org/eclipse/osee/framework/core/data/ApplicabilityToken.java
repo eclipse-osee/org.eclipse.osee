@@ -30,7 +30,7 @@ public class ApplicabilityToken extends NamedIdBase implements ApplicabilityId {
       super(applId, name);
    }
 
-   public static ApplicabilityToken create(@JsonProperty("id") long id, @JsonProperty("name") String name) {
+   public static ApplicabilityToken valueOf(@JsonProperty("id") long id, @JsonProperty("name") String name) {
       return new ApplicabilityToken(id, name);
    }
 }
