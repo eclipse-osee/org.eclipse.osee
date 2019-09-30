@@ -40,4 +40,9 @@ public class ImportEndpointImpl implements ImportEndpoint {
    public XResultData postProcess(Integer startBranch, boolean singleBranch) {
       return null;
    }
+
+   @Override
+   public XResultData postProcessBranch(BranchId branch) {
+      return null;
+   }
 }

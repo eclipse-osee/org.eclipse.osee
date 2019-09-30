@@ -45,4 +45,10 @@ public interface ImportEndpoint {
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
    XResultData postProcess(@PathParam("startBranch") Integer startBranch, @PathParam("singleBranch") boolean singleBranch);
+
+   @POST
+   @Path("postProcessBranch/{branch}")
+   @Consumes(MediaType.TEXT_PLAIN)
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData postProcessBranch(@PathParam("branch") BranchId branch);
 }
