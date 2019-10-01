@@ -229,4 +229,12 @@ public final class OseeEventManager {
       getEventService().receive(sender, artifactEvent);
    }
 
+   /**
+    * Kick a commit event to this local client to update artifact model for committed artifacts. This is needed cause
+    * commit is made on server, but clients need to be notified of updates to commited branch artifact model.
+    */
+   public static void kickCommitEvent(Class class1, ArtifactEvent artifactEvent) {
+      getEventService().sendCommitEvent(class1, artifactEvent);
+   }
+
 }

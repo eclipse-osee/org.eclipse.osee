@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core;
 
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactSearchTestSuite;
 import org.eclipse.osee.framework.skynet.core.event.EventTestSuite;
+import org.eclipse.osee.framework.skynet.core.httpRequests.CommitBranchHttpRequestOperationTest;
 import org.eclipse.osee.framework.skynet.core.importing.ImportingSuite;
 import org.eclipse.osee.framework.skynet.core.internal.event.InternalEventTestSuite;
 import org.eclipse.osee.framework.skynet.core.linking.LinkingTestSuite;
@@ -26,6 +27,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    ArtifactSearchTestSuite.class,
    EventTestSuite.class,
+   CommitBranchHttpRequestOperationTest.class,
    ImportingSuite.class,
    InternalEventTestSuite.class,
    LinkingTestSuite.class,

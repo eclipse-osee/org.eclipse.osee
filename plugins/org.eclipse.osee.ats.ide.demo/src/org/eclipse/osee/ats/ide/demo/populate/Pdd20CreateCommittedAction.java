@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil.SoftwareRequirementStrs;
 import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -115,8 +116,7 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
       }
       Result result = AtsBranchUtil.createWorkingBranch_Validate(reqTeamArt);
       if (result.isFalse()) {
-         throw new OseeArgumentException(
-            new StringBuilder("Error creating working branch: ").append(result.getText()).toString());
+         throw new OseeArgumentException("Error creating working branch: " + result);
       }
       AtsBranchUtil.createWorkingBranch_Create(reqTeamArt, true);
 
@@ -129,7 +129,8 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
          art.addRelation(CoreRelationTypes.Allocation__Component, navArt);
          art.persist(getClass().getSimpleName());
       }
-
+      Artifact testArtifact = null;
+      Artifact testRelArtifact = null;
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(false, SoftwareRequirementStrs.Event,
          reqTeamArt.getWorkingBranch())) {
          art.setSoleAttributeValue(CoreAttributeTypes.CSCI, DemoCscis.Interface.name());
@@ -138,6 +139,9 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
             DemoSubsystems.Robot_API.name(), reqTeamArt.getWorkingBranch());
          art.addRelation(CoreRelationTypes.Allocation__Component, robotArt);
          art.persist(getClass().getSimpleName());
+         testArtifact = art;
+         testRelArtifact = robotArt;
+
       }
 
       // Delete two artifacts
@@ -159,11 +163,74 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
          parentArt.persist(getClass().getSimpleName());
       }
 
+      Artifact parentArtifact = testCommitBranchHttpRequestOperationSetup(reqTeamArt, testArtifact, testRelArtifact);
+
       IOperation op = AtsBranchManager.commitWorkingBranch(reqTeamArt, false, true,
          AtsClientService.get().getBranchService().getBranch(
             (IAtsConfigObject) AtsClientService.get().getVersionService().getTargetedVersion(reqTeamArt)),
          true);
       Operations.executeWorkAndCheckStatus(op);
+
+      testCommitBranchHttpRequestOperation(testRelArtifact, parentArtifact);
+   }
+
+   private void testCommitBranchHttpRequestOperation(Artifact testRelArtifact, Artifact parentArtifact) {
+      // Try up to 10 times to wait for update to happen since update event runs in background thread.
+      int loops = 1;
+      for (int x = 0; x <= loops; x++) {
+         System.err.println("Loop " + x);
+         try {
+            Thread.sleep(1000);
+         } catch (InterruptedException ex) {
+            // do nothing
+         }
+         /**
+          * This tests that the CommitBranchHttpRequestOperation updates the locally cached parent branch artifacts that
+          * were changed due to the commit.
+          */
+         String subsystemStrAfter = parentArtifact.getSoleAttributeValue(CoreAttributeTypes.Subsystem).toString();
+         if (!subsystemStrAfter.equals(DemoSubsystems.Communications.name())) {
+            if (x < loops) {
+               continue;
+            }
+            throw new OseeArgumentException("Artifact Attribute did not update in Parent Branch after commit");
+         }
+         Boolean artFound = false;
+         for (Artifact art : parentArtifact.getRelatedArtifacts(CoreRelationTypes.Allocation__Component)) {
+            if (art.getArtId() == testRelArtifact.getArtId()) {
+               artFound = true;
+            }
+         }
+         if (!artFound) {
+            if (x < loops) {
+               continue;
+            }
+            throw new OseeArgumentException("Artifact Relation does NOT exist in Parent branch after commit.");
+         }
+      }
+   }
+
+   private Artifact testCommitBranchHttpRequestOperationSetup(TeamWorkFlowArtifact reqTeamArt, Artifact testArtifact, Artifact testRelArtifact) {
+      /**
+       * Setup for testing the CommitBranchHttpRequestOperation cache update code after commit. Load artifact from
+       * parent branch which is being changed on the working branch.
+       */
+      BranchId parentBranch = AtsClientService.get().getBranchService().getBranch(
+         (IAtsConfigObject) AtsClientService.get().getVersionService().getTargetedVersion(reqTeamArt));
+      Artifact parentArtifact = ArtifactQuery.getArtifactFromId(testArtifact.getId(), parentBranch);
+      String subsystemStrBefore = parentArtifact.getSoleAttributeValue(CoreAttributeTypes.Subsystem).toString();
+      if (subsystemStrBefore.equals(DemoSubsystems.Communications.name())) {
+         throw new OseeArgumentException(
+            "Artifact Attribute matches between Working and Parent branch before commit.  Invalid Test. ");
+      }
+
+      for (Artifact art : parentArtifact.getRelatedArtifacts(CoreRelationTypes.Allocation__Component)) {
+         if (art.getId() == testRelArtifact.getId()) {
+            throw new OseeArgumentException(
+               "Artifact Relation exists in Working and Parent branch before commit.  Invalid Test. ");
+         }
+      }
+      return parentArtifact;
    }
 
    private class ArtifactTokenActionListener implements INewActionListener {

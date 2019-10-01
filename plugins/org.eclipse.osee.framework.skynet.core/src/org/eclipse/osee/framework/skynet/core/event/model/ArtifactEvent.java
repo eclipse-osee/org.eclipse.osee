@@ -197,6 +197,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender, HasBranc
       return guidArts;
    }
 
+   @SuppressWarnings("unlikely-arg-type")
    public boolean containsArtifact(Artifact artifact, EventModType... eventModTypes) {
       for (EventBasicGuidArtifact guidArt : artifacts) {
          for (EventModType modType : eventModTypes) {

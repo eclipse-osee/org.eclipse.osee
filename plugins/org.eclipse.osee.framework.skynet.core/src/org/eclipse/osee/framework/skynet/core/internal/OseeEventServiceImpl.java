@@ -72,8 +72,7 @@ public class OseeEventServiceImpl implements OseeEventService {
    private ConnectionListenerImpl connectionStatus;
    private ExecutorService executor;
 
-   private final List<ServiceReference<IEventListener>> pendingServices =
-      new CopyOnWriteArrayList<>();
+   private final List<ServiceReference<IEventListener>> pendingServices = new CopyOnWriteArrayList<>();
 
    private Thread thread;
 
@@ -260,6 +259,11 @@ public class OseeEventServiceImpl implements OseeEventService {
    @Override
    public void removeListener(EventQosType qos, IEventListener listener) {
       listeners.removeListener(qos, listener);
+   }
+
+   @Override
+   public void sendCommitEvent(Class class1, ArtifactEvent artifactEvent) {
+      eventTransport.sendCommitEvent(class1, artifactEvent);
    }
 
 }

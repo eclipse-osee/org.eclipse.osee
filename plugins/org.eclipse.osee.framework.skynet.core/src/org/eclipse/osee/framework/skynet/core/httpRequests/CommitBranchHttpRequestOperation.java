@@ -155,6 +155,14 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                   relChange.getBArtId(), defaultBasicGuidRelation);
                event.setRationale(relChange.getRationale());
                artifactEvent.getRelations().add(event);
+               Artifact artA = ArtifactCache.getActive(relChange.getArtId(), newTransaction.getBranch());
+               if (artA != null) {
+                  artifacts.add(artA);
+               }
+               Artifact artB = ArtifactCache.getActive(relChange.getArtId(), newTransaction.getBranch());
+               if (artB != null) {
+                  artifacts.add(artB);
+               }
                break;
             case attribute:
                // Only reload items that were already in the active cache
@@ -202,8 +210,12 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
          }
       }
 
+      // Reloads artifacts changed on local client since event does not get handled by us
       ArtifactQuery.reloadArtifacts(artifacts);
+
+      // Kicks event to other clients; This is ignored by this client which is why below is required
       OseeEventManager.kickPersistEvent(getClass(), artifactEvent);
+
    }
 
 }
