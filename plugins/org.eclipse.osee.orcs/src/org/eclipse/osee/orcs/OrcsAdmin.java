@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -38,4 +40,7 @@ public interface OrcsAdmin {
    void createUser(TransactionBuilder tx, UserToken userToken);
 
    void createSynonymsAndGrants();
+
+   void changeArtifactTypeOutsideofHistory(ArtifactTypeId artifactType, List<? extends ArtifactId> artifacts);
+
 }

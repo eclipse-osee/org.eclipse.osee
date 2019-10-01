@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,9 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
+import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -212,6 +215,22 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       ArtifactToken token = tx.createArtifact(parent, artifactType, name);
       tx.commit();
       return token;
+   }
+
+   @Override
+   public List<ArtifactToken> changeArtifactType(BranchId branch, ArtifactTypeId oldType, ArtifactTypeId newType, List<String> names) {
+      OrcsAdmin adminOps = orcsApi.getAdminOps();
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch);
+      List<ArtifactToken> artifacts = new ArrayList<>();
+      for (String name : names) {
+         try {
+            artifacts.add(query.andTypeEquals(oldType).andNameEquals(name).asArtifactToken());
+         } catch (MultipleItemsExist ex) {
+            throw new MultipleItemsExist(ex.getLocalizedMessage() + "  named " + name);
+         }
+      }
+      adminOps.changeArtifactTypeOutsideofHistory(newType, artifacts);
+      return artifacts;
    }
 
    @Override

@@ -18,6 +18,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -391,8 +392,11 @@ public class Collections {
    }
 
    public static <T> T exactlyOne(Collection<T> items) {
-      if (items.size() != 1) {
-         throw new OseeCoreException("Expected exactly 1, but found %s", items.size());
+      if (items.size() > 1) {
+         throw new MultipleItemsExist("Expected exactly 1, but found %s", items.size());
+      }
+      if (items.size() == 0) {
+         throw new OseeCoreException("Expected exactly 1, but found none");
       }
       if (items instanceof List) {
          return ((List<T>) items).get(0);
@@ -402,7 +406,7 @@ public class Collections {
 
    public static <T> T oneOrSentinel(Collection<T> items, T sentinel) {
       if (items.size() > 1) {
-         throw new OseeCoreException("Expected at most 1, but found %s", items.size());
+         throw new MultipleItemsExist("Expected at most 1, but found %s", items.size());
       } else if (items.size() == 1) {
          if (items instanceof List) {
             return ((List<T>) items).get(0);

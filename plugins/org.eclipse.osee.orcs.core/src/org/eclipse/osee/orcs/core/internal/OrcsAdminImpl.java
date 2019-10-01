@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -32,6 +33,7 @@ import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.OseePreparedStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -55,6 +57,7 @@ public class OrcsAdminImpl implements OrcsAdmin {
    private final DataStoreAdmin dataStoreAdmin;
    private final EventAdmin eventAdmin;
    private final QueryBuilder fromCommon;
+   private final JdbcClient jdbcClient;
 
    public OrcsAdminImpl(OrcsApi orcsApi, Log logger, OrcsSession session, DataStoreAdmin dataStoreAdmin, EventAdmin eventAdmin) {
       this.orcsApi = orcsApi;
@@ -63,6 +66,7 @@ public class OrcsAdminImpl implements OrcsAdmin {
       this.dataStoreAdmin = dataStoreAdmin;
       this.eventAdmin = eventAdmin;
       fromCommon = orcsApi.getQueryFactory().fromBranch(COMMON);
+      jdbcClient = dataStoreAdmin.getJdbcClient();
    }
 
    @Override
@@ -75,7 +79,6 @@ public class OrcsAdminImpl implements OrcsAdmin {
 
    @Override
    public void createSynonymsAndGrants() {
-      JdbcClient jdbcClient = dataStoreAdmin.getJdbcClient();
       for (String table : Arrays.asList("OSEE_ACCOUNT_SESSION", "OSEE_ACTIVITY", "OSEE_ACTIVITY_TYPE", "OSEE_ARTIFACT",
          "OSEE_ARTIFACT_ACL", "OSEE_ATTRIBUTE", "OSEE_BRANCH", "OSEE_BRANCH_ACL", "OSEE_CONFLICT",
          "OSEE_IMPORT_INDEX_MAP", "OSEE_IMPORT_MAP", "OSEE_IMPORT_SAVE_POINT", "OSEE_IMPORT_SOURCE", "OSEE_INFO",
@@ -205,4 +208,11 @@ public class OrcsAdminImpl implements OrcsAdmin {
       }
    }
 
+   @Override
+   public void changeArtifactTypeOutsideofHistory(ArtifactTypeId artifactType, List<? extends ArtifactId> artifacts) {
+      String sql = "UPDATE osee_artifact SET art_type_id = ? WHERE art_id = ?";
+      OseePreparedStatement batchStatement = jdbcClient.getBatchStatement(sql);
+      artifacts.forEach(art -> batchStatement.addToBatch(artifactType, art));
+      batchStatement.execute();
+   }
 }

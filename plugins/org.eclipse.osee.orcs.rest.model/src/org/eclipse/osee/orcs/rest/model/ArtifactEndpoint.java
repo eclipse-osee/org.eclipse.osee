@@ -103,6 +103,12 @@ public interface ArtifactEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    ArtifactToken createArtifact(@PathParam("branch") BranchId branch, @PathParam("artifactType") ArtifactTypeToken artifactType, @DefaultValue("-1") @PathParam("parent") ArtifactId parent, String name);
 
+   @POST
+   @Path("old-type/{oldType}/new-type/{newType}")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ArtifactToken> changeArtifactType(@PathParam("branch") BranchId branch, @PathParam("oldType") ArtifactTypeId oldType, @PathParam("newType") ArtifactTypeId newType, List<String> names);
+
    @DELETE
    @Path("{artifact}")
    @Produces(MediaType.APPLICATION_JSON)

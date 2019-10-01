@@ -60,7 +60,8 @@ public class DoorsCreator {
 
          if (parentArtifact != null) {
 
-            Artifact artifact = ArtifactQuery.checkArtifactFromTypeAndName(DoorsTypes.DoorsRequirement, reqName, branch);
+            Artifact artifact =
+               ArtifactQuery.checkArtifactFromTypeAndName(DoorsTypes.DoorsRequirement, reqName, branch);
             if (artifact == null) {
                newArtifact = parentArtifact.addNewChild(PREEXISTING, DoorsTypes.DoorsRequirement, reqName);
                newArtifact.setSoleAttributeFromString(DoorsTypes.DoorReqName, reqName);
