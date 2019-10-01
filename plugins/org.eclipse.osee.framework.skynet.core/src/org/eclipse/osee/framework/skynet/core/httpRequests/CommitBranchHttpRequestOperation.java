@@ -33,10 +33,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.RelationChange;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
@@ -210,12 +210,15 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
          }
       }
 
-      // Reloads artifacts changed on local client since event does not get handled by us
-      ArtifactQuery.reloadArtifacts(artifacts);
-
       // Kicks event to other clients; This is ignored by this client which is why below is required
       OseeEventManager.kickPersistEvent(getClass(), artifactEvent);
 
+      // Create a new copy of same event because you can't send same event twice
+      ArtifactEvent artifactEvent2 =
+         FrameworkEventUtil.getPersistEvent(FrameworkEventUtil.getRemotePersistEvent(artifactEvent));
+
+      // Kicks event to this client to update Artifact model with commit changes since commit was on server
+      OseeEventManager.kickCommitEvent(getClass(), artifactEvent2);
    }
 
 }

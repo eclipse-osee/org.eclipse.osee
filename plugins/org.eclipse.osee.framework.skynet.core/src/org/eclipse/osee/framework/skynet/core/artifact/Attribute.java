@@ -54,7 +54,11 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
       this.attributeTypeToken = attributeType;
       this.artifactRef = new WeakReference<>(artifact);
       internalSetModType(modificationType, false, markDirty);
-      internalSetApplicabilityId(applicabilityId);
+      if (applicabilityId == null) {
+         internalSetApplicabilityId(ApplicabilityId.BASE);
+      } else {
+         internalSetApplicabilityId(applicabilityId);
+      }
       try {
          Class<? extends IAttributeDataProvider> providerClass =
             AttributeTypeManager.getAttributeProviderClass(AttributeTypeManager.getType(attributeTypeToken));
