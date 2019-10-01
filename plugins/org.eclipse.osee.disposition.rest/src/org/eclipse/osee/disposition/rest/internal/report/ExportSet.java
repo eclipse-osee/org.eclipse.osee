@@ -295,7 +295,9 @@ public class ExportSet {
 
          int index = 1;
          // send correct numbers according to level for second param
-         Iterator<CoverageLevel> iterator = levelsInSet.iterator();
+         List levelsInList = new ArrayList(levelsInSet);
+         Collections.sort(levelsInList);
+         Iterator<CoverageLevel> iterator = levelsInList.iterator();
          while (iterator.hasNext()) {
             CoverageLevel lvl = iterator.next();
             row[index++] =
