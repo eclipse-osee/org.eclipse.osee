@@ -26,9 +26,9 @@ public final class CoverageUtil implements OrcsTypeTokenProvider {
    private static final OrcsTypeTokens tokens = new OrcsTypeTokens();
 
    // @formatter:off
-   public static final ArtifactTypeToken CoveragePackage = ArtifactTypeToken.valueOf(0x000000000000004B, "Coverage Package");
-   public static final ArtifactTypeToken CoverageUnit = ArtifactTypeToken.valueOf(0x000000000000004E, "Coverage Unit");
-   public static final ArtifactTypeToken CoverageFolder = ArtifactTypeToken.valueOf(0x000000000000004D, "Coverage Folder");
+   public static final ArtifactTypeToken CoveragePackage = ArtifactTypeToken.valueOf(75L, "Coverage Package");
+   public static final ArtifactTypeToken CoverageUnit = ArtifactTypeToken.valueOf(78L, "Coverage Unit");
+   public static final ArtifactTypeToken CoverageFolder = ArtifactTypeToken.valueOf(77L, "Coverage Folder");
 
    // Attributes
    public static final AttributeTypeString Assignees = tokens.add(AttributeTypeToken.createString(1152921504606847233L, DispoConstants.DISPO, "coverage.Assignees", MediaType.TEXT_PLAIN, ""));

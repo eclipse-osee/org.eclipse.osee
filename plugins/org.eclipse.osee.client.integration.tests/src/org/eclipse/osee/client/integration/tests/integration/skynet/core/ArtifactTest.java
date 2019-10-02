@@ -53,7 +53,7 @@ public final class ArtifactTest {
 
    @BeforeClass
    public static void setUp() throws Exception {
-      artifactWithSpecialAttr = ArtifactTypeManager.addArtifact(DemoTypes.DemoTestRequirement, SAW_Bld_1);
+      artifactWithSpecialAttr = ArtifactTypeManager.addArtifact(DemoTypes.DemoArtifactWithSelectivePartition, SAW_Bld_1);
       breakerArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Breaker, COMMON);
       breakerArt.setName(BREAKER_NAME);
       breakerArt.persist("ArtifactTest");

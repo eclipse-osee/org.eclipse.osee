@@ -37,7 +37,7 @@ public final class OAuthTypes implements OrcsTypeTokenProvider {
    // @formatter:off
    public static final NamespaceToken OAUTH = NamespaceToken.valueOf(10, "oauth", "Namespace for oauth system and content management types");
 
-   public static final ArtifactTypeToken OAUTH_CLIENT = ArtifactTypeToken.valueOf(756912961500447526L, "OAuth Client");
+   public static final ArtifactTypeToken OAuthClient = ArtifactTypeToken.valueOf(756912961500447526L, "OAuth Client");
 
    public static final AttributeTypeString OAuthClientAuthorizedAudience = tokens.add(AttributeTypeToken.createString(7160371155049131554L, OAUTH, "oauth.client.Authorized Audience", MediaType.TEXT_PLAIN, ""));
    public static final AttributeTypeEnum OAuthClientAuthorizedGrantType = tokens.add(AttributeTypeToken.createEnum(1935002343589638144L, OAUTH, "oauth.client.Authorized Grant Type", MediaType.TEXT_PLAIN, ""));

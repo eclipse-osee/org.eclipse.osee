@@ -123,7 +123,7 @@ public class DoorsArtifactExtractorTest {
    public void setUp() throws UnsupportedEncodingException {
       extractor = new DoorsArtifactExtractor();
       collector = new RoughArtifactCollector(null);
-      theArtifact = ArtifactTypeManager.addArtifact(DemoTypes.DemoTestRequirement, SAW_Bld_1);
+      theArtifact = ArtifactTypeManager.addArtifact(DemoTypes.DemoArtifactWithSelectivePartition, SAW_Bld_1);
       String image = new String("String to represent binary image data");
       imageList.add(Lib.stringToInputStream(image));
       theArtifact.setAttributeFromValues(CoreAttributeTypes.ImageContent, imageList);

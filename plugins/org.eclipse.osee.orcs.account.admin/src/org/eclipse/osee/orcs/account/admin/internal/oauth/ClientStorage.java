@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
-import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUTH_CLIENT;
+import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAuthClient;
 import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUTH_TYPES;
 import com.google.common.io.ByteSource;
 import java.io.IOException;
@@ -82,7 +82,7 @@ public class ClientStorage {
 
    public ArtifactId insert(OseePrincipal principal, OAuthClient data) {
       TransactionBuilder tx = newTransaction(principal, "Create OAuth Client");
-      ArtifactId artId = tx.createArtifact(OAUTH_CLIENT, data.getApplicationName(), data.getClientUuid());
+      ArtifactId artId = tx.createArtifact(OAuthClient, data.getApplicationName(), data.getClientUuid());
       txSetClient(tx, artId, data);
       tx.commit();
       return artId;
