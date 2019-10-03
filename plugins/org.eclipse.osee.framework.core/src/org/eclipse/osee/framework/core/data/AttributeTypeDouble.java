@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Ryan D. Brooks
  */
-public final class AttributeTypeDouble extends AbstractAttributeType<Double> {
+public final class AttributeTypeDouble extends AttributeTypeGeneric<Double> {
    public AttributeTypeDouble(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       super(id, namespace, name, mediaType, description, taggerType);
    }

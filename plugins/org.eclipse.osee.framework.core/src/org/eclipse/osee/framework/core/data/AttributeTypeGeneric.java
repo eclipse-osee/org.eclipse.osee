@@ -15,12 +15,12 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdDescription;
 /**
  * @author Ryan D. Brooks
  */
-public abstract class AbstractAttributeType<T> extends NamedIdDescription implements AttributeTypeToken {
+public abstract class AttributeTypeGeneric<T> extends NamedIdDescription implements AttributeTypeToken {
    private final String mediaType;
    private final TaggerTypeToken taggerType;
    private final NamespaceToken namespace;
 
-   public AbstractAttributeType(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+   public AttributeTypeGeneric(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       super(id, name, description);
       this.namespace = namespace;
       this.mediaType = mediaType;

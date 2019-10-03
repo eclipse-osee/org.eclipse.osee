@@ -18,9 +18,4 @@ public final class AttributeTypeEnum extends AttributeTypeString {
    public AttributeTypeEnum(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       super(id, namespace, name, mediaType, description, taggerType);
    }
-
-   @Override
-   public String valueFromStorageString(String storedValue) {
-      return storedValue;
-   }
 }

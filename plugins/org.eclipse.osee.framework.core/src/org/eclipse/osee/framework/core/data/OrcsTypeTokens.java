@@ -34,7 +34,7 @@ public class OrcsTypeTokens {
       return artifactType;
    }
 
-   public <V, @NonNull T extends AbstractAttributeType<V>> T add(T attributeType) {
+   public <V, @NonNull T extends AttributeTypeGeneric<V>> T add(T attributeType) {
       attributeTypes.add(attributeType);
       return attributeType;
    }

@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 /**
  * @author Ryan D. Brooks
  */
-public final class AttributeTypeInputStream extends AbstractAttributeType<InputStream> {
+public final class AttributeTypeInputStream extends AttributeTypeGeneric<InputStream> {
    public AttributeTypeInputStream(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       super(id, namespace, name, mediaType, description, taggerType);
    }

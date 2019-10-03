@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Ryan D. Brooks
  */
-public final class AttributeTypeArtifactId extends AbstractAttributeType<ArtifactId> {
+public final class AttributeTypeArtifactId extends AttributeTypeGeneric<ArtifactId> {
    public AttributeTypeArtifactId(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       super(id, namespace, name, mediaType, description, taggerType);
    }

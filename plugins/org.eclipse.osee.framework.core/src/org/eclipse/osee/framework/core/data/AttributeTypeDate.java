@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 /**
  * @author Ryan D. Brooks
  */
-public final class AttributeTypeDate extends AbstractAttributeType<Date> {
+public final class AttributeTypeDate extends AttributeTypeGeneric<Date> {
    public AttributeTypeDate(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       super(id, namespace, name, mediaType, description, taggerType);
    }
