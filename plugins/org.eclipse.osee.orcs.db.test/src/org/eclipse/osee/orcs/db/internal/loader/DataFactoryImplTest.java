@@ -17,7 +17,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Design__Design;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Design_Design;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.mockito.Mockito.verify;
@@ -141,7 +141,7 @@ public class DataFactoryImplTest {
       relData = new RelationDataImpl(verData);
       relData.setLocalId(SHARED_ID.intValue());
       relData.setModType(ModificationType.MODIFIED);
-      relData.setType(Design__Design);
+      relData.setType(Design_Design);
       relData.setBaseModType(ModificationType.NEW);
       relData.setBaseType(DEFAULT_HIERARCHY);
       relData.setArtIdA(art88);
@@ -253,7 +253,7 @@ public class DataFactoryImplTest {
       ArtifactId bArt = ArtifactId.valueOf(9513);
       when(idFactory.getNextRelationId()).thenReturn(1);
 
-      RelationData actual = dataFactory.createRelationData(Design__Design, COMMON, aArt, bArt, "My rationale");
+      RelationData actual = dataFactory.createRelationData(Design_Design, COMMON, aArt, bArt, "My rationale");
 
       VersionData actualVer = actual.getVersion();
       assertEquals(COMMON, actualVer.getBranch());
@@ -265,9 +265,9 @@ public class DataFactoryImplTest {
 
       Assert.assertTrue("local id must be valid", actual.getLocalId() > 0);
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
-      assertEquals(Design__Design, actual.getType());
+      assertEquals(Design_Design, actual.getType());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
-      assertEquals(Design__Design, actual.getBaseType());
+      assertEquals(Design_Design, actual.getBaseType());
 
       assertEquals(aArt, actual.getArtifactIdA());
       assertEquals(bArt, actual.getArtifactIdB());
@@ -441,7 +441,7 @@ public class DataFactoryImplTest {
 
       assertEquals(SHARED_ID, actual.getId());
       assertEquals(ModificationType.MODIFIED, actual.getModType());
-      assertEquals(Design__Design, actual.getType());
+      assertEquals(Design_Design, actual.getType());
       assertEquals(ModificationType.NEW, actual.getBaseModType());
       assertEquals(DEFAULT_HIERARCHY, actual.getBaseType());
 

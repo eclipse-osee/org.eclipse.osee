@@ -116,7 +116,7 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
       ViewIdUtility.removeExcludedArtifacts(reqs.iterator(), excludedArtifactIdMap);
 
       for (Artifact req : reqs) {
-         List<Artifact> verifiers = req.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier);
+         List<Artifact> verifiers = req.getRelatedArtifacts(CoreRelationTypes.Verification_Verifier);
          ViewIdUtility.removeExcludedArtifacts(verifiers.iterator(), excludedArtifactIdMap);
          Set<String> verifierNames = new HashSet<>();
          String inspection = getInspectionQual(req);
@@ -136,7 +136,7 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
    public Collection<Artifact> getTestUnitArtifacts(Artifact requirement) {
       Collection<Artifact> toReturn = Collections.emptyList();
       if (!requirement.isHistorical()) {
-         toReturn = requirement.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier);
+         toReturn = requirement.getRelatedArtifacts(CoreRelationTypes.Verification_Verifier);
       }
       return toReturn;
    }

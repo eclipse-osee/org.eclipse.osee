@@ -146,7 +146,7 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
          if (obj instanceof Artifact) {
             isArtifact = true;
             Artifact art = (Artifact) obj;
-            canModifyDH = service.canRelationBeModified(art, null, CoreRelationTypes.Default_Hierarchical__Child,
+            canModifyDH = service.canRelationBeModified(art, null, CoreRelationTypes.DefaultHierarchical_Child,
                Level.FINE).matched();
          }
          boolean isBranchEditable =
@@ -262,7 +262,7 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
                   AccessPolicy policy = ServiceUtil.getAccessPolicy();
 
                   PermissionStatus status = policy.canRelationBeModified(parent, null,
-                     CoreRelationTypes.Default_Hierarchical__Child, Level.FINE);
+                     CoreRelationTypes.DefaultHierarchical_Child, Level.FINE);
                   if (!status.matched()) {
                      MessageDialog.openError(AWorkbench.getActiveShell(), "New Child Error",
                         "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
@@ -310,7 +310,7 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
 
    private static Artifact handleCreateChild(Artifact parent, TreeViewer treeViewer) {
       return handleCreateChild(parent, ArtifactTypeManager.getConcreteArtifactTypes(parent.getBranch()), treeViewer,
-         CoreRelationTypes.Default_Hierarchical__Child);
+         CoreRelationTypes.DefaultHierarchical_Child);
    }
 
    public static Artifact handleCreateChild(Artifact parent, Collection<? extends ArtifactTypeToken> validArtifactTypes, TreeViewer treeViewer, RelationTypeSide relationTypeSide) {

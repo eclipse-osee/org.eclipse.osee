@@ -81,7 +81,7 @@ public final class PublishPidsVerificationReport implements StreamingOutput {
    private void getVerificationsForRequirement(String sub, ArtifactReadable req) throws IOException {
       boolean noVerifications = true;
 
-      for (ArtifactReadable ver : req.getRelated(CoreRelationTypes.Verification__Verifier).getList()) {
+      for (ArtifactReadable ver : req.getRelated(CoreRelationTypes.Verification_Verifier).getList()) {
          noVerifications = false;
          getResultsForVerifications(sub, req, ver);
       }
@@ -94,7 +94,7 @@ public final class PublishPidsVerificationReport implements StreamingOutput {
    private void getResultsForVerifications(String sub, ArtifactReadable req, ArtifactReadable ver) throws IOException {
       boolean noResults = true;
 
-      for (ArtifactReadable res : ver.getRelated(CoreRelationTypes.Test_Unit_Result__Test_Result).getList()) {
+      for (ArtifactReadable res : ver.getRelated(CoreRelationTypes.ResultsData_TestResult).getList()) {
          noResults = false;
          String[] row = {req.getName(), sub, ver.getName(), res.getName()};
          writer.writeRow((Object[]) row);

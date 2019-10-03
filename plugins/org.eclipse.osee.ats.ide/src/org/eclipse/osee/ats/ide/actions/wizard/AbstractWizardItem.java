@@ -305,7 +305,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
       if (agileTeam.isValid()) {
          List<IAgileFeatureGroup> featureGroups = new LinkedList<>();
          for (ArtifactToken featureGroupArt : atsApi.getRelationResolver().getRelated(agileTeam,
-            AtsRelationTypes.AgileTeamToFeatureGroup_FeatureGroup)) {
+            AtsRelationTypes.AgileTeamToFeatureGroup_AgileFeatureGroup)) {
             IAgileFeatureGroup featureGroup = atsApi.getAgileService().getAgileFeatureGroup(featureGroupArt);
             featureGroups.add(featureGroup);
          }

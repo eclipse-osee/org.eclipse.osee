@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.relation.order;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.SupportingInfo_SupportedBy;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.SupportingInfo_IsSupportedBy;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
@@ -61,7 +61,7 @@ public class RelationOrderParserTest {
       RelationType dh = new RelationType(DEFAULT_HIERARCHY.getId(), DEFAULT_HIERARCHY.getName(), "parent", "child",
          Artifact, Artifact, ONE_TO_MANY, LEXICOGRAPHICAL_ASC);
       RelationType supportingInfo =
-         new RelationType(SupportingInfo_SupportedBy.getId(), SupportingInfo_SupportedBy.getName(), "is supported by",
+         new RelationType(SupportingInfo_IsSupportedBy.getId(), SupportingInfo_IsSupportedBy.getName(), "is supported by",
             "supporting info", Artifact, Artifact, MANY_TO_MANY, UNORDERED);
       RelationTypeManager.getCache().cache(dh);
       RelationTypeManager.getCache().cache(supportingInfo);
@@ -129,7 +129,7 @@ public class RelationOrderParserTest {
       List<Object[]> expectedData = new ArrayList<>();
       addData(expectedData, DEFAULT_HIERARCHY, RelationSide.SIDE_B, USER_DEFINED, "AAABDEJ_mIQBf8VXVtGqvA",
          "AAABDEJ_oQ8Bf8VXLX7U_g");
-      addData(expectedData, SupportingInfo_SupportedBy, RelationSide.SIDE_A, USER_DEFINED, "AAABDEJ_mIQXf8VXVtGqvA",
+      addData(expectedData, SupportingInfo_IsSupportedBy, RelationSide.SIDE_A, USER_DEFINED, "AAABDEJ_mIQXf8VXVtGqvA",
          "AAABDEJ_oQVBf8VXLX7U_g");
 
       checkData(data, expectedData);

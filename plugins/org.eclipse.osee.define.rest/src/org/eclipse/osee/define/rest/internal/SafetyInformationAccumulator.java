@@ -88,7 +88,7 @@ public final class SafetyInformationAccumulator {
 
    public void buildSubsystemsRequirementsMap(ArtifactReadable systemFunction) {
 
-      subsystemFunctions = Lists.newArrayList(systemFunction.getRelated(CoreRelationTypes.Dependency__Dependency));
+      subsystemFunctions = Lists.newArrayList(systemFunction.getRelated(CoreRelationTypes.Dependency_Dependency));
 
       Iterator<ArtifactReadable> sfIter = subsystemFunctions.iterator();
       while (sfIter.hasNext()) {
@@ -107,13 +107,13 @@ public final class SafetyInformationAccumulator {
 
       // needs related artifacts
       List<ArtifactReadable> localSubsystemRequirements =
-         Lists.newArrayList(subsystemFunction.getRelated(CoreRelationTypes.Design__Requirement));
+         Lists.newArrayList(subsystemFunction.getRelated(CoreRelationTypes.Design_Requirement));
 
       Iterator<ArtifactReadable> ssrIter = localSubsystemRequirements.iterator();
       while (ssrIter.hasNext()) {
          ArtifactReadable subsystemRequirement = ssrIter.next();
          List<ArtifactReadable> localSoftwareRequirements =
-            Lists.newArrayList(subsystemRequirement.getRelated(CoreRelationTypes.Requirement_Trace__Lower_Level));
+            Lists.newArrayList(subsystemRequirement.getRelated(CoreRelationTypes.RequirementTrace_LowerLevelRequirement));
 
          // test software requirements for suitability - is it a subclass of software requirement?
          Iterables.removeIf(localSoftwareRequirements, notSoftwareRequirement);

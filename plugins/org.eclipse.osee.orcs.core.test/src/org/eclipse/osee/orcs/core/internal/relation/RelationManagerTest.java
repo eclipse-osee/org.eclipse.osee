@@ -189,9 +189,9 @@ public class RelationManagerTest {
 
       when(types.getDefaultOrderTypeGuid(Matchers.any())).thenReturn(LEXICOGRAPHICAL_DESC);
       when(types.getAll()).thenReturn(new ArrayList(
-         Arrays.asList(CoreRelationTypes.Default_Hierarchical__Child, CoreRelationTypes.Default_Hierarchical__Parent)));
+         Arrays.asList(CoreRelationTypes.DefaultHierarchical_Child, CoreRelationTypes.DefaultHierarchical_Parent)));
 
-      when(types.get((Id) Matchers.any())).thenReturn(CoreRelationTypes.Default_Hierarchical__Child);
+      when(types.get((Id) Matchers.any())).thenReturn(CoreRelationTypes.DefaultHierarchical_Child);
    }
 
    private void setupAdjacencies(Artifact node, Relation... relations) {
@@ -296,9 +296,9 @@ public class RelationManagerTest {
 
    @Test
    public void testIntroduce() {
-      when(types.isArtifactTypeAllowed(CoreRelationTypes.Default_Hierarchical__Parent, RelationSide.SIDE_A,
+      when(types.isArtifactTypeAllowed(CoreRelationTypes.DefaultHierarchical_Parent, RelationSide.SIDE_A,
          CoreArtifactTypes.SoftwareRequirement)).thenReturn(true);
-      when(types.getMultiplicity(CoreRelationTypes.Default_Hierarchical__Parent)).thenReturn(
+      when(types.getMultiplicity(CoreRelationTypes.DefaultHierarchical_Parent)).thenReturn(
          RelationTypeMultiplicity.ONE_TO_MANY);
       when(relationFactory.introduce(COMMON, data1)).thenReturn(relation1);
 

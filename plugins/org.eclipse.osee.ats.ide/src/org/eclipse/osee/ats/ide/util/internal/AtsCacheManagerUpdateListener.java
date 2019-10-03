@@ -46,7 +46,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
 
    private static List<Long> configReloadRelationTypeGuids = Arrays.asList(
       AtsRelationTypes.ActionableItemLead_Lead.getGuid(), AtsRelationTypes.TeamDefinitionToVersion_Version.getGuid(),
-      AtsRelationTypes.TeamActionableItem_Team.getGuid(), AtsRelationTypes.TeamLead_Team.getGuid(),
+      AtsRelationTypes.TeamActionableItem_TeamDefinition.getGuid(), AtsRelationTypes.TeamLead_Team.getGuid(),
       AtsRelationTypes.ParallelVersion_Child.getGuid(), AtsRelationTypes.ParallelVersion_Parent.getGuid());
    private Boolean singleServerDeployment;
 

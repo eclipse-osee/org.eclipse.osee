@@ -43,7 +43,7 @@ public class AtsConfigTxActionableItem extends AbstractAtsConfigTxObject<IAtsCon
    @Override
    public IAtsConfigTxActionableItem createChildActionableItem(IAtsActionableItemArtifactToken childTok) {
       IAtsConfigTxActionableItem child = cfgTx.createActionableItem(childTok);
-      changes.relate(ai, CoreRelationTypes.Default_Hierarchical__Child, child.getAi());
+      changes.relate(ai, CoreRelationTypes.DefaultHierarchical_Child, child.getAi());
       return child;
    }
 
@@ -77,7 +77,7 @@ public class AtsConfigTxActionableItem extends AbstractAtsConfigTxObject<IAtsCon
          teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(teamDefTok);
       }
       Conditions.assertNotNull(teamDef, "Team Definition must be created before AI %s", ai);
-      changes.relate(ai, AtsRelationTypes.TeamActionableItem_Team, teamDef);
+      changes.relate(ai, AtsRelationTypes.TeamActionableItem_TeamDefinition, teamDef);
       return this;
    }
 
@@ -88,7 +88,7 @@ public class AtsConfigTxActionableItem extends AbstractAtsConfigTxObject<IAtsCon
          teamDef = atsApi.getTeamDefinitionService().getTeamDefinition(name);
       }
       Conditions.assertNotNull(teamDef, "Team Definition must be created before AI %s", ai);
-      changes.relate(ai, AtsRelationTypes.TeamActionableItem_Team, teamDef);
+      changes.relate(ai, AtsRelationTypes.TeamActionableItem_TeamDefinition, teamDef);
       return this;
    }
 

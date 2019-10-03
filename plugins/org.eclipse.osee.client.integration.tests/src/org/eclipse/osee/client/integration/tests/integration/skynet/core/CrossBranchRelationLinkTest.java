@@ -54,7 +54,7 @@ public class CrossBranchRelationLinkTest {
 
    @Test(expected = OseeArgumentException.class)
    public void attemptCrossBranchLinkCreationTest() {
-      left.addRelation(CoreRelationTypes.Default_Hierarchical__Child, right);
+      left.addRelation(CoreRelationTypes.DefaultHierarchical_Child, right);
    }
 
 }

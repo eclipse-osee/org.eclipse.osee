@@ -81,7 +81,7 @@ public class UniversalGroup {
       groupArt.persist(transaction);
 
       Artifact groupRoot = getTopUniversalGroupArtifact(branch);
-      groupRoot.addRelation(CoreRelationTypes.Universal_Grouping__Members, groupArt);
+      groupRoot.addRelation(CoreRelationTypes.UniversalGrouping_Members, groupArt);
       groupRoot.persist(transaction);
 
       return groupArt;
@@ -97,7 +97,7 @@ public class UniversalGroup {
       groupArt.persist(transaction);
 
       Artifact groupRoot = getTopUniversalGroupArtifact(branch);
-      groupRoot.addRelation(CoreRelationTypes.Universal_Grouping__Members, groupArt);
+      groupRoot.addRelation(CoreRelationTypes.UniversalGrouping_Members, groupArt);
       groupRoot.persist(transaction);
 
       return groupArt;

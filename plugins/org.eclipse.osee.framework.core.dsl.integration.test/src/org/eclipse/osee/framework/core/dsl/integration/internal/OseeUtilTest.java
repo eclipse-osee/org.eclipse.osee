@@ -105,7 +105,7 @@ public class OseeUtilTest {
    @Test
    public void testToTokenRelationType() {
       XRelationType type = OseeDslFactory.eINSTANCE.createXRelationType();
-      IRelationType expected = CoreRelationTypes.Allocation__Component;
+      IRelationType expected = CoreRelationTypes.Allocation_Component;
 
       setupToToken(type, expected);
 

@@ -146,7 +146,7 @@ public class InterArtifactDropTest {
    public void testDeleteRelationFromArtifactBranch() {
       // relation deleted and introduced to existing relation on sourceBranch
       Artifact deleteTestArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact2, updateTestBranch1);
-      deleteTestArtifact.deleteRelation(CoreRelationTypes.Default_Hierarchical__Child, sourceChildArtifact1);
+      deleteTestArtifact.deleteRelation(CoreRelationTypes.DefaultHierarchical_Child, sourceChildArtifact1);
       deleteTestArtifact.persist(getClass().getSimpleName());
 
       InterArtifactExplorerDropHandlerOperation dropHandler =

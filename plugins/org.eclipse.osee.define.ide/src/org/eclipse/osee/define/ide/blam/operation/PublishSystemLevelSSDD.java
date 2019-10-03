@@ -125,7 +125,7 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
    private void getSubsystemList() {
       for (Artifact systemRequirement : sysReqs) {
          List<Artifact> relatedArtifacts =
-            systemRequirement.getRelatedArtifacts(CoreRelationTypes.Allocation__Component);
+            systemRequirement.getRelatedArtifacts(CoreRelationTypes.Allocation_Component);
          excludeArtifacts(relatedArtifacts.iterator());
          for (Artifact subsystem : relatedArtifacts) {
             subsystemToRequirements.put(subsystem, systemRequirement);
@@ -162,14 +162,14 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
 
       for (Artifact systemRequirement : subsystemToRequirements.getValues(subsystem)) {
          List<Artifact> relatedArtifacts =
-            systemRequirement.getRelatedArtifacts(CoreRelationTypes.Allocation__Component);
+            systemRequirement.getRelatedArtifacts(CoreRelationTypes.Allocation_Component);
 
          excludeArtifacts(relatedArtifacts.iterator());
 
          for (Artifact component : relatedArtifacts) {
             if (component.equals(subsystem)) {
                String rationale =
-                  systemRequirement.getRelationRationale(component, CoreRelationTypes.Allocation__Component);
+                  systemRequirement.getRelationRationale(component, CoreRelationTypes.Allocation_Component);
                if (rationale.equals("")) {
                   rationale = null;
                }
@@ -186,7 +186,7 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
       excelWriter.writeCell(systemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
       excelWriter.writeCell(systemRequirement.getName());
 
-      List<Artifact> relatedArtifacts = systemRequirement.getRelatedArtifacts(CoreRelationTypes.Allocation__Component);
+      List<Artifact> relatedArtifacts = systemRequirement.getRelatedArtifacts(CoreRelationTypes.Allocation_Component);
       excludeArtifacts(relatedArtifacts.iterator());
 
       List<Artifact> allocatedSubsystems = new ArrayList<>(relatedArtifacts);

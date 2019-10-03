@@ -17,7 +17,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.FileSyste
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChangeId;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitCommitAuthorDate;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.RepositoryUrl;
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Git_Repository_Commit;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.GitRepositoryCommit_GitCommit;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
@@ -215,7 +215,7 @@ public final class GitOperationsImpl implements GitOperations {
 
          ObjectId to = null;
          ArtifactReadable latestCommit =
-            repoArtifact.getRelated(Git_Repository_Commit).getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+            repoArtifact.getRelated(GitRepositoryCommit_GitCommit).getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
          if (latestCommit.isValid()) {
             String latestImportedSHA = latestCommit.getSoleAttributeValue(CoreAttributeTypes.GitCommitSha);
             to = ObjectId.fromString(latestImportedSHA);
@@ -308,8 +308,8 @@ public final class GitOperationsImpl implements GitOperations {
 
          if (lastValidCommit.isValid()) {
             TransactionBuilder tx = importStrategy.getTransactionBuilder(orcsApi, branch, account);
-            tx.unrelateFromAll(Git_Repository_Commit.getOpposite(), repoArtifact);
-            tx.relate(repoArtifact, Git_Repository_Commit, lastValidCommit);
+            tx.unrelateFromAll(GitRepositoryCommit_GitCommit.getOpposite(), repoArtifact);
+            tx.relate(repoArtifact, GitRepositoryCommit_GitCommit, lastValidCommit);
             importStrategy.finishGitCommit(tx);
          }
          return importStrategy.finishImport();

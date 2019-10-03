@@ -417,9 +417,9 @@ public class TraceReportBlam extends AbstractBlam {
 
    private enum TraceTypeEnum {
       Code_Unit_Trace(CoreRelationTypes.CodeRequirement_Requirement, CoreRelationTypes.CodeRequirement_CodeUnit, false),
-      Verified_By_Test_Unit_Trace(CoreRelationTypes.Verification__Requirement, CoreRelationTypes.Verification__Verifier, true),
-      Used_By_Test_Unit_Trace(CoreRelationTypes.Uses__Requirement, CoreRelationTypes.Uses__TestUnit, true),
-      Validation_By_TestProcedure(CoreRelationTypes.Validation__Requirement, CoreRelationTypes.Validation__Validator, true);
+      Verified_By_Test_Unit_Trace(CoreRelationTypes.Verification_Requirement, CoreRelationTypes.Verification_Verifier, true),
+      Used_By_Test_Unit_Trace(CoreRelationTypes.Uses_Requirement, CoreRelationTypes.Uses_TestUnit, true),
+      Validation_By_TestProcedure(CoreRelationTypes.Validation_Requirement, CoreRelationTypes.Validation_Validator, true);
 
       private RelationTypeSide toReq;
       private RelationTypeSide toTraceUnit;

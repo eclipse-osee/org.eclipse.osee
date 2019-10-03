@@ -73,7 +73,7 @@ public class BranchUuidEventFilterTest {
 
       List<IBasicGuidRelation> relations = new ArrayList<>();
       EventBasicGuidRelation relation = new EventBasicGuidRelation(RelationEventType.Added, BranchId.SENTINEL,
-         CoreRelationTypes.SupportingInfo_SupportedBy.getGuid(), 234, GammaId.valueOf(123), 55, guidArtA, 66, guidArtB);
+         CoreRelationTypes.SupportingInfo_IsSupportedBy.getGuid(), 234, GammaId.valueOf(123), 55, guidArtA, 66, guidArtB);
       relations.add(relation);
 
       // neither in relation matches common branch
@@ -84,7 +84,7 @@ public class BranchUuidEventFilterTest {
 
       relations.clear();
       relation = new EventBasicGuidRelation(RelationEventType.Added, COMMON,
-         CoreRelationTypes.SupportingInfo_SupportedBy.getGuid(), 234, GammaId.valueOf(123), 55, guidArtA, 66, guidArtB);
+         CoreRelationTypes.SupportingInfo_IsSupportedBy.getGuid(), 234, GammaId.valueOf(123), 55, guidArtA, 66, guidArtB);
       relations.add(relation);
 
       // branch match

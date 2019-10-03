@@ -32,8 +32,8 @@ public class OrphanSearchFilter extends NotInRelationFilter {
 
    @Override
    public void addFilterTo(FilterTableViewer filterViewer) {
-      ISearchPrimitive primitive = new NotInRelationSearch(CoreRelationTypes.Default_Hierarchical__Child, false);
-      filterViewer.addItem(primitive, getFilterName(), CoreRelationTypes.Default_Hierarchical__Child.getName(),
+      ISearchPrimitive primitive = new NotInRelationSearch(CoreRelationTypes.DefaultHierarchical_Child, false);
+      filterViewer.addItem(primitive, getFilterName(), CoreRelationTypes.DefaultHierarchical_Child.getName(),
          "Child");
    }
 

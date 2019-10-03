@@ -51,10 +51,10 @@ public class SorterProviderTest {
 
    @Test
    public void testGetDefaultSorterId() {
-      when(relationTypeCache.getDefaultOrderTypeGuid(CoreRelationTypes.Default_Hierarchical__Child)).thenReturn(
+      when(relationTypeCache.getDefaultOrderTypeGuid(CoreRelationTypes.DefaultHierarchical_Child)).thenReturn(
          USER_DEFINED);
 
-      RelationSorter actual1 = provider.getDefaultSorterId(CoreRelationTypes.Default_Hierarchical__Child);
+      RelationSorter actual1 = provider.getDefaultSorterId(CoreRelationTypes.DefaultHierarchical_Child);
       assertEquals(USER_DEFINED, actual1);
 
       when(relationTypeCache.getDefaultOrderTypeGuid(CoreRelationTypes.Users_User)).thenReturn(LEXICOGRAPHICAL_DESC);

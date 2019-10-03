@@ -375,7 +375,7 @@ public class AgileService implements IAgileService {
       List<IAgileFeatureGroup> groups = new LinkedList<>();
       ArtifactId artifact = team.getStoreObject();
       for (ArtifactId groupArt : atsApi.getRelationResolver().getRelated(artifact,
-         AtsRelationTypes.AgileTeamToFeatureGroup_FeatureGroup)) {
+         AtsRelationTypes.AgileTeamToFeatureGroup_AgileFeatureGroup)) {
          groups.add(atsApi.getAgileService().getAgileFeatureGroup(groupArt));
       }
       return groups;
@@ -520,7 +520,7 @@ public class AgileService implements IAgileService {
       List<IAgileFeatureGroup> groups = new LinkedList<>();
       ArtifactId itemArt = atsApi.getQueryService().getArtifact(aItem);
       for (ArtifactId featureGroup : atsApi.getRelationResolver().getRelated(itemArt,
-         AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
+         AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup)) {
          groups.add(atsApi.getAgileService().getAgileFeatureGroup(featureGroup));
       }
       return groups;
@@ -531,7 +531,7 @@ public class AgileService implements IAgileService {
       List<IAgileFeatureGroup> groups = new LinkedList<>();
       ArtifactId itemArt = atsApi.getQueryService().getArtifact(workItem);
       for (ArtifactId featureGroup : atsApi.getRelationResolver().getRelated(itemArt,
-         AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
+         AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup)) {
          groups.add(atsApi.getAgileService().getAgileFeatureGroup(featureGroup));
       }
       return groups;
@@ -542,7 +542,7 @@ public class AgileService implements IAgileService {
       IAgileSprint sprint = null;
       ArtifactToken itemArt = atsApi.getQueryService().getArtifact(item);
       ArtifactToken sprintArt =
-         atsApi.getRelationResolver().getRelatedOrSentinel(itemArt, AtsRelationTypes.AgileSprintToItem_Sprint);
+         atsApi.getRelationResolver().getRelatedOrSentinel(itemArt, AtsRelationTypes.AgileSprintToItem_AgileSprint);
       if (sprintArt.isValid()) {
          sprint = atsApi.getWorkItemService().getAgileSprint(sprintArt);
       }
@@ -571,7 +571,7 @@ public class AgileService implements IAgileService {
          }
       }
       ArtifactId sprintArt =
-         atsApi.getRelationResolver().getRelatedOrSentinel(itemArt, AtsRelationTypes.AgileSprintToItem_Sprint);
+         atsApi.getRelationResolver().getRelatedOrSentinel(itemArt, AtsRelationTypes.AgileSprintToItem_AgileSprint);
       if (sprintArt.isValid()) {
          ArtifactId teamArt =
             atsApi.getRelationResolver().getRelatedOrSentinel(sprintArt, AtsRelationTypes.AgileTeamToSprint_AgileTeam);
@@ -615,7 +615,7 @@ public class AgileService implements IAgileService {
    public Collection<ArtifactToken> getRelatedSprints(ArtifactId artifact) {
       Set<ArtifactToken> sprints = new HashSet<>();
       for (ArtifactToken sprintArt : atsApi.getRelationResolver().getRelatedArtifacts(artifact,
-         AtsRelationTypes.AgileSprintToItem_Sprint)) {
+         AtsRelationTypes.AgileSprintToItem_AgileSprint)) {
          sprints.add(sprintArt);
       }
       return sprints;
@@ -653,8 +653,8 @@ public class AgileService implements IAgileService {
          }
          // attempt to get from workitem relation to sprint
          if (agileTeam == null) {
-            ArtifactId sprintArt =
-               atsApi.getRelationResolver().getRelatedOrSentinel(workItem, AtsRelationTypes.AgileSprintToItem_Sprint);
+            ArtifactId sprintArt = atsApi.getRelationResolver().getRelatedOrSentinel(workItem,
+               AtsRelationTypes.AgileSprintToItem_AgileSprint);
             if (sprintArt.isValid()) {
                IAgileSprint sprint = getAgileSprint(sprintArt);
                if (sprint != null) {
@@ -761,8 +761,8 @@ public class AgileService implements IAgileService {
 
    @Override
    public void setAgileStory(IAtsTeamWorkflow teamWf, IAgileStory story, IAtsChangeSet changes) {
-      changes.unrelateFromAll(AtsRelationTypes.AgileStoryToItems_Story, teamWf.getStoreObject());
-      changes.relate(story, AtsRelationTypes.AgileStoryToItems_AtsItem, teamWf);
+      changes.unrelateFromAll(AtsRelationTypes.AgileStoryToItem_AgileStory, teamWf.getStoreObject());
+      changes.relate(story, AtsRelationTypes.AgileStoryToItem_TeamWorkflow, teamWf);
    }
 
    @Override

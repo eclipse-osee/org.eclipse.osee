@@ -73,7 +73,7 @@ public class EmailUserGroups extends XNavigateItemAction {
             Set<String> emails = new HashSet<>();
             for (Artifact artifact : dialog.getChecked()) {
                if (artifact.isOfType(CoreArtifactTypes.UniversalGroup)) {
-                  for (Artifact userArt : artifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
+                  for (Artifact userArt : artifact.getRelatedArtifacts(CoreRelationTypes.UniversalGrouping_Members)) {
                      if (userArt instanceof User) {
                         if (!EmailUtil.isEmailValid((User) userArt)) {
                            OseeLog.logf(Activator.class, Level.SEVERE, "Invalid email [%s] for user [%s]; skipping",

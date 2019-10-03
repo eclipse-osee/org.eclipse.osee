@@ -511,14 +511,14 @@ public class DataLoaderFactoryImplTest {
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
 
       dataLoader.withLoadLevel(expectedLoadLevel);
-      dataLoader.withRelationTypes(CoreRelationTypes.Default_Hierarchical__Child);
+      dataLoader.withRelationTypes(CoreRelationTypes.DefaultHierarchical_Child);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
       dataLoader.load(cancellation, builder);
 
       verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected,
-         CoreRelationTypes.Default_Hierarchical__Child.getGuid());
+         CoreRelationTypes.DefaultHierarchical_Child.getGuid());
    }
 
    @Test
@@ -535,16 +535,16 @@ public class DataLoaderFactoryImplTest {
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
 
       dataLoader.withLoadLevel(expectedLoadLevel);
-      dataLoader.withRelationTypes(CoreRelationTypes.Default_Hierarchical__Child,
-         CoreRelationTypes.Dependency__Artifact);
+      dataLoader.withRelationTypes(CoreRelationTypes.DefaultHierarchical_Child,
+         CoreRelationTypes.Dependency_Artifact);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
       dataLoader.load(cancellation, builder);
 
       verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID),
-         list(data(CoreRelationTypes.Default_Hierarchical__Child.getGuid(),
-            CoreRelationTypes.Dependency__Artifact.getGuid())));
+         list(data(CoreRelationTypes.DefaultHierarchical_Child.getGuid(),
+            CoreRelationTypes.Dependency_Artifact.getGuid())));
    }
 
    @Test
@@ -608,15 +608,15 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.withRelationIds(45, 55);
-      dataLoader.withRelationTypes(CoreRelationTypes.Default_Hierarchical__Child,
-         CoreRelationTypes.Dependency__Artifact);
+      dataLoader.withRelationTypes(CoreRelationTypes.DefaultHierarchical_Child,
+         CoreRelationTypes.Dependency_Artifact);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
       dataLoader.load(cancellation, builder);
 
       verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID, JQID), list(data(45, 55),
-         data(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), CoreRelationTypes.Dependency__Artifact)));
+         data(CoreRelationTypes.DefaultHierarchical_Child.getGuid(), CoreRelationTypes.Dependency_Artifact)));
    }
 
    @Test
@@ -634,14 +634,14 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.withRelationIds(45);
-      dataLoader.withRelationTypes(CoreRelationTypes.Default_Hierarchical__Child);
+      dataLoader.withRelationTypes(CoreRelationTypes.DefaultHierarchical_Child);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
       dataLoader.load(cancellation, builder);
 
       verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected, 45,
-         CoreRelationTypes.Default_Hierarchical__Child.getGuid());
+         CoreRelationTypes.DefaultHierarchical_Child.getGuid());
    }
 
    @Test
@@ -704,14 +704,14 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.includeDeletedRelations();
-      dataLoader.withRelationTypes(CoreRelationTypes.Default_Hierarchical__Child);
+      dataLoader.withRelationTypes(CoreRelationTypes.DefaultHierarchical_Child);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
       dataLoader.load(cancellation, builder);
 
       verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected,
-         CoreRelationTypes.Default_Hierarchical__Child.getGuid());
+         CoreRelationTypes.DefaultHierarchical_Child.getGuid());
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

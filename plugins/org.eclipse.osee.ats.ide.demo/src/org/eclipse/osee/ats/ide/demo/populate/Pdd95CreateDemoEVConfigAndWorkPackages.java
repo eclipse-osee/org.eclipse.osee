@@ -76,36 +76,36 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
       Artifact codeTeamArt = ArtifactQuery.getArtifactFromToken(DemoArtifactToken.SAW_Code);
 
       Artifact workPkg1 = createWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_01, "ASDHFA443");
-      workPkg1.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, codeTeamArt);
+      workPkg1.addRelation(AtsRelationTypes.WorkPackage_AtsTeamDefOrAi, codeTeamArt);
       relateInsertionActivity(workPkg1, DemoInsertionActivity.commPage);
       workPkg1.persist(transaction);
 
       Artifact workPkg2 = createWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_02, "ASDHFA443");
-      workPkg2.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, codeTeamArt);
+      workPkg2.addRelation(AtsRelationTypes.WorkPackage_AtsTeamDefOrAi, codeTeamArt);
       relateInsertionActivity(workPkg2, DemoInsertionActivity.commPage);
       workPkg2.persist(transaction);
 
       Artifact workPkg3 = createWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_03, "ASDHFA443");
       workPkg3.setSoleAttributeValue(AtsAttributeTypes.Active, false);
-      workPkg3.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, codeTeamArt);
+      workPkg3.addRelation(AtsRelationTypes.WorkPackage_AtsTeamDefOrAi, codeTeamArt);
       relateInsertionActivity(workPkg3, DemoInsertionActivity.commButton);
       workPkg3.persist(transaction);
 
       Artifact testTeamArt = ArtifactQuery.getArtifactFromToken(DemoArtifactToken.SAW_Test_AI);
 
       Artifact workPkg11 = createWorkPackage(DemoArtifactToken.SAW_Test_AI_WorkPackage_0A, "AHESSH3");
-      workPkg11.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, testTeamArt);
+      workPkg11.addRelation(AtsRelationTypes.WorkPackage_AtsTeamDefOrAi, testTeamArt);
       relateInsertionActivity(workPkg11, DemoInsertionActivity.commPage);
       workPkg11.persist(transaction);
 
       Artifact workPkg21 = createWorkPackage(DemoArtifactToken.SAW_Test_AI_WorkPackage_0B, "HAKSHD3");
-      workPkg21.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, testTeamArt);
+      workPkg21.addRelation(AtsRelationTypes.WorkPackage_AtsTeamDefOrAi, testTeamArt);
       relateInsertionActivity(workPkg21, DemoInsertionActivity.commPage);
       workPkg21.persist(transaction);
 
       Artifact workPkg31 = createWorkPackage(DemoArtifactToken.SAW_Test_AI_WorkPackage_0C, "EHA4DS");
       workPkg31.setSoleAttributeValue(AtsAttributeTypes.Active, false);
-      workPkg31.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, testTeamArt);
+      workPkg31.addRelation(AtsRelationTypes.WorkPackage_AtsTeamDefOrAi, testTeamArt);
       relateInsertionActivity(workPkg31, DemoInsertionActivity.commButton);
       workPkg31.persist(transaction);
 

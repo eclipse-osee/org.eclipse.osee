@@ -268,7 +268,7 @@ public final class ReplaceWithBaselineTest {
 
                      parent.persist(testName);
 
-                     testData.setRelationType(CoreRelationTypes.Default_Hierarchical__Child);
+                     testData.setRelationType(CoreRelationTypes.DefaultHierarchical_Child);
                      break;
                   case RELATION_ORDER_ATTR:
                      Artifact parentArtifact = createNewArtifact(baselineBranch, "parent");
@@ -276,7 +276,7 @@ public final class ReplaceWithBaselineTest {
                      int numOfChildren = 5;
 
                      for (int i = 0; i < numOfChildren; i++) {
-                        parentArtifact.addRelation(ascOrder, CoreRelationTypes.Default_Hierarchical__Child,
+                        parentArtifact.addRelation(ascOrder, CoreRelationTypes.DefaultHierarchical_Child,
                            createNewArtifact(baselineBranch, GUID.create()));
                      }
                      parentArtifact.persist(testName);
@@ -415,7 +415,7 @@ public final class ReplaceWithBaselineTest {
                      Artifact child = ArtifactQuery.getArtifactFromId(testData.getbArtifactId(), workingBranch);
                      Artifact newParent = ArtifactQuery.getArtifactFromId(testData.getcArtId(), workingBranch);
 
-                     parent.deleteRelations(CoreRelationTypes.Default_Hierarchical__Child);
+                     parent.deleteRelations(CoreRelationTypes.DefaultHierarchical_Child);
                      parent.persist(testName);
                      newParent.addChild(USER_DEFINED, child);
                      newParent.persist(testName);
@@ -430,7 +430,7 @@ public final class ReplaceWithBaselineTest {
                      int numOfChildren = 5;
 
                      for (int i = 0; i < numOfChildren; i++) {
-                        parentArtifact.addRelation(descOrder, CoreRelationTypes.Default_Hierarchical__Child,
+                        parentArtifact.addRelation(descOrder, CoreRelationTypes.DefaultHierarchical_Child,
                            createNewArtifact(workingBranch, GUID.create()));
                      }
                      parentArtifact.persist(testName);

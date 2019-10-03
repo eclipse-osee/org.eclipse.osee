@@ -150,7 +150,7 @@ public class OrcsStorageImpl implements Storage {
       ArtifactReadable setArt = findDispoArtifact(branch, setId);
       ResultSet<ArtifactReadable> results = getQuery()//
          .fromBranch(branch)//
-         .andRelatedTo(CoreRelationTypes.Default_Hierarchical__Parent, setArt)//
+         .andRelatedTo(CoreRelationTypes.DefaultHierarchical_Parent, setArt)//
          .andTypeEquals(DispoConstants.DispositionableItem)//
          .andNameEquals(name)//
          .getResults();
@@ -361,7 +361,7 @@ public class OrcsStorageImpl implements Storage {
          if (Strings.isValid(item.getMethodNumber())) {
             tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemMethodNumber, item.getMethodNumber());
          }
-         tx.relate(parentSetArt, CoreRelationTypes.Default_Hierarchical__Child, createdItem);
+         tx.relate(parentSetArt, CoreRelationTypes.DefaultHierarchical_Child, createdItem);
       }
       tx.commit();
    }
@@ -509,7 +509,7 @@ public class OrcsStorageImpl implements Storage {
       ResultSet<ArtifactReadable> dispoArtifacts = getQuery()//
          .fromBranch(branch)//
          .andTypeEquals(DispoConstants.DispositionableItem)//
-         .andRelatedTo(CoreRelationTypes.Default_Hierarchical__Parent, dispoSetArt).and(
+         .andRelatedTo(CoreRelationTypes.DefaultHierarchical_Parent, dispoSetArt).and(
             DispoConstants.DispoAnnotationsJson, keyword, //
             QueryOption.CONTAINS_MATCH_OPTIONS)//
          .getResults();

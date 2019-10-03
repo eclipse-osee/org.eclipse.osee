@@ -115,7 +115,7 @@ public class OrcsWriterCollectorGenerator {
 
       // add to new folder
       OwRelation relation = new OwRelation();
-      relation.setType(OwFactory.createRelationType(orcsApi, CoreRelationTypes.Default_Hierarchical__Parent));
+      relation.setType(OwFactory.createRelationType(orcsApi, CoreRelationTypes.DefaultHierarchical_Parent));
       relation.setArtToken(folderToken);
       wordReq.getRelations().add(relation);
    }
@@ -131,7 +131,7 @@ public class OrcsWriterCollectorGenerator {
 
       // add to new folder
       OwRelation relation = new OwRelation();
-      relation.setType(OwFactory.createRelationType(orcsApi, CoreRelationTypes.Default_Hierarchical__Parent));
+      relation.setType(OwFactory.createRelationType(orcsApi, CoreRelationTypes.DefaultHierarchical_Parent));
       relation.setArtToken(folderToken);
       softwareReq.getRelations().add(relation);
    }
@@ -144,7 +144,7 @@ public class OrcsWriterCollectorGenerator {
 
       // add to default hierarchy root
       OwRelation relation = new OwRelation();
-      relation.setType(OwFactory.createRelationType(orcsApi, CoreRelationTypes.Default_Hierarchical__Parent));
+      relation.setType(OwFactory.createRelationType(orcsApi, CoreRelationTypes.DefaultHierarchical_Parent));
       relation.setArtToken(OwFactory.createArtifactToken(CoreArtifactTokens.DefaultHierarchyRoot));
       folder.getRelations().add(relation);
 

@@ -115,7 +115,7 @@ public class RequirementTraceabilityData {
       for (Entry<String, Artifact> entry : testProcedureBranchReqsToReqsBranchMap.entrySet()) {
          Artifact requirement = entry.getValue();
          Set<Artifact> foundProcedures =
-            new HashSet<>(requirement.getRelatedArtifacts(CoreRelationTypes.Validation__Validator));
+            new HashSet<>(requirement.getRelatedArtifacts(CoreRelationTypes.Validation_Validator));
          ViewIdUtility.removeExcludedArtifacts(foundProcedures.iterator(), excludedArtifactIdMap);
          Set<Artifact> toAdd = new HashSet<>();
          if (testProceduresFilter.isEmpty() != true) {

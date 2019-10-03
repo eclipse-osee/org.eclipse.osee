@@ -32,7 +32,7 @@ public class OrphanAndDuplicateParentValidationRule extends AbstractValidationRu
       try {
          if (!atsApi.getStoreService().isHistorical(artifact)) {
             int count =
-               atsApi.getRelationResolver().getRelatedCount(artifact, CoreRelationTypes.Default_Hierarchical__Parent);
+               atsApi.getRelationResolver().getRelatedCount(artifact, CoreRelationTypes.DefaultHierarchical_Parent);
             if (count == 0) {
                logError(artifact, "is orphaned (no parent on Default Hierarchy).", results);
             } else if (count > 1) {

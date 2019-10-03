@@ -15,13 +15,9 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 
 public final class OteRelationTypes {
 
-   public static final RelationTypeSide TEST_SCRIPT_TO_RUN_RELATION__TEST_SCRIPT =
-      RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694326L, "Test Case to Run Relation");
-   public static final RelationTypeSide TEST_SCRIPT_TO_RUN_RELATION__TEST_RUN =
-      RelationTypeSide.create(RelationSide.SIDE_B, 0x2000000000000176L, "Test Case to Run Relation");
-
-   private OteRelationTypes() {
-      // Constants
-   }
+   // @formatter:off
+   public static final RelationTypeSide TestCaseToRunRelation_TestCase = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694326L, "Test Case to Run Relation");
+   public static final RelationTypeSide TestCaseToRunRelation_TestRun = TestCaseToRunRelation_TestCase.getOpposite();
+   // @formatter:off
 
 }

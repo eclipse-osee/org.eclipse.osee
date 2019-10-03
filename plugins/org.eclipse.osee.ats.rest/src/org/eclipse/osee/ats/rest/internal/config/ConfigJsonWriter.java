@@ -140,7 +140,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          if (!identityView) {
             writer.writeArrayFieldStart("workflow");
             for (ArtifactReadable workArt : artifact.getRelated(
-               AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow)) {
+               AtsRelationTypes.TeamWorkflowTargetedForVersion_TeamWorkflow)) {
                addArtifactIdentity(writer, workArt);
             }
             writer.writeEndArray();

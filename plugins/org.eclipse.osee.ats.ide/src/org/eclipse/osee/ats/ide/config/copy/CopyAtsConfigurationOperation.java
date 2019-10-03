@@ -122,11 +122,11 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       Artifact newAiArt = duplicateTeamDefinitionOrActionableItem(changes, fromAiArt);
       changes.add(newAiArt);
       IAtsActionableItem newAi = AtsClientService.get().getActionableItemService().getActionableItemById(newAiArt);
-      changes.relate(parentAiArt, CoreRelationTypes.Default_Hierarchical__Child, newAi);
+      changes.relate(parentAiArt, CoreRelationTypes.DefaultHierarchical_Child, newAi);
       existingArtifacts.add(parentAiArt);
       newArtifacts.add(newAiArt);
       // Relate new Ais to their TeamDefs just like other config
-      for (Artifact fromTeamDefArt : fromAiArt.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_Team,
+      for (Artifact fromTeamDefArt : fromAiArt.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_TeamDefinition,
          Artifact.class)) {
          IAtsConfigObject fromTeamDef =
             AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(fromTeamDefArt);
@@ -137,7 +137,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
                fromTeamDefArt, newAiArt);
          } else {
             Artifact newTeamDefArt = AtsClientService.get().getQueryServiceClient().getArtifact(newTeamDef);
-            newAiArt.addRelation(AtsRelationTypes.TeamActionableItem_Team, newTeamDefArt);
+            newAiArt.addRelation(AtsRelationTypes.TeamActionableItem_TeamDefinition, newTeamDefArt);
             changes.add(newTeamDefArt);
          }
       }

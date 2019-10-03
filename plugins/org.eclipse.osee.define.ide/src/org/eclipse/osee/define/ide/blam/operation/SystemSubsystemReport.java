@@ -193,7 +193,7 @@ public class SystemSubsystemReport extends AbstractBlam {
          row[0] = subSysName;
 
          Artifact component = productComponent.getChild(subSysName);
-         List<Artifact> sysReqByComp = component.getRelatedArtifacts(CoreRelationTypes.Allocation__Requirement);
+         List<Artifact> sysReqByComp = component.getRelatedArtifacts(CoreRelationTypes.Allocation_Requirement);
          if (!sysReqByComp.isEmpty()) {
             ViewIdUtility.removeExcludedArtifacts(sysReqByComp.iterator(), findExcludedArtifactsByView);
          }
@@ -275,10 +275,10 @@ public class SystemSubsystemReport extends AbstractBlam {
             row[SubsystemCompletness.qualMethod.ordinal()] = "N/A: " + artifact.getArtifactTypeName();
          }
 
-         int higherTraceCount = artifact.getRelatedArtifactsCount(CoreRelationTypes.Requirement_Trace__Higher_Level);
+         int higherTraceCount = artifact.getRelatedArtifactsCount(CoreRelationTypes.RequirementTrace_HigherLevelRequirement);
          row[SubsystemCompletness.highLevelTrace.ordinal()] = String.valueOf(higherTraceCount);
 
-         int allocationCount = artifact.getRelatedArtifactsCount(CoreRelationTypes.Allocation__Component);
+         int allocationCount = artifact.getRelatedArtifactsCount(CoreRelationTypes.Allocation_Component);
          row[SubsystemCompletness.allocated.ordinal()] = String.valueOf(allocationCount);
          excelWriter.writeRow(row);
       }
@@ -300,7 +300,7 @@ public class SystemSubsystemReport extends AbstractBlam {
          if (artifact.isOfType(CoreArtifactTypes.SubsystemRequirementMsWord)) {
 
             boolean isRelated = false;
-            List<Artifact> relatedArtifacts = artifact.getRelatedArtifacts(CoreRelationTypes.Allocation__Component);
+            List<Artifact> relatedArtifacts = artifact.getRelatedArtifacts(CoreRelationTypes.Allocation_Component);
             if (!relatedArtifacts.isEmpty()) {
                ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), findExcludedArtifactsByView);
                isRelated = true;
@@ -335,7 +335,7 @@ public class SystemSubsystemReport extends AbstractBlam {
          excelWriter.writeRow(subSysName + " Subsystem Requirements allocated to the " + component.getName());
          excelWriter.writeRow("PIDS Paragraph #", "PIDS Paragraph Title", "Notes <rationale>");
 
-         List<Artifact> relatedArtifacts = component.getRelatedArtifacts(CoreRelationTypes.Allocation__Requirement);
+         List<Artifact> relatedArtifacts = component.getRelatedArtifacts(CoreRelationTypes.Allocation_Requirement);
          if (!relatedArtifacts.isEmpty()) {
             ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), findExcludedArtifactsByView);
          }
@@ -343,7 +343,7 @@ public class SystemSubsystemReport extends AbstractBlam {
             if (subsysReqs.contains(subsysReq)) {
                row[0] = subsysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
                row[1] = subsysReq.getName();
-               String rationale = component.getRelationRationale(subsysReq, CoreRelationTypes.Allocation__Requirement);
+               String rationale = component.getRelationRationale(subsysReq, CoreRelationTypes.Allocation_Requirement);
                row[2] = rationale.equals("") ? null : rationale;
                excelWriter.writeRow(row);
             }
@@ -386,12 +386,12 @@ public class SystemSubsystemReport extends AbstractBlam {
                   subsysMarkedAndQualifiedCount++;
                }
 
-               int higherTraceCount = child.getRelatedArtifactsCount(CoreRelationTypes.Requirement_Trace__Higher_Level);
+               int higherTraceCount = child.getRelatedArtifactsCount(CoreRelationTypes.RequirementTrace_HigherLevelRequirement);
                if (higherTraceCount > 0) {
                   subsysMarkedAndTracedCount++;
                }
 
-               int allocationCount = child.getRelatedArtifactsCount(CoreRelationTypes.Allocation__Component);
+               int allocationCount = child.getRelatedArtifactsCount(CoreRelationTypes.Allocation_Component);
                if (allocationCount > 0) {
                   subsysMarkedAndAllocatedToComponentCount++;
                } else {
@@ -421,7 +421,7 @@ public class SystemSubsystemReport extends AbstractBlam {
          row[1] = sysReq.getName();
 
          boolean isRelated = false;
-         List<Artifact> relatedArtifacts = sysReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Lower_Level);
+         List<Artifact> relatedArtifacts = sysReq.getRelatedArtifacts(CoreRelationTypes.RequirementTrace_LowerLevelRequirement);
          if (!relatedArtifacts.isEmpty()) {
             ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), findExcludedArtifactsByView);
             isRelated = true;
@@ -471,7 +471,7 @@ public class SystemSubsystemReport extends AbstractBlam {
 
          boolean isRelated = false;
          List<Artifact> relatedArtifacts =
-            subsysReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Higher_Level);
+            subsysReq.getRelatedArtifacts(CoreRelationTypes.RequirementTrace_HigherLevelRequirement);
          if (!relatedArtifacts.isEmpty()) {
             ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), findExcludedArtifactsByView);
             isRelated = true;

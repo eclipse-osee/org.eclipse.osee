@@ -83,7 +83,7 @@ public class WorkPackageConfigLoader {
          data.setWorkPackageNotes(workPackageArt.getSoleAttributeValue(CoreAttributeTypes.Notes, ""));
          data.setWorkPackageAnnotation(workPackageArt.getSoleAttributeValue(CoreAttributeTypes.Annotation, ""));
          data.setTeamNames(
-            Collections.toString("; ", workPackageArt.getRelatedArtifacts(AtsRelationTypes.WorkPackage_TeamDefOrAi)));
+            Collections.toString("; ", workPackageArt.getRelatedArtifacts(AtsRelationTypes.WorkPackage_AtsTeamDefOrAi)));
          data.setWorkPackageActive(workPackageArt.getSoleAttributeValue(AtsAttributeTypes.Active, false));
          data.setWorkPackageStartDate(workPackageArt.getSoleAttributeValue(AtsAttributeTypes.StartDate, null));
          data.setWorkPackageEndDate(workPackageArt.getSoleAttributeValue(AtsAttributeTypes.EndDate, null));

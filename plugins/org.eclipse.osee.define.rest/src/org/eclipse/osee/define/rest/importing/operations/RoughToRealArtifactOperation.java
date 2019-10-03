@@ -82,7 +82,7 @@ public class RoughToRealArtifactOperation {
          ArtifactId child = createArtifact(roughArtifact, destinationArtifact);
          createdArtifacts.add(child);
          if (addRelation && child != null && noParent(child)) {
-            transaction.relate(destinationArtifact, CoreRelationTypes.Default_Hierarchical__Child, child,
+            transaction.relate(destinationArtifact, CoreRelationTypes.DefaultHierarchical_Child, child,
                importArtifactOrder);
          }
 
@@ -168,9 +168,9 @@ public class RoughToRealArtifactOperation {
       }
 
       if (hasDifferentParent(child, parent)) {
-         transaction.unrelate(child.getParent(), CoreRelationTypes.Default_Hierarchical__Child, child);
+         transaction.unrelate(child.getParent(), CoreRelationTypes.DefaultHierarchical_Child, child);
       }
-      transaction.relate(parent, CoreRelationTypes.Default_Hierarchical__Child, child, importArtifactOrder);
+      transaction.relate(parent, CoreRelationTypes.DefaultHierarchical_Child, child, importArtifactOrder);
    }
 
    private ArtifactReadable getArtifactReadable(ArtifactId art) {

@@ -103,12 +103,12 @@ public class AgileItemWriter {
                for (IAgileFeatureGroup feature : features) {
                   ArtifactToken featureArt = feature.getStoreObject();
                   if (!atsApi.getRelationResolver().areRelated(featureArt,
-                     AtsRelationTypes.AgileFeatureToItem_FeatureGroup, awa)) {
+                     AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup, awa)) {
                      changes.relate(feature, AtsRelationTypes.AgileFeatureToItem_AtsItem, awa);
                   }
                }
                for (ArtifactToken featureArt : atsApi.getRelationResolver().getRelated(awa,
-                  AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
+                  AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup)) {
                   if (!featureArts.contains(featureArt)) {
                      changes.unrelate(featureArt, AtsRelationTypes.AgileFeatureToItem_AtsItem, awa);
                   }
@@ -117,7 +117,7 @@ public class AgileItemWriter {
          } else if (newItem.isRemoveFeatures()) {
             for (ArtifactToken awa : atsApi.getQueryService().getArtifacts(newItem.getIds())) {
                for (ArtifactToken feature : atsApi.getRelationResolver().getRelated(awa,
-                  AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
+                  AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup)) {
                   changes.unrelate(feature, AtsRelationTypes.AgileFeatureToItem_AtsItem, awa);
                }
             }

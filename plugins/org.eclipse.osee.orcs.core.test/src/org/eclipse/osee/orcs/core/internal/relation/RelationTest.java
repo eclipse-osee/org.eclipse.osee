@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation;
 
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Design__Design;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Design_Design;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -49,7 +49,7 @@ public class RelationTest {
       MockitoAnnotations.initMocks(this);
 
       relation = new Relation(data);
-      when(data.getType()).thenReturn(Design__Design);
+      when(data.getType()).thenReturn(Design_Design);
    }
 
    @Test
@@ -132,7 +132,7 @@ public class RelationTest {
 
    @Test
    public void testIsOfType() {
-      assertTrue(relation.isOfType(Design__Design));
+      assertTrue(relation.isOfType(Design_Design));
       assertFalse(relation.isOfType(CoreRelationTypes.DEFAULT_HIERARCHY));
    }
 

@@ -259,9 +259,9 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
    private RelationTypeSide getRelationFromTraceType(Artifact traceUnitArtifact, String traceType) {
       if (traceUnitArtifact.isOfType(CoreArtifactTypes.TestUnit)) {
          if (isUsesTraceType(traceType)) {
-            return CoreRelationTypes.Uses__TestUnit;
+            return CoreRelationTypes.Uses_TestUnit;
          } else {
-            return CoreRelationTypes.Verification__Verifier;
+            return CoreRelationTypes.Verification_Verifier;
          }
       } else if (traceUnitArtifact.isOfType(CoreArtifactTypes.CodeUnit)) {
          return CoreRelationTypes.CodeRequirement_CodeUnit;
@@ -271,8 +271,8 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
 
    private void removeExistingTraceability(Artifact traceUnitArtifact) {
       if (traceUnitArtifact.isOfType(CoreArtifactTypes.TestUnit)) {
-         traceUnitArtifact.deleteRelations(CoreRelationTypes.Uses__Requirement);
-         traceUnitArtifact.deleteRelations(CoreRelationTypes.Verification__Requirement);
+         traceUnitArtifact.deleteRelations(CoreRelationTypes.Uses_Requirement);
+         traceUnitArtifact.deleteRelations(CoreRelationTypes.Verification_Requirement);
       } else if (traceUnitArtifact.isOfType(CoreArtifactTypes.CodeUnit)) {
          traceUnitArtifact.deleteRelations(CoreRelationTypes.CodeRequirement_Requirement);
       }

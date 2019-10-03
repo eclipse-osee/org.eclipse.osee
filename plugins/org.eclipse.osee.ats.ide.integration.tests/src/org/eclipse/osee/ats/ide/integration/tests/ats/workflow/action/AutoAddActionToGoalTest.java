@@ -85,7 +85,7 @@ public class AutoAddActionToGoalTest {
 
       Artifact testAI2 = AtsClientService.get().getQueryServiceClient().getArtifact(AtsTestUtil.getTestAi2());
 
-      goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, testAI2);
+      goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_AtsConfigObject, testAI2);
 
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
 
@@ -115,7 +115,7 @@ public class AutoAddActionToGoalTest {
 
       Artifact teamDefArtifact =
          AtsClientService.get().getQueryServiceClient().getArtifact(AtsTestUtil.getTestTeamDef());
-      goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, teamDefArtifact);
+      goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_AtsConfigObject, teamDefArtifact);
       goalArt.persist(getClass().getSimpleName() + " - testAutoAddActionToGoal_TeamWF");
 
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
@@ -146,8 +146,8 @@ public class AutoAddActionToGoalTest {
 
       GoalArtifact goalArt =
          GoalManager.createGoal("AutoAddActionToGoalTest - AddActionToGoalFromAIorTeamDef", changes);
-      goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, testAI2Art);
-      goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, teamDefArtifact);
+      goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_AtsConfigObject, testAI2Art);
+      goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_AtsConfigObject, teamDefArtifact);
       changes.execute();
 
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
@@ -185,9 +185,9 @@ public class AutoAddActionToGoalTest {
       Artifact testAI2 = AtsClientService.get().getQueryServiceClient().getArtifact(AtsTestUtil.getTestAi2());
       Artifact testAI3 = AtsClientService.get().getQueryServiceClient().getArtifact(AtsTestUtil.getTestAi3());
 
-      goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, testAI2);
-      goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, testAI3);
-      goalArt2.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, testAI2);
+      goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_AtsConfigObject, testAI2);
+      goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_AtsConfigObject, testAI3);
+      goalArt2.addRelation(AtsRelationTypes.AutoAddActionToGoal_AtsConfigObject, testAI2);
 
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
       TeamWorkFlowArtifact teamWf3 = AtsTestUtil.getTeamWf3();

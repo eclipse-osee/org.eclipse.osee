@@ -105,7 +105,7 @@ public class Pdd22CreateUnCommittedConflictedAction implements IPopulateDemoData
       branchArtifact.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
       Artifact comArt = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component,
          DemoSubsystems.Robot_API.name(), reqTeamArt.getWorkingBranch());
-      branchArtifact.addRelation(CoreRelationTypes.Allocation__Component, comArt);
+      branchArtifact.addRelation(CoreRelationTypes.Allocation_Component, comArt);
       branchArtifact.persist(getClass().getSimpleName());
 
       Artifact parentArtifact = DemoDbUtil.getArtTypeRequirements(isDebug(), CoreArtifactTypes.SoftwareRequirement,

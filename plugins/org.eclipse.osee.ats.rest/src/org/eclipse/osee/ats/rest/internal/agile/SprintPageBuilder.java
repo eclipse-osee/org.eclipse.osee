@@ -139,7 +139,7 @@ public class SprintPageBuilder {
    private void updateFeatureGroupSum(ArtifactReadable item, TreeMap<String, FeatureGroupSum> featureSums, double points) {
       String featureGroupName = null;
       ArtifactReadable featureGroup =
-         item.getRelated(AtsRelationTypes.AgileFeatureToItem_FeatureGroup).getAtMostOneOrDefault(
+         item.getRelated(AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup).getAtMostOneOrDefault(
             ArtifactReadable.SENTINEL);
       if (featureGroup.isInvalid()) {
          featureGroupName = "UnSet";

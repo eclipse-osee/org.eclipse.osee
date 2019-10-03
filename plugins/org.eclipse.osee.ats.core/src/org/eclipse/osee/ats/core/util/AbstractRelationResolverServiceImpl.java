@@ -28,7 +28,7 @@ public abstract class AbstractRelationResolverServiceImpl implements IRelationRe
 
    @Override
    public Collection<ArtifactToken> getChildren(ArtifactId artifact, ArtifactTypeToken artifactType) {
-      return getRelated(artifact, CoreRelationTypes.Default_Hierarchical__Child, artifactType);
+      return getRelated(artifact, CoreRelationTypes.DefaultHierarchical_Child, artifactType);
    }
 
    @Override
@@ -46,12 +46,12 @@ public abstract class AbstractRelationResolverServiceImpl implements IRelationRe
 
    @Override
    public Collection<ArtifactToken> getChildren(ArtifactId artifact) {
-      return getRelated(artifact, CoreRelationTypes.Default_Hierarchical__Child);
+      return getRelated(artifact, CoreRelationTypes.DefaultHierarchical_Child);
    }
 
    @Override
    public ArtifactToken getParent(ArtifactId artifact) {
-      return getRelatedOrNull(artifact, CoreRelationTypes.Default_Hierarchical__Parent);
+      return getRelatedOrNull(artifact, CoreRelationTypes.DefaultHierarchical_Parent);
    }
 
 }

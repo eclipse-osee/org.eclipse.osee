@@ -84,7 +84,7 @@ public class AtsChangeSetTest {
 
       // setRelations
       IAtsChangeSet changes = createAtsChangeSet();
-      changes.setRelations(folderArt, CoreRelationTypes.Default_Hierarchical__Child,
+      changes.setRelations(folderArt, CoreRelationTypes.DefaultHierarchical_Child,
          Arrays.asList(genDocArt0, genDocArt1, genDocArt2));
       changes.execute();
 
@@ -95,7 +95,7 @@ public class AtsChangeSetTest {
 
       // setRelations - remove one and add one
       changes = createAtsChangeSet();
-      changes.setRelations(folderArt, CoreRelationTypes.Default_Hierarchical__Child,
+      changes.setRelations(folderArt, CoreRelationTypes.DefaultHierarchical_Child,
          Arrays.asList(genDocArt0, genDocArt3, genDocArt2));
       changes.execute();
 
@@ -107,7 +107,7 @@ public class AtsChangeSetTest {
 
       // setRelation - remove one and add one
       changes = createAtsChangeSet();
-      changes.setRelation(folderArt, CoreRelationTypes.Default_Hierarchical__Child, genDocArt2);
+      changes.setRelation(folderArt, CoreRelationTypes.DefaultHierarchical_Child, genDocArt2);
       changes.execute();
 
       Assert.assertTrue(folderArt.getChildren().size() == 1);
@@ -122,7 +122,7 @@ public class AtsChangeSetTest {
 
       // Relate
       IAtsChangeSet changes = createAtsChangeSet();
-      changes.relate(folderArt, CoreRelationTypes.Default_Hierarchical__Child, genDocArt0);
+      changes.relate(folderArt, CoreRelationTypes.DefaultHierarchical_Child, genDocArt0);
       changes.execute();
 
       Assert.assertTrue(folderArt.getChildren().size() == 1);
@@ -131,8 +131,8 @@ public class AtsChangeSetTest {
 
       // Add 2 more children
       changes = createAtsChangeSet();
-      changes.relate(folderArt, CoreRelationTypes.Default_Hierarchical__Child, genDocArt1);
-      changes.relate(folderArt, CoreRelationTypes.Default_Hierarchical__Child, genDocArt2);
+      changes.relate(folderArt, CoreRelationTypes.DefaultHierarchical_Child, genDocArt1);
+      changes.relate(folderArt, CoreRelationTypes.DefaultHierarchical_Child, genDocArt2);
       changes.execute();
 
       Assert.assertEquals(3, folderArt.getChildren().size());
@@ -145,7 +145,7 @@ public class AtsChangeSetTest {
 
       // UnRelate All
       changes = createAtsChangeSet();
-      changes.unrelateAll(folderArt, CoreRelationTypes.Default_Hierarchical__Child);
+      changes.unrelateAll(folderArt, CoreRelationTypes.DefaultHierarchical_Child);
       changes.execute();
 
       Assert.assertTrue(folderArt.getChildren().isEmpty());
@@ -155,7 +155,7 @@ public class AtsChangeSetTest {
 
       // Relate using opposite side
       changes = createAtsChangeSet();
-      changes.relate(genDocArt0, CoreRelationTypes.Default_Hierarchical__Parent, folderArt);
+      changes.relate(genDocArt0, CoreRelationTypes.DefaultHierarchical_Parent, folderArt);
       changes.execute();
 
       Assert.assertTrue(folderArt.getChildren().size() == 1);

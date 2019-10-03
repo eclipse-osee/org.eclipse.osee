@@ -101,7 +101,7 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
       Map<String, String[]> impdMap = new HashMap<>();
       for (ArtifactReadable impd : impds) {
          List<ArtifactReadable> matchingReq =
-            impd.getRelated(CoreRelationTypes.Implementation_Info__Requirement).getList();
+            impd.getRelated(CoreRelationTypes.ImplementationInfo_SoftwareRequirement).getList();
 
          String[] pair;
          if (matchingReq.isEmpty()) {
@@ -164,7 +164,7 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
          if (codeUnit.isInvalid()) {
             throw new OseeArgumentException("No code unit found for path [%s]", path);
          }
-         tx.relate(baselineEvent, CoreRelationTypes.SupportingInfo_SupportedBy, codeUnit);
+         tx.relate(baselineEvent, CoreRelationTypes.SupportingInfo_IsSupportedBy, codeUnit);
          updateLGitLatestTuple(repoArtifact, branch, tx, codeUnit, baselineCommit);
       }
 

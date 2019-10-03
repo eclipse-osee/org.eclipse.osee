@@ -208,7 +208,7 @@ public class ArtifactEventTest {
       artifactsInNewOrder.add(orderedChildren.get(3));
       artifactsInNewOrder.add(orderedChildren.get(2));
       artifactsInNewOrder.add(orderedChildren.get(4));
-      newArt.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, artifactsInNewOrder);
+      newArt.setRelationOrder(CoreRelationTypes.DefaultHierarchical_Child, artifactsInNewOrder);
       newArt.persist(getClass().getSimpleName());
 
       Assert.assertEquals("newArt will change cause attribute modified", 1, listener.getArtifacts().size());
@@ -224,7 +224,7 @@ public class ArtifactEventTest {
       Assert.assertEquals(newArt.getGuid(), guidReorder.getParentArt().getGuid());
       Assert.assertEquals(newArt.getArtifactType(), guidReorder.getParentArt().getArtifactType());
       Assert.assertTrue(newArt.isOnSameBranch(guidReorder));
-      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidReorder.getRelTypeGuid());
+      Assert.assertEquals(CoreRelationTypes.DefaultHierarchical_Child.getGuid(), guidReorder.getRelTypeGuid());
 
       List<Artifact> newOrderedChildren = newArt.getChildren();
       Assert.assertEquals(5, newOrderedChildren.size());
@@ -424,7 +424,7 @@ public class ArtifactEventTest {
       }
       EventBasicGuidRelation guidArt = listener.getRelations().iterator().next();
       Assert.assertEquals(RelationEventType.Added, guidArt.getModType());
-      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidArt.getRelTypeGuid());
+      Assert.assertEquals(CoreRelationTypes.DefaultHierarchical_Child.getGuid(), guidArt.getRelTypeGuid());
       RelationLink relLink = newArt.internalGetRelations(rootArt).iterator().next();
       Assert.assertEquals(relLink.getGammaId(), guidArt.getGammaId());
       Assert.assertEquals("", relLink.getRationale());
@@ -474,7 +474,7 @@ public class ArtifactEventTest {
       }
       EventBasicGuidRelation guidArt = listener.getRelations().iterator().next();
       Assert.assertEquals(RelationEventType.ModifiedRationale, guidArt.getModType());
-      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidArt.getRelTypeGuid());
+      Assert.assertEquals(CoreRelationTypes.DefaultHierarchical_Child.getGuid(), guidArt.getRelTypeGuid());
       Assert.assertEquals(newArt.internalGetRelations(rootArt).iterator().next().getGammaId(), guidArt.getGammaId());
       RelationLink modifiedRelLink = newArt.internalGetRelations(rootArt).iterator().next();
       Assert.assertEquals(NEW_RATIONALE_STR, modifiedRelLink.getRationale());
@@ -515,7 +515,7 @@ public class ArtifactEventTest {
       Artifact rootArt = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(COMMON);
       EventBasicGuidRelation guidArt = listener.getRelations().iterator().next();
       Assert.assertEquals(RelationEventType.Deleted, guidArt.getModType());
-      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidArt.getRelTypeGuid());
+      Assert.assertEquals(CoreRelationTypes.DefaultHierarchical_Child.getGuid(), guidArt.getRelTypeGuid());
       Assert.assertEquals(rootArt, guidArt.getArtA());
       Assert.assertEquals(newArt, guidArt.getArtB());
       Assert.assertFalse(rootArt.isDirty());
@@ -528,7 +528,7 @@ public class ArtifactEventTest {
       // Create fake remote event that would come in from another client
       RemotePersistEvent1 remoteEvent =
          getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(getIncrementingRelationId(),
-            RelationEventType.Added, CoreRelationTypes.Default_Hierarchical__Child, rootArt, injectArt);
+            RelationEventType.Added, CoreRelationTypes.DefaultHierarchical_Child, rootArt, injectArt);
 
       // Send
       OseeEventManager.internalTestSendRemoteEvent(remoteEvent);
@@ -542,11 +542,11 @@ public class ArtifactEventTest {
       Assert.assertEquals(RelationEventType.Added, guidRel.getModType());
       Assert.assertEquals(rootArt, guidRel.getArtA());
       Assert.assertEquals(injectArt, guidRel.getArtB());
-      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidRel.getRelTypeGuid());
+      Assert.assertEquals(CoreRelationTypes.DefaultHierarchical_Child.getGuid(), guidRel.getRelTypeGuid());
       Assert.assertTrue(injectArt.isOnSameBranch(guidRel));
 
-      Assert.assertEquals(1, injectArt.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent).size());
-      RelationLink relLink = injectArt.getRelations(CoreRelationTypes.Default_Hierarchical__Parent).iterator().next();
+      Assert.assertEquals(1, injectArt.getRelatedArtifacts(CoreRelationTypes.DefaultHierarchical_Parent).size());
+      RelationLink relLink = injectArt.getRelations(CoreRelationTypes.DefaultHierarchical_Parent).iterator().next();
       Assert.assertEquals("", relLink.getRationale());
       Assert.assertFalse(injectArt.isDirty());
       Assert.assertFalse(rootArt.isDirty());
@@ -557,11 +557,11 @@ public class ArtifactEventTest {
    private Artifact remoteInjection_relations_deleteRelation(Artifact rootArt, Artifact injectArt) throws Exception {
       listener.reset();
 
-      RelationLink relLink = injectArt.getRelations(CoreRelationTypes.Default_Hierarchical__Parent).iterator().next();
+      RelationLink relLink = injectArt.getRelations(CoreRelationTypes.DefaultHierarchical_Parent).iterator().next();
 
       // Create fake remote event that would come in from another client
       RemotePersistEvent1 remoteEvent = getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(
-         relLink.getId(), RelationEventType.Deleted, CoreRelationTypes.Default_Hierarchical__Child, rootArt, injectArt);
+         relLink.getId(), RelationEventType.Deleted, CoreRelationTypes.DefaultHierarchical_Child, rootArt, injectArt);
 
       // Send
       OseeEventManager.internalTestSendRemoteEvent(remoteEvent);
@@ -575,10 +575,10 @@ public class ArtifactEventTest {
       Assert.assertEquals(RelationEventType.Deleted, guidRel.getModType());
       Assert.assertEquals(rootArt, guidRel.getArtA());
       Assert.assertEquals(injectArt, guidRel.getArtB());
-      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidRel.getRelTypeGuid());
+      Assert.assertEquals(CoreRelationTypes.DefaultHierarchical_Child.getGuid(), guidRel.getRelTypeGuid());
       Assert.assertTrue(injectArt.isOnSameBranch(guidRel));
 
-      Assert.assertEquals(0, injectArt.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent).size());
+      Assert.assertEquals(0, injectArt.getRelatedArtifacts(CoreRelationTypes.DefaultHierarchical_Parent).size());
       Assert.assertFalse(injectArt.isDirty());
       Assert.assertFalse(rootArt.isDirty());
 
@@ -598,7 +598,7 @@ public class ArtifactEventTest {
       RemoteBasicGuidRelationReorder1 remoteReorder = new RemoteBasicGuidRelationReorder1();
       remoteReorder.setBranchGuid(COMMON);
       remoteReorder.setModTypeGuid(RelationOrderModType.Absolute.getGuid());
-      remoteReorder.setRelTypeGuid(CoreRelationTypes.Default_Hierarchical__Child.getGuid());
+      remoteReorder.setRelTypeGuid(CoreRelationTypes.DefaultHierarchical_Child.getGuid());
 
       RemoteBasicGuidArtifact1 parentRemGuidArt = new RemoteBasicGuidArtifact1();
       parentRemGuidArt.setModTypeGuid(EventModType.Modified.getGuid());
@@ -623,7 +623,7 @@ public class ArtifactEventTest {
       Assert.assertEquals(parentRemGuidArt.getArtGuid(), guidReorder.getParentArt().getGuid());
       Assert.assertEquals(parentRemGuidArt.getArtifactType(), guidReorder.getParentArt().getArtifactType());
       Assert.assertTrue(guidReorder.getParentArt().isOnBranch(COMMON));
-      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidReorder.getRelTypeGuid());
+      Assert.assertEquals(CoreRelationTypes.DefaultHierarchical_Child.getGuid(), guidReorder.getRelTypeGuid());
       Assert.assertTrue(injectArt.isOnSameBranch(guidReorder));
 
       return injectArt;
@@ -637,7 +637,7 @@ public class ArtifactEventTest {
       // Create fake remote event that would come in from another client
       RemotePersistEvent1 remoteEvent =
          getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(getIncrementingRelationId(),
-            RelationEventType.Added, CoreRelationTypes.Default_Hierarchical__Child, rootArt, injectArt);
+            RelationEventType.Added, CoreRelationTypes.DefaultHierarchical_Child, rootArt, injectArt);
       RemoteBasicGuidRelation1 relation = remoteEvent.getRelations().iterator().next();
       relation.setRationale(RATIONALE_STR);
 
@@ -653,11 +653,11 @@ public class ArtifactEventTest {
       Assert.assertEquals(RelationEventType.Added, guidRel.getModType());
       Assert.assertEquals(rootArt, guidRel.getArtA());
       Assert.assertEquals(injectArt, guidRel.getArtB());
-      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidRel.getRelTypeGuid());
+      Assert.assertEquals(CoreRelationTypes.DefaultHierarchical_Child.getGuid(), guidRel.getRelTypeGuid());
       Assert.assertTrue(injectArt.isOnSameBranch(guidRel));
 
-      Assert.assertEquals(1, injectArt.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent).size());
-      RelationLink relLink = injectArt.getRelations(CoreRelationTypes.Default_Hierarchical__Parent).iterator().next();
+      Assert.assertEquals(1, injectArt.getRelatedArtifacts(CoreRelationTypes.DefaultHierarchical_Parent).size());
+      RelationLink relLink = injectArt.getRelations(CoreRelationTypes.DefaultHierarchical_Parent).iterator().next();
       Assert.assertEquals(RATIONALE_STR, relLink.getRationale());
       Assert.assertFalse(injectArt.isDirty());
       Assert.assertFalse(rootArt.isDirty());
@@ -670,12 +670,12 @@ public class ArtifactEventTest {
 
       String NEW_RATIONALE_STR = "This is the NEW rationale";
 
-      RelationLink relLink = injectArt.getRelations(CoreRelationTypes.Default_Hierarchical__Parent).iterator().next();
+      RelationLink relLink = injectArt.getRelations(CoreRelationTypes.DefaultHierarchical_Parent).iterator().next();
 
       // Create fake remote event that would come in from another client
       RemotePersistEvent1 remoteEvent =
          getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(relLink.getId(),
-            RelationEventType.ModifiedRationale, CoreRelationTypes.Default_Hierarchical__Child, rootArt, injectArt);
+            RelationEventType.ModifiedRationale, CoreRelationTypes.DefaultHierarchical_Child, rootArt, injectArt);
       RemoteBasicGuidRelation1 relation = remoteEvent.getRelations().iterator().next();
       relation.setRationale(NEW_RATIONALE_STR);
 
@@ -691,11 +691,11 @@ public class ArtifactEventTest {
       Assert.assertEquals(RelationEventType.ModifiedRationale, guidRel.getModType());
       Assert.assertEquals(rootArt, guidRel.getArtA());
       Assert.assertEquals(injectArt, guidRel.getArtB());
-      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidRel.getRelTypeGuid());
+      Assert.assertEquals(CoreRelationTypes.DefaultHierarchical_Child.getGuid(), guidRel.getRelTypeGuid());
       Assert.assertTrue(injectArt.isOnSameBranch(guidRel));
 
-      Assert.assertEquals(1, injectArt.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent).size());
-      relLink = injectArt.getRelations(CoreRelationTypes.Default_Hierarchical__Parent).iterator().next();
+      Assert.assertEquals(1, injectArt.getRelatedArtifacts(CoreRelationTypes.DefaultHierarchical_Parent).size());
+      relLink = injectArt.getRelations(CoreRelationTypes.DefaultHierarchical_Parent).iterator().next();
       Assert.assertEquals(NEW_RATIONALE_STR, relLink.getRationale());
       Assert.assertFalse(injectArt.isDirty());
       Assert.assertFalse(rootArt.isDirty());

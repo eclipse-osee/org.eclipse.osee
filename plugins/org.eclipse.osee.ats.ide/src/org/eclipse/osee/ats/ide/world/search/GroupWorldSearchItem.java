@@ -93,7 +93,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
       }
       Set<Artifact> arts = new HashSet<>(100);
       for (Artifact group : getSearchGroups()) {
-         arts.addAll(group.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members));
+         arts.addAll(group.getRelatedArtifacts(CoreRelationTypes.UniversalGrouping_Members));
       }
       if (cancelled) {
          return EMPTY_SET;

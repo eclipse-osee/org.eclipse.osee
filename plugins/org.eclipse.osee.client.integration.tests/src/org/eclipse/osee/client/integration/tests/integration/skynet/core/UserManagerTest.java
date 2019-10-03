@@ -113,7 +113,7 @@ public final class UserManagerTest {
 
          //Create relation between containing folder and new UserGroup
          Artifact groupRoot = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, "User Groups", branch);
-         groupRoot.addRelation(CoreRelationTypes.Default_Hierarchical__Child, groupArt);
+         groupRoot.addRelation(CoreRelationTypes.DefaultHierarchical_Child, groupArt);
          groupRoot.persist(UserManagerTest.class.getSimpleName() + ": Create user group");
       }
    }

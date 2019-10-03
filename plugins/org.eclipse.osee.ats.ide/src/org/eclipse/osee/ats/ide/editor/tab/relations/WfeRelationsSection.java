@@ -79,11 +79,11 @@ public class WfeRelationsSection extends RelationsFormSection implements IWfeEve
    };
 
    private static List<String> filteredRelationTypeNames =
-      Arrays.asList(AtsRelationTypes.ActionToWorkflow_Action.getName(), AtsRelationTypes.TeamWfToTask_TeamWf.getName(),
+      Arrays.asList(AtsRelationTypes.ActionToWorkflow_Action.getName(), AtsRelationTypes.TeamWfToTask_TeamWorkflow.getName(),
          AtsRelationTypes.TeamActionableItem_ActionableItem.getName(),
          AtsRelationTypes.TeamWorkflowTargetedForVersion_Version.getName(), AtsRelationTypes.TeamLead_Lead.getName(),
          AtsRelationTypes.TeamMember_Member.getName(), AtsRelationTypes.TeamWorkflowToReview_Review.getName(),
-         CoreRelationTypes.Default_Hierarchical__Child.getName(), CoreRelationTypes.Users_Artifact.getName());
+         CoreRelationTypes.DefaultHierarchical_Child.getName(), CoreRelationTypes.Users_Artifact.getName());
 
    @Override
    public IAtsWorkItem getWorkItem() {

@@ -97,7 +97,7 @@ public class AgileFactory {
       changes.setSoleAttributeValue(agileTeamArt, AtsAttributeTypes.Active, team.isActive());
       ArtifactId topAgileFolder = AgileFolders.getOrCreateTopAgileFolder(atsApi, userArt, changes);
       if (topAgileFolder.notEqual(atsApi.getRelationResolver().getParent(agileTeamArt))) {
-         changes.unrelateFromAll(CoreRelationTypes.Default_Hierarchical__Parent, agileTeamArt);
+         changes.unrelateFromAll(CoreRelationTypes.DefaultHierarchical_Parent, agileTeamArt);
          changes.addChild(topAgileFolder, agileTeamArt);
       }
 
@@ -176,7 +176,7 @@ public class AgileFactory {
       changes.addChild(featureGroupFolder, featureGroupArt);
 
       ArtifactId team = AgileFolders.getTeamFolder(atsApi, newFeatureGroup.getTeamId());
-      changes.relate(team, AtsRelationTypes.AgileTeamToFeatureGroup_FeatureGroup, featureGroupArt);
+      changes.relate(team, AtsRelationTypes.AgileTeamToFeatureGroup_AgileFeatureGroup, featureGroupArt);
 
       changes.execute();
       return getAgileFeatureGroup(logger, atsApi, featureGroupArt);
@@ -208,7 +208,7 @@ public class AgileFactory {
 
       ArtifactId teamFolder = AgileFolders.getTeamFolder(atsApi, teamId);
       ArtifactId agileSprintFolderArt = AgileFolders.getOrCreateTopSprintFolder(atsApi, teamId, changes);
-      changes.relate(agileSprintFolderArt, CoreRelationTypes.Default_Hierarchical__Child, sprintArt);
+      changes.relate(agileSprintFolderArt, CoreRelationTypes.DefaultHierarchical_Child, sprintArt);
       changes.relate(teamFolder, AtsRelationTypes.AgileTeamToSprint_Sprint, sprintArt);
 
       changes.execute();
@@ -242,7 +242,7 @@ public class AgileFactory {
 
       ArtifactId teamFolder = AgileFolders.getTeamFolder(atsApi, teamId);
       changes.relate(teamFolder, AtsRelationTypes.AgileTeamToBacklog_Backlog, backlogArt);
-      changes.relate(teamFolder, CoreRelationTypes.Default_Hierarchical__Child, backlogArt);
+      changes.relate(teamFolder, CoreRelationTypes.DefaultHierarchical_Child, backlogArt);
 
       changes.execute();
       return getAgileBacklog(logger, atsApi, backlogArt);

@@ -231,7 +231,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
          // teamDef, ai and version
          if (isTeamTypeDefAisOrVersionSearched(allArtTypes)) {
             List<ArtifactId> teamWfIds = getRelatedTeamWorkflowIdsBasedOnTeamDefsAisAndVersions(teamWorkflowAttr);
-            queryAndRelatedTo(AtsRelationTypes.TeamWfToTask_TeamWf, teamWfIds);
+            queryAndRelatedTo(AtsRelationTypes.TeamWfToTask_TeamWorkflow, teamWfIds);
          }
 
          addEvConfigCriteria();
@@ -251,7 +251,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
          // teamDef, ai and version
          if (isTeamTypeDefAisOrVersionSearched(allArtTypes)) {
             List<ArtifactId> teamWfIds = getRelatedTeamWorkflowIdsBasedOnTeamDefsAisAndVersions(teamWorkflowAttr);
-            queryAndRelatedTo(AtsRelationTypes.TeamWorkflowToReview_Team, teamWfIds);
+            queryAndRelatedTo(AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow, teamWfIds);
          }
 
          collectResults(allResults, allArtTypes);

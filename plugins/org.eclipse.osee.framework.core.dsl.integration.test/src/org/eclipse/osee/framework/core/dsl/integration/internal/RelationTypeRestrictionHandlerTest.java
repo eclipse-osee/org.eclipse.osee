@@ -52,7 +52,7 @@ import org.junit.Test;
  * @author Roberto E. Escobar
  */
 public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTest<RelationTypeRestriction> {
-   private static final RelationTypeToken relationType = CoreRelationTypes.Default_Hierarchical__Child;
+   private static final RelationTypeToken relationType = CoreRelationTypes.DefaultHierarchical_Child;
 
    public RelationTypeRestrictionHandlerTest() {
       super(new RelationTypeRestrictionHandler(new ArtifactMatchInterpreter()),

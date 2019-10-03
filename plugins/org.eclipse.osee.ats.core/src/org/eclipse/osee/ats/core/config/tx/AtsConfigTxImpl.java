@@ -71,7 +71,7 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
       }
       IAtsTeamDefinition newTeamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(newTeam);
       if (parent != null) {
-         changes.relate(parent, CoreRelationTypes.Default_Hierarchical__Child, newTeamDef);
+         changes.relate(parent, CoreRelationTypes.DefaultHierarchical_Child, newTeamDef);
       }
       newTeams.put(newTeam.getName(), newTeamDef);
       return new AtsConfigTxTeamDef(newTeamDef, atsApi, changes, this);
@@ -94,7 +94,7 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
       }
       IAtsActionableItem newAi = atsApi.getActionableItemService().getActionableItemById(newAiArt);
       if (parent != null) {
-         changes.relate(parent, CoreRelationTypes.Default_Hierarchical__Child, newAi);
+         changes.relate(parent, CoreRelationTypes.DefaultHierarchical_Child, newAi);
       }
       newAis.put(newAiArt.getName(), newAi);
       return new AtsConfigTxActionableItem(newAi, atsApi, changes, this);

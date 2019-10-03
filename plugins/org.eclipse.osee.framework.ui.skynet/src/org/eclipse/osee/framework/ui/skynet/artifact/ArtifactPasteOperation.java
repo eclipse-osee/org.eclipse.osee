@@ -86,7 +86,7 @@ public class ArtifactPasteOperation extends AbstractOperation {
 
    private void pasteRelationOrder(ArtifactPasteConfiguration config, Artifact source, Artifact newArtifact, List<Artifact> copiedChildren) {
       if (config.isKeepRelationOrderSettings()) {
-         RelationTypeSide relationTypeSide = CoreRelationTypes.Default_Hierarchical__Child;
+         RelationTypeSide relationTypeSide = CoreRelationTypes.DefaultHierarchical_Child;
          RelationOrderData data = RelationManager.createRelationOrderData(source);
          RelationSorter order =
             data.getCurrentSorterGuid(RelationTypeManager.getType(relationTypeSide), relationTypeSide.getSide());

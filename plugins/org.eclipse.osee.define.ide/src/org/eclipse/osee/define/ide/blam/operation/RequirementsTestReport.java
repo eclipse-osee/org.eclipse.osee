@@ -68,7 +68,7 @@ public class RequirementsTestReport extends AbstractBlam {
    }
 
    private void processRequirement(Artifact req) {
-      Collection<Artifact> testProcs = req.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier);
+      Collection<Artifact> testProcs = req.getRelatedArtifacts(CoreRelationTypes.Verification_Verifier);
       if (testProcs.isEmpty()) {
          reportLine(getReqCellOutput(req), MISSING, MISSING, MISSING);
       } else {
@@ -85,7 +85,7 @@ public class RequirementsTestReport extends AbstractBlam {
       } else {
          testStatus = "N/A (" + testProc.getArtifactTypeName() + ")";
       }
-      Collection<Artifact> resultFiles = testProc.getRelatedArtifacts(CoreRelationTypes.Test_Unit_Result__Test_Result);
+      Collection<Artifact> resultFiles = testProc.getRelatedArtifacts(CoreRelationTypes.ResultsData_TestResult);
 
       if (resultFiles.isEmpty()) {
          reportLine(getReqCellOutput(req), testProc.getName(), testStatus, MISSING);
@@ -144,9 +144,9 @@ public class RequirementsTestReport extends AbstractBlam {
          requirementsBulkLoad.addAll(input.getDescendants());
       }
       Collection<Artifact> temp =
-         RelationManager.getRelatedArtifacts(requirementsBulkLoad, 1, CoreRelationTypes.Verification__Verifier);
+         RelationManager.getRelatedArtifacts(requirementsBulkLoad, 1, CoreRelationTypes.Verification_Verifier);
       Collection<Artifact> temp2 =
-         RelationManager.getRelatedArtifacts(temp, 1, CoreRelationTypes.Test_Unit_Result__Test_Result);
+         RelationManager.getRelatedArtifacts(temp, 1, CoreRelationTypes.ResultsData_TestResult);
       logf("Bulk loaded %d test results", temp2.size());
    }
 

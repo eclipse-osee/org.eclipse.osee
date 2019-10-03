@@ -219,7 +219,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    public Collection<IAtsTeamWorkflow> getTargetedForTeamWorkflows(IAtsVersion verArt) {
       List<IAtsTeamWorkflow> teamWorkflows = new LinkedList<>();
       for (IAtsTeamWorkflow teamWf : atsApi.getRelationResolver().getRelated(verArt,
-         AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, IAtsTeamWorkflow.class)) {
+         AtsRelationTypes.TeamWorkflowTargetedForVersion_TeamWorkflow, IAtsTeamWorkflow.class)) {
          teamWorkflows.add(teamWf);
       }
       return teamWorkflows;

@@ -75,13 +75,13 @@ public class AgileBacklogWriter {
                }
             }
             changes.relate(updatedTeamArt, AtsRelationTypes.AgileTeamToBacklog_Backlog, updateBacklogArt);
-            if (!atsApi.getRelationResolver().areRelated(updatedTeamArt, CoreRelationTypes.Default_Hierarchical__Child,
+            if (!atsApi.getRelationResolver().areRelated(updatedTeamArt, CoreRelationTypes.DefaultHierarchical_Child,
                updateBacklogArt)) {
                if (atsApi.getRelationResolver().getParent(updateBacklogArt) != null) {
                   changes.unrelate(atsApi.getRelationResolver().getParent(updateBacklogArt),
-                     CoreRelationTypes.Default_Hierarchical__Child, updateBacklogArt);
+                     CoreRelationTypes.DefaultHierarchical_Child, updateBacklogArt);
                }
-               changes.relate(updatedTeamArt, CoreRelationTypes.Default_Hierarchical__Child, updateBacklogArt);
+               changes.relate(updatedTeamArt, CoreRelationTypes.DefaultHierarchical_Child, updateBacklogArt);
             }
             changes.add(updatedTeamArt);
          }

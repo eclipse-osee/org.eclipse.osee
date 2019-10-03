@@ -108,7 +108,7 @@ public class OrcsWriterWorkbookGenerator {
       writer.writeCell(CoreAttributeTypes.Name.getName() + " (required)");
       writer.writeCell(OwFactory.createAttributeType(CoreAttributeTypes.StaticId).getData());
       writer.writeCell(OwFactory.createAttributeType(CoreAttributeTypes.Partition).getData());
-      writer.writeCell(OwFactory.createRelationType(orcsApi, CoreRelationTypes.Default_Hierarchical__Parent).getData());
+      writer.writeCell(OwFactory.createRelationType(orcsApi, CoreRelationTypes.DefaultHierarchical_Parent).getData());
       writer.endRow();
 
       // row 3 - New Folder rooted at Default Hierarchy Root

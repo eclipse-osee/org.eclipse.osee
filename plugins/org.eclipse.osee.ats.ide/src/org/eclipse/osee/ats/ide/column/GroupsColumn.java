@@ -106,7 +106,7 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
    public static boolean promptChangeGroups(final Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) {
       Set<Artifact> selected = new HashSet<>();
       for (AbstractWorkflowArtifact awa : awas) {
-         selected.addAll(awa.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
+         selected.addAll(awa.getRelatedArtifacts(CoreRelationTypes.UniversalGrouping_Group));
       }
       Collection<Artifact> allGroups = UniversalGroup.getGroupsNotRoot(AtsClientService.get().getAtsBranch());
       FilteredCheckboxTreeArtifactDialog dialog =
@@ -115,7 +115,7 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
       if (dialog.open() == 0) {
          for (AbstractWorkflowArtifact awa : awas) {
             Collection<Artifact> checked = dialog.getChecked();
-            awa.setRelations(CoreRelationTypes.Universal_Grouping__Group, checked);
+            awa.setRelations(CoreRelationTypes.UniversalGrouping_Group, checked);
          }
          TransactionManager.persistInTransaction("Set Groups", awas);
          return true;
@@ -129,18 +129,18 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<Artifact> groups = new HashSet<>();
             Artifact actionArt = AtsClientService.get().getQueryServiceClient().getArtifact(element);
-            groups.addAll(actionArt.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
+            groups.addAll(actionArt.getRelatedArtifacts(CoreRelationTypes.UniversalGrouping_Group));
             // Roll up if same for all children
             for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(actionArt)) {
                groups.addAll(Collections.castAll(AtsClientService.get().getRelationResolver().getRelatedArtifacts(team,
-                  CoreRelationTypes.Universal_Grouping__Group)));
+                  CoreRelationTypes.UniversalGrouping_Group)));
             }
             return Collections.toString("; ", groups);
          }
          if (element instanceof Artifact) {
             return Collections.toString("; ",
                AtsClientService.get().getQueryServiceClient().getArtifact(element).getRelatedArtifacts(
-                  CoreRelationTypes.Universal_Grouping__Group));
+                  CoreRelationTypes.UniversalGrouping_Group));
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);

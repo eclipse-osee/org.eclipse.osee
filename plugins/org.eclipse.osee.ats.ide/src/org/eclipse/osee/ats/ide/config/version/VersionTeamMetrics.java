@@ -52,8 +52,8 @@ public class VersionTeamMetrics {
    private void bulkLoadArtifacts() {
       RelationManager.getRelatedArtifacts(
          Arrays.asList(AtsClientService.get().getQueryServiceClient().getArtifact(this.verTeamDef)), 6,
-         CoreRelationTypes.Default_Hierarchical__Child, AtsRelationTypes.TeamDefinitionToVersion_Version,
-         AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, AtsRelationTypes.TeamWfToTask_Task,
+         CoreRelationTypes.DefaultHierarchical_Child, AtsRelationTypes.TeamDefinitionToVersion_Version,
+         AtsRelationTypes.TeamWorkflowTargetedForVersion_TeamWorkflow, AtsRelationTypes.TeamWfToTask_Task,
          AtsRelationTypes.ActionToWorkflow_Action);
    }
 

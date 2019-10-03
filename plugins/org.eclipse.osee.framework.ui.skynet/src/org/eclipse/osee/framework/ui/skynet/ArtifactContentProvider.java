@@ -118,7 +118,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
    private void addRelations(Artifact parentItem, List<RelationLink> relationsAll, List<Object> allChildren) {
       Set<ArtifactExplorerLinkNode> relationTypes = new HashSet<>();
       for (RelationLink link : relationsAll) {
-         if (!link.isOfType(CoreRelationTypes.Default_Hierarchical__Child)) {
+         if (!link.isOfType(CoreRelationTypes.DefaultHierarchical_Child)) {
             RelationType relType = RelationTypeManager.getType(link.getRelationType());
             if (link.getArtifactIdA().equals(parentItem)) {
                relationTypes.add(new ArtifactExplorerLinkNode(parentItem, relType, true));
@@ -184,13 +184,13 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
                if (artifact.isDeleted()) {
                   return false;
                }
-               if (artifact.getRelatedArtifactsCount(CoreRelationTypes.Default_Hierarchical__Child) > 0) {
+               if (artifact.getRelatedArtifactsCount(CoreRelationTypes.DefaultHierarchical_Child) > 0) {
                   return true;
                } else if (isShowRelations()) {
                   List<RelationLink> relationsAll = artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED);
                   for (RelationLink link : relationsAll) {
                      if (!link.getRelationType().getId().equals(
-                        CoreRelationTypes.Default_Hierarchical__Child.getGuid())) {
+                        CoreRelationTypes.DefaultHierarchical_Child.getGuid())) {
                         return true;
                      }
                   }

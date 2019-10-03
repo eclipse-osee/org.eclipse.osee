@@ -197,7 +197,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    @Override
    public void addChild(ArtifactId parent, ArtifactId child) {
-      relate(parent, CoreRelationTypes.Default_Hierarchical__Child, child);
+      relate(parent, CoreRelationTypes.DefaultHierarchical_Child, child);
    }
 
    @Override
@@ -227,7 +227,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    @Override
    public void addChild(IAtsObject parent, IAtsObject child) {
-      add(new AtsRelationChange(parent, CoreRelationTypes.Default_Hierarchical__Child, Collections.singleton(child),
+      add(new AtsRelationChange(parent, CoreRelationTypes.DefaultHierarchical_Child, Collections.singleton(child),
          RelationOperation.Add));
    }
 

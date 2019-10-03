@@ -12,7 +12,7 @@ package org.eclipse.osee.define.rest.importing.operations;
 
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.DoorsHierarchy;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.DoorsId;
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DefaultHierarchical_Parent;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -115,7 +115,7 @@ public class DoorsTier4RoughToRealOperation {
             }
          }
       }
-      transaction.setRelationsAndOrder(parentArtifact, CoreRelationTypes.Default_Hierarchical__Child, sortedChildren);
+      transaction.setRelationsAndOrder(parentArtifact, CoreRelationTypes.DefaultHierarchical_Child, sortedChildren);
    }
 
    public void resolve(TransactionBuilder transaction, RoughArtifact roughArtifact, BranchId branch, ArtifactId realParentId, ArtifactId rootId) {
@@ -139,7 +139,7 @@ public class DoorsTier4RoughToRealOperation {
             ArtifactToken createdArt =
                transaction.createArtifact(artifactType, roughArtifact.getName(), roughArtifact.getGuid());
             getTranslator().translate(transaction, roughArtifact, createdArt);
-            transaction.relate(parentArtifact, CoreRelationTypes.Default_Hierarchical__Child, createdArt, USER_DEFINED);
+            transaction.relate(parentArtifact, CoreRelationTypes.DefaultHierarchical_Child, createdArt, USER_DEFINED);
             if (!modifiedParents.contains(parentArtifact)) {
                modifiedParents.add(parentArtifact);
             }
@@ -180,11 +180,11 @@ public class DoorsTier4RoughToRealOperation {
 
    private void setupAllKnownArtifacts() {
       List<ArtifactToken> known =
-         orcsApi.getQueryFactory().fromBranch(branch).andRelatedRecursive(Default_Hierarchical__Parent,
+         orcsApi.getQueryFactory().fromBranch(branch).andRelatedRecursive(DefaultHierarchical_Parent,
             destinationArtifact).asArtifactTokens(DoorsHierarchy);
       known.forEach(item -> knownArtsByReqNum.put(item.getName().replace("-", "."), item)); // normalize to match ReqNumber
       List<ArtifactToken> knownIds =
-         orcsApi.getQueryFactory().fromBranch(branch).andRelatedRecursive(Default_Hierarchical__Parent,
+         orcsApi.getQueryFactory().fromBranch(branch).andRelatedRecursive(DefaultHierarchical_Parent,
             destinationArtifact).asArtifactTokens(DoorsId);
       knownIds.forEach(item -> knownArtsByDoorsID.put(item.getName(), item));
    }

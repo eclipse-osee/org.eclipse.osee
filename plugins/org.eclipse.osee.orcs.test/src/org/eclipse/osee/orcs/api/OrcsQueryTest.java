@@ -379,11 +379,11 @@ public class OrcsQueryTest {
       assertEquals("Frame Synchronization", builder1.getResults().getExactlyOne().getName());
 
       QueryBuilder builder2 = factory.fromBranch(SAW_Bld_1);
-      builder2.andRelatedTo(CoreRelationTypes.Default_Hierarchical__Child, builder1.getResults().getExactlyOne());
+      builder2.andRelatedTo(CoreRelationTypes.DefaultHierarchical_Child, builder1.getResults().getExactlyOne());
       assertEquals("Video processing", builder2.getResults().getExactlyOne().getName());
 
       QueryBuilder builder3 = factory.fromBranch(SAW_Bld_1);
-      builder3.andRelatedTo(CoreRelationTypes.Default_Hierarchical__Child, builder2.getResults().getExactlyOne());
+      builder3.andRelatedTo(CoreRelationTypes.DefaultHierarchical_Child, builder2.getResults().getExactlyOne());
       assertEquals("Subsystem Requirements", builder3.getResults().getExactlyOne().getName());
    }
 
@@ -407,7 +407,7 @@ public class OrcsQueryTest {
    public void testFollowRelationType1() throws Exception {
       QueryBuilder builder = factory.fromBranch(SAW_Bld_1) //
          .andTypeEquals(CoreArtifactTypes.RootArtifact)//
-         .follow(CoreRelationTypes.Default_Hierarchical__Child);
+         .follow(CoreRelationTypes.DefaultHierarchical_Child);
 
       ResultSet<ArtifactReadable> results = builder.getResults();
       assertEquals(9, results.size());
@@ -428,7 +428,7 @@ public class OrcsQueryTest {
    public void testFollowRelationType2() throws Exception {
       QueryBuilder builder = factory.fromBranch(SAW_Bld_1) //
          .andTypeEquals(CoreArtifactTypes.RootArtifact)//
-         .follow(CoreRelationTypes.Default_Hierarchical__Child)//
+         .follow(CoreRelationTypes.DefaultHierarchical_Child)//
          .andTypeEquals(CoreArtifactTypes.Component);
 
       ResultSet<ArtifactReadable> results = builder.getResults();
@@ -441,7 +441,7 @@ public class OrcsQueryTest {
    public void testFollowRelationType3() throws Exception {
       QueryBuilder builder = factory.fromBranch(SAW_Bld_1) //
          .and(CoreAttributeTypes.Name, "collaboration", QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.CASE__IGNORE)//
-         .follow(CoreRelationTypes.Default_Hierarchical__Child)//
+         .follow(CoreRelationTypes.DefaultHierarchical_Child)//
          .and(CoreAttributeTypes.Name, "object", QueryOption.CONTAINS_MATCH_OPTIONS);
 
       ResultSet<ArtifactReadable> results = builder.getResults();
@@ -455,7 +455,7 @@ public class OrcsQueryTest {
       QueryBuilder query = factory.fromBranch(SAW_Bld_2) //
          .andNameEquals("Robot API") //
          .andTypeEquals(CoreArtifactTypes.SoftwareRequirement)//
-         .follow(CoreRelationTypes.Default_Hierarchical__Child)//
+         .follow(CoreRelationTypes.DefaultHierarchical_Child)//
          .and(CoreAttributeTypes.Name, "Robot", QueryOption.CONTAINS_MATCH_OPTIONS);
 
       ResultSet<ArtifactReadable> results = query.getResults();
@@ -469,7 +469,7 @@ public class OrcsQueryTest {
       ArtifactReadable parent = results.iterator().next().getParent();
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(SAW_Bld_2, author, "FollowTest");
       ArtifactId child = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "Dummy Robot");
-      tx.relate(parent, CoreRelationTypes.Default_Hierarchical__Child, child);
+      tx.relate(parent, CoreRelationTypes.DefaultHierarchical_Child, child);
       TransactionId commitTx = tx.commit();
       TransactionId headTx = commitTx;
 
@@ -507,7 +507,7 @@ public class OrcsQueryTest {
          .andNameEquals("Robot Interfaces").getResults().getExactlyOne();
 
       // see if artifact from query 1 is related to artifact from query 2
-      Assert.assertTrue(robotApi.areRelated(CoreRelationTypes.Default_Hierarchical__Child, robotInt));
+      Assert.assertTrue(robotApi.areRelated(CoreRelationTypes.DefaultHierarchical_Child, robotInt));
    }
 
    @Test
@@ -532,7 +532,7 @@ public class OrcsQueryTest {
 
       ArtifactReadable folderArt = factory.fromBranch(SAW_Bld_2).andId(folder).getResults().getExactlyOne();
       // robotApi should be related to folder
-      Assert.assertTrue(robotApi.areRelated(CoreRelationTypes.Default_Hierarchical__Child, folderArt));
+      Assert.assertTrue(robotApi.areRelated(CoreRelationTypes.DefaultHierarchical_Child, folderArt));
    }
 
    private Set<String> getNames(ResultSet<ArtifactReadable> results) {

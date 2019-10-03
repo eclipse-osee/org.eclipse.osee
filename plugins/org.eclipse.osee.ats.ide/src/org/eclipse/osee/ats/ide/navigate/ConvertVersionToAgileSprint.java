@@ -121,7 +121,7 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
                IAtsChangeSet changes =
                   client.getStoreService().createAtsChangeSet(getName(), client.getUserService().getCurrentUser());
                Collection<ArtifactToken> teamWfs = client.getRelationResolver().getRelated(version,
-                  AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow);
+                  AtsRelationTypes.TeamWorkflowTargetedForVersion_TeamWorkflow);
                for (ArtifactId teamWf : teamWfs) {
                   changes.relate(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, teamWf);
                }

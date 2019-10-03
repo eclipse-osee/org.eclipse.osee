@@ -111,7 +111,7 @@ public final class ValidatingSafetyInformationAccumulator {
 
    public void buildSubsystemsRequirementsMap(ArtifactReadable systemFunction) {
 
-      subsystemFunctions = Lists.newArrayList(systemFunction.getRelated(CoreRelationTypes.Dependency__Dependency));
+      subsystemFunctions = Lists.newArrayList(systemFunction.getRelated(CoreRelationTypes.Dependency_Dependency));
 
       Iterator<ArtifactReadable> sfIter = subsystemFunctions.iterator();
       while (sfIter.hasNext()) {
@@ -130,13 +130,13 @@ public final class ValidatingSafetyInformationAccumulator {
 
       // needs related artifacts
       List<ArtifactReadable> localSubsystemRequirements =
-         Lists.newArrayList(subsystemFunction.getRelated(CoreRelationTypes.Design__Requirement));
+         Lists.newArrayList(subsystemFunction.getRelated(CoreRelationTypes.Design_Requirement));
 
       Iterator<ArtifactReadable> ssrIter = localSubsystemRequirements.iterator();
       while (ssrIter.hasNext()) {
          ArtifactReadable subsystemRequirement = ssrIter.next();
          List<ArtifactReadable> localSoftwareRequirements =
-            Lists.newArrayList(subsystemRequirement.getRelated(CoreRelationTypes.Requirement_Trace__Lower_Level));
+            Lists.newArrayList(subsystemRequirement.getRelated(CoreRelationTypes.RequirementTrace_LowerLevelRequirement));
 
          // test software requirements for suitability - is it a subclass of software requirement?
          Iterables.removeIf(localSoftwareRequirements, notSoftwareRequirement);
@@ -198,7 +198,7 @@ public final class ValidatingSafetyInformationAccumulator {
          ValidatingSafetyReportGenerator.SUBSYSTEM_INDEX + 4);
 
       String currentCriticality = writeCriticalityWithDesignCheck(subsystemRequirement, criticality,
-         CoreAttributeTypes.IDAL, CoreRelationTypes.Design__Design, CoreAttributeTypes.SeverityCategory,
+         CoreAttributeTypes.IDAL, CoreRelationTypes.Design_Design, CoreAttributeTypes.SeverityCategory,
          currentRowValues, ValidatingSafetyReportGenerator.SUBSYSTEM_INDEX + 5);
       for (ArtifactReadable softwareRequirement : softwareRequirements.get(subsystemRequirement)) {
          processSoftwareRequirement(softwareRequirement, currentCriticality, currentRowValues);
@@ -278,7 +278,7 @@ public final class ValidatingSafetyInformationAccumulator {
       writeCell(softwareRequirement.getName(), currentRowValues,
          ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX);
       String softwareRequirementDAL = writeCriticalityWithDesignCheck(softwareRequirement, sevCat,
-         CoreAttributeTypes.IDAL, CoreRelationTypes.Requirement_Trace__Higher_Level, CoreAttributeTypes.IDAL,
+         CoreAttributeTypes.IDAL, CoreRelationTypes.RequirementTrace_HigherLevelRequirement, CoreAttributeTypes.IDAL,
          currentRowValues, ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 1);
       writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.IdalRationale, ""), currentRowValues,
          ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 2);

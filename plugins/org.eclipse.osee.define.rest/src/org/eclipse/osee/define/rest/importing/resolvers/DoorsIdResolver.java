@@ -52,7 +52,7 @@ public class DoorsIdResolver extends NewArtifactImportResolver {
             ArtifactToken createdArt =
                transaction.createArtifact(artifactType, roughArtifact.getName(), roughArtifact.getGuid());
             getTranslator().translate(transaction, roughArtifact, createdArt);
-            transaction.relate(parentArtifact, CoreRelationTypes.Default_Hierarchical__Child, createdArt);
+            transaction.relate(parentArtifact, CoreRelationTypes.DefaultHierarchical_Child, createdArt);
          } else {
             roughArtifact.getResults().warningf(
                "Doors ID resolver cant find parent. roughArtifactifact: [%s]. Doors Hierarchy: [%s]",

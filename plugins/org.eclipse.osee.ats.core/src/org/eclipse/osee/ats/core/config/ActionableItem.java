@@ -89,7 +89,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
                atsApi.getQueryService().getArtifact(jaxAI.getParentId()));
          } else {
             ArtifactToken art = atsApi.getRelationResolver().getRelatedOrSentinel(artifact,
-               CoreRelationTypes.Default_Hierarchical__Parent);
+               CoreRelationTypes.DefaultHierarchical_Parent);
             if (art.isValid()) {
                parent = atsApi.getActionableItemService().getActionableItemById(art);
             }
@@ -109,7 +109,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
                atsApi.getQueryService().getArtifact(jaxAI.getTeamDefId()));
          } else {
             ArtifactToken art =
-               atsApi.getRelationResolver().getRelatedOrSentinel(artifact, AtsRelationTypes.TeamActionableItem_Team);
+               atsApi.getRelationResolver().getRelatedOrSentinel(artifact, AtsRelationTypes.TeamActionableItem_TeamDefinition);
             if (art.isValid()) {
                teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(art);
             }

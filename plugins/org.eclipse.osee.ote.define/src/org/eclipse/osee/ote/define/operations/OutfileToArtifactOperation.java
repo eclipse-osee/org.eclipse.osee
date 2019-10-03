@@ -74,13 +74,13 @@ public class OutfileToArtifactOperation {
    private Artifact getParentArtifact() {
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
       Artifact testFolder = OseeSystemArtifacts.getOrCreateArtifact(CoreArtifactTypes.Folder, "Test", branch);
-      if (!root.isRelated(CoreRelationTypes.Default_Hierarchical__Child, testFolder)) {
+      if (!root.isRelated(CoreRelationTypes.DefaultHierarchical_Child, testFolder)) {
          root.addChild(testFolder);
          root.persist("New Test Folder");
       }
       Artifact scriptFolder =
          OseeSystemArtifacts.getOrCreateArtifact(CoreArtifactTypes.Folder, "Test Script Results", branch);
-      if (!testFolder.isRelated(CoreRelationTypes.Default_Hierarchical__Child, scriptFolder)) {
+      if (!testFolder.isRelated(CoreRelationTypes.DefaultHierarchical_Child, scriptFolder)) {
          testFolder.addChild(scriptFolder);
          testFolder.persist("New Test Script Results Folder");
       }

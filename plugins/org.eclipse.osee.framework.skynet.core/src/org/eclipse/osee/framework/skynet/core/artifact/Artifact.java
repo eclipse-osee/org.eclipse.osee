@@ -12,7 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DefaultHierarchical_Child;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.io.IOException;
@@ -307,7 +307,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     */
    public final Artifact getParent() {
       Artifact toReturn = null;
-      List<Artifact> artifacts = getRelatedArtifactsUnSorted(CoreRelationTypes.Default_Hierarchical__Parent);
+      List<Artifact> artifacts = getRelatedArtifactsUnSorted(CoreRelationTypes.DefaultHierarchical_Parent);
       int parentCount = artifacts.size();
       if (parentCount == 1) {
          toReturn = artifacts.iterator().next();
@@ -358,7 +358,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * @throws MultipleArtifactsExist if this artiAact has more than one parent
     */
    public final boolean hasParent() {
-      int parentCount = getRelatedArtifactsUnSorted(CoreRelationTypes.Default_Hierarchical__Parent).size();
+      int parentCount = getRelatedArtifactsUnSorted(CoreRelationTypes.DefaultHierarchical_Parent).size();
       if (parentCount > 1) {
          throw new MultipleArtifactsExist("artifact [%s] has %d parents", getGuid(), parentCount);
       }
@@ -421,14 +421,14 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * @return set of the direct children of this artifact
     */
    public final @NonNull List<Artifact> getChildren() {
-      return getRelatedArtifacts(Default_Hierarchical__Child);
+      return getRelatedArtifacts(DefaultHierarchical_Child);
    }
 
    /**
     * @return set of the direct children of this artifact
     */
    public final List<Artifact> getChildren(DeletionFlag deletionFlag) {
-      return getRelatedArtifacts(Default_Hierarchical__Child, deletionFlag);
+      return getRelatedArtifacts(DefaultHierarchical_Child, deletionFlag);
    }
 
    public final List<Artifact> getDescendants(DeletionFlag includeDeleted) {
@@ -485,7 +485,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    public final void addChild(RelationSorter sorterId, Artifact artifact) {
-      addRelation(sorterId, Default_Hierarchical__Child, artifact);
+      addRelation(sorterId, DefaultHierarchical_Child, artifact);
    }
 
    public final Artifact addNewChild(RelationSorter sorterId, ArtifactTypeToken artifactType, String name) {

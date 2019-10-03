@@ -228,26 +228,26 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
 
          // Relate System to SubSystem to Software Requirements
          for (Artifact systemArt : systemArts) {
-            relate(CoreRelationTypes.Requirement_Trace__Lower_Level, systemArt, subSystemArts);
+            relate(CoreRelationTypes.RequirementTrace_LowerLevelRequirement, systemArt, subSystemArts);
             systemArt.persist(transaction);
 
             for (Artifact subSystemArt : subSystemArts) {
-               relate(CoreRelationTypes.Requirement_Trace__Lower_Level, subSystemArt, softArts);
+               relate(CoreRelationTypes.RequirementTrace_LowerLevelRequirement, subSystemArt, softArts);
                subSystemArt.persist(transaction);
             }
          }
 
          // Relate System, SubSystem and Software Requirements to Componets
          for (Artifact art : systemArts) {
-            relate(CoreRelationTypes.Allocation__Component, art, component);
+            relate(CoreRelationTypes.Allocation_Component, art, component);
             art.persist(transaction);
          }
          for (Artifact art : subSystemArts) {
-            relate(CoreRelationTypes.Allocation__Component, art, component);
+            relate(CoreRelationTypes.Allocation_Component, art, component);
             art.persist(transaction);
          }
          for (Artifact art : softArts) {
-            relate(CoreRelationTypes.Allocation__Component, art, component);
+            relate(CoreRelationTypes.Allocation_Component, art, component);
          }
 
          // Create Test Script Artifacts
@@ -261,7 +261,7 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
             Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestCase,
                verificationHeader.getBranch(), "Verification Test " + str);
             verificationTests.add(newArt);
-            verificationHeader.addRelation(CoreRelationTypes.Default_Hierarchical__Child, newArt);
+            verificationHeader.addRelation(CoreRelationTypes.DefaultHierarchical_Child, newArt);
             newArt.persist(transaction);
          }
          Artifact verificationTestsArray[] = verificationTests.toArray(new Artifact[verificationTests.size()]);
@@ -277,7 +277,7 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
             Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedure,
                validationHeader.getBranch(), "Validation Test " + str);
             validationTests.add(newArt);
-            validationHeader.addRelation(CoreRelationTypes.Default_Hierarchical__Child, newArt);
+            validationHeader.addRelation(CoreRelationTypes.DefaultHierarchical_Child, newArt);
             newArt.persist(transaction);
          }
          Artifact validationTestsArray[] = validationTests.toArray(new Artifact[validationTests.size()]);
@@ -293,22 +293,22 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
             Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedure,
                integrationHeader.getBranch(), "integration Test " + str);
             integrationTests.add(newArt);
-            integrationHeader.addRelation(CoreRelationTypes.Default_Hierarchical__Child, newArt);
+            integrationHeader.addRelation(CoreRelationTypes.DefaultHierarchical_Child, newArt);
             newArt.persist(transaction);
          }
          Artifact integrationTestsArray[] = integrationTests.toArray(new Artifact[integrationTests.size()]);
 
          // Relate Software Artifacts to Tests
          Artifact softReqsArray[] = softArts.toArray(new Artifact[softArts.size()]);
-         softReqsArray[0].addRelation(CoreRelationTypes.Validation__Validator, verificationTestsArray[0]);
-         softReqsArray[0].addRelation(CoreRelationTypes.Validation__Validator, verificationTestsArray[1]);
-         softReqsArray[1].addRelation(CoreRelationTypes.Validation__Validator, verificationTestsArray[0]);
-         softReqsArray[1].addRelation(CoreRelationTypes.Validation__Validator, validationTestsArray[1]);
-         softReqsArray[2].addRelation(CoreRelationTypes.Validation__Validator, validationTestsArray[0]);
-         softReqsArray[2].addRelation(CoreRelationTypes.Validation__Validator, integrationTestsArray[1]);
-         softReqsArray[3].addRelation(CoreRelationTypes.Validation__Validator, integrationTestsArray[0]);
-         softReqsArray[4].addRelation(CoreRelationTypes.Validation__Validator, integrationTestsArray[2]);
-         softReqsArray[5].addRelation(CoreRelationTypes.Validation__Validator, validationTestsArray[2]);
+         softReqsArray[0].addRelation(CoreRelationTypes.Validation_Validator, verificationTestsArray[0]);
+         softReqsArray[0].addRelation(CoreRelationTypes.Validation_Validator, verificationTestsArray[1]);
+         softReqsArray[1].addRelation(CoreRelationTypes.Validation_Validator, verificationTestsArray[0]);
+         softReqsArray[1].addRelation(CoreRelationTypes.Validation_Validator, validationTestsArray[1]);
+         softReqsArray[2].addRelation(CoreRelationTypes.Validation_Validator, validationTestsArray[0]);
+         softReqsArray[2].addRelation(CoreRelationTypes.Validation_Validator, integrationTestsArray[1]);
+         softReqsArray[3].addRelation(CoreRelationTypes.Validation_Validator, integrationTestsArray[0]);
+         softReqsArray[4].addRelation(CoreRelationTypes.Validation_Validator, integrationTestsArray[2]);
+         softReqsArray[5].addRelation(CoreRelationTypes.Validation_Validator, validationTestsArray[2]);
 
          for (Artifact artifact : softArts) {
             artifact.persist(transaction);
@@ -345,7 +345,7 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
          "ApplicabilityLists"}) {
          Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch, str);
          newArt.addAttribute(CoreAttributeTypes.WordTemplateContent, wordMlValue[i]);
-         applicabilityFolder.addRelation(CoreRelationTypes.Default_Hierarchical__Child, newArt);
+         applicabilityFolder.addRelation(CoreRelationTypes.DefaultHierarchical_Child, newArt);
          newArt.persist(transaction);
          i++;
       }

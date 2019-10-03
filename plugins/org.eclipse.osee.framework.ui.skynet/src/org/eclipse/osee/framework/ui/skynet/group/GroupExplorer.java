@@ -292,7 +292,7 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
             SkynetTransaction transaction =
                TransactionManager.createTransaction(branch, "Artifacts removed from group");
             for (GroupExplorerItem item : items) {
-               item.getArtifact().deleteRelation(CoreRelationTypes.Universal_Grouping__Group,
+               item.getArtifact().deleteRelation(CoreRelationTypes.UniversalGrouping_Group,
                   item.getParentItem().getArtifact());
                item.getArtifact().persist(transaction);
             }

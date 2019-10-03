@@ -376,15 +376,15 @@ public class TransactionBuilderImplTest {
 
    @Test
    public void testUnrelateWithAandB() {
-      factory.unrelate(node1, CoreRelationTypes.Allocation__Requirement, node2);
-      verify(txDataManager).unrelate(txData, node1, CoreRelationTypes.Allocation__Requirement, node2);
+      factory.unrelate(node1, CoreRelationTypes.Allocation_Requirement, node2);
+      verify(txDataManager).unrelate(txData, node1, CoreRelationTypes.Allocation_Requirement, node2);
    }
 
    @Test
    public void testUnrelateFromAllWithSide() {
-      RelationTypeSide asTypeSide = RelationTypeSide.create(CoreRelationTypes.Allocation__Requirement, SIDE_B);
+      RelationTypeSide asTypeSide = RelationTypeSide.create(CoreRelationTypes.Allocation_Requirement, SIDE_B);
       factory.unrelateFromAll(asTypeSide, expectedAuthor);
-      verify(txDataManager).unrelateFromAll(txData, CoreRelationTypes.Allocation__Requirement, expectedAuthor, SIDE_B);
+      verify(txDataManager).unrelateFromAll(txData, CoreRelationTypes.Allocation_Requirement, expectedAuthor, SIDE_B);
    }
 
    @Test

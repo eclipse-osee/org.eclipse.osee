@@ -60,7 +60,7 @@ public class AgileProgramOperations {
          changes.setSoleAttributeValue(agileProgramArt, AtsAttributeTypes.Active, true);
          ArtifactId topAgileFolder = AgileFolders.getOrCreateTopAgileFolder(atsApi, userArt, changes);
          if (topAgileFolder.notEqual(atsApi.getRelationResolver().getParent(agileProgramArt))) {
-            changes.unrelateFromAll(CoreRelationTypes.Default_Hierarchical__Parent, agileProgramArt);
+            changes.unrelateFromAll(CoreRelationTypes.DefaultHierarchical_Parent, agileProgramArt);
             changes.addChild(topAgileFolder, agileProgramArt);
          }
 
@@ -68,7 +68,7 @@ public class AgileProgramOperations {
          for (Long aTeamId : agileProgram.getTeamIds()) {
             IAgileTeam aTeam = atsApi.getQueryService().getConfigItem(aTeamId);
             if (aTeam != null) {
-               changes.unrelateAll(aTeam, CoreRelationTypes.Default_Hierarchical__Parent);
+               changes.unrelateAll(aTeam, CoreRelationTypes.DefaultHierarchical_Parent);
                changes.addChild(agileProgramArt, aTeam.getStoreObject());
             }
          }

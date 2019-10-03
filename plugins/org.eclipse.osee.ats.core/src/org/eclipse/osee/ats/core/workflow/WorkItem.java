@@ -91,9 +91,9 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
             teamArt = artifact;
          } else if (isReview()) {
             teamArt =
-               atsApi.getRelationResolver().getRelatedOrSentinel(artifact, AtsRelationTypes.TeamWorkflowToReview_Team);
+               atsApi.getRelationResolver().getRelatedOrSentinel(artifact, AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow);
          } else if (isTask()) {
-            teamArt = atsApi.getRelationResolver().getRelatedOrSentinel(artifact, AtsRelationTypes.TeamWfToTask_TeamWf);
+            teamArt = atsApi.getRelationResolver().getRelatedOrSentinel(artifact, AtsRelationTypes.TeamWfToTask_TeamWorkflow);
          }
          if (teamArt.isValid()) {
             parentTeamWf = atsApi.getWorkItemService().getTeamWf(teamArt);

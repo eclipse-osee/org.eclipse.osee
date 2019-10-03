@@ -130,7 +130,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
 
    private void removeOtherParent(Artifact child, Artifact parent) {
       if (hasDifferentParent(child, parent)) {
-         child.deleteRelations(CoreRelationTypes.Default_Hierarchical__Parent);
+         child.deleteRelations(CoreRelationTypes.DefaultHierarchical_Parent);
          child.persist(transaction);
       }
    }

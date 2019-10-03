@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.rest.internal.util;
 
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Allocation__Component;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Allocation_Component;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -60,7 +60,7 @@ public class ComponentUtil {
 
    public String getQualifiedComponentNames(ArtifactReadable requirement) {
       ensureLoaded();
-      ResultSet<ArtifactReadable> components = requirement.getRelated(Allocation__Component);
+      ResultSet<ArtifactReadable> components = requirement.getRelated(Allocation_Component);
 
       StringBuilder strB = new StringBuilder(20);
 

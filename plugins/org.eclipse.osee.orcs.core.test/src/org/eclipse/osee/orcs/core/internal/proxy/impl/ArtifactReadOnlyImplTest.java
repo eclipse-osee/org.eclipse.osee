@@ -17,10 +17,10 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitCommit
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ReviewId;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Allocation__Requirement;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Allocation_Requirement;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DefaultHierarchical_Child;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DefaultHierarchical_Parent;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_CHILD;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_PARENT;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
@@ -252,7 +252,7 @@ public class ArtifactReadOnlyImplTest {
 
    @Test
    public void testGetValidRelationTypes() {
-      List<? extends IRelationType> types = Arrays.asList(CoreRelationTypes.Default_Hierarchical__Child);
+      List<? extends IRelationType> types = Arrays.asList(CoreRelationTypes.DefaultHierarchical_Child);
 
       when(relationManager.getValidRelationTypes(proxiedObject)).thenAnswer(answer(types));
 
@@ -265,7 +265,7 @@ public class ArtifactReadOnlyImplTest {
       when(proxyManager.asInternalArtifact(readable1)).thenReturn(artifact1);
       when(relationManager.areRelated(proxiedObject, DEFAULT_HIERARCHY, artifact1)).thenReturn(true);
 
-      boolean actual = readOnly.areRelated(Default_Hierarchical__Child, readable1);
+      boolean actual = readOnly.areRelated(DefaultHierarchical_Child, readable1);
 
       assertEquals(true, actual);
       verify(proxyManager).asInternalArtifact(readable1);
@@ -286,7 +286,7 @@ public class ArtifactReadOnlyImplTest {
 
    @Test
    public void testGetExistingRelationTypes() {
-      List<? extends IRelationType> types = Arrays.asList(Allocation__Requirement);
+      List<? extends IRelationType> types = Arrays.asList(Allocation_Requirement);
       when(relationManager.getExistingRelationTypes(proxiedObject)).thenAnswer(answer(types));
 
       Collection<RelationTypeId> actual = readOnly.getExistingRelationTypes();
@@ -297,7 +297,7 @@ public class ArtifactReadOnlyImplTest {
 
    @Test
    public void testGetMaximumRelationAllowed() {
-      RelationTypeSide typeAndSide = Default_Hierarchical__Child;
+      RelationTypeSide typeAndSide = DefaultHierarchical_Child;
       when(relationManager.getMaximumRelationAllowed(DEFAULT_HIERARCHY, proxiedObject, IS_PARENT)).thenReturn(6);
 
       int actual = readOnly.getMaximumRelationAllowed(typeAndSide);
@@ -312,7 +312,7 @@ public class ArtifactReadOnlyImplTest {
       when(proxyManager.asInternalArtifact(readable1)).thenReturn(artifact1);
       when(relationManager.getRationale(artifact1, DEFAULT_HIERARCHY, proxiedObject)).thenReturn(expected);
 
-      String actual = readOnly.getRationale(Default_Hierarchical__Parent, readable1);
+      String actual = readOnly.getRationale(DefaultHierarchical_Parent, readable1);
 
       assertEquals(expected, actual);
 
@@ -324,7 +324,7 @@ public class ArtifactReadOnlyImplTest {
       int expected = 35;
       when(relationManager.getRelatedCount(DEFAULT_HIERARCHY, proxiedObject, IS_CHILD)).thenReturn(expected);
 
-      int actual = readOnly.getRelatedCount(Default_Hierarchical__Parent);
+      int actual = readOnly.getRelatedCount(DefaultHierarchical_Parent);
 
       assertEquals(expected, actual);
       verify(relationManager).getRelatedCount(DEFAULT_HIERARCHY, proxiedObject, IS_CHILD);
@@ -339,7 +339,7 @@ public class ArtifactReadOnlyImplTest {
          DeletionFlag.EXCLUDE_DELETED)).thenAnswer(answer(resultSet1));
       when(proxyManager.asExternalArtifacts(session, resultSet1)).thenReturn(expected);
 
-      ResultSet<ArtifactReadable> actual = readOnly.getRelated(Default_Hierarchical__Parent);
+      ResultSet<ArtifactReadable> actual = readOnly.getRelated(DefaultHierarchical_Parent);
 
       assertEquals(expected, actual);
       verify(relationManager).getRelated(session, DEFAULT_HIERARCHY, proxiedObject, IS_CHILD,

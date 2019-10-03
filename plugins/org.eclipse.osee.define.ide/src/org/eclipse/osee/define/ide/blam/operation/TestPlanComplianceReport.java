@@ -97,9 +97,9 @@ public final class TestPlanComplianceReport extends AbstractBlam {
 
       if (isTestPlan(node)) {
          String testPlan = getArtifactNameAndParagraph(node);
-         List<String> perfSpecs = getRequirementsCellOutput(node, CoreRelationTypes.Verification_Plan__Requirement);
-         List<String> pids = getRequirementsCellOutput(node, CoreRelationTypes.Validation__Requirement);
-         List<Artifact> testProcedures = node.getRelatedArtifacts(CoreRelationTypes.Executes__Test_Procedure);
+         List<String> perfSpecs = getRequirementsCellOutput(node, CoreRelationTypes.VerificationPlan_Requirement);
+         List<String> pids = getRequirementsCellOutput(node, CoreRelationTypes.Validation_Requirement);
+         List<Artifact> testProcedures = node.getRelatedArtifacts(CoreRelationTypes.Executes_TestProcedure);
 
          List<String> testProcedureNames = Lists.newLinkedList(Artifacts.getNames(testProcedures));
          TestStatusAndResults testStatusAndResults = calculateTestStatusAndResults(testProcedures);
@@ -169,7 +169,7 @@ public final class TestPlanComplianceReport extends AbstractBlam {
       for (Artifact testProc : testProcedures) {
          String status = testProc.getSoleAttributeValue(CoreAttributeTypes.TestProcedureStatus, BLANK_SPACE);
          Collection<Artifact> testResults =
-            testProc.getRelatedArtifacts(CoreRelationTypes.Test_Unit_Result__Test_Result);
+            testProc.getRelatedArtifacts(CoreRelationTypes.ResultsData_TestResult);
          testProcStatus.add(status);
 
          TestStatusEnum enumStatus = TestStatusEnum.fromString(status);
@@ -286,10 +286,10 @@ public final class TestPlanComplianceReport extends AbstractBlam {
       for (Artifact input : inputArtifacts) {
          testPlans.addAll(input.getDescendants());
       }
-      RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelationTypes.Verification_Plan__Requirement);
+      RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelationTypes.VerificationPlan_Requirement);
       Collection<Artifact> temp =
-         RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelationTypes.Executes__Test_Procedure);
-      RelationManager.getRelatedArtifacts(temp, 1, CoreRelationTypes.Test_Unit_Result__Test_Result);
+         RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelationTypes.Executes_TestProcedure);
+      RelationManager.getRelatedArtifacts(temp, 1, CoreRelationTypes.ResultsData_TestResult);
    }
 
    @Override

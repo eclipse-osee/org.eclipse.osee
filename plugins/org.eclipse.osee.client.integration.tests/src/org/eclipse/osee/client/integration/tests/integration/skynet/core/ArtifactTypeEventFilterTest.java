@@ -62,7 +62,7 @@ public class ArtifactTypeEventFilterTest {
 
       List<IBasicGuidRelation> relations = new ArrayList<>();
       EventBasicGuidRelation relation = new EventBasicGuidRelation(RelationEventType.Added, BranchId.SENTINEL,
-         CoreRelationTypes.SupportingInfo_SupportedBy.getGuid(), 234, GammaId.valueOf(123), 55, guidArtA, 66, guidArtB);
+         CoreRelationTypes.SupportingInfo_IsSupportedBy.getGuid(), 234, GammaId.valueOf(123), 55, guidArtA, 66, guidArtB);
       relations.add(relation);
 
       // guidArt in relation matches

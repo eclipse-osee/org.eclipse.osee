@@ -123,7 +123,7 @@ public class AtsConfigOperation extends AbstractOperation {
       changes.relate(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()),
          AtsRelationTypes.TeamLead_Lead, AtsClientService.get().getUserService().getCurrentUser());
       changes.relate(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()),
-         CoreRelationTypes.Default_Hierarchical__Child, teamDef);
+         CoreRelationTypes.DefaultHierarchical_Child, teamDef);
       return teamDef;
    }
 
@@ -136,7 +136,7 @@ public class AtsConfigOperation extends AbstractOperation {
       changes.setSoleAttributeValue(parentAi, AtsAttributeTypes.Actionable, false);
       changes.relate(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, parentAi);
       changes.relate(ActionableItems.getTopActionableItem(AtsClientService.get()),
-         CoreRelationTypes.Default_Hierarchical__Child, parentAi);
+         CoreRelationTypes.DefaultHierarchical_Child, parentAi);
 
       aias.add(parentAi);
 

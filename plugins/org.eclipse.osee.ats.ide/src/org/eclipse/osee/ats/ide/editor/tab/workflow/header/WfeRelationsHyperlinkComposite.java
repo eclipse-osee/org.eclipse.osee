@@ -54,16 +54,16 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
 
    private static RelationTypeSide[] sides = new RelationTypeSide[] {
       AtsRelationTypes.TeamWorkflowToReview_Review,
-      AtsRelationTypes.TeamWorkflowToReview_Team,
-      CoreRelationTypes.Supercedes_Superceded,
+      AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow,
+      CoreRelationTypes.Supercedes_SupercededBy,
       CoreRelationTypes.Supercedes_Supercedes,
-      CoreRelationTypes.SupportingInfo_SupportedBy,
+      CoreRelationTypes.SupportingInfo_IsSupportedBy,
       CoreRelationTypes.SupportingInfo_SupportingInfo,
       AtsRelationTypes.Derive_From,
       AtsRelationTypes.Derive_To,
       CoreRelationTypes.SupportingInfo_SupportingInfo,
-      CoreRelationTypes.Dependency__Artifact,
-      CoreRelationTypes.Dependency__Dependency};
+      CoreRelationTypes.Dependency_Artifact,
+      CoreRelationTypes.Dependency_Dependency};
    private final WorkflowEditor editor;
    private final IAtsWorkItem workItem;
    private final Map<Long, Hyperlink> relIdToHyperlink = new HashMap<>();
@@ -95,13 +95,13 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
       // Create all hyperlinks from this artifact to others of interest
       if (workItemArt.isTeamWorkflow() && workItemArt.getWorkDefinition().getHeaderDef().isShowSiblingLinks()) {
          for (RelationLink relation : ((Artifact) workItemArt.getParentAction()).getRelations(
-            AtsRelationTypes.ActionToWorkflow_WorkFlow)) {
+            AtsRelationTypes.ActionToWorkflow_TeamWorkFlow)) {
             if (!relation.getArtifactB().equals(workItemArt)) {
                if (existingRels.contains(relation)) {
                   existingRels.remove(relation);
                } else {
                   createLink("This", workItemArt, " has sibling ", relation.getArtifactB(),
-                     AtsRelationTypes.ActionToWorkflow_WorkFlow, relation);
+                     AtsRelationTypes.ActionToWorkflow_TeamWorkFlow, relation);
                   editor.registerEvent(this, relation.getArtifactB());
                }
             }
@@ -109,18 +109,18 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
       }
       createArtifactRelationHyperlinks("This", workItemArt, "is reviewed by",
          AtsRelationTypes.TeamWorkflowToReview_Review);
-      createArtifactRelationHyperlinks("This", workItemArt, "reviews", AtsRelationTypes.TeamWorkflowToReview_Team);
+      createArtifactRelationHyperlinks("This", workItemArt, "reviews", AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow);
       createArtifactRelationHyperlinks("This", workItemArt, "is superceded by",
-         CoreRelationTypes.Supercedes_Superceded);
+         CoreRelationTypes.Supercedes_SupercededBy);
       createArtifactRelationHyperlinks("This", workItemArt, "supercedes", CoreRelationTypes.Supercedes_Supercedes);
-      createArtifactRelationHyperlinks("This", workItemArt, "depends on", CoreRelationTypes.Dependency__Dependency);
-      createArtifactRelationHyperlinks("This", workItemArt, "is dependency of", CoreRelationTypes.Dependency__Artifact);
+      createArtifactRelationHyperlinks("This", workItemArt, "depends on", CoreRelationTypes.Dependency_Dependency);
+      createArtifactRelationHyperlinks("This", workItemArt, "is dependency of", CoreRelationTypes.Dependency_Artifact);
 
       createArtifactRelationHyperlinks("This", workItemArt, "is derived from", AtsRelationTypes.Derive_From);
       createArtifactRelationHyperlinks("This", workItemArt, "derived", AtsRelationTypes.Derive_To);
 
       createArtifactRelationHyperlinks("This", workItemArt, "is supported info for",
-         CoreRelationTypes.SupportingInfo_SupportedBy);
+         CoreRelationTypes.SupportingInfo_IsSupportedBy);
       createArtifactRelationHyperlinks("This", workItemArt, "has supporting info",
          CoreRelationTypes.SupportingInfo_SupportingInfo);
 

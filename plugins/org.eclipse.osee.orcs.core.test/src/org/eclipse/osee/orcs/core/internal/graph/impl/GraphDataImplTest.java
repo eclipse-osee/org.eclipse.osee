@@ -11,9 +11,9 @@
 package org.eclipse.osee.orcs.core.internal.graph.impl;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirement;
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Allocation__Component;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Allocation_Component;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.CodeRequirement_CodeUnit;
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DefaultHierarchical_Child;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -169,10 +169,10 @@ public class GraphDataImplTest {
       RelationNodeAdjacencies adj;
       Collection<Relation> all;
 
-      adjacencies.add(Allocation__Component, relation1);
+      adjacencies.add(Allocation_Component, relation1);
       graph.addAdjacencies(artifact1, adjacencies);
       adj = graph.getAdjacencies(artifactId20);
-      List<Relation> list = adj.getList(Allocation__Component, DeletionFlag.EXCLUDE_DELETED);
+      List<Relation> list = adj.getList(Allocation_Component, DeletionFlag.EXCLUDE_DELETED);
       assertFalse(list.isEmpty());
       assertTrue(list.size() == 1);
 
@@ -182,18 +182,18 @@ public class GraphDataImplTest {
       all = adj.getAll();
       assertFalse(all.isEmpty());
       assertTrue(all.size() == 2);
-      assertTrue(adj.getList(Allocation__Component, DeletionFlag.EXCLUDE_DELETED).size() == 1);
+      assertTrue(adj.getList(Allocation_Component, DeletionFlag.EXCLUDE_DELETED).size() == 1);
       assertTrue(adj.getList(CodeRequirement_CodeUnit, DeletionFlag.EXCLUDE_DELETED).size() == 1);
 
-      adjacencies.add(Default_Hierarchical__Child, relation3);
+      adjacencies.add(DefaultHierarchical_Child, relation3);
       graph.addAdjacencies(artifactId21, adjacencies);
       adj = graph.getAdjacencies(artifact2);
       all = adj.getAll();
       assertFalse(all.isEmpty());
       assertTrue(all.size() == 3);
-      assertTrue(adj.getList(Allocation__Component, DeletionFlag.EXCLUDE_DELETED).size() == 1);
+      assertTrue(adj.getList(Allocation_Component, DeletionFlag.EXCLUDE_DELETED).size() == 1);
       assertTrue(adj.getList(CodeRequirement_CodeUnit, DeletionFlag.EXCLUDE_DELETED).size() == 1);
-      assertTrue(adj.getList(Default_Hierarchical__Child, DeletionFlag.EXCLUDE_DELETED).size() == 1);
+      assertTrue(adj.getList(DefaultHierarchical_Child, DeletionFlag.EXCLUDE_DELETED).size() == 1);
    }
 
    @Test
@@ -201,9 +201,9 @@ public class GraphDataImplTest {
       RelationNodeAdjacencies adjacencies = new RelationNodeAdjacencies();
       RelationNodeAdjacencies adj;
 
-      adjacencies.add(Allocation__Component, relation1);
+      adjacencies.add(Allocation_Component, relation1);
       adjacencies.add(CodeRequirement_CodeUnit, relation2);
-      adjacencies.add(Default_Hierarchical__Child, relation3);
+      adjacencies.add(DefaultHierarchical_Child, relation3);
 
       graph.addAdjacencies(artifact1, adjacencies);
       graph.addAdjacencies(artifactId20, adjacencies);

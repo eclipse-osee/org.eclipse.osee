@@ -258,7 +258,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
 
    @Override
    public List<ArtifactReadable> getDescendants() {
-      return queryFactory.fromBranch(branch, view).andRelatedRecursive(CoreRelationTypes.Default_Hierarchical__Child,
+      return queryFactory.fromBranch(branch, view).andRelatedRecursive(CoreRelationTypes.DefaultHierarchical_Child,
          this).asArtifacts();
    }
 
@@ -274,7 +274,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
 
    @Override
    public List<ArtifactReadable> getChildren() {
-      return getRelated(CoreRelationTypes.Default_Hierarchical__Child, ArtifactTypeId.SENTINEL);
+      return getRelated(CoreRelationTypes.DefaultHierarchical_Child, ArtifactTypeId.SENTINEL);
    }
 
    @Override

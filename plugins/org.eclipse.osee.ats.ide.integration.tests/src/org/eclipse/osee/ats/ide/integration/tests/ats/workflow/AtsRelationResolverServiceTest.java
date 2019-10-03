@@ -52,7 +52,7 @@ public class AtsRelationResolverServiceTest {
 
    @Test
    public void testGetRelatedArtifactIdRelationTypeSide() {
-      Assert.assertEquals(7, relationResolver.getRelated(topAi, CoreRelationTypes.Default_Hierarchical__Child).size());
+      Assert.assertEquals(7, relationResolver.getRelated(topAi, CoreRelationTypes.DefaultHierarchical_Child).size());
    }
 
    @Test
@@ -64,12 +64,12 @@ public class AtsRelationResolverServiceTest {
    @Test
    public void testAreRelatedArtifactIdRelationTypeSideArtifactId() {
       Artifact sawCsciAi = AtsClientService.get().getQueryServiceClient().getArtifact(DemoArtifactToken.SAW_CSCI_AI);
-      Assert.assertTrue(relationResolver.areRelated(topAi, CoreRelationTypes.Default_Hierarchical__Child, sawCsciAi));
-      Assert.assertTrue(relationResolver.areRelated(sawCsciAi, CoreRelationTypes.Default_Hierarchical__Parent, topAi));
+      Assert.assertTrue(relationResolver.areRelated(topAi, CoreRelationTypes.DefaultHierarchical_Child, sawCsciAi));
+      Assert.assertTrue(relationResolver.areRelated(sawCsciAi, CoreRelationTypes.DefaultHierarchical_Parent, topAi));
 
       Artifact sawTestAi = AtsClientService.get().getQueryServiceClient().getArtifact(DemoArtifactToken.SAW_Test_AI);
-      Assert.assertFalse(relationResolver.areRelated(topAi, CoreRelationTypes.Default_Hierarchical__Child, sawTestAi));
-      Assert.assertFalse(relationResolver.areRelated(sawTestAi, CoreRelationTypes.Default_Hierarchical__Parent, topAi));
+      Assert.assertFalse(relationResolver.areRelated(topAi, CoreRelationTypes.DefaultHierarchical_Child, sawTestAi));
+      Assert.assertFalse(relationResolver.areRelated(sawTestAi, CoreRelationTypes.DefaultHierarchical_Parent, topAi));
    }
 
    @Test
@@ -80,7 +80,7 @@ public class AtsRelationResolverServiceTest {
 
       Assert.assertTrue(relationResolver.areRelated(sawCodeCommittedWf, AtsRelationTypes.TeamWfToTask_Task, firstTask));
       Assert.assertTrue(
-         relationResolver.areRelated(firstTask, AtsRelationTypes.TeamWfToTask_TeamWf, sawCodeCommittedWf));
+         relationResolver.areRelated(firstTask, AtsRelationTypes.TeamWfToTask_TeamWorkflow, sawCodeCommittedWf));
 
       // get task from un-related workflow
       Collection<ArtifactToken> unRelated =
@@ -90,19 +90,19 @@ public class AtsRelationResolverServiceTest {
       Assert.assertFalse(
          relationResolver.areRelated(sawCodeCommittedWf, AtsRelationTypes.TeamWfToTask_Task, firstUnRelatedTask));
       Assert.assertFalse(
-         relationResolver.areRelated(firstUnRelatedTask, AtsRelationTypes.TeamWfToTask_TeamWf, sawCodeCommittedWf));
+         relationResolver.areRelated(firstUnRelatedTask, AtsRelationTypes.TeamWfToTask_TeamWorkflow, sawCodeCommittedWf));
    }
 
    @Test
    public void testGetRelatedOrNullArtifactIdRelationTypeSide() {
       ArtifactId sawTestAi = atsApi.getQueryService().getArtifact(DemoArtifactToken.SAW_Test_AI);
       ArtifactId relatedOrNull =
-         relationResolver.getRelatedOrNull(sawTestAi, CoreRelationTypes.Default_Hierarchical__Parent);
+         relationResolver.getRelatedOrNull(sawTestAi, CoreRelationTypes.DefaultHierarchical_Parent);
       Assert.assertNotNull(relatedOrNull);
 
       ArtifactId nullParentId = relationResolver.getRelatedOrNull(
          AtsClientService.get().getQueryServiceClient().getArtifact(sawCodeCommittedWf),
-         CoreRelationTypes.Default_Hierarchical__Parent);
+         CoreRelationTypes.DefaultHierarchical_Parent);
       Assert.assertNull(nullParentId);
    }
 
@@ -114,11 +114,11 @@ public class AtsRelationResolverServiceTest {
       IAtsTask firstTask = atsApi.getWorkItemService().getTask(firstTaskArt);
 
       IAtsTeamWorkflow teamWf =
-         relationResolver.getRelatedOrNull(firstTask, AtsRelationTypes.TeamWfToTask_TeamWf, IAtsTeamWorkflow.class);
+         relationResolver.getRelatedOrNull(firstTask, AtsRelationTypes.TeamWfToTask_TeamWorkflow, IAtsTeamWorkflow.class);
       Assert.assertNotNull(teamWf);
 
       IAtsTeamWorkflow nullChild = relationResolver.getRelatedOrNull(firstTask,
-         CoreRelationTypes.Default_Hierarchical__Child, IAtsTeamWorkflow.class);
+         CoreRelationTypes.DefaultHierarchical_Child, IAtsTeamWorkflow.class);
       Assert.assertNull(nullChild);
    }
 

@@ -262,7 +262,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
             newItem.getResults().errorf("UpdateLocation %s not supported", newItem.getLocation());
             return newItem;
          }
-         changes.setRelationsAndOrder(parentArtifact, CoreRelationTypes.Default_Hierarchical__Child, items);
+         changes.setRelationsAndOrder(parentArtifact, CoreRelationTypes.DefaultHierarchical_Child, items);
          changes.execute();
 
          newItem.setNewId(newitem.getId());
@@ -1108,7 +1108,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       if (!found) {
          IAgileTeam team = atsApi.getAgileService().getAgileTeam(item);
          for (ArtifactReadable featureArt : ((ArtifactReadable) team.getStoreObject()).getRelated(
-            AtsRelationTypes.AgileTeamToFeatureGroup_FeatureGroup)) {
+            AtsRelationTypes.AgileTeamToFeatureGroup_AgileFeatureGroup)) {
             if (featureArt.getName().equals(featureGroupName)) {
                IAtsChangeSet changes =
                   atsApi.createChangeSet("Add Feature Group to WorkItem", AtsCoreUsers.SYSTEM_USER);

@@ -15,7 +15,7 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRe
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DefaultHierarchical_Child;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_CHILD;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_PARENT;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
@@ -196,13 +196,13 @@ public class RelationManagerImplTest {
 
    @Test
    public void testGetMaximumRelationAllowed() {
-      when(validity.getMaximumRelationsAllowed(CoreRelationTypes.Allocation__Requirement, artifactType1,
+      when(validity.getMaximumRelationsAllowed(CoreRelationTypes.Allocation_Requirement, artifactType1,
          SIDE_A)).thenReturn(11);
 
-      int actual = manager.getMaximumRelationAllowed(CoreRelationTypes.Allocation__Requirement, node1, SIDE_A);
+      int actual = manager.getMaximumRelationAllowed(CoreRelationTypes.Allocation_Requirement, node1, SIDE_A);
 
       assertEquals(11, actual);
-      verify(validity).getMaximumRelationsAllowed(CoreRelationTypes.Allocation__Requirement, artifactType1, SIDE_A);
+      verify(validity).getMaximumRelationsAllowed(CoreRelationTypes.Allocation_Requirement, artifactType1, SIDE_A);
    }
 
    @Test
@@ -292,7 +292,7 @@ public class RelationManagerImplTest {
       assertEquals(node1, parent);
 
       verify(resolver).resolve(session, graph, relations, SIDE_A);
-      verify(orderManager1).sort(CoreRelationTypes.Default_Hierarchical__Parent, arts);
+      verify(orderManager1).sort(CoreRelationTypes.DefaultHierarchical_Parent, arts);
    }
 
    @Test
@@ -318,14 +318,14 @@ public class RelationManagerImplTest {
       assertEquals(node6, iterator.next());
 
       verify(resolver).resolve(session, graph, relations, SIDE_B);
-      verify(orderManager1).sort(CoreRelationTypes.Default_Hierarchical__Child, nodes);
+      verify(orderManager1).sort(CoreRelationTypes.DefaultHierarchical_Child, nodes);
    }
 
    @Test
    public void testGetRelatedNullNode() {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("node cannot be null");
-      manager.getRelated(session, CoreRelationTypes.Allocation__Requirement, null, SIDE_A);
+      manager.getRelated(session, CoreRelationTypes.Allocation_Requirement, null, SIDE_A);
    }
 
    @Test
@@ -339,7 +339,7 @@ public class RelationManagerImplTest {
    public void testGetRelatedNullSide() {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("relationSide cannot be null");
-      manager.getRelated(session, CoreRelationTypes.Allocation__Requirement, node1, null);
+      manager.getRelated(session, CoreRelationTypes.Allocation_Requirement, node1, null);
    }
 
    @Test
@@ -347,14 +347,14 @@ public class RelationManagerImplTest {
       List<Relation> relations = Arrays.asList(relation1, relation2, relation3);
       List<Artifact> nodes = Arrays.asList(node2, node3, node5);
 
-      when(container1.getList(CoreRelationTypes.Allocation__Requirement, EXCLUDE_DELETED, node1, SIDE_B)).thenReturn(
+      when(container1.getList(CoreRelationTypes.Allocation_Requirement, EXCLUDE_DELETED, node1, SIDE_B)).thenReturn(
          relations);
 
       when(resolver.resolve(session, graph, relations, SIDE_A)).thenReturn(nodes);
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
       ResultSet<Artifact> result =
-         manager.getRelated(session, CoreRelationTypes.Allocation__Requirement, node1, SIDE_B);
+         manager.getRelated(session, CoreRelationTypes.Allocation_Requirement, node1, SIDE_B);
       assertEquals(3, result.size());
       Iterator<Artifact> iterator = result.iterator();
       assertEquals(node2, iterator.next());
@@ -363,37 +363,37 @@ public class RelationManagerImplTest {
 
       verify(resolver).resolve(session, graph, relations, SIDE_A);
 
-      RelationTypeSide typeSide = RelationTypeSide.create(CoreRelationTypes.Allocation__Requirement, SIDE_A);
+      RelationTypeSide typeSide = RelationTypeSide.create(CoreRelationTypes.Allocation_Requirement, SIDE_A);
       verify(orderManager1).sort(typeSide, nodes);
    }
 
    @Test
    public void testAreRelated() {
-      when(container1.getRelation(node1, CoreRelationTypes.Allocation__Requirement, node2, EXCLUDE_DELETED)).thenReturn(
+      when(container1.getRelation(node1, CoreRelationTypes.Allocation_Requirement, node2, EXCLUDE_DELETED)).thenReturn(
          relation1);
 
-      boolean value = manager.areRelated(node1, CoreRelationTypes.Allocation__Requirement, node2);
+      boolean value = manager.areRelated(node1, CoreRelationTypes.Allocation_Requirement, node2);
       assertTrue(value);
 
-      when(container1.getRelation(node1, CoreRelationTypes.Allocation__Requirement, node2, EXCLUDE_DELETED)).thenReturn(
+      when(container1.getRelation(node1, CoreRelationTypes.Allocation_Requirement, node2, EXCLUDE_DELETED)).thenReturn(
          null);
-      when(container2.getRelation(node1, CoreRelationTypes.Allocation__Requirement, node2, EXCLUDE_DELETED)).thenReturn(
+      when(container2.getRelation(node1, CoreRelationTypes.Allocation_Requirement, node2, EXCLUDE_DELETED)).thenReturn(
          null);
 
-      boolean value2 = manager.areRelated(node1, CoreRelationTypes.Allocation__Requirement, node2);
+      boolean value2 = manager.areRelated(node1, CoreRelationTypes.Allocation_Requirement, node2);
       assertFalse(value2);
    }
 
    @Test
    public void testGetRationale() {
-      when(container1.getRelation(node1, CoreRelationTypes.Allocation__Requirement, node2, EXCLUDE_DELETED)).thenReturn(
+      when(container1.getRelation(node1, CoreRelationTypes.Allocation_Requirement, node2, EXCLUDE_DELETED)).thenReturn(
          relation1);
       when(relation1.getRationale()).thenReturn("Hello rationale");
 
-      String value = manager.getRationale(node1, CoreRelationTypes.Allocation__Requirement, node2);
+      String value = manager.getRationale(node1, CoreRelationTypes.Allocation_Requirement, node2);
       assertEquals("Hello rationale", value);
 
-      verify(container1).getRelation(node1, CoreRelationTypes.Allocation__Requirement, node2, EXCLUDE_DELETED);
+      verify(container1).getRelation(node1, CoreRelationTypes.Allocation_Requirement, node2, EXCLUDE_DELETED);
       verify(relation1).getRationale();
    }
 
@@ -401,26 +401,26 @@ public class RelationManagerImplTest {
    public void testGetRelatedCount() {
       List<Relation> list = Arrays.asList(relation1, relation2, relation3);
 
-      when(container1.getList(CoreRelationTypes.Allocation__Requirement, EXCLUDE_DELETED, node1, SIDE_B)).thenReturn(
+      when(container1.getList(CoreRelationTypes.Allocation_Requirement, EXCLUDE_DELETED, node1, SIDE_B)).thenReturn(
          list);
 
-      int actual = manager.getRelatedCount(CoreRelationTypes.Allocation__Requirement, node1, SIDE_B);
+      int actual = manager.getRelatedCount(CoreRelationTypes.Allocation_Requirement, node1, SIDE_B);
       Assert.assertEquals(3, actual);
 
-      verify(container1).getList(CoreRelationTypes.Allocation__Requirement, EXCLUDE_DELETED, node1, SIDE_B);
+      verify(container1).getList(CoreRelationTypes.Allocation_Requirement, EXCLUDE_DELETED, node1, SIDE_B);
    }
 
    @Test
    public void testGetRelatedCountIncludeDeleted() {
       List<Relation> list = Arrays.asList(relation1, relation2);
 
-      when(container1.getList(CoreRelationTypes.Allocation__Requirement, INCLUDE_DELETED, node1, SIDE_A)).thenReturn(
+      when(container1.getList(CoreRelationTypes.Allocation_Requirement, INCLUDE_DELETED, node1, SIDE_A)).thenReturn(
          list);
 
-      int actual = manager.getRelatedCount(CoreRelationTypes.Allocation__Requirement, node1, SIDE_A, INCLUDE_DELETED);
+      int actual = manager.getRelatedCount(CoreRelationTypes.Allocation_Requirement, node1, SIDE_A, INCLUDE_DELETED);
       Assert.assertEquals(2, actual);
 
-      verify(container1).getList(CoreRelationTypes.Allocation__Requirement, INCLUDE_DELETED, node1, SIDE_A);
+      verify(container1).getList(CoreRelationTypes.Allocation_Requirement, INCLUDE_DELETED, node1, SIDE_A);
    }
 
    @Test
@@ -448,174 +448,174 @@ public class RelationManagerImplTest {
    public void testRelateErrorTypeInvalidNode1() {
       OseeCoreException myException = new OseeCoreException("Test Type Exception");
 
-      doThrow(myException).when(validity).checkRelationTypeValid(CoreRelationTypes.Allocation__Requirement, node1,
+      doThrow(myException).when(validity).checkRelationTypeValid(CoreRelationTypes.Allocation_Requirement, node1,
          SIDE_A);
 
       thrown.expect(OseeCoreException.class);
       thrown.expectMessage("Test Type Exception");
-      manager.relate(session, node1, CoreRelationTypes.Allocation__Requirement, node2);
+      manager.relate(session, node1, CoreRelationTypes.Allocation_Requirement, node2);
 
-      verify(validity).checkRelationTypeValid(CoreRelationTypes.Allocation__Requirement, node1, SIDE_A);
-      verify(validity, times(0)).checkRelationTypeValid(CoreRelationTypes.Allocation__Requirement, node2, SIDE_A);
+      verify(validity).checkRelationTypeValid(CoreRelationTypes.Allocation_Requirement, node1, SIDE_A);
+      verify(validity, times(0)).checkRelationTypeValid(CoreRelationTypes.Allocation_Requirement, node2, SIDE_A);
    }
 
    @Test
    public void testRelateErrorTypeInvalidNode2() {
-      when(relationFactory.createRelation(node1, CoreRelationTypes.Allocation__Requirement, node2)).thenReturn(
+      when(relationFactory.createRelation(node1, CoreRelationTypes.Allocation_Requirement, node2)).thenReturn(
          relation1);
       when(
-         container1.getResultSet(CoreRelationTypes.Allocation__Requirement, INCLUDE_DELETED, node1, SIDE_A)).thenReturn(
+         container1.getResultSet(CoreRelationTypes.Allocation_Requirement, INCLUDE_DELETED, node1, SIDE_A)).thenReturn(
             rSet1);
       when(rSet1.getOneOrNull()).thenReturn(relation1);
 
       OseeCoreException myException = new OseeCoreException("Test Type Exception");
 
-      doThrow(myException).when(validity).checkRelationTypeValid(CoreRelationTypes.Allocation__Requirement, node2,
+      doThrow(myException).when(validity).checkRelationTypeValid(CoreRelationTypes.Allocation_Requirement, node2,
          SIDE_B);
 
       thrown.expect(OseeCoreException.class);
       thrown.expectMessage("Test Type Exception");
-      manager.relate(session, node1, CoreRelationTypes.Allocation__Requirement, node2);
+      manager.relate(session, node1, CoreRelationTypes.Allocation_Requirement, node2);
 
-      verify(validity).checkRelationTypeValid(CoreRelationTypes.Allocation__Requirement, node1, SIDE_A);
-      verify(validity).checkRelationTypeValid(CoreRelationTypes.Allocation__Requirement, node2, SIDE_B);
+      verify(validity).checkRelationTypeValid(CoreRelationTypes.Allocation_Requirement, node1, SIDE_A);
+      verify(validity).checkRelationTypeValid(CoreRelationTypes.Allocation_Requirement, node2, SIDE_B);
    }
 
    @Test
    public void testRelateErrorMultiplicityNode1() {
       thrown.expect(OseeStateException.class);
 
-      when(validity.getMaximumRelationsAllowed(Default_Hierarchical__Child, artifactType1, SIDE_A)).thenReturn(1);
+      when(validity.getMaximumRelationsAllowed(DefaultHierarchical_Child, artifactType1, SIDE_A)).thenReturn(1);
 
-      manager.relate(session, node1, CoreRelationTypes.Allocation__Requirement, node2);
+      manager.relate(session, node1, CoreRelationTypes.Allocation_Requirement, node2);
 
-      verify(validity).checkRelationTypeValid(CoreRelationTypes.Allocation__Requirement, node1, SIDE_A);
-      verify(validity).checkRelationTypeMultiplicity(CoreRelationTypes.Allocation__Requirement, node1, SIDE_A, 1);
-      verify(validity, times(0)).checkRelationTypeValid(CoreRelationTypes.Allocation__Requirement, node2, SIDE_B);
+      verify(validity).checkRelationTypeValid(CoreRelationTypes.Allocation_Requirement, node1, SIDE_A);
+      verify(validity).checkRelationTypeMultiplicity(CoreRelationTypes.Allocation_Requirement, node1, SIDE_A, 1);
+      verify(validity, times(0)).checkRelationTypeValid(CoreRelationTypes.Allocation_Requirement, node2, SIDE_B);
    }
 
    @Test
    public void testRelateErrorMultiplicityNode2() {
-      when(relationFactory.createRelation(node1, CoreRelationTypes.Allocation__Requirement, node2)).thenReturn(
+      when(relationFactory.createRelation(node1, CoreRelationTypes.Allocation_Requirement, node2)).thenReturn(
          relation1);
       when(
-         container1.getResultSet(CoreRelationTypes.Allocation__Requirement, INCLUDE_DELETED, node1, SIDE_A)).thenReturn(
+         container1.getResultSet(CoreRelationTypes.Allocation_Requirement, INCLUDE_DELETED, node1, SIDE_A)).thenReturn(
             rSet1);
       when(rSet1.getOneOrNull()).thenReturn(relation1);
 
       thrown.expect(OseeStateException.class);
-      manager.relate(session, node1, CoreRelationTypes.Allocation__Requirement, node2);
+      manager.relate(session, node1, CoreRelationTypes.Allocation_Requirement, node2);
 
-      verify(validity).checkRelationTypeValid(CoreRelationTypes.Allocation__Requirement, node1, SIDE_A);
-      verify(validity).checkRelationTypeMultiplicity(CoreRelationTypes.Allocation__Requirement, node1, SIDE_A, 1);
-      verify(validity).checkRelationTypeValid(CoreRelationTypes.Allocation__Requirement, node2, SIDE_B);
-      verify(validity).checkRelationTypeMultiplicity(CoreRelationTypes.Allocation__Requirement, node2, SIDE_B, 1);
+      verify(validity).checkRelationTypeValid(CoreRelationTypes.Allocation_Requirement, node1, SIDE_A);
+      verify(validity).checkRelationTypeMultiplicity(CoreRelationTypes.Allocation_Requirement, node1, SIDE_A, 1);
+      verify(validity).checkRelationTypeValid(CoreRelationTypes.Allocation_Requirement, node2, SIDE_B);
+      verify(validity).checkRelationTypeMultiplicity(CoreRelationTypes.Allocation_Requirement, node2, SIDE_B, 1);
    }
 
    @Test
    public void testSetRationale() {
       String rationale = "New Rationale";
 
-      when(container2.getRelation(node1, CoreRelationTypes.Allocation__Requirement, node2, EXCLUDE_DELETED)).thenReturn(
+      when(container2.getRelation(node1, CoreRelationTypes.Allocation_Requirement, node2, EXCLUDE_DELETED)).thenReturn(
          relation1);
 
-      manager.setRationale(node1, CoreRelationTypes.Allocation__Requirement, node2, rationale);
+      manager.setRationale(node1, CoreRelationTypes.Allocation_Requirement, node2, rationale);
 
-      verify(container1).getRelation(node1, CoreRelationTypes.Allocation__Requirement, node2, EXCLUDE_DELETED);
-      verify(container2).getRelation(node1, CoreRelationTypes.Allocation__Requirement, node2, EXCLUDE_DELETED);
+      verify(container1).getRelation(node1, CoreRelationTypes.Allocation_Requirement, node2, EXCLUDE_DELETED);
+      verify(container2).getRelation(node1, CoreRelationTypes.Allocation_Requirement, node2, EXCLUDE_DELETED);
       verify(relation1).setRationale(rationale);
    }
 
    @Test
    public void testRelateWithSorting() {
-      when(container1.getRelation(node1, CoreRelationTypes.Allocation__Requirement, node2, INCLUDE_DELETED)).thenReturn(
+      when(container1.getRelation(node1, CoreRelationTypes.Allocation_Requirement, node2, INCLUDE_DELETED)).thenReturn(
          null);
-      when(container2.getRelation(node1, CoreRelationTypes.Allocation__Requirement, node2, INCLUDE_DELETED)).thenReturn(
+      when(container2.getRelation(node1, CoreRelationTypes.Allocation_Requirement, node2, INCLUDE_DELETED)).thenReturn(
          null);
 
-      when(relationFactory.createRelation(eq(node1), eq(CoreRelationTypes.Allocation__Requirement), eq(node2),
+      when(relationFactory.createRelation(eq(node1), eq(CoreRelationTypes.Allocation_Requirement), eq(node2),
          Matchers.anyString())).thenReturn(relation1);
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
-      when(validity.getMaximumRelationsAllowed(CoreRelationTypes.Allocation__Requirement, artifactType1,
+      when(validity.getMaximumRelationsAllowed(CoreRelationTypes.Allocation_Requirement, artifactType1,
          SIDE_A)).thenReturn(10);
-      when(validity.getMaximumRelationsAllowed(CoreRelationTypes.Allocation__Requirement, artifactType2,
+      when(validity.getMaximumRelationsAllowed(CoreRelationTypes.Allocation_Requirement, artifactType2,
          SIDE_B)).thenReturn(10);
 
-      manager.relate(session, node1, CoreRelationTypes.Allocation__Requirement, node2, LEXICOGRAPHICAL_ASC);
+      manager.relate(session, node1, CoreRelationTypes.Allocation_Requirement, node2, LEXICOGRAPHICAL_ASC);
 
-      RelationTypeSide typeSide = RelationTypeSide.create(CoreRelationTypes.Allocation__Requirement, SIDE_B);
+      RelationTypeSide typeSide = RelationTypeSide.create(CoreRelationTypes.Allocation_Requirement, SIDE_B);
 
-      verify(container1).getRelation(node1, CoreRelationTypes.Allocation__Requirement, node2, INCLUDE_DELETED);
-      verify(container2).getRelation(node1, CoreRelationTypes.Allocation__Requirement, node2, INCLUDE_DELETED);
+      verify(container1).getRelation(node1, CoreRelationTypes.Allocation_Requirement, node2, INCLUDE_DELETED);
+      verify(container2).getRelation(node1, CoreRelationTypes.Allocation_Requirement, node2, INCLUDE_DELETED);
       verify(orderManager1).setOrder(eq(typeSide), eq(LEXICOGRAPHICAL_ASC), sortedListCaptor.capture());
-      verify(container1).add(CoreRelationTypes.Allocation__Requirement, relation1);
-      verify(container2).add(CoreRelationTypes.Allocation__Requirement, relation1);
+      verify(container1).add(CoreRelationTypes.Allocation_Requirement, relation1);
+      verify(container2).add(CoreRelationTypes.Allocation_Requirement, relation1);
    }
 
    @Test
    public void testRelateNoSorting() {
-      when(container1.getRelation(node1, CoreRelationTypes.Allocation__Requirement, node2, INCLUDE_DELETED)).thenReturn(
+      when(container1.getRelation(node1, CoreRelationTypes.Allocation_Requirement, node2, INCLUDE_DELETED)).thenReturn(
          null);
-      when(container2.getRelation(node1, CoreRelationTypes.Allocation__Requirement, node2, INCLUDE_DELETED)).thenReturn(
+      when(container2.getRelation(node1, CoreRelationTypes.Allocation_Requirement, node2, INCLUDE_DELETED)).thenReturn(
          null);
 
-      when(relationFactory.createRelation(eq(node1), eq(CoreRelationTypes.Allocation__Requirement), eq(node2),
+      when(relationFactory.createRelation(eq(node1), eq(CoreRelationTypes.Allocation_Requirement), eq(node2),
          Matchers.anyString())).thenReturn(relation1);
 
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
-      RelationTypeSide typeSide = RelationTypeSide.create(CoreRelationTypes.Allocation__Requirement, SIDE_B);
+      RelationTypeSide typeSide = RelationTypeSide.create(CoreRelationTypes.Allocation_Requirement, SIDE_B);
       when(orderManager1.getSorterId(typeSide)).thenReturn(UNORDERED);
 
-      when(validity.getMaximumRelationsAllowed(CoreRelationTypes.Allocation__Requirement, artifactType1,
+      when(validity.getMaximumRelationsAllowed(CoreRelationTypes.Allocation_Requirement, artifactType1,
          SIDE_A)).thenReturn(10);
-      when(validity.getMaximumRelationsAllowed(CoreRelationTypes.Allocation__Requirement, artifactType2,
+      when(validity.getMaximumRelationsAllowed(CoreRelationTypes.Allocation_Requirement, artifactType2,
          SIDE_B)).thenReturn(10);
 
-      manager.relate(session, node1, CoreRelationTypes.Allocation__Requirement, node2);
+      manager.relate(session, node1, CoreRelationTypes.Allocation_Requirement, node2);
 
-      verify(container1).getRelation(node1, CoreRelationTypes.Allocation__Requirement, node2, INCLUDE_DELETED);
-      verify(container2).getRelation(node1, CoreRelationTypes.Allocation__Requirement, node2, INCLUDE_DELETED);
+      verify(container1).getRelation(node1, CoreRelationTypes.Allocation_Requirement, node2, INCLUDE_DELETED);
+      verify(container2).getRelation(node1, CoreRelationTypes.Allocation_Requirement, node2, INCLUDE_DELETED);
       verify(orderManager1).getSorterId(typeSide);
       verify(orderManager1).setOrder(eq(typeSide), eq(UNORDERED), sortedListCaptor.capture());
-      verify(container1).add(CoreRelationTypes.Allocation__Requirement, relation1);
-      verify(container2).add(CoreRelationTypes.Allocation__Requirement, relation1);
+      verify(container1).add(CoreRelationTypes.Allocation_Requirement, relation1);
+      verify(container2).add(CoreRelationTypes.Allocation_Requirement, relation1);
    }
 
    @Test
    public void testRelateWithSortingUserDefined() {
-      when(container1.getRelation(node1, CoreRelationTypes.Allocation__Requirement, node2, INCLUDE_DELETED)).thenReturn(
+      when(container1.getRelation(node1, CoreRelationTypes.Allocation_Requirement, node2, INCLUDE_DELETED)).thenReturn(
          null);
-      when(container2.getRelation(node1, CoreRelationTypes.Allocation__Requirement, node2, INCLUDE_DELETED)).thenReturn(
+      when(container2.getRelation(node1, CoreRelationTypes.Allocation_Requirement, node2, INCLUDE_DELETED)).thenReturn(
          null);
 
-      when(relationFactory.createRelation(eq(node1), eq(CoreRelationTypes.Allocation__Requirement), eq(node2),
+      when(relationFactory.createRelation(eq(node1), eq(CoreRelationTypes.Allocation_Requirement), eq(node2),
          Matchers.anyString())).thenReturn(relation1);
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
       List<Relation> toOrder = Arrays.asList(relation3, relation4);
-      when(container1.getList(CoreRelationTypes.Allocation__Requirement, EXCLUDE_DELETED, node1, SIDE_A)).thenReturn(
+      when(container1.getList(CoreRelationTypes.Allocation_Requirement, EXCLUDE_DELETED, node1, SIDE_A)).thenReturn(
          toOrder);
 
       List<Artifact> nodesToOrder = Arrays.asList(node3, node4, node5, node6);
       when(resolver.resolve(session, graph, toOrder, SIDE_B)).thenReturn(nodesToOrder);
 
-      when(validity.getMaximumRelationsAllowed(CoreRelationTypes.Allocation__Requirement, artifactType1,
+      when(validity.getMaximumRelationsAllowed(CoreRelationTypes.Allocation_Requirement, artifactType1,
          SIDE_A)).thenReturn(10);
-      when(validity.getMaximumRelationsAllowed(CoreRelationTypes.Allocation__Requirement, artifactType2,
+      when(validity.getMaximumRelationsAllowed(CoreRelationTypes.Allocation_Requirement, artifactType2,
          SIDE_B)).thenReturn(10);
 
-      manager.relate(session, node1, CoreRelationTypes.Allocation__Requirement, node2, USER_DEFINED);
+      manager.relate(session, node1, CoreRelationTypes.Allocation_Requirement, node2, USER_DEFINED);
 
-      verify(container1).getRelation(node1, CoreRelationTypes.Allocation__Requirement, node2, INCLUDE_DELETED);
-      verify(container2).getRelation(node1, CoreRelationTypes.Allocation__Requirement, node2, INCLUDE_DELETED);
-      verify(container1).add(CoreRelationTypes.Allocation__Requirement, relation1);
-      verify(container2).add(CoreRelationTypes.Allocation__Requirement, relation1);
+      verify(container1).getRelation(node1, CoreRelationTypes.Allocation_Requirement, node2, INCLUDE_DELETED);
+      verify(container2).getRelation(node1, CoreRelationTypes.Allocation_Requirement, node2, INCLUDE_DELETED);
+      verify(container1).add(CoreRelationTypes.Allocation_Requirement, relation1);
+      verify(container2).add(CoreRelationTypes.Allocation_Requirement, relation1);
 
       verify(resolver).resolve(session, graph, toOrder, SIDE_B);
 
-      RelationTypeSide typeSide = RelationTypeSide.create(CoreRelationTypes.Allocation__Requirement, SIDE_B);
+      RelationTypeSide typeSide = RelationTypeSide.create(CoreRelationTypes.Allocation_Requirement, SIDE_B);
       verify(orderManager1).sort(typeSide, nodesToOrder);
       verify(orderManager1).setOrder(eq(typeSide), eq(USER_DEFINED), sortedListCaptor.capture());
 
@@ -638,7 +638,7 @@ public class RelationManagerImplTest {
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
-      when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(UNORDERED);
+      when(orderManager1.getSorterId(DefaultHierarchical_Child)).thenReturn(UNORDERED);
 
       when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType1, SIDE_A)).thenReturn(10);
       when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType2, SIDE_B)).thenReturn(10);
@@ -647,8 +647,8 @@ public class RelationManagerImplTest {
 
       verify(container1).getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED);
       verify(container2).getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED);
-      verify(orderManager1).getSorterId(Default_Hierarchical__Child);
-      verify(orderManager1).setOrder(eq(Default_Hierarchical__Child), eq(UNORDERED), sortedListCaptor.capture());
+      verify(orderManager1).getSorterId(DefaultHierarchical_Child);
+      verify(orderManager1).setOrder(eq(DefaultHierarchical_Child), eq(UNORDERED), sortedListCaptor.capture());
       verify(container1).add(DEFAULT_HIERARCHY, relation1);
       verify(container2).add(DEFAULT_HIERARCHY, relation1);
    }
@@ -661,15 +661,15 @@ public class RelationManagerImplTest {
       when(relation1.isDeleted()).thenReturn(true);
 
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
-      when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(UNORDERED);
+      when(orderManager1.getSorterId(DefaultHierarchical_Child)).thenReturn(UNORDERED);
 
       when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType1, SIDE_A)).thenReturn(10);
       when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType2, SIDE_B)).thenReturn(10);
 
       manager.addChild(session, node1, node2);
 
-      verify(orderManager1).getSorterId(Default_Hierarchical__Child);
-      verify(orderManager1).setOrder(eq(Default_Hierarchical__Child), eq(UNORDERED), sortedListCaptor.capture());
+      verify(orderManager1).getSorterId(DefaultHierarchical_Child);
+      verify(orderManager1).setOrder(eq(DefaultHierarchical_Child), eq(UNORDERED), sortedListCaptor.capture());
       verify(container1, times(1)).add(DEFAULT_HIERARCHY, relation1);
       verify(container2, times(0)).add(DEFAULT_HIERARCHY, relation1);
 
@@ -681,7 +681,7 @@ public class RelationManagerImplTest {
       when(container1.getRelation(node1, DEFAULT_HIERARCHY, node2, EXCLUDE_DELETED)).thenReturn(relation1);
 
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
-      when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(USER_DEFINED);
+      when(orderManager1.getSorterId(DefaultHierarchical_Child)).thenReturn(USER_DEFINED);
 
       List<Relation> relations = Arrays.asList(relation1);
       when(container1.getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_PARENT)).thenReturn(relations);
@@ -693,13 +693,13 @@ public class RelationManagerImplTest {
 
       verify(relation1).delete();
 
-      verify(orderManager1).getSorterId(Default_Hierarchical__Child);
+      verify(orderManager1).getSorterId(DefaultHierarchical_Child);
 
       verify(container1, times(0)).remove(DEFAULT_HIERARCHY, relation1);
 
       verify(resolver).resolve(session, graph, relations, SIDE_B);
 
-      verify(orderManager1).setOrder(eq(Default_Hierarchical__Child), eq(USER_DEFINED), sortedListCaptor.capture());
+      verify(orderManager1).setOrder(eq(DefaultHierarchical_Child), eq(USER_DEFINED), sortedListCaptor.capture());
 
       assertEquals(3, sortedListCaptor.getValue().size());
       Iterator<? extends ArtifactToken> iterator = sortedListCaptor.getValue().iterator();
@@ -718,7 +718,7 @@ public class RelationManagerImplTest {
       when(graph.getNode(artifactId22)).thenReturn(node2);
 
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
-      when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(PREEXISTING);
+      when(orderManager1.getSorterId(DefaultHierarchical_Child)).thenReturn(PREEXISTING);
 
       manager.unrelateFromAll(session, DEFAULT_HIERARCHY, node1, IS_PARENT);
 
@@ -727,7 +727,7 @@ public class RelationManagerImplTest {
       verify(container1).getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_PARENT);
       verify(resolver).resolve(session, graph, relations1, SIDE_B);
       verify(relation1).delete();
-      verify(orderManager1).getSorterId(Default_Hierarchical__Child);
+      verify(orderManager1).getSorterId(DefaultHierarchical_Child);
    }
 
    @Test
@@ -748,7 +748,7 @@ public class RelationManagerImplTest {
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
       when(resolver.resolve(session, graph, asAChild, IS_CHILD)).thenReturn(children);
-      when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(PREEXISTING);
+      when(orderManager1.getSorterId(DefaultHierarchical_Child)).thenReturn(PREEXISTING);
 
       manager.unrelateFromAll(session, node1);
 
@@ -761,6 +761,6 @@ public class RelationManagerImplTest {
       verify(container1).getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_CHILD);
       verify(resolver).resolve(session, graph, asAChild, SIDE_B);
 
-      verify(orderManager1).setOrder(Default_Hierarchical__Child, children);
+      verify(orderManager1).setOrder(DefaultHierarchical_Child, children);
    }
 }

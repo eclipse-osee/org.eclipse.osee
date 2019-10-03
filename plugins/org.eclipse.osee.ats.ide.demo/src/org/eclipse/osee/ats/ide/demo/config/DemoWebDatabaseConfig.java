@@ -42,7 +42,7 @@ public class DemoWebDatabaseConfig implements IDbInitializationTask {
 
       Artifact sawProgram =
          (Artifact) AtsClientService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_PL_Program);
-      oseeWebArt.addRelation(CoreRelationTypes.Universal_Grouping__Members, sawProgram);
+      oseeWebArt.addRelation(CoreRelationTypes.UniversalGrouping_Members, sawProgram);
       oseeWebArt.persist(transaction);
 
       transaction.execute();

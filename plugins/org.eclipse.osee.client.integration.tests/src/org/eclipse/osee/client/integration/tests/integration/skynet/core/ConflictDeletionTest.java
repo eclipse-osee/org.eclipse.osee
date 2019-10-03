@@ -274,7 +274,7 @@ public class ConflictDeletionTest {
             if (artifactForDeletionCheck != null) {
                Attribute<?> attribute = artifactForDeletionCheck.getAttributes().get(0);
                RelationLink relation =
-                  artifactForDeletionCheck.getRelations(CoreRelationTypes.Default_Hierarchical__Child).get(0);
+                  artifactForDeletionCheck.getRelations(CoreRelationTypes.DefaultHierarchical_Child).get(0);
                attribute.delete();
                relation.delete(true);
                artifactForDeletionCheck.persist(getClass().getSimpleName());

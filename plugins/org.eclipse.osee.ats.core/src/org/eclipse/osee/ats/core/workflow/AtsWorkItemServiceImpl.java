@@ -123,7 +123,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       List<IAtsTeamWorkflow> teams = new LinkedList<>();
       if (object instanceof IAtsAction) {
          for (ArtifactToken teamWfArt : atsApi.getRelationResolver().getRelated((IAtsAction) object,
-            AtsRelationTypes.ActionToWorkflow_WorkFlow)) {
+            AtsRelationTypes.ActionToWorkflow_TeamWorkFlow)) {
             teams.add(atsApi.getWorkItemService().getTeamWf(teamWfArt));
          }
       } else if (object instanceof ActionResult) {

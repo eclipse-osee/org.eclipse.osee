@@ -85,7 +85,7 @@ public class AtsTaskEndpointImplTest {
       JaxAtsTask newTask = createJaxAtsTask(taskId1, "Task 4", "description", createdByUserId, createdDate, null);
       newTask.setTaskWorkDef(AtsWorkDefinitionTokens.WorkDef_Task_Default.getIdString());
       data.getNewTasks().add(newTask);
-      newTask.addRelation(CoreRelationTypes.SupportingInfo_SupportedBy, codeTeamWfId);
+      newTask.addRelation(CoreRelationTypes.SupportingInfo_IsSupportedBy, codeTeamWfId);
 
       NewTaskDatas newTaskDatas = new NewTaskDatas(data);
       JaxAtsTasks tasks = taskEp.create(newTaskDatas);
@@ -94,7 +94,7 @@ public class AtsTaskEndpointImplTest {
       IAtsTask task = (IAtsTask) client.getQueryService().createQuery(WorkItemType.Task).andIds(
          newTask.getId()).getResults().getExactlyOne();
       Collection<IAtsWorkItem> workItems = client.getRelationResolver().getRelated(task,
-         CoreRelationTypes.SupportingInfo_SupportedBy, IAtsWorkItem.class);
+         CoreRelationTypes.SupportingInfo_IsSupportedBy, IAtsWorkItem.class);
       Assert.assertEquals(1, workItems.size());
       Assert.assertEquals(codeTeamWfId, workItems.iterator().next().getId().longValue());
 
@@ -103,7 +103,7 @@ public class AtsTaskEndpointImplTest {
       changes.deleteArtifact(task);
       changes.execute();
 
-      workItems = client.getRelationResolver().getRelated(task, CoreRelationTypes.SupportingInfo_SupportedBy,
+      workItems = client.getRelationResolver().getRelated(task, CoreRelationTypes.SupportingInfo_IsSupportedBy,
          IAtsWorkItem.class);
       Assert.assertTrue(workItems.isEmpty());
 

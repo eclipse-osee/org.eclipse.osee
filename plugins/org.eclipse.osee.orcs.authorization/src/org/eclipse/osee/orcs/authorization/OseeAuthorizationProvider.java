@@ -74,7 +74,7 @@ public class OseeAuthorizationProvider implements AuthorizationProvider, Authori
       Set<String> roles = new HashSet<>();
       ArtifactReadable oseeUser =
          getQuery().fromBranch(getAdminBranch()).andUuid(identifier).getResults().getExactlyOne();
-      ResultSet<ArtifactReadable> groups = oseeUser.getRelated(CoreRelationTypes.Universal_Grouping__Group);
+      ResultSet<ArtifactReadable> groups = oseeUser.getRelated(CoreRelationTypes.UniversalGrouping_Group);
       for (ArtifactReadable group : groups) {
          roles.add(group.getName());
       }

@@ -131,13 +131,13 @@ public final class TestPlanComplianceReportTest {
 
          testProcedure.setSoleAttributeValue(CoreAttributeTypes.TestProcedureStatus, testProcedureStatus.testStatus);
 
-         testPlan.addRelation(CoreRelationTypes.Executes__Test_Procedure, testProcedure);
+         testPlan.addRelation(CoreRelationTypes.Executes_TestProcedure, testProcedure);
          testPlan.persist(getClass().getSimpleName());
 
          for (int j = 0; j < testResultsAmount; j++) {
             Artifact testResult =
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestResultWml, SAW_Bld_1, "Sample_Test_Result_" + j);
-            testProcedure.addRelation(CoreRelationTypes.Test_Unit_Result__Test_Result, testResult);
+            testProcedure.addRelation(CoreRelationTypes.ResultsData_TestResult, testResult);
             testProcedure.persist(getClass().getSimpleName());
          }
       }

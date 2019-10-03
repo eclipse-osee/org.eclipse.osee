@@ -95,7 +95,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       Set<IAtsTeamDefinition> children = new HashSet<>();
       try {
          for (ArtifactId childArt : atsApi.getRelationResolver().getRelated(artifact,
-            CoreRelationTypes.Default_Hierarchical__Child)) {
+            CoreRelationTypes.DefaultHierarchical_Child)) {
             IAtsTeamDefinition childTeamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(childArt);
             if (childTeamDef != null) {
                children.add(childTeamDef);

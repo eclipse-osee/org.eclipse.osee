@@ -1474,7 +1474,7 @@ relationType "Allocation" {
 
 relationType "Code-Requirement" {
 	id 2305843009213694296
-	sideAName "code"
+	sideAName "code unit"
 	sideAArtifactType "Code Unit"
 	sideBName "requirement"
 	sideBArtifactType "Requirement"
@@ -1836,7 +1836,7 @@ artifactType "Safety Assessment" extends "Artifact" {
 
 relationType "Assessment" {
 	id 2305843009213694336
-	sideAName "Assessments"
+	sideAName "Safety Assessment"
 	sideAArtifactType "Safety Assessment"
 	sideBName "System Functions"
 	sideBArtifactType "System Function"

@@ -62,7 +62,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
       if (parentAwa != null) {
          return parentAwa;
       }
-      parentAwa = (AbstractWorkflowArtifact) getRelatedArtifactOrNull(AtsRelationTypes.TeamWfToTask_TeamWf);
+      parentAwa = (AbstractWorkflowArtifact) getRelatedArtifactOrNull(AtsRelationTypes.TeamWfToTask_TeamWorkflow);
       // only display error once
       if (parentAwa == null && !taskHasNoParent.contains(getId())) {
          taskHasNoParent.add(getId());

@@ -175,7 +175,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
       List<JaxAgileFeatureGroup> selected = new LinkedList<>();
       if (awas.size() == 1) {
          for (Artifact featureArt : awas.iterator().next().getRelatedArtifacts(
-            AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
+            AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup)) {
             IAgileFeatureGroup featureGroup = AtsClientService.get().getAgileService().getAgileFeatureGroup(featureArt);
             if (featureGroup.isActive()) {
                selected.add(createJaxAgileFeatureGroupFromAgileFeatureGroup(featureGroup));
@@ -212,12 +212,12 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
       for (ArtifactId workItemId : workItemArts) {
          try {
             Artifact workItem = AtsClientService.get().getQueryServiceClient().getArtifact(workItemId);
-            List<Artifact> featureArts = workItem.getRelatedArtifacts(AtsRelationTypes.AgileFeatureToItem_FeatureGroup);
+            List<Artifact> featureArts = workItem.getRelatedArtifacts(AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup);
             if (Artifacts.isOfType(workItem, AtsArtifactTypes.Action)) {
                Set<String> strs = new HashSet<>();
                for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams(workItem)) {
                   for (ArtifactToken featureArt : AtsClientService.get().getQueryServiceClient().getArtifact(
-                     teamWf).getRelatedArtifacts(AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
+                     teamWf).getRelatedArtifacts(AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup)) {
                      strs.add(featureArt.getName());
                   }
                }

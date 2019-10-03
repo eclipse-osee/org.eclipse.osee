@@ -118,7 +118,7 @@ public class GroupExplorerItem implements IAdaptable {
       //      return items;
 
       try {
-         List<Artifact> related = artifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members);
+         List<Artifact> related = artifact.getRelatedArtifacts(CoreRelationTypes.UniversalGrouping_Members);
          for (Artifact art : related) {
             addGroupItem(new GroupExplorerItem(treeViewer, art, this, groupExplorer));
          }

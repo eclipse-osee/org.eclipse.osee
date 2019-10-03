@@ -163,8 +163,8 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
 
          } else if (fileTransfer.isSupportedType(event.currentDataType)) {
             IRelationType relationType = data.getRelationType();
-            if (relationType.equals(CoreRelationTypes.Verification__Verifier) || relationType.equals(
-               CoreRelationTypes.Uses__TestUnit)) {
+            if (relationType.equals(CoreRelationTypes.Verification_Verifier) || relationType.equals(
+               CoreRelationTypes.Uses_TestUnit)) {
                AccessPolicy policyHandlerService = null;
                try {
                   policyHandlerService = ServiceUtil.getAccessPolicy();

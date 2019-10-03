@@ -113,7 +113,7 @@ public class ProgramOperations {
          items.add(item);
       }
       ArtifactToken sprintArt =
-         atsApi.getRelationResolver().getRelatedOrSentinel(storyArt, AtsRelationTypes.AgileStoryToSprint_Sprint);
+         atsApi.getRelationResolver().getRelatedOrSentinel(storyArt, AtsRelationTypes.AgileStoryToSprint_AgileSprint);
       if (sprintArt.isValid()) {
          UiGridProgItem item = getProgItemFromArt(sprintArt, level);
          items.add(item);
@@ -127,7 +127,7 @@ public class ProgramOperations {
 
       }
       for (ArtifactToken taskArt : atsApi.getRelationResolver().getRelatedArtifacts(storyArt,
-         AtsRelationTypes.AgileStoryToItems_AtsItem)) {
+         AtsRelationTypes.AgileStoryToItem_TeamWorkflow)) {
          UiGridProgItem taskItem = getProgItemFromArt(taskArt, level);
          taskItem.setTLevel(level);
          setTaskFields(taskArt, taskItem);

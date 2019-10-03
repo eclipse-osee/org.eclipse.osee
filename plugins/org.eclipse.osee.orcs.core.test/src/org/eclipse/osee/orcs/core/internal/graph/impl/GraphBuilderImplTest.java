@@ -92,7 +92,7 @@ public class GraphBuilderImplTest {
 
       when(relationFactory.createRelationContainer()).thenReturn(adjacencies);
       when(relationFactory.createRelation(relationData)).thenReturn(relation);
-      when(relation.getRelationType()).thenReturn(CoreRelationTypes.Allocation__Requirement);
+      when(relation.getRelationType()).thenReturn(CoreRelationTypes.Allocation_Requirement);
 
       when(attributeData.getArtifactId()).thenReturn(artifactId60);
    }

@@ -37,7 +37,7 @@ public class AgileFolders {
       }
       if (sprintFolder == null) {
          sprintFolder = changes.createArtifact(CoreArtifactTypes.Folder, IAgileService.SPRINT_FOLDER_NAME);
-         changes.relate(teamFolder, CoreRelationTypes.Default_Hierarchical__Child, sprintFolder);
+         changes.relate(teamFolder, CoreRelationTypes.DefaultHierarchical_Child, sprintFolder);
       }
       return sprintFolder;
    }
@@ -69,7 +69,7 @@ public class AgileFolders {
          List<ArtifactId> children = new ArrayList<ArtifactId>();
          children.add(agileFolder);
          children.addAll(atsApi.getRelationResolver().getChildren(rootArtifact));
-         changes.setRelationsAndOrder(rootArtifact, CoreRelationTypes.Default_Hierarchical__Child, children);
+         changes.setRelationsAndOrder(rootArtifact, CoreRelationTypes.DefaultHierarchical_Child, children);
       }
       return agileFolder;
    }

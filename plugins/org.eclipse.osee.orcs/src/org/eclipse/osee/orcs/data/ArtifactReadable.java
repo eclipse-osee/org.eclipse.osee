@@ -96,7 +96,7 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    default ArtifactReadable getParent() {
       return org.eclipse.osee.framework.jdk.core.util.Collections.exactlyOne(
-         getRelated(CoreRelationTypes.Default_Hierarchical__Parent, ArtifactTypeId.SENTINEL));
+         getRelated(CoreRelationTypes.DefaultHierarchical_Parent, ArtifactTypeId.SENTINEL));
    }
 
    List<ArtifactReadable> getDescendants();

@@ -148,8 +148,8 @@ public class AddTraceMarksToTraceUnits extends AbstractBlam {
          }
          if (GUID.isValid(guid)) {
             Artifact testCase = ArtifactQuery.getArtifactFromId(guid, branch);
-            List<Artifact> uses = testCase.getRelatedArtifacts(CoreRelationTypes.Uses__Requirement);
-            List<Artifact> verifies = testCase.getRelatedArtifacts(CoreRelationTypes.Verification__Requirement);
+            List<Artifact> uses = testCase.getRelatedArtifacts(CoreRelationTypes.Uses_Requirement);
+            List<Artifact> verifies = testCase.getRelatedArtifacts(CoreRelationTypes.Verification_Requirement);
             StringBuilder sb = new StringBuilder();
             for (Artifact art : verifies) {
                sb.append(" * Verifies: ");

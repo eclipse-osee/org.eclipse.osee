@@ -65,15 +65,15 @@ public class RelationDeletionTest {
       Artifact child1 = createArtifact(CoreArtifactTypes.Folder, COMMON);
       Artifact child2 = createArtifact(CoreArtifactTypes.Folder, COMMON);
       Artifact child3 = createArtifact(CoreArtifactTypes.Folder, COMMON);
-      parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child1);
-      parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child2);
-      parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child3);
+      parent.addRelation(CoreRelationTypes.DefaultHierarchical_Child, child1);
+      parent.addRelation(CoreRelationTypes.DefaultHierarchical_Child, child2);
+      parent.addRelation(CoreRelationTypes.DefaultHierarchical_Child, child3);
       parent.persist(getClass().getSimpleName());
 
       assertTrue("Failed to add all three children",
-         parent.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child).size() == 3);
+         parent.getRelatedArtifacts(CoreRelationTypes.DefaultHierarchical_Child).size() == 3);
 
-      child1.deleteRelation(CoreRelationTypes.Default_Hierarchical__Parent, parent);
+      child1.deleteRelation(CoreRelationTypes.DefaultHierarchical_Parent, parent);
 
       assertTrue("We removed a relation so it should still be dirty.", child1.isDirty());
       assertTrue("Parent artifact should be marked as dirty since it's relation has changed.", parent.isDirty());
@@ -83,7 +83,7 @@ public class RelationDeletionTest {
       assertFalse("Parent artifact should be clean now.", parent.isDirty());
       assertFalse("Child artifact should also be clean.", child1.isDirty());
 
-      List<Artifact> children = parent.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child);
+      List<Artifact> children = parent.getRelatedArtifacts(CoreRelationTypes.DefaultHierarchical_Child);
 
       assertTrue("The deleted child was not successfully removed.", children.size() == 2);
 
@@ -95,30 +95,30 @@ public class RelationDeletionTest {
       Artifact parent = createArtifact(CoreArtifactTypes.Folder, COMMON);
       Artifact child1 = createArtifact(CoreArtifactTypes.Folder, COMMON);
 
-      parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child1);
+      parent.addRelation(CoreRelationTypes.DefaultHierarchical_Child, child1);
       parent.persist(getClass().getSimpleName());
 
       assertTrue("Failed to add child",
-         parent.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child).size() == 1);
+         parent.getRelatedArtifacts(CoreRelationTypes.DefaultHierarchical_Child).size() == 1);
 
-      child1.deleteRelation(CoreRelationTypes.Default_Hierarchical__Parent, parent);
+      child1.deleteRelation(CoreRelationTypes.DefaultHierarchical_Parent, parent);
 
       assertTrue("We removed a relation so it should still be dirty.", child1.isDirty());
       assertTrue("Parent artifact should be marked as dirty since it's relation has changed.", parent.isDirty());
 
       child1.persist(getClass().getSimpleName());
 
-      List<Artifact> children = parent.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child);
+      List<Artifact> children = parent.getRelatedArtifacts(CoreRelationTypes.DefaultHierarchical_Child);
 
       assertTrue("The deleted child was not successfully removed.", children.size() == 0);
 
-      parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child1);
+      parent.addRelation(CoreRelationTypes.DefaultHierarchical_Child, child1);
 
       assertFalse("This previously deleted child still has modification type deleted", child1.isDeleted());
       parent.persist(getClass().getSimpleName());
 
       assertTrue("Failed to add child previously deleted child relation",
-         parent.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child).size() == 1);
+         parent.getRelatedArtifacts(CoreRelationTypes.DefaultHierarchical_Child).size() == 1);
 
    }
 

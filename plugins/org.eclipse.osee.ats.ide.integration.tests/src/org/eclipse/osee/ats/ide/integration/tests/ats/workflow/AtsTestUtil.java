@@ -731,7 +731,7 @@ public class AtsTestUtil {
       verArt.setSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true);
       verArt.setSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, true);
       verArt.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchId, SAW_Bld_1.getIdString());
-      verArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow,
+      verArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_TeamWorkflow,
          Arrays.asList(AtsClientService.get().getQueryServiceClient().getArtifact(getTeamWf())));
       verArt.persist(AtsTestUtil.class.getSimpleName() + "-SetTeamWfTargetedVer1");
    }

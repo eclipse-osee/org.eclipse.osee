@@ -56,7 +56,7 @@ public class RequirementReorderOperation extends AbstractBlam {
       List<Artifact> children = parent.getChildren();
       Collections.sort(children, new ParagraphComparator());
       if (!oldChildren.equals(children)) {
-         parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, children);
+         parent.setRelationOrder(CoreRelationTypes.DefaultHierarchical_Child, children);
          parent.persist(transaction);
       }
 

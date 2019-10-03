@@ -427,7 +427,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    }
 
    private void processTestScriptsAndProcedures(Artifact requirement, String[] statusLine) {
-      Collection<Artifact> scripts = requirement.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier);
+      Collection<Artifact> scripts = requirement.getRelatedArtifacts(CoreRelationTypes.Verification_Verifier);
       if (scripts.isEmpty()) {
          if (requirement.isOfType(CoreArtifactTypes.IndirectSoftwareRequirement) || requirement.isOfType(
             CoreArtifactTypes.AbstractImplementationDetails)) {
@@ -538,7 +538,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
             progress = 0;
          }
          Set<Artifact> foundProcedures =
-            new HashSet<>(tpRequirement.getRelatedArtifacts(CoreRelationTypes.Validation__Validator));
+            new HashSet<>(tpRequirement.getRelatedArtifacts(CoreRelationTypes.Validation_Validator));
          Set<Artifact> toAdd = new HashSet<>();
          toAdd = foundProcedures;
          requirementNameToTestProcedures.put(tpRequirement.getName(), toAdd);

@@ -30,7 +30,7 @@ public class CommitConfiguration {
 
       try {
          User user = UserManager.getUser();
-         Collection<Artifact> teams = user.getRelatedArtifacts(CoreRelationTypes.TeamMember_Team);
+         Collection<Artifact> teams = user.getRelatedArtifacts(CoreRelationTypes.TeamMember_TeamDefinition);
          for (Artifact team : teams) {
             if (team.getName().equals("OSEE")) {
                isAllowed = true;

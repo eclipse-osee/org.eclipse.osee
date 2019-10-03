@@ -69,14 +69,14 @@ public class CatchArtifactChanges implements CommitAction {
    }
 
    private void checkArtIsFullyDeleted(Set<Integer> shouldBeDeletedArts, Artifact artifactChanged) {
-      Artifact relatedArt = artifactChanged.getRelatedArtifactOrNull(CoreRelationTypes.Default_Hierarchical__Parent);
+      Artifact relatedArt = artifactChanged.getRelatedArtifactOrNull(CoreRelationTypes.DefaultHierarchical_Parent);
       if (relatedArt != null) {
          shouldBeDeletedArts.add(artifactChanged.getArtId());
       }
    }
 
    private void checkForOrphans(Set<Integer> orphanedArts, Artifact artifactChanged) {
-      Artifact relatedArt = artifactChanged.getRelatedArtifactOrNull(CoreRelationTypes.Default_Hierarchical__Parent);
+      Artifact relatedArt = artifactChanged.getRelatedArtifactOrNull(CoreRelationTypes.DefaultHierarchical_Parent);
       if (relatedArt == null) {
          orphanedArts.add(artifactChanged.getArtId());
       }

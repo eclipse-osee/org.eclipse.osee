@@ -158,18 +158,18 @@ public class Pdd93CreateDemoAgile {
          AtsClientService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Agile_Team);
       changes.relate(story1Art, AtsRelationTypes.AgileStoryToAgileTeam_AgileTeam, agileTeamArt);
       ArtifactToken sprint2Art = AtsClientService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Sprint_2);
-      changes.relate(story1Art, AtsRelationTypes.AgileStoryToSprint_Sprint, sprint2Art);
+      changes.relate(story1Art, AtsRelationTypes.AgileStoryToSprint_AgileSprint, sprint2Art);
 
       ArtifactToken story2Art = AtsClientService.get().getQueryService().getArtifact(story2);
       changes.relate(story2Art, AtsRelationTypes.AgileStoryToAgileTeam_AgileTeam, agileTeamArt);
-      changes.relate(story2Art, AtsRelationTypes.AgileStoryToSprint_Sprint, sprint2Art);
+      changes.relate(story2Art, AtsRelationTypes.AgileStoryToSprint_AgileSprint, sprint2Art);
 
       ArtifactToken story3Art = AtsClientService.get().getQueryService().getArtifact(story3);
       changes.relate(story3Art, AtsRelationTypes.AgileStoryToAgileTeam_AgileTeam, agileTeamArt);
-      changes.relate(story3Art, AtsRelationTypes.AgileStoryToSprint_Sprint, sprint2Art);
+      changes.relate(story3Art, AtsRelationTypes.AgileStoryToSprint_AgileSprint, sprint2Art);
 
       AtsClientService.get().getAgileService().setAgileStory(reqWf, story1, changes);
-      changes.relate(story1Art, AtsRelationTypes.AgileStoryToItems_AtsItem, reqWf);
+      changes.relate(story1Art, AtsRelationTypes.AgileStoryToItem_TeamWorkflow, reqWf);
 
       IAtsTeamWorkflow codeWf2 =
          AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_UnCommited_Code_TeamWf);
@@ -193,7 +193,7 @@ public class Pdd93CreateDemoAgile {
       changes.execute();
 
       Artifact progArt = AtsClientService.get().getQueryServiceClient().getArtifact(aProgram);
-      RelationManager.setRelationOrder(progArt, CoreRelationTypes.Default_Hierarchical__Child, RelationSide.SIDE_B,
+      RelationManager.setRelationOrder(progArt, CoreRelationTypes.DefaultHierarchical_Child, RelationSide.SIDE_B,
          RelationSorter.UNORDERED, progArt.getChildren());
 
       jaxFeature = JaxAgileProgramFeature.construct(backlogItem1, DemoArtifactToken.RD_Program_Feature_Robot_Voice);

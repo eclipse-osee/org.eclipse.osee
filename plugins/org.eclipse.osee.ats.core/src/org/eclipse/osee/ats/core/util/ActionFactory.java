@@ -200,7 +200,7 @@ public class ActionFactory implements IAtsActionFactory {
                }
             }
             if (group != null) {
-               changes.relate(teamWf, AtsRelationTypes.AgileFeatureToItem_FeatureGroup, group);
+               changes.relate(teamWf, AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup, group);
             }
          }
       }
@@ -474,7 +474,7 @@ public class ActionFactory implements IAtsActionFactory {
       }
 
       // Relate Action to WorkFlow
-      changes.relate(action, AtsRelationTypes.ActionToWorkflow_WorkFlow, teamWf);
+      changes.relate(action, AtsRelationTypes.ActionToWorkflow_TeamWorkFlow, teamWf);
 
       // Auto-add actions to configured goals
       addActionToConfiguredGoal(teamDef, teamWf, actionableItems, null, changes);
@@ -641,7 +641,7 @@ public class ActionFactory implements IAtsActionFactory {
       List<IAtsTeamWorkflow> teams = new LinkedList<>();
       IAtsAction action = getAction(teamWf);
       for (IAtsTeamWorkflow teamChild : atsApi.getRelationResolver().getRelated(action,
-         AtsRelationTypes.ActionToWorkflow_WorkFlow, IAtsTeamWorkflow.class)) {
+         AtsRelationTypes.ActionToWorkflow_TeamWorkFlow, IAtsTeamWorkflow.class)) {
          if (teamChild.notEqual(teamWf)) {
             teams.add(teamChild);
          }

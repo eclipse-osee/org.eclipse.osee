@@ -35,7 +35,7 @@ public class AgileFeatureGroupColumn extends AbstractServicesColumn {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
          Set<String> groups = new HashSet<>();
          for (ArtifactToken featureGroup : atsApi.getRelationResolver().getRelated(workItem,
-            AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
+            AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup)) {
             groups.add(featureGroup.getName());
          }
          result = Collections.toString(", ", groups);

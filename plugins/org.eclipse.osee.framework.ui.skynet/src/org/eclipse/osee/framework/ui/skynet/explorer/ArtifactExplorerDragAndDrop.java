@@ -138,14 +138,14 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                   }
                }
                valid = policy.canRelationBeModified(dropTarget, artsOnSameBranchAsDestination,
-                  CoreRelationTypes.Default_Hierarchical__Child, Level.FINE).matched();
+                  CoreRelationTypes.DefaultHierarchical_Child, Level.FINE).matched();
 
                // if we are deparenting ourself, make sure our parent's child side can be modified
                if (valid) {
                   for (Artifact art : artsOnSameBranchAsDestination) {
                      if (art.hasParent()) {
                         valid = policy.canRelationBeModified(art.getParent(), null,
-                           CoreRelationTypes.Default_Hierarchical__Child, Level.FINE).matched();
+                           CoreRelationTypes.DefaultHierarchical_Child, Level.FINE).matched();
                      }
                      if (!valid) {
                         break;
@@ -210,7 +210,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
             for (Artifact artifact : artifactsToBeRelated) {
                Artifact currentParent = artifact.getParent();
                if (currentParent != null) {
-                  currentParent.deleteRelation(CoreRelationTypes.Default_Hierarchical__Child, artifact);
+                  currentParent.deleteRelation(CoreRelationTypes.DefaultHierarchical_Child, artifact);
                   currentParent.persist(transaction);
                }
                parentArtifact.addChild(USER_DEFINED, artifact);

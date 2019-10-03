@@ -126,7 +126,7 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
          art.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Navigation.name());
          Artifact navArt = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component,
             DemoSubsystems.Navigation.name(), reqTeamArt.getWorkingBranch());
-         art.addRelation(CoreRelationTypes.Allocation__Component, navArt);
+         art.addRelation(CoreRelationTypes.Allocation_Component, navArt);
          art.persist(getClass().getSimpleName());
       }
       Artifact testArtifact = null;
@@ -137,7 +137,7 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
          art.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
          Artifact robotArt = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component,
             DemoSubsystems.Robot_API.name(), reqTeamArt.getWorkingBranch());
-         art.addRelation(CoreRelationTypes.Allocation__Component, robotArt);
+         art.addRelation(CoreRelationTypes.Allocation_Component, robotArt);
          art.persist(getClass().getSimpleName());
          testArtifact = art;
          testRelArtifact = robotArt;
@@ -195,7 +195,7 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
             throw new OseeArgumentException("Artifact Attribute did not update in Parent Branch after commit");
          }
          Boolean artFound = false;
-         for (Artifact art : parentArtifact.getRelatedArtifacts(CoreRelationTypes.Allocation__Component)) {
+         for (Artifact art : parentArtifact.getRelatedArtifacts(CoreRelationTypes.Allocation_Component)) {
             if (art.getArtId() == testRelArtifact.getArtId()) {
                artFound = true;
             }
@@ -223,7 +223,7 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
             "Artifact Attribute matches between Working and Parent branch before commit.  Invalid Test. ");
       }
 
-      for (Artifact art : parentArtifact.getRelatedArtifacts(CoreRelationTypes.Allocation__Component)) {
+      for (Artifact art : parentArtifact.getRelatedArtifacts(CoreRelationTypes.Allocation_Component)) {
          if (art.getId() == testRelArtifact.getId()) {
             throw new OseeArgumentException(
                "Artifact Relation exists in Working and Parent branch before commit.  Invalid Test. ");

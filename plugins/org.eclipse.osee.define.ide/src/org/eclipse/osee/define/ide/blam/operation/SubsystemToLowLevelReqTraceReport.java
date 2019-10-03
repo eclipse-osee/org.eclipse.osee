@@ -150,7 +150,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
          row[10] = lowLevelReq.getIdString();
 
          List<Artifact> relatedArtifacts =
-            lowLevelReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Higher_Level);
+            lowLevelReq.getRelatedArtifacts(CoreRelationTypes.RequirementTrace_HigherLevelRequirement);
          if (!relatedArtifacts.isEmpty()) {
             ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), excludedArtifactIdMap);
             isRelated = true;
@@ -203,11 +203,11 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
    private void processSubsystemReq(String[] row, Artifact higherLevelReq) throws IOException {
       List<Artifact> relatedArtifacts =
-         higherLevelReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Lower_Level);
+         higherLevelReq.getRelatedArtifacts(CoreRelationTypes.RequirementTrace_LowerLevelRequirement);
       ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), excludedArtifactIdMap);
       boolean isTraced = !Collections.disjoint(lowLevelReqs, relatedArtifacts);
 
-      List<Artifact> allocatedComponets = higherLevelReq.getRelatedArtifacts(CoreRelationTypes.Allocation__Component);
+      List<Artifact> allocatedComponets = higherLevelReq.getRelatedArtifacts(CoreRelationTypes.Allocation_Component);
       boolean allocated = !Collections.disjoint(components, allocatedComponets);
 
       /*
@@ -243,7 +243,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
    private void initLowLevelRequirements(List<Artifact> artifacts) {
       RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED,
-         CoreRelationTypes.Default_Hierarchical__Child);
+         CoreRelationTypes.DefaultHierarchical_Child);
       for (Artifact artifact : artifacts) {
          if (isOfLowerLevelRequirementType(artifact)) {
             lowLevelReqs.add(artifact);
@@ -259,7 +259,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
    private void initAllocationComponents(List<Artifact> artifacts) {
       RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED,
-         CoreRelationTypes.Default_Hierarchical__Child);
+         CoreRelationTypes.DefaultHierarchical_Child);
       for (Artifact artifact : artifacts) {
          if (!artifact.isOfType(CoreArtifactTypes.Folder)) {
             components.add(artifact);

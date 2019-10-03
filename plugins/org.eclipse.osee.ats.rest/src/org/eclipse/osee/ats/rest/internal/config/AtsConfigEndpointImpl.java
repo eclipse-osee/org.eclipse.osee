@@ -202,7 +202,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          throw new OseeStateException(rd.toString());
       }
       // Add configuration to configs folder
-      tx.relate(configsFolderArt, CoreRelationTypes.Default_Hierarchical__Child, configArt);
+      tx.relate(configsFolderArt, CoreRelationTypes.DefaultHierarchical_Child, configArt);
       tx.commit();
       return config;
    }

@@ -278,7 +278,7 @@ public class ConflictTestManager {
                      break;
                   case RELATION:
                      createRelation((Artifact) modification.object, (Artifact) modification.object2);
-                     ((Artifact) modification.object).deleteRelation(CoreRelationTypes.Dependency__Dependency,
+                     ((Artifact) modification.object).deleteRelation(CoreRelationTypes.Dependency_Dependency,
                         (Artifact) modification.object2);
                      ((Artifact) modification.object).persist(ConflictTestManager.class.getSimpleName());
                      break;
@@ -316,9 +316,9 @@ public class ConflictTestManager {
    }
 
    protected static RelationLink createRelation(Artifact artifact, Artifact artifactB) {
-      artifact.addRelation(CoreRelationTypes.Dependency__Dependency, artifactB);
+      artifact.addRelation(CoreRelationTypes.Dependency_Dependency, artifactB);
       artifact.persist(ConflictTestManager.class.getSimpleName());
-      return artifact.getRelations(CoreRelationTypes.Dependency__Dependency).get(0);
+      return artifact.getRelations(CoreRelationTypes.Dependency_Dependency).get(0);
    }
 
    public static IOseeBranch getSourceBranch() {

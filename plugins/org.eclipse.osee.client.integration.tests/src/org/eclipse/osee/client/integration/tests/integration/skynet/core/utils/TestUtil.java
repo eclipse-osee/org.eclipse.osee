@@ -57,7 +57,7 @@ public final class TestUtil {
          softArt.setSoleAttributeFromString(CoreAttributeTypes.Subsystem, "Electrical");
       }
       Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
-      rootArtifact.addRelation(CoreRelationTypes.Default_Hierarchical__Child, softArt);
+      rootArtifact.addRelation(CoreRelationTypes.DefaultHierarchical_Child, softArt);
       return softArt;
    }
 

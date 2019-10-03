@@ -56,7 +56,7 @@ public class RelationOrderMergeUtilityTest {
    @Rule
    public final OseeHousekeepingRule oseeHousekeeping = new OseeHousekeepingRule();
 
-   private final RelationTypeSide defaultHierarchy = CoreRelationTypes.Default_Hierarchical__Child;
+   private final RelationTypeSide defaultHierarchy = CoreRelationTypes.DefaultHierarchical_Child;
    private final RelationSorter ascOrder = LEXICOGRAPHICAL_ASC;
    private final RelationSorter descOrder = LEXICOGRAPHICAL_DESC;
 
@@ -157,7 +157,7 @@ public class RelationOrderMergeUtilityTest {
    }
 
    private void setAsChild(Artifact parent, Artifact child, RelationSorter sorter) {
-      child.deleteRelations(CoreRelationTypes.Default_Hierarchical__Parent);
-      parent.addRelation(sorter, CoreRelationTypes.Default_Hierarchical__Child, child);
+      child.deleteRelations(CoreRelationTypes.DefaultHierarchical_Parent);
+      parent.addRelation(sorter, CoreRelationTypes.DefaultHierarchical_Child, child);
    }
 }

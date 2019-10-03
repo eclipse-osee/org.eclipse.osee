@@ -118,7 +118,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
                            arts.add(art);
                         } else if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {
                            for (Artifact relArt : art.getRelatedArtifacts(
-                              CoreRelationTypes.Universal_Grouping__Members)) {
+                              CoreRelationTypes.UniversalGrouping_Members)) {
                               if (AtsObjects.isAtsWorkItemOrAction(relArt)) {
                                  arts.add(relArt);
                               }

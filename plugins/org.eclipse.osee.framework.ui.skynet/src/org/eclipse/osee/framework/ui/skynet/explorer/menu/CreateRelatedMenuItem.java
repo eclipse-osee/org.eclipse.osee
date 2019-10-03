@@ -106,7 +106,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
             AccessPolicy policy = ServiceUtil.getAccessPolicy();
 
             PermissionStatus status =
-               policy.canRelationBeModified(parentArt, null, CoreRelationTypes.Default_Hierarchical__Child, Level.FINE);
+               policy.canRelationBeModified(parentArt, null, CoreRelationTypes.DefaultHierarchical_Child, Level.FINE);
             if (!status.matched()) {
                MessageDialog.openError(AWorkbench.getActiveShell(), "New Child Error",
                   "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");

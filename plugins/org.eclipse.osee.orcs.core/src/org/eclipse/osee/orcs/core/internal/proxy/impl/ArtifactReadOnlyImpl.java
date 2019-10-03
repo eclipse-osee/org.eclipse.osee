@@ -342,7 +342,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
 
    @Override
    public Collection<Long> getChildrentIds() {
-      return getRelatedIds(CoreRelationTypes.Default_Hierarchical__Child);
+      return getRelatedIds(CoreRelationTypes.DefaultHierarchical_Child);
    }
 
    @Override

@@ -13,10 +13,10 @@ package org.eclipse.osee.orcs.api;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Component;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GeneralDocument;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Dependency__Artifact;
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Dependency__Dependency;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DefaultHierarchical_Child;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DefaultHierarchical_Parent;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Dependency_Artifact;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Dependency_Dependency;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
@@ -359,7 +359,7 @@ public class OrcsTransactionTest {
       tx.createAttribute(artifact1, CoreAttributeTypes.PublishInline, true);
       artifact2 = tx.createArtifact(CoreArtifactTypes.Folder, "deleteThisFolder");
       tx.createAttribute(artifact2, CoreAttributeTypes.Annotation, "annotation");
-      tx.relate(artifact2, Default_Hierarchical__Parent, artifact1);
+      tx.relate(artifact2, DefaultHierarchical_Parent, artifact1);
       TransactionId tx1 = tx.commit();
 
       tx = txFactory.createTransaction(COMMON, userArtifact, "create art 1 attribute");
@@ -371,7 +371,7 @@ public class OrcsTransactionTest {
       tx = txFactory.createTransaction(COMMON, userArtifact, "delete art 1");
       tx.deleteArtifact(toDelete);
       tx.deleteAttributes(artifact2, CoreAttributeTypes.Annotation);
-      tx.unrelate(artifact2, Default_Hierarchical__Parent, artifact1);
+      tx.unrelate(artifact2, DefaultHierarchical_Parent, artifact1);
       TransactionId tx3 = tx.commit();
 
       toDelete = query.fromBranch(COMMON).andId(artifact2).getResults().getExactlyOne();
@@ -493,7 +493,7 @@ public class OrcsTransactionTest {
       builder.andIds(artifact1, artifact2);
       builder.includeDeletedArtifacts();
       builder.includeDeletedAttributes();
-      builder.andRelatedTo(Default_Hierarchical__Parent, artifact1Actual);
+      builder.andRelatedTo(DefaultHierarchical_Parent, artifact1Actual);
       artifacts = builder.getResults();
       verifyHistoricalArtifacts(artifacts, artifact1, null);
    }
@@ -518,7 +518,7 @@ public class OrcsTransactionTest {
       builder.andIds(artifact1, artifact2);
       builder.includeDeletedArtifacts();
       builder.includeDeletedAttributes();
-      builder.andRelatedTo(Default_Hierarchical__Parent, artifact1Actual);
+      builder.andRelatedTo(DefaultHierarchical_Parent, artifact1Actual);
       artifacts = builder.getResults();
       verifyHistoricalArtifacts(artifacts, null, null);
    }
@@ -544,7 +544,7 @@ public class OrcsTransactionTest {
       builder.includeDeletedArtifacts();
       builder.includeDeletedAttributes();
       builder.includeDeletedRelations();
-      builder.andRelatedTo(Default_Hierarchical__Parent, artifact1Actual);
+      builder.andRelatedTo(DefaultHierarchical_Parent, artifact1Actual);
       artifacts = builder.getResults();
       verifyHistoricalArtifacts(artifacts, artifact1, null);
    }
@@ -646,7 +646,7 @@ public class OrcsTransactionTest {
 
       TransactionBuilder tx2 = createTx();
       ArtifactId art4 = tx2.createArtifact(Component, "D component");
-      tx2.relate(art1, Default_Hierarchical__Child, art4, LEXICOGRAPHICAL_DESC);
+      tx2.relate(art1, DefaultHierarchical_Child, art4, LEXICOGRAPHICAL_DESC);
       TransactionId tx2Id = tx2.commit();
 
       ArtifactReadable artifact21 = art1Query.getResults().getExactlyOne();
@@ -685,7 +685,7 @@ public class OrcsTransactionTest {
       assertEquals(art2, artifact2);
 
       TransactionBuilder tx2 = createTx();
-      tx2.setRelations(art1, Default_Hierarchical__Child, Arrays.asList(art3, art4));
+      tx2.setRelations(art1, DefaultHierarchical_Child, Arrays.asList(art3, art4));
       tx2.commit();
 
       artifact1 = query.fromBranch(COMMON).andId(art1).getResults().getExactlyOne();
@@ -754,8 +754,8 @@ public class OrcsTransactionTest {
       ArtifactId art1 = tx1.createArtifact(Component, "A component");
       ArtifactId art2 = tx1.createArtifact(Component, "B component");
 
-      tx1.relate(art1, Default_Hierarchical__Child, art2);
-      tx1.setRationale(art1, Default_Hierarchical__Child, art2, rationale);
+      tx1.relate(art1, DefaultHierarchical_Child, art2);
+      tx1.setRationale(art1, DefaultHierarchical_Child, art2, rationale);
 
       tx1.commit();
 
@@ -765,10 +765,10 @@ public class OrcsTransactionTest {
       ArtifactReadable otherArtifact = artifact.getChild();
       assertEquals("B component", otherArtifact.getName());
 
-      String actual1 = artifact.getRationale(Default_Hierarchical__Child, otherArtifact);
+      String actual1 = artifact.getRationale(DefaultHierarchical_Child, otherArtifact);
       assertEquals(rationale, actual1);
 
-      String actual2 = otherArtifact.getRationale(Default_Hierarchical__Parent, artifact);
+      String actual2 = otherArtifact.getRationale(DefaultHierarchical_Parent, artifact);
       assertEquals(rationale, actual2);
    }
 
@@ -779,13 +779,13 @@ public class OrcsTransactionTest {
       ArtifactId art2 = tx1.createArtifact(art1, Component, "C component");
       ArtifactId art3 = tx1.createArtifact(art1, Component, "B component");
       ArtifactId art4 = tx1.createArtifact(GeneralDocument, "Document");
-      tx1.relate(art1, Dependency__Dependency, art4);
+      tx1.relate(art1, Dependency_Dependency, art4);
       tx1.commit();
 
       ArtifactReadable artifact4 = query.fromBranch(COMMON).andId(art4).getResults().getExactlyOne();
       assertEquals(art4, artifact4);
 
-      ArtifactReadable artifact1 = artifact4.getRelated(CoreRelationTypes.Dependency__Artifact).getExactlyOne();
+      ArtifactReadable artifact1 = artifact4.getRelated(CoreRelationTypes.Dependency_Artifact).getExactlyOne();
       assertEquals(art1, artifact1);
 
       Iterator<ArtifactReadable> iterator = artifact1.getChildren().iterator();
@@ -794,13 +794,13 @@ public class OrcsTransactionTest {
 
       // Un-relate a child
       TransactionBuilder tx2 = createTx();
-      tx2.unrelate(art1, Default_Hierarchical__Child, art2);
+      tx2.unrelate(art1, DefaultHierarchical_Child, art2);
       tx2.commit();
 
       artifact4 = query.fromBranch(COMMON).andId(art4).getResults().getExactlyOne();
       assertEquals(art4, artifact4);
 
-      artifact1 = artifact4.getRelated(CoreRelationTypes.Dependency__Artifact).getExactlyOne();
+      artifact1 = artifact4.getRelated(CoreRelationTypes.Dependency_Artifact).getExactlyOne();
       assertEquals(art1, artifact1);
 
       assertEquals(art3, artifact1.getChild());
@@ -814,13 +814,13 @@ public class OrcsTransactionTest {
       ArtifactId art3 = tx1.createArtifact(art1, Component, "B component");
 
       ArtifactId art4 = tx1.createArtifact(GeneralDocument, "Document");
-      tx1.relate(art1, Dependency__Dependency, art4);
+      tx1.relate(art1, Dependency_Dependency, art4);
       tx1.commit();
 
       ArtifactReadable artifact4 = query.fromBranch(COMMON).andId(art4).getResults().getExactlyOne();
       assertEquals(art4, artifact4);
 
-      ArtifactReadable artifact1 = artifact4.getRelated(Dependency__Artifact).getExactlyOne();
+      ArtifactReadable artifact1 = artifact4.getRelated(Dependency_Artifact).getExactlyOne();
       assertEquals(art1, artifact1);
 
       Iterator<ArtifactReadable> iterator = artifact1.getChildren().iterator();
@@ -829,13 +829,13 @@ public class OrcsTransactionTest {
 
       // Unrelate All children
       TransactionBuilder tx2 = createTx();
-      tx2.unrelateFromAll(Default_Hierarchical__Parent, art1);
+      tx2.unrelateFromAll(DefaultHierarchical_Parent, art1);
       tx2.commit();
 
       artifact4 = query.fromBranch(COMMON).andId(art4).getResults().getExactlyOne();
       assertEquals(art4, artifact4);
 
-      artifact1 = artifact4.getRelated(Dependency__Artifact).getExactlyOne();
+      artifact1 = artifact4.getRelated(Dependency_Artifact).getExactlyOne();
       assertEquals(art1, artifact1);
 
       assertEquals(true, artifact1.getChildren().isEmpty());
@@ -880,14 +880,14 @@ public class OrcsTransactionTest {
       ArtifactId art3 = tx1.createArtifact(art1, Component, "C component");
 
       ArtifactId art4 = tx1.createArtifact(GeneralDocument, "Document");
-      tx1.relate(art1, Dependency__Dependency, art4);
+      tx1.relate(art1, Dependency_Dependency, art4);
       TransactionId rec1 = tx1.commit();
       assertNotNull(rec1);
 
       artifact4 = query.fromBranch(COMMON).andId(art4).getResults().getExactlyOne();
       assertEquals(art4, artifact4);
 
-      artifact1 = artifact4.getRelated(Dependency__Artifact).getExactlyOne();
+      artifact1 = artifact4.getRelated(Dependency_Artifact).getExactlyOne();
       assertEquals(art1, artifact1);
 
       Iterator<ArtifactReadable> iterator = artifact1.getChildren().iterator();
@@ -914,12 +914,12 @@ public class OrcsTransactionTest {
       Conditions.assertNotSentinel(artifact4);
 
       assertEquals(true, artifact1.getChildren().isEmpty());
-      assertEquals(true, artifact1.getRelated(Dependency__Dependency).isEmpty());
+      assertEquals(true, artifact1.getRelated(Dependency_Dependency).isEmpty());
 
       assertNull(artifact2.getParent());
       assertNull(artifact3.getParent());
 
-      assertEquals(true, artifact4.getRelated(Dependency__Artifact).isEmpty());
+      assertEquals(true, artifact4.getRelated(Dependency_Artifact).isEmpty());
    }
 
    @Test
@@ -1059,8 +1059,8 @@ public class OrcsTransactionTest {
       ArtifactId child = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "Child");
       ArtifactId parent1 = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "Parent1");
       ArtifactId parent2 = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "Parent2");
-      tx.relate(parent1, Default_Hierarchical__Parent, child);
-      tx.relate(parent2, Default_Hierarchical__Parent, child);
+      tx.relate(parent1, DefaultHierarchical_Parent, child);
+      tx.relate(parent2, DefaultHierarchical_Parent, child);
    }
 
    private TransactionBuilder createTx() {

@@ -147,9 +147,9 @@ public class ActionPage {
          teamWf = action;
       } else if (action.isOfType(AtsArtifactTypes.AbstractReview)) {
          teamWf =
-            action.getRelated(AtsRelationTypes.TeamWorkflowToReview_Team).getOneOrDefault(ArtifactReadable.SENTINEL);
+            action.getRelated(AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow).getOneOrDefault(ArtifactReadable.SENTINEL);
       } else if (action.isOfType(AtsArtifactTypes.Task)) {
-         teamWf = action.getRelated(AtsRelationTypes.TeamWfToTask_TeamWf).getOneOrDefault(ArtifactReadable.SENTINEL);
+         teamWf = action.getRelated(AtsRelationTypes.TeamWfToTask_TeamWorkflow).getOneOrDefault(ArtifactReadable.SENTINEL);
       }
       return teamWf;
    }

@@ -60,10 +60,10 @@ public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
       }
 
       if (artifact.isOfType(CoreArtifactTypes.UniversalGroup)) {
-         if (artifact.getRelatedArtifactsCount(CoreRelationTypes.Universal_Grouping__Members) == 0) {
+         if (artifact.getRelatedArtifactsCount(CoreRelationTypes.UniversalGrouping_Members) == 0) {
             return NO_MATCH;
          }
-         for (Artifact childArt : artifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
+         for (Artifact childArt : artifact.getRelatedArtifacts(CoreRelationTypes.UniversalGrouping_Members)) {
             if (childArt.isOfType(AtsArtifactTypes.AtsArtifact)) {
                return PRESENTATION_SUBTYPE_MATCH;
             }

@@ -54,10 +54,10 @@ public class TraceabilityContentProvider implements ITreeContentProvider {
             if (((Artifact) data).isOfType(CoreArtifactTypes.AbstractSoftwareRequirement)) {
                List<Object> children = new LinkedList<>();
                try {
-                  for (Artifact art : ((Artifact) data).getRelatedArtifacts(CoreRelationTypes.Verification__Verifier)) {
+                  for (Artifact art : ((Artifact) data).getRelatedArtifacts(CoreRelationTypes.Verification_Verifier)) {
                      children.add(new ResultsXViewerRow(new String[] {art.getName(), "Verifies"}, art));
                   }
-                  for (Artifact art : ((Artifact) data).getRelatedArtifacts(CoreRelationTypes.Uses__TestUnit)) {
+                  for (Artifact art : ((Artifact) data).getRelatedArtifacts(CoreRelationTypes.Uses_TestUnit)) {
                      children.add(new ResultsXViewerRow(new String[] {art.getName(), "Uses"}, art));
                   }
                } catch (OseeCoreException ex) {

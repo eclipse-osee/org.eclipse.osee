@@ -94,14 +94,14 @@ public class SprintMemberProvider extends AbstractMemberProvider {
    public Result isAddValid(List<Artifact> artifacts) {
       StringBuilder builder = new StringBuilder();
       for (Artifact art : artifacts) {
-         List<Artifact> relatedSprints = art.getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_Sprint);
+         List<Artifact> relatedSprints = art.getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_AgileSprint);
          if (relatedSprints.size() > 1 || relatedSprints.size() == 1 && relatedSprints.iterator().next().notEqual(
             getArtifact())) {
             builder.append(art.getArtifactTypeName());
             builder.append(" ");
             builder.append(art.toStringWithId());
             builder.append(" already belongs to ");
-            builder.append(art.getRelatedArtifactsCount(AtsRelationTypes.AgileSprintToItem_Sprint));
+            builder.append(art.getRelatedArtifactsCount(AtsRelationTypes.AgileSprintToItem_AgileSprint));
             builder.append(" Sprint(s)\n");
          }
       }

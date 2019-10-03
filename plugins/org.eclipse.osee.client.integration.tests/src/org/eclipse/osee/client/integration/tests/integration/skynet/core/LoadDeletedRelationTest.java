@@ -53,7 +53,7 @@ public class LoadDeletedRelationTest {
       right = TestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Right", SAW_Bld_2);
       left.persist(getClass().getSimpleName());
       right.persist(getClass().getSimpleName());
-      type = CoreRelationTypes.Requirement_Trace__Higher_Level;
+      type = CoreRelationTypes.RequirementTrace_HigherLevelRequirement;
    }
 
    //not implemented  in the code

@@ -87,7 +87,7 @@ public class UpdateAtsConfiguration {
             if (rd.isErrors()) {
                throw new OseeStateException(rd.toString());
             }
-            tx.relate(headingArt, CoreRelationTypes.Default_Hierarchical__Child, ruleDefConfigArt);
+            tx.relate(headingArt, CoreRelationTypes.DefaultHierarchical_Child, ruleDefConfigArt);
             tx.commit();
          }
       } catch (Exception ex) {
@@ -170,7 +170,7 @@ public class UpdateAtsConfiguration {
             orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, userId, "Create AtsConfig");
          ArtifactToken headingArt = atsApi.getQueryService().getArtifact(AtsArtifactToken.HeadingFolder);
          atsConfigArt = tx.createArtifact(AtsArtifactToken.AtsConfig);
-         tx.relate(headingArt, CoreRelationTypes.Default_Hierarchical__Parent, atsConfigArt);
+         tx.relate(headingArt, CoreRelationTypes.DefaultHierarchical_Parent, atsConfigArt);
          tx.commit();
          rd.log("Created AtsConfig");
       }
@@ -197,7 +197,7 @@ public class UpdateAtsConfiguration {
             orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, userId, "Create Configs Folder");
          configsFolderArt = tx.createArtifact(AtsArtifactToken.ConfigsFolder);
          ArtifactId headingArt = atsApi.getQueryService().getArtifact(AtsArtifactToken.HeadingFolder);
-         tx.relate(configsFolderArt, CoreRelationTypes.Default_Hierarchical__Parent, headingArt);
+         tx.relate(configsFolderArt, CoreRelationTypes.DefaultHierarchical_Parent, headingArt);
          tx.commit();
          rd.log("Created Configs Folder");
       }

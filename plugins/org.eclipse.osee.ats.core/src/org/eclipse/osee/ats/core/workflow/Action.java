@@ -38,7 +38,7 @@ public class Action extends AtsObject implements IAtsAction {
 
    @Override
    public Collection<IAtsTeamWorkflow> getTeamWorkflows() {
-      return atsApi.getRelationResolver().getRelated(this, AtsRelationTypes.ActionToWorkflow_WorkFlow,
+      return atsApi.getRelationResolver().getRelated(this, AtsRelationTypes.ActionToWorkflow_TeamWorkFlow,
          IAtsTeamWorkflow.class);
    }
 

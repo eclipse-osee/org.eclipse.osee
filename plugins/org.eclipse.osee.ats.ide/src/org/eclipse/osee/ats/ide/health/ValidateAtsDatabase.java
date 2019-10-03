@@ -903,7 +903,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
          try {
             if (artifact.isOfType(AtsArtifactTypes.Action) && artifact.getRelatedArtifactsCount(
-               AtsRelationTypes.ActionToWorkflow_WorkFlow) == 0) {
+               AtsRelationTypes.ActionToWorkflow_TeamWorkFlow) == 0) {
                results.log(artifact, "testAtsActionsHaveTeamWorkflow",
                   "Error: Action " + XResultDataUI.getHyperlink(artifact) + " has no Team Workflows\n");
             }
@@ -976,11 +976,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          try {
             if (artifact.isOfType(AtsArtifactTypes.Task)) {
                TaskArtifact taskArtifact = (TaskArtifact) artifact;
-               if (taskArtifact.getRelatedArtifactsCount(AtsRelationTypes.TeamWfToTask_TeamWf) != 1) {
+               if (taskArtifact.getRelatedArtifactsCount(AtsRelationTypes.TeamWfToTask_TeamWorkflow) != 1) {
                   results.log(artifact, "testTasksHaveParentWorkflow",
                      "Error: Task " + XResultDataUI.getHyperlink(
                         taskArtifact) + " has " + taskArtifact.getRelatedArtifacts(
-                           AtsRelationTypes.TeamWfToTask_TeamWf).size() + " parents.");
+                           AtsRelationTypes.TeamWfToTask_TeamWorkflow).size() + " parents.");
                }
             }
          } catch (Exception ex) {
@@ -1027,7 +1027,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             if (artifact instanceof AbstractReviewArtifact) {
                AbstractReviewArtifact reviewArtifact = (AbstractReviewArtifact) artifact;
                if (reviewArtifact.getRelatedArtifactsCount(
-                  AtsRelationTypes.TeamWorkflowToReview_Team) == 0 && !AtsClientService.get().getWorkItemService().getActionableItemService().hasActionableItems(
+                  AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow) == 0 && !AtsClientService.get().getWorkItemService().getActionableItemService().hasActionableItems(
                      reviewArtifact)) {
                   results.log(artifact, "testReviewsHaveParentWorkflowOrActionableItems",
                      "Error: Review " + XResultDataUI.getHyperlink(

@@ -129,7 +129,7 @@ public class SafetyReportGenerator {
             StringBuilder reqNames = new StringBuilder();
             boolean firstTime = true;
             for (ArtifactReadable systemRequirement : systemFunction.getRelated(
-               CoreRelationTypes.Design__Requirement)) {
+               CoreRelationTypes.Design_Requirement)) {
                if (!firstTime) {
                   paraNums.append(", ");
                   reqNames.append(", ");
@@ -149,7 +149,7 @@ public class SafetyReportGenerator {
    }
 
    private void writeSFHAInfo(ArtifactReadable systemFunction, String sevCat, ISheetWriter writer) throws IOException {
-      ResultSet<ArtifactReadable> results = systemFunction.getRelated(CoreRelationTypes.Safety__Safety_Assessment);
+      ResultSet<ArtifactReadable> results = systemFunction.getRelated(CoreRelationTypes.Assessment_SafetyAssessment);
       if (results.isEmpty()) {
          writer.writeCell("No SFHA Hazards found");
       } else {

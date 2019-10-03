@@ -146,7 +146,7 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
             row[3] = "";
          }
          String newline = "";
-         for (ArtifactReadable subSysReq : req.getRelated(CoreRelationTypes.Requirement_Trace__Higher_Level)) {
+         for (ArtifactReadable subSysReq : req.getRelated(CoreRelationTypes.RequirementTrace_HigherLevelRequirement)) {
             builtRows[4].append(newline);
             builtRows[4].append(subSysReq.getSoleAttributeAsString(CoreAttributeTypes.ParagraphNumber));
             builtRows[5].append(newline);
@@ -219,7 +219,7 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
          summarySubsystemCounter.put(subsystem, counter);
          String newline = "";
          boolean foundTrace = false;
-         for (ArtifactReadable subSysReq : req.getRelated(CoreRelationTypes.Requirement_Trace__Lower_Level)) {
+         for (ArtifactReadable subSysReq : req.getRelated(CoreRelationTypes.RequirementTrace_LowerLevelRequirement)) {
             builtRows[4].append(newline);
             builtRows[4].append(REQUIREMENT_TRACE_TYPE);
             builtRows[5].append(newline);
@@ -253,7 +253,7 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
          }
 
          foundTrace = false;
-         for (ArtifactReadable subSysReq : req.getRelated(CoreRelationTypes.Allocation__Component)) {
+         for (ArtifactReadable subSysReq : req.getRelated(CoreRelationTypes.Allocation_Component)) {
             builtRows[4].append(newline);
             builtRows[4].append(ALLOCATION_TRACE_TYPE);
             builtRows[5].append(newline);

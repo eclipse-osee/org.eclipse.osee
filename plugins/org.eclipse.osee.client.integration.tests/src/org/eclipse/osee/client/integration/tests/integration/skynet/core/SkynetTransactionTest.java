@@ -151,8 +151,8 @@ public final class SkynetTransactionTest {
       Artifact parent2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "parent2");
       Artifact child = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "child");
       try {
-         parent1.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child);
-         parent2.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child);
+         parent1.addRelation(CoreRelationTypes.DefaultHierarchical_Child, child);
+         parent2.addRelation(CoreRelationTypes.DefaultHierarchical_Child, child);
          child.persist("testRelationMultiplicity");
       } finally {
          child.purgeFromBranch();

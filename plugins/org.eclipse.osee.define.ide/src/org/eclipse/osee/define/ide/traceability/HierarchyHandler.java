@@ -112,7 +112,7 @@ public final class HierarchyHandler {
    }
 
    private void addChildIfNotRelated(Artifact parentFolder, Artifact childFolder) {
-      boolean related = parentFolder.isRelated(CoreRelationTypes.Default_Hierarchical__Child, childFolder);
+      boolean related = parentFolder.isRelated(CoreRelationTypes.DefaultHierarchical_Child, childFolder);
       if (!related) {
          parentFolder.addChild(childFolder);
          persistHelper(parentFolder);
@@ -128,7 +128,7 @@ public final class HierarchyHandler {
             toReturn = relatedFolders.iterator().next();
          } else if (relatedFolders.size() > 1) {
             for (Artifact folder : relatedFolders) {
-               if (parentFolder.isRelated(CoreRelationTypes.Default_Hierarchical__Child, folder)) {
+               if (parentFolder.isRelated(CoreRelationTypes.DefaultHierarchical_Child, folder)) {
                   toReturn = folder;
                   break;
                }

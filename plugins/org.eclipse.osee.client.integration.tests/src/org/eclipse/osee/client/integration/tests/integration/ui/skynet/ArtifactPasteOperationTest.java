@@ -70,18 +70,18 @@ public class ArtifactPasteOperationTest {
       parent1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, COMMON, "Parent");
 
       child1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, COMMON, "child_a");
-      child1.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, emptyList);
+      child1.setRelationOrder(CoreRelationTypes.DefaultHierarchical_Child, emptyList);
 
       child2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, COMMON, "child_b");
       child3 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, COMMON, "child_c");
 
-      parent1.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, emptyList);
+      parent1.setRelationOrder(CoreRelationTypes.DefaultHierarchical_Child, emptyList);
       parent1.addChild(child1);
       parent1.addChild(child3);
       parent1.addChild(child2);
 
       destination = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, COMMON, "Destination");
-      destination.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, emptyList);
+      destination.setRelationOrder(CoreRelationTypes.DefaultHierarchical_Child, emptyList);
       destination.addChild(parent1);
    }
 
@@ -183,7 +183,7 @@ public class ArtifactPasteOperationTest {
          RelationSorter orderGuid = entry.getValue().getFirst();
          List<String> guids = entry.getValue().getSecond();
 
-         Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child, relationTypeId);
+         Assert.assertEquals(CoreRelationTypes.DefaultHierarchical_Child, relationTypeId);
          Assert.assertEquals(RelationSide.SIDE_B, relationSide);
          Assert.assertEquals(expectedOrderType, orderGuid);
          if (hasChildren && expectedOrderType == USER_DEFINED) {

@@ -72,8 +72,8 @@ public class OrcsRelationLoadingTest {
       //      3  219   7  15    54
       //      2  219   1  7     52
       assertEquals(1, art7.getExistingRelationTypes().size());
-      assertEquals(5, art7.getRelated(CoreRelationTypes.Default_Hierarchical__Child).size());
-      assertEquals(1, art7.getRelated(CoreRelationTypes.Default_Hierarchical__Parent).size());
+      assertEquals(5, art7.getRelated(CoreRelationTypes.DefaultHierarchical_Child).size());
+      assertEquals(1, art7.getRelated(CoreRelationTypes.DefaultHierarchical_Parent).size());
 
       //art8 has
       //      REL_LINK_ID    REL_LINK_TYPE_ID     A_ART_ID    B_ART_ID    RATIONALE   GAMMA_ID    TX_CURRENT     MOD_TYPE    BRANCH_ID   TRANSACTION_ID    GAMMA_ID
@@ -84,7 +84,7 @@ public class OrcsRelationLoadingTest {
       //      5  233   8  18    78
       //      1  219   7  8     53
       assertEquals(2, art8.getExistingRelationTypes().size());
-      assertEquals(1, art8.getRelated(CoreRelationTypes.Default_Hierarchical__Parent).size());
+      assertEquals(1, art8.getRelated(CoreRelationTypes.DefaultHierarchical_Parent).size());
       assertEquals(19, art8.getRelated(CoreRelationTypes.Users_User).size());
 
    }
@@ -102,7 +102,7 @@ public class OrcsRelationLoadingTest {
 
       //artifact has 3 children and 1 parent
       assertEquals(1, artifact.getExistingRelationTypes().size());
-      assertEquals(3, artifact.getRelated(CoreRelationTypes.Default_Hierarchical__Child).size());
-      assertEquals(1, artifact.getRelated(CoreRelationTypes.Default_Hierarchical__Parent).size());
+      assertEquals(3, artifact.getRelated(CoreRelationTypes.DefaultHierarchical_Child).size());
+      assertEquals(1, artifact.getRelated(CoreRelationTypes.DefaultHierarchical_Parent).size());
    }
 }

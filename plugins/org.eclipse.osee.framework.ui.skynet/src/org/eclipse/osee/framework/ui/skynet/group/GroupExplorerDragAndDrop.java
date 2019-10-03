@@ -209,9 +209,9 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
 
                      for (Artifact artifact : insertArts) {
                         // Remove item from old group
-                        parentArtifact.deleteRelation(CoreRelationTypes.Universal_Grouping__Members, artifact);
+                        parentArtifact.deleteRelation(CoreRelationTypes.UniversalGrouping_Members, artifact);
                         // Add items to new group
-                        targetArtifact.addRelation(CoreRelationTypes.Universal_Grouping__Members, artifact);
+                        targetArtifact.addRelation(CoreRelationTypes.UniversalGrouping_Members, artifact);
                      }
                      TransactionManager.persistInTransaction("Group Explorer - Drag/Drop", parentArtifact,
                         targetArtifact);
@@ -242,7 +242,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                      Artifact targetArtifact = dragOverExplorerItem.getArtifact();
 
                      for (Artifact art : insertArts) {
-                        parentArtifact.setRelationOrder(CoreRelationTypes.Universal_Grouping__Members, targetArtifact,
+                        parentArtifact.setRelationOrder(CoreRelationTypes.UniversalGrouping_Members, targetArtifact,
                            isFeedbackAfter, art);
                         targetArtifact = art;
                      }
@@ -258,7 +258,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                      Artifact targetArtifact = dragOverExplorerItem.getArtifact();
 
                      for (Artifact art : insertArts) {
-                        parentArtifact.addRelation(USER_DEFINED, CoreRelationTypes.Universal_Grouping__Members,
+                        parentArtifact.addRelation(USER_DEFINED, CoreRelationTypes.UniversalGrouping_Members,
                            targetArtifact, isFeedbackAfter, art, "");
                      }
                      parentArtifact.persist(getClass().getSimpleName());
@@ -298,7 +298,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
       try {
          for (Artifact art : artsToRelate) {
             if (!dragOverExplorerItem.contains(art)) {
-               dragOverExplorerItem.getArtifact().addRelation(CoreRelationTypes.Universal_Grouping__Members, art);
+               dragOverExplorerItem.getArtifact().addRelation(CoreRelationTypes.UniversalGrouping_Members, art);
             }
          }
          dragOverExplorerItem.getArtifact().persist("Drag and drop: copy artifacts to group");

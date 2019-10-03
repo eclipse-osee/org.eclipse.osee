@@ -91,7 +91,7 @@ public class OrcsValidationHelperAdapterTest {
    @Test
    public void testIsRelationTypeExist() {
       System.out.println("testIsRelationTypeExist ");
-      Assert.assertTrue(helper.isRelationTypeExist(CoreRelationTypes.Default_Hierarchical__Child.getGuid()));
+      Assert.assertTrue(helper.isRelationTypeExist(CoreRelationTypes.DefaultHierarchical_Child.getGuid()));
 
       Assert.assertFalse(helper.isRelationTypeExist(999999L));
    }

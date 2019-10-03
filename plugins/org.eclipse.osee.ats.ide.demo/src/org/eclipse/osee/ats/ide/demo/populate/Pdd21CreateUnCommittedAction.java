@@ -157,7 +157,7 @@ public class Pdd21CreateUnCommittedAction implements IPopulateDemoDatabase {
          Artifact comArt = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component,
             DemoSubsystems.Robot_API.name(), reqTeamArt.getWorkingBranch());
 
-         art.addRelation(CoreRelationTypes.Allocation__Component, comArt);
+         art.addRelation(CoreRelationTypes.Allocation_Component, comArt);
          art.persist(getClass().getSimpleName());
       }
 

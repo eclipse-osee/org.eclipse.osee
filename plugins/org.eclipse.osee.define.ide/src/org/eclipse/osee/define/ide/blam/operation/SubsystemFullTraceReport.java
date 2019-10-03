@@ -167,7 +167,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
    private void processSubSystemRequirement(Artifact subSystemRequirement) throws IOException {
       boolean topRowForSubsystemReq = true;
       for (Artifact systemRequirement : subSystemRequirement.getRelatedArtifacts(
-         CoreRelationTypes.Requirement_Trace__Higher_Level)) {
+         CoreRelationTypes.RequirementTrace_HigherLevelRequirement)) {
          writer.writeCell(systemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
          writer.writeCell(systemRequirement.getName());
          writer.writeCell(getRequirementText(systemRequirement));
@@ -179,12 +179,12 @@ public class SubsystemFullTraceReport extends AbstractBlam {
             writer.writeCell(subSystemRequirement.getSoleAttributeValue(CoreAttributeTypes.Subsystem, ""));
             writer.writeCell(subSystemRequirement.getAttributesToStringSorted(CoreAttributeTypes.QualificationMethod));
             writer.writeCell(Collections.toString(",",
-               subSystemRequirement.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier)));
+               subSystemRequirement.getRelatedArtifacts(CoreRelationTypes.Verification_Verifier)));
             topRowForSubsystemReq = false;
          }
 
          for (Artifact softwareRequirement : subSystemRequirement.getRelatedArtifacts(
-            CoreRelationTypes.Requirement_Trace__Lower_Level)) {
+            CoreRelationTypes.RequirementTrace_LowerLevelRequirement)) {
             processSoftwareRequirement(softwareRequirement);
          }
          writer.endRow();
@@ -206,7 +206,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
       writer.writeCell(softwareRequirement.getAttributesToStringSorted(CoreAttributeTypes.QualificationMethod));
 
       tests.clear();
-      for (Artifact testProcedure : softwareRequirement.getRelatedArtifacts(CoreRelationTypes.Validation__Validator)) {
+      for (Artifact testProcedure : softwareRequirement.getRelatedArtifacts(CoreRelationTypes.Validation_Validator)) {
          tests.add(testProcedure.getName());
       }
       Collection<String> testScripts = null;
@@ -214,7 +214,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
          testScripts = requirementsToCodeUnits.getValues(softwareRequirement);
       } else {
          List<Artifact> relatedArtifacts =
-            softwareRequirement.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier);
+            softwareRequirement.getRelatedArtifacts(CoreRelationTypes.Verification_Verifier);
          testScripts = Artifacts.getNames(relatedArtifacts);
       }
       if (testScripts != null) {

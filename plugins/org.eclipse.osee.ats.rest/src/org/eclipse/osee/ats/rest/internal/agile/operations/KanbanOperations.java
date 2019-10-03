@@ -177,7 +177,7 @@ public class KanbanOperations {
    private void addRowsByStory(JaxKbSprint jSprint, JaxKbTask task, IAgileItem aItem, IAtsWorkItem workItem) {
       ArtifactToken sprintArt = atsApi.getQueryService().getArtifact(jSprint.getId());
       Collection<ArtifactToken> sprintStories =
-         atsApi.getRelationResolver().getRelated(sprintArt, AtsRelationTypes.AgileStoryToSprint_Story);
+         atsApi.getRelationResolver().getRelated(sprintArt, AtsRelationTypes.AgileStoryToSprint_AgileStory);
 
       // "rowIdToName" : {
       //   "4345" : "As a user I will move the user right and left",
@@ -200,7 +200,7 @@ public class KanbanOperations {
       //  },
       rowIds.clear();
       for (ArtifactToken story : atsApi.getRelationResolver().getRelated(workItem,
-         AtsRelationTypes.AgileStoryToItems_Story)) {
+         AtsRelationTypes.AgileStoryToItem_AgileStory)) {
          jSprint.addRowIdToTaskId(story.getIdString(), String.valueOf(aItem.getId()));
       }
    }

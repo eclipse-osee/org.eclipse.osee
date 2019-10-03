@@ -157,8 +157,8 @@ public class Overview {
 
    public void addRelationsBlock(AbstractAtsArtifact artifact) {
       addRelationTable("Is Superceded By", CoreRelationTypes.Supercedes_Supercedes, artifact);
-      addRelationTable("Supercedes", CoreRelationTypes.Supercedes_Superceded, artifact);
-      addRelationTable("Supports", CoreRelationTypes.SupportingInfo_SupportedBy, artifact);
+      addRelationTable("Supercedes", CoreRelationTypes.Supercedes_SupercededBy, artifact);
+      addRelationTable("Supports", CoreRelationTypes.SupportingInfo_IsSupportedBy, artifact);
       addRelationTable("Is Supported By", CoreRelationTypes.SupportingInfo_SupportingInfo, artifact);
    }
 

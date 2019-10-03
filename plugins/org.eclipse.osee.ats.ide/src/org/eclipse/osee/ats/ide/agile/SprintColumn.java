@@ -146,7 +146,7 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
                Collection<ArtifactToken> relatedSprintArts =
                   AtsClientService.get().getAgileService().getRelatedSprints(awa);
                for (ArtifactToken relatedSprint : relatedSprintArts) {
-                  changes.unrelate(awa, AtsRelationTypes.AgileSprintToItem_Sprint, relatedSprint);
+                  changes.unrelate(awa, AtsRelationTypes.AgileSprintToItem_AgileSprint, relatedSprint);
                }
             }
             changes.executeIfNeeded();
@@ -163,9 +163,9 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
                Collection<ArtifactToken> relatedSprintArts =
                   AtsClientService.get().getAgileService().getRelatedSprints(awa);
                for (ArtifactToken relatedSprint : relatedSprintArts) {
-                  changes.unrelate(awa, AtsRelationTypes.AgileSprintToItem_Sprint, relatedSprint);
+                  changes.unrelate(awa, AtsRelationTypes.AgileSprintToItem_AgileSprint, relatedSprint);
                }
-               changes.relate(awa, AtsRelationTypes.AgileSprintToItem_Sprint, newSprintArt);
+               changes.relate(awa, AtsRelationTypes.AgileSprintToItem_AgileSprint, newSprintArt);
             }
             TransactionManager.persistInTransaction("Set Sprint", awas);
          }
@@ -202,7 +202,7 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
          if (element instanceof Artifact) {
             return Collections.toString("; ",
                AtsClientService.get().getQueryServiceClient().getArtifact(element).getRelatedArtifacts(
-                  AtsRelationTypes.AgileSprintToItem_Sprint));
+                  AtsRelationTypes.AgileSprintToItem_AgileSprint));
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);

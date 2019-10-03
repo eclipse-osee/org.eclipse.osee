@@ -68,7 +68,7 @@ public class SprintItems {
             }
 
             multipleSprints.addAll(AtsClientService.get().getRelationResolver().getRelated(workItem,
-               AtsRelationTypes.AgileSprintToItem_Sprint));
+               AtsRelationTypes.AgileSprintToItem_AgileSprint));
             commonSelectedSprint = multipleSprints.size() <= 1;
          }
       }

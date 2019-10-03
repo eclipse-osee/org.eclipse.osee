@@ -159,7 +159,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       List<IAtsWorkItem> children = new LinkedList<>();
       for (ArtifactToken action : atsApi.getQueryService().getArtifactsByIds(ids)) {
          for (ArtifactToken childWf : atsApi.getRelationResolver().getRelated(action,
-            AtsRelationTypes.ActionToWorkflow_WorkFlow)) {
+            AtsRelationTypes.ActionToWorkflow_TeamWorkFlow)) {
             IAtsWorkItem child = atsApi.getWorkItemService().getWorkItem(childWf);
             if (child != null) {
                children.add(child);

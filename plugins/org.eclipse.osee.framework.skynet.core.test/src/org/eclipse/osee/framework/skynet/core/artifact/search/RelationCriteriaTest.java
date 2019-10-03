@@ -31,35 +31,35 @@ public class RelationCriteriaTest {
 
    @Test
    public void testAddRelationTypeSideToQueryBuilder() {
-      RelationCriteria criteria = new RelationCriteria(CoreRelationTypes.Allocation__Component);
+      RelationCriteria criteria = new RelationCriteria(CoreRelationTypes.Allocation_Component);
       QueryBuilder builder = mock(QueryBuilder.class);
       criteria.addToQueryBuilder(builder);
-      verify(builder).andExists(CoreRelationTypes.Allocation__Component);
+      verify(builder).andExists(CoreRelationTypes.Allocation_Component);
 
       reset(builder);
       ArtifactId artifact = ArtifactId.valueOf(4);
-      criteria = new RelationCriteria(artifact, CoreRelationTypes.Allocation__Component, RelationSide.SIDE_A);
+      criteria = new RelationCriteria(artifact, CoreRelationTypes.Allocation_Component, RelationSide.SIDE_A);
       criteria.addToQueryBuilder(builder);
       ArgumentCaptor<RelationTypeSide> rtsCaptor = ArgumentCaptor.forClass(RelationTypeSide.class);
       verify(builder).andRelatedTo(rtsCaptor.capture(), eq(artifact));
-      Assert.assertEquals(CoreRelationTypes.Allocation__Component.getGuid(), rtsCaptor.getValue().getGuid());
+      Assert.assertEquals(CoreRelationTypes.Allocation_Component.getGuid(), rtsCaptor.getValue().getGuid());
       Assert.assertEquals(RelationSide.SIDE_A, rtsCaptor.getValue().getSide());
    }
 
    @Test
    public void testAddRelationTypeToQueryBuilder() {
-      RelationCriteria criteria = new RelationCriteria((IRelationType) CoreRelationTypes.Allocation__Component);
+      RelationCriteria criteria = new RelationCriteria((IRelationType) CoreRelationTypes.Allocation_Component);
       QueryBuilder builder = mock(QueryBuilder.class);
       criteria.addToQueryBuilder(builder);
-      verify(builder).andExists((IRelationType) CoreRelationTypes.Allocation__Component);
+      verify(builder).andExists((IRelationType) CoreRelationTypes.Allocation_Component);
 
       reset(builder);
       ArtifactId artifact = ArtifactId.valueOf(4);
-      criteria = new RelationCriteria(artifact, CoreRelationTypes.Allocation__Component, RelationSide.SIDE_A);
+      criteria = new RelationCriteria(artifact, CoreRelationTypes.Allocation_Component, RelationSide.SIDE_A);
       criteria.addToQueryBuilder(builder);
       ArgumentCaptor<RelationTypeSide> rtsCaptor = ArgumentCaptor.forClass(RelationTypeSide.class);
       verify(builder).andRelatedTo(rtsCaptor.capture(), eq(artifact));
-      Assert.assertEquals(CoreRelationTypes.Allocation__Component.getGuid(), rtsCaptor.getValue().getGuid());
+      Assert.assertEquals(CoreRelationTypes.Allocation_Component.getGuid(), rtsCaptor.getValue().getGuid());
       Assert.assertEquals(RelationSide.SIDE_A, rtsCaptor.getValue().getSide());
    }
 }

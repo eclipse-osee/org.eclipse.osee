@@ -39,28 +39,28 @@ public class TraceInformationAccumulator {
    }
 
    public void outputSubsystemsRequirementsMap(ArtifactReadable systemReqt, ISheetWriter writer) throws IOException {
-      softwareRequirements = systemReqt.getRelated(CoreRelationTypes.Requirement_Trace__Lower_Level).getList();
+      softwareRequirements = systemReqt.getRelated(CoreRelationTypes.RequirementTrace_LowerLevelRequirement).getList();
       if (outputReqts() == 0) {
          writer.endRow();
       }
    }
 
    public void outputSubsystemsComponentsMap(ArtifactReadable systemReqt, ISheetWriter writer) throws IOException {
-      components = systemReqt.getRelated(CoreRelationTypes.Allocation__Component).getList();
+      components = systemReqt.getRelated(CoreRelationTypes.Allocation_Component).getList();
       if (outputItems(components) == 0) {
          writer.endRow();
       }
    }
 
    public void outputSubsystemsTestsMap(ArtifactReadable systemReqt, ISheetWriter writer) throws IOException {
-      tests = systemReqt.getRelated(CoreRelationTypes.Verification__Verifier).getList();
+      tests = systemReqt.getRelated(CoreRelationTypes.Verification_Verifier).getList();
       if (outputItems(tests) == 0) {
          writer.endRow();
       }
    }
 
    public void outputSubsystemsTestPlansMap(ArtifactReadable systemReqt, ISheetWriter writer) throws IOException {
-      testPlans = systemReqt.getRelated(CoreRelationTypes.Verification_Plan__Test_Plan_Element).getList();
+      testPlans = systemReqt.getRelated(CoreRelationTypes.VerificationPlan_TestPlanElement).getList();
       if (outputItems(testPlans) == 0) {
          writer.endRow();
       }
@@ -96,11 +96,11 @@ public class TraceInformationAccumulator {
 
       int size = 0;
 
-      size = processSoftwareReqtSubItem(softwareRequirement, CoreRelationTypes.Allocation__Component,
+      size = processSoftwareReqtSubItem(softwareRequirement, CoreRelationTypes.Allocation_Component,
          TraceReportGenerator.SOFTWARE_COMPONENT_INDEX);
-      size += processSoftwareReqtSubItem(softwareRequirement, CoreRelationTypes.Verification__Verifier,
+      size += processSoftwareReqtSubItem(softwareRequirement, CoreRelationTypes.Verification_Verifier,
          TraceReportGenerator.SOFTWARE_PROCEDURE_INDEX);// test procedure
-      size += processSoftwareReqtSubItem(softwareRequirement, CoreRelationTypes.Validation__Validator,
+      size += processSoftwareReqtSubItem(softwareRequirement, CoreRelationTypes.Validation_Validator,
          TraceReportGenerator.SOFTWARE_SCRIPT_INDEX); // test script???
 
       Collection<String> codeUnits = traceReport.getRequirementToCodeUnitsValues(softwareRequirement);

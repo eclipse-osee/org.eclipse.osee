@@ -108,7 +108,7 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
          return parentTeamArt;
       }
       List<TeamWorkFlowArtifact> teams =
-         getRelatedArtifacts(AtsRelationTypes.TeamWorkflowToReview_Team, TeamWorkFlowArtifact.class);
+         getRelatedArtifacts(AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow, TeamWorkFlowArtifact.class);
       if (teams.size() > 1) {
          OseeLog.log(Activator.class, Level.SEVERE,
             getArtifactTypeName() + " " + getAtsId() + " has multiple parent workflows");

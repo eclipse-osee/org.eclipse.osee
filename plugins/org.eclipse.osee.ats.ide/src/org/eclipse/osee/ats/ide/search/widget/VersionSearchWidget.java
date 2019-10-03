@@ -145,7 +145,7 @@ public class VersionSearchWidget extends AbstractXComboViewerSearchWidget<IAtsVe
 
          for (IAtsActionableItem ai : teamActArts) {
             for (ArtifactToken teamDefArt : AtsClientService.get().getRelationResolver().getRelated(ai,
-               AtsRelationTypes.TeamActionableItem_Team)) {
+               AtsRelationTypes.TeamActionableItem_TeamDefinition)) {
                IAtsTeamDefinition teamDef = AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(
                   teamDefArt).getTeamDefinitionHoldingVersions();
                versions.addAll(getSortedVersions(teamDef));
