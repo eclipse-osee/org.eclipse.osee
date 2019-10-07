@@ -16,8 +16,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -25,6 +25,8 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicIdRelation;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -87,12 +89,22 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       options.setCommitter(committer);
       try {
          TransactionToken tx = proxy.commitBranch(sourceBranch, destinationBranch, options);
-         BranchManager.setState(sourceBranch, BranchState.COMMITTED);
-         handleResponse(tx, monitor, sourceBranch, destinationBranch);
+         if (tx == null) {
+            BranchManager.setState(sourceBranch, currentState);
+            OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.CommitFailed, sourceBranch));
+            String err = "A branch cannot be committed without any changes made.";
+            OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, err);
+         } else {
+            BranchManager.setState(sourceBranch, BranchState.COMMITTED);
+            handleResponse(tx, monitor, sourceBranch, destinationBranch);
+         }
       } catch (Exception ex) {
          BranchManager.setState(sourceBranch, currentState);
          OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.CommitFailed, sourceBranch));
-         throw ex;
+         if (!(ex instanceof NullPointerException)) {
+            throw ex;
+         }
+         return;
       }
    }
 

@@ -297,8 +297,12 @@ public class BranchEndpointImpl implements BranchEndpoint {
       Branch destBranch = getBranchById(destinationBranch);
 
       Callable<TransactionToken> op = branchOps.commitBranch(options.getCommitter(), srcBranch, destBranch);
-      TransactionToken tx = executeCallable(op);
-
+      TransactionToken tx = null;
+      try {
+         tx = executeCallable(op);
+      } catch (Exception ex) {
+         return null;
+      }
       if (options.isArchive()) {
          Callable<?> op2 = branchOps.archiveUnarchiveBranch(srcBranch, ArchiveOperation.ARCHIVE);
          executeCallable(op2);
