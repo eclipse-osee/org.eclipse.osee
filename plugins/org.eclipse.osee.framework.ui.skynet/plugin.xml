@@ -8,7 +8,6 @@
 	<extension-point id="ArtifactRendererTemplate" name="ArtifactRendererTemplate" schema="OSEE-INF/extensionPts/ArtifactRendererTemplate.exsd"/>
 	<extension-point id="OseeDictionary" name="OseeDictionary" schema="OSEE-INF/extensionPts/OseeDictionary.exsd"/>
 	<extension-point id="XWidgetProvider" name="XWidgetProvider" schema="OSEE-INF/extensionPts/XWidgetProvider.exsd"/>
-	<extension-point id="IgnorePublishAttribute" name="IgnorePublishAttribute" schema="OSEE-INF/extensionPts/IgnorePublishAttribute.exsd"/>
 	<extension-point id="TemplateProvider" name="TemplateProvider" schema="OSEE-INF/extensionPts/TemplateProvider.exsd"/>
  <extension-point id="AttributeXWidgetProvider" name="AttributeXWidgetProvider" schema="OSEE-INF/extensionPts/AttributeXWidgetProvider.exsd"/>
  <extension-point id="WorkDefinitionProvider" name="WorkDefinitionProvider" schema="OSEE-INF/extensionPts/WorkDefinitionProvider.exsd"/>

@@ -33,12 +33,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -150,7 +145,6 @@ public class WordTemplateProcessor {
    private final List<AttributeElement> attributeElements = new LinkedList<>();
    private final List<MetadataElement> metadataElements = new LinkedList<>();
    final List<Artifact> nonTemplateArtifacts = new LinkedList<>();
-   private final Set<String> ignoreAttributeExtensions = new HashSet<>();
    private final Set<Artifact> processedArtifacts = new HashSet<>();
    private final WordTemplateRenderer renderer;
    private boolean isDiff;
@@ -163,7 +157,6 @@ public class WordTemplateProcessor {
 
    public WordTemplateProcessor(WordTemplateRenderer renderer) {
       this.renderer = renderer;
-      loadIgnoreAttributeExtensions();
       artifactsToExclude = new HashMap<>();
    }
 
@@ -828,8 +821,8 @@ public class WordTemplateProcessor {
       Collection<Attribute<Object>> attributes = artifact.getAttributes(attributeType);
 
       if (!attributes.isEmpty()) {
-         // check if the attribute descriptor name is in the ignore list.
-         if (ignoreAttributeExtensions.contains(attributeType.getName())) {
+         //If WordOleData, the attribute is skipped
+         if (attributeType.equals(CoreAttributeTypes.WordOleData)) {
             return;
          }
 
@@ -847,23 +840,6 @@ public class WordTemplateProcessor {
       } else if (attributeType.equals(WordTemplateContent)) {
          RendererManager.renderAttribute(attributeType, presentationType, artifact, wordMl,
             attributeElement.getFormat(), attributeElement.getLabel(), footer, renderer.getRendererOptions());
-      }
-   }
-
-   private void loadIgnoreAttributeExtensions() {
-      IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
-      if (extensionRegistry != null) {
-         IExtensionPoint point =
-            extensionRegistry.getExtensionPoint("org.eclipse.osee.framework.ui.skynet.IgnorePublishAttribute");
-         if (point != null) {
-            IExtension[] extensions = point.getExtensions();
-            for (IExtension extension : extensions) {
-               IConfigurationElement[] elements = extension.getConfigurationElements();
-               for (IConfigurationElement element : elements) {
-                  ignoreAttributeExtensions.add(element.getAttribute("name"));
-               }
-            }
-         }
       }
    }
 
