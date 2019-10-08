@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.core.agile.AgileUtil;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.actions.NewAction;
 import org.eclipse.osee.ats.ide.actions.NewGoal;
@@ -188,8 +189,12 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
 
          createVersionsSection(item, items);
          createWorkDefinitionsSection(item, items);
-         createAgileSection(item, items);
-         EvNavigateItems.createSection(item, items);
+         if (AgileUtil.isAgileUser(AtsClientService.get())) {
+            createAgileSection(item, items);
+         }
+         if (AgileUtil.isEarnedValueUser(AtsClientService.get())) {
+            EvNavigateItems.createSection(item, items);
+         }
          addExtensionPointItems(item, items);
 
          // Search Items

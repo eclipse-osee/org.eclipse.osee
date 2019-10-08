@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.core.agile.AgileUtil;
+import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 
@@ -46,12 +48,17 @@ public class WorkItemTypeSearchWidget {
             "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Peer Review\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
          searchItem.addWidgetXml(
             "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Decision Review\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-         searchItem.addWidgetXml(
-            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Goal\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-         searchItem.addWidgetXml(
-            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Agile Sprint\" labelAfter=\"true\" horizontalLabel=\"true\" />");
-         searchItem.addWidgetXml(
-            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Agile Backlog\" labelAfter=\"true\" horizontalLabel=\"true\" endComposite=\"true\" />");
+         if (AgileUtil.isAgileUser(AtsClientService.get())) {
+            searchItem.addWidgetXml(
+               "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Goal\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+            searchItem.addWidgetXml(
+               "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Agile Sprint\" labelAfter=\"true\" horizontalLabel=\"true\" />");
+            searchItem.addWidgetXml(
+               "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Agile Backlog\" labelAfter=\"true\" horizontalLabel=\"true\" endComposite=\"true\" />");
+         } else {
+            searchItem.addWidgetXml(
+               "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Goal\" labelAfter=\"true\" horizontalLabel=\"true\" endComposite=\"true\"/>");
+         }
       }
    }
 
