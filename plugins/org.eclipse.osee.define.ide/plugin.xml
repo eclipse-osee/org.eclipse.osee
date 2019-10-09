@@ -37,12 +37,6 @@
          </wizard>
       </extension>
    <extension
-         point="org.eclipse.osee.framework.ui.skynet.IgnorePublishAttribute">
-      <attribute
-            name="Word Ole Data">
-      </attribute>
-   </extension>
-   <extension
          point="org.eclipse.osee.framework.ui.skynet.ArtifactRendererTemplate">
       <Template
             presentationType="ALL"
