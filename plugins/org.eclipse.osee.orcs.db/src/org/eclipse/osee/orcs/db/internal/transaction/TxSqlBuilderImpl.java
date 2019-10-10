@@ -252,9 +252,13 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
             join = createJoin();
             txNotCurrentsJoin.put(key, join);
          }
-         join.add(orcsData.getLocalId());
+         if (key.toString().startsWith("TUPLE")) {
+            join.add(orcsData.getVersion().getGammaId());
+         } else {
+            join.add(orcsData.getLocalId());
+         }
       }
-   }
+   };
 
    private boolean isNewAndDeleted(OrcsData data) {
       return !data.getVersion().isInStorage() && data.getModType().isDeleted();
