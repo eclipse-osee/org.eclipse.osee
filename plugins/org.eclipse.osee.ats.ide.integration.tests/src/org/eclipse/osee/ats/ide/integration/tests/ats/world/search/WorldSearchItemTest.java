@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.query.AtsSearchUserType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil.AtsTestUtilState;
@@ -32,6 +33,27 @@ import org.junit.Test;
  * @author Donald G. Dunne
  */
 public class WorldSearchItemTest {
+
+   @Test
+   public void testWorldSearchItem_PeerReviews() {
+      AtsSearchData data = new AtsSearchData("Peer Reviews");
+      data.setStateTypes(Arrays.asList(StateType.Working));
+      data.setTeamDefIds(Arrays.asList(DemoArtifactToken.SAW_Code.getId()));
+      data.setWorkItemTypes(Arrays.asList(WorkItemType.PeerReview));
+      WorldSearchItem search = new WorldSearchItem(data);
+      Collection<Artifact> results = search.performSearch(SearchType.Search);
+      Assert.assertEquals(2, results.size());
+
+      data.setStateTypes(Arrays.asList(StateType.Completed));
+      search = new WorldSearchItem(data);
+      results = search.performSearch(SearchType.Search);
+      Assert.assertEquals(1, results.size());
+
+      data.setStateTypes(Arrays.asList(StateType.Working, StateType.Completed));
+      search = new WorldSearchItem(data);
+      results = search.performSearch(SearchType.Search);
+      Assert.assertEquals(3, results.size());
+   }
 
    @Test
    public void testWorldSearchItem_AssigneesWorking() {
