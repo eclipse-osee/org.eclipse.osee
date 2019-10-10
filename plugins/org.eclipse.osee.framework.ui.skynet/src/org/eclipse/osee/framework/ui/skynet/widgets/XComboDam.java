@@ -96,7 +96,7 @@ public class XComboDam extends XCombo implements IAttributeWidget {
       IStatus status = super.isValid();
       if (status.isOK()) {
          try {
-            if (getArtifact() != null && getAttributeType() != null) {
+            if (getArtifact() != null && getAttributeType() != null && Strings.isValid(get())) {
                status =
                   OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(), getAttributeType(), get());
             }
