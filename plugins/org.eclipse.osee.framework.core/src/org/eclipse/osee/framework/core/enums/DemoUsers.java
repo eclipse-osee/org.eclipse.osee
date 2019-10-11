@@ -13,7 +13,9 @@ package org.eclipse.osee.framework.core.enums;
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.AgileUser;
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.EarnedValueUser;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 
 /**
@@ -22,7 +24,7 @@ import org.eclipse.osee.framework.core.data.UserToken;
 public final class DemoUsers {
 
    // @formatter:off
-   public static final UserToken Joe_Smith = UserToken.create(61106791, "Joe Smith", "joe@boeing.com", "3333", true, AgileUser, EarnedValueUser);
+   public static final UserToken Joe_Smith = UserToken.create(61106791, "Joe Smith", "joe@boeing.com", "3333", true, Arrays.asList("Joe Smith", "3333"), AgileUser, EarnedValueUser);
    public static final UserToken Kay_Jones = UserToken.create(5896672, "Kay Jones", "kay@boeing.com", "4444", true, AgileUser, EarnedValueUser);
    public static final UserToken Jason_Michael = UserToken.create(277990, "Jason Michael", "jason@boeing.com", "5555", true, CoreUserGroups.OseeAdmin, CoreUserGroups.OseeAccessAdmin);
    public static final UserToken Alex_Kay = UserToken.create(8006939, "Alex Kay", "", "6666", true, AgileUser, EarnedValueUser);
@@ -49,6 +51,12 @@ public final class DemoUsers {
    public static final String Joe_Smith_And_Kay_Jones = DemoUsers.Joe_Smith.getName() + "; " + DemoUsers.Kay_Jones.getName();
    public static final String Kay_Jones_And_Joe_Smith = DemoUsers.Kay_Jones.getName() + "; " + DemoUsers.Joe_Smith.getName();
    // @formatter:on
+
+   private static UserToken create(long id, String name, String email, String userId, boolean active, Collection<String> loginIds, IUserGroupArtifactToken... roles) {
+      UserToken token = UserToken.create(id, name, email, userId, active, loginIds, roles);
+      values.add(token);
+      return token;
+   }
 
    private DemoUsers() {
       // Constants
