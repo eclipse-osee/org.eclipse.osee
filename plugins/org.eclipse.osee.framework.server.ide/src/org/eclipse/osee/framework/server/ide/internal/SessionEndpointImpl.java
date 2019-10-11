@@ -59,6 +59,8 @@ public class SessionEndpointImpl implements SessionEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    public Response createIdeClientSession(OseeCredential credential) {
+      System.err.println(getClass().getSimpleName() + " - " + credential.toString());
+
       OseeSessionGrant sessionGrant = sessionManager.createSession(credential);
       if (sessionGrant != null) {
          logSessionCreation(credential, sessionGrant);
@@ -94,17 +96,16 @@ public class SessionEndpointImpl implements SessionEndpoint {
    private void logSessionCreation(OseeCredential credential, OseeSessionGrant oseeSessionGrant) {
       try {
          activityLog.createEntry(CoreActivityTypes.IDE, ActivityLog.COMPLETE_STATUS,
-            String.format(
-               "IDE Client Session Created " //
-                  + "{" //
-                  + "\"version\":\"%s\", " //
-                  + "\"clientAddress\":\"%s\", " //
-                  + "\"clientMachineName\":\"%s\", " //
-                  + "\"port\":\"%s\", " //
-                  + "\"userName\":\"%s\", " //
-                  + "\"userId\":\"%s\", " //
-                  + "\"sessionId\":\"%s\"" //
-                  + "}", //
+            String.format("IDE Client Session Created " //
+               + "{" //
+               + "\"version\":\"%s\", " //
+               + "\"clientAddress\":\"%s\", " //
+               + "\"clientMachineName\":\"%s\", " //
+               + "\"port\":\"%s\", " //
+               + "\"userName\":\"%s\", " //
+               + "\"userId\":\"%s\", " //
+               + "\"sessionId\":\"%s\"" //
+               + "}", //
                credential.getClientVersion(), credential.getClientAddress(), credential.getClientAddress(),
                credential.getClientPort(), credential.getUserName(), oseeSessionGrant.getUserToken().getUserId(),
                oseeSessionGrant.getSessionId()));
@@ -119,13 +120,12 @@ public class SessionEndpointImpl implements SessionEndpoint {
          String duration = getDuration(session);
          String userId = session != null ? session.getUserId() : "unknown";
          activityLog.createEntry(CoreActivityTypes.IDE, ActivityLog.COMPLETE_STATUS,
-            String.format(
-               "IDE Client Session Released " //
-                  + "{" //
-                  + "\"sessionId\":\"%s\", " //
-                  + "\"duration\":\"%s\", " //
-                  + "\"userId\":\"%s\"" //
-                  + "}", //
+            String.format("IDE Client Session Released " //
+               + "{" //
+               + "\"sessionId\":\"%s\", " //
+               + "\"duration\":\"%s\", " //
+               + "\"userId\":\"%s\"" //
+               + "}", //
                sessionId, duration, userId));
       } catch (Exception ex) {
          // do nothing
