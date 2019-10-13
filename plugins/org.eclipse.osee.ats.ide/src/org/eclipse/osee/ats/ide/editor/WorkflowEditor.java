@@ -258,8 +258,16 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       return getWfeInput().getName();
    }
 
+   public static interface WfeSaveListener {
+      void saved(IAtsWorkItem workItem, IAtsChangeSet changes);
+   }
+
    @Override
    public void doSave(IProgressMonitor monitor) {
+      doSave(monitor, null);
+   }
+
+   public void doSave(IProgressMonitor monitor, WfeSaveListener saveListener) {
       try {
          if (workItem.isHistorical()) {
             AWorkbench.popup("Historical Error",
@@ -279,6 +287,9 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
                   workFlowTab.saveXWidgetToArtifact();
                   workItem.save(changes);
                   changes.execute();
+                  if (saveListener != null) {
+                     saveListener.saved(workItem, changes);
+                  }
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

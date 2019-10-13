@@ -15,8 +15,11 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
+import org.eclipse.osee.ats.ide.editor.WorkflowEditor.WfeSaveListener;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -53,43 +56,62 @@ public class ReloadAction extends AbstractAtsAction {
 
          @Override
          public void run() {
-            if (editor != null && editor.isDirty()) {
-               MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), "Reload confirmation", null,
-                  "The current editor has unsaved changes.  Do you want to save changes and reload?",
-                  MessageDialog.NONE, new String[] {"Save and Reload", "Cancel"}, 0);
-               int result = dialog.open();
-               if (result == 1) {
-                  return;
-               }
-               editor.doSave(null);
-               editor.close(true);
-            }
-            try {
-               Thread reloadThread = new Thread(new Runnable() {
-
-                  @Override
-                  public void run() {
-                     Set<Artifact> relatedArts = new HashSet<>();
-                     relatedArts.add(sma);
-                     if (sma.isTeamWorkflow()) {
-                        relatedArts.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) sma));
-                     }
-                     if (sma instanceof TeamWorkFlowArtifact) {
-                        Collection<IAtsTask> tasks =
-                           AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) sma);
-                        relatedArts.addAll(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(tasks));
-                     }
-                     ArtifactQuery.reloadArtifacts(relatedArts);
-                     if (editor != null) {
-                        WorkflowEditor.edit(sma);
-                        // Don't need to re-open editor cause event handler will do that
-                     }
+            if (editor != null) {
+               if (editor.isDirty()) {
+                  MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), "Reload confirmation", null,
+                     "The current editor has unsaved changes.  Do you want to save changes and reload?",
+                     MessageDialog.NONE, new String[] {"Save and Reload", "Cancel"}, 0);
+                  int result = dialog.open();
+                  if (result == 1) {
+                     return;
                   }
-               });
-               reloadThread.start();
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+                  editor.doSave(null, new WfeSaveListener() {
+
+                     @Override
+                     public void saved(IAtsWorkItem workItem, IAtsChangeSet changes) {
+                        // Can't close the editor until save or it will do it's own dirty editor save dialog
+                        editor.close(false);
+                        try {
+                           Thread reloadThread = getReloadThread();
+                           reloadThread.start();
+                        } catch (Exception ex) {
+                           OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+                        }
+                     }
+                  });
+               } else {
+                  editor.close(false);
+                  try {
+                     Thread reloadThread = getReloadThread();
+                     reloadThread.start();
+                  } catch (Exception ex) {
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+                  }
+               }
             }
+         }
+
+         private Thread getReloadThread() {
+            Thread reloadThread = new Thread(new Runnable() {
+
+               @Override
+               public void run() {
+                  Set<Artifact> relatedArts = new HashSet<>();
+                  relatedArts.add(sma);
+                  if (sma.isTeamWorkflow()) {
+                     relatedArts.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) sma));
+                  }
+                  if (sma instanceof TeamWorkFlowArtifact) {
+                     Collection<IAtsTask> tasks =
+                        AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) sma);
+                     relatedArts.addAll(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(tasks));
+                  }
+
+                  ArtifactQuery.reloadArtifacts(relatedArts);
+                  WorkflowEditor.edit(sma);
+               }
+            });
+            return reloadThread;
          }
       });
 
