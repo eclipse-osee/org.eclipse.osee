@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
+import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerLinkNode;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -198,7 +199,15 @@ public class OpenContributionItem extends ContributionItem {
       Collection<Artifact> artifacts = getSelectedArtifacts();
       boolean readOnly = false;
       if (!artifacts.isEmpty()) {
-         for (Artifact art : artifacts) {
+         for (Object obj : artifacts) {
+            Artifact art = null;
+            if (obj instanceof ArtifactExplorerLinkNode) {
+               art = ((ArtifactExplorerLinkNode) obj).getArtifact();
+            } else if (obj instanceof Artifact) {
+               art = (Artifact) obj;
+            } else {
+               continue;
+            }
             if (art.isReadOnly()) {
                readOnly = true;
                break;
