@@ -42,6 +42,7 @@
 								<plugin id="org.eclipse.wst.common.emf" />
 								<plugin id="org.eclipse.jem.util" />
 								<plugin id="org.json" />
+								<plugin id="com.google.protobuf" />
 								<plugin id="org.apache.cxf.core.config" />
 								<plugin id="javax.ws.rs" />
 								<plugin id="javax.wsdl" />
@@ -114,6 +115,10 @@
 							   	<feature id="org.eclipse.m2e.feature" />	
 							   	<feature id="org.eclipse.wst.server_ui.feature" />																					
 								<feature id="org.eclipse.jgit.lfs" />
+								<feature id="org.eclipse.wst.xml_userdoc.feature" />
+								<feature id="org.eclipse.wst.web_ui.feature" />
+								<feature id="org.eclipse.wst.jsdt.feature" />							
+								<feature id="org.eclipse.xsd.edit" />
 							   	<feature id="org.eclipse.wst.common_ui.feature" />
 							  	<feature id="org.eclipse.jgit.http.apache" />
 								<plugin id="org.eclipse.uml2.codegen.ecore" />

@@ -22,6 +22,22 @@
         version="0.0.0"/>
     
     <includes
+         id="org.eclipse.wst.xml_userdoc.feature"
+       version="0.0.0"/>
+         
+    <includes
+         id="org.eclipse.xsd.edit"
+         version="0.0.0"/>      
+    
+    <includes
+         id="org.eclipse.wst.web_ui.feature"
+         version="0.0.0"/>
+     
+    <includes
+         id="org.eclipse.wst.jsdt.feature"
+         version="0.0.0"/>      
+    
+    <includes
          id="org.eclipse.egit.mylyn"
          version="5.0.0"/>  
   
@@ -1986,7 +2002,14 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>    
-         
+          
+   <plugin
+         id="com.google.protobuf"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+   
    <plugin
          id="org.apache.commons.lang3"
          download-size="0"
