@@ -17,6 +17,7 @@ import org.eclipse.osee.client.integration.tests.integration.dsl.ui.integration.
 import org.eclipse.osee.client.integration.tests.integration.orcs.rest.OrcsRestTestSuite;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.XSkynetCoreIntegrationTestSuite;
 import org.eclipse.osee.client.integration.tests.integration.ui.skynet.XUiSkynetCoreIntegrationTestSuite;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -34,4 +35,9 @@ import org.junit.runners.Suite;
    DirtyArtifactCacheTest.class})
 public class OseeClientIntegrationTestSuite {
    // Test Suite
+
+   @BeforeClass
+   public static void setup() {
+      System.setProperty("user.name", "3333");
+   }
 }
