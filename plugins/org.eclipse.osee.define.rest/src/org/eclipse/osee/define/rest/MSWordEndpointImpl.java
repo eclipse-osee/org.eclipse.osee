@@ -16,6 +16,8 @@ import org.eclipse.osee.define.api.MSWordEndpoint;
 import org.eclipse.osee.define.api.WordTemplateContentData;
 import org.eclipse.osee.define.api.WordUpdateChange;
 import org.eclipse.osee.define.api.WordUpdateData;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
@@ -37,5 +39,10 @@ public final class MSWordEndpointImpl implements MSWordEndpoint {
    @Override
    public Pair<String, Set<String>> renderWordTemplateContent(WordTemplateContentData data) {
       return defineApi.getMSWordOperations().renderWordTemplateContent(data);
+   }
+
+   @Override
+   public void publishWithNestedTemplates(BranchId branch, ArtifactId masterTemplate, ArtifactId slaveTemplate, ArtifactId headArtifact) {
+      defineApi.getMSWordOperations().publishWithNestedTemplates(branch, masterTemplate, slaveTemplate, headArtifact);
    }
 }

@@ -12,14 +12,20 @@ package org.eclipse.osee.define.rest;
 
 import java.util.Set;
 import org.eclipse.osee.define.api.MSWordOperations;
+import org.eclipse.osee.define.api.PublishingOptions;
 import org.eclipse.osee.define.api.WordTemplateContentData;
 import org.eclipse.osee.define.api.WordUpdateChange;
 import org.eclipse.osee.define.api.WordUpdateData;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordTemplateContentRendererHandler;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordUpdateArtifact;
+import org.eclipse.osee.define.rest.operations.WordTemplateProcessor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.model.type.LinkType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.osgi.service.event.EventAdmin;
 
 /**
@@ -48,5 +54,35 @@ public class MSWordOperationsImpl implements MSWordOperations {
    public WordUpdateChange updateWordArtifacts(WordUpdateData data) {
       WordUpdateArtifact updateArt = new WordUpdateArtifact(logger, orcsApi, eventAdmin);
       return updateArt.updateArtifacts(data);
+   }
+
+   @Override
+   public void publishWithNestedTemplates(BranchId branch, ArtifactId masterTemplate, ArtifactId slaveTemplate, ArtifactId headArtifact) {
+      PublishingOptions publishingOptions = new PublishingOptions();
+      //default options
+      publishingOptions.branch = branch;
+      publishingOptions.includeUuids = false;
+      publishingOptions.linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_NAME;
+      publishingOptions.updateParagraphNumbers = false;
+      publishingOptions.excludeArtifactTypes = null;
+      publishingOptions.excludeFolders = true;
+      publishingOptions.recurse = true;
+      publishingOptions.maintainOrder = true;
+      publishingOptions.useTemplateOnce = true;
+      publishingOptions.firstTime = true;
+      publishingOptions.publishDiff = false;
+      publishingOptions.view = ArtifactReadable.SENTINEL;
+      publishingOptions.publishEmptyHeaders = false;
+      publishingOptions.overrideDataRights = "";
+
+      if (masterTemplate.getId().equals(-1L)) {
+         masterTemplate = ArtifactId.SENTINEL;
+      }
+      if (slaveTemplate.getId().equals(-1L)) {
+         slaveTemplate = ArtifactId.SENTINEL;
+      }
+
+      WordTemplateProcessor processor = new WordTemplateProcessor(publishingOptions, logger, orcsApi);
+      processor.publishWithNestedTemplates(masterTemplate, slaveTemplate, headArtifact);
    }
 }

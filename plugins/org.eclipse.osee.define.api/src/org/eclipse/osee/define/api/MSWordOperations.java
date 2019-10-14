@@ -11,6 +11,8 @@
 package org.eclipse.osee.define.api;
 
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
@@ -21,5 +23,7 @@ public interface MSWordOperations {
    public WordUpdateChange updateWordArtifacts(WordUpdateData data);
 
    public Pair<String, Set<String>> renderWordTemplateContent(WordTemplateContentData data);
+
+   public void publishWithNestedTemplates(BranchId branch, ArtifactId masterTemplate, ArtifactId slaveTemplate, ArtifactId headArtifact);
 
 }

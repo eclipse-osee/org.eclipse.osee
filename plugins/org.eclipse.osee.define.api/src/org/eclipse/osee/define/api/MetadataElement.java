@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.render.word;
+package org.eclipse.osee.define.api;
 
 /**
  * @author Dominic A. Guss
