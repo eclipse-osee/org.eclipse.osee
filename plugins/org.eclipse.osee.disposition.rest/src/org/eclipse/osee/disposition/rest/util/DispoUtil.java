@@ -87,11 +87,10 @@ public final class DispoUtil {
 
    public static DispoAnnotationData getById(List<DispoAnnotationData> list, String id) {
       for (DispoAnnotationData annotation : list) {
-         if (annotation.getGuid().equals(id)) {
+         if (annotation.getGuid() != null && annotation.getGuid().equals(id)) {
             return annotation;
          }
       }
-
       return null;
    }
 
