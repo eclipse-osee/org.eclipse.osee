@@ -47,6 +47,8 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
       artRefAttrTypeToValidArtType.put(AtsAttributeTypes.TeamDefinitionReference, AtsArtifactTypes.TeamDefinition);
       artRefAttrTypeToValidArtType.put(AtsAttributeTypes.WorkflowDefinitionReference, ArtifactTypeId.SENTINEL);
       artRefAttrTypeToValidArtType.put(AtsAttributeTypes.WorkPackageReference, AtsArtifactTypes.WorkPackage);
+      artRefAttrTypeToValidArtType.put(AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference,
+         AtsArtifactTypes.TeamDefinition);
       artRefAttributeTypes = artRefAttrTypeToValidArtType.keySet();
    }
 
