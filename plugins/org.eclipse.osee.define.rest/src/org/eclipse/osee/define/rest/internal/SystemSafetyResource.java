@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.app.OseeAppletPage;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -52,7 +53,26 @@ public final class SystemSafetyResource {
    @GET
    @Produces(MediaType.APPLICATION_XML)
    public Response getSystemSafetyReport(@QueryParam("branch") BranchId branchId, @QueryParam("code_root") String codeRoot, @DefaultValue("on") @QueryParam("style") String validate) {
-      StreamingOutput streamingOutput = new SafetyStreamingOutput(activityLog, orcsApi, branchId, codeRoot, validate);
+      StreamingOutput streamingOutput =
+         new SafetyStreamingOutput(activityLog, orcsApi, branchId, ArtifactId.SENTINEL, codeRoot, validate);
+      ResponseBuilder builder = Response.ok(streamingOutput);
+      builder.header("Content-Disposition", "attachment; filename=" + "Safety_Report.xml");
+      return builder.build();
+   }
+
+   /**
+    * Produce the System Safety Report
+    *
+    * @param branchId The Branch to run the System Safety Report on.
+    * @param codeRoot The root directory accessible on the server for the code traces.
+    * @return Produces a streaming xml file containing the System Safety Report
+    */
+   @Path("view/safety")
+   @GET
+   @Produces(MediaType.APPLICATION_XML)
+   public Response getSystemSafetyReportWithView(@QueryParam("branch") BranchId branchId, @QueryParam("code_root") String codeRoot, @QueryParam("view") ArtifactId view, @DefaultValue("on") @QueryParam("style") String validate) {
+      StreamingOutput streamingOutput =
+         new SafetyStreamingOutput(activityLog, orcsApi, branchId, view, codeRoot, validate);
       ResponseBuilder builder = Response.ok(streamingOutput);
       builder.header("Content-Disposition", "attachment; filename=" + "Safety_Report.xml");
       return builder.build();

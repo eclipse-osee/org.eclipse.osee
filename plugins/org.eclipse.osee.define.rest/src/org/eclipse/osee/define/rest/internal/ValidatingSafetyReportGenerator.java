@@ -17,6 +17,7 @@ import java.io.Writer;
 import java.util.Collection;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.define.rest.internal.util.ComponentUtil;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -80,17 +81,17 @@ public class ValidatingSafetyReportGenerator {
       this.activityLog = activityLog;
    }
 
-   private void init(OrcsApi orcsApi, BranchId branchId, ISheetWriter writer) {
+   private void init(OrcsApi orcsApi, BranchId branchId, ISheetWriter writer, ArtifactId view) {
       queryFactory = orcsApi.getQueryFactory();
       accumulator = new ValidatingSafetyInformationAccumulator(this, writer);
-      accumulator.setupPartitions(queryFactory, branchId);
+      accumulator.setupPartitions(queryFactory, branchId, view);
       componentUtil = new ComponentUtil(branchId, orcsApi);
    }
 
-   public void runOperation(OrcsApi providedOrcs, BranchId branchId, String codeRoot, Writer providedWriter) throws IOException {
+   public void runOperation(OrcsApi providedOrcs, BranchId branchId, ArtifactId view, String codeRoot, Writer providedWriter) throws IOException {
       ISheetWriter writer = new ExcelXmlWriter(providedWriter);
 
-      init(providedOrcs, branchId, writer);
+      init(providedOrcs, branchId, writer, view);
 
       boolean doTracability = false;
       if (codeRoot != null && codeRoot.isEmpty() != true) {

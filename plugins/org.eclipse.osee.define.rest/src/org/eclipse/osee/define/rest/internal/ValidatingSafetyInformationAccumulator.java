@@ -10,15 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.define.rest.internal;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -46,34 +45,25 @@ public final class ValidatingSafetyInformationAccumulator {
    private List<ArtifactToken> tokensA;
    private List<ArtifactToken> tokensB;
    private List<ArtifactToken> tokensC;
+   private List<ArtifactId> allowedRequirements;
    private final HashMap<ArtifactReadable, List<ArtifactReadable>> subsystemRequirements = Maps.newHashMap();
    private final HashMap<ArtifactReadable, List<ArtifactReadable>> softwareRequirements = Maps.newHashMap();
-   private static final Predicate<ArtifactReadable> notSoftwareRequirement = new Predicate<ArtifactReadable>() {
-      @Override
-      public boolean apply(ArtifactReadable input) {
-         boolean toReturn = true;
-         try {
-            toReturn = !input.isOfType(CoreArtifactTypes.SoftwareRequirementMsWord);
-         } catch (OseeCoreException ex) {
-            // if there is an exception on the type, then we will treat it like it is not
-            // an abstract software requirement (i.e. leave toReturn true and skip)
-         }
-         return toReturn;
-      }
-   };
 
    public ValidatingSafetyInformationAccumulator(ValidatingSafetyReportGenerator providedSafetyReport, ISheetWriter providedWriter) {
       safetyReport = providedSafetyReport;
       writer = providedWriter;
    }
 
-   public void setupPartitions(QueryFactory qf, BranchId branch) {
+   public void setupPartitions(QueryFactory qf, BranchId branch, ArtifactId view) {
       tokensA = qf.fromBranch(branch).andIsOfType(CoreArtifactTypes.Component).andAttributeIs(CoreAttributeTypes.IDAL,
          "A").asArtifactTokens();
       tokensB = qf.fromBranch(branch).andIsOfType(CoreArtifactTypes.Component).andAttributeIs(CoreAttributeTypes.IDAL,
          "B").asArtifactTokens();
       tokensC = qf.fromBranch(branch).andIsOfType(CoreArtifactTypes.Component).andAttributeIs(CoreAttributeTypes.IDAL,
          "C").asArtifactTokens();
+
+      allowedRequirements =
+         qf.fromBranch(branch, view).andIsOfType(CoreArtifactTypes.SoftwareRequirementMsWord).asArtifactIds();
    }
 
    public String calculateLevelForPartition(List<String> partitions) {
@@ -135,11 +125,16 @@ public final class ValidatingSafetyInformationAccumulator {
       Iterator<ArtifactReadable> ssrIter = localSubsystemRequirements.iterator();
       while (ssrIter.hasNext()) {
          ArtifactReadable subsystemRequirement = ssrIter.next();
-         List<ArtifactReadable> localSoftwareRequirements =
+
+         List<ArtifactReadable> unfilteredSoftwareRequirements =
             Lists.newArrayList(subsystemRequirement.getRelated(CoreRelationTypes.RequirementTrace_LowerLevelRequirement));
 
-         // test software requirements for suitability - is it a subclass of software requirement?
-         Iterables.removeIf(localSoftwareRequirements, notSoftwareRequirement);
+         List<ArtifactReadable> localSoftwareRequirements = new ArrayList<>();
+         for (ArtifactReadable art : unfilteredSoftwareRequirements) {
+            if (allowedRequirements.contains(art)) {
+               localSoftwareRequirements.add(art);
+            }
+         }
 
          if (localSoftwareRequirements.isEmpty()) {
             //remove the subsystemRequirement
