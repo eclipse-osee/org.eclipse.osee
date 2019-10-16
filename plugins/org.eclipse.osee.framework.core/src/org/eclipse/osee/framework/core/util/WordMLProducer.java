@@ -110,11 +110,32 @@ public class WordMLProducer {
       }
    }
 
-   public void setPageBreak() {
+   public void startAppendixSubSection(CharSequence style, CharSequence headingText) {
+      append("<wx:sub-section>");
+      if (Strings.isValid(headingText)) {
+         startParagraph();
+         append("<w:pPr>");
+         writeParagraphStyle(style);
+         append("</w:pPr>");
+         writeHeadingText(headingText);
+         endParagraph();
+      }
+   }
+
+   public void endAppendixSubSection() {
+      append("</wx:sub-section>");
+   }
+
+   public void setPageBreak(boolean chapterNumbering) {
       append("<w:p>");
       append("<w:pPr>");
       append("<w:sectPr>");
       append("<w:pgSz w:w=\"12240\" w:h=\"15840\" w:code=\"1\" />");
+      if (chapterNumbering) {
+         append(
+            "<w:pgMar w:top=\"1440\" w:right=\"1296\" w:bottom=\"1440\" w:left=\"1296\" w:header=\"720\" w:footer=\"720\" w:gutter=\"0\"/>");
+      }
+      append("<w:pgNumType w:start=\"1\" w:chap-style=\"1\"/>");
       append("</w:sectPr>");
       append("</w:pPr>");
       append("</w:p>");
@@ -254,6 +275,25 @@ public class WordMLProducer {
 
    public void endTableColumn() {
       append("</w:tc>");
+   }
+
+   public void addTableCaption(String captionText) {
+
+      append(
+         "<w:p wsp:rsidR=\"003571A9\" wsp:rsidRDefault=\"00AE7B3F\" wsp:rsidP=\"00AE7B3F\"><w:pPr><w:pStyle w:val=\"Caption\"/></w:pPr>");
+      append("<w:r><w:t>Table </w:t></w:r>");
+      append("<w:fldSimple w:instr=\" SEQ Table \\* ARABIC \"><w:r><w:rPr><w:noProof/></w:rPr><w:t>");
+      append("#");
+      append("</w:t></w:r></w:fldSimple><w:r><w:t>: ");
+      append(captionText);
+      append("</w:t></w:r></w:p>");
+
+   }
+
+   public void addTableColumnHeader(String text) {
+      startTableColumn();
+      addParagraphBold(text);
+      endTableColumn();
    }
 
    public void addTableColumns(String... datas) {

@@ -89,17 +89,17 @@ public class WordTemplateProcessor {
 
    private static final String LOAD_EXCLUDED_ARTIFACTIDS =
       "select art_id from osee_artifact art, osee_txs txs where art.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.tx_current = 1 and not exists (select null from osee_tuple2 t2, osee_txs txsP where tuple_type = 2 and e1 = ? and t2.gamma_id = txsP.gamma_id and txsP.branch_id = ? and txsP.tx_current = 1 and e2 = txs.app_id)";
-   private static final String ARTIFACT = "Artifact";
+   protected static final String ARTIFACT = "Artifact";
    private static final String ARTIFACT_TYPE = "Artifact Type";
    private static final Object ARTIFACT_ID = "Artifact Id";
    private static final String APPLICABILITY = "Applicability";
    private static final String INSERT_LINK = "INSERT_LINK_HERE";
    private static final String INSERT_ARTIFACT_HERE = "INSERT_ARTIFACT_HERE";
-   private static final String NESTED_TEMPLATE = "NestedTemplate";
+   protected static final String NESTED_TEMPLATE = "NestedTemplate";
    public static final String PGNUMTYPE_START_1 = "<w:pgNumType [^>]*w:start=\"1\"/>";
    public static final String STYLES = "<w:lists>.*?</w:lists><w:styles>.*?</w:styles>";
 
-   private static final Pattern headElementsPattern =
+   protected static final Pattern headElementsPattern =
       Pattern.compile("(" + INSERT_ARTIFACT_HERE + ")" + "|" + INSERT_LINK,
          Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
@@ -107,15 +107,15 @@ public class WordTemplateProcessor {
    private String slaveTemplateOptions;
    private String slaveTemplateStyles;
 
-   private String elementType;
+   protected String elementType;
    private DataRightsClassification overrideClassification;
    private BranchId branch;
 
    //Outlining Options
-   private AttributeTypeId headingAttributeType;
-   private boolean outlining;
-   private boolean recurseChildren;
-   private String outlineNumber;
+   protected AttributeTypeId headingAttributeType;
+   protected boolean outlining;
+   protected boolean recurseChildren;
+   protected String outlineNumber;
 
    //Attribute Options
    private String attributeLabel;
@@ -136,16 +136,15 @@ public class WordTemplateProcessor {
    private String value;
    private int nestedCount;
 
-   private final List<AttributeElement> attributeElements = new LinkedList<>();
-   private final List<MetadataElement> metadataElements = new LinkedList<>();
-   final List<ArtifactReadable> nonTemplateArtifacts = new LinkedList<>();
-   private final Set<ArtifactReadable> processedArtifacts = new HashSet<>();
-   //private final WordTemplateRenderer renderer; //TODO remove once no longer needed
-   private PublishingOptions publishingOptions = new PublishingOptions();
+   protected final List<AttributeElement> attributeElements = new LinkedList<>();
+   protected final List<MetadataElement> metadataElements = new LinkedList<>();
+   protected final List<ArtifactReadable> nonTemplateArtifacts = new LinkedList<>();
+   protected final Set<ArtifactReadable> processedArtifacts = new HashSet<>();
+   protected PublishingOptions publishingOptions = new PublishingOptions();
    private boolean isDiff;
-   private boolean excludeFolders;
-   private CharSequence paragraphNumber = null;
-   private final List<ArtifactTypeToken> excludeArtifactTypes = new LinkedList<>();
+   protected boolean excludeFolders;
+   protected CharSequence paragraphNumber = null;
+   protected final List<ArtifactTypeToken> excludeArtifactTypes = new LinkedList<>();
    private HashMap<ApplicabilityId, ApplicabilityToken> applicabilityTokens;
    private final HashMap<ArtifactId, ArtifactId> artifactsToExclude;
    private final Set<ArtifactId> emptyFolders = new HashSet<>();
@@ -307,7 +306,7 @@ public class WordTemplateProcessor {
       return includeParent;
    }
 
-   private List<ArtifactTypeToken> getExcludeArtifactTypes() {
+   protected List<ArtifactTypeToken> getExcludeArtifactTypes() {
       excludeArtifactTypes.clear();
 
       if (publishingOptions.excludeArtifactTypes != null) {
@@ -475,7 +474,7 @@ public class WordTemplateProcessor {
    //      }
    //   }
 
-   private void parseAttributeOptions(String templateOptions) {
+   protected void parseAttributeOptions(String templateOptions) {
       try {
          attributeElements.clear();
 
@@ -503,7 +502,7 @@ public class WordTemplateProcessor {
       }
    }
 
-   private void parseOutliningOptions(String templateOptions) {
+   protected void parseOutliningOptions(String templateOptions) {
       try {
          JSONObject jsonObject = new JSONObject(templateOptions);
          JSONArray optionsArray = jsonObject.getJSONArray("OutliningOptions");
@@ -518,7 +517,7 @@ public class WordTemplateProcessor {
       }
    }
 
-   private void parseMetadataOptions(String metadataOptions) {
+   protected void parseMetadataOptions(String metadataOptions) {
       try {
          JSONObject jsonObject = new JSONObject(metadataOptions);
          JSONObject options = null;
@@ -545,7 +544,7 @@ public class WordTemplateProcessor {
       }
    }
 
-   private String updateFooter(String endOfTemplate) {
+   protected String updateFooter(String endOfTemplate) {
       // footer cleanup
       endOfTemplate = endOfTemplate.replaceAll(ReportConstants.FTR, "");
       endOfTemplate =
@@ -575,7 +574,7 @@ public class WordTemplateProcessor {
       return startParagraphNumber;
    }
 
-   private void processArtifactSet(String templateOptions, List<ArtifactReadable> artifacts, WordMLProducer wordMl, String outlineType, PresentationType presentationType, ArtifactId viewId) {
+   protected void processArtifactSet(String templateOptions, List<ArtifactReadable> artifacts, WordMLProducer wordMl, String outlineType, PresentationType presentationType, ArtifactId viewId) {
       nonTemplateArtifacts.clear();
       publishingOptions.view = (viewId == null ? ArtifactId.SENTINEL : viewId);
 
@@ -709,7 +708,7 @@ public class WordTemplateProcessor {
       }
    }
 
-   private boolean isOfType(ArtifactReadable artifact, List<ArtifactTypeToken> excludeArtifactTypes) {
+   protected boolean isOfType(ArtifactReadable artifact, List<ArtifactTypeToken> excludeArtifactTypes) {
       for (ArtifactTypeToken artType : excludeArtifactTypes) {
          if (artifact.isOfType(artType)) {
             return true;
@@ -718,13 +717,13 @@ public class WordTemplateProcessor {
       return false;
    }
 
-   private void processMetadata(ArtifactReadable artifact, WordMLProducer wordMl) {
+   protected void processMetadata(ArtifactReadable artifact, WordMLProducer wordMl) {
       for (MetadataElement metadataElement : metadataElements) {
          processMetadata(artifact, wordMl, metadataElement);
       }
    }
 
-   private void processAttributes(ArtifactReadable artifact, WordMLProducer wordMl, PresentationType presentationType, boolean publishInLine, String footer) {
+   protected void processAttributes(ArtifactReadable artifact, WordMLProducer wordMl, PresentationType presentationType, boolean publishInLine, String footer) {
       for (AttributeElement attributeElement : attributeElements) {
          String attributeName = attributeElement.getAttributeName();
 
@@ -746,7 +745,7 @@ public class WordTemplateProcessor {
       }
    }
 
-   private void processMetadata(ArtifactReadable artifact, WordMLProducer wordMl, MetadataElement element) {
+   protected void processMetadata(ArtifactReadable artifact, WordMLProducer wordMl, MetadataElement element) {
       wordMl.startParagraph();
       String name = element.getType();
       String format = element.getFormat();
@@ -824,7 +823,7 @@ public class WordTemplateProcessor {
       }
    }
 
-   private void displayNonTemplateArtifacts(final Collection<ArtifactReadable> artifacts, final String warningString) {
+   protected void displayNonTemplateArtifacts(final Collection<ArtifactReadable> artifacts, final String warningString) {
       //TODO Add page at end of published document that contains all errors
    }
 
@@ -866,7 +865,7 @@ public class WordTemplateProcessor {
    }
 
    //Copied from WordTemplateRenderer for server publishing
-   public void renderAttribute(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer) {
+   protected void renderAttribute(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer) {
       WordMLProducer wordMl = producer;
 
       if (attributeType.equals(CoreAttributeTypes.WordTemplateContent)) {
@@ -910,6 +909,7 @@ public class WordTemplateProcessor {
 
          if (content != null) {
             data = content.getFirst();
+            data = data.replaceAll("\\r\\n", "");
             //TODO Display unknown guids by printing them on final page of published document
             //WordUiUtil.displayUnknownGuids(artifact, content.getSecond());
          }
@@ -937,7 +937,7 @@ public class WordTemplateProcessor {
    }
 
    //Copied from DefaultArtifactRenderer for server publishing
-   public void defaultRenderAttribute(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer) {
+   protected void defaultRenderAttribute(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer) {
       WordMLProducer wordMl = producer;
       boolean allAttrs = publishingOptions.allAttributes;
 
