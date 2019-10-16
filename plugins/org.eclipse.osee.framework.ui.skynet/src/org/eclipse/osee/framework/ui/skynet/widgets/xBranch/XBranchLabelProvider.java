@@ -104,7 +104,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          return branch.getName();
       } else if (cCol.equals(BranchXViewerFactory.archivedState)) {
          return BranchManager.getArchivedStr(branch);
-      } else if (cCol.equals(BranchXViewerFactory.timeStamp)) {
+      } else if (cCol.equals(BranchXViewerFactory.createdDate)) {
          try {
             String date = "";
             if (branch.getBaseTransaction() != null) {
@@ -182,7 +182,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
       if (cCol.equals(BranchXViewerFactory.branchName) || cCol.equals(BranchXViewerFactory.transaction)) {
          columnText = String.valueOf(transaction.getId());
       }
-      if (cCol.equals(BranchXViewerFactory.timeStamp)) {
+      if (cCol.equals(BranchXViewerFactory.createdDate)) {
          DateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
          columnText = DATE_FORMAT.format(transaction.getTimeStamp());
       } else if (cCol.equals(BranchXViewerFactory.author)) {
@@ -260,7 +260,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Object getBackingData(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
-      if (xCol.getId().equals(BranchXViewerFactory.timeStamp.getId())) {
+      if (xCol.getId().equals(BranchXViewerFactory.createdDate.getId())) {
          if (element instanceof BranchId) {
             TransactionRecord tx = BranchManager.getBaseTransaction((BranchId) element);
             Date date = null;

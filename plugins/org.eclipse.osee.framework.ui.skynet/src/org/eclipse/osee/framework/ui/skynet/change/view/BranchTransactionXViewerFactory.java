@@ -26,7 +26,7 @@ public class BranchTransactionXViewerFactory extends BranchXViewerFactory {
       super(reportProvider);
       setNamespace(NAMESPACE);
       this.clearColumnRegistration();
-      registerColumns(transaction, timeStamp, author, comment);
+      registerColumns(transaction, createdDate, author, comment);
    }
 
    @Override
