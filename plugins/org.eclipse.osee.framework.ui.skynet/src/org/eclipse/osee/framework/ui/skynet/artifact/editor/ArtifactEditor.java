@@ -15,7 +15,9 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -45,7 +47,9 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.UIJob;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
@@ -352,6 +356,54 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       if (formPage != null) {
          formPage.refresh();
       }
+   }
+
+   public static ArtifactEditor getArtifactEditor(Artifact fArtifact) {
+      IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+      IEditorReference editors[] = page.getEditorReferences();
+      for (int j = 0; j < editors.length; j++) {
+         try {
+            IEditorReference editor = editors[j];
+            if (editor.getPart(false) instanceof ArtifactEditor) {
+               // Try to get from editor's work item
+               Artifact artItem = ((ArtifactEditor) editor.getPart(false)).getArtifactFromEditorInput();
+               if (fArtifact.equals(artItem)) {
+                  return (ArtifactEditor) editor.getPart(false);
+               }
+               // Else, try to load from saved work item id
+               ArtifactId savedArtId = ((ArtifactEditorInput) editor.getEditorInput()).getSavedArtUuid();
+               if (savedArtId.isValid() && fArtifact.equals(savedArtId)) {
+                  return (ArtifactEditor) editor.getPart(false);
+               }
+            }
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.WARNING, Lib.exceptionToString(ex));
+         }
+
+      }
+      return null;
+   }
+
+   public static void editArtifact(final Artifact artifact) {
+      if (artifact == null) {
+         return;
+      }
+      if (artifact.isDeleted()) {
+         AWorkbench.popup("ERROR", "Artifact has been deleted");
+         return;
+      }
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            IWorkbenchPage page = AWorkbench.getActivePage();
+            try {
+               page.openEditor(new ArtifactEditorInput(artifact), EDITOR_ID);
+               //RecentlyVisitedNavigateItems.addVisited(artifact);
+            } catch (PartInitException ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      });
    }
 
 }

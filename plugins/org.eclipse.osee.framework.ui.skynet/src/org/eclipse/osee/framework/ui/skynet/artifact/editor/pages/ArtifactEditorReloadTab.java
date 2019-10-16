@@ -14,9 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -86,7 +84,7 @@ public class ArtifactEditorReloadTab extends FormPage {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-               loadEditor(page);
+               loadEditor();
             }
 
          });
@@ -131,32 +129,9 @@ public class ArtifactEditorReloadTab extends FormPage {
       }
    }
 
-   private void loadEditor(final FormPage page) {
+   private void loadEditor() {
       LoadAndRefreshJob loadAndRefresh = new LoadAndRefreshJob(title);
-      Jobs.startJob(loadAndRefresh, false, new JobChangeAdapter() {
-
-         @Override
-         public void done(IJobChangeEvent event) {
-            if (editor != null && editor.getToolkit() != null) {
-               final Artifact artifact = ((LoadAndRefreshJob) event.getJob()).getArtifact();
-               Displays.ensureInDisplayThread(new Runnable() {
-
-                  @Override
-                  public void run() {
-                     if (artifact == null) {
-                        AWorkbench.popup("Saved item is not valid.  Unable to reload.");
-                     } else {
-                        editor.getEditorInput().setArtifact(artifact);
-                        bodyComp.dispose();
-                        page.dispose();
-                        editor.performLoad();
-                        editor.removePage(0);
-                     }
-                  }
-               });
-            }
-         }
-      });
+      Jobs.startJob(loadAndRefresh, true);
    }
 
    private class LoadAndRefreshJob extends Job {
@@ -173,8 +148,28 @@ public class ArtifactEditorReloadTab extends FormPage {
             try {
                artifact = ArtifactQuery.getArtifactFromId(artifactId, branchId, DeletionFlag.INCLUDE_DELETED);
             } catch (ArtifactDoesNotExist ex) {
-               // do nothing
+               AWorkbench.popup("Can't reload editor.");
+               editor.closeEditor();
+               return Status.CANCEL_STATUS;
             }
+            final Artifact fArtifact = artifact;
+            Displays.ensureInDisplayThread(new Runnable() {
+
+               @Override
+               public void run() {
+                  ArtifactEditor artifactEditor = ArtifactEditor.getArtifactEditor(fArtifact);
+                  if (artifactEditor != null) {
+                     artifactEditor.closeEditor();
+                  }
+               }
+            });
+            Displays.ensureInDisplayThread(new Runnable() {
+
+               @Override
+               public void run() {
+                  ArtifactEditor.editArtifact(fArtifact);
+               }
+            });
          }
          return Status.OK_STATUS;
       }
