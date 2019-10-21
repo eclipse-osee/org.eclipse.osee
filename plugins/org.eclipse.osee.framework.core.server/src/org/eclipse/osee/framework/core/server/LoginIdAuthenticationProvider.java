@@ -69,7 +69,7 @@ public class LoginIdAuthenticationProvider extends AbstractAuthenticationProvide
             String.format("Exception resolving loginId: [%s] - Exception: %s", loginId, Lib.exceptionToString(ex)));
       }
 
-      return SystemUser.Anonymous;
+      return SystemUser.UnAuthenticated;
    }
 
 }

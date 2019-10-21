@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.BaseStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -111,6 +112,8 @@ public class InternalClientSessionManager {
             oseeSessionGrant = internalAcquireSession(credential);
             if (oseeSessionGrant == null) {
                return;
+            } else if (SystemUser.UnAuthenticated.getUserId().equals(oseeSessionGrant.getUserToken().getUserId())) {
+               throw new OseeArgumentException("User [%s] is not authenticated.", credential.getUserName());
             }
             oseeSession = new IdeClientSession();
             oseeSession.setId(oseeSessionGrant.getSessionId());
