@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.BaseStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.server.ide.api.SessionEndpoint;
@@ -142,9 +141,6 @@ public class InternalClientSessionManager {
                      userName = SystemUser.BootStrap.getName();
                   } else {
                      userName = System.getProperty("user.name", SystemUser.Anonymous.getName());
-                     if (Strings.isValid(userName)) {
-                        userName = userName.toLowerCase();
-                     }
                   }
                   credential.setUserName(userName);
                   credential.setPassword("");
