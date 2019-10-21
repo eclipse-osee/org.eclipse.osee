@@ -46,6 +46,10 @@ public class CreateSystemBranches {
    private final QueryBuilder query;
    private static String EDIT_RENDERER_OPTIONS =
       "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
+   private static String PREVIEW_ALL_NO_ATTR_RENDERER_OPTIONS =
+      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
+   private static String RECURSIVE_NO_ATTR_RENDERER_OPTIONS =
+      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : true, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
    private static String RECURSIVE_RENDERER_OPTIONS =
       "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : true, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"*\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
 
@@ -140,6 +144,17 @@ public class CreateSystemBranches {
       tx.createAttribute(templateArtPrev, CoreAttributeTypes.TemplateMatchCriteria,
          "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer DIFF");
 
+      ArtifactId templateArtPrevNoAttr =
+         tx.createArtifact(documentTemplateFolder, CoreArtifactTypes.RendererTemplate, "PREVIEW_ALL_NO_ATTRIBUTES");
+      tx.setSoleAttributeValue(templateArtPrevNoAttr, CoreAttributeTypes.RendererOptions,
+         PREVIEW_ALL_NO_ATTR_RENDERER_OPTIONS);
+      tx.setSoleAttributeValue(templateArtPrevNoAttr, CoreAttributeTypes.WholeWordContent,
+         OseeInf.getResourceContents("templates/PREVIEW_ALL_NO_ATTRIBUTES.xml", getClass()));
+      tx.createAttribute(templateArtPrevNoAttr, CoreAttributeTypes.TemplateMatchCriteria,
+         "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer PREVIEW PREVIEW_ALL_NO_ATTRIBUTES");
+      tx.createAttribute(templateArtPrevNoAttr, CoreAttributeTypes.TemplateMatchCriteria,
+         "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer DIFF_NO_ATTRIBUTES");
+
       // must match name used in client integration tests
       ArtifactId templateArtPar =
          tx.createArtifact(documentTemplateFolder, CoreArtifactTypes.RendererTemplate, "PREVIEW_ALL_RECURSE");
@@ -148,6 +163,15 @@ public class CreateSystemBranches {
          OseeInf.getResourceContents("templates/PREVIEW_ALL_RECURSE.xml", getClass()));
       tx.createAttribute(templateArtPar, CoreAttributeTypes.TemplateMatchCriteria,
          "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer PREVIEW PREVIEW_WITH_RECURSE");
+
+      ArtifactId templateArtParna = tx.createArtifact(documentTemplateFolder, CoreArtifactTypes.RendererTemplate,
+         "PREVIEW_ALL_RECURSE_NO_ATTRIBUTES");
+      tx.setSoleAttributeValue(templateArtParna, CoreAttributeTypes.RendererOptions,
+         RECURSIVE_NO_ATTR_RENDERER_OPTIONS);
+      tx.setSoleAttributeValue(templateArtParna, CoreAttributeTypes.WholeWordContent,
+         OseeInf.getResourceContents("templates/PREVIEW_ALL_RECURSE_NO_ATTRIBUTES.xml", getClass()));
+      tx.createAttribute(templateArtParna, CoreAttributeTypes.TemplateMatchCriteria,
+         "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer PREVIEW PREVIEW_WITH_RECURSE_NO_ATTRIBUTES");
    }
 
    private void createDataRights(TransactionBuilder tx, ArtifactId documentTemplateFolder) {

@@ -68,6 +68,7 @@ public enum RendererOption {
    OPEN_OPTION("open.option", OptionType.String),
    EXECUTE_VB_SCRIPT("execute.vb.script", OptionType.String),
    TEMPLATE_OPTION("Template", OptionType.String),
+   PREVIEW_ALL_NO_ATTRIBUTES_VALUE("PREVIEW_ALL_NO_ATTRIBUTES", OptionType.String),
    PREVIEW_WITH_RECURSE_VALUE("PREVIEW_WITH_RECURSE", OptionType.String),
    PREVIEW_WITH_RECURSE_NO_ATTRIBUTES_VALUE("PREVIEW_WITH_RECURSE_NO_ATTRIBUTES", OptionType.String),
    DIFF_VALUE("DIFF", OptionType.String),

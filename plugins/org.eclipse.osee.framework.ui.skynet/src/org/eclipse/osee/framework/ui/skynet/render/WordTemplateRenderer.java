@@ -355,6 +355,11 @@ public class WordTemplateRenderer extends WordRenderer {
       commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview", imageDescriptor));
       commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview with children", imageDescriptor,
          RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_WITH_RECURSE_VALUE.getKey()));
+      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview (No Attr)", imageDescriptor,
+         RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey()));
+      commands.add(
+         new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview with children (No Attr)", imageDescriptor,
+            RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_WITH_RECURSE_NO_ATTRIBUTES_VALUE.getKey()));
    }
 
 }
