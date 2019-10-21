@@ -44,4 +44,11 @@ public interface MSWordEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_XML})
    void publishWithNestedTemplates(@PathParam("branch") BranchId branch, @PathParam("master") ArtifactId masterTemplate, @PathParam("slave") ArtifactId slaveTemplate, @PathParam("artifact") ArtifactId headArtifact);
+
+   @GET
+   @Path("getDocumentNumbers/{branchId}")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   String getDocumentNumbers(@PathParam("branchId") BranchId branchId);
+
 }

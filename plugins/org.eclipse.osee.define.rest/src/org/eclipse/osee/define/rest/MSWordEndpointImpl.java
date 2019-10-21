@@ -45,4 +45,9 @@ public final class MSWordEndpointImpl implements MSWordEndpoint {
    public void publishWithNestedTemplates(BranchId branch, ArtifactId masterTemplate, ArtifactId slaveTemplate, ArtifactId headArtifact) {
       defineApi.getMSWordOperations().publishWithNestedTemplates(branch, masterTemplate, slaveTemplate, headArtifact);
    }
+
+   @Override
+   public String getDocumentNumbers(BranchId branchId) {
+      return null;
+   }
 }
