@@ -150,7 +150,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
                long e1 = stmt.getLong("item_first");
                long e2 = stmt.getLong("item_second");
                hashChangeData.put(4, gammaId.getId(), ChangeItemUtil.newTupleChange(TupleTypeId.valueOf(itemTypeId),
-                  gammaId, getApplicabilityToken(appId), e1, e2));
+                  gammaId, getApplicabilityToken(appId), modType, e1, e2));
                break;
             }
             case 5: {
@@ -158,7 +158,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
                long e2 = stmt.getLong("item_second");
                long e3 = stmt.getLong("item_third");
                hashChangeData.put(5, gammaId.getId(), ChangeItemUtil.newTupleChange(TupleTypeId.valueOf(itemTypeId),
-                  gammaId, getApplicabilityToken(appId), e1, e2, e3));
+                  gammaId, getApplicabilityToken(appId), modType, e1, e2, e3));
                break;
             }
             case 6: {
@@ -167,7 +167,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
                long e3 = stmt.getLong("item_third");
                long e4 = stmt.getLong("item_fourth");
                hashChangeData.put(6, gammaId.getId(), ChangeItemUtil.newTupleChange(TupleTypeId.valueOf(itemTypeId),
-                  gammaId, getApplicabilityToken(appId), e1, e2, e3, e4));
+                  gammaId, getApplicabilityToken(appId), modType, e1, e2, e3, e4));
                break;
             }
          }
@@ -218,12 +218,24 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
             " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?" + //
             " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.rel_link_id as item_id, 3 as table_type, transaction_id from osee_join_export_import idj," + //
             " osee_relation_link item, %s txs where idj.query_id = ? and idj.id2 = item.rel_link_id and idj.id1 = 3" + //
-            " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ? ORDER BY transaction_id",
-         archiveTable, archiveTable, archiveTable);
+            " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?" + //
+            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.gamma_id as item_id, 4 as table_type, transaction_id from osee_join_export_import idj," + //
+            " osee_tuple2 item, %s txs where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 4" + //
+            " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?" + //
+            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.gamma_id as item_id, 5 as table_type, transaction_id from osee_join_export_import idj," + //
+            " osee_tuple3 item, %s txs where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 5" + //
+            " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?" + //
+            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.gamma_id as item_id, 6 as table_type, transaction_id from osee_join_export_import idj," + //
+            " osee_tuple4 item, %s txs where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 6" + //
+            " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?" + //
+            " ORDER BY transaction_id",
+         archiveTable, archiveTable, archiveTable, archiveTable, archiveTable, archiveTable);
 
       jdbcClient.runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query, queryId, transactionLimit.getBranch(),
          transactionLimit, queryId, transactionLimit.getBranch(), transactionLimit, queryId,
-         transactionLimit.getBranch(), transactionLimit);
+         transactionLimit.getBranch(), transactionLimit, queryId, transactionLimit.getBranch(), transactionLimit,
+         queryId, transactionLimit.getBranch(), transactionLimit, queryId, transactionLimit.getBranch(),
+         transactionLimit);
    }
 
    public List<ChangeItem> compareTransactions() {

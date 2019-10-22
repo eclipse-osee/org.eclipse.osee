@@ -85,6 +85,7 @@ public class LoadDeltasBetweenBranches {
    private final HashMap<Long, ApplicabilityToken> applicTokens;
    private final ApplicabilityQuery applicabilityQuery;
    private final MissingChangeItemFactory missingChangeItemFactory;
+   private final QueryFactory queryFactory;
 
    public LoadDeltasBetweenBranches(JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsTypes orcsTypes, BranchId sourceBranch, BranchId destinationBranch, TransactionToken sourceTx, TransactionToken destinationTx, BranchId mergeBranch, QueryFactory queryFactory, MissingChangeItemFactory missingChangeItemFactory) {
       this.jdbcClient = jdbcClient;
@@ -98,6 +99,7 @@ public class LoadDeltasBetweenBranches {
       this.applicabilityQuery = queryFactory.applicabilityQuery();
       this.missingChangeItemFactory = missingChangeItemFactory;
       this.applicTokens = applicabilityQuery.getApplicabilityTokens(sourceBranch, destinationBranch);
+      this.queryFactory = queryFactory;
 
       if (mergeBranch.isValid()) {
          mergeTxId = queryFactory.transactionQuery().andIsHead(mergeBranch).getResults().getExactlyOne();
@@ -190,7 +192,7 @@ public class LoadDeltasBetweenBranches {
                long e1 = stmt.getLong("item_first");
                long e2 = stmt.getLong("item_second");
                hashChangeData.put(4, gammaId.getId(), ChangeItemUtil.newTupleChange(TupleTypeId.valueOf(itemTypeId),
-                  gammaId, getApplicabilityToken(appId), e1, e2));
+                  gammaId, getApplicabilityToken(appId), modType, e1, e2));
                break;
             }
             case 5: {
@@ -198,7 +200,7 @@ public class LoadDeltasBetweenBranches {
                long e2 = stmt.getLong("item_second");
                long e3 = stmt.getLong("item_third");
                hashChangeData.put(5, gammaId.getId(), ChangeItemUtil.newTupleChange(TupleTypeId.valueOf(itemTypeId),
-                  gammaId, getApplicabilityToken(appId), e1, e2, e3));
+                  gammaId, getApplicabilityToken(appId), modType, e1, e2, e3));
                break;
             }
             case 6: {
@@ -207,7 +209,7 @@ public class LoadDeltasBetweenBranches {
                long e3 = stmt.getLong("item_third");
                long e4 = stmt.getLong("item_fourth");
                hashChangeData.put(6, gammaId.getId(), ChangeItemUtil.newTupleChange(TupleTypeId.valueOf(itemTypeId),
-                  gammaId, getApplicabilityToken(appId), e1, e2, e3, e4));
+                  gammaId, getApplicabilityToken(appId), modType, e1, e2, e3, e4));
                break;
             }
 
@@ -247,11 +249,22 @@ public class LoadDeltasBetweenBranches {
             " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?" + //
             " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.rel_link_id as item_id, 3 as table_type from osee_join_export_import idj," + //
             " osee_relation_link item, osee_txs txs where idj.query_id = ? and idj.id2 = item.rel_link_id and idj.id1 = 3" + //
-            " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
+            " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?" + //
+            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.gamma_id as item_id, 4 as table_type from osee_join_export_import idj," + //
+            " osee_tuple2 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and item.gamma_id = txs.gamma_id" + //
+            " and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?" + //
+            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.gamma_id as item_id, 5 as table_type from osee_join_export_import idj," + //
+            " osee_tuple3 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and item.gamma_id = txs.gamma_id" + //
+            " and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?" + //
+            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.gamma_id as item_id, 6 as table_type from osee_join_export_import idj," + //
+            " osee_tuple4 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and item.gamma_id = txs.gamma_id" + //
+            " and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
 
       jdbcClient.runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query, idJoin.getQueryId(),
          TxCurrent.NOT_CURRENT, txBranchId, txId, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId,
-         idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId);
+         idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId, idJoin.getQueryId(), TxCurrent.NOT_CURRENT,
+         txBranchId, txId, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId, idJoin.getQueryId(),
+         TxCurrent.NOT_CURRENT, txBranchId, txId);
 
    }
 
@@ -266,11 +279,23 @@ public class LoadDeltasBetweenBranches {
                "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
                "union all select null as value, item.rel_link_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 3 as table_type from osee_join_export_import idj, " + //
                "osee_relation_link item, osee_txs txs where idj.query_id = ? and idj.id2 = item.rel_link_id and idj.id1 = 3 " + //
-               "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ?) t order by t.id2, t.transaction_id asc";
+               "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
+               "union all select null as value, item.gamma_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 4 as table_type from osee_join_export_import idj, " + //
+               "osee_tuple2 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 4 " + //
+               "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
+               "union all select null as value, item.gamma_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 5 as table_type from osee_join_export_import idj, " + //
+               "osee_tuple3 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 5 " + //
+               "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
+               "union all select null as value, item.gamma_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 6 as table_type from osee_join_export_import idj, " + //
+               "osee_tuple4 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 6 " + //
+               "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
+               ") t order by t.id2, t.transaction_id asc";
 
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, idJoin.getQueryId(), TxCurrent.NOT_CURRENT,
             sourceBranch, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch, idJoin.getQueryId(),
-            TxCurrent.NOT_CURRENT, sourceBranch);
+            TxCurrent.NOT_CURRENT, sourceBranch, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch,
+            idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch, idJoin.getQueryId(), TxCurrent.NOT_CURRENT,
+            sourceBranch);
 
          Long previousItemId = -1L;
          boolean isFirstSet = false;

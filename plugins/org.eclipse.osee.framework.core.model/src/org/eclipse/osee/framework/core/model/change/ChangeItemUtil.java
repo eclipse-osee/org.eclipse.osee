@@ -89,7 +89,7 @@ public final class ChangeItemUtil {
       return item;
    }
 
-   public static ChangeItem newTupleChange(TupleTypeId tupleTypeId, GammaId gammaId, ApplicabilityToken appToken, Long... e) {
+   public static ChangeItem newTupleChange(TupleTypeId tupleTypeId, GammaId gammaId, ApplicabilityToken appToken, ModificationType currentSourceModType, Long... e) {
       ChangeItem item = new ChangeItem();
       item.setChangeType(ChangeType.TUPLE_CHANGE);
 
@@ -99,7 +99,7 @@ public final class ChangeItemUtil {
 
       ChangeVersion current = item.getCurrentVersion();
       current.setGammaId(gammaId);
-      current.setModType(ModificationType.MODIFIED);
+      current.setModType(currentSourceModType);
       current.setApplicabilityToken(appToken);
 
       if (e.length == 2) {
@@ -295,6 +295,7 @@ public final class ChangeItemUtil {
    public static boolean isResurrected(ChangeItem changeItem) {
       // There's a change corresponding to a Deleted Item, item MUST have been resurrected
       return changeItem.getBaselineVersion().isValid() && isDeleted(changeItem.getBaselineVersion());
+
    }
 
    public static boolean hasBeenDeletedInDestination(ChangeItem changeItem) {

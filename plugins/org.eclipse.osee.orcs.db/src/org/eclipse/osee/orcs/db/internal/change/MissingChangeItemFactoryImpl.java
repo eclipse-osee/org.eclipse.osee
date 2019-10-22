@@ -59,7 +59,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
          Set<ArtifactId> modifiedArtIds = new HashSet<>();
          Multimap<ArtifactId, Id> modifiedAttrIds = LinkedListMultimap.create();
          Multimap<ArtifactId, Id> modifiedRels = LinkedListMultimap.create();
-         Multimap<Long, Long> modifiedTuples = LinkedListMultimap.create();
+         Multimap<ArtifactId, Id> modifiedTuples = LinkedListMultimap.create();
 
          for (ChangeItem change : changes) {
 
@@ -78,7 +78,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
                   modifiedRels.put(change.getArtIdB(), change.getItemId());
                   break;
                case TUPLE_CHANGE:
-                  modifiedTuples.put(0L, 1L);
+                  modifiedTuples.put(change.getArtId(), change.getItemId());
                   break;
                default:
                   throw new OseeStateException("Unknonw change type detected [%s]", change);
@@ -89,6 +89,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
          allArtIds.addAll(modifiedAttrIds.keySet());
 
          allArtIds.addAll(modifiedRels.keySet());
+         allArtIds.addAll(modifiedTuples.keySet());
          Set<ArtifactId> missingArtIds = Collections.EMPTY_SET;
 
          try {
