@@ -73,6 +73,8 @@ public class DispoStrings {
    public static final String ANALYZE_CODE = "Modify_Code";
    public static final String ANALYZE_TEST = "Modify_Test";
    public static final String ANALYZE_REQT = "Modify_Reqt";
+   public static final String ANALYZE_TOOL = "Modify_Tooling";
+   public static final String ANALYZE_WORK_PRODUCT = "Modify_Work_Product";
 
    public static final String CODE_COVERAGE = "codeCoverage";
 

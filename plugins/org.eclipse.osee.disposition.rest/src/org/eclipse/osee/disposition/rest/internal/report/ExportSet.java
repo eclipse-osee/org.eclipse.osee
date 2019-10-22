@@ -10,6 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal.report;
 
+import static org.eclipse.osee.disposition.model.DispoStrings.ANALYZE_CODE;
+import static org.eclipse.osee.disposition.model.DispoStrings.ANALYZE_REQT;
+import static org.eclipse.osee.disposition.model.DispoStrings.ANALYZE_TEST;
+import static org.eclipse.osee.disposition.model.DispoStrings.ANALYZE_TOOL;
+import static org.eclipse.osee.disposition.model.DispoStrings.ANALYZE_WORK_PRODUCT;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -221,6 +226,7 @@ public class ExportSet {
    public void runCoverageReport(BranchId branch, DispoSet setPrimary, String option, OutputStream outputStream) {
       Map<String, String> resolutionsValueToText = new HashMap<>();
       Set<CoverageLevel> levelsInSet = new HashSet<>();
+      List<CoverageLevel> levelsInList = new ArrayList<>();
       Map<CoverageLevel, Map<String, Pair<WrapInt, WrapInt>>> leveltoUnitToCovered = new HashMap<>();
       for (CoverageLevel level : CoverageLevel.values()) {
          leveltoUnitToCovered.put(level, new HashMap<>());
@@ -271,6 +277,8 @@ public class ExportSet {
             }
          }
 
+         levelsInList.addAll(levelsInSet);
+         Collections.sort(levelsInList);
          sheetWriter.endSheet();
 
          // START COVER SHEET
@@ -278,13 +286,13 @@ public class ExportSet {
 
          List<String> coverSheetHeadersList = new ArrayList<>();
          coverSheetHeadersList.add(" ");
-         if (levelsInSet.contains(CoverageLevel.A)) {
+         if (levelsInList.contains(CoverageLevel.A)) {
             coverSheetHeadersList.add("MCDC");
          }
-         if (levelsInSet.contains(CoverageLevel.B)) {
+         if (levelsInList.contains(CoverageLevel.B)) {
             coverSheetHeadersList.add("Branch");
          }
-         if (levelsInSet.contains(CoverageLevel.C)) {
+         if (levelsInList.contains(CoverageLevel.C)) {
             coverSheetHeadersList.add("Statement");
          }
 
@@ -295,8 +303,6 @@ public class ExportSet {
 
          int index = 1;
          // send correct numbers according to level for second param
-         List levelsInList = new ArrayList(levelsInSet);
-         Collections.sort(levelsInList);
          Iterator<CoverageLevel> iterator = levelsInList.iterator();
          while (iterator.hasNext()) {
             CoverageLevel lvl = iterator.next();
@@ -307,9 +313,9 @@ public class ExportSet {
 
          // Try to get Resolution from Level A if available, otherwise get from C
          Set<String> resolutionTypes;
-         if (levelsInSet.contains(CoverageLevel.A)) {
+         if (levelsInList.contains(CoverageLevel.A)) {
             resolutionTypes = levelToResolutionTypesToCount.get(CoverageLevel.A).keySet();
-         } else if (levelsInSet.contains(CoverageLevel.B)) {
+         } else if (levelsInList.contains(CoverageLevel.B)) {
             resolutionTypes = levelToResolutionTypesToCount.get(CoverageLevel.B).keySet();
          } else {
             resolutionTypes = levelToResolutionTypesToCount.get(CoverageLevel.C).keySet();
@@ -317,10 +323,10 @@ public class ExportSet {
 
          for (String resolution : resolutionTypes) {
             int index1 = 0;
-            row[index1++] = resolutionsValueToText.containsKey(resolution) ? resolutionsValueToText.get(
-               resolution) : "Resolution not in Config--" + resolution;
+            row[index1++] =
+               resolutionsValueToText.containsKey(resolution) ? resolutionsValueToText.get(resolution) : resolution;
 
-            Iterator<CoverageLevel> it = levelsInSet.iterator();
+            Iterator<CoverageLevel> it = levelsInList.iterator();
             while (it.hasNext()) {
                CoverageLevel lvl = it.next();
                row[index1++] = getPercent(levelToResolutionTypesToCount.get(lvl).get(resolution).getValue(),
@@ -533,7 +539,10 @@ public class ExportSet {
 
       // Uptick Resolution type count
       if (coverageData.isPairCovered()) {
-         currentCoveredTotalCount.inc();
+         if (!isTypeAnalyze(resolutionType)) {
+            currentCoveredTotalCount.inc();
+         }
+
          WrapInt count = resolutionTypeToCount.get(coverageData.getCoveringResolutionType());
          if (count == null) {
             resolutionTypeToCount.put(resolutionType, new WrapInt(1));
@@ -569,12 +578,10 @@ public class ExportSet {
 
       Pair<WrapInt, WrapInt> coveredOverTotal = unitToCovered.get(unit);
 
-      int thisUnitsCoveredCount;
-      if (Strings.isValid(resolutionType)) {
+      int thisUnitsCoveredCount = 0;
+      if (Strings.isValid(resolutionType) && !isTypeAnalyze(resolutionType)) {
          thisUnitsCoveredCount = 1;
          currentCoveredTotalCount.inc();
-      } else {
-         thisUnitsCoveredCount = 0;
       }
       if (coveredOverTotal == null) {
          Pair<WrapInt, WrapInt> newCount = new Pair<>(new WrapInt(thisUnitsCoveredCount), new WrapInt(1));
@@ -583,6 +590,14 @@ public class ExportSet {
          coveredOverTotal.getFirst().inc(thisUnitsCoveredCount);
          coveredOverTotal.getSecond().inc();
       }
+   }
+
+   private boolean isTypeAnalyze(String resolutionType) {
+      if (resolutionType.equals(ANALYZE_CODE) || resolutionType.equals(ANALYZE_TEST) || resolutionType.equals(
+         ANALYZE_REQT) || resolutionType.equals(ANALYZE_TOOL) || resolutionType.equals(ANALYZE_WORK_PRODUCT)) {
+         return true;
+      }
+      return false;
    }
 
    private CoverageLevel getLevel(String location) {
