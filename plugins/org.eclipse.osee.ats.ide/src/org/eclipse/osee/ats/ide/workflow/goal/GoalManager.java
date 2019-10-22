@@ -15,7 +15,9 @@ import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
@@ -60,14 +62,25 @@ public class GoalManager extends MembersManager<GoalArtifact> {
    }
 
    public static GoalArtifact createGoal(String title, IAtsChangeSet changes) {
-      GoalArtifact goalArt = (GoalArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Goal,
-         AtsClientService.get().getAtsBranch(), title);
+      IAtsWorkDefinition workDef =
+         AtsClientService.get().getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal);
+      return createGoal(title, changes, AtsArtifactTypes.Goal, workDef,
+         TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()));
+   }
 
-      AtsClientService.get().getActionFactory().setAtsId(goalArt,
-         TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()), changes);
+   public static GoalArtifact createGoal(String title, IAtsChangeSet changes, ArtifactTypeToken artifactType, IAtsWorkDefinition workDefinition, IAtsTeamDefinition teamDef) {
+      GoalArtifact goalArt =
+         (GoalArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), title);
 
-      IAtsWorkDefinition workDefinition =
-         AtsClientService.get().getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(goalArt, null, changes);
+      IAtsTeamDefinition useTeamDef = teamDef;
+      Conditions.assertNotNull(useTeamDef, "Team Definition can not be null for %s", goalArt.toStringWithId());
+      AtsClientService.get().getActionFactory().setAtsId(goalArt, useTeamDef, changes);
+
+      IAtsWorkDefinition useWorkDefinition = workDefinition;
+      if (useWorkDefinition == null) {
+         useWorkDefinition =
+            AtsClientService.get().getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(goalArt, null, changes);
+      }
       Conditions.assertNotNull(workDefinition, "Work Definition can not be null for %s", goalArt.toStringWithId());
 
       AtsClientService.get().getActionFactory().initializeNewStateMachine(goalArt,
