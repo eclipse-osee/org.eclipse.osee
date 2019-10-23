@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.util.Result;
@@ -47,7 +48,13 @@ public class XIntegerDam extends XInteger implements IAttributeWidget {
       this.artifact = artifact;
       this.attributeType = attrName;
       try {
-         Integer value = artifact.getSoleAttributeValue(getAttributeType());
+         Object obj = artifact.getSoleAttributeValue(getAttributeType());
+         Integer value;
+         if (obj instanceof ArtifactId) {
+            value = ((ArtifactId) obj).getIdIntValue();
+         } else {
+            value = (Integer) obj;
+         }
          if (value != null) {
             super.set(value.toString());
          } else {
