@@ -13,6 +13,7 @@ package org.eclipse.define.api.importing;
 import java.util.regex.Matcher;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author David W. Miller
@@ -42,7 +43,7 @@ public class BlockField {
 
    public void appendContent(String content, boolean first) {
       String newline = "";
-      if (!first) {
+      if (!first && Strings.isValid(data)) {
          newline = "\n";
       }
       data = data + newline + content;
