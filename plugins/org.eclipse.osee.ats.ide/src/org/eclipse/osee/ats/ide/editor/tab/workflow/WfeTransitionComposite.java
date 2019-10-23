@@ -422,6 +422,7 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
    }
 
    private void handleChangeTransitionAssignees(AbstractWorkflowArtifact aba) {
+      userSelectedTransitionToState = getToState();
       if (userSelectedTransitionToState == null) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "No Transition State Selected");
          return;
