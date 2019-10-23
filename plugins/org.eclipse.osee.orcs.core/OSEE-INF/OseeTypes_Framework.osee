@@ -854,6 +854,12 @@ artifactType "Software Test Procedure - MS Word" extends "MS Word Template", "Te
 	attribute "Doors Hierarchy"
 }
 
+artifactType "Integration Test Procedure - MS Word" extends "MS Word Template", "Test Unit"  {
+	id 443398723457743216
+	attribute "Doors ID"
+	attribute "Doors Hierarchy"
+}
+
 artifactType "Indirect Software Requirement" extends "Abstract Software Requirement" , "MS Word Template" {
 	id 25
 }

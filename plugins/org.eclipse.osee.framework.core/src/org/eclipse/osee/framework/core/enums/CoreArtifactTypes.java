@@ -53,6 +53,7 @@ public final class CoreArtifactTypes {
    public static final ArtifactTypeToken ImplementationDetailsDrawing = ArtifactTypeToken.valueOf(209690, "Implementation Details Drawing");
    public static final ArtifactTypeToken ImplementationDetailsDataDefinition = ArtifactTypeToken.valueOf(279578, "Implementation Details Data Definition");
    public static final ArtifactTypeToken ImplementationDetailsPlainText = ArtifactTypeToken.valueOf(638269899, "Implementation Details Plain Text");
+   public static final ArtifactTypeToken IntegrationTestProcedureMsWord = ArtifactTypeToken.valueOf(443398723457743216L, "Software Test Procedure - MS Word");
    public static final ArtifactTypeToken ModelDiagram = ArtifactTypeToken.valueOf(98, "Model Diagram");
    public static final ArtifactTypeToken NativeArtifact = ArtifactTypeToken.valueOf(20, "Native Artifact");
    public static final ArtifactTypeToken MsWordWholeDocument = ArtifactTypeToken.valueOf(18, "MS Word Whole Document");
