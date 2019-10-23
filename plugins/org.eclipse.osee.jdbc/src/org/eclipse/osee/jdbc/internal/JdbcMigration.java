@@ -31,9 +31,10 @@ public class JdbcMigration {
    private static final String DB_BIGINT = "db.bigint";
    private static final String DB_CLOB = "db.clob";
    private static final String DB_BLOB = "db.blob";
-   private static final String DB_ORGANIZATION_INDEX = "db.organization_index";
+   private static final String DB_ORGANIZATION_INDEX_0 = "db.organization_index_0";
+   private static final String DB_ORGANIZATION_INDEX_1 = "db.organization_index_1";
+   private static final String DB_ORGANIZATION_INDEX_2 = "db.organization_index_2";
    private static final String DB_ORGANIZATION_INDEX_3 = "db.organization_index_3";
-   private static final String DB_ORGANIZATION_INDEX_KEY_VALUE = "db.organization_index_key_value";
    private static final String DB_SYNONYM_2 = "db.synonym2";
    private static final String DB_GRANT_2 = "db.grant2";
    private static final String DB_SYNONYM_3 = "db.synonym3";
@@ -42,7 +43,10 @@ public class JdbcMigration {
    private static final String DB_GRANT_4 = "db.grant4";
    private static final String DB_SYNONYM_KEY_VALUE = "db.synonym_key_value";
    private static final String DB_GRANT_KEY_VALUE = "db.grant_key_value";
-   private static final String DB_TABLESPACE = "db.tablespace";
+   private static final String DB_TABLESPACE_OSEE_DATA = "db.tablespace.osee_data";
+   private static final String DB_TABLESPACE_OSEE_INDEX = "db.tablespace.osee_index";
+   private static final String DB_TABLESPACE_OSEE_ARCHIVED = "db.tablespace.osee_archived";
+   private static final String DB_TABLESPACE_OSEE_JOIN = "db.tablespace.osee_join";
    private static final String DB_PCTTHRESHOLD = "db.pctthreshold";
    private static final String DB_OVERFLOW = "db.overflow";
    private static final String DB_DEFERRABLE = "db.deferrable";
@@ -111,9 +115,10 @@ public class JdbcMigration {
       placeholders.put(DB_BLOB, "blob");
       placeholders.put(DB_CLOB, "clob");
       placeholders.put(DB_BIGINT, "bigint");
-      placeholders.put(DB_ORGANIZATION_INDEX, "");
+      placeholders.put(DB_ORGANIZATION_INDEX_0, "");
+      placeholders.put(DB_ORGANIZATION_INDEX_1, "");
+      placeholders.put(DB_ORGANIZATION_INDEX_2, "");
       placeholders.put(DB_ORGANIZATION_INDEX_3, "");
-      placeholders.put(DB_ORGANIZATION_INDEX_KEY_VALUE, "");
       placeholders.put(DB_SYNONYM_2, "");
       placeholders.put(DB_GRANT_2, "");
       placeholders.put(DB_SYNONYM_3, "");
@@ -122,7 +127,12 @@ public class JdbcMigration {
       placeholders.put(DB_GRANT_4, "");
       placeholders.put(DB_SYNONYM_KEY_VALUE, "");
       placeholders.put(DB_GRANT_KEY_VALUE, "");
-      placeholders.put(DB_TABLESPACE, "");
+      placeholders.put(DB_TABLESPACE_OSEE_DATA, "");
+      placeholders.put(DB_TABLESPACE_OSEE_INDEX, "");
+      placeholders.put(DB_TABLESPACE_OSEE_ARCHIVED, "");
+      placeholders.put(DB_TABLESPACE_OSEE_JOIN, "");
+      placeholders.put(DB_PCTTHRESHOLD, "");
+      placeholders.put(DB_OVERFLOW, "");
       placeholders.put(DB_PCTTHRESHOLD, "");
       placeholders.put(DB_OVERFLOW, "");
       placeholders.put(DB_DEFERRABLE, "");
@@ -130,21 +140,21 @@ public class JdbcMigration {
       if (JdbcDriverType.postgresql.getDriver().equals(driver)) {
          placeholders.put(DB_BLOB, "bytea");
          placeholders.put(DB_CLOB, "text");
-         placeholders.put(DB_PCTTHRESHOLD, "");
-         placeholders.put(DB_OVERFLOW, "");
          placeholders.put(DB_DEFERRABLE, "DEFERRABLE INITIALLY DEFERRED");
-
       } else if (JdbcDriverType.oracle_thin.getDriver().equals(driver)) {
          placeholders.put(DB_BIGINT, "number");
-         placeholders.put(DB_ORGANIZATION_INDEX, "ORGANIZATION INDEX COMPRESS 2");
+         placeholders.put(DB_ORGANIZATION_INDEX_0, "ORGANIZATION INDEX");
+         placeholders.put(DB_ORGANIZATION_INDEX_1, "ORGANIZATION INDEX COMPRESS 1");
+         placeholders.put(DB_ORGANIZATION_INDEX_2, "ORGANIZATION INDEX COMPRESS 2");
          placeholders.put(DB_ORGANIZATION_INDEX_3, "ORGANIZATION INDEX COMPRESS 3");
-         placeholders.put(DB_ORGANIZATION_INDEX_KEY_VALUE, "ORGANIZATION INDEX");
-         placeholders.put(DB_TABLESPACE, "TABLESPACE osee_data");
+         placeholders.put(DB_TABLESPACE_OSEE_DATA, "TABLESPACE osee_data");
+         placeholders.put(DB_TABLESPACE_OSEE_INDEX, "TABLESPACE osee_index");
+         placeholders.put(DB_TABLESPACE_OSEE_ARCHIVED, "TABLESPACE osee_archived");
+         placeholders.put(DB_TABLESPACE_OSEE_JOIN, "TABLESPACE osee_join");
          placeholders.put(DB_PCTTHRESHOLD, "PCTTHRESHOLD 20");
          placeholders.put(DB_OVERFLOW, "OVERFLOW TABLESPACE osee_data");
          placeholders.put(DB_DEFERRABLE, "DEFERRABLE INITIALLY DEFERRED");
       }
-
    }
 
    private void after() {
@@ -168,5 +178,4 @@ public class JdbcMigration {
       fly.setBaselineOnMigrate(baselineOnMigrate);
       return fly;
    }
-
 }

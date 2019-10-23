@@ -5,7 +5,7 @@ CREATE TABLE OSEE_TUPLE2 (
 	E2 ${db.bigint} NOT NULL,
 	GAMMA_ID ${db.bigint} NOT NULL,
 	CONSTRAINT TUPLE2__T_E1_E2_PK PRIMARY KEY (TUPLE_TYPE, E1, E2))
-	${db.organization_index};
+	${db.organization_index_2};
  
 CREATE INDEX OSEE_TUPLE2__G_IDX ON OSEE_TUPLE2 (GAMMA_ID);
 
@@ -17,7 +17,7 @@ CREATE TABLE OSEE_TUPLE3 (
 	E3 ${db.bigint} NOT NULL,
 	GAMMA_ID ${db.bigint} NOT NULL,
 	CONSTRAINT TUPLE3__T_E1_E2_E3_PK PRIMARY KEY (TUPLE_TYPE, E1, E2, E3))
-	${db.organization_index};
+	${db.organization_index_2};
  
 CREATE INDEX OSEE_TUPLE3__G_IDX ON OSEE_TUPLE3 (GAMMA_ID);
 
@@ -38,9 +38,9 @@ CREATE TABLE OSEE_KEY_VALUE (
 	KEY ${db.bigint} NOT NULL,
 	VALUE varchar(4000) NOT NULL,
 	CONSTRAINT OSEE_KEY_VALUE__K_PK PRIMARY KEY (KEY))
-	${db.organization_index_key_value}
-	${db.tablespace}
+	${db.organization_index_0}
+	${db.tablespace.osee_data}
 	${db.pctthreshold}
 	${db.overflow};
-	
+
 CREATE INDEX OSEE_KEY_VALUE__V_IDX ON OSEE_KEY_VALUE (VALUE);
