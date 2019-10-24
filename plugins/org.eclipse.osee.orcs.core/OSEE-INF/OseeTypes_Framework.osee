@@ -805,6 +805,7 @@ oseeEnumType "enum.data.rights.classification" {
 	entry "Unspecified"
 	entry "Proprietary"
 	entry "Limited Rights"
+	entry "Unlimited Rights"
 	entry "Export Controlled ITAR"
 }
 
