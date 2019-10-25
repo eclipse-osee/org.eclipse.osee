@@ -182,7 +182,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       IAtsDecisionReview decRev = (IAtsDecisionReview) atsApi.getWorkItemService().getReview(decRevArt);
 
       changes.relate(teamWf, AtsRelationTypes.TeamWorkflowToReview_Review, decRev);
-      atsApi.getActionFactory().setAtsId(decRev, decRev.getParentTeamWorkflow().getTeamDefinition(), changes);
+      atsApi.getActionFactory().setAtsId(decRev, decRev.getParentTeamWorkflow().getTeamDefinition(), null, changes);
 
       IAtsWorkDefinition workDefinition =
          atsApi.getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(decRev, null, changes);
@@ -338,7 +338,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
          changes.relate(teamWf, AtsRelationTypes.TeamWorkflowToReview_Review, peerRev);
       }
 
-      atsApi.getActionFactory().setAtsId(peerRev, teamDef, changes);
+      atsApi.getActionFactory().setAtsId(peerRev, teamDef, null, changes);
 
       if (workDefinition == null) {
          workDefinition = atsApi.getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(peerRev, null, changes);

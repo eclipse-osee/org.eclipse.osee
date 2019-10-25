@@ -48,6 +48,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
+import org.eclipse.osee.ats.api.workflow.IWorkItemListener;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
@@ -79,6 +80,7 @@ public class ActionFactory implements IAtsActionFactory {
    private final AtsApi atsApi;
    private IAtsTeamDefinition topTeamDefinition;
    private JsonFactory jsonFactory;
+   private IWorkItemListener workItemListener;
 
    public ActionFactory(AtsApi atsApi) {
       this(atsApi.getAttributeResolver(), atsApi);
@@ -305,7 +307,7 @@ public class ActionFactory implements IAtsActionFactory {
       ArtifactToken actionArt = changes.createArtifact(AtsArtifactTypes.Action, title);
       IAtsAction action = atsApi.getWorkItemService().getAction(actionArt);
       IAtsTeamDefinition topTeamDefinition = getTopTeamDef();
-      atsApi.getActionFactory().setAtsId(action, topTeamDefinition, changes);
+      atsApi.getActionFactory().setAtsId(action, topTeamDefinition, workItemListener, changes);
       changes.add(action);
       setArtifactIdentifyData(action, title, desc, changeType, priority, validationRequired, needByDate, changes);
 
@@ -436,7 +438,7 @@ public class ActionFactory implements IAtsActionFactory {
       // Relate WorkFlow to Team Definition (by id due to relation loading issues)
       changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.TeamDefinitionReference, teamDef.getStoreObject());
 
-      setAtsId(teamWf, teamWf.getTeamDefinition(), changes);
+      setAtsId(teamWf, teamWf.getTeamDefinition(), workItemListener, changes);
 
       IAtsWorkDefinition workDefinition =
          atsApi.getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(teamWf, newActionListeners, changes);
@@ -607,9 +609,11 @@ public class ActionFactory implements IAtsActionFactory {
    }
 
    @Override
-   public void setAtsId(IAtsObject newObject, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
-      new AtsIdProvider(atsApi.getSequenceProvider(), atsApi.getAttributeResolver(), newObject, teamDef).setAtsId(
-         changes);
+   public void setAtsId(IAtsObject newObject, IAtsTeamDefinition teamDef, IWorkItemListener workItemListener, IAtsChangeSet changes) {
+      AtsIdProvider atsIdProvider =
+         new AtsIdProvider(atsApi.getSequenceProvider(), atsApi.getAttributeResolver(), newObject, teamDef);
+      atsIdProvider.setWorkItemListener(workItemListener);
+      atsIdProvider.setAtsId(changes);
    }
 
    @Override
@@ -627,6 +631,14 @@ public class ActionFactory implements IAtsActionFactory {
          jsonFactory = JsonUtil.getFactory();
       }
       return jsonFactory;
+   }
+
+   public IWorkItemListener getWorkItemListener() {
+      return workItemListener;
+   }
+
+   public void setWorkItemListener(IWorkItemListener workItemListener) {
+      this.workItemListener = workItemListener;
    }
 
 }

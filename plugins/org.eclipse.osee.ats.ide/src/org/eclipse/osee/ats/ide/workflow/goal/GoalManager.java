@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workflow.IWorkItemListener;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -64,17 +65,17 @@ public class GoalManager extends MembersManager<GoalArtifact> {
    public static GoalArtifact createGoal(String title, IAtsChangeSet changes) {
       IAtsWorkDefinition workDef =
          AtsClientService.get().getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal);
-      return createGoal(title, changes, AtsArtifactTypes.Goal, workDef,
-         TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()));
+      return createGoal(title, AtsArtifactTypes.Goal, workDef,
+         TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()), changes, null);
    }
 
-   public static GoalArtifact createGoal(String title, IAtsChangeSet changes, ArtifactTypeToken artifactType, IAtsWorkDefinition workDefinition, IAtsTeamDefinition teamDef) {
+   public static GoalArtifact createGoal(String title, ArtifactTypeToken artifactType, IAtsWorkDefinition workDefinition, IAtsTeamDefinition teamDef, IAtsChangeSet changes, IWorkItemListener workItemListener) {
       GoalArtifact goalArt =
          (GoalArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), title);
 
       IAtsTeamDefinition useTeamDef = teamDef;
       Conditions.assertNotNull(useTeamDef, "Team Definition can not be null for %s", goalArt.toStringWithId());
-      AtsClientService.get().getActionFactory().setAtsId(goalArt, useTeamDef, changes);
+      AtsClientService.get().getActionFactory().setAtsId(goalArt, useTeamDef, workItemListener, changes);
 
       IAtsWorkDefinition useWorkDefinition = workDefinition;
       if (useWorkDefinition == null) {

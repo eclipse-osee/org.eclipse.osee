@@ -46,7 +46,7 @@ public interface IAtsActionFactory {
 
    void initializeNewStateMachine(IAtsWorkItem workItem, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsWorkDefinition workDefinition, IAtsChangeSet changes);
 
-   void setAtsId(IAtsObject atsObject, IAtsTeamDefinition teamDef, IAtsChangeSet changes);
+   void setAtsId(IAtsObject atsObject, IAtsTeamDefinition teamDef, IWorkItemListener workItemListener, IAtsChangeSet changes);
 
    void setCreatedBy(IAtsWorkItem workItem, IAtsUser user, boolean logChange, Date date, IAtsChangeSet changes);
 

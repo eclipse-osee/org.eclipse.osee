@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * It also provides the ability for programatic override of image creation by
  * ImageManager.registerImageOverrideProvider. Registering to be override provider will cause the appropriate setupImage
  * calls to be executed when the image is needed. All overlays and base images are then provided out of this provider.
- * 
+ *
  * @author Ryan D. Brooks
  */
 public abstract class ArtifactImageProvider {
@@ -38,6 +38,8 @@ public abstract class ArtifactImageProvider {
    /**
     * Provide image artifact type registration by ImageManager.register.* calls
     */
-   public abstract void init();
+   public void init() {
+      // do nothing
+   }
 
 }

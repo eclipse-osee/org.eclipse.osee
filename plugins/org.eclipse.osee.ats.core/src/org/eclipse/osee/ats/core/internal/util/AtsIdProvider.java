@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.api.workflow.IWorkItemListener;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -43,10 +44,12 @@ public final class AtsIdProvider {
 
    protected static final String DEFAULT_SEQ_NAME = "ATS_ID_SEQ";
    protected static final String DEFAULT_ID_PREFIX = "ATS";
+
    private final IAtsObject newObject;
    private final IAtsTeamDefinition teamDef;
    private final IAttributeResolver attrResolver;
    private final ISequenceProvider sequenceProvider;
+   private IWorkItemListener workItemListener;
 
    public AtsIdProvider(ISequenceProvider sequenceProvider, IAttributeResolver attrResolver, IAtsObject newObject, IAtsTeamDefinition teamDef) {
       this.sequenceProvider = sequenceProvider;
@@ -70,8 +73,14 @@ public final class AtsIdProvider {
             seqName = DEFAULT_SEQ_NAME;
          }
       }
-      String prefixName = getAttrValueFromTeamDef(AtsAttributeTypes.AtsIdPrefix);
-      if (!Strings.isValid(prefixName)) {
+      String prefixName = null;
+      if (workItemListener != null) {
+         prefixName = workItemListener.getWorkItemAtsIdPrefix(newObject);
+      }
+      if (Strings.isInValid(prefixName)) {
+         prefixName = getAttrValueFromTeamDef(AtsAttributeTypes.AtsIdPrefix);
+      }
+      if (Strings.isInValid(prefixName)) {
          if (newObject.isTypeEqual(AtsArtifactTypes.TeamWorkflow)) {
             prefixName = DEFAULT_WORKFLOW_ID_PREFIX;
          } else if (newObject.isTypeEqual(AtsArtifactTypes.Action)) {
@@ -108,6 +117,14 @@ public final class AtsIdProvider {
          }
       }
       return attrValue;
+   }
+
+   public IWorkItemListener getWorkItemListener() {
+      return workItemListener;
+   }
+
+   public void setWorkItemListener(IWorkItemListener workItemListener) {
+      this.workItemListener = workItemListener;
    }
 
 }
