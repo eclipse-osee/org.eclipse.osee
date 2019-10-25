@@ -130,9 +130,6 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       return tx.commit();
    }
 
-   /**
-    * TBD: Need to delete tuples that are not in the set. Update this when tx.removeTuple2 is implemented.
-    */
    @Override
    public TransactionToken setApplicabilityReference(List<ApplicabilityData> appDatas) {
       XResultData access = isAccess();
@@ -152,9 +149,11 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    @Override
    public ArtifactToken createView(String viewName) {
       XResultData access = isAccess();
+
       if (access.isErrors()) {
          return ArtifactToken.SENTINEL;
       }
+
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account, "Create Branch View");
       ArtifactToken view = tx.createView(branch, viewName);
       tx.commit();
@@ -170,9 +169,11 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    @Override
    public TransactionToken copyView(ArtifactId sourceView, String viewName) {
       XResultData access = isAccess();
+
       if (access.isErrors()) {
          return TransactionToken.SENTINEL;
       }
+
       ArtifactToken view = createView(viewName);
 
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account, "Copy Branch View");
@@ -180,10 +181,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
          applicabilityQuery.getViewApplicabilityTokens(sourceView, branch);
       for (ApplicabilityToken applicToken : viewApplicabilityTokens) {
          String name = applicToken.getName();
-         if (name.contains("Config = ")) {
-            tx.addTuple2(CoreTupleTypes.ViewApplicability, view, "Config = " + viewName);
-         } else {
-            tx.addTuple2(CoreTupleTypes.ViewApplicability, view, name);
+         if (!applicabilityQuery.applicabilityExistsOnBranchView(branch, view, name) && !name.startsWith("Config = ")) {
+            tx.createApplicabilityForView(view, name);
          }
       }
       return tx.commit();
@@ -199,7 +198,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
          results.error("View is invalid.");
          return results;
       }
-      if (!applicabilityQuery.applicabilityExistsOnBranchView(branch, viewId, applicability)) {
+      if (applicabilityQuery.applicabilityExistsOnBranchView(branch, viewId, applicability)) {
          results.error("Applicability already exists.");
 
       }

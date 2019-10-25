@@ -180,7 +180,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       List<GammaId> tuples = new ArrayList<>();
       queryFactory.tupleQuery().getTuple2GammaFromE1E2(CoreTupleTypes.ViewApplicability, branch, viewId, applicability,
          tuples::add);
-      return tuples.isEmpty();
+      return !tuples.isEmpty();
    }
 
    @Override
