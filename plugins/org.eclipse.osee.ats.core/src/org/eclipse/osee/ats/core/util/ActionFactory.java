@@ -457,7 +457,7 @@ public class ActionFactory implements IAtsActionFactory {
       changes.relate(action, AtsRelationTypes.ActionToWorkflow_WorkFlow, teamWf);
 
       // Auto-add actions to configured goals
-      addActionToConfiguredGoal(teamDef, teamWf, actionableItems, changes);
+      addActionToConfiguredGoal(teamDef, teamWf, actionableItems, null, changes);
 
       changes.add(teamWf);
 
@@ -528,11 +528,14 @@ public class ActionFactory implements IAtsActionFactory {
     * Auto-add actions to a goal configured with relations to the given ActionableItem or Team Definition
     */
    @Override
-   public void addActionToConfiguredGoal(IAtsTeamDefinition teamDef, IAtsTeamWorkflow teamWf, Collection<IAtsActionableItem> actionableItems, IAtsChangeSet changes) {
+   public void addActionToConfiguredGoal(IAtsTeamDefinition teamDef, IAtsTeamWorkflow teamWf, Collection<IAtsActionableItem> actionableItems, IAtsGoal handledGoal, IAtsChangeSet changes) {
       // Auto-add this team artifact to configured goals
       IRelationResolver relationResolver = atsApi.getRelationResolver();
       for (IAtsGoal goal : relationResolver.getRelated(teamDef, AtsRelationTypes.AutoAddActionToGoal_Goal,
          IAtsGoal.class)) {
+         if (goal.equals(handledGoal)) {
+            continue;
+         }
          if (!relationResolver.areRelated(goal, AtsRelationTypes.Goal_Member, teamWf)) {
             changes.relate(goal, AtsRelationTypes.Goal_Member, teamWf);
             changes.add(goal);
@@ -543,6 +546,9 @@ public class ActionFactory implements IAtsActionFactory {
       for (IAtsActionableItem aia : actionableItems) {
          for (IAtsGoal goal : relationResolver.getRelated(aia, AtsRelationTypes.AutoAddActionToGoal_Goal,
             IAtsGoal.class)) {
+            if (goal.equals(handledGoal)) {
+               continue;
+            }
             if (!relationResolver.areRelated(goal, AtsRelationTypes.Goal_Member, teamWf)) {
                changes.relate(goal, AtsRelationTypes.Goal_Member, teamWf);
                changes.add(goal);

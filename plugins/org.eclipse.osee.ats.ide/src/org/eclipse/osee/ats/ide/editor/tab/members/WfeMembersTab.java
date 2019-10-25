@@ -46,6 +46,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.CollectorArtifact;
+import org.eclipse.osee.ats.ide.workflow.goal.CloneActionToGoalAction;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.NewActionToGoalAction;
 import org.eclipse.osee.ats.ide.workflow.goal.OpenAgileTasksAction;
@@ -631,6 +632,7 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
 
    Action setCollectorOrderAction, removeFromCollectorAction, printAgileTasksAction;
    private NewActionToGoalAction newActionToGoalAction;
+   private CloneActionToGoalAction cloneActionToGoalAction;
 
    private void createActions() {
       setCollectorOrderAction = new SetCollectorOrderAction(provider, (CollectorArtifact) editor.getWorkItem(), this);
@@ -646,6 +648,7 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
          new RemoveFromCollectorAction(provider, (CollectorArtifact) editor.getWorkItem(), this, handler);
       newActionToGoalAction = new NewActionToGoalAction(provider, (CollectorArtifact) editor.getWorkItem(), this);
 
+      cloneActionToGoalAction = new CloneActionToGoalAction(provider, (CollectorArtifact) editor.getWorkItem(), this);
       printAgileTasksAction = new OpenAgileTasksAction(this);
    }
 
@@ -654,9 +657,11 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
       MenuManager mm = worldComposite.getXViewer().getMenuManager();
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, setCollectorOrderAction);
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, removeFromCollectorAction);
-      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, printAgileTasksAction);
       newActionToGoalAction.refreshText();
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, newActionToGoalAction);
+      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, cloneActionToGoalAction);
+      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, new Separator());
+      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, printAgileTasksAction);
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, new Separator());
    }
 

@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
@@ -46,10 +47,22 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
    private List<AttributeTypeId> excludeTypes;
    private static String ATS_CONFIG_EXCLUDE_DUPLICATE_TYPE_IDS_KEY =
       "DuplicateWorkflowAsIsOperation_ExcludeAttrTypeIds";
+   private final String comment;
+   private final IDuplicateWorkflowListener duplicateListener;
 
    public DuplicateWorkflowAsIsOperation(Collection<IAtsTeamWorkflow> teamWfs, boolean duplicateTasks, String title, IAtsUser asUser, AtsApi atsApi) {
+      this(teamWfs, duplicateTasks, title, asUser, atsApi, "", null);
+   }
+
+   public DuplicateWorkflowAsIsOperation(Collection<IAtsTeamWorkflow> teamWfs, boolean duplicateTasks, String title, IAtsUser asUser, AtsApi atsApi, String comment, IDuplicateWorkflowListener duplicateListener) {
       super(teamWfs, title, asUser, atsApi);
       this.duplicateTasks = duplicateTasks;
+      this.comment = comment;
+      this.duplicateListener = duplicateListener;
+   }
+
+   public DuplicateWorkflowAsIsOperation(List<IAtsTeamWorkflow> asList, boolean b, String existingName, String newName, IAtsUser currentUser, AtsApi atsApi) {
+      this(asList, b, newName, currentUser, atsApi, "", null);
    }
 
    @Override
@@ -60,7 +73,8 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
       }
       oldToNewMap = new HashMap<>();
 
-      IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Duplicate Workflow - As-Is", asUser);
+      IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet(
+         Strings.isValid(comment) ? comment : "Duplicate Workflow - As-Is", asUser);
 
       for (IAtsTeamWorkflow teamWf : teamWfs) {
 
@@ -111,8 +125,14 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
             assignees.add(asUser);
          }
          // Auto-add actions to configured goals
-         atsApi.getActionFactory().addActionToConfiguredGoal(teamWf.getTeamDefinition(), teamWf,
-            teamWf.getActionableItems(), changes);
+         if (newWorkItemArt instanceof IAtsTeamWorkflow) {
+            IAtsGoal goal = null;
+            if (duplicateListener != null) {
+               goal = duplicateListener.addToGoal((IAtsTeamWorkflow) newWorkItemArt, changes);
+            }
+            atsApi.getActionFactory().addActionToConfiguredGoal(teamWf.getTeamDefinition(),
+               (IAtsTeamWorkflow) newWorkItemArt, teamWf.getActionableItems(), goal, changes);
+         }
       }
 
       for (IAttribute<Object> attr : atsApi.getAttributeResolver().getAttributes(workItem.getStoreObject())) {

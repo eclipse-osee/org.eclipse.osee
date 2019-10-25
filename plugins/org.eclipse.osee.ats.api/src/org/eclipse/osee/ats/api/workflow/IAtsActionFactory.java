@@ -37,8 +37,10 @@ public interface IAtsActionFactory {
 
    /**
     * Auto-add actions to a goal configured with relations to the given ActionableItem or Team Definition
+    *
+    * @param handledGoal don't handle this goal, else null
     */
-   void addActionToConfiguredGoal(IAtsTeamDefinition teamDef, IAtsTeamWorkflow teamWf, Collection<IAtsActionableItem> actionableItems, IAtsChangeSet changes);
+   void addActionToConfiguredGoal(IAtsTeamDefinition teamDef, IAtsTeamWorkflow teamWf, Collection<IAtsActionableItem> actionableItems, IAtsGoal handledGoal, IAtsChangeSet changes);
 
    Collection<IAtsTeamWorkflow> getSiblingTeamWorkflows(IAtsTeamWorkflow teamWf);
 

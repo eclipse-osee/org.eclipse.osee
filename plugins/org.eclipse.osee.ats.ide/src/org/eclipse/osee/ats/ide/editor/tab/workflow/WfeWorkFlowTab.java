@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.ide.actions.AddNoteAction;
+import org.eclipse.osee.ats.ide.actions.CloneWorkflowAction;
 import org.eclipse.osee.ats.ide.actions.CopyActionDetailsAction;
 import org.eclipse.osee.ats.ide.actions.EmailActionAction;
 import org.eclipse.osee.ats.ide.actions.FavoriteAction;
@@ -427,6 +428,9 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       toolBarMgr.add(new CopyActionDetailsAction(awa, AtsClientService.get()));
       toolBarMgr.add(new OpenInBrowserAction(awa));
       toolBarMgr.add(new ResourceHistoryAction(awa));
+      if (awa.isTeamWorkflow()) {
+         toolBarMgr.add(new CloneWorkflowAction((TeamWorkFlowArtifact) awa, null));
+      }
       toolBarMgr.add(new ReloadAction(awa, editor));
 
       managedForm.getForm().updateToolBar();
