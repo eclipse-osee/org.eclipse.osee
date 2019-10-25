@@ -44,7 +44,8 @@ public class XArtifactReferencedAtsObjectAttributeWidget extends XArtifactRefere
       if (Strings.isNumeric(value)) {
          boolean isWorkDef = false;
          if (getAttributeType().equals(AtsAttributeTypes.WorkflowDefinitionReference) || getAttributeType().equals(
-            AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference)) {
+            AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference) || getAttributeType().equals(
+               AtsAttributeTypes.RelatedTaskWorkflowDefinitionReference)) {
             IAtsWorkDefinition workDef =
                AtsClientService.get().getWorkDefinitionService().getWorkDefinition(Long.valueOf(value));
             isWorkDef = true;
