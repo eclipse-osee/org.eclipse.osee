@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -143,8 +142,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
    }
 
    public void insertSelectItems(Id4JoinQuery txJoin, JdbcConnection connection, String tableName, String artifactJoinSql, int queryId) {
-      String query = String.format(SELECT_ITEM_GAMMAS, ServiceUtil.useOracleHints() ? " /*+ ordered */ " : "",
-         tableName, artifactJoinSql);
+      String query = String.format(SELECT_ITEM_GAMMAS, getJdbcClient().getOrderedHint(), tableName, artifactJoinSql);
       try (JdbcStatement chStmt = getJdbcClient().getStatement(connection)) {
          chStmt.runPreparedQuery(query, queryId);
          while (chStmt.next()) {

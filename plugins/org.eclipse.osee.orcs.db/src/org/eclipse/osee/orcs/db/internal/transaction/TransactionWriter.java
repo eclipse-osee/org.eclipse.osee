@@ -23,7 +23,6 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;
-import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 
 /**
@@ -151,8 +150,7 @@ public class TransactionWriter {
          List<Object[]> txNotCurrentData = new ArrayList<>();
          for (Entry<SqlOrderEnum, ? extends AbstractJoinQuery> entry : sqlBuilder.getTxNotCurrents()) {
             fetchTxNotCurrent(connection, tx.getBranch(), txNotCurrentData,
-               AbstractSqlWriter.injectOrderedHint(jdbcClient, entry.getKey().getTxsNotCurrentQuery()),
-               entry.getValue());
+               jdbcClient.injectOrderedHint(entry.getKey().getTxsNotCurrentQuery()), entry.getValue());
          }
 
          // Insert into tables

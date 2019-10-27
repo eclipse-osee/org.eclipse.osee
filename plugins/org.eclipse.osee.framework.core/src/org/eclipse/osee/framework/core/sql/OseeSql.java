@@ -128,14 +128,6 @@ public enum OseeSql {
    }
 
    public static class Strings {
-
-      public static String getHintsOrdered(Properties dbProps) {
-         String result = "";
-         if (useOracleHints(dbProps)) {
-            result = HintsOrdered;
-         }
-         return result;
-      }
       private static final String HintsOrdered = "/*+ ordered */";
 
       private static final String HINTS__ORDERED__INDEX__ARTIFACT_CONFLICT =

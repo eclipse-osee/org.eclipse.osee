@@ -111,8 +111,8 @@ public class DataLoaderFactoryImplTest {
 
       when(jdbcClient.getStatement()).thenReturn(chStmt);
       when(jdbcClient.fetch(eq(TransactionId.SENTINEL), Matchers.anyString(), eq(COMMON))).thenReturn(EXPECTED_HEAD_TX);
-
       when(jdbcClient.getDbType()).thenReturn(JdbcDbType.h2);
+      when(jdbcClient.getOrderedHint()).thenReturn("");
    }
 
    @Test

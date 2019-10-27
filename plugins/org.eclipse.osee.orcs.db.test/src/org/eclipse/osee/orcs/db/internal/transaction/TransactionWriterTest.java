@@ -32,7 +32,6 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;
-import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter.SqlOrderEnum;
 import org.junit.Assert;
@@ -150,13 +149,13 @@ public class TransactionWriterTest {
 
       inOrder.verify(join1).store();
 
-      String sql = AbstractSqlWriter.injectOrderedHint(jdbcClient, SqlOrderEnum.ARTIFACTS.getTxsNotCurrentQuery());
+      String sql = jdbcClient.injectOrderedHint(SqlOrderEnum.ARTIFACTS.getTxsNotCurrentQuery());
 
       inOrder.verify(chStmt).runPreparedQuery(sql, QUERY_ID_1, COMMON);
       inOrder.verify(join1).close();
 
       inOrder.verify(join2).store();
-      sql = AbstractSqlWriter.injectOrderedHint(jdbcClient, SqlOrderEnum.ATTRIBUTES.getTxsNotCurrentQuery());
+      sql = jdbcClient.injectOrderedHint(SqlOrderEnum.ATTRIBUTES.getTxsNotCurrentQuery());
       inOrder.verify(chStmt).runPreparedQuery(sql, QUERY_ID_2, COMMON);
       inOrder.verify(join2).close();
 

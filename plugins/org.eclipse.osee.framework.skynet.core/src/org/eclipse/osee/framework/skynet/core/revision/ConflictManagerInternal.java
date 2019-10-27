@@ -58,32 +58,11 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  */
 public class ConflictManagerInternal {
 
-   private static final String MULTIPLICITY_DETECTION = "with " + //
-      "attr_c as (select attr_src.art_id as src_art_id, " + //
-      "attr_src.attr_id as src_attr_id, " + //
-      "attr_src.attr_type_id as src_attr_tid, " + //
-      "txs_src.gamma_id as src_txs_gid " + //
-      "from osee_txs txs_src, osee_attribute attr_src where " + //
-      "branch_id = ? and " + //
-      "tx_current = 1 and " + //
-      "transaction_id > ? and " + //
-      "txs_src.gamma_id = attr_src.gamma_id), " + //
-      "sj_c as (select attr_c.src_art_id as sj_art_id, " + //
-      "attr_c.src_attr_id as sj_attr_id, " + //
-      "attr_c.src_attr_tid as sj_attr_tid " + //
-      "from attr_c, osee_join_id jid where " + //
-      "attr_c.src_attr_tid = jid.id and " + //
-      "jid.query_id = ?) " + //
-      "select attr_d.art_id as art_id, " + //
-      "sj_c.sj_attr_id as source_attr_id, " + //
-      "attr_d.attr_id as dest_attr_id " + //
-      "from sj_c, osee_attribute attr_d, osee_txs txs_d where " + //
-      "txs_d.branch_id = ? and " + //
-      "txs_d.tx_current = 1 and " + //
-      "txs_d.gamma_id = attr_d.gamma_id and " + //
-      "attr_d.attr_type_id = sj_c.sj_attr_tid and " + //
-      "attr_d.art_id = sj_c.sj_art_id and " + //
-      "attr_d.attr_id <> sj_c.sj_attr_id";
+   private static final String MULTIPLICITY_DETECTION =
+      "SELECT%s dest.art_id, dest.attr_id as dest_attr_id, src.attr_id as src_attr_id " + //
+         "FROM osee_txs txs_src, osee_attribute src, osee_join_id jid, osee_attribute dest, osee_txs txs_dest " + //
+         "WHERE txs_src.branch_id = ? AND txs_src.tx_current = 1 AND txs_src.transaction_id > ? AND txs_src.gamma_id = src.gamma_id AND src.attr_type_id = jid.id AND jid.query_id = ? " + //
+         "AND src.art_id = dest.art_id AND src.attr_type_id = dest.attr_type_id AND dest.attr_id <> src.attr_id AND dest.gamma_id = txs_dest.gamma_id AND txs_dest.branch_id = ? AND txs_dest.tx_current = 1";
 
    private static final String CONFLICT_CLEANUP =
       "DELETE FROM osee_conflict t1 WHERE merge_branch_id = ? AND NOT EXISTS (SELECT 'X' FROM osee_join_id4 WHERE query_id = ? AND t1.conflict_id = id2 AND (t1.conflict_type = id3 or id3 is NULL))";
@@ -218,13 +197,14 @@ public class ConflictManagerInternal {
 
          Consumer<JdbcStatement> consumer = stmt -> {
             ArtifactId artId = ArtifactId.valueOf(stmt.getLong("art_id"));
-            Long sAttrId = stmt.getLong("source_attr_id");
+            Long sAttrId = stmt.getLong("src_attr_id");
             Long dAttrId = stmt.getLong("dest_attr_id");
             artIdSet.add(artId);
             batchParams.add(new Object[] {dAttrId, sAttrId, artId});
          };
-         jdbcClient.runQuery(consumer, MULTIPLICITY_DETECTION, source, BranchManager.getBaseTransaction(source),
-            joinQuery.getQueryId(), dest);
+         String sql = jdbcClient.injectOrderedHint(MULTIPLICITY_DETECTION);
+         jdbcClient.runQuery(consumer, sql, source, BranchManager.getBaseTransaction(source), joinQuery.getQueryId(),
+            dest);
       }
       if (!batchParams.isEmpty()) {
          String updateSql = "update osee_attribute set attr_id = ? where attr_id = ? and art_id = ?";

@@ -37,7 +37,6 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
  * @author Roberto E. Escobar
  */
 public abstract class AbstractSqlWriter implements HasOptions {
-   private static final String HintsOrdered = "/*+ ordered */";
    private static final String AND_NEW_LINE = " AND\n";
    private final List<String> tableEntries = new ArrayList<>();
    private final SqlAliasManager aliasManager = new SqlAliasManager();
@@ -492,16 +491,9 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    protected void writeSelectAndHint() {
       write("SELECT");
-      if (jdbcClient.getDbType().areHintsSupported()) {
-         write(HintsOrdered);
-      }
+      write(jdbcClient.getOrderedHint());
       write(" ");
       firstField = true;
-   }
-
-   public static String injectOrderedHint(JdbcClient jdbcClient, String sql) {
-      String hint = jdbcClient.getDbType().areHintsSupported() ? HintsOrdered : "";
-      return String.format(sql, hint);
    }
 
    @Override

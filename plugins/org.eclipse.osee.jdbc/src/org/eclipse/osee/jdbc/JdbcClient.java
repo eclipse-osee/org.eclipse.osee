@@ -103,4 +103,12 @@ public interface JdbcClient {
    void invalidateSequences();
 
    int clearTable(String tableName);
+
+   default String injectOrderedHint(String sql) {
+      return String.format(sql, getOrderedHint());
+   }
+
+   default String getOrderedHint() {
+      return getDbType().areHintsSupported() ? "/*+ ordered */" : "";
+   }
 }
