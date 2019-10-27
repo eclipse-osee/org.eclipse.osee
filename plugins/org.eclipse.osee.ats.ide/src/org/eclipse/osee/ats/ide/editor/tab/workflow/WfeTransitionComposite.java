@@ -84,6 +84,7 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
    private final WorkflowEditor editor;
    private IAtsStateDefinition userSelectedTransitionToState;
    private final boolean isEditable;
+   private final Hyperlink transitionLabelLink;
 
    public WfeTransitionComposite(Composite parent, final WorkflowEditor editor, final boolean isEditable) {
       super(parent, SWT.NONE);
@@ -102,13 +103,14 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
       setLayout(layout);
       editor.getWorkFlowTab().getManagedForm().getToolkit().adapt(this);
 
-      Hyperlink transitionLabelLink = editor.getToolkit().createHyperlink(this, "Transition", SWT.NONE);
+      transitionLabelLink = editor.getToolkit().createHyperlink(this, "Transition", SWT.NONE);
       transitionLabelLink.addHyperlinkListener(new HyperlinkAdapter() {
          @Override
          public void linkActivated(HyperlinkEvent e) {
             if (editor.isDirty()) {
                editor.doSave(null);
             }
+            transitionLabelLink.setEnabled(false);
             handleTransitionButtonSelection();
          }
       });
@@ -418,6 +420,7 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
          transitionAssigneesLabel.setText(
             editor.getWorkFlowTab().getCurrentStateSection().getPage().getSma().getTransitionAssigneesStr());
          transitionAssigneesLabel.getParent().layout();
+         transitionLabelLink.setEnabled(true);
       }
    }
 
