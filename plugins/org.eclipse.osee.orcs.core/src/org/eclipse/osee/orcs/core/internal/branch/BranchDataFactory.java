@@ -43,7 +43,7 @@ public class BranchDataFactory {
    private CreateBranchData createBranchData(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact, BranchType branchType) {
       TransactionQuery txQuery = queryFactory.transactionQuery();
       TransactionToken fromTx = txQuery.andIsHead(parent).getTokens().getExactlyOne();
-      String creationComment = String.format("New Branch from %s (%s)", parent.getName(), fromTx);
+      String creationComment = String.format("New Branch from %s (%s)", parent.getName(), fromTx.getIdString());
       return createBranchData(branch, parent, branchType, creationComment, fromTx, author, associatedArtifact, false);
    }
 
