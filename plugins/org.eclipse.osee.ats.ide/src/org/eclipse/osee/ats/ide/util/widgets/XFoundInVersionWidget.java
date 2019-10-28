@@ -69,7 +69,7 @@ public class XFoundInVersionWidget extends XHyperlabelVersionSelection implement
    @Override
    public boolean handleSelection() {
       try {
-         if (FoundInVersionColumnUI.promptFoundInVersion((TeamWorkFlowArtifact) getArtifact(), getRelation())) {
+         if (FoundInVersionColumnUI.getInstance().promptChangeVersion((TeamWorkFlowArtifact) getArtifact())) {
             notifyXModifiedListeners();
             refresh();
             return true;

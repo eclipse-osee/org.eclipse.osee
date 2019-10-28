@@ -10,20 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.column;
 
-import java.util.Arrays;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumnIdColumn;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
 /**
  * @author Jeremy A. Midvidy
  */
-public class FoundInVersionColumnUI extends XViewerAtsColumnIdColumn {
+public class FoundInVersionColumnUI extends AbstractVersionSelector {
 
    public static FoundInVersionColumnUI instance = new FoundInVersionColumnUI();
 
@@ -35,20 +29,20 @@ public class FoundInVersionColumnUI extends XViewerAtsColumnIdColumn {
       return instance;
    }
 
-   public static boolean promptFoundInVersion(IAtsWorkItem art, RelationTypeSide toRelate) {
-      IAtsVersion oldVersion = AtsClientService.get().getVersionService().getFoundInVersion(art);
-      if (TargetedVersionColumnUI.promptChangeVersion(Arrays.asList((TeamWorkFlowArtifact) art), null, null)) {
-         if (TargetedVersionColumnUI.getSelectedVersion() == null) { // hit "cancel" on version select popup
-            return false;
-         }
-         if (oldVersion == null || oldVersion.notEqual(TargetedVersionColumnUI.getSelectedVersion())) {
-            IAtsChangeSet changes = AtsClientService.get().createChangeSet("Update Found-In-Version");
-            changes.setRelation(art, toRelate, TargetedVersionColumnUI.getSelectedVersion());
-            changes.executeIfNeeded();
-            return true;
-
-         }
-      }
-      return false;
+   /**
+    * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
+    * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
+    */
+   @Override
+   public FoundInVersionColumnUI copy() {
+      FoundInVersionColumnUI newXCol = new FoundInVersionColumnUI();
+      super.copy(this, newXCol);
+      return newXCol;
    }
+
+   @Override
+   public RelationTypeSide getRelation() {
+      return AtsRelationTypes.TeamWorkflowToFoundInVersion_Version;
+   }
+
 }

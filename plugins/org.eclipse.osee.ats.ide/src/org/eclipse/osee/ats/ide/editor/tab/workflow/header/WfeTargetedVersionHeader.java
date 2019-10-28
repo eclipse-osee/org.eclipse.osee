@@ -103,7 +103,7 @@ public class WfeTargetedVersionHeader extends Composite implements IWfeEventHand
          if (editor.isDirty()) {
             editor.doSave(null);
          }
-         if (TargetedVersionColumnUI.promptChangeVersion((TeamWorkFlowArtifact) teamWf,
+         if (TargetedVersionColumnUI.getInstance().promptChangeVersion((TeamWorkFlowArtifact) teamWf,
             AtsClientService.get().getUserService().isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
             VersionLockedType.UnLocked)) {
 
