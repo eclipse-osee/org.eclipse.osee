@@ -178,7 +178,6 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
       // Try up to 10 times to wait for update to happen since update event runs in background thread.
       int loops = 1;
       for (int x = 0; x <= loops; x++) {
-         System.err.println("Loop " + x);
          try {
             Thread.sleep(1000);
          } catch (InterruptedException ex) {
