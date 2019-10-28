@@ -45,8 +45,8 @@
 <plugin id="javaewah"/>
 <plugin id="javax.activation"/>
 <plugin id="javax.activation.source"/>
-<plugin id="javax.annotation" version="1.2.0.v201908011702-DEV"/>
-<plugin id="javax.annotation.source" version="1.2.0.v201908011702-DEV"/>
+<plugin id="javax.annotation"/>
+<plugin id="javax.annotation.source"/>
 <plugin id="javax.el"/>
 <plugin id="javax.el.source"/>
 <plugin id="javax.inject"/>
@@ -56,7 +56,7 @@
 <plugin id="javax.servlet" version="3.0.0.v201112011016"/>
 <plugin id="javax.servlet.jsp"/>
 <plugin id="javax.servlet.jsp.source"/>
-<plugin id="javax.servlet.source"/>
+<plugin id="javax.servlet.source" version="3.1.0.v201410161800"/>
 <plugin id="javax.ws.rs"/>
 <plugin id="javax.wsdl"/>
 <plugin id="javax.xml"/>
@@ -79,11 +79,11 @@
 <plugin id="org.apache.aries.quiesce.source"/>
 <plugin id="org.apache.aries.util"/>
 <plugin id="org.apache.aries.util.source"/>
-<plugin id="org.apache.batik.css.source"/>
-<plugin id="org.apache.batik.util.source"/>
+<plugin id="org.apache.batik.css.source" version="1.9.1.v20180313-1559"/>
+<plugin id="org.apache.batik.util.source" version="1.9.1.v20180227-1645"/>
 <plugin id="org.apache.commons.cli"/>
-<plugin id="org.apache.commons.codec"/>
-<plugin id="org.apache.commons.codec.source"/>
+<plugin id="org.apache.commons.codec" version="1.9.0.v20170208-1614"/>
+<plugin id="org.apache.commons.codec.source" version="1.9.0.v20170208-1614"/>
 <plugin id="org.apache.commons.compress"/>
 <plugin id="org.apache.commons.dbcp"/>
 <plugin id="org.apache.commons.dbcp.source"/>
@@ -138,7 +138,6 @@
 <plugin id="org.apache.xerces"/>
 <plugin id="org.apache.xml.resolver"/>
 <plugin id="org.apache.xml.serializer"/>
-<plugin id="org.apache.xmlrpc"/>
 <plugin id="org.codehaus.stax2"/>
 <plugin id="org.codehaus.stax2.source"/>
 <plugin id="org.eclipse.ant.core"/>
@@ -291,7 +290,6 @@
 <plugin id="org.eclipse.emf.edit.source"/>
 <plugin id="org.eclipse.emf.edit.ui"/>
 <plugin id="org.eclipse.emf.edit.ui.source"/>
-<plugin id="org.eclipse.emf.example.installer"/>
 <plugin id="org.eclipse.emf.exporter"/>
 <plugin id="org.eclipse.emf.exporter.source"/>
 <plugin id="org.eclipse.emf.importer"/>
@@ -737,17 +735,17 @@
 <plugin id="org.eclipse.zest.layouts"/>
 <plugin id="org.flywaydb.core"/>
 <plugin id="org.gradle.toolingapi"/>
-<plugin id="org.hamcrest.core"/>
-<plugin id="org.hamcrest.core.source"/>
+<plugin id="org.hamcrest.core" version="1.3.0.v20180420-1519"/>
+<plugin id="org.hamcrest.core.source" version="1.3.0.v20180420-1519"/>
 <plugin id="org.hsqldb"/>
 <plugin id="org.jacoco.agent"/>
 <plugin id="org.json"/>
 <plugin id="org.jsoup"/>
 <plugin id="org.junit"/>
 <plugin id="org.junit.source"/>
-<plugin id="org.mockito"/>
+<plugin id="org.mockito" version="2.13.0.v20180426-1843"/>
 <plugin id="org.mozilla.javascript"/>
-<plugin id="org.objectweb.asm.source"/>
+<plugin id="org.objectweb.asm.source" version="6.1.1.v20180414-0329"/>
 <plugin id="org.objenesis.source"/>
 <plugin id="org.openoffice"/>
 <plugin id="org.osgi.service.blueprint"/>
@@ -756,7 +754,7 @@
 <plugin id="org.sat4j.core"/>
 <plugin id="org.sat4j.pb"/>
 <plugin id="org.slf4j.api" version="1.7.10.v20170428-1633"/>
-<plugin id="org.slf4j.api.source"/>
+<plugin id="org.slf4j.api.source" version="1.7.10.v20170428-1633"/>
 <plugin id="org.slf4j.jcl"/>
 <plugin id="org.slf4j.jcl.source"/>
 <plugin id="org.tukaani.xz"/>
@@ -837,12 +835,12 @@
 <plugin id="lpg.runtime.java"/>
 <plugin id="org.eclipse.ocl.common"/>
 <plugin id="org.eclipse.jdt.annotation" version="2.2.0.v20180417-0931"/>
-<plugin id="org.apache.lucene.core" version="3.5.0.v20120725-1805"/>
+<plugin id="org.apache.lucene.core" version="7.1.0.v20171214-1510"/>
 <plugin id="org.eclipse.help.base"/>
 <plugin id="org.eclipse.help.base.source"/>
 <plugin id="org.apache.lucene.analyzers-common" version="7.1.0.v20180122-2126"/>
 <plugin id="org.apache.lucene.analyzers-smartcn"/>
-<plugin id="org.apache.lucene.core" version="7.1.0.v20171214-1510"/>
+<plugin id="org.apache.lucene.core" version="3.5.0.v20120725-1805"/>
 <plugin id="org.eclipse.e4.ui.workbench"/>
 <plugin id="org.eclipse.e4.ui.workbench3"/>
 <plugin id="org.eclipse.e4.ui.workbench.renderers.swt"/>
@@ -858,7 +856,6 @@
 <plugin id="org.eclipse.e4.ui.workbench.swt.source"/>
 <plugin id="org.eclipse.e4.ui.workbench3.source"/>
 	<plugin id="org.eclipse.ui.genericeditor"/>
-	<plugin id="javax.xml.bind"/>
 	<plugin id="javax.xml.stream"/>
 	<plugin id="org.eclipse.jgit.lfs"/>
 </includeBundles>
