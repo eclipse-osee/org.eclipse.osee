@@ -11,13 +11,16 @@
 package org.eclipse.osee.ats.core.task;
 
 import java.util.List;
-import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
+import org.eclipse.osee.ats.api.task.create.ChangeReportTaskMatch;
+import org.eclipse.osee.ats.api.task.create.ChangeReportTaskMatchType;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskTeamWfData;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
@@ -32,7 +35,7 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
@@ -91,67 +94,56 @@ public class ChangeReportTasksUtil {
          crtd.getAddedModifiedArts(), crtd.getDeletedArts(), crtd.getRelArts()));
    }
 
-   public static void getArifactNames(ChangeReportTaskTeamWfData crd, CreateTasksDefinition setDef, List<ChangeItem> changeData) {
-      for (ArtifactId artifact : crd.getAddedModifiedArts()) {
-         if (crd.getTaskedArtToName().keySet().contains(artifact)) {
-            continue;
-         }
-
-         if (!isArtifactTypeTaskable(artifact, crd, setDef)) {
-            return;
-         }
-         if (isArtifactDeleted(artifact, crd, setDef)) {
-            crd.addTaskedArtToName(artifact, getTaskTitleDeleted(artifact, crd, setDef));
-            return;
-         }
-
-         for (ChangeItem change : changeData) {
-            if (isAttributeTypeTaskable(change.getItemTypeId(), setDef)) {
-               String taskTitle = getTaskTitle(artifact, crd, setDef);
-               if (Strings.isValid(taskTitle)) {
-                  crd.addTaskedArtToName(artifact, taskTitle);
-               }
-            }
-         }
-      }
-   }
-
-   public static void getReferencedArtsToTasks(ChangeReportTaskTeamWfData crd, CreateTasksDefinition setDef, WorkType workType, IAtsTeamWorkflow destTeamWf) {
+   /**
+    * Compare already TaskComputedAsNeeded task matches with existing tasks and determine fate.
+    */
+   public static void determinExistingTaskMatchType(ChangeReportTaskTeamWfData crttwd, CreateTasksDefinition setDef, WorkType workType, IAtsTeamWorkflow destTeamWf) {
       AtsApi atsApi = AtsApiService.get();
       for (IAtsTask task : atsApi.getTaskService().getTasks(destTeamWf)) {
-         ArtifactId relArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(task,
+         ArtifactId referencedChgArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(task,
             AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
-         if (relArt.isValid()) {
-            crd.getReferencedArtsToTasks().put(relArt, task);
+         ArtifactToken referencedChgArtTok = null; // TBD Search for artifact token (include deleted) cause needed name to compare
+         if (referencedChgArt.isValid()) {
+            // See if there's already a task match, set task saying it exists
+            ChangeReportTaskMatch taskMatch = getTaskMatch(referencedChgArtTok, crttwd);
+
+            // If not, add task match that will probably be marked for removal
+            if (taskMatch == null) {
+               ChangeReportTaskMatch newTaskMatch = new ChangeReportTaskMatch();
+               newTaskMatch.setTaskName(task.getName());
+               newTaskMatch.setTaskWf(task);
+               newTaskMatch.setTaskTok(task.getArtifactToken());
+               newTaskMatch.setType(ChangeReportTaskMatchType.TaskRefAttrValidButRefChgArtMissing);
+               crttwd.addTaskMatch(newTaskMatch);
+            }
+         } else {
+            // No matching rel chg art attr; mark for removal
+            ChangeReportTaskMatch taskMatch = new ChangeReportTaskMatch();
+            taskMatch.setTaskName(task.getName());
+            taskMatch.setTaskWf(task);
+            taskMatch.setTaskTok(task.getArtifactToken());
+            taskMatch.setType(ChangeReportTaskMatchType.TaskRefAttrMissing);
+            crttwd.addTaskMatch(taskMatch);
          }
       }
    }
 
-   private static String getTaskTitleDeleted(ArtifactId artifact, ChangeReportTaskTeamWfData crd, CreateTasksDefinition setDef) {
-      String taskTitle = getTaskTitle(artifact, crd, setDef) + " (Deleted)";
-      if (Strings.isValid(taskTitle)) {
-         crd.addTaskedArtToName(artifact, taskTitle);
-      }
-      return taskTitle;
-   }
-
-   private static boolean isArtifactDeleted(ArtifactId artifact, ChangeReportTaskTeamWfData crd, CreateTasksDefinition setDef) {
-      AtsApi atsApi = AtsApiService.get();
-      return atsApi.getStoreService().isDeleted(artifact);
-   }
-
-   private static String getTaskTitle(ArtifactId artifact, ChangeReportTaskTeamWfData crd, CreateTasksDefinition setDef) {
-      AtsApi atsApi = AtsApiService.get();
-      @Nullable
-      ArtifactToken art = atsApi.getQueryService().getArtifact(artifact);
-      if (art == null) {
-         crd.getRd().errorf("Can't retrive artifact for id %s", artifact.getIdString());
-      } else {
-         return String.format("%s for [%s]%s", workType.name(), art.getName(), "");
+   /**
+    * @return task match if both name and referenced change artifact match
+    */
+   public static ChangeReportTaskMatch getTaskMatch(ArtifactToken referencedChgArt, ChangeReportTaskTeamWfData crttwd) {
+      for (ChangeReportTaskMatch taskMatch : crttwd.getTaskMatches()) {
+         if (referencedChgArt.equals(taskMatch.getChgRptArt())) {
+            if (referencedChgArt.getName().equals(taskMatch.getTaskName())) {
+               taskMatch.setType(ChangeReportTaskMatchType.Match);
+               return taskMatch;
+            }
+         }
       }
       return null;
    }
 
+   // TBD - Need to add this check back in if appropriate
    private static boolean isAttributeTypeTaskable(Id itemTypeId, CreateTasksDefinition setDef) {
       AttributeTypeId attrType = AttributeTypeId.valueOf(itemTypeId.getId());
       if (setDef.getChgRptOptions().getAttributeTypes().contains(
@@ -161,6 +153,7 @@ public class ChangeReportTasksUtil {
       return false;
    }
 
+   // TBD - Need to add this check back in if appropriate
    private static boolean isArtifactTypeTaskable(ArtifactId artifact, ChangeReportTaskTeamWfData crd, CreateTasksDefinition setDef) {
       AtsApi atsApi = AtsApiService.get();
       ArtifactTypeToken artType = atsApi.getStoreService().getArtifactType(artifact);
@@ -171,7 +164,7 @@ public class ChangeReportTasksUtil {
       return false;
    }
 
-   public static void getTaskNamesFromChanges(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
+   public static void getTasksComputedAsNeeded(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
       getModifiedArifactNames(crtd, crttwd, atsApi);
       getDeletedArifactNames(crtd, crttwd, atsApi);
       getRelArtifactNames(crtd, crttwd, atsApi);
@@ -184,26 +177,56 @@ public class ChangeReportTasksUtil {
 
    private static void getRelArtifactNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
       for (ArtifactId chgRptArt : crtd.getRelArts()) {
-         ArtifactToken art =
-            atsApi.getQueryService().getArtifact(chgRptArt, crtd.getWorkOrParentBranch(), DeletionFlag.INCLUDE_DELETED);
-         crttwd.addTaskedArtToName(chgRptArt, String.format("Handle change to %s", art.toStringWithId()));
+         logAndAddTaskName(crtd, crttwd, atsApi, chgRptArt, "Relation");
       }
    }
 
-   public static void getModifiedArifactNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
+   private static void getModifiedArifactNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
       for (ArtifactId chgRptArt : crtd.getAddedModifiedArts()) {
-         ArtifactToken art =
-            atsApi.getQueryService().getArtifact(chgRptArt, crtd.getWorkOrParentBranch(), DeletionFlag.INCLUDE_DELETED);
-         crttwd.addTaskedArtToName(chgRptArt, String.format("Handle change to %s", art.toStringWithId()));
+         logAndAddTaskName(crtd, crttwd, atsApi, chgRptArt, "Add/Mod");
       }
    }
 
-   public static void getDeletedArifactNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
+   private static void getDeletedArifactNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
       for (ArtifactId chgRptArt : crtd.getDeletedArts()) {
-         ArtifactToken art =
-            atsApi.getQueryService().getArtifact(chgRptArt, crtd.getWorkOrParentBranch(), DeletionFlag.INCLUDE_DELETED);
-         crttwd.addTaskedArtToName(chgRptArt, String.format("Handle change to %s", art.toStringWithId()));
+         logAndAddTaskName(crtd, crttwd, atsApi, chgRptArt, "Deleted");
       }
+   }
+
+   private static void logAndAddTaskName(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi, ArtifactId chgRptArt, String chgType) {
+      ArtifactReadable art = (ArtifactReadable) atsApi.getQueryService().getArtifact(chgRptArt,
+         crtd.getWorkOrParentBranch(), DeletionFlag.INCLUDE_DELETED);
+      String safeName = String.format("Handle %s change to [%s]", chgType, art.getSafeName());
+      if ("Deleted".equals(chgType)) {
+         safeName += " (Deleted)";
+      }
+      ChangeReportTaskMatch match = new ChangeReportTaskMatch();
+      match.setChgRptArt(chgRptArt);
+      match.setTaskName(safeName);
+      match.setType(ChangeReportTaskMatchType.TaskComputedAsNeeded);
+      crttwd.getTaskMatches().add(match);
+   }
+
+   public static IAtsTeamWorkflow getDestTeamWfOrNull(ChangeReportTaskTeamWfData crttwd, WorkType workType, AtsApi atsApi, IAtsTeamWorkflow sourceTeamWf, IAtsTeamDefinition destTeamDef) {
+      // Try to find by Derive_To first
+      ArtifactToken chgRptTeamWf = crttwd.getChgRptTeamWf();
+      for (ArtifactToken related : atsApi.getRelationResolver().getRelated(chgRptTeamWf, AtsRelationTypes.Derive_To)) {
+         if (related instanceof IAtsTeamWorkflow) {
+            IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) related;
+            if (teamWf.getTeamDefinition().equals(crttwd.getDestTeamDef())) {
+               crttwd.setDestTeamWf(teamWf.getStoreObject());
+               return teamWf;
+            }
+         }
+      }
+      //       Else, look through siblings for matching team def
+      for (IAtsTeamWorkflow teamWf : sourceTeamWf.getParentAction().getTeamWorkflows()) {
+         if (!teamWf.equals(sourceTeamWf) && teamWf.getTeamDefinition().equals(destTeamDef)) {
+            crttwd.setDestTeamWf(teamWf.getArtifactToken());
+            return teamWf;
+         }
+      }
+      return null;
    }
 
 }

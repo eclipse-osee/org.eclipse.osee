@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -44,8 +45,6 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -62,52 +61,51 @@ public class CreateTasksOperation {
    private final OrcsApi orcsApi;
    private final List<JaxAtsTask> tasks = new ArrayList<>();
    private IAtsUser asUser;
-   private XResultData resultData;
+   private XResultData results;
    private Date createdByDate;
    private final Map<Long, IAtsTeamWorkflow> idToTeamWf = new HashMap<>();
 
-   public CreateTasksOperation(NewTaskData newTaskData, AtsApi atsApi, OrcsApi orcsApi, XResultData resultData) {
-      this(new NewTaskDatas(newTaskData), atsApi, orcsApi, resultData);
+   public CreateTasksOperation(NewTaskData newTaskData, AtsApi atsApi, OrcsApi orcsApi, XResultData results) {
+      this(new NewTaskDatas(newTaskData), atsApi, orcsApi, results);
    }
 
-   public CreateTasksOperation(NewTaskDatas newTaskDatas, AtsApi atsApi, OrcsApi orcsApi, XResultData resultData) {
+   public CreateTasksOperation(NewTaskDatas newTaskDatas, AtsApi atsApi, OrcsApi orcsApi, XResultData results) {
       this.newTaskDatas = newTaskDatas;
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
-      this.resultData = resultData;
+      this.results = results;
    }
 
    public XResultData validate() {
-      if (resultData == null) {
-         resultData = new XResultData(false);
+      if (results == null) {
+         results = new XResultData(false);
       }
       for (NewTaskData newTaskData : newTaskDatas.getTaskDatas()) {
          Long teamWfId = newTaskData.getTeamWfId();
          if (teamWfId == null) {
-            resultData.error("Team Workflow id not specified");
-            continue;
-         }
-         ArtifactReadable teamWfArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(teamWfId);
-         if (teamWfArt == null) {
-            resultData.errorf("Team Workflow id %d does not exist\n", teamWfId);
+            results.error("Team Workflow id not specified");
             continue;
          }
          IAtsTeamWorkflow teamWf = getTeamWorkflow(teamWfId);
          if (teamWf == null) {
-            teamWf = atsApi.getWorkItemService().getTeamWf(teamWfArt);
+            teamWf = atsApi.getWorkItemService().getTeamWf(ArtifactId.valueOf(teamWfId));
+         }
+         if (teamWf == null) {
+            results.errorf("Team Workflow id %s does not exist", teamWfId);
+            continue;
          }
          String asUserId = newTaskData.getAsUserId();
          if (asUserId == null) {
-            resultData.error("As User Id id not specified");
+            results.error("As User Id id not specified");
             continue;
          }
          asUser = atsApi.getUserService().getUserById(asUserId);
          if (asUser == null) {
-            resultData.errorf("As User Id id %d does not exist\n", asUserId);
+            results.errorf("As User Id id %d does not exist\n", asUserId);
             continue;
          }
          if (!Strings.isValid(newTaskData.getCommitComment())) {
-            resultData.errorf("Inavlidate Commit Comment [%s]\n", newTaskData.getCommitComment());
+            results.errorf("Inavlidate Commit Comment [%s]\n", newTaskData.getCommitComment());
             continue;
          }
 
@@ -116,26 +114,24 @@ public class CreateTasksOperation {
             if (taskId != null && taskId > 0L) {
                ArtifactReadable taskArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(taskId);
                if (taskArt != null) {
-                  resultData.errorf("Task with id %d already exists for %s\n", taskId, task);
+                  results.errorf("Task with id %d already exists for %s\n", taskId, task);
                }
             }
             if (!Strings.isValid(task.getName())) {
-               resultData.errorf("Task name [%s] is invalid for %s\n", task.getName(), task);
+               results.errorf("Task name [%s] is invalid for %s\n", task.getName(), task);
             }
             IAtsUser createdBy = atsApi.getUserService().getUserById(task.getCreatedByUserId());
             if (createdBy == null) {
-               resultData.errorf("Task Created By user id %d does not exist in %s\n", createdBy, task);
+               results.errorf("Task Created By user id %d does not exist in %s\n", createdBy, task);
             }
             createdByDate = task.getCreatedDate();
             if (createdByDate == null) {
-               resultData.errorf("Task Created By Date %s does not exist in %s\n", createdByDate, task);
+               results.errorf("Task Created By Date %s does not exist in %s\n", createdByDate, task);
             }
-            IAtsTeamWorkflow teamWorkflow = atsApi.getWorkItemService().getTeamWf(teamWfArt);
             String relatedToState = task.getRelatedToState();
             if (Strings.isValid(relatedToState)) {
-               if (teamWorkflow.getWorkDefinition().getStateByName(relatedToState) == null) {
-                  resultData.errorf("Task Related To State %s invalid for Team Workflow %d\n", relatedToState,
-                     teamWfId);
+               if (teamWf.getWorkDefinition().getStateByName(relatedToState) == null) {
+                  results.errorf("Task Related To State %s invalid for Team Workflow %d\n", relatedToState, teamWfId);
                }
             }
 
@@ -143,7 +139,7 @@ public class CreateTasksOperation {
             if (!assigneeUserIds.isEmpty()) {
                Collection<IAtsUser> assignees = atsApi.getUserService().getUsersByUserIds(assigneeUserIds);
                if (assigneeUserIds.size() != assignees.size()) {
-                  resultData.errorf("Task Assignees [%s] not all valid in %s\n", String.valueOf(assigneeUserIds), task);
+                  results.errorf("Task Assignees [%s] not all valid in %s\n", String.valueOf(assigneeUserIds), task);
                }
             }
 
@@ -153,10 +149,10 @@ public class CreateTasksOperation {
                   workDefinition =
                      atsApi.getWorkDefinitionService().getWorkDefinition(ArtifactId.valueOf(task.getTaskWorkDef()));
                   if (workDefinition == null) {
-                     resultData.errorf("Error finding Task Work Def [%s].\n", task.getTaskWorkDef());
+                     results.errorf("Error finding Task Work Def [%s].\n", task.getTaskWorkDef());
                   }
                } catch (Exception ex) {
-                  resultData.errorf("Exception finding Task Work Def [%s].  Exception: %s\n", task.getTaskWorkDef(),
+                  results.errorf("Exception finding Task Work Def [%s].  Exception: %s\n", task.getTaskWorkDef(),
                      ex.getMessage());
                }
             }
@@ -168,17 +164,17 @@ public class CreateTasksOperation {
             for (JaxAttribute attribute : task.getAttributes()) {
                AttributeTypeId attrType = atsApi.getStoreService().getAttributeType(attribute.getAttrTypeName());
                if (attrType == null || attrType.isInvalid()) {
-                  resultData.errorf("Attribute Type [%s] not valid for Task creation in %s", attrType, task);
+                  results.errorf("Attribute Type [%s] not valid for Task creation in %s", attrType, task);
                }
 
                for (JaxRelation relation : task.getRelations()) {
                   IRelationType relationType = getRelationType(atsApi, relation.getRelationTypeName());
                   if (relationType == null) {
-                     resultData.errorf("Relation Type [%s] not valid for Task creation in %s\n",
+                     results.errorf("Relation Type [%s] not valid for Task creation in %s\n",
                         relation.getRelationTypeName(), task);
                   }
                   if (relation.getRelatedIds().isEmpty()) {
-                     resultData.errorf("Relation [%s] Ids must be suplied Task creation in %s\n",
+                     results.errorf("Relation [%s] Ids must be suplied Task creation in %s\n",
                         relation.getRelationTypeName(), task);
                   }
                   List<Long> foundWorkItemIds = new ArrayList<>();
@@ -188,10 +184,11 @@ public class CreateTasksOperation {
                   }
                   if (foundWorkItemIds.size() != relation.getRelatedIds().size()) {
                      List<Long> notFoundIds = new ArrayList<>();
+                     System.err.println(getClass().getSimpleName() + " - Fix art long not used below");
                      for (Long art : relation.getRelatedIds()) {
                         notFoundIds.addAll(relation.getRelatedIds());
                         notFoundIds.removeAll(foundWorkItemIds);
-                        resultData.errorf("Relation [%s] Work Item Ids [%s] has unfound Work Item(s) in db for task %s",
+                        results.errorf("Relation [%s] Work Item Ids [%s] has unfound Work Item(s) in db for task %s",
                            relation.getRelationTypeName(), notFoundIds, task);
                      }
                   }
@@ -199,7 +196,7 @@ public class CreateTasksOperation {
             }
          }
       }
-      return resultData;
+      return results;
    }
 
    private IAtsTeamWorkflow getTeamWorkflow(Long teamWfId) {
@@ -232,7 +229,7 @@ public class CreateTasksOperation {
    public void run() {
       XResultData results = validate();
       if (results.isErrors()) {
-         throw new OseeArgumentException(results.toString());
+         return;
       }
 
       IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet(
@@ -245,7 +242,7 @@ public class CreateTasksOperation {
             for (JaxAtsTask jaxTask : newTaskData.getNewTasks()) {
                JaxAtsTask newJaxTask = createNewJaxTask(jaxTask.getId(), atsApi);
                if (newJaxTask == null) {
-                  throw new OseeStateException("Unable to create return New Task for id " + jaxTask.getId());
+                  results.errorf("Unable to create return New Task for id %s\n" + jaxTask.getId());
                }
                this.tasks.add(newJaxTask);
             }
@@ -256,7 +253,7 @@ public class CreateTasksOperation {
    public void run(IAtsChangeSet changes) {
       createTasks(changes);
       if (changes.isEmpty()) {
-         resultData.log(getClass().getSimpleName() + " Error - No Tasks to Create");
+         results.log(getClass().getSimpleName() + " Error - No Tasks to Create");
       }
    }
 
@@ -319,7 +316,7 @@ public class CreateTasksOperation {
             for (JaxRelation relation : jaxTask.getRelations()) {
                RelationTypeToken relationType = getRelationType(atsApi, relation.getRelationTypeName());
                if (relationType == null) {
-                  resultData.errorf("Relation Type [%s] not valid for Task creation in %s\n",
+                  results.errorf("Relation Type [%s] not valid for Task creation in %s\n",
                      relation.getRelationTypeName(), task);
                }
                Collection<IAtsWorkItem> items = atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andIds(
@@ -366,6 +363,12 @@ public class CreateTasksOperation {
          return newJaxTask;
       }
       return null;
+   }
+
+   public void setIdToTeamWf(Map<Long, IAtsTeamWorkflow> idToTeamWf) {
+      for (Entry<Long, IAtsTeamWorkflow> entry : idToTeamWf.entrySet()) {
+         this.idToTeamWf.put(entry.getKey(), entry.getValue());
+      }
    }
 
 }

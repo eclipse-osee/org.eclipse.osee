@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -371,5 +372,11 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    @Override
    public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeId artifactType, DeletionFlag deletionFlag) {
       throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public String getSafeName() {
+      return getSoleAttributeValue(CoreAttributeTypes.Name, DeletionFlag.INCLUDE_DELETED,
+         "Unknown Name: " + getIdString());
    }
 }

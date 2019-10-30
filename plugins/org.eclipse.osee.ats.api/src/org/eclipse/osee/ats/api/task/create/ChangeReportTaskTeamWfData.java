@@ -10,13 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.task.create;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.Set;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.task.NewTaskData;
-import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -26,28 +25,20 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
  */
 public class ChangeReportTaskTeamWfData {
 
-   HashMap<String, ArtifactId> taskNamesToReqId = new HashMap<>();
    Collection<ArtifactId> addedModifiedArts = new HashSet<>();
    Collection<ArtifactId> deletedArts = new HashSet<>();
+   Collection<ArtifactId> relArts = new HashSet<>();
    WorkType workType;
    ArtifactToken chgRptTeamWf;
    ArtifactToken destTeamWf;
+   ArtifactToken destTeamDef;
    XResultData rd;
-   Map<ArtifactId, String> taskedArtToName = new HashMap<>();
-   Map<ArtifactId, IAtsTask> referencedArtsToTasks = new HashMap<ArtifactId, IAtsTask>();
    boolean reportOnly;
+   Collection<ChangeReportTaskMatch> taskMatches = new ArrayList<ChangeReportTaskMatch>();
    NewTaskData newTaskData = new NewTaskData();
 
    public ChangeReportTaskTeamWfData() {
       // for jax-rs
-   }
-
-   public HashMap<String, ArtifactId> getTaskNamesToReqId() {
-      return taskNamesToReqId;
-   }
-
-   public void setTaskNamesToReqId(HashMap<String, ArtifactId> taskNamesToReqId) {
-      this.taskNamesToReqId = taskNamesToReqId;
    }
 
    public Collection<ArtifactId> getAddedModifiedArts() {
@@ -90,26 +81,6 @@ public class ChangeReportTaskTeamWfData {
       this.rd = rd;
    }
 
-   public Map<ArtifactId, String> getTaskedArtToName() {
-      return taskedArtToName;
-   }
-
-   public void setTaskedArtToName(Map<ArtifactId, String> taskedArtToName) {
-      this.taskedArtToName = taskedArtToName;
-   }
-
-   public void addTaskedArtToName(ArtifactId art, String name) {
-      this.taskedArtToName.put(art, name);
-   }
-
-   public Map<ArtifactId, IAtsTask> getReferencedArtsToTasks() {
-      return referencedArtsToTasks;
-   }
-
-   public void setReferencedArtsToTasks(Map<ArtifactId, IAtsTask> referencedArtsToTasks) {
-      this.referencedArtsToTasks = referencedArtsToTasks;
-   }
-
    public boolean isReportOnly() {
       return reportOnly;
    }
@@ -136,6 +107,62 @@ public class ChangeReportTaskTeamWfData {
 
    public void setDestTeamWf(ArtifactToken destTeamWf) {
       this.destTeamWf = destTeamWf;
+   }
+
+   public Collection<ArtifactId> getRelArts() {
+      return relArts;
+   }
+
+   public void setRelArts(Collection<ArtifactId> relArts) {
+      this.relArts = relArts;
+   }
+
+   public Collection<ChangeReportTaskMatch> getTaskMatches() {
+      return taskMatches;
+   }
+
+   public void setTaskMatches(Collection<ChangeReportTaskMatch> taskMatches) {
+      this.taskMatches = taskMatches;
+   }
+
+   public void addTaskMatch(ChangeReportTaskMatch taskMatch) {
+      this.taskMatches.add(taskMatch);
+   }
+
+   public Set<String> getTaskNames() {
+      Set<String> names = new HashSet<>();
+      for (ChangeReportTaskMatch taskMatch : getTaskMatches()) {
+         if (taskMatch.getMatchType() == ChangeReportTaskMatchType.Match) {
+            names.add(taskMatch.getTaskName());
+         }
+      }
+      return names;
+   }
+
+   public ArtifactId getToChgArt(String name) {
+      for (ChangeReportTaskMatch taskMatch : getTaskMatches()) {
+         if (taskMatch.getTaskName().equals(name)) {
+            return taskMatch.getChgRptArt();
+         }
+      }
+      return null;
+   }
+
+   public void addTaskMatch(ArtifactId art, String format, Object... data) {
+      ChangeReportTaskMatch taskMatch = new ChangeReportTaskMatch();
+      taskMatch.setTaskName(String.format(format, data));
+      if (art != null) {
+         taskMatch.setChgRptArt(art);
+      }
+      taskMatch.setType(ChangeReportTaskMatchType.Manual);
+   }
+
+   public ArtifactToken getDestTeamDef() {
+      return destTeamDef;
+   }
+
+   public void setDestTeamDef(ArtifactToken destTeamDef) {
+      this.destTeamDef = destTeamDef;
    }
 
 }

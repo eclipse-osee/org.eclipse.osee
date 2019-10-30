@@ -55,4 +55,13 @@ public enum WorkType {
    public String getDescription() {
       return description;
    }
+
+   public static WorkType valueOfOrNone(String workTypeStr) {
+      for (WorkType type : values()) {
+         if (type.name().equals(workTypeStr)) {
+            return type;
+         }
+      }
+      return WorkType.None;
+   }
 }

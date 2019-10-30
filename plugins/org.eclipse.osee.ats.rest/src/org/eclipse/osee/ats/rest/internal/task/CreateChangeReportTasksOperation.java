@@ -8,6 +8,7 @@ package org.eclipse.osee.ats.rest.internal.task;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -20,9 +21,10 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.task.CreateTasksOption;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
-import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.task.create.ChangeReportOptions;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
+import org.eclipse.osee.ats.api.task.create.ChangeReportTaskMatch;
+import org.eclipse.osee.ats.api.task.create.ChangeReportTaskMatchType;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskTeamWfData;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
@@ -35,11 +37,14 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.task.ChangeReportTasksUtil;
 import org.eclipse.osee.ats.core.task.CreateTasksWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 public class CreateChangeReportTasksOperation {
 
@@ -66,6 +71,7 @@ public class CreateChangeReportTasksOperation {
             rd.error("No Host Team Workflow can be found.\n");
             return crtd;
          }
+         crtd.getIdToTeamWf().put(hostTeamWf.getId(), hostTeamWf);
          rd.logf("Creating from host Team Wf %s\n", hostTeamWf.toStringWithId());
 
          CreateTasksDefinitionBuilder taskSetDefinition =
@@ -97,6 +103,7 @@ public class CreateChangeReportTasksOperation {
             chgRptTeamWf = siblings.iterator().next();
          }
          rd.logf("Using Change Report Team Wf %s\n", chgRptTeamWf.toStringWithId());
+         crtd.getIdToTeamWf().put(chgRptTeamWf.getId(), chgRptTeamWf);
          crtd.setChgRptTeamWf(chgRptTeamWf.getStoreObject());
 
          ChangeReportTasksUtil.getBranchOrCommitChangeData(crtd, setDef);
@@ -109,6 +116,7 @@ public class CreateChangeReportTasksOperation {
             rd.errorf("No sibling team defs found for id %s\n", taskDefToken.toStringWithId());
             return crtd;
          }
+         rd.logf("For Sibling Team AIs [%s]\n", Collections.toString(", ", toSiblingTeamAis.values()));
 
          ChangeReportTasksUtil.processChangeData(crtd);
          if (crtd.getAllArtifacts().isEmpty()) {
@@ -120,9 +128,9 @@ public class CreateChangeReportTasksOperation {
          boolean fail = false;
          for (ArtifactId art : crtd.getAllArtifacts()) {
             try {
-               ArtifactToken artifact =
-                  atsApi.getQueryService().getArtifact(art, crtd.getWorkOrParentBranch(), DeletionFlag.INCLUDE_DELETED);
-               artifact.getName();
+               ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(art,
+                  crtd.getWorkOrParentBranch(), DeletionFlag.INCLUDE_DELETED);
+               artifact.getSafeName();
             } catch (Exception ex) {
                rd.errorf("Exception accessing name of %s - %s\n", art.getId(), ex.getLocalizedMessage());
                fail = true;
@@ -151,11 +159,27 @@ public class CreateChangeReportTasksOperation {
             crttwd.setReportOnly(reportOnly);
             crttwd.setRd(rd);
             crttwd.setChgRptTeamWf(chgRptTeamWf.getStoreObject());
+            crttwd.getAddedModifiedArts().addAll(crtd.getAddedModifiedArts());
+            crttwd.getDeletedArts().addAll(crtd.getDeletedArts());
+            crttwd.getRelArts().addAll(crtd.getRelArts());
+            crttwd.setDestTeamDef(teamDef.getStoreObject());
+
             WorkType workType = WorkType.None;
-            if (teamDef.getName().contains("Code")) {
-               workType = WorkType.Code;
-            } else if (teamDef.getName().contains("Test")) {
-               workType = WorkType.Test;
+            String workTypeStr =
+               atsApi.getAttributeResolver().getSoleAttributeValue(teamDef, AtsAttributeTypes.WorkType, "");
+            if (Strings.isValid(workTypeStr)) {
+               workType = WorkType.valueOfOrNone(workTypeStr);
+            }
+            if (workType != WorkType.None) {
+               if (teamDef.getName().contains("Code")) {
+                  workType = WorkType.Code;
+               } else if (teamDef.getName().contains("Test")) {
+                  workType = WorkType.Test;
+               }
+            }
+            if (workType == WorkType.None) {
+               rd.errorf("\n\nCan't determine Work Type from Team Def or Name%s\n", teamDef.toStringWithId());
+               return crtd;
             }
             crttwd.setWorkType(workType);
 
@@ -165,40 +189,77 @@ public class CreateChangeReportTasksOperation {
                rd.errorf("Actionable Item  %s is invalid for team %s\n", teamDefAi.getValue(), teamDefAi.getKey());
                return crtd;
             }
-            CreateTasksWorkflow workflowCreator =
-               new CreateTasksWorkflow("", setDef.getChgRptOptions().getCreateOptions(),
-                  crttwd.getTaskedArtToName().values(), reportOnly, crttwd.getRd(), changes, new Date(),
-                  AtsCoreUsers.SYSTEM_USER, chgRptTeamWf, targetedVersion, crttwd.getWorkType(), null, null);
-            workflowCreator.setActionableItem(ai);
 
-            // Compute task names; add to crd
-            ChangeReportTasksUtil.getTaskNamesFromChanges(crtd, crttwd, atsApi);
+            // Going to create a ChangeReportTaskMatch for all the exist
+            // Then, going to compute/match all that are needed (using boolean ChangeReportTaskMatch.found == true?)
+            // Later, all ChangeReportTaskMatch that have no task, create new task
+            //        all ChangeReportTaskMatch that have found == false, mark to remove task
 
-            // Create destination teamWf if tasks are needed and not already exist
-            IAtsTeamWorkflow destTeamWf = workflowCreator.createMissingWorkflow();
-            if (destTeamWf == null) {
-               crttwd.getRd().logf("No Destination Team Created/Needed for %s\n", teamDef.toStringWithId());
-               continue;
-            }
-            crttwd.setDestTeamWf(destTeamWf.getStoreObject());
-            rd.logf("Destination Team Wf %s\n", destTeamWf.toStringWithId());
+            // TBD Compute task maches that already exist (need boolean for match found so can remove if no match)
+            // ChangeReportTaskUtil.compute CR task matches that already exist
 
-            // Compute missing tasks; add to crd
-            ChangeReportTasksUtil.getReferencedArtsToTasks(crttwd, setDef, workType, destTeamWf);
-
-            Set<ArtifactId> currentlyReferencedArts = crttwd.getReferencedArtsToTasks().keySet();
-            Collection<ArtifactId> artsReferencedByTasks = crttwd.getTaskNamesToReqId().values();
-
-            // if currently referenced and not should be, mark as no match
-            for (ArtifactId currRef : currentlyReferencedArts) {
-               if (!artsReferencedByTasks.contains(currRef)) {
-                  IAtsTask task = crttwd.getReferencedArtsToTasks().get(currRef);
-                  dereferenceTask(crttwd, task);
+            // Compute task matches needed; add to crd
+            ChangeReportTasksUtil.getTasksComputedAsNeeded(crtd, crttwd, atsApi);
+            for (ChangeReportTaskMatch taskMatch : crttwd.getTaskMatches()) {
+               if (crtd.isDebug()) {
+                  crtd.getResults().logf("Task Computed as Needed [%s]\n", taskMatch.toString());
                }
             }
-            for (ArtifactId artRef : artsReferencedByTasks) {
-               if (!currentlyReferencedArts.contains(artRef)) {
-                  createTask(crttwd, artRef);
+
+            // Get or create destTeamWf
+            IAtsTeamWorkflow destTeamWf =
+               ChangeReportTasksUtil.getDestTeamWfOrNull(crttwd, workType, atsApi, chgRptTeamWf, teamDef);
+            if (destTeamWf == null) {
+               CreateTasksWorkflow workflowCreator = new CreateTasksWorkflow(hostTeamWf.getName(),
+                  setDef.getChgRptOptions().getCreateOptions(), true, reportOnly, crttwd.getRd(), changes, new Date(),
+                  AtsCoreUsers.SYSTEM_USER, chgRptTeamWf, targetedVersion, crttwd.getWorkType(), null, null);
+               workflowCreator.setActionableItem(ai);
+               destTeamWf = workflowCreator.createMissingWorkflow();
+               rd.logf("Created Destination Team Wf %s\n", destTeamWf.toStringWithId());
+            } else {
+               rd.logf("Using existing Destination Team Wf %s\n", destTeamWf.toStringWithId());
+            }
+            crttwd.setDestTeamWf(destTeamWf.getStoreObject());
+            crtd.getIdToTeamWf().put(destTeamWf.getId(), destTeamWf);
+
+            // Compute missing tasks; add task or null to crttwd.ChangeReportTaskMatch objects
+            ChangeReportTasksUtil.determinExistingTaskMatchType(crttwd, setDef, workType, destTeamWf);
+
+            Set<String> addModTaskNames = new HashSet<>();
+            Set<String> deletedTaskNames = new HashSet<>();
+            Date createdDate = new Date();
+            // Log changes needed; Add to delete if needed or to NewTaskData
+            for (ChangeReportTaskMatch taskMatch : crttwd.getTaskMatches()) {
+               ChangeReportTaskMatchType matchType = taskMatch.getMatchType();
+               // Skip if task already exists
+               if (matchType == ChangeReportTaskMatchType.Match) {
+                  crtd.getResults().logf("Task %s Exists - No Change Needed\n", taskMatch.getTaskWf().toStringWithId());
+               }
+
+               // Create if no task was found
+               else if (matchType == ChangeReportTaskMatchType.TaskComputedAsNeeded) {
+                  if (!addModTaskNames.contains(taskMatch.getTaskName())) {
+                     crtd.getResults().warningf("Create new task [%s]\n", taskMatch.getTaskName());
+                     addToNewTaskData(crttwd, taskMatch, createdDate);
+                     addModTaskNames.add(taskMatch.getTaskName());
+                  }
+               }
+
+               // Delete if no reference or referenced artifact not there anymore
+               else if ((matchType == ChangeReportTaskMatchType.TaskRefAttrMissing) || (matchType == ChangeReportTaskMatchType.TaskRefAttrValidButRefChgArtMissing)) {
+                  if (!deletedTaskNames.contains(taskMatch.getTaskName())) {
+                     crtd.getResults().warningf("Delete un-referenced task [%s]\n", taskMatch.getTaskName());
+                     if (!reportOnly) {
+                        if (changes == null) {
+                           crtd.getResults().errorf("AtsChangeSet can not be null.");
+                        } else {
+                           changes.deleteArtifact(taskMatch.getTaskWf());
+                        }
+                     }
+                     deletedTaskNames.add(taskMatch.getTaskName());
+                  }
+               } else {
+                  crtd.getResults().errorf("Unhandled Match Type [%s]\n", taskMatch.getMatchType().name());
                }
             }
 
@@ -209,36 +270,35 @@ public class CreateChangeReportTasksOperation {
                crttwd.getNewTaskData().setCommitComment("Create Change Report Tasks");
                crttwd.getNewTaskData().setTeamWfId(destTeamWf.getId());
 
-               NewTaskDatas newTasks = new NewTaskDatas();
-               newTasks.getTaskDatas().add(crttwd.getNewTaskData());
-               atsApi.getTaskService().createTasks(newTasks);
+               atsApi.getTaskService().createTasks(crttwd.getNewTaskData(), changes, rd, crtd.getIdToTeamWf());
             }
          }
 
+         if (!reportOnly && changes != null) {
+            TransactionId transId = changes.executeIfNeeded();
+            if (transId.isValid()) {
+               crtd.getResults().log("Tasks Updated\n");
+            } else {
+               crtd.getResults().log("No Changes Needed\n");
+            }
+         }
       } catch (Exception ex) {
          crtd.results.errorf("Exception creating tasks %s", Lib.exceptionToString(ex));
       }
       return crtd;
    }
 
-   private void createTask(ChangeReportTaskTeamWfData crd, ArtifactId artRef) {
-      ArtifactToken artRefTok = atsApi.getQueryService().getArtifactToken(artRef);
-      crd.getRd().logf("No matching task for artifact %s; Create new task.", artRefTok.toStringWithId());
-      Set<Entry<String, ArtifactId>> entrySet = crd.getTaskNamesToReqId().entrySet();
-      if (crd.isPersist()) {
-         for (Entry<String, ArtifactId> entry : crd.getTaskNamesToReqId().entrySet()) {
-            if (artRef.equals(entry.getValue())) {
-               JaxAtsTask task = new JaxAtsTask();
-               task.setName(entry.getKey());
-               task.setAssigneeUserIds(Arrays.asList(AtsCoreUsers.UNASSIGNED_USER.getUserId()));
-               task.addAttribute(AtsAttributeTypes.TaskToChangedArtifactReference, entry.getValue());
-               crd.getNewTaskData().getNewTasks().add(task);
-               crtd.results.logf("Create task %s", task.toStringWithId());
-            }
-         }
-      }
+   private void addToNewTaskData(ChangeReportTaskTeamWfData crttwd, ChangeReportTaskMatch taskMatch, Date createdDate) {
+      JaxAtsTask task = new JaxAtsTask();
+      task.setName(taskMatch.getTaskName());
+      task.setCreatedDate(createdDate);
+      task.setCreatedByUserId(AtsCoreUsers.SYSTEM_USER.getUserId());
+      task.setAssigneeUserIds(Arrays.asList(AtsCoreUsers.UNASSIGNED_USER.getUserId()));
+      task.addAttribute(AtsAttributeTypes.TaskToChangedArtifactReference, taskMatch.getChgRptArt());
+      crttwd.getNewTaskData().getNewTasks().add(task);
    }
 
+   // TBD - needed anymore?  We're just deleting un-referenced
    private void dereferenceTask(ChangeReportTaskTeamWfData crd, IAtsTask task) {
       crd.getRd().logf("No matching artifact for Task %s; De-referenced task can be deleted.", task.toStringWithId());
       if (crd.isPersist()) {

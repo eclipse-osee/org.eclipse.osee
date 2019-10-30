@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -350,5 +351,11 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    @Override
    public ApplicabilityId getApplicability() {
       return applicability;
+   }
+
+   @Override
+   public String getSafeName() {
+      return getSoleAttributeValue(CoreAttributeTypes.Name, DeletionFlag.INCLUDE_DELETED,
+         "Unknown Name: " + getIdString());
    }
 }

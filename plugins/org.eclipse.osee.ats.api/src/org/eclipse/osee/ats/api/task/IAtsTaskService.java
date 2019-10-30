@@ -82,4 +82,6 @@ public interface IAtsTaskService {
 
    Collection<IAtsTask> createTasks(NewTaskData newTaskData, IAtsChangeSet changes, XResultData results);
 
+   Collection<IAtsTask> createTasks(NewTaskData newTaskData, IAtsChangeSet changes, XResultData rd, Map<Long, IAtsTeamWorkflow> idToTeamWf);
+
 }

@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
 
 /**
  * @author Donald G Dunne
@@ -38,7 +37,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 public class CreateTasksWorkflow {
 
    protected final Collection<CreateTasksOption> createTasksOptions;
-   protected final Collection<String> taskNamesMissingTaskArtifact;
+   protected final boolean createWorkflow;
    protected final boolean reportOnly;
    protected final XResultData resultData;
    protected final IAtsChangeSet changes;
@@ -55,9 +54,19 @@ public class CreateTasksWorkflow {
    public CreateTasksWorkflow(String pcrNumber, Collection<CreateTasksOption> createTasksOptions, Collection<String> taskNamesMissingTaskArtifact, //
       boolean reportOnly, XResultData resultData, IAtsChangeSet changes, Date createdDate, IAtsUser createdBy, IAtsTeamWorkflow sourceTeamWf, //
       ICommitConfigItem commitConfigArt, WorkType workType, IAtsTeamWorkflow destTeam, IAtsProgram program) {
+      this(pcrNumber, createTasksOptions,
+         ((!taskNamesMissingTaskArtifact.isEmpty() || createTasksOptions.contains(
+            CreateTasksOption.WorkflowsOnly)) && destTeam == null),
+         reportOnly, resultData, changes, createdDate, createdBy, sourceTeamWf, commitConfigArt, workType, destTeam,
+         program);
+   }
+
+   public CreateTasksWorkflow(String pcrNumber, Collection<CreateTasksOption> createTasksOptions, boolean createWorkflow, //
+      boolean reportOnly, XResultData resultData, IAtsChangeSet changes, Date createdDate, IAtsUser createdBy, IAtsTeamWorkflow sourceTeamWf, //
+      ICommitConfigItem commitConfigArt, WorkType workType, IAtsTeamWorkflow destTeam, IAtsProgram program) {
       this.pcrNumber = pcrNumber;
       this.createTasksOptions = createTasksOptions;
-      this.taskNamesMissingTaskArtifact = taskNamesMissingTaskArtifact;
+      this.createWorkflow = createWorkflow;
       this.reportOnly = reportOnly;
       this.resultData = resultData;
       this.changes = changes;
@@ -71,13 +80,7 @@ public class CreateTasksWorkflow {
    }
 
    protected void logWorkflowCreation() {
-      if (reportOnly) {
-         resultData.error(AHTML.addRowMultiColumnTable(workType.name(),
-            "Action " + sourceTeamWf.getParentAction().getAtsId() + " needs workflow for " + workType, ".", "."));
-      } else {
-         resultData.log(AHTML.addRowMultiColumnTable(workType.name(),
-            "Action " + sourceTeamWf.getParentAction().getAtsId() + "; Created workflow for " + workType, ".", "."));
-      }
+      resultData.logf("Create [%s] Workflow\n", workType.name());
    }
 
    public boolean isSourceTeamWfEqualDestination() {
@@ -94,8 +97,7 @@ public class CreateTasksWorkflow {
 
    public IAtsTeamWorkflow createMissingWorkflow() {
       // Now, report all tasks of unknown origin
-      if ((!taskNamesMissingTaskArtifact.isEmpty() || createTasksOptions.contains(
-         CreateTasksOption.WorkflowsOnly)) && destTeam == null) {
+      if (createWorkflow) {
          logWorkflowCreation();
 
          /**

@@ -199,4 +199,9 @@ public class AtsTaskService extends AbstractAtsTaskService implements IAtsTaskSe
       return taskArt;
    }
 
+   @Override
+   public Collection<IAtsTask> createTasks(NewTaskData newTaskData, IAtsChangeSet changes, XResultData rd, Map<Long, IAtsTeamWorkflow> idToTeamWf) {
+      throw new UnsupportedOperationException("Not supported on ide client");
+   }
+
 }

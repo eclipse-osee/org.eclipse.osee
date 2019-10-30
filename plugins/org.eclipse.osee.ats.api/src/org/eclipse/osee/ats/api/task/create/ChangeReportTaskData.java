@@ -13,11 +13,14 @@ package org.eclipse.osee.ats.api.task.create;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -30,6 +33,10 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 public class ChangeReportTaskData {
 
    public List<ChangeReportTaskTeamWfData> changeReportDatas = new ArrayList<ChangeReportTaskTeamWfData>();
+   /**
+    * Results for all processing of this operation including validation checks, creating workflow, creating tasks and
+    * error handling
+    */
    public XResultData results = new XResultData();
    boolean reportOnly = false;
    IAtsVersion targetedVersion;
@@ -38,14 +45,22 @@ public class ChangeReportTaskData {
    ArtifactToken hostTeamWf;
    // Workflow that owns change report or empty (will be determined from create task definition team def)
    ArtifactToken chgRptTeamWf = ArtifactToken.SENTINEL;
+   // Token of the CreateTaskDefinition to run against change report
    AtsTaskDefToken taskDefToken;
    private BranchId workOrParentBranch;
+   // ChangeItems from executed change report
    private List<ChangeItem> changeData;
+   // Artifact lists for the different types of changes in change report
    private Collection<ArtifactId> addedModifiedArts = new HashSet<>();
    private Collection<ArtifactId> deletedArts = new HashSet<>();
    private Collection<ArtifactId> relArts = new HashSet<>();
    private Collection<ArtifactId> allArtifacts = new HashSet<>();
+   // Definition loaded from the taskDefToken that defines how tasks are created
    private CreateTasksDefinition setDef;
+   @JsonIgnore
+   private final Map<Long, IAtsTeamWorkflow> idToTeamWf = new HashMap<Long, IAtsTeamWorkflow>();
+   // Show detailed debug logging
+   private boolean debug = false;
 
    public ChangeReportTaskData() {
       // for jax-rs
@@ -174,6 +189,22 @@ public class ChangeReportTaskData {
 
    public CreateTasksDefinition getSetDef() {
       return setDef;
+   }
+
+   /**
+    * Storage for team workflows loaded or create so they can be used later in process without having to search db
+    * (which they may not have been stored in yet).
+    */
+   public Map<Long, IAtsTeamWorkflow> getIdToTeamWf() {
+      return idToTeamWf;
+   }
+
+   public boolean isDebug() {
+      return debug;
+   }
+
+   public void setDebug(boolean debug) {
+      this.debug = debug;
    }
 
 }

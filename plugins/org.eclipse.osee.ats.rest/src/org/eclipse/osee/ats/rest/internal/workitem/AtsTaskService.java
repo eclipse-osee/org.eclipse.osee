@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.rest.internal.workitem;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -35,12 +36,6 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class AtsTaskService extends AbstractAtsTaskService {
    private final AtsApi atsApi;
    private final OrcsApi orcsApi;
-   private XResultData results;
-
-   public AtsTaskService(AtsApi atsApi, OrcsApi orcsApi, XResultData results) {
-      this(atsApi, orcsApi);
-      this.results = results;
-   }
 
    public AtsTaskService(AtsApi atsApi, OrcsApi orcsApi) {
       super(atsApi);
@@ -57,18 +52,25 @@ public class AtsTaskService extends AbstractAtsTaskService {
 
    @Override
    public Collection<IAtsTask> createTasks(NewTaskData newTaskData, IAtsChangeSet changes, XResultData results) {
-      CreateTasksOperation operation = new CreateTasksOperation(newTaskData, atsApi, orcsApi, results);
-      operation.validate();
-      operation.run(changes);
-      if (results.isErrors()) {
-         throw new OseeStateException("Error creating tasks - " + results.toString());
-      }
-      if (this.results != null) {
-         results.addRaw(this.results.toString());
-      }
+      return createTasks(newTaskData, changes, results, new HashMap<Long, IAtsTeamWorkflow>());
+   }
+
+   /**
+    * @param idToTeamWf - Map of team workflows created during operation that may not be in database yet
+    */
+   @Override
+   public Collection<IAtsTask> createTasks(NewTaskData newTaskData, IAtsChangeSet changes, XResultData results, Map<Long, IAtsTeamWorkflow> idToTeamWf) {
       List<IAtsTask> tasks = new LinkedList<>();
-      for (JaxAtsTask task : operation.getTasks()) {
-         tasks.add(atsApi.getWorkItemService().getTask(atsApi.getQueryService().getArtifact(task.getId())));
+      CreateTasksOperation operation = new CreateTasksOperation(newTaskData, atsApi, orcsApi, results);
+      operation.setIdToTeamWf(idToTeamWf);
+      operation.validate();
+      if (results.isSuccess()) {
+         operation.run(changes);
+         if (results.isSuccess()) {
+            for (JaxAtsTask task : operation.getTasks()) {
+               tasks.add(atsApi.getWorkItemService().getTask(atsApi.getQueryService().getArtifact(task.getId())));
+            }
+         }
       }
       return tasks;
    }

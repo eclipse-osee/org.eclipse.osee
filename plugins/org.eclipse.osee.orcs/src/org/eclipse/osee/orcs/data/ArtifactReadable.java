@@ -154,4 +154,6 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
    boolean isHistorical();
 
    ApplicabilityId getApplicability();
+
+   String getSafeName();
 }
