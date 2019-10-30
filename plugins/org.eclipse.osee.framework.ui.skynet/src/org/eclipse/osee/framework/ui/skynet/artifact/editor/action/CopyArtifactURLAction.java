@@ -66,12 +66,12 @@ public final class CopyArtifactURLAction extends Action {
 
    private AttributeTypeId getAttributeTypeId() {
       return artifact.isOfType(
-         CoreArtifactTypes.MsWholeWordDocument) ? CoreAttributeTypes.WholeWordContent : CoreAttributeTypes.NativeContent;
+         CoreArtifactTypes.MsWordWholeDocument) ? CoreAttributeTypes.WholeWordContent : CoreAttributeTypes.NativeContent;
    }
 
    public static boolean isApplicable(Artifact artifact) {
       return artifact.isOfType(CoreArtifactTypes.NativeArtifact) || artifact.isOfType(
-         CoreArtifactTypes.MsWholeWordDocument);
+         CoreArtifactTypes.MsWordWholeDocument);
    }
 
 }

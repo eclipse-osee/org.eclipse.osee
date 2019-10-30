@@ -55,11 +55,11 @@ public final class CoreArtifactTypes {
    public static final ArtifactTypeToken ImplementationDetailsPlainText = ArtifactTypeToken.valueOf(638269899, "Implementation Details Plain Text");
    public static final ArtifactTypeToken ModelDiagram = ArtifactTypeToken.valueOf(98, "Model Diagram");
    public static final ArtifactTypeToken NativeArtifact = ArtifactTypeToken.valueOf(20, "Native Artifact");
-   public static final ArtifactTypeToken MsWholeWordDocument = ArtifactTypeToken.valueOf(18, "MS Word Whole Document");
+   public static final ArtifactTypeToken MsWordWholeDocument = ArtifactTypeToken.valueOf(18, "MS Word Whole Document");
    public static final ArtifactTypeToken OseeApp = ArtifactTypeToken.valueOf(89, "OSEE App");
    public static final ArtifactTypeToken OseeTypeDefinition = ArtifactTypeToken.valueOf(60, "Osee Type Definition");
 
-   public static final ArtifactTypeToken OseeTypesEnum = ArtifactTypeToken.valueOf(5447805027409642344L, "Osee Type Enum");
+   public static final ArtifactTypeToken OseeTypeEnum = ArtifactTypeToken.valueOf(5447805027409642344L, "Osee Type Enum");
    public static final ArtifactTypeToken PlainText = ArtifactTypeToken.valueOf(784L, "Plain Text");
    public static final ArtifactTypeToken RendererTemplate = ArtifactTypeToken.valueOf(9, "Renderer Template");
    public static final ArtifactTypeToken Requirement = ArtifactTypeToken.valueOf(21, "Requirement");

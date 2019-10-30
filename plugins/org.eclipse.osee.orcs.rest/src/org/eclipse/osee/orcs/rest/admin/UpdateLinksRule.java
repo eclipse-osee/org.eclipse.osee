@@ -58,7 +58,7 @@ public class UpdateLinksRule extends Rule {
    private Long getAttributeId(ArtifactReadable artifact) {
       AttributeTypeToken attributeType;
 
-      if (artifact.isOfType(CoreArtifactTypes.MsWholeWordDocument)) {
+      if (artifact.isOfType(CoreArtifactTypes.MsWordWholeDocument)) {
          attributeType = CoreAttributeTypes.WholeWordContent;
 
       } else if (artifact.isOfType(CoreArtifactTypes.NativeArtifact)) {
