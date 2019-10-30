@@ -11,6 +11,7 @@
 package org.eclipse.osee.define.rest;
 
 import java.util.Set;
+import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.define.api.MSWordOperations;
 import org.eclipse.osee.define.api.PublishingOptions;
 import org.eclipse.osee.define.api.WordTemplateContentData;
@@ -18,7 +19,7 @@ import org.eclipse.osee.define.api.WordUpdateChange;
 import org.eclipse.osee.define.api.WordUpdateData;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordTemplateContentRendererHandler;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordUpdateArtifact;
-import org.eclipse.osee.define.rest.operations.WordTemplateProcessor;
+import org.eclipse.osee.define.rest.operations.NestedTemplateStreamingOutput;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.type.LinkType;
@@ -57,7 +58,7 @@ public class MSWordOperationsImpl implements MSWordOperations {
    }
 
    @Override
-   public void publishWithNestedTemplates(BranchId branch, ArtifactId masterTemplate, ArtifactId slaveTemplate, ArtifactId headArtifact) {
+   public StreamingOutput publishWithNestedTemplates(BranchId branch, ArtifactId masterTemplate, ArtifactId slaveTemplate, ArtifactId headArtifact) {
       PublishingOptions publishingOptions = new PublishingOptions();
       //default options
       publishingOptions.branch = branch;
@@ -82,7 +83,9 @@ public class MSWordOperationsImpl implements MSWordOperations {
          slaveTemplate = ArtifactId.SENTINEL;
       }
 
-      WordTemplateProcessor processor = new WordTemplateProcessor(publishingOptions, logger, orcsApi);
-      processor.publishWithNestedTemplates(masterTemplate, slaveTemplate, headArtifact);
+      StreamingOutput streamingOutput = new NestedTemplateStreamingOutput(publishingOptions, masterTemplate,
+         slaveTemplate, headArtifact, orcsApi, logger);
+
+      return streamingOutput;
    }
 }

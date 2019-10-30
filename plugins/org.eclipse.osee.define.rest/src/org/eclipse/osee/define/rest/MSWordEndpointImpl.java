@@ -10,7 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.define.rest;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Set;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.define.api.DefineApi;
 import org.eclipse.osee.define.api.MSWordEndpoint;
 import org.eclipse.osee.define.api.WordTemplateContentData;
@@ -42,8 +47,22 @@ public final class MSWordEndpointImpl implements MSWordEndpoint {
    }
 
    @Override
-   public void publishWithNestedTemplates(BranchId branch, ArtifactId masterTemplate, ArtifactId slaveTemplate, ArtifactId headArtifact) {
-      defineApi.getMSWordOperations().publishWithNestedTemplates(branch, masterTemplate, slaveTemplate, headArtifact);
+   public Response publishWithNestedTemplates(BranchId branch, ArtifactId masterTemplate, ArtifactId slaveTemplate, ArtifactId headArtifact) {
+      StreamingOutput streamingOutput = defineApi.getMSWordOperations().publishWithNestedTemplates(branch,
+         masterTemplate, slaveTemplate, headArtifact);
+
+      //Get date/time for filename
+      SimpleDateFormat format = new SimpleDateFormat("MM-dd_HH-mm-ss");
+      Date date = new Date(System.currentTimeMillis());
+      String time = format.format(date);
+
+      String msofdName = headArtifact.getIdString();
+
+      String fileName = msofdName + "_" + time + ".xml";
+
+      ResponseBuilder builder = Response.ok(streamingOutput);
+      builder.header("Content-Disposition", "attachment; filename=" + fileName);
+      return builder.build();
    }
 
    @Override

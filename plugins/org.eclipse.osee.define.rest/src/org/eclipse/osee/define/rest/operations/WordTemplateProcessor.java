@@ -16,14 +16,9 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.SeverityC
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordTemplateContent;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
-import java.awt.Desktop;
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -64,7 +59,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.logger.Log;
@@ -163,7 +157,7 @@ public class WordTemplateProcessor {
     * Parse through template to find xml defining artifact sets and replace it with the result of publishing those
     * artifacts Only used by Publish SRS
     */
-   public void publishWithNestedTemplates(ArtifactId masterTemplateArtId, ArtifactId slaveTemplateArtId, ArtifactId headArtifact) {
+   public String publishWithNestedTemplates(ArtifactId masterTemplateArtId, ArtifactId slaveTemplateArtId, ArtifactId headArtifact) {
       ArtifactReadable masterTemplateArtifact = null, slaveTemplateArtifact = null;
       List<ArtifactReadable> artifacts = new LinkedList<>();
 
@@ -247,27 +241,11 @@ public class WordTemplateProcessor {
          isEmptyHeaders(artifacts);
       }
 
-      //Get date/time for filename
-      SimpleDateFormat format = new SimpleDateFormat("MM-dd_HH-mm-ss");
-      Date date = new Date(System.currentTimeMillis());
-      String time = format.format(date);
-
       //Using applyTemplate, get the xml string, create and write to the file.
       StringBuilder wordMlOutput =
          applyTemplate(artifacts, masterTemplate, masterTemplateOptions, masterTemplateStyles, null, null, PREVIEW);
-      File file = new File(
-         System.getProperty("user.home") + "/Downloads/" + masterTemplateArtifact.getName() + "_" + time + ".xml");
 
-      try {
-         //Writes to the file
-         Lib.writeStringToFile(wordMlOutput.toString(), file);
-         //Opens the file in word
-         if (Desktop.isDesktopSupported()) {
-            Desktop.getDesktop().open(file);
-         }
-      } catch (IOException ex) {
-         ex.printStackTrace();
-      }
+      return wordMlOutput.toString();
    }
 
    /**
