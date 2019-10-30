@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,6 +54,7 @@ public class ExportSet {
    private final DispoApi dispoApi;
    Map<CoverageLevel, WrapInt> levelToTotalCount = new HashMap<>();
    Map<CoverageLevel, WrapInt> levelToCoveredTotalCount = new HashMap<>();
+   Map<String, Integer> defaultCases = new HashMap<>();
 
    private final String LEVEL_A_LOCATION_PATTERN = "\\s*\\d+\\s*\\.\\s*\\d+.*?\\.\\s*(T|F)\\s*";
    private final String LEVEL_B_LOCATION_PATTERN = "(.*?RESULT.*|\\s*\\d+\\s*\\.\\s*(T|F).*)";
@@ -127,36 +129,56 @@ public class ExportSet {
             if (typesCopy.remove("Test_Script")) {
                switch (typesCopy.get(0)) {
                   case "Defensive_Programming":
-                     toReturn = "Test_Def_Prog";
+                     toReturn = "Defensive_Programming/Test_Script";
                      break;
                   case "Exception_Handling":
-                     toReturn = "Test_Ex_Handling";
+                     toReturn = "Exception_Handling/Test_Script";
                      break;
                   case "Analysis":
-                     toReturn = "Test_Analysis";
+                     toReturn = "Analysis/Test_Script";
                      break;
                   case "Deactivated_EXT_ATE_PRESENT":
-                     toReturn = "Test_Deactivated_EXT_ATE_Present";
+                     toReturn = "Deactivated_EXT_ATE_PRESENT/Test_Script";
                      break;
                   case "Deactivated_IN_AIR_OR_ENG_ON":
-                     toReturn = "Test_Deactivated_AIR_OR_ENG_ON";
+                     toReturn = "Deactivated_IN_AIR_OR_ENG_ON/Test_Script";
                      break;
                   case "Deactivated_J4_Connector":
-                     toReturn = "Test_Deactivated_J4";
+                     toReturn = "Deactivated_J4_Connector/Test_Script";
                      break;
                   case "Deactivated_Compile_Time":
-                     toReturn = "Test_Deactivated_Compile";
+                     toReturn = "Deactivated_Compile_Time/Test_Script";
                      break;
                   default:
+                     recordUnexpectedEvents(resolutionTypes);
                      toReturn = "MIXED";
                }
             } else {
+               recordUnexpectedEvents(resolutionTypes);
                toReturn = "MIXED - No Test_Script";
             }
             return toReturn;
          } else {
+            recordUnexpectedEvents(resolutionTypes);
             return "SHOULD NOT HAVE LANDED HERE";
          }
+      }
+   }
+
+   private void recordUnexpectedEvents(Set<String> resolutionTypes) {
+      List<String> tempResolutionTypes = new ArrayList<>(resolutionTypes);
+      String wrongResolutions = "";
+      for (String resolution : tempResolutionTypes) {
+         if (!wrongResolutions.isEmpty()) {
+            wrongResolutions += "/";
+         }
+         wrongResolutions += resolution;
+      }
+      if (defaultCases.containsKey(wrongResolutions)) {
+         int count = defaultCases.get(wrongResolutions) + 1;
+         defaultCases.replace(wrongResolutions, count);
+      } else {
+         defaultCases.put(wrongResolutions, 1);
       }
    }
 
@@ -249,13 +271,13 @@ public class ExportSet {
          }
          // Needed for Level A, pairs can but should not have different coverage methods
          innerMap.put("MIXED", new WrapInt(0));
-         innerMap.put("Test_Def_Prog", new WrapInt(0));
-         innerMap.put("Test_Ex_Handling", new WrapInt(0));
-         innerMap.put("Test_Analysis", new WrapInt(0));
-         innerMap.put("Test_Deactivated_EXT_ATE_Present", new WrapInt(0));
-         innerMap.put("Test_Deactivated _AIR_ENG_ON", new WrapInt(0));
-         innerMap.put("Test_Deactivated _J4", new WrapInt(0));
-         innerMap.put("Test_Deactivated _Compile", new WrapInt(0));
+         innerMap.put("Defensive_Programming/Test_Script", new WrapInt(0));
+         innerMap.put("Exception_Handling/Test_Script", new WrapInt(0));
+         innerMap.put("Analysis/Test_Script", new WrapInt(0));
+         innerMap.put("Deactivated_EXT_ATE_PRESENT/Test_Script", new WrapInt(0));
+         innerMap.put("Deactivated_IN_AIR_OR_ENG_ON/Test_Script", new WrapInt(0));
+         innerMap.put("Deactivated_J4_Connector/Test_Script", new WrapInt(0));
+         innerMap.put("Deactivated_Compile_Time/Test_Script", new WrapInt(0));
          levelToResolutionTypesToCount.put(level, innerMap);
       }
 
@@ -321,16 +343,43 @@ public class ExportSet {
             resolutionTypes = levelToResolutionTypesToCount.get(CoverageLevel.C).keySet();
          }
 
-         for (String resolution : resolutionTypes) {
+         List<String> orderedResolutionTypes = organizeResolutions(resolutionTypes);
+         for (String resolution : orderedResolutionTypes) {
             int index1 = 0;
+            boolean mcdcOnly = false;
+
             row[index1++] =
                resolutionsValueToText.containsKey(resolution) ? resolutionsValueToText.get(resolution) : resolution;
 
             Iterator<CoverageLevel> it = levelsInList.iterator();
             while (it.hasNext()) {
                CoverageLevel lvl = it.next();
-               row[index1++] = getPercent(levelToResolutionTypesToCount.get(lvl).get(resolution).getValue(),
+               if (levelToResolutionTypesToCount.get(lvl).get(resolution) == null) {
+                  row[index1++] = "ERROR";
+                  continue;
+               }
+               String percentValue = getPercent(levelToResolutionTypesToCount.get(lvl).get(resolution).getValue(),
                   levelToTotalCount.get(lvl).getValue(), false);
+               if (mcdcOnly && percentValue.equals("0%")) { //MCDC only has level A, but we still print any that are >0% to show there is a problem
+                  row[index1++] = "";
+               } else {
+                  row[index1++] = percentValue;
+               }
+               if (resolution.contains("/") || resolution.equals("MIXED")) {
+                  mcdcOnly = true;
+               }
+            }
+            sheetWriter.writeRow(row);
+         }
+
+         for (Entry<String, Integer> entry : defaultCases.entrySet()) {
+            int index1 = 0;
+            row[index1++] = entry.getKey() + " x " + entry.getValue();
+
+            Iterator<CoverageLevel> it = levelsInList.iterator();
+            while (it.hasNext()) {
+               it.next();
+               row[index1++] = " ";
             }
             sheetWriter.writeRow(row);
          }
@@ -648,6 +697,32 @@ public class ExportSet {
       return sb.toString();
    }
 
+   private List<String> organizeResolutions(Set<String> resolutionTypes) {
+      String[] toRemove = {"Test Script", "MIXED"};
+      List<String> tempResolutionTypes = new ArrayList<>(resolutionTypes);
+      for (String coverageMethod : toRemove) {
+         if (tempResolutionTypes.contains(coverageMethod)) {
+            tempResolutionTypes.remove(coverageMethod);
+         }
+      }
+
+      List<String> orderedResolutionTypes = new ArrayList<>();
+      for (String coverageMethod : coverageMethodList()) {
+         if (tempResolutionTypes.contains(coverageMethod) || coverageMethod.isEmpty()) {
+            orderedResolutionTypes.add(coverageMethod);
+            tempResolutionTypes.remove(coverageMethod);
+         }
+      }
+
+      for (String coverageMethod : tempResolutionTypes) {
+         orderedResolutionTypes.add(coverageMethod);
+      }
+
+      orderedResolutionTypes.add("MIXED");
+
+      return orderedResolutionTypes;
+   }
+
    private String[] getHeadersDetailed() {
       String[] toReturn = {//
          "Script Name", //
@@ -697,6 +772,37 @@ public class ExportSet {
          "Statement Lines Covered", //
          "Statement Lines Total", //
          "Statement Lines % Coverage"}; //
+      return toReturn;
+   }
+
+   private String[] coverageMethodList() {
+      String[] toReturn = {
+         "Test_Script",
+         "Defensive_Programming",
+         "Exception_Handling",
+         "Analysis",
+         "Deactivated_IN_AIR_OR_ENG_ON",
+         "Deactivated_EXT_ATE_PRESENT",
+         "Deactivated_J4_Connector",
+         "Deactivated_Compile_Time",
+         "Defensive_Programming/Test_Script",
+         "Exception_Handling/Test_Script",
+         "Analysis/Test_Script",
+         "Deactivated_EXT_ATE_PRESENT/Test_Script",
+         "Deactivated_IN_AIR_OR_ENG_ON/Test_Script",
+         "Deactivated_J4_Connector/Test_Script",
+         "Deactivated_Compile_Time/Test_Script",
+         "Deactivated_Remote_SW_test_page",
+         "Deactivated_INTEGRITY_serial_console_command",
+         "Deactivated_Engineering_test_page",
+         "Deactivated_Code",
+         "Deactivated_Ada_console_command",
+         "Deactivated_Ground_testing_only",
+         "Modify_Reqt",
+         "Modify_Code",
+         "Modify_Test",
+         "Modify_Tooling",
+         "Modify_Work_Product"};
       return toReturn;
    }
 }
