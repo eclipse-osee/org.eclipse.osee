@@ -289,6 +289,9 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * sub-types included; otherwise us the less expensive isTypeEqual()
     */
    public final boolean isOfType(ArtifactTypeId... artifactTypes) {
+      if (artifactType.isInvalid()) {
+         return false;
+      }
       return getArtifactTypeFull().inheritsFrom(artifactTypes);
    }
 
