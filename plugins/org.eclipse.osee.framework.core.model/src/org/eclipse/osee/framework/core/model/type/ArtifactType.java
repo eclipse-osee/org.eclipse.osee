@@ -10,17 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.type;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IOseeField;
@@ -58,9 +60,10 @@ public class ArtifactType extends AbstractOseeType implements ArtifactTypeToken 
       return superTypes != null && !superTypes.isEmpty();
    }
 
-   public Collection<ArtifactType> getSuperArtifactTypes() {
-      Collection<ArtifactType> defaultValue = Collections.emptyList();
-      return getFieldValueLogException(defaultValue, ARTIFACT_INHERITANCE_FIELD_KEY);
+   public List<ArtifactType> getSuperArtifactTypes() {
+      List<ArtifactType> defaultValue = Collections.emptyList();
+      Collection<ArtifactType> types = getFieldValueLogException(defaultValue, ARTIFACT_INHERITANCE_FIELD_KEY);
+      return new ArrayList<ArtifactType>(types);
    }
 
    public void setSuperTypes(Set<ArtifactType> superType) {
@@ -141,8 +144,14 @@ public class ArtifactType extends AbstractOseeType implements ArtifactTypeToken 
       }
    }
 
+   @Override
    public boolean isAbstract() {
       return getFieldValueLogException(false, ARTIFACT_IS_ABSTRACT_FIELD_KEY);
+   }
+
+   @Override
+   public List<ArtifactTypeToken> getSuperTypes() {
+      return org.eclipse.osee.framework.jdk.core.util.Collections.cast(getSuperArtifactTypes());
    }
 
    public void setAbstract(boolean isAbstract) {

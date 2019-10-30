@@ -306,7 +306,7 @@ public class Collections {
     * @return
     */
    public static <F extends T, T> List<T> cast(Collection<F> from) {
-      return Collections.transform(from, r -> r);
+      return transform(from, r -> r);
    }
 
    /**

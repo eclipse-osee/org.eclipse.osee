@@ -24,12 +24,26 @@ public class OrcsTypeTokens {
    private final List<ArtifactTypeToken> artifactTypes = new ArrayList<>();
    private final List<AttributeTypeToken> attributeTypes = new ArrayList<>();
    private final List<RelationTypeToken> relationTypes = new ArrayList<>();
+   private final NamespaceToken namespace;
+
+   public AttributeMultiplicity artifactType(Long id, String name, boolean isAbstract, ArtifactTypeToken... superTypes) {
+      return new AttributeMultiplicity(id, namespace, name, isAbstract, superTypes);
+   }
+
+   public OrcsTypeTokens() {
+      this.namespace = NamespaceToken.OSEE;
+   }
+
+   public OrcsTypeTokens(NamespaceToken namespace) {
+      this.namespace = namespace;
+   }
 
    public List<AttributeTypeToken> getAttributeTypes() {
       return attributeTypes;
    }
 
-   public ArtifactTypeToken add(ArtifactTypeToken artifactType) {
+   public ArtifactTypeToken add(AttributeMultiplicity attributeMultiplicity) {
+      ArtifactTypeToken artifactType = attributeMultiplicity.get();
       artifactTypes.add(artifactType);
       return artifactType;
    }
