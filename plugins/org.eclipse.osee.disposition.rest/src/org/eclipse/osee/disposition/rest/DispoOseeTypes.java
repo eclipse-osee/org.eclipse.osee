@@ -28,11 +28,11 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 /**
  * @author Angel Avila
  */
-public final class DispoConstants implements OrcsTypeTokenProvider {
+public final class DispoOseeTypes implements OrcsTypeTokenProvider {
    private static final OrcsTypeTokens tokens = new OrcsTypeTokens();
 
    // @formatter:off
-   public static final NamespaceToken DISPO = NamespaceToken.valueOf(8, "dispo", "Namespace for dispo system and content management types");
+   public static final NamespaceToken DISPO = NamespaceToken.valueOf(4, "dispo", "Namespace for dispo system and content management types");
 
    public static final ArtifactTypeToken DispositionSet = ArtifactTypeToken.valueOf(807, "Disposition Set");
    public static final ArtifactTypeToken DispositionableItem = ArtifactTypeToken.valueOf(808, "Dispositionable Item");

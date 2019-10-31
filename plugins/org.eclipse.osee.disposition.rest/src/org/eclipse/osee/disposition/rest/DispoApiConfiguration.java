@@ -67,8 +67,8 @@ public class DispoApiConfiguration {
       }
 
       public DispoApiConfigurationBuilder properties(Map<String, Object> props) {
-         fileExtRegex(get(props, DispoConstants.FILE_EXT_REGEX, ""));
-         resultsFileExtRegex(get(props, DispoConstants.RESULTS_FILE_EXT_REGEX, ""));
+         fileExtRegex(get(props, DispoOseeTypes.FILE_EXT_REGEX, ""));
+         resultsFileExtRegex(get(props, DispoOseeTypes.RESULTS_FILE_EXT_REGEX, ""));
          return this;
       }
 

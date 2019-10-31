@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
-import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAuthClient;
-import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUTH_TYPES;
+import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthOseeTypes.OAuthClient;
+import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthOseeTypes.OAUTH_TYPES;
 import com.google.common.io.ByteSource;
 import java.io.IOException;
 import java.io.InputStream;
@@ -100,15 +100,15 @@ public class ClientStorage {
    private void txSetClient(TransactionBuilder tx, ArtifactId artId, OAuthClient data) {
       //@formatter:off
       tx.setSoleAttributeFromString(artId, CoreAttributeTypes.Description, data.getApplicationDescription());
-      tx.setSoleAttributeFromString(artId, OAuthTypes.OAuthClientWebsiteUri, data.getApplicationWebUri());
-      tx.setSoleAttributeFromString(artId, OAuthTypes.OAuthClientLogoUri, data.getApplicationLogoUri());
+      tx.setSoleAttributeFromString(artId, OAuthOseeTypes.OAuthClientWebsiteUri, data.getApplicationWebUri());
+      tx.setSoleAttributeFromString(artId, OAuthOseeTypes.OAuthClientLogoUri, data.getApplicationLogoUri());
 
-      tx.setSoleAttributeValue(artId, OAuthTypes.OAuthClientIsConfidential, data.isConfidential());
+      tx.setSoleAttributeValue(artId, OAuthOseeTypes.OAuthClientIsConfidential, data.isConfidential());
 
-      tx.setAttributesFromStrings(artId, OAuthTypes.OAuthClientAuthorizedAudience, data.getRegisteredAudiences());
-      tx.setAttributesFromStrings(artId, OAuthTypes.OAuthClientAuthorizedGrantType, data.getAllowedGrantTypes());
-      tx.setAttributesFromStrings(artId, OAuthTypes.OAuthClientAuthorizedRedirectUri, data.getRedirectUris());
-      tx.setAttributesFromStrings(artId, OAuthTypes.OAuthClientAuthorizedScope, data.getRegisteredScopes());
+      tx.setAttributesFromStrings(artId, OAuthOseeTypes.OAuthClientAuthorizedAudience, data.getRegisteredAudiences());
+      tx.setAttributesFromStrings(artId, OAuthOseeTypes.OAuthClientAuthorizedGrantType, data.getAllowedGrantTypes());
+      tx.setAttributesFromStrings(artId, OAuthOseeTypes.OAuthClientAuthorizedRedirectUri, data.getRedirectUris());
+      tx.setAttributesFromStrings(artId, OAuthOseeTypes.OAuthClientAuthorizedScope, data.getRegisteredScopes());
       //@formatter:on
 
       ByteSource supplier = data.getApplicationLogoSupplier();
@@ -122,7 +122,7 @@ public class ClientStorage {
 
       Map<String, String> props = data.getProperties();
       String json = JsonUtil.toJson(props);
-      tx.setSoleAttributeValue(artId, OAuthTypes.OAuthClientProperties, json);
+      tx.setSoleAttributeValue(artId, OAuthOseeTypes.OAuthClientProperties, json);
    }
 
    public void delete(OseePrincipal principal, OAuthClient data) {

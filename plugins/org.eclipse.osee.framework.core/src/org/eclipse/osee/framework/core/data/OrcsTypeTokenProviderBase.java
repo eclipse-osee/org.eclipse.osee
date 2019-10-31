@@ -15,13 +15,26 @@ package org.eclipse.osee.framework.core.data;
  */
 public class OrcsTypeTokenProviderBase implements OrcsTypeTokenProvider {
    private final OrcsTypeTokens tokens;
+   private final OrcsTypeTokens[] tokensArray;
 
    public OrcsTypeTokenProviderBase(OrcsTypeTokens tokens) {
       this.tokens = tokens;
+      tokensArray = null;
+   }
+
+   public OrcsTypeTokenProviderBase(OrcsTypeTokens... tokensArray) {
+      this.tokensArray = tokensArray;
+      tokens = null;
    }
 
    @Override
    public void registerTypes(OrcsTokenService tokenService) {
-      tokens.registerTypes(tokenService);
+      if (tokens == null) {
+         for (OrcsTypeTokens token : tokensArray) {
+            token.registerTypes(tokenService);
+         }
+      } else {
+         tokens.registerTypes(tokenService);
+      }
    }
 }

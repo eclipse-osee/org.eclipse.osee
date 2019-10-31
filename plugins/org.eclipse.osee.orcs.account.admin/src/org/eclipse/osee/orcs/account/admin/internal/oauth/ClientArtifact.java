@@ -60,42 +60,42 @@ public class ClientArtifact extends BaseIdentity<String> implements OAuthClient 
 
    @Override
    public String getApplicationWebUri() {
-      return artifact.getSoleAttributeAsString(OAuthTypes.OAuthClientWebsiteUri);
+      return artifact.getSoleAttributeAsString(OAuthOseeTypes.OAuthClientWebsiteUri);
    }
 
    @Override
    public String getApplicationLogoUri() {
-      return artifact.getSoleAttributeAsString(OAuthTypes.OAuthClientLogoUri);
+      return artifact.getSoleAttributeAsString(OAuthOseeTypes.OAuthClientLogoUri);
    }
 
    @Override
    public boolean isConfidential() {
-      return artifact.getSoleAttributeValue(OAuthTypes.OAuthClientIsConfidential);
+      return artifact.getSoleAttributeValue(OAuthOseeTypes.OAuthClientIsConfidential);
    }
 
    @Override
    public List<String> getAllowedGrantTypes() {
-      return artifact.getAttributeValues(OAuthTypes.OAuthClientAuthorizedGrantType);
+      return artifact.getAttributeValues(OAuthOseeTypes.OAuthClientAuthorizedGrantType);
    }
 
    @Override
    public List<String> getRedirectUris() {
-      return artifact.getAttributeValues(OAuthTypes.OAuthClientAuthorizedRedirectUri);
+      return artifact.getAttributeValues(OAuthOseeTypes.OAuthClientAuthorizedRedirectUri);
    }
 
    @Override
    public List<String> getRegisteredScopes() {
-      return artifact.getAttributeValues(OAuthTypes.OAuthClientAuthorizedScope);
+      return artifact.getAttributeValues(OAuthOseeTypes.OAuthClientAuthorizedScope);
    }
 
    @Override
    public List<String> getRegisteredAudiences() {
-      return artifact.getAttributeValues(OAuthTypes.OAuthClientAuthorizedAudience);
+      return artifact.getAttributeValues(OAuthOseeTypes.OAuthClientAuthorizedAudience);
    }
 
    @Override
    public Map<String, String> getProperties() {
-      String data = artifact.getSoleAttributeValue(OAuthTypes.OAuthClientProperties, null);
+      String data = artifact.getSoleAttributeValue(OAuthOseeTypes.OAuthClientProperties, null);
       if (Strings.isValid(data)) {
          return JsonUtil.readValue(data, new TypeReference<Map<String, String>>() {// used to avoid type erasure
          });

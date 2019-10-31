@@ -61,18 +61,18 @@ public class DoorsCreator {
          if (parentArtifact != null) {
 
             Artifact artifact =
-               ArtifactQuery.checkArtifactFromTypeAndName(DoorsTypes.DoorsRequirement, reqName, branch);
+               ArtifactQuery.checkArtifactFromTypeAndName(DoorsOseeTypes.DoorsRequirement, reqName, branch);
             if (artifact == null) {
-               newArtifact = parentArtifact.addNewChild(PREEXISTING, DoorsTypes.DoorsRequirement, reqName);
-               newArtifact.setSoleAttributeFromString(DoorsTypes.DoorReqName, reqName);
-               newArtifact.setSoleAttributeFromString(DoorsTypes.DoorReqUrl, url);
+               newArtifact = parentArtifact.addNewChild(PREEXISTING, DoorsOseeTypes.DoorsRequirement, reqName);
+               newArtifact.setSoleAttributeFromString(DoorsOseeTypes.DoorReqName, reqName);
+               newArtifact.setSoleAttributeFromString(DoorsOseeTypes.DoorReqUrl, url);
 
                newArtifact.setName(reqName);
                newArtifact.persist(trans);
                trans.execute();
             } else {
-               artifact.setSoleAttributeFromString(DoorsTypes.DoorReqName, reqName);
-               artifact.setSoleAttributeFromString(DoorsTypes.DoorReqUrl, url);
+               artifact.setSoleAttributeFromString(DoorsOseeTypes.DoorReqName, reqName);
+               artifact.setSoleAttributeFromString(DoorsOseeTypes.DoorReqUrl, url);
 
                artifact.setName(reqName);
                artifact.persist(trans);

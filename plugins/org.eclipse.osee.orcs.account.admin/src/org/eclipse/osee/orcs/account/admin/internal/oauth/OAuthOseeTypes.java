@@ -27,15 +27,15 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 /**
  * @author Roberto E. Escobar
  */
-public final class OAuthTypes implements OrcsTypeTokenProvider {
+public final class OAuthOseeTypes implements OrcsTypeTokenProvider {
    private static final OrcsTypeTokens tokens = new OrcsTypeTokens();
 
-   private OAuthTypes() {
+   private OAuthOseeTypes() {
       // Constants
    }
 
    // @formatter:off
-   public static final NamespaceToken OAUTH = NamespaceToken.valueOf(10, "oauth", "Namespace for oauth system and content management types");
+   public static final NamespaceToken OAUTH = NamespaceToken.valueOf(6, "oauth", "Namespace for oauth system and content management types");
 
    public static final ArtifactTypeToken OAuthClient = ArtifactTypeToken.valueOf(756912961500447526L, "OAuth Client");
 

@@ -15,7 +15,7 @@ import java.util.List;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.Note;
 import org.eclipse.osee.disposition.model.OperationReport;
-import org.eclipse.osee.disposition.rest.DispoConstants;
+import org.eclipse.osee.disposition.rest.DispoOseeTypes;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -39,18 +39,18 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
 
    @Override
    public String getImportPath() {
-      return artifact.getSoleAttributeAsString(DispoConstants.DispoImportPath);
+      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoImportPath);
    }
 
    @Override
    public List<Note> getNotesList() {
-      String notesJson = artifact.getSoleAttributeAsString(DispoConstants.DispoNotesJson, "[]");
+      String notesJson = artifact.getSoleAttributeAsString(DispoOseeTypes.DispoNotesJson, "[]");
       return DispoUtil.jsonStringToList(notesJson, Note.class);
    }
 
    @Override
    public OperationReport getOperationSummary() {
-      String operationSummaryJson = artifact.getSoleAttributeAsString(DispoConstants.DispoOperationSummary, "{}");
+      String operationSummaryJson = artifact.getSoleAttributeAsString(DispoOseeTypes.DispoOperationSummary, "{}");
       return DispoUtil.jsonObjToOperationSummary(operationSummaryJson);
    }
 
@@ -61,26 +61,26 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
 
    @Override
    public String getImportState() {
-      return artifact.getSoleAttributeAsString(DispoConstants.DispoImportState, "None");
+      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoImportState, "None");
    }
 
    @Override
    public String getDispoType() {
-      return artifact.getSoleAttributeAsString(DispoConstants.DispoConfig, "");
+      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoConfig, "");
    }
 
    @Override
    public String getCiSet() {
-      return artifact.getSoleAttributeAsString(DispoConstants.DispoCiSet, "");
+      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoCiSet, "");
    }
 
    @Override
    public String getRerunList() {
-      return artifact.getSoleAttributeAsString(DispoConstants.DispoRerunList, "");
+      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoRerunList, "");
    }
 
    @Override
    public Date getTime() {
-      return artifact.getSoleAttributeValue(DispoConstants.DispoTime, null);
+      return artifact.getSoleAttributeValue(DispoOseeTypes.DispoTime, null);
    }
 }

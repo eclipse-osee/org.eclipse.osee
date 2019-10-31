@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.OrcsTypeTokens;
  *
  * @author Chandan Bandemutt
  */
-public final class DoorsTypes implements OrcsTypeTokenProvider {
+public final class DoorsOseeTypes implements OrcsTypeTokenProvider {
    private static final OrcsTypeTokens tokens = new OrcsTypeTokens();
 
    /**
@@ -27,7 +27,7 @@ public final class DoorsTypes implements OrcsTypeTokenProvider {
     */
 
    // @formatter:off
-   public static final NamespaceToken DOORS = NamespaceToken.valueOf(13, "doors", "Namespace for doors system and content management types");
+   public static final NamespaceToken DOORS = NamespaceToken.valueOf(7, "doors", "Namespace for doors system and content management types");
 
    public static final ArtifactTypeToken DoorsRequirement = ArtifactTypeToken.valueOf(5764607523034243073L, "Doors Requirement");
 

@@ -25,7 +25,7 @@ public final class OteAttributeTypes implements OrcsTypeTokenProvider {
    private static final OrcsTypeTokens tokens = new OrcsTypeTokens();
 
    // @formatter:off
-   public static final NamespaceToken OTE = NamespaceToken.valueOf(11, "ote", "Namespace for ote system and content management types");
+   public static final NamespaceToken OTE = NamespaceToken.valueOf(3, "ote", "Namespace for ote system and content management types");
 
    public static final AttributeTypeString BuildId = tokens.add(AttributeTypeToken.createString(1152921504606847306L, OTE, "Build Id", MediaType.TEXT_PLAIN, "Build Id"));
    public static final AttributeTypeString Checksum = tokens.add(AttributeTypeToken.createString(1152921504606847307L, OTE, "Checksum", MediaType.TEXT_PLAIN, "Test Case Checksum"));

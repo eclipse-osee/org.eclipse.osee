@@ -26,7 +26,7 @@ public final class DemoTypes implements OrcsTypeTokenProvider {
    private static final OrcsTypeTokens tokens = new OrcsTypeTokens();
 
    // @formatter:off
-   public static final NamespaceToken DEMO = NamespaceToken.valueOf(15, "demo", "Namespace for demo system and content management types");
+   public static final NamespaceToken DEMO = NamespaceToken.valueOf(9, "demo", "Namespace for demo system and content management types");
 
    public static final ArtifactTypeToken DemoArtifactWithSelectivePartition = ArtifactTypeToken.valueOf(86, "Demo Artifact With Selective Partition");
 

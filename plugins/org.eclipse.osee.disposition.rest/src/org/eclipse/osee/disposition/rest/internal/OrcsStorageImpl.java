@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal;
 
-import static org.eclipse.osee.disposition.rest.DispoConstants.DISPO_ARTIFACT;
+import static org.eclipse.osee.disposition.rest.DispoOseeTypes.DISPO_ARTIFACT;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.UriGeneralStringData;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.io.InputStream;
@@ -33,8 +33,8 @@ import org.eclipse.osee.disposition.model.DispoStorageMetadata;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.Note;
 import org.eclipse.osee.disposition.model.OperationReport;
-import org.eclipse.osee.disposition.rest.DispoConstants;
-import org.eclipse.osee.disposition.rest.internal.importer.coverage.CoverageUtil;
+import org.eclipse.osee.disposition.rest.DispoOseeTypes;
+import org.eclipse.osee.disposition.rest.internal.importer.coverage.CoverageOseeTypes;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -138,7 +138,7 @@ public class OrcsStorageImpl implements Storage {
    public boolean isUniqueSetName(BranchId branch, String name) {
       ResultSet<ArtifactReadable> results = getQuery()//
          .fromBranch(branch)//
-         .andTypeEquals(DispoConstants.DispositionSet)//
+         .andTypeEquals(DispoOseeTypes.DispositionSet)//
          .andNameEquals(name)//
          .getResults();
 
@@ -151,7 +151,7 @@ public class OrcsStorageImpl implements Storage {
       ResultSet<ArtifactReadable> results = getQuery()//
          .fromBranch(branch)//
          .andRelatedTo(CoreRelationTypes.DefaultHierarchical_Parent, setArt)//
-         .andTypeEquals(DispoConstants.DispositionableItem)//
+         .andTypeEquals(DispoOseeTypes.DispositionableItem)//
          .andNameEquals(name)//
          .getResults();
 
@@ -195,7 +195,7 @@ public class OrcsStorageImpl implements Storage {
    public List<DispoSet> findDispoSets(BranchId branch, String type) {
       ResultSet<ArtifactReadable> results = getQuery()//
          .fromBranch(branch)//
-         .andTypeEquals(DispoConstants.DispositionSet)//
+         .andTypeEquals(DispoOseeTypes.DispositionSet)//
          .getResults();
 
       List<DispoSet> toReturn = new ArrayList<>();
@@ -246,19 +246,19 @@ public class OrcsStorageImpl implements Storage {
    @Override
    public Long createDispoSet(UserId author, BranchId branch, DispoSet descriptor) {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Create Dispo Set");
-      ArtifactId creatdArtId = tx.createArtifact(DispoConstants.DispositionSet, descriptor.getName());
-      tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoImportPath, descriptor.getImportPath());
-      tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoImportState, descriptor.getImportState());
-      tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoConfig, descriptor.getDispoType());
-      tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoNotesJson, JsonUtil.toJson(descriptor.getNotesList()));
+      ArtifactId creatdArtId = tx.createArtifact(DispoOseeTypes.DispositionSet, descriptor.getName());
+      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoImportPath, descriptor.getImportPath());
+      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoImportState, descriptor.getImportState());
+      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoConfig, descriptor.getDispoType());
+      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoNotesJson, JsonUtil.toJson(descriptor.getNotesList()));
       if (descriptor.getCiSet() == null) {
-         tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoCiSet, "NOCI");
-         tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoRerunList, "NOCI");
-         tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoTime, new Date());
+         tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoCiSet, "NOCI");
+         tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoRerunList, "NOCI");
+         tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoTime, new Date());
       } else {
-         tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoCiSet, descriptor.getCiSet());
-         tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoRerunList, descriptor.getRerunList());
-         tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoTime, descriptor.getTime());
+         tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoCiSet, descriptor.getCiSet());
+         tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoRerunList, descriptor.getRerunList());
+         tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoTime, descriptor.getTime());
       }
 
       tx.commit();
@@ -267,12 +267,12 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public boolean deleteDispoSet(UserId author, BranchId branch, String setId) {
-      return deleteDispoEntityArtifact(author, branch, setId, DispoConstants.DispositionSet);
+      return deleteDispoEntityArtifact(author, branch, setId, DispoOseeTypes.DispositionSet);
    }
 
    @Override
    public boolean deleteDispoItem(UserId author, BranchId branch, String itemId) {
-      return deleteDispoEntityArtifact(author, branch, itemId, DispoConstants.DispositionableItem);
+      return deleteDispoEntityArtifact(author, branch, itemId, DispoOseeTypes.DispositionableItem);
    }
 
    private boolean deleteDispoEntityArtifact(UserId author, BranchId branch, String entityId, ArtifactTypeToken type) {
@@ -308,20 +308,20 @@ public class OrcsStorageImpl implements Storage {
          tx.setName(dispoSet, name);
       }
       if (importPath != null && !importPath.equals(origSetAs.getImportPath())) {
-         tx.setSoleAttributeFromString(dispoSet, DispoConstants.DispoImportPath, importPath);
+         tx.setSoleAttributeFromString(dispoSet, DispoOseeTypes.DispoImportPath, importPath);
       }
       if (notesList != null && !notesList.equals(origSetAs.getNotesList())) {
-         tx.setSoleAttributeFromString(dispoSet, DispoConstants.DispoNotesJson,
+         tx.setSoleAttributeFromString(dispoSet, DispoOseeTypes.DispoNotesJson,
             JsonUtil.toJson(origSetAs.getNotesList()));
       }
       if (ciSet != null && !ciSet.equals(origSetAs.getCiSet())) {
-         tx.setSoleAttributeFromString(dispoSet, DispoConstants.DispoCiSet, ciSet);
+         tx.setSoleAttributeFromString(dispoSet, DispoOseeTypes.DispoCiSet, ciSet);
       }
       if (rerunList != null && !rerunList.equals(origSetAs.getRerunList())) {
-         tx.setSoleAttributeFromString(dispoSet, DispoConstants.DispoRerunList, rerunList);
+         tx.setSoleAttributeFromString(dispoSet, DispoOseeTypes.DispoRerunList, rerunList);
       }
       if (time != null && !time.equals(origSetAs.getTime())) {
-         tx.setSoleAttributeValue(dispoSet, DispoConstants.DispoTime, time);
+         tx.setSoleAttributeValue(dispoSet, DispoOseeTypes.DispoTime, time);
       }
       tx.commit();
    }
@@ -332,34 +332,34 @@ public class OrcsStorageImpl implements Storage {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Create Dispoable Item");
 
       for (DispoItem item : data) {
-         ArtifactId createdItem = tx.createArtifact(DispoConstants.DispositionableItem, item.getName());
+         ArtifactId createdItem = tx.createArtifact(DispoOseeTypes.DispositionableItem, item.getName());
 
          if (item.getCreationDate() == null) {
-            tx.setSoleAttributeValue(createdItem, DispoConstants.DispoDateCreated, new Date());
+            tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoDateCreated, new Date());
          } else {
-            tx.setSoleAttributeValue(createdItem, DispoConstants.DispoDateCreated, item.getCreationDate());
+            tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoDateCreated, item.getCreationDate());
          }
-         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemLastUpdated, item.getLastUpdate());
-         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemStatus, item.getStatus());
-         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemTotalPoints, item.getTotalPoints());
+         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemLastUpdated, item.getLastUpdate());
+         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemStatus, item.getStatus());
+         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemTotalPoints, item.getTotalPoints());
 
-         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemNeedsRerun, item.getNeedsRerun());
-         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemAborted, item.getAborted());
-         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoDiscrepanciesJson,
+         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemNeedsRerun, item.getNeedsRerun());
+         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemAborted, item.getAborted());
+         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoDiscrepanciesJson,
             JsonUtil.toJson(item.getDiscrepanciesList()));
-         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoAnnotationsJson,
+         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoAnnotationsJson,
             JsonUtil.toJson(item.getAnnotationsList()));
-         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemVersion, item.getVersion());
-         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemAssignee, item.getAssignee());
-         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemMachine, item.getMachine());
-         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemCategory, item.getCategory());
-         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemElapsedTime, item.getElapsedTime());
+         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemVersion, item.getVersion());
+         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemAssignee, item.getAssignee());
+         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemMachine, item.getMachine());
+         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemCategory, item.getCategory());
+         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemElapsedTime, item.getElapsedTime());
 
          if (Strings.isValid(item.getFileNumber())) {
-            tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemFileNumber, item.getFileNumber());
+            tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemFileNumber, item.getFileNumber());
          }
          if (Strings.isValid(item.getMethodNumber())) {
-            tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemMethodNumber, item.getMethodNumber());
+            tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemMethodNumber, item.getMethodNumber());
          }
          tx.relate(parentSetArt, CoreRelationTypes.DefaultHierarchical_Child, createdItem);
       }
@@ -396,52 +396,52 @@ public class OrcsStorageImpl implements Storage {
          tx.setName(currentItemArt, name);
       }
       if (newDiscrepancies != null && !newDiscrepancies.equals(origItem.getDiscrepanciesList())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoDiscrepanciesJson,
+         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoDiscrepanciesJson,
             JsonUtil.toJson(newDiscrepancies));
       }
       if (newAnnotations != null && !newAnnotations.equals(origItem.getAnnotationsList())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoAnnotationsJson,
+         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoAnnotationsJson,
             JsonUtil.toJson(newAnnotations));
       }
       if (assignee != null && !assignee.equals(origItem.getAssignee())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemAssignee, assignee);
+         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemAssignee, assignee);
       }
       if (status != null && !status.equals(origItem.getStatus())) {
          metadata.addIdOfUpdatedItem(newItemData.getGuid());
-         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemStatus, status);
+         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemStatus, status);
       }
       if (lastUpdate != null && !lastUpdate.equals(origItem.getLastUpdate())) {
-         tx.setSoleAttributeValue(currentItemArt, DispoConstants.DispoItemLastUpdated, lastUpdate);
+         tx.setSoleAttributeValue(currentItemArt, DispoOseeTypes.DispoItemLastUpdated, lastUpdate);
       }
       if (needsRerun != null && !needsRerun.equals(origItem.getNeedsRerun())) {
-         tx.setSoleAttributeValue(currentItemArt, DispoConstants.DispoItemNeedsRerun, needsRerun.booleanValue());
+         tx.setSoleAttributeValue(currentItemArt, DispoOseeTypes.DispoItemNeedsRerun, needsRerun.booleanValue());
       }
       if (totalPoints != null && !totalPoints.equals(origItem.getTotalPoints())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemTotalPoints, totalPoints);
+         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemTotalPoints, totalPoints);
       }
       if (machine != null && !machine.equals(origItem.getMachine())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemMachine, machine);
+         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemMachine, machine);
       }
       if (category != null && !category.equals(origItem.getCategory())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemCategory, category);
+         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemCategory, category);
       }
       if (elapsedTime != null && !elapsedTime.equals(origItem.getElapsedTime())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemElapsedTime, elapsedTime);
+         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemElapsedTime, elapsedTime);
       }
       if (aborted != null && !aborted.equals(origItem.getAborted())) {
-         tx.setSoleAttributeValue(currentItemArt, DispoConstants.DispoItemAborted, aborted);
+         tx.setSoleAttributeValue(currentItemArt, DispoOseeTypes.DispoItemAborted, aborted);
       }
       if (itemNotes != null && !itemNotes.equals(origItem.getItemNotes())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemNotes, itemNotes);
+         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemNotes, itemNotes);
       }
       if (fileNumber != null && !fileNumber.equals(origItem.getFileNumber())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemFileNumber, fileNumber);
+         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemFileNumber, fileNumber);
       }
       if (methodNumber != null && !methodNumber.equals(origItem.getMethodNumber())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemMethodNumber, methodNumber);
+         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemMethodNumber, methodNumber);
       }
       if (team != null && !team.equals(origItem.getTeam())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemTeam, team);
+         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemTeam, team);
       }
    }
 
@@ -508,9 +508,9 @@ public class OrcsStorageImpl implements Storage {
       Set<DispoItem> toReturn = new HashSet<>();
       ResultSet<ArtifactReadable> dispoArtifacts = getQuery()//
          .fromBranch(branch)//
-         .andTypeEquals(DispoConstants.DispositionableItem)//
+         .andTypeEquals(DispoOseeTypes.DispositionableItem)//
          .andRelatedTo(CoreRelationTypes.DefaultHierarchical_Parent, dispoSetArt).and(
-            DispoConstants.DispoAnnotationsJson, keyword, //
+            DispoOseeTypes.DispoAnnotationsJson, keyword, //
             QueryOption.CONTAINS_MATCH_OPTIONS)//
          .getResults();
 
@@ -603,7 +603,7 @@ public class OrcsStorageImpl implements Storage {
       Map<String, ArtifactReadable> toReturn = new HashMap<>();
 
       for (ArtifactReadable descendant : descendants) {
-         if (!descendant.getAttributeValues(CoverageUtil.CoverageItem).isEmpty()) {
+         if (!descendant.getAttributeValues(CoverageOseeTypes.CoverageItem).isEmpty()) {
             ArtifactReadable parent = descendant.getParent();
             String fullName = String.format("%s.%s", parent.getName(), descendant.getName());
             toReturn.put(fullName, descendant);
@@ -618,8 +618,8 @@ public class OrcsStorageImpl implements Storage {
       ArtifactReadable dispoSet = findDispoArtifact(branch, setId);
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Update Dispo Operation Report");
 
-      tx.setSoleAttributeFromString(dispoSet, DispoConstants.DispoImportState, newReport.getStatus().getName());
-      tx.setSoleAttributeFromString(dispoSet, DispoConstants.DispoOperationSummary,
+      tx.setSoleAttributeFromString(dispoSet, DispoOseeTypes.DispoImportState, newReport.getStatus().getName());
+      tx.setSoleAttributeFromString(dispoSet, DispoOseeTypes.DispoOperationSummary,
          DispoUtil.operationReportToString(newReport));
       tx.commit();
    }
@@ -663,7 +663,7 @@ public class OrcsStorageImpl implements Storage {
       List<Branch> dispoBranches = findDispoBranches();
       for (BranchId branch : dispoBranches) {
          for (ArtifactReadable dispoSet : findAllCiSets(branch)) {
-            String ciSet = dispoSet.getSoleAttributeValue(DispoConstants.DispoCiSet, "");
+            String ciSet = dispoSet.getSoleAttributeValue(DispoOseeTypes.DispoCiSet, "");
             if (!ciSet.isEmpty()) {
                CiSetData set = new CiSetData();
                set.setBranchId(branch.getIdString());
@@ -688,8 +688,8 @@ public class OrcsStorageImpl implements Storage {
    }
 
    private List<ArtifactReadable> findAllCiSets(BranchId branch) {
-      return getQuery().fromBranch(branch).andIsOfType(DispoConstants.DispositionSet).andExists(
-         DispoConstants.DispoCiSet).getResults().getList();
+      return getQuery().fromBranch(branch).andIsOfType(DispoOseeTypes.DispositionSet).andExists(
+         DispoOseeTypes.DispoCiSet).getResults().getList();
    }
 
    @Override

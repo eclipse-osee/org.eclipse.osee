@@ -16,7 +16,7 @@ import java.util.Map;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
-import org.eclipse.osee.disposition.rest.DispoConstants;
+import org.eclipse.osee.disposition.rest.DispoOseeTypes;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -50,13 +50,13 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
 
    @Override
    public Map<String, Discrepancy> getDiscrepanciesList() {
-      String discrepanciesJson = artifact.getSoleAttributeAsString(DispoConstants.DispoDiscrepanciesJson, "{}");
+      String discrepanciesJson = artifact.getSoleAttributeAsString(DispoOseeTypes.DispoDiscrepanciesJson, "{}");
       return DispoUtil.jsonStringToDiscrepanciesMap(discrepanciesJson);
    }
 
    @Override
    public List<DispoAnnotationData> getAnnotationsList() {
-      String annotationsList = artifact.getSoleAttributeAsString(DispoConstants.DispoAnnotationsJson, "[]");
+      String annotationsList = artifact.getSoleAttributeAsString(DispoOseeTypes.DispoAnnotationsJson, "[]");
       return DispoUtil.jsonStringToList(annotationsList, DispoAnnotationData.class);
    }
 
@@ -67,82 +67,82 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
 
    @Override
    public String getAssignee() {
-      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemAssignee, "");
+      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoItemAssignee, "");
    }
 
    @Override
    public Date getCreationDate() {
-      return artifact.getSoleAttributeValue(DispoConstants.DispoDateCreated);
+      return artifact.getSoleAttributeValue(DispoOseeTypes.DispoDateCreated);
 
    }
 
    @Override
    public Date getLastUpdate() {
-      return artifact.getSoleAttributeValue(DispoConstants.DispoItemLastUpdated);
+      return artifact.getSoleAttributeValue(DispoOseeTypes.DispoItemLastUpdated);
    }
 
    @Override
    public String getStatus() {
-      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemStatus);
+      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoItemStatus);
    }
 
    @Override
    public String getVersion() {
-      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemVersion);
+      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoItemVersion);
    }
 
    @Override
    public Boolean getNeedsRerun() {
-      return artifact.getSoleAttributeValue(DispoConstants.DispoItemNeedsRerun, false);
+      return artifact.getSoleAttributeValue(DispoOseeTypes.DispoItemNeedsRerun, false);
    }
 
    @Override
    public String getTotalPoints() {
-      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemTotalPoints, "0");
+      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoItemTotalPoints, "0");
    }
 
    @Override
    public String getMachine() {
-      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemMachine, "n/a");
+      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoItemMachine, "n/a");
    }
 
    @Override
    public String getCategory() {
-      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemCategory, "");
+      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoItemCategory, "");
    }
 
    @Override
    public String getElapsedTime() {
-      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemElapsedTime, "0.0");
+      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoItemElapsedTime, "0.0");
    }
 
    @Override
    public Boolean getAborted() {
-      return artifact.getSoleAttributeValue(DispoConstants.DispoItemAborted, false);
+      return artifact.getSoleAttributeValue(DispoOseeTypes.DispoItemAborted, false);
    }
 
    @Override
    public String getItemNotes() {
-      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemNotes, "");
+      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoItemNotes, "");
    }
 
    @Override
    public String getMethodNumber() {
-      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemMethodNumber, "");
+      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoItemMethodNumber, "");
    }
 
    @Override
    public String getFileNumber() {
-      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemFileNumber, "");
+      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoItemFileNumber, "");
    }
 
    @Override
    public Boolean getNeedsReview() {
-      return artifact.getSoleAttributeValue(DispoConstants.DispoItemNeedsReview, false);
+      return artifact.getSoleAttributeValue(DispoOseeTypes.DispoItemNeedsReview, false);
    }
 
    @Override
    public String getTeam() {
-      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemTeam, "");
+      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoItemTeam, "");
    }
 }

@@ -79,7 +79,7 @@ import org.mockito.stubbing.Answer;
 public final class OrcsTypesTest {
    private static final OrcsTypeTokens tokens = new OrcsTypeTokens();
    //@formatter:off
-   public static final NamespaceToken TEST = NamespaceToken.valueOf(16, "ats", "Namespace for ats system and content management types");
+   public static final NamespaceToken TEST = NamespaceToken.valueOf(8, "test", "Namespace for orcsTypesTest system and content management types");
 
    private static final String SESSION_ID = "Test Session";
 
