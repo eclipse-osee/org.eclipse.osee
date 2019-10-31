@@ -92,6 +92,7 @@ public class WordTemplateProcessor {
    protected static final String NESTED_TEMPLATE = "NestedTemplate";
    public static final String PGNUMTYPE_START_1 = "<w:pgNumType [^>]*w:start=\"1\"/>";
    public static final String STYLES = "<w:lists>.*?</w:lists><w:styles>.*?</w:styles>";
+   private final String newLineChar = System.getProperty("line.separator");
 
    protected static final Pattern headElementsPattern =
       Pattern.compile("(" + INSERT_ARTIFACT_HERE + ")" + "|" + INSERT_LINK,
@@ -887,7 +888,7 @@ public class WordTemplateProcessor {
 
          if (content != null) {
             data = content.getFirst();
-            data = data.replaceAll("\\r\\n", "");
+            data = data.replaceAll(newLineChar, "");
             //TODO Display unknown guids by printing them on final page of published document
             //WordUiUtil.displayUnknownGuids(artifact, content.getSecond());
          }
