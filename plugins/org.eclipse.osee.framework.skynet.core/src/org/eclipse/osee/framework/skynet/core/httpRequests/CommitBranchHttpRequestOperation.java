@@ -173,7 +173,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                }
 
                Artifact changedArtifact = change.getChangeArtifact();
-               if (changedArtifact != null) {
+               if (changedArtifact.isValid()) {
 
                   EventModifiedBasicGuidArtifact artEvent = artEventMap.get(artifactId.getId().intValue());
                   if (artEvent == null) {

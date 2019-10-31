@@ -74,7 +74,7 @@ public final class CompareArtifactAction extends Action {
          Change change = (Change) object;
          try {
             Artifact toCheck = change.getChangeArtifact();
-            if (toCheck != null) {
+            if (toCheck.isValid()) {
                IRenderer renderer = RendererManager.getBestRenderer(PresentationType.DIFF, toCheck);
                isValidSelection = renderer.supportsCompare();
             }

@@ -253,7 +253,7 @@ public final class RevisionChangeLoader {
             }
          } else {
             toReturn = new ArtifactChange(branch, builder.getSourceGamma(), builder.getArtId(), builder.getTxDelta(),
-               builder.getModType(), "", "", isHistorical, null, null);
+               builder.getModType(), "", "", isHistorical, Artifact.SENTINEL, null);
          }
          changes.add(toReturn);
       }

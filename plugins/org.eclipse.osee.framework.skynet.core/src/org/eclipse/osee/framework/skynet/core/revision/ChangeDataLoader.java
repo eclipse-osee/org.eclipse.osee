@@ -213,7 +213,7 @@ public class ChangeDataLoader extends AbstractOperation {
       // When we are comparing two different branches, the displayed artifact should be the start artifact or the artifact from the
       // source branch. When we are comparing items from the same branch, the displayed artifact should be the artifact in the end transaction
       // since that is the resulting change artifact.
-      Artifact changeArtifact = null;
+      Artifact changeArtifact = Artifact.SENTINEL;
       if (artifactDelta != null) {
          changeArtifact = artifactDelta.getEndArtifact();
       }
@@ -297,8 +297,8 @@ public class ChangeDataLoader extends AbstractOperation {
             if (tok.hasMoreElements()) {
                tupleIsValue = tok.nextToken();
             }
-            change = new TupleChange(startTxBranch, itemGammaId, ModificationType.MODIFIED, tupleTypeId, tupleIsValue,
-               "?", itemKind, isHistorical);
+            change = new TupleChange(startTxBranch, itemGammaId, txDelta, netModType, tupleTypeId, tupleIsValue, "?",
+               itemKind, isHistorical);
             break;
          default:
             throw new OseeCoreException("The change item must map to either an artifact, attribute or relation change");

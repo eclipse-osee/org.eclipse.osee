@@ -50,7 +50,7 @@ public class CatchValidationChecks implements CommitAction {
       for (Change change : changes) {
          if (!change.getModificationType().isDeleted()) {
             Artifact artifactChanged = change.getChangeArtifact();
-            if (artifactChanged != null) {
+            if (artifactChanged.isValid()) {
                changedArtifacts.add(artifactChanged);
             }
          }

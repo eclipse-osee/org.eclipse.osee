@@ -48,20 +48,20 @@ public class ArtifactTokenColumn extends XViewerValueColumn {
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
+      String columnText = "";
       try {
-         Artifact artifact = null;
          if (element instanceof Artifact) {
-            artifact = (Artifact) element;
+            columnText = ((Artifact) element).toStringWithId();
          } else if (element instanceof Change) {
-            artifact = ((Change) element).getChangeArtifact();
+            Artifact artifact = ((Change) element).getChangeArtifact();
+            columnText = artifact.isValid() ? artifact.toStringWithId() : "";
+         } else {
+            columnText = "";
          }
-         if (artifact != null) {
-            return artifact.toStringWithId();
-         }
+         return columnText;
       } catch (OseeCoreException ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
-      return "";
    }
 
 }

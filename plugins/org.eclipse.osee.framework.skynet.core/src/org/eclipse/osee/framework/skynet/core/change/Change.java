@@ -61,25 +61,23 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
 
    @Override
    public boolean equals(Object obj) {
-      if (getChangeArtifact() != null) {
-         if (obj instanceof Change) {
-            Change change = (Change) obj;
-            boolean areDeltasEqual = false;
-            if (change.getDelta() != null && getDelta() != null) {
-               areDeltasEqual = change.getDelta().equals(getDelta());
-            } else if (change.getDelta() == null && getDelta() == null) {
-               areDeltasEqual = true;
-            }
-            return areDeltasEqual && change.getArtId() == getArtId() &&
-            //
-               change.getGamma() == getGamma() &&
-               //
-               change.getChangeArtifact().equals(getChangeArtifact()) &&
-               //
-               change.getModificationType() == getModificationType() &&
-               //
-               change.getTxDelta().equals(getTxDelta());
+      if (obj instanceof Change) {
+         Change change = (Change) obj;
+         boolean areDeltasEqual = false;
+         if (change.getDelta() != null && getDelta() != null) {
+            areDeltasEqual = change.getDelta().equals(getDelta());
+         } else if (change.getDelta() == null && getDelta() == null) {
+            areDeltasEqual = true;
          }
+         return areDeltasEqual && change.getArtId().equals(getArtId()) &&
+         //
+            change.getGamma() == getGamma() &&
+            //
+            change.getChangeArtifact().equals(getChangeArtifact()) &&
+            //
+            change.getModificationType().equals(getModificationType()) &&
+            //
+            change.getTxDelta().equals(getTxDelta());
       }
       return false;
    }
@@ -89,7 +87,7 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
       int hashCode = 7;
       hashCode += 13 * getArtId().hashCode();
       hashCode += 13 * getGamma().hashCode();
-      hashCode += getChangeArtifact() != null ? 13 * getChangeArtifact().hashCode() : 0;
+      hashCode += 13 * getChangeArtifact().hashCode();
       hashCode += getDelta() != null ? 13 * getDelta().hashCode() : 0;
       hashCode += getModificationType() != null ? 13 * getModificationType().hashCode() : 0;
       hashCode += getTxDelta() != null ? 13 * getTxDelta().hashCode() : 0;

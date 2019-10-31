@@ -165,7 +165,10 @@ public final class ViewWordChangeAndDiffTest {
    private static ArrayList<Artifact> asArtifacts(Collection<Change> changes) {
       ArrayList<Artifact> arts = new ArrayList<>();
       for (Change artifactChange : changes) {
-         arts.add(artifactChange.getChangeArtifact());
+         Artifact changeArtifact = artifactChange.getChangeArtifact();
+         if (changeArtifact.isValid()) {
+            arts.add(changeArtifact);
+         }
       }
       return arts;
    }

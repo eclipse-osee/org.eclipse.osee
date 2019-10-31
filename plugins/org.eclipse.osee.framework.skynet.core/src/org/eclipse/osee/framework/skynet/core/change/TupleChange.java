@@ -15,7 +15,9 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 
 /**
@@ -28,8 +30,8 @@ public class TupleChange extends Change {
    private final String itemKind;
    private final TupleTypeId itemTypeId;
 
-   public TupleChange(BranchId branch, GammaId sourceGamma, ModificationType modType, TupleTypeId itemTypeId, String isValue, String wasValue, String itemKind, boolean isHistorical) {
-      super(branch, sourceGamma, ArtifactId.valueOf(0L), null, modType, isHistorical, null, null);
+   public TupleChange(BranchId branch, GammaId sourceGamma, TransactionDelta txDelta, ModificationType modType, TupleTypeId itemTypeId, String isValue, String wasValue, String itemKind, boolean isHistorical) {
+      super(branch, sourceGamma, ArtifactId.valueOf(0L), txDelta, modType, isHistorical, Artifact.SENTINEL, null);
       this.itemTypeId = itemTypeId;
       this.isValue = isValue;
       this.wasValue = wasValue;

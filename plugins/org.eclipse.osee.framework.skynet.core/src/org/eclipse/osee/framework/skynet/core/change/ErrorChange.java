@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 
 /**
@@ -27,7 +28,7 @@ public final class ErrorChange extends Change {
    private final String name;
 
    public ErrorChange(BranchId branch, ArtifactId artId, String exception) {
-      super(branch, GammaId.valueOf(0L), artId, null, null, false, null, null);
+      super(branch, GammaId.valueOf(0L), artId, null, null, false, Artifact.SENTINEL, null);
       this.errorMessage = String.format("%s %s", ERROR_STRING, exception);
       this.name = String.format("%s ArtID: %s BranchUuid: %s - %s", ERROR_STRING, getArtId(),
          branch == null ? null : branch.getIdString(), exception);

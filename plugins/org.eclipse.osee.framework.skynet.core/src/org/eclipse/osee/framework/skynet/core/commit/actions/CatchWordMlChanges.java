@@ -74,7 +74,7 @@ public class CatchWordMlChanges implements CommitAction {
             }
 
             Artifact artifactChanged = change.getChangeArtifact();
-            if (artifactChanged != null) {
+            if (artifactChanged.isValid()) {
                changedArtifacts.add(artifactChanged);
             }
          }
@@ -82,9 +82,8 @@ public class CatchWordMlChanges implements CommitAction {
 
       String err = null;
       if (!trackedChanges.isEmpty()) {
-         err = String.format(
-            "Commit Branch Failed. The following artifacts contain Tracked Changes. " //
-               + " Please accept or reject and turn off track changes, then recommit : [%s]\n\n",
+         err = String.format("Commit Branch Failed. The following artifacts contain Tracked Changes. " //
+            + " Please accept or reject and turn off track changes, then recommit : [%s]\n\n",
             trackedChanges.toString());
       }
       if (!applicabilityTags.isEmpty()) {
