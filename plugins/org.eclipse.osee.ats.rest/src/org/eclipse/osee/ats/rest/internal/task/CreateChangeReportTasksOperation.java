@@ -8,6 +8,7 @@ package org.eclipse.osee.ats.rest.internal.task;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -126,11 +127,13 @@ public class CreateChangeReportTasksOperation {
 
          // Verify that name is set for all loaded artifacts
          boolean fail = false;
+         Map<ArtifactId, ArtifactReadable> idToArtifact = new HashMap<ArtifactId, ArtifactReadable>();
          for (ArtifactId art : crtd.getAllArtifacts()) {
             try {
                ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(art,
                   crtd.getWorkOrParentBranch(), DeletionFlag.INCLUDE_DELETED);
                artifact.getSafeName();
+               idToArtifact.put(artifact, artifact);
             } catch (Exception ex) {
                rd.errorf("Exception accessing name of %s - %s\n", art.getId(), ex.getLocalizedMessage());
                fail = true;
@@ -195,9 +198,6 @@ public class CreateChangeReportTasksOperation {
             // Later, all ChangeReportTaskMatch that have no task, create new task
             //        all ChangeReportTaskMatch that have found == false, mark to remove task
 
-            // TBD Compute task maches that already exist (need boolean for match found so can remove if no match)
-            // ChangeReportTaskUtil.compute CR task matches that already exist
-
             // Compute task matches needed; add to crd
             ChangeReportTasksUtil.getTasksComputedAsNeeded(crtd, crttwd, atsApi);
             for (ChangeReportTaskMatch taskMatch : crttwd.getTaskMatches()) {
@@ -223,7 +223,8 @@ public class CreateChangeReportTasksOperation {
             crtd.getIdToTeamWf().put(destTeamWf.getId(), destTeamWf);
 
             // Compute missing tasks; add task or null to crttwd.ChangeReportTaskMatch objects
-            ChangeReportTasksUtil.determinExistingTaskMatchType(crttwd, setDef, workType, destTeamWf);
+            ChangeReportTasksUtil.determinExistingTaskMatchType(idToArtifact, crtd, crttwd, setDef, workType,
+               destTeamWf);
 
             Set<String> addModTaskNames = new HashSet<>();
             Set<String> deletedTaskNames = new HashSet<>();
@@ -265,7 +266,7 @@ public class CreateChangeReportTasksOperation {
 
             if (reportOnly) {
                return crtd;
-            } else {
+            } else if (!crttwd.getNewTaskData().getNewTasks().isEmpty()) {
                crttwd.getNewTaskData().setAsUserId(crtd.getAsUser().getUserId());
                crttwd.getNewTaskData().setCommitComment("Create Change Report Tasks");
                crttwd.getNewTaskData().setTeamWfId(destTeamWf.getId());
@@ -277,9 +278,10 @@ public class CreateChangeReportTasksOperation {
          if (!reportOnly && changes != null) {
             TransactionId transId = changes.executeIfNeeded();
             if (transId.isValid()) {
-               crtd.getResults().log("Tasks Updated\n");
+               crtd.setTransaction(transId);
+               crtd.getResults().log("\nTasks Updated\n");
             } else {
-               crtd.getResults().log("No Changes Needed\n");
+               crtd.getResults().log("\nNo Changes Needed\n");
             }
          }
       } catch (Exception ex) {

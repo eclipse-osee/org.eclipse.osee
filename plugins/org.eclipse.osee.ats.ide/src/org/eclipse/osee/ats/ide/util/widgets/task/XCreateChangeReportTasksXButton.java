@@ -9,9 +9,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
+import org.eclipse.osee.ats.api.task.create.ChangeReportTaskTeamWfData;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
@@ -20,10 +22,12 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButton;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -61,6 +65,10 @@ public class XCreateChangeReportTasksXButton extends XButton implements IArtifac
 
    protected void createUpdateTasks(String name) {
 
+      if (!MessageDialog.openConfirm(Displays.getActiveShell(), name, name + "?")) {
+         return;
+      }
+
       Job job = new Job(name) {
 
          @Override
@@ -74,7 +82,19 @@ public class XCreateChangeReportTasksXButton extends XButton implements IArtifac
             XResultDataUI.report(data.getResults(), getName());
 
             // Reload team wfs if tasks created
-
+            if (data.getTransaction() != null && data.getTransaction().isValid()) {
+               final ChangeReportTaskData fData = data;
+               Thread reload = new Thread(new Runnable() {
+                  @Override
+                  public void run() {
+                     for (ChangeReportTaskTeamWfData crttwd : fData.getChangeReportDatas()) {
+                        ArtifactQuery.reloadArtifactFromId(crttwd.getDestTeamWf(),
+                           AtsClientService.get().getAtsBranch());
+                     }
+                  }
+               });
+               reload.start();
+            }
             return Status.OK_STATUS;
          }
       };

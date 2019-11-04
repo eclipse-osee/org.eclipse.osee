@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -24,6 +25,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
@@ -51,16 +53,17 @@ public class ChangeReportTaskData {
    // ChangeItems from executed change report
    private List<ChangeItem> changeData;
    // Artifact lists for the different types of changes in change report
-   private Collection<ArtifactId> addedModifiedArts = new HashSet<>();
-   private Collection<ArtifactId> deletedArts = new HashSet<>();
-   private Collection<ArtifactId> relArts = new HashSet<>();
-   private Collection<ArtifactId> allArtifacts = new HashSet<>();
+   private Set<ArtifactId> addedModifiedArts = new HashSet<>();
+   private Set<ArtifactId> deletedArts = new HashSet<>();
+   private Set<ArtifactId> relArts = new HashSet<>();
+   private Set<ArtifactId> allArtifacts = new HashSet<>();
    // Definition loaded from the taskDefToken that defines how tasks are created
    private CreateTasksDefinition setDef;
    @JsonIgnore
    private final Map<Long, IAtsTeamWorkflow> idToTeamWf = new HashMap<Long, IAtsTeamWorkflow>();
    // Show detailed debug logging
    private boolean debug = false;
+   private TransactionId transaction;
 
    public ChangeReportTaskData() {
       // for jax-rs
@@ -155,7 +158,7 @@ public class ChangeReportTaskData {
       return addedModifiedArts;
    }
 
-   public void setAddedModifiedArts(Collection<ArtifactId> addedModifiedArts) {
+   public void setAddedModifiedArts(Set<ArtifactId> addedModifiedArts) {
       this.addedModifiedArts = addedModifiedArts;
    }
 
@@ -163,7 +166,7 @@ public class ChangeReportTaskData {
       return deletedArts;
    }
 
-   public void setDeletedArts(Collection<ArtifactId> deletedArts) {
+   public void setDeletedArts(Set<ArtifactId> deletedArts) {
       this.deletedArts = deletedArts;
    }
 
@@ -171,7 +174,7 @@ public class ChangeReportTaskData {
       return relArts;
    }
 
-   public void setRelArts(Collection<ArtifactId> relArts) {
+   public void setRelArts(Set<ArtifactId> relArts) {
       this.relArts = relArts;
    }
 
@@ -179,7 +182,7 @@ public class ChangeReportTaskData {
       return allArtifacts;
    }
 
-   public void setAllArtifacts(Collection<ArtifactId> allArtifacts) {
+   public void setAllArtifacts(Set<ArtifactId> allArtifacts) {
       this.allArtifacts = allArtifacts;
    }
 
@@ -205,6 +208,14 @@ public class ChangeReportTaskData {
 
    public void setDebug(boolean debug) {
       this.debug = debug;
+   }
+
+   public TransactionId getTransaction() {
+      return transaction;
+   }
+
+   public void setTransaction(TransactionId transaction) {
+      this.transaction = transaction;
    }
 
 }

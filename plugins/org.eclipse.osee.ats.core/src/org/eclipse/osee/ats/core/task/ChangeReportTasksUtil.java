@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.task;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -97,18 +99,34 @@ public class ChangeReportTasksUtil {
    /**
     * Compare already TaskComputedAsNeeded task matches with existing tasks and determine fate.
     */
-   public static void determinExistingTaskMatchType(ChangeReportTaskTeamWfData crttwd, CreateTasksDefinition setDef, WorkType workType, IAtsTeamWorkflow destTeamWf) {
+   public static void determinExistingTaskMatchType(Map<ArtifactId, ArtifactReadable> idToArtifact, ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, CreateTasksDefinition setDef, WorkType workType, IAtsTeamWorkflow destTeamWf) {
       AtsApi atsApi = AtsApiService.get();
-      for (IAtsTask task : atsApi.getTaskService().getTasks(destTeamWf)) {
-         ArtifactId referencedChgArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(task,
+      Collection<IAtsTask> tasks = atsApi.getTaskService().getTasks(destTeamWf);
+      System.out.println(String.format("%s tasks for %s", tasks.size(), destTeamWf.toStringWithId()));
+      for (IAtsTask task : tasks) {
+         ArtifactId refChgArtId = atsApi.getAttributeResolver().getSoleArtifactIdReference(task,
             AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
-         ArtifactToken referencedChgArtTok = null; // TBD Search for artifact token (include deleted) cause needed name to compare
-         if (referencedChgArt.isValid()) {
-            // See if there's already a task match, set task saying it exists
-            ChangeReportTaskMatch taskMatch = getTaskMatch(referencedChgArtTok, crttwd);
+
+         // Search for artifact token (include deleted) cause needed name to compare
+         if (refChgArtId.isValid()) {
+            boolean found = false;
+            for (ChangeReportTaskMatch taskMatch : crttwd.getTaskMatches()) {
+               // We found matching TaskMatch
+               if (refChgArtId.getId().equals(taskMatch.getChgRptArt().getId()) && task.getName().equals(
+                  taskMatch.getTaskName())) {
+                  System.err.println("Match\n");
+                  taskMatch.setTaskName(task.getName());
+                  taskMatch.setType(ChangeReportTaskMatchType.Match);
+                  taskMatch.setTaskWf(task);
+                  taskMatch.setTaskTok(task.getArtifactToken());
+                  found = true;
+                  break;
+               }
+            }
 
             // If not, add task match that will probably be marked for removal
-            if (taskMatch == null) {
+            if (!found) {
+               System.err.println("No Match\n");
                ChangeReportTaskMatch newTaskMatch = new ChangeReportTaskMatch();
                newTaskMatch.setTaskName(task.getName());
                newTaskMatch.setTaskWf(task);
@@ -129,17 +147,22 @@ public class ChangeReportTasksUtil {
    }
 
    /**
-    * @return task match if both name and referenced change artifact match
+    * @return task match if task referenced
     */
-   public static ChangeReportTaskMatch getTaskMatch(ArtifactToken referencedChgArt, ChangeReportTaskTeamWfData crttwd) {
+   public static ChangeReportTaskMatch getTaskMatch(IAtsTask task, ArtifactId referencedChgArt, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
+      ArtifactId taskRefArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(task,
+         AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
       for (ChangeReportTaskMatch taskMatch : crttwd.getTaskMatches()) {
-         if (referencedChgArt.equals(taskMatch.getChgRptArt())) {
-            if (referencedChgArt.getName().equals(taskMatch.getTaskName())) {
-               taskMatch.setType(ChangeReportTaskMatchType.Match);
-               return taskMatch;
-            }
+         if (referencedChgArt.getId().equals(taskRefArt.getId())) {
+            System.err.println("Match\n");
+            taskMatch.setTaskName(task.getName());
+            taskMatch.setType(ChangeReportTaskMatchType.Match);
+            taskMatch.setTaskWf(task);
+            taskMatch.setTaskTok(task.getArtifactToken());
+            return taskMatch;
          }
       }
+      System.err.println("No Match\n");
       return null;
    }
 

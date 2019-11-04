@@ -47,8 +47,8 @@ public class ChangeReportTaskMatch {
 
    @Override
    public String toString() {
-      return String.format("ChgRptArt %s for task name [%s] mapped to task %s", chgRptArt.toString(), taskName,
-         (taskTok == null ? "none" : taskTok.toStringWithId()));
+      return String.format("%s ChgRptArt %s for task name [%s] mapped to task %s", matchType.name(),
+         chgRptArt.toString(), taskName, (taskTok == null ? "none" : taskTok.toStringWithId()));
    }
 
    public void setTaskWf(IAtsTask taskWf) {

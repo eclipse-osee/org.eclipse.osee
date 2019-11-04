@@ -39,7 +39,6 @@ public class TaskXViewer extends WorldXViewer {
    Action editAssigneeAction;
    Action addNewTaskAction;
    EditBlockedStatusAction editBlockedStatusAction;
-   private boolean newTaskSelectionEnabled = false;
    private boolean tasksEditable = true;
    private IAtsTeamWorkflow teamWf;
 
@@ -93,10 +92,6 @@ public class TaskXViewer extends WorldXViewer {
 
    public void setTasksEditable(boolean tasksEditable) {
       this.tasksEditable = tasksEditable;
-   }
-
-   public void setNewTaskSelectionEnabled(boolean newTaskSelectionEnabled) {
-      this.newTaskSelectionEnabled = newTaskSelectionEnabled;
    }
 
    public void setTeamWf(IAtsTeamWorkflow teamWf) {

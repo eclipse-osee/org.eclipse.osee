@@ -23,7 +23,7 @@ public class NewTaskData {
 
    @JsonSerialize(using = ToStringSerializer.class)
    Long teamWfId;
-   List<JaxAtsTask> newTasks;
+   List<JaxAtsTask> newTasks = new ArrayList<>();
    String asUserId;
    String commitComment;
    XResultData results;
@@ -38,9 +38,6 @@ public class NewTaskData {
    }
 
    public List<JaxAtsTask> getNewTasks() {
-      if (newTasks == null) {
-         newTasks = new ArrayList<>();
-      }
       return newTasks;
    }
 

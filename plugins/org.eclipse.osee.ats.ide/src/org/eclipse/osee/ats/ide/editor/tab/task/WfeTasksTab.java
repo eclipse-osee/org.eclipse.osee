@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.ide.editor.tab.task;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -39,7 +38,6 @@ import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.RuleEventType;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.actions.AddTaskAction;
 import org.eclipse.osee.ats.ide.actions.DeleteTasksAction;
@@ -80,7 +78,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
@@ -300,7 +297,7 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
                return Status.OK_STATUS;
             }
             try {
-               Collection<TaskArtifact> taskArts = getTaskArtifacts();
+               Collection<TaskArtifact> taskArts = getTaskArts();
                Displays.ensureInDisplayThread(new Runnable() {
                   @Override
                   public void run() {
@@ -397,7 +394,7 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
          @Override
          public void run() {
             if (Widgets.isAccessible(taskComposite)) {
-               taskComposite.getXViewer().setInput(getTaskArtifacts());
+               taskComposite.getXViewer().setInput(getTaskArts());
             }
          }
       });
@@ -661,21 +658,7 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
 
    @Override
    public void reSearch() {
-      JobChangeAdapter listener = new JobChangeAdapter() {
-
-         @Override
-         public void done(IJobChangeEvent event) {
-            super.done(event);
-            reload();
-         }
-
-      };
-      deCacheAndReload(listener);
-   }
-
-   private void deCacheAndReload(JobChangeAdapter listener) {
-      ArtifactQuery.reloadArtifacts(getTaskArtifacts());
-      ArtifactQuery.reloadArtifacts(Collections.singleton(teamArt));
+      refresh();
    }
 
    @Override
@@ -694,12 +677,13 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
    }
 
    private Collection<IAtsTask> getTasks() {
-      return client.getTaskService().getTasks(teamWf);
+      Collection<IAtsTask> tasks = client.getTaskService().getTasks(teamWf);
+      System.err.println(getClass().getSimpleName() + ".getTasks() - " + tasks.size());
+      return tasks;
    }
 
-   public Collection<TaskArtifact> getTaskArtifacts() {
-      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
-         AtsObjects.getArtifacts(client.getTaskService().getTasks(teamWf)));
+   public Collection<TaskArtifact> getTaskArts() {
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(getTasks());
    }
 
    public void refreshTabName() {
