@@ -66,7 +66,7 @@ public final class MSWordEndpointImpl implements MSWordEndpoint {
    }
 
    @Override
-   public String getDocumentNumbers(BranchId branchId) {
+   public String getDocumentNames(BranchId branchId) {
       return null;
    }
 }
