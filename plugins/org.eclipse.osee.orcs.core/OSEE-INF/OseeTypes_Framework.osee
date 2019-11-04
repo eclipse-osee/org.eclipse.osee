@@ -849,13 +849,13 @@ artifactType "Software Test Procedure Plain Text" extends "Plain Text", "Test Un
 	attribute "Doors Hierarchy"
 }
 
-artifactType "Software Test Procedure - MS Word" extends "MS Word Template", "Test Unit"  {
+artifactType "Software Test Procedure - MS Word" extends "MS Word Whole Document", "Test Unit"  {
 	id 554486323432951758
 	attribute "Doors ID"
 	attribute "Doors Hierarchy"
 }
 
-artifactType "Integration Test Procedure - MS Word" extends "MS Word Template", "Test Unit"  {
+artifactType "Integration Test Procedure - MS Word" extends "MS Word Whole Document", "Test Unit"  {
 	id 443398723457743216
 	attribute "Doors ID"
 	attribute "Doors Hierarchy"

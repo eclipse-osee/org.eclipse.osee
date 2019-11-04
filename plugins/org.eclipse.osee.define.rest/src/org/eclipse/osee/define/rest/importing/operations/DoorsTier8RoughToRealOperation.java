@@ -59,7 +59,7 @@ public class DoorsTier8RoughToRealOperation {
       String operationComment = String.format("Add or Modify %s", destinationArtifact.getName());
       TransactionBuilder transaction =
          orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem, operationComment);
-      for (RoughArtifact roughArtifact : rawData.getParentRoughArtifact().getChildren()) {
+      for (RoughArtifact roughArtifact : rawData.getRoughArtifacts()) {
          String name = roughArtifact.getName();
          if (name.length() > 32) {
             name = name.substring(0, 32);
@@ -129,8 +129,10 @@ public class DoorsTier8RoughToRealOperation {
          if (!modifiedParents.contains(parentArtifact)) {
             modifiedParents.add(parentArtifact);
          }
-         knownArtsByReqNum.put(
-            roughArtifact.getRoughAttribute(CoreAttributeTypes.DoorsHierarchy.getName()).replace("-", "."), createdArt);
+         String fixedHierarchy =
+            roughArtifact.getRoughAttribute(CoreAttributeTypes.DoorsHierarchy.getName()).replaceAll("0-", "");
+         fixedHierarchy = fixedHierarchy.replaceAll("-", ".");
+         knownArtsByReqNum.put(fixedHierarchy, createdArt);
       } else {
          results.logf("Doors ID resolver cant find parent. roughArtifactifact: [%s]. Doors Hierarchy: [%s]",
             roughArtifact.getName(), roughArtifact.getAttributes().getSoleAttributeValue("Doors Hierarchy"));
@@ -139,6 +141,9 @@ public class DoorsTier8RoughToRealOperation {
 
    private ArtifactToken findParentArtifact(RoughArtifact roughArtifact, BranchId branch) {
       String doorsHierarchy = roughArtifact.getRoughAttribute(CoreAttributeTypes.DoorsHierarchy.getName());
+      doorsHierarchy = doorsHierarchy.replaceAll("0-", "");
+      doorsHierarchy = doorsHierarchy.replaceAll("-", ".");
+      System.out.println(doorsHierarchy);
       ReqNumbering reqNumber = new ReqNumbering(doorsHierarchy, true);
 
       ArtifactToken currentParent = knownArtsByReqNum.get(reqNumber.getParentString());

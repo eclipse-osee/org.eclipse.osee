@@ -49,7 +49,7 @@ public final class DoorsImportFieldTokens {
    public static final BlockFieldToken blockAttrDeleted =     BlockFieldToken.valueOf(11, "Deleted", DELETED_REGEX, BLOCK_ATTR_REGEX, BlockField::new);
    public static final BlockFieldToken blockAttrComments =    BlockFieldToken.valueOf(12, "Comments", COMMENTS_REGEX, OBJECT_TEXT_REGEX, BlockField::new, CoreAttributeTypes.Annotation);
    public static final BlockFieldToken blockAttrExtLink =     BlockFieldToken.valueOf(14, "ExternalLink", EXT_LINK_REGEX, BLOCK_ATTR_REGEX, BlockField::new, CoreAttributeTypes.ContentUrl);
-   public static final BlockFieldToken blockAttrPlainText =   BlockFieldToken.valueOf(15, "Plain Text", PLAIN_TEXT_REGEX, OBJECT_TEXT_REGEX, BlockField::new, CoreAttributeTypes.PlainTextContent); // TODO write a plain text converter - see BlockFieldText. Use that constructor here
+   public static final BlockFieldToken blockAttrPlainText =   BlockFieldToken.valueOf(15, "Plain Text", PLAIN_TEXT_REGEX, OBJECT_TEXT_REGEX, BlockField::new); // TODO write a plain text converter - see BlockFieldText. Use that constructor here
    public static final BlockFieldToken blockAttrDescription = BlockFieldToken.valueOf(16, "Description", DESCRIPTION_REGEX, BLOCK_ATTR_REGEX, BlockField::new, CoreAttributeTypes.Description);
    // @formatter:on
 }
