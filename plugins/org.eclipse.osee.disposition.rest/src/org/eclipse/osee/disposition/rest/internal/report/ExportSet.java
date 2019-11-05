@@ -346,7 +346,6 @@ public class ExportSet {
          List<String> orderedResolutionTypes = organizeResolutions(resolutionTypes);
          for (String resolution : orderedResolutionTypes) {
             int index1 = 0;
-            boolean mcdcOnly = false;
 
             row[index1++] =
                resolutionsValueToText.containsKey(resolution) ? resolutionsValueToText.get(resolution) : resolution;
@@ -358,30 +357,41 @@ public class ExportSet {
                   row[index1++] = "ERROR";
                   continue;
                }
-               String percentValue = getPercent(levelToResolutionTypesToCount.get(lvl).get(resolution).getValue(),
+               row[index1++] = getPercent(levelToResolutionTypesToCount.get(lvl).get(resolution).getValue(),
                   levelToTotalCount.get(lvl).getValue(), false);
-               if (mcdcOnly && percentValue.equals("0%")) { //MCDC only has level A, but we still print any that are >0% to show there is a problem
-                  row[index1++] = "";
-               } else {
-                  row[index1++] = percentValue;
-               }
-               if (resolution.contains("/") || resolution.equals("MIXED")) {
-                  mcdcOnly = true;
-               }
             }
             sheetWriter.writeRow(row);
          }
 
-         for (Entry<String, Integer> entry : defaultCases.entrySet()) {
+         if (!defaultCases.isEmpty()) {
+            Map<CoverageLevel, Integer> levelToMixed = new HashMap<>();
             int index1 = 0;
-            row[index1++] = entry.getKey() + " x " + entry.getValue();
-
+            row[index1++] = "MIXED - Expanded Below";
             Iterator<CoverageLevel> it = levelsInList.iterator();
             while (it.hasNext()) {
-               it.next();
-               row[index1++] = " ";
+               CoverageLevel lvl = it.next();
+
+               if (levelToResolutionTypesToCount.get(lvl).get("MIXED") == null) {
+                  row[index1++] = "ERROR";
+                  continue;
+               }
+               row[index1++] = getPercent(levelToResolutionTypesToCount.get(lvl).get("MIXED").getValue(),
+                  levelToTotalCount.get(lvl).getValue(), false) + " - Expanded Below";
+               levelToMixed.put(lvl, levelToResolutionTypesToCount.get(lvl).get("MIXED").getValue());
             }
             sheetWriter.writeRow(row);
+
+            for (Entry<String, Integer> entry : defaultCases.entrySet()) {
+               int index2 = 0;
+               row[index2++] = entry.getKey();
+
+               Iterator<CoverageLevel> it2 = levelsInList.iterator();
+               while (it.hasNext()) {
+                  CoverageLevel lvl = it2.next();
+                  row[index2++] = getPercent(entry.getValue(), levelToMixed.get(lvl), false);
+               }
+               sheetWriter.writeRow(row);
+            }
          }
 
          sheetWriter.endSheet();
@@ -718,8 +728,6 @@ public class ExportSet {
          orderedResolutionTypes.add(coverageMethod);
       }
 
-      orderedResolutionTypes.add("MIXED");
-
       return orderedResolutionTypes;
    }
 
@@ -785,6 +793,12 @@ public class ExportSet {
          "Deactivated_EXT_ATE_PRESENT",
          "Deactivated_J4_Connector",
          "Deactivated_Compile_Time",
+         "Deactivated_Remote_SW_test_page",
+         "Deactivated_INTEGRITY_serial_console_command",
+         "Deactivated_Engineering_test_page",
+         "Deactivated_Code",
+         "Deactivated_Ada_console_command",
+         "Deactivated_Ground_testing_only",
          "Defensive_Programming/Test_Script",
          "Exception_Handling/Test_Script",
          "Analysis/Test_Script",
@@ -792,12 +806,6 @@ public class ExportSet {
          "Deactivated_IN_AIR_OR_ENG_ON/Test_Script",
          "Deactivated_J4_Connector/Test_Script",
          "Deactivated_Compile_Time/Test_Script",
-         "Deactivated_Remote_SW_test_page",
-         "Deactivated_INTEGRITY_serial_console_command",
-         "Deactivated_Engineering_test_page",
-         "Deactivated_Code",
-         "Deactivated_Ada_console_command",
-         "Deactivated_Ground_testing_only",
          "Modify_Reqt",
          "Modify_Code",
          "Modify_Test",
