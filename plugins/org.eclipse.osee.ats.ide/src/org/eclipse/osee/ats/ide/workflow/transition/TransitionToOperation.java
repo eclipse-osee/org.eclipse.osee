@@ -55,7 +55,6 @@ public class TransitionToOperation extends AbstractOperation {
 
          IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
          results = transitionMgr.handleAllAndPersist();
-         System.err.println(getClass().getSimpleName() + " - persisted");
          if (results.isCancelled()) {
             return;
          }

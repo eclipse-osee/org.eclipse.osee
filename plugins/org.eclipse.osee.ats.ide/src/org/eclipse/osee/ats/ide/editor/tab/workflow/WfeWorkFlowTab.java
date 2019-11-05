@@ -26,6 +26,8 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.event.IAtsWorkItemTopicEventListener;
+import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.ide.actions.AddNoteAction;
@@ -60,6 +62,7 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.WorkflowManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.IWorldViewerEventHandler;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
@@ -76,10 +79,13 @@ import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -96,7 +102,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler {
+public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler, IAtsWorkItemTopicEventListener {
    private final AbstractWorkflowArtifact awa;
    private final List<WfeWorkflowSection> sections = new ArrayList<>();
    private final List<StateXWidgetPage> statePages = new ArrayList<>();
@@ -143,10 +149,25 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
             HelpUtil.setHelp(managedForm.getForm(), AtsHelpContext.WORKFLOW_EDITOR__WORKFLOW_TAB);
          }
 
+         AtsClientService.get().getEventService().registerAtsWorkItemTopicEvent(this,
+            AtsTopicEvent.WORK_ITEM_TRANSITIONED, AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED);
+
          List<IOperation> ops = new ArrayList<>();
          ops.addAll(AtsBulkLoad.getConfigLoadingOperations());
          IOperation operation = Operations.createBuilder("Load Workflow Tab").addAll(ops).build();
          Operations.executeAsJob(operation, false, Job.LONG, new ReloadJobChangeAdapter(editor));
+
+         // Register for events and deregister on dispose
+         AtsClientService.get().getEventService().registerAtsWorkItemTopicEvent(this,
+            AtsTopicEvent.WORK_ITEM_TRANSITIONED, AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED);
+         final WfeWorkFlowTab fThis = this;
+         bodyComp.addDisposeListener(new DisposeListener() {
+
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+               AtsClientService.get().getEventService().deRegisterAtsWorkItemTopicEvent(fThis);
+            }
+         });
 
       } catch (Exception ex) {
          handleException(ex);
@@ -561,6 +582,26 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
    public WfeHeaderComposite getHeader() {
       return headerComp;
+   }
+
+   @Override
+   public void handleEvent(AtsTopicEvent topicEvent, Collection<ArtifactId> workItems) {
+      if (topicEvent.equals(AtsTopicEvent.WORK_ITEM_TRANSITIONED) || topicEvent.equals(
+         AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED)) {
+         System.err.println("handleEvent " + topicEvent);
+         if (this.isDisposed()) {
+            AtsClientService.get().getEventService().deRegisterAtsWorkItemTopicEvent(this);
+            return;
+         }
+         Displays.ensureInDisplayThread(new Runnable() {
+
+            @Override
+            public void run() {
+               refresh();
+               refreshExpandStates();
+            }
+         });
+      }
    }
 
 }

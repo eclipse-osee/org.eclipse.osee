@@ -21,4 +21,6 @@ public interface IAtsWorkItemTopicEventListener {
 
    void handleEvent(AtsTopicEvent topicEvent, Collection<ArtifactId> workItems);
 
+   boolean isDisposed();
+
 }

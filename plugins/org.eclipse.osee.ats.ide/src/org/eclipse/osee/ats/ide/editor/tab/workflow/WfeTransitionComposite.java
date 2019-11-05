@@ -66,6 +66,8 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -91,9 +93,6 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
       this.editor = editor;
       this.isEditable = isEditable;
 
-      AtsClientService.get().getEventService().registerAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITIONED,
-         this);
-
       awa = editor.getWorkItem();
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       GridLayout layout = new GridLayout(editor.getWorkFlowTab().getHeader().isShowTargetedVersion() ? 7 : 5, false);
@@ -102,6 +101,18 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
       layout.marginHeight = 0;
       setLayout(layout);
       editor.getWorkFlowTab().getManagedForm().getToolkit().adapt(this);
+
+      // Register for events and deregister on dispose
+      AtsClientService.get().getEventService().registerAtsWorkItemTopicEvent(this, AtsTopicEvent.WORK_ITEM_TRANSITIONED,
+         AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED);
+      final WfeTransitionComposite fThis = this;
+      addDisposeListener(new DisposeListener() {
+
+         @Override
+         public void widgetDisposed(DisposeEvent e) {
+            AtsClientService.get().getEventService().deRegisterAtsWorkItemTopicEvent(fThis);
+         }
+      });
 
       transitionLabelLink = editor.getToolkit().createHyperlink(this, "Transition", SWT.NONE);
       transitionLabelLink.addHyperlinkListener(new HyperlinkAdapter() {
@@ -132,7 +143,8 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
             }
          }
       });
-      transitionToStateLabel = editor.getToolkit().createLabel(this, getToState().getName());
+      String toStateName = getToState() == null ? "<not set>" : getToState().getName();
+      transitionToStateLabel = editor.getToolkit().createLabel(this, toStateName);
       transitionToStateLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       transitionToStateLabel.setToolTipText("Select to change state to transition to");
 
@@ -356,7 +368,7 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
 
    public void updateTransitionToAssignees() {
       Collection<IAtsUser> assignees = null;
-      // Determine if the is an override set of assigness
+      // Determine if the is an override set of assignees
       for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
          String decisionValueIfApplicable = "";
          if (awa.isOfType(
@@ -414,15 +426,17 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
          if (toState == null) {
             toState = awa.getStateDefinition().getDefaultToState();
          }
-         if (toState != null) {
+         if (toState == null) {
+            transitionToStateLabel.setText("<Not Set>");
+         } else {
             transitionToStateLabel.setText(toState.getName());
-            transitionToStateLabel.getParent().layout();
          }
+         transitionToStateLabel.getParent().layout();
 
-         transitionAssigneesLabel.setText(
-            editor.getWorkFlowTab().getCurrentStateSection().getPage().getSma().getTransitionAssigneesStr());
-         transitionAssigneesLabel.getParent().layout();
          transitionLabelLink.setEnabled(true);
+
+         transitionAssigneesLabel.setText(awa.getTransitionAssigneesStr());
+         transitionAssigneesLabel.getParent().layout();
       }
    }
 
@@ -456,19 +470,22 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
 
    @Override
    public void handleEvent(AtsTopicEvent topicEvent, Collection<ArtifactId> workItems) {
-      if (this.isDisposed()) {
-         AtsClientService.get().getEventService().deRegisterAtsWorkItemTopicEvent(this);
-         return;
-      }
-      Displays.ensureInDisplayThread(new Runnable() {
-
-         @Override
-         public void run() {
-            userSelectedTransitionToState = null;
-            refresh();
-            editor.getWorkFlowTab().refreshExpandStates();
+      if (topicEvent.equals(AtsTopicEvent.WORK_ITEM_TRANSITIONED) || topicEvent.equals(
+         AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED)) {
+         System.err.println("handleEvent " + topicEvent);
+         if (this.isDisposed()) {
+            AtsClientService.get().getEventService().deRegisterAtsWorkItemTopicEvent(this);
+            return;
          }
-      });
+         Displays.ensureInDisplayThread(new Runnable() {
+
+            @Override
+            public void run() {
+               userSelectedTransitionToState = null;
+               refresh();
+            }
+         });
+      }
    }
 
    public boolean isSelected() {

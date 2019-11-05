@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.util;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.osee.framework.core.event.AbstractTopicEvent;
 import org.eclipse.osee.framework.core.event.EventType;
 
@@ -18,10 +20,15 @@ import org.eclipse.osee.framework.core.event.EventType;
  */
 public class AtsTopicEvent extends AbstractTopicEvent {
 
+   public static Map<String, AtsTopicEvent> idToEvent = new HashMap<String, AtsTopicEvent>();
+
    public static final AtsTopicEvent WORK_ITEM_MODIFIED =
       new AtsTopicEvent(EventType.LocalAndRemote, "ats/workitem/modified");
+
    public static final AtsTopicEvent WORK_ITEM_TRANSITIONED =
       new AtsTopicEvent(EventType.LocalAndRemote, "ats/workitem/transitioned");
+   public static final AtsTopicEvent WORK_ITEM_TRANSITION_FAILED =
+      new AtsTopicEvent(EventType.LocalOnly, "ats/workitem/transition/failed");
 
    // semi-colon delimited long ids
    public static final String WORK_ITEM_IDS_KEY = "workItemIds";
@@ -33,6 +40,11 @@ public class AtsTopicEvent extends AbstractTopicEvent {
 
    private AtsTopicEvent(EventType eventType, String topic) {
       super(eventType, topic);
+      idToEvent.put(topic, this);
+   }
+
+   public static AtsTopicEvent get(String topic) {
+      return idToEvent.get(topic);
    }
 
 }

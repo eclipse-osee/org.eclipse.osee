@@ -57,7 +57,7 @@ public interface IAtsEventService {
     */
    void postAtsWorkItemTopicEvent(AtsTopicEvent event, Collection<IAtsWorkItem> workItems);
 
-   void registerAtsWorkItemTopicEvent(AtsTopicEvent event, IAtsWorkItemTopicEventListener listener);
+   void registerAtsWorkItemTopicEvent(IAtsWorkItemTopicEventListener listener, AtsTopicEvent... events);
 
    void deRegisterAtsWorkItemTopicEvent(IAtsWorkItemTopicEventListener listener);
 }

@@ -219,13 +219,6 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
                   if (results.isCancelled()) {
                      continue;
                   }
-
-                  if (helper.isExecuteChanges()) {
-                     helper.getChangeSet().execute();
-
-                     helper.getServices().getEventService().postAtsWorkItemTopicEvent(
-                        AtsTopicEvent.WORK_ITEM_TRANSITIONED, helper.getWorkItems());
-                  }
                }
             }
          } catch (OseeCoreException ex) {
@@ -375,12 +368,6 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
                results.addResult(workItem,
                   new TransitionResult(String.format("Exception while transitioning [%s]", helper.getName()), ex));
             }
-         }
-         if (results.isEmpty() && helper.isExecuteChanges()) {
-            helper.getChangeSet().execute();
-
-            helper.getServices().getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITIONED,
-               helper.getWorkItems());
          }
       } catch (Exception ex) {
          results.addResult(
@@ -625,6 +612,9 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
          helper.getChangeSet().execute();
 
          helper.getServices().getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITIONED,
+            helper.getWorkItems());
+      } else {
+         helper.getServices().getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED,
             helper.getWorkItems());
       }
       return result;

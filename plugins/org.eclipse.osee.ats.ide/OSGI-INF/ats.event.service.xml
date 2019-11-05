@@ -2,7 +2,8 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
    <implementation class="org.eclipse.osee.ats.ide.util.internal.AtsEventServiceIdeImpl"/>
    <reference bind="setEventAdmin" cardinality="1..1" interface="org.osgi.service.event.EventAdmin" name="EventAdmin" policy="static"/>
-   <property name="event.topics" type="String" value="ats/workitem/transitioned"/>
+   <property name="event.topics" type="String" value="ats/*">
+   </property>
    <service>
       <provide interface="org.osgi.service.event.EventHandler"/>
       <provide interface="org.eclipse.osee.ats.api.event.IAtsEventService"/>

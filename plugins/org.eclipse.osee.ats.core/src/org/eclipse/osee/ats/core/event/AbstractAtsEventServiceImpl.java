@@ -13,7 +13,9 @@ package org.eclipse.osee.ats.core.event;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.event.IAtsEventService;
@@ -21,6 +23,7 @@ import org.eclipse.osee.ats.api.event.IAtsWorkItemTopicEventListener;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -34,8 +37,7 @@ import org.osgi.service.event.EventHandler;
 public abstract class AbstractAtsEventServiceImpl implements IAtsEventService, EventHandler {
 
    private EventAdmin eventAdmin;
-   private final List<IAtsWorkItemTopicEventListener> workItemEventListeners =
-      new ArrayList<IAtsWorkItemTopicEventListener>();
+   private final HashCollection<String, IAtsWorkItemTopicEventListener> workItemEventListeners = new HashCollection<>();
 
    @Override
    public EventAdmin getEventAdmin() {
@@ -72,32 +74,44 @@ public abstract class AbstractAtsEventServiceImpl implements IAtsEventService, E
    }
 
    @Override
-   public void registerAtsWorkItemTopicEvent(AtsTopicEvent event, IAtsWorkItemTopicEventListener listener) {
-      if (workItemEventListeners.contains(listener)) {
-         System.err.println(
-            getClass().getSimpleName() + " - duplicate listener register: " + listener.getClass().getSimpleName());
-         return;
+   public void registerAtsWorkItemTopicEvent(IAtsWorkItemTopicEventListener listener, AtsTopicEvent... events) {
+      for (AtsTopicEvent event : events) {
+         List<IAtsWorkItemTopicEventListener> listeners = workItemEventListeners.getValues(event.getTopic());
+         if (listeners == null) {
+            listeners = new LinkedList<IAtsWorkItemTopicEventListener>();
+            workItemEventListeners.put(event.getTopic(), listeners);
+         }
+         if (!listeners.contains(listener)) {
+            listeners.add(listener);
+         }
       }
-      workItemEventListeners.add(listener);
    }
 
    @Override
    public void deRegisterAtsWorkItemTopicEvent(IAtsWorkItemTopicEventListener listener) {
-      workItemEventListeners.remove(listener);
+      for (Entry<String, List<IAtsWorkItemTopicEventListener>> entry : workItemEventListeners.entrySet()) {
+         List<IAtsWorkItemTopicEventListener> listeners = entry.getValue();
+         if (!listeners.contains(listener)) {
+            listeners.remove(listener);
+         }
+      }
    }
 
    @Override
    public void handleEvent(Event event) {
       try {
-         if (event.getTopic().equals(AtsTopicEvent.WORK_ITEM_TRANSITIONED.getTopic())) {
-            String ids = (String) event.getProperty(AtsTopicEvent.WORK_ITEM_IDS_KEY);
-            List<ArtifactId> workItemArtIds = new ArrayList<>();
-            for (Long workItemId : Collections.fromString(ids, ";", Long::valueOf)) {
-               ArtifactId workItemArtId = ArtifactId.valueOf(workItemId);
-               workItemArtIds.add(workItemArtId);
-               for (IAtsWorkItemTopicEventListener listener : workItemEventListeners) {
+         String topic = event.getTopic();
+         AtsTopicEvent topicEvent = AtsTopicEvent.get(topic);
+         if (topicEvent != null) {
+            List<IAtsWorkItemTopicEventListener> listeners = workItemEventListeners.getValues(topic);
+            if (!listeners.isEmpty()) {
+               List<ArtifactId> workItemArtIds = getWorkItemArtIds(event);
+               for (IAtsWorkItemTopicEventListener listener : listeners) {
                   try {
-                     listener.handleEvent(AtsTopicEvent.WORK_ITEM_TRANSITIONED, workItemArtIds);
+                     if (listener.isDisposed()) {
+                        continue;
+                     }
+                     listener.handleEvent(topicEvent, workItemArtIds);
                   } catch (Exception ex) {
                      OseeLog.logf(getClass().getClass(), Level.SEVERE, ex,
                         "Error processing work item transition event handler for - %s", listener);
@@ -108,6 +122,16 @@ public abstract class AbstractAtsEventServiceImpl implements IAtsEventService, E
       } catch (Exception ex) {
          // do nothing
       }
+   }
+
+   private List<ArtifactId> getWorkItemArtIds(Event event) {
+      String ids = (String) event.getProperty(AtsTopicEvent.WORK_ITEM_IDS_KEY);
+      List<ArtifactId> workItemArtIds = new ArrayList<>();
+      for (Long workItemId : Collections.fromString(ids, ";", Long::valueOf)) {
+         ArtifactId workItemArtId = ArtifactId.valueOf(workItemId);
+         workItemArtIds.add(workItemArtId);
+      }
+      return workItemArtIds;
    }
 
 }
