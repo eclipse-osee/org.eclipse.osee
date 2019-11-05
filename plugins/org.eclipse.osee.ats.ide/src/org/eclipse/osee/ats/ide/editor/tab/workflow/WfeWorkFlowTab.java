@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
@@ -46,7 +45,6 @@ import org.eclipse.osee.ats.ide.actions.ShowChangeReportAction;
 import org.eclipse.osee.ats.ide.actions.ShowMergeManagerAction;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.editor.tab.relations.WfeRelationsSection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeHeaderComposite;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeDetailsSection;
@@ -98,7 +96,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler, IWfeEventHandle {
+public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler {
    private final AbstractWorkflowArtifact awa;
    private final List<WfeWorkflowSection> sections = new ArrayList<>();
    private final List<StateXWidgetPage> statePages = new ArrayList<>();
@@ -144,8 +142,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          } else {
             HelpUtil.setHelp(managedForm.getForm(), AtsHelpContext.WORKFLOW_EDITOR__WORKFLOW_TAB);
          }
-
-         editor.registerEvent(this, awa);
 
          List<IOperation> ops = new ArrayList<>();
          ops.addAll(AtsBulkLoad.getConfigLoadingOperations());
@@ -514,7 +510,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       return null;
    }
 
-   @Override
    public void refresh() {
       if (editor != null) {
          String stateName = awa.getCurrentStateName();
@@ -562,11 +557,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    @Override
    public boolean isDisposed() {
       return editor.isDisposed();
-   }
-
-   @Override
-   public IAtsWorkItem getWorkItem() {
-      return awa;
    }
 
    public WfeHeaderComposite getHeader() {

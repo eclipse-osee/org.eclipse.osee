@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.ide.editor.event;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 
 /**
  * Implement to be notified of change to attr or rel type
@@ -21,6 +22,12 @@ public interface IWfeEventHandle {
 
    IAtsWorkItem getWorkItem();
 
-   void refresh();
+   default void refresh() {
+      // do nothing
+   }
+
+   default void refresh(ArtifactEvent artifactEvent) {
+      // do nothing
+   }
 
 }
