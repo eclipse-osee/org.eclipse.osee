@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityData;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -132,8 +133,11 @@ public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCm
    private List<ApplicabilityToken> getStoredApplicabilities() {
       List<ApplicabilityToken> tokens = new ArrayList<ApplicabilityToken>();
       try {
-         for (ApplicabilityToken tok : AtsClientService.get().getOseeClient().getApplicabilityEndpoint(
-            AtsClientService.get().getAtsBranch()).getApplicabilityReferenceTokens(workItem.getStoreObject())) {
+         IOseeBranch branch = AtsClientService.get().getAtsBranch();
+         ApplicabilityEndpoint applicEndpoint = AtsClientService.get().getOseeClient().getApplicabilityEndpoint(branch);
+         List<ApplicabilityToken> applicTokens =
+            applicEndpoint.getApplicabilityReferenceTokens(workItem.getArtifactId());
+         for (ApplicabilityToken tok : applicTokens) {
             if (tok.isValid()) {
                tokens.add(tok);
             }
