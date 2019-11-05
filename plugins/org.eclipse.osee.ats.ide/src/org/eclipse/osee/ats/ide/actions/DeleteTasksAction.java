@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
-import org.eclipse.osee.ats.ide.workflow.task.internal.AtsTaskCache;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -104,7 +103,6 @@ public class DeleteTasksAction extends AbstractAtsAction {
                } else {
                   tasksNotInDb.add(taskArt);
                }
-               AtsTaskCache.decache(taskArt.getParentAWA());
             }
             transaction.execute();
 

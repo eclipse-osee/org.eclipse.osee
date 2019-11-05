@@ -16,16 +16,12 @@ import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Version;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
-import org.eclipse.osee.ats.ide.workflow.task.internal.AtsTaskCache;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -92,26 +88,6 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
 
          }
       }
-
-      for (EventBasicGuidRelation guidRel : artifactEvent.getRelations()) {
-         try {
-            if (guidRel.is(AtsRelationTypes.TeamWfToTask_Task)) {
-               for (TaskArtifact taskArt : ArtifactCache.getActive(guidRel, TaskArtifact.class)) {
-                  if (!taskArt.isDeleted()) {
-                     AtsTaskCache.decache(taskArt.getParentAWA());
-                  }
-               }
-               for (Artifact artifact : ArtifactCache.getActive(guidRel)) {
-                  if (artifact instanceof TeamWorkFlowArtifact) {
-                     AtsTaskCache.decache(artifact);
-                  }
-               }
-            }
-
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
    }
 
    private boolean processArtifacts(ArtifactEvent artifactEvent, Sender sender) {
@@ -133,9 +109,6 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
 
       for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
          try {
-            if (guidArt.is(EventModType.Deleted, EventModType.Purged)) {
-               handleCachesForDeletedPurged(guidArt);
-            }
             if (guidArt.is(EventModType.Added, EventModType.Modified)) {
                if (sender.isRemote()) {
                   handleCachesForAddedModified(guidArt);
@@ -151,29 +124,10 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
    private void handleCachesForAddedModified(EventBasicGuidArtifact guidArt) {
       // Only process if in cache
       Artifact artifact = ArtifactCache.getActive(guidArt);
-      if (artifact != null && guidArt.is(EventModType.Added)) {
-         if (artifact.isOfType(AtsArtifactTypes.Task) && !artifact.isDeleted()) {
-            AtsTaskCache.decache(((TaskArtifact) artifact).getParentAWA());
-         }
-         if (artifact instanceof TeamWorkFlowArtifact) {
-            AtsTaskCache.decache(artifact);
-         }
-      }
       if (artifact instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
          awa.clearCaches();
       }
    }
 
-   private void handleCachesForDeletedPurged(EventBasicGuidArtifact guidArt) {
-      Artifact artifact = ArtifactCache.getActive(guidArt);
-      if (guidArt.isTypeEqual(AtsArtifactTypes.Task) && guidArt.is(EventModType.Deleted, EventModType.Purged)) {
-         if (artifact != null && !artifact.isDeleted()) {
-            AtsTaskCache.decache(((TaskArtifact) artifact).getParentAWA());
-         }
-      }
-      if (artifact instanceof TeamWorkFlowArtifact) {
-         AtsTaskCache.decache(artifact);
-      }
-   }
 }

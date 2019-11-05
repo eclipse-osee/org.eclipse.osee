@@ -44,7 +44,6 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.XVersionList;
 import org.eclipse.osee.ats.ide.util.widgets.XAtsProgramComboWidget;
-import org.eclipse.osee.ats.ide.workflow.task.internal.AtsTaskCache;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.define.ide.traceability.report.RequirementStatus;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -616,7 +615,6 @@ public class DetailedTestStatusBlam extends AbstractBlam {
 
    private void loadTasksFromWorkflow(TeamWorkFlowArtifact workflow) {
       Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(workflow);
-      AtsTaskCache.decache(workflow);
 
       String legacyId = workflow.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
 

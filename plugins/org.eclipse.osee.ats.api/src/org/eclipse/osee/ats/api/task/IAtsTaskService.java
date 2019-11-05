@@ -62,10 +62,6 @@ public interface IAtsTaskService {
     */
    ArtifactId getTaskToRelatedArtifactChanged(IAtsTask task);
 
-   default void decache(IAtsTeamWorkflow teamWf) {
-      throw new UnsupportedOperationException();
-   }
-
    boolean hasTasks(IAtsTeamWorkflow teamWf);
 
    default boolean hasNoTasks(IAtsTeamWorkflow teamWf) {

@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
-import org.eclipse.osee.ats.ide.workflow.task.internal.AtsTaskCache;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -103,9 +102,9 @@ public class WorldContentProvider implements ITreeContentProvider {
             if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
                List<Artifact> arts = new ArrayList<>();
-               // Convert artifacts to WorldArtifactItems
                arts.addAll(ReviewManager.getReviews(teamArt));
-               arts.addAll(getTaskArtifactsSorted(teamArt));
+               arts.addAll(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
+                  AtsClientService.get().getTaskService().getTasks(teamArt)));
                relatedArts.addAll(arts);
                return arts.toArray();
             }
@@ -114,10 +113,6 @@ public class WorldContentProvider implements ITreeContentProvider {
          }
       }
       return org.eclipse.osee.framework.jdk.core.util.Collections.EMPTY_ARRAY;
-   }
-
-   public Collection<TaskArtifact> getTaskArtifactsSorted(TeamWorkFlowArtifact teamArt) {
-      return AtsTaskCache.getTaskArtifacts(teamArt);
    }
 
    @Override

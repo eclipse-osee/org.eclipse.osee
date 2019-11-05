@@ -49,7 +49,6 @@ import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
-import org.eclipse.osee.ats.ide.workflow.task.internal.AtsTaskCache;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -226,9 +225,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
              * copies loaded. Can result in duplicate non-historical artifacts in JVM.
              */
             for (Artifact artifact : artifacts) {
-               if (artifact instanceof TeamWorkFlowArtifact) {
-                  AtsTaskCache.decache((TeamWorkFlowArtifact) artifact);
-               }
                if (!AtsUtil.isInTest() && !(artifact instanceof User)) {
                   ArtifactCache.deCache(artifact);
                }

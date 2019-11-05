@@ -95,7 +95,6 @@ public class AtsTaskService extends AbstractAtsTaskService implements IAtsTaskSe
       List<Long> artIds = new LinkedList<>();
 
       teamWf.reloadAttributesAndRelations();
-      AtsTaskCache.decache((TeamWorkFlowArtifact) teamWf);
 
       for (JaxAtsTask task : jaxTasks.getTasks()) {
          String guid = ArtifactQuery.getGuidFromId(task.getId(), AtsClientService.get().getAtsBranch());
@@ -139,11 +138,6 @@ public class AtsTaskService extends AbstractAtsTaskService implements IAtsTaskSe
    @Override
    public Collection<IAtsTask> createTasks(NewTaskData newTaskData, IAtsChangeSet changes, XResultData results) {
       throw new UnsupportedOperationException("Not Supported on Client");
-   }
-
-   @Override
-   public void decache(IAtsTeamWorkflow teamWf) {
-      AtsTaskCache.decache((TeamWorkFlowArtifact) teamWf);
    }
 
    @Override
@@ -191,7 +185,6 @@ public class AtsTaskService extends AbstractAtsTaskService implements IAtsTaskSe
             AtsClientService.get().getTaskService().createTasks(new NewTaskDatas(newTaskData));
 
             taskArt = (TaskArtifact) AtsClientService.get().getQueryService().getArtifact(task.getId());
-            AtsTaskCache.decache((TeamWorkFlowArtifact) teamWf.getStoreObject());
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

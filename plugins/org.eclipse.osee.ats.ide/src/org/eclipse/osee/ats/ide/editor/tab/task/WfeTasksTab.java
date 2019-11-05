@@ -63,7 +63,6 @@ import org.eclipse.osee.ats.ide.workflow.task.IXTaskViewer;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskComposite;
 import org.eclipse.osee.ats.ide.workflow.task.TaskXViewerFactory;
-import org.eclipse.osee.ats.ide.workflow.task.internal.AtsTaskCache;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.IMenuActionProvider;
 import org.eclipse.osee.ats.ide.world.IWorldEditor;
@@ -676,7 +675,6 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
 
    private void deCacheAndReload(JobChangeAdapter listener) {
       ArtifactQuery.reloadArtifacts(getTaskArtifacts());
-      AtsTaskCache.decache(teamArt);
       ArtifactQuery.reloadArtifacts(Collections.singleton(teamArt));
    }
 
