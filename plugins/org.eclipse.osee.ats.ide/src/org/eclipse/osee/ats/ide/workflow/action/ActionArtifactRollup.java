@@ -16,9 +16,13 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactory;
+import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactoryProvider;
+import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -29,6 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class ActionArtifactRollup {
 
    private final ActionArtifact action;
+   private static AttributeTypeEnum priAttrToken;
 
    public ActionArtifactRollup(ActionArtifact action) {
       this.action = action;
@@ -124,24 +129,40 @@ public class ActionArtifactRollup {
       }
    }
 
+   private AttributeTypeEnum getPrioirtyAttrToken() {
+      if (priAttrToken == null) {
+         for (INewActionPageAttributeFactoryProvider provider : ActionFactory.getProviders()) {
+            for (INewActionPageAttributeFactory factory : provider.getNewActionAttributeFactory()) {
+               if (factory.useFactory() && factory.getPrioirtyColumnToken() != null) {
+                  priAttrToken = factory.getPrioirtyAttrToken();
+                  return priAttrToken;
+               }
+            }
+         }
+         priAttrToken = AtsAttributeTypes.Priority;
+      }
+      return priAttrToken;
+   }
+
    private void resetPriorityOffChildren() {
+      AttributeTypeEnum priToken = getPrioirtyAttrToken();
       String priorityType = null;
       Collection<TeamWorkFlowArtifact> teamArts = action.getTeams();
       if (teamArts.size() == 1) {
-         priorityType = teamArts.iterator().next().getSoleAttributeValue(AtsAttributeTypes.Priority, "");
+         priorityType = teamArts.iterator().next().getSoleAttributeValue(priToken, "");
       } else {
          for (TeamWorkFlowArtifact team : teamArts) {
             if (!team.isCancelled()) {
                if (priorityType == null) {
-                  priorityType = team.getSoleAttributeValue(AtsAttributeTypes.Priority, "");
-               } else if (!priorityType.equals(team.getSoleAttributeValue(AtsAttributeTypes.Priority, ""))) {
+                  priorityType = team.getSoleAttributeValue(priToken, "");
+               } else if (!priorityType.equals(team.getSoleAttributeValue(priToken, ""))) {
                   return;
                }
             }
          }
       }
       if (Strings.isValid(priorityType)) {
-         action.setSoleAttributeValue(AtsAttributeTypes.Priority, priorityType);
+         action.setSoleAttributeValue(priToken, priorityType);
       }
    }
 

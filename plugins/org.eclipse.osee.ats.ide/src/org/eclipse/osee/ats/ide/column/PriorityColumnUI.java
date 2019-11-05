@@ -16,14 +16,20 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactory;
+import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactoryProvider;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
+import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -35,17 +41,33 @@ import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * @author Donald G. Dunne
+ * @author Jeremy A. Midvdy
  */
 public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
 
-   public static PriorityColumnUI instance = new PriorityColumnUI();
+   public static PriorityColumnUI instance = null;
+   private final AtsAttributeValueColumn colToken;
+   private final AttributeTypeEnum attrToken;
 
    public static PriorityColumnUI getInstance() {
+      if (instance == null) {
+         for (INewActionPageAttributeFactoryProvider provider : ActionFactory.getProviders()) {
+            for (INewActionPageAttributeFactory factory : provider.getNewActionAttributeFactory()) {
+               if (factory.useFactory() && factory.getPrioirtyColumnToken() != null) {
+                  instance = new PriorityColumnUI(factory.getPrioirtyColumnToken(), factory.getPrioirtyAttrToken());
+                  return instance;
+               }
+            }
+         }
+         instance = new PriorityColumnUI(AtsColumnToken.PriorityColumn, AtsAttributeTypes.Priority);
+      }
       return instance;
    }
 
-   private PriorityColumnUI() {
-      super(AtsColumnToken.PriorityColumn);
+   private PriorityColumnUI(AtsAttributeValueColumn priColToken, AttributeTypeEnum priAttrToken) {
+      super(priColToken);
+      this.colToken = priColToken;
+      this.attrToken = priAttrToken;
    }
 
    /**
@@ -54,12 +76,12 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
     */
    @Override
    public PriorityColumnUI copy() {
-      PriorityColumnUI newXCol = new PriorityColumnUI();
+      PriorityColumnUI newXCol = new PriorityColumnUI(this.colToken, this.attrToken);
       super.copy(this, newXCol);
       return newXCol;
    }
 
-   public static boolean promptChangePriority(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) {
+   public static boolean promptChangePriority(final Collection<? extends TeamWorkFlowArtifact> teams, AttributeTypeToken attrTypeToken, boolean persist) {
 
       try {
          for (TeamWorkFlowArtifact team : teams) {
@@ -70,7 +92,7 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
                return false;
             }
          }
-         PromptChangeUtil.promptChangeAttribute(teams, AtsAttributeTypes.Priority, persist, false);
+         PromptChangeUtil.promptChangeAttribute(teams, attrTypeToken, persist, false);
          return true;
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't change priority", ex);
@@ -106,7 +128,8 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
                return false;
             }
 
-            boolean modified = promptChangePriority(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer());
+            boolean modified =
+               promptChangePriority(Arrays.asList((TeamWorkFlowArtifact) useArt), this.attrToken, isPersistViewer());
             XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
             if (modified && isPersistViewer(xViewer)) {
                useArt.persist("persist priority via alt-left-click");
@@ -138,7 +161,7 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
          AWorkbench.popup("Must select Team Workflow(s)");
          return;
       }
-      promptChangePriority(awas, true);
+      promptChangePriority(awas, this.attrToken, true);
       return;
    }
 

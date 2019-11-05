@@ -48,6 +48,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
+import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactory;
+import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactoryProvider;
 import org.eclipse.osee.ats.api.workflow.IWorkItemListener;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
@@ -81,6 +83,16 @@ public class ActionFactory implements IAtsActionFactory {
    private IAtsTeamDefinition topTeamDefinition;
    private JsonFactory jsonFactory;
    private IWorkItemListener workItemListener;
+   private static List<INewActionPageAttributeFactoryProvider> attributeFactoryProviders;
+
+   static {
+      attributeFactoryProviders = new LinkedList<>();
+   }
+
+   public ActionFactory() {
+      this.atsApi = null;
+      this.attrResolver = null;
+   }
 
    public ActionFactory(AtsApi atsApi) {
       this(atsApi.getAttributeResolver(), atsApi);
@@ -89,6 +101,14 @@ public class ActionFactory implements IAtsActionFactory {
    public ActionFactory(IAttributeResolver attrResolver, AtsApi atsApi) {
       this.attrResolver = attrResolver;
       this.atsApi = atsApi;
+   }
+
+   public static synchronized List<INewActionPageAttributeFactoryProvider> getProviders() {
+      return attributeFactoryProviders;
+   }
+
+   public void addActionFactoryProvider(INewActionPageAttributeFactoryProvider provider) {
+      getProviders().add(provider);
    }
 
    @Override
@@ -561,6 +581,16 @@ public class ActionFactory implements IAtsActionFactory {
     * Set Team Workflow attributes off given action artifact
     */
    public void setArtifactIdentifyData(IAtsAction fromAction, IAtsTeamWorkflow toTeam, IAtsChangeSet changes) {
+      if (!getProviders().isEmpty()) {
+         for (INewActionPageAttributeFactoryProvider provider : getProviders()) {
+            for (INewActionPageAttributeFactory factory : provider.getNewActionAttributeFactory()) {
+               if (factory.useFactory()) {
+                  factory.setArtifactIdentifyData(attrResolver, fromAction, toTeam, changes);
+                  return;
+               }
+            }
+         }
+      }
       Conditions.checkNotNull(fromAction, "fromAction");
       Conditions.checkNotNull(toTeam, "toTeam");
       Conditions.checkNotNull(changes, "changes");
@@ -577,6 +607,17 @@ public class ActionFactory implements IAtsActionFactory {
     * Since there is no shared attribute yet, action and workflow arts are all populate with identify data
     */
    public void setArtifactIdentifyData(IAtsObject atsObject, String title, String desc, ChangeType changeType, String priority, Boolean validationRequired, Date needByDate, IAtsChangeSet changes) {
+      if (!getProviders().isEmpty()) {
+         for (INewActionPageAttributeFactoryProvider provider : getProviders()) {
+            for (INewActionPageAttributeFactory factory : provider.getNewActionAttributeFactory()) {
+               if (factory.useFactory()) {
+                  factory.setArtifactIdentifyData(attrResolver, atsObject, title, desc, changeType, priority,
+                     validationRequired, needByDate, changes);
+                  return;
+               }
+            }
+         }
+      }
       changes.setSoleAttributeValue(atsObject, CoreAttributeTypes.Name, title);
       if (Strings.isValid(desc)) {
          changes.addAttribute(atsObject, AtsAttributeTypes.Description, desc);
