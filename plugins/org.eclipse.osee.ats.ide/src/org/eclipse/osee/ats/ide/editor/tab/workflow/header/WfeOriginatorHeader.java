@@ -56,6 +56,7 @@ public class WfeOriginatorHeader extends Composite implements IWfeEventHandle {
 
       try {
          origLink = editor.getToolkit().createHyperlink(this, ORIGINATOR, SWT.NONE);
+         origLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          origLink.addHyperlinkListener(new IHyperlinkListener() {
 
             @Override
@@ -104,26 +105,14 @@ public class WfeOriginatorHeader extends Composite implements IWfeEventHandle {
    @Override
    public void refresh() {
       try {
-         if (!workItem.isCancelled() && !workItem.isCompleted()) {
-            if (workItem.getCreatedBy() == null) {
-               origLabel.setText("Error: No originator identified.");
-               origLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-            } else {
-               User origUser = AtsClientService.get().getUserServiceClient().getOseeUser(workItem.getCreatedBy());
-               userIconLabel.setImage(FrameworkArtifactImageProvider.getUserImage(Arrays.asList(origUser)));
-               origLabel.setText(workItem.getCreatedBy().getName());
-               origLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
-            }
+         if (workItem.getCreatedBy() == null) {
+            origLabel.setText("Error: No originator identified.");
+            origLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
          } else {
-            if (workItem.getCreatedBy() == null) {
-               origLabel.setText("Error: No originator identified.");
-               origLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-            } else {
-               User origUser = AtsClientService.get().getUserServiceClient().getOseeUser(workItem.getCreatedBy());
-               userIconLabel.setImage(FrameworkArtifactImageProvider.getUserImage(Arrays.asList(origUser)));
-               origLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
-            }
-            origLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            User origUser = AtsClientService.get().getUserServiceClient().getOseeUser(workItem.getCreatedBy());
+            userIconLabel.setImage(FrameworkArtifactImageProvider.getUserImage(Arrays.asList(origUser)));
+            origLabel.setText(workItem.getCreatedBy().getName());
+            origLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
          }
          origLabel.getParent().getParent().layout();
       } catch (OseeCoreException ex) {
