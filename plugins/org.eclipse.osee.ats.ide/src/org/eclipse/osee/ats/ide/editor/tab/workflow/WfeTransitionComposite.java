@@ -414,8 +414,10 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
          if (toState == null) {
             toState = awa.getStateDefinition().getDefaultToState();
          }
-         transitionToStateLabel.setText(toState.getName());
-         transitionToStateLabel.getParent().layout();
+         if (toState != null) {
+            transitionToStateLabel.setText(toState.getName());
+            transitionToStateLabel.getParent().layout();
+         }
 
          transitionAssigneesLabel.setText(
             editor.getWorkFlowTab().getCurrentStateSection().getPage().getSma().getTransitionAssigneesStr());
@@ -454,7 +456,6 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
 
    @Override
    public void handleEvent(AtsTopicEvent topicEvent, Collection<ArtifactId> workItems) {
-      System.err.println(getClass().getSimpleName() + " - " + topicEvent);
       if (this.isDisposed()) {
          AtsClientService.get().getEventService().deRegisterAtsWorkItemTopicEvent(this);
          return;
@@ -463,6 +464,7 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
 
          @Override
          public void run() {
+            userSelectedTransitionToState = null;
             refresh();
             editor.getWorkFlowTab().refreshExpandStates();
          }

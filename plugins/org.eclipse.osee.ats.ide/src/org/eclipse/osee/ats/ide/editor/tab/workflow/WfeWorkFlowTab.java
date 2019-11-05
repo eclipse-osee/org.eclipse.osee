@@ -353,13 +353,11 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
                }
                // Else make placeholder for state transition
                else {
-                  if (placeHolderComp == null) {
-                     placeHolderComp = editor.getToolkit().createComposite(sectionsComp);
-                     gd = new GridData(GridData.FILL_HORIZONTAL);
-                     gd.widthHint = 100;
-                     placeHolderComp.setLayoutData(gd);
-                     placeHolderComp.setLayout(ALayout.getZeroMarginLayout(1, false));
-                  }
+                  Composite placeHolderComp = editor.getToolkit().createComposite(sectionsComp);
+                  gd = new GridData(GridData.FILL_HORIZONTAL);
+                  gd.widthHint = 100;
+                  placeHolderComp.setLayoutData(gd);
+                  placeHolderComp.setLayout(ALayout.getZeroMarginLayout(1, false));
                   stateNameToPageAndComposite.put(statePage.getName(),
                      new Pair<StateXWidgetPage, Composite>(statePage, placeHolderComp));
                }
@@ -506,7 +504,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    }
 
    private WfeHeaderComposite headerComp;
-   private Composite placeHolderComp;
 
    public WfeWorkflowSection getCurrentStateSection() {
       for (WfeWorkflowSection section : sections) {
@@ -534,7 +531,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          if (!found) {
             Pair<StateXWidgetPage, Composite> pageAndComp = stateNameToPageAndComposite.get(stateName);
             StateXWidgetPage statePage = pageAndComp.getFirst();
-            createStateSection(placeHolderComp, statePage);
+            createStateSection(pageAndComp.getSecond(), statePage);
          }
          for (WfeWorkflowSection section : sections) {
             section.refresh();
