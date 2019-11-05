@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.operation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -30,7 +31,6 @@ import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -91,7 +91,18 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
                   return;
                }
                try {
-                  Collection<TeamWorkFlowArtifact> teamArts = Collections.castAll(artifacts);
+                  Collection<TeamWorkFlowArtifact> teamArts = new ArrayList<TeamWorkFlowArtifact>();
+                  for (Artifact art : artifacts) {
+                     if (art instanceof TeamWorkFlowArtifact) {
+                        teamArts.add((TeamWorkFlowArtifact) art);
+                     }
+                  }
+                  //run from the BLAM editor directly, need to initalize default teamWFs
+                  if (!teamArts.isEmpty()) {
+                     if (defaultTeamWorkflows == null) {
+                        setDefaultTeamWorkflows(teamArts);
+                     }
+                  }
                   if (createNewWorkflow) {
                      handleCreateNewWorkflow(teamArts, title);
                   } else {

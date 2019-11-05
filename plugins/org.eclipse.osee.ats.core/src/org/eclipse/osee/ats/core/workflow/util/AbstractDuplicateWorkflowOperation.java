@@ -57,6 +57,9 @@ public abstract class AbstractDuplicateWorkflowOperation implements IValidatingO
     * Return "Copy of"-title if title isn't specified
     */
    protected String getTitle(IAtsWorkItem workItem) {
+      if (workItem.isTask()) {
+         return workItem.getName();
+      }
       if (teamWfs.size() == 1 && Strings.isValid(title)) {
          return AXml.textToXml(title);
       } else {
