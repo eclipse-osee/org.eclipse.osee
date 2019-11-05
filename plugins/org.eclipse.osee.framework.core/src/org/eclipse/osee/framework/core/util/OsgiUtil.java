@@ -10,10 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.util;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.osee.framework.core.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -54,5 +61,31 @@ public final class OsgiUtil {
          throw new OseeCoreException("getService is null for class" + clazz);
       }
       return service;
+   }
+
+   public static InputStream getResourceAsStream(Class<?> classFromBundle, String resourcePath) {
+      try {
+         return new BufferedInputStream(getResourceAsUrl(classFromBundle, resourcePath).openStream());
+      } catch (IOException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+   }
+
+   public static URL getResourceAsUrl(Class<?> classFromBundle, String resourcePath) {
+      try {
+         Bundle bundle = FrameworkUtil.getBundle(classFromBundle);
+         URL resourceUrl = bundle.getResource(resourcePath);
+         return FileLocator.toFileURL(resourceUrl);
+      } catch (IOException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+   }
+
+   public static String getResourceAsString(Class<?> classFromBundle, String resourcePath) {
+      try {
+         return Lib.inputStreamToString(getResourceAsStream(classFromBundle, resourcePath));
+      } catch (IOException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
    }
 }

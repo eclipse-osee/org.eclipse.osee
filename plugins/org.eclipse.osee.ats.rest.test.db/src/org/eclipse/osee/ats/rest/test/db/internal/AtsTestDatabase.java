@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.test.db.internal;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -29,8 +27,6 @@ import org.eclipse.osee.jdbc.JdbcService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.Assert;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
@@ -70,20 +66,13 @@ public class AtsTestDatabase {
    }
 
    public void initialize() throws Exception {
-      Bundle bundle = FrameworkUtil.getBundle(AtsMethodDatabase.class);
-      Assert.assertNotNull("Bundle cannot be null", bundle);
-      int state = bundle.getState();
-      if (state != Bundle.STARTING || state != Bundle.ACTIVE) {
-         bundle.start();
-      }
-
       System.err.println("Initializing ATS Database");
 
       tempFolder = createTempFolder();
       Assert.assertNotNull("TempFolder cannot be null", tempFolder);
 
-      addResource(tempFolder, bundle, "data/hsql.zip");
-      addResource(tempFolder, bundle, "data/binary_data.zip");
+      addResource(tempFolder, "data/hsql.zip");
+      addResource(tempFolder, "data/binary_data.zip");
 
       checkExist(tempFolder, "hsql");
       checkExist(tempFolder, "attr");
@@ -139,16 +128,10 @@ public class AtsTestDatabase {
       Assert.assertTrue(String.format("%s does not exist", name), toCheck.exists());
    }
 
-   private void addResource(File targetDirectory, Bundle bundle, String resource) throws IOException {
-      URL resourceURL = bundle.getResource(resource);
-      InputStream inputStream = null;
-      try {
-         if (resourceURL != null) {
-            inputStream = new BufferedInputStream(resourceURL.openStream());
-            Lib.decompressStream(inputStream, targetDirectory);
-         }
-      } finally {
-         Lib.close(inputStream);
+   private void addResource(File targetDirectory, String resource) throws IOException {
+      try (InputStream inputStream =
+         org.eclipse.osee.framework.core.util.OsgiUtil.getResourceAsStream(AtsMethodDatabase.class, resource)) {
+         Lib.decompressStream(inputStream, targetDirectory);
       }
    }
 

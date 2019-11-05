@@ -14,14 +14,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import java.io.ByteArrayInputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -97,14 +93,6 @@ public abstract class ImageManagerTest {
 
    }
 
-   public static ByteArrayInputStream getByteArrayInputStream(String imageFilename) throws Exception {
-      URL imageFile = Platform.getBundle(PLUGIN_ID).getResource("images/" + imageFilename);
-      if (imageFile == null) {
-         throw new OseeArgumentException("Invalid image filename.");
-      }
-      return new ByteArrayInputStream(Lib.inputStreamToBytes(imageFile.openStream()));
-   }
-
    public enum MissingImage implements KeyedImage {
       NOT_HERE("nothere.gif");
 
@@ -124,5 +112,4 @@ public abstract class ImageManagerTest {
          return PLUGIN_ID + "." + fileName;
       }
    }
-
 }

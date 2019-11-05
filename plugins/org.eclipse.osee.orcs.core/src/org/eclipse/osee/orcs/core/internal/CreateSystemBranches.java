@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.core.internal;
 
 import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -187,9 +186,8 @@ public class CreateSystemBranches {
    }
 
    private void addFrameworkAccessModel(TransactionBuilder tx, ArtifactId typesAccessFolder) {
-      InputStream inputStream = OseeInf.getResourceAsStream("access/OseeAccess_FrameworkAccess.osee", getClass());
-
-      try (InputStream stream = new BufferedInputStream(inputStream)) {
+      try (InputStream stream =
+         OseeInf.getResourceAsStream("access/OseeAccess_FrameworkAccess.osee", getClass())) {
          ArtifactId accessModel = tx.createArtifact(typesAccessFolder, CoreArtifactTokens.FrameworkAccessModel);
          tx.setSoleAttributeFromStream(accessModel, CoreAttributeTypes.GeneralStringData, stream);
       } catch (IOException ex) {

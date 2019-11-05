@@ -10,15 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.help.ui.util;
 
-import java.io.BufferedInputStream;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -44,19 +42,13 @@ public class TocParser {
 
    public void parse() throws Exception {
       entries.clear();
-      URL url = HelpTestUtil.getResource(path);
 
-      InputStream inputStream = null;
-      try {
-         inputStream = new BufferedInputStream(url.openStream());
+      try (InputStream inputStream = OsgiUtil.getResourceAsStream(getClass(), path)) {
          XMLStreamReader streamReader = xmlInputFactory.createXMLStreamReader(inputStream);
          while (streamReader.hasNext()) {
             process(streamReader);
             streamReader.next();
          }
-
-      } finally {
-         Lib.close(inputStream);
       }
    }
 

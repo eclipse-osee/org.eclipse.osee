@@ -13,7 +13,6 @@ package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,7 +21,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -32,6 +30,7 @@ import java.util.Set;
 import org.eclipse.osee.client.demo.DemoTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -46,8 +45,6 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author Marc A. Potter
@@ -228,18 +225,12 @@ public class DoorsArtifactExtractorTest {
    }
 
    private static void copyResource(String resource, File output) throws IOException {
-      Bundle bundle = FrameworkUtil.getBundle(DoorsArtifactExtractorTest.class);
-      String fullPath = String.format("support/doorsArtifactExtractor/%s", resource);
-      URL input = bundle.getResource(fullPath);
-
       OutputStream outputStream = null;
-      InputStream inputStream = null;
-      try {
+      try (InputStream inputStream = OsgiUtil.getResourceAsStream(DoorsArtifactExtractorTest.class,
+         "support/doorsArtifactExtractor/" + resource)) {
          outputStream = new BufferedOutputStream(new FileOutputStream(output));
-         inputStream = new BufferedInputStream(input.openStream());
          Lib.inputStreamToOutputStream(inputStream, outputStream);
       } finally {
-         Lib.close(inputStream);
          Lib.close(outputStream);
       }
    }

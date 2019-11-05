@@ -14,11 +14,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
 
 /**
  * Helper class to quickly access OSEE files in OSEE-INF directory
@@ -27,21 +23,12 @@ import org.osgi.framework.FrameworkUtil;
  */
 public class OseeInf {
 
-   public static InputStream getResourceAsStream(String path, Class<?> clazz) {
-      try {
-         URL url = getResourceAsUrl(path, clazz);
-         return url.openStream();
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex, "Error getting resource [%s] as file", path);
-      }
+   public static InputStream getResourceAsStream(String path, Class<?> classFromBundle) {
+      return OsgiUtil.getResourceAsStream(classFromBundle, "OSEE-INF/" + path);
    }
 
-   public static String getResourceContents(String path, Class<?> clazz) {
-      try {
-         return Lib.inputStreamToString(getResourceAsStream(path, clazz));
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex, "Error getting resource [%s] as file", path);
-      }
+   public static String getResourceContents(String path, Class<?> classFromBundle) {
+      return OsgiUtil.getResourceAsString(classFromBundle, "OSEE-INF/" + path);
    }
 
    public static File getResourceAsFile(String path, Class<?> clazz) {
@@ -55,21 +42,6 @@ public class OseeInf {
    }
 
    public static URL getResourceAsUrl(String path, Class<?> clazz) {
-      Bundle bundle = FrameworkUtil.getBundle(clazz);
-      String inf = "OSEE-INF/" + path;
-
-      URL url = null;
-      try {
-         url = bundle.getResource(inf);
-      } catch (Exception ex) {
-         System.out.println("Exception caught from class loader: " + clazz.getClassLoader().toString());
-      }
-      try {
-         return FileLocator.toFileURL(url);
-      } catch (Exception ex) {
-         System.out.println("Exception caught at: " + inf + "  " + ex.getLocalizedMessage());
-         throw new OseeCoreException(ex, "Error getting resource [%s] as file", path);
-      }
+      return OsgiUtil.getResourceAsUrl(clazz, "OSEE-INF/" + path);
    }
-
 }
