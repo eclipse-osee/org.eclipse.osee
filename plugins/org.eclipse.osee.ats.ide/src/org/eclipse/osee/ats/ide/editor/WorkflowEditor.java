@@ -878,6 +878,8 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
             handledArts.add(getWorkItem().getGuid());
          }
       }
+      onDirtied();
+      updatePartName();
    }
 
    private void handleArtifactEvent(Set<String> handledArts, String guid) {

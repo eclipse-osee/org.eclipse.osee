@@ -10,14 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.editor.event;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
@@ -37,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.osgi.service.event.Event;
@@ -105,6 +100,16 @@ public class WfeArtifactEventManager implements IArtifactEventListener, EventHan
          return;
       }
 
+      if (isReloaded(artifactEvent, awa)) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               handler.getWorkflowEditor().refreshPages();
+            }
+         });
+         return;
+      }
+
       Displays.ensureInDisplayThread(new Runnable() {
 
          @Override
@@ -113,178 +118,6 @@ public class WfeArtifactEventManager implements IArtifactEventListener, EventHan
          }
       });
 
-      //      else if (
-      //      //
-      //      workflowModifiedOrReloaded(artifactEvent, awa) ||
-      //      //
-      //         workflowRelationIsAddedChangedOrDeleted(artifactEvent, awa) ||
-      //         //
-      //         workflowActionIsModifedOrReloaded(artifactEvent, awa) ||
-      //         //
-      //         workflowActionRelationIsAddedChangedOrDeleted(artifactEvent, awa) ||
-      //         //
-      //         teamWorkflowParallelConfigurationChanged(artifactEvent, awa)
-      //      //
-      //      ) {
-      //         refreshed = true;
-      //         Displays.ensureInDisplayThread(new Runnable() {
-      //            @Override
-      //            public void run() {
-      //               handler.getWorkflowEditor().refreshPages();
-      //            }
-      //         });
-      //      } else if (isReloaded(artifactEvent, awa)) {
-      //         if (awa.isDeleted()) {
-      //            WorkflowEditor.close(Collections.singleton(awa), false);
-      //         } else {
-      //            Displays.ensureInDisplayThread(new Runnable() {
-      //               @Override
-      //               public void run() {
-      //                  handler.getWorkflowEditor().refreshPages();
-      //               }
-      //            });
-      //         }
-      //      }
-      //      if (!refreshed && awa.isTeamWorkflow() && AtsClientService.get().getReviewService().hasReviews(
-      //         (TeamWorkFlowArtifact) awa)) {
-      //         try {
-      //            // If related review has made a change, redraw
-      //            for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) awa)) {
-      //               if (artifactEvent.isHasEvent(reviewArt)) {
-      //                  refreshed = true;
-      //                  Displays.ensureInDisplayThread(new Runnable() {
-      //                     @Override
-      //                     public void run() {
-      //                        handler.getWorkflowEditor().refreshPages();
-      //                     }
-      //                  });
-      //                  // Only refresh editor for first review that has event
-      //                  break;
-      //               }
-      //            }
-      //         } catch (Exception ex) {
-      //            // do nothing
-      //         }
-      //      }
-      //      if (!refreshed && awa.isTeamWorkflow() && AtsClientService.get().getTaskService().hasTasks(
-      //         (TeamWorkFlowArtifact) awa)) {
-      //         try {
-      //            // If related review has made a change, redraw
-      //            for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(awa, awa.getStateDefinition())) {
-      //               if (artifactEvent.isHasEvent((TaskArtifact) task.getStoreObject())) {
-      //                  refreshed = true;
-      //                  Displays.ensureInDisplayThread(new Runnable() {
-      //                     @Override
-      //                     public void run() {
-      //                        handler.getWorkflowEditor().refreshPages();
-      //                     }
-      //                  });
-      //                  // Only refresh editor for first task that has event
-      //                  break;
-      //               }
-      //            }
-      //         } catch (Exception ex) {
-      //            // do nothing
-      //         }
-      //      }
-      //      if (!refreshed) {
-      //         try {
-      //            // Since SMAEditor is refreshed when a sibling workflow is changed, need to refresh this
-      //            // list of actionable items when a sibling changes
-      //            for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams(
-      //               awa.getParentAction())) {
-      //               IAtsAction parentAction = teamWf.getParentAction();
-      //               if (awa.notEqual(teamWf) && artifactEvent.isHasEvent(
-      //                  AtsClientService.get().getQueryServiceClient().getArtifact(
-      //                     teamWf)) && parentAction != null && artifactEvent.isRelAddedChangedDeleted(
-      //                        AtsClientService.get().getQueryServiceClient().getArtifact(parentAction.getStoreObject()))) {
-      //                  refreshed = true;
-      //                  Displays.ensureInDisplayThread(new Runnable() {
-      //                     @Override
-      //                     public void run() {
-      //                        handler.getWorkflowEditor().refreshPages();
-      //                     }
-      //                  });
-      //                  // Only need to refresh once
-      //                  return;
-      //               }
-      //            }
-      //         } catch (Exception ex) {
-      //            // do nothing
-      //         }
-      //      }
-
-   }
-
-   /**
-    * Return true if one of the versions configured for parallel dev had a parallel config relation add, change or
-    * delete. Refreshing in this case is necessary so the commit manager will show the updated parallel configuration
-    * changes.
-    */
-   private boolean teamWorkflowParallelConfigurationChanged(ArtifactEvent artifactEvent, AbstractWorkflowArtifact awa) {
-      boolean changed = false;
-      // Only handle for teamWorkflows
-      if (awa instanceof TeamWorkFlowArtifact) {
-         TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) awa;
-         try {
-            // Retrieve all config to commit items for this team Wf, which will contain all parallel version artifacts
-            Collection<ICommitConfigItem> configArtifactsConfiguredToCommitTo =
-               AtsClientService.get().getBranchService().getConfigArtifactsConfiguredToCommitTo(teamWf);
-            for (Object obj : configArtifactsConfiguredToCommitTo) {
-               if (obj instanceof IAtsVersion) {
-                  IAtsVersion version = (IAtsVersion) obj;
-                  for (EventBasicGuidRelation relation : artifactEvent.getRelations()) {
-                     // If relation is parallel config and guid is one of parallel configured versions
-                     if (relation.is(AtsRelationTypes.ParallelVersion_Child) && (relation.getArtA().getGuid().equals(
-                        version.getStoreObject().getGuid()) || relation.getArtB().getGuid().equals(
-                           version.getStoreObject().getGuid()))) {
-                        changed = true;
-                        break;
-                     }
-                  }
-               }
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
-      return changed;
-   }
-
-   private boolean workflowActionRelationIsAddedChangedOrDeleted(final ArtifactEvent artifactEvent, AbstractWorkflowArtifact awa) {
-      boolean result = false;
-      if (awa instanceof TeamWorkFlowArtifact) {
-         TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) awa;
-         try {
-            Artifact actionArt = teamWf.getParentActionArtifact();
-            result = artifactEvent.isRelAddedChangedDeleted(actionArt);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
-      return result;
-   }
-
-   private boolean workflowActionIsModifedOrReloaded(ArtifactEvent artifactEvent, AbstractWorkflowArtifact awa) {
-      boolean result = false;
-      if (awa instanceof TeamWorkFlowArtifact) {
-         TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) awa;
-         try {
-            Artifact actionArt = teamWf.getParentActionArtifact();
-            result = artifactEvent.isModifiedReloaded(actionArt);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
-      return result;
-   }
-
-   private boolean workflowRelationIsAddedChangedOrDeleted(final ArtifactEvent artifactEvent, AbstractWorkflowArtifact awa) {
-      return artifactEvent.isRelAddedChangedDeleted(awa);
-   }
-
-   private boolean workflowModifiedOrReloaded(final ArtifactEvent artifactEvent, AbstractWorkflowArtifact awa) {
-      return artifactEvent.isModifiedReloaded(awa);
    }
 
    private boolean isReloaded(ArtifactEvent artifactEvent, AbstractWorkflowArtifact sma) {
@@ -331,7 +164,6 @@ public class WfeArtifactEventManager implements IArtifactEventListener, EventHan
    @Override
    public void handleEvent(Event event) {
       try {
-
          if (event.getTopic().equals(AtsTopicEvent.WORK_ITEM_MODIFIED.getTopic())) {
             String ids = (String) event.getProperty(AtsTopicEvent.WORK_ITEM_IDS_KEY);
             for (Long workItemId : Collections.fromString(ids, ";", Long::valueOf)) {
