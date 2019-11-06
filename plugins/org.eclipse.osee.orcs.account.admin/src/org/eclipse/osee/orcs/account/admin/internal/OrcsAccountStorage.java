@@ -146,7 +146,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    public void setAccountPreferences(ArtifactId accountId, Map<String, String> preferences) {
       String prefValue = asString(accountId, preferences);
 
-      TransactionBuilder tx = newTransaction("User - Save Settings");
+      TransactionBuilder tx = newTransaction("User - Save Settings (Server)");
       tx.setSoleAttributeFromString(accountId, CoreAttributeTypes.UserSettings, prefValue);
       tx.commit();
    }

@@ -172,7 +172,7 @@ public class User extends Artifact implements UserToken {
          }
          setSoleAttributeFromString(CoreAttributeTypes.UserSettings, stringWriter.toString());
          if (transaction == null) {
-            persist("User - Save Settings");
+            persist("User - Save Settings (IDE)");
          } else {
             persist(transaction);
          }
