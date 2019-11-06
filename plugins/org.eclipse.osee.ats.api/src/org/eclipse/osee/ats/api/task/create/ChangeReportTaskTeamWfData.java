@@ -132,7 +132,7 @@ public class ChangeReportTaskTeamWfData {
    public Set<String> getTaskNames() {
       Set<String> names = new HashSet<>();
       for (ChangeReportTaskMatch taskMatch : getTaskMatches()) {
-         if (taskMatch.getMatchType() == ChangeReportTaskMatchType.Match) {
+         if (taskMatch.getMatchType() == ChangeReportTaskMatchType.Match || taskMatch.getMatchType() == ChangeReportTaskMatchType.Manual) {
             names.add(taskMatch.getTaskName());
          }
       }
@@ -155,6 +155,7 @@ public class ChangeReportTaskTeamWfData {
          taskMatch.setChgRptArt(art);
       }
       taskMatch.setType(ChangeReportTaskMatchType.Manual);
+      taskMatches.add(taskMatch);
    }
 
    public ArtifactToken getDestTeamDef() {
