@@ -56,7 +56,6 @@ public class WfeOriginatorHeader extends Composite implements IWfeEventHandle {
 
       try {
          origLink = editor.getToolkit().createHyperlink(this, ORIGINATOR, SWT.NONE);
-         origLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          origLink.addHyperlinkListener(new IHyperlinkListener() {
 
             @Override
@@ -87,6 +86,7 @@ public class WfeOriginatorHeader extends Composite implements IWfeEventHandle {
          });
          userIconLabel = editor.getToolkit().createLabel(this, "");
          origLabel = editor.getToolkit().createLabel(this, "");
+         origLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          editor.registerEvent(this, AtsAttributeTypes.CreatedBy);
          refresh();
 
