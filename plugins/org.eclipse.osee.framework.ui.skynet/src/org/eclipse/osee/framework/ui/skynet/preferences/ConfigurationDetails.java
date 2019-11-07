@@ -124,8 +124,13 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
       }
 
       try {
-         builder.append(
-            "<tr><td><b>OSEE Client Version</b></td><td colspan=2>" + OseeCodeVersion.getVersion() + "</td></tr>");
+         String verStr = OseeCodeVersion.getVersion();
+         String bundleVerStr = OseeCodeVersion.getBundleVersion();
+         String display = verStr;
+         if (!verStr.equals(bundleVerStr)) {
+            display = String.format("%s / %s/", verStr, bundleVerStr);
+         }
+         builder.append("<tr><td><b>OSEE Client Version</b></td><td colspan=2>" + display + "</td></tr>");
       } catch (NullPointerException ex) {
          builder.append(
             "<tr><td><b>OSEE Client Installation</b></td><td colspan=2><font color=\"red\"><b>WARNING: OseeCodeVersion.getVersion() produced a null pointer exception.</b></font></td></tr>");
