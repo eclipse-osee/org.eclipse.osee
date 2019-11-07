@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
@@ -26,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.swt.layout.GridData;
@@ -92,6 +95,11 @@ public class WfeTitleHeader extends Composite implements IWfeEventHandle {
       if (titleText.isDirty().isTrue()) {
          artWidgets.add(titleText);
       }
+   }
+
+   public Collection<XWidget> getXWidgets(ArrayList<XWidget> widgets) {
+      widgets.add(titleText);
+      return widgets;
    }
 
 }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -335,5 +337,11 @@ public class WfeHeaderComposite extends Composite {
          }
       }
    };
+
+   public Collection<XWidget> getXWidgets(ArrayList<XWidget> widgets) {
+      titleHeader.getXWidgets(widgets);
+      customHeader.getXWidgets(widgets);
+      return widgets;
+   }
 
 }

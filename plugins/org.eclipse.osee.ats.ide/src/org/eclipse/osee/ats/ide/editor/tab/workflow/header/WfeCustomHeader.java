@@ -230,4 +230,9 @@ public class WfeCustomHeader extends Composite {
       return editor;
    }
 
+   public ArrayList<XWidget> getXWidgets(ArrayList<XWidget> widgets) {
+      widgets.addAll(allXWidgets);
+      return widgets;
+   }
+
 }
