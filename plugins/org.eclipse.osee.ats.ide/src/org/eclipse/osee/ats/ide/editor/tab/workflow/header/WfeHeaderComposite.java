@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.WorkflowManager;
 import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkflowHookIde;
+import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -122,6 +123,10 @@ public class WfeHeaderComposite extends Composite {
          if (WfeRelationsHyperlinkComposite.relationExists((AbstractWorkflowArtifact) workItem)) {
             smaRelationsComposite = new WfeRelationsHyperlinkComposite(this, SWT.NONE, editor);
             smaRelationsComposite.create();
+         }
+
+         if (WfeActionableItemReviewHeader.isApplicable(workItem)) {
+            new WfeActionableItemReviewHeader(this, editor.getToolkit(), (AbstractReviewArtifact) workItem, editor);
          }
 
          boolean isEditable = WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(),

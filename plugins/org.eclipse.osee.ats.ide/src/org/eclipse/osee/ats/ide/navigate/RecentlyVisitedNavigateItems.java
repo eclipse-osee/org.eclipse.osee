@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.core.util.RecentlyVisistedItem;
 import org.eclipse.osee.ats.core.util.RecentlyVisitedItems;
 import org.eclipse.osee.ats.ide.AtsImage;
-import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
@@ -130,18 +129,17 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
 
    @Override
    public boolean preShutdown(IWorkbench workbench, boolean forced) {
-      if (!forced && visitedItems != null && !visitedItems.getReverseVisited().isEmpty()) {
-         ObjectMapper mapper = JsonUtil.getMapper();
-         try {
+      try {
+         if (visitedItems != null && !visitedItems.getReverseVisited().isEmpty()) {
+            ObjectMapper mapper = JsonUtil.getMapper();
             String toStoreJson = mapper.writeValueAsString(visitedItems);
             String fromStoreJson = AtsClientService.get().getUserConfigValue(RECENTLY_VISITED_TOKENS);
             if (!toStoreJson.equals(fromStoreJson)) {
                AtsClientService.get().setUserConfigValue(RECENTLY_VISITED_TOKENS, toStoreJson);
             }
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE,
-               "Unable to write visited items from Ats Config attribute on user artifact");
          }
+      } catch (Exception ex) {
+         OseeLog.log(RecentlyVisitedNavigateItem.class, Level.WARNING, "Error saving recently visited items.", ex);
       }
       return true;
    }

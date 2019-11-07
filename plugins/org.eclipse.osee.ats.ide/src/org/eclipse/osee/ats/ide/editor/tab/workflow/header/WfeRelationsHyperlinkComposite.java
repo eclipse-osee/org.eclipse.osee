@@ -61,14 +61,16 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
       CoreRelationTypes.SupportingInfo_SupportingInfo,
       AtsRelationTypes.Derive_From,
       AtsRelationTypes.Derive_To,
-      CoreRelationTypes.SupportingInfo_SupportingInfo,
       CoreRelationTypes.Dependency_Artifact,
       CoreRelationTypes.Dependency_Dependency};
+   private static RelationTypeSide[] siblings =
+      new RelationTypeSide[] {AtsRelationTypes.ActionToWorkflow_TeamWorkflow, AtsRelationTypes.ActionToWorkflow_Action};
    private final WorkflowEditor editor;
    private final IAtsWorkItem workItem;
    private final Map<Long, Hyperlink> relIdToHyperlink = new HashMap<>();
    private final Map<Long, Label> relIdToLabel = new HashMap<>();
    private final Set<Long> existingRels = new HashSet<>();
+   private IWfeEventHandle siblingHandler;
 
    public WfeRelationsHyperlinkComposite(Composite parent, int style, WorkflowEditor editor) {
       super(parent, style);
@@ -86,6 +88,38 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
       createUpdateLinks();
 
       editor.registerEvent(this, sides);
+      // If team workflow, register for siblings
+      if (workItem.isTeamWorkflow()) {
+         for (IAtsTeamWorkflow wf : AtsClientService.get().getWorkItemService().getTeams(workItem.getParentAction())) {
+            if (!workItem.equals(wf)) {
+               editor.registerEvent(getSiblingEventHandler(), wf.getParentAction().getStoreObject(), siblings);
+            }
+         }
+      }
+   }
+
+   private IWfeEventHandle getSiblingEventHandler() {
+      if (siblingHandler == null) {
+         siblingHandler = new IWfeEventHandle() {
+
+            @Override
+            public IAtsWorkItem getWorkItem() {
+               return workItem;
+            }
+
+            @Override
+            public void refresh() {
+               Displays.ensureInDisplayThread(new Runnable() {
+
+                  @Override
+                  public void run() {
+                     createUpdateLinks();
+                  }
+               });
+            }
+         };
+      }
+      return siblingHandler;
    }
 
    private void createUpdateLinks() {
@@ -160,6 +194,12 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
    }
 
    public static boolean relationExists(AbstractWorkflowArtifact workItem) {
+      if (workItem.isTeamWorkflow()) {
+         boolean siblings = ((IAtsTeamWorkflow) workItem).getParentAction().getTeamWorkflows().size() > 1;
+         if (siblings) {
+            return true;
+         }
+      }
       for (RelationTypeSide side : sides) {
          if (workItem.getRelatedArtifacts(side).size() > 0) {
             return true;

@@ -398,7 +398,6 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
             IWorkbenchPage page = AWorkbench.getActivePage();
             try {
                page.openEditor(new ArtifactEditorInput(artifact), EDITOR_ID);
-               //RecentlyVisitedNavigateItems.addVisited(artifact);
             } catch (PartInitException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }

@@ -107,9 +107,6 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       atsUser.setActive(userArt.getSoleAttributeValue(CoreAttributeTypes.Active, true));
       atsUser.setId(userArt.getId());
       atsUser.getLoginIds().addAll(userArt.getAttributeValues(CoreAttributeTypes.LoginId));
-      for (ArtifactReadable userGroupArt : userArt.getRelated(CoreRelationTypes.Users_Artifact)) {
-         atsUser.getUserGroups().add(ArtifactId.valueOf(userGroupArt.getId()));
-      }
       return atsUser;
    }
 

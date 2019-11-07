@@ -111,7 +111,7 @@ public class SavedSearchesNavigateItem extends XNavigateItem implements EventHan
       try {
          refresh();
       } catch (Exception ex) {
-         OseeLog.log(NavigateViewLinksTopicEventHandler.class, Level.SEVERE, ex);
+         OseeLog.log(NavigateViewLinksTopicEventHandler.class, Level.WARNING, ex);
       }
    }
 

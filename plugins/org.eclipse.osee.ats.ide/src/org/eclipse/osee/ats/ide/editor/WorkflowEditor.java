@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -63,11 +64,13 @@ import org.eclipse.osee.ats.ide.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.ide.world.IAtsMetricsProvider;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -134,8 +137,14 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    WfeOutlinePage outlinePage;
    private final HashCollection<AttributeTypeToken, IWfeEventHandle> attrHandlers = new HashCollection<>();
    private final HashCollection<RelationTypeId, IWfeEventHandle> relHandlers = new HashCollection<>();
-   // This MUST be string guid until types are converted to id all at once
+   // This MUST be string guid until types are converted to id all at once and events use id
    private final HashCollection<String, IWfeEventHandle> artHandlers = new HashCollection<>();
+   /**
+    * This MUST be string guid until types are converted to id all at once and events use id. Used when want to listen
+    * for rel events for a artifact other than the editor workItem.
+    */
+   private final DoubleKeyHashMap<RelationTypeId, String, List<IWfeEventHandle>> artRelHandlers =
+      new DoubleKeyHashMap<>();
 
    @Override
    protected void addPages() {
@@ -832,6 +841,23 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       }
    }
 
+   /**
+    * Listen to events for other artifact relation changes (like TeamWf siblings added/deleted)
+    */
+   public void registerEvent(IWfeEventHandle handler, ArtifactToken artifact, RelationTypeId... relTypes) {
+      for (RelationTypeId relType : relTypes) {
+         List<IWfeEventHandle> handlers = artRelHandlers.get(relType, artifact.getGuid());
+         if (handlers == null) {
+            handlers = new ArrayList<>();
+            artRelHandlers.put(relType, artifact.getGuid(), handlers);
+         }
+         handlers.add(handler);
+      }
+   }
+
+   /**
+    * Handle Events for attributes change to this WorkItem or relations against this WorkItem
+    */
    public void handleEvent(ArtifactEvent artifactEvent) {
       // Only want to call artHandlers once if an artifact changed for any reason
       Set<String> handledArts = new HashSet<>();
@@ -878,6 +904,44 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
             }
             handledArts.add(getWorkItem().getGuid());
          }
+      }
+      for (EventBasicGuidRelation eRel : artifactEvent.getRelations()) {
+         for (Entry<RelationTypeId, String> relArt : artRelHandlers.keySet().entrySet()) {
+            String artGuid = relArt.getValue();
+            RelationTypeId relation = relArt.getKey();
+            if (eRel.getArtA().getGuid().equals(artGuid) || eRel.getArtB().getGuid().equals(artGuid)) {
+               if (eRel.getRelTypeGuid().equals(relation.getId())) {
+                  List<IWfeEventHandle> handlers = artRelHandlers.get(relation, artGuid);
+                  if (handlers != null) {
+                     for (IWfeEventHandle handler : handlers) {
+                        Displays.ensureInDisplayThread(new Runnable() {
+
+                           @Override
+                           public void run() {
+                              handler.refresh();
+                           }
+                        });
+                     }
+                  }
+               }
+               handledArts.clear();
+               if (!handledArts.contains(artGuid)) {
+                  List<IWfeEventHandle> handlers2 = artRelHandlers.get(relation, artGuid);
+                  if (handlers2 != null) {
+                     for (IWfeEventHandle handler : handlers2) {
+                        Displays.ensureInDisplayThread(new Runnable() {
+
+                           @Override
+                           public void run() {
+                              handler.refresh();
+                           }
+                        });
+                     }
+                  }
+               }
+            }
+         }
+         handledArts.add(getWorkItem().getGuid());
       }
       onDirtied();
       updatePartName();

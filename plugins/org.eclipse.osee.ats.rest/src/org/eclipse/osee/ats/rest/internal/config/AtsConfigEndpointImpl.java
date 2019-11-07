@@ -122,6 +122,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          CoreRelationTypes.Users_Artifact)) {
          user.getUserGroups().add(userGroup);
       }
+      user.setStoreObject(ArtifactToken.valueOf(user.getId(), atsApi.getAtsBranch()));
       return user;
    }
 
