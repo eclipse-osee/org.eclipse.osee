@@ -33,6 +33,7 @@ public class OwCollector {
    private List<ArtifactToken> delete;
    private List<OwArtifactType> artTypes;
    private List<OwAttributeType> attrTypes;
+   private List<OwApplicability> apps;
    private List<OwRelationType> relTypes;
    private List<OwBranch> branches;
    private List<OwArtifactToken> artTokens;
@@ -70,6 +71,17 @@ public class OwCollector {
          attrTypes = new LinkedList<>();
       }
       return attrTypes;
+   }
+
+   public List<OwApplicability> getApps() {
+      if (apps == null) {
+         apps = new LinkedList<>();
+      }
+      return apps;
+   }
+
+   public void setApps(List<OwApplicability> apps) {
+      this.apps = apps;
    }
 
    public void setAttrTypes(List<OwAttributeType> attrTypes) {

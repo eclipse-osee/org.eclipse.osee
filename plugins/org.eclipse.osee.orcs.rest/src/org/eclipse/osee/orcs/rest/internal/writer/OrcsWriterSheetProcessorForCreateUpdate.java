@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwApplicability;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifact;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactType;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwAttribute;
@@ -35,7 +36,8 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
    private final OwCollector collector;
    private final Map<Integer, OwAttributeType> columnToAttributeType = new HashMap<>();
    private final Map<Integer, OwRelationType> columnToRelationType = new HashMap<>();
-   private Integer artTokenColumn = null, nameColumn = null;
+
+   private Integer artTokenColumn = null, nameColumn = null, applicabilityColumn = null;
    private int rowCount = 0;
    private final OrcsWriterFactory factory;
    private final boolean createSheet;
@@ -95,6 +97,8 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
                relType.setData(OrcsWriterUtil.getData(getSheetName(), rowCount, colCount));
                columnToRelationType.put(colCount, relType);
                collector.getRelTypes().add(relType);
+            } else if (value.toLowerCase().equals("applicability")) {
+               applicabilityColumn = colCount;
             } else if (value.toLowerCase().startsWith("new art token")) {
                if (artTokenColumn != null) {
                   throw new OseeArgumentException("Can't have multiple \"New Art Token\" columns on %s sheet",
@@ -200,6 +204,13 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
                   throw new OseeStateException("Unexpected Name [%s] at %s", value,
                      OrcsWriterUtil.getRowColumnStr(colCount, colCount, getSheetName()));
                }
+            }
+            if (applicabilityColumn != null && applicabilityColumn == colCount) {
+               String value = row[colCount];
+
+               OwApplicability app = factory.getOrCreateApplicability(artifact);
+               app.setValue(value);
+               artifact.setAppId(app);
             }
             if (isAttributeColumn(colCount)) {
                OwAttributeType attrType = columnToAttributeType.get(colCount);

@@ -11,6 +11,9 @@
 package org.eclipse.osee.orcs.rest.internal.writer;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import java.util.Collection;
+import java.util.HashMap;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -51,6 +54,19 @@ public class OrcsValidationHelperAdapter implements IOrcsValidationHelper {
    @Override
    public boolean isArtifactTypeExist(long artifactTypeUuid) {
       return orcsTypes.getArtifactTypes().get(artifactTypeUuid) != null;
+   }
+
+   @Override
+   public boolean isApplicabilityExist(BranchId branch, String value) {
+
+      HashMap<Long, ApplicabilityToken> tokenMap = queryFactory.applicabilityQuery().getApplicabilityTokens(branch);
+      Collection<ApplicabilityToken> tokens = tokenMap.values();
+      for (ApplicabilityToken applicToken : tokens) {
+         if (applicToken.getName().equals(value)) {
+            return true;
+         }
+      }
+      return false;
    }
 
    @Override

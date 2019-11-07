@@ -70,7 +70,11 @@ public interface TransactionBuilder {
 
    ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name);
 
+   ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, ApplicabilityId appId);
+
    ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId);
+
+   ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId, ApplicabilityId appId);
 
    ArtifactToken createArtifact(ArtifactToken token);
 
@@ -204,5 +208,4 @@ public interface TransactionBuilder {
    List<ArtifactToken> createArtifacts(ArtifactTypeId artifactType, ArtifactId parent, List<String> names);
 
    void introduceTuple(TupleTypeId tupleType, GammaId tupleGamma);
-
 }

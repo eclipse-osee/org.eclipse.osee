@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -31,6 +31,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.writer.OrcsWriterToken;
 import org.eclipse.osee.orcs.rest.model.writer.config.OrcsWriterInputConfig;
 import org.eclipse.osee.orcs.rest.model.writer.config.OrcsWriterRelationSide;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwApplicability;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifact;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactToken;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactType;
@@ -99,12 +100,32 @@ public class OrcsWriterCollectorGenerator {
       ArtifactToken folder = createFolder();
       createSoftwareRequirement(folder, "1");
       createSoftwareRequirement(folder, "2");
+      createMSWordRequirement(folder, "3");
+   }
+
+   private void createMSWordRequirement(ArtifactToken folderToken, String number) {
+      Long reqId = Lib.generateArtifactIdAsInt();
+      String name = "MSWordRequirement" + number;
+      OwArtifact wordReq = OwFactory.createArtifact(CoreArtifactTypes.CustomerRequirementMsWord, name, reqId);
+      OwApplicability owApp = OwFactory.createApplicability("Base");
+      wordReq.setAppId(owApp);
+      OwFactory.createAttribute(wordReq, CoreAttributeTypes.WordTemplateContent,
+         "WordTemplate Content field " + number);
+      collector.getCreate().add(wordReq);
+
+      // add to new folder
+      OwRelation relation = new OwRelation();
+      relation.setType(OwFactory.createRelationType(orcsApi, CoreRelationTypes.Default_Hierarchical__Parent));
+      relation.setArtToken(folderToken);
+      wordReq.getRelations().add(relation);
    }
 
    private void createSoftwareRequirement(ArtifactToken folderToken, String number) {
       Long reqId = Lib.generateArtifactIdAsInt();
       String name = "Software Requirement " + number;
       OwArtifact softwareReq = OwFactory.createArtifact(CoreArtifactTypes.SoftwareRequirement, name, reqId);
+      OwApplicability owApp = OwFactory.createApplicability("Base");
+      softwareReq.setAppId(owApp);
       OwFactory.createAttribute(softwareReq, CoreAttributeTypes.StaticId, "static id field " + number);
       collector.getCreate().add(softwareReq);
 

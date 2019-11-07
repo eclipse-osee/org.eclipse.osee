@@ -276,6 +276,14 @@ public class TxDataManager {
       return asExternalArtifact(txData, artifact);
    }
 
+   public ArtifactReadable createArtifact(TxData txData, ArtifactTypeToken artifactType, String name, String guid, ApplicabilityId appId) {
+      checkChangesAllowed(txData);
+      Artifact artifact =
+         artifactFactory.createArtifact(txData.getSession(), txData.getBranch(), artifactType, guid, appId);
+      artifact.setName(name);
+      return asExternalArtifact(txData, artifact);
+   }
+
    public ArtifactReadable createArtifact(TxData txData, ArtifactTypeToken artifactType, String name, Long artifactId, String guid) {
       checkChangesAllowed(txData);
       Artifact artifact =
@@ -287,6 +295,14 @@ public class TxDataManager {
    public ArtifactReadable createArtifact(TxData txData, ArtifactTypeToken artifactType, String name, long uuid) {
       checkChangesAllowed(txData);
       Artifact artifact = artifactFactory.createArtifact(txData.getSession(), txData.getBranch(), artifactType, uuid);
+      artifact.setName(name);
+      return asExternalArtifact(txData, artifact);
+   }
+
+   public ArtifactReadable createArtifact(TxData txData, ArtifactTypeToken artifactType, String name, long uuid, ApplicabilityId appId) {
+      checkChangesAllowed(txData);
+      Artifact artifact =
+         artifactFactory.createArtifact(txData.getSession(), txData.getBranch(), artifactType, uuid, appId);
       artifact.setName(name);
       return asExternalArtifact(txData, artifact);
    }

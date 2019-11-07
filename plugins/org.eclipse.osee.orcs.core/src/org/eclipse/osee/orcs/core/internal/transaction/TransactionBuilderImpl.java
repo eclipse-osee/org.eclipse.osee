@@ -133,6 +133,11 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
+   public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, ApplicabilityId appId) {
+      return txManager.createArtifact(txData, artifactType, name, (String) null, appId);
+   }
+
+   @Override
    public ArtifactToken createArtifact(ArtifactToken token) {
       return txManager.createArtifact(txData, token.getArtifactType(), token.getName(), token.getUuid());
    }
@@ -140,6 +145,11 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    @Override
    public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId) {
       return txManager.createArtifact(txData, artifactType, name, artifactId);
+   }
+
+   @Override
+   public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId, ApplicabilityId appId) {
+      return txManager.createArtifact(txData, artifactType, name, artifactId, appId);
    }
 
    @Override

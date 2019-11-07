@@ -110,6 +110,11 @@ public class OrcsCollectorValidator {
          if (!helper.isArtifactTypeExist(artType.getId())) {
             results.errorf("Artifact Type [%s] does not exist.\n", artType);
          }
+
+         if (artifact.getAppId() != null && !helper.isApplicabilityExist(collector.getBranchId(),
+            artifact.getAppId().getValue())) {
+            results.errorf("Applicability [%s] is invalid for chosen branch", artifact.getAppId().getValue());
+         }
       }
    }
 

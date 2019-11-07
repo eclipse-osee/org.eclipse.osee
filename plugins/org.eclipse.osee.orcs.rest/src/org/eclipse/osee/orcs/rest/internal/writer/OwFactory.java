@@ -14,13 +14,14 @@ package org.eclipse.osee.orcs.rest.internal.writer;
  * Donald G. Dunne
  */
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwApplicability;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifact;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactToken;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactType;
@@ -36,6 +37,13 @@ public class OwFactory {
       OwArtifactType type = new OwArtifactType(artType.getId(), artType.getName());
       type.setData(typeStr);
       return type;
+   }
+
+   public static OwApplicability createApplicability(String value) {
+
+      OwApplicability app = new OwApplicability();
+      app.setValue(value);
+      return app;
    }
 
    public static OwAttributeType createAttributeType(AttributeTypeToken attrType) {

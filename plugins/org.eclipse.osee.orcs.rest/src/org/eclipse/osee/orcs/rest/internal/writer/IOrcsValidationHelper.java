@@ -31,4 +31,6 @@ public interface IOrcsValidationHelper {
 
    boolean isAttributeTypeExists(String attributeTypeName);
 
+   boolean isApplicabilityExist(BranchId branch, String value);
+
 }

@@ -60,8 +60,18 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
+   public ArtifactData create(BranchId branch, ArtifactTypeToken token, String guid, ApplicabilityId appId) {
+      return this.create(branch, token, guid, idFactory.getNextArtifactId(), appId);
+   }
+
+   @Override
    public ArtifactData create(BranchId branch, ArtifactTypeToken token, Long artifactId) {
       return this.create(branch, token, null, artifactId);
+   }
+
+   @Override
+   public ArtifactData create(BranchId branch, ArtifactTypeToken token, Long artifactId, ApplicabilityId appId) {
+      return this.create(branch, token, null, artifactId, appId);
    }
 
    @Override
@@ -82,6 +92,27 @@ public class DataFactoryImpl implements DataFactory {
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
       ArtifactData artifactData =
          objectFactory.createArtifactData(version, (int) artifactId, token, modType, guidToSet, ApplicabilityId.BASE);
+      return artifactData;
+   }
+
+   @Override
+   public ArtifactData create(BranchId branchId, ArtifactTypeToken token, String guid, long artifactId, ApplicabilityId appId) {
+      Conditions.checkNotNull(branchId, "branch");
+
+      Conditions.checkExpressionFailOnTrue(artifactCache.isAbstract(token),
+         "Cannot create an instance of abstract type [%s]", token);
+
+      String guidToSet = idFactory.getUniqueGuid(guid);
+
+      Conditions.checkExpressionFailOnTrue(!GUID.isValid(guidToSet),
+         "Invalid guid [%s] during artifact creation [type: %s]", guidToSet, token);
+
+      VersionData version = objectFactory.createDefaultVersionData();
+      version.setBranch(branchId);
+
+      ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
+      ArtifactData artifactData =
+         objectFactory.createArtifactData(version, (int) artifactId, token, modType, guidToSet, appId);
       return artifactData;
    }
 

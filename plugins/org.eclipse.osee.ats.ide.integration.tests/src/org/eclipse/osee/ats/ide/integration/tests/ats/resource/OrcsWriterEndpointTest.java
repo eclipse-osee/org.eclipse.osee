@@ -47,7 +47,7 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
    @Test
    public void testGetOrcsWriterInputDefaultJson() throws Exception {
       OwCollector collector = getDefaultOwCollector();
-      assertEquals(3, collector.getCreate().size());
+      assertEquals(4, collector.getCreate().size());
    }
 
    private OwCollector getDefaultOwCollector() throws Exception {
@@ -90,16 +90,22 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
             long artId = art.getId();
             Artifact folderArt = AtsClientService.get().getQueryServiceClient().getArtifact(artId);
             assertNotNull(folderArt);
-            assertEquals(2, folderArt.getChildren().size());
+            assertEquals(3, folderArt.getChildren().size());
             for (Artifact child : folderArt.getChildren()) {
-               assertTrue(
-                  child.getName().equals("Software Requirement 1") || child.getName().equals("Software Requirement 2"));
+               assertTrue(child.getName().equals("MSWordRequirement3") || child.getName().equals(
+                  "Software Requirement 1") || child.getName().equals("Software Requirement 2"));
+               if (child.getName().equals("MSWordRequirement3")) {
+                  assertTrue(child.getAttributes().get(4).getValue().toString().contains("<w:p><w:r><w:t>"));
+
+               }
+
             }
          }
       }
 
       OwArtifact userGroupOwArt = collector.getUpdate().iterator().next();
       Artifact userGroupArt = AtsClientService.get().getQueryServiceClient().getArtifact(userGroupOwArt.getId());
+
       assertNotNull(userGroupArt);
       userGroupArt.reloadAttributesAndRelations();
       assertEquals("test static id", userGroupArt.getSoleAttributeValue(CoreAttributeTypes.StaticId, null));

@@ -31,7 +31,7 @@ public class OwArtifact extends OwBase {
    }
 
    OwArtifactType type;
-
+   OwApplicability appId;
    List<OwAttribute> attributes;
    List<OwRelation> relations;
 
@@ -68,6 +68,14 @@ public class OwArtifact extends OwBase {
    @Override
    public String toString() {
       return "OwArtifact [type=" + type + ", id=" + getId() + ", data=" + data + "]";
+   }
+
+   public OwApplicability getAppId() {
+      return appId;
+   }
+
+   public void setAppId(OwApplicability appId) {
+      this.appId = appId;
    }
 
 }

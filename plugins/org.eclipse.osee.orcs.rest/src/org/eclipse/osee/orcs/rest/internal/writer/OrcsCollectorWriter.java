@@ -11,17 +11,20 @@
 package org.eclipse.osee.orcs.rest.internal.writer;
 
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -109,7 +112,32 @@ public class OrcsCollectorWriter {
          } catch (Exception ex) {
             throw new OseeWrappedException(ex, "Exception processing relations for [%s]", owArtifact);
          }
+         if (owArtifact.getAppId() != null) {
+            try {
+               ApplicabilityId appId = ApplicabilityId.BASE;
+               HashMap<Long, ApplicabilityToken> tokenMap =
+                  orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(branch);
+               Collection<ApplicabilityToken> tokens = tokenMap.values();
+               for (ApplicabilityToken applicToken : tokens) {
+                  if (applicToken.getName().equals(owArtifact.getAppId().getValue())) {
+                     appId = ApplicabilityId.valueOf(applicToken.getId());
+                     break;
+                  }
+               }
+               if (appId.isInvalid()) {
+                  results.warningf("Couldn't find applicability " + owArtifact.getAppId().getValue() + " on branch %s",
+                     branch.getIdString());
+               } else {
+                  ApplicabilityId currApp = artifact.getApplicability();
+                  if (!currApp.equals(appId)) {
+                     getTransaction().setApplicability(artifact, appId);
+                  }
+               }
 
+            } catch (Exception ex) {
+               throw new OseeWrappedException(ex, "Exception processing applicability for [%s]", owArtifact);
+            }
+         }
          try {
             for (OwAttribute owAttribute : owArtifact.getAttributes()) {
                AttributeTypeToken attrType =
@@ -175,6 +203,15 @@ public class OrcsCollectorWriter {
                         throw new OseeArgumentException("Exception processing Integer for OwAttribute %s Exception %s",
                            owAttribute, ex);
                      }
+                  } else if (attrType.equals(CoreAttributeTypes.WordTemplateContent)) {
+                     if (!newValue.contains("<w:p><w:r><w:t>")) {
+                        newValue = "<w:p><w:r><w:t>" + newValue + "</w:t></w:r></w:p>";
+                     }
+                     if (currValue == null && newValue != null || currValue != null && !currValue.equals(newValue)) {
+                        logChange(artifact, attrType, currValue, newValue);
+                        getTransaction().setSoleAttributeValue(artifact, attrType, newValue);
+                     }
+
                   } else if (currValue == null && newValue != null || currValue != null && !currValue.equals(
                      newValue)) {
                      logChange(artifact, attrType, currValue, newValue);
@@ -254,10 +291,34 @@ public class OrcsCollectorWriter {
          long artifactId = owArtifact.getId();
          String name = owArtifact.getName();
          ArtifactId artifact;
+         ApplicabilityId appId = ApplicabilityId.BASE;
+         if (owArtifact.getAppId() != null) {
+            try {
+
+               HashMap<Long, ApplicabilityToken> tokenMap =
+                  orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(branch);
+               Collection<ApplicabilityToken> tokens = tokenMap.values();
+               for (ApplicabilityToken applicToken : tokens) {
+                  if (applicToken.getName().equals(owArtifact.getAppId().getValue())) {
+                     appId = ApplicabilityId.valueOf(applicToken.getId());
+                     break;
+                  }
+               }
+               if (appId == null) {
+                  results.warningf("Couldn't find applicability " + owArtifact.getAppId().getValue() + " on branch %s",
+                     branch.getIdString());
+                  appId = ApplicabilityId.BASE;
+               }
+
+            } catch (Exception ex) {
+               throw new OseeWrappedException(ex, "Exception processing applicability for [%s]", owArtifact);
+            }
+         }
+
          if (artifactId < 1) {
-            artifact = getTransaction().createArtifact(artType, name);
+            artifact = getTransaction().createArtifact(artType, name, appId);
          } else {
-            artifact = getTransaction().createArtifact(artType, name, artifactId);
+            artifact = getTransaction().createArtifact(artType, name, artifactId, appId);
          }
 
          if (idToArtifact == null) {
@@ -276,6 +337,7 @@ public class OrcsCollectorWriter {
          } catch (Exception ex) {
             throw new OseeWrappedException(ex, "Exception creating relations for [%s]", owArtifact);
          }
+
       }
    }
 
@@ -341,6 +403,12 @@ public class OrcsCollectorWriter {
                      } else {
                         throw new OseeArgumentException("Unexpected date format [%s]", value);
                      }
+                  } else if (attrType.equals(CoreAttributeTypes.WordTemplateContent)) {
+                     if (!valueOf.contains("<w:p><w:r><w:t>")) {
+                        valueOf = "<w:p><w:r><w:t>" + valueOf + "</w:t></w:r></w:p>";
+                     }
+                     getTransaction().createAttribute(artifact, attrType, valueOf);
+
                   } else if (orcsApi.getOrcsTypes().getAttributeTypes().getMaxOccurrences(attrType) == 1) {
                      getTransaction().setSoleAttributeValue(artifact, attrType, value);
                   } else {
