@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.plugin.util;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -34,23 +35,33 @@ public class ListSelectionDialogNoSave extends MessageDialog {
 
    @Override
    protected Control createCustomArea(Composite parent) {
-      selections = new List(parent, SWT.SINGLE);
+      selections = new List(parent, SWT.SINGLE | SWT.BORDER);
       for (int i = 0; i < choose.length; i++) {
          selections.add(choose[i].toString());
       }
+
+      selections.addMouseListener(new org.eclipse.swt.events.MouseAdapter() {
+
+         @Override
+         public void mouseDoubleClick(MouseEvent e) {
+            super.mouseDoubleClick(e);
+            selectionIndex = selections.getSelectionIndex();
+            setReturnCode(OK);
+            close();
+         }
+
+      });
 
       selections.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
             selectionIndex = selections.getSelectionIndex();
-            System.out.println("selected index " + selectionIndex);
          }
 
       });
 
       selections.select(0);
-
       return parent;
    }
 

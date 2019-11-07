@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.editor.tab.workflow;
+package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -37,7 +36,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelperAdapter;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeTargetedVersionHeader;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsStateItemManager;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.IAtsStateItem;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -56,12 +54,10 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench.MessageType;
-import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
-import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
+import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialogNoSave;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCancelWidgetDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -79,7 +75,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class WfeTransitionComposite extends Composite implements IAtsWorkItemTopicEventListener {
+public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicEventListener {
 
    private final Label transitionAssigneesLabel, transitionToStateLabel;
    private final AbstractWorkflowArtifact awa;
@@ -88,7 +84,7 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
    private final boolean isEditable;
    private final Hyperlink transitionLabelLink;
 
-   public WfeTransitionComposite(Composite parent, final WorkflowEditor editor, final boolean isEditable) {
+   public WfeTransitionHeader(Composite parent, final WorkflowEditor editor, final boolean isEditable) {
       super(parent, SWT.NONE);
       this.editor = editor;
       this.isEditable = isEditable;
@@ -105,7 +101,7 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
       // Register for events and deregister on dispose
       AtsClientService.get().getEventService().registerAtsWorkItemTopicEvent(this, AtsTopicEvent.WORK_ITEM_TRANSITIONED,
          AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED);
-      final WfeTransitionComposite fThis = this;
+      final WfeTransitionHeader fThis = this;
       addDisposeListener(new DisposeListener() {
 
          @Override
@@ -136,7 +132,7 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
                IAtsStateDefinition selState = handleChangeTransitionToState(awa, isEditable, getToState());
                if (selState != null) {
                   userSelectedTransitionToState = selState;
-                  refresh();
+                  handleTransitionButtonSelection();
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -172,12 +168,20 @@ public class WfeTransitionComposite extends Composite implements IAtsWorkItemTop
 
    public static IAtsStateDefinition handleChangeTransitionToState(AbstractWorkflowArtifact awa, final boolean isEditable, IAtsStateDefinition toStateDef) {
       List<IAtsStateDefinition> states = awa.getToStatesWithCompleteCancelReturnStates();
-      FilteredTreeDialog dialog = new FilteredTreeDialog("Transition To", "Select State to Transition To",
-         new ArrayTreeContentProvider(), new StringLabelProvider());
-      dialog.setInput(states);
-      if (dialog.open() == Window.OK) {
-         return (IAtsStateDefinition) dialog.getSelectedFirst();
+
+      Object[] stateArray = states.toArray();
+      ListSelectionDialogNoSave dialog =
+         new ListSelectionDialogNoSave(stateArray, Displays.getActiveShell().getShell(), "Select Transition-To State",
+            null, "Select the state to transition to.\nTransition will happen upon selection and Tranistion button.\n" //
+               + "Double-click will select, close and transition.",
+            2, new String[] {"Transition", "Cancel"}, 0);
+
+      if (dialog.open() == 0) {
+         Object obj = stateArray[dialog.getSelection()];
+         System.err.println("Selected " + obj);
+         return (IAtsStateDefinition) obj;
       }
+
       return null;
    }
 
