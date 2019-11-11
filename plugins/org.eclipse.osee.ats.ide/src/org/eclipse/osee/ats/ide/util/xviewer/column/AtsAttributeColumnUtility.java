@@ -34,12 +34,13 @@ public class AtsAttributeColumnUtility {
       try {
          if (columnData instanceof IAttributeColumn) {
             IAttributeColumn attrColumn = (IAttributeColumn) columnData;
-            // Only prompt change for sole attribute types
-            if (AttributeTypeManager.getMaxOccurrences(attrColumn.getAttributeType()) != 1) {
-               return false;
-            }
             if (item instanceof Artifact) {
                Artifact useArt = AtsClientService.get().getQueryServiceClient().getArtifact(item);
+               if (AttributeTypeManager.getMaxOccurrences(attrColumn.getAttributeType()) != 1) {
+                  if (useArt.getAttributeCount(attrColumn.getAttributeType()) > 1) {
+                     return false;
+                  }
+               }
                if (useArt.isOfType(AtsArtifactTypes.Action)) {
                   if (AtsClientService.get().getWorkItemService().getTeams(useArt).size() == 1) {
                      useArt = (AbstractWorkflowArtifact) AtsClientService.get().getWorkItemService().getFirstTeam(

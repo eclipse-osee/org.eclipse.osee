@@ -39,7 +39,7 @@ public class EnumeratedHandlePromptChange implements IHandlePromptChange {
    private final Collection<? extends Artifact> artifacts;
    private final AttributeTypeId attributeType;
    private final boolean persist;
-   private boolean isSingletonAttribute = false;
+   private boolean isSingletonAttribute = true;
 
    public EnumeratedHandlePromptChange(Collection<? extends Artifact> artifacts, AttributeTypeId attributeType, String displayName, boolean persist) {
       super();
@@ -48,7 +48,14 @@ public class EnumeratedHandlePromptChange implements IHandlePromptChange {
       this.persist = persist;
 
       try {
-         isSingletonAttribute = AttributeTypeManager.getMaxOccurrences(attributeType) == 1;
+         if (AttributeTypeManager.getMaxOccurrences(attributeType) != 1) {
+            for (Artifact art : artifacts) {
+               if (art.getAttributeCount(attributeType) > 1) {
+                  this.isSingletonAttribute = false;
+                  break;
+               }
+            }
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
