@@ -10,4 +10,5 @@
 	</service>
 	<reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static" />
 	<reference bind="setOrcsApi" cardinality="1..1" interface="org.eclipse.osee.orcs.OrcsApi" name="OrcsApi" policy="static"/>
+	<reference bind="setAtsApi" cardinality="1..1" interface="org.eclipse.osee.ats.rest.IAtsServer" name="IAtsServer" policy="static"/>
 </scr:component>

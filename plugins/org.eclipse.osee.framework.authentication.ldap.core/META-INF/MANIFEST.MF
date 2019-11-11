@@ -5,12 +5,21 @@ Bundle-SymbolicName: org.eclipse.osee.framework.authentication.ldap.core;singlet
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime,
+ org.apache.commons.codec
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.osee.framework.authentication.ldap.core,
+ org.eclipse.osee.framework.authentication.ldap.core.internal,
  org.eclipse.osee.framework.authentication.ldap.core.service
-Import-Package: org.eclipse.osee.framework.core.data,
+Import-Package: org.eclipse.osee.ats.api,
+ org.eclipse.osee.ats.rest,
+ org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.server,
+ org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.jdbc,
  org.eclipse.osee.logger,
  org.eclipse.osee.orcs
 Service-Component: OSGI-INF/*.xml  

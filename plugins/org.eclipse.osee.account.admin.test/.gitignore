@@ -1,0 +1,9 @@
+#Ignore all bin folders
+bin/
+#Ignore all .settings folders
+*/*/.settings/
+#Ignore vi temporary files
+*~
+*swp
+#Ignore maven build target
+target/

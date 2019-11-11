@@ -16,6 +16,8 @@ package org.eclipse.osee.ats.api.data;
 import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.data.enums.token.AgileChangeTypeAttributeType;
+
+import org.eclipse.osee.ats.api.data.enums.token.AgileChangeTypeAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ApplicableToProgramAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.CancelReasonAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ChangeTypeAttributeType;
@@ -196,14 +198,13 @@ public interface AtsAttributeTypes {
    AttributeTypeString WorkflowNotes = ats.createString(1152921504606847205L, "ats.Workflow Notes", MediaType.TEXT_PLAIN, "Notes applicable to ATS Workflow");
 
    //icTeam Types
-   AttributeTypeString StoryPoint = ats.createString(1152921504606851479L, "agile.Story Point", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString Rank = ats.createString(1152921504606851480L, "agile.Rank", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString Shortname = ats.createStringNoTag(1152921904606847240L, "Shortname", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString TaskCountForProject = ats.createString(1152921504606849831L, "TaskCountForProject", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString GUID = ats.createString(1152921504606851425L, "task.guid", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString Rank = ats.createString(1152921504606851480L, "agile.Rank", MediaType.TEXT_PLAIN, "Holds the Rank of workflow for prioritization");
+   AttributeTypeString Shortname = ats.createStringNoTag(1152921504606847340L, "Shortname", MediaType.TEXT_PLAIN, "Shorter name of project");
+   AttributeTypeString TaskCountForProject = ats.createString(1152921504606849831L, "ats.TaskCountForProject", MediaType.TEXT_PLAIN, "Count value to hold the number of tasks under a project");
+   AttributeTypeString GUID = ats.createString(1152921504606851425L, "task.guid", MediaType.TEXT_PLAIN, "Guid of the task");
    AgileChangeTypeAttributeType AgileChangeType  = ats.createEnum(new AgileChangeTypeAttributeType());
-   AttributeTypeString Information = ats.createString(1152921504606851665L, "tag.Information", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString Condition = ats.createString(1152921504606851666L, "req.Condition", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString Information = ats.createString(1152921504606851665L, "tag.Information", MediaType.TEXT_PLAIN, "Addition of tags to workflow");
+   AttributeTypeString Condition = ats.createString(1152921504606851666L, "req.Condition", MediaType.TEXT_PLAIN, "Stores the prerequsite data for workflow");
 
    // Remove static after 25.0
    AttributeTypeString ActionableItem = ats.createString(1152921504606847200L, "ats.Actionable Item", MediaType.TEXT_PLAIN, "Actionable Items that are impacted by this change.");
@@ -216,7 +217,6 @@ public interface AtsAttributeTypes {
 
    // Leave this attribute definition for other OSEE sites to convert
    AttributeTypeString BaselineBranchGuid = ats.createString(1152921504606847145L, "ats.Baseline Branch Guid", MediaType.TEXT_PLAIN, "");
-
    // @formatter:on
 
 }

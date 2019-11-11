@@ -14,9 +14,17 @@
 package org.eclipse.osee.framework.authentication.ldap.core;
 
 import java.util.Hashtable;
+
 import javax.naming.Context;
+import javax.naming.NamingEnumeration;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.SearchResult;
+
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.authentication.ldap.core.internal.LDAPConnector;
 import org.eclipse.osee.framework.authentication.ldap.core.service.ILDAPService;
 import org.eclipse.osee.framework.core.data.OseeCredential;
@@ -28,13 +36,39 @@ import org.osgi.framework.Bundle;
  * This class gives the implementation of the LDAP authentication mechanism. if the user is included in the LDAP
  * directory , then the user gets authentication.
  *
- * @author Swapna
+ * @author Ajay Chandrahasan
  */
 public class LDAPAuthenticationProvider extends AbstractAuthenticationProvider {
 
    private final String extensionPointId = Messages.LDAPServiceExtensionPointID;
    private final String LDAP_SERVER_PREFIX = "ldap://";
    private LDAPConnector connector;
+   private String sUserAbsoluteName;
+   private String sDisplayName;
+   private String sMail;
+   private String sUserID;
+   private static AtsApi atsServer;
+   
+   
+   public String getsMail() {
+	    return this.sMail;
+   }
+   
+   public String getsDisplayName() {
+	    return this.sDisplayName;
+   }
+   public String getsUserID() {
+	    return this.sUserID;
+   }
+   
+   public void setAtsApi(final IAtsServer atsServer) {
+	   LDAPAuthenticationProvider.atsServer = atsServer;
+   }
+
+   public static AtsApi getAtsApi() {
+
+	   return LDAPAuthenticationProvider.atsServer;
+   }
 
    // for ReviewOsgiXml public void setLogger(Log logger)
    // for ReviewOsgiXml public void setOrcsApi(OrcsApi orcsApi)
@@ -164,4 +198,60 @@ public class LDAPAuthenticationProvider extends AbstractAuthenticationProvider {
       return null;
    }
 
+   /*
+    *  User details for LDAP login
+    */
+   public boolean getLDAPUserDetails(final String userName, final String password, final String domain) {
+     OseeCredential credential = new OseeCredential();
+     credential.setUserName(userName);
+     credential.setPassword(password);
+   //  credential.setDomain(domain);
+
+     boolean check = checkLDAPAuthenticated(credential);
+     if (check) {
+       getDisplayNameMailfromLDAPUser(userName);
+     }
+
+     return check;
+   }
+
+   private void getDisplayNameMailfromLDAPUser(final String userName) {
+	    if (this.connector != null) {
+	      try {
+	        SearchResult ldapUser = this.connector.getLdapUser(this.sUserAbsoluteName);
+	        Attributes attribs = ldapUser.getAttributes();
+	        if (attribs.size() > 0) {
+
+	          Attribute attribute = attribs.get("displayname");
+	          NamingEnumeration allMembers = attribute.getAll();
+	          while ((allMembers != null) && allMembers.hasMoreElements()) {
+	            this.sDisplayName = (String) allMembers.next();
+
+	          }
+
+	          attribute = attribs.get("mail");
+	          allMembers = attribute.getAll();
+	          while ((allMembers != null) && allMembers.hasMoreElements()) {
+	            this.sMail = (String) allMembers.next();
+	          }
+
+	          attribute = attribs.get("sAMAccountName");
+	          allMembers = attribute.getAll();
+	          while ((allMembers != null) && allMembers.hasMoreElements()) {
+	            this.sUserID = (String) allMembers.next();
+	            /*
+	             * to avoid case sensitive user creation
+	             */
+	            this.sUserID = this.sUserID.toLowerCase();
+	          }
+
+	        }
+
+	      }
+	      catch (Exception e) {
+	    	  getLogger().error(e, "Error while retrieving LDAP User details" + e.getMessage());
+	      }
+	    }
+
+	  }
 }

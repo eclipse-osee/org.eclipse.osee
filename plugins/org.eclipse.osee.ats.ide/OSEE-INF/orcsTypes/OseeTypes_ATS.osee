@@ -320,11 +320,12 @@ artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Cont
 	attribute "ats.Estimate Assumptions"	
 	attribute "ats.Approve Requested Hours Date"
 	attribute "ats.Approve Requested Hours By"
-	attribute "ats.Product Line Approved By"
-	attribute "ats.Product Line Approved Date"
 	attribute "tag.Information"
 	attribute "req.Condition"
 	attribute "agile.Rank"
+	attribute "ats.Points Attribute Type"
+	attribute "ats.Product Line Approved By"
+	attribute "ats.Product Line Approved Date"
 }
 
 artifactType "Work Package" extends "Artifact" {
@@ -2198,7 +2199,7 @@ attributeType "agile.Rank" extends StringAttribute {
 }
 
 attributeType "Shortname" extends StringAttribute {
-	id 1152921904606847240
+	id 1152921504606847340
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
