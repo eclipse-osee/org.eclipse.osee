@@ -1,0 +1,58 @@
+<!--
+Copyright (c) 2020 Robert Bosch Engineering and Business Solutions Ltd India
+This program and the accompanying materials are made
+available under the terms of the Eclipse Public License 2.0
+which is available at https://www.eclipse.org/legal/epl-2.0/
+ 
+SPDX-License-Identifier: EPL-2.0
+ 
+Contributors:
+    Robert Bosch Engineering and Business Solutions Ltd India - initial API and implementation
+-->
+<div class="container-fluid">
+  <div class="project-side-menu">
+    <div id="mySidenav" class="sidenav" [ngClass]="{'showNav': showNav,'notShowNav':!showNav}">
+      <a href="javascript:void(0)" class="closebtn" (click)="openNav()">&times;</a>
+      <a href="javascript:void(0)" (click)="createTeam()">Team</a>
+      <a href="javascript:void(0)" (click)="createPackage()">Package</a>
+      <a href="javascript:void(0)" (click)="createRelease()">Release</a>
+      <a href="javascript:void(0)" (click)="createTask()">Task</a>
+    </div>
+  </div>
+  <div class="project-main row" stle="width: 100%">
+      <div *ngIf="dropDownNav==='Releases'" (click)="closeNav()">
+            <div class="dropdown dropright" style="margin-left: 15%">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                  Sprints
+                </button>
+                <div class="dropdown-menu">
+                  <div class="dropdown-header">Open Sprints</div>
+                  <a class="dropdown-item" [routerLink]="['Releases/Sprint',sprint.guid]" *ngFor="let sprint of releaseList">
+                    {{ sprint.attributeMap['displayName'][0] }}
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" [routerLink]="['Releases/Backlog']">Backlog</a>
+                  <div class="dropdown-divider"></div>
+                  <div class="dropdown-header">Closed Sprints</div>
+                  <a class="dropdown-item" [routerLink]="['Releases/Sprint',sprint.guid]" *ngFor="let sprint of closereleaseList">
+                    {{ sprint.attributeMap['displayName'][0] }}
+                  </a>
+                </div>
+              </div>
+      </div>
+
+      <div class="text-box" (click)="closeNav()">
+          <h2 class="header-primary">
+            <span class="header-primary-main">{{selectedProject?.name}}</span>
+          </h2>
+      </div>
+      <div  >
+       <span style="font-size:20px;cursor:pointer;right:0px;top:50px" (click)="openNav()">&#9776; Settings</span>
+      </div>
+  </div>
+
+  <div class="container-fluid"  (click)="closeNav()">
+    <router-outlet></router-outlet>
+  </div>
+
+</div>

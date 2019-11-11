@@ -1,0 +1,25 @@
+<!--
+Copyright (c) 2020 Robert Bosch Engineering and Business Solutions Ltd India
+This program and the accompanying materials are made
+available under the terms of the Eclipse Public License 2.0
+which is available at https://www.eclipse.org/legal/epl-2.0/
+ 
+SPDX-License-Identifier: EPL-2.0
+ 
+Contributors:
+    Robert Bosch Engineering and Business Solutions Ltd India - initial API and implementation
+-->
+<div class="status-bind" (clickOutside)="close($event)">
+  <button type="button" *ngIf="selectedValue =='New'" name="status" id="status" class="btn btn-outline-secondary" btn-block (click)="openlist()" >{{selectedValue}}</button>
+  <button type="button" *ngIf="selectedValue =='Completed'" name="status" id="status" class="btn btn-outline-success" btn-block (click)="openlist()" >{{selectedValue}}</button>
+  <button type="button" *ngIf="selectedValue =='Cancelled'" name="status" id="status" class="btn btn-outline-danger" btn-block (click)="openlist()" >{{selectedValue}}</button>
+  <button type="button"  *ngIf="selectedValue =='InProgress'"name="status" id="status" class="btn btn-outline-primary" btn-block (click)="openlist()" >{{selectedValue}}</button>
+  <div class="status-list" [hidden]="!showlist">
+    <div class="arrow-up arrow-2"></div>
+    <div class="arrow-up"></div>
+    <div></div>
+    <div class="status-area">
+      <div class="status-item" (click)="changeStatus(item)" *ngFor="let item of itemList">{{item}}</div>
+    </div>
+  </div>
+</div>

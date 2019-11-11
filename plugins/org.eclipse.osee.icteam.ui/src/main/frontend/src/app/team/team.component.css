@@ -1,0 +1,129 @@
+#team {
+  /*margin-top: 25px;*/
+  padding-top: 10px;
+  background-color: #F6F7FE;
+}
+
+.projects {
+  /*min-height: 90%;*/
+  height: 640px;
+  overflow-y: scroll;
+  background-color: #303666;
+}
+
+.projects .ic-list {
+  cursor: pointer;
+}
+
+.users {
+  /* max-height: 90%; */
+  height: 375px;
+  background-color: white;
+  color: white;
+  overflow-y: scroll;
+  font-size:12px;
+}
+
+.ldaplist,
+.members {
+  height: 235px;
+  overflow-y: auto;
+  font-size:12px;
+}
+
+.leads { height: 130px;
+  overflow-y: auto;
+  font-size:12px;
+
+}
+
+/*.dropdown:hover>.dropdown-menu {
+  display: block;
+}*/
+
+/* .btn-group {
+  display: inline-block;
+  height: 50px;
+} */
+
+.title {
+  /* border-bottom: 5px solid white;*/
+  padding: 0.2em;
+  background-color: #dfdfe0;
+  color: #525f6b;
+  border-radius: 5%;
+  margin-bottom: 0rem;
+  font-size:18px;
+}
+
+.bg-color {
+  background-color: #F6F7FE;
+}
+
+.ic-list {
+  background-color: white;
+  margin: 0.1em;
+  padding: 0.5em;
+  border: 1px solid lightgrey;
+  /* border-radius: 5%; */
+  color: black;
+}
+
+#users .ic-list {
+  cursor: crosshair;
+}
+
+@media (min-width: 1204px) {
+  .icteam-xlsize .modal-lg {
+    max-width: 1200px;
+  }
+}
+
+#SearchUser {
+  width: 100%;
+  border-radius: 5%;
+  margin-bottom: 3px;
+  /* padding: .5rem .75rem; */
+  color: black;
+  text-align: left;
+}
+
+/* #SearchUser:focus {
+  color: white;
+} */
+
+.plus-icon {
+  position: absolute;
+  right: 30px;
+  /*background-color: blue;
+  border: 1px solid;
+  border-radius: 4%;*/
+  padding: 3px;
+  cursor: pointer;
+}
+
+.search-icon {
+  top: 32px;
+}
+
+.usr-stext {
+  padding-right: 40px;
+}
+
+/*.list-close {
+  position: absolute;
+  right: 2em;
+  padding: 2px;
+  border: 1px solid;
+  cursor: pointer;
+}*/
+
+/*.userlist .list-close {
+  display: none;
+}*/
+
+body, html {
+  font: 400 14px/18px Bosch Sans,Bosch Office Sans,Helvetica Neue,Helvetica,Arial,sans-serif;
+      font-size: 14px;
+      line-height: 18px;
+}

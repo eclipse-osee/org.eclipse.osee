@@ -1,0 +1,115 @@
+<!--
+Copyright (c) 2020 Robert Bosch Engineering and Business Solutions Ltd India
+This program and the accompanying materials are made
+available under the terms of the Eclipse Public License 2.0
+which is available at https://www.eclipse.org/legal/epl-2.0/
+ 
+SPDX-License-Identifier: EPL-2.0
+ 
+Contributors:
+    Robert Bosch Engineering and Business Solutions Ltd India - initial API and implementation
+-->
+<div id="release">
+  <div class="modal-header bg-primary text-white">
+    <h4 class="modal-title" id="modelTitleId">
+      Create/Update Sprint
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.close(mileStoneList)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="row ml-1">
+    <div class="col-sm-3 left-container">
+      <input class="btn btn-outline-primary w-100 mt-2" id="newSprint" name="newSprint" type="button" value="New" (click)="NewSprintInit()">
+      <div class="releaseList">
+      <div *ngFor="let milstone of mileStoneList">
+        <span class="milestones p-1" (click)="renderMilestoneinfo(milstone)" [ngClass]="{'release-active':selectedMilestoneForUpdate === milstone}">{{milstone.name}}</span>
+        <div class="project-list ml-4 p-1" *ngFor="let sprint of milstone.relationMap['Default Hierarchical'] " [ngClass]="{'release-active':selectedSprintForUpdate === sprint}"
+          (click)="renderSprintinfo(sprint)">
+          <span class="pull-left badge badge-pill badge-secondary m-1 " *ngIf="sprint.attributeMap['ats.Released'][0] =='true' ">R</span>
+          <span class="pull-left badge badge-pill badge-success m-1 " *ngIf="sprint.attributeMap['ats.Released'][0] =='false' ">O</span>
+          {{sprint.name}}
+        </div>
+      </div>
+      </div>
+    </div>
+    <div class="col-sm-9 right-container">
+      <form #sprintForm="ngForm" (ngSubmit)="createSprint(sprintForm)">
+        <div class="modal-body">
+          <div class="form-group row">
+            <label for="projectname" class="col-sm-4 col-form-label ml-2">Name</label>
+            <div class="col-sm-7">
+              <input type="text" class="form-control" id="Releasename" maxlength="15" placeholder="Name" name="releaseName" [(ngModel)]="release.releaseName" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group row">
+                <label for="" class="col-sm-4 col-form-label ml-2">Project</label>
+                <select class="col-sm-6 ml-3" (change)="getSelectedProject()" [(ngModel)]="release.selectedProject" name="selectedProject"
+                  [disabled]="projectsDisable" required>
+                  <option *ngFor="let project of projectList" [ngValue]="project">{{project.name}}</option>
+                </select>
+
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!isUpdate">
+            <div class="row p-3">
+                <mat-radio-group required>
+                    <mat-radio-button (change)="onMileStoneSelection('MileStone')" name="releaseType" value="MileStone" >MileStone</mat-radio-button>
+                    <mat-radio-button (change)="onSprintSelection('Sprint')" name="releaseType" value="Sprint" >Sprint</mat-radio-button>
+                  </mat-radio-group>
+            </div>
+            <div class="row" *ngIf="releaseType == 'Sprint'">
+              <div class="col-sm-12">
+                <div class="form-group row">
+                  <label for="" class="col-sm-4 col-form-label ml-2">MileStone List</label>
+                  <select class="col-sm-6 ml-3" [(ngModel)]="release.selectedmileStone" name="mileStone" required>
+                    <option *ngFor="let mileStone of mileStoneList" [ngValue]="mileStone.guid">{{mileStone.name}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group row" *ngIf="releaseType == 'MileStone'">
+                <label for="" class="col-sm-4 col-form-label ml-2">Team</label>
+                <select class="col-sm-6 ml-3" [(ngModel)]="release.selectedTeam" name="team"  required>
+                  <option *ngFor="let team of teamList" [ngValue]="team">{{team.name}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="" class="col-sm-4 col-form-label ml-2">Estimated Date</label>
+            <div class="input-group col-sm-7">
+              <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="release.model" ngbDatepicker #d="ngbDatepicker" required>
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary fa fa-calendar" (click)="d.toggle()" type="button">
+                </button>
+              </div>
+            </div>
+          </div>
+          <label  class="decoratedErrorField" style="color: red" [hidden]=isUnique name="userMessage" [(ngModel)]="message">{{message}}</label>
+        </div>
+        <div class="modal-footer">
+          <small *ngIf="relaseResponse" class="text-danger">
+            {{relaseResponse}}
+          </small>
+
+       <!--   <button type="button" class="btn btn-secondary" [disabled]="!isSprintSelected" (click)="releaseReport()">Generate Release Report</button>-->  
+          <button type="button" class="btn btn-secondary" [disabled]="!isSprintSelected" (click)="releaseSprint()">Mark as Release</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!sprintForm.form.valid">
+            <span [hidden]="changeToUpdate">Save</span>
+            <span [hidden]="!changeToUpdate">Update</span>
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="activeModal.close(mileStoneList)">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,64 @@
+/* You can add global styles to this file, and also import other style files */
+@import url( 'https://fonts.googleapis.com/css?family=Roboto:400,700|Material+Icons');
+// @import '~@angular/material/theming';
+@import "../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css";
+@import '~font-awesome/css/font-awesome.css';
+@import '~dragula/dist/dragula.min.css';
+@import '~dragula/dist/dragula.css';
+@import './assets/abstracts/variables';
+.bg-theam-color {
+  background-color: $navigation-bg-color;
+  border-color: #00F !important;
+}
+
+body {
+   color: #606468;
+  font: 87.5%/1.5em 'Open Sans', sans-serif;
+  margin: 0;
+  // background-color: #F7F7F7 !important;
+  background-image:url('assets/img/bosch/bg-1280x800_dark.png');
+}
+
+// tree-internal .tree .node-value:after {
+//   display: block;
+//   padding-top: -3px;
+//   width: 0px;
+//   height: 2px;
+//   background-color: orange;
+//   content: '';
+//   -webkit-transition: width 0.3s;
+//   transition: width 0.3s;
+// }
+
+// tree-internal .tree .node-selected:after {
+//   width: 0;
+// }
+
+// .tree {
+//   white-space: nowrap;
+//   max-width: 200px;
+//   padding-left: 3%;
+//   text-overflow: hidden;
+// }
+
+// .node-content-wrapper {
+//   display: flex;
+//   flex-wrap: wrap;
+//   align-items: baseline;
+// }
+
+// .node-content-wrapper {
+//   flex-grow: 1;
+//   position: relative;
+// }
+
+input[type="checkbox"]{
+  padding-bottom: 5px;
+  width:10px;
+  min-height:2px !important;
+}
+
+input[type="radio"]{
+  width:15px;
+  min-height:3px !important;
+}

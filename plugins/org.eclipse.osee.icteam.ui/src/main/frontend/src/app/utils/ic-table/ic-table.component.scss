@@ -1,0 +1,85 @@
+.hide {
+  align-self: center;
+  cursor: pointer;
+  background: #eee;
+  border-radius: 2px;
+  border: 1px solid;
+  border-color: inherit;
+  color: #bbb;
+  font-size: 12px;
+  padding: 2px;
+  &:hover {
+    color: #777;
+  }
+  &.active {
+    color: #6b43d6;
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+th {
+  position: relative;
+  &:not(:last-child):after {
+    content: '';
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 80%;
+    margin: 3px 0px;
+    border-right: 1px solid #bbb;
+  }
+}
+
+.filter-list {
+  position: absolute;
+  top: 27px;
+  right: 0px;
+  background: #eee;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  box-shadow: 0px 2px 5px;
+  z-index: 1;
+}
+
+.table-fotter {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+
+@media screen and (max-height: 850px) {
+  .icTable {
+    table-layout: auto;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+}
+
+@media screen and (min-height: 851px) and (max-height: 1500px) {
+  .icTable {
+    table-layout: auto;
+    max-height: 700px;
+    overflow-y: auto;
+  }
+}
+
+@media screen and (min-height: 1501px) and (max-height: 2999px) {
+  .icTable {
+    table-layout: auto;
+    max-height: 1200px;
+    overflow-y: auto;
+  }
+}
+
+@media screen and (min-height: 3000px) {
+  .icTable {
+    table-layout: auto;
+    max-height: 2400px;
+    overflow-y: auto;
+  }
+}

@@ -1,0 +1,31 @@
+.btn-block {
+  border-color: lightblue;
+}
+
+.left-container {
+  border-right: 1px solid lightgray;
+  background-color: #F7F7F7;
+
+}
+.packageList{
+  max-height: 140px;
+  overflow-y: auto;
+  background-color: #F7F7F7;
+}
+
+.package {
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.package:hover {
+  transform: translateY(-3px);
+}
+
+.package:active {
+  transform: translateY(-1px);
+}
+
+.packageActive {
+  color: orange;
+}

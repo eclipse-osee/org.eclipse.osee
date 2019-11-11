@@ -1,0 +1,54 @@
+<!--
+Copyright (c) 2020 Robert Bosch Engineering and Business Solutions Ltd India
+This program and the accompanying materials are made
+available under the terms of the Eclipse Public License 2.0
+which is available at https://www.eclipse.org/legal/epl-2.0/
+ 
+SPDX-License-Identifier: EPL-2.0
+ 
+Contributors:
+    Robert Bosch Engineering and Business Solutions Ltd India - initial API and implementation
+-->
+<div class="ScrollStyle" id="artifact">
+    <div class="modal-header bg-primary text-white">
+      <h4 class="modal-title" id="modelTitleId">Link Task</h4>
+      <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    
+
+    <input type="text" id="myInput"   [(ngModel)]="SearchTask" placeholder="Search for IDs.." title="Type ID">
+    <label>Filter by type</label>
+
+        <select  class="ng-tns-c6-1" (change)="getSelectedOption($event)" [(ngModel)]="selectedType" aria-hidden="true" name="options" tabindex="-1">
+            <option class="ng-tns-c6-1" *ngFor="let type of typeList" [ngValue]="type" >{{type}} </option>
+          </select>
+          <label>Filter by Project</label>
+
+          <select  class="ng-tns-c7-1" (change)="getSelectedOption($event)" [(ngModel)]="selectedProject" aria-hidden="true" name="options2" tabindex="-1">
+              <option class="ng-tns-c7-1" *ngFor="let project of projectList" [ngValue]="project" >{{project}} </option>
+            </select>
+    <table id="myTable">
+      <tr class="header">
+
+        <th scope="row" style="width:50%;">Task ID</th>
+        <th style="width:50%;">Title</th>
+      </tr>
+      <!-- <tr
+            *ngFor="let t of tasks |   namefilter:'Id': SearchTask let i = index" (click)="setClickedRow(i)" [class.active]="i == selectedRow" > -->
+            <!-- "{'selected':$index == selectedRow}" -->
+            <!-- ng-class="{'active': $index === selectedRow}" -->
+            <!-- [ngClass]="{'active': node.id === highlightSprintId}" -->
+            <tr  *ngFor="let t of tasks |   namefilter:'Id': SearchTask  let i = index" [ngClass]="{'active': i === selectedRow}">
+            <td>{{t.Id}}</td>
+            <td>{{t.Title}}</td>
+            <td><button 
+              
+             class="btn btn-secondary m-1" (click)=selection($event,t,i)    ><i class="fa fa-send  mr-1" ></i>Link</button></td>
+      </tr>
+    </table>
+
+    
+  </div>
+  

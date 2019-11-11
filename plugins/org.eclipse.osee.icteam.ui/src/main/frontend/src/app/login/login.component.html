@@ -1,0 +1,56 @@
+<!--
+Copyright (c) 2020 Robert Bosch Engineering and Business Solutions Ltd India
+This program and the accompanying materials are made
+available under the terms of the Eclipse Public License 2.0
+which is available at https://www.eclipse.org/legal/epl-2.0/
+ 
+SPDX-License-Identifier: EPL-2.0
+ 
+Contributors:
+    Robert Bosch Engineering and Business Solutions Ltd India - initial API and implementation
+-->
+<div class="login">
+  <div id="content">
+   <img alt="" src="bosch_logo.png"/>
+</div>
+  <div class="container py-5">
+    <div class="row mx-auto login-container">
+      <div class="row mx-auto">
+        <h4 class="login-tittle">Login into {{tittle}}</h4>
+      </div>
+      <div class="row login-body">
+        <div class="col-md-6">
+          <img [src]="logo" class=" rounded-circle" alt="">
+        </div>
+        <div class="col-md-6 login-form">
+          <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)">
+            <fieldset>
+              <div class="form-group form-group-custom">
+                <div class="label">User ID:</div>
+                <input autofocus type="text" name="userId" ngModel required>
+              </div>
+              <div class="form-group form-group-custom">
+                <div class="label">Password:</div>
+                <input type="password" name="Password" ngModel required>
+              </div>
+              <div>
+                <span>
+                  <input type="submit" value="Sign In">
+                </span>
+                <small class="text-muted" *ngIf="errorMessage">{{errorMessage}}</small>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+      <div class="row login-footer">
+        <p>&copy; Copyright 2017, Robert Bosch Engineering and Business Solutions private Limited All right reserved</p>
+        <div class="details-build">
+          <p>iCTeam Version : 1.4</p>
+          <p>Build Version : 001</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

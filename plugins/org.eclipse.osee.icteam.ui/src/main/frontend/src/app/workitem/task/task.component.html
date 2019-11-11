@@ -1,0 +1,285 @@
+<!--
+Copyright (c) 2020 Robert Bosch Engineering and Business Solutions Ltd India
+This program and the accompanying materials are made
+available under the terms of the Eclipse Public License 2.0
+which is available at https://www.eclipse.org/legal/epl-2.0/
+ 
+SPDX-License-Identifier: EPL-2.0
+ 
+Contributors:
+    Robert Bosch Engineering and Business Solutions Ltd India - initial API and implementation
+-->
+<section>
+  <icTeam-spinner [busy]="isTaskPageisLoading" message="task is loading...">
+    <div class="container-fluid p-4 td-container taskComp">
+      <div class="row activity-container">
+        <button type="submit" class="btn btn-secondary m-1" [disabled]="isSaveDisable" form="taskDetailsForm">
+          <i class="fa fa-save  mr-1"></i>Save
+        </button>
+        <button class="btn btn-secondary m-1" (click)="openDialog()">
+          <i class="fa fa-send  mr-1"></i>Link
+        </button>
+      </div>
+      <div class="task" *ngIf="taskDetails">
+        <form #taskForm="ngForm" (ngSubmit)="onSubmit(taskForm)" id="taskDetailsForm">
+          <div class="row mt-2">
+            <div class="col-sm-4">
+              <div class="row">
+                <label class="col-md-4">Task Id :</label>
+                <div class="col-md-8">
+                  <label>{{taskID}}</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="row">
+                <label class="col-md-4">Created by :</label>
+                <div class="col-md-8">
+                  <label>{{taskDetails.createdBy}}</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="row">
+                <label class="col-md-4">Created Date :</label>
+                <div class="col-md-8">
+                  <label>{{taskDetails.createdDate | date:'MM/dd/yyyy h:mm a'}}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-sm-4">
+              <div class="row">
+                <label class="col-md-4" for="taskName">Task Name : </label>
+                <div class="col-md-8">
+                  <input class="form-control" id="taskName" name="1152921504606847088" placeholder="Task Name" required type="text" value="{{taskDetails.name}}"
+                    [(ngModel)]="taskDetails.name">
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="row">
+                <label class="col-md-4">Assignee :</label>
+                <div class="col-md-8">
+                  <!--<input type="text" class="form-control">-->
+                  <!-- <assign-multiselect-dropdown [options]="usersList" [texts]="usersListTexts" [settings]="usersListSettings" [(ngModel)]="selectedUsers"
+                    (ngModelChange)="onUserSelect()" style="display:inline-block" name="assignselector" [isFooterEnable]=false></assign-multiselect-dropdown> -->
+                  <select class="custom-select d-block w-100" name="assignselector" [(ngModel)]="selectedUser" attributeMap>
+                    <option *ngFor="let user of usersList" [ngValue]="user.name">{{user.name}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="row">
+                <label class="col-md-4">Estimated Hours :</label>
+                <div class="col-md-8">
+                  <input type="number" class="form-control" name="1152921504606847182" [(ngModel)]="taskDetails.estimatedHours" value="{{taskDetails.estimatedHours}}">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-sm-4">
+              <div class="row">
+                <label class="col-md-4">Current State :</label>
+                <div class="col-md-8">
+                  <select class="custom-select d-block w-100" name="1152921504606847192" [(ngModel)]="taskDetails.currentState" attributeMap>
+                    <option *ngFor="let state of taskDetails.attributeMap.states" [ngValue]="state">{{state}}</option>
+                    <!-- <option [ngValue]="taskDetails.currentState">{{taskDetails.currentState}}</option> -->
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="row">
+                <label class="col-md-4">Story Point :</label>
+                <div class="col-md-8">
+                  <input type="number" step=".25" class="form-control" value="{{taskDetails.story}}" name="1152921504606851479" [(ngModel)]="taskDetails.story">
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="row">
+                <label class="col-md-4">Task Priority :</label>
+                <div class="col-md-8">
+
+                  <select class="custom-select d-block w-100" name="1152921504606847179" [(ngModel)]="taskDetails.priority" attributeMap>
+                    <option *ngFor="let priorty of taskDetails.attributeMap.priorityList" [ngValue]="priorty">{{priorty}}</option>
+
+                  </select>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="row mt-2">
+            <div class="col-sm-4">
+              <div class="row">
+                <label class="col-md-4">Task Type :</label>
+                <div class="col-md-8">
+                  <select class="custom-select d-block w-100" [(ngModel)]="taskDetails.changeType" name="1152921504606847180" attributeMap>
+                    <option *ngFor="let type of taskDetails.attributeMap.ChangeTypeList" [ngValue]="type">{{type}}</option>
+
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="row">
+                <label class="col-md-4">Package :</label>
+                <div class="col-md-8">
+                  <select class="custom-select d-block w-100" [(ngModel)]="taskDetails.actionableItem.guid" name="1152921504606847200">
+                    <option *ngFor="let package of taskDetails.listCompoentsDropDown" [ngValue]="package.guid">{{package.name}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="row">
+                <label class="col-md-4">Tag Information :</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" value="{{taskDetails.attributeMap['tag.Information'][0]}}" name="tag.Information"
+                    [(ngModel)]="taskDetails.attributeMap['tag.Information'][0]">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-sm-4">
+              <div class="row">
+                <label class="col-md-4">Rank :</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" value="{{taskDetails.rank}}" name="1152921504606851480" [(ngModel)]="taskDetails.rank">
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="row">
+                <label class="col-md-4">Expected date :</label>
+
+                <div class="input-group  col-md-8">
+                  <input class="form-control" placeholder="yyyy-mm-dd" name="1152921504606847165;Date" [(ngModel)]="expecteddate" ngbDatepicker
+                    #ed="ngbDatepicker" (ngModelChange)="formateTheData($event,'expecteddate')">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" (click)="ed.toggle()" type="button">
+                      <span class="fa fa-calendar"></span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="row">
+                <label class="col-md-4">Remaining Hours :</label>
+                <div class="col-md-8">
+                  <input type="number" class="form-control" name="1152921504606847212" [(ngModel)]="taskDetails.remainingHours" value="{{taskDetails.remainingHours}}">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-2">
+            <div class="col-sm-4">
+              <div class="row">
+                <label class="col-md-4">Release :</label>
+                <!-- <div class="col-md-6">
+                  <select class="custom-select d-block w-100">
+                    <option>Sprint 1 </option>
+                    <option>Sprint 2</option>
+                  </select>
+                </div> -->
+                <div class="col-md-8">
+                  <select class="custom-select d-block w-100" [(ngModel)]="taskDetails.version.guid" name="sprint">
+                    <option *ngFor="let sprint of taskDetails.listVersionsDropDown" [ngValue]="sprint.guid">{{sprint.attributeMap.displayName[0]}}</option>
+                    <option>Product_Backlog</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="row">
+                <label class="col-md-4">Required Condition :</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" value="{{taskDetails.attributeMap['req.Condition'][0]}}" name="req.Condition" [(ngModel)]="taskDetails.attributeMap['req.Condition'][0]">
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row mt-2">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="">Description :</label>
+                <textarea class="form-control" name="1152921504606847196" id="" rows="3" [(ngModel)]="taskDetails.description">{{taskDetails.description}}</textarea>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="fotter">
+        <ngb-tabset type="tabs">
+          <ngb-tab title="Comments">
+            <ng-template ngbTabContent>
+              <div class="comment-container">
+                <div class="comment-set row">
+                  <div class="col-sm-11">
+                    <div class="form-group">
+                      <label for=""></label>
+                      <textarea class="form-control" name="" id="" rows="3" [(ngModel)]="commentdetails"></textarea>
+                    </div>
+                  </div>
+                  <div class="col-sm-1">
+                    <button type="button" title="Submit Comment" class="btn btn-primary mt-5 fa fa-send" [disabled]="!commentdetails" (click)="submitCommnet(commentdetails)">
+                    </button>
+                  </div>
+                </div>
+                <div class="comments" *ngIf="taskDetails?.commentArtifactList">
+                  <div class="comment-details" *ngFor="let comment of taskDetails.commentArtifactList">
+                    <div class="commentedBy">{{comment.user}} added a Comment : {{comment.date}}</div>
+                    <div class="comment">{{comment.msg}}</div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab>
+            <ng-template ngbTabTitle>
+              <div (click)="getAllTaskLinks(taskDetails.guid)">Links</div>
+            </ng-template>
+            <ng-template ngbTabContent>
+              <div>
+                <!-- <div (click)="createTaskFromLink(taskDetails.guid)">Create Task</div> -->
+                <div>
+                  <button class="btn btn-secondary m-1" (click)="createTaskFromLink()" type="button">
+                    Create Task
+                  </button>
+                </div>
+                <div class="container" *ngIf="linklist">
+                  <table class="table table-striped">
+                    <tbody>
+                      <tr *ngFor="let link of linklist">
+
+                        <td>
+                          <a [routerLink]="['/dashboard',projectId,link.guid]">{{link.attributeMap['TaskId']}} {{link.name}}</a>
+
+                        </td>
+                        <td></td>
+                        <td>
+                          <span class="fa fa-remove  btn btn-danger" (click)="deleteLink(link)"></span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </ng-template>
+          </ngb-tab>
+        </ngb-tabset>
+      </div>
+    </div>
+  </icTeam-spinner>
+</section>

@@ -1,0 +1,113 @@
+<!--
+Copyright (c) 2020 Robert Bosch Engineering and Business Solutions Ltd India
+This program and the accompanying materials are made
+available under the terms of the Eclipse Public License 2.0
+which is available at https://www.eclipse.org/legal/epl-2.0/
+ 
+SPDX-License-Identifier: EPL-2.0
+ 
+Contributors:
+    Robert Bosch Engineering and Business Solutions Ltd India - initial API and implementation
+-->
+<div id="team">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-3">
+              <select class=" btn btn-block" style="font-size:18px;" [(ngModel)]="selectedProject" [disabled]="projectsDisable" required>
+                <option *ngFor="let project of projectList" [ngValue]="project">{{project.name}}</option>
+              </select>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group row">
+                <label for="" class="col-sm-3 col-form-label" style="font-size:18px;">Team Name </label>
+                <input type="text" class="form-control col-sm-9" name="teamtittle" aria-describedby="helpId" maxlength=15 placeholder="Enter Team Name"
+                  [(ngModel)]="teamTittle">
+              </div>
+            </div>
+
+
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+              <h4 class="card-title title">Users
+                <span class="fa fa-plus-circle plus-icon" (click)="addUserWindow()"></span>
+              </h4>
+              <input type="text" name="searchUsers" placeholder="Search User..." id="SearchUser" class="form-control" [(ngModel)]="searchUser"
+              />
+              <div class="card users" [dragula]='"bag-one"' id='users'>
+                <div class="ic-list" *ngFor="let user of usersList | namefilter:'name': searchUser" [attr.guidData]='user.guid'>
+                  {{user.name}}
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-9">
+              <div *ngIf="isAddUserWindowActive" class="col-sm-12" id='newUserWindow'>
+                <div class="form-group">
+                  <label for="userId"></label>
+                  <input type="text" class="form-control usr-stext" name="userId" id="userId" aria-describedby="userId" placeholder="Search User"
+                    [(ngModel)]="searchUserFromLdap">
+                  <span class="fa fa-search plus-icon search-icon" (click)="searchUserFormLDAp(searchUserFromLdap)"></span>
+                </div>
+                <div class="card ldaplist mb-5">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>select</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>UserId</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let ldapUser of ldapSearchUsers">
+                        <td>
+                          <input name="ldapresult" class="btn btn-info" type="button" value="Add" (click)="addUserToDB(ldapUser)">
+                        </td>
+                        <td>{{ldapUser.attributeMap.Name}} </td>
+                        <td>{{ldapUser.attributeMap.Email}}</td>
+                        <td>{{ldapUser.userId}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                </div>
+              </div>
+
+              <!--<div class=" row ">-->
+              <h4 class="card-title title ">Team Members</h4>
+              <div class="card members col-sm-12 " [dragula]='"bag-one"' id='members'>
+                <div class="ic-list" *ngFor="let teamMember of teamMemberList" [attr.guidData]='teamMember.guid'>
+                  {{teamMember.name}}
+                </div>
+              </div>
+              <!--</div>
+                        <div class="row ">-->
+              <h4 class="card-title title mt-4 ">Team Leads</h4>
+              <div class="card leads col-sm-12 " [dragula]='"bag-one"' id='leads'>
+                <div class="ic-list" *ngFor="let teamLead of teamLeadList" [attr.guidData]='teamLead.guid'>
+                  {{teamLead.name}}
+                </div>
+              </div>
+              <!--</div>-->
+            </div>
+          </div>
+          <!--<br>
+          <div class="row ">
+            <button type="button " name=" " id=" " class="btn btn-primary " btn-lg btn-block>Save</button>
+          </div>
+        </div>-->
+          <div class="modal-footer ">
+            <small *ngIf="teamSavingResult " class="text-danger ">
+              {{teamSavingResult}}
+            </small>
+            <button type="submit" class="btn btn-primary " (click)="save(teamTittle,selectedProject.guid)">Save</button>
+            <button type="button" class="btn btn-secondary " (click)="activeModal.close( 'Close click')">Cancel</button>
+          </div>
+
+        </div>
+      </div>
+    </div>

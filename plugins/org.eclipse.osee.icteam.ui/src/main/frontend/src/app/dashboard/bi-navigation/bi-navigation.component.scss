@@ -1,0 +1,94 @@
+.user-name {
+  color: #FFF !important;
+}
+
+.float-right {
+  margin-right: 30px;
+}
+
+.dropdown:hover>.dropdown-menu {
+  display: block;
+}
+
+.glyphicon-user {
+  margin-right: 5px;
+}
+
+.dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  -webkit-border-radius: 0 6px 6px 6px;
+  -moz-border-radius: 0 6px 6px;
+  border-radius: 0 6px 6px 6px;
+}
+
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #ccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+
+.dropdown-submenu:hover>a:after {
+  border-left-color: #fff;
+}
+
+.dropdown-submenu.pull-left {
+  float: none;
+}
+
+.dropdown-menu {
+  margin-top: 0;
+  max-height: 65vh;
+  overflow-y: auto;
+}
+
+.nav-projectslist {
+  position: relative;
+}
+
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  -webkit-border-radius: 6px 0 6px 6px;
+  -moz-border-radius: 6px 0 6px 6px;
+  border-radius: 6px 0 6px 6px;
+}
+
+.iCTeam {
+  padding: 8px;
+  font-weight: 800;
+  background: linear-gradient(to right, #65ABD6, #336490);
+}
+
+.user-icon {
+  margin-left: 10px;
+  padding: 2px 5px;
+  background: orange; // clip-path: circle(50%);
+  border-radius: 50%
+}
+
+.outline-0 {
+  outline: none;
+}
+
+.product{
+  cursor: pointer;
+}

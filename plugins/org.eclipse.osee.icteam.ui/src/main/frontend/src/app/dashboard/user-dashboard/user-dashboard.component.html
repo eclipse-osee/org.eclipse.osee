@@ -1,0 +1,111 @@
+<!--
+Copyright (c) 2020 Robert Bosch Engineering and Business Solutions Ltd India
+This program and the accompanying materials are made
+available under the terms of the Eclipse Public License 2.0
+which is available at https://www.eclipse.org/legal/epl-2.0/
+ 
+SPDX-License-Identifier: EPL-2.0
+ 
+Contributors:
+    Robert Bosch Engineering and Business Solutions Ltd India - initial API and implementation
+-->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-9 mytasks">
+          <div class="row">
+              <div class="col-sm-5">
+              </div>
+              <div class="col-sm-4">
+                <h4 class="prj-tittle"> User Dashboard</h4>
+              </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+                  <h4 class="task-tittle"> My Open WorkItems</h4>
+            </div>
+            <div class="col-sm-6">
+          </div>
+            <div class="col-sm-1">
+              <mat-form-field style="font-size:12px">
+                  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                </mat-form-field>
+            </div>
+          </div>
+      <div class="taskTable">
+        <div  class="sprintTable">
+          <div class="sprint-Table-container mat-elevation-z8 ">
+
+              <mat-table #table [dataSource]="dataSource" matSort>
+
+                  <ng-container matColumnDef="taskid">
+                    <mat-header-cell [ngClass]="'customWidthID'" *matHeaderCellDef mat-sort-header>Task Id</mat-header-cell>
+                    <mat-cell [ngClass]="'customWidthID'" style="cursor:default" *matCellDef="let row"> {{row.taskid}} </mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="name">
+                    <mat-header-cell [ngClass]="'customWidthName'" *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+                    <mat-cell [ngClass]="'customWidthName'"  *matCellDef="let row" >
+                    <a style="cursor:pointer" [routerLink]="['/dashboard',selectedProjectGuid,row.guid]">{{row.name}} </a>
+                      </mat-cell>
+
+                  </ng-container>
+
+                  <ng-container matColumnDef="status">
+                      <mat-header-cell [ngClass]="'customWidthStatus'" *matHeaderCellDef mat-sort-header> Status </mat-header-cell>
+                         <mat-cell  [ngClass]="'customWidthStatus'"  *matCellDef="let row"> {{row.status}} </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="story">
+                      <mat-header-cell [ngClass]="'customWidthStory'" *matHeaderCellDef mat-sort-header> Story </mat-header-cell>
+                      <mat-cell style="text-align:center" [ngClass]="'customWidthStory'"  *matCellDef="let row"> {{row.story}} </mat-cell>
+                    </ng-container>
+
+                  <ng-container matColumnDef="type">
+                    <mat-header-cell [ngClass]="'customWidthType'" style="text-align:center" *matHeaderCellDef mat-sort-header> Type </mat-header-cell>
+                    <mat-cell [ngClass]="'customWidthType'" style="cursor:default" *matCellDef="let row" > {{row.type  }} </mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="sprint">
+                    <mat-header-cell [ngClass]="'customWidthSprint'" *matHeaderCellDef mat-sort-header > Sprint </mat-header-cell>
+                    <mat-cell [ngClass]="'customWidthSprint'" *matCellDef="let row">{{row.sprint}}</mat-cell>
+
+                  </ng-container>
+                  <ng-container matColumnDef="project">
+                    <mat-header-cell [ngClass]="'customWidthProject'" *matHeaderCellDef mat-sort-header > Project </mat-header-cell>
+                    <mat-cell [ngClass]="'customWidthProject'" *matCellDef="let row">{{row.project}}</mat-cell>
+
+                  </ng-container>
+
+                  <mat-header-row *matHeaderRowDef="displayedColumns;  sticky: true"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+              </div>
+          </div>
+
+          <div *ngIf=noTasksAssigned class="NoTasksAssigned">
+            <h3  class="prj-tittle"> You don't have any tasks assigned. Enjoy the day!!!</h3>
+          </div>
+
+          <mat-paginator class="PageStyle" #paginator
+            [length]="pageLength"
+            [pageSize]="20"
+            [pageSizeOptions]="[15, 20, 25]"
+            [showFirstLastButtons]="true">
+          </mat-paginator>
+
+
+        </div>
+      <!-- </icTeam-spinner> -->
+    </div>
+
+    <div class="col-sm-3 ">
+      <h4>My Open Items</h4>
+      <div class="card ">
+        <div style="display: block ">
+          <canvas *ngIf="showChart" baseChart [data]="pieChartData " [labels]="pieChartLabels " [chartType]="pieChartType" > </canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

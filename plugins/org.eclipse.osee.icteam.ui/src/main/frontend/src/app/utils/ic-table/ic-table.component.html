@@ -1,0 +1,61 @@
+<!--
+Copyright (c) 2020 Robert Bosch Engineering and Business Solutions Ltd India
+This program and the accompanying materials are made
+available under the terms of the Eclipse Public License 2.0
+which is available at https://www.eclipse.org/legal/epl-2.0/
+ 
+SPDX-License-Identifier: EPL-2.0
+ 
+Contributors:
+    Robert Bosch Engineering and Business Solutions Ltd India - initial API and implementation
+-->
+<div class="icTable">
+<table class="table table-sm table-hover table-bordered">
+  <thead class="thead-light">
+    <tr>
+      <th *ngFor="let column of columns">
+        <div class="header" style ="height:20%">
+          <div (click)="sortColumn(column.property)" *ngIf="column.sortable">{{column.header}}
+            <span class="column-sort-icon">
+              <span class="fa fa-sort column-sortable-icon" [hidden]="column.property === sortBy"></span>
+              <span [hidden]=" column.property !== sortBy">
+                <i class="fa fa-sort-asc" [hidden]="sortAsc"></i>
+                <i class="fa fa-sort-desc" [hidden]="!sortAsc"></i>
+              </span>
+            </span>
+          </div>
+          <div *ngIf="!column.sortable">{{column.header}}
+          </div>
+          <div *ngIf="column.filter">
+            <span class="fa fa-filter hide" (click)="toggleFilter(column.property)" [ngClass]="{'active': selectedFilterType === column.property}"></span>
+            <div class="filter-list" *ngIf="filterType === column.property" (clickOutside)="close($event)">
+              <input type="text" class="form-control" name="" id="" aria-describedby="helpId" placeholder="Filter it..." [(ngModel)]="filterData">
+            </div>
+          </div>
+        </div>
+      </th>
+    </tr>
+  </thead>
+  <!-- <div *ngIf="dragulaEnable">
+
+  </div> -->
+  <tbody *ngIf="dragulaEnable" [dragula]='"table-item"' id='{{dragulaId}}' [dragulaOptions]="options">
+    <tr *ngFor="let item of items |filter:selectedFilterType:filterData | paginate: { itemsPerPage: pageSize, currentPage: page }; let index=index"
+      class="data-table-row-wrapper" appTableTr app-table-tr #row [item]="item" [attr.data]='item |json' [index]="index">
+    </tr>
+  </tbody>
+  <tbody *ngIf="!dragulaEnable">
+    <tr *ngFor="let item of items |filter:selectedFilterType:filterData | paginate: { itemsPerPage: pageSize, currentPage: page }; let index=index"
+      class="data-table-row-wrapper" appTableTr app-table-tr #row [item]="item" [index]="index">
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="table-fotter" *ngIf="pagination">
+  <div class=" form-inline ">
+    <label for="page-size">Size : </label>
+    <input class="form-control form-control-sm col-3" id="page-size" type="number" name="pageSize" [(ngModel)]="pageSize">
+  </div>
+  <pagination-controls (pageChange)="page = $event"></pagination-controls>
+</div>

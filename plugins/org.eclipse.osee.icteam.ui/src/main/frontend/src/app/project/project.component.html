@@ -1,0 +1,45 @@
+<!--
+Copyright (c) 2020 Robert Bosch Engineering and Business Solutions Ltd India
+This program and the accompanying materials are made
+available under the terms of the Eclipse Public License 2.0
+which is available at https://www.eclipse.org/legal/epl-2.0/
+ 
+SPDX-License-Identifier: EPL-2.0
+ 
+Contributors:
+    Robert Bosch Engineering and Business Solutions Ltd India - initial API and implementation
+-->
+<div id="project">
+  <div class="modal-header bg-primary text-white">
+    <h4 class="modal-title" id="modelTitleId">Create Project</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <form #projectForm="ngForm" (ngSubmit)="projectSubmit(projectForm)">
+    <div class="modal-body">
+      <div class="form-group row">
+        <label for="projectname" class="col-sm-3 col-form-label">Name</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control form-control-lg" id="projectname" placeholder="Project Name" maxlength=15 name="name" ngModel required>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="shortname" class="col-sm-3 col-form-label">Short Name</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control form-control-lg" id="shortname" placeholder="Short Name" maxlength=15 name="shortname" ngModel
+            required>
+        </div>
+      </div>
+      <label  class="decoratedErrorField" [hidden]=isUnique name="userMessage" [(ngModel)]="message">{{message}}</label>
+    </div>
+    <div class="modal-footer">
+      <small *ngIf="projectResponse" class="text-danger">
+        We are facing some issue on server side,Plase try after some time.
+      </small>
+      <button type="submit" class="btn btn-primary" [disabled]="!projectForm.form.valid">Save</button>
+      <button type="button" class="btn btn-secondary" (click)="activeModal.close('Close click')">Close</button>
+
+    </div>
+  </form>
+</div>

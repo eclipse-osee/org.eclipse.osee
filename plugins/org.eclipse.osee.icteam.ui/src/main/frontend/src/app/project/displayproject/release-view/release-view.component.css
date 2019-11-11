@@ -1,0 +1,54 @@
+
+@keyframes MoveLeft {
+  0% {
+    transform: translateX(20%);
+    opacity: 0;
+  }
+  80% {
+    transform: translateX(-20px);
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes MoveRight {
+  0% {
+    transform: translateX(-20%);
+    opacity: 0;
+  }
+  80% {
+    transform: translateX(20px);
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/*New Dashboard*/
+
+.projects {
+  max-height: 85%;
+  overflow-y: auto;
+  background-color: #F7F7F7;
+  border: 0;
+}
+
+.sprints-container {
+  height: 85vh;
+  padding-top: 0.5%;
+  background-color: white;
+}
+
+.backlog{
+  cursor: pointer;
+}
+
+.active{
+  color:orange;
+}
+.release_container{
+height: 100%;
+}

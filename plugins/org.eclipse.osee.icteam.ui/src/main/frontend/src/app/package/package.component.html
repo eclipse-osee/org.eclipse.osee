@@ -1,0 +1,77 @@
+<!--
+Copyright (c) 2020 Robert Bosch Engineering and Business Solutions Ltd India
+This program and the accompanying materials are made
+available under the terms of the Eclipse Public License 2.0
+which is available at https://www.eclipse.org/legal/epl-2.0/
+ 
+SPDX-License-Identifier: EPL-2.0
+ 
+Contributors:
+    Robert Bosch Engineering and Business Solutions Ltd India - initial API and implementation
+-->
+<div id="package">
+  <div class="modal-header bg-primary text-white">
+    <h4 class="modal-title" id="modelTitleId">
+      Create/Update Package</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-3 left-container">
+        <input class="btn btn-outline-primary w-100 mt-2" id="createPackage" name="createPackage" type="button" value="New Package" (click)="NewPackageInit()">
+        <div class= "packageList">
+          <div *ngFor="let package of packageList" class="package m-1 p-2" (click)="renderSelectedPackage(package)" [ngClass]="{'packageActive': package === selectedPackage}">{{package.name}}</div>
+        </div>
+      </div>
+      <div class="col-sm-9">
+        <div class="row">
+          <div class="col-sm-12 mt-2">
+            <div class="form-group row">
+              <label for="" class="col-sm-4 col-form-label ml-2">Package Name </label>
+              <div class="col-sm-7">
+                <input type="text" class="form-control" id="packagename" placeholder="Package Name" maxlength=15 name="packageName" [(ngModel)]="packageName">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group row">
+              <label for="" class="col-sm-4 col-form-label ml-2">Project</label>
+              <select class="col-sm-6 ml-3 btn btn-block" (change)="getSelectedProject()" [(ngModel)]="selectedProject" [disabled]="projectsDisable"
+                required>
+                <option *ngFor="let project of projectList" [ngValue]="project">{{project.name}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <!--{{selectedTeam |json}}-->
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group row">
+              <label for="" class="col-sm-4 col-form-label ml-2">Team</label>
+              <select class="col-sm-6 ml-3 btn btn-block" (change)="getSelectedTeam()" [(ngModel)]="selectedTeam" [disabled]="teamDisable" required>
+                <option *ngFor="let team of teamList" [ngValue]="team">{{team.name}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <small *ngIf="packageResponse" class="text-danger">
+            We are facing some issue on server side,Plase try after some time.
+          </small>
+          <button type="submit" class="btn btn-primary" (click)="createPackage()">
+            <span [hidden]="selectedPackage">Save</span>
+            <span [hidden]="!selectedPackage">Update</span>
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="activeModal.close('Close click')">Cancel</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

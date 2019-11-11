@@ -1,0 +1,19 @@
+input {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 14px;
+}
+
+input.ng-untouched,
+input.ng-touched.ng-valid[required],
+input.ng-touched.ng-valid.required {
+  border-left: 5px solid #42A948;
+}
+
+input.ng-touched.ng-invalid:not(form) {
+  border-left: 5px solid #a94442;
+}
+
+.decoratedErrorField{
+  color: #a94442;
+}
+

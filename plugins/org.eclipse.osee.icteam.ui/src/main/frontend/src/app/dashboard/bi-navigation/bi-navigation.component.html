@@ -1,0 +1,65 @@
+<!--
+Copyright (c) 2020 Robert Bosch Engineering and Business Solutions Ltd India
+This program and the accompanying materials are made
+available under the terms of the Eclipse Public License 2.0
+which is available at https://www.eclipse.org/legal/epl-2.0/
+ 
+SPDX-License-Identifier: EPL-2.0
+ 
+Contributors:
+    Robert Bosch Engineering and Business Solutions Ltd India - initial API and implementation
+-->
+<nav class="navbar navbar-expand-sm navbar-dark bg-theam-color fixed-top p-0">
+  <a href="#/dashboard/userDashboard" class="navbar-brand iCTeam">{{title}}</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar4">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div id="navbar" class="navbar-collapse collapse">
+    <div class="nav-left-items  mr-auto ">
+      <ul class="nav navbar-nav nav-left-items  mr-auto ">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle active" style="cursor:pointer" role="button" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+            Projects
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <li class="dropdown-header py-0">
+              <input type="text" placeholder="Browse Projects" [(ngModel)]="SearchProject" class="border-0 outline-0" />
+            </li>
+            <li class="dropdown-divider"></li>
+            <li [(ngModel)]="projectList" ngDefaultControl  class="nav-projectslist">
+              <a class="dropdown-item" [routerLink]="['/dashboard/projectDashboard',project.guid]" *ngFor="let project of projectList | namefilter:'name': SearchProject">
+                {{ project.name }}
+              </a>
+            </li>
+            <li class="dropdown-divider"></li>
+            <button type="button" class="btn btn-primary bg-light btn-outline-light text-dark w-100" data-toggle="modal" (click)="createProject()">
+              Create New Project
+            </button>
+
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="nav-right-items form-inline my-2 my-lg-0">
+      <div class="float-right user-name">
+        <span>Hi,{{userFullName}}</span>
+        <span class="dropdown dropdown-toggle active">
+          <span class="fa fa-user user-icon" style="margin-left: 10px;">
+          </span>
+          <span class="caret"></span>
+          <ul class="dropdown-menu">
+            <button class=" btn btn-primary btn-outline-light text-dark dropdown-item fa fa-sign-out px-2 py-0" (click)="onLogout()"
+              type="button">
+              logout
+            </button>
+          </ul>
+        </span>
+
+      </div>
+    </div>
+  </div>
+
+</nav>

@@ -1,0 +1,134 @@
+<!--
+Copyright (c) 2020 Robert Bosch Engineering and Business Solutions Ltd India
+This program and the accompanying materials are made
+available under the terms of the Eclipse Public License 2.0
+which is available at https://www.eclipse.org/legal/epl-2.0/
+ 
+SPDX-License-Identifier: EPL-2.0
+ 
+Contributors:
+    Robert Bosch Engineering and Business Solutions Ltd India - initial API and implementation
+-->
+<div id="task">
+  <div class="modal-header bg-primary text-white">
+    <h4 class="modal-title" id="modelTitleId">Create Task</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="container">
+    <div class="row ">
+      <div class="col-sm-12 mt-2">
+        <div class="form-group row">
+          <label for="" class="col-sm-4 col-form-label ml-2">Title</label>
+          <div class="col-sm-7">
+            <input type="text" class="form-control" id="taskname" placeholder="Task Name" name="taskName" [(ngModel)]="taskName">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 mt-2">
+        <div class="form-group row">
+          <label for="" class="col-sm-4 col-form-label ml-2">Description</label>
+          <div class="col-sm-7">
+            <textarea type="text" class="form-control" id="taskdesc" placeholder="Description" name="taskDesc" [(ngModel)]="taskDesc"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="form-group row">
+          <label for="" class="col-sm-4 col-form-label ml-2">Project</label>
+          <select class="col-sm-6 ml-3 btn btn-block" (change)="getSelectedProject()" [(ngModel)]="selectedProject" [disabled]="projectsDisable"
+            required>
+            <option *ngFor="let project of projectList" [ngValue]="project">{{project.name}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="form-group row">
+          <label for="" class="col-sm-4 col-form-label ml-2">Packages</label>
+          <select class="col-sm-6 ml-3 btn btn-block" (change)="getSelectedPackage()" [(ngModel)]="selectedPackage" required>
+            <option *ngFor="let package of packageList" [ngValue]="package">{{package.name}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="form-group row">
+          <label for="" class="col-sm-4 col-form-label ml-2">Sprint</label>
+          <select class="col-sm-6 ml-3 btn btn-block" [(ngModel)]="selectedRelease" >
+           <option *ngFor="let sprint of releaseList" [ngValue]="sprint">{{sprint.attributeMap['displayName'][0]}}</option>
+           <option>Product_Backlog</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="form-group row">
+          <label for="" class="col-sm-4 col-form-label ml-2">Task Type</label>
+          <select class="col-sm-6 ml-3 btn btn-block" [(ngModel)]="selectedTaskType" required>
+            <option *ngFor="let taskType of taskTypeList" [ngValue]="taskType">{{taskType.name}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+          <div class="form-group row">
+            <label for="" class="col-sm-4 col-form-label ml-2">Priority</label>
+            <select class="col-sm-6 ml-3 btn btn-block" [(ngModel)]="selectedPriority" required>
+              <option *ngFor="let priority of priorityList" [ngValue]="priority">{{priority.name}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+
+   
+
+
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="form-group row">
+          <label for="" class="col-sm-4 col-form-label ml-2">Assignees</label>
+         
+                
+                <select class="col-sm-6 ml-3 btn btn-block"   [(ngModel)]="selectedUser" attributeMap>
+                    <option  *ngFor="let user of dropdownList" [ngValue]="user.itemName">{{user.itemName}}</option>
+                  </select>
+               
+
+
+
+
+
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <small *ngIf="taskResponse" class="text-danger">
+        We are facing some issue on server side,Plase try after some time.
+      </small>
+      <small>
+        **All fields are mandatory**
+      </small>
+      <button type="submit" class="btn btn-primary" (click)="createTask()">Save</button>
+      <button type="button" class="btn btn-secondary" (click)="activeModal.close('Close click')">Cancel</button>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+.left-container {
+  border-right: 1px dotted lightgray;
+  background-color: #F7F7F7;
+}
+
+.project-list,
+.milestones {
+  font-weight: 600;
+  cursor: pointer;
+}
+.milestones{
+  font-weight: 900;
+  text-transform: UPPERCASE;
+}
+
+.release-active {
+  color: orange;
+}
+
+input[type="radio"]{
+  border-radius: 25px;
+  width: 0.8rem;
+  height: 0.8rem;
+  opacity: 1;
+  z-index: 2;
+  top: 7px;
+  cursor: pointer;
+  margin: 0%
+
+}
+input[type="radio"]:checked+ label{
+  font-style: italic;
+  color:orange;
+}
+
+.releaseList{
+  max-height: 270px;
+  overflow-y: auto;
+}

@@ -1,0 +1,18 @@
+{
+  "/service": {
+    "target": "http://localhost:8081",
+    "secure": false
+  },
+  "/user": {
+    "target": "http://localhost:8081",
+    "secure": false
+  },
+  "/logout": {
+    "target": "http://localhost:8081",
+    "secure": false
+  },
+  "/file": {
+    "target": "http://localhost:8081",
+    "secure": false
+  }
+}

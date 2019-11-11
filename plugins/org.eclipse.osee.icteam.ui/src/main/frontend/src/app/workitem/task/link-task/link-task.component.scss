@@ -1,0 +1,43 @@
+tr::selection{
+    background-color:grey;
+    color:black
+ }
+
+ tr:hover{
+    background-color: #33A1DE !important;
+    color:white
+ }
+
+//  .selected{
+//     background-color:red;
+//     color:black
+//  }
+
+//  .active{
+//     background-color:red;
+//     color:green;
+//  }
+
+.table tr.active td {
+    background-color:#33A1DE !important;
+    color: white;
+  }
+
+  .active {
+    background-color:#33A1DE !important;
+    color:white;
+  }
+
+  .ScrollStyle
+{
+  
+
+    max-height: 550px;
+    overflow-y: scroll;
+
+  box-sizing: border-box;
+  width: 700px !important;
+  background-color:white !important;
+}
+
+
