@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="org.eclipse.osee.icteam.resource.Branch.layer" name="ResourceLayer" schema="schema/org.eclipse.osee.icteam.resource.layer.exsd"/>
+   <extension-point id="org.eclipse.osee.icteam.resource.project.layer" name="ProjectResourceLayer" schema="schema/org.eclipse.osee.icteam.resource.project.layer.exsd"/>
+
+</plugin>

@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: iCTeam Server Access
+Bundle-SymbolicName: org.eclipse.osee.icteam.server.access;singleton:=true
+Bundle-Version: 1.4.0.qualifier
+Bundle-Vendor: BOSCH LTD
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Eclipse-ExtensibleAPI: true
+Export-Package: org.eclipse.osee.icteam.server.access.core
+Import-Package: org.eclipse.core.runtime,
+ org.eclipse.osee.ats.rest,
+ org.eclipse.osee.orcs,
+ org.osgi.framework
+Service-Component: OSGI-INF/*.xml

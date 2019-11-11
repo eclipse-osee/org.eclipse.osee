@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: iCTeam Common Clientserver (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.icteam.common.clientserver;singleton:=true
+Bundle-Version: 1.4.0.qualifier
+Bundle-ClassPath: .
+Bundle-Activator: org.eclipse.osee.icteam.common.clientserver.Activator
+Bundle-Vendor: BOSCH
+Export-Package: org.eclipse.osee.icteam.common.clientserver,
+ org.eclipse.osee.icteam.common.clientserver.util
+Require-Bundle:  com.google.guava,
+ org.eclipse.osee.framework.jdk.core,
+ org.eclipse.osee.icteam.common.clientserver.dependent
+Import-Package: com.google.gson,
+ org.eclipse.core.runtime,
+ org.eclipse.osee.framework.core,
+ org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.icteam.common.clientserver.osee,
+ org.eclipse.osee.icteam.common.interfaces,
+ org.osgi.framework
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

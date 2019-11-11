@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: iCTeam Client Server Osee (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.icteam.common.clientserver.osee;singleton:=true
+Bundle-Version: 1.3.0.qualifier
+Bundle-ClassPath: .
+Bundle-Activator: org.eclipse.osee.icteam.common.clientserver.osee.Activator
+Bundle-Vendor: BOSCH
+Export-Package: org.eclipse.osee.icteam.common.clientserver.osee,
+ org.eclipse.osee.icteam.common.clientserver.osee.ats.workdefs
+Require-Bundle: org.eclipse.osee.framework.jdk.core,
+ com.google.guava,
+ org.eclipse.osee.ats.core
+Import-Package: org.eclipse.core.runtime,
+ org.eclipse.osee.ats.api,
+ org.eclipse.osee.ats.api.data,
+ org.eclipse.osee.ats.api.workdef,
+ org.eclipse.osee.ats.api.workdef.model,
+ org.eclipse.osee.framework.core,
+ org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
+ org.osgi.framework
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy

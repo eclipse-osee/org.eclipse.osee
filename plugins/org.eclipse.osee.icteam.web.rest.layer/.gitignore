@@ -1,0 +1,13 @@
+#Ignore all bin folders
+bin/
+#Ignore all .settings folders
+*/*/.settings/
+#Ignore vi temporary files
+*~
+*swp
+#Ignore temp test file
+plugins/*/utf8_input_copy.xml
+#Ignore maven build target
+target/
+#Ignore workspace folders
+workspace/

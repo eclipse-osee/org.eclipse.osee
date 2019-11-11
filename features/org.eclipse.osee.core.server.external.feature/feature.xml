@@ -1203,6 +1203,48 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+		 
+	<plugin
+         id="org.eclipse.osee.icteam.common.clientserver"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+		 
+	<plugin
+         id="org.eclipse.osee.icteam.common.clientserver.dependent"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+	 
+	<plugin
+         id="org.eclipse.osee.icteam.common.clientserver.osee"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+		 
+	<plugin
+         id="org.eclipse.osee.icteam.common.interfaces"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+		 
+	<plugin
+         id="org.eclipse.osee.icteam.server.access"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+		 
+	<plugin
+         id="org.eclipse.osee.icteam.web.rest.layer"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
    
     <plugin
          id="org.eclipse.jdt.compiler.apt"
