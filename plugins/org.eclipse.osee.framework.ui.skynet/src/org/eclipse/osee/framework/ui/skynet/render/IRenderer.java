@@ -30,6 +30,7 @@ public interface IRenderer {
 
    public static final int SPECIALIZED_KEY_MATCH = 70;
    public static final int SPECIALIZED_MATCH = 60;
+   public static final int PRESENTATION_TYPE_OPTION_MATCH = 55;
    public static final int PRESENTATION_SUBTYPE_MATCH = 50;
    public static final int PRESENTATION_TYPE = 40;
    public static final int SUBTYPE_TYPE_MATCH = 30;

@@ -79,6 +79,7 @@ public class WordTemplateRenderer extends WordRenderer {
    private static final String STYLES_END = "</w:styles>";
    private static final String OLE_START = "<w:docOleData>";
    private static final String OLE_END = "</w:docOleData>";
+   private static final String OPEN_IN_WORD = "MS Word";
 
    private final WordTemplateProcessor templateProcessor;
    private final IComparator comparator;
@@ -154,7 +155,11 @@ public class WordTemplateRenderer extends WordRenderer {
                rating = PRESENTATION_SUBTYPE_MATCH;
             }
          } else if (presentationType.matches(PREVIEW, DIFF)) {
-            rating = BASE_MATCH;
+            if (OPEN_IN_WORD.equals(rendererOptions.get(RendererOption.OPEN_OPTION))) {
+               rating = PRESENTATION_TYPE_OPTION_MATCH;
+            } else {
+               rating = BASE_MATCH;
+            }
          }
       }
       return rating;
@@ -350,16 +355,21 @@ public class WordTemplateRenderer extends WordRenderer {
 
    @Override
    public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
+      Map<String, String> wordMenuSettings = new HashMap<String, String>();
+      wordMenuSettings.put(RendererOption.OPEN_OPTION.getKey(), OPEN_IN_WORD);
       ImageDescriptor imageDescriptor = ImageManager.getProgramImageDescriptor("doc");
-      commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "MS Word Edit", imageDescriptor));
-      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview", imageDescriptor));
-      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview with children", imageDescriptor,
-         RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_WITH_RECURSE_VALUE.getKey()));
-      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview (No Attr)", imageDescriptor,
-         RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey()));
       commands.add(
-         new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview with children (No Attr)", imageDescriptor,
-            RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_WITH_RECURSE_NO_ATTRIBUTES_VALUE.getKey()));
+         new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "MS Word Edit", imageDescriptor, wordMenuSettings));
+      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview", imageDescriptor, wordMenuSettings));
+      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview with children", imageDescriptor,
+         RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_WITH_RECURSE_VALUE.getKey(),
+         wordMenuSettings));
+      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview (No Attr)", imageDescriptor,
+         RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey(),
+         wordMenuSettings));
+      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview with children (No Attr)",
+         imageDescriptor, RendererOption.TEMPLATE_OPTION.getKey(),
+         RendererOption.PREVIEW_WITH_RECURSE_NO_ATTRIBUTES_VALUE.getKey(), wordMenuSettings));
    }
 
 }

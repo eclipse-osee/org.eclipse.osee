@@ -31,6 +31,7 @@ public class MenuCmdDef {
    private final String optionKey;
    private final String optionValue;
    private final String commandId;
+   private Map<String, String> commandParamMap;
 
    public MenuCmdDef(CommandGroup commandGroup, String commandId, ImageDescriptor icon) {
       this(commandGroup, commandId, null, null, icon, null, null);
@@ -56,13 +57,26 @@ public class MenuCmdDef {
       this(commandGroup, GENERALIZED_CMD_ID, presentationType, label, icon, null, null);
    }
 
+   public MenuCmdDef(CommandGroup commandGroup, PresentationType presentationType, String label, ImageDescriptor icon, Map<String, String> commandParamMap) {
+      this(commandGroup, GENERALIZED_CMD_ID, presentationType, label, icon, null, null, commandParamMap);
+   }
+
    public MenuCmdDef(CommandGroup commandGroup, PresentationType presentationType, String label, ImageDescriptor icon, String optionKey, String optionValue) {
       this(commandGroup, GENERALIZED_CMD_ID, presentationType, label, icon, optionKey, optionValue);
+   }
+
+   public MenuCmdDef(CommandGroup commandGroup, PresentationType presentationType, String label, ImageDescriptor icon, String optionKey, String optionValue, Map<String, String> commandParamMap) {
+      this(commandGroup, GENERALIZED_CMD_ID, presentationType, label, icon, optionKey, optionValue, commandParamMap);
    }
 
    public MenuCmdDef(CommandGroup commandGroup, String commandId, PresentationType presentationType, String label, KeyedImage imageEnum, String optionKey, String optionValue) {
       this(commandGroup, commandId, presentationType, label, ImageManager.getImageDescriptor(imageEnum), optionKey,
          optionValue);
+   }
+
+   public MenuCmdDef(CommandGroup commandGroup, String commandId, PresentationType presentationType, String label, ImageDescriptor icon, String optionKey, String optionValue, Map<String, String> commandParamMap) {
+      this(commandGroup, commandId, presentationType, label, icon, optionKey, optionValue);
+      this.commandParamMap = commandParamMap;
    }
 
    public MenuCmdDef(CommandGroup commandGroup, String commandId, PresentationType presentationType, String label, ImageDescriptor icon, String optionKey, String optionValue) {
@@ -80,7 +94,9 @@ public class MenuCmdDef {
    }
 
    public Map<String, String> getCommandParamMap() {
-      Map<String, String> commandParamMap = new HashMap<>();
+      if (commandParamMap == null) {
+         commandParamMap = new HashMap<>();
+      }
       if (presentationType != null) {
          commandParamMap.put(PresentationType.class.getSimpleName(), presentationType.toString());
       }
