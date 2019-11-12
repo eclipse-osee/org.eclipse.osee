@@ -43,10 +43,6 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 @Path("branches")
 public interface BranchEndpoint {
 
-   @GET
-   @Produces({MediaType.APPLICATION_JSON})
-   List<Branch> getBranches();
-
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
@@ -69,8 +65,8 @@ public interface BranchEndpoint {
    List<Branch> getBranches(@DefaultValue("") @QueryParam("branchUuids") String branchUuids, //
       @DefaultValue("") @QueryParam("branchTypes") String branchTypes, //
       @DefaultValue("") @QueryParam("branchStates") String branchStates, //
-      @QueryParam("deleted") boolean deleted, //
-      @QueryParam("archived") boolean archived, //
+      @DefaultValue("false") @QueryParam("deleted") boolean deleted, //
+      @DefaultValue("false") @QueryParam("archived") boolean archived, //
       @DefaultValue("") @QueryParam("nameEquals") String nameEquals, //
       @DefaultValue("") @QueryParam("namePattern") String namePattern, //
       @QueryParam("childOf") Long childOf, //

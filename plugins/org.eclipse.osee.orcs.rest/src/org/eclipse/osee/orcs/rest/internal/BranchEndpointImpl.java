@@ -138,11 +138,6 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public List<Branch> getBranches() {
-      return newBranchQuery().includeArchived().includeDeleted().getResults().getList();
-   }
-
-   @Override
    public List<Branch> getBranches(BranchQueryData options) {
       ResultSet<Branch> results = searchBranches(options);
       return results.getList();
@@ -729,10 +724,14 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
       if (options.isIncludeArchived()) {
          query.includeArchived();
+      } else {
+         query.excludeArchived();
       }
 
       if (options.isIncludeDeleted()) {
          query.includeDeleted();
+      } else {
+         query.excludeDeleted();
       }
 
       String nameEquals = options.getNameEquals();
