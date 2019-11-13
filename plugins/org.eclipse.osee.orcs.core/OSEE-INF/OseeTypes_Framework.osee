@@ -861,6 +861,10 @@ artifactType "Integration Test Procedure - MS Word" extends "MS Word Whole Docum
 	attribute "Doors Hierarchy"
 }
 
+artifactType "Acronym Plain Text" extends "Plain Text" {
+	id 5034328852220100337
+}
+
 artifactType "Indirect Software Requirement" extends "Abstract Software Requirement" , "MS Word Template" {
 	id 25
 }

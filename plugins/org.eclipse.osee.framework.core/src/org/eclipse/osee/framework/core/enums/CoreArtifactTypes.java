@@ -18,11 +18,12 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 public final class CoreArtifactTypes {
 
    // @formatter:off
-   public static final ArtifactTypeToken AccessControlModel = ArtifactTypeToken.valueOf(2, "Access Control Model");
    public static final ArtifactTypeToken AbstractSoftwareRequirement = ArtifactTypeToken.valueOf(23, "Abstract Software Requirement");
    public static final ArtifactTypeToken AbstractSpecRequirement = ArtifactTypeToken.valueOf(58551193202327573L, "Abstract Spec Requirement");
    public static final ArtifactTypeToken AbstractSubsystemRequirement = ArtifactTypeToken.valueOf(797, "Abstract Subsystem Requirement");
    public static final ArtifactTypeToken AbstractSystemRequirement = ArtifactTypeToken.valueOf(796, "Abstract System Requirement");
+   public static final ArtifactTypeToken AccessControlModel = ArtifactTypeToken.valueOf(2, "Access Control Model");
+   public static final ArtifactTypeToken AcronymPlainText = ArtifactTypeToken.valueOf(5034328852220100337L, "Acronym Plain Text");
    public static final ArtifactTypeToken Artifact = ArtifactTypeToken.valueOf(1, "Artifact");
    public static final ArtifactTypeToken Breaker = ArtifactTypeToken.valueOf(188458869981236L, "Breaker");
    public static final ArtifactTypeToken BranchView = ArtifactTypeToken.valueOf(5849078277209560034L, "Branch View");
